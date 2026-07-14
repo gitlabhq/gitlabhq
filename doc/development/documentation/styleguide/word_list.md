@@ -2104,8 +2104,7 @@ For more information, see the
 
 ## once
 
-The word **once** means **one time**. Don't use it to mean **after** or **when**.
-
+The word **once** means **one time**. Don't use it to mean "after" or "when".
 Use:
 
 - When the process is complete...

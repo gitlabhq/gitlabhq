@@ -1,5 +1,6 @@
 #import "./work_item_ancestors.fragment.graphql"
 
+# @feature_category: portfolio_management
 mutation workItemUpdateParent($input: WorkItemUpdateInput!, $useWorkItemFeatures: Boolean = false) {
   workItemUpdate(input: $input) {
     workItem {

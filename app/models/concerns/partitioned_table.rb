@@ -8,6 +8,7 @@ module PartitionedTable
 
     PARTITIONING_STRATEGIES = {
       daily: Gitlab::Database::Partitioning::Time::DailyStrategy,
+      weekly: Gitlab::Database::Partitioning::Time::WeeklyStrategy,
       monthly: Gitlab::Database::Partitioning::Time::MonthlyStrategy,
       sliding_list: Gitlab::Database::Partitioning::SlidingListStrategy,
       ci_sliding_list: Gitlab::Database::Partitioning::CiSlidingListStrategy,

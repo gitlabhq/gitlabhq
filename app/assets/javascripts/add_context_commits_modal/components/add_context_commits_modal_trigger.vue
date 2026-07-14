@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     openModal() {
-      eventHub.$emit('openModal');
+      eventHub.$emit('open-modal');
     },
   },
 };

@@ -9,13 +9,14 @@ title: Scheduled pipeline execution policies
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14147) as an experiment in GitLab 18.0 with a flag named `scheduled_pipeline_execution_policy_type` defined in the `policy.yml` file.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238197) to beta in GitLab 18.2.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/17875) in GitLab 19.2.
 
 {{< /history >}}
 
@@ -32,19 +33,6 @@ Common use cases include:
 - Check project configurations periodically.
 - Run dependency scans on inactive repositories to detect newly discovered vulnerabilities.
 - Execute compliance reporting scripts on a schedule.
-
-## Enable scheduled pipeline execution policies
-
-Scheduled pipeline execution policies are available as an experimental feature. To enable this feature in your environment, enable the `pipeline_execution_schedule_policy` experiment in the security policy configuration. The `.gitlab/security-policies/policy.yml` YAML configuration file is stored in your Security Policy Project:
-
-```yaml
-experiments:
-  pipeline_execution_schedule_policy:
-    enabled: true
-```
-
-> [!note]
-> This feature is experimental and may change in future releases. You should test it thoroughly in a non-production environment only. You should not use this feature in production environments as it may be unstable.
 
 ## Test a scheduled pipeline execution policy
 
@@ -230,6 +218,62 @@ For example, `2025-06-26T16:27:00+00:00` represents June 26, 2025, at 4:27 PM UT
 
 To remove a snooze before its expiration time, remove the `snooze` section from the policy configuration or set a date in the past for the `until` value.
 
+## Control access to CI/CD variables
+
+By default, scheduled pipeline execution policy jobs cannot access project or group CI/CD variables.
+This secure default prevents policies from unintentionally exposing sensitive project configuration.
+
+To allow policy jobs to access project and group CI/CD variables, add the `variables_override` option to your policy configuration:
+
+```yaml
+pipeline_execution_schedule_policy:
+- name: Scheduled Security Scan
+  description: 'Run security scans with access to project variables'
+  enabled: true
+  content:
+    include:
+    - project: your-group/your-project
+      file: security-scan.yml
+  variables_override:
+    allowed: true
+  schedules:
+  - type: daily
+    start_time: '02:00'
+    time_window:
+      value: 3600
+      distribution: random
+```
+
+### `variables_override` configuration options
+
+| Parameter | Description |
+|-----------|-------------|
+| `allowed` | Required. When `true`, policy jobs can access project and group CI/CD variables. When `false`, blocks access to these variables. |
+| `exceptions` | Optional. An array of variable names that are excepted from the enforcement. When `allowed: true`, variables in this list are blocked. When `allowed: false`, variables in this list are allowed. |
+| `dotenv` | Optional. Controls whether dotenv artifact variables follow the policy rules. Set to `allow_override` to let dotenv variables bypass the policy rules. Default behavior respects the policy rules. |
+
+### `variables_override` examples
+
+Block all project variables except specific ones:
+
+```yaml
+variables_override:
+  allowed: false
+  exceptions:
+    - DEPLOY_TOKEN
+    - API_KEY
+```
+
+Allow all project variables except sensitive ones:
+
+```yaml
+variables_override:
+  allowed: true
+  exceptions:
+    - SECRET_KEY
+    - PRIVATE_TOKEN
+```
+
 ## Schedule pipelines for specific branches
 
 By default, schedules run on the default branch only. Scheduled pipeline execution policies support branch filtering, which allows you to schedule pipelines for additional branches. Use the `branches` property to perform regular scans or checks on other important branches in your project.
@@ -295,36 +339,21 @@ This setting applies to any user who triggers a pipeline with pipeline execution
 1. Turn on **Grant security policy project access to CI/CD configuration**.
 1. Select **Save changes**.
 
-### Option 2: Allow Security Policy Bot access to private or internal projects
+### Option 2: Allow access to private or internal projects
 
 If your policy `include:` value references a CI/CD configuration file stored in a private or internal
 project other than the security policy project, use this option.
-This setting applies only to Security Policy Bot users and can be enabled on any project.
-
-1. Enable the `pipeline_execution_policy_bot_access` experiment in your security policy project.
-   In the `.gitlab/security-policies/policy.yml` file, add the following lines:
-
-   ```yaml
-   experiments:
-     pipeline_execution_policy_bot_access:
-       enabled: true
-   ```
-
-   > [!note]
-   > Your private or internal project, or one of its parent groups, must be linked to this security
-   > policy project. If it is not already linked, you must
-   > [link the security policy project](enforcement/security_policy_projects.md#link-to-a-security-policy-project).
 
 1. In the private or internal project that stores CI/CD files, in the left sidebar, select
    **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
-1. In **Security policy bot access**, select
-   **Allow security policy bots to access CI/CD configuration files in this project**.
-1. In **Allowed file patterns**, add one or more glob patterns to specify the files that bots can access, separated by commas.
-1. Optional. In **Allowed group**, select a group to allow only security policy bots from projects
+1. In **Pipeline execution policies**, select
+   **Allow access to CI/CD configuration files in this project**.
+1. In **Allowed file patterns**, add one or more glob patterns to specify the files that can be accessed, separated by commas.
+1. Optional. In **Allowed group**, select a group to allow only users from projects
    in that group to access CI/CD configuration files.
 
-   If not specified, bots from any project in the root ancestor group can access the files.
+   If not specified, users from any project in the root ancestor group can access the files.
 1. Select **Save changes**.
 
 The glob patterns for the allowed files must match the paths specified in the `include:file:` value. For example:
@@ -342,23 +371,23 @@ To ensure that policy execution remains isolated and secure, the bot user has th
 - The bot user is treated as an external user and cannot access internal projects by default.
 - The bot user can access files in the security policy project and public projects.
 - The bot user can access files in private or internal projects only if those projects explicitly
-  enable **Security policy bot access** and the file path matches the pattern specified in the project.
+  enable the **Pipeline execution policies** setting and the file path matches the pattern specified in the project.
 
 Because the bot user is not a member of other projects, it cannot complete any of the following actions:
 
-- Access CI/CD configuration files from private or internal projects that do not allow bot access
+- Access CI/CD configuration files from private or internal projects that do not allow access
   or do not match allowed file patterns.
 - Start multi-project child pipelines that target private or internal projects.
 - Access artifacts or resources from private or internal projects.
 
 > [!important]
-> When you include files from a private or internal project, enable **Security policy bot access**
-> in that project and set matching file patterns. Without these settings, pipeline execution fails
+> When you include files from a private or internal project, enable the **Pipeline execution policies**
+> setting in that project and set matching file patterns. Without these settings, pipeline execution fails
 > with an access error.
 
 ## Scheduling limits
 
-This feature is experimental and may change in future releases. Also, be aware of the following limits when creating scheduled pipeline execution policies:
+Be aware of the following limits when creating scheduled pipeline execution policies:
 
 - The maximum number of scheduled pipeline execution policies per security policy project is limited to one policy with one schedule.
 - The maximum frequency for schedules is once per day (daily).
@@ -369,9 +398,24 @@ This feature is experimental and may change in future releases. Also, be aware o
 
 ## Troubleshooting
 
+### First scheduled run may be delayed
+
+When you create or update a scheduled pipeline execution policy, a background worker creates the schedule record asynchronously.
+If the background worker queue experiences delays (for example, due to high system load), the background worker might
+create the schedule record after the intended first run time passes.
+In this case, the first run occurs at the next scheduled occurrence instead of immediately.
+
+For example, if you create a policy at 2:00 PM for a 6:00 PM run, but the background worker doesn't process the policy until 7:00 PM, the first run is scheduled for 6:00 PM the following day (or the next applicable day based on your schedule configuration).
+
+To work around this behavior:
+
+- Create policies well in advance of the intended first run time.
+- Use the [test run feature](#test-a-scheduled-pipeline-execution-policy) to verify the policy works correctly before the first scheduled run.
+
+### Scheduled pipelines not running
+
 If your scheduled pipelines are not running as expected, follow these troubleshooting steps:
 
-1. **Verify experimental flag**: Ensure that the `pipeline_execution_schedule_policy: enabled: true` flag is set in the `experiments` section of your `policy.yml` file.
 1. **Check policy access**: Verify that:
    - The CI/CD configuration file is in the security policy project, in a public project, or in a
      private or internal project with bot access enabled and matching file patterns.

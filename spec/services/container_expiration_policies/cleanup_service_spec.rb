@@ -30,12 +30,12 @@ RSpec.describe ContainerExpirationPolicies::CleanupService, feature_category: :c
         response = subject
 
         aggregate_failures "checking the response and container repositories" do
-          expect(response.success?).to eq(true)
+          expect(response.success?).to be(true)
           expect(response.payload).to include(cleanup_status: :finished, container_repository_id: repository.id)
           expect(ContainerRepository.waiting_for_cleanup.count).to eq(0)
           expect(repository.reload.cleanup_unscheduled?).to be_truthy
-          expect(repository.expiration_policy_completed_at).not_to eq(nil)
-          expect(repository.expiration_policy_started_at).not_to eq(nil)
+          expect(repository.expiration_policy_completed_at).not_to be_nil
+          expect(repository.expiration_policy_started_at).not_to be_nil
           expect(repository.last_cleanup_deleted_tags_count).to eq(1)
         end
       end
@@ -53,13 +53,13 @@ RSpec.describe ContainerExpirationPolicies::CleanupService, feature_category: :c
         response = subject
 
         aggregate_failures "checking the response and container repositories" do
-          expect(response.success?).to eq(true)
+          expect(response.success?).to be(true)
           expect(response.payload).to include(cleanup_status: :unfinished, container_repository_id: repository.id)
           expect(ContainerRepository.waiting_for_cleanup.count).to eq(1)
           expect(repository.reload.cleanup_unfinished?).to be_truthy
-          expect(repository.expiration_policy_started_at).not_to eq(nil)
-          expect(repository.expiration_policy_completed_at).to eq(nil)
-          expect(repository.last_cleanup_deleted_tags_count).to eq(nil)
+          expect(repository.expiration_policy_started_at).not_to be_nil
+          expect(repository.expiration_policy_completed_at).to be_nil
+          expect(repository.last_cleanup_deleted_tags_count).to be_nil
         end
       end
 
@@ -80,7 +80,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService, feature_category: :c
           response = subject
 
           aggregate_failures "checking the response and container repositories" do
-            expect(response.success?).to eq(true)
+            expect(response.success?).to be(true)
             expect(response.payload)
               .to include(
                 cleanup_status: :unfinished,
@@ -94,9 +94,9 @@ RSpec.describe ContainerExpirationPolicies::CleanupService, feature_category: :c
               )
             expect(ContainerRepository.waiting_for_cleanup.count).to eq(1)
             expect(repository.reload.cleanup_unfinished?).to be_truthy
-            expect(repository.expiration_policy_started_at).not_to eq(nil)
-            expect(repository.expiration_policy_completed_at).to eq(nil)
-            expect(repository.last_cleanup_deleted_tags_count).to eq(nil)
+            expect(repository.expiration_policy_started_at).not_to be_nil
+            expect(repository.expiration_policy_completed_at).to be_nil
+            expect(repository.last_cleanup_deleted_tags_count).to be_nil
           end
         end
       end
@@ -106,7 +106,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService, feature_category: :c
       let(:service) { described_class.new(nil) }
 
       it 'returns an error response' do
-        expect(subject.success?).to eq(false)
+        expect(subject.success?).to be(false)
         expect(subject.message).to eq('no repository')
       end
     end
@@ -122,7 +122,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService, feature_category: :c
 
       it 'returns an error response' do
         expect { subject }.to change { repository.expiration_policy_cleanup_status }.from('cleanup_ongoing').to('cleanup_unscheduled')
-        expect(subject.success?).to eq(false)
+        expect(subject.success?).to be(false)
         expect(subject.message).to eq('invalid policy')
         expect(policy).not_to be_enabled
       end
@@ -139,9 +139,9 @@ RSpec.describe ContainerExpirationPolicies::CleanupService, feature_category: :c
 
         expect(ContainerRepository.waiting_for_cleanup.count).to eq(1)
         expect(repository.reload.cleanup_unfinished?).to be_truthy
-        expect(repository.expiration_policy_started_at).not_to eq(nil)
-        expect(repository.expiration_policy_completed_at).to eq(nil)
-        expect(repository.last_cleanup_deleted_tags_count).to eq(nil)
+        expect(repository.expiration_policy_started_at).not_to be_nil
+        expect(repository.expiration_policy_completed_at).to be_nil
+        expect(repository.last_cleanup_deleted_tags_count).to be_nil
       end
     end
 

@@ -214,7 +214,7 @@ To show the sidebar again:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `work_items_beta`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `work_items_beta`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/551805) in GitLab 18.2. Moved from behind feature flag `work_items_beta`.
 
 {{< /history >}}
@@ -260,7 +260,7 @@ The assignee is changed without having to refresh the page.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags/_index.md) named `epic_color_highlight`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a feature flag](../../../administration/feature_flags/_index.md) named `epic_color_highlight`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365336) in GitLab 16.11. Feature flag `epic_color_highlight` removed.
 - Customizable color [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394864) in GitLab 17.5.
 
@@ -409,7 +409,7 @@ the epic's [confidentiality status](#make-an-epic-confidential):
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464698) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `work_item_view_for_issues`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464698) in GitLab 17.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `work_item_view_for_issues`. Enabled by default.
 - Toggling between drawer and full page view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536620) in GitLab 18.2.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500367) in GitLab 18.6. Feature flag `epics_list_drawer` removed.
 
@@ -472,7 +472,7 @@ To filter:
 
 {{< history >}}
 
-- OR filtering for labels and authors was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382969) in GitLab 15.9 [with a flag](../../../administration/feature_flags/_index.md) named `or_issuable_queries`. Disabled by default.
+- OR filtering for labels and authors was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382969) in GitLab 15.9 [with a feature flag](../../../administration/feature_flags/_index.md) named `or_issuable_queries`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/296031) in GitLab 17.0. Feature flag `or_issuable_queries` removed.
 

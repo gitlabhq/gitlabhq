@@ -758,7 +758,7 @@ registry['storage'] = {
 }
 ```
 
-GitLab supports all [available parameters](https://docs.docker.com/registry/storage-drivers/gcs/).
+GitLab supports all [available parameters](https://distribution.github.io/distribution/storage-drivers/gcs/).
 
 {{< /tab >}}
 
@@ -1793,7 +1793,7 @@ Make sure everything continues to work as expected before replicating it in prod
 
 ### Docker Distribution Registry
 
-The [Docker Distribution Registry](https://docs.docker.com/registry/) was donated to the CNCF
+The [Docker Distribution Registry](https://distribution.github.io/distribution/) was donated to the CNCF
 and is now known as the [Distribution Registry](https://distribution.github.io/distribution/).
 This registry is the open source implementation that the GitLab container registry is based on.
 The GitLab container registry is compatible with the basic functionality provided by the Distribution Registry,
@@ -1805,7 +1805,7 @@ The GitLab container registry should accept the same configuration that you are 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480652) in GitLab 17.5 [with a flag](../feature_flags/_index.md) named `set_delete_failed_container_repository`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480652) in GitLab 17.5 [with a feature flag](../feature_flags/_index.md) named `set_delete_failed_container_repository`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/490354) in GitLab 17.6. Feature flag `set_delete_failed_container_repository` removed.
 
 {{< /history >}}

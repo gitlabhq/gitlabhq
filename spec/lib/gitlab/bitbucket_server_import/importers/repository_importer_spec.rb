@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketServerImport::Importers::RepositoryImporter, feature_category: :importers do
-  let_it_be(:project, freeze: false) { create(:project, import_url: 'http://bitbucket:test@my-bitbucket') }
+  let_it_be_with_reload(:project) { create(:project, import_url: 'http://bitbucket:test@my-bitbucket') }
 
   subject(:importer) { described_class.new(project) }
 

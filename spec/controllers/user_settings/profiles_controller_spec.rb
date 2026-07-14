@@ -183,6 +183,10 @@ RSpec.describe UserSettings::ProfilesController, :request_store, feature_categor
     end
 
     context 'for email OTP enrollment' do
+      before do
+        stub_application_setting(email_otp_enabled: true)
+      end
+
       context 'when the current password is not required' do
         it 'allows enabling email OTP', :aggregate_failures, :freeze_time do
           stub_application_setting(password_authentication_enabled_for_web?: false)

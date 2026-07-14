@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Redis::Queues do
+RSpec.describe Gitlab::Redis::Queues, feature_category: :redis do
   include TmpdirHelper
 
   let(:instance_specific_config_file) { "config/redis.queues.yml" }

@@ -24,8 +24,8 @@ RSpec.describe 'Labels subscription', feature_category: :team_planning do
 
         click_button 'Subscribe'
 
-        expect(page).not_to have_button 'Subscribe'
         expect(page).to have_button 'Unsubscribe'
+        expect(page).not_to have_button 'Subscribe'
 
         click_button 'Unsubscribe'
 

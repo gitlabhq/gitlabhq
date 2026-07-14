@@ -127,6 +127,38 @@ RSpec.describe OmniAuth::Strategies::CellsAwareOpenidConnect, feature_category: 
     end
   end
 
+  describe '#call_app!' do
+    let(:env) { build_env }
+
+    before do
+      allow(strategy).to receive_messages(env: env, request: Rack::Request.new(env))
+    end
+
+    context 'when a callback marked the cookie for clearing' do
+      before do
+        strategy.instance_variable_set(:@pending_cookie_clear, true)
+      end
+
+      it 'invokes the downstream app and clears the oauth_state cookie' do
+        status, headers, body = strategy.call_app!(env)
+
+        expect(status).to eq(200)
+        expect(body).to eq(['OK'])
+        expect(headers['Set-Cookie']).to match(/omniauth_oauth_state=.*max-age=0/i)
+      end
+    end
+
+    context 'when no callback ran for this request' do
+      it 'passes the downstream response through without clearing the cookie' do
+        status, headers, body = strategy.call_app!(env)
+
+        expect(status).to eq(200)
+        expect(body).to eq(['OK'])
+        expect(headers['Set-Cookie']).to be_nil
+      end
+    end
+  end
+
   describe '#user_info' do
     subject(:strategy_instance) { described_class.new({}) }
 

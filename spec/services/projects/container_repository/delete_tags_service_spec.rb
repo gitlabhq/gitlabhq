@@ -8,7 +8,7 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService, feature_categor
 
   let(:service) { described_class.new(project, user, params) }
 
-  let_it_be(:available_service_classes, freeze: false) do
+  let_it_be(:available_service_classes) do
     [
       ::Projects::ContainerRepository::Gitlab::DeleteTagsService,
       ::Projects::ContainerRepository::ThirdParty::DeleteTagsService
@@ -89,13 +89,13 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService, feature_categor
       end
 
       context 'when no params are specified' do
-        let_it_be(:params, freeze: false) { {} }
+        let_it_be(:params) { {} }
 
         it { is_expected.to include(status: :error) }
       end
 
       context 'with empty tags' do
-        let_it_be(:tags, freeze: false) { [] }
+        let_it_be(:tags) { [] }
 
         it { is_expected.to include(status: :error) }
       end
@@ -165,7 +165,7 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService, feature_categor
     end
 
     context 'without user' do
-      let_it_be(:user, freeze: false) { nil }
+      let_it_be(:user) { nil }
 
       context 'when not run by a cleanup policy' do
         it { is_expected.to include(status: :error) }

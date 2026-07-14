@@ -13,7 +13,7 @@ title: License scanning of CycloneDX files
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab.com [with two flags](../../../administration/feature_flags/_index.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab.com [with two feature flags](../../../administration/feature_flags/_index.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.
 - The legacy license compliance analyzer (`License-Scanning.gitlab-ci.yml`) was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439162) in GitLab 17.0.
 - GitLab 17.5 introduced support for using a CycloneDX report artifact as a source of
@@ -241,7 +241,7 @@ CycloneDX reports for licenses. For more information, see the offline [quick sta
 
 {{< history >}}
 
-- Introduced in GitLab 17.5 [with a flag](../../../administration/feature_flags/_index.md) named `license_scanning_with_sbom_licenses`. Disabled by default.
+- Introduced in GitLab 17.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `license_scanning_with_sbom_licenses`. Disabled by default.
 - Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.6.
 - Generally available in GitLab 17.8. Feature flag `license_scanning_with_sbom_licenses` removed.
 
@@ -274,6 +274,29 @@ To configure the preferred source of license information for a project:
      - The scanner reads license information from reports located in the project at `/gl-sbom-*.cdx.json`.
      - To overwrite a license, update the license data directly in this file.
    - **PMDB** - Uses license information from the external license database.
+
+### Enable or disable license scanning for CycloneDX files
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500716) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `license_scanning_for_cyclonedx_setting`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241413) in GitLab 19.2. Feature flag `license_scanning_for_cyclonedx_setting` removed.
+
+{{< /history >}}
+
+License scanning runs by default on all ingested CycloneDX SBOM files.
+You can disable license scanning per project from the Security configuration page. When disabled,
+licenses from SBOM ingestion appear as `unknown` on the dependency list.
+
+Prerequisites:
+
+- You must have the Maintainer, Owner, or Security Manager role for the project.
+
+To enable or disable license scanning for CycloneDX files:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Secure** > **Security configuration**.
+1. In the **License Scanning for CycloneDX** section, turn the toggle on or off.
 
 ## Troubleshooting
 

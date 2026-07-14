@@ -111,6 +111,8 @@ export default class ProtectedBranchEdit {
       hasLicense: this.hasLicense,
       searchEnabled: el.dataset.filter !== undefined,
       showUsers: projectId !== undefined,
+      showCustomRoles:
+        projectId === undefined && Boolean(gon.custom_roles_for_protected_branches_enabled),
       block: true,
       accessLevel,
       accessLevelsData,

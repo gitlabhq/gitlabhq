@@ -9,7 +9,7 @@ RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', feature_category: :sy
       confidential: false, scopes: 'read_user')
   end
 
-  let_it_be(:user, freeze: false) { create(:user, :with_namespace, organizations: [organization]) }
+  let_it_be_with_reload(:user) { create(:user, :with_namespace, organizations: [organization]) }
   let_it_be(:client_id) { application.uid }
   let_it_be(:client_secret) { application.secret }
 

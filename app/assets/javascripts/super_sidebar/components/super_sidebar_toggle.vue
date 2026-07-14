@@ -8,6 +8,7 @@ import { sidebarState } from '../state';
 import { toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 
 export default {
+  name: 'SuperSidebarToggle',
   components: {
     GlButton,
   },
@@ -97,9 +98,7 @@ export default {
       if (
         bvEvent.target !== this.$el ||
         (this.isTypeCollapse && !this.isCollapsed) ||
-        (this.isTypeExpand && this.isCollapsed) ||
-        this.isPeek ||
-        this.isHoverPeek
+        (this.isTypeExpand && this.isCollapsed)
       )
         return;
 

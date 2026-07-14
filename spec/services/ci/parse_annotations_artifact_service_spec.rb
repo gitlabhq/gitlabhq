@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ParseAnnotationsArtifactService, feature_category: :job_artifacts do
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   let_it_be_with_reload(:build) { create(:ci_build, project: project) }
   let(:service) { described_class.new(project, nil) }
@@ -12,7 +12,7 @@ RSpec.describe Ci::ParseAnnotationsArtifactService, feature_category: :job_artif
     subject { service.execute(artifact) }
 
     context 'when build has an annotations artifact' do
-      let_it_be(:artifact, freeze: false) { create(:ci_job_artifact, :annotations, job: build) }
+      let_it_be_with_reload(:artifact) { create(:ci_job_artifact, :annotations, job: build) }
 
       context 'when artifact does not have the specified blob' do
         before do

@@ -3,13 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
-  let_it_be(:group, freeze: false) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
-  let_it_be(:author, freeze: false) { create(:user, guest_of: group) }
-  let_it_be(:guest, freeze: false) { create(:user, guest_of: group) }
-  let_it_be(:planner, freeze: false) { create(:user, planner_of: group) }
-  let_it_be(:owner, freeze: false) { create(:user, owner_of: group) }
-  let_it_be(:incident, freeze: false) { create(:work_item, :incident, project: project, author: author) }
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
+  let_it_be_with_reload(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, group: group) }
+  let_it_be_with_reload(:author) { create(:user, guest_of: group) }
+  let_it_be_with_reload(:guest) { create(:user, guest_of: group) }
+  let_it_be_with_reload(:planner) { create(:user, planner_of: group) }
+  let_it_be_with_reload(:owner) { create(:user, owner_of: group) }
+  let_it_be_with_reload(:incident) { create(:work_item, :incident, project: project, author: author) }
   let_it_be_with_refind(:work_item) { create(:work_item, project: project, author: author) }
   let(:user) { nil }
 
@@ -98,7 +103,12 @@ RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
     end
 
     context 'when work item has assignees' do
-      let_it_be(:assignee, freeze: false) { create(:user, guest_of: group) }
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
+      let_it_be_with_reload(:assignee) { create(:user, guest_of: group) }
       let_it_be(:work_item_with_assignee, freeze: false) do
         create(:work_item, project: project, author: owner, assignees: [assignee])
       end

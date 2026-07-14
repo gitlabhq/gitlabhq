@@ -6,6 +6,7 @@ import editNamespaceMutation from '../graphql/mutations/edit_namespace_job_token
 import PoliciesSelector from './policies_selector.vue';
 
 export default {
+  name: 'NamespaceForm',
   components: { GlFormGroup, GlButton, GlFormInput, PoliciesSelector },
   inject: ['fullPath'],
   props: {

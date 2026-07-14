@@ -21,6 +21,7 @@ module API
     params do
       requires :group_id, type: Integer, desc: 'The group ID to find all certificate-based clusters in the hierarchy'
     end
+    route_setting :authorization, permissions: :read_cluster, boundary_type: :group
     get '/discover-cert-based-clusters' do
       group = find_group!(params[:group_id])
 

@@ -13,14 +13,14 @@ export function toLineType(lineChange) {
   return position === 'new' ? NEW_LINE_TYPE : OLD_LINE_TYPE;
 }
 
-export function buildReplyData({ discussion, noteText, noteableData, diffRefs }) {
+export function buildReplyData({ discussion, noteText, noteableData, sourceHeadSha }) {
   return {
     endpoint: noteableData.create_note_path,
     data: {
       in_reply_to_discussion_id: discussion.reply_id,
       target_type: noteableData.targetType,
       note: { note: noteText },
-      merge_request_diff_head_sha: diffRefs.head_sha,
+      merge_request_diff_head_sha: sourceHeadSha,
     },
   };
 }
@@ -41,7 +41,7 @@ export function buildLineDiscussionData({
   noteBody,
   noteableData,
   viewConfig,
-  diffRefs,
+  sourceHeadSha,
   showWhitespace,
 }) {
   const { position, lineChange, lineCode, commitId } = discussion;
@@ -50,7 +50,7 @@ export function buildLineDiscussionData({
     data: {
       view: viewConfig.viewType,
       line_type: toLineType(lineChange),
-      merge_request_diff_head_sha: diffRefs.head_sha,
+      merge_request_diff_head_sha: sourceHeadSha,
       note_project_id: '',
       target_type: noteableData.targetType,
       target_id: noteableData.id,
@@ -58,9 +58,6 @@ export function buildLineDiscussionData({
       note: {
         note: noteBody,
         position: JSON.stringify({
-          base_sha: diffRefs.base_sha,
-          start_sha: diffRefs.start_sha,
-          head_sha: diffRefs.head_sha,
           ...position,
           position_type: position.position_type || TEXT_DIFF_POSITION_TYPE,
           ignore_whitespace_change: !(showWhitespace ?? viewConfig.showWhitespace),
@@ -75,22 +72,12 @@ export function buildLineDiscussionData({
   };
 }
 
-export function buildDraftLineDiscussionData({
-  discussion,
-  noteBody,
-  viewConfig,
-  diffRefs,
-  showWhitespace,
-  sourceHeadSha,
-}) {
+export function buildDraftLineDiscussionData({ discussion, noteBody, viewConfig, showWhitespace }) {
   const { position, lineCode } = discussion;
   return {
     note: {
       note: noteBody,
       position: JSON.stringify({
-        base_sha: diffRefs.base_sha,
-        start_sha: diffRefs.start_sha,
-        head_sha: sourceHeadSha || diffRefs.head_sha,
         ...position,
         position_type: position.position_type || TEXT_DIFF_POSITION_TYPE,
         ignore_whitespace_change: !(showWhitespace ?? viewConfig.showWhitespace),
@@ -101,10 +88,15 @@ export function buildDraftLineDiscussionData({
   };
 }
 
-export function buildDraftReplyData({ discussion, noteText, diffRefs, resolveDiscussion = false }) {
+export function buildDraftReplyData({
+  discussion,
+  noteText,
+  sourceHeadSha,
+  resolveDiscussion = false,
+}) {
   return {
     in_reply_to_discussion_id: discussion.reply_id,
     draft_note: { note: noteText, resolve_discussion: resolveDiscussion },
-    merge_request_diff_head_sha: diffRefs.head_sha,
+    merge_request_diff_head_sha: sourceHeadSha,
   };
 }

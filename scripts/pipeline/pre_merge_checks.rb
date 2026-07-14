@@ -23,6 +23,16 @@ class PreMergeChecks
   STABLE_BRANCH_SUFFIX                                  = '-stable-ee'
   TIER_IDENTIFIER_REGEX                                 = /tier:\d/
 
+  # `release-tools` opens this MR to bump the Gitaly version. It is excluded from
+  # pipeline tier labeling in triage-ops, so it never gets a tier-3 pipeline and
+  # would otherwise be blocked here.
+  # See https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/22164.
+  #
+  # We require BOTH the source branch and the author to match, so that a user
+  # cannot bypass the tier-3 requirement by pushing a branch with this name.
+  GITALY_UPDATE_SOURCE_BRANCH                           = 'release-tools/update-gitaly'
+  GITALY_UPDATE_AUTHOR_USERNAME                         = 'gitlab-release-tools-bot'
+
   PreMergeChecksFailedError = Class.new(StandardError)
   PreMergeChecksStatus = Struct.new(:exitstatus, :message) do
     def success?
@@ -34,11 +44,13 @@ class PreMergeChecks
     api_endpoint: ENV.fetch('CI_API_V4_URL', DEFAULT_API_ENDPOINT),
     project_id: ENV['CI_PROJECT_ID'],
     merge_request_iid: ENV['CI_MERGE_REQUEST_IID'],
-    target_branch: ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'])
+    target_branch: ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'],
+    source_branch: ENV['CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'])
     @api_endpoint        = api_endpoint
     @project_id          = project_id
     @merge_request_iid   = merge_request_iid.to_i
     @target_branch       = target_branch
+    @source_branch       = source_branch
   end
 
   def execute
@@ -71,7 +83,7 @@ class PreMergeChecks
 
   private
 
-  attr_reader :api_endpoint, :project_id, :merge_request_iid, :target_branch
+  attr_reader :api_endpoint, :project_id, :merge_request_iid, :target_branch, :source_branch
 
   def api_client
     @api_client ||= begin
@@ -128,7 +140,8 @@ class PreMergeChecks
   end
 
   def check_pipeline_identifier!(pipeline)
-    if pipeline.name.match?(TIER_IDENTIFIER_REGEX) && !pipeline.name.include?(REQUIRED_TIER_IDENTIFIER) # rubocop:disable Rails/NegateInclude -- Not executed in Rails context
+    if !gitaly_update_merge_request? &&
+        pipeline.name.match?(TIER_IDENTIFIER_REGEX) && !pipeline.name.include?(REQUIRED_TIER_IDENTIFIER) # rubocop:disable Rails/NegateInclude -- Not executed in Rails context
       fail_check! <<~MSG
         Expected latest pipeline (#{pipeline.web_url}) to be a tier-3 pipeline! Pipeline name was "#{pipeline.name}".
 
@@ -162,6 +175,16 @@ class PreMergeChecks
     target_branch.end_with?(STABLE_BRANCH_SUFFIX)
   end
 
+  def gitaly_update_merge_request?
+    source_branch == GITALY_UPDATE_SOURCE_BRANCH &&
+      merge_request_author_username == GITALY_UPDATE_AUTHOR_USERNAME
+  end
+
+  def merge_request_author_username
+    @merge_request_author_username ||=
+      api_client.merge_request(project_id, merge_request_iid).author&.username
+  end
+
   def fail_check!(text)
     raise PreMergeChecksFailedError, text
   end
@@ -184,14 +207,19 @@ if $PROGRAM_NAME == __FILE__
       options[:target_branch] = value
     end
 
+    opts.on("-s", "--source-branch [string]", String, "Source branch name") do |value|
+      options[:source_branch] = value
+    end
+
     opts.on("-h", "--help") do
       puts "Usage: #{File.basename(__FILE__)} [--project_id <PROJECT_ID>] " \
-        "[--merge_request_iid <MERGE_REQUEST_IID>] [--target-branch <TARGET_BRANCH>]"
+        "[--merge_request_iid <MERGE_REQUEST_IID>] [--target-branch <TARGET_BRANCH>] " \
+        "[--source-branch <SOURCE_BRANCH>]"
       puts
       puts "Examples:"
       puts
       puts "#{File.basename(__FILE__)} --project_id \"gitlab-org/gitlab\" " \
-        "--merge_request_iid \"1\" --target-branch \"master\""
+        "--merge_request_iid \"1\" --target-branch \"master\" --source-branch \"my-feature\""
 
       exit
     end

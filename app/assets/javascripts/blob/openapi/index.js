@@ -3,16 +3,13 @@ import { setAttributes } from '~/lib/utils/dom_utils';
 import {
   getBaseURL,
   relativePathToAbsolute,
-  joinPaths,
   setUrlParams,
   getParameterByName,
 } from '~/lib/utils/url_utility';
-
-const SANDBOX_FRAME_PATH = '/-/sandbox/swagger';
+import { sandboxSwaggerPath } from '~/lib/utils/path_helpers/routes';
 
 const getSandboxFrameSrc = () => {
-  const path = joinPaths(gon.relative_url_root || '', SANDBOX_FRAME_PATH);
-  const absoluteUrl = relativePathToAbsolute(path, getBaseURL());
+  const absoluteUrl = relativePathToAbsolute(sandboxSwaggerPath(), getBaseURL());
   const displayOperationId = getParameterByName('displayOperationId');
   const params = { displayOperationId };
   return setUrlParams(params, { url: absoluteUrl });
@@ -46,6 +43,7 @@ export default async (el = document.getElementById('js-openapi-viewer')) => {
     const message = {
       type: 'swagger-init',
       spec,
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Needed to render swagger UI in app/assets/javascripts/lib/swagger.js
       relativeRootPath: window.gon?.relative_url_root || null,
     };
 

@@ -6,6 +6,7 @@ import k8sStatefulSetsQuery from '../graphql/queries/k8s_dashboard_stateful_sets
 import { STATUS_FAILED, STATUS_READY, STATUS_LABELS } from '../constants';
 
 export default {
+  name: 'StatefulSetsPage',
   components: {
     WorkloadLayout,
   },

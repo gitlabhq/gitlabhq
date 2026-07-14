@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Packages::Maven::Metadatum < ApplicationRecord
   belongs_to :package, class_name: 'Packages::Maven::Package'
 

@@ -10,8 +10,7 @@ export const initOrganizationsShow = () => {
   const {
     dataset: { appData },
   } = el;
-  const { organization, canReadArtifactRegistry, canAdminOrganization } =
-    convertObjectPropsToCamelCase(JSON.parse(appData));
+  const { organization, canAdminOrganization } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   return new Vue({
     el,
@@ -20,7 +19,6 @@ export const initOrganizationsShow = () => {
       return createElement(App, {
         props: {
           organization,
-          canReadArtifactRegistry,
           canAdminOrganization,
         },
       });

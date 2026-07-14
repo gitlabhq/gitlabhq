@@ -21,10 +21,13 @@ module Projects::ProjectMembersHelper
   private
 
   def project_members_app_data(
-    project, members:, invited:, links:, access_requests:, pending_members_count: # rubocop:disable Lint/UnusedMethodArgument -- Argument used in EE
+    project, members:, direct_members:, invited:, links:, access_requests:, pending_members_count: # rubocop:disable Lint/UnusedMethodArgument -- Argument used in EE
   )
     {
       user: project_members_list_data(project, members, { param_name: :page, params: { search_groups: nil } }),
+      direct_members: project_members_list_data(
+        project, direct_members, { param_name: :direct_members_page, params: { search_groups: nil } }
+      ),
       group: project_group_links_list_data(project, links),
       invite: project_members_list_data(project, invited.nil? ? [] : invited),
       access_request: project_members_list_data(project, access_requests.nil? ? [] : access_requests),

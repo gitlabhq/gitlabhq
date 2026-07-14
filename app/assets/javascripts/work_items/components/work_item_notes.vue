@@ -13,6 +13,7 @@ import {
 import { Mousetrap, suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
+import AccessorUtilities from '~/lib/utils/accessor';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -49,6 +50,7 @@ import workItemNotesByIidQuery from '../graphql/notes/work_item_notes_by_iid.que
 import WorkItemAddNote from './notes/work_item_add_note.vue';
 
 export default {
+  name: 'WorkItemNotes',
   components: {
     GlModal,
     SystemNote,
@@ -148,10 +150,14 @@ export default {
       default: false,
     },
   },
+  emits: ['blur', 'error', 'focus', 'openReportAbuse', 'start-editing', 'stop-editing'],
   data() {
     return {
       isLoadingMore: false,
-      initialSortOrder: localStorage.getItem(WORK_ITEM_NOTES_SORT_ORDER_KEY) || ASC,
+      initialSortOrder:
+        (AccessorUtilities.canUseLocalStorage()
+          ? localStorage.getItem(WORK_ITEM_NOTES_SORT_ORDER_KEY)
+          : null) || ASC,
       sortOrder: ASC,
       noteToDelete: null,
       discussionFilter: WORK_ITEM_NOTES_FILTER_ALL_NOTES,

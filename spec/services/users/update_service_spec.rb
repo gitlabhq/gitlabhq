@@ -14,7 +14,7 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
 
       expect(result).to include(status: :success)
       expect(user.reload.timezone).to eq('Europe/Warsaw')
-      expect(user.time_display_relative).to eq(true)
+      expect(user.time_display_relative).to be(true)
     end
 
     it 'returns an error result when record cannot be updated' do
@@ -82,7 +82,10 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
       it 'calls Authn::EmailOtpEnrollment updater after setting the attribute' do
         # Create pre-conditions where email_otp_required_after is not
         # nil and may not be set to nil.
-        stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+        stub_application_setting(
+          email_otp_enabled: true,
+          require_minimum_email_based_otp_for_users_with_passwords: true
+        )
         user.update!(email_otp_required_after: 30.days.ago)
 
         # UpdateService will first set the attribute to nil as
@@ -298,7 +301,7 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
             ).execute
 
             expect(result[:status]).to eq(:success)
-            expect(organization.user?(target_user)).to eq(true)
+            expect(organization.user?(target_user)).to be(true)
           end
         end
 
@@ -357,7 +360,7 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
           update_user(user, enabled_following: false)
         end.to change { user.followed_users.count }.from(3).to(0)
                                                    .and change { user.following_users.count }.from(3).to(0)
-        expect(user.enabled_following).to eq(false)
+        expect(user.enabled_following).to be(false)
       end
 
       context 'when there is more followers/followees then batch limit' do
@@ -370,7 +373,7 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
             update_user(user, enabled_following: false)
           end.to change { user.followed_users.count }.from(3).to(0)
                                                      .and change { user.following_users.count }.from(3).to(0)
-          expect(user.enabled_following).to eq(false)
+          expect(user.enabled_following).to be(false)
         end
       end
     end

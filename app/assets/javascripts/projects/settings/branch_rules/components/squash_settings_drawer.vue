@@ -14,6 +14,7 @@ import {
 } from './constants';
 
 export default {
+  name: 'SquashSettingsDrawer',
   DRAWER_Z_INDEX,
   i18n: {
     saveChanges: __('Save changes'),

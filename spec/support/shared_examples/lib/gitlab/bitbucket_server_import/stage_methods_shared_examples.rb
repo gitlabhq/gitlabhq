@@ -37,6 +37,23 @@ RSpec.shared_examples Gitlab::BitbucketServerImport::StageMethods do
       worker.perform(project.id)
     end
 
+    it 'does not execute the importer if the import state is no longer in progress' do
+      canceled_project = create(:project, :import_canceled)
+
+      expect(worker).not_to receive(:import)
+      expect(Gitlab::BitbucketServerImport::Logger)
+        .to receive(:info)
+        .with(
+          hash_including(
+            message: 'starting stage',
+            project_id: canceled_project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => canceled_project.organization_id
+          )
+        )
+
+      worker.perform(canceled_project.id)
+    end
+
     context 'when a non-retryable ConnectionError is raised' do
       let(:exception) do
         BitbucketServer::Connection::ConnectionError.new('Error 404: Not Found', http_status_code: 404)
@@ -63,7 +80,8 @@ RSpec.shared_examples Gitlab::BitbucketServerImport::StageMethods do
           hash_including(
             message: 'Non-retryable Bitbucket Server error, failing import',
             http_status_code: 404,
-            error: 'Error 404: Not Found'
+            error: 'Error 404: Not Found',
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
           )
         )
 

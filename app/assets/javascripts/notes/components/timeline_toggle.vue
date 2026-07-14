@@ -12,6 +12,7 @@ export const timelineEnabledTooltip = s__('Timeline|Turn recent updates view off
 export const timelineDisabledTooltip = s__('Timeline|Turn recent updates view on');
 
 export default {
+  name: 'TimelineToggle',
   components: {
     GlButton,
   },

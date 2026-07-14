@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_composition do
   include StubRequests
 
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
   before do
@@ -214,6 +214,57 @@ RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_compos
         expect(parsed_body['errors']).to match_array([
           'Included file `https://test.example.com/.yml` does not have YAML extension!'
         ])
+      end
+    end
+
+    context 'when the ci_lint rate limit is exceeded', :freeze_time, :clean_gitlab_redis_rate_limiting do
+      let(:content) do
+        <<~HEREDOC
+        rubocop:
+          script:
+            - bundle exec rubocop
+        HEREDOC
+      end
+
+      before do
+        project.add_developer(user)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:ci_lint).and_return(1)
+      end
+
+      context 'when ci_enforce_ci_lint_rate_limit is enabled' do
+        it 'returns 429 Too Many Requests after the limit is hit', :aggregate_failures do
+          post :create, params: params
+          expect(response).to have_gitlab_http_status(:ok)
+
+          post :create, params: params
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(response).to have_attributes(content_type: a_string_including('application/json'))
+          expect(json_response['error']).to be_present
+          expect(response.headers['Retry-After']).to be_present
+        end
+      end
+
+      context 'when ci_enforce_ci_lint_rate_limit is disabled (log-only mode)' do
+        before do
+          stub_feature_flags(ci_enforce_ci_lint_rate_limit: false)
+        end
+
+        it 'does not block requests over the limit', :aggregate_failures do
+          post :create, params: params
+          expect(response).to have_gitlab_http_status(:ok)
+
+          post :create, params: params
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'still checks (and increments) the rate limit counter' do
+          expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:ci_lint, scope: [user])
+            .and_call_original
+
+          post :create, params: params
+        end
       end
     end
   end

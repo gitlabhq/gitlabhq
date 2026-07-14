@@ -1,0 +1,36 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+Gemfile/MissingFeatureCategory:
+  Enabled: false
+
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+
+# This gem must call Gitlab::HTTP_V2 directly since Gitlab::HTTP is a monolith
+# wrapper that depends on ActiveRecord (Gitlab::CurrentSettings). Disabling the
+# cop here is intentional and load-bearing.
+Gitlab/HttpV2:
+  Enabled: false
+
+# Spec helpers inherited from gitlab-rspec use instance variables
+RSpec/InstanceVariable:
+  Exclude:
+    - spec/**/*.rb
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/ExampleWithoutDescription:
+  Enabled: false
+
+Lint/BinaryOperatorWithIdenticalOperands:
+  Exclude:
+    - spec/**/*.rb
+
+# webmock_enable! is a monolith-only helper; in gems we call WebMock directly
+RSpec/WebMockEnable:
+  Enabled: false

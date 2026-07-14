@@ -1,8 +1,9 @@
 <script>
 import { GlLink, GlSprintf, GlIcon } from '@gitlab/ui';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { groupPath } from '~/lib/utils/path_helpers/group';
 
 export default {
+  name: 'ImportSourceCell',
   components: {
     GlLink,
     GlSprintf,
@@ -20,8 +21,8 @@ export default {
         ? `${this.group.lastImportTarget.targetNamespace}/${this.group.lastImportTarget.newName}`
         : null;
     },
-    absoluteLastImportPath() {
-      return joinPaths(gon.relative_url_root || '/', this.fullLastImportPath);
+    lastImportHref() {
+      return groupPath(this.fullLastImportPath);
     },
   },
 };
@@ -35,7 +36,7 @@ export default {
     <div v-if="group.flags.isFinished && fullLastImportPath" class="gl-text-sm gl-text-subtle">
       <gl-sprintf :message="s__('BulkImport|Last imported to %{link}')">
         <template #link>
-          <gl-link :href="absoluteLastImportPath" class="gl-text-sm" target="_blank">{{
+          <gl-link :href="lastImportHref" class="gl-text-sm" target="_blank">{{
             fullLastImportPath
           }}</gl-link>
         </template>

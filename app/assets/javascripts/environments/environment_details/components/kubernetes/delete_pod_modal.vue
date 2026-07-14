@@ -31,6 +31,7 @@ export default {
       type: String,
     },
   },
+  emits: ['close', 'pod-deleted'],
   data() {
     return {
       visible: false,

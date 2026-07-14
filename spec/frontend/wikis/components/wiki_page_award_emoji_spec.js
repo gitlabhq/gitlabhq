@@ -52,6 +52,7 @@ describe('WikiPageAwardEmoji', () => {
     canAwardEmoji = true,
     toggleHandlerImpl,
     subscribeHandlerImpl,
+    provideCurrentUserData = currentUserData,
   } = {}) => {
     queryHandler = jest.fn().mockResolvedValue({
       data: buildWikiPageData({ awards, subscribed, canAwardEmoji }),
@@ -89,7 +90,7 @@ describe('WikiPageAwardEmoji', () => {
         canAwardEmoji,
         isSubscribed: subscribed,
       },
-      provide: { currentUserData, queryVariables },
+      provide: { currentUserData: provideCurrentUserData, queryVariables },
     });
 
     apolloProvider.defaultClient.cache.writeQuery({
@@ -117,6 +118,41 @@ describe('WikiPageAwardEmoji', () => {
 
       const passedAwards = findAwardsList().props('awards');
       expect(passedAwards[0].user.id).toBe(70);
+    });
+  });
+
+  describe('when currentUserData is null (anonymous user)', () => {
+    it('renders without error', async () => {
+      await createWrapper({
+        awards: [buildAward('thumbsup')],
+        canAwardEmoji: false,
+        provideCurrentUserData: null,
+      });
+
+      expect(findAwardsList().exists()).toBe(true);
+    });
+
+    it('passes null as currentUserId to AwardsList', async () => {
+      await createWrapper({
+        awards: [buildAward('thumbsup')],
+        canAwardEmoji: false,
+        provideCurrentUserData: null,
+      });
+
+      expect(findAwardsList().props('currentUserId')).toBeNull();
+    });
+
+    it('displays existing awards from other users', async () => {
+      const otherUserAward = buildAward('thumbsup', 'gid://gitlab/User/99', 'OtherUser');
+      await createWrapper({
+        awards: [otherUserAward],
+        canAwardEmoji: false,
+        provideCurrentUserData: null,
+      });
+
+      const passedAwards = findAwardsList().props('awards');
+      expect(passedAwards).toHaveLength(1);
+      expect(passedAwards[0].name).toBe('thumbsup');
     });
   });
 

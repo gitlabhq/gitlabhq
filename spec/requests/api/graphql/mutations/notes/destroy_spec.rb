@@ -15,6 +15,16 @@ RSpec.describe 'Destroying a Note', feature_category: :team_planning do
     graphql_mutation_response(:destroy_note)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_note do
+    let(:user) { note.author }
+    let(:boundary_object) { note.project }
+    let(:request) do
+      post_graphql_mutation(
+        graphql_mutation(:destroy_note, { id: global_id_of(note).to_s }, 'errors'),
+        token: { personal_access_token: pat })
+    end
+  end
+
   context 'when the user does not have permission' do
     let(:current_user) { create(:user) }
 

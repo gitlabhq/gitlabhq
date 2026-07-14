@@ -9,13 +9,12 @@ module Organizations
     end
 
     def ui_for_organizations_enabled?
-      Feature.disabled?(:opt_out_organizations, current_user) && Feature.enabled?(:ui_for_organizations, current_user)
+      Feature.enabled?(:ui_for_organizations, current_user)
     end
 
     def organization_show_app_data(organization)
       {
         organization: organization.slice(:name, :path),
-        can_read_artifact_registry: can?(current_user, :read_artifact_registry, organization),
         can_admin_organization: can?(current_user, :update_organization, organization)
       }.to_json
     end
@@ -29,7 +28,8 @@ module Organizations
     def organization_settings_general_app_data(organization)
       {
         organization: organization.slice(:id, :name, :path, :description, :visibility_level)
-          .merge({ avatar: organization.avatar_url(size: 192) })
+          .merge({ avatar: organization.avatar_url(size: 192) }),
+        max_group_visibility_level: organization.max_group_visibility_level
       }.merge(shared_new_settings_general_app_data).to_json
     end
 

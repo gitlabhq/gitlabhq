@@ -19,6 +19,7 @@ export default {
       required: true,
     },
   },
+  emits: ['delete', 'handle-save-edit', 'hide-edit'],
   methods: {
     saveEvent(eventDetails) {
       this.$emit('handle-save-edit', { ...eventDetails, id: this.event.id }, false);

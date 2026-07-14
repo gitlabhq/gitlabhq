@@ -1,6 +1,7 @@
 ---
 # Cop supports --autocorrect.
 API/EntityFieldType:
+  Details: grace period
   Exclude:
     - 'ee/lib/api/entities/admin/model.rb'
     - 'ee/lib/api/entities/ai/active_context.rb'
@@ -14,8 +15,6 @@ API/EntityFieldType:
     - 'ee/lib/api/entities/analytics/deployment_frequency.rb'
     - 'ee/lib/api/entities/billable_member.rb'
     - 'ee/lib/api/entities/billable_membership.rb'
-    - 'ee/lib/api/entities/clusters/agent_url_configuration.rb'
-    - 'ee/lib/api/entities/clusters/receptive_agent.rb'
     - 'ee/lib/api/entities/dependency.rb'
     - 'ee/lib/api/entities/deployments/approval.rb'
     - 'ee/lib/api/entities/geo_node_status.rb'
@@ -42,7 +41,6 @@ API/EntityFieldType:
     - 'ee/lib/api/entities/virtual_registries/packages/maven/upstream.rb'
     - 'ee/lib/ee/api/entities/application_setting.rb'
     - 'ee/lib/ee/api/entities/ci/job_request/response.rb'
-    - 'ee/lib/ee/api/entities/clusters/agent.rb'
     - 'ee/lib/ee/api/entities/group.rb'
     - 'ee/lib/ee/api/entities/group_detail.rb'
     - 'ee/lib/ee/api/entities/identity.rb'
@@ -84,20 +82,12 @@ API/EntityFieldType:
     - 'lib/api/entities/ci/runner_details.rb'
     - 'lib/api/entities/ci/runner_registration_details.rb'
     - 'lib/api/entities/cluster.rb'
-    - 'lib/api/entities/cluster_group.rb'
-    - 'lib/api/entities/cluster_project.rb'
-    - 'lib/api/entities/clusters/agent.rb'
-    - 'lib/api/entities/clusters/agent_token.rb'
-    - 'lib/api/entities/clusters/agent_token_basic.rb'
-    - 'lib/api/entities/clusters/agent_token_with_token.rb'
-    - 'lib/api/entities/clusters/agents/authorizations/ci_access.rb'
     - 'lib/api/entities/container_expiration_policy.rb'
     - 'lib/api/entities/container_registry.rb'
     - 'lib/api/entities/deploy_key.rb'
     - 'lib/api/entities/deploy_key_with_user.rb'
     - 'lib/api/entities/deploy_keys_project.rb'
     - 'lib/api/entities/deployment.rb'
-    - 'lib/api/entities/discovered_clusters.rb'
     - 'lib/api/entities/email.rb'
     - 'lib/api/entities/entity_helpers.rb'
     - 'lib/api/entities/environment.rb'
@@ -145,7 +135,6 @@ API/EntityFieldType:
     - 'lib/api/entities/personal_access_token_associations.rb'
     - 'lib/api/entities/personal_access_token_with_token.rb'
     - 'lib/api/entities/plan_limit.rb'
-    - 'lib/api/entities/platform/kubernetes.rb'
     - 'lib/api/entities/provider/gcp.rb'
     - 'lib/api/entities/release.rb'
     - 'lib/api/entities/resource_access_token_with_token.rb'

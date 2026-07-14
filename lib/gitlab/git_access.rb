@@ -31,6 +31,7 @@ module Gitlab
       read_only: 'The repository is temporarily read-only. Please try again later.',
       archived: "You can't push code to an archived project.",
       cannot_push_to_read_only: "You can't push code to a read-only GitLab instance.",
+      organization_read_only: 'Git push is not allowed because this organization is currently in read-only mode.',
       push_code: 'You are not allowed to push code to this project.'
     }.freeze
 
@@ -228,11 +229,8 @@ module Gitlab
     end
 
     def check_authentication_abilities!
-      if personal_access_token&.granular?
-        check_granular_pat_permissions!
-      else
-        check_legacy_authentication_abilities!
-      end
+      check_granular_pat_permissions! if personal_access_token
+      check_legacy_authentication_abilities! unless personal_access_token&.granular?
     end
 
     def check_legacy_authentication_abilities!
@@ -250,7 +248,7 @@ module Gitlab
 
     def check_granular_pat_permissions!
       result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
-        boundaries: ::Authz::Boundary.for(project),
+        boundaries: granular_pat_boundaries,
         permissions: permission_for_command,
         token: personal_access_token
       ).execute
@@ -261,12 +259,19 @@ module Gitlab
       raise ForbiddenError, result.message
     end
 
+    def granular_pat_boundaries
+      ::Authz::Boundary.for(project)
+    end
+
+    # The granular permission required for the command. Each access type's
+    # download/push ability is a raw permission covered by an assignable
+    # group, so we reuse them as the required granular permission.
     def permission_for_command
       case cmd
       when *DOWNLOAD_COMMANDS
-        :download_code
+        download_ability
       when *PUSH_COMMANDS
-        :push_code
+        push_ability
       end
     end
 
@@ -342,6 +347,18 @@ module Gitlab
       if Gitlab::Database.read_only?
         raise ForbiddenError, push_to_read_only_message
       end
+
+      check_organization_read_only!
+    end
+
+    def check_organization_read_only!
+      return unless container.respond_to?(:organization)
+
+      organization = container.organization
+      return unless organization&.read_only?
+      return unless Feature.enabled?(:organization_read_only_enforcement, organization)
+
+      raise ForbiddenError, error_message(:organization_read_only)
     end
 
     def check_repository_existence!

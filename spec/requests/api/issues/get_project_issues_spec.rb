@@ -649,6 +649,13 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       let(:failed_status_code) { :not_found }
     end
 
+    describe 'mcp route setting' do
+      subject { get api("/projects/#{project.id}/issues/#{issue.iid}", user) }
+
+      it_behaves_like 'an endpoint with mcp route setting', :get_issue,
+        expected_params: [:id, :issue_iid]
+    end
+
     context 'when unauthenticated' do
       it 'returns public issues' do
         get api("/projects/#{project.id}/issues/#{issue.iid}")

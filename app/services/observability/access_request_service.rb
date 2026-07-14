@@ -6,13 +6,18 @@ module Observability
 
     DEPLOYER_PROJECT_ID = 71877027
 
-    def initialize(group, current_user)
-      @group = group
+    # namespace - the Group or personal (user) Namespace the setting belongs to.
+    # project - required for personal namespaces: the initiating project, used
+    #   for the authorization check and as the container for the CI export
+    #   variable (user namespaces have no CI variables of their own).
+    def initialize(namespace, current_user, project: nil)
+      @namespace = namespace
       @current_user = current_user
+      @project = project
     end
 
     def execute
-      return error(s_('Observability|Group is required'), :bad_request) unless @group
+      return error(s_('Observability|Namespace is required'), :bad_request) unless @namespace
       return error(s_('Observability|User is required'), :bad_request) unless @current_user
 
       unless authorized?
@@ -20,23 +25,23 @@ module Observability
           :forbidden)
       end
 
-      project = project_for_observability_access_requests
-      return error(s_('Observability|Project not found'), :not_found) unless project
+      issue_project = project_for_observability_access_requests
+      return error(s_('Observability|Project not found'), :not_found) unless issue_project
 
-      existing_issue = existing_issue?(project)
+      existing_issue = existing_issue?(issue_project)
       return success(issue: existing_issue) if existing_issue
 
       issue_params = build_issue_params
 
       result = Issues::CreateService.new(
-        container: project,
+        container: issue_project,
         current_user: Users::Internal.admin_bot,
         params: issue_params
       ).execute
 
       if result.success?
-        create_temporary_group_o11y_setting(group)
-        Observability::CreateGroupO11ySettingWorker.perform_async(current_user.id, group.id)
+        create_temporary_o11y_setting(namespace)
+        Observability::CreateGroupO11ySettingWorker.perform_async(current_user.id, namespace.id, project&.id)
         success(issue: result[:issue])
       else
         error_message = result.errors.is_a?(Array) ? result.errors.join(', ') : result.errors.to_s
@@ -46,11 +51,23 @@ module Observability
 
     private
 
-    attr_reader :group, :current_user, :params
+    attr_reader :namespace, :current_user, :project, :params
 
     def authorized?
-      ::Feature.enabled?(:observability_sass_features, group) &&
-        Ability.allowed?(current_user, :create_observability_access_request, group)
+      return false unless ::Feature.enabled?(:observability_sass_features, namespace)
+
+      if group_namespace?
+        Ability.allowed?(current_user, :create_observability_access_request, namespace)
+      else
+        # Personal namespaces have no policy surface for this permission; it is
+        # granted at the project level (owner only) instead.
+        project.present? && project.namespace == namespace &&
+          Ability.allowed?(current_user, :create_observability_access_request, project)
+      end
+    end
+
+    def group_namespace?
+      namespace.is_a?(Group)
     end
 
     def build_issue_params
@@ -62,14 +79,14 @@ module Observability
     end
 
     def issue_title
-      "Request Observability Access for #{group.name}"
+      "Request Observability Access for #{namespace.name}"
     end
 
-    def existing_issue?(project)
+    def existing_issue?(issue_project)
       ::IssuesFinder.new(
         Users::Internal.admin_bot,
         {
-          project_id: project.id,
+          project_id: issue_project.id,
           search: issue_title,
           in: 'title',
           state: 'opened'
@@ -78,20 +95,19 @@ module Observability
     end
 
     def issue_description
-      member_count = group.members.size
-
       <<~DESCRIPTION
         ## Observability Access Request
 
         - **Requesting User:** #{current_user.name} (@#{current_user.username}) - #{current_user.email}
-        - **Group:** #{group.name} (#{group.full_path})
+        - **Namespace:** #{namespace.name} (#{namespace.full_path})
         - **Request Date:** #{Time.current.strftime('%Y-%m-%d %H:%M:%S UTC')}
 
-        ### Group Information
+        ### Namespace Information
 
-        - **Group ID:** #{group.id}
-        - **Group Path:** #{group.full_path}
-        - **Group Visibility:** #{group.visibility_level}
+        - **Namespace ID:** #{namespace.id}
+        - **Namespace Path:** #{namespace.full_path}
+        - **Namespace Type:** #{namespace_type}
+        - **Namespace Visibility:** #{namespace.visibility_level}
         - **Member Count:** #{member_count}
 
         ---
@@ -101,25 +117,34 @@ module Observability
       DESCRIPTION
     end
 
+    def namespace_type
+      group_namespace? ? 'Group' : 'Personal namespace'
+    end
+
+    def member_count
+      # User namespaces have no members association; the owner is the only member.
+      group_namespace? ? namespace.members.size : 1
+    end
+
     def project_for_observability_access_requests
       if Rails.env.production?
         Project.find_by_id(DEPLOYER_PROJECT_ID)
       else
-        group.projects.first
+        namespace.projects.projects_order_id_asc.first
       end
     end
 
-    def create_temporary_group_o11y_setting(group)
-      return if group.observability_group_o11y_setting.present?
+    def create_temporary_o11y_setting(namespace)
+      return if namespace.observability_group_o11y_setting.present?
 
-      setting = group.build_observability_group_o11y_setting
+      setting = namespace.build_observability_group_o11y_setting
       ::Observability::GroupO11ySettingsUpdateService.new.execute(setting, settings_params)
     end
 
     def settings_params
       {
-        o11y_service_name: group.id.to_s,
-        o11y_service_user_email: "#{group.id}@gitlab-o11y.com",
+        o11y_service_name: namespace.id.to_s,
+        o11y_service_user_email: "#{namespace.id}@gitlab-o11y.com",
         o11y_service_password: SecureRandom.hex(16),
         o11y_service_post_message_encryption_key: SecureRandom.hex(32)
       }

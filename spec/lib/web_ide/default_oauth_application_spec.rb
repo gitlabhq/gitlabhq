@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe WebIde::DefaultOauthApplication, feature_category: :web_ide do
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:oauth_application, freeze: false) { create(:oauth_application, owner: nil) }
+  let_it_be_with_reload(:oauth_application) { create(:oauth_application, owner: nil) }
 
   describe '#oauth_application' do
     it 'returns web_ide_oauth_application from application_settings' do

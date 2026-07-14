@@ -121,16 +121,16 @@ RSpec.describe Tooling::Danger::SaasFeature, feature_category: :tooling do
         let(:group) { nil }
 
         it 'is true only if MR has no group label' do
-          expect(found.group_match_mr_label?(group)).to eq true
-          expect(found.group_match_mr_label?('group::source code')).to eq false
+          expect(found.group_match_mr_label?(group)).to be true
+          expect(found.group_match_mr_label?('group::source code')).to be false
         end
       end
 
       context 'when group is not nil' do
         it 'is true only if MR has the same group label' do
-          expect(found.group_match_mr_label?(group)).to eq true
-          expect(found.group_match_mr_label?(nil)).to eq false
-          expect(found.group_match_mr_label?('group::authentication and authorization')).to eq false
+          expect(found.group_match_mr_label?(group)).to be true
+          expect(found.group_match_mr_label?(nil)).to be false
+          expect(found.group_match_mr_label?('group::authentication and authorization')).to be false
         end
       end
     end

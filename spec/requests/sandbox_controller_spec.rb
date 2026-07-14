@@ -14,7 +14,7 @@ RSpec.describe SandboxController, feature_category: :shared do
     end
 
     context 'with a signed-in user' do
-      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       before do
         sign_in(user)
@@ -52,6 +52,15 @@ RSpec.describe SandboxController, feature_category: :shared do
         expect(csp_header).to be_present
         expect(directives['script-src']).to include("'self'")
         expect(directives['script-src']).not_to include("'unsafe-inline'")
+      end
+
+      it 'lists the instance origin explicitly in script-src and style-src', :aggregate_failures do
+        get_mermaid
+
+        origin = Gitlab.config.gitlab.base_url
+
+        expect(directives['script-src']).to include(origin)
+        expect(directives['style-src']).to include(origin)
       end
 
       it 'sets restrictive defaults' do

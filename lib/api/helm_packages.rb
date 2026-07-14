@@ -51,13 +51,13 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/helm', requirements: HELM_REQUIREMENTS do
         desc 'Download a chart index' do
-          detail 'This feature was introduced in GitLab 14.0'
+          detail 'Downloads a specified chart index for a project.'
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' }
           ]
-          tags %w[packages]
+          tags %w[packages_helm]
         end
         params do
           requires :channel, type: String, desc: 'Helm channel', regexp: Gitlab::Regex.helm_channel_regex, documentation: { example: 'stable' }
@@ -90,14 +90,14 @@ module API
         end
 
         desc 'Download a chart' do
-          detail 'This feature was introduced in GitLab 14.0'
+          detail 'Downloads a specified chart for a project.'
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[packages]
+          tags %w[packages_helm]
         end
         params do
           requires :channel, type: String, desc: 'Helm channel', regexp: Gitlab::Regex.helm_channel_regex, documentation: { example: 'stable' }
@@ -126,7 +126,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[packages]
+          tags %w[packages_helm]
         end
         params do
           requires :channel, type: String, desc: 'Helm channel', regexp: Gitlab::Regex.helm_channel_regex, documentation: { example: 'stable' }
@@ -142,14 +142,14 @@ module API
         end
 
         desc 'Upload a chart' do
-          detail 'This feature was introduced in GitLab 14.0'
+          detail 'Uploads a specified chart for a project.'
           success code: 201
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[packages]
+          tags %w[packages_helm]
         end
         params do
           requires :channel, type: String, desc: 'Helm channel', regexp: Gitlab::Regex.helm_channel_regex, documentation: { example: 'stable' }

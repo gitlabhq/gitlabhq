@@ -1,0 +1,9 @@
+---
+name: create_ml_experiment
+description: Grants the ability to create ML experiments
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_ml_experiment

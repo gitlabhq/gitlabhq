@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop:disable Style/RedundantFetchBlock
 #
 require 'spec_helper'
@@ -11,33 +12,33 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache, featu
 
     describe '#fetch' do
       it 'caches the value' do
-        expect(service.fetch('main') { true }).to eq(true)
-        expect(service.fetch('not-found') { false }).to eq(false)
+        expect(service.fetch('main') { true }).to be(true)
+        expect(service.fetch('not-found') { false }).to be(false)
 
         # Uses cached values
-        expect(service.fetch('main') { false }).to eq(true)
-        expect(service.fetch('not-found') { true }).to eq(false)
+        expect(service.fetch('main') { false }).to be(true)
+        expect(service.fetch('not-found') { true }).to be(false)
       end
 
       it 'sets expiry on the key' do
         stub_const("#{described_class.name}::CACHE_EXPIRE_IN", immediate_expiration)
 
-        expect(service.fetch('main') { true }).to eq(true)
-        expect(service.fetch('not-found') { false }).to eq(false)
+        expect(service.fetch('main') { true }).to be(true)
+        expect(service.fetch('not-found') { false }).to be(false)
 
-        expect(service.fetch('main') { false }).to eq(false)
-        expect(service.fetch('not-found') { true }).to eq(true)
+        expect(service.fetch('main') { false }).to be(false)
+        expect(service.fetch('not-found') { true }).to be(true)
       end
 
       it 'does not set an expiry on the key after the hash is already created' do
-        expect(service.fetch('main') { true }).to eq(true)
+        expect(service.fetch('main') { true }).to be(true)
 
         stub_const("#{described_class.name}::CACHE_EXPIRE_IN", immediate_expiration)
 
-        expect(service.fetch('not-found') { false }).to eq(false)
+        expect(service.fetch('not-found') { false }).to be(false)
 
-        expect(service.fetch('main') { false }).to eq(true)
-        expect(service.fetch('not-found') { true }).to eq(false)
+        expect(service.fetch('main') { false }).to be(true)
+        expect(service.fetch('not-found') { true }).to be(false)
       end
 
       context 'when CACHE_LIMIT is exceeded' do
@@ -46,31 +47,31 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache, featu
         end
 
         it 'recreates cache' do
-          expect(service.fetch('main') { true }).to eq(true)
-          expect(service.fetch('not-found') { false }).to eq(false)
+          expect(service.fetch('main') { true }).to be(true)
+          expect(service.fetch('not-found') { false }).to be(false)
 
           # Uses cached values
-          expect(service.fetch('main') { false }).to eq(true)
-          expect(service.fetch('not-found') { true }).to eq(false)
+          expect(service.fetch('main') { false }).to be(true)
+          expect(service.fetch('not-found') { true }).to be(false)
 
           # Overflow
-          expect(service.fetch('new-branch') { true }).to eq(true)
+          expect(service.fetch('new-branch') { true }).to be(true)
 
           # Refreshes values
-          expect(service.fetch('main') { false }).to eq(false)
-          expect(service.fetch('not-found') { true }).to eq(true)
+          expect(service.fetch('main') { false }).to be(false)
+          expect(service.fetch('not-found') { true }).to be(true)
         end
       end
 
       context 'when dry_run is on' do
         it 'does not use cached value' do
-          expect(service.fetch('main', dry_run: true) { true }).to eq(true)
-          expect(service.fetch('main', dry_run: true) { false }).to eq(false)
+          expect(service.fetch('main', dry_run: true) { true }).to be(true)
+          expect(service.fetch('main', dry_run: true) { false }).to be(false)
         end
 
         context 'when cache mismatch' do
           it 'logs an error' do
-            expect(service.fetch('main', dry_run: true) { true }).to eq(true)
+            expect(service.fetch('main', dry_run: true) { true }).to be(true)
 
             expect(Gitlab::AppLogger).to receive(:error).with(
               {
@@ -82,17 +83,17 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache, featu
               }
             )
 
-            expect(service.fetch('main', dry_run: true) { false }).to eq(false)
+            expect(service.fetch('main', dry_run: true) { false }).to be(false)
           end
         end
 
         context 'when cache matches' do
           it 'does not log an error' do
-            expect(service.fetch('main', dry_run: true) { true }).to eq(true)
+            expect(service.fetch('main', dry_run: true) { true }).to be(true)
 
             expect(Gitlab::AppLogger).not_to receive(:error)
 
-            expect(service.fetch('main', dry_run: true) { true }).to eq(true)
+            expect(service.fetch('main', dry_run: true) { true }).to be(true)
           end
         end
       end
@@ -102,12 +103,12 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache, featu
       let(:project_service) { described_class.new(project, user) }
 
       it 'clears cached values', time_travel_to: 1.minute.from_now do
-        expect(service.fetch('main') { true }).to eq(true)
-        expect(service.fetch('not-found') { false }).to eq(false)
+        expect(service.fetch('main') { true }).to be(true)
+        expect(service.fetch('not-found') { false }).to be(false)
 
         if entity.is_a?(Group)
-          expect(project_service.fetch('main') { true }).to eq(true)
-          expect(project_service.fetch('not-found') { false }).to eq(false)
+          expect(project_service.fetch('main') { true }).to be(true)
+          expect(project_service.fetch('not-found') { false }).to be(false)
           # When refreshing a group we also touch each project within the
           # group.
           expect { service.refresh }.to change { project.reload.updated_at }.to(Time.current)
@@ -118,13 +119,13 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache, featu
         end
 
         # Recreates cache
-        expect(service.fetch('main') { false }).to eq(false)
-        expect(service.fetch('not-found') { true }).to eq(true)
+        expect(service.fetch('main') { false }).to be(false)
+        expect(service.fetch('not-found') { true }).to be(true)
 
         # Refreshes caches for each project in the group
         if entity.is_a?(Group)
-          expect(project_service.fetch('main') { false }).to eq(false)
-          expect(project_service.fetch('not-found') { true }).to eq(true)
+          expect(project_service.fetch('main') { false }).to be(false)
+          expect(project_service.fetch('not-found') { true }).to be(true)
         end
       end
     end
@@ -154,7 +155,7 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache, featu
     let_it_be_with_reload(:entity) { project.group }
     let_it_be_with_reload(:user) { create(:user) }
 
-    before do
+    before_all do
       entity.add_owner(user)
     end
 

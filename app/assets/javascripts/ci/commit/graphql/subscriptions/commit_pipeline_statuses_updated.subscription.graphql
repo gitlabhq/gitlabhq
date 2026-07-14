@@ -1,0 +1,8 @@
+# @feature_category: continuous_integration
+#import "../fragments/commit_pipeline_list_item.fragment.graphql"
+
+subscription commitPipelineStatusesUpdated($projectId: ProjectID!, $sha: String) {
+  ciPipelineStatusesUpdated(projectId: $projectId, sha: $sha) {
+    ...CommitPipelineListItem
+  }
+}

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Gitlab OAuth2 Authorization Code Flow', feature_category: :system_access do
   let_it_be(:application) { create(:oauth_application, redirect_uri: 'https://example.com/oauth/callback') }
-  let_it_be(:user, freeze: false) { create(:user, :with_namespace, organizations: [create(:organization)]) }
+  let_it_be(:user) { create(:user, :with_namespace, organizations: [create(:organization)]) }
   let_it_be(:client_id) { application.uid }
   let_it_be(:client_secret) { application.secret }
 

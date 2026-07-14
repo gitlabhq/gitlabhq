@@ -12,7 +12,8 @@ RSpec.describe API::TrackAPIRequestFromPersonalAccessToken, :request_store,
 
   let_it_be(:endpoint) { '/test_pat_middleware' }
   let_it_be(:forbidden_endpoint) { '/test_pat_middleware_forbidden' }
-  let_it_be(:app, freeze: false) do
+  let_it_be(:denied_endpoint) { '/test_pat_middleware_granular_denied' }
+  let_it_be(:app) do
     Class.new(API::API).tap do |app|
       app.route_setting :authentication, job_token_allowed: true
       app.route_setting :authorization, skip_granular_token_authorization: true
@@ -23,6 +24,12 @@ RSpec.describe API::TrackAPIRequestFromPersonalAccessToken, :request_store,
       app.get(forbidden_endpoint) do
         authenticate!
         forbidden!
+      end
+      app.route_setting :authorization,
+        skip_granular_token_authorization: false, boundary_type: :instance, permissions: [:read_work_item]
+      app.get(denied_endpoint) do
+        authenticate!
+        status 200
       end
     end
   end
@@ -120,6 +127,34 @@ RSpec.describe API::TrackAPIRequestFromPersonalAccessToken, :request_store,
         it_behaves_like 'tracks the use_pat event' do
           let(:expected_pat_type) { 'legacy' }
           let(:expected_metric) { use_legacy_pat_metric }
+        end
+      end
+
+      context 'when a granular permission is denied' do
+        let(:target_endpoint) { denied_endpoint }
+        let(:headers) { { 'Private-Token' => granular_pat.token } }
+
+        before do
+          stub_feature_flags(granular_personal_access_tokens: true)
+        end
+
+        # The denial raises GranularPermissionsError, which is converted to a 403 by APIGuard's
+        # `rescue_from` responder (lib/api/api_guard.rb, GranularPermissionsError -> Bearer::Forbidden)
+        # *after* this middleware's `after` hook runs, so `context.status` is still 200 here.
+        # `denied_permissions` is the authoritative denial signal (matching the GraphQL path, where
+        # denials are also served as 200).
+        it 'tracks use_pat with the denied permission' do
+          expect { request }.to trigger_internal_events('use_pat')
+            .with(
+              user: user,
+              category: 'InternalEventTracking',
+              additional_properties: {
+                pat_type: 'granular',
+                label: "GET /api/:version#{denied_endpoint}",
+                response_code: 200,
+                denied_permissions: 'read_work_item'
+              }
+            )
         end
       end
     end

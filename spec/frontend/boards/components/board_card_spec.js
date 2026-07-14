@@ -214,7 +214,7 @@ describe('Board card', () => {
     await resolveQuery(workItemTypesConfigurationQuery);
     await selectCard();
 
-    expect(visitUrl).toHaveBeenCalledWith(mockIssue.webUrl);
+    expect(visitUrl).toHaveBeenCalledWith(mockIssue.webPath);
   });
 
   it('should redirect to the legacy issue page on card click when item is ticket', async () => {
@@ -227,6 +227,6 @@ describe('Board card', () => {
     await resolveQuery(workItemTypesConfigurationQuery);
     await selectCard();
 
-    expect(visitUrl).toHaveBeenCalledWith(mockIssue.webUrl);
+    expect(visitUrl).toHaveBeenCalledWith(mockIssue.webPath);
   });
 });

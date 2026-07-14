@@ -1,14 +1,7 @@
-- disable_initialization = local_assigns.fetch(:disable_initialization, false)
-- artifacts_endpoint_placeholder = ':pipeline_artifacts_id'
-
-#commit-pipeline-table-view{ data: { disable_initialization: disable_initialization,
-  endpoint: endpoint,
-  full_path: @project.full_path,
+#commit-pipeline-table-view{ data: { endpoint: endpoint,
   graphql_path: api_graphql_path,
   new_pipeline_path: new_project_pipeline_path(@project),
-  "empty-state-svg-path" => image_path('illustrations/empty-state/empty-pipeline-md.svg'),
-  "error-state-svg-path" => image_path('illustrations/empty-state/empty-job-failed-md.svg'),
+  project_full_path: @project.full_path,
+  commit_sha: @commit&.id,
   "project-id": @project.id,
-  "artifacts-endpoint" => downloadable_artifacts_project_pipeline_path(@project, artifacts_endpoint_placeholder, format: :json),
-  "artifacts-endpoint-placeholder" => artifacts_endpoint_placeholder,
 } }

@@ -17,6 +17,15 @@ module Gitlab
           new(table, value, partition_name: partition_name)
         end
 
+        def self.from_export_definition(table, partition_name, definition)
+          definition = definition.with_indifferent_access
+          values = Array(definition[:values])
+
+          raise ArgumentError, 'Expected a single value' if values.size != 1
+
+          new(table, Integer(values.first), partition_name: partition_name)
+        end
+
         attr_reader :table, :value
 
         def initialize(table, value, partition_name: nil)
@@ -70,6 +79,14 @@ module Gitlab
           return if table != other.table
 
           value <=> other.value
+        end
+
+        def export_definition
+          { partition_name: partition_name, values: [value] }
+        end
+
+        def covers?(other)
+          value == other.value
         end
 
         private

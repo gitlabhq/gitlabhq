@@ -11,6 +11,7 @@ import {
 import WorkItemParentMetadata from '~/work_items/components/shared/work_item_parent_metadata.vue';
 
 export default {
+  name: 'WorkItemLinkChildMetadata',
   components: {
     ItemMilestone,
     WorkItemRolledUpCount,

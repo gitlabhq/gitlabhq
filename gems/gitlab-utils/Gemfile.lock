@@ -54,7 +54,7 @@ GEM
     amatch (0.4.2)
       mize
       tins (~> 1.0)
-    ast (2.4.2)
+    ast (2.4.3)
     base64 (0.2.0)
     batch-loader (2.0.6)
     benchmark (0.4.1)
@@ -242,9 +242,10 @@ GEM
     os (1.1.4)
     ostruct (0.6.3)
     parallel (1.23.0)
-    parser (3.2.2.3)
+    parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
+    prism (1.9.0)
     proc_to_ast (0.1.0)
       coderay
       parser
@@ -325,8 +326,9 @@ GEM
       rubocop-ast (>= 1.28.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.29.0)
-      parser (>= 3.2.1.0)
+    rubocop-ast (1.49.1)
+      parser (>= 3.3.7.2)
+      prism (~> 1.7)
     rubocop-capybara (2.18.0)
       rubocop (~> 1.41)
     rubocop-factory_bot (2.23.1)
@@ -407,7 +409,7 @@ CHECKSUMS
   activesupport (7.0.8.7) sha256=df4702375de924aae81709c831605317c5417f0bd9e502a0373ff84a067204ff
   addressable (2.8.1) sha256=bc724a176ef02118c8a3ed6b5c04c39cf59209607ffcce77b91d0261dbadedfa
   amatch (0.4.2) sha256=5a7c8c08882864621b81bf3bbc0447bb638afe6066ceeead6b9d11f34cf0d911
-  ast (2.4.2) sha256=1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12
+  ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   base64 (0.2.0) sha256=0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507
   batch-loader (2.0.6) sha256=93e313b8880740d5d8be32861bf4e1631f5975ad34f4cb8fb9cf7662ee009267
   benchmark (0.4.1) sha256=d4ef40037bba27f03b28013e219b950b82bace296549ec15a78016552f8d2cce
@@ -494,7 +496,8 @@ CHECKSUMS
   os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
   parallel (1.23.0) sha256=27154713ad6ef32fa3dcb7788a721d6c07bca77e72443b4c6080a14145288c49
-  parser (3.2.2.3) sha256=10685f358ab36ffea2252dc4952e5b8fad3a297a8152a85f59adc982747b91eb
+  parser (3.3.11.1) sha256=d17ace7aabe3e72c3cc94043714be27cc6f852f104d81aa284c2281aecc65d54
+  prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85
   proc_to_ast (0.1.0) sha256=92a73fa66e2250a83f8589f818b0751bcf227c68f85916202df7af85082f8691
   public_suffix (5.0.0) sha256=26ee4fbce33ada25eb117ac71f2c24bf4d8b3414ab6b34f05b4708a3e90f1c6b
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
@@ -521,7 +524,7 @@ CHECKSUMS
   rspec-rails (6.0.1) sha256=016c8ebd5b38ce5cbce949de2f5b28f2bde7bb78d4de26940516713597b26e34
   rspec-support (3.12.0) sha256=dd4d44b247ff679b95b5607ac5641d197a5f9b1d33f916123cb98fc5f917c58b
   rubocop (1.50.2) sha256=7cfeb0616f686ac61d049beae89f31446792d7e9f5728152657548f70aa78650
-  rubocop-ast (1.29.0) sha256=d1da2ab279a074baefc81758ac430c5768a8da8c7438dd4e5819ce5984d00ba1
+  rubocop-ast (1.49.1) sha256=4412f3ee70f6fe4546cc489548e0f6fcf76cafcfa80fa03af67098ffed755035
   rubocop-capybara (2.18.0) sha256=66b256755101f76dc455ba9694e2414bc957db5200401d204b00bc835401d605
   rubocop-factory_bot (2.23.1) sha256=c19ee30c02e591f4293c07e943e22b7999c545d5010aac4d79621ee310850c4f
   rubocop-graphql (0.19.0) sha256=ba4b2fc91c9f0fda47e0870a6ae15a1e5525d6caffcb150dc88b00caaacc3e43

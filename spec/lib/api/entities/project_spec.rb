@@ -197,7 +197,7 @@ RSpec.describe ::API::Entities::Project do
 
   describe 'description_html', feature_category: :groups_and_projects do
     let_it_be(:group) { create(:group) }
-    let_it_be(:project_a, freeze: false) { create(:project, :public, group: group, name: 'a', path: 'a') }
+    let_it_be_with_reload(:project_a) { create(:project, :public, group: group, name: 'a', path: 'a') }
     let_it_be(:project_b) { create(:project, :public, group: group, name: 'b', path: 'b') }
     let_it_be(:issue) { create(:issue, :confidential, project: project_b) }
 

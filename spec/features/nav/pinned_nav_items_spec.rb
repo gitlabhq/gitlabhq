@@ -7,6 +7,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
   let_it_be(:project) { create(:project, developers: user) }
 
   before do
+    stub_feature_flags(feature_library_modal: false)
     sign_in(user)
   end
 
@@ -34,6 +35,25 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
     it 'adds sensible defaults' do
       within_testid 'pinned-nav-items' do
         expect(page).to have_link 'Work items'
+      end
+    end
+
+    context 'when feature_library_modal is enabled' do
+      let_it_be(:project_with_repo) { create(:project, :repository, developers: user) }
+
+      before do
+        stub_feature_flags(feature_library_modal: true)
+        visit project_path(project_with_repo)
+      end
+
+      it 'adds enriched defaults' do
+        within_testid 'pinned-nav-items' do
+          expect(page).to have_link 'Members'
+          expect(page).to have_link 'Work items'
+          expect(page).to have_link 'Branches'
+          expect(page).to have_link 'Merge requests'
+          expect(page).to have_link 'Pipelines'
+        end
       end
     end
 

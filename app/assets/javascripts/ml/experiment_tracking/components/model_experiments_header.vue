@@ -12,6 +12,7 @@ import { MLFLOW_USAGE_MODAL_ID } from '../routes/experiments/index/constants';
 import MlflowModal from '../routes/experiments/index/components/mlflow_usage_modal.vue';
 
 export default {
+  name: 'ModelExperimentsHeader',
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,

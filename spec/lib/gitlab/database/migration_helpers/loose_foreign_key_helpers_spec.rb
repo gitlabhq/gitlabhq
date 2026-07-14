@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers, feature_category: :database do
+  # `freeze: false` is kept here because this `let_it_be` subject is not an
+  # ActiveRecord model record (it's an ActiveRecord::Migration instance extended
+  # with the helpers module), so freezing
+  # `refind` are no-ops on it. Keep as-is (see gitlab-org/gitlab#602925).
   let_it_be(:migration, freeze: false) do
     ActiveRecord::Migration.new.extend(described_class)
   end

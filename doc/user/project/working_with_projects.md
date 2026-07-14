@@ -112,8 +112,8 @@ To view the projects on your GitLab instance:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from **Yours** to **Member** in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from **Yours** to **Member** in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
 
 {{< /history >}}
@@ -144,7 +144,7 @@ You can also view your starred and personal projects from your personal profile:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Pending deletion" to "Inactive" in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Pending deletion" to "Inactive" in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
 - [Changed tab label generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
 - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
 - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in GitLab 18.0.
@@ -203,7 +203,7 @@ GitLab removes project activity events older than three years from the events ta
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385465) in GitLab 15.9 [with a flag](../../administration/feature_flags/_index.md) named `project_language_search`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385465) in GitLab 15.9 [with a feature flag](../../administration/feature_flags/_index.md) named `project_language_search`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110956) in GitLab 15.9. Feature flag `project_language_search` removed.
 
 {{< /history >}}
@@ -503,9 +503,9 @@ This action is also available on other list pages.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `transfer_project_with_tags`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7 [with a feature flag](../../administration/feature_flags/_index.md) named `transfer_project_with_tags`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7. Feature flag removed.
-- Asynchronous transfers for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594575) in GitLab 18.11 [with a flag](../../administration/feature_flags/_index.md) named `groups_and_projects_async_transfer`. Disabled by default.
+- Asynchronous transfers for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594575) in GitLab 18.11 [with a feature flag](../../administration/feature_flags/_index.md) named `groups_and_projects_async_transfer`. Disabled by default.
 
 {{< /history >}}
 

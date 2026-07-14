@@ -47,7 +47,7 @@ RSpec.describe Gitlab::ProjectAuthorizations, feature_category: :system_access d
 
   context 'unapproved access request' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     subject(:mapping) { map_access_levels(authorizations) }
 
@@ -119,7 +119,7 @@ RSpec.describe Gitlab::ProjectAuthorizations, feature_category: :system_access d
 
   context 'user with minimal access to group' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     subject(:mapping) { map_access_levels(authorizations) }
 
@@ -181,7 +181,7 @@ RSpec.describe Gitlab::ProjectAuthorizations, feature_category: :system_access d
     let_it_be(:group) { create(:group) }
     let_it_be(:nested_group) { create(:group, parent: group) }
     let_it_be(:nested_project) { create(:project, namespace: nested_group) }
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     before_all do
       group.add_developer(user)
@@ -212,8 +212,8 @@ RSpec.describe Gitlab::ProjectAuthorizations, feature_category: :system_access d
 
   context 'with shared projects' do
     let_it_be(:shared_with_group) { create(:group) }
-    let_it_be(:user, freeze: false) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, group: create(:group)) }
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, group: create(:group)) }
 
     let(:mapping) { map_access_levels(authorizations) }
 
@@ -261,7 +261,7 @@ RSpec.describe Gitlab::ProjectAuthorizations, feature_category: :system_access d
     let_it_be(:shared_group_child) { create(:group, :private, parent: shared_group) }
 
     let_it_be(:project_parent) { create(:project, group: shared_group_parent) }
-    let_it_be(:project, freeze: false) { create(:project, group: shared_group) }
+    let_it_be_with_reload(:project) { create(:project, group: shared_group) }
     let_it_be(:project_child) { create(:project, group: shared_group_child) }
 
     before_all do
@@ -285,7 +285,7 @@ RSpec.describe Gitlab::ProjectAuthorizations, feature_category: :system_access d
     end
 
     context 'with lower group access level than max access level for share' do
-      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       before_all do
         group.add_reporter(user)
@@ -325,7 +325,7 @@ RSpec.describe Gitlab::ProjectAuthorizations, feature_category: :system_access d
     end
 
     context 'user without accepted access request' do
-      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       before_all do
         create(:group_member, :developer, :access_request, user: user, group: group)
@@ -358,7 +358,7 @@ RSpec.describe Gitlab::ProjectAuthorizations, feature_category: :system_access d
 
   context 'with pending memberships' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     subject(:mapping) { map_access_levels(authorizations) }
 

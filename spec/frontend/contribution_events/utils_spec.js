@@ -1,5 +1,10 @@
-import { TARGET_TYPE_MILESTONE, WORK_ITEM_ISSUE_TYPE_TASK } from '~/contribution_events/constants';
-import { getValueByEventTarget } from '~/contribution_events/utils';
+import {
+  TARGET_TYPE_MILESTONE,
+  WORK_ITEM_ISSUE_TYPE_TASK,
+  VARIANT_AVATAR,
+  VARIANT_DEFAULT,
+} from '~/contribution_events/constants';
+import { getValueByEventTarget, isValidVariant } from '~/contribution_events/utils';
 import { eventMilestoneCreated, eventTaskCreated } from './utils';
 
 describe('getValueByEventTarget', () => {
@@ -20,5 +25,17 @@ describe('getValueByEventTarget', () => {
     ${{ target: { type: 'unsupported type' } }} | ${fallbackValue}
   `('returns $expected when event is $event', ({ event, expected }) => {
     expect(getValueByEventTarget(map, event)).toBe(expected);
+  });
+});
+
+describe('isValidVariant', () => {
+  it.each`
+    variant            | expected
+    ${VARIANT_AVATAR}  | ${true}
+    ${VARIANT_DEFAULT} | ${true}
+    ${'invalid'}       | ${false}
+    ${''}              | ${false}
+  `('returns $expected when variant is $variant', ({ variant, expected }) => {
+    expect(isValidVariant(variant)).toBe(expected);
   });
 });

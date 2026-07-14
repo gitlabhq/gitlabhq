@@ -3,6 +3,7 @@ import { GlButton, GlFormGroup, GlFormInput, GlMultiStepFormTemplate } from '@gi
 import csrf from '~/lib/utils/csrf';
 
 export default {
+  name: 'ImportFromFogbugzApp',
   components: {
     GlButton,
     GlFormGroup,

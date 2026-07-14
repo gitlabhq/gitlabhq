@@ -30,6 +30,8 @@ class RemoteMirror < ApplicationRecord
   validates :only_protected_branches, inclusion: { in: [true, false], message: :blank }
   validate :validate_mirror_count, on: :create
   validate :validate_mirror_count, if: :enabling_mirror?
+  validate :url_not_duplicated, if: :revalidate_url?
+  validate :url_not_pointing_to_self, if: :revalidate_url?
 
   before_validation :store_credentials
   after_update :reset_fields, if: :saved_change_to_mirror_url?
@@ -299,6 +301,61 @@ class RemoteMirror < ApplicationRecord
     return unless project.remote_mirrors.enabled.count >= MAX_MIRRORS_PER_PROJECT
 
     errors.add(:base, format(_("Maximum number of push mirrors (%{max_mirrors}) exceeded for this project."), max_mirrors: MAX_MIRRORS_PER_PROJECT))
+  end
+
+  def revalidate_url?
+    new_record? || will_save_change_to_url?
+  end
+
+  def url_not_duplicated
+    return unless project
+
+    stored_url = read_attribute(:url)
+    return if stored_url.blank?
+
+    return unless project.remote_mirrors.where(url: stored_url).exists?
+
+    errors.add(:url, _('has already been taken'))
+  end
+
+  def url_not_pointing_to_self
+    return unless project
+
+    mirror_url = normalized_repo_url(read_attribute(:url))
+    return if mirror_url.blank?
+
+    self_urls = [project.http_url_to_repo, project.ssh_url_to_repo]
+      .filter_map { |repo_url| normalized_repo_url(repo_url) }
+
+    return unless self_urls.include?(mirror_url)
+
+    errors.add(:base, _("You cannot mirror a repository to itself."))
+  end
+
+  def normalized_repo_url(value)
+    return if value.blank?
+
+    canonical = canonicalize_scp_style(value)
+    # Normalize to a credential-insensitive form so equivalent URLs compare equal.
+    Gitlab::UrlSanitizer.new(canonical).sanitized_url.chomp('/').delete_suffix('.git').chomp('/')
+  rescue Addressable::URI::InvalidURIError
+    nil
+  end
+
+  # Rewrites scp-style SSH URLs (git@host:group/project.git) into the RFC form
+  # (ssh://git@host/group/project.git) so both compare equal after sanitizing.
+  def canonicalize_scp_style(value)
+    return value if value.match?(%r{\A[a-z][a-z0-9+.-]*://}i)
+    return value unless value.match?(%r{\A[^/@]+@[^/:]+:})
+
+    user_host, _, path = value.partition(':')
+
+    port_match = path.match(%r{\A(\d+)/(.*)\z})
+    if port_match
+      "ssh://#{user_host}:#{port_match[1]}/#{port_match[2]}"
+    else
+      "ssh://#{user_host}/#{path}"
+    end
   end
 end
 

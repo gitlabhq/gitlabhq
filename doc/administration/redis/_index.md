@@ -20,6 +20,14 @@ You can choose to install and manage Redis and Sentinel yourself, use a hosted
 cloud solution, or you can use the ones that come bundled with the Linux
 packages so you can only focus on configuration. Pick the one that suits your needs.
 
+## Supported versions
+
+Redis 7.2 or Valkey 7.2 is recommended. For recommended and minimum versions, including guidance
+for managed services, see [Redis requirements](../../install/requirements.md#redis-or-valkey).
+
+The minimum version is expected to increase in a future release. To migrate an existing Redis 6
+deployment, see [Support for Redis 6](../../update/deprecations.md#support-for-redis-6).
+
 ## Use Valkey instead of Redis
 
 {{< history >}}

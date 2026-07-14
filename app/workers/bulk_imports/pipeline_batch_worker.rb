@@ -183,7 +183,7 @@ module BulkImports
           bulk_import_entity_id: tracker.entity.id,
           pipeline_class: tracker.pipeline_name,
           pipeline_step: 'pipeline_batch_worker_run',
-          importer: Logger::IMPORTER_NAME
+          importer: Logger.importer_for(tracker.entity.bulk_import)
         }.merge(extra)
       )
     end

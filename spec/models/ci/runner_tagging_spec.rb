@@ -109,6 +109,11 @@ RSpec.describe Ci::RunnerTagging, feature_category: :runner_core do
   describe 'partitioning' do
     context 'with runner' do
       let_it_be(:runner) { FactoryBot.build(:ci_runner, :group, groups: [group]) }
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:runner_tagging, freeze: false) { FactoryBot.build(:ci_runner_tagging, runner: runner) }
 
       it 'sets runner_type to the current partition value' do
@@ -173,6 +178,11 @@ RSpec.describe Ci::RunnerTagging, feature_category: :runner_core do
     describe '.for_runner' do
       subject(:for_runner) { described_class.for_runner(runner_ids) }
 
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:runners, freeze: false) { create_list(:ci_runner, 3, :group, groups: [group]) }
 
       before_all do

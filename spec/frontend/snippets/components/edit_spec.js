@@ -23,6 +23,7 @@ import {
 import CreateSnippetMutation from '~/snippets/mutations/create_snippet.mutation.graphql';
 import UpdateSnippetMutation from '~/snippets/mutations/update_snippet.mutation.graphql';
 import FormFooterActions from '~/snippets/components/form_footer_actions.vue';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import { testEntries, createGQLSnippetsQueryResponse, createGQLSnippet } from '../test_utils';
 
 jest.mock('~/alert');
@@ -93,7 +94,9 @@ describe('Snippet Edit app', () => {
   // - Assert which mutation was sent
   let mutateSpy;
 
-  const relativeUrlRoot = '/foo/';
+  const relativeUrlRoot = '/gitlab';
+
+  useConfigurePathHelpers(relativeUrlRoot);
 
   beforeEach(() => {
     stubPerformanceWebAPI();
@@ -103,7 +106,6 @@ describe('Snippet Edit app', () => {
     // See `mutateSpy` declaration comment for why we send a key
     mutateSpy = jest.fn().mockImplementation((key) => Promise.resolve(createMutationResponse(key)));
 
-    gon.relative_url_root = relativeUrlRoot;
     jest.spyOn(urlUtils, 'visitUrl').mockImplementation();
   });
 
@@ -147,6 +149,7 @@ describe('Snippet Edit app', () => {
         snippetGid: TEST_SNIPPET_GID,
         markdownPreviewPath: 'http://preview.foo.bar',
         markdownDocsPath: 'http://docs.foo.bar',
+        projectPath: 'foo/bar',
         ...props,
       },
     });

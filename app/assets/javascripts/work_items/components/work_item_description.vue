@@ -48,6 +48,7 @@ const paramName = 'description_template';
 const oldParamNameFromPreWorkItems = 'issuable_template';
 
 export default {
+  name: 'WorkItemDescription',
   components: {
     EditedAt,
     GlAlert,
@@ -140,6 +141,7 @@ export default {
       default: true,
     },
   },
+  emits: ['cancel-create', 'cancel-editing', 'error', 'updateDraft', 'updateWorkItem'],
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
     return {
@@ -152,7 +154,7 @@ export default {
       initialDescriptionText: this.description,
       conflictedDescription: '',
       formFieldProps: {
-        'aria-label': __('Description'),
+        'aria-labelledby': 'work-item-description-label',
         placeholder: __('Write a comment or drag your files here…'),
         id: 'work-item-description',
         name: 'work-item-description',
@@ -288,6 +290,7 @@ export default {
         return {
           fullPath: this.fullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       skip() {
@@ -552,7 +555,7 @@ export default {
       }
 
       this.isEditing = false;
-      this.$emit('cancelEditing');
+      this.$emit('cancel-editing');
       this.clearDraftWorkItem();
       this.conflictedDescription = '';
       this.initialDescriptionText = this.descriptionText;
@@ -662,7 +665,7 @@ export default {
           ?.classList.contains('at-who-active')
       ) {
         if (this.isCreateFlow) {
-          this.$emit('cancelCreate');
+          this.$emit('cancel-create');
         } else {
           this.cancelEditing();
         }
@@ -675,11 +678,12 @@ export default {
 <template>
   <div data-testid="work-item-description-wrapper">
     <gl-form v-if="isEditing" @submit.prevent="updateWorkItem" @reset.prevent="cancelEditing">
-      <gl-form-group
-        :class="formGroupClass"
-        :label="__('Description')"
-        label-for="work-item-description"
-      >
+      <gl-form-group :class="formGroupClass" label-for="work-item-description">
+        <template #label>
+          <span id="work-item-description-label">
+            {{ __('Description') }}
+          </span>
+        </template>
         <work-item-description-template-listbox
           :full-path="fullPath"
           :template="selectedTemplate"

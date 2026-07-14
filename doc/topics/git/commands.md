@@ -32,7 +32,7 @@ Use `git blame` to report which users changed which parts of a file.
 git blame <file_name>
 ```
 
-You can use `git blame -L <line_start>, <line_end>` to check a specific range of lines.
+You can use `git blame -L <line_start>,<line_end>` to check a specific range of lines.
 
 For more information, see [Git file blame](../../user/project/repository/files/git_blame.md).
 
@@ -41,7 +41,7 @@ For more information, see [Git file blame](../../user/project/repository/files/g
 To check which user most recently modified line five of `example.txt`:
 
 ```shell
-$ git blame -L 5, 5 example.txt
+$ git blame -L 5,5 example.txt
 123abc (Zhang Wei 2021-07-04 12:23:04 +0000 5)
 ```
 

@@ -92,3 +92,43 @@ func TestNew_TLS(t *testing.T) {
 
 	pingClient(t, c)
 }
+
+func TestNew_TLS_DefaultsToTLS12(t *testing.T) {
+	const (
+		certFile = "../../testdata/localhost.crt"
+		keyFile  = "../../testdata/localhost.key"
+	)
+
+	cfg := config.ListenerConfig{
+		Addr:    "127.0.0.1:0",
+		Network: "tcp",
+		TLS: &config.TLSConfig{
+			Certificate: certFile,
+			Key:         keyFile,
+		},
+	}
+
+	l, err := New("test", cfg)
+	require.NoError(t, err)
+	defer l.Close()
+	go pingServer(l)
+
+	tlsCertificate, err := tls.LoadX509KeyPair(certFile, keyFile)
+	require.NoError(t, err)
+	certificate, err := x509.ParseCertificate(tlsCertificate.Certificate[0])
+	require.NoError(t, err)
+	certpool := x509.NewCertPool()
+	certpool.AddCert(certificate)
+
+	// A client that only offers up to TLS 1.1 must be rejected because the
+	// listener defaults to a minimum of TLS 1.2 when min_version is unset.
+	c, err := tls.Dial("tcp", l.Addr().String(), &tls.Config{
+		RootCAs:    certpool,
+		MinVersion: tls.VersionTLS10,
+		MaxVersion: tls.VersionTLS11,
+	})
+	if err == nil {
+		c.Close()
+		t.Fatal("expected TLS handshake to fail for a client limited to TLS 1.1")
+	}
+}

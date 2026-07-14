@@ -174,12 +174,17 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
       end
 
       it 'bubbles up failure messages for negated matcher' do
+        # Format the hash the same way RSpec does when rendering received
+        # arguments so this matches on both Ruby 3.3 (`{:k=>v}`) and Ruby 3.4
+        # (`{:k => v}`), whose Hash#inspect output differs.
+        args = RSpec::Support::ObjectFormatter.format({ namespace: group_1, user: user_1 })
+
         expect do
           expect { track_event }.not_to trigger_internal_events('g_edit_by_sfe')
         end.to raise_expectation_error_with <<~TEXT
-          (Gitlab::InternalEvents).track_event("g_edit_by_sfe", {:namespace=>#<Group id:#{group_1.id} @#{group_1.name}>, :user=>#<User id:#{user_1.id} @#{user_1.username}>})
+          (Gitlab::InternalEvents).track_event("g_edit_by_sfe", #{args})
               expected: 0 times with arguments: ("g_edit_by_sfe", anything)
-              received: 1 time with arguments: ("g_edit_by_sfe", {:namespace=>#<Group id:#{group_1.id} @#{group_1.name}>, :user=>#<User id:#{user_1.id} @#{user_1.username}>})
+              received: 1 time with arguments: ("g_edit_by_sfe", #{args})
         TEXT
       end
 
@@ -563,7 +568,7 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
         context 'when triggered from request specs', type: :request do
           # ideally, this spec should be completed with a new controller generated inside the test
           let_it_be(:project) { create(:project, :repository) }
-          let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
+          let_it_be(:user) { create(:user, maintainer_of: project) }
 
           subject do
             sign_in(user)

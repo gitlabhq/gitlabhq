@@ -12,7 +12,7 @@ RSpec.describe Groups::GroupLinks::DestroyService, '#execute', feature_category:
   subject { described_class.new(shared_group, owner) }
 
   context 'when authorizing by user' do
-    before do
+    before_all do
       group.add_developer(owner)
       shared_group.add_owner(owner)
     end

@@ -15,20 +15,6 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTypesTool, feature_category: :m
     group.add_developer(user)
   end
 
-  describe 'class methods' do
-    describe '.build_query' do
-      it 'returns the GraphQL query string' do
-        query = described_class.build_query
-
-        expect(query).to include('query GetNamespaceWorkItemTypes($fullPath: ID!)')
-        expect(query).to include('namespace(fullPath: $fullPath)')
-        expect(query).to include('workItemTypes')
-        expect(query).to include('iconName')
-        expect(query).to include('widgetDefinitions')
-      end
-    end
-  end
-
   describe 'versioning' do
     it 'registers version using VERSIONS constant' do
       expect(tool.version).to eq(Mcp::Tools::Concerns::Constants::VERSIONS[:v0_1_0])
@@ -41,7 +27,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTypesTool, feature_category: :m
     it 'has correct GraphQL operation for version 0.1.0' do
       operation = tool.graphql_operation
 
-      expect(operation).to include('query GetNamespaceWorkItemTypes')
+      expect(operation).to include('query getNamespaceWorkItemTypes')
       expect(operation).to include('workItemTypes')
     end
   end
@@ -93,13 +79,15 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTypesTool, feature_category: :m
       result = tool.execute
 
       expect(result[:isError]).to be(false)
+      expect(result[:structuredContent].keys).to match_array(%w[workItemTypes])
       types = result[:structuredContent]['workItemTypes']
       expect(types).to be_an(Array)
       expect(types).not_to be_empty
 
       first_type = types.first
-      expect(first_type).to include('id', 'name', 'iconName', 'widgetDefinitions')
+      expect(first_type.keys).to match_array(%w[id name iconName widgetDefinitions])
       expect(first_type['widgetDefinitions']).to be_an(Array)
+      expect(first_type['widgetDefinitions'].first.keys).to match_array(%w[type])
     end
 
     it 'includes the system-defined Issue type' do

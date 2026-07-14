@@ -9,7 +9,7 @@ RSpec.describe Banzai::DiagramProxyController, feature_category: :markdown do
     [command, params]
   end
 
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   let(:diagram_type) { 'plantuml' }
   let(:diagram_source) { 'Bob -> Sara : Hello' }

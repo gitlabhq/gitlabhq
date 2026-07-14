@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Milestones::DestroyService, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, maintainers: user) }
-  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
+  let_it_be_with_reload(:project) { create(:project, group: group) }
 
   subject(:service) { described_class.new(container, user, {}) }
 

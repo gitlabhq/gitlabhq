@@ -3,9 +3,9 @@
 module API
   module Entities
     class IssuableEntity < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 84 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 84 }
       expose :iid, documentation: { type: 'Integer', example: 14 }
-      expose :project_id, documentation: { type: 'Integer', example: 4 } do |entity|
+      expose :project_id, documentation: { type: 'Integer', format: 'int64', example: 4 } do |entity|
         entity&.project.try(:id)
       end
       expose :title, documentation: { type: 'String', example: 'Impedit et ut et dolores vero provident ullam est' }

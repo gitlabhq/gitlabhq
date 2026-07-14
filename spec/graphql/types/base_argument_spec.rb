@@ -4,6 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Types::BaseArgument, feature_category: :api do
   include_examples 'Gitlab-style deprecations' do
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:field, freeze: false) do
       Types::BaseField.new(name: 'field', type: String, null: true)
     end
@@ -15,6 +20,11 @@ RSpec.describe Types::BaseArgument, feature_category: :api do
   end
 
   describe 'array size validation' do
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:field, freeze: false) { Types::BaseField.new(name: 'field', type: String, null: true) }
 

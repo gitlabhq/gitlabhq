@@ -15,6 +15,10 @@ FactoryBot.define do
       impersonation { true }
     end
 
+    trait :sudo do
+      sudo { true }
+    end
+
     trait :revoked do
       revoked { true }
     end

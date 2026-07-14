@@ -15,6 +15,7 @@ export default {
       required: true,
     },
   },
+  emits: ['error', 'sign-in-oauth'],
   computed: {
     isOauthSelfManagedEnabled() {
       return this.publicKeyStorageEnabled;

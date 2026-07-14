@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::API::Entities::ProjectJobTokenScope, feature_category: :secrets_management do
-  let_it_be(:project, freeze: false) do
+  let_it_be_with_reload(:project) do
     create(:project,
       :public,
       ci_inbound_job_token_scope_enabled: true,

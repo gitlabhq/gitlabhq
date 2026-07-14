@@ -111,6 +111,68 @@ You can [configure different ports in the Helm chart](https://docs.gitlab.com/ch
 
 {{< /tabs >}}
 
+## Metrics
+
+`gitlab-sshd` exposes [Prometheus metrics](../monitoring/prometheus/gitlab_metrics.md) on the monitoring endpoint
+configured with `web_listen` in the `gitlab-shell` configuration.
+`gitlab-sshd` serves the metrics at the `/metrics` path of that address.
+
+| Metric                                                   | Type      | Description |
+|:---------------------------------------------------------|:----------|:------------|
+| `gitlab_shell_sshd_in_flight_connections`                | Gauge     | Connections currently being served by `gitlab-sshd`. |
+| `gitlab_shell_sshd_concurrent_limited_sessions_total`    | Counter   | Number of times the concurrent sessions limit was hit. |
+| `gitlab_shell_sshd_session_duration_seconds`             | Histogram | Duration of SSH sessions served by `gitlab-sshd`. |
+| `gitlab_shell_sshd_session_established_duration_seconds` | Histogram | Latency until an SSH session is established, used as the latency for the `gitlab_sshd` service Apdex. |
+| `gitlab_sli:shell_sshd_sessions:total`                   | Counter   | Number of SSH sessions that have been established (post-authentication session channels). |
+| `gitlab_sli:shell_sshd_sessions:errors_total`            | Counter   | Number of SSH sessions that have failed. |
+| `gitlab_sli:shell_sshd_connections:total`                | Counter   | Number of SSH connections that reached authentication. |
+| `gitlab_sli:shell_sshd_connections:errors_total`         | Counter   | Number of SSH connections that failed due to a server-side error. |
+
+### Session-level and connection-level SLIs
+
+`gitlab-sshd` exposes two sets of Service Level Indicator (SLI) counters for SSH reliability:
+
+- Session-level (`gitlab_sli:shell_sshd_sessions:*`) counts post-authentication session
+  channels.
+  This counter does not observe failures that occur during the authentication phase.
+- Connection-level (`gitlab_sli:shell_sshd_connections:*`) counts each connection that
+  reaches the authentication phase, and treats server-side errors during either the
+  authentication or session phase as failures.
+  Unlike the session-level counters, connection-level counters capture authentication-phase
+  failures such as `authorized_keys` lookup errors.
+  The connection-level counters exclude connections that never get past the transport handshake,
+  such as port scanners and health checks.
+
+The connection-level counters provide broader coverage of user-facing failures and are the
+preferred signal for SSH reliability monitoring.
+
+### Other GitLab Shell metrics
+
+`gitlab-sshd` also exposes metrics for the interactions that GitLab Shell has with other
+services.
+These metrics are part of GitLab Shell's general instrumentation, and are not specific to the SSH
+daemon.
+The metrics cover connections to Gitaly, the GitLab internal API, Git LFS, and the Topology
+Service.
+When `gitlab-sshd` handles an SSH connection, `gitlab-sshd` runs these operations in its own
+process and exposes the resulting counters on the same `/metrics` endpoint as the SSH metrics.
+When you use OpenSSH instead of `gitlab-sshd`, GitLab Shell runs as a short-lived process for each
+connection.
+These short-lived processes increment the same counters, but do not expose a metrics endpoint, so
+the counters are not available for scraping.
+
+| Metric                                           | Type      | Description |
+|:-------------------------------------------------|:----------|:------------|
+| `gitlab_shell_gitaly_connections_total`          | Counter   | Number of Gitaly connections that have been established, labeled by `status` (`ok` or `fail`). |
+| `gitlab_shell_http_requests_total`               | Counter   | Number of requests to the GitLab internal API, labeled by `code` and `method`. |
+| `gitlab_shell_http_request_duration_seconds`     | Histogram | Latency of requests to the GitLab internal API, labeled by `code` and `method`. |
+| `gitlab_shell_http_in_flight_requests`           | Gauge     | Requests to the GitLab internal API currently being performed. |
+| `lfs_http_connections_total`                     | Counter   | Number of Git LFS-over-HTTP connections that have been established. |
+| `lfs_ssh_connections_total`                      | Counter   | Number of Git LFS-over-SSH connections that have been established. |
+| `gitlab_shell_topology_connections_total`        | Counter   | Number of Topology Service connections that have been established, labeled by `status` (`ok` or `fail`). |
+| `gitlab_shell_topology_requests_total`           | Counter   | Number of Topology Service `Classify` requests, labeled by `status` (`ok` or `fail`). |
+| `gitlab_shell_topology_request_duration_seconds` | Histogram | Latency of Topology Service `Classify` requests. |
+
 ## PROXY protocol support
 
 Load balancers in front of `gitlab-sshd` cause GitLab to report the proxy IP address instead of the

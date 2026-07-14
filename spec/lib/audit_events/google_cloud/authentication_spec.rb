@@ -7,7 +7,7 @@ RSpec.describe AuditEvents::GoogleCloud::Authentication, feature_category: :audi
     let_it_be(:client_email) { 'test@example.com' }
     let_it_be(:private_key) { 'private_key' }
     let_it_be(:scope) { 'https://www.googleapis.com/auth/logging.write' }
-    let_it_be(:json_key_io, freeze: false) do
+    let_it_be(:json_key_io) do
       StringIO.new({ client_email: client_email, private_key: private_key }.to_json)
     end
 

@@ -96,18 +96,17 @@ class EnvironmentSerializer < BaseSerializer
       },
       deployable: {
         user: [],
-        metadata: [],
         job_environment: [],
         job_definition: [],
         supply_chain_attestation: [],
         pipeline: {
           project: [],
           manual_actions: [
-            :metadata, :job_definition, :job_environment, :deployment, :supply_chain_attestation, :project,
+            :job_definition, :job_environment, :deployment, :supply_chain_attestation, :project,
             { pipeline: :project }
           ],
           scheduled_actions: [
-            :metadata, :job_definition, :job_environment, :supply_chain_attestation, :project,
+            :job_definition, :job_environment, :supply_chain_attestation, :project,
             { pipeline: :project }
           ],
           latest_successful_jobs: [:supply_chain_attestation],

@@ -8,7 +8,7 @@ title: マージリクエスト承認API
 
 {{< details >}}
 
-- プラン: Premium、Ultimate
+- プラン: Free、Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
@@ -22,6 +22,15 @@ title: マージリクエスト承認API
 このAPIを使用して、[マージリクエストの承認](../user/project/merge_requests/approvals/_index.md)を管理します。
 
 すべてのエンドポイントで認証が必要です。
+
+次のエンドポイントは、Freeを含むすべてのプランで利用できます:
+
+- [マージリクエストを承認する](#approve-merge-request)
+- [マージリクエストの承認を取り消す](#unapprove-a-merge-request)
+- [マージリクエストの承認をリセットする](#reset-approvals-for-a-merge-request)
+- [マージリクエストの承認状態を取得する](#retrieve-approval-state-for-a-merge-request)
+
+その他のすべてのエンドポイントにはPremiumまたはUltimateが必要で、それぞれにプランが表示されます。
 
 ## マージリクエストを承認する {#approve-merge-request}
 
@@ -132,6 +141,13 @@ curl --request PUT \
 ```
 
 ## グループの承認ルール {#approval-rules-for-projects}
+
+{{< details >}}
+
+- プラン: Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
 
 これらのエンドポイントは、プロジェクトとその承認ルールに適用されます。すべてのエンドポイントで認証が必要です。
 
@@ -787,6 +803,13 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
 
 ### マージリクエストの承認の詳細を取得する {#retrieve-approval-details-for-a-merge-request}
 
+{{< details >}}
+
+- プラン: Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
+
 指定されたマージリクエストの承認の詳細を取得します。
 
 ユーザーがマージリクエストの承認ルールを変更した場合、応答には以下が含まれます。
@@ -856,6 +879,13 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_state
 ```
 
 ### マージリクエストのすべての承認ルールをリストする {#list-all-approval-rules-for-a-merge-request}
+
+{{< details >}}
+
+- プラン: Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
 
 指定されたマージリクエストのすべての承認ルールと、関連する詳細をリストします。
 
@@ -991,6 +1021,13 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
 
 ### 特定のマージリクエストの承認ルールを取得する {#retrieve-an-approval-rule-for-a-specific-merge-request}
 
+{{< details >}}
+
+- プラン: Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
+
 特定のマージリクエストの承認ルールに関する情報を取得します。
 
 ```plaintext
@@ -1065,6 +1102,13 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rul
 ```
 
 ### マージリクエストの承認ルールを作成する {#create-an-approval-rule-for-a-merge-request}
+
+{{< details >}}
+
+- プラン: Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
 
 特定のマージリクエストの承認ルールを作成します。`approval_project_rule_id`がプロジェクトからの既存の承認ルールのIDで設定されている場合、このエンドポイントは次のようになります。
 
@@ -1148,6 +1192,13 @@ POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
 
 ### マージリクエストの承認ルールを更新する {#update-an-approval-rule-for-a-merge-request}
 
+{{< details >}}
+
+- プラン: Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
+
 マージリクエストの指定された承認ルールを更新します。このエンドポイントは、`group_ids`、`user_ids`、または`usernames`属性に含まれていない承認者とグループを削除します。
 
 `report_approver`または`code_owner`のルールはシステムによって生成されるため、編集できません。
@@ -1230,6 +1281,13 @@ PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rul
 
 ### マージリクエストの承認ルールを削除する {#delete-an-approval-rule-for-a-merge-request}
 
+{{< details >}}
+
+- プラン: Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
+
 指定されたマージリクエストの承認ルールを削除します。
 
 ```plaintext
@@ -1250,6 +1308,8 @@ DELETE /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_
 
 {{< details >}}
 
+- プラン: Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 - ステータス: 実験的機能
 
 {{< /details >}}

@@ -360,6 +360,15 @@ rspec unit clickhouse25:
     - .rails:rules:clickhouse-changes
   parallel: 2
 
+# Dedicated job for the partition export/import UTC session guard specs.
+# Runs only the `:partition_tz`-tagged examples (see .rspec-base-pg17-tz) with
+# the extra non-UTC `postgres-tz` service, gated by a fork-runnable changes:
+# rule scoped to the partitioning lib + spec files.
+rspec unit partition-tz:
+  extends:
+    - .rspec-base-pg17-tz
+    - .rails:rules:partition-tz-changes
+
 rspec-ee unit clickhouse25:
   extends:
     - .rspec-base-pg17-clickhouse25
@@ -795,6 +804,40 @@ rspec:schedule-weekly-report-failures:
         (echo "☠️ \`${CI_JOB_NAME}\` weekly testing pipeline failed! ☠️ See ${CI_JOB_URL}");
       fi
 
+# Reports PG PREVIOUS nightly pipeline status to #s_database_excellence_alerts (issue #592923)
+rspec:schedule-nightly-pg-previous-report-failure:
+  extends:
+    - .rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-ee-only
+  stage: .post
+  when: on_failure
+  script:
+    - scripts/slack s_database_excellence_alerts "❌ PG PREVIOUS nightly pipeline failed! See ${CI_PIPELINE_URL}" ci_failing "GitLab Bot"
+
+rspec:schedule-nightly-pg-previous-report-success:
+  extends:
+    - .rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-ee-only
+  stage: .post
+  when: on_success
+  script:
+    - scripts/slack s_database_excellence_alerts "✅ PG PREVIOUS nightly pipeline succeeded! See ${CI_PIPELINE_URL}" ci_passing "GitLab Bot"
+
+# Reports PG NEXT nightly pipeline status to #s_database_excellence_alerts (issue #592923)
+rspec:schedule-nightly-pg-next-report-failure:
+  extends:
+    - .rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-ee-only
+  stage: .post
+  when: on_failure
+  script:
+    - scripts/slack s_database_excellence_alerts "❌ PG NEXT nightly pipeline failed! See ${CI_PIPELINE_URL}" ci_failing "GitLab Bot"
+
+rspec:schedule-nightly-pg-next-report-success:
+  extends:
+    - .rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-ee-only
+  stage: .post
+  when: on_success
+  script:
+    - scripts/slack s_database_excellence_alerts "✅ PG NEXT nightly pipeline succeeded! See ${CI_PIPELINE_URL}" ci_passing "GitLab Bot"
+
 rspec:flaky-tests-report:
   extends:
     - .default-retry
@@ -1219,7 +1262,8 @@ rspec-ee system pg17 es9:
 
 # PG17 is the default now.
 
-# PG16 (Nightly) — PREVIOUS PG version. Runs only when its own nightly schedule sets PREVIOUS_NIGHTLY_PG_VERSION=16.
+# PG16 (Nightly) — PREVIOUS PG version (currently PG16, set by .rspec-base-pg16). Runs only when its own nightly
+# schedule sets NIGHTLY_PG_ROLE=previous.
 rspec migration pg16:
   extends:
     - .rspec-base-pg16
@@ -1254,7 +1298,8 @@ rspec system pg16:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage", rules]
 
-# PG18 (Nightly) — NEXT PG version. Runs only when its own nightly schedule sets NEXT_NIGHTLY_PG_VERSION=18.
+# PG18 (Nightly) — NEXT PG version (currently PG18, set by .rspec-base-pg18). Runs only when its own nightly
+# schedule sets NIGHTLY_PG_ROLE=next.
 rspec migration pg18:
   extends:
     - .rspec-base-pg18
@@ -1339,7 +1384,8 @@ rspec-ee system pg17 opensearch2:
 
 # Production version tests for ES and PG in nightly pipeline are defined in the previous section
 
-# PG16 (EE-Nightly) — PREVIOUS PG version. Runs only when its own nightly schedule sets PREVIOUS_NIGHTLY_PG_VERSION=16.
+# PG16 (EE-Nightly) — PREVIOUS PG version (currently PG16, set by .rspec-ee-base-pg16). Runs only when its own
+# nightly schedule sets NIGHTLY_PG_ROLE=previous.
 rspec-ee migration pg16:
   extends:
     - .rspec-ee-base-pg16
@@ -1374,8 +1420,9 @@ rspec-ee system pg16:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-ee-only", rules]
 
-# PG18 (EE-Nightly) — NEXT PG version. Runs only when its own nightly schedule sets NEXT_NIGHTLY_PG_VERSION=18.
-# Each non-default PG version runs in its own nightly schedule to keep every pipeline under the 2000-job limit.
+# PG18 (EE-Nightly) — NEXT PG version (currently PG18, set by .rspec-ee-base-pg18). Runs only when its own nightly
+# schedule sets NIGHTLY_PG_ROLE=next. Each non-default PG version runs in its own nightly schedule to keep every
+# pipeline under the 2000-job limit.
 rspec-ee migration pg18:
   extends:
     - .rspec-ee-base-pg18
@@ -1432,6 +1479,26 @@ rspec integration pg17 valkey:
 rspec system pg17 valkey:
   extends:
     - .rspec-base-pg17-valkey
+    - .rspec-system-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-default-rules
+
+# Compatibility tests against Redis 7.0 (the minimum version), using the production PG version (PG17)
+
+rspec unit pg17 redis70:
+  extends:
+    - .rspec-base-pg17-redis70
+    - .rspec-unit-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-default-rules
+
+rspec integration pg17 redis70:
+  extends:
+    - .rspec-base-pg17-redis70
+    - .rspec-integration-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-default-rules
+
+rspec system pg17 redis70:
+  extends:
+    - .rspec-base-pg17-redis70
     - .rspec-system-parallel
     - .rails:rules:default-branch-schedule-weekly--code-backstage-default-rules
 

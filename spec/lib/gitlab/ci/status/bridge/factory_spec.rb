@@ -144,7 +144,7 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
   end
 
   context 'when bridge has strategy:mirror and has to mirror the status of the upstream pipeline' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let(:upstream_pipeline) { create(:ci_pipeline, :success, project: project) }
     let(:bridge) { create(:ci_bridge, :success, :strategy_mirror, pipeline: upstream_pipeline) }
 
@@ -175,7 +175,7 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
   end
 
   context 'when bridge has strategy:depend and downstream has the passed_with_warnings status' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:upstream_pipeline) { create(:ci_pipeline, :success, project: project) }
     let_it_be(:bridge) { create(:ci_bridge, :success, :strategy_depend, pipeline: upstream_pipeline) }
 
@@ -228,8 +228,8 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
   private
 
   def create_bridge(*traits)
-    upstream_project = create(:project, :repository)
-    downstream_project = create(:project, :repository)
+    upstream_project = create(:project)
+    downstream_project = create(:project)
     upstream_pipeline = create(:ci_pipeline, :running, project: upstream_project)
     trigger = { trigger: { project: downstream_project.full_path, branch: 'feature' } }
 

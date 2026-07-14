@@ -3,6 +3,7 @@ name: read_snippet
 description: Grants the ability to read snippets
 boundaries:
   - user
+  - project
   - instance
 available_for:
   - granular_access_token

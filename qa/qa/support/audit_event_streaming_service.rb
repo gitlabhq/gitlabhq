@@ -19,7 +19,7 @@ module QA
         @api.register(mocks)
       end
 
-      delegate :verify, to: :api
+      delegate :verify, :stringified_history, to: :api
 
       # Fetch smocker container logs
       #

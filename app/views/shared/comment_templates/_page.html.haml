@@ -4,7 +4,7 @@
 
 = render ::Layouts::SettingsSectionComponent.new(page_title,
   id: 'js-comment-templates-root',
-  options: { class: 'gl-mt-5', data: { base_path: base_path, namespace_id: namespace_id } }) do |c|
+  options: { data: { base_path: base_path, namespace_id: namespace_id } }) do |c|
   - c.with_description do
     = _('Comment templates can be used when creating comments inside issues, merge requests, and epics.')
   - c.with_body do

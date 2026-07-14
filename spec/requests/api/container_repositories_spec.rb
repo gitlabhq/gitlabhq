@@ -212,7 +212,7 @@ RSpec.describe API::ContainerRepositories, :with_current_organization, feature_c
 
             subject
 
-            expect(json_response['size']).to eq(nil)
+            expect(json_response['size']).to be_nil
           end
         end
       end

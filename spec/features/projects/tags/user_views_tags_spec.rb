@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'User views tags', :feature, feature_category: :source_code_management do

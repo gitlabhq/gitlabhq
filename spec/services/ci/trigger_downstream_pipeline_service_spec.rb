@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::TriggerDownstreamPipelineService, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { project.first_owner }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
 

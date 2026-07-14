@@ -104,8 +104,6 @@ build-vite-prod:
   needs:
     - job: cache:node-modules
       optional: true
-    - job: generate-js-routes
-      optional: true
   script:
     - source scripts/utils.sh
     - yarn_install_script
@@ -135,31 +133,6 @@ compile-fe-islands:
   artifacts:
     paths:
       - ee/frontend_islands/apps/*/dist/main.js
-
-generate-js-routes:
-  extends:
-    - .default-retry
-    - .default-before_script
-    - .ruby-cache
-    - .repo-from-artifacts
-    - .frontend:rules:generate-js-routes
-  stage: prepare
-  needs:
-    - !reference [.repo-from-artifacts, needs]
-    - job: cache:ruby-gems
-      optional: true
-  variables:
-    SETUP_DB: "false"
-  script:
-    - bundle exec rake gitlab:js:routes
-  artifacts:
-    paths:
-      - app/assets/javascripts/lib/utils/path_helpers
-      - ee/app/assets/javascripts/lib/utils/path_helpers
-  # This job is not yet used. Once we verify that this job works in all
-  # environments we will remove this and add it as a dependency for test and
-  # build jobs.
-  allow_failure: true
 
 .frontend-fixtures-base:
   extends:
@@ -293,8 +266,6 @@ upload-graphql-schema-dump:
   cache:
     - !reference [.yarn-cache, cache]
   needs:
-    - job: generate-js-routes
-      optional: true
     - job: compile-fe-islands
       optional: true
 
@@ -701,7 +672,8 @@ compile-storybook:
     - .storybook-yarn-cache-pull-push
     - .repo-from-artifacts
     - .frontend:rules:compile-storybook
-  stage: pages
+  # In test-frontend so test-storybook can use the build artifact.
+  stage: test-frontend
   needs:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
     - !reference [.frontend-test-base, needs]
@@ -731,6 +703,9 @@ test-storybook:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
+    # Optional: rules differ from compile-storybook, so the build step falls back when absent.
+    - job: compile-storybook
+      optional: true
   timeout: 60m
   artifacts:
     name: storybook-test-results
@@ -742,7 +717,8 @@ test-storybook:
   script:
     - yarn_install_script_storybook
     - yarn --cwd ./storybook playwright install --with-deps chromium
-    - yarn run storybook:build  # Build a static Storybook so stories are pre-compiled (avoids dev-server on-demand compile timeouts)
+    # Reuse compile-storybook's artifact if present, else build (pre-compiled stories avoid dev-server timeouts).
+    - '[ -f storybook/public/index.html ] || yarn run storybook:build'
     # `kill $STORYBOOK_PID` only reaps the yarn wrapper, leaving its http-server child
     # orphaned and still holding the job's stdout/stderr pipe; redirect output so the
     # runner's Wait() gets EOF instead of failing "WaitDelay expired before I/O complete".
@@ -760,8 +736,6 @@ bundle-size-review:
     - .frontend:rules:bundle-size-review
   stage: test-frontend
   needs:
-    - job: generate-js-routes
-      optional: true
     - job: compile-fe-islands
       optional: true
     - job: compile-production-assets
@@ -784,6 +758,7 @@ bundle-size-review:
 untamper-fe-islands-lockfile:
   extends: untamper-my-lockfile
   rules:
+    - !reference ['.ai-principles-schedule:rules:skip', rules]
     - if: $CI_MERGE_REQUEST_IID
       changes:
         - ee/frontend_islands/yarn.lock

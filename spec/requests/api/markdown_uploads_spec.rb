@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
-  let_it_be(:group, freeze: false) { create(:group, :private) }
+  let_it_be(:group) { create(:group, :private) }
   let_it_be(:group_maintainer) { create(:user, maintainer_of: group) }
 
   let_it_be(:project) { create(:project, :private) }

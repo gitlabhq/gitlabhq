@@ -70,7 +70,7 @@ RSpec.describe API::Entities::GroupDetail, feature_category: :groups_and_project
 
       context 'when step-up auth required oauth provider is set in namespace setting' do
         let(:openid_connect_config) do
-          GitlabSettings::Options.new(
+          Gitlab::Configs.build_options(
             name: 'openid_connect',
             step_up_auth: {
               namespace: {

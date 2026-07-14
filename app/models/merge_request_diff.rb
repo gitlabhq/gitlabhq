@@ -37,9 +37,22 @@ class MergeRequestDiff < ApplicationRecord
     -> { order(:merge_request_diff_id, :relative_order) },
     inverse_of: :merge_request_diff
 
-  has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }, inverse_of: :merge_request_diff do
-    def with_users
-      associations_to_preload = [{ merge_request_commits_metadata: [:commit_author, :committer] }, :commit_author, :committer]
+  has_many :merge_request_diff_commits, ->(diff) {
+    scope = order(:merge_request_diff_id, :relative_order)
+
+    if diff.project_id && MergeRequestDiffCommit.project_id_pruning_enabled?(diff.project_id)
+      scope = scope.where(project_id: diff.project_id)
+    end
+
+    scope
+  }, inverse_of: :merge_request_diff do
+    # The `:commit_author` / `:committer` FK columns
+    # live only on the old merge_request_diff_commits table; once the new table is the source of truth
+    # the nested preload through metadata covers it.
+    def with_users(read_new_commits_table: false)
+      associations_to_preload = [{ merge_request_commits_metadata: [:commit_author, :committer] }]
+      associations_to_preload += [:commit_author, :committer] unless read_new_commits_table
+
       ActiveRecord::Associations::Preloader.new(records: self, associations: associations_to_preload).call
       self
     end
@@ -95,22 +108,30 @@ class MergeRequestDiff < ApplicationRecord
     serialized_shas = sha_array.map { |s| Gitlab::Database::ShaAttribute.new.serialize(s) }
     project_ids_list = Array.wrap(target_project_id)
 
-    metadata_query = MergeRequestDiff.joins(:merge_request_diff_commits)
-                                     .joins(
-                                       MergeRequestDiff.sanitize_sql_array([
-                                         "INNER JOIN merge_request_commits_metadata ON merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id AND merge_request_commits_metadata.project_id IN (?)",
-                                         project_ids_list
-                                       ])
-                                     ).where(merge_request_commits_metadata: { sha: serialized_shas })
+    metadata_query = MergeRequestDiff
+                       .joins("INNER JOIN merge_request_diff_commits ON merge_request_diffs.id = merge_request_diff_commits.merge_request_diff_id")
+                       .joins(
+                         MergeRequestDiff.sanitize_sql_array([
+                           "INNER JOIN merge_request_commits_metadata ON merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id AND merge_request_commits_metadata.project_id IN (?)",
+                           project_ids_list
+                         ])
+                       ).where(merge_request_commits_metadata: { sha: serialized_shas })
+
+    if project_ids_list.all? { |id| MergeRequestDiffCommit.read_new_commits_table?(id) }
+      if project_ids_list.all? { |id| MergeRequestDiffCommit.project_id_pruning_enabled?(id) }
+        # `merge_request_diff_commits` is partitioned by `project_id` on the new table;
+        metadata_query = metadata_query.where(merge_request_diff_commits: { project_id: project_ids_list })
+      end
+
+      # `from_union` wraps the result in `FROM (...) merge_request_diffs`, which preserves
+      # outer chain context like the `EXISTS` correlation in `MergeRequest.by_commit_sha`.
+      next from_union([metadata_query]).reorder(nil)
+    end
 
     diff_commits_query =
       MergeRequestDiff
-        .joins(:merge_request_diff_commits)
+        .joins("INNER JOIN merge_request_diff_commits ON merge_request_diffs.id = merge_request_diff_commits.merge_request_diff_id")
         .where(merge_request_diff_commits: { sha: sha })
-
-    if project_ids_list.any? { |id| MergeRequestDiffCommit.read_new_commits_table?(id) }
-      diff_commits_query = diff_commits_query.where(merge_request_diff_commits: { project_id: project_ids_list })
-    end
 
     from_union(metadata_query, diff_commits_query).reorder(nil)
   end
@@ -189,7 +210,6 @@ class MergeRequestDiff < ApplicationRecord
     MergeRequestDiff
       .from("(VALUES #{mr_id_list}) merge_requests (id)")
       .joins("INNER JOIN LATERAL (#{join_query.to_sql}) #{MergeRequestDiff.table_name} ON TRUE")
-      .includes(:merge_request_diff_commits)
   end
 
   class << self
@@ -281,10 +301,6 @@ class MergeRequestDiff < ApplicationRecord
     # of `after_save` hooks that come after this `after_create` hook. Otherwise, the
     # hooks that run when an attribute was changed are run twice.
     reset
-
-    return if async_keep_around_refs?
-
-    keep_around_commits unless importing?
   end
 
   def set_patch_id_sha
@@ -440,10 +456,13 @@ class MergeRequestDiff < ApplicationRecord
     sorted_diff_commits = merge_request_diff_commits.sort_by { |diff_commit| [diff_commit.id, diff_commit.relative_order] }
     sorted_diff_commits = sorted_diff_commits.take(limit) if limit
 
-    if mode == :preload
+    if mode == :preload || read_new_commits_table?
       # ActiveRecord::Associations::Preloader works with both arrays and relations
+      # and is a no-op when the association is already loaded.
       preload_metadata_for_commits(sorted_diff_commits)
     end
+
+    return sorted_diff_commits.map { |dc| dc.merge_request_commits_metadata.sha } if read_new_commits_table?
 
     sorted_diff_commits.map(&:sha)
   end
@@ -454,7 +473,8 @@ class MergeRequestDiff < ApplicationRecord
     # when the number of shas is huge (1000+) we don't want
     # to pass them all as an SQL param, let's pass them in batches
     shas.each_slice(BATCH_SIZE).any? do |batched_shas|
-      break true if metadata_sha_exists?(batched_shas)
+      next true if metadata_sha_exists?(batched_shas)
+      next false if read_new_commits_table?
 
       merge_request_diff_commits.where(sha: batched_shas).exists?
     end
@@ -584,7 +604,7 @@ class MergeRequestDiff < ApplicationRecord
 
       if comparison
         diff_options.merge!(
-          generated_files: comparison.generated_files,
+          generated_files: comparison.generated_files(diffs: collection.diff_files),
           paths: collection.diff_paths,
           page: collection.current_page,
           per_page: collection.limit_value,
@@ -762,10 +782,7 @@ class MergeRequestDiff < ApplicationRecord
   def read_new_commits_table?
     return false unless merge_request&.target_project
 
-    target_project = merge_request.target_project
-
-    Feature.enabled?(:mr_diff_commits_read_new_table, target_project) &&
-      Feature.enabled?(:merge_request_diff_commits_partition, target_project)
+    Feature.enabled?(:mr_diff_commits_read_new_table, merge_request.target_project)
   end
   strong_memoize_attr :read_new_commits_table?
 
@@ -948,7 +965,7 @@ class MergeRequestDiff < ApplicationRecord
       commits = Gitlab::Git::Commit.batch_by_oid(repository, shas)
       commits = Commit.decorate(commits, project)
     else
-      commits = diff_commits.with_users.map { |commit| Commit.from_hash(commit.to_hash, project) }
+      commits = diff_commits.with_users(read_new_commits_table: read_new_commits_table?).map { |commit| Commit.from_hash(commit.to_hash, project) }
     end
 
     CommitCollection
@@ -1031,7 +1048,9 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def enqueue_keep_around_commits
-    return unless async_keep_around_refs?
+    # The merge head keeps track of what an actual merge might look like. The
+    # referenced merge is temporary and so is kept alive with
+    # MergeRequest#merge_ref_path which is updated as required.
     return if merge_head?
 
     project_ids = [project.id, merge_request.source_project_id].compact.uniq
@@ -1040,23 +1059,6 @@ class MergeRequestDiff < ApplicationRecord
       [start_commit_sha, head_commit_sha],
       self.class.name
     )
-  end
-
-  def async_keep_around_refs?
-    strong_memoize(:async_keep_around_refs) do
-      Feature.enabled?(:async_keep_around_refs_for_merge_request_diffs, project, type: :gitlab_com_derisk)
-    end
-  end
-
-  def keep_around_commits
-    # The merge head keeps track of what an actual merge might look like. The
-    # referenced merge is temporary and so is kept alive with
-    # MergeRequest#merge_ref_path which is updated as required.
-    return if merge_head?
-
-    [repository, merge_request.source_project.repository].uniq.each do |repo|
-      repo.keep_around(start_commit_sha, head_commit_sha, source: self.class.name)
-    end
   end
 
   def reorder_diff_files!
@@ -1108,7 +1110,9 @@ class MergeRequestDiff < ApplicationRecord
 
   def metadata_sha_exists?(shas)
     diff_commits_relation = MergeRequestDiffCommit.where(merge_request_diff_id: id)
-    diff_commits_relation = diff_commits_relation.where(project_id: project_id) if read_new_commits_table?
+    if MergeRequestDiffCommit.project_id_pruning_enabled?(project_id)
+      diff_commits_relation = diff_commits_relation.where(project_id: project_id)
+    end
 
     MergeRequest::CommitsMetadata
       .where(project: project, sha: shas)
@@ -1122,17 +1126,13 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def commit_shas_from_metadata(limit)
-    diff_commits_relation = if read_new_commits_table?
+    diff_commits_relation = if MergeRequestDiffCommit.project_id_pruning_enabled?(project_id)
                               MergeRequestDiffCommit.for_merge_request_diff(id, project_id)
                             else
                               MergeRequestDiffCommit.for_merge_request_diff(id)
                             end
 
-    diff_commits_relation.commit_shas_from_metadata(
-      project_id: project_id,
-      limit: limit,
-      partition_enabled: read_new_commits_table?
-    )
+    diff_commits_relation.commit_shas_from_metadata(project_id: project_id, limit: limit)
   end
 end
 

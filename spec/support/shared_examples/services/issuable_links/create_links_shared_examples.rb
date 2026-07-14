@@ -5,7 +5,6 @@ RSpec.shared_examples 'issuable link creation' do |use_references: true|
   let(:response_keys) { [:status, :created_references] }
   let(:async_notes) { false }
   let(:already_assigned_error_msg) { "#{issuable_type.capitalize}(s) already assigned" }
-  let(:permission_error_status) { issuable_type == :issue ? 403 : 404 }
   let(:noteable) { issuable }
   let(:noteable2) { issuable2 }
   let(:noteable3) { issuable3 }
@@ -15,6 +14,11 @@ RSpec.shared_examples 'issuable link creation' do |use_references: true|
 
   let(:no_found_error_msg) do
     "No matching #{issuable_type} found. Make sure that you are adding a valid #{issuable_type} URL."
+  end
+
+  let(:no_permission_error_msg) do
+    issuables = issuable_type.to_s.pluralize
+    "Could not link #{issuables}. You must be a member of the project or group of both #{issuables}."
   end
 
   describe '#execute' do
@@ -47,6 +51,18 @@ RSpec.shared_examples 'issuable link creation' do |use_references: true|
 
       it 'returns error' do
         is_expected.to eq(message: no_found_error_msg, status: :error, http_status: 404)
+      end
+
+      it 'no relationship is created' do
+        expect { subject }.not_to change { issuable_link_class.count }
+      end
+    end
+
+    context 'when user has readonly permission to target issuable' do
+      let(:params) { set_params([readonly_issuable]) }
+
+      it 'returns a permission error' do
+        is_expected.to eq(message: no_permission_error_msg, status: :error, http_status: 403)
       end
 
       it 'no relationship is created' do

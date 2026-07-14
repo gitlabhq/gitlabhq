@@ -4,6 +4,7 @@ import { getUser } from '~/api/user_api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 export default {
+  name: 'UserAvatar',
   components: {
     GlAvatarLabeled,
     GlLoadingIcon,

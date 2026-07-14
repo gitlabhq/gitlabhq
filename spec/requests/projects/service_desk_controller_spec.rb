@@ -9,7 +9,7 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
       files: { '.gitlab/issue_templates/service_desk.md' => 'template' })
   end
 
-  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   before do
     allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
@@ -47,7 +47,7 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
         get project_service_desk_path(project, format: :json)
 
         response_hash = Gitlab::Json.parse(response.body)
-        expect(response_hash['template_file_missing']).to eq(false)
+        expect(response_hash['template_file_missing']).to be(false)
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
 
         get project_service_desk_path(project, format: :json)
 
-        expect(json_response['template_file_missing']).to eq(true)
+        expect(json_response['template_file_missing']).to be(true)
       end
     end
   end

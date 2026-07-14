@@ -48,6 +48,30 @@ describe('highlightContent', () => {
     expect(result).toBe('<span class="hljs-keyword">puts</span> "Hello, world!"');
   });
 
+  it('injects a YAML frontmatter mode into the markdown grammar', async () => {
+    const lang = 'markdown';
+    const rawContent = '---\ntitle: Example\n---\n';
+    const hljsLanguage = 'markdown';
+
+    ROUGE_TO_HLJS_LANGUAGE_MAP[lang.toLowerCase()] = hljsLanguage;
+
+    const markdownDefinition = { default: jest.fn(), contains: [] };
+    languageLoader[hljsLanguage] = jest.fn().mockResolvedValue(markdownDefinition);
+    languageLoader.yaml = jest.fn().mockResolvedValue({ default: jest.fn() });
+    mockHljsInstance.getLanguage.mockReturnValue(markdownDefinition);
+    mockHljsInstance.highlight.mockReturnValue({ value: rawContent });
+
+    await highlightContent(lang, rawContent, []);
+
+    const frontmatterMode = markdownDefinition.contains[0];
+    expect(frontmatterMode).toMatchObject({ className: 'meta', subLanguage: 'yaml' });
+    expect(frontmatterMode.begin).toEqual(/(?<![\s\S])---\s*$/);
+    expect(frontmatterMode.end).toEqual(/^---\s*$/);
+
+    // the yaml sub-language referenced by the injected mode is registered
+    expect(languageLoader.yaml).toHaveBeenCalled();
+  });
+
   it('should return undefined for an unknown language', async () => {
     const lang = 'unknownLanguage';
     const rawContent = 'some content';

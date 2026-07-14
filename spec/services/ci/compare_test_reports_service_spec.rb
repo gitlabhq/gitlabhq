@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::CompareTestReportsService, feature_category: :continuous_integration do
   let(:service) { described_class.new(project) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
 
   describe '#execute' do
     subject(:comparison) { service.execute(base_pipeline, head_pipeline) }

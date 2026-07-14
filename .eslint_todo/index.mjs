@@ -4,8 +4,6 @@ export { default as vueRequireNameProperty } from './vue-require-name-property.m
 
 export { default as vueVOnEventHyphenation } from './vue-v-on-event-hyphenation.mjs';
 
-export { default as vueRequireExplicitEmits } from './vue-require-explicit-emits.mjs';
-
 export { default as vueCustomEventNameCasing } from './vue-custom-event-name-casing.mjs';
 
 export { default as vueNoDeprecatedVOnNativeModifier } from './vue-no-deprecated-v-on-native-modifier.mjs';
@@ -27,3 +25,7 @@ export { default as localRulesNoWebUrl } from './local-rules-no-web-url.mjs';
 export { default as localRulesVueNoWebUrl } from './local-rules-vue-no-web-url.mjs';
 
 export { default as tailwindcssNoArbitraryValue } from './tailwindcss-no-arbitrary-value.mjs';
+
+export { default as localRulesNoApolloMock } from './local-rules-no-apollo-mock.mjs';
+
+export { default as localRulesVueNoUnusedInjects } from './local-rules-vue-no-unused-injects.mjs';

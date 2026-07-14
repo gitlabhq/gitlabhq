@@ -50,7 +50,6 @@ class Blob < SimpleDelegator
   ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
   AUXILIARY_VIEWERS = [
-    BlobViewer::GitlabCiYml,
     BlobViewer::RouteMap,
 
     BlobViewer::Readme,

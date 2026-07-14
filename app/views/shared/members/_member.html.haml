@@ -9,10 +9,10 @@
 
 -# Note this is just for individual members. For groups please see shared/members/_group
 
-%li.member.js-member.py-2.px-3.gl-flex-col{ class: ['!gl-flex', dom_class(member), ("flex-md-row" unless force_mobile_view)], id: dom_id(member) }
+%li.member.js-member.gl-flex-col{ class: ['!gl-flex !gl-py-3 !gl-px-5', dom_class(member), ("flex-md-row" unless force_mobile_view)], id: dom_id(member) }
   %span{ class: "list-item-name !gl-mb-3 m-md-0" }
     - if user
-      = render Pajamas::AvatarComponent.new(user, size: 32, class: 'gl-mr-3 flex-shrink-0 flex-grow-0')
+      = render Pajamas::AvatarComponent.new(user, size: 32, class: 'gl-mr-3 !gl-shrink-0 !gl-grow-0')
       .user-info
         %span
           = link_to user.name, user_path(user), class: 'member js-user-link', data: { user_id: user.id }
@@ -43,13 +43,13 @@
             = _("Given access %{time_ago}").html_safe % { time_ago: time_ago_with_tooltip(member.created_at) }
           %span.js-expires-in{ class: ('gl-hidden' unless member.expires?) }
             &middot;
-            %span.js-expires-in-text{ class: "has-tooltip#{' text-warning' if member.expires_soon?}", title: (member.expires_at.to_time.in_time_zone.to_fs(:medium) if member.expires?) }
+            %span.js-expires-in-text{ class: "has-tooltip#{' !gl-text-warning' if member.expires_soon?}", title: (member.expires_at.to_time.in_time_zone.to_fs(:medium) if member.expires?) }
               - if member.expires?
                 - preposition = current_user.time_display_relative ? '' : 'on'
                 = _("Expires %{preposition} %{expires_at}").html_safe % { expires_at: time_ago_with_tooltip(member.expires_at), preposition: preposition }
 
     - else
-      = render Pajamas::AvatarComponent.new(Pajamas::AvatarEmail.new(member.invite_email), size: 32, class: 'gl-mr-3 flex-shrink-0 flex-grow-0')
+      = render Pajamas::AvatarComponent.new(Pajamas::AvatarEmail.new(member.invite_email), size: 32, class: 'gl-mr-3 !gl-shrink-0 !gl-grow-0')
       .user-info
         .member= member.invite_email
         .gl-text-subtle

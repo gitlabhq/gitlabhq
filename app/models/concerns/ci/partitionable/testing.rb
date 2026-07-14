@@ -7,14 +7,11 @@ module Ci
 
       PARTITIONABLE_MODELS = %w[
         CommitStatus
-        Ci::BuildExecutionConfig
-        Ci::BuildMetadata
         Ci::BuildName
         Ci::BuildNeed
         Ci::BuildReportResult
         Ci::BuildRunnerSession
         Ci::BuildSource
-        Ci::BuildTag
         Ci::BuildTraceChunk
         Ci::BuildTraceMetadata
         Ci::BuildPendingState
@@ -31,6 +28,7 @@ module Ci
         Ci::PendingBuild
         Ci::RunningBuild
         Ci::RunnerManagerBuild
+        Ci::BuildRuntimeEnvironment
         Ci::PipelineArtifact
         Ci::PipelineChatData
         Ci::PipelineMessage

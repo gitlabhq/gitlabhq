@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
-RSpec.describe Gitlab::TerraformRegistryToken do
+RSpec.describe Gitlab::TerraformRegistryToken, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
 
   describe '.from_token' do

@@ -6,9 +6,9 @@ import { __ } from '~/locale';
 import InputValidator from '~/validators/input_validator';
 import Tracking from '~/tracking';
 import FormErrorTracker from '~/pages/shared/form_error_tracker';
+import { userExistsPath } from '~/lib/utils/path_helpers/user';
 
 const debounceTimeoutDuration = 1000;
-const rootUrl = gon.relative_url_root;
 const invalidInputClass = 'gl-field-error-outline';
 const successInputClass = 'gl-field-success-outline';
 const successMessageSelector = '.validation-success';
@@ -68,7 +68,7 @@ export default class UsernameValidator extends InputValidator {
   }
 
   static fetchUsernameAvailability(username) {
-    return axios.get(`${rootUrl}/users/${username}/exists`).then(({ data }) => data.exists);
+    return axios.get(userExistsPath(username)).then(({ data }) => data.exists);
   }
 
   static setMessageVisibility(inputDomElement, messageSelector, isVisible = true) {

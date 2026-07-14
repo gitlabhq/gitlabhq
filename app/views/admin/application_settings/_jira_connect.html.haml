@@ -24,6 +24,11 @@
         = f.label :jira_connect_additional_audience_url, s_('JiraConnect|Jira Connect Additional Audience URL'), class: 'label-bold'
         = f.text_field :jira_connect_additional_audience_url, class: 'form-control gl-form-input'
       .gl-form-group
+        = f.label :jira_forge_app_id, s_('JiraConnect|Forge app ID'), class: 'label-bold'
+        = f.text_field :jira_forge_app_id, class: 'form-control gl-form-input', placeholder: 'ari:cloud:ecosystem::app/00000000-0000-0000-0000-000000000000'
+        %span.form-text.gl-text-subtle
+          = s_('JiraConnect|Atlassian Forge app ID (ARI) used to verify inbound Forge tokens. Required only for a manual (self-managed) Forge install.')
+      .gl-form-group
         = f.gitlab_ui_checkbox_component :jira_connect_public_key_storage_enabled, s_('JiraConnect|Enable public key storage')
 
       = f.submit _('Save changes'), pajamas_button: true

@@ -27,6 +27,7 @@ export default {
       default: null,
     },
   },
+  emits: ['change', 'input'],
   computed: {
     isChecked() {
       return this.value && this.value === this.checked;

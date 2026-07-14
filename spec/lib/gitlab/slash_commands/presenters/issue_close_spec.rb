@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SlashCommands::Presenters::IssueClose do
+RSpec.describe Gitlab::SlashCommands::Presenters::IssueClose, feature_category: :team_planning do
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
   let(:attachment) { subject[:attachments].first }

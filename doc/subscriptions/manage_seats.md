@@ -141,7 +141,7 @@ Seat controls apply to the instance on GitLab Self-Managed, and to the top-level
 {{< /history >}}
 
 The user cap is the maximum number of billable users who can be added to a top-level group on GitLab.com, or create accounts on GitLab Self-Managed.
-After the user cap is reached, a group Owner or administrator must approve the users to be added to a top-level group or create accounts. 
+After the user cap is reached, a group Owner or administrator must approve the users to be added to a top-level group or create accounts.
 After the users have been approved, they can access the group or instance.
 If a group Owner or an administrator increases or removes the user cap, users pending approval are automatically approved.
 
@@ -174,7 +174,7 @@ For more information, see [issue 441504](https://gitlab.com/gitlab-org/gitlab/-/
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442718) in GitLab 17.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523468) in GitLab 18.0.
 - Group sharing settings [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/488451) in GitLab 18.7.
-- Automatic restricted access for GitLab Self-Managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240092) in GitLab 19.1 [with a flag](../administration/feature_flags/_index.md) named `auto_enable_restricted_access_on_self_managed`. Enabled by default.
+- Automatic restricted access for GitLab Self-Managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240092) in GitLab 19.1 [with a feature flag](../administration/feature_flags/_index.md) named `auto_enable_restricted_access_on_self_managed`. Enabled by default.
 
 {{< /history >}}
 
@@ -201,7 +201,7 @@ You cannot turn off restricted access when your subscription does not allow over
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a feature flag](../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
 
 {{< /history >}}
@@ -222,7 +222,6 @@ When you turn on restricted access, the following known issues might occur and r
 - The number of seats can still be exceeded if:
   - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription. When the Minimal Access fallback feature is enabled, users are assigned Minimal Access instead of being blocked.
   - Multiple users with the Owner role or administrator access add members simultaneously.
-  - New billable members delay accepting an invitation. When you invite a user, they don't consume a billable seat until they accept the invitation. If an invited user delays accepting, you can invite and add other users during that time. When the delayed user finally accepts, they consume a billable seat, which might cause an overage if you've already reached your seat limit.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
   subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
   renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
@@ -248,6 +247,21 @@ A group Owner or an administrator can approve the users when seats become availa
 Users with only the Minimal Access role are reactivated directly, because they do not consume a billable seat.
 
 You can [automatically remove dormant members](../user/group/moderate_users.md#automatically-remove-dormant-members).
+
+#### Pending invitation acceptance
+
+After you turn on restricted access, it governs whether a pending invitation can proceed:
+
+- On GitLab.com, when no subscription seats remain, a user cannot accept a pending invitation
+  that grants a billable role. The invitation remains pending until a group Owner makes a seat
+  available, either by purchasing more seats or removing billable members.
+- On GitLab Self-Managed:
+  - On the Ultimate tier, the same behavior applies. The invitation remains pending
+    until an administrator makes a seat available, either by purchasing more seats or removing
+    billable members.
+  - On the Premium tier, restricted access enforces the seat limit when the account is created,
+    rather than when the invitation is accepted. GitLab notifies the user when they register
+    that their account could not be created and they should contact a GitLab administrator.
 
 ### Changing from user cap to restricted access
 
@@ -369,7 +383,7 @@ which will be included in your next invoice.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a flag](../administration/feature_flags/_index.md) named `seat_flag_alerts`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a feature flag](../administration/feature_flags/_index.md) named `seat_flag_alerts`.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/362041) in GitLab 15.4. Feature flag `seat_flag_alerts` removed.
 
 {{< /history >}}

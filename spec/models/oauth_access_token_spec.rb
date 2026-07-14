@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe OauthAccessToken, feature_category: :system_access do
+RSpec.describe OauthAccessToken, feature_category: :system_access, factory_default: :keep do
+  let_it_be(:default_user) { create_default(:user) }
   let_it_be(:app_one) { create(:oauth_application) }
   let_it_be(:app_two) { create(:oauth_application) }
   let_it_be(:app_three) { create(:oauth_application) }
-  let_it_be(:organization) { create(:organization) }
+  let(:organization) { build_stubbed(:organization) }
 
   let(:token) { create(:oauth_access_token, application_id: app_one.id) }
 
@@ -71,9 +72,9 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
     end
 
     context 'with actual fallback strategies' do
-      let!(:pbkdf2_token) { create(:oauth_access_token, application: app_one) }
-      let!(:sha512_token) { create(:oauth_access_token, application: app_two) }
-      let!(:plain_token) { create(:oauth_access_token, application: app_three) }
+      let_it_be_with_reload(:pbkdf2_token) { create(:oauth_access_token, application: app_one) }
+      let_it_be_with_reload(:sha512_token) { create(:oauth_access_token, application: app_two) }
+      let_it_be_with_reload(:plain_token) { create(:oauth_access_token, application: app_three) }
 
       before do
         allow(described_class).to receive(:upgrade_fallback_value).and_call_original
@@ -149,8 +150,6 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
   end
 
   describe '#scope_user' do
-    let_it_be(:user) { create(:user) }
-
     context 'when scopes match expected format' do
       where(:scopes) do
         [
@@ -163,13 +162,13 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
 
       with_them do
         let(:formatted_scopes) do
-          format(scopes, user_id: user.id)
+          format(scopes, user_id: default_user.id)
         end
 
-        let(:oauth_access_token) { create(:oauth_access_token, scopes: formatted_scopes) }
+        let(:oauth_access_token) { build_stubbed(:oauth_access_token, scopes: formatted_scopes) }
 
         it 'returns the user' do
-          expect(oauth_access_token.scope_user).to eq user
+          expect(oauth_access_token.scope_user).to eq default_user
         end
       end
     end
@@ -189,13 +188,13 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
       end
       let(:formatted_scopes) do
         if scopes.presence
-          format(scopes, user_id: user.id)
+          format(scopes, user_id: default_user.id)
         else
           scopes
         end
       end
 
-      let(:oauth_access_token) { create(:oauth_access_token, scopes: formatted_scopes) }
+      let(:oauth_access_token) { build_stubbed(:oauth_access_token, scopes: formatted_scopes) }
 
       with_them do
         it 'returns false' do

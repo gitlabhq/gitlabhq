@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Workflow Catalog
+stage: Agent Foundations
+group: AI Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: AI Catalog Rake tasks
 ---

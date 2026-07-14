@@ -14,7 +14,7 @@ title: Validity checks
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/520923) in GitLab 18.0 [with a flag](../../../api/feature_flags.md) named `validity_checks`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/520923) in GitLab 18.0 [with a feature flag](../../../api/feature_flags.md) named `validity_checks`. Disabled by default.
 - Additional access [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556765) in GitLab 18.2 with a flag named `validity_checks_security_finding_status`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/531222) in GitLab 18.5.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206929) from experiment to beta in GitLab 18.5.
@@ -74,7 +74,7 @@ mutation {
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16890) support for external service tokens in GitLab 18.7 [with a flag](../../../api/feature_flags.md) named `secret_detection_partner_token_verification`. Enabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16890) support for external service tokens in GitLab 18.7 [with a feature flag](../../../api/feature_flags.md) named `secret_detection_partner_token_verification`. Enabled by default.
 
 {{< /history >}}
 
@@ -101,8 +101,6 @@ Validity checks support the following secret types:
 **External service tokens:**
 
 - AWS IAM access key IDs
-- GCP API keys
-- GCP OAuth client secrets
 - Postman API tokens
 
 ### Configure outbound network access
@@ -151,7 +149,7 @@ flowchart TD
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/537133) in GitLab 18.2 [with a flag](../../../api/feature_flags.md) named `secret_detection_validity_checks_refresh_token`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/537133) in GitLab 18.2 [with a feature flag](../../../api/feature_flags.md) named `secret_detection_validity_checks_refresh_token`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/552306) in GitLab 18.7 Feature flag `secret_detection_validity_checks_refresh_token` removed.
 
 {{< /history >}}

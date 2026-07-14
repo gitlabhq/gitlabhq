@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
   let_it_be(:user)  { create(:user) }
   let_it_be(:group) { create :group }
-  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
+  let_it_be_with_reload(:project) { create(:project, :repository, group: group) }
   let(:params) { {} }
   let(:args) { {} }
   let(:repository) { project.repository }
-  let_it_be(:v1_0_0, freeze: false)     { create(:release, project: project, tag: 'v1.0.0', updated_at: 4.days.ago) }
-  let_it_be(:v1_1_0, freeze: false)     { create(:release, project: project, tag: 'v1.1.0') }
+  let_it_be_with_reload(:v1_0_0)     { create(:release, project: project, tag: 'v1.0.0', updated_at: 4.days.ago) }
+  let_it_be_with_reload(:v1_1_0)     { create(:release, project: project, tag: 'v1.1.0') }
 
   shared_examples_for 'when the user is not authorized' do
     it 'returns no releases' do
@@ -108,9 +108,9 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
   end
 
   describe 'when parent is an array of projects' do
-    let_it_be(:project2, freeze: false) { create(:project, :repository, group: group) }
-    let_it_be(:v2_0_0, freeze: false) { create(:release, project: project2, tag: 'v2.0.0') }
-    let_it_be(:v2_1_0, freeze: false) { create(:release, project: project2, tag: 'v2.1.0') }
+    let_it_be_with_reload(:project2) { create(:project, :repository, group: group) }
+    let_it_be_with_reload(:v2_0_0) { create(:release, project: project2, tag: 'v2.0.0') }
+    let_it_be_with_reload(:v2_1_0) { create(:release, project: project2, tag: 'v2.1.0') }
 
     subject { described_class.new([project, project2], user, params).execute(**args) }
 
@@ -224,9 +224,9 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
   end
 
   describe 'latest releases' do
-    let_it_be(:project2, freeze: false) { create(:project, :repository, group: group) }
-    let_it_be(:v2_0_0, freeze: false) { create(:release, project: project2) }
-    let_it_be(:v2_1_0, freeze: false) { create(:release, project: project2) }
+    let_it_be_with_reload(:project2) { create(:project, :repository, group: group) }
+    let_it_be_with_reload(:v2_0_0) { create(:release, project: project2) }
+    let_it_be_with_reload(:v2_1_0) { create(:release, project: project2) }
 
     let(:params) { { latest: true } }
 

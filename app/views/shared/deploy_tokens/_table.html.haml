@@ -24,7 +24,7 @@
                 = token.created_at.to_date.to_fs(:medium)
               %td{ data: { label: _('Expires') }, class: '!gl-align-middle' }
                 - if token.expires?
-                  %span{ class: ('text-warning' if token.expires_soon?) }
+                  %span{ class: ('!gl-text-warning' if token.expires_soon?) }
                     = time_ago_with_tooltip(token.expires_at)
                 - else
                   %span.token-never-expires-label= _('Never')

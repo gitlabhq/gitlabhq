@@ -8,6 +8,7 @@ import DesignOverlay from './design_overlay.vue';
 const CLICK_DRAG_BUFFER_PX = 2;
 
 export default {
+  name: 'DesignPresentation',
   components: {
     DesignImage,
     DesignOverlay,

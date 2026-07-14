@@ -58,14 +58,15 @@ module API
               content_type :txt, 'text/plain'
               format :txt
 
-              desc 'Authenticate user against conan CLI' do
-                detail 'This feature was introduced in GitLab 12.2'
+              desc 'Retrieve an authentication token' do
+                detail 'Retrieves an authentication token. Creates a JSON Web Token (JWT) for use as a Bearer header ' \
+                  'in other requests to the package registry.'
                 success code: 200
                 failure [
                   { code: 401, message: 'Unauthorized' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_conan]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -78,14 +79,14 @@ module API
                 token.to_jwt
               end
 
-              desc 'Check for valid user credentials per conan CLI' do
-                detail 'This feature was introduced in GitLab 12.4'
+              desc 'Verify authentication credentials' do
+                detail 'Verifies authentication credentials for a Conan package registry.'
                 success code: 200
                 failure [
                   { code: 401, message: 'Unauthorized' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_conan]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -98,14 +99,14 @@ module API
             end
 
             namespace 'conans' do
-              desc 'Search for packages' do
-                detail 'This feature was introduced in GitLab 12.4'
+              desc 'Search for a Conan package' do
+                detail 'Searches the instance for a specified Conan package.'
                 success code: 200
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_conan]
               end
 
               params do
@@ -145,8 +146,9 @@ module API
 
               namespace ':package_name/:package_version/:package_username/:package_channel/search',
                 requirements: PACKAGE_REQUIREMENTS do
-                desc 'Get package references metadata' do
-                  detail 'This feature was introduced in GitLab 18.0'
+                desc 'Retrieve package references metadata' do
+                  detail 'Retrieves the metadata for all package references of a specified package. This feature was ' \
+                    'introduced in GitLab 18.0.'
                   success code: 200
                   failure [
                     { code: 400, message: 'Bad Request' },
@@ -154,7 +156,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_conan]
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true

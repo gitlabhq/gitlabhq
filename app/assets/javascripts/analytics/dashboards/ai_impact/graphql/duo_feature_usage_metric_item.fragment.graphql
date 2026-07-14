@@ -1,0 +1,14 @@
+fragment DuoFeatureUsageMetricItem on AiMetrics {
+  duoChatContributorsCount
+  rootCauseAnalysisUsersCount
+  chat {
+    requestDuoChatResponseEventCount
+  }
+  troubleshoot {
+    troubleshootJobEventCount
+  }
+  codeSuggestions {
+    contributorsCount
+    shownCount
+  }
+}

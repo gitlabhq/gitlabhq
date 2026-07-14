@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Projects::MoveForksService, feature_category: :source_code_management do
   include ProjectForksHelper
 
-  let!(:user) { create(:user) }
-  let!(:project_with_forks) { create(:project, namespace: user.namespace) }
-  let!(:target_project) { create(:project, namespace: user.namespace) }
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project_with_forks) { create(:project, namespace: user.namespace) }
+  let_it_be_with_reload(:target_project) { create(:project, namespace: user.namespace) }
   let!(:lvl1_forked_project_1) { fork_project(project_with_forks, user) }
   let!(:lvl1_forked_project_2) { fork_project(project_with_forks, user) }
   let!(:lvl2_forked_project_1_1) { fork_project(lvl1_forked_project_1, user) }

@@ -17,6 +17,7 @@ module BlobViewer
         h[:issuable_reference_expansion_enabled] = true
         h[:cache_key] = ['blob', blob.id, 'commit', blob.commit_id]
         h[:commit_id] = blob.commit_id
+        h[:use_filename_in_anchor] = true if blob.container.is_a?(Snippet)
       end
     end
   end

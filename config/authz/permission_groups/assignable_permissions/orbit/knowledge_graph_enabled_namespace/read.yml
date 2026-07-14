@@ -1,0 +1,9 @@
+---
+name: read_knowledge_graph_enabled_namespace
+description: Grants the ability to read Knowledge Graph enabled namespaces
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_knowledge_graph_enabled_namespace

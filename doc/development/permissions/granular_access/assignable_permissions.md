@@ -33,6 +33,7 @@ boundaries:
 | `description` | Human-readable description of what the assignable permission grants |
 | `permissions` | Array of raw permissions included in this assignable permission (must already exist as [raw permission definition files](permission_definitions.md#permission-definition-file)) |
 | `boundaries` | List of organizational levels where the assignable permission applies |
+| `available_for` | Consumers that may use this permission: `granular_access_token` (granular PATs), `role` (standard and custom roles), or both. An assignable permission that declares `granular_access_token` must have at least one of its raw permissions referenced by a REST authorization decorator or GraphQL granular scope directive. |
 | `deprecated` | Optional. When set to `true`, hides the assignable permission from the UI so users can no longer select it when creating new tokens. Existing tokens that already have this permission continue to work. Use this during [rename migrations](#renaming-assignable-permissions) or when phasing out a permission. |
 
 ### Understanding the Directory Structure
@@ -98,7 +99,7 @@ In this example:
 - The resource has an unconventional action name that looks ugly in prose (e.g., `renew_secret`)
 - The directory name is uncountable or pluralizes awkwardly (e.g., "code" → "codes", "metadata" → "metadatas")
 
-You do **not** need a metadata file when the directory name titleizes and pluralizes correctly (the majority of resources).
+You do not need a metadata file when the directory name titleizes and pluralizes correctly (the majority of resources).
 
 ### Determining Boundaries
 
@@ -164,7 +165,7 @@ If `Assignable.get(p)` cannot find the stored name in the current YAML definitio
 Adding a new assignable permission is safe. New YAML files are automatically discovered and made visible in the UI when creating granular scopes. Existing tokens are not affected.
 
 > [!note]
-> When none of the raw permissions included in an assignable permission are used for API authorization, users creating tokens see no effect from adding that permission. There is no static validation to protect against this, because assignable permissions may also be used outside of API authorization (for example, `Repository > Code > Download/Push` permissions are used for Git operations).
+> When none of the raw permissions included in an assignable permission are used for API authorization, users creating tokens see no effect from adding that permission. The `gitlab:permissions:validate` Rake task fails in this case for assignable permissions that declare `available_for: granular_access_token`. Raw permissions consumed outside of API authorization (for example, `download_code` is used for Git operations) are exempted through `GRANULAR_TOKEN_NON_API_CONSUMERS` in `lib/tasks/gitlab/permissions/assignable/validate_task.rb`.
 
 #### Removing assignable permissions
 

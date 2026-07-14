@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import CodeOutput from '../code/index.vue';
 import HtmlOutput from './html.vue';
@@ -13,6 +12,7 @@ const TEXT_MARKDOWN = 'text/markdown';
 const ERROR_OUTPUT_TYPE = 'error';
 
 export default {
+  name: 'CellsOutput',
   props: {
     count: {
       type: Number,

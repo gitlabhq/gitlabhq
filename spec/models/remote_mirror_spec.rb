@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management do
+  using RSpec::Parameterized::TableSyntax
+
   before do
     stub_feature_flags(remote_mirror_no_delay: false)
   end
@@ -13,7 +15,7 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
     it { is_expected.to validate_presence_of(:project) }
 
     describe '#validate_mirror_count' do
-      let_it_be(:project, freeze: false) { create(:project, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :repository) }
 
       before do
         stub_const('RemoteMirror::MAX_MIRRORS_PER_PROJECT', 3)
@@ -71,8 +73,165 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
       end
     end
 
+    describe 'url uniqueness' do
+      let_it_be_with_reload(:project) { create(:project, :repository) }
+
+      where(:base_url, :new_url, :valid) do
+        'https://example.com/foo.git'  | 'https://example.com/foo.git'  | false
+        'https://example.com/foo.git'  | 'https://example.com/bar.git'  | true
+        'http://a:b@example.com/foo.git' | 'http://c:d@example.com/foo.git' | false
+      end
+
+      with_them do
+        it 'validates url uniqueness within the project', :aggregate_failures do
+          project.remote_mirrors.create!(url: base_url)
+
+          mirror = project.remote_mirrors.new(url: new_url)
+
+          expect(mirror.valid?).to be(valid)
+          expect(mirror.errors[:url]).to include('has already been taken') unless valid
+          expect(mirror.errors[:url].count('has already been taken')).to eq(1) unless valid
+        end
+      end
+
+      it 'allows the same URL on a different project' do
+        other_project = create(:project, :repository)
+        project.remote_mirrors.create!(url: 'https://example.com/foo.git')
+
+        mirror = other_project.remote_mirrors.new(url: 'https://example.com/foo.git')
+
+        expect(mirror).to be_valid
+      end
+
+      it 'grandfathers existing duplicates on update', :aggregate_failures do
+        first = project.remote_mirrors.create!(url: 'https://example.com/foo.git')
+        duplicate = project.remote_mirrors.new(url: 'https://example.com/foo.git', enabled: false)
+        duplicate.save!(validate: false)
+
+        duplicate.enabled = true
+
+        expect(duplicate.save).to be(true)
+        expect(first).to be_persisted
+      end
+
+      it 'prevents updating a mirror to a duplicate URL', :aggregate_failures do
+        project.remote_mirrors.create!(url: 'https://example.com/foo.git')
+        mirror = project.remote_mirrors.create!(url: 'https://example.com/bar.git')
+
+        mirror.url = 'https://example.com/foo.git'
+
+        expect(mirror).not_to be_valid
+        expect(mirror.errors[:url]).to include('has already been taken')
+      end
+    end
+
+    describe 'self-referencing url' do
+      let_it_be_with_reload(:project) { create(:project, :repository) }
+
+      context 'with HTTP self-referencing URLs' do
+        where(:url_transform) do
+          [
+            lazy { project.http_url_to_repo },
+            lazy { project.http_url_to_repo.delete_suffix('.git') },
+            lazy { "#{project.http_url_to_repo}/" },
+            lazy { "#{project.http_url_to_repo.delete_suffix('.git')}/" }
+          ]
+        end
+
+        with_them do
+          it 'rejects the self-referencing HTTP URL', :aggregate_failures do
+            mirror = project.remote_mirrors.new(url: url_transform)
+
+            expect(mirror).not_to be_valid
+            expect(mirror.errors[:base]).to include(_("You cannot mirror a repository to itself."))
+            expect(mirror.errors[:base].count(_("You cannot mirror a repository to itself."))).to eq(1)
+          end
+        end
+      end
+
+      it 'rejects a self-referencing URL that includes credentials', :aggregate_failures do
+        url = project.http_url_to_repo.sub('://', '://user:pass@')
+        mirror = project.remote_mirrors.new(url: url)
+
+        expect(mirror).not_to be_valid
+        expect(mirror.errors[:base]).to include(_("You cannot mirror a repository to itself."))
+      end
+
+      it 'allows an unrelated external URL' do
+        mirror = project.remote_mirrors.new(url: 'https://gitlab.example.com/group/project.git')
+
+        expect(mirror).to be_valid
+      end
+
+      context 'with SSH self-referencing URLs' do
+        where(:case_name, :url_transform) do
+          [
+            ['RFC ssh:// form', lazy { project.ssh_url_to_repo.sub(':', '/').prepend('ssh://') }],
+            ['scp-style form', lazy { project.ssh_url_to_repo }]
+          ]
+        end
+
+        with_them do
+          it 'rejects the self-referencing SSH URL', :aggregate_failures do
+            mirror = project.remote_mirrors.new(url: url_transform)
+
+            expect(mirror).not_to be_valid
+            expect(mirror.errors[:base]).to include(_("You cannot mirror a repository to itself."))
+          end
+        end
+
+        it 'rejects a self-referencing URL when the project uses a custom SSH port', :aggregate_failures do
+          allow(project).to receive(:ssh_url_to_repo).and_return('git@example.com:2222/group/project.git')
+
+          mirror = project.remote_mirrors.new(url: 'ssh://git@example.com:2222/group/project.git')
+
+          expect(mirror).not_to be_valid
+          expect(mirror.errors[:base]).to include(_("You cannot mirror a repository to itself."))
+        end
+
+        it 'does not raise when the project SSH URL uses a bracketed IPv6 host' do
+          allow(project).to receive(:ssh_url_to_repo).and_return('git@[2001:db8::1]:group/project.git')
+
+          mirror = project.remote_mirrors.new(url: 'ssh://git@example.com/group/project.git')
+
+          expect { mirror.valid? }.not_to raise_error
+        end
+      end
+
+      it 'grandfathers an existing self-mirror on update' do
+        mirror = project.remote_mirrors.new(url: project.http_url_to_repo, enabled: false)
+        mirror.save!(validate: false)
+
+        mirror.enabled = true
+
+        expect(mirror.save).to be(true)
+      end
+
+      it 'prevents updating a mirror to a self-referencing URL', :aggregate_failures do
+        mirror = project.remote_mirrors.create!(url: 'https://gitlab.example.com/group/project.git')
+
+        mirror.url = project.http_url_to_repo
+
+        expect(mirror).not_to be_valid
+        expect(mirror.errors[:base]).to include(_("You cannot mirror a repository to itself."))
+      end
+
+      it 'does not raise for a blank url' do
+        mirror = project.remote_mirrors.new(url: '')
+
+        expect { mirror.valid? }.not_to raise_error
+      end
+
+      it 'does not raise for an unparseable url', :aggregate_failures do
+        mirror = project.remote_mirrors.new(url: 'https://exa mple.com/foo')
+
+        expect { mirror.valid? }.not_to raise_error
+        expect(mirror.errors[:base]).not_to include(_("You cannot mirror a repository to itself."))
+      end
+    end
+
     describe '#enabling_mirror?' do
-      let_it_be(:project, freeze: false) { create(:project, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :repository) }
 
       it 'returns true when enabling a disabled mirror' do
         mirror = project.remote_mirrors.create!(url: "http://test.com", enabled: false)
@@ -545,7 +704,7 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
   end
 
   describe '#disabled?' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
 
     subject { remote_mirror.disabled? }
 

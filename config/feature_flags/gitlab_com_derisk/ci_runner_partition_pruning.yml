@@ -1,0 +1,10 @@
+---
+name: ci_runner_partition_pruning
+description: Add runner_type filters to Ci::Runner scopes and the runner_managers association to enable PostgreSQL partition pruning on ci_runners and ci_runner_machines.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/594861
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240576
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/603949
+milestone: "19.2"
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

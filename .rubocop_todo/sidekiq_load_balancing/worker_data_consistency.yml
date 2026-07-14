@@ -2,7 +2,6 @@
 SidekiqLoadBalancing/WorkerDataConsistency:
   Exclude:
     - 'app/workers/ci/archive_traces_cron_worker.rb'
-    - 'app/workers/ci/build_prepare_worker.rb'
     - 'app/workers/ci/build_schedule_worker.rb'
     - 'app/workers/ci/cancel_pipeline_worker.rb'
     - 'app/workers/ci/delete_objects_worker.rb'
@@ -35,7 +34,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/container_expiration_policy_worker.rb'
     - 'app/workers/container_registry/cleanup_worker.rb'
     - 'app/workers/container_registry/delete_container_repository_worker.rb'
-    - 'app/workers/container_registry/record_data_repair_detail_worker.rb'
     - 'app/workers/counters/cleanup_refresh_worker.rb'
     - 'app/workers/create_note_diff_file_worker.rb'
     - 'app/workers/database/drop_detached_partitions_worker.rb'
@@ -53,7 +51,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/disallow_two_factor_for_subgroups_worker.rb'
     - 'app/workers/email_receiver_worker.rb'
     - 'app/workers/emails_on_push_worker.rb'
-    - 'app/workers/environments/auto_delete_cron_worker.rb'
     - 'app/workers/environments/auto_stop_cron_worker.rb'
     - 'app/workers/environments/auto_stop_worker.rb'
     - 'app/workers/environments/canary_ingress/update_worker.rb'
@@ -98,7 +95,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/integrations/propagate_integration_descendant_worker.rb'
     - 'app/workers/invalid_gpg_signature_update_worker.rb'
     - 'app/workers/issuable/label_links_destroy_worker.rb'
-    - 'app/workers/issuable_export_csv_worker.rb'
     - 'app/workers/issuables/clear_groups_issue_counter_worker.rb'
     - 'app/workers/issue_due_scheduler_worker.rb'
     - 'app/workers/issues/close_worker.rb'

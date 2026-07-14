@@ -121,10 +121,7 @@ module Gitlab
           # but MergeRequestDiffCommit doesn't have a project association yet, so we remove it
           row.delete('project')
 
-          # We set project_id if the `merge_request_diff_commits_partition` feature flag
-          # is enabled. This will be used to partition the new `merge_request_diff_commits`
-          # table.
-          row['project_id'] = project.id if diff_commits_partition_enabled?
+          row['project_id'] = project.id
 
           row['commit_author'] = author ||
             find_or_create_diff_commit_user(aname, amail)
@@ -142,16 +139,14 @@ module Gitlab
           row['merge_request_commits_metadata'] = merge_request_commits_metadata ||
             find_or_create_merge_request_commits_metadata(commit_metadata_attrs)
 
-          %w[committer commit_author authored_date committed_date sha message].each do |deduplicated_column|
-            row.delete(deduplicated_column)
+          %w[committer commit_author authored_date committed_date sha message trailers].each do |column|
+            row.delete(column)
           end
 
           unless row['merge_request_commits_metadata'].present?
-            Gitlab::ErrorTracking.track_exception(
-              MergeRequestDiffCommit::CouldNotCreateMetadataError.new,
-              message: 'Failed to create metadata during import',
-              project_id: project.id
-            )
+            raise MergeRequestDiffCommit::CouldNotCreateMetadataError,
+              "Failed to create commits metadata during import. " \
+                "project_id: #{project.id}, sha: #{commit_metadata_attrs['sha']}"
           end
 
           MergeRequestDiffCommit.new(row)
@@ -235,11 +230,6 @@ module Gitlab
           # Only the 'iid' and `project` attributes should be present
           ::Ci::Pipeline.find_by(iid: attributes['iid'], project_id: project.id)
         end
-
-        def diff_commits_partition_enabled?
-          Feature.enabled?(:merge_request_diff_commits_partition, project)
-        end
-        strong_memoize_attr :diff_commits_partition_enabled?
       end
     end
   end

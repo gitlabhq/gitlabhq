@@ -63,6 +63,31 @@ describe('createNoPreviewDiscussionsAdapter', () => {
     expect(createAlert).not.toHaveBeenCalled();
   });
 
+  it("forwards the diff file's refs to findDiscussionsForFile", () => {
+    const diffRefs = { base_sha: 'base', start_sha: 'start', head_sha: 'head' };
+    const findDiscussionsForFile = jest.fn().mockReturnValue([]);
+    const fileData = {
+      viewer: 'no_preview',
+      old_path: oldPath,
+      new_path: newPath,
+      diff_refs: diffRefs,
+    };
+    setHTMLFixture(`
+      <diff-file data-file-data='${JSON.stringify(fileData)}'>
+        <div><div class="flash-container"></div></div>
+      </diff-file>
+    `);
+    getDiffFile().mount({
+      adapterConfig: {
+        no_preview: [createNoPreviewDiscussionsAdapter({ findDiscussionsForFile })],
+      },
+      appData: {},
+      unobserve: jest.fn(),
+    });
+
+    expect(findDiscussionsForFile).toHaveBeenCalledWith({ oldPath, newPath, diffRefs });
+  });
+
   it('shows an info alert for a single line discussion', async () => {
     mountAdapter();
     useDiscussions().discussions = [lineDiscussion('disc-1')];

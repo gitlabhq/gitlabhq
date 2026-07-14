@@ -361,7 +361,7 @@ export default {
         :initial-cron-interval="cron"
         :daily-limit="dailyLimit"
         :send-native-errors="false"
-        @cronValue="setCronValue"
+        @cron-value="setCronValue"
       />
     </gl-form-group>
     <!--Branch/Tag Selector-->

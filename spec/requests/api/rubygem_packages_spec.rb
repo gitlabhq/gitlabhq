@@ -268,7 +268,7 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
       let(:headers) { { 'HTTP_AUTHORIZATION' => pat.token } }
       let(:request) { get(url, headers: headers) }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
     end

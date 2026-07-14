@@ -57,6 +57,7 @@ export default {
       default: false,
     },
   },
+  emits: ['input'],
 
   formOptions: formOptionsGenerator(),
   i18n: {

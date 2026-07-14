@@ -17,6 +17,7 @@ import errorQuery from '../graphql/client/error.query.graphql';
 import { setError } from '../graphql/cache_updates';
 
 export default {
+  name: 'BoardApp',
   i18n: {
     fetchError: s__(
       'Boards|An error occurred while fetching the board lists. Please reload the page.',
@@ -220,7 +221,6 @@ export default {
 
 <template>
   <div class="boards-app gl-relative">
-    <router-view />
     <board-top-bar
       :board-id="boardId"
       :is-swimlanes-on="isSwimlanesOn"

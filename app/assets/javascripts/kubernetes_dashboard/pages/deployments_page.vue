@@ -6,6 +6,7 @@ import k8sDashboardDeploymentsQuery from '../graphql/queries/k8s_dashboard_deplo
 import { STATUS_FAILED, STATUS_READY, STATUS_PENDING, STATUS_LABELS } from '../constants';
 
 export default {
+  name: 'DeploymentsPage',
   components: {
     WorkloadLayout,
   },

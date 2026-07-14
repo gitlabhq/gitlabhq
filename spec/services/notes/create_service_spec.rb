@@ -277,7 +277,7 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
             create(:diff_note_on_merge_request, noteable: merge_request, project: project_with_repo)
           end
 
-          before do
+          before_all do
             project_with_repo.add_maintainer(user)
           end
 

@@ -16,7 +16,6 @@ class Dashboard::GroupsController < Dashboard::ApplicationController
     groups = GroupsFinder.new(
       current_user,
       all_available: false,
-      organization: Current.organization,
       active: safe_params[:active]
     ).execute
 

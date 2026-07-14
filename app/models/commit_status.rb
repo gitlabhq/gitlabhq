@@ -10,6 +10,8 @@ class CommitStatus < Ci::ApplicationRecord
   include Ci::PartitionableFinder
 
   ignore_column :environment_auto_stop_in, remove_with: '18.4', remove_after: '2025-09-01'
+  ignore_columns %i[options yaml_variables], remove_with: '19.3', remove_after: '2026-08-15' # https://gitlab.com/gitlab-org/gitlab/-/work_items/604404
+  ignore_column :execution_config_id, remove_with: '19.4', remove_after: '2026-08-21' # https://gitlab.com/gitlab-org/gitlab/-/work_items/583736
 
   self.table_name = :p_ci_builds
   self.sequence_name = :ci_builds_id_seq
@@ -60,6 +62,7 @@ class CommitStatus < Ci::ApplicationRecord
     where(allow_failure: true, status: [:failed, :canceled])
   end
 
+  scope :order_id_asc, -> { order(id: :asc) }
   scope :order_id_desc, -> { order(id: :desc) }
 
   scope :latest, -> { where(retried: [false, nil]) }
@@ -381,6 +384,14 @@ class CommitStatus < Ci::ApplicationRecord
   # For AiAction
   def resource_parent
     project
+  end
+
+  def prepare_for_bulk_insert(pipeline)
+    self.commit_id = pipeline.id
+    self.partition_id = pipeline.partition_id
+    self.project_id = pipeline.project_id
+    self.processed = false
+    self.stage_id = ci_stage.id if ci_stage
   end
 
   private

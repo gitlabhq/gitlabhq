@@ -124,5 +124,43 @@ RSpec.describe Types::CountableConnectionType do
         end
       end
     end
+
+    context 'when the items expose a precomputed_total_count' do
+      let(:type) do
+        described_class.allocate.tap do |instance|
+          allow(instance).to receive(:object).and_return(connection)
+        end
+      end
+
+      let(:connection) { Struct.new(:items).new(items) }
+      let(:items) do
+        Gitlab::Graphql::ExternallyPaginatedArray.new(nil, nil, :page_item_a, :page_item_b, total_count: total_count)
+      end
+
+      context 'when the precomputed total is present' do
+        let(:total_count) { 42 }
+
+        it 'returns the precomputed total', :aggregate_failures do
+          expect(type.count).to eq(42)
+          expect(items.size).to eq(2)
+        end
+
+        it 'caps at limit + 1 when a smaller limit is given' do
+          expect(type.count(limit: 10)).to eq(11)
+        end
+
+        it 'returns the precomputed total when it is below the limit' do
+          expect(type.count(limit: 100)).to eq(42)
+        end
+      end
+
+      context 'when the precomputed total is nil' do
+        let(:total_count) { nil }
+
+        it 'falls back to the existing page-size behavior' do
+          expect(type.count).to eq(2)
+        end
+      end
+    end
   end
 end

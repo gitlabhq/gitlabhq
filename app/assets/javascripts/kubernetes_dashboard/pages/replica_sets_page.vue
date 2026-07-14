@@ -6,6 +6,7 @@ import k8sReplicaSetsQuery from '../graphql/queries/k8s_dashboard_replica_sets.q
 import { STATUS_FAILED, STATUS_READY, STATUS_LABELS } from '../constants';
 
 export default {
+  name: 'ReplicaSetsPage',
   components: {
     WorkloadLayout,
   },

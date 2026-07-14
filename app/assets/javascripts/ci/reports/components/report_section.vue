@@ -99,6 +99,7 @@ export default {
       default: null,
     },
   },
+  emits: ['toggleEvent'],
 
   data() {
     return {

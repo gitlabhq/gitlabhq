@@ -6,13 +6,13 @@ RSpec.describe GitlabSchema.types['WikiPage'], feature_category: :wiki do
   include GraphqlHelpers
 
   let_it_be(:developer) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :private, developers: developer) }
-  let_it_be(:wiki_page_meta, freeze: false) { create(:wiki_page_meta, :for_wiki_page, container: project) }
+  let_it_be_with_reload(:project) { create(:project, :private, developers: developer) }
+  let_it_be_with_reload(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
 
   it 'has the correct fields' do
     expected_fields = [
       :id, :title, :notes, :discussions, :commenters,
-      :user_permissions, :web_url, :name, :subscribed, :award_emoji
+      :user_permissions, :web_url, :name, :subscribed, :award_emoji, :slug
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

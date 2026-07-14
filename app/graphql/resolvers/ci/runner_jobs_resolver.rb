@@ -34,7 +34,6 @@ module Resolvers
           pipeline: [:user],
           project: [{ project: [:route, { namespace: [:route] }, :project_feature] }],
           detailed_status: [
-            :metadata,
             :job_definition,
             :error_job_messages,
             { pipeline: [:merge_request] },
@@ -46,7 +45,7 @@ module Resolvers
           play_path: [{ project: { namespace: [:route] } }],
           web_path: [{ project: { namespace: [:route] } }],
           short_sha: [:pipeline],
-          tags: [:tags],
+          tags: [:job_definition],
           trace: [{ project: [:namespace] }, :job_artifacts_trace],
           [:trace, :html_summary] => [:trace_chunks]
         }

@@ -8,6 +8,12 @@ module Mutations
       class Base < Mutations::Notes::Base
         authorize :admin_note
 
+        authorize_granular_token permissions: :update_note,
+          boundaries: [
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :project },
+            { boundary_argument: :id, boundary: :resource_parent, boundary_type: :group }
+          ]
+
         argument :id,
           ::Types::GlobalIDType[::Note],
           required: true,

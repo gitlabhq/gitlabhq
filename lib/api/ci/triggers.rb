@@ -39,6 +39,7 @@ module API
           optional :inputs, type: Hash, desc: 'The list of inputs to be used to create the pipeline.'
         end
         route_setting :authorization, skip_granular_token_authorization: :trigger_token_auth
+        route_setting :log_safety, { unsafe: %w[inputs] }
         post ":id/(ref/:ref/)trigger/pipeline", requirements: { ref: /.+/ } do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20758')
 

@@ -595,6 +595,9 @@ class Wiki
     path.sub(/\.[^.]+\z/, "")
   end
 
+  # Caution: Gitaly applies `limit`/`offset` in git tree order, which is path-ascending (matching
+  # `sort_pages!`). Offset pagination relies on this: if Gitaly's order diverged from path
+  # order, windows would no longer align and rows could be skipped or duplicated across pages.
   def list_page_paths(limit: 0, offset: 0)
     return [] if repository.empty?
 

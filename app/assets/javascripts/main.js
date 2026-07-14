@@ -18,7 +18,7 @@ import { logHelloDeferred } from 'jh_else_ce/lib/logger/hello_deferred';
 import initAlertHandler from './alert_handler';
 import initLayoutNav from './layout_nav';
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
-import { localTimeAgo } from './lib/utils/datetime/timeago_utility';
+import { localTimeAgo, initTimeagoPrintHandler } from './lib/utils/datetime/timeago_utility';
 import { getLocationHash, visitUrl, mergeUrlParams } from './lib/utils/url_utility';
 
 // everything else
@@ -179,6 +179,7 @@ $('.btn').click(function clickDisabledButtonCallback(e) {
 });
 
 localTimeAgo(document.querySelectorAll('abbr.timeago, .js-timeago'), true);
+initTimeagoPrintHandler();
 
 /**
  * This disables form buttons while a form is submitting

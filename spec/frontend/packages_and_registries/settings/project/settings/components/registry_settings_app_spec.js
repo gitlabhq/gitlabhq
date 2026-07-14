@@ -23,7 +23,6 @@ describe('Registry Settings app', () => {
   const defaultProvide = {
     showContainerRegistrySettings: true,
     showPackageRegistrySettings: true,
-    isContainerRegistryMetadataDatabaseEnabled: false,
   };
 
   const mountComponent = (provide = defaultProvide) => {

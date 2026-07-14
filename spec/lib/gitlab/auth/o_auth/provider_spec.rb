@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access d
     context 'for an LDAP provider' do
       context 'when the provider exists' do
         it 'returns the config' do
-          expect(described_class.config_for('ldapmain')).to be_a(GitlabSettings::Options)
+          expect(described_class.config_for('ldapmain')).to be_a(Gitlab::Configs::Options)
         end
       end
 
@@ -62,12 +62,12 @@ RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access d
 
     context 'for an OmniAuth provider' do
       before do
-        provider = GitlabSettings::Options.new(
+        provider = Gitlab::Configs.build_options(
           name: 'google_oauth2',
           app_id: 'asd123',
           app_secret: 'asd123'
         )
-        openid_connect = GitlabSettings::Options.new(name: 'openid_connect')
+        openid_connect = Gitlab::Configs.build_options(name: 'openid_connect')
 
         stub_omniauth_setting(providers: [provider, openid_connect])
       end
@@ -76,7 +76,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access d
         subject(:config) { described_class.config_for('google_oauth2') }
 
         it 'returns the config' do
-          expect(config).to be_a(GitlabSettings::Options)
+          expect(config).to be_a(Gitlab::Configs::Options)
         end
 
         it 'merges defaults with the given configuration' do
@@ -144,9 +144,9 @@ RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access d
 
       context 'when provider has a custom name in args' do
         let(:provider_config) do
-          GitlabSettings::Options.new({
+          Gitlab::Configs.build_options({
             'name' => 'openid_connect',
-            'args' => GitlabSettings::Options.new({
+            'args' => Gitlab::Configs.build_options({
               'name' => 'my_custom_provider',
               'gitlab_username_claim' => 'preferred_username'
             })
@@ -159,7 +159,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access d
 
         it 'returns the config when searching by custom name' do
           config = described_class.config_for('my_custom_provider')
-          expect(config).to be_a(GitlabSettings::Options)
+          expect(config).to be_a(Gitlab::Configs::Options)
           expect(config.name).to eq('openid_connect')
           expect(config.dig('args', 'name')).to eq('my_custom_provider')
           expect(config.dig('args', 'gitlab_username_claim')).to eq('preferred_username')

@@ -128,7 +128,12 @@ export default {
           <gl-sprintf :message="$options.i18n.dateString">
             <template #action>{{ createdTime }}</template>
             <template #date>
-              <span v-gl-tooltip.bottom :title="tooltipTitle(timeAt)">{{ atTimeAgo }}</span>
+              <time
+                v-gl-tooltip.bottom
+                :datetime="timeAt?.toISOString()"
+                :title="tooltipTitle(timeAt)"
+                >{{ atTimeAgo }}</time
+              >
             </template>
           </gl-sprintf>
         </div>

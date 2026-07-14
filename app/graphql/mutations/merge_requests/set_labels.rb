@@ -5,6 +5,9 @@ module Mutations
     class SetLabels < Base
       graphql_name 'MergeRequestSetLabels'
 
+      authorize_granular_token permissions: :update_merge_request, boundary_argument: :project_path,
+        boundary_type: :project
+
       argument :label_ids,
         [::Types::GlobalIDType[Label]],
         required: true,

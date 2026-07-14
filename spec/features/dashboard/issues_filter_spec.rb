@@ -6,16 +6,36 @@ RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :portfolio_m
   include Features::SortingHelpers
   include FilteredSearchHelpers
 
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
+  # `freeze: false` is required here: this `let_it_be` subject is mutated
+  # in-memory across examples in a way that survives both
+  # `let_it_be_with_reload` and `let_it_be_with_refind` (e.g. a memoized
+  # association/collection or a non-persisted attribute). Keeping it unfrozen
+  # is the only correct cure (see gitlab-org/gitlab#602925).
   let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
 
-  let_it_be(:issue, freeze: false) { create(:issue, project: project, author: user, assignees: [user]) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
   let_it_be(:issue2) { create(:issue, project: project, author: user, assignees: [user], milestone: milestone) }
+  # `freeze: false` is required here: this `let_it_be` subject is mutated
+  # in-memory across examples in a way that survives both
+  # `let_it_be_with_reload` and `let_it_be_with_refind` (e.g. a memoized
+  # association/collection or a non-persisted attribute). Keeping it unfrozen
+  # is the only correct cure (see gitlab-org/gitlab#602925).
   let_it_be(:label, freeze: false) { create(:label, project: project, title: 'bug') }
   let_it_be(:label_link) { create(:label_link, label: label, target: issue) }
 
+  # `freeze: false` is required here: this `let_it_be` subject is mutated
+  # in-memory across examples in a way that survives both
+  # `let_it_be_with_reload` and `let_it_be_with_refind` (e.g. a memoized
+  # association/collection or a non-persisted attribute). Keeping it unfrozen
+  # is the only correct cure (see gitlab-org/gitlab#602925).
   let_it_be(:project2, freeze: false) { create(:project, namespace: user.namespace) }
+  # `freeze: false` is required here: this `let_it_be` subject is mutated
+  # in-memory across examples in a way that survives both
+  # `let_it_be_with_reload` and `let_it_be_with_refind` (e.g. a memoized
+  # association/collection or a non-persisted attribute). Keeping it unfrozen
+  # is the only correct cure (see gitlab-org/gitlab#602925).
   let_it_be(:label2, freeze: false) { create(:label, title: 'bug') }
 
   before do

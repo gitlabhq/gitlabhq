@@ -2409,8 +2409,8 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     let(:recipient) { issue.assignees.first }
 
     before do
-      allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits)
-        .and_return(notification_emails: { threshold: 1, interval: 1.minute })
+      allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
+      allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:notification_emails).and_return(1)
     end
 
     it 'logs a message, stops sending notifications, and notifies the user of the rate limit only once', :aggregate_failures do

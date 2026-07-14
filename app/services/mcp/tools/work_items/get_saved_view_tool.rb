@@ -4,30 +4,9 @@ module Mcp
   module Tools
     module WorkItems
       class GetSavedViewTool < BaseTool
-        class << self
-          def build_query
-            <<~GRAPHQL
-              query GetNamespaceSavedView($fullPath: ID!, $id: WorkItemsSavedViewsSavedViewID!) {
-                namespace(fullPath: $fullPath) {
-                  id
-                  savedViews(id: $id) {
-                    nodes {
-                      id
-                      name
-                      description
-                      filters
-                      sort
-                    }
-                  }
-                }
-              }
-            GRAPHQL
-          end
-        end
-
         register_version VERSIONS[:v0_1_0], {
           operation_name: 'namespace',
-          graphql_operation: build_query
+          graphql_operation: load_graphql('work_items/get_saved_view.query.graphql')
         }
 
         def build_variables

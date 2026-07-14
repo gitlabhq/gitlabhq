@@ -2,6 +2,8 @@
 
 module Admin
   class DatabaseDiagnosticsController < Admin::ApplicationController
+    include Gitlab::InternalEventsTracking
+
     feature_category :database
     authorize! :read_admin_database_diagnostics,
       only: %i[index run_collation_check collation_check_results run_schema_check schema_check_results]
@@ -19,6 +21,8 @@ module Admin
 
     def index
       @database_information = ::Gitlab::Database::DatabaseInformation.execute
+
+      track_internal_event('visit_db_diagnostics_page', user: current_user)
     end
 
     def run_collation_check

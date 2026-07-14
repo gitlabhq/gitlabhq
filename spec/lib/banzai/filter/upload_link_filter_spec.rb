@@ -120,7 +120,7 @@ RSpec.describe Banzai::Filter::UploadLinkFilter, feature_category: :markdown do
 
   context 'to a group upload' do
     let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
 
     let(:project) { nil }
     let(:relative_path) { "/-/group/#{group.id}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg" }

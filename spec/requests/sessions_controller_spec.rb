@@ -7,7 +7,7 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
   include SessionHelpers
 
   describe '#destroy' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let(:expected_context) do
       { 'meta.caller_id' => 'SessionsController#destroy',
         'meta.user' => user.username }
@@ -40,7 +40,7 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
   end
 
   describe '#create' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let(:expected_context) do
       { 'meta.caller_id' => 'SessionsController#create',
         'meta.user' => user.username }
@@ -96,7 +96,7 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
     end
 
     context 'for passkey authentication', :clean_gitlab_redis_sessions do
-      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be_with_reload(:user) { create(:user) }
       let_it_be(:passkey) { create_passkey(user) }
 
       let(:device_response) { device_response_after_authentication(user, passkey) }
@@ -138,8 +138,8 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
   end
 
   describe 'POST /users/sign_in (self_managed_welcome_onboarding redirect)', feature_category: :onboarding do
-    let_it_be(:admin, freeze: false) { create(:admin) }
-    let_it_be(:regular_user, freeze: false) { create(:user) }
+    let_it_be(:admin) { create(:admin) }
+    let_it_be(:regular_user) { create(:user) }
 
     def sign_in_as(user)
       post user_session_path, params: { user: { login: user.username, password: user.password } }

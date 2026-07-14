@@ -72,6 +72,7 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures, featur
           .with(
             exception,
             {
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
               project_id: project.id,
               import_type: import_type,
               source: 'SomeImporter',
@@ -85,6 +86,7 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures, featur
             {
               message: 'importer failed',
               'exception.message': 'some error',
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
               project_id: project.id,
               import_type: import_type,
               source: 'SomeImporter',
@@ -116,6 +118,7 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures, featur
           .with(
             exception,
             {
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
               project_id: project.id,
               import_type: import_type,
               source: 'SomeImporter',
@@ -129,6 +132,7 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures, featur
             {
               message: 'importer failed',
               'exception.message': 'some error',
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
               project_id: project.id,
               import_type: import_type,
               source: 'SomeImporter',
@@ -165,13 +169,20 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures, featur
           .with(
             hash_including(
               message: 'another custom message',
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
               jid: 'abc123'
             )
           )
 
         expect(Gitlab::ErrorTracking)
           .to receive(:track_exception)
-          .with(exception, hash_including(jid: 'abc123'))
+          .with(
+            exception,
+            hash_including(
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
+              jid: 'abc123'
+            )
+          )
 
         service.execute
       end

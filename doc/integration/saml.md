@@ -1565,7 +1565,7 @@ For information on automatically managing GitLab group membership, see [SAML Gro
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262074) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `saml_timeout_supplied_by_idp_override`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262074) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `saml_timeout_supplied_by_idp_override`.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/work_items/553931) in GitLab 18.3.
 
 {{< /history >}}
@@ -1583,7 +1583,7 @@ when their GitLab user session ends.
 
 {{< history >}}
 
-- Bypass 2FA enforcement [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122109) in GitLab 16.1 [with a flag](../administration/feature_flags/_index.md) named `by_pass_two_factor_current_session`.
+- Bypass 2FA enforcement [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122109) in GitLab 16.1 [with a feature flag](../administration/feature_flags/_index.md) named `by_pass_two_factor_current_session`.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/416535) in GitLab 17.8.
 
 {{< /history >}}

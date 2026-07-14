@@ -25,7 +25,6 @@ describe('PipelineFailedJobsWidget component', () => {
   };
 
   const defaultProvide = {
-    fullPath: 'namespace/project/',
     graphqlPath: 'api/graphql',
   };
 
@@ -209,6 +208,18 @@ describe('PipelineFailedJobsWidget component', () => {
       findFailedJobsList().vm.$emit('job-retried');
 
       expect(defaultHandler).toHaveBeenCalledTimes(2);
+    });
+
+    it('emits "retried" so the parent can refresh and force-subscribe the pipeline', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      await findFailedJobsButton().vm.$emit('click');
+
+      findFailedJobsList().vm.$emit('job-retried');
+
+      expect(wrapper.emitted('retried')).toHaveLength(1);
     });
   });
 });

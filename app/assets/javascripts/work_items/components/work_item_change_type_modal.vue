@@ -19,6 +19,7 @@ import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graph
 import getWorkItemDesignListQuery from './design_management/graphql/design_collection.query.graphql';
 
 export default {
+  name: 'WorkItemChangeTypeModal',
   components: {
     GlModal,
     GlFormGroup,
@@ -87,6 +88,7 @@ export default {
       default: () => {},
     },
   },
+  emits: ['error', 'promoteToEpic', 'workItemTypeChanged'],
   data() {
     return {
       selectedWorkItemType: null,
@@ -119,6 +121,7 @@ export default {
         return {
           id: this.workItemId,
           atVersion: null,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       update(data) {

@@ -78,7 +78,7 @@ module Gitlab
       end
 
       def deduplicate_ci_taggings(bad_tag_ids, tag_remap)
-        tagging_models = [::Ci::BuildTag, ::Ci::RunnerTagging]
+        tagging_models = [::Ci::RunnerTagging]
 
         tagging_models.each do |tagging_model|
           tagging_model.include EachBatch
@@ -98,12 +98,7 @@ module Gitlab
       end
 
       def taggings_with_fk(model_record)
-        case model_record
-        when ::Ci::BuildTag
-          model_record.class.where(build_id: model_record.build_id)
-        when ::Ci::RunnerTagging
-          model_record.class.where(runner_id: model_record.runner_id)
-        end
+        model_record.class.where(runner_id: model_record.runner_id)
       end
 
       def delete_duplicate_taggings(tagging_model, tag_remap)

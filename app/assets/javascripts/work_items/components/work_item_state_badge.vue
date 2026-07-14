@@ -4,6 +4,7 @@ import { __, s__ } from '~/locale';
 import { STATE_OPEN } from '../constants';
 
 export default {
+  name: 'WorkItemStateBadge',
   components: {
     GlBadge,
     GlLink,

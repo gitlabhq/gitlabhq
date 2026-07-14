@@ -10,6 +10,7 @@ module Banzai
     class IssuableReferenceExpansionFilter < HTML::Pipeline::Filter
       prepend Concerns::PipelineTimingCheck
       include Gitlab::Utils::StrongMemoize
+      include Concerns::ContextAccessors
 
       NUMBER_OF_SUMMARY_ASSIGNEES = 2
       VISIBLE_STATES = %w[closed merged].freeze
@@ -98,18 +99,6 @@ module Banzai
         return unless node.attr('data-reference-format').present? || VISIBLE_STATES.include?(issuable.state)
 
         CGI.unescapeHTML(node.inner_html) == issuable.reference_link_text(project || group)
-      end
-
-      def current_user
-        context[:current_user]
-      end
-
-      def project
-        context[:project]
-      end
-
-      def group
-        context[:group]
       end
 
       def expand_emoji(string)

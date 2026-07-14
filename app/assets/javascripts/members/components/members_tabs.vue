@@ -2,8 +2,13 @@
 import { GlBadge, GlButton, GlTab, GlTabs } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
-import { queryToObject, setUrlParams } from '~/lib/utils/url_utility';
-import { ACTIVE_TAB_QUERY_PARAM_NAME, MEMBERS_TAB_TYPES } from 'ee_else_ce/members/constants';
+import { getParameterByName, queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
+import {
+  ACTIVE_TAB_QUERY_PARAM_NAME,
+  DIRECT_MEMBERS_PAGE_QUERY_PARAM_NAME,
+  MEMBERS_TAB_TYPES,
+  TAB_QUERY_PARAM_VALUES,
+} from 'ee_else_ce/members/constants';
 import { TABS } from 'ee_else_ce/members/tabs_metadata';
 import MembersApp from './app.vue';
 
@@ -49,6 +54,9 @@ export default {
       return this.$options.TABS.filter(this.showTab);
     },
   },
+  mounted() {
+    this.ensureDirectMembersPageParam();
+  },
   methods: {
     getTabUrlParams(namespace) {
       const state = this.$store.state[namespace];
@@ -81,10 +89,33 @@ export default {
       );
     },
     tabPath(value) {
-      return setUrlParams({ tab: value, page: null });
+      const params = { tab: value };
+
+      // The Direct members tab must request page 1 explicitly so the backend
+      // loads direct members via the dedicated finder rather than deriving them
+      // from the combined members page (which can omit direct members that fall
+      // on a later page of the combined list).
+      if (value === TAB_QUERY_PARAM_VALUES.directMembers) {
+        params[DIRECT_MEMBERS_PAGE_QUERY_PARAM_NAME] = 1;
+      }
+
+      return setUrlParams(params, { clearParams: true });
     },
     titleLinkAttrs({ attrs, queryParamValue: value }) {
       return { ...attrs, href: this.tabPath(value) };
+    },
+    ensureDirectMembersPageParam() {
+      // When landing directly on the Direct members tab (e.g. via a bookmark or
+      // shared link) without the page param, the server-rendered seed comes from
+      // the wrong code path. Reload with the page param so the dedicated finder
+      // provides the correct, complete list.
+      const isDirectMembersTab =
+        getParameterByName(ACTIVE_TAB_QUERY_PARAM_NAME) === TAB_QUERY_PARAM_VALUES.directMembers;
+      const hasPageParam = getParameterByName(DIRECT_MEMBERS_PAGE_QUERY_PARAM_NAME) !== null;
+
+      if (isDirectMembersTab && !hasPageParam) {
+        visitUrl(setUrlParams({ [DIRECT_MEMBERS_PAGE_QUERY_PARAM_NAME]: 1 }));
+      }
     },
   },
 };

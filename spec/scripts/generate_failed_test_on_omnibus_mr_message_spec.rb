@@ -63,7 +63,7 @@ RSpec.describe GenerateFailedTestOnOmnibusMrMessage, feature_category: :tooling 
 
         expect(merge_request_discussion_client).to receive(:execute).with(content)
 
-        expect(discussion_added).to eq(true)
+        expect(discussion_added).to be(true)
       end
     end
 
@@ -72,7 +72,7 @@ RSpec.describe GenerateFailedTestOnOmnibusMrMessage, feature_category: :tooling 
 
       it 'does not add a discussion' do
         expect(CreateMergeRequestDiscussion).not_to receive(:new)
-        expect(discussion_added).to eq(nil)
+        expect(discussion_added).to be_nil
       end
     end
   end

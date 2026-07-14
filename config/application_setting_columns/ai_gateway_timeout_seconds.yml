@@ -1,0 +1,12 @@
+---
+api_type:
+attr: ai_gateway_timeout_seconds
+clusterwide: false
+column: ai_gateway_timeout_seconds
+db_type: integer
+default: '60'
+description: Timeout in seconds for requests to the self-hosted AI Gateway. Moved from the ai_settings table because it is per-cell infrastructure configuration.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

@@ -4,6 +4,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
 
 export default {
+  name: 'ConfirmModal',
   directives: {
     SafeHtml,
   },
@@ -62,6 +63,7 @@ export default {
       default: 'sm',
     },
   },
+  emits: ['closed', 'confirmed'],
   computed: {
     primaryAction() {
       return {

@@ -19,24 +19,36 @@ RSpec.describe 'Users views raw design image files', feature_category: :design_m
   it 'serves the latest design version when no ref is given' do
     visit project_design_management_designs_raw_image_path(design.project, design)
 
-    expect(response_headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to eq(
-      workhorse_data_header_for_version(oldest_version.sha)
+    expect(decoded_workhorse_send_data_header).to include(
+      workhorse_blob_params_for_version(oldest_version.sha)
     )
   end
 
   it 'serves the correct design version when a ref is given' do
     visit project_design_management_designs_raw_image_path(design.project, design, oldest_version.sha)
 
-    expect(response_headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to eq(
-      workhorse_data_header_for_version(oldest_version.sha)
+    expect(decoded_workhorse_send_data_header).to include(
+      workhorse_blob_params_for_version(oldest_version.sha)
     )
   end
 
   private
 
-  def workhorse_data_header_for_version(ref)
+  def decoded_workhorse_send_data_header
+    header = response_headers[Gitlab::Workhorse::SEND_DATA_HEADER]
+    encoded = header.split(':', 2).last
+    Gitlab::Json.safe_parse(Base64.urlsafe_decode64(encoded))
+  end
+
+  def workhorse_blob_params_for_version(ref)
     blob = project.design_repository.blob_at(ref, design.full_path)
 
-    Gitlab::Workhorse.send_git_blob(project.design_repository, blob).last
+    {
+      'GetBlobRequest' => {
+        'repository' => project.design_repository.gitaly_repository.to_h.deep_stringify_keys,
+        'oid' => blob.id,
+        'limit' => -1
+      }
+    }
   end
 end

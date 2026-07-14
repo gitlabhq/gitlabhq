@@ -41,7 +41,7 @@ RSpec.describe Projects::AlertManagementHelper, feature_category: :incident_mana
     end
 
     context 'with http integration' do
-      let_it_be(:integration, freeze: false) { create(:alert_management_http_integration, project: project) }
+      let_it_be_with_reload(:integration) { create(:alert_management_http_integration, project: project) }
 
       context 'when integration is active' do
         it 'enables alert management' do

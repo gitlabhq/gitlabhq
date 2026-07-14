@@ -1,10 +1,14 @@
 import { shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
+import Vue from 'vue';
 
 import SignInGitlabCom from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_com.vue';
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 import SubscriptionsList from '~/jira_connect/subscriptions/components/subscriptions_list.vue';
-import createStore from '~/jira_connect/subscriptions/store';
 import { I18N_DEFAULT_SIGN_IN_BUTTON_TEXT } from '~/jira_connect/subscriptions/constants';
+
+Vue.use(PiniaVuePlugin);
 
 jest.mock('~/jira_connect/subscriptions/utils');
 
@@ -14,16 +18,15 @@ const defaultProvide = {
 
 describe('SignInGitlabCom', () => {
   let wrapper;
-  let store;
 
   const findSignInOauthButton = () => wrapper.findComponent(SignInOauthButton);
   const findSubscriptionsList = () => wrapper.findComponent(SubscriptionsList);
 
   const createComponent = ({ props } = {}) => {
-    store = createStore();
+    const pinia = createTestingPinia();
 
     wrapper = shallowMount(SignInGitlabCom, {
-      store,
+      pinia,
       provide: {
         ...defaultProvide,
       },

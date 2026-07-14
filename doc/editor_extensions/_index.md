@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Editor Extensions
+stage: AI Clients
+group: Developer Clients
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Extend the features of GitLab to Visual Studio Code, JetBrains IDEs, Visual Studio, Eclipse, and Neovim.
 title: Editor extensions
@@ -28,14 +28,14 @@ to manage projects and applications.
 | [GitLab for VS Code](visual_studio_code/_index.md)              | {{< yes >}}          | {{< yes >}}      | {{< yes >}}                  | {{< yes >}} | {{< yes >}}              |
 | [GitLab Duo plugin for JetBrains IDEs](jetbrains_ide/_index.md) | {{< yes >}}          | {{< yes >}}      | {{< yes >}}                  | {{< yes >}} | {{< no >}}               |
 | [GitLab for Visual Studio](visual_studio/_index.md)   | {{< yes >}}          | {{< yes >}}      | {{< yes >}}                  | {{< no >}}  | {{< no >}}               |
-| [GitLab for Eclipse plugin](eclipse/_index.md)                  | {{< yes >}}(non-agentic) | {{< yes >}}      | {{< no >}}                   | {{< no >}}  | {{< no >}}               |
+| [GitLab for Eclipse plugin](eclipse/_index.md)                  | {{< yes >}}<br>(non-agentic only) | {{< yes >}}      | {{< no >}}                   | {{< no >}}  | {{< no >}}               |
 
 If you prefer a command-line interface, try the following:
 
 | Extension                                                       | GitLab Duo Chat      | Code Suggestions | Software Development<br> Flow | Agents      | Other<br> GitLab features |
 |-----------------------------------------------------------------|----------------------|------------------|------------------------------|-------------|--------------------------|
-| [The GitLab CLI (`glab`)](gitlab_cli/_index.md)                | {{< yes >}} | {{< no >}}                  | {{< no >}}                | {{< no >}} | {{< yes >}}           |
-| [The GitLab Duo CLI (`duo`)](../user/gitlab_duo_cli/_index.md) | {{< yes >}}<br>(agentic) | {{< no >}}                  | {{< no >}}                | {{< no >}} | {{< no >}}            |
+| [The GitLab CLI (`glab`)](gitlab_cli/_index.md)                | {{< yes >}}<br>(agentic only) | {{< no >}}                  | {{< no >}}                | {{< no >}} | {{< yes >}}           |
+| [The GitLab Duo CLI (`duo`)](../user/gitlab_duo_cli/_index.md) | {{< yes >}}<br>(agentic only) | {{< no >}}                  | {{< no >}}                | {{< no >}} | {{< no >}}            |
 | [GitLab.nvim for Neovim](neovim/_index.md)                     | {{< no >}}            | {{< yes >}}                 | {{< no >}}                | {{< no >}} | {{< no >}}            |
 
 ## Security considerations

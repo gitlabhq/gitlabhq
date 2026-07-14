@@ -291,6 +291,13 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
         expect(act.to_html).to eq exp
       end
 
+      it 'leaves data-indeterminate attribute on tasklist inputs' do
+        exp = %q(<ul><li><input type="checkbox" class="task-list-item-checkbox" data-indeterminate="true"></li></ul>)
+        act = filter(exp)
+
+        expect(act.to_html).to eq_html exp
+      end
+
       it 'removes tasklist inputs outside of lists' do
         exp = %q(<p> Hello</p>)
         act = filter(%q(<p><input type="checkbox" class="task-list-item-checkbox"> Hello</p>))

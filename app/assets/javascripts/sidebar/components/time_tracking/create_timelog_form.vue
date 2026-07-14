@@ -13,10 +13,10 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { issuableTypeText, TYPE_ISSUE } from '~/issues/constants';
 import { toISOStringWithoutMilliseconds } from '~/lib/utils/datetime_utility';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { n__, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import updateWorkItemTimeTrackingMutation from '~/work_items/graphql/update_work_item_time_tracking.mutation.graphql';
+import { helpPagePath } from '~/lib/utils/path_helpers/help';
 import createTimelogMutation from '../../queries/create_timelog.mutation.graphql';
 import { CREATE_TIMELOG_MODAL_ID, SUMMARY_MAX_LENGTH } from './constants';
 
@@ -90,7 +90,7 @@ export default {
       };
     },
     timeTrackingDocsPath() {
-      return joinPaths(gon.relative_url_root || '', '/help/user/project/time_tracking.md');
+      return helpPagePath('user/project/time_tracking.md');
     },
     createTimelogModalId() {
       return this.workItemId

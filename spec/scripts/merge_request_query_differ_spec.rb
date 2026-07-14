@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'tmpdir'
 
 require_relative '../../scripts/merge_request_query_differ'
 
@@ -25,11 +26,23 @@ RSpec.describe MergeRequestQueryDiffer, feature_category: :tooling do
     allow(SQLFingerprintExtractor).to receive(:new).and_return(sql_fingerprint_extractor)
     allow(logger).to receive_messages(info: nil, warn: nil, error: nil)
     allow(differ).to receive(:write_report)
+    allow(differ).to receive(:write_new_fingerprints)
   end
 
   subject(:differ) { described_class.new(empty_file.path, logger) }
 
   describe "#run" do
+    it "initializes the fingerprints file as empty, even when a later step raises" do
+      allow(sql_fingerprint_extractor).to receive(:extract_queries_from_file).and_raise(StandardError, "boom")
+
+      Dir.mktmpdir do |dir|
+        runner = described_class.new(File.join(dir, 'mr_auto_explain.ndjson'), logger)
+        runner.run
+
+        expect(File.read(runner.fingerprints_file)).to eq("")
+      end
+    end
+
     context "when no queries are found in MR" do
       it "exits early and writes an appropriate report" do
         allow(sql_fingerprint_extractor).to receive(:extract_queries_from_file).and_return([])
@@ -85,6 +98,12 @@ RSpec.describe MergeRequestQueryDiffer, feature_category: :tooling do
         result = differ.run
 
         expect(differ).to have_received(:write_report).with(differ.output_file, "# Sample Test Report")
+        expect(differ).to have_received(:write_new_fingerprints).with(
+          a_collection_containing_exactly(
+            a_hash_including('fingerprint' => 'fp3'),
+            a_hash_including('fingerprint' => 'fp2')
+          )
+        )
         expect(result).to eq(2) # Two new queries (fp2 and fp3)
       end
     end
@@ -355,6 +374,38 @@ RSpec.describe MergeRequestQueryDiffer, feature_category: :tooling do
 
       differ.write_report("test.txt", "content")
       expect(logger).to have_received(:error).with("Could not write report to file: Write error")
+    end
+  end
+
+  describe "#write_new_fingerprints" do
+    before do
+      allow(differ).to receive(:write_new_fingerprints).and_call_original
+      allow(File).to receive(:write)
+      allow(logger).to receive(:info)
+    end
+
+    it "writes one newline-terminated fingerprint per line, skipping queries without one" do
+      differ.write_new_fingerprints([
+        { 'fingerprint' => 'fp1' },
+        { 'normalized' => 'SELECT 1' },
+        { 'fingerprint' => 'fp2' }
+      ])
+
+      expect(File).to have_received(:write).with(differ.fingerprints_file, "fp1\nfp2\n")
+    end
+
+    it "writes an empty file when there are no new fingerprints (the fail-open default)" do
+      differ.write_new_fingerprints([])
+
+      expect(File).to have_received(:write).with(differ.fingerprints_file, "")
+    end
+
+    it "logs and swallows write errors" do
+      allow(File).to receive(:write).and_raise(StandardError.new("disk full"))
+
+      differ.write_new_fingerprints([{ 'fingerprint' => 'fp1' }])
+
+      expect(logger).to have_received(:error).with("Could not write new fingerprints: disk full")
     end
   end
 

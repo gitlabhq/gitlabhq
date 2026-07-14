@@ -52,6 +52,10 @@ RSpec.describe Gitlab::Database::Sos::DbStatsActivity, feature_category: :databa
           expect(result.fields).to eq %w[collation_name version actual_version]
         when :pg_class_settings
           expect(result.fields).to include("oid", "relname", "relnamespace", "reltype")
+        when :broken_sequence_ownership
+          expect(result.fields).to eq %w[seq_name table_name col_name deptype]
+        when *described_class::LFK_DELETED_RECORD_TABLES.map { |t| :"#{t}_backlog" }
+          expect(result.fields).to eq %w[source_table pending due_now max_attempts oldest_consume_after]
         end
       end
     end

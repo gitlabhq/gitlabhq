@@ -1,6 +1,7 @@
 - add_page_specific_style 'page_bundles/tree'
 - breadcrumb_title _("Repository")
 - page_title @path.presence || _("Files"), @ref
+- @force_fluid_layout = true
 
 - if @gitaly_unavailable
   = render 'shared/errors/gitaly_unavailable', reason: s_('Tree|Unable to load repository files')

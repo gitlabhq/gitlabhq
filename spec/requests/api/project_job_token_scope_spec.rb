@@ -8,7 +8,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe 'GET /projects/:id/job_token_scope' do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
 
     let(:get_job_token_scope_path) { "/projects/#{project.id}/job_token_scope" }
@@ -84,7 +84,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe 'PATCH /projects/:id/job_token_scope' do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
 
     let(:patch_job_token_scope_path) { "/projects/#{project.id}/job_token_scope" }
@@ -246,7 +246,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe "GET /projects/:id/job_token_scope/allowlist" do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
 
     let_it_be(:user) { create(:user) }
 
@@ -321,7 +321,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe "GET /projects/:id/job_token_scope/groups_allowlist" do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
     let_it_be(:target_group) { create(:group, :public) }
 
     let_it_be(:user) { create(:user) }
@@ -389,7 +389,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe "POST /projects/:id/job_token_scope/groups_allowlist" do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
     let_it_be(:target_group) { create(:group, :public) }
     let_it_be(:user) { create(:user) }
 
@@ -510,7 +510,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe 'DELETE /projects/:id/job_token_scope/groups_allowlist/:target_group_id' do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
     let_it_be(:target_group) { create(:group, :public) }
     let_it_be(:user) { create(:user) }
     let_it_be(:link) do
@@ -642,7 +642,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe "POST /projects/:id/job_token_scope/allowlist" do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
     let_it_be(:project_inbound_allowed) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
 
@@ -780,7 +780,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
   end
 
   describe 'DELETE /projects/:id/job_token_scope/allowlist/:target_project_id' do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
     let_it_be(:target_project) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
     let_it_be(:link) do
@@ -851,6 +851,20 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
         end
       end
 
+      context 'when user has no access to target project' do
+        let_it_be(:inbound_link) do
+          create(:ci_job_token_project_scope_link,
+            source_project: project,
+            target_project: target_project,
+            direction: :inbound)
+        end
+
+        it 'removes the project from the allowlist', :aggregate_failures do
+          expect { subject }.to change { Ci::JobToken::ProjectScopeLink.count }.by(-1)
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
       context 'for the target project member' do
         before do
           target_project.add_guest(user)
@@ -905,7 +919,7 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
         end
       end
 
-      context 'when target project does not exists' do
+      context 'when target project does not exist' do
         before do
           target_project.destroy!
         end

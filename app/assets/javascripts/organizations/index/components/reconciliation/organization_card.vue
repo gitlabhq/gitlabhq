@@ -4,13 +4,7 @@ import gitlabLogoUrl from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg?url';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_ORGANIZATION_NAME } from '~/organizations/shared/constants';
-import {
-  VISIBILITY_TYPE_ICON,
-  ORGANIZATION_VISIBILITY_TYPE,
-  VISIBILITY_LEVELS_STRING_TO_INTEGER,
-  VISIBILITY_LEVEL_PRIVATE_INTEGER,
-  VISIBILITY_LEVELS_INTEGER_TO_STRING,
-} from '~/visibility_level/constants';
+import { VISIBILITY_TYPE_ICON, ORGANIZATION_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { isDefaultOrganization } from '~/organizations/shared/utils';
 
 export default {
@@ -59,26 +53,8 @@ export default {
         'gl-pb-2': !this.$scopedSlots.default,
       };
     },
-    // The visibility must be broader than the visibility of any contained groups.
-    maxVisibilityLevel() {
-      if (!this.organization.groups.nodes.length) {
-        return VISIBILITY_LEVEL_PRIVATE_INTEGER;
-      }
-
-      return Math.max(
-        ...this.organization.groups.nodes.map(
-          (group) => VISIBILITY_LEVELS_STRING_TO_INTEGER[group.visibility],
-        ),
-      );
-    },
     visibility() {
-      const visibilityInteger = VISIBILITY_LEVELS_STRING_TO_INTEGER[this.organization.visibility];
-
-      if (visibilityInteger >= this.maxVisibilityLevel) {
-        return this.organization.visibility;
-      }
-
-      return VISIBILITY_LEVELS_INTEGER_TO_STRING[this.maxVisibilityLevel];
+      return this.organization.visibility;
     },
     visibilityIcon() {
       return VISIBILITY_TYPE_ICON[this.visibility];

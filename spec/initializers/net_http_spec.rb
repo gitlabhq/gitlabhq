@@ -6,8 +6,17 @@ require 'webrick'
 RSpec.describe 'Net::Http patch', :request_store, feature_category: :tooling do
   let(:two_mega_bytes_body) { "A" * 2 * 1024 * 1024 }
 
+  # `freeze: false` is kept here because this `let_it_be` subject is not an
+  # ActiveRecord record, so freezing gives no cross-example isolation benefit
+  # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+  # gitlab-org/gitlab#602925).
   let_it_be(:server_port, freeze: false) { 4567 }
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:server_thread, freeze: false) do
     Thread.new do
       server = WEBrick::HTTPServer.new(Port: server_port, Logger: WEBrick::Log.new("/dev/null"), AccessLog: [])

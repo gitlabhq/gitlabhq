@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe AutocompleteController do
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { project.first_owner }
 
   context 'GET users', feature_category: :user_management do
-    let!(:user2) { create(:user) }
-    let!(:non_member) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+    let_it_be(:non_member) { create(:user) }
 
     context 'project members' do
       before do
@@ -113,9 +113,9 @@ RSpec.describe AutocompleteController do
     end
 
     context 'user order' do
-      let(:reported_user) { create(:user, name: 'Doug') }
-      let(:exact_match_user) { create(:user, name: 'User') }
-      let(:user1) { create(:user, name: 'Ian') }
+      let_it_be(:reported_user) { create(:user, name: 'Doug') }
+      let_it_be(:exact_match_user) { create(:user, name: 'User') }
+      let_it_be(:user1) { create(:user, name: 'Ian') }
 
       it 'shows exact matches first' do
         # Ensure users are created in this order
@@ -151,11 +151,10 @@ RSpec.describe AutocompleteController do
     end
 
     context 'unauthenticated user' do
-      let(:public_project) { create(:project, :public) }
+      let_it_be(:public_project) { create(:project, :public, guests: user) }
 
       describe 'GET #users with public project' do
         before do
-          public_project.add_guest(user)
           get(:users, params: { project_id: public_project.id })
         end
 
@@ -288,8 +287,8 @@ RSpec.describe AutocompleteController do
   end
 
   context 'GET projects', feature_category: :groups_and_projects do
-    let(:authorized_project) { create(:project) }
-    let(:authorized_search_project) { create(:project, name: 'rugged') }
+    let_it_be(:authorized_project) { create(:project) }
+    let_it_be(:authorized_search_project) { create(:project, name: 'rugged') }
 
     before do
       sign_in(user)
@@ -362,7 +361,7 @@ RSpec.describe AutocompleteController do
       before do
         authorized_project.add_guest(user)
 
-        expect(user.can?(:admin_issue, authorized_project)).to eq(false)
+        expect(user.can?(:admin_issue, authorized_project)).to be(false)
       end
 
       describe 'GET #projects with project ID' do
@@ -380,10 +379,10 @@ RSpec.describe AutocompleteController do
 
   context 'GET award_emojis', feature_category: :team_planning do
     let(:user2) { create(:user) }
-    let!(:award_emoji1) { create_list(:award_emoji, 2, user: user, name: AwardEmoji::THUMBS_UP) }
-    let!(:award_emoji2) { create_list(:award_emoji, 1, user: user, name: AwardEmoji::THUMBS_DOWN) }
-    let!(:award_emoji3) { create_list(:award_emoji, 3, user: user, name: 'star') }
-    let!(:award_emoji4) { create_list(:award_emoji, 1, user: user, name: 'tea') }
+    let_it_be(:award_emoji1) { create_list(:award_emoji, 2, user: user, name: AwardEmoji::THUMBS_UP) }
+    let_it_be(:award_emoji2) { create_list(:award_emoji, 1, user: user, name: AwardEmoji::THUMBS_DOWN) }
+    let_it_be(:award_emoji3) { create_list(:award_emoji, 3, user: user, name: 'star') }
+    let_it_be(:award_emoji4) { create_list(:award_emoji, 1, user: user, name: 'tea') }
 
     context 'unauthorized user' do
       it 'returns empty json' do

@@ -160,6 +160,32 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Services::CloudNativePG, :aggre
         }
       })
     end
+
+    context "with additional databases" do
+      subject(:service) do
+        described_class.new(
+          kubeclient: kubeclient,
+          helm: helm,
+          namespace: namespace,
+          cluster_name: cluster_name,
+          additional_databases: [{ name: "openbao", owner: "openbao", password: "s3cret" }]
+        )
+      end
+
+      it "bootstraps the role and database via postInitSQL without clobbering the base bootstrap" do
+        initdb = service.send(:cluster_manifest).dig(:spec, :bootstrap, :initdb)
+
+        expect(initdb).to include(
+          database: "gitlabhq_production",
+          owner: "gitlab",
+          postInitSQL: [
+            "CREATE ROLE openbao LOGIN PASSWORD 's3cret';",
+            "CREATE DATABASE openbao OWNER openbao;"
+          ]
+        )
+        expect(initdb[:postInitApplicationSQL]).to include("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
+      end
+    end
   end
 
   describe "wait_for_cluster" do

@@ -10,10 +10,13 @@ module OmniAuth
     # Session-based CSRF state is therefore unreliable; we bind the state to the
     # browser via a short-lived cookie instead.
     class CellsAwareOpenidConnect < OpenIDConnect
+      extend ::Gitlab::Utils::Override
+
       OAUTH_STATE_COOKIE_NAME = 'omniauth_oauth_state'
       # Matches the IAM Auth Service parked-session TTL.
       OAUTH_STATE_COOKIE_MAX_AGE = 600
 
+      override :request_phase
       def request_phase
         status, headers, body = super
 
@@ -23,6 +26,7 @@ module OmniAuth
         [status, headers, body]
       end
 
+      override :callback_phase
       def callback_phase
         return fail_with_csrf_error! unless valid_oauth_state_cookie?
 
@@ -30,6 +34,7 @@ module OmniAuth
         super
       end
 
+      override :call_app!
       def call_app!(env = @env)
         status, headers, body = super
         clear_oauth_state_cookie(headers) if @pending_cookie_clear
@@ -40,6 +45,7 @@ module OmniAuth
       # This is overridden from https://github.com/omniauth/omniauth_openid_connect/blob/master/lib/omniauth/strategies/openid_connect.rb#L263C6-L273C10
       # We skip the OIDC userinfo endpoint call and directly use the ID token for user information
       # when the userinfo endpoint is not available in the IAM authentication service
+      override :user_info
       def user_info
         return @user_info if @user_info
 

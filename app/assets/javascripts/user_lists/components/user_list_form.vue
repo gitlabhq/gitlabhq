@@ -3,6 +3,7 @@ import { GlButton, GlFormGroup, GlFormInput, GlLink, GlSprintf } from '@gitlab/u
 import { s__ } from '~/locale';
 
 export default {
+  name: 'UserListForm',
   components: {
     GlButton,
     GlFormGroup,

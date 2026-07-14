@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'variable list drawer' do
+  let(:protected_ci_variables_setting) { false }
+
+  before do
+    stub_application_setting(protected_ci_variables: protected_ci_variables_setting)
+    visit page_path
+  end
+
   it 'renders the list drawer' do
     open_drawer
 
@@ -12,8 +19,6 @@ RSpec.shared_examples 'variable list drawer' do
 
     fill_variable('NEW_KEY', 'NEW_VALUE', 'NEW_DESCRIPTION')
     click_add_variable
-
-    wait_for_requests
 
     page.within('[data-testid="ci-variable-drawer"]') do
       # alert is rendered inside the drawer
@@ -56,8 +61,6 @@ RSpec.shared_examples 'variable list drawer' do
     fill_variable('NEW_KEY', 'NEW_VALUE')
     click_add_variable
 
-    wait_for_requests
-
     page.within('[data-testid="ci-variable-table"]') do
       key_column = first(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']")
 
@@ -68,11 +71,7 @@ RSpec.shared_examples 'variable list drawer' do
 
   context 'with application setting for protected attribute' do
     context 'when application setting is true' do
-      before do
-        stub_application_setting(protected_ci_variables: true)
-
-        visit page_path
-      end
+      let(:protected_ci_variables_setting) { true }
 
       it 'defaults to protected' do
         open_drawer
@@ -84,11 +83,7 @@ RSpec.shared_examples 'variable list drawer' do
     end
 
     context 'when application setting is false' do
-      before do
-        stub_application_setting(protected_ci_variables: false)
-
-        visit page_path
-      end
+      let(:protected_ci_variables_setting) { false }
 
       it 'defaults to unprotected' do
         open_drawer
@@ -116,8 +111,6 @@ RSpec.shared_examples 'variable list drawer' do
     set_visible
     toggle_expanded
     find_by_testid('ci-variable-confirm-button').click
-
-    wait_for_requests
 
     page.within('[data-testid="ci-variable-drawer"]') do
       # alert is rendered inside the drawer
@@ -157,8 +150,6 @@ RSpec.shared_examples 'variable list drawer' do
     fill_variable('NEW_KEY', 'NEW_VALUE', 'NEW_DESCRIPTION')
     click_add_variable
 
-    wait_for_requests
-
     page.within('[data-testid="ci-variable-drawer"]') do
       # alert is rendered
       expect(page).to have_selector('[data-testid="ci-variable-mutation-alert"]')
@@ -178,12 +169,14 @@ RSpec.shared_examples 'variable list drawer' do
 
     fill_variable('NEW_KEY', 'NEW_VALUE')
     click_add_variable
-    wait_for_requests
+
+    page.within('[data-testid="ci-variable-drawer"]') do
+      expect(page).to have_selector('[data-testid="ci-variable-mutation-alert"]')
+    end
 
     # Re-enter same values in the form
     fill_variable('NEW_KEY', 'NEW_VALUE')
     click_add_variable
-    wait_for_requests
 
     page.within('[data-testid="ci-variable-drawer"]') do
       expect(page).to have_css('.gl-alert-danger')
@@ -213,12 +206,16 @@ RSpec.shared_examples 'variable list drawer' do
     fill_variable('akey', 'akeyvalue')
     click_add_variable
 
-    wait_for_requests
+    within_testid('ci-variable-mutation-alert') do
+      expect(page).to have_content('Variable akey has been successfully added.')
+    end
 
     fill_variable('zkey', 'zkeyvalue')
     click_add_variable
 
-    wait_for_requests
+    within_testid('ci-variable-mutation-alert') do
+      expect(page).to have_content('Variable zkey has been successfully added.')
+    end
 
     expect(page).to have_selector('.js-ci-variable-row', count: 3)
 
@@ -239,21 +236,17 @@ RSpec.shared_examples 'variable list drawer' do
       click_button('Delete')
     end
 
-    wait_for_requests
-
     # Add another variable
     open_drawer
     fill_variable('ckey', 'ckeyvalue')
     click_add_variable
 
-    wait_for_requests
-
     # expect to find 3 rows of variables in alphabetical order
     expect(page).to have_selector('.js-ci-variable-row', count: 3)
-    rows = all('.js-ci-variable-row')
-    expect(rows[0].find('td[data-label="Key"]')).to have_content('ckey')
-    expect(rows[1].find('td[data-label="Key"]')).to have_content('test_key')
-    expect(rows[2].find('td[data-label="Key"]')).to have_content('zkey')
+
+    expect(page).to have_selector('.js-ci-variable-row:nth-child(1) td[data-label="Key"]', text: 'ckey')
+    expect(page).to have_selector('.js-ci-variable-row:nth-child(2) td[data-label="Key"]', text: 'test_key')
+    expect(page).to have_selector('.js-ci-variable-row:nth-child(3) td[data-label="Key"]', text: 'zkey')
   end
 
   private
@@ -266,6 +259,9 @@ RSpec.shared_examples 'variable list drawer' do
 
   def close_drawer
     page.within('[data-testid="ci-variable-drawer"]') do
+      # Pre-empt the scrollTo that happens on submit to prevent misclicks
+      # https://gitlab.com/gitlab-org/gitlab/-/blob/b8f1b6ee356a2126f9593ace822d4e2742d1d45e/app/assets/javascripts/ci/ci_variable_list/components/ci_variable_drawer.vue#L448
+      scroll_to(find_button('Cancel'))
       click_button('Cancel')
     end
   end
@@ -277,8 +273,6 @@ RSpec.shared_examples 'variable list drawer' do
   end
 
   def fill_variable(key, value = '', description = '')
-    wait_for_requests
-
     page.within('[data-testid="ci-variable-drawer"]') do
       find('[data-testid="ci-variable-key"] input').set(key)
       find('[data-testid="ci-variable-value"]').set(value) if value.present?

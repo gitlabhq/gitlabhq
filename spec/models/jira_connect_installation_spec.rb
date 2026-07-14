@@ -26,6 +26,8 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
     it { is_expected.not_to allow_value('not/a/url').for(:instance_url) }
     it { is_expected.not_to allow_value("https://example.coצ").for(:instance_url) }
     it { is_expected.not_to allow_value('https://user:p@ss@example.com').for(:instance_url) }
+
+    it { is_expected.to validate_length_of(:cloud_id).is_at_most(255) }
   end
 
   describe '#normalize_instance_url' do
@@ -195,5 +197,45 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
 
       it { is_expected.to eq(true) }
     end
+  end
+
+  describe '#forge_direct?' do
+    let(:installation) { build(:jira_connect_installation) }
+
+    subject(:result) { installation.forge_direct? }
+
+    it { expect(result).to eq(false) }
+
+    context 'when both the apiBaseUrl and system token are present' do
+      let(:installation) do
+        build(:jira_connect_installation,
+          jira_api_base_url: 'https://api.atlassian.com/ex/jira/cloud-xyz',
+          forge_system_token: 'sys-token')
+      end
+
+      it { expect(result).to eq(true) }
+    end
+
+    context 'when only the apiBaseUrl is present' do
+      let(:installation) do
+        build(:jira_connect_installation, jira_api_base_url: 'https://api.atlassian.com/ex/jira/cloud-xyz')
+      end
+
+      it { expect(result).to eq(false) }
+    end
+
+    context 'when only the system token is present' do
+      let(:installation) { build(:jira_connect_installation, forge_system_token: 'sys-token') }
+
+      it { expect(result).to eq(false) }
+    end
+  end
+
+  describe 'jira_api_base_url validation' do
+    subject(:installation) { build(:jira_connect_installation) }
+
+    it { is_expected.to allow_value(nil).for(:jira_api_base_url) }
+    it { is_expected.to allow_value('https://api.atlassian.com/ex/jira/cloud-xyz').for(:jira_api_base_url) }
+    it { is_expected.not_to allow_value('not/a/url').for(:jira_api_base_url) }
   end
 end

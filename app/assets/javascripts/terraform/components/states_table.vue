@@ -17,6 +17,7 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import StateActions from './states_table_actions.vue';
 
 export default {
+  name: 'StatesTable',
   components: {
     CiIcon,
     GlAlert,

@@ -66,14 +66,6 @@ RSpec.describe Layouts::StaticPanelComponent, feature_category: :design_system d
   end
 
   describe 'slots' do
-    it 'renders broadcasts slot inside .broadcast-wrapper' do
-      render_inline component do |c|
-        c.with_broadcasts { 'Broadcast content' }
-      end
-
-      expect(page).to have_css('.broadcast-wrapper', text: 'Broadcast content')
-    end
-
     it 'renders header slot inside the top bar' do
       render_inline component do |c|
         c.with_header { 'Header content' }

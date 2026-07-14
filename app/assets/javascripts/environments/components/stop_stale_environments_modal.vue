@@ -36,6 +36,7 @@ export default {
       default: false,
     },
   },
+  emits: ['change'],
   modalProps: {
     primary: {
       text: s__('Environments|Clean up'),

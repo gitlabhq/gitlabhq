@@ -81,11 +81,11 @@ RSpec.shared_examples 'enforces step-up authentication' do
 
     context 'with multiple OAuth providers configured' do
       let(:provider_without_step_up) do
-        GitlabSettings::Options.new(name: 'github')
+        Gitlab::Configs.build_options(name: 'github')
       end
 
       let(:another_step_up_provider) do
-        GitlabSettings::Options.new(
+        Gitlab::Configs.build_options(
           name: 'saml',
           step_up_auth: {
             namespace: {
@@ -158,11 +158,11 @@ RSpec.shared_examples 'enforces step-up authentication' do
 
     context 'with multiple OAuth providers configured' do
       let(:provider_without_step_up) do
-        GitlabSettings::Options.new(name: 'github')
+        Gitlab::Configs.build_options(name: 'github')
       end
 
       let(:another_step_up_provider) do
-        GitlabSettings::Options.new(
+        Gitlab::Configs.build_options(
           name: 'saml',
           step_up_auth: {
             namespace: {

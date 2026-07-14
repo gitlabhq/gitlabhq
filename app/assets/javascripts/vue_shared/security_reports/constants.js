@@ -37,6 +37,7 @@ export const REPORT_TYPE_API_FUZZING = 'api_fuzzing';
  */
 export const SECURITY_REPORT_TYPE_ENUM_SAST = 'SAST';
 export const SECURITY_REPORT_TYPE_ENUM_SECRET_DETECTION = 'SECRET_DETECTION';
+export const SECURITY_REPORT_TYPE_ENUM_DEPENDENCY_SCANNING = 'DEPENDENCY_SCANNING';
 
 /**
  * A mapping from security scan report types to SecurityReportTypeEnum values.

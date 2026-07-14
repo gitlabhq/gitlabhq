@@ -386,10 +386,10 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
 
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('public_api/v4/feature_flag')
-        expect(json_response['active']).to eq(false)
+        expect(json_response['active']).to be(false)
 
         feature_flag = project.operations_feature_flags.last
-        expect(feature_flag.active).to eq(false)
+        expect(feature_flag.active).to be(false)
       end
 
       it 'creates a new feature flag with strategies' do
@@ -618,8 +618,8 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/feature_flag')
-        expect(json_response['active']).to eq(false)
-        expect(feature_flag.reload.active).to eq(false)
+        expect(json_response['active']).to be(false)
+        expect(feature_flag.reload.active).to be(false)
       end
 
       it 'updates the feature flag name' do

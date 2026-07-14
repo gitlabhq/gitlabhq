@@ -27,6 +27,7 @@ export default {
       default: 'initial',
     },
   },
+  emits: ['error'],
   data() {
     return {
       hljs: null,

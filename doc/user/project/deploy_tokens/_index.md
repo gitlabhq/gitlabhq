@@ -33,7 +33,7 @@ A deploy token is a pair of values:
 
 Deploy tokens do not support [SSH authentication](../../ssh.md).
 
-You can use a deploy token for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)
+You can use a deploy token for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Authentication)
 to the following endpoints:
 
 - GitLab package registry public API.
@@ -70,7 +70,7 @@ A deploy token's scope determines the actions it can perform.
 
 {{< history >}}
 
-- Support for `gitlab-deploy-token` at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214014) in GitLab 15.1 [with a flag](../../../administration/feature_flags/_index.md) named `ci_variable_for_group_gitlab_deploy_token`. Enabled by default.
+- Support for `gitlab-deploy-token` at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214014) in GitLab 15.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `ci_variable_for_group_gitlab_deploy_token`. Enabled by default.
 - [Feature flag `ci_variable_for_group_gitlab_deploy_token`](https://gitlab.com/gitlab-org/gitlab/-/issues/363621) removed in GitLab 15.4.
 
 {{< /history >}}
@@ -100,7 +100,7 @@ CI/CD variables are available only to immediate child projects of the group.
 
 {{< history >}}
 
-- Email notifications for deploy token expiration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512197) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `project_deploy_token_expiring_notifications`. Disabled by default.
+- Email notifications for deploy token expiration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512197) in GitLab 18.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `project_deploy_token_expiring_notifications`. Disabled by default.
 
 {{< /history >}}
 

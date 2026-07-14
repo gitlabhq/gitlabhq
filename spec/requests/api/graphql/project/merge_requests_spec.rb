@@ -48,6 +48,13 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
     )
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_merge_request] do
+    let(:user) { create(:user, developer_of: project) }
+    let(:boundary_object) { project }
+    let(:query) { query_merge_requests('iid') }
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+  end
+
   it_behaves_like 'a working graphql query' do
     # we exclude codequalityReportsComparer because it is behind feature flag
     let(:excluded) { %w[codequalityReportsComparer] }

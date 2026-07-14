@@ -4,10 +4,8 @@ module Ci
   module PipelineSchedulesHelper
     def js_pipeline_schedules_form_data(project, schedule)
       {
-        can_view_pipeline_editor: can_view_pipeline_editor?(project).to_s,
         daily_limit: schedule.daily_limit,
         default_branch: project.default_branch,
-        pipeline_editor_path: project_ci_pipeline_editor_path(project),
         project_id: project.id,
         project_path: project.full_path,
         schedules_path: pipeline_schedules_path(project),

@@ -17,6 +17,7 @@ module Gitlab
       Subscriptions::CiSubscriptions,
       Subscriptions::NamespacesSubscriptions,
       Subscriptions::MlSubscriptions,
+      Subscriptions::OrganizationsSubscriptions,
       Subscriptions::PagesSubscriptions,
       Subscriptions::WorkItemsSubscriptions,
       Subscriptions::FeatureSubscriptions

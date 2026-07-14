@@ -15,9 +15,9 @@ title: Zoekt
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags/_index.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with feature flags](../../administration/feature_flags/_index.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
-- Global code search [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `zoekt_cross_namespace_search`. Disabled by default.
+- Global code search [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077) in GitLab 16.11 [with a feature flag](../../administration/feature_flags/_index.md) named `zoekt_cross_namespace_search`. Disabled by default.
 - Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
 - Feature flag `zoekt_rollout_worker` [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175666) in GitLab 17.9. Disabled by default.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/17918) from beta to limited availability in GitLab 18.6.
@@ -49,6 +49,8 @@ Each GitLab version comes with a specific `gitlab-zoekt-indexer` and `gitlab-zoe
 
 | GitLab version | `gitlab-zoekt-indexer` version | `gitlab-zoekt` chart version |
 |----------------|--------------------------------|------------------------------|
+| 19.1           | 1.16.1                         | 4.1.0                        |
+| 19.0           | 1.14.2                         | 4.0.0                        |
 | 18.11          | 1.13.1                         | 3.11.0                       |
 | 18.10          | 1.11.2                         | 3.10.0                       |
 | 18.9           | 1.8.2                          | 3.9.0                        |
@@ -180,7 +182,7 @@ gitlab-rake "gitlab:zoekt:reindex_failed_projects[1,2,3]"
 
 {{< history >}}
 
-- Stopping indexing when Zoekt node storage exceeds the critical watermark [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/504945) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `zoekt_critical_watermark_stop_indexing`. Disabled by default.
+- Stopping indexing when Zoekt node storage exceeds the critical watermark [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/504945) in GitLab 17.7 [with a feature flag](../../administration/feature_flags/_index.md) named `zoekt_critical_watermark_stop_indexing`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/505334) in GitLab 18.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505334) in GitLab 18.1. Feature flag `zoekt_critical_watermark_stop_indexing` removed.
 

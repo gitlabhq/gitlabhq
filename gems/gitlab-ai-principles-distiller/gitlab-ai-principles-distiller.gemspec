@@ -19,7 +19,11 @@ Gem::Specification.new do |spec|
 
   spec.files = Dir['lib/**/*.rb']
   spec.require_paths = ['lib']
-  spec.executables = %w[gitlab-ai-principles-distiller-sync gitlab-ai-principles-distiller-provision-flow]
+  spec.executables = %w[
+    gitlab-ai-principles-distiller-sync
+    gitlab-ai-principles-distiller-provision-flow
+    gitlab-ai-principles-distiller-validate
+  ]
 
   spec.add_dependency 'rainbow'
 

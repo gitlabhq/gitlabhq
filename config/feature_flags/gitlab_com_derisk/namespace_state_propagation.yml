@@ -1,0 +1,11 @@
+---
+name: namespace_state_propagation
+description: Read namespace state from the state column directly instead of resolving
+  it through ancestor traversal
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/599306
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242843
+rollout_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/21923
+milestone: '19.2'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

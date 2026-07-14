@@ -120,5 +120,48 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_inte
         expect(response).to be_instance_of(::Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
     end
+
+    context 'when the ci_lint rate limit is exceeded' do
+      before do
+        project.add_developer(user)
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+          .with(:ci_lint, scope: [user])
+          .and_return(true)
+      end
+
+      context 'when ci_enforce_ci_lint_rate_limit is enabled' do
+        it 'returns a ResourceNotAvailable error' do
+          expect(response).to be_instance_of(::Gitlab::Graphql::Errors::ResourceNotAvailable)
+        end
+      end
+
+      context 'when ci_enforce_ci_lint_rate_limit is disabled (log-only mode)' do
+        # Provide a sha so the real Lint constructor doesn't resolve the head commit via Gitaly,
+        # which the resolver test harness rejects on the success path.
+        let(:sha) { '1231231' }
+
+        let(:fake_result) do
+          ::Gitlab::Ci::Lint::Result.new(
+            merged_yaml: content, jobs: [], errors: [], warnings: [], includes: []
+          )
+        end
+
+        before do
+          stub_feature_flags(ci_enforce_ci_lint_rate_limit: false)
+
+          # Exercise the real `ci_lint_rate_limited?` gate (it should return false and not raise),
+          # but stub the downstream validation to avoid Gitaly calls the resolver harness rejects.
+          allow_next_instance_of(::Gitlab::Ci::Lint) do |lint|
+            allow(lint).to receive(:legacy_static_validation).and_return(fake_result)
+          end
+        end
+
+        it 'does not block the request and lints the config', :aggregate_failures do
+          expect(response).not_to be_instance_of(::Gitlab::Graphql::Errors::ResourceNotAvailable)
+          expect(response[:status]).to eq(:valid)
+        end
+      end
+    end
   end
 end

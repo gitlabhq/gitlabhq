@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLabのGitリポジトリ管理のためのREST APIに関するドキュメント
 title: リポジトリファイルAPI
 ---
@@ -13,11 +13,11 @@ title: リポジトリファイルAPI
 
 {{< /details >}}
 
-このAPIを使用して、[repository files](../user/project/repository/_index.md)を管理します。このAPIの[レート制限を設定する](../administration/settings/files_api_rate_limits.md)こともできます。
+このAPIを使用して、[リポジトリファイル](../user/project/repository/_index.md)を管理します。このAPIの[レート制限を設定する](../administration/settings/files_api_rate_limits.md)こともできます。
 
 ## パーソナルアクセストークンで使用可能なスコープ {#available-scopes-for-personal-access-tokens}
 
-[パーソナルアクセストークン](../user/profile/personal_access_tokens.md)では、次のスコープがサポートされています:
+[パーソナルアクセストークン](../user/profile/personal_access_tokens.md)では、次のスコープがサポートされています。
 
 | スコープ             | 説明 |
 |-------------------|-------------|
@@ -25,9 +25,9 @@ title: リポジトリファイルAPI
 | `read_api`        | リポジトリファイルへの読み取りアクセスを許可します。 |
 | `read_repository` | リポジトリファイルへの読み取りアクセスを許可します。 |
 
-## リポジトリからファイルを取得する {#get-file-from-repository}
+## リポジトリからファイルを取得する {#retrieve-a-file-from-a-repository}
 
-名前、サイズ、内容など、リポジトリ内のファイルに関する情報を受け取ることができるようにします。ファイルの内容はBase64でエンコードされています。リポジトリが公開されている場合、このエンドポイントには認証なしでアクセスできます。
+リポジトリ内の指定されたファイルに関する情報を取得します。これには、名前、サイズ、ファイルの内容などの情報が含まれます。ファイルの内容はBase64でエンコードされています。リポジトリが公開されている場合、このエンドポイントには認証なしでアクセスできます。
 
 10 MBを超えるblobの場合、このエンドポイントには1分あたり5リクエストというレート制限があります。
 
@@ -35,7 +35,7 @@ title: リポジトリファイルAPI
 GET /projects/:id/repository/files/:file_path
 ```
 
-サポートされている属性:
+サポートされている属性は以下のとおりです: 
 
 | 属性   | 型              | 必須 | 説明 |
 |-------------|-------------------|----------|-------------|
@@ -43,7 +43,7 @@ GET /projects/:id/repository/files/:file_path
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `ref`       | 文字列            | はい      | ブランチ、タグ、またはコミットの名前。デフォルトブランチを自動的に使用するには、`HEAD`を使用します。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性          | 型    | 説明 |
 |--------------------|---------|-------------|
@@ -64,14 +64,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=main"
 ```
 
-ブランチ名がわからない場合、またはデフォルトブランチを使用する場合は、`ref`の値として`HEAD`を使用できます。次に例を示します: 
+ブランチ名がわからない場合、またはデフォルトブランチを使用する場合は、`ref`の値として`HEAD`を使用できます。例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: " \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=HEAD"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -102,7 +102,7 @@ curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=main"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```plaintext
 HTTP/1.1 200 OK
@@ -120,15 +120,15 @@ X-Gitlab-Execute-Filemode: false
 ...
 ```
 
-## リポジトリからファイルblameを取得する {#get-file-blame-from-repository}
+## リポジトリからファイルのblame履歴を取得する {#retrieve-file-blame-history-from-a-repository}
 
-blame情報を取得します。各blame範囲には、行と対応するコミット情報が含まれています。
+リポジトリ内の指定されたファイルに対するblame履歴を取得します。各blame範囲には、行と対応するコミット情報が含まれています。
 
 ```plaintext
 GET /projects/:id/repository/files/:file_path/blame
 ```
 
-サポートされている属性:
+サポートされている属性は以下のとおりです: 
 
 | 属性      | 型              | 必須 | 説明 |
 |----------------|-------------------|----------|-------------|
@@ -139,7 +139,7 @@ GET /projects/:id/repository/files/:file_path/blame
 | `range[end]`   | 整数           | いいえ       | blame対象範囲の最後の行。 |
 | `range[start]` | 整数           | いいえ       | blame対象範囲の最初の行。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性 | 型   | 説明 |
 |-----------|--------|-------------|
@@ -151,7 +151,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -180,7 +180,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ### ファイルのblameメタデータのみを取得する {#get-file-blame-metadata-only}
 
-`HEAD`メソッドを使用して、blameファイルのメタデータのみを返します。
+`HEAD`メソッドを使用して、ファイルblameメタデータのみを返します。
 
 ```plaintext
 HEAD /projects/:id/repository/files/:file_path/blame
@@ -191,7 +191,7 @@ curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```plaintext
 HTTP/1.1 200 OK
@@ -218,7 +218,7 @@ curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main&range[start]=1&range[end]=2"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -244,19 +244,21 @@ curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## リポジトリからrawファイルを取得する {#get-raw-file-from-repository}
+## リポジトリからrawファイルを取得する {#retrieve-a-raw-file-from-a-repository}
+
+リポジトリ内の指定されたファイルのrawコンテンツを取得します。
 
 ```plaintext
 GET /projects/:id/repository/files/:file_path/raw
 ```
 
-サポートされている属性:
+サポートされている属性は以下のとおりです: 
 
 | 属性   | 型              | 必須 | 説明 |
 |-------------|-------------------|----------|-------------|
 | `file_path` | 文字列            | はい      | ファイルのURLエンコードされたフルパス（`lib%2Fclass%2Erb`など）。 |
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `lfs`       | ブール値           | いいえ       | `true`の場合、応答をポインターではなく、Git LFSファイルの内容にするかどうかを決定します。ファイルがGit LFSで追跡されていない場合は無視されます。デフォルトは`false`です。 |
+| `lfs`       | ブール値           | いいえ       | `true`の場合、応答をポインターではなく、Git LFSファイルの内容にするかどうかを決定します。ファイルがGit LFSで追跡されていない場合は無視されます。`false`がデフォルトです。 |
 | `ref`       | 文字列            | いいえ       | ブランチ、タグ、またはコミットの名前。デフォルトはプロジェクトの`HEAD`です。 |
 
 ```shell
@@ -264,21 +266,27 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=main"
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> [リポジトリからファイルを取得する](repository_files.md#retrieve-a-file-from-a-repository)のと同様に、`HEAD`を使用してファイルメタデータのみを取得できます。
 
-[リポジトリからファイルを取得する](repository_files.md#get-file-from-repository)場合と同様に、`HEAD`を使用してファイルメタデータのみを取得できます。
+## リポジトリにファイルを作成する {#create-a-file-in-a-repository}
 
-{{< /alert >}}
+{{< history >}}
 
-## リポジトリに新しいファイルを作成する {#create-new-file-in-repository}
+- GitLab 18.7で導入されたリクエストサイズとレート制限。
 
-1つのファイルを作成できるようにします。1つのリクエストで複数のファイルを作成するには、[コミットAPI](commits.md#create-a-commit-with-multiple-files-and-actions)を参照してください。
+{{< /history >}}
+
+指定されたリポジトリにファイルを作成します。単一のリクエストで複数のファイルを作成するには、[コミットAPI](commits.md#create-a-commit)を参照してください。
 
 ```plaintext
 POST /projects/:id/repository/files/:file_path
 ```
 
-サポートされている属性:
+> [!note]
+> このエンドポイントは、[リクエストサイズとレート制限](../administration/instance_limits.md#commits-and-files-api-limits)の対象となります。デフォルトの300 MBを超えるリクエストは拒否されます。20 MBを超えるリクエストは、30秒ごとに3リクエストにレート制限されます。
+
+サポートされている属性は以下のとおりです: 
 
 | 属性          | 型              | 必須 | 説明 |
 |--------------------|-------------------|----------|-------------|
@@ -293,7 +301,7 @@ POST /projects/:id/repository/files/:file_path
 | `execute_filemode` | ブール値           | いいえ       | `true`の場合、ファイルの`execute`フラグが有効になります。`false`の場合、ファイルの`execute`フラグが無効になります。 |
 | `start_branch`     | 文字列            | いいえ       | ブランチの作成元となるベースブランチの名前。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`201 Created`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性   | 型   | 説明 |
 |-------------|--------|-------------|
@@ -309,7 +317,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -318,15 +326,24 @@ curl --request POST \
 }
 ```
 
-## リポジトリ内の既存のファイルを更新する {#update-existing-file-in-repository}
+## リポジトリ内のファイルを更新する {#update-a-file-in-a-repository}
 
-1つのファイルを更新できるようにします。1つのリクエストで複数のファイルを更新するには、[コミットAPI](commits.md#create-a-commit-with-multiple-files-and-actions)を参照してください。
+{{< history >}}
+
+- GitLab 18.7で導入されたリクエストサイズとレート制限。
+
+{{< /history >}}
+
+指定されたリポジトリ内のファイルを更新します。単一のリクエストで複数のファイルを更新するには、[コミットAPI](commits.md#create-a-commit)を参照してください。
 
 ```plaintext
 PUT /projects/:id/repository/files/:file_path
 ```
 
-サポートされている属性:
+> [!note]
+> このエンドポイントは、[リクエストサイズとレート制限](../administration/instance_limits.md#commits-and-files-api-limits)の対象となります。デフォルトの300 MBを超えるリクエストは拒否されます。20 MBを超えるリクエストは、30秒ごとに3リクエストにレート制限されます。
+
+サポートされている属性は以下のとおりです: 
 
 | 属性        | 型              | 必須 | 説明 |
 | ---------------- | ----------------- | -------- | ----------- |
@@ -342,7 +359,7 @@ PUT /projects/:id/repository/files/:file_path
 | `last_commit_id` | 文字列            | いいえ       | 既知の最新のファイルコミットID。 |
 | `start_branch`   | 文字列            | いいえ       | ブランチの作成元となるベースブランチの名前。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性   | 型   | 説明 |
 |-------------|--------|-------------|
@@ -358,7 +375,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -367,7 +384,7 @@ curl --request PUT \
 }
 ```
 
-何らかの理由でコミットが失敗した場合、APIは特定のエラーメッセージではなく、`400 Bad Request`エラーを返します。コミットが失敗する原因として考えられる状況は次のとおりです:
+コミットが何らかの理由で失敗した場合、APIは汎用的なエラーメッセージとともに`400 Bad Request`エラーを返します。コミットが失敗する原因として考えられる状況は次のとおりです。
 
 - `file_path`に`/../`が含まれていた（ディレクトリトラバーサルが試行された）。
 - コミットが空であった。新しいファイルの内容が現在のファイルの内容と同じであった。
@@ -375,15 +392,15 @@ curl --request PUT \
 
 [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell/)の戻りコードはブール値であるため、GitLabはエラーを指定できません。
 
-## リポジトリ内の既存のファイルを削除する {#delete-existing-file-in-repository}
+## リポジトリ内のファイルを削除する {#delete-a-file-in-a-repository}
 
-1つのファイルを削除します。1つのリクエストで複数のファイルを削除するには、[コミットAPI](commits.md#create-a-commit-with-multiple-files-and-actions)を参照してください。
+指定されたリポジトリ内のファイルを削除します。1つのリクエストで複数のファイルを削除するには、[コミットAPI](commits.md#create-a-commit)を参照してください。
 
 ```plaintext
 DELETE /projects/:id/repository/files/:file_path
 ```
 
-サポートされている属性:
+サポートされている属性は以下のとおりです: 
 
 | 属性        | 型              | 必須 | 説明 |
 |------------------|-------------------|----------|-------------|
@@ -396,7 +413,7 @@ DELETE /projects/:id/repository/files/:file_path
 | `last_commit_id` | 文字列            | いいえ       | 既知の最新のファイルコミットID。 |
 | `start_branch`   | 文字列            | いいえ       | ブランチの作成元となるベースブランチの名前。 |
 
-成功すると、[`200 OK`](rest/troubleshooting.md#status-codes)を返します。
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)を返します。
 
 ```shell
 curl --request DELETE \

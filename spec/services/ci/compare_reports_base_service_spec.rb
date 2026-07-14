@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::CompareReportsBaseService, feature_category: :continuous_integration do
   let(:service) { described_class.new(project) }
-  let(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   let!(:base_pipeline) { nil }
   let!(:head_pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }

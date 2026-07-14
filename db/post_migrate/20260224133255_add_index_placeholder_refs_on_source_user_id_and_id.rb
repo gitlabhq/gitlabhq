@@ -10,9 +10,7 @@ class AddIndexPlaceholderRefsOnSourceUserIdAndId < Gitlab::Database::Migration[2
   INDEX_NAME = 'index_import_source_user_placeholder_refs_on_source_user_id_id'
 
   def up
-    # rubocop:disable Migration/PreventIndexCreation -- https://gitlab.com/gitlab-org/database-team/team-tasks/-/work_items/591
     add_concurrent_index TABLE_NAME, COLUMNS, name: INDEX_NAME
-    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

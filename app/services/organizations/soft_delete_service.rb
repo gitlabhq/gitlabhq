@@ -11,7 +11,7 @@ module Organizations
     end
 
     def execute
-      return error(_('Insufficient permissions')) unless authorized?
+      return error(_('Insufficient permissions'), reason: :access_denied) unless authorized?
       return error(_('Organization must be empty before it can be deleted')) unless organization.empty?
       return error(_('Organization has already been deleted')) if organization.soft_deleted?
 
@@ -32,8 +32,8 @@ module Organizations
       Ability.allowed?(current_user, :delete_organization, organization)
     end
 
-    def error(message)
-      ServiceResponse.error(message: message, payload: { organization: nil })
+    def error(message, reason: nil)
+      ServiceResponse.error(message: message, payload: { organization: nil }, reason: reason)
     end
 
     def log_event

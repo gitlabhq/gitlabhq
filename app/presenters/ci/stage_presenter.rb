@@ -5,7 +5,7 @@ module Ci
     presents ::Ci::Stage, as: :stage
 
     PRELOADED_RELATIONS = [
-      :pipeline, :metadata, :job_definition, :tags, :job_artifacts_archive, :downstream_pipeline
+      :pipeline, :job_definition, :job_artifacts_archive, :downstream_pipeline
     ].freeze
 
     def latest_ordered_statuses

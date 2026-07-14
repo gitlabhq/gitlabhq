@@ -425,7 +425,7 @@ RSpec.shared_examples 'supports group mentions' do |integration_factory|
   describe '#supported_events' do
     context 'when used in a project' do
       let_it_be(:project, freeze: false) { create(:project) }
-      let_it_be(:integration, freeze: false) { build(integration_factory, project: project) }
+      let_it_be(:integration) { build(integration_factory, project: project) }
 
       it 'does not support group mentions', :aggregate_failures do
         expect(integration.supported_events).not_to include('group_mention')
@@ -435,7 +435,7 @@ RSpec.shared_examples 'supports group mentions' do |integration_factory|
 
     context 'when used in a group' do
       let_it_be(:group, freeze: false) { create(:group) }
-      let_it_be(:integration, freeze: false) { build(integration_factory, group: group) }
+      let_it_be(:integration) { build(integration_factory, group: group) }
 
       it 'supports group mentions', :aggregate_failures do
         expect(integration.supported_events).to include('group_mention')

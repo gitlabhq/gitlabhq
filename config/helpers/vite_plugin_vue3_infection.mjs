@@ -18,6 +18,9 @@ const {
 const VUE3_SUFFIX = '.vue3-infected';
 const VUE3_SUFFIX_RE = /\.vue3-infected(\.\w+)/;
 
+// Target that `@vitejs/plugin-vue2`'s `vue$` alias rewrites the bare `vue` specifier to.
+const VUE2_RUNTIME_ALIAS = 'vue/dist/vue.runtime.esm.js';
+
 const isInfectedBySuffix = (id) => VUE3_SUFFIX_RE.test(id);
 const isInfected = (id) => hasVue3Query(id) || isInfectedBySuffix(id);
 const isVirtualModule = (id) => id.startsWith('\0');
@@ -93,7 +96,13 @@ export function Vue3InfectionPlugin() {
       }
 
       const resolve = (id) => this.resolve(id, importer, { ...options, skipSelf: true });
-      const sourceToResolve = explicitlyRequestsInfection ? stripQuery(source) : source;
+      const rawSource = explicitlyRequestsInfection ? stripQuery(source) : source;
+      // `@vitejs/plugin-vue2` rewrites the bare `vue` specifier to the Vue 2 runtime
+      // build via a `vue$` alias. Since Vite 8.0.14 that alias is applied before this
+      // plugin's `resolveId` runs, so the CONTEXT_ALIASES `vue` redirect would otherwise
+      // be missed and infected modules would resolve the raw Vue 2 runtime instead of the
+      // `@vue/compat` shim. Normalize the alias target back to the bare `vue` specifier.
+      const sourceToResolve = rawSource === VUE2_RUNTIME_ALIAS ? 'vue' : rawSource;
       const appendVue3 = isBuild ? appendVue3Suffix : appendVue3Query;
 
       const aliasKey = contextAliasKeys.find((k) => sourceToResolve === k);

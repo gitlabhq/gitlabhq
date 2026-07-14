@@ -3,35 +3,35 @@
 require 'spec_helper'
 
 RSpec.describe API::Boards, :with_license, feature_category: :portfolio_management do
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:non_member, freeze: false) { create(:user) }
-  let_it_be(:guest, freeze: false) { create(:user) }
-  let_it_be(:admin, freeze: false) { create(:user, :admin) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:non_member) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:admin) { create(:user, :admin) }
   let_it_be_with_reload(:board_parent) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
 
-  let_it_be(:dev_label, freeze: false) do
+  let_it_be(:dev_label) do
     create(:label, title: 'Development', color: '#FFAABB', project: board_parent)
   end
 
-  let_it_be(:test_label, freeze: false) do
+  let_it_be(:test_label) do
     create(:label, title: 'Testing', color: '#FFAACC', project: board_parent)
   end
 
-  let_it_be(:ux_label, freeze: false) do
+  let_it_be(:ux_label) do
     create(:label, title: 'UX', color: '#FF0000', project: board_parent)
   end
 
-  let_it_be(:dev_list, freeze: false) do
+  let_it_be_with_reload(:dev_list) do
     create(:list, label: dev_label, position: 1)
   end
 
-  let_it_be(:test_list, freeze: false) do
+  let_it_be_with_reload(:test_list) do
     create(:list, label: test_label, position: 2)
   end
 
-  let_it_be(:milestone, freeze: false) { create(:milestone, project: board_parent) }
-  let_it_be(:board_label, freeze: false) { create(:label, project: board_parent) }
-  let_it_be(:board, freeze: false) { create(:board, project: board_parent, lists: [dev_list, test_list]) }
+  let_it_be(:milestone) { create(:milestone, project: board_parent) }
+  let_it_be(:board_label) { create(:label, project: board_parent) }
+  let_it_be_with_reload(:board) { create(:board, project: board_parent, lists: [dev_list, test_list]) }
 
   it_behaves_like 'group and project boards', "/projects/:id/boards"
 
@@ -106,11 +106,11 @@ RSpec.describe API::Boards, :with_license, feature_category: :portfolio_manageme
   end
 
   describe "POST /groups/:id/boards/:board_id/lists" do
-    let_it_be(:group, freeze: false) { create(:group) }
-    let_it_be(:board_parent, freeze: false) { create(:group, parent: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be_with_reload(:board_parent) { create(:group, parent: group) }
     let(:url) { "/groups/#{board_parent.id}/boards/#{board.id}/lists" }
 
-    let_it_be(:board, freeze: false) { create(:board, group: board_parent) }
+    let_it_be_with_reload(:board) { create(:board, group: board_parent) }
 
     it 'creates a new board list for ancestor group labels' do
       group.add_developer(user)

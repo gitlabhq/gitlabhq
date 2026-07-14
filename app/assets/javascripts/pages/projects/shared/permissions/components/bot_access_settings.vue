@@ -13,20 +13,20 @@ export default {
     ProjectSettingRow,
   },
   i18n: {
-    botAccessLabel: s__('ProjectSettings|Security policy bot access'),
+    botAccessLabel: s__('ProjectSettings|Pipeline execution policies'),
     botAccessEnabledLabel: s__(
-      'ProjectSettings|Allow security policy bots to access CI/CD configuration files in this project.',
+      'ProjectSettings|Allow access to CI/CD configuration files in this project.',
     ),
     botAccessEnabledHelpText: s__(
-      'ProjectSettings|When enabled, security policy bots from projects in the same group hierarchy can access files matching the specified patterns.',
+      'ProjectSettings|When enabled, users running pipelines with pipeline execution policies from projects in the same group hierarchy can access files matching the specified patterns.',
     ),
     botAccessFilePatternsLabel: s__('ProjectSettings|Allowed file patterns'),
     botAccessFilePatternsHelpText: s__(
-      'ProjectSettings|Comma-separated glob patterns for files the bot can access (for example, ci/**/*.yml).',
+      'ProjectSettings|Comma-separated glob patterns for files that can be accessed (for example, ci/**/*.yml).',
     ),
     botAccessGroupLabel: s__('ProjectSettings|Allowed group'),
     botAccessGroupDescription: s__(
-      'ProjectSettings|Restrict access to bots from projects in this group. If not set, defaults to the root ancestor group.',
+      'ProjectSettings|Restrict access to users from projects in this group. If not set, defaults to the root ancestor group.',
     ),
     botAccessGroupEmptyText: s__('ProjectSettings|Use default (root ancestor group)'),
   },

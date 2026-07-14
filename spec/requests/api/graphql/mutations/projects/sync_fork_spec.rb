@@ -33,7 +33,7 @@ RSpec.describe "Sync project fork", feature_category: :source_code_management do
   end
 
   context 'when the branch is protected', :use_clean_rails_redis_caching do
-    let_it_be(:protected_branch, freeze: false) do
+    let_it_be(:protected_branch) do
       create(:protected_branch, :no_one_can_push, project: project, name: target_branch)
     end
 
@@ -120,7 +120,7 @@ RSpec.describe "Sync project fork", feature_category: :source_code_management do
           end
 
           expect_error_response('The synchronization cannot happen due to the merge conflict')
-          expect(graphql_mutation_response(:project_sync_fork)['details']['hasConflicts']).to eq(true)
+          expect(graphql_mutation_response(:project_sync_fork)['details']['hasConflicts']).to be(true)
         end
       end
 
@@ -140,7 +140,7 @@ RSpec.describe "Sync project fork", feature_category: :source_code_management do
           end
 
           expect_error_response('Another fork sync is already in progress')
-          expect(graphql_mutation_response(:project_sync_fork)['details']['isSyncing']).to eq(true)
+          expect(graphql_mutation_response(:project_sync_fork)['details']['isSyncing']).to be(true)
         end
       end
     end

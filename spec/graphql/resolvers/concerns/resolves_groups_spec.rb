@@ -6,23 +6,23 @@ RSpec.describe ResolvesGroups do
   include GraphqlHelpers
   include AfterNextHelpers
 
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:groups, freeze: false) { create_pair(:group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:groups) { create_pair(:group) }
 
-  let_it_be(:resolver, freeze: false) do
+  let_it_be(:resolver) do
     Class.new(Resolvers::BaseResolver) do
       include ResolvesGroups
       type Types::GroupType, null: true
     end
   end
 
-  let_it_be(:query_type, freeze: false) do
+  let_it_be(:query_type) do
     query_factory do |query|
       query.field :groups, Types::GroupType.connection_type, null: true, resolver: resolver
     end
   end
 
-  let_it_be(:preloaded_fields, freeze: false) do
+  let_it_be(:preloaded_fields) do
     <<~FIELDS
       archived
       containerRepositoriesCount

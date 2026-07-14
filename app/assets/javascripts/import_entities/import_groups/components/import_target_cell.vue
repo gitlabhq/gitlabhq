@@ -7,6 +7,7 @@ import { validationMessageFor } from '../utils';
 import { NEW_NAME_FIELD, TARGET_NAMESPACE_FIELD } from '../constants';
 
 export default {
+  name: 'ImportTargetCell',
   components: {
     ImportTargetDropdown,
     GlFormInput,

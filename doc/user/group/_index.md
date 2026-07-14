@@ -106,7 +106,7 @@ To explore all public or internal groups:
 
 {{< history >}}
 
-- **Member** tab [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
+- **Member** tab [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) in GitLab 18.2 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542790) in GitLab 18.3. Feature flag `your_work_groups_vue` removed.
 
 {{< /history >}}
@@ -125,9 +125,9 @@ This page shows groups that you are a member of through:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) **Inactive** tab in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) **Inactive** tab in GitLab 18.2 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542790) in GitLab 18.3. Feature flag `your_work_groups_vue` removed.
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) **Inactive** tab on the **Explore groups** page in GitLab 18.8 [with a flag](../../administration/feature_flags/_index.md) named `explore_groups_vue`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) **Inactive** tab on the **Explore groups** page in GitLab 18.8 [with a feature flag](../../administration/feature_flags/_index.md) named `explore_groups_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/585432) in GitLab 18.11. Feature flag `explore_groups_vue` removed.
 
 {{< /history >}}

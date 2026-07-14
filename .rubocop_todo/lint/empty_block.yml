@@ -28,7 +28,6 @@ Lint/EmptyBlock:
     - 'spec/initializers/net_http_response_patch_spec.rb'
     - 'spec/lib/api/base_spec.rb'
     - 'spec/lib/api/helpers/authentication_spec.rb'
-    - 'spec/lib/bitbucket_server/connection_spec.rb'
     - 'spec/lib/feature_spec.rb'
     - 'spec/lib/gitlab/application_context_spec.rb'
     - 'spec/lib/gitlab/background_migration/batched_migration_job_spec.rb'

@@ -27,6 +27,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
   end
 
   describe 'GET /projects/:id/pipelines ' do
+    describe 'mcp route setting' do
+      subject { get api("/projects/#{project.id}/pipelines", user) }
+
+      it_behaves_like 'an endpoint with mcp route setting', :list_pipelines,
+        expected_params: [:id, :ref, :page, :per_page]
+    end
+
     it_behaves_like 'pipelines visibility table'
 
     it_behaves_like 'enforcing job token policies', :read_pipelines,
@@ -375,7 +382,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
   describe 'GET /projects/:id/pipelines/:pipeline_id/jobs' do
     let(:query) { {} }
     let(:api_user) { user }
-    let_it_be(:job, freeze: false) do
+    let_it_be_with_reload(:job) do
       create(
         :ci_build,
         :success,
@@ -386,6 +393,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     let(:guest) { create(:project_member, :guest, project: project).user }
+
+    describe 'mcp route setting' do
+      subject { get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", user) }
+
+      it_behaves_like 'an endpoint with mcp route setting', :get_pipeline_jobs,
+        expected_params: [:id, :pipeline_id, :per_page, :page]
+    end
 
     context 'when public_builds is false' do
       before do |example|
@@ -587,7 +601,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
   end
 
-  describe 'GET /projects/:id/pipelines/:pipeline_id/bridges' do
+  shared_examples 'listing trigger jobs by pipeline' do |route_suffix|
     let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline, user: pipeline.user) }
 
     let(:downstream_pipeline) { create(:ci_pipeline) }
@@ -610,7 +624,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       before do |example|
         unless example.metadata[:skip_before_request]
           project.update!(public_builds: false)
-          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/#{route_suffix}", api_user), params: query
         end
       end
 
@@ -661,7 +675,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
             let(:query) { { 'scope' => 'pending' } }
 
             it :skip_before_request, :aggregate_failures do
-              get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
+              get api("/projects/#{project.id}/pipelines/#{pipeline.id}/#{route_suffix}", api_user), params: query
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(json_response).to be_an Array
@@ -674,7 +688,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
             let(:query) { { scope: %w[pending running] } }
 
             it :skip_before_request, :aggregate_failures do
-              get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
+              get api("/projects/#{project.id}/pipelines/#{pipeline.id}/#{route_suffix}", api_user), params: query
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(json_response).to be_an Array
@@ -716,20 +730,20 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         it 'avoids N+1 queries', :use_sql_query_cache, :request_store,
           quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/562015' do
           control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-            get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
+            get api("/projects/#{project.id}/pipelines/#{pipeline.id}/#{route_suffix}", api_user), params: query
           end
 
           3.times { create_bridge(pipeline) }
 
           expect do
-            get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
+            get api("/projects/#{project.id}/pipelines/#{pipeline.id}/#{route_suffix}", api_user), params: query
           end.to issue_same_number_of_queries_as(control)
         end
       end
 
       context 'no pipeline is found' do
         it 'does not return bridges', :aggregate_failures do
-          get api("/projects/#{project2.id}/pipelines/#{pipeline.id}/bridges", user)
+          get api("/projects/#{project2.id}/pipelines/#{pipeline.id}/#{route_suffix}", user)
 
           expect(json_response['message']).to eq '404 Project Not Found'
           expect(response).to have_gitlab_http_status(:not_found)
@@ -761,7 +775,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           end
 
           it 'does not return bridges' do
-            get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user)
+            get api("/projects/#{project.id}/pipelines/#{pipeline.id}/#{route_suffix}", api_user)
             expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
@@ -786,17 +800,26 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       it_behaves_like 'enforcing job token policies', :read_pipelines,
         allow_public_access_for_enabled_project_features: [:repository, :builds] do
         let(:request) do
-          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges"), params: { job_token: target_job.token }
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/#{route_suffix}"),
+            params: { job_token: target_job.token }
         end
       end
 
       it_behaves_like 'authorizing granular token permissions', :read_pipeline_bridge do
         let(:boundary_object) { project }
         let(:request) do
-          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", personal_access_token: pat)
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/#{route_suffix}", personal_access_token: pat)
         end
       end
     end
+  end
+
+  describe 'GET /projects/:id/pipelines/:pipeline_id/trigger_jobs' do
+    it_behaves_like 'listing trigger jobs by pipeline', 'trigger_jobs'
+  end
+
+  describe 'GET /projects/:id/pipelines/:pipeline_id/bridges' do
+    it_behaves_like 'listing trigger jobs by pipeline', 'bridges'
   end
 
   describe 'POST /projects/:id/pipeline ' do
@@ -808,6 +831,17 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         expect(variable.value).to eq(expected_variable['value'])
         expect(variable.variable_type).to eq(expected_variable['variable_type'])
       end
+    end
+
+    describe 'mcp route setting' do
+      before do
+        stub_ci_pipeline_to_return_yaml_file
+      end
+
+      subject { post api("/projects/#{project.id}/pipeline", user), params: { ref: project.default_branch } }
+
+      it_behaves_like 'an endpoint with mcp route setting', :create_pipeline,
+        expected_params: [:id, :ref, :variables, :inputs], status: :created
     end
 
     context 'authorized user' do
@@ -962,6 +996,15 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           end
 
           it_behaves_like 'creating a successful pipeline'
+        end
+
+        it 'masks input values when logging' do
+          expect(::API::API::LOGGER).to receive(:info).with(
+            include(params: include('inputs' => '[FILTERED]'))
+          )
+
+          post api("/projects/#{project.id}/pipeline", user),
+            params: { ref: project.default_branch, inputs: inputs }
         end
       end
 
@@ -1308,6 +1351,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
   end
 
   describe 'DELETE /projects/:id/pipelines/:pipeline_id' do
+    describe 'mcp route setting' do
+      subject { delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", project.first_owner) }
+
+      it_behaves_like 'an endpoint with mcp route setting', :delete_pipeline,
+        expected_params: [:id, :pipeline_id], status: :no_content
+    end
+
     context 'authorized user' do
       let(:owner) { project.first_owner }
 
@@ -1397,6 +1447,15 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       put api("/projects/#{project.id}/pipelines/#{pipeline.id}/metadata", current_user), params: { name: name }
     end
 
+    describe 'mcp route setting' do
+      subject do
+        put api("/projects/#{project.id}/pipelines/#{pipeline.id}/metadata", user), params: { name: name }
+      end
+
+      it_behaves_like 'an endpoint with mcp route setting', :update_pipeline,
+        expected_params: [:id, :pipeline_id, :name]
+    end
+
     it_behaves_like 'enforcing job token policies', :admin_pipelines do
       let(:request) do
         put api("/projects/#{source_project.id}/pipelines/#{pipeline.id}/metadata"),
@@ -1483,6 +1542,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
       let_it_be(:build) { create(:ci_build, :failed, pipeline: pipeline) }
 
+      describe 'mcp route setting' do
+        subject { post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user) }
+
+        it_behaves_like 'an endpoint with mcp route setting', :retry_pipeline,
+          expected_params: [:id, :pipeline_id], status: :created
+      end
+
       it 'retries failed builds', :aggregate_failures do
         expect do
           post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
@@ -1533,7 +1599,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
     end
 
-    let_it_be(:job, freeze: false) { create(:ci_build, :running, pipeline: pipeline) }
+    let_it_be_with_reload(:job) { create(:ci_build, :running, pipeline: pipeline) }
+
+    describe 'mcp route setting' do
+      subject { post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user) }
+
+      it_behaves_like 'an endpoint with mcp route setting', :cancel_pipeline,
+        expected_params: [:id, :pipeline_id]
+    end
 
     context 'authorized user', :aggregate_failures do
       context 'when supports canceling is true' do

@@ -9,8 +9,6 @@ module Gitlab
     InvalidKeyError = Class.new(StandardError)
     InvalidScopeError = Class.new(StandardError)
 
-    LIMIT_USAGE_BUCKET = [0.25, 0.5, 0.75, 1].freeze
-
     class << self
       include ::Gitlab::Utils::StrongMemoize
       # Application rate limits
@@ -28,16 +26,19 @@ module Gitlab
           bulk_delete_todos: { threshold: 6, interval: 1.minute },
           bulk_import: { threshold: 6, interval: 1.minute },
           ci_job_processed_subscription: { threshold: 50, interval: 1.minute },
+          ci_lint: { threshold: -> { application_settings.ci_lint_limit_per_user }, interval: 1.minute },
           ci_pipeline_statuses_subscription: { threshold: 50, interval: 1.minute },
           code_suggestions_api_endpoint: { threshold: -> { application_settings.code_suggestions_api_rate_limit }, interval: 1.minute },
           create_organization_api: { threshold: -> { application_settings.create_organization_api_limit }, interval: 1.minute },
           delete_all_todos: { threshold: 1, interval: 5.minutes },
+          deployment_delete: { threshold: 500, interval: 1.minute },
           downstream_pipeline_trigger: {
             threshold: -> { application_settings.downstream_pipeline_trigger_limit_per_project_user_sha }, interval: 1.minute
           },
           email_verification: { threshold: 10, interval: 10.minutes },
           email_verification_code_send: { threshold: 10, interval: 1.hour },
           expanded_diff_files: { threshold: 6, interval: 1.minute },
+          feature_library_search: { threshold: 60, interval: 1.minute },
           fetch_google_ip_list: { threshold: 10, interval: 1.minute },
           github_import: { threshold: 6, interval: 1.minute },
           fogbugz_import: { threshold: 1, interval: 1.minute },
@@ -96,6 +97,7 @@ module Gitlab
           runner_jobs_request_api: { threshold: -> { application_settings.runner_jobs_request_api_limit }, interval: 1.minute },
           runner_jobs_patch_trace_api: { threshold: -> { application_settings.runner_jobs_patch_trace_api_limit }, interval: 1.minute },
           runner_jobs_api: { threshold: -> { application_settings.runner_jobs_endpoints_api_limit }, interval: 1.minute },
+          search_index_integrity: { threshold: 1, interval: 30.minutes },
           search_rate_limit: { threshold: -> { application_settings.search_rate_limit }, interval: 1.minute },
           search_rate_limit_unauthenticated: { threshold: -> { application_settings.search_rate_limit_unauthenticated }, interval: 1.minute },
           service_account_creation: { threshold: 10, interval: 1.minute },
@@ -224,26 +226,6 @@ module Gitlab
         throttled?(key, peek: true, scope: scope, threshold: threshold, interval: interval, users_allowlist: users_allowlist)
       end
 
-      def report_metrics(key, value, threshold, peek)
-        return if threshold == 0 # guard against div-by-zero
-
-        label = {
-          throttle_key: key,
-          peek: peek,
-          feature_category: Gitlab::ApplicationContext.current_context_attribute(:feature_category)
-        }
-        application_rate_limiter_histogram.observe(label, value / threshold.to_f)
-      end
-
-      def application_rate_limiter_histogram
-        @application_rate_limiter_histogram ||= Gitlab::Metrics.histogram(
-          :gitlab_application_rate_limiter_throttle_utilization_ratio,
-          "The utilization-ratio of a throttle.",
-          { peek: nil, throttle_key: nil, feature_category: nil },
-          LIMIT_USAGE_BUCKET
-        )
-      end
-
       # Logs request using provided logger
       #
       # @param request [Http::Request] - Web request to be logged
@@ -274,7 +256,7 @@ module Gitlab
       # @param key [Symbol] Key attribute registered in `.rate_limits`
       # @return [Integer, nil] The interval value in seconds, or nil if not configured
       def interval(key)
-        value = rate_limit_value_by_key(key, :interval)
+        value = limit_source_value(key, :interval, :period)
         raise InvalidKeyError if value.nil?
 
         rate_limit_value(value)
@@ -286,7 +268,7 @@ module Gitlab
       # @param key [Symbol] Key attribute registered in `.rate_limits`
       # @return [Integer] The resolved threshold; 0 when the key disables itself.
       def threshold(key)
-        value = rate_limit_value_by_key(key, :threshold)
+        value = limit_source_value(key, :threshold, :limit)
 
         rate_limit_value(value)
       end
@@ -304,6 +286,8 @@ module Gitlab
         interval_value = interval || interval(key)
         return false if interval_value == 0
 
+        # Threshold/interval are passed through as per-call overrides; the
+        # labkit Rule resolves them (falling back to the registry) per check.
         labkit_decision = dispatch_to_labkit(
           key,
           scope: scope,
@@ -313,55 +297,19 @@ module Gitlab
           interval: interval
         )
 
-        return labkit_decision if !labkit_decision.nil? && LabkitAdapter.enforce?(key)
+        # Keys not handled by the adapter (absent from the labkit registry, or
+        # an INCR-mode key called with a resource) return nil; treat that as
+        # "not throttled". A guardrail spec asserts every rate_limits key is
+        # registered, so this does not silently disable a real limit.
+        return false if labkit_decision.nil?
 
-        legacy_decision = legacy_throttled?(
-          key,
-          scope: scope,
-          strategy: strategy,
-          peek: peek,
-          threshold_value: threshold_value,
-          interval_value: interval_value
-        )
-
-        unless labkit_decision.nil?
-          LabkitAdapter.record_divergence(key, labkit_decision, legacy_decision,
-            interval_seconds: interval_value)
-        end
-
-        legacy_decision
+        labkit_decision
       end
 
-      # Computes the throttle decision via the legacy Redis counter shape
-      # (application_rate_limiter:<key>:<scope>:<period_key>). Increments
-      # the counter unless +peek+, then compares against +threshold_value+.
-      # Returns false when the counter is missing (peek with no prior
-      # increment) so callers treat "no counter" as "not throttled".
-      def legacy_throttled?(key, scope:, strategy:, peek:, threshold_value:, interval_value:)
-        # `period_key` is based on the current time and interval so when time passes to the next interval
-        # the key changes and the rate limit count starts again from 0.
-        # Based on https://github.com/rack/rack-attack/blob/886ba3a18d13c6484cd511a4dc9b76c0d14e5e96/lib/rack/attack/cache.rb#L63-L68
-        period_key, time_elapsed_in_period = Time.now.to_i.divmod(interval_value)
-        cache_key = cache_key(key, scope, period_key)
-
-        value = if peek
-                  strategy.read(cache_key)
-                else
-                  # We add a 1 second buffer to avoid timing issues when we're at the end of a period
-                  expiry = interval_value - time_elapsed_in_period + 1
-                  strategy.increment(cache_key, expiry)
-                end
-
-        return false if value.nil?
-
-        report_metrics(key, value, threshold_value, peek)
-
-        value > threshold_value
-      end
-
-      # Routes a check through the labkit adapter when applicable, returning
-      # labkit's boolean decision or nil if the adapter does not handle this
-      # call. Plain IncrementPerAction maps to labkit's INCR-mode rules;
+      # Routes a check through the labkit adapter when the strategy maps to the
+      # registered labkit rule mode, returning labkit's boolean decision or nil
+      # if the strategy/rule combination is intentionally not dispatched.
+      # Plain IncrementPerAction maps to labkit's INCR-mode rules;
       # IncrementPerActionedResource maps to labkit's count_distinct (SADD)
       # rules with +resource_id+ as the SET member. IncrementResourceUsagePerAction
       # maps to labkit cost-mode rules (caller-supplied threshold/interval),
@@ -396,8 +344,6 @@ module Gitlab
 
         context = { resource_id: resource_id, threshold: threshold, interval: interval }
 
-        return unless LabkitAdapter.shadow_or_enforce?(key, context: context)
-
         if peek
           LabkitAdapter.run_peek!(key, scope: scope, context: context)
         else
@@ -417,18 +363,25 @@ module Gitlab
         action[setting] if action
       end
 
-      def cache_key(key, scope, period_key)
-        composed_key = [key, scope].flatten.compact
-
-        serialized = composed_key.map do |obj|
-          if obj.is_a?(String) || obj.is_a?(Symbol)
-            obj.to_s
-          else
-            "#{obj.class.model_name.to_s.underscore}:#{obj.id}"
-          end
-        end.join(":")
-
-        "application_rate_limiter:#{serialized}:#{period_key}"
+      # Returns the raw (unresolved) limit/period source for a key.
+      #
+      # The labkit SupportedRateLimits registry now carries each key's
+      # limit/period and is migrating toward being the single source of truth
+      # (see gitlab-com/gl-infra/production-engineering#29054). While the
+      # rate_limiter_resolve_limits_from_registry flag is enabled this reads the
+      # registry; while disabled it reads the legacy rate_limits hash. A parity
+      # spec asserts the two resolve to identical values for every key, so the
+      # flag is a value-preserving switch.
+      #
+      # @param key [Symbol] the rate limit key
+      # @param rate_limits_field [Symbol] :threshold or :interval (legacy hash)
+      # @param registry_field [Symbol] :limit or :period (registry entry)
+      def limit_source_value(key, rate_limits_field, registry_field)
+        if Feature.enabled?(:rate_limiter_resolve_limits_from_registry, Feature.current_request)
+          LabkitAdapter::SupportedRateLimits.all.dig(key, registry_field)
+        else
+          rate_limit_value_by_key(key, rate_limits_field)
+        end
       end
 
       def application_settings

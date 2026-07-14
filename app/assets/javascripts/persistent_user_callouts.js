@@ -9,6 +9,8 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-openssl-callout',
   '.js-new-user-signups-cap-reached',
   '.js-approaching-seat-count-threshold',
+  '.js-reached-seat-count-threshold',
+  '.js-overage-seat-count-threshold',
   '.js-storage-pre-enforcement-alert',
   '.js-user-over-limit-free-plan-alert',
   '.js-minute-limit-banner',

@@ -4,6 +4,7 @@ import SuggestionDiffHeader from './suggestion_diff_header.vue';
 import SuggestionDiffRow from './suggestion_diff_row.vue';
 
 export default {
+  name: 'SuggestionDiff',
   components: {
     SuggestionDiffHeader,
     SuggestionDiffRow,
@@ -42,6 +43,7 @@ export default {
       default: false,
     },
   },
+  emits: ['addToBatch', 'apply', 'applyBatch', 'removeFromBatch'],
   computed: {
     batchSuggestionsCount() {
       return this.batchSuggestionsInfo.length;

@@ -32,6 +32,26 @@ RSpec.describe BulkImports::FileExportService, feature_category: :importers do
       end
     end
 
+    context 'when in offline transfer' do
+      it 'passes offline_export_id to the uploads export service' do
+        Dir.mktmpdir do |export_path|
+          offline_export_id = build_stubbed(:offline_export).id
+          export.offline_export_id = offline_export_id
+          export.relation = 'uploads'
+
+          service = described_class.new(export, export_path, offline_export_id)
+
+          expect_next_instance_of(BulkImports::UploadsExportService) do |uploads_service|
+            expect(uploads_service).to receive(:execute)
+          end
+
+          expect(service).to receive(:tar_cf).with(archive: File.join(export_path, 'uploads.tar'), dir: export_path)
+
+          service.execute
+        end
+      end
+    end
+
     context 'when unsupported relation is passed' do
       it 'raises an error' do
         export.relation = 'issues'

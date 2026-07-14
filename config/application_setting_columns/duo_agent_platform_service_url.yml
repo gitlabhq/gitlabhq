@@ -1,0 +1,12 @@
+---
+api_type:
+attr: duo_agent_platform_service_url
+clusterwide: false
+column: duo_agent_platform_service_url
+db_type: text
+default:
+description: URL of the self-hosted Duo Agent Platform service for this instance (cell). Moved from the ai_settings table because it is per-cell infrastructure configuration.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

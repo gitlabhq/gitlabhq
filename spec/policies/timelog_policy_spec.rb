@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe TimelogPolicy, :models do
-  let_it_be(:author, freeze: false) { create(:user) }
+  let_it_be_with_refind(:author) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:issue, freeze: false) { create(:issue, project: project) }
-  let_it_be(:timelog, freeze: false) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project) }
+  let_it_be_with_reload(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
 
   let(:user) { nil }
 
@@ -30,8 +30,8 @@ RSpec.describe TimelogPolicy, :models do
 
       context 'when user has no role on a private project' do
         let_it_be(:private_project) { create(:project, :private) }
-        let_it_be(:private_issue, freeze: false) { create(:issue, project: private_project) }
-        let_it_be(:private_timelog, freeze: false) do
+        let_it_be_with_reload(:private_issue) { create(:issue, project: private_project) }
+        let_it_be_with_reload(:private_timelog) do
           create(:timelog, user: author, issue: private_issue, time_spent: 1800)
         end
 

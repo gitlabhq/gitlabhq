@@ -10,7 +10,6 @@ Rails/TimeZone:
     - 'ee/spec/lib/gitlab/geo/log_cursor/logger_spec.rb'
     - 'lib/api/helpers.rb'
     - 'lib/api/sidekiq_metrics.rb'
-    - 'lib/bitbucket_server/representation/base.rb'
     - 'lib/gitlab/auth/current_user_mode.rb'
     - 'lib/gitlab/auth/ldap/access.rb'
     - 'lib/gitlab/chaos.rb'

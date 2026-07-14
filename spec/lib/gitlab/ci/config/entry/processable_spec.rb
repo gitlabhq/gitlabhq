@@ -286,6 +286,82 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable, feature_category: :pipeli
       end
     end
 
+    context 'when skip_branch_pipelines_for_mrs is enabled' do
+      let(:project) { double('project', ci_skip_branch_pipelines_for_mrs?: true) }
+      let(:entry) { node_class.new(config, name: :rspec, project: project) }
+      let(:workflow) { double('workflow', 'has_rules?' => false) }
+
+      context 'when job has no rules or only/except' do
+        let(:config) { { script: 'ls' } }
+
+        it 'removes the default only entry' do
+          entry.compose!(deps)
+
+          expect(entry.only_value).to be_nil
+        end
+
+        it 'removes the default except entry' do
+          entry.compose!(deps)
+
+          expect(entry.except_value).to be_nil
+        end
+      end
+
+      context 'when job has explicit only' do
+        let(:config) { { script: 'ls', only: %w[branches] } }
+
+        it 'keeps the user-defined only entry' do
+          entry.compose!(deps)
+
+          expect(entry.only_value).to eq({ refs: %w[branches] })
+        end
+      end
+
+      context 'when job has explicit except' do
+        let(:config) { { script: 'ls', except: %w[tags] } }
+
+        it 'keeps the user-defined except entry' do
+          entry.compose!(deps)
+
+          expect(entry.except_value).to eq({ refs: %w[tags] })
+        end
+      end
+
+      context 'when job has rules' do
+        let(:config) { { script: 'ls', rules: [{ if: '$CI_MERGE_REQUEST_IID' }] } }
+
+        it 'removes the default only entry' do
+          entry.compose!(deps)
+
+          expect(entry.only_value).to be_nil
+        end
+      end
+
+      context 'when workflow:rules is also present' do
+        let(:workflow) { double('workflow', 'has_rules?' => true) }
+        let(:config) { { script: 'ls' } }
+
+        it 'removes the default only entry' do
+          entry.compose!(deps)
+
+          expect(entry.only_value).to be_nil
+        end
+      end
+    end
+
+    context 'when skip_branch_pipelines_for_mrs is disabled' do
+      let(:project) { double('project', ci_skip_branch_pipelines_for_mrs?: false) }
+      let(:entry) { node_class.new(config, name: :rspec, project: project) }
+      let(:workflow) { double('workflow', 'has_rules?' => false) }
+      let(:config) { { script: 'ls' } }
+
+      it 'keeps the default only entry' do
+        entry.compose!(deps)
+
+        expect(entry.only_value).to eq({ refs: %w[branches tags] })
+      end
+    end
+
     shared_examples 'has no warnings' do
       it 'does not raise the warning' do
         expect(entry.warnings).to be_empty

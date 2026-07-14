@@ -1,6 +1,6 @@
 ---
-source_checksum: 4245f8c78c51bf39
-distilled_at_sha: 186bab0afd636fbcfc444beff09e9b796060fcea
+source_checksum: e6bdd4909ea096f0
+distilled_at_sha: 73023e3b34aa63d1692e8a3066e870c10875ef55
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -15,6 +15,7 @@ distilled_at_sha: 186bab0afd636fbcfc444beff09e9b796060fcea
 - Use `bin/permission <permission_name>` to generate raw permission definition files; pass `-a` (action) and `-r` (resource) flags to override the default name-splitting behaviour when the action is more than one word.
 - Place raw permission definition files at exactly `config/authz/permissions/<resource>/<action>.yml`; DO NOT add extra directories between the base path and the final filename.
 - Ensure each permission definition file includes a `name` and `description` field; the `description` must follow the pattern `"Grants the ability to <action> <resource>"`.
+- Include a `conditionally_enables` field for private (underscore-prefixed) permissions, set to the broader permission(s) that imply it, or `null` when none apply.
 - Ensure each resource directory has a `.metadata.yml` with a valid `feature_category` entry from `config/feature_categories.yml`; look at existing API endpoints for that resource to find the correct category.
 - Run `bundle exec rake gitlab:permissions:validate` (or rely on the Lefthook pre-push hook) to validate all permission definition files before pushing.
 
@@ -46,35 +47,28 @@ distilled_at_sha: 186bab0afd636fbcfc444beff09e9b796060fcea
 
 ### GraphQL Authorization Directives
 
-- Add `authorize_granular_token` to every GraphQL object type and mutation that exposes protected resources; all fields accessed with granular PATs must have a directive or the authorization service returns `"Unable to determine boundaries and permissions for authorization"`.
+- Add `authorize_granular_token` to every GraphQL object type and mutation that exposes protected resources; the `gitlab:permissions:graphql:validate` Rake task requires every object type to declare either a directive or a `skip_reason:`.
 - Use `boundary: :project` (or `:group`, `:user`, `:instance`) on object types where the resolved object has a method to reach the boundary (e.g., `issue.project`); use `boundary_argument: :project_path` on mutations and root query fields where the boundary is passed as an argument.
 - Use `boundary: :itself` when the type itself is the boundary object (e.g., `ProjectType` or `GroupType`).
 - Use `boundary: :user` or `boundary: :instance` for standalone resources that do not belong to a specific project or group.
-- DO NOT apply `boundary` (without `:id` argument) to root query fields that lack an `:id` argument — the object is not yet resolved and an `ArgumentError` will be raised; use `boundary_argument` instead.
+- When a mutation's `boundary_argument` resolves to a record that is not itself a Project or Group, combine `boundary_argument` with `boundary` so the extractor locates the record and then calls `boundary` on it to reach the Project or Group.
 - Ensure `permissions` references only valid permission symbols from `Authz::PermissionGroups::Assignable.all_permissions`; the `gitlab:permissions:validate` Rake task enforces this.
 - Ensure `boundary_type` matches at least one boundary declared in the corresponding assignable permission's `boundaries` field; the Lefthook pre-push validation catches mismatches.
-- Apply the directive at only one level per field (field, owner type, implementing type, or return type) to avoid ambiguity; the `DirectiveFinder` stops at the first match in that priority order.
-- DO NOT declare `permissions: []` on a directive; the authorization service returns `"Unable to determine permissions for authorization"` when the permissions array is empty.
-- Use `traversal: true` on entry-point fields (e.g., `Query.group(fullPath:)`, `Query.project(fullPath:)`) that resolve a boundary from a path argument but do not expose data themselves; this causes the authorization service to verify only that the token is scoped to the boundary, not the listed permission. Note: `traversal: true` only applies to `project` and `group` boundary types.
-
-### Directive Discovery and Boundary Extraction
-
-- Understand that `DirectiveFinder` checks directives in this priority order and returns the first match: field-level → owner type → implementing type → return type (unwrapping List, NonNull, and Connection wrappers).
-- Understand that `BoundaryExtractor` uses Strategy A (`boundary_argument`) for mutations and query fields with path arguments, Strategy B (`boundary` method on resolved object) for type fields, Strategy C (ID fallback via GlobalID) for query fields with an `:id` argument when the object is nil, and Strategy D (standalone `NilBoundary`) for `user` or `instance` boundaries.
-- Be aware that the ID fallback strategy (Strategy C) fetches the record twice — once for authorization and once during field resolution — though the query is cached.
-- Ensure that `boundary` method values are one of the valid accessor methods: `project`, `group`, or `itself`; any other value raises `ArgumentError: "Invalid boundary method: '<value>'"`.
+- DO NOT declare `permissions:` alongside `skip_reason:`; use `skip_reason:` alone on types that intentionally opt out of granular-token authorization.
+- Use `traversal: true` on entry-point fields (e.g., `Query.group(fullPath:)`, `Query.project(fullPath:)`) that resolve a boundary from a path argument but do not expose data themselves; pass it via `granular_scope_directive(traversal: true)` on the field definition. Note: `traversal: true` only applies to `project` and `group` boundary types and is not currently enforced — a field marked `traversal: true` enforces the listed permissions like any other field pending reimplementation.
+- DO NOT pass `traversal: true` to a type-level `authorize_granular_token`; use `granular_scope_directive(traversal: true)` on the field definition instead (passing it at the type level raises `ArgumentError`).
 
 ### Traversal Between Authorized Types
 
-- Understand that when a field on an authorized type returns another type that also declares `authorize_granular_token`, the owner type's directive is automatically skipped; the child type's directive enforces authorization when fields on the child object are resolved.
+- Understand that when a field on an authorized type returns another type that also declares `authorize_granular_token`, the owner type's directive is intended to be automatically skipped and the child type's directive enforces authorization; however, this automatic skip is **not currently performed** — plan permissions assuming both the owner type's and the child type's directives are enforced.
 - DO NOT rely on the automatic traversal skip for leaf types (types whose fields all return plain scalars, e.g., `RepositoryLanguageType`, `PushRulesType`); for leaf types the collection-level check always fires and must not be bypassed.
 - Add an explicit field-level directive using `directives: granular_scope_directive(...)` to any field where the automatic traversal skip should not apply; an explicit field-level directive always wins.
 
 ### Authorization Caching and Performance
 
-- Rely on the per-request `context[:authz_cache]` Set to avoid redundant authorization checks; the cache key is `[permissions.sort, boundary.class, boundary.namespace.id]`, so multiple fields on the same type and boundary incur only one authorization service call.
-- Understand that non-granular (legacy) PATs skip the entire `GranularTokenAuthorization` extension with zero overhead; granular authorization only runs when `token.granular?` is true.
-- Understand that mutation response fields (e.g., `createIssue.issue`) and permission metadata fields (e.g., `issue.userPermissions`) are automatically skipped by `SkipRules`; DO NOT add directives to these fields.
+- Rely on the per-request authorization cache: multiple fields that resolve to the same boundary and permissions reuse the cached result, so the authorization service runs only once for them.
+- Understand that `BoundaryExtractors::Preloader` batch-loads boundary associations across all nodes in a collection before authorization runs, avoiding N+1 queries (e.g., `issue.project` for each resolved issue); the loaded records are cached in `Gitlab::SafeRequestStore` and reused by the boundary extractors.
+- Understand that legacy (non-granular) PATs skip granular authorization entirely; granular authorization only runs when the token is granular. Exception: when a boundary's root namespace has `granular_tokens_enforced?` enabled, legacy tokens are held to the same permission checks as granular tokens.
 
 ### Feature Flag
 

@@ -18,10 +18,8 @@ export default (selector, editing = false) => {
   }
 
   const {
-    canViewPipelineEditor,
     dailyLimit,
     defaultBranch,
-    pipelineEditorPath,
     projectId,
     projectPath,
     schedulesPath,
@@ -36,10 +34,8 @@ export default (selector, editing = false) => {
     name: 'PipelineSchedulesFormRoot',
     apolloProvider,
     provide: {
-      canViewPipelineEditor: parseBoolean(canViewPipelineEditor),
       dailyLimit: dailyLimit ?? '',
       defaultBranch,
-      pipelineEditorPath,
       projectId,
       projectPath,
       schedulesPath,

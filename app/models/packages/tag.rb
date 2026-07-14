@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Packages::Tag < ApplicationRecord
   belongs_to :package, inverse_of: :tags
   belongs_to :project

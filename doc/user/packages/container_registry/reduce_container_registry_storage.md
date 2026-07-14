@@ -159,8 +159,8 @@ To delete the underlying layers and images that aren't associated with any tags,
 ### Enable the cleanup policy
 
 > [!warning]
-> For performance reasons, enabled cleanup policies are automatically disabled for projects on
-> GitLab.com that don't have a container image.
+> For performance reasons, enabled cleanup policies are automatically disabled for projects
+> that do not have a container image.
 
 ### How the cleanup policy works
 

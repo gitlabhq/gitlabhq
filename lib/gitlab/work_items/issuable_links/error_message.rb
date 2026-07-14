@@ -4,9 +4,8 @@ module Gitlab
   module WorkItems
     module IssuableLinks
       class ErrorMessage
-        def initialize(target_type:, container_type:)
+        def initialize(target_type:)
           @target_type = target_type
-          @container_type = container_type
         end
 
         def for_http_status(http_status)
@@ -26,10 +25,8 @@ module Gitlab
 
         def no_permission_error
           format(
-            _("Couldn't link %{issuables}. You must have at least the Guest role in both %{issuable}'s " \
-              "%{projects_or_groups}."),
-            issuables: target_type.to_s.pluralize, issuable: target_type.to_s,
-            projects_or_groups: container_type.pluralize
+            _("Could not link %{issuables}. You must be a member of the project or group of both %{issuables}."),
+            issuables: target_type.to_s.pluralize
           )
         end
 
@@ -39,10 +36,6 @@ module Gitlab
         end
 
         attr_reader :target_type
-
-        private
-
-        attr_reader :container_type
       end
     end
   end

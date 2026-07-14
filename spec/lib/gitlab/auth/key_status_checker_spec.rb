@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::KeyStatusChecker do
+RSpec.describe Gitlab::Auth::KeyStatusChecker, feature_category: :system_access do
   let_it_be(:never_expires_key) { build(:personal_key, expires_at: nil) }
   let_it_be(:expired_key) { build(:personal_key, expires_at: 3.days.ago) }
   let_it_be(:expiring_soon_key) { build(:personal_key, expires_at: 3.days.from_now) }

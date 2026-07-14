@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category: :continuous_integration do
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:commit) { project.repository.commit }
   let_it_be(:guest) { create_user(:guest) }
   let_it_be(:reporter) { create_user(:reporter) }
@@ -12,6 +12,12 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
 
   describe "GET /projects/:id/repository/commits/:sha/statuses" do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
+
+    it_behaves_like 'authorizing granular token permissions', :read_commit_status do
+      let(:boundary_object) { project }
+      let(:user) { reporter }
+      let(:request) { get api(get_url, personal_access_token: pat) }
+    end
 
     context 'ci commit exists' do
       let_it_be(:master) do
@@ -178,6 +184,12 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
 
   describe 'POST /projects/:id/statuses/:sha' do
     let(:post_url) { "/projects/#{project.id}/statuses/#{sha}" }
+
+    it_behaves_like 'authorizing granular token permissions', :create_commit_status do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) { post api(post_url, personal_access_token: pat), params: { state: 'running' } }
+    end
 
     context 'developer user' do
       context 'uses only required parameters' do
@@ -564,7 +576,7 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
 
         it 'does not create commit status' do
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq(nil)
+          expect(json_response['message']).to be_nil
         end
       end
 
@@ -575,7 +587,7 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
 
         it 'does not create commit status' do
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq(nil)
+          expect(json_response['message']).to be_nil
         end
       end
 

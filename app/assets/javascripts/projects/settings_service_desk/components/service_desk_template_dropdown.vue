@@ -4,6 +4,7 @@ import { GlDropdown, GlDropdownSectionHeader, GlDropdownItem, GlSearchBoxByType 
 import { __ } from '~/locale';
 
 export default {
+  name: 'ServiceDeskTemplateDropdown',
   components: {
     GlDropdown,
     GlDropdownSectionHeader,

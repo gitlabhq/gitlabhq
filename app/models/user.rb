@@ -87,6 +87,13 @@ class User < ApplicationRecord
 
   RESERVED_AI_USERNAME_PREFIXES = %w[duo- duo_ ai- ai_].freeze
 
+  # Top-level routes that intercept `/<route>.<anything>` before `/:username`,
+  # making those profiles unreachable. Case-sensitive, matching Rails routing.
+  # A spec enforces this set; see https://gitlab.com/gitlab-org/gitlab/-/issues/594444.
+  USERNAME_SHADOWING_TOP_LEVEL_ROUTES = %w[
+    admin dashboard explore groups health_check help projects public search
+  ].freeze
+
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, insecure: true, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
   add_authentication_token_field :feed_token, insecure: true, format_with_prefix: :prefix_for_feed_token
@@ -357,6 +364,7 @@ class User < ApplicationRecord
     exclusion: { in: Gitlab::PathRegex::TOP_LEVEL_ROUTES, message: N_('%{value} is a reserved name') }
   validates :username, uniqueness: true, unless: :namespace
   validate :username_not_reserved_ai_prefix, if: :username_changed?
+  validate :username_not_shadowed_by_top_level_route, if: :username_changed?
   validate :username_not_assigned_to_pages_unique_domain, if: :username_changed?
   validates :name, presence: true, length: { maximum: 255 }
   validates :first_name, length: { maximum: MAX_NAME_LENGTH }
@@ -1535,18 +1543,11 @@ class User < ApplicationRecord
     otp_secret_expires_at.past?
   end
 
-  # Centralised location while transitioning from Feature Flag to
-  # Application Setting.
-  # TODO: Remove after https://gitlab.com/gitlab-org/gitlab/-/work_items/599948
-  def email_otp_available?
-    ::Feature.enabled?(:email_based_mfa, self) || ::Gitlab::CurrentSettings.email_otp_enabled?
-  end
-
   def email_based_otp_required?
     # Ensure that `email_otp_required_after` is set to a valid state.
     set_email_otp_required_after_based_on_restrictions(save: true)
 
-    email_otp_available? &&
+    ::Gitlab::CurrentSettings.email_otp_enabled? &&
       email_otp_required_after.present? && email_otp_required_after <= Time.zone.now
   end
 
@@ -2015,6 +2016,10 @@ class User < ApplicationRecord
 
   def has_multiple_organizations?
     organization_users.many?
+  end
+
+  def has_active_non_default_organization?
+    organizations.without_default.with_states(:active).exists?
   end
 
   def can_leave_project?(member_or_project)
@@ -2648,7 +2653,7 @@ class User < ApplicationRecord
     end
   end
 
-  def can_admin_organization?(organization)
+  def can_update_organization?(organization)
     can?(:update_organization, organization)
   end
 
@@ -3346,6 +3351,17 @@ class User < ApplicationRecord
     errors.add(:username, _("starting with 'duo-', 'duo_', 'ai-' or 'ai_' is reserved for GitLab AI entities. Please choose a different name."))
   end
 
+  def username_not_shadowed_by_top_level_route
+    return if username.blank? || username.exclude?('.')
+
+    prefix = username.split('.', 2).first
+    return unless USERNAME_SHADOWING_TOP_LEVEL_ROUTES.include?(prefix)
+
+    errors.add(:username, format(
+      _("cannot start with '%{prefix}.' because the profile URL would be intercepted by an existing route. " \
+        "Please choose a different name."), prefix: prefix))
+  end
+
   def groups_allowing_project_creation
     Groups::AcceptingProjectCreationsFinder.new(self).execute
   end
@@ -3361,27 +3377,6 @@ class User < ApplicationRecord
 
   def unique_attributes
     [:username, :email]
-  end
-
-  ##
-  # Decrypt and return the `encrypted_otp_secret` attribute which was used in
-  # prior versions of devise-two-factor
-  # @return [String] The decrypted OTP secret
-  def legacy_otp_secret
-    return unless self[:encrypted_otp_secret]
-    return unless self.class.otp_secret_encryption_key
-
-    hmac_iterations = 2000 # a default set by the Encryptor gem
-    key = self.class.otp_secret_encryption_key
-    salt = Base64.decode64(encrypted_otp_secret_salt)
-    iv = Base64.decode64(encrypted_otp_secret_iv)
-    cipher_text = Base64.decode64(encrypted_otp_secret)
-    cipher = OpenSSL::Cipher.new('aes-256-cbc')
-
-    cipher.decrypt
-    cipher.key = OpenSSL::PKCS5.pbkdf2_hmac_sha1(key, salt, hmac_iterations, cipher.key_len)
-    cipher.iv = iv
-    cipher.update(cipher_text) + cipher.final
   end
 end
 

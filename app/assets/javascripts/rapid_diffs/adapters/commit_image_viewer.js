@@ -8,7 +8,7 @@ export const commitImageViewerAdapter = {
     const imageData = JSON.parse(
       this.diffElement.querySelector('[data-image-data]').dataset.imageData,
     );
-    const { oldPath, newPath } = this.data;
+    const { oldPath, newPath, diffRefs } = this.data;
     const { appData } = this;
     // eslint-disable-next-line no-new
     new Vue({
@@ -35,6 +35,7 @@ export const commitImageViewerAdapter = {
             imageData,
             oldPath,
             newPath,
+            diffRefs,
           },
         });
       },

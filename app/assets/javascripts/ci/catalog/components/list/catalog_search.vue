@@ -10,7 +10,6 @@ import {
 import {
   SORT_ASC,
   SORT_DESC,
-  SORT_OPTION_CREATED,
   SORT_OPTION_RELEASED,
   SORT_OPTION_STAR_COUNT,
   SORT_OPTION_POPULARITY,
@@ -156,7 +155,6 @@ export default {
   sortOptions: [
     { value: SORT_OPTION_POPULARITY, text: __('Popularity') },
     { value: SORT_OPTION_RELEASED, text: __('Released date') },
-    { value: SORT_OPTION_CREATED, text: __('Created date') },
     { value: SORT_OPTION_STAR_COUNT, text: __('Star count') },
   ],
 };

@@ -184,7 +184,7 @@ This shortcut is available when viewing a [wiki page](project/wiki/_index.md):
 ### Rich text editor
 
 These shortcuts are available when editing a file with the
-[rich text editor](https://about.gitlab.com/direction/plan/knowledge/content_editor/):
+[rich text editor](rich_text_editor.md):
 
 | macOS shortcut | Windows shortcut | Description |
 |----------------|------------------|-------------|

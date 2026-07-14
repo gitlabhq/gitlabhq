@@ -492,14 +492,10 @@ span.idiff {
   }
 
   .blame-commit {
-    width: 400px;
+    width: 100%;
     flex: none;
     @apply gl-bg-subtle;
     border-left: 3px solid;
-
-    @include gl-media-breakpoint-down(md) {
-      width: 200px;
-    }
 
     .commit-row-title {
       display: flex;

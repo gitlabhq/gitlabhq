@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Groups::Settings::AccessTokensController, feature_category: :system_access do
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:resource, freeze: false) { create(:group, owners: user) }
-  let_it_be(:access_token_user, freeze: false) { create(:user, :project_bot, maintainer_of: resource) }
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:resource) { create(:group, owners: user) }
+  let_it_be(:access_token_user) { create(:user, :project_bot, maintainer_of: resource) }
 
-  let_it_be(:another_resource, freeze: false) { create(:group) }
-  let_it_be(:access_token_user_from_another_resource, freeze: false) { create(:user, :project_bot, maintainer_of: another_resource) }
+  let_it_be(:another_resource) { create(:group) }
+  let_it_be(:access_token_user_from_another_resource) { create(:user, :project_bot, maintainer_of: another_resource) }
 
   before do
     sign_in(user)
@@ -16,7 +16,7 @@ RSpec.describe Groups::Settings::AccessTokensController, feature_category: :syst
 
   shared_examples 'feature unavailable' do
     context 'user is not a owner' do
-      before do
+      before_all do
         resource.add_maintainer(user)
       end
 
@@ -123,7 +123,7 @@ RSpec.describe Groups::Settings::AccessTokensController, feature_category: :syst
   end
 
   describe '#index' do
-    let_it_be(:resource_access_tokens, freeze: false) { create_list(:personal_access_token, 3, user: access_token_user) }
+    let_it_be(:resource_access_tokens) { create_list(:personal_access_token, 3, user: access_token_user) }
 
     before do
       get group_settings_access_tokens_path(resource)

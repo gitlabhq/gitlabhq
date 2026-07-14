@@ -1,4 +1,5 @@
 import { s__, __ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const i18n = {
   card: {
@@ -167,7 +168,11 @@ export const I18N_ALERT_SETTINGS_FORM = {
 };
 
 export const NO_ISSUE_TEMPLATE_SELECTED = { value: '', text: __('No template selected') };
-export const TAKING_INCIDENT_ACTION_DOCS_LINK =
-  '/help/operations/incident_management/alerts#trigger-actions-from-alerts';
-export const ISSUE_TEMPLATES_DOCS_LINK =
-  '/help/user/project/description_templates#create-an-issue-template';
+export const TAKING_INCIDENT_ACTION_DOCS_LINK = helpPagePath(
+  'operations/incident_management/alerts',
+  { anchor: 'trigger-actions-from-alerts' },
+);
+
+export const ISSUE_TEMPLATES_DOCS_LINK = helpPagePath('user/project/description_templates', {
+  anchor: 'create-a-description-template',
+});

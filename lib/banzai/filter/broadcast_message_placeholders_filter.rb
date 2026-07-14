@@ -6,6 +6,7 @@ module Banzai
     # user or the instance.
     class BroadcastMessagePlaceholdersFilter < HTML::Pipeline::Filter
       prepend Concerns::PipelineTimingCheck
+      include Concerns::ContextAccessors
 
       def call
         return doc unless context[:broadcast_message_placeholders]
@@ -49,10 +50,6 @@ module Banzai
           "username" => -> { current_user.try(:username) },
           "instance_id" => -> { Gitlab::CurrentSettings.try(:uuid) }
         }
-      end
-
-      def current_user
-        context[:current_user]
       end
     end
   end

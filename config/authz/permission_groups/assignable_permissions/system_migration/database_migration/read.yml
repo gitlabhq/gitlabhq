@@ -1,0 +1,9 @@
+---
+name: read_database_migration
+description: Grants the ability to read database migrations
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_database_migration

@@ -1,6 +1,7 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/label.fragment.graphql"
+#import "~/work_items/graphql/work_item_parent_fields.fragment.graphql"
 
 # @feature_category: portfolio_management
 query getBoardWorkItems(
@@ -110,7 +111,7 @@ query getBoardWorkItems(
         webUrl
         webPath
         state
-        widgets(onlyTypes: [LABELS, ASSIGNEES]) {
+        widgets(onlyTypes: [LABELS, ASSIGNEES, MILESTONE, START_AND_DUE_DATE, HIERARCHY]) {
           type
           ... on WorkItemWidgetLabels {
             allowsScopedLabels
@@ -125,6 +126,24 @@ query getBoardWorkItems(
               nodes {
                 ...User
               }
+            }
+          }
+          ... on WorkItemWidgetMilestone {
+            milestone {
+              id
+              dueDate
+              startDate
+              title
+              webPath
+            }
+          }
+          ... on WorkItemWidgetStartAndDueDate {
+            dueDate
+            startDate
+          }
+          ... on WorkItemWidgetHierarchy {
+            parent {
+              ...WorkItemParentFields
             }
           }
         }

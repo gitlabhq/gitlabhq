@@ -106,7 +106,6 @@ onboarding, based primarily on user count. Reference architectures for instances
 To view your reference architecture:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
-1. At the top of the page, select **Configuration**.
 1. From the tenant overview page, locate the **Reference architecture** field.
 
 > [!note]

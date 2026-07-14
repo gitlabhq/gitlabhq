@@ -20,7 +20,7 @@ export const initAdminJobsApp = () => {
 
   if (!containerEl) return false;
 
-  const { jobStatuses, emptyStateSvgPath, url, canUpdateAllJobs } = containerEl.dataset;
+  const { jobStatuses, url, canUpdateAllJobs } = containerEl.dataset;
 
   return new Vue({
     el: containerEl,
@@ -28,7 +28,6 @@ export const initAdminJobsApp = () => {
     apolloProvider,
     provide: {
       url,
-      emptyStateSvgPath,
       jobStatuses: JSON.parse(jobStatuses),
       canUpdateAllJobs: parseBoolean(canUpdateAllJobs),
     },

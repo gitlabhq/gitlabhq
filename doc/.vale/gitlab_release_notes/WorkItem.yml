@@ -1,0 +1,35 @@
+---
+name: gitlab_release_notes.WorkItem
+description: Ensures feature release notes link to a work item.
+message: "The `work_item` metadata is required and must be an absolute GitLab work item, issue, or merge request URL, or a list of them (for example, `https://gitlab.com/groups/gitlab-org/-/work_items/12345` or `https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/?milestone_title=19.1&state=closed`)."
+link: https://docs.gitlab.com/development/documentation/release_notes/#feature-release-note-metadata
+level: error
+extends: script
+scope: raw
+script: |
+  text := import("text")
+  matches := []
+
+  if text.re_match("^---\\n", scope) {
+    fmEnd := text.index(scope, "\n---")
+    if fmEnd > 0 {
+      fm := scope[0:fmEnd]
+      if !text.re_match("(?m)^work_item:", fm) {
+        matches = append(matches, {begin: 0, end: 3})
+      } else {
+        m := text.re_find("(?m)^work_item:[ \\t]*(.*)$", fm, 1)
+        if !is_undefined(m) {
+          cap := m[0][1]
+          span := {begin: cap.begin, end: cap.begin + len(cap.text)}
+          v := text.trim_space(text.re_replace("[\"']", cap.text, ""))
+          // Accept a single work item/issue/merge request (`/-/work_items/123`)
+          // or a list of them, with or without query parameters
+          // (`/-/work_items?milestone_title=19.1&state=closed`), which teams
+          // use to link to an issue board.
+          if !text.re_match("^https://gitlab\\.com/.+/-/(work_items|issues|merge_requests)(/[0-9]+)?(/?(\\?\\S+))?$", v) {
+            matches = append(matches, span)
+          }
+        }
+      }
+    }
+  }

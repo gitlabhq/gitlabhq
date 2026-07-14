@@ -62,20 +62,29 @@ module IssuableLinks
     end
 
     def render_no_permission_error?
-      readonly_issuables(referenced_issuables).present? && linkable_issuables(referenced_issuables).empty?
+      readonly_issuables.present? && linkable_issuables.empty?
     end
 
     def render_not_found_error?
-      linkable_issuables(referenced_issuables).empty?
+      linkable_issuables.empty?
     end
 
     def create_links
-      objects = linkable_issuables(referenced_issuables)
+      objects = linkable_issuables
       link_issuables(objects)
     end
 
     def link_issuables(target_issuables)
-      target_issuables.map do |referenced_object|
+      target_issuables.filter_map do |referenced_object|
+        if different_organization?(referenced_object)
+          @errors << (_("%{ref} cannot be added: %{error}") % {
+            ref: referenced_object.to_reference,
+            error: _('it belongs to a different organization')
+          })
+
+          next
+        end
+
         link = relate_issuables(referenced_object)
 
         if link.errors.any?
@@ -89,6 +98,17 @@ module IssuableLinks
 
         link
       end
+    end
+
+    # An organization is isolated to a single cell, so items in different
+    # organizations cannot be linked. Only issuables expose the organization
+    # comparison; other linkables (e.g. feature flags) are scoped to a single
+    # project and never cross cells, so they are left untouched.
+    def different_organization?(referenced_object)
+      return false unless issuable.respond_to?(:same_organization_as?)
+      return false unless Feature.enabled?(:prevent_cross_organization_work_item_actions, issuable.root_ancestor)
+
+      !issuable.same_organization_as?(referenced_object)
     end
 
     def referenced_issuables
@@ -136,7 +156,7 @@ module IssuableLinks
     end
 
     def error_message
-      ::Gitlab::WorkItems::IssuableLinks::ErrorMessage.new(target_type: target_issuable_type, container_type: 'project')
+      ::Gitlab::WorkItems::IssuableLinks::ErrorMessage.new(target_type: target_issuable_type)
     end
 
     def target_issuable_type
@@ -148,11 +168,11 @@ module IssuableLinks
       SystemNoteService.relate_issuable(issuable_link.target, issuable_link.source, current_user)
     end
 
-    def linkable_issuables(objects)
+    def linkable_issuables
       raise NotImplementedError
     end
 
-    def readonly_issuables(_issuables)
+    def readonly_issuables
       [] # default to empty for non-issues
     end
 

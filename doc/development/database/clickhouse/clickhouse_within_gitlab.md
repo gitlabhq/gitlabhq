@@ -63,7 +63,7 @@ ClickHouse::Client.select('SELECT 1', :main)
 
 To generate a ClickHouse database migration, execute:
 
-``` shell
+```shell
 bundle exec rails generate gitlab:click_house:migration MIGRATION_CLASS_NAME
 ```
 
@@ -72,6 +72,15 @@ To run database migrations, execute:
 ```shell
 bundle exec rake gitlab:clickhouse:migrate
 ```
+
+The `gitlab:clickhouse:migrate` task also generates a schema version marker file under
+`db/click_house/schema_migrations/main/<version>` for each applied migration.
+Commit these marker files together with the migration.
+The `clickhouse:check-schema` CI job fails when a migration is merged without its
+marker file, and GitLab regenerates the marker file as an untracked file on every
+migration run until you commit the file.
+If you write a migration without a local ClickHouse instance, run the migration
+to generate the marker file before you commit.
 
 To rollback last N migrations, execute:
 
@@ -184,14 +193,14 @@ select dictGetOrDefault('project_traversal_paths_dictionary', 'traversal_path', 
 
 To generate a ClickHouse database post deployment migration execute:
 
-``` shell
+```shell
 bundle exec rails generate gitlab:click_house:post_deployment_migration MIGRATION_CLASS_NAME
 ```
 
 These migrations will run by default together with regular migrations, but they can be skipped,
 for example, before deploying to production using `SKIP_POST_DEPLOYMENT_MIGRATIONS` environment variable, for example:
 
-``` shell
+```shell
 export SKIP_POST_DEPLOYMENT_MIGRATIONS=true
 bundle exec rake gitlab:clickhouse:migrate
 ```

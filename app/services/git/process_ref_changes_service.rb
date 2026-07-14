@@ -43,7 +43,10 @@ module Git
       push_service_class = push_service_class_for(ref_type)
 
       create_bulk_push_event = changes.size > Gitlab::CurrentSettings.push_event_activities_limit
-      merge_request_branches = merge_request_branches_for(ref_type, changes)
+
+      pushed_branches_service = pushed_branches_service_for(ref_type, changes)
+      merge_request_branches = pushed_branches_service&.all_branches || []
+      merge_request_source_branches = pushed_branches_service&.open_source_branches || []
 
       changes.each do |change|
         options = {
@@ -51,6 +54,7 @@ module Git
           push_options: params[:push_options],
           gitaly_context: params[:gitaly_context],
           merge_request_branches: merge_request_branches,
+          merge_request_source_branches: merge_request_source_branches,
           create_pipelines: under_process_limit?(change),
           execute_project_hooks: execute_project_hooks,
           create_push_event: !create_bulk_push_event
@@ -127,10 +131,10 @@ module Git
       Git::BranchPushService
     end
 
-    def merge_request_branches_for(ref_type, changes)
-      return [] if ref_type == :tag
+    def pushed_branches_service_for(ref_type, changes)
+      return if ref_type == :tag
 
-      MergeRequests::PushedBranchesService.new(project: project, current_user: current_user, params: { changes: changes }).execute
+      MergeRequests::PushedBranchesService.new(project: project, current_user: current_user, params: { changes: changes })
     end
 
     def perform_housekeeping

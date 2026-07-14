@@ -16,6 +16,7 @@ lock_gitlab_schemas:
   - gitlab_main_jh
   - gitlab_pm
   - gitlab_sec
+  - gitlab_sec_cell_local
 klass: Ci::ApplicationRecord
 # if CI database is not configured, use this database
 fallback_database: main

@@ -24,6 +24,42 @@ const buildPaginationVariables = ({ resource, itemsNeeded, cursor, direction }) 
 };
 
 /**
+ * Compute the cachedPageInfo for a resource after a fetch.
+ *
+ * When metadataDirection is set, this was a metadata probe for one item
+ * pageInfo will be off by one item, so decide hasNextPage or hasPreviousPage
+ * based on the presence of the item instead
+ *
+ * @param {Object} options
+ * @param {?string} options.metadataDirection - DIRECTION.NEXT/PREVIOUS if this was a probe, otherwise null
+ * @param {Array<Object>} options.nodes - The items returned by the query
+ * @param {Object} options.result - The raw query result
+ * @param {Function} options.getPageInfo - Extracts pageInfo from the result
+ * @param {Object} [options.previousPageInfo] - The resource's existing cachedPageInfo, preserved on a probe
+ * @returns {Object} The new cachedPageInfo for the resource
+ */
+export const computeCachedPageInfo = ({
+  metadataDirection,
+  nodes,
+  result,
+  getPageInfo,
+  previousPageInfo,
+}) => {
+  if (!metadataDirection) {
+    // Not a probe: trust the pageInfo from the result
+    return getPageInfo(result);
+  }
+
+  const hasContent = nodes.length > 0;
+  return {
+    ...previousPageInfo,
+    ...(metadataDirection === DIRECTION.NEXT
+      ? { hasNextPage: hasContent }
+      : { hasPreviousPage: hasContent }),
+  };
+};
+
+/**
  * @typedef {Object} PaginationResource
  * @property {Object} query - The GraphQL query to fetch this resource
  * @property {Function} [skip] - Optional function that returns true to skip this resource during pagination
@@ -96,7 +132,7 @@ export default class SequentialCursorPaginator {
     return this.getNextCombinedPage(componentVariables);
   }
 
-  async getPageFromResource(resource, index, variables) {
+  async getPageFromResource({ resource, index, variables, metadataDirection = null }) {
     const { query, baseVariables = {}, getNodes, getPageInfo, timeout } = resource;
     const queryPromise = this.$apollo.query({
       query,
@@ -111,8 +147,17 @@ export default class SequentialCursorPaginator {
           }),
         ])
       : queryPromise);
-    this.resources[index].cachedPageInfo = getPageInfo(result);
-    return getNodes(result);
+    const nodes = getNodes(result);
+
+    this.resources[index].cachedPageInfo = computeCachedPageInfo({
+      metadataDirection,
+      nodes,
+      result,
+      getPageInfo,
+      previousPageInfo: this.resources[index].cachedPageInfo,
+    });
+
+    return nodes;
   }
 
   async getNextCombinedPage(componentVariables) {
@@ -141,7 +186,11 @@ export default class SequentialCursorPaginator {
       // Skip this resource if skip function returns true
       if (!resource.skip?.()) {
         const itemsNeeded = this.pageSize - combinedPageItems.length;
-        const cursor = resource.cachedPageInfo?.endCursor || null;
+
+        // If we're continuing within this resource, use cached cursor
+        // otherwise set to null to get first page of this resource
+        const continuing = resourceIndex === this.resourceStartIndex;
+        const cursor = continuing ? resource.cachedPageInfo?.endCursor ?? null : null;
 
         const paginationVariables = buildPaginationVariables({
           resource,
@@ -150,9 +199,10 @@ export default class SequentialCursorPaginator {
           direction: DIRECTION.NEXT,
         });
         // eslint-disable-next-line no-await-in-loop
-        const pageFromResource = await this.getPageFromResource(resource, resourceIndex, {
-          ...componentVariables,
-          ...paginationVariables,
+        const pageFromResource = await this.getPageFromResource({
+          resource,
+          index: resourceIndex,
+          variables: { ...componentVariables, ...paginationVariables },
         });
 
         combinedPageItems = [...combinedPageItems, ...pageFromResource];
@@ -198,7 +248,11 @@ export default class SequentialCursorPaginator {
       // Skip this resource if skip function returns true
       if (!resource.skip?.()) {
         const itemsNeeded = this.pageSize - combinedPageItems.length;
-        const cursor = resource.cachedPageInfo?.startCursor || null;
+
+        // If we're continuing within this resource, use cached cursor
+        // otherwise set to null to get last page of this resource
+        const continuing = resourceIndex === this.resourceEndIndex;
+        const cursor = continuing ? resource.cachedPageInfo?.startCursor ?? null : null;
 
         const paginationVariables = buildPaginationVariables({
           resource,
@@ -207,9 +261,10 @@ export default class SequentialCursorPaginator {
           direction: DIRECTION.PREVIOUS,
         });
         // eslint-disable-next-line no-await-in-loop
-        const pageFromResource = await this.getPageFromResource(resource, resourceIndex, {
-          ...componentVariables,
-          ...paginationVariables,
+        const pageFromResource = await this.getPageFromResource({
+          resource,
+          index: resourceIndex,
+          variables: { ...componentVariables, ...paginationVariables },
         });
 
         combinedPageItems = [...pageFromResource, ...combinedPageItems];
@@ -244,11 +299,14 @@ export default class SequentialCursorPaginator {
       direction,
     });
 
-    await this.getPageFromResource(resource, resourceIndex, {
-      ...componentVariables,
-      ...paginationVariables,
+    await this.getPageFromResource({
+      resource,
+      index: resourceIndex,
+      variables: { ...componentVariables, ...paginationVariables },
+      metadataDirection: direction,
     });
   }
+
   async checkIfAnyResourceHasMorePages(direction, resourceIndex, componentVariables) {
     const resourcesToCheck = [];
     if (direction === DIRECTION.NEXT) {

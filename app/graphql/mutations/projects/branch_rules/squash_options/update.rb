@@ -9,6 +9,7 @@ module Mutations
           description 'Update a squash option for a branch rule'
 
           authorize :update_squash_option
+
           argument :branch_rule_id, ::Types::GlobalIDType[::Projects::BranchRule],
             required: true,
             description: 'Global ID of the branch rule.'
@@ -22,13 +23,13 @@ module Mutations
             null: true,
             description: 'Updated squash option after mutation.'
 
-          def resolve(branch_rule_id:, squash_option:)
+          def resolve(branch_rule_id:, **params)
             branch_rule = authorized_find!(id: branch_rule_id)
 
-            service_response = ::Projects::BranchRules::SquashOptions::UpdateService.new(
+            service_response = ::BranchRules::SquashOptions::UpdateService.new(
               branch_rule,
-              squash_option: squash_option,
-              current_user: current_user
+              user: current_user,
+              params: params
             ).execute
 
             {

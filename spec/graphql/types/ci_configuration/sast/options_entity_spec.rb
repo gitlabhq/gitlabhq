@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['SastCiConfigurationOptionsEntity'] do
+RSpec.describe GitlabSchema.types['SastCiConfigurationOptionsEntity'], feature_category: :static_application_security_testing do
   let(:fields) { %i[label value] }
 
   it { expect(described_class.graphql_name).to eq('SastCiConfigurationOptionsEntity') }

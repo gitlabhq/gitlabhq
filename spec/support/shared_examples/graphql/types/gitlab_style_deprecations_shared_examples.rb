@@ -52,20 +52,20 @@ RSpec.shared_examples 'Gitlab-style deprecations' do
   it 'adds information about the replacement if provided' do
     deprecable = subject(deprecated: { milestone: '1.10', reason: :renamed, replacement: 'Foo.bar' })
 
-    expect(deprecable.deprecation_reason).to include('Please use `Foo.bar`')
+    expect(deprecable.deprecation_reason).to include('Use `Foo.bar` instead.')
   end
 
   it 'supports named reasons: renamed' do
     deprecable = subject(deprecated: { milestone: '1.10', reason: :renamed })
 
-    expect(deprecable.deprecation_reason).to eq('This was renamed. Deprecated in GitLab 1.10.')
+    expect(deprecable.deprecation_reason).to eq('Renamed. Deprecated in GitLab 1.10.')
   end
 
   it 'supports :experiment' do
     deprecable = subject(experiment: { milestone: '1.10' })
 
     expect(deprecable.deprecation_reason).to eq(
-      '**Status**: Experiment. Introduced in GitLab 1.10.'
+      'Status: Experiment. Introduced in GitLab 1.10.'
     )
   end
 

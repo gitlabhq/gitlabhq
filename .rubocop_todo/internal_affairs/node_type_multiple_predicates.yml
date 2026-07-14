@@ -1,8 +1,0 @@
----
-# Cop supports --autocorrect.
-InternalAffairs/NodeTypeMultiplePredicates:
-  Exclude:
-    - 'rubocop/cop/gettext/static_identifier.rb'
-    - 'rubocop/cop/gitlab/rails/safe_format.rb'
-    - 'rubocop/cop/migration/add_reference.rb'
-    - 'rubocop/cop/search/namespaced_class.rb'

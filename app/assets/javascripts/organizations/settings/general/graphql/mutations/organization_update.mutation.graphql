@@ -3,6 +3,7 @@ mutation organizationUpdate($input: OrganizationUpdateInput!) {
     organization {
       id
       name
+      path
       webUrl
     }
     errors

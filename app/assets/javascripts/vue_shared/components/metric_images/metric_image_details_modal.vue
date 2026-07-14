@@ -1,9 +1,9 @@
 <script>
 import { GlButton, GlForm, GlFormGroup, GlFormInput, GlModal } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import { __, s__, sprintf } from '~/locale';
 import { isValidURL } from '~/lib/utils/url_utility';
+import { useMetricImages } from '~/vue_shared/components/metric_images/store';
 
 export default {
   name: 'MetricImageDetailsModal',
@@ -50,6 +50,7 @@ export default {
       default: '',
     },
   },
+  emits: ['hidden'],
   data() {
     return {
       modalUrl: this.url,
@@ -57,7 +58,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['isUploadingImage']),
+    ...mapState(useMetricImages, ['isUploadingImage']),
     title() {
       return this.edit
         ? sprintf(this.$options.i18n.editTitle, { filename: this.filename })
@@ -68,7 +69,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['uploadImage', 'updateImage']),
+    ...mapActions(useMetricImages, ['uploadImage', 'updateImage']),
     clear() {
       this.modalUrl = this.url;
       this.modalUrlText = this.urlText;

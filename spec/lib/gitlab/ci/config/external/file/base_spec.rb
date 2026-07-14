@@ -37,6 +37,10 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
   before do
     allow_any_instance_of(Gitlab::Ci::Config::External::Context)
       .to receive(:check_execution_time!)
+
+    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
+      .with(:ci_interpolation_split_function)
+      .and_return(false)
   end
 
   describe '#matching?' do

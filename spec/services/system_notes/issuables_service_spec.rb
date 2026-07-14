@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning do
   include ProjectForksHelper
 
-  let_it_be(:group)   { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
-  let_it_be(:author)  { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, :repository, group: group) }
+  let_it_be(:author) { create(:user) }
 
   let(:noteable)      { create(:issue, project: project) }
   let(:issue)         { noteable }
@@ -54,7 +54,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
     end
 
     context 'with work items' do
-      let_it_be(:noteable, freeze: false) { create(:work_item, :task, project: project) }
+      let_it_be_with_reload(:noteable) { create(:work_item, :task, project: project) }
 
       it 'sets the note text without referencing the work item type' do
         expect(subject.note).to eq "marked as related to #{noteable_ref.to_reference(project)}"
@@ -164,7 +164,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
   describe '#change_issuable_reviewers' do
     subject { service.change_issuable_reviewers([reviewer]) }
 
-    let_it_be(:noteable, freeze: false) { create(:merge_request, :simple, source_project: project) }
+    let_it_be_with_reload(:noteable) { create(:merge_request, :simple, source_project: project) }
     let_it_be(:reviewer) { create(:user) }
     let_it_be(:reviewer1) { create(:user) }
     let_it_be(:reviewer2) { create(:user) }
@@ -223,8 +223,8 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
   describe '#request_review' do
     subject(:request_review) { service.request_review(reviewer, unapproved) }
 
-    let_it_be(:reviewer, freeze: false) { create(:user) }
-    let_it_be(:noteable, freeze: false) { create(:merge_request, :simple, source_project: project, reviewers: [reviewer]) }
+    let_it_be_with_reload(:reviewer) { create(:user) }
+    let_it_be_with_reload(:noteable) { create(:merge_request, :simple, source_project: project, reviewers: [reviewer]) }
     let(:unapproved) { false }
 
     it_behaves_like 'a system note' do
@@ -247,7 +247,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
   describe '#change_issuable_contacts' do
     subject { service.change_issuable_contacts(1, 1) }
 
-    let_it_be(:noteable, freeze: false) { create(:issue, project: project) }
+    let_it_be_with_reload(:noteable) { create(:issue, project: project) }
 
     it_behaves_like 'a system note' do
       let(:action) { 'contact' }
@@ -1022,7 +1022,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
       event = ResourceStateEvent.last
 
-      expect(event.close_after_error_tracking_resolve).to eq(true)
+      expect(event.close_after_error_tracking_resolve).to be(true)
       expect(event.state).to eq('closed')
     end
   end
@@ -1035,7 +1035,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
       event = ResourceStateEvent.last
 
-      expect(event.close_auto_resolve_prometheus_alert).to eq(true)
+      expect(event.close_auto_resolve_prometheus_alert).to be(true)
       expect(event.state).to eq('closed')
     end
   end

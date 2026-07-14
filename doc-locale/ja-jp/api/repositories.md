@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLabのGitリポジトリのためのREST APIのドキュメント
 title: リポジトリAPI
 ---
@@ -13,27 +13,24 @@ title: リポジトリAPI
 
 {{< /details >}}
 
-このAPIを使用して[Gitリポジトリ](../user/project/repository/_index.md)を管理します。
+このAPIを使用して、[Gitリポジトリ](../user/project/repository/_index.md)を管理します。
 
-## リポジトリツリーの一覧 {#list-repository-tree}
+## プロジェクト内のすべてのリポジトリツリーを一覧表示します {#list-all-repository-trees-in-a-project}
 
-プロジェクト内のリポジトリファイルとディレクトリのリストを取得します。リポジトリが公開されている場合、このエンドポイントは認証なしでアクセスできます。
+指定されたプロジェクト内のすべてのリポジトリファイルとディレクトリを一覧表示します。リポジトリが公開されている場合、このエンドポイントは認証なしでアクセスできます。
 
-このコマンドは、基本的に`git ls-tree`コマンドと同じ機能を提供します。詳細については、Gitの内部ドキュメントにある[ツリーオブジェクト](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects.html#_tree_objects)のセクションを参照してください。
+このコマンドは、基本的に`git ls-tree`コマンドと同じ機能を提供します。詳細については、Git内部ドキュメントの[ツリーオブジェクト](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects.html#_tree_objects)を参照してください。
 
-{{< alert type="warning" >}}
-
-GitLabバージョン17.7では、リクエストされたパスが見つからない場合のエラー処理動作が変更されました。エンドポイントはステータスコード`404 Not Found`を返すようになりました。以前のステータスコードは`200 OK`でした。
-
-ご使用の実装が、存在しないパスに対して空の配列を持つ`200`ステータスコードが返ってくることを前提としている場合は、新しい`404`応答に対応できるよう、エラー処理を更新する必要があります。
-
-{{< /alert >}}
+> [!warning]
+> GitLabバージョン17.7では、要求されたパスが見つからない場合のエラー処理の動作が変更されます。エンドポイントは、ステータスコード`404 Not Found`を返すようになりました。以前のステータスコードは`200 OK`でした。
+>
+> ご使用の実装が、存在しないパスに対して空の配列を持つ`200`ステータスコードが返ってくることを前提としている場合は、新しい`404`応答に対応できるよう、エラー処理を更新する必要があります。
 
 ```plaintext
 GET /projects/:id/repository/tree
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性    | 型              | 必須 | 説明 |
 |--------------|-------------------|----------|-------------|
@@ -47,14 +44,14 @@ GET /projects/:id/repository/tree
 
 成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)とツリーオブジェクトの配列を返します。
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/tree"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -110,9 +107,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## リポジトリからblobを取得する {#get-a-blob-from-repository}
+## リポジトリからblobを取得する {#retrieve-a-blob-from-a-repository}
 
-リポジトリ内のblobについて、サイズや内容といった情報を取得できるようにします。blobコンテンツはBase64エンコードされています。リポジトリが公開されている場合、このエンドポイントには認証なしでアクセスできます。
+リポジトリ内のblobのサイズやコンテンツなどの情報を取得します。blobコンテンツはBase64エンコードされています。リポジトリが公開されている場合、このエンドポイントには認証なしでアクセスできます。
 
 10 MBを超えるblobの場合、このエンドポイントには1分あたり5リクエストというレート制限があります。
 
@@ -120,14 +117,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/repository/blobs/:sha
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列            | はい      | blob SHA。   |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性  | 型    | 説明 |
 |------------|---------|-------------|
@@ -136,14 +133,14 @@ GET /projects/:id/repository/blobs/:sha
 | `sha`      | 文字列  | blob SHA。   |
 | `size`     | 整数 | Blobのサイズ（バイト単位）。 |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/blobs/79f7bbd25901e8334750839545a9bd021f0e4c83"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -154,31 +151,31 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## raw blobコンテンツを取得する {#get-raw-blob-content}
+## raw blobコンテンツを取得する {#retrieve-raw-blob-content}
 
-blob SHAを指定して、blobのrawファイルのコンテンツを取得します。リポジトリが公開されている場合、このエンドポイントは認証なしでアクセスできます。
+blob SHAによって、blobのrawファイルコンテンツを取得します。リポジトリが公開されている場合、このエンドポイントは認証なしでアクセスできます。
 
 ```plaintext
 GET /projects/:id/repository/blobs/:sha/raw
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列            | はい      | blob SHA。   |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/blobs/79f7bbd25901e8334750839545a9bd021f0e4c83/raw"
 ```
 
-## ファイルアーカイブを取得する {#get-file-archive}
+## リポジトリからファイルアーカイブを取得する {#retrieve-file-archive-from-a-repository}
 
-リポジトリのアーカイブを取得します。リポジトリが公開されている場合、このエンドポイントは認証なしでアクセスできます。
+指定されたリポジトリのファイルアーカイブを取得します。リポジトリが公開されている場合、このエンドポイントは認証なしでアクセスできます。
 
 GitLab.comのユーザーの場合、このエンドポイントには1分あたり5リクエストというレート制限しきい値が設定されています。
 
@@ -186,7 +183,7 @@ GitLab.comのユーザーの場合、このエンドポイントには1分あた
 GET /projects/:id/repository/archive[.format]
 ```
 
-`format`はアーカイブ形式のオプションのサフィックスであり、デフォルトは`tar.gz`です。たとえば`archive.zip`を指定すると、ZIP形式でアーカイブが送信されます。使用可能なオプションは次のとおりです:
+`format`はアーカイブ形式のオプションのサフィックスであり、デフォルトは`tar.gz`です。たとえば`archive.zip`を指定すると、ZIP形式でアーカイブが送信されます。使用可能なオプションは次のとおりです。
 
 - `bz2`
 - `tar`
@@ -197,7 +194,7 @@ GET /projects/:id/repository/archive[.format]
 - `tbz2`
 - `zip`
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
@@ -207,7 +204,7 @@ GET /projects/:id/repository/archive[.format]
 | `path`              | 文字列            | いいえ       | ダウンロードするリポジトリのサブパス。空の文字列の場合、デフォルトはリポジトリ全体です。 |
 | `sha`               | 文字列            | いいえ       | ダウンロードするコミットSHA。タグ、ブランチ参照、またはSHAを受け入れます。指定しない場合、デフォルトはデフォルトブランチの先端です。 |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -222,13 +219,19 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-リポジトリが公開されている場合、このエンドポイントは認証なしでアクセスできます。差分の制限に達すると、差分に空の差分文字列が含まれる可能性があります。
+指定されたプロジェクト内の2つのブランチ、タグ、またはコミット間の差分を取得します。リポジトリが公開されている場合、このエンドポイントは認証なしでアクセスできます。
+
+`compare_timeout`が`true`の場合、比較がサイズ制限を超過したか、タイムアウトしました:
+
+- `commits`配列は常に完全です。
+- `diffs`配列は不完全な場合があります。
+- 個々の差分オブジェクトは、そのコンテンツが制限を超過した場合、空の`diff`文字列を持つ可能性があります。
 
 ```plaintext
 GET /projects/:id/repository/compare
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性         | 型              | 必須 | 説明 |
 |-------------------|-------------------|----------|-------------|
@@ -239,12 +242,12 @@ GET /projects/:id/repository/compare
 | `straight`        | ブール値           | いいえ       | `true`の場合、比較方法は`from`と`to`間の直接比較です（`from`..`to`）。`false`の場合、マージベースを使用して比較します（`from`...`to`）。デフォルトは`false`です。 |
 | `unidiff`         | ブール値           | いいえ       | `true`の場合、[unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html)形式で差分を表示します。デフォルトは`false`です。GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610)されました。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                | 型         | 説明 |
 |--------------------------|--------------|-------------|
 | `commit`                 | オブジェクト       | 比較対象の最新コミットの詳細。 |
-| `commits`                | オブジェクト配列 | 比較に含まれるコミットのリスト。 |
+| `commits`                | オブジェクト配列 | 2つの参照間のコミット。`compare_timeout`が`true`の場合でも、常に完全です。 |
 | `commits[].author_email` | 文字列       | コミット作成者のメールアドレス。 |
 | `commits[].author_name`  | 文字列       | コミット作成者の名前。 |
 | `commits[].created_at`   | 日時     | コミット作成タイムスタンプ。 |
@@ -252,7 +255,7 @@ GET /projects/:id/repository/compare
 | `commits[].short_id`     | 文字列       | 短いコミットSHA。 |
 | `commits[].title`        | 文字列       | コミットタイトル。 |
 | `compare_same_ref`       | ブール値      | `true`の場合、比較ではFromとToの両方に同じ参照を使用します。 |
-| `compare_timeout`        | ブール値      | `true`の場合、比較操作がタイムアウトしました。 |
+| `compare_timeout`        | ブール値      | `true`の場合、比較がサイズ制限を超過したか、タイムアウトしました。`diffs`配列は不完全な場合があります。 |
 | `diffs`                  | オブジェクト配列 | ファイルの差分のリスト。 |
 | `diffs[].a_mode`         | 文字列       | 古いファイルモード。 |
 | `diffs[].b_mode`         | 文字列       | 新しいファイルモード。 |
@@ -266,14 +269,14 @@ GET /projects/:id/repository/compare
 | `diffs[].too_large`      | ブール値      | `true`の場合、ファイルの差分は除外され、取得できません。 |
 | `web_url`                | 文字列       | 比較を表示するためのWeb URL。 |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/compare?from=main&to=feature"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -327,7 +330,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/repository/contributors
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
@@ -336,7 +339,7 @@ GET /projects/:id/repository/contributors
 | `ref`      | 文字列            | いいえ       | リポジトリのブランチまたはタグの名前。指定しない場合は、デフォルトブランチです。 |
 | `sort`     | 文字列            | いいえ       | `asc`または`desc`の順にソートされたコントリビューターを返します。デフォルトは`asc`です。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性   | 型    | 説明 |
 |-------------|---------|-------------|
@@ -346,14 +349,14 @@ GET /projects/:id/repository/contributors
 | `email`     | 文字列  | コントリビューターのメールアドレス。 |
 | `name`      | 文字列  | コントリビューターの名前。 |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/7/repository/contributors"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [{
@@ -379,14 +382,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/repository/merge_base
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `refs`    | 配列             | はい      | 共通の祖先を見つけるためのrefs。複数のrefsを指定できます。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性           | 型     | 説明 |
 |---------------------|----------|-------------|
@@ -406,14 +409,14 @@ GET /projects/:id/repository/merge_base
 | `trailers`          | オブジェクト   | コミットメッセージから解析されたGitトレーラー。 |
 | `web_url`           | 文字列   | GitLab Webインターフェースでコミットを表示するURL。 |
 
-読みやすさのためにrefを省略したリクエスト例は以下のとおりです:
+読みやすさのためにrefを省略したリクエスト例は以下のとおりです。
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/merge_base?refs[]=304d257d&refs[]=0031876f"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -441,36 +444,43 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 - GitLab 17.7で、[CI/CDジョブトークン](../ci/jobs/ci_job_token.md)による認証が[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172842)されました。
 - `config_file_ref`属性は、GitLab 18.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/426108)されました。
+- プレーンテキスト形式（`.txt`）はGitLab 19.1で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237585)。
 
 {{< /history >}}
 
 リポジトリ内のコミットに基づいて変更履歴データを生成し、変更履歴データを変更履歴ファイルにコミットしません。
 
-変更履歴データが変更履歴ファイルにコミットされないことを除き、`POST /projects/:id/repository/changelog`とまったく同様に機能します。
+`POST /projects/:id/repository/changelog`と全く同じように動作します。ただし、変更履歴データはどの変更履歴ファイルにもコミットされません。
 
 ```plaintext
 GET /projects/:id/repository/changelog
 ```
 
-サポートされている属性は以下のとおりです:
+オプション。`.txt`サフィックスを追加すると、変更履歴がJSONではなくプレーンテキストMarkdownとして返されます:
+
+```plaintext
+GET /projects/:id/repository/changelog.txt
+```
+
+サポートされている属性は以下のとおりです: 
 
 | 属性         | 型     | 必須 | 説明 |
 |-------------------|----------|----------|-------------|
 | `version`         | 文字列   | はい      | 変更履歴を生成するバージョン。形式は、[セマンティックバージョニング](https://semver.org/)に従う必要があります。 |
-| `config_file`     | 文字列   | いいえ       | プロジェクトのGitリポジトリ内の変更履歴設定ファイルのパス。デフォルトは`.gitlab/changelog_config.yml`です。 |
+| `config_file`     | 文字列   | いいえ       | プロジェクトのGitリポジトリ内の変更履歴設定ファイルのパス。`.gitlab/changelog_config.yml`がデフォルトです。 |
 | `config_file_ref` | 文字列   | いいえ       | 変更履歴設定ファイルが定義されているGit参照（例：ブランチ）。デフォルトでは、リポジトリのブランチが使用されます。 |
 | `date`            | 日時 | いいえ       | リリースの日時。ISO 8601形式を使用します。たとえば`2016-03-11T03:45:40Z`などです。デフォルトは現在の時刻です。 |
 | `from`            | 文字列   | いいえ       | 変更履歴を生成する際に使用するコミット範囲の開始点（SHA）。このコミット自体は、リストには含まれません。 |
 | `to`              | 文字列   | いいえ       | 変更履歴に使用するコミット範囲の終了点（SHA）。このコミットはリストに含まれます。デフォルトは、デフォルトのプロジェクトブランチのHEADです。 |
-| `trailer`         | 文字列   | いいえ       | コミットを含めるために使用するGitトレーラー。デフォルトは`Changelog`です。 |
+| `trailer`         | 文字列   | いいえ       | コミットを含めるために使用するGitトレーラー。`Changelog`がデフォルトです。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性 | 型   | 説明 |
 |-----------|--------|-------------|
 | `notes`   | 文字列 | Markdown形式で生成された変更履歴データ。 |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: token" \
@@ -489,6 +499,26 @@ curl --header "PRIVATE-TOKEN: token" \
 }
 ```
 
+`.txt`形式のリクエスト例:
+
+```shell
+curl --header "PRIVATE-TOKEN: token" \
+  --url "https://gitlab.com/api/v4/projects/42/repository/changelog.txt?version=1.0.0"
+```
+
+レスポンス例: 
+
+```plaintext
+## 1.0.0 (2021-11-17)
+
+### feature (2 changes)
+
+- [Title 2](namespace13/project13@ad608eb642124f5b3944ac0ac772fecaf570a6bf)
+  ([merge request](namespace13/project13!2))
+- [Title 1](namespace13/project13@3c6b80ff7034fa0d585314e1571cc780596ce3c8)
+  ([merge request](namespace13/project13!1))
+```
+
 ## ファイルに変更履歴データを追加 {#add-changelog-data-to-file}
 
 {{< history >}}
@@ -502,7 +532,7 @@ curl --header "PRIVATE-TOKEN: token" \
 
 [セマンティックバージョニング](https://semver.org/)とコミット範囲を指定すると、GitLabは特定の[Gitトレーラー](https://git-scm.com/docs/git-interpret-trailers)を使用するすべてのコミットの変更履歴を生成します。GitLabは、プロジェクトのGitリポジトリ内の変更履歴ファイルに、新しいMarkdown形式のセクションを追加します。出力形式はカスタマイズできます。
 
-パフォーマンスとセキュリティ上の理由から、変更履歴の設定の解析中は2秒に制限されています。この制限は、不正な形式の変更履歴テンプレートからの潜在的なDoS攻撃を防ぐのに役立ちます。リクエストがタイムアウトした場合は、`changelog_config.yml`ファイルのサイズを小さくすることを検討してください。
+パフォーマンスとセキュリティ上の理由から、変更履歴の設定の解析中は秒に制限されています。この制限は、不正な形式の変更履歴テンプレートからの潜在的なDoS攻撃を防ぐのに役立ちます。リクエストがタイムアウトした場合は、`changelog_config.yml`ファイルのサイズを小さくすることを検討してください。
 
 ユーザー向けドキュメントについては、[変更履歴](../user/project/changelogs.md)を参照してください。
 
@@ -510,22 +540,22 @@ curl --header "PRIVATE-TOKEN: token" \
 POST /projects/:id/repository/changelog
 ```
 
-変更履歴は、次の属性をサポートしています:
+変更履歴は、次の属性をサポートしています。
 
 | 属性              | 型     | 必須 | 説明 |
 |------------------------|----------|----------|-------------|
-| `version` <sup>1</sup> | 文字列   | はい      | 変更履歴を生成するバージョン。形式は、[セマンティックバージョニング](https://semver.org/)に従う必要があります。 |
+| `version` <sup>18.2</sup> | 文字列   | はい      | 変更履歴を生成するバージョン。形式は、[セマンティックバージョニング](https://semver.org/)に従う必要があります。 |
 | `branch`               | 文字列   | いいえ       | 変更履歴の変更をコミットするブランチ。デフォルトは、プロジェクトのデフォルトブランチです。 |
-| `config_file`          | 文字列   | いいえ       | プロジェクトのGitリポジトリ内の変更履歴設定ファイルのパス。デフォルトは`.gitlab/changelog_config.yml`です。 |
+| `config_file`          | 文字列   | いいえ       | プロジェクトのGitリポジトリ内の変更履歴設定ファイルのパス。`.gitlab/changelog_config.yml`がデフォルトです。 |
 | `config_file_ref`      | 文字列   | いいえ       | 変更履歴設定ファイルが定義されているGit参照（例：ブランチ）。デフォルトでは、リポジトリのブランチが使用されます。 |
 | `date`                 | 日時 | いいえ       | リリースの日時。デフォルトは現在の時刻です。 |
-| `file`                 | 文字列   | いいえ       | 変更をコミットするファイル。デフォルトは`CHANGELOG.md`です。 |
+| `file`                 | 文字列   | いいえ       | 変更をコミットするファイル。`CHANGELOG.md`がデフォルトです。 |
 | `from` <sup>2</sup>    | 文字列   | いいえ       | 変更履歴に含めるコミットの範囲の開始を示すコミットのSHA。このコミットは変更履歴には含まれません。 |
 | `message`              | 文字列   | いいえ       | 変更をコミットするときに使用するコミットメッセージ。デフォルトは`Add changelog for version X`です。ここで、`X`は`version`引数の値です。 |
 | `to`                   | 文字列   | いいえ       | 変更履歴に含めるコミットの範囲の終わりを示すコミットのSHA。このコミットは変更履歴に含まれます。デフォルトは、`branch`属性に指定されたブランチです。15,000コミットに制限されています。 |
-| `trailer`              | 文字列   | いいえ       | コミットを含めるために使用するGitトレーラー。デフォルトは`Changelog`です。大文字と小文字を区別します。`Example`は`example`または`eXaMpLE`と一致しません。 |
+| `trailer`              | 文字列   | いいえ       | コミットを含めるために使用するGitトレーラー。`Changelog`がデフォルトです。大文字と小文字を区別します。`Example`は`example`または`eXaMpLE`と一致しません。 |
 
-**Footnotes**（脚注）:
+**脚注**:
 
 1. 属性`version`には、`v`プレフィックスを含めることも、省略することもできます。`1.0.0`と`v1.0.0`はどちらも同じ結果を生成します。GitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/437616)されました。
 
@@ -537,7 +567,7 @@ POST /projects/:id/repository/changelog
 
 ### 例 {#examples}
 
-以下に示す例では、[cURL](https://curl.se/)を使用してHTTPリクエストを実行します。コマンドの例では次の値を使用します:
+以下に示す例では、[cURL](https://curl.se/)を使用してHTTPリクエストを実行します。コマンドの例では次の値を使用します。
 
 - プロジェクトID: 42
 - ロケーション: GitLab.comでホスト
@@ -550,7 +580,7 @@ POST /projects/:id/repository/changelog
 - 最後のリリースのタグから開始します。
 - ターゲットブランチの最後のコミットで終了します。デフォルトのターゲットブランチは、プロジェクトのデフォルトブランチです。
 
-最後のタグが`v0.9.0`で、デフォルトブランチが`main`の場合、この例に含まれるコミットの範囲は`v0.9.0..main`です:
+最後のタグが`v0.9.0`で、デフォルトブランチが`main`の場合、この例に含まれるコミットの範囲は`v0.9.0..main`です。
 
 ```shell
 curl --request POST \
@@ -559,7 +589,7 @@ curl --request POST \
   --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```
 
-別のブランチのデータを生成するには、`branch`パラメータを指定します。次のコマンドは、`foo`ブランチからデータを生成します:
+別のブランチのデータを生成するには、`branch`パラメータを指定します。次のコマンドは、`foo`ブランチからデータを生成します。
 
 ```shell
 curl --request POST \
@@ -568,7 +598,7 @@ curl --request POST \
   --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```
 
-別のトレーラーを使用するには、`trailer`パラメータを使用します:
+別のトレーラーを使用するには、`trailer`パラメータを使用します。
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: token" \
@@ -576,7 +606,7 @@ curl --request POST --header "PRIVATE-TOKEN: token" \
   --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```
 
-結果を別のファイルに保存するには、`file`パラメータを使用します:
+結果を別のファイルに保存するには、`file`パラメータを使用します。
 
 ```shell
 curl --request POST \
@@ -585,7 +615,7 @@ curl --request POST \
   --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```
 
-パラメータとしてブランチを指定するには、`to`属性を使用します:
+パラメータとしてブランチを指定するには、`to`属性を使用します。
 
 ```shell
 curl --request GET \
@@ -608,13 +638,15 @@ curl --request GET \
 
 {{< /history >}}
 
-プロジェクトリポジトリのヘルスに関連する統計を取得します。このエンドポイントは、プロジェクトごとに1時間あたり5件のリクエストにレート制限されています。
+プロジェクトリポジトリのヘルスに関連する統計を取得します。
+
+このエンドポイントは、`generate`が`true`の場合、プロジェクトあたり1時間あたり5リクエストにレート制限されます。このエンドポイントは、リポジトリへのプッシュアクセス権を持つユーザーのみが利用できます。
 
 ```plaintext
 GET /projects/:id/repository/health
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型    | 必須 | 説明                                                                            |
 |------------|---------|----------|----------------------------------------------------------------------------------------|
@@ -622,14 +654,14 @@ GET /projects/:id/repository/health
 
 成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)とリポジトリのヘルス統計が返されます。
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: token" \
   --url "https://gitlab.com/api/v4/projects/42/repository/health"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

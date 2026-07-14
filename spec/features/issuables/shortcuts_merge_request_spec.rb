@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request shortcuts', :js, feature_category: :code_review_workflow do
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
   let(:note_text) { 'I got this!' }
 
@@ -86,7 +86,7 @@ RSpec.describe 'Merge request shortcuts', :js, feature_category: :code_review_wo
     it "opens labels dropdown for editing" do
       find('body').native.send_key('l')
 
-      expect(find('.js-labels-block')).to have_selector('[data-testid="labels-select-dropdown-contents"]')
+      expect(find('.js-labels-block')).to have_selector('[data-testid="listbox-search-input"]')
     end
   end
 end

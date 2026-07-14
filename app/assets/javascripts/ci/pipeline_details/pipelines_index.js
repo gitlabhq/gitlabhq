@@ -11,7 +11,6 @@ import { doesHashExistInUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import Translate from '~/vue_shared/translate';
 import PipelinesApp from '~/ci/pipelines_page/pipelines_app.vue';
-import { DEFAULT_MANUAL_ACTIONS_LIMIT } from '../constants';
 
 Vue.use(Translate);
 Vue.use(GlToast);
@@ -29,8 +28,6 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
   }
 
   const {
-    artifactsEndpoint,
-    artifactsEndpointPlaceholder,
     fullPath,
     newPipelinePath,
     resetCachePath,
@@ -46,7 +43,6 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     canCreatePipeline,
     showJenkinsCiPrompt,
     usesExternalConfig,
-    emptyStateIllustrationPath,
     pipelineEditorPath,
     projectPipelinesEtagPath,
     hasGitlabCi,
@@ -57,8 +53,6 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     name: 'PipelinesAppRoot',
     apolloProvider,
     provide: {
-      artifactsEndpoint,
-      artifactsEndpointPlaceholder,
       fullPath,
       newPipelinePath,
       resetCachePath,
@@ -67,14 +61,12 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
       identityVerificationPath,
       projectId,
       defaultBranchName,
-      manualActionsLimit: DEFAULT_MANUAL_ACTIONS_LIMIT,
       pipelineSchedulesPath,
       suggestedCiTemplates: JSON.parse(suggestedCiTemplates),
       canCreatePipeline: parseBoolean(canCreatePipeline),
       showJenkinsCiPrompt: parseBoolean(showJenkinsCiPrompt),
       usesExternalConfig: parseBoolean(usesExternalConfig),
       hasGitlabCi: parseBoolean(hasGitlabCi),
-      emptyStateIllustrationPath,
       pipelineEditorPath,
       projectPipelinesEtagPath,
     },

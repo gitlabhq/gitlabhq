@@ -9,6 +9,7 @@ RSpec.shared_examples 'log import failure' do |importable_column|
       retry_count: retry_count
     }
     extra[importable_column] = importable.id
+    extra[Labkit::Fields::GL_ORGANIZATION_ID] = importable.organization_id
 
     expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception, extra)
 

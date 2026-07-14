@@ -53,15 +53,15 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
 
   let_it_be(:admin) { create(:admin, :with_namespace) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group) }
   let_it_be(:url) { '/admin/token' }
   let(:api_user) { admin }
   let_it_be(:user) { create(:user, :with_namespace) }
 
   let_it_be(:project_bot) { create(:user, :project_bot) }
-  let_it_be(:group_bot, freeze: false) { create(:user, :project_bot) }
+  let_it_be(:group_bot) { create(:user, :project_bot) }
   let_it_be(:project_member) { create(:project_member, source: project, user: project_bot) }
-  let_it_be(:group_member, freeze: false) { create(:group_member, source: group, user: group_bot) }
+  let_it_be(:group_member) { create(:group_member, source: group, user: group_bot) }
 
   let(:personal_access_token) { create(:personal_access_token, user: user) }
   let(:project_access_token) { create(:personal_access_token, user: project_bot) }
@@ -269,6 +269,52 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
             delete_token
             expect(response.body).to include('Some error')
           end
+        end
+      end
+
+      context 'when the token is not revocable' do
+        shared_examples 'returns bad_request for unsupported token' do |expected_message|
+          it 'returns bad_request as revocation is not supported', :aggregate_failures do
+            delete_token
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response.body).to include(expected_message)
+          end
+        end
+
+        context 'when the token is a CI build token' do
+          let(:plaintext) { ci_build.token }
+
+          it_behaves_like 'returns bad_request for unsupported token', 'Unsupported token type'
+        end
+
+        context 'when the token is a CI trigger token' do
+          let(:plaintext) { ci_trigger.token }
+
+          before do
+            stub_feature_flags(token_api_expire_pipeline_triggers: false)
+          end
+
+          it_behaves_like 'returns bad_request for unsupported token', 'Unsupported token type'
+        end
+
+        context 'when the token is an orphan deploy token' do
+          let(:orphan_token) { create(:deploy_token) }
+          let(:plaintext) { orphan_token.token }
+
+          before do
+            allow(orphan_token).to receive_messages(group: nil, project: nil)
+            allow(::DeployToken).to receive(:find_by_token).with(plaintext).and_return(orphan_token)
+          end
+
+          it_behaves_like 'returns bad_request for unsupported token', 'Unsupported deploy token type'
+        end
+
+        context 'when the token is a PAT for a non-human, non-project_bot user' do
+          let(:unsupported_pat) { create(:personal_access_token, user: create(:user, :bot)) }
+          let(:plaintext) { unsupported_pat.token }
+
+          it_behaves_like 'returns bad_request for unsupported token', 'Unsupported personal access token type'
         end
       end
 

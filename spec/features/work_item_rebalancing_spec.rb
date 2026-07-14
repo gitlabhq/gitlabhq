@@ -6,7 +6,7 @@ RSpec.describe 'Work item rebalancing', feature_category: :team_planning do
   include Features::SortingHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, group: group) }
+  let_it_be(:project) { create(:project, group: group) }
   let_it_be(:user) { create(:user) }
 
   let(:alert_message_regex) { /Issues are being rebalanced at the moment/ }
@@ -72,6 +72,7 @@ RSpec.describe 'Work item rebalancing', feature_category: :team_planning do
     it 'shows alert when trying to switch to manual sort via dropdown in project work items list', :js do
       visit project_work_items_path(project)
 
+      click_button 'Display'
       pajamas_sort_by 'Manual', from: 'Created date'
 
       wait_for_requests
@@ -83,6 +84,7 @@ RSpec.describe 'Work item rebalancing', feature_category: :team_planning do
     it 'shows alert when trying to switch to manual sort via dropdown in group work items list', :js do
       visit group_work_items_path(group)
 
+      click_button 'Display'
       pajamas_sort_by 'Manual', from: 'Created date'
 
       wait_for_requests
@@ -94,6 +96,7 @@ RSpec.describe 'Work item rebalancing', feature_category: :team_planning do
     it 'does not show alert when switching to non-manual sort via dropdown in project work items list', :js do
       visit project_work_items_path(project)
 
+      click_button 'Display'
       pajamas_sort_by 'Updated date', from: 'Created date'
 
       wait_for_requests
@@ -105,6 +108,7 @@ RSpec.describe 'Work item rebalancing', feature_category: :team_planning do
     it 'does not show alert when switching to non-manual sort via dropdown in group work items list', :js do
       visit group_work_items_path(group)
 
+      click_button 'Display'
       pajamas_sort_by 'Updated date', from: 'Created date'
 
       wait_for_requests

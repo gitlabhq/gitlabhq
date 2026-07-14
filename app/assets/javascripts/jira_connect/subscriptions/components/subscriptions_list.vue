@@ -1,16 +1,16 @@
 <script>
 import { GlButton, GlTableLite } from '@gitlab/ui';
 import { isEmpty } from 'lodash-es';
-// eslint-disable-next-line no-restricted-imports
-import { mapMutations, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { removeSubscription } from '~/jira_connect/subscriptions/api';
 import { reloadPage } from '~/jira_connect/subscriptions/utils';
 import { __, s__ } from '~/locale';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { SET_ALERT } from '../store/mutation_types';
+import { useJiraConnectSubscriptions } from '../store';
 import GroupItemName from './group_item_name.vue';
 
 export default {
+  name: 'SubscriptionsList',
   components: {
     GlButton,
     GlTableLite,
@@ -42,12 +42,10 @@ export default {
     unlinkError: s__('JiraConnect|Failed to unlink group. Please try again.'),
   },
   computed: {
-    ...mapState(['subscriptions']),
+    ...mapState(useJiraConnectSubscriptions, ['subscriptions']),
   },
   methods: {
-    ...mapMutations({
-      setAlert: SET_ALERT,
-    }),
+    ...mapActions(useJiraConnectSubscriptions, ['setAlert']),
     isUnlinkButtonDisabled(item) {
       return !isEmpty(item);
     },

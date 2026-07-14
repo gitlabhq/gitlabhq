@@ -40,10 +40,7 @@ module Gitlab
       end
 
       def commit
-        return if commit_id.blank?
-        return unless merge_request.commit_exists?(commit_id)
-
-        merge_request.project.commit(commit_id)
+        ::Gitlab::MergeRequests::CommitResolver.new(merge_request, commit_id).resolve
       end
       strong_memoize_attr :commit
 

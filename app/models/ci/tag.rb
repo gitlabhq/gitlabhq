@@ -6,7 +6,6 @@ module Ci
 
     self.table_name = :tags
 
-    has_many :job_taggings, class_name: 'Ci::BuildTag'
     has_many :runner_taggings, class_name: 'Ci::RunnerTagging'
 
     validates :name, presence: true

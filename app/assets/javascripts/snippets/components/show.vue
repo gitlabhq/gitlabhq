@@ -16,6 +16,7 @@ import SnippetDescription from './snippet_description.vue';
 eventHub.$on(SNIPPET_MEASURE_BLOBS_CONTENT, markBlobPerformance);
 
 export default {
+  name: 'SnippetsShow',
   components: {
     SnippetHeader,
     SnippetDescription,

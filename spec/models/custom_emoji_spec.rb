@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CustomEmoji do
+RSpec.describe CustomEmoji, feature_category: :code_review_workflow do
   describe 'Associations' do
     it { is_expected.to belong_to(:namespace).inverse_of(:custom_emoji) }
     it { is_expected.to belong_to(:creator).inverse_of(:created_custom_emoji) }

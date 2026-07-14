@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::ByIdLookup, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
-  let_it_be(:partition, freeze: false) { create(:ci_partition, id: 102) }
+  let_it_be_with_reload(:partition) { create(:ci_partition, id: 102) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, partition_id: partition.id) }
 
   let(:scope) { Ci::Pipeline.all }

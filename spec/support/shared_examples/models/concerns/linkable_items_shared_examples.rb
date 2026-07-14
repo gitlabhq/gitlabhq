@@ -70,6 +70,31 @@ RSpec.shared_examples 'includes LinkableItem concern' do
         end
       end
     end
+
+    describe '#validate_same_organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_group) { create(:group, organization: other_organization) }
+      let_it_be(:other_project) { create(:project, group: other_group) }
+      let_it_be(:cross_org_item, freeze: false) { create(:work_item, :issue, project: other_project) }
+
+      let(:source) { issue }
+      let(:target) { cross_org_item }
+
+      it 'is invalid when source and target are in different organizations' do
+        is_expected.to be_invalid
+        expect(link.errors.messages[:target]).to include('must belong to the same organization.')
+      end
+
+      context 'when the prevent_cross_organization_work_item_actions flag is disabled' do
+        before do
+          stub_feature_flags(prevent_cross_organization_work_item_actions: false)
+        end
+
+        it 'is valid' do
+          is_expected.to be_valid
+        end
+      end
+    end
   end
 
   describe 'Scopes' do

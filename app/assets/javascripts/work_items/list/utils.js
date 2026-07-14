@@ -12,6 +12,7 @@ import { capitalizeFirstCharacter, convertEachWordToTitleCase } from '~/lib/util
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import {
+  FILTER_ME,
   FILTERED_SEARCH_TERM,
   OPERATOR_NOT,
   OPERATOR_IS,
@@ -101,6 +102,8 @@ import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_sa
 import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_view.query.graphql';
 import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
 import workItemSavedViewReorder from '~/work_items/graphql/reorder_saved_view.mutation.graphql';
+import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
+import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 
 export const getInitialPageParams = (
   pageSize,
@@ -477,8 +480,16 @@ const wildcardTokens = [
   TOKEN_TYPE_PARENT,
 ];
 
+// Tokens whose backend supports a "Me" (current user) wildcard. Not applicable to
+// all token types, so tested separately from other wildcard tokens.
+const meSupportingTokens = [TOKEN_TYPE_ASSIGNEE];
+
+const isMeWildcardValue = (tokenType, value) =>
+  meSupportingTokens.includes(tokenType) && value === FILTER_ME;
+
 const isWildcardValue = (tokenType, value) =>
-  wildcardTokens.includes(tokenType) && wildcardFilterValues.includes(value);
+  (wildcardTokens.includes(tokenType) && wildcardFilterValues.includes(value)) ||
+  isMeWildcardValue(tokenType, value);
 
 const convertToTokenValue = (token, baseValue) => {
   switch (token) {
@@ -752,7 +763,7 @@ const getFilterType = ({ type, value: { data, operator } }) => {
   ) {
     return ALTERNATIVE_FILTER;
   }
-  if (wildcardFilterValues.includes(data)) {
+  if (wildcardFilterValues.includes(data) || isMeWildcardValue(type, data)) {
     return WILDCARD_FILTER;
   }
 
@@ -1416,3 +1427,61 @@ export const reorderSavedView = async ({
       }),
   });
 };
+
+// Persists namespace-level work item display settings (for example collapsed
+// groups or hidden metadata fields) and patches the cached preferences so the
+// change is reflected without a refetch. Errors propagate to the caller.
+export const updateNamespaceDisplaySettings = ({
+  apolloClient,
+  namespacePath,
+  workItemTypeId,
+  isSavedView = false,
+  sort,
+  displaySettings,
+}) =>
+  apolloClient.mutate({
+    mutation: updateWorkItemListUserPreference,
+    variables: {
+      namespace: namespacePath,
+      displaySettings,
+    },
+    optimisticResponse: {
+      workItemUserPreferenceUpdate: {
+        errors: [],
+        userPreferences: {
+          displaySettings,
+          sort,
+          __typename: 'WorkItemTypesUserPreference',
+        },
+        __typename: 'WorkItemUserPreferenceUpdatePayload',
+      },
+    },
+    update(
+      cache,
+      {
+        data: {
+          workItemUserPreferenceUpdate: { userPreferences },
+        },
+      },
+    ) {
+      cache.updateQuery(
+        {
+          query: getUserWorkItemsPreferences,
+          variables: {
+            namespace: namespacePath,
+            workItemTypeId,
+            userPreferencesOnly: isSavedView,
+          },
+        },
+        (existingData) =>
+          produce(existingData, (draftData) => {
+            if (draftData?.currentUser) {
+              draftData.currentUser.workItemPreferences = {
+                ...(draftData?.currentUser?.workItemPreferences ?? {}),
+                displaySettings: userPreferences.displaySettings,
+              };
+            }
+          }),
+      );
+    },
+  });

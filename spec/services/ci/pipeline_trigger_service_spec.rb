@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integration do
   include AfterNextHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo) }
 
   before do
     stub_ci_pipeline_to_return_yaml_file
@@ -13,13 +13,9 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
   end
 
   describe '#execute' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, developer_of: project) }
 
     let(:result) { described_class.new(project, user, params).execute }
-
-    before do
-      project.add_developer(user)
-    end
 
     shared_examples 'detecting an unprocessable pipeline trigger' do
       context 'when the pipeline was not created successfully' do
@@ -73,7 +69,7 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
     end
 
     context 'with a trigger token' do
-      let(:trigger) { create(:ci_trigger, project: project, owner: user) }
+      let_it_be(:trigger) { create(:ci_trigger, project: project, owner: user) }
 
       context 'when trigger belongs to a different project' do
         let(:params) { { token: trigger.token, ref: 'master', variables: nil } }
@@ -114,7 +110,7 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
             expect(var.key).to eq('TRIGGER_PAYLOAD')
             expect(var.value).to eq('{"ref":"master","variables":null}')
             expect(var.variable_type).to eq('file')
-            expect(var.raw).to eq(true)
+            expect(var.raw).to be(true)
           end
 
           context 'when commit message has [ci skip]' do
@@ -180,7 +176,7 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
     end
 
     context 'with a pipeline job token' do
-      let!(:pipeline) { create(:ci_empty_pipeline, project: project) }
+      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
       let(:job) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
       context 'when job user does not have a permission to read a project' do

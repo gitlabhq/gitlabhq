@@ -4,18 +4,19 @@ import {
   GlFormInput,
   GlFormTextarea,
   GlButton,
-  GlExperimentBadge,
   GlLink,
-  GlTabs,
   GlSprintf,
   GlLoadingIcon,
+  GlFormCheckbox,
 } from '@gitlab/ui';
+import { cloneDeep } from 'lodash-es';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { createAlert } from '~/alert';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { scrollTo, scrollToElement } from '~/lib/utils/scroll_utils';
@@ -42,6 +43,8 @@ import {
   mockProjects,
   mockGroups,
 } from '../../mock_data';
+
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/scroll_utils');
@@ -74,7 +77,6 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       },
       stubs: {
         GlSprintf,
-        GlTabs: { template: '<div><slot name="tabs-end" /><slot /></div>' },
         AskDapPermissions: true,
       },
     });
@@ -82,8 +84,6 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findPageHeading = () => wrapper.findComponent(PageHeading);
-
-  const findExperimentBadge = () => wrapper.findComponent(GlExperimentBadge);
 
   const findNameFormGroup = () => wrapper.findAllComponents(GlFormGroup).at(0);
   const findDescriptionFormGroup = () => wrapper.findAllComponents(GlFormGroup).at(1);
@@ -97,13 +97,15 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
 
   const findLink = () => wrapper.findComponent(GlLink);
   const findLinks = () => wrapper.findAllComponents(GlLink);
-  const findTabs = () => wrapper.findComponent(GlTabs);
 
-  const findPermissionsSelectors = () =>
-    wrapper.findAllComponents(PersonalAccessTokenPermissionsSelector);
-  const findGroupPermissionsSelector = () => findPermissionsSelectors().at(0);
-  const findUserPermissionsSelector = () => findPermissionsSelectors().at(1);
-  const findInstancePermissionsSelector = () => findPermissionsSelectors().at(2);
+  const findPermissionsSelector = () =>
+    wrapper.findComponent(PersonalAccessTokenPermissionsSelector);
+  const emitPermissions = ({ groupPermissions, userPermissions, instancePermissions } = {}) =>
+    findPermissionsSelector().vm.$emit('input', {
+      namespace: groupPermissions ? mockCreateMutationInput.group.permissions : [],
+      user: userPermissions ? mockCreateMutationInput.user.permissions : [],
+      instance: instancePermissions ? mockCreateMutationInput.instance.permissions : [],
+    });
 
   const findCreateButton = () => wrapper.findAllComponents(GlButton).at(0);
   const findCancelButton = () => wrapper.findAllComponents(GlButton).at(1);
@@ -111,6 +113,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
   const findConfirmDialog = () => wrapper.findComponent(ConfirmUnsavedChangesDialog);
   const findCreatedToken = () => wrapper.findComponent(CreatedPersonalAccessToken);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findSudoCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
   const fillFormWithValidData = async (
     options = { groupPermissions: true, userPermissions: true, instancePermissions: false },
@@ -125,19 +128,9 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       await nextTick();
 
       findNamespaceSelector().vm.$emit('input', [mockProjects[0], mockGroups[0]]);
-      findGroupPermissionsSelector().vm.$emit('input', mockCreateMutationInput.group.permissions);
     }
 
-    if (options.userPermissions) {
-      findUserPermissionsSelector().vm.$emit('input', mockCreateMutationInput.user.permissions);
-    }
-
-    if (options.instancePermissions) {
-      findInstancePermissionsSelector().vm.$emit(
-        'input',
-        mockCreateMutationInput.instance.permissions,
-      );
-    }
+    emitPermissions(options);
   };
 
   const fillAndSubmitForm = async (options) => {
@@ -158,9 +151,29 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     );
   });
 
-  it('renders the experiment badge', () => {
-    expect(findExperimentBadge().exists()).toBe(true);
-    expect(findExperimentBadge().props('type')).toBe('beta');
+  describe('sudo checkbox', () => {
+    it('is hidden when sudo is not available', () => {
+      createComponent();
+
+      expect(findSudoCheckbox().exists()).toBe(false);
+    });
+
+    it('is shown when sudo is available', () => {
+      createComponent({ provide: { canEnableSudo: true } });
+
+      expect(findSudoCheckbox().exists()).toBe(true);
+    });
+
+    it('submits the form with sudo enabled when the checkbox is checked', async () => {
+      createComponent({ provide: { canEnableSudo: true } });
+
+      findSudoCheckbox().vm.$emit('input', true);
+      await fillAndSubmitForm();
+
+      expect(mockMutationHandler).toHaveBeenCalledWith({
+        input: expect.objectContaining({ sudo: true }),
+      });
+    });
   });
 
   describe('form fields', () => {
@@ -242,17 +255,13 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       expect(publicAccessLink.attributes('target')).toBe('_blank');
     });
 
-    it('renders permissions selectors for group, user, and instance scope', () => {
-      expect(findTabs().exists()).toBe(true);
-
-      expect(findPermissionsSelectors()).toHaveLength(3);
-
-      expect(findGroupPermissionsSelector().props('targetBoundaries')).toEqual([
-        'GROUP',
-        'PROJECT',
-      ]);
-      expect(findUserPermissionsSelector().props('targetBoundaries')).toEqual(['USER']);
-      expect(findInstancePermissionsSelector().props('targetBoundaries')).toEqual(['INSTANCE']);
+    it('renders the permissions selector with the form permissions', () => {
+      expect(findPermissionsSelector().exists()).toBe(true);
+      expect(findPermissionsSelector().props('value')).toEqual({
+        namespace: [],
+        user: [],
+        instance: [],
+      });
     });
   });
 
@@ -294,7 +303,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     });
 
     it('validates scope is required when group permissions are selected', async () => {
-      findGroupPermissionsSelector().vm.$emit('input', mockCreateMutationInput.group.permissions);
+      emitPermissions({ groupPermissions: true });
 
       await findCreateButton().vm.$emit('click');
 
@@ -313,13 +322,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     it('validates permissions are required', async () => {
       await findCreateButton().vm.$emit('click');
 
-      expect(findGroupPermissionsSelector().props('error')).toBe(
-        'Add at least one resource with permissions.',
-      );
-      expect(findUserPermissionsSelector().props('error')).toBe(
-        'Add at least one resource with permissions.',
-      );
-      expect(findInstancePermissionsSelector().props('error')).toBe(
+      expect(findPermissionsSelector().props('error')).toBe(
         'Add at least one resource with permissions.',
       );
     });
@@ -348,7 +351,11 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     });
 
     it('passes hasUnsavedChanges as true when permissions are changed', async () => {
-      findGroupPermissionsSelector().vm.$emit('input', ['read_project']);
+      findPermissionsSelector().vm.$emit('input', {
+        namespace: ['read_project'],
+        user: [],
+        instance: [],
+      });
       await nextTick();
 
       expect(findConfirmDialog().props('hasUnsavedChanges')).toBe(true);
@@ -386,6 +393,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
           name: mockCreateMutationInput.name,
           description: mockCreateMutationInput.description,
           expiresAt: mockCreateMutationInput.expirationDate,
+          sudo: false,
           granularScopes: [
             {
               access: mockCreateMutationInput.group.access,
@@ -409,6 +417,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
           name: mockCreateMutationInput.name,
           description: mockCreateMutationInput.description,
           expiresAt: mockCreateMutationInput.expirationDate,
+          sudo: false,
           granularScopes: [
             {
               access: mockCreateMutationInput.user.access,
@@ -427,6 +436,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
           name: mockCreateMutationInput.name,
           description: mockCreateMutationInput.description,
           expiresAt: mockCreateMutationInput.expirationDate,
+          sudo: false,
           granularScopes: [
             {
               access: mockCreateMutationInput.group.access,
@@ -450,6 +460,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
           name: mockCreateMutationInput.name,
           description: mockCreateMutationInput.description,
           expiresAt: mockCreateMutationInput.expirationDate,
+          sudo: false,
           granularScopes: [
             {
               access: mockCreateMutationInput.instance.access,
@@ -469,6 +480,24 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       });
 
       expect(findForm().exists()).toBe(false);
+    });
+
+    describe('after successful submission', () => {
+      let trackEventSpy;
+
+      beforeEach(async () => {
+        ({ trackEventSpy } = bindInternalEventDocument(wrapper.element));
+
+        await fillAndSubmitForm();
+      });
+
+      it('tracks form completion', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'complete_fine_grained_personal_access_token_form',
+          {},
+          undefined,
+        );
+      });
     });
 
     it('resets isFormDirty after successful submission', async () => {
@@ -518,6 +547,46 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     });
   });
 
+  describe('form abandonment tracking', () => {
+    const dispatchBeforeUnload = () => window.dispatchEvent(new Event('beforeunload'));
+
+    let trackEventSpy;
+
+    describe('when the user attempts to leave the page', () => {
+      beforeEach(() => {
+        ({ trackEventSpy } = bindInternalEventDocument(wrapper.element));
+
+        dispatchBeforeUnload();
+      });
+
+      it('tracks form abandonment', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'abandon_fine_grained_personal_access_token_form',
+          {},
+          undefined,
+        );
+      });
+    });
+
+    describe('when the user attempts to leave the page after a token is successfully created', () => {
+      beforeEach(async () => {
+        await fillAndSubmitForm();
+
+        ({ trackEventSpy } = bindInternalEventDocument(wrapper.element));
+
+        dispatchBeforeUnload();
+      });
+
+      it('does not track form abandonment', () => {
+        expect(trackEventSpy).not.toHaveBeenCalledWith(
+          'abandon_fine_grained_personal_access_token_form',
+          {},
+          undefined,
+        );
+      });
+    });
+  });
+
   describe('duplicating a token', () => {
     beforeEach(() => {
       window.gon = { current_user_id: 42 };
@@ -562,14 +631,14 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       createComponent();
       await waitForPromises();
 
-      expect(findGroupPermissionsSelector().props('value')).toEqual([
+      expect(findPermissionsSelector().props('value').namespace).toEqual([
         'read_project',
         'write_project',
         'read_repository',
         'read_contributed_project',
       ]);
 
-      expect(findUserPermissionsSelector().props('value')).toEqual([]);
+      expect(findPermissionsSelector().props('value').user).toEqual([]);
     });
 
     it('pre-populates namespace selector from the fetched token scopes', async () => {
@@ -579,7 +648,12 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       expect(findNamespaceSelector().exists()).toBe(true);
 
       expect(findNamespaceSelector().props('value')).toEqual([
-        expect.objectContaining({ id: 'gid://gitlab/Group/1', fullPath: 'my-group' }),
+        expect.objectContaining({
+          id: 'gid://gitlab/Group/1',
+          fullPath: 'my-group',
+          projectsCount: 5,
+          descendantGroupsCount: 2,
+        }),
       ]);
     });
 
@@ -607,8 +681,8 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       expect(findNameInput().attributes('value')).toBe('User Only Token (copy)');
       expect(findDescriptionTextarea().attributes('value')).toBe('A user-scoped token');
       expect(findNamespaceSelector().exists()).toBe(false);
-      expect(findGroupPermissionsSelector().props('value')).toEqual([]);
-      expect(findUserPermissionsSelector().props('value')).toEqual([
+      expect(findPermissionsSelector().props('value').namespace).toEqual([]);
+      expect(findPermissionsSelector().props('value').user).toEqual([
         'read_user',
         'read_contributed_project',
       ]);
@@ -665,9 +739,9 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
 
       await waitForPromises();
 
-      expect(findGroupPermissionsSelector().props('value')).toEqual(['read_project']);
+      expect(findPermissionsSelector().props('value').namespace).toEqual(['read_project']);
 
-      expect(findUserPermissionsSelector().props('value')).toEqual([
+      expect(findPermissionsSelector().props('value').user).toEqual([
         'read_user',
         'read_contributed_project',
       ]);
@@ -675,6 +749,41 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       expect(findNamespaceSelector().props('value')).toEqual([
         expect.objectContaining({ id: 'gid://gitlab/Project/10' }),
       ]);
+    });
+
+    describe('sudo capability', () => {
+      const sudoSourceTokenHandler = () => {
+        const response = cloneDeep(mockGroupScopedTokenQueryResponse);
+        response.data.user.personalAccessTokens.nodes[0].sudo = true;
+        return jest.fn().mockResolvedValue(response);
+      };
+
+      it('retains sudo when an admin duplicates a sudo-enabled token', async () => {
+        createComponent({
+          provide: { canEnableSudo: true },
+          sourceTokenHandler: sudoSourceTokenHandler(),
+        });
+        await waitForPromises();
+
+        findCreateButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(mockMutationHandler).toHaveBeenCalledWith({
+          input: expect.objectContaining({ sudo: true }),
+        });
+      });
+
+      it('does not retain sudo when the user cannot use sudo', async () => {
+        createComponent({ sourceTokenHandler: sudoSourceTokenHandler() });
+        await waitForPromises();
+
+        findCreateButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(mockMutationHandler).toHaveBeenCalledWith({
+          input: expect.objectContaining({ sudo: false }),
+        });
+      });
     });
   });
 });

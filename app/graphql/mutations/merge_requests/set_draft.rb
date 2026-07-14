@@ -5,6 +5,9 @@ module Mutations
     class SetDraft < Base
       graphql_name 'MergeRequestSetDraft'
 
+      authorize_granular_token permissions: :update_merge_request, boundary_argument: :project_path,
+        boundary_type: :project
+
       argument :draft,
         GraphQL::Types::Boolean,
         required: true,

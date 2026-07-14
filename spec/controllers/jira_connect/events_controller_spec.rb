@@ -114,6 +114,14 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
       expect(installation.display_url).to eq('https://custom.example.com')
     end
 
+    it 'persists the cloud_id from the lifecycle payload' do
+      post :installed, params: params.merge(cloudId: 'jira-cloud-id-xyz')
+
+      installation = JiraConnectInstallation.find_by_client_key_and_organization_id(client_key, current_organization.id)
+
+      expect(installation.cloud_id).to eq('jira-cloud-id-xyz')
+    end
+
     context 'when the shared_secret param is missing' do
       let(:jwt_token) { Atlassian::Jwt.encode({ iss: client_key, qsh: 'test' }, 'some_secret') }
 

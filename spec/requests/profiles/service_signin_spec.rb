@@ -27,8 +27,8 @@ RSpec.describe 'Service sign-in', feature_category: :system_access do
   context 'when an identity already exists' do
     before do
       stub_omniauth_setting(enabled: true, providers: [
-        GitlabSettings::Options.new(name: 'google_oauth2'),
-        GitlabSettings::Options.new(name: 'saml')
+        Gitlab::Configs.build_options(name: 'google_oauth2'),
+        Gitlab::Configs.build_options(name: 'saml')
       ])
 
       allow(Devise).to receive(:omniauth_providers).and_return([:google_oauth2, :saml])
@@ -54,7 +54,7 @@ RSpec.describe 'Service sign-in', feature_category: :system_access do
     context "with federated identities" do
       before do
         stub_omniauth_setting(enabled: true, providers: [
-          GitlabSettings::Options.new(name: 'iam_github')
+          Gitlab::Configs.build_options(name: 'iam_github')
         ])
         allow(Devise).to receive(:omniauth_providers).and_return([:github, :iam_github])
         allow_next_instance_of(ActionDispatch::Routing::RoutesProxy) do |instance|

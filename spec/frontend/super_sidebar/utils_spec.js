@@ -52,7 +52,7 @@ describe('Super sidebar utils spec', () => {
     let axiosMock;
 
     const username = 'root';
-    const trackVisitsPath = '/-/track_visits';
+    const trackVisitsPath = '/-/track_namespace_visits';
     const context = {
       namespace: 'groups',
       item: { id: 1 },
@@ -76,7 +76,7 @@ describe('Super sidebar utils spec', () => {
     });
 
     it('creates a new item if it does not exist in the local storage', () => {
-      trackContextAccess(username, context, trackVisitsPath);
+      trackContextAccess(username, context);
 
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         storageKey,
@@ -93,7 +93,7 @@ describe('Super sidebar utils spec', () => {
     it('sends a POST request to persist the visit in the DB', async () => {
       expect(axiosMock.history.post).toHaveLength(0);
 
-      trackContextAccess(username, context, trackVisitsPath);
+      trackContextAccess(username, context);
       await waitForPromises();
 
       expect(axiosMock.history.post).toHaveLength(1);
@@ -102,7 +102,7 @@ describe('Super sidebar utils spec', () => {
 
     it('logs an error to Sentry when the request fails with an unexpected status', async () => {
       axiosMock.onPost(trackVisitsPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-      trackContextAccess(username, context, trackVisitsPath);
+      trackContextAccess(username, context);
       await waitForPromises();
 
       expect(Sentry.captureException).toHaveBeenCalled();
@@ -110,7 +110,7 @@ describe('Super sidebar utils spec', () => {
 
     it('does not log to Sentry when the request fails with a 422 status', async () => {
       axiosMock.onPost(trackVisitsPath).reply(HTTP_STATUS_UNPROCESSABLE_ENTITY);
-      trackContextAccess(username, context, trackVisitsPath);
+      trackContextAccess(username, context);
       await waitForPromises();
 
       expect(Sentry.captureException).not.toHaveBeenCalled();
@@ -127,7 +127,7 @@ describe('Super sidebar utils spec', () => {
           },
         ]),
       );
-      trackContextAccess(username, context, trackVisitsPath);
+      trackContextAccess(username, context);
 
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         storageKey,
@@ -154,7 +154,7 @@ describe('Super sidebar utils spec', () => {
       expect(window.localStorage.setItem).toHaveBeenCalledTimes(1);
       expect(window.localStorage.setItem).toHaveBeenCalledWith(storageKey, jsonString);
 
-      trackContextAccess(username, context, trackVisitsPath);
+      trackContextAccess(username, context);
 
       expect(window.localStorage.setItem).toHaveBeenCalledTimes(3);
       expect(window.localStorage.setItem).toHaveBeenLastCalledWith(storageKey, jsonString);
@@ -211,14 +211,10 @@ describe('Super sidebar utils spec', () => {
       const newItem = {
         id: FREQUENT_ITEMS.MAX_COUNT + 1,
       };
-      trackContextAccess(
-        username,
-        {
-          namespace: 'groups',
-          item: newItem,
-        },
-        trackVisitsPath,
-      );
+      trackContextAccess(username, {
+        namespace: 'groups',
+        item: newItem,
+      });
       // Finally, retrieve the final data from the local storage
       const finallyStoredItems = JSON.parse(window.localStorage.getItem(storageKey));
 

@@ -32,7 +32,8 @@ module Authn
         grpc = iam_config.grpc
         raise ConfigurationError, 'IAM gRPC service is not configured' if grpc.host.blank? || grpc.port.blank?
 
-        "#{grpc.host}:#{grpc.port}"
+        scheme = Rails.env.development? ? '' : 'tls://'
+        "#{scheme}#{grpc.host}:#{grpc.port}"
       end
 
       def secret

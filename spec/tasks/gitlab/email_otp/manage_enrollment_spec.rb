@@ -417,16 +417,18 @@ RSpec.describe Tasks::Gitlab::EmailOtp::ManageEnrollment, :silence_stdout, featu
       end.to output(/Applying to existing enrollment date.*target cohort.*#{existing_date}/).to_stdout
     end
 
-    it 'checks if email_based_mfa feature flag is enabled' do
-      allow(Feature).to receive(:enabled?).with(:email_based_mfa).and_return(true)
+    it 'reports when email_otp_enabled application setting is enabled' do
+      stub_application_setting(email_otp_enabled: true)
 
-      expect { manager.send(:confirm_settings) }.to output(/Feature Flag.*email_based_mfa.*Yes/).to_stdout
+      expect { manager.send(:confirm_settings) }
+        .to output(/Application Setting.*email_otp_enabled.*Yes/).to_stdout
     end
 
-    it 'warns if email_based_mfa feature flag is disabled' do
-      allow(Feature).to receive(:enabled?).with(:email_based_mfa).and_return(false)
+    it 'reports when email_otp_enabled application setting is disabled' do
+      stub_application_setting(email_otp_enabled: false)
 
-      expect { manager.send(:confirm_settings) }.to output(/Feature Flag.*email_based_mfa.*No/).to_stdout
+      expect { manager.send(:confirm_settings) }
+        .to output(/Application Setting.*email_otp_enabled.*No/).to_stdout
     end
 
     it 'prompts for confirmation' do

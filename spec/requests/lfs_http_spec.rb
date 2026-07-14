@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'Git LFS API and storage', feature_category: :source_code_management do
@@ -1386,6 +1387,182 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
       it_behaves_like 'LFS http requests' do
         let(:container) { create(:personal_snippet, :empty_repo) }
         let(:authorize_upload) { container.update!(author: user) }
+      end
+    end
+  end
+
+  context 'when authenticating with a granular personal access token' do
+    let_it_be(:granular_project) { create(:project, :empty_repo) }
+    let_it_be(:lfs_object) { create(:lfs_object, :with_file) }
+
+    let(:boundary) { ::Authz::Boundary.for(granular_project) }
+    let(:granular_pat) { create(:granular_pat, user: user, boundary: boundary, permissions: permissions) }
+    let(:authorization) do
+      ActionController::HttpAuthentication::Basic.encode_credentials(user.username, granular_pat.token)
+    end
+
+    let(:headers) { { 'Authorization' => authorization } }
+    let(:existing_object) { { 'oid' => lfs_object.oid, 'size' => lfs_object.size } }
+    let(:new_object) do
+      { 'oid' => 'b68143e6463773b1b6c6fd009a76c32aeec041faff32ba2ed42fd7f708a17f80', 'size' => 1575078 }
+    end
+
+    before_all do
+      granular_project.add_developer(user)
+      granular_project.lfs_objects << lfs_object
+    end
+
+    before do
+      stub_lfs_setting(enabled: true)
+    end
+
+    def download_batch
+      post_lfs_json(batch_url(granular_project), download_body(existing_object), headers)
+    end
+
+    def upload_batch
+      post_lfs_json(batch_url(granular_project), upload_body(new_object), headers)
+    end
+
+    context 'without any code permissions' do
+      let(:permissions) { [] }
+
+      it 'denies LFS download' do
+        download_batch
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'denies LFS upload' do
+        upload_batch
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with download_code permission' do
+      let(:permissions) { :download_code }
+
+      it 'allows LFS download' do
+        download_batch
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['objects'].first['actions']).to have_key('download')
+      end
+
+      it 'denies LFS upload' do
+        upload_batch
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'with download_code and push_code permissions' do
+      let(:permissions) { [:download_code, :push_code] }
+
+      it 'allows LFS download' do
+        download_batch
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['objects'].first['actions']).to have_key('download')
+      end
+
+      it 'allows LFS upload' do
+        upload_batch
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['objects'].first['actions']).to have_key('upload')
+      end
+    end
+
+    context 'when the granular_personal_access_tokens feature flag is disabled' do
+      let(:permissions) { [:download_code, :push_code] }
+
+      before do
+        stub_feature_flags(granular_personal_access_tokens: false)
+      end
+
+      it 'denies LFS download' do
+        download_batch
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'denies LFS upload' do
+        upload_batch
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  context 'when authenticating with a legacy personal access token' do
+    let_it_be_with_reload(:enforced_group) { create(:group) }
+    let_it_be(:enforced_project) { create(:project, :empty_repo, group: enforced_group) }
+    let_it_be(:lfs_object) { create(:lfs_object, :with_file) }
+
+    let(:legacy_pat) { create(:personal_access_token, user: user, scopes: %w[read_repository write_repository]) }
+    let(:authorization) do
+      ActionController::HttpAuthentication::Basic.encode_credentials(user.username, legacy_pat.token)
+    end
+
+    let(:headers) { { 'Authorization' => authorization } }
+    let(:existing_object) { { 'oid' => lfs_object.oid, 'size' => lfs_object.size } }
+    let(:new_object) do
+      { 'oid' => 'b68143e6463773b1b6c6fd009a76c32aeec041faff32ba2ed42fd7f708a17f80', 'size' => 1575078 }
+    end
+
+    before_all do
+      enforced_project.add_developer(user)
+      enforced_project.lfs_objects << lfs_object
+    end
+
+    before do
+      stub_lfs_setting(enabled: true)
+    end
+
+    def download_batch
+      post_lfs_json(batch_url(enforced_project), download_body(existing_object), headers)
+    end
+
+    def upload_batch
+      post_lfs_json(batch_url(enforced_project), upload_body(new_object), headers)
+    end
+
+    context 'when the namespace does not enforce granular tokens' do
+      it 'allows LFS download' do
+        download_batch
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['objects'].first['actions']).to have_key('download')
+      end
+
+      it 'allows LFS upload' do
+        upload_batch
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['objects'].first['actions']).to have_key('upload')
+      end
+    end
+
+    context 'when the namespace enforces granular tokens' do
+      before do
+        enforced_group.namespace_settings.update!(
+          enforce_granular_tokens: true,
+          granular_tokens_enforced_after: Date.current
+        )
+      end
+
+      it 'denies LFS download' do
+        download_batch
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'denies LFS upload' do
+        upload_batch
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

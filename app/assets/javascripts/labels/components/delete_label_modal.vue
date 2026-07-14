@@ -12,6 +12,7 @@ import eventHub, {
 } from '../event_hub';
 
 export default {
+  name: 'DeleteLabelModal',
   components: {
     GlModal,
     GlSprintf,

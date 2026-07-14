@@ -24,6 +24,27 @@ module Groups
       ::NamespaceSettings::AssignAttributesService.new(current_user, group, settings_params).execute
     end
 
+    def handle_crm_settings_update
+      return if params[:crm_enabled].nil? && params[:crm_source_group_id].nil?
+
+      crm_enabled = params.delete(:crm_enabled)
+      crm_enabled = true if crm_enabled.nil?
+      crm_source_group_id = params.delete(:crm_source_group_id).presence&.to_i
+      return if group.crm_enabled? == crm_enabled && group.crm_settings&.source_group_id == crm_source_group_id
+
+      if group.crm_settings&.source_group_id != crm_source_group_id && group.has_issues_with_contacts?
+        message = s_('GroupSettings|Contact source cannot be changed when issues already ' \
+          'have contacts assigned from a different source.')
+        group.errors.add(:base, message)
+        return
+      end
+
+      crm_settings = group.crm_settings || group.build_crm_settings
+      crm_settings.enabled = crm_enabled
+      crm_settings.source_group_id = crm_source_group_id
+      crm_settings.save
+    end
+
     def remove_unallowed_params
       # overridden in EE
     end

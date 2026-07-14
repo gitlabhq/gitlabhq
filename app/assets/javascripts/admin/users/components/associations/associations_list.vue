@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import AssociationsListItem from './associations_list_item.vue';
 
 export default {
+  name: 'AssociationsList',
   i18n: {
     errorMessage: s__(
       "AdminUsers|An error occurred while fetching this user's contributions, and the request cannot return the number of issues, merge requests, groups, and projects linked to this user. If you proceed with deleting the user, all their contributions will still be deleted.",

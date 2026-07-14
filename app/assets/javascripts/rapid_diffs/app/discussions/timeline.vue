@@ -17,7 +17,6 @@ export default {
   inject: {
     store: { type: Object },
     userPermissions: { type: Object },
-    endpoints: { type: Object },
   },
   data() {
     return {

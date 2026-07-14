@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ResourceEvents::ChangeMilestoneService, feature_category: :team_planning do
-  let_it_be(:timebox, freeze: false) { create(:milestone) }
+  let_it_be_with_reload(:timebox) { create(:milestone) }
 
   let(:created_at_time) { Time.utc(2019, 12, 30) }
   let(:add_timebox_args) { { old_milestone: nil } }
@@ -11,7 +11,7 @@ RSpec.describe ResourceEvents::ChangeMilestoneService, feature_category: :team_p
 
   [:issue, :merge_request].each do |issuable|
     it_behaves_like 'timebox(milestone or iteration) resource events creator', ResourceMilestoneEvent do
-      let_it_be(:resource, freeze: false) { create(issuable) } # rubocop:disable Rails/SaveBang -- FactoryBot create, not ActiveRecord
+      let_it_be_with_reload(:resource) { create(issuable) } # rubocop:disable Rails/SaveBang -- FactoryBot create, not ActiveRecord
     end
   end
 

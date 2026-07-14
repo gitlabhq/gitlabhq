@@ -12,6 +12,7 @@ import { SORT_DIRECTION } from './constants';
 import { filterEmptySearchTerm, uniqueTokens } from './filtered_search_utils';
 
 export default {
+  name: 'FilteredSearchBarRoot',
   components: {
     GlFilteredSearch,
     GlSorting,

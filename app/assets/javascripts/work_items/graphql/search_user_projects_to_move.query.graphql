@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 query searchUserProjectsToMove($search: String, $sort: String) {
   projects(
     search: $search

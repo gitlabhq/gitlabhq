@@ -3,7 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/boards/components/board_card.vue',
     'app/assets/javascripts/ci/admin/jobs_table/components/cells/project_cell.vue',
     'app/assets/javascripts/ci/job_details/components/job_header.vue',
     'app/assets/javascripts/ci/runner/components/runner_jobs_table.vue',

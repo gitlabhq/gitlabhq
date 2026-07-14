@@ -3,7 +3,7 @@
 namespace :gitlab do
   namespace :assets do
     task :tailwind, [:silent] do |_t, args|
-      cmd = 'yarn tailwindcss:build && yarn tailwindcss:cqs:build'
+      cmd = 'yarn tailwindcss:build'
       cmd += '> /dev/null 2>&1' if args[:silent].present?
 
       abort Rainbow('Error: Unable to build Tailwind CSS bundle.').red unless system(cmd)
@@ -30,9 +30,6 @@ namespace :gitlab do
         Gitlab::TaskHelpers.invoke_and_time_task('gettext:compile')
         # Skip Yarn Install when using Cssbundling
         Rake::Task["css:install"].clear
-        # Generate `app/assets/javascripts/lib/utils/path_helpers/*.js`
-        # and `ee/app/assets/javascripts/lib/utils/path_helpers/*.js`
-        Gitlab::TaskHelpers.invoke_and_time_task('gitlab:js:routes')
         Gitlab::TaskHelpers.invoke_and_time_task('rake:assets:precompile')
 
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']

@@ -1,13 +1,17 @@
 import axios from '~/lib/utils/axios_utils';
 import { buildApiUrl } from '~/api/api_utils';
+import {
+  jiraConnectInstallationsPath,
+  jiraConnectOauthApplicationIdPath,
+} from '~/lib/utils/path_helpers/jira_connect';
 
 import { GITLAB_COM_BASE_PATH } from '~/jira_connect/subscriptions/constants';
 import { getJwt } from './utils';
 
 const CURRENT_USER_PATH = '/api/:version/user';
 const JIRA_CONNECT_SUBSCRIPTIONS_PATH = '/api/:version/integrations/jira_connect/subscriptions';
-const JIRA_CONNECT_INSTALLATIONS_PATH = '/-/jira_connect/installations';
-const JIRA_CONNECT_OAUTH_APPLICATION_ID_PATH = '/-/jira_connect/oauth_application_id';
+const JIRA_CONNECT_INSTALLATIONS_PATH = jiraConnectInstallationsPath();
+const JIRA_CONNECT_OAUTH_APPLICATION_ID_PATH = jiraConnectOauthApplicationIdPath();
 
 // This export is only used for testing purposes
 export const axiosInstance = axios.create();

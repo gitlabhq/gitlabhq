@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Workflow Catalog
+stage: Agent Foundations
+group: AI Catalog
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Managing foundational agents
 ---
@@ -194,8 +194,46 @@ still add it to their project at which point they can be used through triggers.
 
 ## Versioning
 
-Versioning of agents is not yet supported. Consider potential breaking changes to older GitLab versions
-before doing changes to an agent.
+Pin a foundational agent to a specific flow version with the `flow_version` attribute in
+[`FoundationalChatAgentsDefinitions.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ai/foundational_chat_agents_definitions.rb).
+The value is a semantic version constraint that GitLab Duo Workflow Service uses to select a
+flow config from the bundled versions. Use version pinning to iterate on foundational agents
+without breaking existing GitLab Self-Managed and GitLab Dedicated customers.
+
+```ruby
+{
+  id: 2,
+  reference: 'foundational_pirate_agent',
+  version: 'v1',
+  flow_version: '^1.0.0',
+  name: 'Foundational Pirate Agent',
+  description: "A most important agent that speaks like a pirate"
+}
+```
+
+When `flow_version` is set, the monolith sends `flow_config_id`, `flow_config_schema_version`, and
+`flow_version` to GitLab Duo Workflow Service when starting a workflow. The service then resolves
+the matching flow config from its bundled versions.
+
+Use a constraint that matches the compatibility you need:
+
+- `^1.0.0` accepts any `1.x.y` release (recommended for most agents).
+- `~1.2.0` accepts any `1.2.x` release.
+- `1.2.3` pins to an exact version.
+
+Choose the version increment based on the change:
+
+- Increment the major version for breaking changes (for example, expecting a new required input).
+- Increment the minor version for backwards-compatible additions (for example, a new optional parameter).
+- Increment the patch version for bug fixes.
+
+> [!note]
+> Version pinning is only available for agents defined in GitLab Duo Workflow Service.
+> Agents backed by an AI Catalog item resolve their version from the catalog item and
+> ignore `flow_version`.
+
+Without `flow_version`, GitLab Duo Workflow Service falls back to its default resolution.
+Consider potential breaking changes to older GitLab versions before changing an agent.
 
 ## Context variables
 
@@ -295,6 +333,38 @@ const mergedAdditionalContext =
     : additionalContext || [];
 ```
 
+### Contribute context from outside the chat
+
+The wiring above builds the envelope inside `duo_agentic_chat_state_manager.vue`, which suits
+context the chat component already holds. For context owned by a feature *outside* the chat, such as
+a form elsewhere on the page whose state the user edits between messages, register a
+provider instead. Providers are read fresh on every send, so the agent always sees the current
+state rather than a value frozen when the chat opened.
+
+Register from the contributing component, using `external_context_store`:
+
+```javascript
+import { registerExternalContextProvider } from 'ee/ai/duo_agentic_chat/context/external_context_store';
+
+mounted() {
+  // getContent runs on every send; return a nullish value to contribute nothing this turn.
+  this.disposeContextProvider = registerExternalContextProvider(
+    'my_context',
+    () => ({ my_var: this.currentValue }),
+  );
+},
+beforeDestroy() {
+  this.disposeContextProvider?.();
+},
+```
+
+`registerExternalContextProvider` returns a disposer; call it on teardown so the provider does not
+leak. `duo_agentic_chat_state_manager.vue` calls `getExternalContextItems()` on every send and
+merges the results, taking precedence over per-message items of the same category.
+
+Categories registered this way must still be filtered from display and GraphQL.
+For more information, see [Filter internal categories](#filter-internal-categories-from-display-and-graphql).
+
 ### Filter internal categories from display and GraphQL
 
 Internal context categories (for example, `my_context`) must not be shown in the UI or serialized
@@ -322,6 +392,73 @@ if msg['additional_context'].is_a?(Array)
   end
 end
 ```
+
+## Let an agent edit a UI form
+
+Foundational agents can read the state of a form on a page and write changes back to it.
+
+The pattern has two halves:
+
+- Read: pass the form state to the agent in a `form_context` context variable.
+- Write: the agent calls a form-editing tool, and the consumer applies the returned changes.
+
+The read half builds on [context variables](#context-variables). The sections below cover what the
+form-editing pattern adds for the consumer.
+
+### Pass the form state to the agent
+
+Send the current form state to the agent as a `form_context` [context variable](#context-variables).
+Use the `buildFormContext` helper from `ee/app/assets/javascripts/ai/shared/utils/form_context_utils.js`
+to wrap the form identity and contents in the envelope. The consumer passes only `formId` and
+`formContent`, so it does not carry the envelope shape (`category`, JSON-encoded content, and
+`metadata`):
+
+```javascript
+import { buildFormContext } from 'ee/ai/shared/utils/form_context_utils';
+
+// In the consumer component:
+computed: {
+  additionalContext() {
+    return buildFormContext({ formId: 'my-form', formContent: this.formContent });
+  },
+}
+```
+
+`formId` identifies the form so the agent only edits this form. `formContent` is the current form
+state, which the agent treats as ground truth. Pass the result through the `additional-context` prop
+of `open_agentic_chat_button.vue`. For the underlying envelope shape, see
+[Wire context variables from the GitLab monolith](#wire-context-variables-from-the-gitlab-monolith).
+
+### Apply the agent's changes
+
+The agent applies changes by calling a form-editing tool that returns the fields to change. The
+reference tool is
+[`update_form_fields`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/duo_workflow_service/tools/update_form_fields.py),
+with this contract:
+
+```plaintext
+form_id: str        # echoed from the system prompt; identifies the target form
+select: list[str]   # field or option names to select or enable
+clear:  list[str]   # field or option names to clear or disable
+```
+
+The system prompt pins `form_id` from the `form_context` envelope, so the agent echoes the correct
+value back instead of inventing one.
+
+In the consumer, handle the `tool-completed` event. Act only on tool calls whose `form_id` matches
+the form, so multiple form-editing buttons on the same page do not cross-fire:
+
+```javascript
+handleToolCompleted({ name, args } = {}) {
+  if (name !== 'update_form_fields' || args?.form_id !== 'my-form') return;
+
+  // Apply args.select and args.clear to the form.
+}
+```
+
+The `select` and `clear` contract covers any form control whose value is a set of named options:
+checkbox groups, multi-select dropdowns, token fields, and boolean toggles. Enable a toggle with
+`select` and disable it with `clear`. It does not yet support text fields.
 
 ## Developing foundational agents locally
 

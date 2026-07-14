@@ -121,13 +121,13 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
     end
 
     context 'hashed storage' do
-      let_it_be(:project, freeze: false) { create(:project_with_design, :repository) }
+      let_it_be_with_reload(:project) { create(:project_with_design, :repository) }
 
       it_behaves_like 'creates a repository backup'
     end
 
     context 'legacy storage' do
-      let_it_be(:project, freeze: false) { create(:project_with_design, :repository, :legacy_storage) }
+      let_it_be_with_reload(:project) { create(:project_with_design, :repository, :legacy_storage) }
 
       it_behaves_like 'creates a repository backup'
     end
@@ -157,7 +157,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
   end
 
   context 'restore' do
-    let_it_be(:project, freeze: false) { create(:project_with_design, :repository) }
+    let_it_be_with_reload(:project) { create(:project_with_design, :repository) }
     let_it_be(:personal_snippet) { create(:personal_snippet, author: project.first_owner) }
     let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.first_owner) }
 

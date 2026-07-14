@@ -179,7 +179,7 @@ The eligible Code Owners are:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203298) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `check_inherited_groups_for_codeowners`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203298) in GitLab 18.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `check_inherited_groups_for_codeowners`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/566627) in GitLab 18.6.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/579541) in GitLab 18.8. Feature flag `check_inherited_groups_for_codeowners` removed.
 

@@ -27,6 +27,7 @@ export default {
       required: true,
     },
   },
+  emits: ['delete-schedule', 'hide-modal'],
 };
 </script>
 
@@ -38,8 +39,8 @@ export default {
     :action-primary="$options.modal.actionPrimary"
     :action-cancel="$options.modal.actionCancel"
     size="sm"
-    @primary="$emit('deleteSchedule')"
-    @hide="$emit('hideModal')"
+    @primary="$emit('delete-schedule')"
+    @hide="$emit('hide-modal')"
   >
     {{ $options.modal.deleteConfirmation }}
   </gl-modal>

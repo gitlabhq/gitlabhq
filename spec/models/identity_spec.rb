@@ -16,7 +16,7 @@ RSpec.describe Identity do
     let_it_be(:user) { create(:user) }
 
     context 'with existing user and provider' do
-      before do
+      before_all do
         create(:identity, provider: 'ldapmain', user_id: user.id)
       end
 
@@ -43,8 +43,8 @@ RSpec.describe Identity do
   end
 
   describe '#is_ldap?' do
-    let(:ldap_identity) { create(:identity, provider: 'ldapmain') }
-    let(:other_identity) { create(:identity, provider: 'twitter') }
+    let(:ldap_identity) { build_stubbed(:identity, provider: 'ldapmain') }
+    let(:other_identity) { build_stubbed(:identity, provider: 'twitter') }
 
     it 'returns true if it is a ldap identity' do
       expect(ldap_identity.ldap?).to be_truthy
@@ -110,7 +110,7 @@ RSpec.describe Identity do
   context 'callbacks' do
     context 'before_save' do
       describe 'normalizes extern uid' do
-        let!(:ldap_identity) { create(:identity, provider: 'ldapmain', extern_uid: 'uid=john smith,ou=people,dc=example,dc=com') }
+        let_it_be_with_reload(:ldap_identity) { create(:identity, provider: 'ldapmain', extern_uid: 'uid=john smith,ou=people,dc=example,dc=com') }
 
         it 'if extern_uid changes' do
           expect(ldap_identity).not_to receive(:ensure_normalized_extern_uid)
@@ -134,7 +134,7 @@ RSpec.describe Identity do
     end
 
     context 'after_destroy' do
-      let!(:user) { create(:user) }
+      let_it_be_with_reload(:user) { create(:user) }
       let(:ldap_identity) { create(:identity, provider: 'ldapmain', extern_uid: 'uid=john smith,ou=people,dc=example,dc=com', user: user) }
       let(:ldap_user_synced_attributes) { { provider: 'ldapmain', name_synced: true, email_synced: true } }
       let(:other_provider_user_synced_attributes) { { provider: 'other', name_synced: true, email_synced: true } }

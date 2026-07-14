@@ -129,6 +129,29 @@ RSpec.describe Gitlab::RepositoryHashCache, :clean_gitlab_redis_repository_cache
 
       expect(cache.read_members(:example, ["test"])).to eq(test_hash)
     end
+
+    context "with a large hash" do
+      let(:large_hash) do
+        (1..2_500).each_with_object({}) { |i, h| h["branch-#{i}"] = "true" }
+      end
+
+      it "writes all values so they are readable" do
+        cache.write(:example, large_hash)
+
+        expect(cache.read_members(:example, large_hash.keys)).to eq(large_hash)
+      end
+
+      it "issues far fewer Redis commands than one per field (N+1)", :request_store do
+        instrumentation = Gitlab::Instrumentation::Redis::RepositoryCache
+
+        before_count = instrumentation.get_request_count
+        cache.write(:example, large_hash)
+        delta = instrumentation.get_request_count - before_count
+
+        # 2_500 fields / BATCH_SIZE 1_000 => 3 hset commands + 1 expire = 4
+        expect(delta).to eq(4)
+      end
+    end
   end
 
   describe "#fetch_and_add_missing" do

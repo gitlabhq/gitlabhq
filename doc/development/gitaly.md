@@ -142,6 +142,93 @@ describe 'Gitaly Request count tests' do
 end
 ```
 
+## Test for a Gitaly N+1
+
+To test for a Gitaly N+1:
+
+1. Confirm the N+1 exists and find where it happens.
+1. Choose a spec that counts the calls, or that trips the GraphQL call limit when counting is not possible.
+1. Confirm the guard fails without the fix.
+
+More than one spec can be valid, so treat the patterns below as known-good starting points rather
+than the only options.
+
+### Confirm and locate the N+1
+
+Observe the real calls before you write any assertion:
+
+- Open the Performance Bar and read the Gitaly call count and list.
+- Read the Gitaly server logs for repeated RPCs, such as `ListCommitsByOid` or `FindCommit`.
+
+### Choose a spec
+
+The spec that can catch the N+1 depends on where the call count is readable:
+
+| Where the code runs      | What drives the calls      | Known-good test                 |
+|--------------------------|----------------------------|---------------------------------|
+| The example's own store  | Any                        | `:request_store`, exact `by(n)` |
+| A `post_graphql` request | Distinct commit per record | Threshold detector              |
+
+Counting works only when the measured block runs in the example's own request store, such as a
+service, finder, model, or controller spec, or an in-process `GitlabSchema.execute`. A
+`post_graphql` or request-spec `get` runs `RequestStore.clear!` at its boundary, so the counter
+returns to zero and a `by(n)`, `not_to change`, or `by_at_most` assertion passes even when the N+1
+is present. Counting also requires the `:request_store` flag, without which the counter stays at
+zero.
+
+This is why SQL N+1s can be counted in a request spec with
+[QueryRecorder](database/query_recorder.md), but Gitaly N+1s cannot: `QueryRecorder` reads
+`ActiveSupport` notifications that fire regardless of the request store, while the Gitaly counter
+lives in the store that the request boundary clears.
+
+When the N+1 reproduces only through a `post_graphql` request, use the
+[threshold detector](#detect-an-n1-in-a-graphql-request-spec) instead. The detector needs each
+record to drive a distinct Gitaly lookup, such as a distinct commit. If the records resolve to the
+same commit, the call count does not grow with the record count and the detector cannot fire, so
+fall back to a controller spec with a tight `by(n)`.
+
+For a GraphQL resolver tested with `GitlabSchema.execute`, query the same fields the production
+client does. A narrower query such as `commit { sha }` can batch where the full field set does not,
+so the test can pass over a live N+1.
+
+### Detect an N+1 in a GraphQL request spec
+
+Create more than `Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS` (30) records, each on a distinct
+commit, then make one request. An unbatched resolve makes one call per record, exceeds the limit,
+and raises `TooManyInvocationsError`. A batched resolve makes one call and passes.
+
+```ruby
+let_it_be(:deployment_count) do
+  shas = project.repository.commits('master', limit: 35).map(&:id).uniq
+  shas.each do |sha|
+    create(:deployment, :success, environment: environment, project: project, ref: 'master', sha: sha)
+  end
+  shas.size
+end
+
+it 'resolves every deployment commit within the Gitaly call limit' do
+  expect(deployment_count).to be > Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS
+
+  post_graphql(query, current_user: user)
+
+  expect_graphql_errors_to_be_empty
+end
+```
+
+When the resolve exceeds the limit, `enforce_gitaly_request_limits` raises
+`TooManyInvocationsError`. The error surfaces in the response `errors` array rather than being
+raised out of `post_graphql`, so the `expect_graphql_errors_to_be_empty` assertion is what fails
+the test. Keep that assertion rather than a count assertion, which passes even when the resolve
+exceeds the limit.
+
+### Confirm the guard fails first
+
+A change that returns a lazy or batched value can look correct while still making one Gitaly call
+per record, so a passing test proves nothing on its own. Confirm the test fails without the fix
+before you rely on it: revert the fix, or add one extra real Gitaly call inside the measured block,
+and confirm the test fails. For more information, see
+[Never trust a test you haven't seen fail](database/query_recorder.md#never-trust-a-test-you-havent-seen-fail).
+
 ## Running tests with a locally modified version of Gitaly
 
 Usually, GitLab CE/EE tests use a local clone of Gitaly in

@@ -14,6 +14,8 @@ module Gitlab
     InvalidKeysProvidedError = Class.new(RepositoryHashCacheError)
     InvalidHashProvidedError = Class.new(RepositoryHashCacheError)
 
+    BATCH_SIZE = 1000
+
     # @param repository [Repository]
     # @param extra_namespace [String]
     # @param expires_in [Integer] expiry time for hash store keys
@@ -90,12 +92,12 @@ module Gitlab
 
       with do |redis|
         results = redis.pipelined do |pipeline|
-          # Set each hash key to the provided value
-          hash.each do |h_key, h_value|
-            pipeline.hset(full_key, h_key, h_value)
+          # Splitting into batches prevents us from creating a too-long Redis command
+          hash.each_slice(BATCH_SIZE) do |slice|
+            pipeline.hset(full_key, slice.to_h)
           end
 
-          # Update the expiry time for this hset
+          # Refresh the TTL for the whole hash on every write
           pipeline.expire(full_key, expires_in)
         end
 

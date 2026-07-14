@@ -13,7 +13,7 @@ RSpec.describe MergeRequests::UpdateAssigneesService, :request_store, feature_ca
   let_it_be(:merge_request_author) { create(:user) }
   let_it_be(:unauthorized_user) { create(:user) }
   let_it_be(:project) do
-    create(:project, :private, :repository, group: group, maintainers: user,
+    create(:project, :private, group: group, maintainers: user,
       developers: [user2, user3, service_account])
   end
 

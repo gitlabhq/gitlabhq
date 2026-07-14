@@ -117,6 +117,8 @@ module Gitlab
           end
 
           def mask_variables_from(string)
+            return string unless string.is_a?(String)
+
             variables.reduce(string.dup) do |str, variable|
               if variable[:masked]
                 Gitlab::Ci::MaskSecret.mask!(str, variable[:value])

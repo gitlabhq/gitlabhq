@@ -38,7 +38,13 @@ module Types
       @authorization ||= ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(authorize, authorization_scopes)
     end
 
+    def self.granular_scope_authorization
+      @granular_scope_authorization ||= ::Gitlab::Graphql::Authz::GranularScopeAuthorization.new(directives)
+    end
+
     def self.authorized?(object, context)
+      return false unless granular_scope_authorization.ok?(object, context)
+
       authorization.ok?(object, context[:current_user],
         scope_validator: context[:scope_validator],
         skip_abilities: context[:skip_type_authorization]

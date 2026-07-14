@@ -19,6 +19,7 @@ import WorkItemProjectsListbox from './work_item_projects_listbox.vue';
 import WorkItemGroupsListbox from './work_item_groups_listbox.vue';
 
 export default {
+  name: 'WorkItemLinksForm',
   components: {
     GlForm,
     GlButton,
@@ -91,6 +92,7 @@ export default {
       default: '',
     },
   },
+  emits: ['add-child', 'cancel', 'error', 'update-in-progress'],
   apollo: {
     workItemTypes: {
       query() {
@@ -353,6 +355,7 @@ export default {
           mutation: createWorkItemMutation,
           variables: {
             input: this.workItemInput,
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
           update: (cache, { data }) =>
             addHierarchyChild({

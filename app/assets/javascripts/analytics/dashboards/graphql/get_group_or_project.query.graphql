@@ -1,0 +1,18 @@
+query getGroupOrProject($fullPath: ID!) {
+  group(fullPath: $fullPath) {
+    id
+    name
+    fullName
+    webUrl
+    avatarUrl
+    visibility
+  }
+  project(fullPath: $fullPath) {
+    id
+    name
+    fullName: nameWithNamespace
+    webUrl
+    avatarUrl
+    visibility
+  }
+}

@@ -15,6 +15,19 @@ require 'tempfile'
 class PerTestCoverageArtifactDownloader
   BRIDGE_NAME = 'per-test-coverage:trigger'
 
+  # Splits the matching jobs across parallel export nodes. Sorting by id first
+  # gives every node the identical ordering, so the round-robin slices are
+  # disjoint and exhaustive. node_index is 1-based (CI_NODE_INDEX); node_total
+  # is the parallel count (CI_NODE_TOTAL).
+  def self.shards_for_node(jobs, node_index:, node_total:)
+    return jobs if node_total <= 1
+
+    jobs.sort_by { |job| job['id'] }
+        .each_with_index
+        .select { |_job, position| position % node_total == node_index - 1 }
+        .map(&:first)
+  end
+
   # output_dir is the destination prefix passed to `unzip -d`. GitLab artifact
   # zips preserve the project-root-relative paths of their entries, so unzipping
   # at the project root (`.`) restores files to their original locations
@@ -40,6 +53,12 @@ class PerTestCoverageArtifactDownloader
     @project_id = ENV.fetch('CI_PROJECT_ID')
     @pipeline_id = ENV.fetch('CI_PIPELINE_ID')
     @job_token = ENV.fetch('CI_JOB_TOKEN')
+
+    # CI_NODE_INDEX (1-based) and CI_NODE_TOTAL are set by GitLab only when the
+    # export job runs parallel:N. Default to a single node so the script behaves
+    # identically when run unparallelized.
+    @node_index = ENV.fetch('CI_NODE_INDEX', '1').to_i
+    @node_total = ENV.fetch('CI_NODE_TOTAL', '1').to_i
   end
 
   # Returns 0 when every matching shard downloaded successfully, 1 otherwise.
@@ -60,11 +79,18 @@ class PerTestCoverageArtifactDownloader
       return 1
     end
 
+    shards = self.class.shards_for_node(matching, node_index: @node_index, node_total: @node_total)
+    if shards.empty?
+      puts "Per-test coverage: node #{@node_index}/#{@node_total} owns none of the " \
+        "#{matching.size} matching jobs (fewer shards than nodes). Nothing to download."
+      return 0
+    end
+
     FileUtils.mkdir_p(@output_dir)
 
     all_ok = true
     downloaded = 0
-    matching.each_slice(@batch_size) do |batch|
+    shards.each_slice(@batch_size) do |batch|
       batch.each do |job|
         if download_artifacts(job['id'], job['name'])
           downloaded += 1
@@ -75,8 +101,8 @@ class PerTestCoverageArtifactDownloader
       all_ok = false unless process_batch
     end
 
-    puts "Per-test coverage: downloaded artifacts from #{downloaded}/#{matching.size} jobs " \
-      "in child pipeline #{child_pipeline_id}."
+    puts "Per-test coverage: node #{@node_index}/#{@node_total} downloaded artifacts from " \
+      "#{downloaded}/#{shards.size} jobs in child pipeline #{child_pipeline_id}."
 
     all_ok ? 0 : 1
   end
@@ -202,7 +228,11 @@ class PerTestCoverageArtifactDownloader
       tempfile.flush
 
       unless system('unzip', '-o', '-q', tempfile.path, '-d', output_dir)
-        warn "Per-test coverage: unzip exited #{$?.exitstatus} on artifacts from " \
+        # $? is the status of the last child process, so it is nil until a
+        # subprocess has actually run. Safe-navigate it: when unzip is stubbed
+        # in specs (or has not run yet) the status interpolates to blank instead
+        # of raising NoMethodError on nil.
+        warn "Per-test coverage: unzip exited #{$?&.exitstatus} on artifacts from " \
           "#{job_name} (#{job_id})"
         next
       end

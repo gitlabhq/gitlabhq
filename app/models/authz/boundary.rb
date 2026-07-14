@@ -19,6 +19,15 @@ module Authz
       strategy_class&.new(boundary)
     end
 
+    def self.strategy_for_type(type)
+      case type&.to_sym
+      when :project
+        ProjectBoundary
+      when :group
+        GroupBoundary
+      end
+    end
+
     class Base
       def self.declarative_policy_class
         'Authz::BoundaryPolicy'
@@ -30,6 +39,10 @@ module Authz
 
       def path
         namespace&.full_path
+      end
+
+      def root_namespace_id
+        namespace&.traversal_ids&.first
       end
 
       def type_label
@@ -44,6 +57,14 @@ module Authz
     end
 
     class GroupBoundary < Base
+      def self.record_class
+        ::Group
+      end
+
+      def self.namespace_association
+        nil
+      end
+
       def access
         GranularScope::Access::SELECTED_MEMBERSHIPS
       end
@@ -66,6 +87,14 @@ module Authz
     end
 
     class ProjectBoundary < Base
+      def self.record_class
+        ::Project
+      end
+
+      def self.namespace_association
+        :project_namespace
+      end
+
       def access
         GranularScope::Access::SELECTED_MEMBERSHIPS
       end

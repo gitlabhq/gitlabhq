@@ -91,7 +91,7 @@ RSpec.describe Projects::ContainerRepository::DestroyService, feature_category: 
   end
 
   context 'when user has access to registry' do
-    before do
+    before_all do
       project.add_developer(user)
     end
 

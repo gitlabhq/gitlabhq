@@ -51,6 +51,10 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
       ).and_return(fetch_service)
 
     allow(fetch_service).to receive(:execute).and_return(response)
+
+    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
+      .with(:ci_interpolation_split_function)
+      .and_return(false)
   end
 
   describe '#matching?' do

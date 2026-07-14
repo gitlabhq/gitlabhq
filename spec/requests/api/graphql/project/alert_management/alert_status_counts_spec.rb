@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'getting Alert Management Alert counts by status', feature_category: :incident_management do

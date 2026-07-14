@@ -1,7 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WikiHeader from './components/wiki_header.vue';
 import WikiContent from './components/wiki_content.vue';
 import WikiForm from './components/wiki_form.vue';
@@ -18,7 +17,6 @@ export default {
     WikiAlert,
     WikiNotesApp,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     isEditingPath: { default: false },
     isPageHistorical: { default: null },
@@ -45,10 +43,7 @@ export default {
       return !this.isCustomSidebar && (!this.isEditing || this.pagePersisted);
     },
     showWikiHeader() {
-      if (this.glFeatures.wikiImmersiveEditor) {
-        return !this.isEditing;
-      }
-      return !this.hasEnteredEditMode;
+      return !this.isEditing;
     },
     isCustomSidebar() {
       return this.wikiUrl.endsWith('_sidebar');

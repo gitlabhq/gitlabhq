@@ -107,7 +107,7 @@ here's how you configure GitLab to be aware of the change:
 
    ![Instance details with an SSH button to log into it.](img/vm_created_v10_6.png)
 
-   In the future you might want to set up [connecting with an SSH key](https://cloud.google.com/compute/docs/connect/standard-ssh)
+   In the future you might want to set up [connecting with an SSH key](https://docs.cloud.google.com/compute/docs/connect/standard-ssh)
    instead.
 
 1. Edit the configuration file of the Linux package using your favorite text editor:

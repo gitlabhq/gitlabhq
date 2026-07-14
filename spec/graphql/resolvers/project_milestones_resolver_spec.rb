@@ -6,15 +6,11 @@ RSpec.describe 'Resolvers::ProjectMilestonesResolver' do
   include GraphqlHelpers
 
   describe '#resolve' do
-    let_it_be(:described_class, freeze: false) { Resolvers::ProjectMilestonesResolver }
+    let_it_be(:described_class) { Resolvers::ProjectMilestonesResolver }
     let_it_be(:project) { create(:project, :private) }
-    let_it_be(:current_user) { create(:user) }
+    let_it_be(:current_user) { create(:user, developer_of: project) }
     let_it_be(:now) { Time.now }
     let_it_be(:now_date) { now.to_date }
-
-    before_all do
-      project.add_developer(current_user)
-    end
 
     def args(**arguments)
       satisfy("contain only #{arguments.inspect}") do |passed|
@@ -37,11 +33,7 @@ RSpec.describe 'Resolvers::ProjectMilestonesResolver' do
     context 'when including ancestor milestones' do
       let(:parent_group) { create(:group) }
       let(:group) { create(:group, parent: parent_group) }
-      let(:project) { create(:project, group: group) }
-
-      before do
-        project.add_developer(current_user)
-      end
+      let(:project) { create(:project, group: group, developers: current_user) }
 
       it 'calls MilestonesFinder with correct parameters' do
         expect(MilestonesFinder).to receive(:new).with(

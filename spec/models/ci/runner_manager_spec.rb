@@ -16,6 +16,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility do
   it { is_expected.to belong_to(:runner_version).with_foreign_key(:version) }
   it { is_expected.to have_many(:runner_manager_builds) }
   it { is_expected.to have_many(:builds).through(:runner_manager_builds) }
+  it { is_expected.to have_many(:build_runtime_environments) }
 
   describe 'query_constraints' do
     # `ci_runner_machines` is LIST-partitioned by `runner_type` with composite

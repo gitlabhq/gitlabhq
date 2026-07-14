@@ -54,7 +54,7 @@ RSpec.describe Issues::SetCrmContactsService, feature_category: :team_planning d
     end
 
     context 'when user has permission' do
-      before do
+      before_all do
         group.add_reporter(user)
       end
 

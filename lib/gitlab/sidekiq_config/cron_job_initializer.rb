@@ -18,13 +18,17 @@ module Gitlab
 
           # Disable on JH before loading into the registry so the registry reflects the correct status.
           Gitlab.jh do
-            worker = Gitlab::SidekiqConfig.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']
-            worker['status'] = 'disabled' if worker
+            if Gitlab::SidekiqConfig.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']
+              Gitlab::SidekiqConfig::CronJobs.config.set_job(
+                'gitlab_subscriptions_offline_cloud_license_provision_worker',
+                { 'status' => 'disabled' }
+              )
+            end
           end
 
           # Set source to schedule to clear any missing jobs
           # See https://github.com/sidekiq-cron/sidekiq-cron/pull/431
-          Sidekiq::Cron::Job.load_from_hash! Gitlab::SidekiqConfig.cron_jobs, source: 'schedule'
+          Sidekiq::Cron::Job.load_from_hash! Gitlab::SidekiqConfig.cron_jobs.transform_values(&:dup), source: 'schedule'
 
           Gitlab.ee do
             Gitlab::Mirror.configure_cron_job!
@@ -37,18 +41,32 @@ module Gitlab
 
         # Migrated from Settings#load_dynamic_cron_schedules! in config/settings.rb.
         def load_dynamic_cron_schedules!
-          return unless Gitlab::SidekiqConfig.cron_jobs['gitlab_service_ping_worker']
+          Gitlab::SidekiqConfig::CronJobs.config.set_job(
+            'gitlab_service_ping_worker',
+            { 'cron' => cron_for_service_ping }
+          )
 
-          Gitlab::SidekiqConfig.cron_jobs['gitlab_service_ping_worker']['cron'] ||= cron_for_service_ping
+          Gitlab::SidekiqConfig::CronJobs.config.set_job(
+            'sync_seat_link_worker',
+            { 'cron' => "#{rand(60)} #{rand(3..4)} * * * UTC" }
+          )
+
+          Gitlab::SidekiqConfig::CronJobs.config.set_job(
+            'sync_service_token_worker',
+            { 'cron' => "#{rand(60)} * * * * UTC" }
+          )
         end
 
         # Computes a per-instance random schedule from the instance UUID so that
         # service pings are distributed across instances rather than firing all at once.
+        #
+        # @return [String]
         def cron_for_service_ping
           uuid   = Gitlab::CurrentSettings.uuid || GITLAB_INSTANCE_UUID_NOT_SET
           minute = Digest::SHA256.hexdigest("#{uuid}minute").to_i(16) % 60
           hour   = Digest::SHA256.hexdigest("#{uuid}hour").to_i(16) % 24
           dow    = Digest::SHA256.hexdigest(uuid).to_i(16) % 7
+
           "#{minute} #{hour} * * #{dow}"
         end
       end

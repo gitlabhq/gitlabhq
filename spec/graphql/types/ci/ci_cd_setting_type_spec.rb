@@ -10,7 +10,7 @@ RSpec.describe Types::Ci::CiCdSettingType, feature_category: :continuous_integra
       cross_project_push_for_job_token_allowed
       group_runners_enabled inbound_job_token_scope_enabled job_token_scope_enabled
       keep_latest_artifact merge_pipelines_enabled project
-      push_repository_for_job_token_allowed
+      skip_branch_pipelines_for_mrs push_repository_for_job_token_allowed
       pipeline_variables_minimum_override_role resource_group_default_process_mode
       display_pipeline_variables
     ]
@@ -18,6 +18,7 @@ RSpec.describe Types::Ci::CiCdSettingType, feature_category: :continuous_integra
     if Gitlab.ee?
       expected_fields += %w[
         merge_trains_skip_train_allowed merge_trains_enabled max_pipelines_per_merge_train
+        merge_train_enforcement
       ]
     end
 

@@ -680,94 +680,12 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :markdown do
     end
 
     context 'from a diff' do
-      shared_examples 'copying code from a diff' do
-        context 'selecting one word of text' do
-          it 'copies as inline code' do
-            verify(
-              '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"] .line .no',
-              '`RuntimeError`',
-              target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'
-            )
-          end
-        end
-
-        context 'selecting one line of text' do
-          it 'copies as inline code' do
-            verify(
-              '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]',
-              '`      raise RuntimeError, "System commands must be given as an array of strings"`',
-              target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'
-            )
-          end
-        end
-
-        context 'selecting multiple lines of text' do
-          it 'copies as a code block' do
-            verify(
-              '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
-              <<~GFM,
-                ```ruby
-                      raise RuntimeError, "System commands must be given as an array of strings"
-                    end
-                ```
-              GFM
-              target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'
-            )
-          end
-        end
+      def visit_rapid_diff(view:)
+        visit project_commit_path(project, sample_commit.id, view: view)
+        wait_for_requests
       end
 
-      context 'inline diff' do
-        before do
-          stub_feature_flags(rapid_diffs_on_commit_show: false)
-          visit project_commit_path(project, sample_commit.id, view: 'inline')
-          wait_for_requests
-        end
-
-        it_behaves_like 'copying code from a diff'
-      end
-
-      context 'parallel diff' do
-        before do
-          stub_feature_flags(rapid_diffs_on_commit_show: false)
-          visit project_commit_path(project, sample_commit.id, view: 'parallel')
-          wait_for_requests
-        end
-
-        it_behaves_like 'copying code from a diff'
-
-        context 'selecting code on the left' do
-          it 'copies as a code block' do
-            verify(
-              '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
-              <<~GFM,
-                ```ruby
-                    unless cmd.is_a?(Array)
-                      raise "System commands must be given as an array of strings"
-                    end
-                ```
-              GFM
-              target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"].left-side'
-            )
-          end
-        end
-
-        context 'selecting code on the right' do
-          it 'copies as a code block' do
-            verify(
-              '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
-              <<~GFM,
-                ```ruby
-                    unless cmd.is_a?(Array)
-                      raise RuntimeError, "System commands must be given as an array of strings"
-                    end
-                ```
-              GFM
-              target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"].right-side'
-            )
-          end
-        end
-      end
+      it_behaves_like 'copy as GFM from a Rapid Diffs diff'
     end
 
     context 'from a blob' do
@@ -849,7 +767,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :markdown do
     end
 
     def verify(selector, gfm, target: nil)
-      expect(page).to have_selector('.js-syntax-highlight')
+      expect(page).to have_selector('.line')
       html = html_for_selector(selector)
       output_gfm = html_to_gfm(html, 'transformCodeSelection', target: target)
       wait_for_requests

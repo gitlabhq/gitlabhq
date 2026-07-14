@@ -22,9 +22,9 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
   let_it_be(:diff, freeze: false) { diffs.first }
   let_it_be(:diff_refs, freeze: false) { commit.diff_refs }
   let_it_be(:diff_file, freeze: false) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
-  let_it_be(:diff_files, freeze: false) { [diff_file] }
   let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
 
+  let(:diff_files) { [diff_file] }
   let(:expected_button_classes) do
     "gl-button btn btn-md btn-default"
   end

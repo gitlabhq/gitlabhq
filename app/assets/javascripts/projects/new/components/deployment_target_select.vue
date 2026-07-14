@@ -15,6 +15,7 @@ import {
 const trackingMixin = Tracking.mixin({ label: DEPLOYMENT_TARGET_LABEL });
 
 export default {
+  name: 'DeploymentTargetSelect',
   i18n: {
     deploymentTargetLabel: s__('Deployment Target|Project deployment target (optional)'),
     defaultOption: s__('Deployment Target|Select the deployment target'),

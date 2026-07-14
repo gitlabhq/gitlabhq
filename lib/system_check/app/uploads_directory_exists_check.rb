@@ -14,7 +14,7 @@ module SystemCheck
           "sudo -u #{gitlab_user} mkdir #{Rails.root}/public/uploads"
         )
         for_more_information(
-          see_installation_guide_section('GitLab')
+          see_installation_guide_section('9. GitLab')
         )
         fix_and_rerun
       end

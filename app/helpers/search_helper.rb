@@ -58,11 +58,7 @@ module SearchHelper
     when :users
       users_autocomplete(term)
     when :issues, :work_items
-      if work_items_autocomplete_enabled?
-        recent_work_items_autocomplete(term)
-      else
-        recent_issues_autocomplete(term)
-      end
+      recent_work_items_autocomplete(term)
     else
       []
     end
@@ -76,13 +72,9 @@ module SearchHelper
   end
 
   def recent_items_autocomplete(term)
-    issues_or_work_items = if work_items_autocomplete_enabled?
-                             recent_work_items_autocomplete(term)
-                           else
-                             recent_issues_autocomplete(term)
-                           end
-
-    recent_merge_requests_autocomplete(term) + issues_or_work_items + recent_wiki_pages_autocomplete(term)
+    recent_merge_requests_autocomplete(term) +
+      recent_work_items_autocomplete(term) +
+      recent_wiki_pages_autocomplete(term)
   end
 
   def search_entries_info(collection, scope, term)
@@ -352,11 +344,6 @@ module SearchHelper
     end
   end
 
-  def work_items_autocomplete_enabled?
-    ::Feature.enabled?(:work_items_autocomplete, current_user)
-  end
-  strong_memoize_attr :work_items_autocomplete_enabled?
-
   def combined_generic_results
     project_autocomplete + default_autocomplete + help_autocomplete + default_autocomplete_admin
   end
@@ -371,7 +358,7 @@ module SearchHelper
   def default_autocomplete
     [
       { category: "Settings", label: _("User settings"),    url: user_settings_profile_path },
-      { category: "Settings", label: _("SSH Keys"),         url: user_settings_ssh_keys_path },
+      { category: "Settings", label: _("SSH keys"),         url: user_settings_ssh_keys_path },
       { category: "Settings", label: _("Dashboard"),        url: root_path }
     ]
   end
@@ -394,7 +381,7 @@ module SearchHelper
       { category: "Help", label: _("Public Access Help"),           url: help_page_path("user/public_access.md") },
       { category: "Help", label: _("Rake Tasks Help"),
         url: help_page_path("administration/raketasks/_index.md") },
-      { category: "Help", label: _("SSH Keys Help"), url: help_page_path("user/ssh.md") },
+      { category: "Help", label: _("SSH keys help"), url: help_page_path("user/ssh.md") },
       {
         category: "Help",
         label: s_("Webhooks|System hooks help"),
@@ -486,21 +473,13 @@ module SearchHelper
 
   # Autocomplete results for the current user's projects
   def projects_autocomplete(term, limit = 5)
-    projects = if Feature.enabled?(:search_projects_autocomplete_use_search_service, current_user)
-                 search_using_search_service(
-                   current_user,
-                   'projects',
-                   term,
-                   limit,
-                   { autocomplete: true }
-                 )
-               else
-                 current_user.authorized_projects.order_id_desc.search(
-                   term,
-                   include_namespace: true,
-                   use_minimum_char_limit: false
-                 ).sorted_by_stars_desc.self_and_ancestors_non_archived.limit(limit)
-               end
+    projects = search_using_search_service(
+      current_user,
+      'projects',
+      term,
+      limit,
+      { autocomplete: true }
+    )
 
     projects.map do |p|
       {
@@ -545,22 +524,6 @@ module SearchHelper
         avatar_url: mr.target_project.avatar_url || '',
         project_id: mr.target_project_id,
         project_name: mr.target_project.name
-      }
-    end
-  end
-
-  def recent_issues_autocomplete(term)
-    return [] unless current_user
-
-    ::Gitlab::Search::RecentIssues.new(user: current_user).search(term).preload_namespace.preload_routables.map do |i|
-      {
-        category: "Recent issues",
-        id: i.id,
-        label: search_result_sanitize(i.title),
-        url: issue_path(i),
-        avatar_url: i.project.avatar_url || '',
-        project_id: i.project_id,
-        project_name: i.project.name
       }
     end
   end

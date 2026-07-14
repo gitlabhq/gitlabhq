@@ -5,25 +5,32 @@ require_relative '../../code_reuse_helpers'
 module RuboCop
   module Cop
     module API
-      # This cop checks that `allow_access_with_scope` is called only at the class level.
-      # This is because `allow_access_with_scope` aggregates scopes for each call in a class.
-      # Calling `allow_access_with_scope` within a `namespace` or an alias method such as
-      # `resource`, `resources`, `segment` or `group` may mislead developers to think the scope
-      # would be only allowed within given namespace which is not the case.
+      # Checks that `allow_access_with_scope` is called only at the class level.
+      #
+      # `allow_access_with_scope` aggregates scopes for each call in a class.
+      # Calling it within a `namespace` or an alias method such as `resource`,
+      # `resources`, `segment`, or `group` may mislead developers into thinking
+      # the scope only applies to that namespace.
       #
       # @example
       #
       #   # bad
       #   class MyClass < ::API::Base
       #     include APIGuard
+      #
       #     namespace 'my_namespace' do
       #       resource :my_resource do
       #         allow_access_with_scope :ai_workflows
+      #       end
+      #     end
+      #   end
       #
       #   # good
       #   class MyClass < ::API::Base
       #     include APIGuard
+      #
       #     allow_access_with_scope :ai_workflows
+      #   end
       class ClassLevelAllowAccessWithScope < RuboCop::Cop::Base
         include CodeReuseHelpers
 

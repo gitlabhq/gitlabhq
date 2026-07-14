@@ -82,6 +82,7 @@ export default {
       required: true,
     },
   },
+  emits: ['assignees-updated'],
   data() {
     return {
       issuable: {},

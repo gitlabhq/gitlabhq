@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -32,17 +31,14 @@ describe('CommitListItemDescription', () => {
     });
   };
 
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findDescription = () => wrapper.find('pre');
 
   describe('when loading', () => {
     beforeEach(() => createComponent());
 
-    it('renders loading icon', () => {
-      expect(findLoadingIcon().exists()).toBe(true);
-    });
-
     it('does not render description', () => {
+      // No loading indicator by design: the parent keeps the drawer collapsed
+      // until `loaded` fires.
       expect(findDescription().exists()).toBe(false);
     });
   });
@@ -51,10 +47,6 @@ describe('CommitListItemDescription', () => {
     beforeEach(async () => {
       createComponent();
       await waitForPromises();
-    });
-
-    it('hides loading icon', () => {
-      expect(findLoadingIcon().exists()).toBe(false);
     });
 
     it('renders description in pre element', () => {
@@ -66,6 +58,10 @@ describe('CommitListItemDescription', () => {
         projectPath: defaultProvide.projectFullPath,
         ref: mockCommit.sha,
       });
+    });
+
+    it('emits `loaded` so the parent can gate its open animation', () => {
+      expect(wrapper.emitted('loaded')).toHaveLength(1);
     });
   });
 
@@ -102,6 +98,13 @@ describe('CommitListItemDescription', () => {
   });
 
   describe('when query fails', () => {
+    it('still emits `loaded` so the parent can open the row', async () => {
+      createComponent(jest.fn().mockRejectedValue(new Error('Custom error message')));
+      await waitForPromises();
+
+      expect(wrapper.emitted('loaded')).toBeDefined();
+    });
+
     it('shows error message from error object when available', async () => {
       createComponent(jest.fn().mockRejectedValue(new Error('Custom error message')));
       await waitForPromises();

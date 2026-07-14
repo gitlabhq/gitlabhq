@@ -7,6 +7,7 @@ import ImportProjectsTable from './import_projects_table.vue';
 import GithubOrganizationsBox from './github_organizations_box.vue';
 
 export default {
+  name: 'GithubStatusTable',
   components: {
     ImportProjectsTable,
     GithubOrganizationsBox,

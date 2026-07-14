@@ -1,13 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
 import HelpState from '~/sidebar/components/time_tracking/help_state.vue';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-
-jest.mock('~/lib/utils/url_utility', () => ({
-  joinPaths: jest.fn(),
-}));
 
 jest.mock('~/locale', () => ({
   ...jest.requireActual('~/locale'),
@@ -77,9 +72,7 @@ describe('Time Tracking Help State', () => {
   });
 
   it('renders the button with the correct href', () => {
-    const href = '/help/user/project/time_tracking.md';
-
-    expect(joinPaths).toHaveBeenCalledWith('', href);
+    expect(findButtonLearnMore().attributes('href')).toBe('/help/user/project/time_tracking.md');
   });
 
   it('renders the button text correctly', () => {

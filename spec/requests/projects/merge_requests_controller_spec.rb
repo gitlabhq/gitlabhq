@@ -49,13 +49,13 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
   describe 'GET #show' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:project) { create(:project, :public, group: group) }
 
     let(:merge_request) { create :merge_request, source_project: project, author: user }
 
     context 'when the author of the merge request is banned', feature_category: :insider_threat do
-      let_it_be(:user, freeze: false) { create(:user, :banned) }
+      let_it_be_with_reload(:user) { create(:user, :banned) }
 
       subject { response }
 
@@ -110,7 +110,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
   end
 
   describe 'GET #index' do
-    let_it_be(:public_project, freeze: false) { create(:project, :public) }
+    let_it_be_with_reload(:public_project) { create(:project, :public) }
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit, use_second_scope: false do
       let(:current_user) { user }
@@ -186,7 +186,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
   context 'token authentication' do
     context 'when public project' do
-      let_it_be(:public_project, freeze: false) { create(:project, :public) }
+      let_it_be_with_reload(:public_project) { create(:project, :public) }
 
       it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: true do
         let(:url) { project_merge_requests_url(public_project, format: :atom) }
@@ -201,9 +201,11 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         ignore_metrics: true do
         let(:url) { project_merge_requests_url(private_project, format: :atom) }
 
+        # rubocop:disable RSpec/BeforeAllRoleAssignment -- sessionless shared example reassigns user per-context
         before do
           private_project.add_maintainer(user)
         end
+        # rubocop:enable RSpec/BeforeAllRoleAssignment
       end
     end
   end
@@ -444,8 +446,11 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
   end
 
   describe 'GET #diff_files_metadata' do
-    before do
+    before_all do
       project.add_developer(user)
+    end
+
+    before do
       login_as(user)
     end
 
@@ -458,8 +463,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     include_examples 'diff files metadata'
 
     context 'when merge_request_diff does not exist' do
-      let(:merge_request) { create(:merge_request, :skip_diff_creation, author: user) }
-      let(:project) { merge_request.project }
+      let_it_be(:merge_request) { create(:merge_request, :skip_diff_creation, author: user) }
+      let_it_be(:project) { merge_request.project }
+
+      before_all do
+        project.add_developer(user)
+      end
 
       it 'returns an empty array' do
         send_request
@@ -494,8 +503,11 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
   end
 
   describe 'GET #diffs_stats' do
-    before do
+    before_all do
       project.add_developer(user)
+    end
+
+    before do
       login_as(user)
     end
 
@@ -505,7 +517,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     include_examples 'diffs stats' do
       let(:expected_stats) do
         {
-          added_lines: 120,
+          added_lines: 119,
           removed_lines: 9,
           diffs_count: 21
         }
@@ -525,8 +537,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     end
 
     context 'when merge_request_diff does not exist' do
-      let(:merge_request) { create(:merge_request, :skip_diff_creation, author: user) }
-      let(:project) { merge_request.project }
+      let_it_be(:merge_request) { create(:merge_request, :skip_diff_creation, author: user) }
+      let_it_be(:project) { merge_request.project }
+
+      before_all do
+        project.add_developer(user)
+      end
 
       it 'returns an empty array' do
         send_request
@@ -543,7 +559,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       it_behaves_like 'diffs stats' do
         let(:expected_stats) do
           {
-            added_lines: 120,
+            added_lines: 119,
             removed_lines: 9,
             diffs_count: 21
           }
@@ -607,8 +623,11 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
   end
 
   describe 'GET #diff_file' do
-    before do
+    before_all do
       project.add_developer(user)
+    end
+
+    before do
       login_as(user)
     end
 
@@ -660,8 +679,11 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
   end
 
   describe 'PUT #update' do
-    before do
+    before_all do
       project.add_developer(user)
+    end
+
+    before do
       login_as(user)
     end
 
@@ -723,8 +745,11 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     let(:previous_start_sha) { previous_mr_diff.head_commit_sha }
     let(:latest_start_sha) { latest_mr_diff.head_commit_sha }
 
-    before do
+    before_all do
       project.add_developer(user)
+    end
+
+    before do
       login_as(user)
     end
 

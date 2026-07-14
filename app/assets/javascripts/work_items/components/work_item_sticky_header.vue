@@ -16,6 +16,7 @@ import WorkItemStateBadge from './work_item_state_badge.vue';
 import WorkItemNotificationsWidget from './work_item_notifications_widget.vue';
 
 export default {
+  name: 'WorkItemStickyHeader',
   components: {
     HiddenBadge,
     ImportedBadge,
@@ -64,6 +65,7 @@ export default {
       default: false,
     },
   },
+  emits: ['error', 'hideStickyHeader', 'showStickyHeader', 'todosUpdated', 'toggleEditMode'],
   computed: {
     canUpdate() {
       return this.workItem.userPermissions?.updateWorkItem;
@@ -120,7 +122,7 @@ export default {
       <div
         v-if="isStickyHeaderShowing"
         ref="stickyHeader"
-        class="issue-sticky-header gl-border-b gl-z-3 gl-bg-default gl-py-2"
+        class="issue-sticky-header gl-border-b gl-z-3 gl-bg-default gl-pb-3 gl-pt-2"
         :class="{
           'panel-top-offset-panel-header-height gl-absolute gl-left-0': isDrawer,
           'gl-fixed': !isDrawer,

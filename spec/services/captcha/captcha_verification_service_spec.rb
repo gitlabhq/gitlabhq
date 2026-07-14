@@ -24,7 +24,7 @@ RSpec.describe Captcha::CaptchaVerificationService, feature_category: :team_plan
       let(:captcha_response) { nil }
 
       it 'returns false' do
-        expect(subject).to eq(false)
+        expect(subject).to be(false)
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Captcha::CaptchaVerificationService, feature_category: :team_plan
       it 'returns false' do
         expect(service).to receive(:verify_recaptcha).with(response: captcha_response) { true }
 
-        expect(subject).to eq(true)
+        expect(subject).to be(true)
       end
 
       it 'has a request method which returns an object with the ip address #remote_ip' do

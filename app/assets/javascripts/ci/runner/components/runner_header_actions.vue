@@ -31,6 +31,7 @@ export default {
       default: null,
     },
   },
+  emits: ['deleted'],
   data() {
     return {
       isDropdownVisible: false,

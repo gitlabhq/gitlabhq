@@ -31,7 +31,7 @@ variables:
   # - eslint
   # - license-finder
   SECURE_BINARIES_ANALYZERS: >-
-    gitlab-advanced-sast, spotbugs, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python, dependency-scanning, dast, dast-runner-validation, api-security
+    gitlab-advanced-sast, gitlab-advanced-sast-cpp, spotbugs, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python, dependency-scanning, dast, dast-runner-validation, api-security
 
   SECURE_BINARIES_DOWNLOAD_IMAGES: "true"
   SECURE_BINARIES_PUSH_IMAGES: "true"
@@ -47,24 +47,25 @@ variables:
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
+    SECURE_BINARIES_IMAGE_NAME: "$CI_JOB_NAME"
   services:
     - docker:dind
   script:
     - docker info
     - env
-    - if [ -z "$SECURE_BINARIES_IMAGE" ]; then export SECURE_BINARIES_IMAGE=${SECURE_BINARIES_IMAGE:-"${SECURE_ANALYZERS_PREFIX}/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"}; fi
+    - if [ -z "$SECURE_BINARIES_IMAGE" ]; then export SECURE_BINARIES_IMAGE="${SECURE_ANALYZERS_PREFIX}/${SECURE_BINARIES_IMAGE_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"; fi
     - docker pull --quiet ${SECURE_BINARIES_IMAGE}
-    - mkdir -p output/$(dirname ${CI_JOB_NAME})
+    - mkdir -p output/$(dirname ${SECURE_BINARIES_IMAGE_NAME})
     - |
       if [ "$SECURE_BINARIES_SAVE_ARTIFACTS" = "true" ]; then
-        docker save ${SECURE_BINARIES_IMAGE} | gzip > output/${CI_JOB_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tar.gz
-        sha256sum output/${CI_JOB_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tar.gz > output/${CI_JOB_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tar.gz.sha256sum
+        docker save ${SECURE_BINARIES_IMAGE} | gzip > output/${SECURE_BINARIES_IMAGE_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tar.gz
+        sha256sum output/${SECURE_BINARIES_IMAGE_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tar.gz > output/${SECURE_BINARIES_IMAGE_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tar.gz.sha256sum
       fi
     - |
       if [ "$SECURE_BINARIES_PUSH_IMAGES" = "true" ]; then
         docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-        docker tag ${SECURE_BINARIES_IMAGE} ${CI_REGISTRY_IMAGE}/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}
-        docker push ${CI_REGISTRY_IMAGE}/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}
+        docker tag ${SECURE_BINARIES_IMAGE} ${CI_REGISTRY_IMAGE}/${SECURE_BINARIES_IMAGE_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}
+        docker push ${CI_REGISTRY_IMAGE}/${SECURE_BINARIES_IMAGE_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}
       fi
 
   artifacts:
@@ -165,7 +166,15 @@ gitlab-advanced-sast:
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "1"
   rules:
-    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bgitlab-advanced-sast\b/'
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /(^|[,\s])gitlab-advanced-sast([,\s]|$)/'
+
+gitlab-advanced-sast-cpp:
+  extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "1"
+    SECURE_BINARIES_IMAGE_NAME: "clangsa"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /(^|[,\s])gitlab-advanced-sast-cpp([,\s]|$)/'
 
 sobelow:
   extends: .download_images

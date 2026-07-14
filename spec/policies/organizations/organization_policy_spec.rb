@@ -36,6 +36,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       it { is_expected.to be_allowed(:update_organization) }
       it { is_expected.to be_allowed(:create_group) }
       it { is_expected.to be_allowed(:delete_organization) }
+      it { is_expected.to be_allowed(:restore_organization) }
       it { is_expected.to be_allowed(:read_organization) }
       it { is_expected.to be_allowed(:read_organization_user) }
       it { is_expected.to be_allowed(:read_artifact_registry) }
@@ -44,7 +45,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
 
       context 'when org_admin_area feature flag is disabled' do
         before do
-          stub_feature_flags(org_admin_area: false)
+          stub_organization_release(org_admin_area: false)
         end
 
         it { is_expected.to be_disallowed(:access_organization_admin_area) }
@@ -53,6 +54,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
 
     context 'when admin mode is disabled' do
       it { is_expected.to be_disallowed(:update_organization) }
+      it { is_expected.to be_disallowed(:restore_organization) }
       it { is_expected.to be_disallowed(:access_organization_admin_area) }
       it { expect_disallowed(:transfer_group) }
       it { is_expected.to be_disallowed(:read_artifact_registry) }
@@ -78,6 +80,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_disallowed(:update_organization) }
     it { is_expected.to be_allowed(:create_group) }
     it { is_expected.to be_disallowed(:delete_organization) }
+    it { is_expected.to be_disallowed(:restore_organization) }
     it { is_expected.to be_allowed(:read_organization) }
     it { is_expected.to be_allowed(:read_artifact_registry) }
     it { is_expected.to be_disallowed(:read_organization_user) }
@@ -93,6 +96,8 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_allowed(:update_organization) }
     it { is_expected.to be_allowed(:create_group) }
     it { is_expected.to be_allowed(:delete_organization) }
+    # restore_organization is admin-only, so organization owners cannot restore.
+    it { is_expected.to be_disallowed(:restore_organization) }
     it { is_expected.to be_allowed(:read_organization) }
     it { is_expected.to be_allowed(:read_organization_user) }
     it { is_expected.to be_allowed(:read_artifact_registry) }
@@ -101,7 +106,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
 
     context 'when org_admin_area feature flag is disabled' do
       before do
-        stub_feature_flags(org_admin_area: false)
+        stub_organization_release(org_admin_area: false)
       end
 
       it { expect_disallowed(:access_organization_admin_area) }
@@ -112,6 +117,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_disallowed(:update_organization) }
     it { is_expected.to be_disallowed(:create_group) }
     it { is_expected.to be_disallowed(:delete_organization) }
+    it { is_expected.to be_disallowed(:restore_organization) }
     it { is_expected.to be_disallowed(:read_organization_user) }
     it { is_expected.to be_disallowed(:read_artifact_registry) }
     it { expect_disallowed(:transfer_group) }
@@ -142,6 +148,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       end
 
       it { is_expected.to be_disallowed(:delete_organization) }
+      it { is_expected.to be_disallowed(:restore_organization) }
     end
 
     context 'when the user is deactivated' do
@@ -150,6 +157,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       end
 
       it { is_expected.to be_disallowed(:delete_organization) }
+      it { is_expected.to be_disallowed(:restore_organization) }
     end
 
     context 'when the user is inactive (access locked)' do
@@ -158,6 +166,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       end
 
       it { is_expected.to be_disallowed(:delete_organization) }
+      it { is_expected.to be_disallowed(:restore_organization) }
     end
   end
 

@@ -61,38 +61,6 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
         expect(described_class.with_namespace(-1)).to be_empty
       end
     end
-
-    describe '.for_standalone' do
-      it 'returns standalone instance and user scopes', :aggregate_failures do
-        expect(described_class.for_standalone(:personal_projects)).to be_empty
-        expect(described_class.for_standalone(:all_memberships)).to be_empty
-        expect(described_class.for_standalone(:selected_memberships)).to be_empty
-        expect(described_class.for_standalone(:user)).to match_array(scopes_for(:standalone_user))
-        expect(described_class.for_standalone(:instance)).to match_array(scopes_for(:instance))
-      end
-    end
-
-    describe '.for_namespaces' do
-      it 'returns personal_projects, selected_memberships and all_memberships scopes', :aggregate_failures do
-        expect(described_class.for_namespaces(rootgroup))
-          .to match_array(scopes_for(:all_memberships, :rootgroup))
-
-        expect(described_class.for_namespaces(subgroup.self_and_ancestor_ids))
-          .to match_array(scopes_for(:all_memberships, :rootgroup, :subgroup))
-
-        expect(described_class.for_namespaces(project.project_namespace.self_and_ancestor_ids))
-          .to match_array(scopes_for(:all_memberships, :rootgroup, :subgroup, :project))
-
-        expect(described_class.for_namespaces(user.namespace))
-          .to match_array(scopes_for(:all_memberships, :personal_projects))
-
-        expect(described_class.for_namespaces(user_project.project_namespace.self_and_ancestor_ids))
-          .to match_array(scopes_for(:all_memberships, :personal_projects, :user_project))
-
-        expect(described_class.for_namespaces(other_project.project_namespace.self_and_ancestor_ids))
-          .to match_array(scopes_for(:all_memberships, :other_project))
-      end
-    end
   end
 
   describe '#expanded_permissions' do
@@ -179,104 +147,23 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
     end
   end
 
-  describe '.permitted_for_boundary?' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:boundary) { Authz::Boundary.for(project) }
-
-    subject { described_class.permitted_for_boundary?(boundary, required_permissions) }
-
-    shared_examples 'checks for permission on boundary' do
-      context 'when a scope exists for a boundary' do
-        before do
-          create(:granular_scope, boundary: boundary, permissions: token_permissions)
-        end
-
-        it { is_expected.to be true }
-
-        context 'when the scope does not include the required permissions' do
-          let_it_be(:required_permissions) { :not_allowed_permission }
-
-          it { is_expected.to be false }
-        end
-      end
-
-      context 'when a scope does not exist for a boundary' do
-        it { is_expected.to be false }
-      end
+  describe '#applicable_to_boundary?' do
+    subject(:applicable_scopes) do
+      scopes.values.select { |scope| scope.applicable_to_boundary?(boundary) }
     end
 
-    context 'with individual permissions' do
-      let_it_be(:token_permissions) { %i[create_member_role delete_member_role] }
-      let_it_be(:required_permissions) { :delete_member_role }
-
-      it_behaves_like 'checks for permission on boundary'
+    where(:boundary, :applicable_scope_types) do
+      ref(:instance_boundary)        | [:instance]
+      ref(:standalone_user_boundary) | [:standalone_user]
+      ref(:rootgroup_boundary)       | [:all_memberships, :rootgroup]
+      ref(:subgroup_boundary)        | [:all_memberships, :rootgroup, :subgroup]
+      ref(:project_boundary)         | [:all_memberships, :rootgroup, :subgroup, :project]
+      ref(:user_project_boundary)    | [:all_memberships, :personal_projects, :user_project]
+      ref(:other_project_boundary)   | [:all_memberships, :other_project]
     end
-
-    context 'with grouped permissions' do
-      let_it_be(:token_permissions) do
-        %i[update_wiki] # expands to :update_wiki and :upload_wiki_attachment raw permissions
-      end
-
-      let_it_be(:required_permissions) { :upload_wiki_attachment }
-
-      it_behaves_like 'checks for permission on boundary'
-    end
-  end
-
-  describe '.token_permissions' do
-    where(:boundary, :expected_result) do
-      ref(:instance_boundary)        | [:instance_perm]
-      ref(:standalone_user_boundary) | [:standalone_user_perm]
-      ref(:rootgroup_boundary)       | [:all_memberships_perm, :rootgroup_perm]
-      ref(:subgroup_boundary)        | [:all_memberships_perm, :rootgroup_perm, :subgroup_perm]
-      ref(:project_boundary)         | [:all_memberships_perm, :rootgroup_perm, :subgroup_perm, :project_perm]
-      ref(:user_project_boundary)    | [:all_memberships_perm, :personal_projects_perm, :user_project_perm]
-      ref(:other_project_boundary)   | [:all_memberships_perm, :other_project_perm]
-    end
-
-    let_it_be(:assignable_permissions) do
-      %i[instance_perm standalone_user_perm all_memberships_perm rootgroup_perm subgroup_perm project_perm
-        personal_projects_perm user_project_perm other_project_perm]
-    end
-
-    before do
-      allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return(assignable_permissions.index_with { |p|
-        instance_double(::Authz::PermissionGroups::Assignable, permissions: [p])
-      })
-    end
-
-    subject(:permissions) { described_class.token_permissions(boundary) }
 
     with_them do
-      it { is_expected.to match_array(expected_result) }
-    end
-
-    describe 'persisted but undefined assignable permission group' do
-      let(:boundary) { instance_boundary }
-
-      before do
-        build(:granular_scope, boundary: boundary, permissions: [:non_existing]).save!(validate: false)
-      end
-
-      it 'is ignored' do
-        expect(permissions).to match_array([:instance_perm])
-      end
-    end
-
-    describe 'when the passed boundary is `nil` or has the incorrect access' do
-      where(:boundary) do
-        [
-          ref(:all_memberships_boundary),
-          ref(:personal_projects_boundary),
-          nil
-        ]
-      end
-
-      with_them do
-        it 'is expected to raise an error' do
-          expect { permissions }.to raise_error(NoMethodError)
-        end
-      end
+      it { is_expected.to match_array(scopes_for(*applicable_scope_types)) }
     end
   end
 

@@ -15,8 +15,8 @@ title: Scan execution policies
 {{< history >}}
 
 - Support for custom CI/CD variables in the scan execution policies editor [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9566) in GitLab 16.2.
-- Enforcement of scan execution policies on projects with an existing GitLab CI/CD configuration [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6880) in GitLab 16.2 [with a flag](../../../administration/feature_flags/_index.md) named `scan_execution_policy_pipelines`. Feature flag `scan_execution_policy_pipelines` removed in GitLab 16.5.
-- Overriding predefined variables in scan execution policies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440855) in GitLab 16.10 [with a flag](../../../administration/feature_flags/_index.md) named `allow_restricted_variables_at_policy_level`. Enabled by default. Feature flag `allow_restricted_variables_at_policy_level` removed in GitLab 17.5.
+- Enforcement of scan execution policies on projects with an existing GitLab CI/CD configuration [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6880) in GitLab 16.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `scan_execution_policy_pipelines`. Feature flag `scan_execution_policy_pipelines` removed in GitLab 16.5.
+- Overriding predefined variables in scan execution policies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440855) in GitLab 16.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `allow_restricted_variables_at_policy_level`. Enabled by default. Feature flag `allow_restricted_variables_at_policy_level` removed in GitLab 17.5.
 
 {{< /history >}}
 
@@ -74,7 +74,7 @@ value for each policy action. For example, `secret-detection` becomes `secret-de
 {{< history >}}
 
 - `Merge Request Security Template`:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `flexible_scan_execution`. Disabled by default.
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `flexible_scan_execution`. Disabled by default.
   - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.3.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.4. Feature flag `flexible_scan_execution` removed.
 
@@ -152,7 +152,7 @@ the following sections and tables provide an alternative.
 
 {{< history >}}
 
-- Limit of actions per policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/472213) in GitLab 17.4 [with flags](../../../administration/feature_flags/_index.md) named `scan_execution_policy_action_limit` (for projects) and `scan_execution_policy_action_limit_group` (for groups). Disabled by default.
+- Limit of actions per policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/472213) in GitLab 17.4 [with feature flags](../../../administration/feature_flags/_index.md) named `scan_execution_policy_action_limit` (for projects) and `scan_execution_policy_action_limit_group` (for groups). Disabled by default.
 - Limit of actions per policy [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/535605) in GitLab 18.0. Feature flags `scan_execution_policy_action_limit` (for projects) and `scan_execution_policy_action_limit_group` (for groups) removed.
 
 {{< /history >}}
@@ -211,13 +211,13 @@ from bypassing the pipeline execution policies.
 {{< history >}}
 
 - The `branch_type` field:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_type`.
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_type`.
   - Generally available in GitLab 16.2. Feature flag `security_policies_branch_type` removed.
 - The `branch_exceptions` field:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_exceptions`.
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_exceptions`.
   - Generally available in GitLab 16.5. Feature flag `security_policies_branch_exceptions` removed.
 - The `pipeline_sources` field and the `branch_type` options `target_default` and `target_protected`:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `flexible_scan_execution`.
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `flexible_scan_execution`.
   - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.3.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.4. Feature flag `flexible_scan_execution` removed.
 
@@ -242,20 +242,20 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 {{< history >}}
 
 - New `branch_type` field:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_type`.
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_type`.
   - Generally available in GitLab 16.2. Feature flag removed.
 - New `branch_exceptions` field:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_exceptions`.
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_exceptions`.
   - Generally available in GitLab 16.5. Feature flag removed.
 - New `scan_execution_pipeline_worker` worker to scheduled scans to create pipelines:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147691) in GitLab 16.11 [with a flag](../../../administration/feature_flags/_index.md).
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147691) in GitLab 16.11 [with a feature flag](../../../administration/feature_flags/_index.md).
   - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) on GitLab.com in GitLab 17.5.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) in GitLab 17.6. Feature flag `scan_execution_pipeline_worker` removed.
 - New application setting `security_policy_scheduled_scans_max_concurrency`:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152855) in GitLab 17.1. The concurrency limit applies when both the `scan_execution_pipeline_worker` and `scan_execution_pipeline_concurrency_control` are enabled.
   - [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178892) a new application setting `security_policy_scheduled_scans_max_concurrency` in GitLab 17.11.
 - Concurrency limit for scan execution scheduled jobs:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158636) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `scan_execution_pipeline_concurrency_control`.
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158636) in GitLab 17.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `scan_execution_pipeline_concurrency_control`.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/463802) in GitLab 17.9. Feature flag `scan_execution_pipeline_concurrency_control` removed.
 
 {{< /history >}}
@@ -443,7 +443,7 @@ The concurrency control distributes the scheduled pipelines according to the [`t
 {{< history >}}
 
 - Scan Execution Policies variable precedence:
-  - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_variables_precedence`. Enabled by default.
+  - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_variables_precedence`. Enabled by default.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435727) in GitLab 16.8. Feature flag `security_policies_variables_precedence` removed.
 - Selection of security templates for given action:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415427) for projects in GitLab 17.1 [with feature flag](../../../administration/feature_flags/_index.md) named `scan_execution_policies_with_latest_templates`. Disabled by default.

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
@@ -133,6 +134,7 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
         it 'is "created date"' do
           visit_issues project
 
+          click_button 'Display'
           expect(page).to have_button 'Created date'
           expect(first_issue).to include(last_created_issuable.title)
           expect(last_issue).to include(first_created_issuable.title)
@@ -147,6 +149,7 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
         end
 
         it 'shows the sort order as created date' do
+          click_button 'Display'
           expect(page).to have_button 'Created date'
           expect(first_issue).to include(last_created_issuable.title)
           expect(last_issue).to include(first_created_issuable.title)
@@ -160,6 +163,7 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
       it 'supports sorting in asc and desc order' do
         visit_issues_with_state(project, 'opened')
 
+        click_button 'Display'
         pajamas_sort_by 'Updated date', from: 'Created date'
 
         expect(page).to have_css('.issue:first-child', text: last_updated_issuable.title)

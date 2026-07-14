@@ -1,0 +1,8 @@
+---
+table: sbom_component_versions
+database: sec
+replication_targets:
+- name: clickhouse_main
+  target: siphon_sbom_component_versions
+  dedup_by:
+  - id

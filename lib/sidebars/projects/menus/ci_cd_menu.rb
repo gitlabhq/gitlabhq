@@ -47,7 +47,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             container_html_options: { class: 'shortcuts-pipelines' },
             active_routes: { path: pipelines_routes },
-            item_id: :pipelines
+            item_id: :pipelines,
+            description: _('Automate your build and deployment process'),
+            library_icon: 'pipeline'
           )
         end
 
@@ -77,7 +79,9 @@ module Sidebars
             link: project_ci_pipeline_editor_path(context.project, params),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             active_routes: { path: 'projects/ci/pipeline_editor#show' },
-            item_id: :pipelines_editor
+            item_id: :pipelines_editor,
+            description: _('Configure your automation workflows visually'),
+            library_icon: 'pipeline-editor'
           )
         end
 
@@ -88,7 +92,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             container_html_options: { class: 'shortcuts-builds' },
             active_routes: { controller: :jobs },
-            item_id: :jobs
+            item_id: :jobs,
+            description: _('Monitor individual build tasks and their results'),
+            library_icon: 'job'
           )
         end
 
@@ -99,7 +105,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             container_html_options: { class: 'shortcuts-builds' },
             active_routes: { path: 'artifacts#index' },
-            item_id: :artifacts
+            item_id: :artifacts,
+            description: _('Access build outputs and compiled binaries'),
+            library_icon: 'doc-compressed'
           )
         end
 
@@ -110,7 +118,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             container_html_options: { class: 'shortcuts-builds' },
             active_routes: { controller: :pipeline_schedules },
-            item_id: :pipeline_schedules
+            item_id: :pipeline_schedules,
+            description: _('Run your automation on a recurring schedule'),
+            library_icon: 'pipeline-schedule'
           )
         end
 
@@ -123,7 +133,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             container_html_options: { class: 'shortcuts-builds' },
             active_routes: { controller: :attestations },
-            item_id: :attestations
+            item_id: :attestations,
+            description: _('View build provenance attestations.'),
+            library_icon: 'license'
           )
         end
 

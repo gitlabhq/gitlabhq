@@ -95,7 +95,7 @@
         -# This tab is always loaded via AJAX
       = render "projects/merge_requests/tabs/pane", name: "pipelines", id: "pipelines", class: "pipelines" do
         - if @project.builds_enabled?
-          = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
+          = render 'projects/commit/pipelines_list', endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       = render_if_exists "projects/merge_requests/reports_tab_pane"
       - if rapid_diffs_page_enabled?
         = render "projects/merge_requests/tabs/pane", name: "diffs", class: "diffs", id: 'diffs' do

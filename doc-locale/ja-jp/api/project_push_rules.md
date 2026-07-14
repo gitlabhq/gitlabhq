@@ -61,7 +61,8 @@ GET /projects/:id/push_rule
 リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/3/push_rule"
 ```
 

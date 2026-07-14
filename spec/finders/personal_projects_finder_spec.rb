@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe PersonalProjectsFinder, feature_category: :groups_and_projects do
   let_it_be(:source_user) { create(:user) }
-  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:current_user) { create(:user) }
   let_it_be(:admin)           { create(:admin) }
 
   let(:finder)                { described_class.new(source_user) }

@@ -1,5 +1,7 @@
 <script>
 import { s__ } from '~/locale';
+import { VARIANT_DEFAULT } from '../../constants';
+import { isValidVariant } from '../../utils';
 import ContributionEventBase from './contribution_event_base.vue';
 
 export default {
@@ -44,6 +46,12 @@ export default {
       type: Object,
       required: true,
     },
+    variant: {
+      type: String,
+      required: false,
+      default: VARIANT_DEFAULT,
+      validator: isValidVariant,
+    },
   },
 };
 </script>
@@ -51,6 +59,7 @@ export default {
 <template>
   <contribution-event-base
     :event="event"
+    :variant="variant"
     :message="$options.i18n.message"
     icon-name="approval-solid"
   />

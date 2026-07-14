@@ -225,7 +225,7 @@ Prerequisites:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19260) in GitLab 18.3 [with a flag](../../../../administration/feature_flags/_index.md) named `render_gpg_signed_tags_verification_status`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19260) in GitLab 18.3 [with a feature flag](../../../../administration/feature_flags/_index.md) named `render_gpg_signed_tags_verification_status`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/560619) in GitLab 19.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/599765) in GitLab 19.1. Feature flag `render_gpg_signed_tags_verification_status` removed.
 

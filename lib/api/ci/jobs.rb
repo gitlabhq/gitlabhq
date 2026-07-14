@@ -191,6 +191,7 @@ module API
         end
         # This endpoint can be used for retrying both builds and bridges.
         route_setting :authorization, permissions: :retry_job, boundary_type: :project
+        route_setting :log_safety, { unsafe: %w[inputs] }
         post ':id/jobs/:job_id/retry', urgency: :low, feature_category: :continuous_integration do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/473419')
 
@@ -260,6 +261,7 @@ module API
         end
 
         route_setting :authorization, permissions: :play_job, boundary_type: :project
+        route_setting :log_safety, { unsafe: %w[job_inputs] }
         post ':id/jobs/:job_id/play', urgency: :low, feature_category: :continuous_integration do
           authorize_read_builds!
 

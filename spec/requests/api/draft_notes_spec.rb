@@ -109,7 +109,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       end
 
       it "deletes the specified draft note" do
-        expect(DraftNote.exists?(deleted_draft_note_id)).to eq(false)
+        expect(DraftNote.exists?(deleted_draft_note_id)).to be(false)
       end
     end
 
@@ -402,7 +402,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
 
       it "publishes the specified draft note" do
         expect { publish_draft_note }.to change { Note.count }.by(1)
-        expect(DraftNote.exists?(draft_note_by_current_user.id)).to eq(false)
+        expect(DraftNote.exists?(draft_note_by_current_user.id)).to be(false)
       end
 
       it "creates a resolvable discussion when draft note has no position" do
@@ -414,9 +414,9 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
         expect(response).to have_gitlab_http_status(:no_content)
 
         # The published note should be a DiscussionNote, making it resolvable
-        published_note = merge_request.notes.last
+        published_note = merge_request.notes.order(:id).last
         expect(published_note.type).to eq('DiscussionNote')
-        expect(published_note.discussion.resolvable?).to eq(true)
+        expect(published_note.discussion.resolvable?).to be(true)
       end
 
       it_behaves_like 'authorizing granular token permissions', :publish_merge_request_draft_note do
@@ -481,14 +481,14 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
 
       it "publishes the specified draft notes" do
         expect { bulk_publish_draft_notes }.to change { Note.count }.by(2)
-        expect(DraftNote.exists?(draft_note_by_current_user.id)).to eq(false)
-        expect(DraftNote.exists?(draft_note_by_current_user_2.id)).to eq(false)
+        expect(DraftNote.exists?(draft_note_by_current_user.id)).to be(false)
+        expect(DraftNote.exists?(draft_note_by_current_user_2.id)).to be(false)
       end
 
       it "only publishes the user's draft notes" do
         bulk_publish_draft_notes
 
-        expect(DraftNote.exists?(draft_note_by_random_user.id)).to eq(true)
+        expect(DraftNote.exists?(draft_note_by_random_user.id)).to be(true)
       end
 
       it_behaves_like 'authorizing granular token permissions', :publish_merge_request_draft_note do
@@ -508,6 +508,102 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
         bulk_publish_draft_notes
 
         expect(response).to have_gitlab_http_status(:internal_server_error)
+      end
+    end
+
+    context "when reviewer_state is provided" do
+      before do
+        merge_request.reviewers << user
+      end
+
+      it "sets the reviewer state to requested_changes", :aggregate_failures do
+        post api("#{base_url}/bulk_publish", user), params: { reviewer_state: 'requested_changes' }
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        reviewer = merge_request.merge_request_reviewers.find_by(user_id: user.id)
+        expect(reviewer.state).to eq('requested_changes')
+      end
+
+      it "sets the reviewer state to reviewed", :aggregate_failures do
+        post api("#{base_url}/bulk_publish", user), params: { reviewer_state: 'reviewed' }
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        reviewer = merge_request.merge_request_reviewers.find_by(user_id: user.id)
+        expect(reviewer.state).to eq('reviewed')
+      end
+
+      it "rejects invalid reviewer_state values" do
+        post api("#{base_url}/bulk_publish", user), params: { reviewer_state: 'invalid' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it "rejects the 'approved' reviewer_state and records no approval", :aggregate_failures do
+        expect do
+          post api("#{base_url}/bulk_publish", user), params: { reviewer_state: 'approved' }
+        end.not_to change { merge_request.approvals.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context "when note is provided" do
+      it "creates a merge request note", :aggregate_failures do
+        expect do
+          post api("#{base_url}/bulk_publish", user), params: { note: '**Summary**' }
+        end.to change { merge_request.notes.count }.by_at_least(1)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(merge_request.notes.order(:id).last.note).to eq('**Summary**')
+      end
+
+      it "creates an internal note when internal is true", :aggregate_failures do
+        post api("#{base_url}/bulk_publish", user), params: { note: 'Internal summary', internal: true }
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        note = merge_request.notes.order(:id).last
+        expect(note.note).to eq('Internal summary')
+        expect(note.internal).to be(true)
+      end
+
+      it "creates a public note when internal is false", :aggregate_failures do
+        post api("#{base_url}/bulk_publish", user), params: { note: 'Public summary', internal: false }
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        note = merge_request.notes.order(:id).last
+        expect(note.note).to eq('Public summary')
+        expect(note.internal).to be(false)
+      end
+    end
+
+    context "when all params are provided together" do
+      before do
+        merge_request.reviewers << user
+      end
+
+      it "publishes drafts, creates a note, and sets reviewer state", :aggregate_failures do
+        expect do
+          post api("#{base_url}/bulk_publish", user),
+            params: { reviewer_state: 'requested_changes', note: 'Review summary', internal: true }
+        end.to change { Note.count }.by_at_least(2)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+
+        reviewer = merge_request.merge_request_reviewers.find_by(user_id: user.id)
+        expect(reviewer.state).to eq('requested_changes')
+
+        summary_note = merge_request.notes.where(note: 'Review summary').order(:id).last
+        expect(summary_note).to be_present
+        expect(summary_note.internal).to be(true)
+      end
+    end
+
+    context "when no new params are provided" do
+      it "returns 204 without creating internal notes" do
+        bulk_publish_draft_notes
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(merge_request.notes.where(internal: true).count).to eq(0)
       end
     end
   end

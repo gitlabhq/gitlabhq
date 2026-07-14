@@ -33,7 +33,19 @@ module WebHooks
     private
 
     def hook_log
-      @hook_log ||= hook.web_hook_logs.find(params.permit(:id)[:id])
+      @hook_log ||= hook.web_hook_logs.find(params.permit(:id)[:id]).tap do |log|
+        log_stale_hook_log_access(log) if log.outside_recent_window?
+      end
+    end
+
+    def log_stale_hook_log_access(log)
+      Gitlab::WebHooks::Logger.log_stale_access(
+        hook: hook,
+        web_hook_log: log,
+        action: action_name,
+        interface: 'web',
+        user: current_user
+      )
     end
 
     def execute_hook

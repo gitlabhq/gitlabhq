@@ -3,6 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'LogsTopBar',
   components: {
     GlButton,
   },
@@ -18,6 +19,7 @@ export default {
       default: false,
     },
   },
+  emits: ['scrollToBottom', 'scrollToTop', 'toggleFullScreen'],
   i18n: {
     enterFullScreen: s__('LogsViewer|Enter full screen'),
     exitFullScreen: s__('LogsViewer|Exit full screen'),

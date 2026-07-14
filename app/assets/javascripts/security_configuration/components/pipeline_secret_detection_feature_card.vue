@@ -30,6 +30,7 @@ export default {
       required: true,
     },
   },
+  emits: ['error'],
   data() {
     return {
       localValidityChecksEnabled: this.validityChecksEnabled,

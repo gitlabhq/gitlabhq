@@ -2,16 +2,14 @@
 import { GlButton } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 import { createAlert } from '~/alert';
-import { __ } from '~/locale';
+import { __, n__ } from '~/locale';
 import { useBatchComments } from '~/batch_comments/store';
 import { useNotes } from '~/notes/store/legacy_notes';
-import DraftsCount from './drafts_count.vue';
 
 export default {
   name: 'SubmitReviewButton',
   components: {
     GlButton,
-    DraftsCount,
   },
   computed: {
     ...mapState(useNotes, ['isNotesFetched']),
@@ -23,6 +21,9 @@ export default {
     ]),
     isLoading() {
       return !this.isNotesFetched || !this.isDraftsFetched;
+    },
+    draftsCountSrText() {
+      return n__('draft', 'drafts', this.draftsCount);
     },
   },
   mounted() {
@@ -47,17 +48,14 @@ export default {
       data-testid="review-drawer-toggle"
       :disabled="isLoading"
       :loading="isLoading"
+      :count="draftsCount > 0 ? draftsCount : null"
+      :count-sr-text="draftsCountSrText"
       :class="{
         'motion-safe:gl-animate-[review-btn-animate_300ms_ease-in]': shouldAnimateReviewButton,
       }"
       @click="setDrawerOpened(true)"
     >
       {{ __('Your review') }}
-      <drafts-count
-        v-if="draftsCount > 0"
-        variant="info"
-        data-testid="reviewer-drawer-drafts-count-badge"
-      />
     </gl-button>
   </div>
 </template>

@@ -180,7 +180,7 @@ When the **Organization** tab is selected, you can further narrow down your sear
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139410) in GitLab 16.8 [with a flag](../../../administration/feature_flags/_index.md) named `github_import_extended_events`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139410) in GitLab 16.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `github_import_extended_events`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146695) in GitLab 16.11. Feature flag `github_import_extended_events` removed.
 

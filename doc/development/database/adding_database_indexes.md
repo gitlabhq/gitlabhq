@@ -380,7 +380,7 @@ Be aware that certain factors can give the false impression that an index is unu
    - The index name in the development environment may not match production. It's important to correlate the indexes
      based on definition rather than name. To check its definition, you can:
      - Manually inspect [db/structure.sql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql)
-       (This file does **not** include data on dynamically generated partitions.)
+       (This file does not include data on dynamically generated partitions.)
      - [Use Database Lab to check the status of an index.](database_lab.md#checking-indexes)
    - For partitioned tables, child indexes are often named differently than the parent index.
      To list all child indexes, you can:

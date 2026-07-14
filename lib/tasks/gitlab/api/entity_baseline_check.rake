@@ -57,7 +57,9 @@ namespace :gitlab do
         puts 'Add the following to:'
         puts '  rubocop/cop/api/config/api_entity_exposure_baseline.yml'
         puts '=' * 72
-        snippet = new_entries.each_with_object({}) { |entry, hash| hash[entry[:path]] = entry[:fields] }
+        snippet = new_entries.each_with_object({}) do |entry, hash|
+          hash[entry[:path]] = { 'usage_radius' => entry[:usage_radius], 'fields' => entry[:fields] }
+        end
         puts snippet.to_yaml.delete_prefix("---\n")
       end
 

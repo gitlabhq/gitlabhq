@@ -14,6 +14,22 @@ const loadLanguage = async (language, hljs) => {
   }
 };
 
+// Highlight.js's Markdown grammar does not recognize YAML frontmatter, so the
+// closing `---` delimiter pairs with the preceding line and is highlighted as a
+// Setext heading. Inject a frontmatter mode, anchored to the start of the
+// document, so the block is highlighted as YAML instead.
+const patchMarkdownFrontmatter = (hljs) => {
+  const markdown = hljs.getLanguage('markdown');
+  if (!markdown?.contains) return;
+
+  markdown.contains.unshift({
+    className: 'meta',
+    begin: /(?<![\s\S])---\s*$/, // matches only at the start of the document
+    end: /^---\s*$/,
+    subLanguage: 'yaml',
+  });
+};
+
 const loadSubLanguages = async (languageDefinition, hljs) => {
   // Some files can contain sub-languages (i.e., Svelte); this ensures that sub-languages are also loaded
   if (!languageDefinition?.contains) return;
@@ -34,6 +50,11 @@ const loadSubLanguages = async (languageDefinition, hljs) => {
 
 const registerLanguage = async (hljs, language) => {
   await loadLanguage(language, hljs);
+
+  if (language === 'markdown') {
+    patchMarkdownFrontmatter(hljs);
+  }
+
   await loadSubLanguages(hljs.getLanguage(language), hljs);
 };
 

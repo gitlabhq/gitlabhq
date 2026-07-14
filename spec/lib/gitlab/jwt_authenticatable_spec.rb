@@ -61,6 +61,72 @@ RSpec.describe Gitlab::JwtAuthenticatable, feature_category: :system_access do
     end
   end
 
+  describe '.read_public_key' do
+    let(:private_key) { OpenSSL::PKey::EC.generate('prime256v1') }
+    let(:public_key_path) { Rails.root.join('tmp', 'tests', '.jwt_public_key.pem') }
+
+    before do
+      File.write(public_key_path, private_key.public_to_pem)
+    end
+
+    after do
+      FileUtils.rm_f(public_key_path)
+    end
+
+    it 'reads a PEM-encoded public key without enforcing SECRET_LENGTH' do
+      key = test_class.read_public_key(public_key_path)
+
+      expect(key).to be_a(OpenSSL::PKey::PKey)
+      expect(key.public_to_pem).to eq(private_key.public_to_pem)
+    end
+
+    it 'raises an exception if the key file cannot be read' do
+      FileUtils.rm_f(public_key_path)
+
+      expect { test_class.read_public_key(public_key_path) }.to raise_error(Errno::ENOENT)
+    end
+
+    it 'raises an exception when the file contains a private key' do
+      File.write(public_key_path, private_key.to_pem)
+
+      expect { test_class.read_public_key(public_key_path) }
+        .to raise_error(/contains a private key; only public keys are permitted/)
+    end
+  end
+
+  describe '.public_key_set' do
+    let(:key_one) { OpenSSL::PKey::EC.generate('prime256v1') }
+    let(:key_two) { OpenSSL::PKey::EC.generate('prime256v1') }
+    let(:path_one) { Rails.root.join('tmp', 'tests', '.jwt_public_key_one.pem') }
+    let(:path_two) { Rails.root.join('tmp', 'tests', '.jwt_public_key_two.pem') }
+
+    before do
+      File.write(path_one, key_one.public_to_pem)
+      File.write(path_two, key_two.public_to_pem)
+    end
+
+    after do
+      FileUtils.rm_f(path_one)
+      FileUtils.rm_f(path_two)
+    end
+
+    it 'builds a JWK set from multiple public key files keyed by kid' do
+      set = test_class.public_key_set([path_one, path_two])
+
+      expect(set).to be_a(JWT::JWK::Set)
+      expect(set.map { |jwk| jwk[:kid] }).to contain_exactly(
+        JWT::JWK.new(key_one).export[:kid],
+        JWT::JWK.new(key_two).export[:kid]
+      )
+    end
+
+    it 'accepts a single path' do
+      set = test_class.public_key_set(path_one)
+
+      expect(set.map { |jwk| jwk[:kid] }).to contain_exactly(JWT::JWK.new(key_one).export[:kid])
+    end
+  end
+
   describe '.write_secret' do
     context 'without an input' do
       it 'uses mode 0600' do
@@ -252,6 +318,46 @@ RSpec.describe Gitlab::JwtAuthenticatable, feature_category: :system_access do
 
           expect { test_class.decode_jwt(encoded_message, algorithm: 'RS256') }.to raise_error(JWT::DecodeError)
         end
+      end
+    end
+
+    context 'with a jwks (asymmetric key set)' do
+      let(:private_key) { OpenSSL::PKey::EC.generate('prime256v1') }
+      let(:public_key) { OpenSSL::PKey::EC.new(private_key.public_to_pem) }
+      let(:kid) { JWT::JWK.new(public_key).export[:kid] }
+      let(:jwks) { JWT::JWK::Set.new([JWT::JWK.new(public_key)]) }
+
+      it 'verifies a token whose kid matches a key in the set' do
+        encoded_message = JWT.encode(payload, private_key, 'ES256', { kid: kid })
+
+        expect do
+          test_class.decode_jwt(encoded_message, nil, algorithm: 'ES256', jwks: jwks)
+        end.not_to raise_error
+      end
+
+      it 'raises an error when the kid is not in the set' do
+        encoded_message = JWT.encode(payload, private_key, 'ES256', { kid: 'unknown' })
+
+        expect do
+          test_class.decode_jwt(encoded_message, nil, algorithm: 'ES256', jwks: jwks)
+        end.to raise_error(JWT::DecodeError)
+      end
+
+      it 'raises an error when the token is signed by a key absent from the set' do
+        other_key = OpenSSL::PKey::EC.generate('prime256v1')
+        encoded_message = JWT.encode(payload, other_key, 'ES256', { kid: kid })
+
+        expect do
+          test_class.decode_jwt(encoded_message, nil, algorithm: 'ES256', jwks: jwks)
+        end.to raise_error(JWT::DecodeError)
+      end
+
+      it 'raises an ArgumentError when both a secret and a jwks are given' do
+        encoded_message = JWT.encode(payload, private_key, 'ES256', { kid: kid })
+
+        expect do
+          test_class.decode_jwt(encoded_message, 'a-secret', algorithm: 'ES256', jwks: jwks)
+        end.to raise_error(ArgumentError, 'jwt_secret and jwks are mutually exclusive; pass only one')
       end
     end
   end

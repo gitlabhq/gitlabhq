@@ -3,6 +3,7 @@ import { GlDisclosureDropdown, GlDisclosureDropdownGroup, GlTooltipDirective } f
 import { __ } from '~/locale';
 
 export default {
+  name: 'DownloadDropdown',
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,

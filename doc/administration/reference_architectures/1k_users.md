@@ -34,7 +34,7 @@ For a full list of reference architectures, see
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
 1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#supported-machine-types) for more information.
-2. For GCP, the closest and equivalent standard machine type has been selected that matches the recommended requirement of 8 vCPU and 16 GB of RAM. A [custom machine type](https://cloud.google.com/compute/docs/instances/creating-instance-with-custom-machine-type) can also be used if desired.
+2. For GCP, the closest and equivalent standard machine type has been selected that matches the recommended requirement of 8 vCPU and 16 GB of RAM. A [custom machine type](https://docs.cloud.google.com/compute/docs/instances/creating-instance-with-custom-machine-type) can also be used if desired.
 <!-- markdownlint-enable MD029 -->
 
 The following diagram shows that while GitLab can be installed on a single server, it is internally composed of multiple services. When an instance scales, these services are separated and independently scaled according to their specific demands.

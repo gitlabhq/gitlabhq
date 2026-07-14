@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe Gitlab::Patch::RedisClient, feature_category: :redis do
   include RedisHelpers
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:redis_store_class, freeze: false) { define_helper_redis_store_class }
   let_it_be(:redis_client, freeze: false) { RedisClient.new(redis_store_class.params) }
 

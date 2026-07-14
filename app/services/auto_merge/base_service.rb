@@ -12,6 +12,7 @@ module AutoMerge
       end
 
       notify(merge_request)
+      execute_merge_request_hooks(merge_request)
       AutoMergeProcessWorker.perform_async({ 'merge_request_id' => merge_request.id })
 
       strategy.to_sym
@@ -32,28 +33,20 @@ module AutoMerge
       strategy.to_sym
     end
 
-    def cancel(merge_request)
-      ApplicationRecord.transaction do
-        clear_auto_merge_parameters!(merge_request)
-        yield if block_given?
-      end
+    def cancel(merge_request, &block)
+      response = clear_auto_merge(merge_request, error_message: "Can't cancel the automatic merge", &block)
 
-      success
-    rescue StandardError => e
-      track_exception(e, merge_request)
-      error("Can't cancel the automatic merge", 406)
+      # Fire the update webhook only on a successful, user-initiated cancellation.
+      # abort delegates to clear_auto_merge too but intentionally skips this:
+      # aborts are system-initiated, so a plain 'update' event would misattribute
+      # the change to current_user.
+      execute_merge_request_hooks(merge_request) if response[:status] == :success
+
+      response
     end
 
-    def abort(merge_request, reason)
-      ApplicationRecord.transaction do
-        clear_auto_merge_parameters!(merge_request)
-        yield if block_given?
-      end
-
-      success
-    rescue StandardError => e
-      track_exception(e, merge_request)
-      error("Can't abort the automatic merge", 406)
+    def abort(merge_request, reason, &block)
+      clear_auto_merge(merge_request, error_message: "Can't abort the automatic merge", &block)
     end
 
     def available_for?(merge_request)
@@ -94,6 +87,14 @@ module AutoMerge
     # Overridden in child classes
     def notify(merge_request); end
 
+    # Fires outside the transaction so the DB state is committed before
+    # external consumers receive the event.
+    def execute_merge_request_hooks(merge_request)
+      MergeRequests::BaseService
+        .new(project: merge_request.project, current_user: current_user)
+        .execute_hooks(merge_request, 'update')
+    end
+
     def strategy
       strong_memoize(:strategy) do
         self.class.name.demodulize.remove('Service').underscore
@@ -107,13 +108,32 @@ module AutoMerge
       merge_request.save!
     end
 
+    def clear_auto_merge(merge_request, error_message:, &block)
+      ApplicationRecord.transaction do
+        clear_auto_merge_parameters!(merge_request)
+        yield if block
+      end
+
+      success
+    rescue StandardError => e
+      track_exception(e, merge_request)
+      error(error_message, 406)
+    end
+
     def clear_auto_merge_parameters!(merge_request)
       merge_request.auto_merge_enabled = false
       merge_request.merge_user = nil
 
       merge_request.clear_merge_params(clearable_auto_merge_parameters)
 
+      # Clearing auto-merge parameters must succeed even when the merge request is
+      # otherwise broken (e.g. its fork relationship is gone), so we relax the
+      # structural validations that are irrelevant to disabling auto-merge. The flag
+      # is reset afterwards so any later use of this in-memory object validates normally.
+      merge_request.allow_broken = true
       merge_request.save!
+    ensure
+      merge_request.allow_broken = false
     end
 
     # Overridden in EE child classes

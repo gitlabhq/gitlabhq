@@ -121,6 +121,70 @@ RSpec.describe QA::Runtime::Env do
     end
   end
 
+  describe '.runner_gitlab_url' do
+    context 'when QA_RUNNER_GITLAB_URL is not set' do
+      before do
+        stub_env('QA_RUNNER_GITLAB_URL', nil)
+      end
+
+      it 'returns nil' do
+        expect(described_class.runner_gitlab_url).to be_nil
+      end
+    end
+
+    context 'when QA_RUNNER_GITLAB_URL is blank' do
+      before do
+        stub_env('QA_RUNNER_GITLAB_URL', '')
+      end
+
+      it 'returns nil' do
+        expect(described_class.runner_gitlab_url).to be_nil
+      end
+    end
+
+    context 'when QA_RUNNER_GITLAB_URL is set' do
+      before do
+        stub_env('QA_RUNNER_GITLAB_URL', 'http://host.docker.internal:3000')
+      end
+
+      it 'returns the value' do
+        expect(described_class.runner_gitlab_url).to eq('http://host.docker.internal:3000')
+      end
+    end
+  end
+
+  describe '.runner_clone_url' do
+    context 'when QA_RUNNER_CLONE_URL is not set' do
+      before do
+        stub_env('QA_RUNNER_CLONE_URL', nil)
+      end
+
+      it 'returns nil' do
+        expect(described_class.runner_clone_url).to be_nil
+      end
+    end
+
+    context 'when QA_RUNNER_CLONE_URL is blank' do
+      before do
+        stub_env('QA_RUNNER_CLONE_URL', '')
+      end
+
+      it 'returns nil' do
+        expect(described_class.runner_clone_url).to be_nil
+      end
+    end
+
+    context 'when QA_RUNNER_CLONE_URL is set' do
+      before do
+        stub_env('QA_RUNNER_CLONE_URL', 'http://192.168.65.2:3000')
+      end
+
+      it 'returns the value' do
+        expect(described_class.runner_clone_url).to eq('http://192.168.65.2:3000')
+      end
+    end
+  end
+
   describe '.github_access_token' do
     it 'returns "" if QA_GITHUB_ACCESS_TOKEN is not defined' do
       stub_env('QA_GITHUB_ACCESS_TOKEN', nil)

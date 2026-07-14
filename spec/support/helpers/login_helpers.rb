@@ -77,13 +77,10 @@ module LoginHelpers
   def submit_sign_in_form_for(user, remember: false, two_factor_auth: false, password: nil, visit: true)
     visit new_user_session_path if visit
 
+    # The visible login/password inputs only exist once the Vue sign-in form mounts
+    # (`app/assets/javascripts/authentication/sign_in/components/sign_in_form.vue`),
+    # so `fill_in` auto-waits for the form to be ready.
     fill_in "user_login", with: user.email
-
-    # When JavaScript is enabled, wait for the password field, with class `.js-password`,
-    # to be replaced by the Vue password component,
-    # `app/assets/javascripts/authentication/password/components/password_input.vue`.
-    expect(page).not_to have_selector('.js-password') if javascript_test?
-
     fill_in "user_password", with: password || user.password
 
     check 'user_remember_me' if remember
@@ -358,7 +355,7 @@ module LoginHelpers
   end
 
   def stub_omniauth_config(messages)
-    allow(Gitlab.config.omniauth).to receive_messages(GitlabSettings::Options.build(messages))
+    allow(Gitlab.config.omniauth).to receive_messages(Gitlab::Configs.build_options(messages))
   end
 
   def stub_basic_saml_config

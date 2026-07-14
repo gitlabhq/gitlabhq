@@ -12,7 +12,7 @@ RSpec.describe ServiceDesk::Emails, feature_category: :service_desk do
     shared_examples 'with incoming email address' do
       context 'when incoming email is enabled' do
         before do
-          config = double(::GitlabSettings::Settings, enabled: true, address: 'test+%{key}@mail.com') # rubocop: disable RSpec/VerifiedDoubles -- Settings defines methods dynamically
+          config = double(::Gitlab::Configs::Settings, enabled: true, address: 'test+%{key}@mail.com') # rubocop: disable RSpec/VerifiedDoubles -- Settings defines methods dynamically
           allow(::Gitlab.config).to receive(:incoming_email).and_return(config)
         end
 
@@ -23,7 +23,7 @@ RSpec.describe ServiceDesk::Emails, feature_category: :service_desk do
 
       context 'when incoming email is disabled' do
         before do
-          config = double(::GitlabSettings::Settings, enabled: false) # rubocop: disable RSpec/VerifiedDoubles -- Settings defines methods dynamically
+          config = double(::Gitlab::Configs::Settings, enabled: false) # rubocop: disable RSpec/VerifiedDoubles -- Settings defines methods dynamically
           allow(::Gitlab.config).to receive(:incoming_email).and_return(config)
         end
 
@@ -43,7 +43,7 @@ RSpec.describe ServiceDesk::Emails, feature_category: :service_desk do
 
     context 'when service_desk_email is enabled' do
       before do
-        config = double(::GitlabSettings::Settings, enabled: true, address: 'foo+%{key}@bar.com') # rubocop: disable RSpec/VerifiedDoubles -- Settings defines methods dynamically
+        config = double(::Gitlab::Configs::Settings, enabled: true, address: 'foo+%{key}@bar.com') # rubocop: disable RSpec/VerifiedDoubles -- Settings defines methods dynamically
         allow(::Gitlab::Email::ServiceDeskEmail).to receive(:config).and_return(config)
       end
 

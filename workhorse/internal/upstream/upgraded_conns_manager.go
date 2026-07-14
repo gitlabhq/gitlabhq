@@ -7,9 +7,10 @@ package upstream
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
-	"gitlab.com/gitlab-org/labkit/log"
+	"gitlab.com/gitlab-org/labkit/v2/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/shutdown"
 )
@@ -42,14 +43,18 @@ func (m *UpgradedConnsManager) Shutdown(period time.Duration) {
 	if timeoutSeconds < 0 {
 		timeoutSeconds = 0
 	}
-	log.WithFields(log.Fields{"shutdown_timeout_s": timeoutSeconds}).Infof("upgraded connections: shutdown initiated")
+
+	slog.Info(
+		"upgraded connections: shutdown initiated",
+		slog.Float64("shutdown_timeout_s", timeoutSeconds),
+	)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeoutSeconds)*time.Second) // lint:allow context.Background
 	defer cancel()
 
 	if err := shutdown.All(ctx, m.handlers...); err != nil {
-		log.WithError(err).Errorf("upgraded connections: failed to shut down gracefully %v", err)
+		slog.Error("upgraded connections: failed to shut down gracefully", log.Error(err))
 	}
 
-	log.Info("upgraded connections: shutting down")
+	slog.Info("upgraded connections: shutting down")
 }

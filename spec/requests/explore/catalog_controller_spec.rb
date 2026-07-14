@@ -7,7 +7,7 @@ RSpec.describe Explore::CatalogController, feature_category: :pipeline_compositi
   let_it_be(:project) { create(:project, namespace: namespace) }
   let_it_be(:catalog_resource) { create(:ci_catalog_resource, :published, project: project) }
 
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before_all do
     catalog_resource.project.add_reporter(user)

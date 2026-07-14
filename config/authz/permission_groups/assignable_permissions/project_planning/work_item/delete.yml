@@ -29,6 +29,7 @@ permissions:
   - delete_merge_request_note
   - delete_merge_request_note_award_emoji
   - delete_milestone
+  - delete_note
   - delete_related_epic_link
   - delete_snippet_award_emoji
   - delete_snippet_discussion_note

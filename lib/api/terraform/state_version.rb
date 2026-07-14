@@ -18,6 +18,10 @@ module API
       end
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        params do
+          requires :name, type: String, desc: 'The name of a Terraform state'
+          requires :serial, type: Integer, desc: 'The version number of the state'
+        end
         namespace ':id/terraform/state/:name/versions/:serial' do
           params do
             requires :name, type: String, desc: 'The name of a Terraform state'

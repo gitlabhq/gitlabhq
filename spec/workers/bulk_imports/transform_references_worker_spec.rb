@@ -3,22 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :importers do
-  let_it_be(:project, freeze: false) do
+  let_it_be_with_reload(:project) do
     project = create(:project)
     project.add_owner(user)
     project
   end
 
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:bulk_import, freeze: false) { create(:bulk_import) }
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:bulk_import) { create(:bulk_import) }
 
-  let_it_be(:entity, freeze: false) do
+  let_it_be_with_reload(:entity) do
     create(:bulk_import_entity, :project_entity, project: project, bulk_import: bulk_import,
       source_full_path: 'source/full/path')
   end
 
-  let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
-  let_it_be(:config, freeze: false) { create(:bulk_import_configuration, bulk_import: bulk_import, url: 'https://my.gitlab.com') }
+  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:config) { create(:bulk_import_configuration, bulk_import: bulk_import, url: 'https://my.gitlab.com') }
 
   let_it_be_with_refind(:issue) do
     create(:issue,
@@ -26,27 +26,27 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
       description: 'https://my.gitlab.com/source/full/path/-/issues/1')
   end
 
-  let_it_be(:merge_request, freeze: false) do
+  let_it_be(:merge_request) do
     create(:merge_request,
       source_project: project,
       description: 'https://my.gitlab.com/source/full/path/-/merge_requests/1 @source_username? @bob, @alice!')
   end
 
-  let_it_be(:issue_note, freeze: false) do
+  let_it_be(:issue_note) do
     create(:note,
       noteable: issue,
       project: project,
       note: 'https://my.gitlab.com/source/full/path/-/issues/1 @older_username, not_a@username, and @old_username.')
   end
 
-  let_it_be(:merge_request_note, freeze: false) do
+  let_it_be(:merge_request_note) do
     create(:note,
       noteable: merge_request,
       project: project,
       note: 'https://my.gitlab.com/source/full/path/-/merge_requests/1 @same_username')
   end
 
-  let_it_be(:system_note, freeze: false) do
+  let_it_be(:system_note) do
     create(:note,
       project: project,
       system: true,
@@ -219,7 +219,7 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
     include_examples 'transforms and saves references'
 
     context 'when the note includes a username' do
-      let_it_be(:object, freeze: false) do
+      let_it_be(:object) do
         create(:note,
           project: project,
           system: true,
@@ -245,7 +245,7 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
     # | @manuelgrabowski       | @manuelgrabowski-admin  |
     # |------------------------|-------------------------|
 
-    let_it_be(:object, freeze: false) do
+    let_it_be(:object) do
       create(:note,
         project: project,
         noteable: merge_request,
@@ -286,7 +286,7 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
   end
 
   context 'when a non-URI string that URI.extract considers a URI is returned' do
-    let_it_be(:note_with_bad_uri, freeze: false) do
+    let_it_be(:note_with_bad_uri) do
       create(
         :note,
         noteable: issue,

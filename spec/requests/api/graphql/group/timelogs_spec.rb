@@ -6,13 +6,13 @@ RSpec.describe 'Timelogs through GroupQuery', feature_category: :team_planning d
   include GraphqlHelpers
 
   describe 'Get list of timelogs from a group issues' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:group)     { create(:group) }
     let_it_be(:project)   { create(:project, :public, group: group) }
     let_it_be(:milestone) { create(:milestone, group: group) }
-    let_it_be(:issue, freeze: false)     { create(:issue, project: project, milestone: milestone) }
-    let_it_be(:timelog1, freeze: false)  { create(:timelog, issue: issue, user: user, spent_at: '2019-08-13 14:00:00') }
-    let_it_be(:timelog2, freeze: false)  { create(:timelog, issue: issue, user: user, spent_at: '2019-08-10 08:00:00') }
+    let_it_be_with_reload(:issue)     { create(:issue, project: project, milestone: milestone) }
+    let_it_be_with_reload(:timelog1)  { create(:timelog, issue: issue, user: user, spent_at: '2019-08-13 14:00:00') }
+    let_it_be(:timelog2)  { create(:timelog, issue: issue, user: user, spent_at: '2019-08-10 08:00:00') }
     let_it_be(:params)    { { startTime: '2019-08-10 12:00:00', endTime: '2019-08-21 12:00:00' } }
 
     let(:timelogs_data)   { graphql_data['group']['timelogs']['nodes'] }
@@ -20,8 +20,8 @@ RSpec.describe 'Timelogs through GroupQuery', feature_category: :team_planning d
     context 'when the project is private' do
       let_it_be(:group2)    { create(:group) }
       let_it_be(:project2)  { create(:project, :private, group: group2) }
-      let_it_be(:issue2, freeze: false)    { create(:issue, project: project2) }
-      let_it_be(:timelog3, freeze: false)  { create(:timelog, issue: issue2, spent_at: '2019-08-13 14:00:00') }
+      let_it_be_with_reload(:issue2)    { create(:issue, project: project2) }
+      let_it_be_with_reload(:timelog3)  { create(:timelog, issue: issue2, spent_at: '2019-08-13 14:00:00') }
 
       subject { post_graphql(query(full_path: group2.full_path), current_user: user) }
 

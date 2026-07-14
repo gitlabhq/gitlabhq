@@ -12,6 +12,7 @@ import DesignNoteSignedOut from '../design_notes/design_note_signed_out.vue';
 import DesignDescription from './design_description.vue';
 
 export default {
+  name: 'DesignSidebar',
   isLoggedIn: isLoggedIn(),
   components: {
     DesignDescription,

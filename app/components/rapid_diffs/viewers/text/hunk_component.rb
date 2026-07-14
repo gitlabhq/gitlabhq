@@ -102,19 +102,19 @@ module RapidDiffs
                       safe_join([*indicators, pre])
                     end
 
-          tag.td(content, class: css, data: { change: change, position: position })
+          tag.td(content, class: css, data: { change: change, position: position, gfm_source: true })
         end
 
         def line_coverage(line, position)
           return unless line_indicator_visible?(line, position)
 
-          tag.span('', class: 'has-tooltip', data: { line_coverage: line.new_pos })
+          tag.span('', class: 'has-tooltip', data: { line_coverage: line.new_pos, gfm_ignore: true })
         end
 
         def line_codequality(line, position)
           return unless line_indicator_visible?(line, position)
 
-          tag.div('', data: { line_codequality: line.new_pos })
+          tag.div('', data: { line_codequality: line.new_pos, gfm_ignore: true })
         end
 
         def line_indicator_visible?(line, position)

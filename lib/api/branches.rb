@@ -32,7 +32,7 @@ module API
       end
 
       def build_branches_finder(repository, params)
-        if params[:regex].present? || Feature.disabled?(:use_new_branches_finder_api, user_project)
+        if params[:search].present? || params[:regex].present? || Feature.disabled?(:use_new_branches_finder_api, user_project)
           BranchesFinder.new(repository, params)
         else
           Gitlab::Git::Finders::BranchesFinder.new(
@@ -99,6 +99,9 @@ module API
         render_api_error!('Regex is invalid', 400)
       end
 
+      params do
+        requires :branch, type: String, desc: 'The name of the branch'
+      end
       resource ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         params do
           requires :branch, type: String, desc: 'The name of the branch'

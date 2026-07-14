@@ -1,10 +1,15 @@
 <script>
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
-import { kebabCase } from 'lodash-es';
 import { s__ } from '~/locale';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import { InternalEvents } from '~/tracking';
 import { PLACES } from '~/vue_shared/global_search/constants';
 import { TRACKING_UNKNOWN_ID, TRACKING_UNKNOWN_PANEL } from '~/super_sidebar/constants';
+import { adminRootPath } from '~/lib/utils/path_helpers/admin';
+import { exploreRootPath } from '~/lib/utils/path_helpers/explore';
+import { profilePreferencesPath } from '~/lib/utils/path_helpers/profile';
+import { rootPath } from '~/lib/utils/path_helpers/routes';
+import { userSettingsProfilePath } from '~/lib/utils/path_helpers/user_settings';
 import {
   EVENT_CLICK_YOUR_WORK_IN_COMMAND_PALETTE,
   EVENT_CLICK_EXPLORE_IN_COMMAND_PALETTE,
@@ -28,6 +33,7 @@ export default {
     EXPLORE_TITLE: s__('GlobalSearch|Explore'),
     PROFILE_TITLE: s__('GlobalSearch|Profile'),
     PREFERENCES_TITLE: s__('GlobalSearch|Preferences'),
+    ADMIN_AREA_TITLE: s__('GlobalSearch|Admin area'),
   },
   components: {
     GlDisclosureDropdownGroup,
@@ -35,16 +41,29 @@ export default {
     SearchResultFocusLayover,
   },
   mixins: [trackingMixin],
-  inject: ['contextSwitcherLinks'],
-  emits: ['nothing-to-render'],
+  inject: {
+    showAdminAreaLink: { default: false },
+  },
   computed: {
-    shouldRender() {
-      return this.contextSwitcherLinks.length > 0;
+    contextSwitcherLinks() {
+      return [
+        ...(isLoggedIn() ? [{ title: this.$options.i18n.YOUR_WORK_TITLE, link: rootPath() }] : []),
+        { title: this.$options.i18n.EXPLORE_TITLE, link: exploreRootPath() },
+        ...(isLoggedIn()
+          ? [
+              { title: this.$options.i18n.PROFILE_TITLE, link: userSettingsProfilePath() },
+              { title: this.$options.i18n.PREFERENCES_TITLE, link: profilePreferencesPath() },
+            ]
+          : []),
+        ...(this.showAdminAreaLink
+          ? [{ title: this.$options.i18n.ADMIN_AREA_TITLE, link: adminRootPath() }]
+          : []),
+      ];
     },
     group() {
       return {
         name: this.$options.i18n.PLACES,
-        items: this.contextSwitcherLinks.map(({ title, link, ...rest }) => ({
+        items: this.contextSwitcherLinks.map(({ title, link }) => ({
           text: title,
           href: link,
           extraAttrs: {
@@ -62,21 +81,10 @@ export default {
 
             // this is helper class for popover-hint
             class: 'show-focus-layover',
-
-            // Any other data- attributes (e.g., for @rails/ujs)
-            ...Object.entries(rest).reduce((acc, [name, value]) => {
-              if (name.startsWith('data')) acc[kebabCase(name)] = value;
-              return acc;
-            }, {}),
           },
         })),
       };
     },
-  },
-  created() {
-    if (!this.shouldRender) {
-      this.$emit('nothing-to-render');
-    }
   },
   methods: {
     trackingTypes({ text }) {
@@ -108,12 +116,7 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown-group
-    v-if="shouldRender"
-    v-bind="$attrs"
-    :group="group"
-    @action="trackingTypes"
-  >
+  <gl-disclosure-dropdown-group v-bind="$attrs" :group="group" @action="trackingTypes">
     <gl-disclosure-dropdown-item
       v-for="item in group.items"
       :key="item.text"

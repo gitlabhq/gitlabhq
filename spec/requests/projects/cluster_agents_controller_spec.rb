@@ -11,7 +11,7 @@ RSpec.describe Projects::ClusterAgentsController, feature_category: :deployment_
     subject { get project_cluster_agent_path(project, cluster_agent.name) }
 
     context 'when user is unauthorized' do
-      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       before do
         project.add_reporter(user)

@@ -17,6 +17,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'PoliciesSelector',
   components: {
     GlCollapsibleListbox,
     GlFormRadioGroup,

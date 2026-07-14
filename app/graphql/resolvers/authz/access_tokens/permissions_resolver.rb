@@ -9,7 +9,16 @@ module Resolvers
         def resolve
           raise_resource_not_available_error! unless resource_available?
 
-          ::Authz::PermissionGroups::Assignable.available_definitions
+          # sorting categories and resources case-insensitively by display name.
+          ::Authz::PermissionGroups::Assignable.available_definitions.sort_by do |permission|
+            [
+              permission.category_name.to_s.downcase,
+              permission.category_name.to_s,
+              permission.resource_name.to_s.downcase,
+              permission.resource_name.to_s,
+              permission.action.to_s
+            ]
+          end
         end
 
         private

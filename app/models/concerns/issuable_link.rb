@@ -36,6 +36,7 @@ module IssuableLink
     validates :source, presence: true
     validates :target, presence: true
     validates :source, uniqueness: { scope: :target_id, message: 'is already related' }
+    validates_with Organizations::SameOrganizationValidator
     validate :check_self_relation
     validate :check_opposite_relation
     validate :validate_max_number_of_links, on: :create

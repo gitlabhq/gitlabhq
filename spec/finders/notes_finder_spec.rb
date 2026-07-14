@@ -3,18 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_planning do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, maintainers: user) }
 
   before do
-    project.add_maintainer(user)
     Current.organization = current_organization
   end
 
   describe '#execute' do
     context 'when notes filter is present' do
-      let!(:comment) { create(:note_on_issue, project: project) }
-      let!(:system_note) { create(:note_on_issue, project: project, system: true) }
+      let_it_be(:comment) { create(:note_on_issue, project: project) }
+      let_it_be(:system_note) { create(:note_on_issue, project: project, system: true) }
 
       it 'returns only user notes when using only_comments filter' do
         finder = described_class.new(user, project: project, notes_filter: UserPreference::NOTES_FILTERS[:only_comments], organization_id: current_organization.id)
@@ -74,7 +73,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     end
 
     context 'on restricted projects' do
-      let(:project) do
+      let_it_be(:project) do
         create(
           :project,
           :public,
@@ -110,11 +109,9 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     end
 
     context 'for notes on public issue in public project' do
-      let_it_be(:public_project) { create(:project, :public) }
       let_it_be(:guest_member) { create(:user) }
       let_it_be(:reporter_member) { create(:user) }
-      let_it_be(:guest_project_member) { create(:project_member, :guest, user: guest_member, project: public_project) }
-      let_it_be(:reporter_project_member) { create(:project_member, :reporter, user: reporter_member, project: public_project) }
+      let_it_be(:public_project) { create(:project, :public, guests: guest_member, reporters: reporter_member) }
       let_it_be(:internal_note) { create(:note_on_issue, project: public_project, internal: true) }
       let_it_be(:public_note) { create(:note_on_issue, project: public_project) }
 
@@ -133,7 +130,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
       subject(:finder) { described_class.new(user, project: project, organization_id: current_organization.id).execute }
 
       let_it_be(:banned_user) { create(:banned_user).user }
-      let!(:banned_note) { create(:note_on_issue, project: project, author: banned_user) }
+      let_it_be(:banned_note) { create(:note_on_issue, project: project, author: banned_user) }
 
       context 'when user is an admin' do
         let(:user) { create(:admin) }
@@ -153,9 +150,9 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     end
 
     context 'for target type' do
-      let(:project) { create(:project, :repository) }
-      let!(:note1) { create :note_on_issue, project: project }
-      let!(:note2) { create :note_on_commit, project: project }
+      let_it_be(:project) { create(:project, :repository, maintainers: user) }
+      let_it_be(:note1) { create :note_on_issue, project: project }
+      let_it_be(:note2) { create :note_on_commit, project: project }
 
       it 'finds only notes for the selected type' do
         notes = described_class.new(user, project: project, target_type: 'issue').execute
@@ -165,9 +162,9 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     end
 
     context 'for target' do
-      let(:project) { create(:project, :repository) }
-      let!(:note1) { create :note_on_commit, project: project }
-      let!(:note2) { create :note_on_commit, project: project }
+      let_it_be(:project) { create(:project, :repository, maintainers: user) }
+      let_it_be(:note1) { create :note_on_commit, project: project }
+      let_it_be_with_reload(:note2) { create :note_on_commit, project: project }
       let(:commit) { note1.noteable }
       let(:params) { { project: project, target_id: commit.id, target_type: 'commit', last_fetched_at: 1.hour.ago } }
 
@@ -215,8 +212,8 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
       end
 
       context 'confidential issue notes' do
-        let(:confidential_issue) { create(:issue, :confidential, project: project, author: user) }
-        let!(:confidential_note) { create(:note, noteable: confidential_issue, project: confidential_issue.project) }
+        let_it_be(:confidential_issue) { create(:issue, :confidential, project: project, author: user) }
+        let_it_be(:confidential_note) { create(:note, noteable: confidential_issue, project: confidential_issue.project) }
 
         let(:params) { { project: confidential_issue.project, target_id: confidential_issue.id, target_type: 'issue', last_fetched_at: 1.hour.ago } }
 
@@ -304,9 +301,9 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     end
 
     context 'for explicit target' do
-      let(:project) { create(:project, :repository) }
-      let!(:note1) { create :note_on_commit, project: project, created_at: 1.day.ago, updated_at: 2.hours.ago }
-      let!(:note2) { create :note_on_commit, project: project }
+      let_it_be(:project) { create(:project, :repository, maintainers: user) }
+      let_it_be(:note1) { create :note_on_commit, project: project, created_at: 1.day.ago, updated_at: 2.hours.ago }
+      let_it_be(:note2) { create :note_on_commit, project: project }
       let(:commit) { note1.noteable }
       let(:params) { { project: project, target: commit } }
 
@@ -345,8 +342,8 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
   end
 
   describe '.search' do
-    let(:project) { create(:project, :public) }
-    let(:note) { create(:note_on_issue, note: 'WoW', project: project) }
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:note) { create(:note_on_issue, note: 'WoW', project: project) }
 
     it 'returns notes with matching content' do
       expect(described_class.new(nil, project: note.project, search: note.note, organization_id: current_organization.id).execute).to eq([note])
@@ -363,9 +360,9 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     end
 
     context "confidential issues" do
-      let(:user) { create(:user) }
-      let(:confidential_issue) { create(:issue, :confidential, project: project, author: user) }
-      let(:confidential_note) { create(:note, note: "Random", noteable: confidential_issue, project: confidential_issue.project) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:confidential_issue) { create(:issue, :confidential, project: project, author: user) }
+      let_it_be(:confidential_note) { create(:note, note: "Random", noteable: confidential_issue, project: confidential_issue.project) }
 
       it "returns notes with matching content if user can see the issue" do
         expect(described_class.new(user, project: confidential_note.project, search: confidential_note.note, organization_id: current_organization.id).execute).to eq([confidential_note])
@@ -432,7 +429,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     end
 
     context 'for a commit target' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository, maintainers: user) }
       let(:commit) { project.commit }
       let(:params) { { project: project, target_type: 'commit', target_id: commit.id } }
 
@@ -452,8 +449,8 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     end
 
     context 'target_iid' do
-      let(:issue) { create(:issue, project: project) }
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+      let_it_be(:issue) { create(:issue, project: project) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
       it 'finds issues by iid' do
         iid_params = { project: project, target_type: 'issue', target_iid: issue.iid }

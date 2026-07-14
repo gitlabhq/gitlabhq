@@ -11,6 +11,9 @@ module API
       end
 
       namespace 'admin' do
+        params do
+          requires :id, type: Integer, desc: 'The batched background migration id'
+        end
         resources 'batched_background_migrations/:id' do
           desc 'Retrieve a batched background migration' do
             success ::API::Entities::BatchedBackgroundMigration
@@ -68,6 +71,9 @@ module API
           end
         end
 
+        params do
+          requires :id, type: Integer, desc: 'The batched background migration id'
+        end
         resources 'batched_background_migrations/:id/resume' do
           desc 'Resume a batched background migration' do
             success ::API::Entities::BatchedBackgroundMigration
@@ -103,6 +109,9 @@ module API
           end
         end
 
+        params do
+          requires :id, type: Integer, desc: 'The batched background migration id'
+        end
         resources 'batched_background_migrations/:id/pause' do
           desc 'Pause a batched background migration' do
             success ::API::Entities::BatchedBackgroundMigration

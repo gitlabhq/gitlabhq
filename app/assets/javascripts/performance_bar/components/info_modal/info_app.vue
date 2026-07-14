@@ -3,6 +3,7 @@ import { GlButton, GlModal } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'InfoApp',
   components: {
     GlButton,
     GlModal,

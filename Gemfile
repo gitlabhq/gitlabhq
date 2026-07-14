@@ -47,10 +47,14 @@ gem 'ffi', '~> 1.17.3', feature_category: :shared # rubocop:todo Gemfile/Missing
 gem 'openssl', '~> 3.3.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 gem 'gitlab-safe_request_store', path: 'gems/gitlab-safe_request_store', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'safe_zip', path: 'gems/safe_zip', feature_category: :job_artifacts
 
 # GitLab Monorepo Gems
 group :monorepo do
   gem 'gitlab-utils', path: 'gems/gitlab-utils', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+  gem 'gitlab-configs', path: 'gems/gitlab-configs', feature_category: :settings
+  gem 'gitlab-email_handler', path: 'gems/gitlab-email_handler', require: false,
+    feature_category: :service_desk
 end
 
 gem 'gitlab-backup-cli', path: 'gems/gitlab-backup-cli', require: 'gitlab/backup/cli', feature_category: :backup_restore
@@ -69,7 +73,7 @@ gem 'view_component', '~> 3.23.2', feature_category: :shared # rubocop:todo Gemf
 gem 'pg', '~> 1.6.1', feature_category: :database
 
 gem 'faraday', '~> 2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-gem 'faraday-retry', '~> 2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'faraday-retry', '~> 2.4', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 # Logger is a dependency of Faraday, but Logger 1.6.0 does not work with Chef.
 gem 'logger', '~> 1.7.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
@@ -80,7 +84,7 @@ gem 'declarative_policy', '~> 2.1.0', feature_category: :permissions
 gem 'gitlab-glaz', '~> 0.0.3', feature_category: :permissions
 
 # For source code paths mapping
-gem 'coverband', '6.2.0', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'coverband', '6.2.1', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Authentication libraries
 gem 'devise', '~> 4.9.3', feature_category: :system_access
@@ -95,7 +99,11 @@ gem 'ruby-saml', '~> 1.18', feature_category: :system_access
 gem 'omniauth-saml', '~> 2.2.1', feature_category: :system_access
 gem 'omniauth', '~> 2.1.0', feature_category: :system_access
 gem 'omniauth-auth0', '~> 3.1', feature_category: :system_access
-gem 'omniauth-azure-activedirectory-v2', '~> 2.0', feature_category: :system_access
+# Require the strategy directly to skip the gem's top-level entry file, which emits a
+# load-time deprecation warning about the upcoming rename to omniauth-entra-id.
+# See https://gitlab.com/gitlab-org/gitlab/-/work_items/604391.
+gem 'omniauth-azure-activedirectory-v2', '~> 2.0',
+  require: 'omniauth/strategies/azure_activedirectory_v2', feature_category: :system_access
 gem 'omniauth-alicloud', '~> 3.0.0', feature_category: :system_access
 gem 'omniauth-github', '2.0.1', feature_category: :system_access
 # See vendor/gems/omniauth-gitlab/README.md
@@ -159,11 +167,11 @@ else
   gem 'grape', '~> 2.0.0', feature_category: :api
 end
 
-gem 'grape-entity', '~> 1.0.1', feature_category: :api
+gem 'grape-entity', '~> 1.1.0', feature_category: :api
 gem 'grape-swagger', '~> 2.1.2', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.7.0', group: [:development, :test], feature_category: :api
 gem 'grape-path-helpers', '~> 2.0.1', feature_category: :api
-gem 'gitlab-grape-openapi', '~> 0.1', feature_category: :api
+gem 'gitlab-grape-openapi', '~> 0.2', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors', feature_category: :api
 
 # GraphQL API
@@ -184,7 +192,7 @@ gem 'gitlab-topology-service-client', '~> 0.1',
   feature_category: :cell
 
 # Duo Workflow
-gem 'gitlab-duo-workflow-service-client', '~> 0.8',
+gem 'gitlab-duo-workflow-service-client', '~> 0.10',
   path: 'vendor/gems/gitlab-duo-workflow-service-client',
   feature_category: :duo_agent_platform
 
@@ -251,9 +259,9 @@ gem 'seed-fu', '~> 2.3.7', feature_category: :shared # rubocop:todo Gemfile/Miss
 gem 'elasticsearch-model', '~> 7.2', feature_category: :global_search
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation', feature_category: :global_search
 gem 'elasticsearch-api', '7.17.11', feature_category: :global_search
-gem 'aws-sdk-core', '~> 3.250.0', feature_category: :global_search
+gem 'aws-sdk-core', '~> 3.252.0', feature_category: :global_search
 gem 'aws-sdk-cloudformation', '~> 1', feature_category: :global_search
-gem 'aws-sdk-s3', '~> 1.224.0', feature_category: :global_search
+gem 'aws-sdk-s3', '~> 1.226.0', feature_category: :global_search
 gem 'faraday-typhoeus', '~> 1.1', feature_category: :global_search
 gem 'faraday_middleware-aws-sigv4', '~> 1.0.1', feature_category: :global_search
 # Used with Elasticsearch to support http keep-alive connections
@@ -264,7 +272,7 @@ gem 'gitlab-active-context', path: 'gems/gitlab-active-context', require: 'activ
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.14.3', feature_category: :markdown
-gem 'gitlab-markup', '~> 2.0.0', require: 'github/markup', feature_category: :markdown
+gem 'gitlab-markup', '~> 2.1.0', require: 'github/markup', feature_category: :markdown
 gem 'commonmarker', '~> 0.23.10', feature_category: :markdown
 gem 'kramdown', '~> 2.5.0', feature_category: :markdown
 gem 'RedCloth', '~> 4.3.3', feature_category: :markdown
@@ -348,7 +356,7 @@ gem 'connection_pool', '~> 2.5.3', feature_category: :shared # rubocop:todo Gemf
 gem 'redis-actionpack', '~> 5.5.0', feature_category: :redis
 
 # Jira integration
-gem 'jira-ruby', '~> 2.3.0', feature_category: :integrations
+gem 'jira-ruby', '~> 3.2.0', feature_category: :integrations
 gem 'atlassian-jwt', '~> 0.2.1', feature_category: :integrations
 
 # Slack integration
@@ -388,7 +396,7 @@ gem 'rack-proxy', '~> 0.7.7', feature_category: :shared # rubocop:todo Gemfile/M
 gem 'cssbundling-rails', '1.4.3', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'terser', '1.0.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-gem 'click_house-client', '0.10.0', feature_category: :database
+gem 'click_house-client', '0.11.0', feature_category: :database
 gem 'addressable', '~> 2.8', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'gon', '~> 6.5.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'request_store', '~> 1.7.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
@@ -409,9 +417,12 @@ gem 'pg_query', '~> 6.2.0', feature_category: :database
 
 gem 'gitlab-schema-validation', path: 'gems/gitlab-schema-validation', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'gitlab-http', path: 'gems/gitlab-http', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'gitlab-bitbucket', path: 'gems/gitlab-bitbucket', require: 'bitbucket', feature_category: :importers
+gem 'gitlab-bitbucket-server', path: 'gems/gitlab-bitbucket-server',
+  require: 'bitbucket_server', feature_category: :importers
 
 gem 'premailer-rails', '~> 1.12.0', feature_category: :notifications
-gem 'gitlab-labkit', '~> 2.6.0', feature_category: :error_budgets
+gem 'gitlab-labkit', '~> 2.7.0', feature_category: :error_budgets
 gem 'thrift', '~> 0.22.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # I18n
@@ -439,7 +450,7 @@ gem 'snowplow-tracker', '~> 0.8.0', feature_category: :product_analytics
 
 # Metrics
 gem 'webrick', '~> 1.9.0', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-gem 'prometheus-client-mmap', '~> 1.5.0', require: 'prometheus/client', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'prometheus-client-mmap', '~> 1.6.0', require: 'prometheus/client', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Event-driven reactor for Ruby
 # Required manually in config/initializers/require_async_gem
@@ -511,9 +522,9 @@ group :development do
 
   gem 'ruby-lsp-rspec', "~> 0.1.28", require: false, feature_category: :tooling
 
-  gem 'gdk-toogle', '~> 0.9', '>= 0.9.5', require: 'toogle', feature_category: :tooling
+  gem 'gdk-toogle', '~> 1.0', require: 'toogle', feature_category: :tooling
 
-  gem 'grpc-tools', '~> 1.80.0', feature_category: :system_access
+  gem 'grpc-tools', '~> 1.81.0', feature_category: :system_access
 
   # Used by
   # * `lib/tasks/gitlab/security/update_banned_ssh_keys.rake`
@@ -527,7 +538,7 @@ group :development, :test do
   gem 'parser', '= 3.3.11.1', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
   gem 'pry-byebug', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
   gem 'pry-rails', '~> 0.3.9', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-  gem 'pry-shell', '~> 0.6.4', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+  gem 'pry-shell', '~> 0.7.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
   gem 'amazing_print', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
@@ -542,7 +553,7 @@ group :development, :test do
   gem 'spring-commands-rspec', '~> 1.0.4', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
   gem 'gitlab-styles', '~> 14.1', feature_category: :tooling, require: false
-  gem 'haml_lint', '~> 0.58', feature_category: :tooling, require: false
+  gem 'haml_lint', '~> 0.75', feature_category: :tooling, require: false
 
   # Benchmarking & profiling
   gem 'benchmark-ips', '~> 2.14.0', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
@@ -567,7 +578,7 @@ group :development, :test do
   gem 'yard', '~> 0.9', require: false, feature_category: :tooling
 
   # Gems required for Dangerfile
-  gem 'gitlab-dangerfiles', '~> 4.11.1', require: false, feature_category: :tooling
+  gem 'gitlab-dangerfiles', '~> 4.12.0', require: false, feature_category: :tooling
 
   # Gems required for code coverage
   gem 'simplecov', '~> 0.22', require: false, feature_category: :tooling
@@ -600,13 +611,13 @@ group :test do
   gem 'test-prof', '~> 1.6.0', feature_category: :tooling
   gem 'rspec_junit_formatter', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
   gem 'guard-rspec', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-  gem 'axe-core-rspec', '~> 4.10.0', feature_category: :tooling
+  gem 'axe-core-rspec', '~> 4.12.0', feature_category: :tooling
   gem 'state_machines-rspec', '~> 0.6', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-  gem 'gitlab_quality-test_tooling', '~> 3.16.0', require: false, feature_category: :tooling
+  gem 'gitlab_quality-test_tooling', '~> 3.20.1', require: false, feature_category: :tooling
 
   # Test execution result export
   gem 'gitlab-rspec-metrics-exporter', '~> 0.2.0', require: false, feature_category: :tooling
@@ -616,7 +627,7 @@ gem 'octokit', '~> 9.0', feature_category: :importers
 # Needed by octokit: https://github.com/octokit/octokit.rb/pull/1688
 gem 'faraday-multipart', '~> 1.0', feature_category: :importers
 
-gem 'gitlab-mail_room', '~> 1.0.0', require: 'mail_room', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'gitlab-mail_room', '~> 1.1.0', require: 'mail_room', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 gem 'email_reply_trimmer', '~> 0.1', feature_category: :team_planning
 gem 'html2text', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
@@ -648,10 +659,10 @@ gem 'spamcheck', '~> 1.3.0', feature_category: :insider_threat
 gem 'gitaly', '~> 19.0', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
-gem 'gitlab-kas-grpc', '~> 19.1.0-rc2', feature_category: :deployment_management
+gem 'gitlab-kas-grpc', '~> 19.2.0-rc1', feature_category: :deployment_management
 
 # Knowledge Graph GRPC protocol definitions
-gem 'gitlab-gkg-proto', '~> 0.37.0', feature_category: :knowledge_graph
+gem 'gitlab-gkg-proto', '~> 0.87.0', feature_category: :knowledge_graph
 
 gem 'grpc', '~> 1.81.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
@@ -664,11 +675,16 @@ gem 'flipper', '~> 1.3.6', feature_category: :shared # rubocop:todo Gemfile/Miss
 gem 'flipper-active_record', '~> 1.3.6', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'flipper-active_support_cache_store', '~> 1.3.6', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'unleash', '~> 3.2.2', feature_category: :feature_flags # https://docs.gitlab.com/operations/feature_flags/
-gem 'gitlab-experiment', '~> 1.5.0', feature_category: :acquisition
+gem 'gitlab-experiment', '~> 1.6.0', feature_category: :acquisition
 
 # Structured logging
 gem 'lograge', '~> 0.5', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-gem 'grape_logging', '~> 1.8', '>= 1.8.4', feature_category: :api
+
+if next?
+  gem 'grape_logging', '~> 3.0', feature_category: :api
+else
+  gem 'grape_logging', '~> 1.8', '>= 1.8.4', feature_category: :api
+end
 
 # DNS Lookup
 gem 'gitlab-net-dns', '~> 0.15.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
@@ -688,10 +704,12 @@ gem 'lru_redux', feature_category: :importers
 # `config/initializers/mail_starttls_patch.rb` has also been patched to
 # fix STARTTLS handling until https://github.com/mikel/mail/pull/1536 is
 # released.
-gem 'mail', '= 2.9.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-gem 'mail-smtp_pool', '~> 0.1.0', path: 'gems/mail-smtp_pool', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'mail', '= 2.9.0', feature_category: :notifications
+gem 'mail-smtp_pool', '~> 0.1.0', path: 'gems/mail-smtp_pool', require: false, feature_category: :notifications
 
-gem 'microsoft_graph_mailer', '~> 0.1.0', path: 'vendor/gems/microsoft_graph_mailer', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'microsoft_graph_mailer', '~> 0.1.0', path: 'vendor/gems/microsoft_graph_mailer',
+  require: false, feature_category: :notifications
+gem 'aws-actionmailer-ses', '~> 1', require: false, feature_category: :notifications
 
 # File encryption
 gem 'lockbox', '~> 1.4.0', feature_category: :continuous_integration
@@ -729,7 +747,7 @@ gem 'zstd-ruby', '~> 2.0', require: 'zstd-ruby', feature_category: :software_com
 gem 'arr-pm', '~> 0.0.12', feature_category: :package_registry
 
 # Remote Development
-gem 'devfile', '~> 0.5.1', feature_category: :workspaces
+gem 'devfile', '~> 0.5.3', feature_category: :workspaces
 gem 'hashdiff', '~> 1.2.0', feature_category: :workspaces
 
 # Apple plist parsing
@@ -747,6 +765,11 @@ gem "base64", "~> 0.2.0", feature_category: :shared # rubocop:todo Gemfile/Missi
 gem 'net-protocol', '~> 0.2.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem "nkf", "~> 0.2.0", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
+# NOTE: In Ruby 3.4 resolv-replace was moved out of the stdlib into a bundled gem.
+# It is required explicitly by the gitlab:artifacts:* rake tasks (lib/tasks/gitlab/artifacts/),
+# so `require: false` keeps it from globally replacing the DNS resolver at boot.
+gem "resolv-replace", "~> 0.2.0", require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+
 # This is locked to 0.6.0 because we patch Net::HTTP#connect in
 # gems/gitlab-http/lib/net_http/connect_patch.rb.
 # It can be upgraded but care must be taken to preserve the patch.
@@ -762,11 +785,11 @@ gem 'paper_trail', '~> 16.0', feature_category: :workspaces
 
 gem "i18n_data", "~> 0.13.1", feature_category: :system_access
 
-gem "gitlab-cloud-connector", "~> 1.51", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning
+gem "gitlab-cloud-connector", "~> 1.52", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning
 
 gem "gvltools", "~> 0.4.0", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-gem 'gitlab_query_language', '~> 0.28.0', feature_category: :integrations
+gem 'gitlab_query_language', '~> 0.29.0', feature_category: :integrations
 
 # standard Gem, version increase to resolve vulnerabilities
 gem "zlib", "~> 3.2", ">= 3.2.3", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/work_items/596593

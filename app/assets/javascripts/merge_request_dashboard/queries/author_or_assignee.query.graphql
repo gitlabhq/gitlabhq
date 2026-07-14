@@ -10,6 +10,7 @@ query requestingReviewAuthorOrAssignee(
   $not: MergeRequestsResolverNegatedParams
   $ignoredReviewerUsername: String
   $draft: Boolean
+  $updatedAt: Boolean = false
   $perPage: Int!
   $afterCursor: String
   $sort: MergeRequestSort = UPDATED_DESC

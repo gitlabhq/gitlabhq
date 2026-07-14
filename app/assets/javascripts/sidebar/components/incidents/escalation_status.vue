@@ -39,6 +39,7 @@ export default {
       },
     },
   },
+  emits: ['input'],
   computed: {
     statusDropdownOptions() {
       return this.$options.STATUS_LIST.map((status) => ({

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BlobHelper do
+RSpec.describe Gitlab::BlobHelper, feature_category: :source_code_management do
   include FakeBlobHelpers
 
   let(:project) { create(:project) }

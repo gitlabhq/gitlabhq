@@ -7,7 +7,7 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
   include AfterNextHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user)    { create(:user) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
   let_it_be(:jira_integration) { create(:jira_integration, project: project) }
 
   let(:integration) { jira_integration }
@@ -15,7 +15,6 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
 
   before do
     sign_in(user)
-    project.add_maintainer(user)
   end
 
   it_behaves_like Integrations::Actions do
@@ -225,8 +224,8 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
 
     context 'when the endpoint receives requests above the rate limit', :freeze_time do
       before do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits)
-          .and_return(project_testing_integration: { threshold: 1, interval: 1.minute })
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:project_testing_integration).and_return(1)
       end
 
       it 'prevents making test requests' do
@@ -336,7 +335,7 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
 
       context 'when param `inherit_from_id` is set to a group integration' do
         let_it_be(:group) { create(:group) }
-        let_it_be(:project) { create(:project, group: group) }
+        let_it_be(:project) { create(:project, group: group, maintainers: user) }
         let_it_be(:jira_integration) { create(:jira_integration, project: project) }
 
         let(:group_integration) do

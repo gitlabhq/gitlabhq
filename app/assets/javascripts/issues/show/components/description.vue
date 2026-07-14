@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlToast } from '@gitlab/ui';
 import Sortable from 'sortablejs';
@@ -35,6 +34,7 @@ import TaskListItemActions from './task_list_item_actions.vue';
 Vue.use(GlToast);
 
 export default {
+  name: 'ShowDescription',
   directives: {
     SafeHtml,
   },
@@ -80,6 +80,12 @@ export default {
       default: false,
     },
   },
+  emits: [
+    'saveDescription',
+    'taskListUpdateFailed',
+    'taskListUpdateStarted',
+    'taskListUpdateSucceeded',
+  ],
   data() {
     return {
       hasTaskListItemActions: false,

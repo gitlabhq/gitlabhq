@@ -10,6 +10,7 @@ const messageHtml = `<p>${s__(
 )}</p>`;
 
 export default {
+  name: 'UntrustUser',
   components: {
     GlDisclosureDropdownItem,
   },

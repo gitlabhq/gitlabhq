@@ -64,7 +64,7 @@ module API
         issue.subscribed?(options[:current_user], options[:project] || issue.project)
       end
 
-      expose :moved_to_id, documentation: { type: 'Integer', example: 1 }
+      expose :moved_to_id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :imported?, as: :imported, documentation: { type: 'Boolean', example: false }
       expose :imported_from, documentation: { type: 'String', example: 'github' }
       expose :service_desk_reply_to, documentation: { type: 'String', example: 'user@example.com' } do |issue|

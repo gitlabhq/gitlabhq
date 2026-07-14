@@ -67,26 +67,26 @@ module ActiveContext
           Ability.allowed?(user, :"read_#{object.to_ability_name}", object)
         end
 
-        def embedding_model_selector
+        def embedding_model_factory
           raise NotImplementedError
         end
 
         def current_indexing_embedding_model
           return nil if collection_record&.current_indexing_embedding_model.nil?
 
-          embedding_model_selector.for(collection_record.current_indexing_embedding_model)
+          embedding_model_factory.for(collection_record.current_indexing_embedding_model)
         end
 
         def next_indexing_embedding_model
           return nil if collection_record&.next_indexing_embedding_model.nil?
 
-          embedding_model_selector.for(collection_record.next_indexing_embedding_model)
+          embedding_model_factory.for(collection_record.next_indexing_embedding_model)
         end
 
         def search_embedding_model
           return nil if collection_record&.search_embedding_model.nil?
 
-          embedding_model_selector.for(collection_record.search_embedding_model, search: true)
+          embedding_model_factory.for(collection_record.search_embedding_model, search: true)
         end
 
         def indexing_embedding_models

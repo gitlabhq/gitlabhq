@@ -1,6 +1,7 @@
 import { omitBy, isNil } from 'lodash-es';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
+import { searchAutocompletePath } from '~/lib/utils/path_helpers/routes';
 import { FETCH_TYPES } from '../constants';
 import * as types from './mutation_types';
 
@@ -15,7 +16,7 @@ export const autocompleteQuery = ({ state, fetchType }) => {
     isNil,
   );
 
-  return `${state.autocompletePath}?${objectToQuery(query)}`;
+  return `${searchAutocompletePath()}?${objectToQuery(query)}`;
 };
 
 const doFetch = ({ commit, state, fetchType }) => {

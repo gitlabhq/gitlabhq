@@ -59,16 +59,7 @@ module Ci
           ServiceResponse.success(payload: pipeline)
         end
       else
-        Gitlab::OptimisticLocking.retry_lock(bridge,
-          name: 'create_downstream_pipeline_update_bridge_status_failure') do |subject|
-          subject.transaction do
-            messages = pipeline.errors.full_messages
-
-            subject.drop!(:downstream_pipeline_creation_failed)
-            create_downstream_error_messages(subject, messages)
-            ServiceResponse.error(payload: pipeline, message: messages)
-          end
-        end
+        drop_bridge!(bridge, pipeline)
       end
     rescue StateMachines::InvalidTransition => e
       error = Ci::Bridge::InvalidTransitionError.new(e.message)
@@ -78,6 +69,19 @@ module Ci
         bridge_id: bridge.id,
         downstream_pipeline_id: pipeline.id)
       ServiceResponse.error(payload: pipeline, message: e.message)
+    end
+
+    def drop_bridge!(bridge, pipeline)
+      messages = pipeline.errors.full_messages
+
+      Gitlab::OptimisticLocking.retry_lock(bridge,
+        name: 'create_downstream_pipeline_update_bridge_status_failure') do |subject|
+        subject.drop!(:downstream_pipeline_creation_failed)
+      end
+
+      create_downstream_error_messages(bridge, messages)
+
+      ServiceResponse.error(payload: pipeline, message: messages)
     end
 
     def create_downstream_error_messages(bridge, messages)

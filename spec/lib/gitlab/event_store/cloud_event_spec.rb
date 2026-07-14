@@ -42,6 +42,14 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
 
   subject(:cloud_event) { test_cloud_event_class.new(data: event_data) }
 
+  around do |example|
+    original_registry = described_class::REGISTRY.dup
+    example.run
+  ensure
+    described_class::REGISTRY.clear
+    described_class::REGISTRY.merge!(original_registry)
+  end
+
   describe '#initialize' do
     it 'creates a valid event' do
       expect(cloud_event).to be_a(described_class)
@@ -366,5 +374,215 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
       expect(decoded.text_data).to eq(proto.text_data)
       expect(decoded.attributes.keys).to match_array(proto.attributes.keys)
     end
+  end
+
+  describe '.register' do
+    it 'maps a type string to a CloudEvent subclass' do
+      described_class.register('com.example.x', test_cloud_event_class)
+
+      expect(described_class.lookup('com.example.x')).to eq(test_cloud_event_class)
+    end
+
+    it 'returns the registered class' do
+      expect(described_class.register('com.example.x', test_cloud_event_class)).to eq(test_cloud_event_class)
+    end
+
+    it 'rejects a non-String type' do
+      expect { described_class.register(:symbol, test_cloud_event_class) }
+        .to raise_error(ArgumentError, /type must be a String/)
+    end
+
+    it 'rejects a non-Class klass' do
+      expect { described_class.register('com.example.x', 'not a class') }
+        .to raise_error(ArgumentError, /must be a Gitlab::EventStore::CloudEvent subclass/)
+    end
+
+    it 'rejects a class that is not a CloudEvent subclass' do
+      expect { described_class.register('com.example.x', String) }
+        .to raise_error(ArgumentError, /must be a Gitlab::EventStore::CloudEvent subclass/)
+    end
+  end
+
+  describe '.lookup' do
+    it 'returns the registered class for a known type' do
+      described_class.register('com.example.x', test_cloud_event_class)
+
+      expect(described_class.lookup('com.example.x')).to eq(test_cloud_event_class)
+    end
+
+    it 'returns nil for an unregistered type' do
+      expect(described_class.lookup('com.example.never_registered')).to be_nil
+    end
+  end
+
+  describe '.from_proto' do
+    let(:registered_type) { 'com.gitlab.merge_requests.assigned_reviewers' }
+
+    before do
+      described_class.register(registered_type, test_cloud_event_class)
+    end
+
+    context 'when the type is registered' do
+      let(:proto) { cloud_event.to_proto }
+
+      subject(:result) { described_class.from_proto(proto) }
+
+      it 'returns an instance of the registered class' do
+        expect(result).to be_a(test_cloud_event_class)
+      end
+
+      it 'restores the required spec fields', :aggregate_failures do
+        expect(result.data[:id]).to eq(event_data[:id])
+        expect(result.data[:source]).to eq(event_data[:source])
+        expect(result.data[:specversion]).to eq(event_data[:specversion])
+        expect(result.data[:type]).to eq(event_data[:type])
+      end
+
+      it 'unwraps ce_string attributes', :aggregate_failures do
+        %i[datacontenttype dataschema gitlab_user_username subject time].each do |key|
+          expect(result.data[key]).to eq(event_data[key].to_s)
+        end
+      end
+
+      it 'unwraps ce_integer attributes', :aggregate_failures do
+        expect(result.data[:gitlab_user_id]).to eq(event_data[:gitlab_user_id])
+        expect(result.data[:gitlab_organization_id]).to eq(event_data[:gitlab_organization_id])
+      end
+
+      it 'JSON-decodes text_data into the payload' do
+        expect(result.event_data).to eq(event_data[:data])
+      end
+    end
+
+    context 'when text_data is empty' do
+      let(:empty_payload_type) { 'com.gitlab.merge_requests.empty' }
+
+      let(:empty_payload_class) do
+        Class.new(described_class) do
+          event_category :merge_requests
+          event_type :empty
+
+          def data_schema
+            { 'type' => 'object' }
+          end
+        end
+      end
+
+      let(:empty_payload_event) do
+        empty_payload_class.new(data: event_data.merge(type: empty_payload_type, data: {}))
+      end
+
+      before do
+        described_class.register(empty_payload_type, empty_payload_class)
+      end
+
+      it 'decodes an empty text_data into an empty payload' do
+        proto = empty_payload_event.to_proto
+        proto.text_data = ''
+
+        expect(described_class.from_proto(proto).event_data).to eq({})
+      end
+    end
+
+    context 'when the type is not registered' do
+      let(:proto) { build_proto_event(type: 'com.example.never_registered') }
+
+      it 'raises UnknownCloudEventTypeError' do
+        expect { described_class.from_proto(proto) }
+          .to raise_error(described_class::UnknownCloudEventTypeError,
+            /no registered class for CloudEvent type/)
+      end
+    end
+
+    context 'when the payload uses binary_data' do
+      let(:proto) { build_proto_event(type: registered_type, binary_data: 'some bytes') }
+
+      it 'raises UnsupportedPayloadError' do
+        expect { described_class.from_proto(proto) }
+          .to raise_error(described_class::UnsupportedPayloadError, /only text_data is supported/)
+      end
+    end
+
+    context 'when an attribute uses an unsupported variant' do
+      let(:proto) do
+        build_proto_event(
+          type: registered_type,
+          attributes: { 'subject' => attribute_value(ce_boolean: true) }
+        )
+      end
+
+      it 'raises UnsupportedPayloadError' do
+        expect { described_class.from_proto(proto) }
+          .to raise_error(described_class::UnsupportedPayloadError, /unsupported attribute variant/)
+      end
+    end
+
+    context 'when the proto is missing a required attribute' do
+      let(:proto) do
+        full = cloud_event.to_proto
+        full.attributes.delete('subject')
+        full
+      end
+
+      it 'raises InvalidEvent from schema validation' do
+        expect { described_class.from_proto(proto) }
+          .to raise_error(Gitlab::EventStore::InvalidEvent)
+      end
+    end
+
+    context 'when the attributes map smuggles required spec fields' do
+      let(:proto) do
+        full = cloud_event.to_proto
+        full.attributes['id'] = attribute_value(ce_string: 'smuggled')
+        full.attributes['type'] = attribute_value(ce_string: 'smuggled')
+        full
+      end
+
+      it 'keeps the explicitly-decoded spec fields', :aggregate_failures do
+        result = described_class.from_proto(proto)
+
+        expect(result.data[:id]).to eq(event_data[:id])
+        expect(result.data[:type]).to eq(event_data[:type])
+      end
+    end
+
+    context 'when round-tripping a real event through to_proto and from_proto' do
+      subject(:round_tripped) { described_class.from_proto(cloud_event.to_proto) }
+
+      it 'reconstructs an equivalent event', :aggregate_failures do
+        expect(round_tripped).to be_a(test_cloud_event_class)
+        expect(round_tripped.data[:type]).to eq(cloud_event.data[:type])
+        expect(round_tripped.event_category).to eq(cloud_event.event_category)
+        expect(round_tripped.event_type).to eq(cloud_event.event_type)
+        expect(round_tripped.event_data).to eq(cloud_event.event_data)
+      end
+
+      it 'preserves the attribute values', :aggregate_failures do
+        %i[
+          datacontenttype dataschema gitlab_organization_id gitlab_user_id
+          gitlab_user_username subject time
+        ].each do |key|
+          expect(round_tripped.data[key]).to eq(cloud_event.data[key])
+        end
+      end
+    end
+  end
+
+  def build_proto_event(
+    type:, id: SecureRandom.uuid, source: '/projects/1/merge_requests/1',
+    spec_version: '1.0', attributes: {}, text_data: nil, binary_data: nil)
+    Gitlab::Agent::Event::CloudEvent.new(
+      id: id,
+      source: source,
+      spec_version: spec_version,
+      type: type,
+      attributes: attributes,
+      text_data: text_data,
+      binary_data: binary_data
+    )
+  end
+
+  def attribute_value(**args)
+    Gitlab::Agent::Event::CloudEvent::CloudEventAttributeValue.new(**args)
   end
 end

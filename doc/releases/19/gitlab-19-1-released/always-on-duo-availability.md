@@ -9,8 +9,6 @@ categories: [ AI Abstraction Layer ]
 level: primary
 ---
 
-<!-- categories: AI Abstraction Layer -->
-
 Administrators can now set GitLab Duo to be always on for all projects in an entire instance or top-level group. When GitLab Duo is set to always on,
 group, subgroup, and project owners cannot turn off GitLab Duo, giving enterprises centralized AI governance for compliance and
 regulated environments.

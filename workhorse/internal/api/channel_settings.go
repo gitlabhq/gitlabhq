@@ -5,11 +5,12 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"net/url"
 
 	"github.com/gorilla/websocket"
-	"gitlab.com/gitlab-org/labkit/log"
+	"gitlab.com/gitlab-org/labkit/v2/log"
 )
 
 // ChannelSettings holds the configuration settings for establishing a websocket channel.
@@ -46,7 +47,7 @@ func (t *ChannelSettings) Dialer() *websocket.Dialer {
 
 	pool, err := x509.SystemCertPool()
 	if err != nil {
-		log.WithError(err).Print("failed to load system cert pool")
+		slog.Warn("failed to load system cert pool", log.Error(err))
 		pool = x509.NewCertPool()
 	}
 

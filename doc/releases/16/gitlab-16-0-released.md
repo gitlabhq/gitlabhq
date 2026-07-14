@@ -247,7 +247,7 @@ to improve efficiency and productivity across various GitLab features, all lever
 
 These AI-powered workflows boost efficiency and reduce cycle times in every phase of the software development lifecycle.
 
-Learn more about [AI-powered workflows](https://about.gitlab.com/solutions/ai/)
+Learn more about [AI-powered workflows](https://about.gitlab.com/gitlab-duo-agent-platform/)
 
 ### Code Suggestions improvements
 
@@ -396,7 +396,7 @@ These changes include a change to container names that was best done during a ma
 [releases notes for cert-manager 1.11](https://cert-manager.io/docs/release-notes/release-notes-1.11).
 - PostgreSQL 12 is no longer supported. The minimum required version is PostgreSQL 13, and support for PostgreSQL 14 is added.
 New chart installs of GitLab include PostgreSQL 14 by default, and upgrades must follow the steps for
-[upgrading the bundled PostgreSQL version](https://docs.gitlab.com/charts/installation/database_upgrade.html).
+[upgrading the bundled PostgreSQL version](https://docs.gitlab.com/charts/installation/database_upgrade/).
 - Updates to GitLab 16.0 include an update to the Redis subchart to version 16.13.2, including Redis 6.2.7.
 - We have removed the bundled Grafana chart. If you use the bundled Grafana, you must switch to the [newer chart version from Grafana Labs](https://artifacthub.io/packages/helm/grafana/grafana) or a Grafana Operator from a trusted provider.
 - GitLab 16.0 includes

@@ -63,6 +63,14 @@ RSpec.describe API::ClusterDiscovery, feature_category: :deployment_management d
       create_list(:cluster, 2, :provided_by_gcp, :group, :production_environment, groups: [subsubgroup1])
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_cluster do
+      let(:boundary_object) { group }
+      let(:user) { current_user }
+      let(:request) do
+        get api("/discover-cert-based-clusters", personal_access_token: pat), params: { group_id: group.id }
+      end
+    end
+
     context 'when user is not authorized' do
       let(:unauthorized_user) { create(:user) }
 

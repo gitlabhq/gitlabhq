@@ -92,12 +92,26 @@ module Observability
       errors.add(:o11y_service_user_email, I18n.t(:invalid, scope: 'valid_email.validations.email'))
     end
 
+    # Returns the group-level GITLAB_OBSERVABILITY_EXPORT CI variable.
+    # For personal (user) namespaces this always returns nil; use
+    # #observability_export_variable_for(project) instead.
     def gitlab_observability_export_variable
       return unless namespace.is_a?(Group)
 
       namespace.variables.by_key('GITLAB_OBSERVABILITY_EXPORT').first
     end
     strong_memoize_attr :gitlab_observability_export_variable
+
+    # Namespace-aware lookup: checks group variables for groups, project
+    # variables for personal namespaces. The +project+ argument is only
+    # required for personal namespaces and is ignored for groups.
+    def observability_export_variable_for(project = nil)
+      if namespace.is_a?(Group)
+        gitlab_observability_export_variable
+      elsif project
+        project.variables.by_key('GITLAB_OBSERVABILITY_EXPORT').first
+      end
+    end
 
     def provisioning?
       within_provisioning_window? || new_record?

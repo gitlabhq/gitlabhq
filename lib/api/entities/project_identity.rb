@@ -3,7 +3,7 @@
 module API
   module Entities
     class ProjectIdentity < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :description, documentation: { type: 'String', example: 'desc' }
       expose :name, documentation: { type: 'String', example: 'project1' }
       expose :name_with_namespace, documentation: { type: 'String', example: 'John Doe / project1' }

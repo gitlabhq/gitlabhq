@@ -23,16 +23,22 @@ module BulkImports
       @resolved_relation = portable.public_send(relation) # rubocop:disable GitlabSecurity/PublicSend
       @jid = jid
       @offline_export_id = offline_export_id
+      @config = FileTransfer.config_for(portable)
     end
 
     def execute
-      return finish_export! if batches_count == 0
+      return finish_export! unless resolved_relation.exists?
 
       log_export_restart if export.started? && export.batches.in_progress.present?
 
       start_export!
       export.batches.destroy_all # rubocop: disable Cop/DestroyAll
-      enqueue_batch_exports
+      exported_count = enqueue_batch_exports
+
+      # Record the totals that were actually enqueued. For the commit notes path, corrects the upfront
+      # count which includes notes on commits no longer reachable from the repository (which the CommitNotesBatcher
+      # does not export).
+      export.update!(total_objects_count: exported_count, batches_count: export.batches.count)
 
       FinishBatchedRelationExportWorker.perform_async(export.id)
     end
@@ -69,50 +75,73 @@ module BulkImports
       # rubocop:enable Performance/ActiveRecordSubtransactionMethods
     end
 
-    def objects_count
-      resolved_relation.count
-    end
-
-    def batches_count
-      objects_count.fdiv(batch_size).ceil
-    end
-
     def start_export!
       update_export!('start')
     end
 
     def finish_export!
-      update_export!('finish')
+      # Reached only when the relation is empty, so the totals are zero. Setting them explicitly
+      # avoids a count query and resets any stale totals from a previous export attempt.
+      update_export!('finish', total_objects_count: 0, batches_count: 0)
     end
 
-    def update_export!(event)
-      export.update!(
+    def update_export!(event, total_objects_count: nil, batches_count: nil)
+      attributes = {
         status_event: event,
-        total_objects_count: objects_count,
         batched: true,
-        batches_count: batches_count,
         jid: jid,
         error: nil
-      )
+      }
+
+      # total_objects_count and batches_count are NOT NULL columns, so only assign them when a
+      # value is given. The real totals are set after the batches are enqueued in #execute.
+      attributes[:total_objects_count] = total_objects_count unless total_objects_count.nil?
+      attributes[:batches_count] = batches_count unless batches_count.nil?
+
+      export.update!(attributes)
     end
 
-    # rubocop:disable Cop/InBatches
-    # rubocop:disable CodeReuse/ActiveRecord
     def enqueue_batch_exports
       batch_number = 0
+      exported_count = 0
 
-      resolved_relation.in_batches(of: batch_size) do |batch|
+      each_export_batch do |ids|
         batch_number += 1
-
+        exported_count += ids.size
         batch_id = find_or_create_batch(batch_number).id
-        ids = batch.pluck(batch.model.primary_key)
 
         Gitlab::Cache::Import::Caching.set_add(self.class.cache_key(export.id, batch_id), ids, timeout: CACHE_DURATION)
 
         RelationBatchExportWorker.perform_async(user.id, batch_id)
       end
+
+      exported_count
     end
-    # rubocop:enable Cop/InBatches
+
+    # rubocop:disable CodeReuse/ActiveRecord -- Export orchestration pages through relations and persists batch records directly
+    def each_export_batch(&block)
+      if export_commit_notes_via_repo?
+        ::Import::Export::Project::CommitNotesBatcher
+          .new(portable, batch_size: commit_notes_batch_size)
+          .each_commit_note_id_batch(&block)
+      else
+        resolved_relation.in_batches(of: batch_size) do |batch| # rubocop:disable Cop/InBatches -- Generic export pages arbitrary relations; each_batch needs a typed model with EachBatch
+          yield batch.pluck(batch.model.primary_key)
+        end
+      end
+    end
+
+    def export_commit_notes_via_repo?
+      config.commit_notes_export_via_git?(relation.to_s)
+    end
+
+    # Commit notes are small, so allow larger batches than the conservative
+    # `Gitlab::CurrentSettings.relation_export_batch_size` setting used for
+    # heavier relations. Still honor a larger configured
+    # `relation_export_batch_size` if set.
+    def commit_notes_batch_size
+      [batch_size, ::Import::Export::Project::CommitNotesBatcher::DEFAULT_BATCH_SIZE].max
+    end
 
     def find_or_create_batch(batch_number)
       export.batches.find_or_create_by!(batch_number: batch_number)

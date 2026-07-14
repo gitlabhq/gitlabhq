@@ -83,7 +83,7 @@ RSpec.shared_examples 'gitlab projects import validations' do |import_type:|
   end
 
   context 'when there is a project with the same path' do
-    let(:existing_project) { create(:project, namespace: namespace) }
+    let_it_be(:existing_project) { create(:project, namespace: namespace) }
     let(:path) { existing_project.path }
 
     it 'does not create the project' do
@@ -101,6 +101,46 @@ RSpec.shared_examples 'gitlab projects import validations' do |import_type:|
 
         expect(project).to be_valid
         expect(project).to be_persisted
+      end
+
+      # Only the temporary name is asserted here. The final rename back to the
+      # original name is handled by OverwriteProjectService, covered in
+      # spec/services/projects/overwrite_project_service_spec.rb.
+      it 'assigns a temporary name to avoid collisions on override' do
+        project = subject.execute
+
+        override_name = project.import_data.data.dig('override_params', 'name')
+        expect(override_name).to be_present
+        expect(override_name).not_to eq(existing_project.name)
+      end
+
+      context 'when project name is specified in import params' do
+        before do
+          import_params[:name] = existing_project.name
+        end
+
+        it 'assigns a temporary name to avoid collisions on override' do
+          project = subject.execute
+
+          override_name = project.import_data.data.dig('override_params', 'name')
+          expect(override_name).not_to eq(existing_project.name)
+        end
+      end
+
+      context 'when the project name equals its path' do
+        before do
+          import_params[:name] = path
+        end
+
+        # Guards the edge case where slug == name: the temporary name must still
+        # be unique within the namespace regardless of the provided name.
+        it 'assigns a temporary name to avoid collisions on override' do
+          project = subject.execute
+
+          override_name = project.import_data.data.dig('override_params', 'name')
+          expect(override_name).to be_present
+          expect(override_name).not_to eq(path)
+        end
       end
     end
   end

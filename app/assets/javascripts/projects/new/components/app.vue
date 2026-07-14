@@ -52,6 +52,7 @@ const PANELS = [
 ];
 
 export default {
+  name: 'NewApp',
   components: {
     NewNamespacePage,
     NewProjectPushTipPopover,
@@ -94,6 +95,11 @@ export default {
       default: '',
     },
     canImportProjects: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    showBuiltInProjectTemplates: {
       type: Boolean,
       required: false,
       default: true,
@@ -146,6 +152,7 @@ export default {
     :initial-breadcrumbs="initialBreadcrumbs"
     :panels="availablePanels"
     :jump-to-last-persisted-panel="hasErrors"
+    :show-built-in-project-templates="showBuiltInProjectTemplates"
     :title="s__('ProjectsNew|Create new project')"
     persistence-key="new_project_last_active_tab"
     @panel-change="resetProjectErrors"

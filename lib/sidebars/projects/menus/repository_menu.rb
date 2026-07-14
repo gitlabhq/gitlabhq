@@ -56,8 +56,8 @@ module Sidebars
             active_routes: { controller: %w[tree blob blame edit_tree new_tree find_file] },
             container_html_options: { class: 'shortcuts-tree' },
             item_id: :files,
-            description: _('Browse and manage your repository files.'),
-            library_icon: 'doc-text'
+            description: _('Browse and manage repository files and code'),
+            library_icon: 'repository'
           )
         end
 
@@ -71,7 +71,7 @@ module Sidebars
             active_routes: { controller: %w[commit commits] },
             item_id: :commits,
             container_html_options: { class: 'shortcuts-commits' },
-            description: _('View the commit history of your repository.'),
+            description: _('View commit history and changes'),
             library_icon: 'commit'
           )
         end
@@ -83,7 +83,7 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: :branches },
             item_id: :branches,
-            description: _('Manage the branches of your repository.'),
+            description: _('Manage project branches and branch protection'),
             library_icon: 'branch'
           )
         end
@@ -95,8 +95,8 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             item_id: :tags,
             active_routes: { controller: :tags },
-            description: _('Tag specific points in your repository history.'),
-            library_icon: 'label'
+            description: _('Create and manage release tags'),
+            library_icon: 'tag'
           )
         end
 
@@ -111,8 +111,8 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
             active_routes: { path: 'graphs#show' },
             item_id: :contributors,
-            description: _('See commit statistics for each contributor.'),
-            library_icon: 'users'
+            description: _('Track and view member contributions and activity'),
+            library_icon: 'contributor-analytics'
           )
         end
 
@@ -126,8 +126,8 @@ module Sidebars
             active_routes: { controller: :network },
             container_html_options: { class: 'shortcuts-network' },
             item_id: :graphs,
-            description: _('Visualize the branch and commit graph of your repository.'),
-            library_icon: 'chart'
+            description: _('Visualize repository commit history and branches'),
+            library_icon: 'repository-graph'
           )
         end
 
@@ -138,7 +138,7 @@ module Sidebars
             link: project_compare_index_path(context.project, from: context.project.repository.root_ref, to: context.current_ref),
             active_routes: { controller: :compare },
             item_id: :compare,
-            description: _('Compare changes between branches, tags, or commits.'),
+            description: _('Compare changes between revisions'),
             library_icon: 'comparison'
           )
         end

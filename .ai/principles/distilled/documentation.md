@@ -1,6 +1,6 @@
 ---
-source_checksum: d36ccbb0679c0fc2
-distilled_at_sha: 56d6e7df2193336003a2368db3b4c1ae9cb6f911
+source_checksum: fdddf765995a1dff
+distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -109,8 +109,7 @@ distilled_at_sha: 56d6e7df2193336003a2368db3b4c1ae9cb6f911
 
 ### Images and Screenshots
 
-- Resize wide or tall screenshots (width ≤ 1000 px, height ≤ 500 px).
-- Compress all PNG images to 100 KB or less on disk.
+- Resize wide or tall screenshots (width ≤ 1000 px, height ≤ 500 px); compress all PNG images to 100 KB or less on disk.
 - Use descriptive lowercase filenames; append the GitLab version in the format `_vX_Y` (e.g., `pipelines_v11_1.png`).
 - Place images in an `img/` subdirectory alongside the `.md` file.
 - Use PNG format; DO NOT use JPEG for screenshots.
@@ -140,6 +139,7 @@ distilled_at_sha: 56d6e7df2193336003a2368db3b4c1ae9cb6f911
 - Use cards only on top-level landing pages where cards are the only content.
 - DO NOT use Markdown emoji format (`:smile:`); use GitLab SVG icons instead.
 - When using SVG icons, place the icon after the label text in parentheses (e.g., `Select **Edit** ({{< icon name="pencil" >}})`).
+- Use glossary tooltips only for the first occurrence of a GitLab-specific term or unfamiliar term on a page; DO NOT use them for common terms, every instance of a term, or as a replacement for acronyms. Limit to five to ten tooltips per page.
 
 ### Videos and Demos
 
@@ -159,6 +159,35 @@ distilled_at_sha: 56d6e7df2193336003a2368db3b4c1ae9cb6f911
 - Start optional steps with "Optional." followed by a period.
 - Start recommended steps with "Recommended." followed by a period.
 - Use "Complete the fields" to summarize multiple self-explanatory fields in a single task step rather than documenting each field individually.
+
+### Metadata
+
+- Include `stage`, `group`, `info`, and `title` front matter on every documentation page.
+- Use the `title` metadata attribute to set the page H1; DO NOT add a Markdown `# H1` heading.
+- Add `gitlab_dedicated: no` (or `yes`) metadata when a page's GitLab Dedicated availability differs from its GitLab Self-Managed availability.
+- Add `availability_details: no` metadata on pages that purposely omit availability details.
+- Add `ignore_in_report: true` metadata to keep a page out of the global navigation; it excludes the page from the technical writing team's navigation report so the page is not prompted for a `navigation.yaml` entry.
+- Add a `description` metadata tag on top-level pages and REST API resource pages; start the description with an active verb for top-level pages.
+
+### Product Availability Details
+
+- Place availability details (`{{< details >}}` shortcode) at the top of the page (after front matter) when they apply to the whole page, or under the applicable section heading when they apply to a specific section.
+- Include tier (`Free, Premium, Ultimate` or subset), add-on (for GitLab Duo features only), offering (`GitLab.com`, `GitLab Self-Managed`, `GitLab Dedicated`, `GitLab Dedicated for Government`), and status (`Beta`, `Experiment`, or `Limited availability`) as applicable; DO NOT add a status entry for generally available features.
+- DO NOT add availability details to tutorials, tier-comparison pages, `/development` pages, or `/solutions` pages.
+- DO NOT repeat tier, offering, or status in a subheading's badge when it matches the parent topic's badge.
+- Place history notes (`{{< history >}}` shortcode) after the details block and immediately after the heading; start each entry with `-` and link to the related issue, MR, or epic when possible.
+- Remove history items and inline version references that refer to unsupported GitLab versions (current major version and two previous major versions are supported); when a new major version is about to be released, create removal MRs in advance but merge them only during that milestone.
+- For tools released on their own schedule (e.g., editor extensions, CLI tools), include both the GitLab version and the tool version in history entries with a link to the tool's release page; nest tool version entries under the related instance history item when both change together, or use `during the GitLab X.Y release` phrasing when the change is tool-only.
+- For GitLab Duo features available with self-hosted models, use the `{{< collapsible title="Model information" >}}` shortcode; DO NOT state that a feature is unavailable on self-hosted models unless necessary, and if you must, use "Not available on GitLab Duo with self-hosted models" without a link.
+- When documenting LLMs used by a GitLab Duo feature, include a link to the LLM and use separate entries for code generation vs. code completion or Amazon Q when they differ.
+
+### Deprecations and Removals
+
+- When deprecating a feature, add `(deprecated)` after the title, add a `> [!warning]` alert stating when it was deprecated and when it will be removed, and wrap the content in `<!-- remove_date: YYYY-MM-DD -->` HTML comments (set `remove_date` to three months after the planned removal release).
+- When removing a feature, change `(deprecated)` to `(removed)` in the title, remove all content except the deprecation/removal statement, set `remove_date` in metadata to three months after the removal release, and set `redirect_to` to a relevant replacement page.
+- After removing a page, edit `navigation.yaml` in `docs-gitlab-com` to remove the page's entry from the global navigation, update any links in the [Deprecations and Removals](https://docs.gitlab.com/update/deprecations/) YAML files, and run `bin/rake gitlab:docs:compile_deprecations`.
+- DO NOT follow the standard deprecation process for features that are not generally available; delete the content outright instead.
+- For features no longer actively developed but not deprecated, add a note under the topic title stating the feature is not under active development but community contributions are welcome.
 
 ### Documentation Workflow
 
@@ -212,4 +241,7 @@ For the full picture, see:
 
 - doc/development/documentation/styleguide/_index.md
 - doc/development/documentation/workflow.md
+- doc/development/documentation/styleguide/availability_details.md
+- doc/development/documentation/styleguide/deprecations_and_removals.md
+- doc/development/documentation/metadata.md
 

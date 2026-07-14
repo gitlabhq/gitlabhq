@@ -102,7 +102,8 @@ module Import
     def log_error(message)
       ::Import::Framework::Logger.error(
         message: 'Import failed due to a Fogbugz error',
-        error: message
+        error: message,
+        Labkit::Fields::GL_ORGANIZATION_ID => target_namespace.organization_id
       )
     end
   end

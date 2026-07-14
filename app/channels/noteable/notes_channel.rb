@@ -18,6 +18,9 @@ module Noteable
 
       return reject if noteable.nil?
 
+      boundary = ::Authz::Boundary.for(noteable.try(:resource_parent))
+      return reject if granular_authorization_denied?(boundaries: boundary, permissions: :read_note)
+
       stream_for noteable
     rescue ActiveRecord::RecordNotFound
       reject

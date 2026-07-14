@@ -5,6 +5,8 @@ FactoryBot.define do
     association :merge_request_diff
 
     relative_order { 0 }
+    # project_id { merge_request_diff.project_id || merge_request_diff.project&.id }
+    project_id { merge_request_diff.project_id }
 
     transient do
       commit_author { association(:merge_request_diff_commit_user) }
@@ -62,5 +64,6 @@ FactoryBot.define do
     relative_order { 0 }
 
     sha { OpenSSL::Digest::SHA256.hexdigest(SecureRandom.hex) }
+    project_id { merge_request_diff.project_id }
   end
 end

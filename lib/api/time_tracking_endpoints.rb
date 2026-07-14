@@ -53,9 +53,11 @@ module API
       issuable_name            = name.end_with?('Issues') ? 'issue' : 'merge_request'
       issuable_collection_name = issuable_name.pluralize
       issuable_key             = :"#{issuable_name}_iid"
+      issuable_human           = issuable_name.humanize(capitalize: false)
+      issuable_article         = issuable_human.match?(/\A[aeiou]/i) ? 'an' : 'a'
 
-      desc "Set a time estimate for a #{issuable_name}" do
-        detail "Sets an estimated time of work for this #{issuable_name}."
+      desc "Set the estimated time for #{issuable_article} #{issuable_human}" do
+        detail "Sets an estimated time of work for a specified #{issuable_human}."
         success Entities::IssuableTimeStats
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -82,8 +84,8 @@ module API
         end
       end
 
-      desc "Reset the time estimate for a project #{issuable_name}" do
-        detail "Resets the estimated time for this #{issuable_name} to 0 seconds."
+      desc "Reset the estimated time for #{issuable_article} #{issuable_human}" do
+        detail "Resets the estimated time for a specified #{issuable_human} to `0` seconds."
         success Entities::IssuableTimeStats
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -102,8 +104,8 @@ module API
         update_issuable(time_estimate: 0)
       end
 
-      desc "Add spent time for a #{issuable_name}" do
-        detail "Adds spent time for this #{issuable_name}."
+      desc "Add spent time for #{issuable_article} #{issuable_human}" do
+        detail "Adds spent time for a specified #{issuable_human}."
         success Entities::IssuableTimeStats
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -131,8 +133,8 @@ module API
         update_issuable(update_params)
       end
 
-      desc "Reset spent time for a #{issuable_name}" do
-        detail "Resets the total spent time for this #{issuable_name} to 0 seconds."
+      desc "Reset spent time for #{issuable_article} #{issuable_human}" do
+        detail "Resets the total spent time for a specified #{issuable_human} to `0` seconds."
         success Entities::IssuableTimeStats
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -151,8 +153,9 @@ module API
         update_issuable(spend_time: { duration: :reset, user_id: current_user.id })
       end
 
-      desc "Get time tracking stats" do
-        detail "Get time tracking stats"
+      desc "Retrieve time tracking stats for #{issuable_article} #{issuable_human}" do
+        detail "Retrieves time tracking stats for a specified #{issuable_human}, including time estimate and time " \
+          "spent in seconds and human-readable format (for example, `1h 30m`)."
         success Entities::IssuableTimeStats
         failure [
           { code: 401, message: 'Unauthorized' },

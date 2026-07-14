@@ -135,6 +135,36 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
         expect(described_class.link_type_closes).to contain_exactly(closes_issue1)
       end
     end
+
+    describe '.by_link_types' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:mentioned_row) do
+        create(:merge_requests_closing_issues,
+          issue: issue2, merge_request: merge_request,
+          link_type: :mentioned, from_mr_description: false)
+      end
+
+      let_it_be(:related_row) do
+        create(:merge_requests_closing_issues,
+          issue: issue1, merge_request: merge_request,
+          link_type: :related, from_mr_description: false)
+      end
+
+      where(:types, :expected) do
+        [:closes]                       | lazy { [closes_issue1] }
+        [:mentioned]                    | lazy { [mentioned_row] }
+        [:related]                      | lazy { [related_row] }
+        [:closes, :related]             | lazy { [closes_issue1, related_row] }
+        [:closes, :mentioned, :related] | lazy { [closes_issue1, mentioned_row, related_row] }
+      end
+
+      with_them do
+        it 'returns only the rows with the given link types' do
+          expect(described_class.by_link_types(types)).to match_array(expected)
+        end
+      end
+    end
   end
 
   describe '.count_for_issue / .count_for_collection (audit coverage)' do

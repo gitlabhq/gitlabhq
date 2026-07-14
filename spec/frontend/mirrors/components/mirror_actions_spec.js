@@ -52,13 +52,13 @@ describe('MirrorActions', () => {
       expect(findSyncButton().attributes('icon-classes')).toBe('');
     });
 
-    it('emits "sync" with mirror id on click', () => {
+    it('emits "sync" with { id, direction } on click', () => {
       const mirror = createMirror({ id: 7 });
       createComponent({ mirror });
 
       findSyncButton().vm.$emit('click');
 
-      expect(wrapper.emitted('sync')).toEqual([[7]]);
+      expect(wrapper.emitted('sync')).toEqual([[{ id: 7, direction: 'push' }]]);
     });
   });
 
@@ -84,13 +84,13 @@ describe('MirrorActions', () => {
       expect(findEnableButton().exists()).toBe(false);
     });
 
-    it('emits "toggle" with mirror id on click', () => {
+    it('emits "toggle" with { id, direction } on click', () => {
       const mirror = createMirror({ id: 7 });
       createComponent({ mirror });
 
       findDisableButton().vm.$emit('click');
 
-      expect(wrapper.emitted('toggle')).toEqual([[7]]);
+      expect(wrapper.emitted('toggle')).toEqual([[{ id: 7, direction: 'push' }]]);
     });
   });
 
@@ -101,13 +101,13 @@ describe('MirrorActions', () => {
       expect(findDeleteButton().exists()).toBe(true);
     });
 
-    it('emits "delete" with mirror id on click', () => {
+    it('emits "delete" with { id, direction } on click', () => {
       const mirror = createMirror({ id: 7 });
       createComponent({ mirror });
 
       findDeleteButton().vm.$emit('click');
 
-      expect(wrapper.emitted('delete')).toEqual([[7]]);
+      expect(wrapper.emitted('delete')).toEqual([[{ id: 7, direction: 'push' }]]);
     });
   });
 

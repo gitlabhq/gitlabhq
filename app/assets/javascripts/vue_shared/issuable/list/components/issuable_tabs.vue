@@ -4,6 +4,7 @@ import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { formatNumber } from '~/locale';
 
 export default {
+  name: 'IssuableTabs',
   components: {
     GlTabs,
     GlTab,

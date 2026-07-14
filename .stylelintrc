@@ -31,16 +31,11 @@
     {
       "files": [
         "app/assets/stylesheets/application_dark.scss",
+        "app/assets/stylesheets/_application_dark_overrides.scss",
         "app/assets/stylesheets/framework/**/*.scss"
       ],
       "rules": {
         "gitlab/no-gl-class": null
-      }
-    },
-    {
-      "files": ["app/assets/stylesheets/framework/application-chrome.scss"],
-      "rules": {
-        "gitlab/split-apply": null
       }
     },
     {

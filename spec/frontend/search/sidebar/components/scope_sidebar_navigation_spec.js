@@ -68,8 +68,7 @@ describe('ScopeSidebarNavigation', () => {
   const findNavElement = () => wrapper.findComponent('nav');
   const findNavItems = () => wrapper.findAllComponents(NavItem);
   const findNavItemActive = () => wrapper.find('[aria-current=page]');
-  const findNavItemActiveLabel = () =>
-    findNavItemActive().find('[data-testid="nav-item-link-label"]');
+  const findNavItemActiveLabel = () => findNavItemActive().find('[data-testid="nav-item-label"]');
 
   describe('when navigation render', () => {
     beforeEach(() => {

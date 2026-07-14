@@ -26,7 +26,7 @@ RSpec.describe BulkImports::FileDecompressionService, feature_category: :importe
     it 'decompresses specified file' do
       subject.execute
 
-      expect(File.exist?(File.join(tmpdir, ndjson_filename))).to eq(true)
+      expect(File.exist?(File.join(tmpdir, ndjson_filename))).to be(true)
       expect(File.open(ndjson_filepath, &:readline)).to include('title', 'description')
     end
 

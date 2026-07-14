@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :code_review_workflow do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:current_user, freeze: false) { create(:user) }
-  let_it_be(:merge_request, freeze: false) { create(:merge_request, reviewers: [current_user]) }
+  let_it_be_with_reload(:current_user) { create(:user) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request, reviewers: [current_user]) }
   let(:reviewer) { merge_request.merge_request_reviewers.find_by(user_id: current_user.id) }
   let(:project) { merge_request.project }
   let(:service) { described_class.new(project: project, current_user: current_user) }

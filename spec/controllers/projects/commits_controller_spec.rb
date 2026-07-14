@@ -3,16 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Projects::CommitsController, feature_category: :source_code_management do
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
-  let_it_be(:repository, freeze: false) { project.repository }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
-  before do
-    project.add_maintainer(user)
-  end
+  let(:repository) { project.repository }
 
   context 'unauthenticated user' do
-    let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
+    let_it_be_with_reload(:project) { create(:project, :repository, :public) }
 
     context 'GET show' do
       context 'without path' do
@@ -167,11 +164,10 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
       end
 
       context "valid branch, whitespace-only file that exists" do
-        let_it_be(:project, freeze: false) { create(:project, :repository) }
+        let_it_be_with_reload(:project) { create(:project, :repository, maintainers: user) }
         let(:id) { 'master/ ' }
 
         before do
-          project.add_maintainer(user)
           project.repository.create_file(
             user, ' ', 'content',
             message: 'Add file with space name', branch_name: 'master'

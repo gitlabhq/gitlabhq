@@ -11,18 +11,15 @@ RSpec.describe Sidebars::YourWork::Menus::ImportHistoryMenu, feature_category: :
 
     subject { described_class.new(context).render? }
 
-    where(:current_user, :bulk_import_enabled, :feature_flag_enabled, :result) do
-      nil  | true  | true  | false
-      user | false | false | false
-      user | true  | false | true
-      user | false | true  | true
-      user | true  | true  | true
+    where(:current_user, :bulk_import_enabled, :result) do
+      nil  | true  | false
+      user | false | false
+      user | true  | true
     end
 
     with_them do
       before do
         stub_application_setting(bulk_import_enabled: bulk_import_enabled)
-        stub_feature_flags(override_bulk_import_disabled: feature_flag_enabled)
       end
 
       it { is_expected.to eq(result) }

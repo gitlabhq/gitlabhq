@@ -1,0 +1,6 @@
+fragment CodeSuggestionsAcceptanceRateMetricItem on AiMetrics {
+  codeSuggestions {
+    acceptedCount
+    shownCount
+  }
+}

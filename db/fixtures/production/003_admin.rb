@@ -1,9 +1,17 @@
+if User.admins.exists?
+  puts Rainbow("Administrator account already exists, skipping creation.").yellow
+  return
+end
+
+organization = Gitlab::DatabaseImporters::AdminOrganizationImporter.organization_for_admin
+
 user_args = {
   email:    ENV['GITLAB_ROOT_EMAIL'].presence || "gitlab_admin_#{SecureRandom.hex(3)}@example.com",
   name:     'Administrator',
-  username: 'root',
+  username: ENV['GITLAB_ROOT_USERNAME'].presence ||
+    Gitlab::DatabaseImporters::AdminOrganizationImporter.default_username_for(organization),
   admin:    true,
-  organization_id: Organizations::Organization.default_organization.id,
+  organization_id: organization.id,
   organization_access_level: :owner
 }
 
@@ -24,7 +32,7 @@ if response.success?
 
   puts Rainbow("Administrator account created:").green
   puts
-  puts Rainbow("login:    root").green
+  puts Rainbow("login:    #{user.username}").green
 
   if user_args.key?(:password)
     if ::Settings.gitlab['display_initial_root_password']

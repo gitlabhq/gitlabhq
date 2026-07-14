@@ -1,0 +1,9 @@
+---
+name: create_security_scan
+description: Grants the ability to run security scans
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_security_scan

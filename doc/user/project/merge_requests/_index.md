@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI Coding
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Merge requests
@@ -37,6 +37,21 @@ When viewing a merge request, you see:
 - Mergeability reports.
 - Comments.
 - The list of commits.
+
+## Assignees and reviewers
+
+A merge request has two roles:
+
+- **Assignee**: Owns the merge request and is responsible for its progress.
+  The assignee is usually the author.
+- **Reviewer**: Reviews the changes and provides feedback.
+  A reviewer can request changes or, if eligible, approve the merge request.
+
+Your project's [approval rules and settings](approvals/_index.md) determine who can approve
+merge requests.
+
+For more information, see [assign an assignee](#assign-a-user-to-a-merge-request) and
+[request a reviewer](reviews/_index.md#request-a-review).
 
 ## Create a merge request
 
@@ -179,8 +194,8 @@ To filter by `Deployed before` or `Deployed after`, enter a deploy date manually
 If you have permission to add changes to a merge request, you can do so in several ways. The method to use depends on the complexity of your change, and whether you need access to a development
 environment:
 
-- [Edit changes in the Web IDE](../web_ide/_index.md) in your browser with the
-  <kbd>.</kbd> keyboard shortcut. Use this
+- [Edit changes in the Web IDE](../web_ide/_index.md) in your browser. Press <kbd>.</kbd> (period)
+  on any project page in GitLab to open the Web IDE. Use this
   browser-based method to edit multiple files, or if you are not comfortable with Git commands.
   You cannot run tests from the Web IDE.
 - [Edit changes in Ona](../../../integration/gitpod.md#launch-ona-in-gitlab), if you
@@ -472,7 +487,7 @@ Threads on unchanged lines and top-level resolvable threads are not resolved.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../../administration/feature_flags/_index.md) named `notifications_todos_buttons`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `notifications_todos_buttons`. Disabled by default.
 - [Issues, incidents](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133474), and [epics](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133881) also updated.
 
 {{< /history >}}

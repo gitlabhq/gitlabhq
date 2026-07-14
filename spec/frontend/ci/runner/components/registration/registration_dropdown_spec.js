@@ -271,7 +271,7 @@ describe('RegistrationDropdown', () => {
       const newToken = 'mock1';
 
       const resetToken = async () => {
-        findTokenResetDropdownItem().vm.$emit('tokenReset', newToken);
+        findTokenResetDropdownItem().vm.$emit('token-reset', newToken);
         await nextTick();
       };
 

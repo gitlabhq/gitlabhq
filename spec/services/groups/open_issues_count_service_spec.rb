@@ -38,7 +38,7 @@ RSpec.describe Groups::OpenIssuesCountService, :use_clean_rails_memory_store_cac
 
     context 'when user is provided' do
       context 'when user can read confidential issues' do
-        before do
+        before_all do
           group.add_planner(user)
         end
 
@@ -48,7 +48,7 @@ RSpec.describe Groups::OpenIssuesCountService, :use_clean_rails_memory_store_cac
       end
 
       context 'when user cannot read confidential issues' do
-        before do
+        before_all do
           group.add_guest(user)
         end
 

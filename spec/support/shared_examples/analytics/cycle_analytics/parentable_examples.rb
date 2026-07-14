@@ -3,6 +3,8 @@
 RSpec.shared_examples 'value stream analytics namespace models' do
   let(:factory_name) { nil }
 
+  let_it_be(:namespace_owner) { create(:user) }
+
   context 'when ProjectNamespace is given' do
     it 'is valid' do
       project_namespace = create(:project_namespace)
@@ -16,7 +18,7 @@ RSpec.shared_examples 'value stream analytics namespace models' do
 
   context 'when personal namespace is given' do
     it 'is valid' do
-      namespace = create(:namespace, owner: create(:user))
+      namespace = create(:namespace, owner: namespace_owner)
       model = build(factory_name, namespace: namespace)
 
       expect(model).to be_valid

@@ -43,6 +43,7 @@ export default {
       default: 'merge-request',
     },
   },
+  emits: ['click-link'],
   computed: {
     isLoading() {
       return !this.hasError && this.userItems === null;
@@ -110,7 +111,10 @@ export default {
           <gl-skeleton-loader :width="80" :lines="1" />
         </span>
         <span v-else data-testid="last-updated-at" class="gl-text-sm gl-text-subtle">
-          {{ lastUpdatedAt ? timeFormatted(lastUpdatedAt) : __('Just now') }}
+          <time v-if="lastUpdatedAt" :datetime="lastUpdatedAt">{{
+            timeFormatted(lastUpdatedAt)
+          }}</time>
+          <template v-else>{{ __('Just now') }}</template>
         </span>
       </div>
     </div>

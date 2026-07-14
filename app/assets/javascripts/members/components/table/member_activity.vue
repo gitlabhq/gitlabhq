@@ -3,6 +3,7 @@ import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import UserDate from '~/vue_shared/components/user_date.vue';
 
 export default {
+  name: 'MemberActivity',
   components: { UserDate, GlIcon },
   directives: {
     GlTooltip: GlTooltipDirective,

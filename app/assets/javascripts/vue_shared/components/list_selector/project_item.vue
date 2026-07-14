@@ -22,6 +22,7 @@ export default {
       default: false,
     },
   },
+  emits: ['delete', 'select'],
   computed: {
     deleteButtonLabel() {
       return sprintf(__('Delete %{name}'), { name: this.name });

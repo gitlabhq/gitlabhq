@@ -26,6 +26,14 @@ module Types
       description: 'ID of the project.',
       scopes: [:api, :read_api, :ai_workflows]
 
+    field :wiki_pages, Types::Wikis::WikiPageType.connection_type,
+      null: true,
+      resolver: Resolvers::Wikis::WikiPagesResolver,
+      description: 'Wiki pages of the project.',
+      experiment: { milestone: '19.2' },
+      connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
+      calls_gitaly: true
+
     field :ci_config_path_or_default, GraphQL::Types::String,
       null: false,
       description: 'Path of the CI configuration file.'
@@ -504,10 +512,7 @@ module Types
       type: Types::Ci::PipelineScheduleType.connection_type,
       null: true,
       description: 'Pipeline schedules of the project. This field can only be resolved for one project per request.',
-      resolver: Resolvers::Ci::ProjectPipelineSchedulesResolver,
-      directives: granular_scope_directive(
-        permissions: :read_pipeline_schedule, boundary: :itself, boundary_type: :project
-      )
+      resolver: Resolvers::Ci::ProjectPipelineSchedulesResolver
 
     field :pipeline_triggers,
       Types::Ci::PipelineTriggerType.connection_type,
@@ -816,10 +821,7 @@ module Types
     field :runners, Types::Ci::RunnerType.connection_type,
       null: true,
       resolver: ::Resolvers::Ci::ProjectRunnersResolver,
-      description: "Find runners visible to the current user.",
-      directives: granular_scope_directive(
-        permissions: :read_runner, boundary: :itself, boundary_type: :project
-      )
+      description: "Find runners visible to the current user."
 
     field :data_transfer, Types::DataTransfer::ProjectDataTransferType,
       null: true, # disallow null once data_transfer_monitoring feature flag is rolled-out! https://gitlab.com/gitlab-org/gitlab/-/issues/391682
@@ -1092,6 +1094,8 @@ module Types
     end
 
     def ci_config_variables(ref:, fail_on_cache_miss: false)
+      return unless ref.present? && ref_belongs_to_project?(ref)
+
       result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(ref)
 
       if result.nil? && fail_on_cache_miss
@@ -1103,6 +1107,15 @@ module Types
       result.map do |var_key, var_config|
         { key: var_key, **var_config }
       end
+    end
+
+    def ref_belongs_to_project?(ref)
+      return true if object.repository.branch_or_tag?(ref)
+
+      return false unless object.commit(ref)
+
+      repo = object.repository
+      repo.branch_names_contains(ref, limit: 1).any? || repo.tag_names_contains(ref, limit: 1).any?
     end
 
     def job(id:)

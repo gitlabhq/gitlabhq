@@ -54,7 +54,6 @@ export default {
         blobs: [],
       },
       isLoadingFiles: false,
-      isOverLimit: false,
       clickedShowMore: false,
       fetchCounter: 0,
     };
@@ -163,11 +162,6 @@ export default {
     normalizeData(key, data) {
       return this.entries[key].concat(data.nodes);
     },
-    hasNextPage(data) {
-      return []
-        .concat(data.trees.pageInfo, data.submodules.pageInfo, data.blobs.pageInfo)
-        .find(({ hasNextPage }) => hasNextPage);
-    },
     handleRowAppear(rowNumber) {
       if (window.gon?.show_commit_columns === false) {
         return;
@@ -206,7 +200,7 @@ export default {
       :loading-path="loadingPath"
       :has-more="hasShowMore"
       :commits="commits"
-      @showMore="handleShowMore"
+      @show-more="handleShowMore"
       @row-appear="handleRowAppear"
     />
     <file-preview v-if="readme" :blob="readme" />

@@ -18,7 +18,8 @@ module Resolvers
     argument :to_line, GraphQL::Types::Int,
       required: false,
       default_value: 1,
-      description: 'Range ending on the line. Cannot be smaller than `from_line` or greater than `from_line` + 100.'
+      description: 'Range ending on the line. Cannot be smaller than `from_line` or greater than or equal to ' \
+        '`from_line` + the maximum line range cap (1000 when `blame_line_range_cap_1000` is enabled, 100 otherwise).'
 
     alias_method :blob, :object
 
@@ -54,11 +55,17 @@ module Resolvers
       raise_greater_than_one unless args[:from_line] >= 1
       raise_greater_than_one unless args[:to_line] >= 1
 
-      return unless args[:to_line] < args[:from_line] || args[:to_line] >= args[:from_line] + 100
+      cap = line_range_cap
+      return unless args[:to_line] < args[:from_line] || args[:to_line] >= args[:from_line] + cap
 
       raise Gitlab::Graphql::Errors::ArgumentError,
-        '`to_line` must be greater than or equal to `from_line` and smaller than `from_line` + 100'
+        "`to_line` must be greater than or equal to `from_line` and smaller than `from_line` + #{cap}"
     end
+
+    def line_range_cap
+      Feature.enabled?(:blame_line_range_cap_1000, project) ? 1000 : 100
+    end
+    strong_memoize_attr :line_range_cap
 
     def raise_greater_than_one
       raise Gitlab::Graphql::Errors::ArgumentError,

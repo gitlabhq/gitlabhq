@@ -35,6 +35,7 @@ export default {
       required: true,
     },
   },
+  emits: ['close', 'remove-reviewer', 'request-review'],
   data() {
     return {
       reviewers: [],

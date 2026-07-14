@@ -7,16 +7,8 @@ module Projects
 
     SEARCH_LIMIT = 5
 
-    # Will be deprecated in favor of work_items when work_items_autocomplete FF is removed
     def issues
-      if ::Feature.enabled?(:work_items_autocomplete, current_user)
-        work_items
-      else
-        relation = IssuesFinder.new(current_user, project_id: project.id, state: 'opened').execute
-        relation = relation.gfm_autocomplete_search(params[:search]).limit(SEARCH_LIMIT) if params[:search]
-        relation
-          .select(:iid, :title, :namespace_id, :work_item_type_id)
-      end
+      work_items
     end
 
     def work_items

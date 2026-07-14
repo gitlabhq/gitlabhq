@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: AI Clients
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting GitLab Duo Chat
@@ -199,6 +199,12 @@ You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1003`.
 
 This error occurs when streaming response from AI Gateway failed. Try your request again.
+
+If a long response stops partway through with no error, a proxy, load balancer, or
+firewall might have cut the connection. For more information, see:
+
+- [Allow outbound connections from the GitLab instance to GitLab Duo](../../administration/gitlab_duo/configure/_index.md#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo).
+- [Responses are truncated without an error](../../administration/gitlab_duo_self_hosted/troubleshooting.md#responses-are-truncated-without-an-error) for GitLab Duo Self-Hosted.
 
 ### GitLab Duo Self-Hosted
 

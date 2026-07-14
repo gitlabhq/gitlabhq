@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'Querying CI template', feature_category: :continuous_integration do
@@ -42,7 +43,7 @@ RSpec.describe 'Querying CI template', feature_category: :continuous_integration
     it_behaves_like 'a working graphql query'
 
     it 'returns correct data' do
-      expect(graphql_data.dig('project', 'ciTemplate')).to eq(nil)
+      expect(graphql_data.dig('project', 'ciTemplate')).to be_nil
     end
   end
 end

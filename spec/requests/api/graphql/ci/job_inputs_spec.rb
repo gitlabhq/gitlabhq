@@ -126,6 +126,87 @@ RSpec.describe 'Query.project.job.inputs', feature_category: :continuous_integra
         expect(inputs.pluck('value')).to contain_exactly('production', true)
       end
     end
+
+    context 'when checking authorization' do
+      let(:job) { create(:ci_build, project: project) }
+
+      before do
+        create(:ci_job_input, job: job, project: project, name: 'secret_input', value: 'sensitive_value')
+      end
+
+      context 'when user is a reporter or above' do
+        let_it_be(:reporter) { create(:user) }
+
+        before_all do
+          project.add_reporter(reporter)
+        end
+
+        it 'returns the inputs', :aggregate_failures do
+          post_graphql(query, current_user: reporter)
+
+          inputs = graphql_data_at(:project, :job, :inputs)
+          expect(inputs).to be_an(Array)
+          expect(inputs.size).to eq(1)
+          expect(inputs.first['value']).to eq('sensitive_value')
+        end
+      end
+
+      context 'when user is a guest' do
+        let(:guest) { create(:user, guest_of: project) }
+
+        it 'returns null for inputs' do
+          post_graphql(query, current_user: guest)
+
+          expect(graphql_data_at(:project, :job, :inputs)).to be_nil
+        end
+      end
+
+      context 'when user is not a member' do
+        let(:non_member) { create(:user) }
+
+        it 'returns null for inputs' do
+          post_graphql(query, current_user: non_member)
+
+          expect(graphql_data_at(:project, :job, :inputs)).to be_nil
+        end
+      end
+
+      context 'when user is anonymous on a public project' do
+        let_it_be(:public_project) { create(:project, :public) }
+        let(:public_job) { create(:ci_build, project: public_project) }
+
+        let(:public_query) do
+          %(
+            query {
+              project(fullPath: "#{public_project.full_path}") {
+                job(id: "#{public_job.to_global_id}") {
+                  inputs {
+                    name
+                    value
+                  }
+                }
+              }
+            }
+          )
+        end
+
+        before do
+          create(
+            :ci_job_input,
+            job: public_job,
+            project: public_project,
+            name: 'secret_input',
+            value: 'sensitive_value'
+          )
+        end
+
+        it 'returns null for inputs' do
+          post_graphql(public_query, current_user: nil)
+
+          expect(graphql_data_at(:project, :job, :inputs)).to be_nil
+        end
+      end
+    end
   end
 
   describe 'input fields call limit' do

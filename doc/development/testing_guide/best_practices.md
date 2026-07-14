@@ -218,6 +218,12 @@ To avoid creation, it is worth bearing in mind that:
 
 - `instance_double` and `spy` are faster than `FactoryBot.build(...)`.
 - `FactoryBot.build(...)` and `.build_stubbed` are faster than `.create`.
+- `build_stubbed` is usually faster than `build`: it never touches the database,
+  assigns a fake `id` and timestamps, and stubs associated records instead of
+  building them, so it avoids the association cascades that `build` can still
+  trigger.
+  Prefer `build_stubbed` unless the code under test persists the object
+  or relies on real association records.
 - Don't `create` an object when you can use `build`, `build_stubbed`, `attributes_for`,
   `spy`, or `instance_double`. Database persistence is slow!
 
@@ -443,6 +449,7 @@ See [Run `:js` spec in a visible browser](#run-js-spec-in-a-visible-browser) for
 ##### Search for `Capybara::DSL#` when using profiling
 
 <!-- TODO: Add the search keywords -->
+
 When using [`stackprof` flamegraphs](#profiling-see-where-your-test-spend-its-time), search for `Capybara::DSL#` in the search to see the capybara actions that are made, and how long they take!
 
 #### Identify slow tests
@@ -557,6 +564,15 @@ expect(page).to have_testid('search-filter')   # confirm page is loaded
 expect(page).to have_no_link('Edit')           # then check absence
 ```
 
+Confirm the page has reached the expected state with a positive matcher before
+the next interaction or assertion - not only before absence checks, but also
+before reading database or model state and before navigating. `wait_for_requests`
+is not sufficient on its own: it waits for in-flight AJAX requests tracked by the
+test harness to settle, but not for Vue re-render, redirect completion, async
+follow-up writes, or browser-initiated downloads (which are not tracked XHR or
+fetch requests). Prefer asserting the expected visible outcome (`have_content`,
+`have_current_path`, `have_css`).
+
 Use `wait: 0` to skip the wait in conditional logic. **Note:** Only use it
 when you can't avoid conditional logic, and only inside a region you have
 already confirmed loaded; otherwise you get the wrong answer. Conditional
@@ -565,6 +581,157 @@ logic in tests makes specs non-deterministic.
 ```ruby
 within_testid('search-filter') do
   click_link 'Edit' if has_link?('Edit', wait: 0)
+end
+```
+
+#### Assert on a stable end-state, not on a transient control
+
+After an action that triggers an asynchronous mutation, the control you just
+interacted with often passes through a transient `loading`/disabled state and
+swaps its label before the component re-renders. Asserting on that control to
+confirm the action completed is racy, because the control changes several times
+before settling.
+
+Avoid asserting on the button's label or `disabled` state to synchronize. Assert
+on a stable end-state that only appears once the mutation has fully resolved,
+such as a status text or alert message:
+
+```ruby
+# Bad: races the in-flight mutation. The button passes through a transient
+# loading/disabled state and keeps its old label, so these assertions can
+# pass before the runnerUpdate mutation re-renders the row.
+click_button 'Pause'
+expect(page).to have_button 'Resume', disabled: false
+expect(page).not_to have_button 'Pause'
+
+click_button 'Resume'
+expect(page).to have_button 'Pause', disabled: false
+expect(page).not_to have_button 'Resume'
+
+# Good: assert on the stable end-state text that only appears once the
+# mutation has resolved. This still exercises the pause/resume round-trip.
+expect(page).not_to have_text 'Paused'
+
+click_button 'Pause'
+expect(page).to have_text 'Paused'
+
+click_button 'Resume'
+expect(page).not_to have_text 'Paused'
+```
+
+#### Poll for browser side-effects with `wait_for`
+
+Always prefer asserting on a visible UI outcome (`have_content`,
+`have_current_path`, `have_css`) to confirm an action has completed. Use the
+`wait_for` helper (defined in `spec/support/helpers/wait_helpers.rb`) only as a
+last resort, when there is nothing in the UI you can assert on. Some side-effects
+have no visible signal:
+
+- Browser-initiated downloads, which are not XHR or `fetch` requests.
+- Interactions that must be retried because the element is not yet interactive
+  (for example, hovering a diff line does nothing until the page is fully
+  loaded).
+
+(Do not reach for `wait_for_requests` here either: it is deprecated and should
+not be used in new specs.)
+
+```ruby
+# Bad: click_link triggers a browser-initiated download and returns before the
+# request is logged, so `artifact_request` can be nil.
+requests = inspect_requests { click_link 'Download' }
+artifact_request = requests.find { |r| r.url.include?('artifacts/download') }
+
+# Good: poll until the download request has been recorded.
+requests = inspect_requests do
+  click_link 'Download'
+
+  wait_for('artifact download request') do
+    Gitlab::Testing::RequestInspectorMiddleware.requests.any? do |r|
+      r.url.include?('artifacts/download')
+    end
+  end
+end
+artifact_request = requests.find { |r| r.url.include?('artifacts/download') }
+```
+
+When an interaction must be retried because the target is not yet interactive,
+wrap the whole sequence in `wait_for` and rescue `Capybara::ElementNotFound`. In
+the example below, hovering a diff line does nothing until the page has finished
+loading, so the hover (not just the click) must be retried:
+
+```ruby
+# Bad: hovering an unloaded diff line is a no-op, so the button never appears.
+line_holder.hover
+line[:num].find('.js-add-diff-note-button').click
+
+# Good: retry the hover until the note form appears and is focused.
+wait_for('note form to appear') do
+  line_holder.hover
+  line[:num].find('.js-add-diff-note-button', wait: 0.2).click
+  page.has_field?('note_note', focused: true, wait: 0.2)
+rescue Capybara::ElementNotFound
+end
+```
+
+#### Prefer waiting matchers over reading element values
+
+Reading a value, text, or count directly from an element (`find(...).value`,
+`find(...).text`, `all(...).count`) captures the state at that exact moment. If
+the page is still rendering an asynchronous update, you read the old value and
+the test fails or passes for the wrong reason. The `have_*` matchers instead
+retry until the expectation holds (or the wait times out), so they synchronize
+with the UI rather than racing it.
+
+Assert with a waiting matcher rather than reading a value and comparing it:
+
+```ruby
+# Bad: reads the field value now and compares; races an in-flight update.
+expect(find('#cadence-title').value).to eq(cadence.title)
+
+# Good: waits for the field to have the expected value.
+expect(page).to have_field('cadence-title', with: cadence.title)
+```
+
+```ruby
+# Bad: all_by_testid returns as soon as one match exists, then compares count.
+expect(all_by_testid('cache-entry-row').count).to eq(cache_entries.size)
+
+# Good: waits for the DOM to have the expected number of matches.
+expect(page).to have_selector('[data-testid="cache-entry-row"]', count: cache_entries.size)
+```
+
+```ruby
+# Bad: reads the element's text content at this point in time.
+expect(find_by_testid("user-project-count-#{admin.id}").text).to eq('1')
+
+# Good: waits for the element to have the expected content.
+within_testid("user-project-count-#{admin.id}") do
+  expect(page).to have_content('1')
+end
+```
+
+#### Enter admin mode with metadata, not the UI
+
+Driving admin mode through the browser UI with
+`enable_admin_mode!(admin, use_ui: true)` is slow and introduces a race: the
+mode-activation request may not complete before the next action runs. Use the
+`:enable_admin_mode` RSpec metadata tag instead, which activates admin mode at
+the session level without any UI interaction:
+
+```ruby
+# Bad: slow and race-prone.
+before do
+  enable_admin_mode!(admin, use_ui: true)
+end
+
+# Good: activates admin mode without touching the browser.
+it 'does something as admin', :enable_admin_mode do
+  ...
+end
+
+# Or on a describe/context block:
+context 'when in admin mode', :enable_admin_mode do
+  ...
 end
 ```
 
@@ -658,6 +825,9 @@ is a signal that the view has too many responsibilities.
 > Before writing a new system test,
 > [consider this guide around their use](testing_levels.md#white-box-tests-at-the-system-level-formerly-known-as-system--feature-tests)
 
+- Place feature specs in `spec/features/`, or `ee/spec/features/` for
+  EE-only features.
+  End-to-end specs live separately, in `qa/`.
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as
   `user_changes_password_spec.rb`.
 - Use scenario titles that describe the success and failure paths.
@@ -670,6 +840,12 @@ is a signal that the view has too many responsibilities.
   For instance, if you want to verify that a record was created, add
   expectations that its attributes are displayed on the page, not that
   `Model.count` increased by one.
+- When a test must assert backend or model state after a UI action, first wait
+  for a visible success indicator (`have_content`, `have_current_path`,
+  `have_css`) and only then read `model.reload`. A Capybara action returns once
+  the request is dispatched, not once it completes, so reading model state
+  immediately after races the request. This is the most common cause of
+  feature-spec flakiness.
 - It's ok to look for DOM elements, but don't abuse it, because it makes the tests
   more brittle
 
@@ -1217,6 +1393,15 @@ Therefore, the solution is to use `let` or `let!` instead of `let_it_be(:bar)`.
 can be used to verify things that are time-sensitive. Any test that exercises or verifies something time-sensitive
 should make use of these helpers to prevent transient test failures.
 
+Two recurring sources of time-related flakiness to avoid:
+
+- When a test orders records by a timestamp column, give the records distinct
+  timestamps (for example with `travel_to` and explicit offsets). Equal
+  timestamps produce non-deterministic ordering and flaky assertions.
+- Do not hardcode future-date constants in specs that gate behavior on "today".
+  They pass until the date arrives, then fail. Use `travel_to` or compute the
+  date relative to `Time.current`.
+
 Example:
 
 ```ruby
@@ -1360,7 +1545,7 @@ allows the created rows to be viewed from multiple database connections, which
 is important for specs that run in a browser, or migration specs, among others.
 
 One consequence of using these strategies, instead of the well-known
-`TRUNCATE TABLES` approach, is that primary keys and other sequences are **not**
+`TRUNCATE TABLES` approach, is that primary keys and other sequences are not
 reset across specs. So if you create a project in spec A, then create a project
 in spec B, the first has `id=1`, while the second has `id=2`.
 
@@ -1413,6 +1598,26 @@ the processing of background jobs is needed/expected.
 The usage of `perform_enqueued_jobs` is useful only for testing delayed mail
 deliveries, because our Sidekiq workers aren't inheriting from `ApplicationJob`
 / `ActiveJob::Base`.
+
+In feature specs, wrap both the triggering UI action and an assertion on its
+visible outcome (mail delivery, confirmation modal, updated page state) inside
+the `perform_enqueued_jobs` block. The click only kicks off an AJAX request that
+later enqueues the job. If the block wraps just the click, it can end before that
+request enqueues the job, so the job runs through the default test adapter
+instead of inline and is never processed. Asserting on the outcome inside the
+block keeps it open until the request has completed and the job has run inline:
+
+```ruby
+# Bad: the email is not yet delivered when the assertion runs.
+perform_enqueued_jobs { click_button 'Approve' }
+expect(page).to have_content('Approval email sent')
+
+# Good: the assertion runs only after the enqueued jobs complete.
+perform_enqueued_jobs do
+  click_button 'Approve'
+  expect(page).to have_content('Approval email sent')
+end
+```
 
 #### DNS
 
@@ -1743,7 +1948,7 @@ On Linux, `Time` can have the maximum precision of 9 and
 However, the actual value `created_at` (like `2023-04-28 05:53:30.808033`) stored to and loaded from the database
 doesn't have the same precision, and the match would fail.
 On macOS X, the precision of `Time` matches that of the PostgreSQL timestamp type
- and the match could succeed.
+and the match could succeed.
 
 To avoid the issue, we can use `be_like_time` or `be_within` to compare
 that times are within one second of each other.
@@ -1837,6 +2042,12 @@ Testing query performance allows us to:
 
 - Assert that N+1 problems do not exist in a block of code.
 - Ensure that the number of queries in a block of code does not increase unnoticed.
+
+Do not assert N+1 or query counts in feature (`:js`) specs - query-count
+baselines are flaky in the browser context. Put `QueryRecorder` and
+`exceed_query_limit` assertions in request or controller specs. When the first
+call lazily loads caches, prime the recorded baseline with a warmup request
+before measuring.
 
 #### QueryRecorder
 

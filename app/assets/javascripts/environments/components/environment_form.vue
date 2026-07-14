@@ -61,6 +61,7 @@ export default {
       default: false,
     },
   },
+  emits: ['change', 'submit'],
   i18n: {
     agentSelectorHelp: s__(
       'Environments|Select an agent with Kubernetes access to the project or group.',

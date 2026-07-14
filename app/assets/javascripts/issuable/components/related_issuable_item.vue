@@ -17,6 +17,7 @@ import IssueAssignees from './issue_assignees.vue';
 import IssueMilestone from './issue_milestone.vue';
 
 export default {
+  name: 'RelatedIssuableItem',
   components: {
     IssueMilestone,
     IssueAssignees,
@@ -62,6 +63,7 @@ export default {
       default: '',
     },
   },
+  emits: ['related-issue-remove-request'],
   data() {
     return {
       isReportDrawerOpen: false,
@@ -99,7 +101,7 @@ export default {
       }
     },
     handleWorkItemDeleted(workItemId) {
-      this.$emit('relatedIssueRemoveRequest', workItemId);
+      this.$emit('related-issue-remove-request', workItemId);
     },
     updateQueryParam(id) {
       updateHistory({

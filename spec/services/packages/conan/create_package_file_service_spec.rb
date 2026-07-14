@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :package_registry do
   include WorkhorseHelpers
 
-  let_it_be(:package, freeze: false) { create(:conan_package, without_package_files: true) }
+  let_it_be_with_reload(:package) { create(:conan_package, without_package_files: true) }
   let_it_be(:user) { create(:user) }
 
   describe '#execute', :aggregate_failures do

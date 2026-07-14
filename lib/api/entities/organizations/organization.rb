@@ -4,7 +4,8 @@ module API
   module Entities
     module Organizations
       class Organization < Grape::Entity
-        expose :id, documentation: { type: 'Integer', example: 1 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
+        expose :uuid, documentation: { type: 'String', example: '0192f8c2-1a2b-7cde-89ab-0123456789ab' }
         expose :name, documentation: { type: 'String', example: 'GitLab' }
         expose :path, documentation: { type: 'String', example: 'gitlab' }
         expose :description, documentation: { type: 'String', example: 'My description' }

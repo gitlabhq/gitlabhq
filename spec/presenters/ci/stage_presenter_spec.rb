@@ -22,16 +22,16 @@ RSpec.describe Ci::StagePresenter do
       expect(presented_stage.association(:pipeline)).to be_loaded
     end
 
-    it 'preloads build tags' do
-      expect(presented_stage.association(:tags)).to be_loaded
+    it 'preloads build job_definition' do
+      expect(presented_stage.association(:job_definition)).to be_loaded
     end
 
     it 'preloads build artifacts archive' do
       expect(presented_stage.association(:job_artifacts_archive)).to be_loaded
     end
 
-    it 'preloads build artifacts metadata' do
-      expect(presented_stage.association(:metadata)).to be_loaded
+    it 'preloads job definition' do
+      expect(presented_stage.association(:job_definition)).to be_loaded
     end
   end
 

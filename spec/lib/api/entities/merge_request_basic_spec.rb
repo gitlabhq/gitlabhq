@@ -4,6 +4,11 @@ require 'spec_helper'
 
 RSpec.describe ::API::Entities::MergeRequestBasic, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:merge_request, freeze: false) { create(:merge_request) }
   let_it_be(:labels) { create_list(:label, 3) }
   let_it_be(:merge_requests) { create_list(:labeled_merge_request, 10, :unique_branches, labels: labels) }

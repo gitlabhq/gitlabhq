@@ -3,9 +3,10 @@
 namespace :gitlab do
   namespace :db do
     # @return [String]
-    #   JSON array of { database, tables: [{ table_name, partition_type, partitions: [{ partition_name, from, to }] }] }
-    #   Integer partition bounds are integers; time bounds are ISO 8601 strings.
-    desc 'GitLab | Cells | DB | Export integer range and time partition definitions from all databases as JSON'
+    #   JSON array of { database, tables: [{ table_name, partition_type, partitions: [...] }] }
+    #   Range bounds: { partition_name, from, to } (integers or ISO 8601 strings).
+    #   List bounds: { partition_name, values: [Integer] }.
+    desc 'GitLab | Cells | DB | Export integer range, time, and list partition definitions from all databases as JSON'
     task export_partition_definitions: :environment do
       all_databases = []
 
@@ -26,7 +27,7 @@ namespace :gitlab do
     #   Summary lines per database and a total created/skipped line.
     #   Exits non-zero if any invalid entries are encountered.
     #   Set DRY_RUN=true to preview without creating partitions.
-    desc 'GitLab | Cells | DB | Ensure integer range & time partitions exist on all DBs from exported definitions file'
+    desc 'GitLab | Cells | DB | Ensure integer range, time, and list partitions exist on all DBs from definitions file'
     task :ensure_partitions, [:file] => :environment do |_, args|
       file_path = args[:file]
       unless file_path

@@ -46,7 +46,20 @@ RSpec.shared_examples Gitlab::BitbucketImport::ObjectImporter do
       let(:project_id) { project.id }
 
       it 'calls the importer' do
-        expect(Gitlab::BitbucketImport::Logger).to receive(:info).twice
+        expect(Gitlab::BitbucketImport::Logger).to receive(:info).with(
+          hash_including(
+            message: 'importer started',
+            project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          )
+        )
+        expect(Gitlab::BitbucketImport::Logger).to receive(:info).with(
+          hash_including(
+            message: 'importer finished',
+            project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          )
+        )
         expect_next(worker.importer_class, project, kind_of(Hash)).to receive(:execute)
 
         worker.class.perform_inline(project_id, {}, waiter_key)

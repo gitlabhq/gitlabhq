@@ -30,6 +30,11 @@ module Types
           null: false,
           description: 'Whether the personal access token is granular.'
 
+        field :sudo,
+          GraphQL::Types::Boolean,
+          null: false,
+          description: 'Whether the personal access token can impersonate other users with sudo.'
+
         field :revoked,
           GraphQL::Types::Boolean,
           null: false,

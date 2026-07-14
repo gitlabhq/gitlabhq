@@ -7,7 +7,7 @@ RSpec.describe 'PipelineSchedulePlay', feature_category: :continuous_integration
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:pipeline_schedule, freeze: false) do
+  let_it_be_with_reload(:pipeline_schedule) do
     create(
       :ci_pipeline_schedule,
       :every_minute,
@@ -33,22 +33,6 @@ RSpec.describe 'PipelineSchedulePlay', feature_category: :continuous_integration
     it_behaves_like 'a mutation on an unauthorized resource'
   end
 
-  context 'with granular token permissions' do
-    before_all do
-      project.add_maintainer(current_user)
-    end
-
-    it_behaves_like 'authorizing granular token permissions for GraphQL', :play_pipeline_schedule do
-      let(:user) { current_user }
-      let(:boundary_object) { project }
-      let(:mutation) do
-        graphql_mutation(:pipeline_schedule_play, { id: pipeline_schedule.to_global_id.to_s }, 'errors')
-      end
-
-      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
-    end
-  end
-
   context 'when authorized', :sidekiq_inline do
     before_all do
       project.add_maintainer(current_user)
@@ -71,6 +55,22 @@ RSpec.describe 'PipelineSchedulePlay', feature_category: :continuous_integration
       it 'does not change next_run_at' do
         expect { post_graphql_mutation(mutation, current_user: current_user) }
           .not_to change { pipeline_schedule.reload.next_run_at }
+      end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :play_pipeline_schedule do
+        let(:user) { current_user }
+        let(:boundary_object) { project }
+        let(:mutation) do
+          graphql_mutation(:pipeline_schedule_play, { id: pipeline_schedule.to_global_id.to_s }, 'errors')
+        end
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+
+        before do
+          allow_next_instance_of(Ci::CreatePipelineService) do |service|
+            allow(service).to receive(:execute).and_return(service_response)
+          end
+        end
       end
     end
 

@@ -13,8 +13,6 @@ auto_mr:
 # Non-distilled .ai/ files included in AGENTS.md Context Loading.
 # These are manually maintained and have no SSOT sources.
 static_entries:
-  - description: Code style or linting
-    path: .ai/code-style.md
   - description: Git, commits, or branches
     path: .ai/git.md
   - description: CI/CD pipelines or `.gitlab-ci.yml`
@@ -129,7 +127,7 @@ principles:
   # ── ClickHouse ────────────────────────────────────────────────────────────
 
   clickhouse:
-    description: ClickHouse database concerns
+    description: ClickHouse and Siphon CDC concerns, including adding the matching column to the respective siphon_ ClickHouse table when adding a column to a Postgres table replicated by Siphon
     group: Database
     owner_team: '@gitlab-org/maintainers/clickhouse'
     file_filters:
@@ -138,20 +136,22 @@ principles:
       - 'db/click_house/**/*'
       - 'ee/db/click_house/**/*'
       - 'lib/click_house/**/*.rb'
+      - 'db/migrate/**/*.rb'
+      - 'db/post_migrate/**/*.rb'
+      - 'ee/db/geo/migrate/**/*.rb'
     baseline: .ai/principles/baselines/clickhouse.md
     sources:
       - path: doc/development/database/clickhouse/reviewer_guidelines.md
         url: https://docs.gitlab.com/development/database/clickhouse/reviewer_guidelines/
+      - path: doc/development/database/clickhouse/clickhouse_within_gitlab.md
+        url: https://docs.gitlab.com/development/database/clickhouse/clickhouse_within_gitlab/
 
   # ── Cells ─────────────────────────────────────────────────────────────────
 
   cells-fundamentals:
     description: Cells architecture sharding keys, organization data ownership, routable requests, and cell isolation when adding tables or customer-owned resources
     group: Cells
-    # Owns /doc/development/cells/ (the SSOT). @gitlab-org/tenant-scale-group
-    # is archived (not an eligible CODEOWNERS approver), so use the verified
-    # individual owner of those docs instead.
-    owner_team: '@bmarjanovic'
+    owner_team: '@gitlab-com/gl-infra/tenant-scale/cells-infrastructure/backend-engineers'
     team_slug: cells
     prerequisite: true
     file_filters:
@@ -168,9 +168,7 @@ principles:
   cells-claims:
     description: Cells globally-unique attribute claims (Cells::Claimable), claim rollout lifecycle, and feature flags for cross-cell uniqueness
     group: Cells
-    # See cells-fundamentals: tenant-scale-group is archived; use the verified
-    # SSOT-doc owner instead.
-    owner_team: '@bmarjanovic'
+    owner_team: '@gitlab-com/gl-infra/tenant-scale/cells-infrastructure/backend-engineers'
     team_slug: cells
     file_filters:
       - 'app/models/**/*.rb'
@@ -289,8 +287,6 @@ principles:
         url: https://docs.gitlab.com/development/permissions/granular_access/rest_api_implementation_guide/
       - path: doc/development/permissions/granular_access/job_tokens.md
         url: https://docs.gitlab.com/development/permissions/granular_access/job_tokens/
-      - path: doc/development/permissions/job_tokens.md
-        url: https://docs.gitlab.com/development/permissions/job_tokens/
       - path: doc/development/permissions/granular_access/permission_definitions.md
         url: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/
       - path: doc/development/permissions/granular_access/assignable_permissions.md
@@ -302,11 +298,24 @@ principles:
     description: General code review practices and acceptance checklist
     group: Code Review
     owner_team: '@gitlab-org/maintainers/rails-backend'
+    ping_team: false
     file_filters:
       - '**/*'
     sources:
       - path: doc/development/code_review.md
         url: https://docs.gitlab.com/development/code_review/
+
+  ai-instruction-files:
+    description: Reviewing AI instruction files under .ai/ (hand-authored modules, distilled principles, baselines, distillation config)
+    group: Code Review
+    owner_team: '@dgruzd @pedropombeiro @ghavenga @tkuah @dmishunov'
+    team_slug: ai-harness
+    ping_team: false
+    file_filters:
+      - '.ai/**/*'
+    sources:
+      - path: doc/development/ai_instruction_files_review.md
+        url: https://docs.gitlab.com/development/ai_instruction_files_review/
 
   # ── Backend (3 sub-domains) ───────────────────────────────────────────────
 
@@ -314,6 +323,7 @@ principles:
     description: Ruby/Rails style, logging, common pitfalls
     group: Backend
     owner_team: '@gitlab-org/maintainers/rails-backend'
+    ping_team: false
     prerequisite: true
     file_filters:
       - 'app/**/*.rb'
@@ -359,6 +369,7 @@ principles:
     description: Service patterns, abstractions, design conventions
     group: Backend
     owner_team: '@gitlab-org/maintainers/rails-backend'
+    ping_team: false
     file_filters:
       - 'app/services/**/*.rb'
       - 'app/finders/**/*.rb'
@@ -385,6 +396,7 @@ principles:
     description: EE/CE separation, licensing, code placement
     group: Backend
     owner_team: '@gitlab-org/maintainers/rails-backend'
+    ping_team: false
     file_filters:
       - 'ee/**/*.rb'
     sources:
@@ -444,6 +456,7 @@ principles:
     description: Sidekiq worker design and reliability
     group: Workers
     owner_team: '@gitlab-org/maintainers/rails-backend'
+    ping_team: false
     file_filters:
       - 'app/workers/**/*.rb'
       - 'ee/app/workers/**/*.rb'
@@ -477,6 +490,8 @@ principles:
         url: https://docs.gitlab.com/development/cicd/configuration/
       - path: doc/development/cicd/cicd_tables.md
         url: https://docs.gitlab.com/development/cicd/cicd_tables/
+      - path: doc/development/cicd/keyword_reviews.md
+        url: https://docs.gitlab.com/development/cicd/keyword_reviews/
 
   # ── Frontend (4 sub-domains) ──────────────────────────────────────────────
 
@@ -484,6 +499,7 @@ principles:
     description: Vue.js components, state management, patterns
     group: Frontend
     owner_team: '@gitlab-org/maintainers/frontend'
+    ping_team: false
     prerequisite: true
     file_filters:
       - 'app/assets/javascripts/**/*.vue'
@@ -516,6 +532,7 @@ principles:
     description: CSS/SCSS, Tailwind, dark mode
     group: Frontend
     owner_team: '@gitlab-org/maintainers/frontend'
+    ping_team: false
     file_filters:
       - 'app/assets/stylesheets/**/*.scss'
       - 'ee/app/assets/stylesheets/**/*.scss'
@@ -532,6 +549,7 @@ principles:
     description: HAML templates, ViewComponents, Pajamas
     group: Frontend
     owner_team: '@gitlab-org/maintainers/frontend'
+    ping_team: false
     file_filters:
       - 'app/views/**/*.haml'
       - 'ee/app/views/**/*.haml'
@@ -545,6 +563,7 @@ principles:
     description: Frontend accessibility patterns and requirements
     group: Frontend
     owner_team: '@gitlab-org/maintainers/frontend'
+    ping_team: false
     file_filters:
       - 'app/assets/javascripts/**/*.vue'
       - 'app/views/**/*.haml'
@@ -556,18 +575,21 @@ principles:
       - path: doc/development/fe_guide/accessibility/best_practices.md
         url: https://docs.gitlab.com/development/fe_guide/accessibility/best_practices/
 
-  # ── QA (2 sub-domains) ───────────────────────────────────────────────────
+  # ── Testing  ───────────────────────────────────────────────────
 
-  qa-rspec:
+  testing-rspec:
     description: RSpec patterns, factories, shared examples
     group: Testing
-    owner_team: '@abdwdd @alexpooley'
+    owner_team: '@gitlab-org/maintainers/rails-backend'
     team_slug: qa
     file_filters:
       - 'spec/**/*_spec.rb'
       - 'ee/spec/**/*_spec.rb'
-      - 'qa/**/*'
-    baseline: .ai/principles/baselines/qa-rspec.md
+      - '!spec/migrations/db/**/*_spec.rb'
+      - '!ee/spec/migrations/db/**/*.rb'
+      - '!ee/db/geo/migrate/**/*.rb'
+      - '!ee/db/geo/post_migrate/**/*.rb'
+    baseline: .ai/principles/baselines/testing-rspec.md
     sources:
       - path: doc/development/testing_guide/_index.md
         url: https://docs.gitlab.com/development/testing_guide/
@@ -575,17 +597,78 @@ principles:
         url: https://docs.gitlab.com/development/testing_guide/best_practices/
       - path: doc/development/testing_guide/testing_levels.md
         url: https://docs.gitlab.com/development/testing_guide/testing_levels/
-      - path: doc/development/testing_guide/testing_migrations_guide.md
-        url: https://docs.gitlab.com/development/testing_guide/testing_migrations_guide/
       - path: doc/development/testing_guide/testing_rake_tasks.md
         url: https://docs.gitlab.com/development/testing_guide/testing_rake_tasks/
 
-  qa-jest:
+  authentication-testing:
+    description: Test quality for authentication and authorization specs — positive and negative path coverage, token edge cases (expired, revoked, wrong-scope), the authorization actor matrix (authorized, unauthorized, anonymous, admin), auth-stubbing red flags, rate-limit specs, and narrow token scopes in specs
+    group: Testing
+    owner_team: '@gitlab-org/software-supply-chain-security/authentication/approvers'
+    team_slug: authentication
+    secondary_teams:
+      - '@gitlab-com/gl-security/appsec'
+    # Scoped to auth-team-owned spec paths (mirrors the Duo fence fileFilters),
+    # not the broad testing-rspec globs, so the checks fire only on auth specs.
+    file_filters:
+      - 'spec/controllers/sessions_controller_spec.rb'
+      - 'spec/controllers/passwords_controller_spec.rb'
+      - 'spec/controllers/omniauth_callbacks_controller_spec.rb'
+      - 'spec/controllers/oauth/**/*_spec.rb'
+      - 'spec/controllers/concerns/authenticates_with_two_factor*_spec.rb'
+      - 'spec/controllers/admin/sessions_controller_spec.rb'
+      - 'spec/controllers/admin/impersonation_tokens_controller_spec.rb'
+      - 'spec/controllers/user_settings/**/*_spec.rb'
+      - 'spec/controllers/profiles/two_factor_auths_controller_spec.rb'
+      - 'spec/models/authn/**/*_spec.rb'
+      - 'spec/models/personal_access_token_spec.rb'
+      - 'spec/models/oauth_access_*_spec.rb'
+      - 'spec/models/webauthn_registration_spec.rb'
+      - 'spec/models/concerns/token_authenticatable_spec.rb'
+      - 'spec/services/authn/**/*_spec.rb'
+      - 'spec/services/users/email_verification/**/*_spec.rb'
+      - 'spec/services/webauthn/**/*_spec.rb'
+      - 'spec/services/personal_access_tokens/**/*_spec.rb'
+      - 'spec/services/group_access_tokens/**/*_spec.rb'
+      - 'spec/services/project_access_tokens/**/*_spec.rb'
+      - 'spec/services/resource_access_tokens/**/*_spec.rb'
+      - 'spec/policies/**/*_spec.rb'
+      - 'spec/lib/authn/**/*_spec.rb'
+      - 'spec/lib/gitlab/auth/**/*_spec.rb'
+      - 'spec/requests/api/api_guard_spec.rb'
+      - 'spec/requests/api/admin/token_spec.rb'
+      - 'spec/requests/api/deploy_tokens_spec.rb'
+      - 'spec/requests/api/doorkeeper_access_spec.rb'
+      - 'spec/requests/api/oauth_tokens_spec.rb'
+      - 'spec/requests/api/personal_access_tokens_spec.rb'
+      - 'spec/requests/api/personal_access_tokens/**/*_spec.rb'
+      - 'spec/requests/api/resource_access_tokens_spec.rb'
+      - 'spec/requests/api/resource_access_tokens/**/*_spec.rb'
+      - 'spec/requests/api/group_service_accounts_spec.rb'
+      - 'spec/requests/api/project_service_accounts_spec.rb'
+      - 'spec/requests/api/service_accounts_spec.rb'
+      - 'spec/requests/api/graphql/authz/**/*_spec.rb'
+      - 'spec/requests/api/graphql/mutations/users/personal_access_tokens/**/*_spec.rb'
+      - 'ee/spec/controllers/**/passwords_controller_spec.rb'
+      - 'ee/spec/controllers/**/omniauth_callbacks_controller_spec.rb'
+      - 'ee/spec/controllers/**/two_factor_auths_controller_spec.rb'
+      - 'ee/spec/controllers/**/service_accounts_controller_spec.rb'
+      - 'ee/spec/controllers/smartcard_controller_spec.rb'
+      - 'ee/spec/lib/authn/**/*_spec.rb'
+      - 'ee/spec/lib/gitlab/auth/**/*_spec.rb'
+      - 'ee/spec/policies/**/*_spec.rb'
+      - 'ee/spec/services/ee/personal_access_tokens/**/*_spec.rb'
+      - 'ee/spec/services/namespaces/service_accounts/**/*_spec.rb'
+      - 'ee/spec/services/users/service_accounts/**/*_spec.rb'
+    baseline: .ai/principles/baselines/authentication-testing.md
+    sources:
+      - path: doc/development/testing_guide/best_practices.md
+        url: https://docs.gitlab.com/development/testing_guide/best_practices/
+
+  testing-jest:
     description: Jest, jsdom, Vue Test Utils patterns
     group: Testing
     owner_team: '@gitlab-org/maintainers/frontend'
-    secondary_teams:
-      - '@abdwdd @alexpooley'
+    ping_team: false
     file_filters:
       - 'spec/frontend/**/*'
       - 'ee/spec/frontend/**/*'
@@ -593,12 +676,85 @@ principles:
       - path: doc/development/testing_guide/frontend_testing.md
         url: https://docs.gitlab.com/development/testing_guide/frontend_testing/
 
+  testing-migrations:
+    description: Rails migrations testing patterns
+    group: Testing
+    owner_team: '@gitlab-org/maintainers/database'
+    file_filters:
+      - 'spec/migrations/db/**/*_spec.rb'
+      - 'ee/spec/migrations/db/**/*.rb'
+      - 'ee/db/geo/migrate/**/*.rb'
+      - 'ee/db/geo/post_migrate/**/*.rb'
+    sources:
+      - path: doc/development/testing_guide/testing_migrations_guide.md
+        url: https://docs.gitlab.com/development/testing_guide/testing_migrations_guide/
+
+  testing-frontend-testing-hierarchy:
+    description: Frontend testing hierarchy — which test type to write (unit vs MSW integration vs Capybara vs QA), lazy-load discovery, and cross-layer anti-patterns
+    group: Testing
+    owner_team: '@gitlab-org/maintainers/frontend'
+    secondary_teams:
+      - '@gitlab-org/plan-stage/frontend-engineers'
+    file_filters:
+      - 'spec/frontend/**/*'
+      - 'ee/spec/frontend/**/*'
+      - 'spec/features/**/*'
+      - 'ee/spec/features/**/*'
+    baseline: .ai/principles/baselines/testing-frontend-testing-hierarchy.md
+    sources:
+      - path: doc/development/testing_guide/frontend_testing.md
+        url: https://docs.gitlab.com/development/testing_guide/frontend_testing/
+      - path: doc/development/testing_guide/testing_levels.md
+        url: https://docs.gitlab.com/development/testing_guide/testing_levels/
+
+  testing-msw:
+    description: How to write MSW integration tests correctly (setup, mounting, handlers, fixtures, request counting)
+    group: Testing
+    owner_team: '@gitlab-org/maintainers/frontend'
+    secondary_teams:
+      - '@gitlab-org/plan-stage/frontend-engineers'
+    file_filters:
+      - 'spec/frontend/msw_integration/**/*'
+      - 'ee/spec/frontend/msw_integration/**/*'
+    baseline: .ai/principles/baselines/testing-msw.md
+    sources:
+      - path: doc/development/testing_guide/frontend_testing.md
+        url: https://docs.gitlab.com/development/testing_guide/frontend_testing/
+
+  testing-e2e:
+    description: End-to-end (QA) test patterns — resource readiness and explicit waits, reliable navigation, and avoiding timing-based flakiness in qa/ specs
+    group: Testing
+    owner_team: '@gitlab-org/maintainers/rails-backend'
+    team_slug: qa
+    file_filters:
+      - 'qa/**/*'
+    sources:
+      - path: doc/development/testing_guide/end_to_end/style_guide.md
+        url: https://docs.gitlab.com/development/testing_guide/end_to_end/style_guide/
+      - path: doc/development/testing_guide/end_to_end/beginners_guide/flows.md
+        url: https://docs.gitlab.com/development/testing_guide/end_to_end/beginners_guide/flows/
+      - path: doc/development/testing_guide/end_to_end/beginners_guide/page_objects.md
+        url: https://docs.gitlab.com/development/testing_guide/end_to_end/beginners_guide/page_objects/
+      - path: doc/development/testing_guide/end_to_end/beginners_guide/resources.md
+        url: https://docs.gitlab.com/development/testing_guide/end_to_end/beginners_guide/resources/
+      - path: doc/development/testing_guide/end_to_end/best_practices/_index.md
+        url: https://docs.gitlab.com/development/testing_guide/end_to_end/best_practices/
+      - path: doc/development/testing_guide/end_to_end/best_practices/dynamic_element_validation.md
+        url: https://docs.gitlab.com/development/testing_guide/end_to_end/best_practices/dynamic_element_validation/
+      - path: doc/development/testing_guide/end_to_end/best_practices/execution_context_selection.md
+        url: https://docs.gitlab.com/development/testing_guide/end_to_end/best_practices/execution_context_selection/
+      - path: doc/development/testing_guide/end_to_end/best_practices/feature_flags.md
+        url: https://docs.gitlab.com/development/testing_guide/end_to_end/best_practices/feature_flags/
+      - path: doc/development/testing_guide/end_to_end/best_practices/waits.md
+        url: https://docs.gitlab.com/development/testing_guide/end_to_end/best_practices/waits/
+
   # ── Remaining (unchanged) ─────────────────────────────────────────────────
 
   performance:
     description: Performance and scalability
     group: Performance
     owner_team: '@gitlab-org/maintainers/rails-backend'
+    ping_team: false
     file_filters:
       - 'app/**/*.rb'
       - 'ee/app/**/*.rb'
@@ -614,18 +770,81 @@ principles:
     owner_team: '@gitlab-org/technical-writing/tw-docops'
     file_filters:
       - 'doc/**/*.md'
-      - 'locale/**/*'
     baseline: .ai/principles/baselines/documentation.md
     sources:
       - path: doc/development/documentation/styleguide/_index.md
         url: https://docs.gitlab.com/development/documentation/styleguide/
       - path: doc/development/documentation/workflow.md
         url: https://docs.gitlab.com/development/documentation/workflow/
+      - path: doc/development/documentation/styleguide/availability_details.md
+        url: https://docs.gitlab.com/development/documentation/styleguide/availability_details/
+      - path: doc/development/documentation/styleguide/deprecations_and_removals.md
+        url: https://docs.gitlab.com/development/documentation/styleguide/deprecations_and_removals/
+      - path: doc/development/documentation/metadata.md
+        url: https://docs.gitlab.com/development/documentation/metadata/
+
+  documentation-topics:
+    description: Documentation authoring guidelines per topic type (for example, Concept, Task, Reference, Troubleshooting, Tutorial, etc.)
+    group: Documentation
+    owner_team: '@gitlab-org/technical-writing/tw-docops'
+    file_filters:
+      - 'doc/**/*.md'
+    baseline: .ai/principles/baselines/documentation-topics.md
+    sources:
+      - path: doc/development/documentation/topic_types/_index.md
+        url: https://docs.gitlab.com/development/documentation/topic_types/
+      - path: doc/development/documentation/topic_types/concept.md
+        url: https://docs.gitlab.com/development/documentation/topic_types/concept/
+      - path: doc/development/documentation/topic_types/task.md
+        url: https://docs.gitlab.com/development/documentation/topic_types/task/
+      - path: doc/development/documentation/topic_types/reference.md
+        url: https://docs.gitlab.com/development/documentation/topic_types/reference/
+      - path: doc/development/documentation/topic_types/troubleshooting.md
+        url: https://docs.gitlab.com/development/documentation/topic_types/troubleshooting/
+      - path: doc/development/documentation/topic_types/tutorial.md
+        url: https://docs.gitlab.com/development/documentation/topic_types/tutorial/
+      - path: doc/development/documentation/topic_types/get_started.md
+        url: https://docs.gitlab.com/development/documentation/topic_types/get_started/
+      - path: doc/development/documentation/topic_types/glossary.md
+        url: https://docs.gitlab.com/development/documentation/topic_types/glossary/
+      - path: doc/development/documentation/topic_types/top_level_page.md
+        url: https://docs.gitlab.com/development/documentation/topic_types/top_level_page/
+
+  documentation-api:
+    description: Documenting REST, GraphQL, and CLI APIs (endpoint reference structure, attributes tables, curl examples)
+    group: Documentation
+    owner_team: '@gitlab-org/technical-writing/tw-docops'
+    file_filters:
+      - 'doc/api/**/*.md'
+    sources:
+      - path: doc/development/documentation/restful_api_styleguide.md
+        url: https://docs.gitlab.com/development/documentation/restful_api_styleguide/
+      - path: doc/development/documentation/graphql_styleguide.md
+        url: https://docs.gitlab.com/development/documentation/graphql_styleguide/
+
+  documentation-feature-lifecycle:
+    description: Documenting feature state and lifecycle (feature flags, experiment/beta status, version history, release notes)
+    group: Documentation
+    owner_team: '@gitlab-org/technical-writing/tw-docops'
+    file_filters:
+      - 'config/feature_flags/**/*.yml'
+      - 'ee/config/feature_flags/**/*.yml'
+      - 'doc/**/*.md'
+    sources:
+      - path: doc/development/documentation/feature_flags.md
+        url: https://docs.gitlab.com/development/documentation/feature_flags/
+      - path: doc/development/documentation/experiment_beta.md
+        url: https://docs.gitlab.com/development/documentation/experiment_beta/
+      - path: doc/development/documentation/release_notes.md
+        url: https://docs.gitlab.com/development/documentation/release_notes/
+      - path: doc/development/documentation/topic_types/version_specific_changes.md
+        url: https://docs.gitlab.com/development/documentation/topic_types/version_specific_changes/
 
   feature-flags:
     description: Feature flag usage and lifecycle
     group: Feature Flags
     owner_team: '@gitlab-org/maintainers/rails-backend'
+    ping_team: false
     file_filters:
       - 'config/feature_flags/**/*.yml'
       - 'ee/config/feature_flags/**/*.yml'

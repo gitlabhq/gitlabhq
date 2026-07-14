@@ -46,19 +46,19 @@ RSpec.describe GitlabUploader, feature_category: :shared do
 
   describe '#move_to_cache' do
     it 'is true' do
-      expect(subject.move_to_cache).to eq(true)
+      expect(subject.move_to_cache).to be(true)
     end
   end
 
   describe '#move_to_store' do
     it 'is true' do
-      expect(subject.move_to_store).to eq(true)
+      expect(subject.move_to_store).to be(true)
     end
   end
 
   describe '#empty_size?' do
     it 'is true' do
-      expect(subject.empty_size?).to eq(true)
+      expect(subject.empty_size?).to be(true)
     end
   end
 

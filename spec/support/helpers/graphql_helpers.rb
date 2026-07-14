@@ -679,6 +679,18 @@ module GraphqlHelpers
     expect(flattened_errors).to eq([])
   end
 
+  # `expect_graphql_errors_to_be_empty` only covers top-level `graphql_errors`.
+  # A failed mutation returns HTTP 200 with no top-level errors and reports the
+  # failure in the payload's own `errors` field instead. Opt in to this helper
+  # when a spec needs to prove a mutation actually succeeded.
+  def expect_graphql_mutation_errors_to_be_empty
+    graphql_data.each_value do |payload|
+      next unless payload.is_a?(Hash) && payload.key?('errors')
+
+      expect(payload['errors']).to be_empty
+    end
+  end
+
   # Helps migrate to the new GraphQL interpreter,
   # https://gitlab.com/gitlab-org/gitlab/-/issues/210556
   def expect_graphql_error_to_be_created(error_class, match_message = '')

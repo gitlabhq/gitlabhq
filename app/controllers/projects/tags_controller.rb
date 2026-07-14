@@ -4,7 +4,7 @@ class Projects::TagsController < Projects::ApplicationController
   include SortingHelper
   include HandlesGitalyErrors
 
-  prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
+  prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss, permission: :read_code) }
 
   # Authorize
   before_action :require_non_empty_project

@@ -4,6 +4,7 @@ import { issuableTypeText } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 
 export default {
+  name: 'LockedBadge',
   components: {
     GlBadge,
   },

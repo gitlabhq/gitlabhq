@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Agent Foundations
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use foundational and custom flows to automate complex development tasks with multiple agents.
 title: Flows
@@ -21,7 +21,7 @@ title: Flows
 
 {{< history >}}
 
-- Introduced as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.4 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_flows`. Disabled by default.
+- Introduced as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_flows`. Disabled by default.
 - Changed to [beta](../../../policy/development_stages_support.md) in GitLab 18.7.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/569060) in GitLab 18.7.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/569060) in GitLab 18.8.
@@ -29,12 +29,9 @@ title: Flows
 - Additional flags are required for foundational flows.
 - Foundational flows [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 - Custom flows [changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) to beta in GitLab 18.8.
+- Feature flag `ai_catalog_flows` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239459) in GitLab 19.2.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 A flow is a combination of one or more agents working together to solve a complex problem.
 
@@ -62,7 +59,7 @@ For information about the security of flows, see [the composite identity documen
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
 - Turn on **Allow foundational flows** [for the top-level group](foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 - [Configure push rules to allow a service account](../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Configure your own runners](execution.md#configure-runners) or turn on [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) for your project.
+- [Configure your own runners](execution.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) for your project.
 
 ## Monitor running flows in the GitLab UI
 

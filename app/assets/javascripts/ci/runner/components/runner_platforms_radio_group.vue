@@ -29,6 +29,7 @@ export default {
       default: null,
     },
   },
+  emits: ['input'],
   data() {
     return {
       model: this.value,

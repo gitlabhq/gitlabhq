@@ -57,4 +57,24 @@ RSpec.describe Integrations::Base::IssueTracker, feature_category: :team_plannin
       it { is_expected.to be_nil }
     end
   end
+
+  describe '#issue_url' do
+    subject(:result) { integration.issue_url(123) }
+
+    context 'when issues_url is configured' do
+      before do
+        integration.issues_url = 'https://example.com/issues/:id'
+      end
+
+      it { is_expected.to eq('https://example.com/issues/123') }
+    end
+
+    context 'when issues_url is nil' do
+      before do
+        integration.issues_url = nil
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
 end

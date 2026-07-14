@@ -9,6 +9,7 @@ import { unarchiveProject } from '~/api/projects_api';
 import { InternalEvents } from '~/tracking';
 
 export default {
+  name: 'UnarchiveSettings',
   components: {
     GlCard,
     GlButton,

@@ -4,7 +4,7 @@ module Gitlab
   module Audit
     class UnauthenticatedAuthor < Gitlab::Audit::NullAuthor
       def initialize(name: nil)
-        super(id: -1, name: name)
+        super(id: UNAUTHENTICATED_AUTHOR_ID, name: name)
       end
 
       # Events that are authored by unauthenticated users, should be

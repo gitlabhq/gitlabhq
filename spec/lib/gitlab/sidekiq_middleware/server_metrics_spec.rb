@@ -162,8 +162,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
           expect(completion_seconds_metric).to receive(:observe).with(labels_with_job_status, monotonic_time_duration)
           expect(redis_seconds_metric).to receive(:observe).with(labels_with_job_status, redis_duration)
           expect(elasticsearch_seconds_metric).to receive(:observe).with(labels_with_job_status, elasticsearch_duration)
+          expect(zoekt_seconds_metric).to receive(:observe).with(labels_with_job_status, zoekt_duration)
           expect(redis_requests_total).to receive(:increment).with(labels_with_job_status, redis_calls)
           expect(elasticsearch_requests_total).to receive(:increment).with(labels_with_job_status, elasticsearch_calls)
+          expect(zoekt_requests_total).to receive(:increment).with(labels_with_job_status, zoekt_calls)
           expect(sidekiq_mem_total_bytes).to receive(:set).with(labels_with_job_status, mem_total_bytes)
           expect(gvl_thread_metric).to receive(:observe).with(labels_with_job_status, gvl_thread_wait)
           expect(gvl_process_metric).to receive(:increment).with(labels_with_job_status, gvl_process_wait)
@@ -597,6 +599,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
       expect(gitaly_seconds_metric).not_to receive(:observe)
       expect(redis_seconds_metric).not_to receive(:observe)
       expect(elasticsearch_seconds_metric).not_to receive(:observe)
+      expect(zoekt_seconds_metric).not_to receive(:observe)
 
       middleware.call(worker, job, queue) { nil }
     end
@@ -614,6 +617,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
       expect(gitaly_seconds_sum_metric).to receive(:increment).with(labels, gitaly_duration)
       expect(redis_seconds_sum_metric).to receive(:increment).with(labels, redis_duration)
       expect(elasticsearch_seconds_sum_metric).to receive(:increment).with(labels, elasticsearch_duration)
+      expect(zoekt_seconds_sum_metric).to receive(:increment).with(labels, zoekt_duration)
 
       middleware.call(worker, job, queue) { nil }
     end

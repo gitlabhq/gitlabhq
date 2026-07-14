@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_composition do
@@ -163,7 +164,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           }
         end
 
-        let_it_be(:project, freeze: false) do
+        let_it_be_with_reload(:project) do
           create(:project, :custom_repo, files: project_files)
         end
 
@@ -244,7 +245,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           }
         end
 
-        let_it_be(:project, freeze: false) do
+        let_it_be_with_reload(:project) do
           create(:project, :custom_repo, files: project_files)
         end
 
@@ -294,9 +295,9 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       it 'assigns job:allow_failure values to the builds' do
-        expect(find_job('job-1').allow_failure).to eq(false)
-        expect(find_job('job-2').allow_failure).to eq(true)
-        expect(find_job('job-3').allow_failure).to eq(false)
+        expect(find_job('job-1').allow_failure).to be(false)
+        expect(find_job('job-2').allow_failure).to be(true)
+        expect(find_job('job-3').allow_failure).to be(false)
       end
 
       it 'removes exit_codes if allow_failure is specified' do
@@ -473,8 +474,8 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           expect(build_names).to contain_exactly('deploy', 'teardown')
           expect(find_job('deploy').when).to eq('on_success')
           expect(find_job('teardown').when).to eq('manual')
-          expect(find_job('deploy').allow_failure).to eq(false)
-          expect(find_job('teardown').allow_failure).to eq(false)
+          expect(find_job('deploy').allow_failure).to be(false)
+          expect(find_job('teardown').allow_failure).to be(false)
           expect(find_job('deploy').actual_persisted_environment.name).to eq('review/master')
           expect(find_job('teardown').actual_persisted_environment.name).to eq('review/master')
         end
@@ -531,10 +532,10 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           end
 
           it 'assigns job:allow_failure values to the builds' do
-            expect(find_job('regular-job').allow_failure).to eq(false)
-            expect(find_job('master-job').allow_failure).to eq(false)
-            expect(find_job('negligible-job').allow_failure).to eq(true)
-            expect(find_job('delayed-job').allow_failure).to eq(false)
+            expect(find_job('regular-job').allow_failure).to be(false)
+            expect(find_job('master-job').allow_failure).to be(false)
+            expect(find_job('negligible-job').allow_failure).to be(true)
+            expect(find_job('delayed-job').allow_failure).to be(false)
           end
 
           it 'assigns start_in for delayed jobs' do
@@ -565,7 +566,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           expect(pipeline).to be_persisted
           expect(build_names).to contain_exactly('regular-job')
           expect(regular_job.when).to eq('manual')
-          expect(regular_job.allow_failure).to eq(true)
+          expect(regular_job.allow_failure).to be(true)
         end
       end
 
@@ -704,7 +705,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         end
 
         it 'sets allow_failure: for negligible job' do
-          expect(find_job('negligible-job').allow_failure).to eq(true)
+          expect(find_job('negligible-job').allow_failure).to be(true)
         end
       end
 
@@ -740,9 +741,75 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         end
       end
 
+      context 'without compare_to in a merge request pipeline', :request_store do
+        let_it_be(:project, freeze: false) { create(:project, :repository) }
+        let_it_be(:user) { project.first_owner }
+
+        let_it_be(:merge_request) do
+          project.repository.create_file(
+            user, 'revert_me.txt', 'original', message: 'Add revert_me.txt', branch_name: 'master'
+          )
+          project.repository.create_file(
+            user, 'genuinely_changed.txt', 'new', message: 'Add genuinely_changed.txt',
+            branch_name: 'net-diff-source', start_branch_name: 'master'
+          )
+          project.repository.update_file(
+            user, 'revert_me.txt', 'changed', message: 'Change revert_me.txt', branch_name: 'net-diff-source'
+          )
+          project.repository.update_file(
+            user, 'revert_me.txt', 'original', message: 'Revert revert_me.txt', branch_name: 'net-diff-source'
+          )
+
+          create(:merge_request,
+            source_project: project, source_branch: 'net-diff-source',
+            target_project: project, target_branch: 'master')
+        end
+
+        let(:source) { :merge_request_event }
+        let(:initialization_params) do
+          {
+            ref: merge_request.ref_path,
+            source_sha: merge_request.diff_head_sha,
+            target_sha: nil
+          }
+        end
+
+        let(:response) { service.execute(source, merge_request: merge_request) }
+
+        let(:config) do
+          <<-YAML
+            revert-job:
+              script: 'echo reverted'
+              rules:
+                - changes: [revert_me.txt]
+
+            changed-job:
+              script: 'echo changed'
+              rules:
+                - changes: [genuinely_changed.txt]
+          YAML
+        end
+
+        it 'evaluates changes against the net diff vs the target branch, excluding reverted files' do
+          expect(pipeline).to be_persisted
+          expect(build_names).to contain_exactly('changed-job')
+        end
+
+        context 'when the :mr_changed_paths_net_diff feature flag is disabled' do
+          before do
+            stub_feature_flags(mr_changed_paths_net_diff: false)
+          end
+
+          it 'evaluates changes against the per-commit union, including reverted files' do
+            expect(pipeline).to be_persisted
+            expect(build_names).to contain_exactly('changed-job', 'revert-job')
+          end
+        end
+      end
+
       context 'with paths and compare_to' do
-        let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
-        let_it_be(:user)    { project.first_owner }
+        let_it_be_with_reload(:project) { create(:project, :empty_repo) }
+        let_it_be(:user) { project.first_owner }
 
         let(:initialization_params) { base_initialization_params.merge(before: nil) }
         let(:changed_file) { 'file2.txt' }
@@ -992,9 +1059,9 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         end
 
         it 'sets allow_failure: for all jobs' do
-          expect(regular_job.allow_failure).to eq(false)
-          expect(rules_job.allow_failure).to eq(true)
-          expect(delayed_job.allow_failure).to eq(true)
+          expect(regular_job.allow_failure).to be(false)
+          expect(rules_job.allow_failure).to be(true)
+          expect(delayed_job.allow_failure).to be(true)
         end
       end
 
@@ -1054,7 +1121,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           expect(regular_job).to be_persisted
           expect(rules_job).to be_persisted
           expect(rules_job.when).to eq('manual')
-          expect(rules_job.allow_failure).to eq(false)
+          expect(rules_job.allow_failure).to be(false)
         end
       end
 
@@ -1132,10 +1199,10 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       it 'assigns job:allow_failure values to the builds' do
-        expect(find_job('job-1').allow_failure).to eq(false)
-        expect(find_job('job-4').allow_failure).to eq(false)
-        expect(find_job('job-5').allow_failure).to eq(true)
-        expect(find_job('job-6').allow_failure).to eq(true)
+        expect(find_job('job-1').allow_failure).to be(false)
+        expect(find_job('job-4').allow_failure).to be(false)
+        expect(find_job('job-5').allow_failure).to be(true)
+        expect(find_job('job-6').allow_failure).to be(true)
       end
     end
 
@@ -1205,13 +1272,13 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       it 'assigns job:allow_failure values to the builds' do
-        expect(find_job('job-1').allow_failure).to eq(false)
-        expect(find_job('job-2').allow_failure).to eq(true)
-        expect(find_job('job-3').allow_failure).to eq(true)
-        expect(find_job('job-4').allow_failure).to eq(false)
-        expect(find_job('job-5').allow_failure).to eq(true)
-        expect(find_job('job-6').allow_failure).to eq(false)
-        expect(find_job('job-7').allow_failure).to eq(true)
+        expect(find_job('job-1').allow_failure).to be(false)
+        expect(find_job('job-2').allow_failure).to be(true)
+        expect(find_job('job-3').allow_failure).to be(true)
+        expect(find_job('job-4').allow_failure).to be(false)
+        expect(find_job('job-5').allow_failure).to be(true)
+        expect(find_job('job-6').allow_failure).to be(false)
+        expect(find_job('job-7').allow_failure).to be(true)
       end
 
       it 'assigns job:when values to the builds' do

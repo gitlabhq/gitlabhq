@@ -22,7 +22,7 @@ export default {
   provide: {
     showExportButton: true,
   },
-  inject: ['isSignedIn', 'issuableType', 'email', 'exportCsvPath', 'rssUrl'],
+  inject: ['isSignedIn', 'exportCsvPath', 'rssUrl'],
   props: {
     count: {
       type: Number,

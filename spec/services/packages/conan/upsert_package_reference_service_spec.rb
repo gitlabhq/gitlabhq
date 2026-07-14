@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::UpsertPackageReferenceService, feature_category: :package_registry do
-  let_it_be(:package, freeze: false) { create(:conan_package, without_package_files: true) }
+  let_it_be_with_reload(:package) { create(:conan_package, without_package_files: true) }
   let_it_be(:conan_package_reference) { '1234567890abcdef1234567890abcdef12345678' }
   let_it_be(:recipe_revision) { create(:conan_recipe_revision, package: package) }
 

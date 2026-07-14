@@ -8,7 +8,7 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
   describe 'GET /personal_access_tokens' do
     using RSpec::Parameterized::TableSyntax
 
-    def map_id(json_resonse)
+    def map_id(json_response)
       json_response.map { |pat| pat['id'] }
     end
 
@@ -43,6 +43,62 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.count).to eq(PersonalAccessToken.all.count)
+      end
+
+      it 'avoids N+1 queries when rendering last_used_ips' do
+        stub_feature_flags(expose_last_used_ips_for_access_tokens: true)
+        token = create(:personal_access_token)
+        token.last_used_ips.create!(organization: token.organization, ip_address: '192.0.2.30')
+
+        get api(path, current_user) # warm-up
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(path, current_user) }
+
+        extra_token = create(:personal_access_token)
+        extra_token.last_used_ips.create!(organization: extra_token.organization, ip_address: '192.0.2.31')
+
+        expect { get api(path, current_user) }.not_to exceed_all_query_limit(control)
+      end
+
+      it 'avoids N+1 queries when rendering granular_scopes for project-scoped tokens' do
+        project = create(:project)
+        create(:granular_pat, user: current_user, permissions: ['read_job'],
+          boundary: ::Authz::Boundary.for(project))
+
+        get api(path, current_user) # warm-up
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(path, current_user) }
+
+        other_project = create(:project)
+        create(:granular_pat, user: current_user, permissions: ['read_job'],
+          boundary: ::Authz::Boundary.for(other_project))
+
+        expect { get api(path, current_user) }.not_to exceed_all_query_limit(control)
+      end
+
+      it 'returns granular_scopes for a granular token' do
+        token = create(:granular_pat, user: current_user, permissions: ['read_job'],
+          boundary: ::Authz::Boundary.for(::Authz::GranularScope::Access::INSTANCE))
+
+        get api(path, current_user)
+
+        pat_response = json_response.find { |pat| pat['id'] == token.id }
+        expect(pat_response['granular_scopes']).to contain_exactly(
+          a_hash_including('access' => 'instance', 'permissions' => ['read_job'])
+        )
+      end
+
+      it 'resolves project_id for a project-scoped granular token' do
+        project = create(:project)
+        token = create(:granular_pat, user: current_user, permissions: ['read_job'],
+          boundary: ::Authz::Boundary.for(project))
+
+        get api(path, current_user)
+
+        pat_response = json_response.find { |pat| pat['id'] == token.id }
+        expect(pat_response['granular_scopes']).to contain_exactly(
+          a_hash_including('permissions' => ['read_job'], 'project_id' => project.id, 'group_id' => nil)
+        )
       end
 
       context 'filtered with user_id parameter' do
@@ -330,6 +386,7 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         let(:request_ip_address) { '192.168.1.2' }
 
         before do
+          stub_feature_flags(expose_last_used_ips_for_access_tokens: true)
           allow_next_instance_of(Gitlab::ExclusiveLease) do |instance|
             allow(instance).to receive(:try_obtain).and_return(true)
           end
@@ -530,6 +587,10 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
       context 'when a token is recently used from an IP' do
         let(:request_ip_address) { '192.168.1.2' }
 
+        before do
+          stub_feature_flags(expose_last_used_ips_for_access_tokens: true)
+        end
+
         it 'returns IPs' do
           get api(user_token_path, personal_access_token: user_token), headers: { 'REMOTE_ADDR' => request_ip_address }
 
@@ -539,11 +600,52 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
       end
 
       context 'when there is not an ip recently used' do
+        before do
+          stub_feature_flags(expose_last_used_ips_for_access_tokens: true)
+        end
+
         it 'does not return an ip' do
           get api(user_token_path, current_user)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['last_used_ips']).to be_empty
+        end
+      end
+
+      context 'when the token is granular' do
+        let_it_be(:granular_token) do
+          create(:granular_pat, user: current_user, permissions: ['read_job'],
+            boundary: ::Authz::Boundary.for(::Authz::GranularScope::Access::INSTANCE))
+        end
+
+        let_it_be(:granular_token_path) { "/personal_access_tokens/#{granular_token.id}" }
+
+        it 'returns granular_scopes' do
+          get api(granular_token_path, current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['granular_scopes']).to contain_exactly(
+            a_hash_including('access' => 'instance', 'permissions' => ['read_job'])
+          )
+        end
+
+        it 'avoids N+1 queries when the token has multiple project-scoped granular scopes' do
+          project = create(:project)
+          token = create(:granular_pat, user: current_user, permissions: ['read_job'],
+            boundary: ::Authz::Boundary.for(project))
+          token_path = "/personal_access_tokens/#{token.id}"
+
+          get api(token_path, current_user) # warm-up
+
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(token_path, current_user) }
+
+          other_project = create(:project)
+          other_scope = create(:granular_scope, boundary: ::Authz::Boundary.for(other_project),
+            permissions: ['read_job'], organization: token.organization)
+          create(:personal_access_token_granular_scope, personal_access_token: token,
+            granular_scope: other_scope, organization: token.organization)
+
+          expect { get api(token_path, current_user) }.not_to exceed_all_query_limit(control)
         end
       end
 
@@ -603,6 +705,21 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['token']).not_to eq(token.token)
         expect(json_response['expires_at']).to eq(expiry_date.to_s)
+      end
+    end
+
+    context 'when the token is granular' do
+      it 'carries over granular_scopes to the new token and resolves its project_id' do
+        project = create(:project)
+        granular_token = create(:granular_pat, permissions: ['read_job'],
+          boundary: ::Authz::Boundary.for(project))
+
+        post api("/personal_access_tokens/#{granular_token.id}/rotate", granular_token.user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['granular_scopes']).to contain_exactly(
+          a_hash_including('permissions' => ['read_job'], 'project_id' => project.id, 'group_id' => nil)
+        )
       end
     end
 

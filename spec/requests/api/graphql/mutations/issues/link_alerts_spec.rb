@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe 'Link alerts to an incident', feature_category: :incident_management do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:planner) { create(:user, planner_of: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
-  let_it_be(:linked_alert, freeze: false) { create(:alert_management_alert, project: project) }
+  let_it_be_with_reload(:linked_alert) { create(:alert_management_alert, project: project) }
   let_it_be(:alert1) { create(:alert_management_alert, project: project) }
   let_it_be(:alert2) { create(:alert_management_alert, project: project) }
-  let_it_be(:incident, freeze: false) { create(:incident, project: project, alert_management_alerts: [linked_alert]) }
+  let_it_be_with_reload(:incident) { create(:incident, project: project, alert_management_alerts: [linked_alert]) }
 
   let(:mutation) do
     variables = {

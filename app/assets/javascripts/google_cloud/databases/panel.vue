@@ -5,6 +5,7 @@ import InstanceTable from './cloudsql/instance_table.vue';
 import ServiceTable from './service_table.vue';
 
 export default {
+  name: 'DatabasesPanel',
   components: {
     InstanceTable,
     GoogleCloudMenu,

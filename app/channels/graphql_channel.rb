@@ -57,7 +57,8 @@ class GraphqlChannel < ApplicationCable::Channel # rubocop:disable Gitlab/Namesp
       current_user: current_user,
       current_organization: connection.current_organization,
       is_sessionless_user: false,
-      scope_validator: scope_validator
+      scope_validator: scope_validator,
+      access_token: access_token
     }
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['AgentConfiguration'] do
+RSpec.describe GitlabSchema.types['AgentConfiguration'], feature_category: :deployment_management do
   let(:fields) { %i[agent_name] }
 
   it { expect(described_class.graphql_name).to eq('AgentConfiguration') }

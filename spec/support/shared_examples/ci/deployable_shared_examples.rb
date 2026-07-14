@@ -585,17 +585,6 @@ RSpec.shared_examples 'a deployable job' do
     describe '#expanded_environment_name' do
       subject { job.expanded_environment_name }
 
-      before_all do
-        Ci::ApplicationRecord.connection.execute(<<~SQL)
-          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_100"
-            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (100);
-          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_101"
-            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (101);
-          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_102"
-            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (102);
-        SQL
-      end
-
       context 'when environment uses $CI_COMMIT_REF_NAME' do
         let(:job) do
           create(
@@ -621,19 +610,6 @@ RSpec.shared_examples 'a deployable job' do
 
         it 'returns an expanded environment name with a list of variables' do
           is_expected.to eq('review/host')
-        end
-
-        context 'when job metadata has already persisted the expanded environment name' do
-          before do
-            create(:ci_build_metadata, build: job, expanded_environment_name: 'review/foo')
-            job.reload_metadata
-          end
-
-          it 'returns a persisted expanded environment name without a list of variables' do
-            expect(job).not_to receive(:simple_variables)
-
-            is_expected.to eq('review/foo')
-          end
         end
       end
 
@@ -681,22 +657,6 @@ RSpec.shared_examples 'a deployable job' do
         end
 
         it { is_expected.to eq('name-from-job-env') }
-
-        context 'when the job metadata has the namespace persisted' do
-          before do
-            create(:ci_build_metadata, build: job, expanded_environment_name: 'name-from-metadata')
-          end
-
-          it { is_expected.to eq('name-from-job-env') }
-        end
-
-        context 'when the job metadata does not exist' do
-          before do
-            job.metadata&.destroy!
-          end
-
-          it { is_expected.to eq('name-from-job-env') }
-        end
       end
     end
 

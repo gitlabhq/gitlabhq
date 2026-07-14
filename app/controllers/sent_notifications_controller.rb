@@ -16,8 +16,6 @@ class SentNotificationsController < ApplicationController
   def unsubscribe
     return render_expired_link unless unsubscribe_prerequisites_met?
 
-    @notification_id_from_request = params[:id]
-
     unsubscribe_and_redirect if current_user || params[:force] || request.post?
   end
 
@@ -31,7 +29,7 @@ class SentNotificationsController < ApplicationController
   private
 
   def sent_notification
-    SentNotification.for(params[:id])
+    SentNotification.for(params[:id], params[:namespace_id])
   end
   strong_memoize_attr :sent_notification
 

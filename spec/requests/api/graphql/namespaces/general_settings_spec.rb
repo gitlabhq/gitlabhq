@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe 'querying namespace settings', feature_category: :api do
   include GraphqlHelpers
 
-  let_it_be(:group, freeze: false) { create(:group) }
-  let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
+  let_it_be_with_reload(:group) { create(:group) }
+  let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
 
   let(:omniauth_provider_config_oidc) do
-    GitlabSettings::Options.new(
+    Gitlab::Configs.build_options(
       name: 'openid_connect',
       label: 'OpenID Connect',
       step_up_auth: {

@@ -39,46 +39,83 @@ If the default replication factor is used, Praefect automatically replicates all
 
 ### Replace an existing Gitaly node
 
-You can replace an existing Gitaly node with a new node with either the same name or a different name. Before removing the old node:
+You can replace an existing Gitaly node with a new node that has either the same name or a different name.
 
-- If a replication factor is set, it must be greater than 1 to prevent data loss.
-- If no replication factor is set, repositories are replicated on every node under the virtual storage.
+#### Replacing primary nodes
 
-When a primary Gitaly node is removed, repositories managed by that node become unavailable until either:
+Gitaly Cluster (Praefect) elects a primary separately for each repository. When you remove a node that is the
+primary for some repositories, the outcome depends on whether an up-to-date replica remains.
 
-- The node is replaced and replicated.
-- A new replacement node becomes available that contains the data from the replaced primary node.
+If an up-to-date replica exists on a remaining healthy node, the repository stays available.
+Reads are served from the up-to-date replica, and Praefect elects a new primary from a valid candidate on
+the next request that requires one. Users are not affected.
 
-While the node is unavailable, read requests to affected repositories fail with `404` errors. Gitaly resolves this
-situation automatically on the next write attempt to the affected repositories by triggering a failover to establish a
-new primary node.
+If no up-to-date replica remains (the removed node held the last current copy), the repository becomes
+unavailable. Praefect returns `404` for reads rather than serve a stale copy. The repository stays unavailable
+until one of the following restores an up-to-date copy:
 
-#### With a node with the same name
+- The node is brought back (same name) and re-replicated.
+- A replacement node that contains the repository's data becomes available (different name).
+
+Because an unavailable repository has no valid primary candidate to elect, a read cannot recover it: there is
+nowhere to route the request. The next write re-establishes a primary by promoting the best available replica (the
+one with the fewest unreplicated changes), which can incur data loss for writes that existed only on the removed
+node. To avoid this case entirely, ensure every repository on the node has an up-to-date copy on a remaining healthy node before removal.
+
+Gitaly Cluster (Praefect) does not provide a command to manually trigger re-election of a primary. The closest option
+is the [`accept-dataloss`](#accept-data-loss) subcommand, which sets a specified storage as the primary for a
+relative path and begins replicating from that storage instead of the old primary.
+
+#### Prepare to remove a node
+
+Before you remove the old node, so that every repository it holds has an up-to-date copy on another healthy node:
+
+1. Confirm the replication factor allows redundancy:
+   - If a replication factor is set, it must be greater than `1`. With a replication factor of `1`, removing a node causes data loss.
+   - If no replication factor is set, repositories are replicated to every node in the virtual storage, so a copy already exists elsewhere.
+1. Ensure pool repositories are replicated to the same nodes as their upstream repository and forks. Pool repositories
+   are treated the same as other repositories for replication, but older clusters might have pool repositories that are
+   not co-located with the repositories that depend on them.
+1. Use the [`dataloss`](#check-for-data-loss) subcommand to confirm each affected repository has an up-to-date, assigned replica on a node you are keeping.
+1. Place the GitLab instance in [maintenance mode](../../maintenance_mode/_index.md) so that new writes are not
+   processed by the cluster while you remove the node.
+
+#### Use the same name
 
 To use the same name for the replacement node, use [repository verifier](configure.md#enable-deletions) to scan the storage and remove dangling metadata records.
 [Manually prioritize verification](configure.md#prioritize-verification-manually) of the replaced storage to speed up the process.
 
-#### With a node with a different name
+#### Use a different name
 
-The steps to replace a node with a node with a different name for Gitaly Cluster (Praefect) depend on if a
-[replication factor](configure.md#configure-replication-factor) is set.
+When using a different name for the replacement node, how you get repositories onto the new node depends on your
+[replication factor](configure.md#configure-replication-factor) configuration.
 
-If a custom replication factor is set, use [`praefect set-replication-factor`](configure.md#configure-replication-factor)
-to set the replication factor per repository again to get new storage assigned.
+If a custom replication factor is set, existing repositories are not automatically replicated to a newly added node.
+Get the new node populated using one of the following approaches:
 
-For example, if two nodes in the virtual storage have a replication factor of 2 and a new node (`gitaly-3`) is added, you should increase the replication
-factor to 3:
+- **Increase the replication factor** with [`praefect set-replication-factor`](configure.md#configure-replication-factor).
+  This assigns one additional storage chosen at random from the unassigned configured storages. It does not
+  preferentially pick the newly added node. In a cluster with more than one unassigned storage, the new replica can
+  land on any of them, including a node you intend to retire. Use this approach when adding redundancy, not when
+  capacity on the old nodes is constrained.
 
-```shell
-$ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -relative-path @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 3
+  For example, if two nodes in the virtual storage have a replication factor of 2 and a new node (`gitaly-3`) is added, you can increase the replication
+  factor to 3:
 
-current assignments: gitaly-1, gitaly-2, gitaly-3
-```
+  ```shell
+  $ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -relative-path @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 3
 
-This ensures that the repository is replicated to the new node and the `repository_assignments` table gets updated with the name of new Gitaly node.
+  current assignments: gitaly-1, gitaly-2, gitaly-3
+  ```
 
-If the [default replication factor](configure.md#configure-replication-factor) is set, new nodes are not
-automatically included in replication. You must follow the steps described previously.
+  This ensures that the repository is replicated to a new node and the `repository_assignments` table is updated with the name of the new Gitaly node.
+
+- **Reassign at the same replication factor** by updating the `repository_assignments` table. This swaps the old
+  storage for the new one without adding a copy, and is the recommended approach when you are draining a node or
+  source capacity is limited. See the reassignment steps later in this section.
+
+If the [default replication factor](configure.md#configure-replication-factor) is set, Praefect automatically
+replicates all repositories to any newly added node to maintain the factor. No per-repository action is required.
 
 After you [verify](#check-for-data-loss) that repository is successfully replicated to the new node:
 
@@ -107,7 +144,9 @@ An alternative is to reassign all repositories from the old storage to the new o
    UPDATE repository_assignments SET storage='new-gitaly' WHERE storage='old-gitaly';
    ```
 
-This would trigger appropriate replication jobs to bring the system back into the desired state.
+This triggers the appropriate replication jobs to bring the system back into the desired state. Before you remove the
+old node, use the [`dataloss`](#check-for-data-loss) subcommand to confirm each affected repository has an up-to-date,
+assigned replica on the new node.
 
 ## Primary node failure
 

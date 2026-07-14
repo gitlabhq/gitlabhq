@@ -1,0 +1,11 @@
+# @feature_category: continuous_integration
+#import "../fragments/mr_pipeline_list_item.fragment.graphql"
+
+query getMergeRequestSinglePipeline($fullPath: ID!, $id: CiPipelineID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(id: $id) {
+      ...MergeRequestPipelineListItem
+    }
+  }
+}

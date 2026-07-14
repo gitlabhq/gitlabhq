@@ -23,7 +23,6 @@ class UserDetail < ApplicationRecord
   validate :provisioning_source_mutually_exclusive
 
   ignore_column :email_reset_offered_at, remove_after: '2026-01-16', remove_with: '18.8'
-  ignore_column :organization, remove_after: '2026-06-20', remove_with: '19.2'
 
   DEFAULT_FIELD_LENGTH = 500
 
@@ -59,6 +58,21 @@ class UserDetail < ApplicationRecord
     \z            # end of string
   /x
 
+  TWITTER_HANDLE_REGEX = %r{
+    \A                                  # beginning of string
+    (?:https?://)?                      # optional scheme
+    (?:(?:www\.)?(?:twitter|x)\.com/)?  # optional twitter/x host
+    @?                                  # optional leading @
+    ([^/?\#]+)                          # capture handle (first path segment)
+  }xi
+
+  GITHUB_HANDLE_REGEX = %r{
+    \A                           # beginning of string
+    (?:https?://)?               # optional scheme
+    (?:(?:www\.)?github\.com/)?  # optional github host
+    ([^/?\#]+)                   # capture handle (first path segment)
+  }xi
+
   validates :discord, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validate :discord_format
   validates :linkedin, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
@@ -88,6 +102,13 @@ class UserDetail < ApplicationRecord
   before_validation :sanitize_attrs, if: -> { Feature.disabled?(:validate_sanitizable_user_details, user) }
 
   before_save :prevent_nil_fields
+
+  # Allow rendering `bio` with MarkupHelper.markdown_field using the UserBioPipeline.
+  def banzai_render_context(field)
+    raise ArgumentError, "Unknown field: #{field.inspect}" unless field == :bio
+
+    { pipeline: :user_bio, project: nil }
+  end
 
   # Exclude the hashed email_otp attribute
   def serializable_hash(options = nil)

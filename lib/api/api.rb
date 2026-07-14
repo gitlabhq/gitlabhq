@@ -13,10 +13,23 @@ module API
     NAMESPACE_OR_PROJECT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
     COMMIT_ENDPOINT_REQUIREMENTS = NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
     USER_REQUIREMENTS = { user_id: NO_SLASH_URL_PART_REGEX }.freeze
+    # Grape 2.4+ no longer honors route-level `format: false`; this never-matching `:format`
+    # requirement re-suppresses the implicit `(.:format)` suffix so a trailing extension or
+    # dot stays inside the wildcard/param instead of being parsed off as a response format.
+    NO_FORMAT_SUFFIX_REQUIREMENT = { format: /(?!)/ }.freeze
+    # Origin of the catch-all `route :any, '*path'` that handles requests mapping to no real
+    # endpoint (unknown paths and unmatched API versions).
+    UNMATCHED_ROUTE_ORIGIN = '/api/:version/*path'
     LOG_FILTERS = ::Rails.application.config.filter_parameters + [/^output$/]
     LOG_FILTER_EXCEPTIONS = %w[controller action format Content-Type].freeze
     LOG_FORMATTER = Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new
+    # grape_logging 3.0.0's Reporters::LoggerReporter clones the logger it is given, so the request
+    # logger emits through a clone of LOGGER rather than LOGGER itself. The clone exists only to hold a
+    # per-reporter formatter, which we already supply explicitly via `formatter:` below, so it changes
+    # nothing in production. Returning self from #clone keeps LOGGER the single emitting object, matching
+    # Grape 2.0/grape_logging 1.8.4 behavior and letting specs stub LOGGER directly.
     LOGGER = Logger.new(LOG_FILENAME, level: ::Gitlab::Utils.to_rails_log_level(ENV["GITLAB_LOG_LEVEL"], :info))
+      .tap { |logger| def logger.clone = self }
 
     class MovedPermanentlyError < StandardError
       MSG_PREFIX = 'This resource has been moved permanently to'
@@ -56,6 +69,7 @@ module API
     prefix :api
 
     version 'v3', using: :path do
+      route_setting :authorization, skip_granular_token_authorization: :catch_all
       route :any, '*path' do
         error!('API V3 is no longer supported. Use API V4 instead.', 410)
       end
@@ -75,9 +89,14 @@ module API
     end
 
     before do
+      api_endpoint = request.env[Grape::Env::API_ENDPOINT]
+
+      # Skip when the request is for the catch-all route (`route :any, '*path'`),
+      # since that route is only supposed to return 404 Not Found
+      next if api_endpoint&.route&.pattern&.origin == UNMATCHED_ROUTE_ORIGIN
+
       coerce_nil_params_to_array!
 
-      api_endpoint = request.env[Grape::Env::API_ENDPOINT]
       feature_category = api_endpoint.options[:for].try(:feature_category_for_app, api_endpoint).to_s
 
       # remote_ip is added here and the ContextLogger so that the
@@ -95,6 +114,33 @@ module API
       )
 
       increment_http_router_metrics
+    end
+
+    before_validation do
+      next unless Feature.enabled?(:set_current_organization_for_grape_api, Feature.current_request)
+      next if ::Current.organization_assigned
+
+      endpoint_class = request.env[Grape::Env::API_ENDPOINT]&.options&.dig(:for)
+      next if endpoint_class.respond_to?(:skip_global_organization_setup?) &&
+        endpoint_class.skip_global_organization_setup?
+
+      begin
+        ::Current.organization = Gitlab::Current::Organization.new(
+          params: {},
+          user: -> { safe_find_user_from_sources },
+          rack_env: request.env
+        ).organization
+      rescue ::Current::OrganizationAlreadyAssignedError
+        # The earlier check is the canonical guard, but some tests stub
+        # Current.organization_assigned to return false while the underlying
+        # attribute is in fact set. Treat the resulting double-assignment as
+        # a no-op rather than letting it abort the request.
+      end
+
+      # Mirror what set_current_organization in lib/api/helpers.rb does after
+      # assigning, so write requests to a read-only organization are rejected
+      # even when this hook short-circuits the per-endpoint helper.
+      check_organization_read_only!
     end
 
     before do
@@ -198,6 +244,7 @@ module API
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
     helpers ::API::Helpers
     helpers ::API::Helpers::CommonHelpers
+    helpers ::API::Helpers::CurrentOrganizationHelpers
     helpers ::API::Helpers::PerformanceBarHelpers
     helpers ::API::Helpers::RateLimiter
     helpers Gitlab::HttpRouter::RuleContext
@@ -292,6 +339,8 @@ module API
         mount ::API::Integrations::Slack::Interactions
         mount ::API::Integrations::Slack::Options
         mount ::API::Integrations::JiraConnect::Subscriptions
+        mount ::API::Integrations::JiraForge::Installations
+        mount ::API::Integrations::JiraForge::Subscriptions
         mount ::API::Invitations
         mount ::API::IssueLinks
         mount ::API::Issues
@@ -381,7 +430,9 @@ module API
         mount ::API::WorkItems::LinkedItems
         mount ::API::WorkItems::LinkedResources
         mount ::API::WorkItems::AwardEmoji
+        mount ::API::WorkItems::CurrentUserTodos
         mount ::API::WorkItems::Notes
+        mount ::API::WorkItems::Discussions
         mount ::API::WorkItems::EmailParticipants
         mount ::API::Wikis
 
@@ -442,6 +493,7 @@ module API
     mount ::API::Internal::Shellhorse
     mount ::API::Internal::Gitaly
 
+    route_setting :authorization, skip_granular_token_authorization: :catch_all
     route :any, '*path', feature_category: :not_owned do
       error!('404 Not Found', 404)
     end
@@ -460,14 +512,19 @@ module API
       return unless user
       return unless Feature.enabled?(:track_api_request_from_personal_access_token, user)
 
+      additional_properties = {
+        label: endpoint_id,
+        pat_type: token_info[:pat_type],
+        response_code: context.status
+      }
+
+      denied_permissions = ::Current.formatted_granular_denied_permissions
+      additional_properties[:denied_permissions] = denied_permissions if denied_permissions
+
       ::Gitlab::InternalEvents.track_event(
         'use_pat',
         user: user,
-        additional_properties: {
-          label: endpoint_id,
-          pat_type: token_info[:pat_type],
-          response_code: context.status
-        }
+        additional_properties: additional_properties
       )
 
       # Explicit nil is needed or the api call return value will be overwritten

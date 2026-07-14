@@ -97,7 +97,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
     describe '.orphan' do
       subject { described_class.orphan }
 
-      let_it_be(:symbol, freeze: false) { create(:nuget_symbol) }
+      let_it_be_with_reload(:symbol) { create(:nuget_symbol) }
       let_it_be(:orphan_symbol) { create(:nuget_symbol, :orphan) }
 
       it { is_expected.to contain_exactly(orphan_symbol) }
@@ -106,7 +106,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
     describe '.pending_destruction' do
       subject { described_class.pending_destruction }
 
-      let_it_be(:symbol, freeze: false) { create(:nuget_symbol, :orphan, :processing) }
+      let_it_be_with_reload(:symbol) { create(:nuget_symbol, :orphan, :processing) }
       let_it_be(:orphan_symbol) { create(:nuget_symbol, :orphan) }
 
       it { is_expected.to contain_exactly(orphan_symbol) }
@@ -116,7 +116,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
       subject(:with_signature) { described_class.with_signature(signature) }
 
       let_it_be(:signature) { 'signature' }
-      let_it_be(:symbol, freeze: false) { create(:nuget_symbol, signature: signature) }
+      let_it_be_with_reload(:symbol) { create(:nuget_symbol, signature: signature) }
 
       shared_examples 'returns symbols with the given signature' do
         it { is_expected.to contain_exactly(symbol) }
@@ -135,7 +135,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
       subject(:with_file_name) { described_class.with_file_name(file_name) }
 
       let_it_be(:file_name) { 'file_name' }
-      let_it_be(:symbol, freeze: false) { create(:nuget_symbol) }
+      let_it_be_with_reload(:symbol) { create(:nuget_symbol) }
 
       shared_examples 'returns symbols with the given file_name' do
         it 'returns symbols with the given file_name' do
@@ -160,7 +160,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
       subject { described_class.with_file_sha256(checksum) }
 
       let_it_be(:checksum) { OpenSSL::Digest.hexdigest('SHA256', 'checksum') }
-      let_it_be(:symbol, freeze: false) { create(:nuget_symbol, file_sha256: checksum) }
+      let_it_be_with_reload(:symbol) { create(:nuget_symbol, file_sha256: checksum) }
 
       it { is_expected.to contain_exactly(symbol) }
 
@@ -173,7 +173,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
 
     describe '.with_file_path' do
       let_it_be(:file_path) { 'symbol_package/file.pdb' }
-      let_it_be(:symbol, freeze: false) { create(:nuget_symbol, file_path: file_path) }
+      let_it_be_with_reload(:symbol) { create(:nuget_symbol, file_path: file_path) }
 
       subject { described_class.with_file_path(file_path) }
 
@@ -199,7 +199,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
       let_it_be(:signature) { 'signature' }
       let_it_be(:file_name) { 'file.pdb' }
       let_it_be(:checksum) { OpenSSL::Digest.hexdigest('SHA256', 'checksums') }
-      let_it_be(:symbol, freeze: false) { create(:nuget_symbol, signature: signature, file_sha256: checksum) }
+      let_it_be_with_reload(:symbol) { create(:nuget_symbol, signature: signature, file_sha256: checksum) }
       let_it_be(:another_symbol) { create(:nuget_symbol) }
 
       let(:scoped_project_ids) { symbol.project_id }

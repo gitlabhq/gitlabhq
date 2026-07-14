@@ -24,6 +24,7 @@ export default {
       default: null,
     },
   },
+  emits: ['reset-runners-cache'],
   methods: {
     onClickResetCache() {
       this.$emit('reset-runners-cache', this.resetCachePath);

@@ -800,17 +800,17 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
     describe '#can_handle?' do
       let(:mail) { Mail::Message.new(email_raw) }
 
-      it 'handles the new email key format' do
+      it 'handles the new email key format', :aggregate_failures do
         handler = described_class.new(mail, "h5bp-html5-boilerplate-#{project.project_id}-issue-")
 
-        expect(handler.instance_variable_get(:@project_id).to_i).to eq project.project_id
+        expect(handler.identification.project_id).to eq project.project_id
         expect(handler.can_handle?).to be_truthy
       end
 
-      it 'handles the legacy email key format' do
+      it 'handles the legacy email key format', :aggregate_failures do
         handler = described_class.new(mail, "h5bp/html5-boilerplate")
 
-        expect(handler.instance_variable_get(:@project_path)).to eq 'h5bp/html5-boilerplate'
+        expect(handler.identification.project_path).to eq 'h5bp/html5-boilerplate'
         expect(handler.can_handle?).to be_truthy
       end
 

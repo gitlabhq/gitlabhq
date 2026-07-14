@@ -1,5 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { TYPE_EPIC, TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
@@ -11,6 +13,7 @@ import StickyHeader from '~/issues/show/components/sticky_header.vue';
 import TitleComponent from '~/issues/show/components/title.vue';
 import IncidentTabs from '~/issues/show/components/incidents/incident_tabs.vue';
 import PinnedLinks from '~/issues/show/components/pinned_links.vue';
+import getAlert from '~/issues/show/components/incidents/graphql/queries/get_alert.graphql';
 import eventHub from '~/issues/show/event_hub';
 import axios from '~/lib/utils/axios_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -34,6 +37,23 @@ confirmAction.mockResolvedValueOnce(false);
 
 const REALTIME_REQUEST_STACK = [initialRequest, secondRequest];
 
+Vue.use(VueApollo);
+
+const mockResolvers = {
+  Query: {
+    issueState() {
+      return {
+        __typename: 'IssueState',
+        rawData: {},
+      };
+    },
+  },
+};
+
+const getAlertHandler = jest.fn().mockResolvedValue({
+  data: { project: { id: 'gid://gitlab/Project/1', issue: null } },
+});
+
 describe('Issuable output', () => {
   let axiosMock;
   let wrapper;
@@ -48,6 +68,7 @@ describe('Issuable output', () => {
 
   const createComponent = ({ props = {}, options = {} } = {}) => {
     wrapper = shallowMountExtended(IssuableApp, {
+      apolloProvider: createMockApollo([[getAlert, getAlertHandler]], mockResolvers),
       propsData: { ...appProps, ...props },
       provide: {
         fullPath: 'gitlab-org/incidents',
@@ -55,7 +76,6 @@ describe('Issuable output', () => {
       },
       stubs: {
         HighlightBar: true,
-        IncidentTabs,
         PinnedLinks,
       },
       ...options,
@@ -423,17 +443,6 @@ describe('Issuable output', () => {
           props: {
             descriptionComponent: IncidentTabs,
             showTitleBorder: false,
-          },
-          options: {
-            mocks: {
-              $apollo: {
-                queries: {
-                  alert: {
-                    loading: false,
-                  },
-                },
-              },
-            },
           },
         });
       });

@@ -422,7 +422,10 @@ RSpec.describe Repositories::PostReceiveWorker, :clean_gitlab_redis_shared_state
 
     it 'enqueues a UpdateMergeRequestsWorker job' do
       allow(Project).to receive(:find_by).and_return(project)
-      expect_next(MergeRequests::PushedBranchesService).to receive(:execute).and_return(%w[test])
+      expect_next_instance_of(MergeRequests::PushedBranchesService) do |service|
+        expect(service).to receive(:all_branches).and_return(%w[test])
+        allow(service).to receive(:open_source_branches).and_return([])
+      end
 
       expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(project.id, project.first_owner.id, any_args)
 

@@ -3,6 +3,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import PdfLab from '~/pdf/index.vue';
 
 export default {
+  name: 'PdfViewer',
   components: {
     PdfLab,
     GlLoadingIcon,

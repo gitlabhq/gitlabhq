@@ -229,6 +229,46 @@ RSpec.describe Integration, feature_category: :integrations do
       end
     end
 
+    describe '.overriding_instance_default' do
+      it 'includes projects with explicit custom settings (inherit_from_id IS NULL)' do
+        instance_integration = create(:jira_integration, :instance)
+        custom_project_integration = create(:jira_integration)
+
+        expect(described_class.overriding_instance_default(instance_integration))
+          .to include(custom_project_integration)
+      end
+
+      it 'includes projects inheriting from a group integration' do
+        instance_integration = create(:jira_integration, :instance)
+        group_integration = create(:jira_integration, :group)
+        project_inheriting_from_group = create(:jira_integration, inherit_from_id: group_integration.id)
+
+        expect(described_class.overriding_instance_default(instance_integration))
+          .to include(project_inheriting_from_group)
+      end
+
+      it 'excludes projects inheriting directly from the instance integration' do
+        instance_integration = create(:jira_integration, :instance)
+        project_inheriting_from_instance = create(:jira_integration, inherit_from_id: instance_integration.id)
+
+        expect(described_class.overriding_instance_default(instance_integration))
+          .not_to include(project_inheriting_from_instance)
+      end
+
+      context 'when the instance integration is not persisted' do
+        it 'includes both explicit custom and group-inherited projects' do
+          instance_integration = build(:jira_integration, :instance)
+          custom_project_integration = create(:jira_integration, inherit_from_id: nil)
+          group_integration = create(:jira_integration, :group)
+          project_inheriting_from_group = create(:jira_integration, inherit_from_id: group_integration.id)
+
+          result = described_class.overriding_instance_default(instance_integration)
+
+          expect(result).to include(custom_project_integration, project_inheriting_from_group)
+        end
+      end
+    end
+
     describe '.by_type' do
       let_it_be(:jira_project_integration) { create(:jira_integration, project: project) }
       let_it_be(:jira_integration) { create(:jira_integration) }

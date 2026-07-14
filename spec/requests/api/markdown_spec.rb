@@ -102,6 +102,12 @@ RSpec.describe API::Markdown, feature_category: :markdown do
           let(:params) { { text: text } }
 
           it_behaves_like "rendered markdown text without GFM"
+
+          it_behaves_like 'authorizing granular token permissions', :render_markdown,
+            expected_success_status: :created do
+            let(:boundary_object) { :user }
+            let(:request) { post api("/markdown", personal_access_token: pat), params: params }
+          end
         end
 
         context "with project" do
@@ -115,6 +121,12 @@ RSpec.describe API::Markdown, feature_category: :markdown do
             let(:user) { project.first_owner }
 
             it_behaves_like "rendered markdown text without GFM"
+
+            it_behaves_like 'authorizing granular token permissions', :render_markdown,
+              expected_success_status: :created do
+              let(:boundary_object) { project }
+              let(:request) { post api("/markdown", personal_access_token: pat), params: params }
+            end
           end
         end
       end

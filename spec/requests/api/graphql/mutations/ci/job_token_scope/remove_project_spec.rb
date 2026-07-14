@@ -101,7 +101,19 @@ RSpec.describe 'CiJobTokenScopeRemoveProject', feature_category: :continuous_int
       it 'has mutation errors' do
         post_graphql_mutation(mutation, current_user: current_user)
 
-        expect(mutation_response['errors']).to contain_exactly(Ci::JobTokenScope::EditScopeValidations::TARGET_PROJECT_UNAUTHORIZED_OR_UNFOUND)
+        expect(mutation_response['errors']).to contain_exactly(Ci::JobTokenScope::RemoveProjectService::TARGET_NOT_IN_SCOPE)
+      end
+    end
+
+    context 'when user has no access to target project' do
+      let_it_be(:current_user) { create(:user, maintainer_of: project) }
+
+      it 'removes the project from the allowlist', :aggregate_failures do
+        expect { post_graphql_mutation(mutation, current_user: current_user) }
+          .to change { Ci::JobToken::ProjectScopeLink.count }.by(-1)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['errors']).to be_empty
       end
     end
   end

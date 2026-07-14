@@ -50,7 +50,7 @@ RSpec.describe Search::Worker, feature_category: :global_search do
     let(:exceptions) do
       [
         # checks elasticsearch_pause_indexing
-        ElasticIndexInitialBulkCronWorker,
+        Search::Elastic::IndexInitialBulkCronWorker,
         Search::Elastic::IndexBulkCronWorker,
         # advanced search framework operations
         Elastic::MigrationWorker,

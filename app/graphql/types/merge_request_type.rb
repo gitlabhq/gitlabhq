@@ -11,6 +11,8 @@ module Types
     implements Types::TodoableInterface
 
     authorize :read_merge_request
+    authorize_granular_token permissions: :read_merge_request,
+      boundary: :project, boundary_type: :project
 
     def self.authorization_scopes
       super + [:ai_workflows]
@@ -34,6 +36,15 @@ module Types
       description: 'Details about which files were changed in the merge request.' do
       argument :path, GraphQL::Types::String, required: false, description: 'Specific file path.'
     end
+    field :discussions_with_activity, ::Types::Notes::DiscussionType.connection_type,
+      null: false,
+      skip_type_authorization: [:read_note, :read_emoji],
+      resolver: Resolvers::Notes::DiscussionsResolver,
+      connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
+      experiment: { milestone: '19.2' },
+      description: 'Discussions on the merge request, including synthetic system notes ' \
+        'generated from resource events such as label, milestone, and state changes. ' \
+        'Supports forward-only pagination.'
     field :draft, GraphQL::Types::Boolean, method: :draft?, null: false,
       description: 'Indicates if the merge request is a draft.'
     field :id, GraphQL::Types::ID, null: false,
@@ -321,11 +332,17 @@ module Types
       [Types::MergeRequests::LinkedWorkItemType],
       null: true,
       calls_gitaly: true,
-      experiment: { milestone: '18.10' },
+      deprecated: { reason: 'Use `workItemRelations` instead', milestone: '19.2' },
       description: 'Work items linked to this merge request (closing or mentioned).',
       resolver: Resolvers::MergeRequests::LinkedWorkItemsResolver do
         extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
       end
+
+    field :work_item_relations,
+      null: true,
+      max_page_size: ::MergeRequests::WorkItemRelations::BaseService::MAX_RELATIONS,
+      description: 'Relations between this merge request and work items (closing or mentioned).',
+      resolver: Resolvers::MergeRequests::WorkItemRelationsResolver
 
     field :retargeted, GraphQL::Types::Boolean, null: true,
       description: 'Indicates if merge request was retargeted.'

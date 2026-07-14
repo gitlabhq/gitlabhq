@@ -5,6 +5,7 @@ import { __, s__ } from '~/locale';
 import IssuableHeader from '~/vue_shared/issuable/show/components/issuable_header.vue';
 
 export default {
+  name: 'IssueHeader',
   NAMESPACE_PROJECT,
   components: {
     GlLink,

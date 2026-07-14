@@ -542,7 +542,7 @@ Use a reputable provider that runs a [supported PostgreSQL version](../../instal
 
 For more information, including guidance on high availability and database load balancing, see:
 
-- [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services).
+- [Infrastructure and services](_index.md#infrastructure-and-services).
 - [Best practices for the database services](_index.md#best-practices-for-the-database-services).
 
 If you use a third party external service:
@@ -875,7 +875,7 @@ You can optionally use a [third party external service for the Redis Cache and P
 - Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
 - You must set the [Redis eviction mode](../redis/replication_and_failover_external.md#setting-the-eviction-policy) according to your setup.
 
-For more information, see [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services).
+For more information, see [Infrastructure and services](_index.md#infrastructure-and-services).
 
 ### Configure the Redis Cache cluster
 
@@ -1336,7 +1336,7 @@ A reputable provider or solution should be used for this. [Google Cloud SQL](htt
 and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from
 [14.4.0](https://archives.docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes/#1440).
 
-See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 
 Once the database is set up, follow the [post configuration](#praefect-postgresql-post-configuration).
 
@@ -2221,7 +2221,7 @@ To configure the Monitoring node:
 GitLab supports using an [object storage](../object_storage.md) service for holding numerous types of data.
 It's recommended over [NFS](../nfs.md) for data objects and in general it's better
 in larger setups as object storage is typically much more performant, reliable,
-and scalable. See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+and scalable. See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 
 There are two ways of specifying object storage configuration in GitLab:
 
@@ -2339,7 +2339,7 @@ services where applicable):
 2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) for more information.
    - Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores. For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance.
-4. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+4. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 6. Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
    Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.

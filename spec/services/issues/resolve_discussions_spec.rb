@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Issues::ResolveDiscussions, feature_category: :team_planning do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
 
   before do
     stub_const('DummyService', Class.new(Issues::BaseService))
@@ -16,8 +16,6 @@ RSpec.describe Issues::ResolveDiscussions, feature_category: :team_planning do
         filter_resolve_discussion_params
       end
     end
-
-    project.add_developer(user)
   end
 
   describe "for resolving discussions" do

@@ -30,15 +30,15 @@ RSpec.describe API::ProjectSnapshots, :aggregate_failures, feature_category: :so
       type, params = workhorse_send_data
 
       expect(type).to eq('git-snapshot')
-      expect(params).to eq(
-        'GitalyServer' => {
-          'call_metadata' => {
+      expect(params).to include(
+        'GitalyServer' => include(
+          'call_metadata' => include(
             'gitaly-feature-foobar' => 'true',
             'retry_config' => Gitlab::Json.dump(retry_policy)
-          },
+          ),
           'address' => Gitlab::GitalyClient.address(repository.project.repository_storage),
           'token' => Gitlab::GitalyClient.token(repository.project.repository_storage)
-        },
+        ),
         'GetSnapshotRequest' => Gitaly::GetSnapshotRequest.new(
           repository: repository.gitaly_repository
         ).to_json

@@ -168,14 +168,14 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
 
     context 'when enabling for a repository by path' do
       it_behaves_like 'enables the flag for the actor', :repository do
-        let_it_be(:actor, freeze: false) { create(:project).repository }
+        let_it_be_with_reload(:actor) { create(:project).repository }
         let(:actor_value) { actor.full_path }
       end
     end
 
     context 'when enabling for a runner by ID' do
       it_behaves_like 'enables the flag for the actor', :runner do
-        let_it_be(:actor, freeze: false) { create(:ci_runner) }
+        let_it_be_with_reload(:actor) { create(:ci_runner) }
         let(:actor_value) { actor.id.to_s }
       end
 
@@ -206,6 +206,43 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
       it_behaves_like 'enables the flag for the actor', :endpoint do
         let(:actor) { Feature::Endpoint.new('GET /api/v4/projects/:id') }
         let(:actor_value) { actor.caller_id }
+      end
+    end
+
+    context 'when enabling for an organization by ID' do
+      it_behaves_like 'enables the flag for the actor', :organization do
+        let_it_be_with_reload(:actor) { create(:organization) }
+        let(:actor_value) { actor.id.to_s }
+      end
+
+      context 'with multiple organizations' do
+        let_it_be(:organization) { create(:organization) }
+        let_it_be(:organization2) { create(:organization) }
+
+        it 'sets the feature gate for all organizations' do
+          organization_ids = "#{organization.id},#{organization2.id}"
+          post api(path, admin, admin_mode: true), params: { value: 'true', organization: organization_ids }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['gates']).to include(
+            { 'key' => 'actors', 'value' => contain_exactly(organization.flipper_id, organization2.flipper_id) }
+          )
+        end
+      end
+
+      context 'when organization does not exist' do
+        it 'returns a 400' do
+          post api(path, admin, admin_mode: true), params: { value: 'true', organization: '999999' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+    end
+
+    context 'when enabling for an organization by path' do
+      it_behaves_like 'enables the flag for the actor', :organization do
+        let_it_be_with_reload(:actor) { create(:organization) }
+        let(:actor_value) { actor.path }
       end
     end
 
@@ -269,6 +306,12 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
 
       context 'when key and endpoint are provided' do
         let(:extra_params) { { endpoint: 'GET /api/v4/projects' } }
+
+        it_behaves_like 'fails to set the feature flag'
+      end
+
+      context 'when key and organization are provided' do
+        let(:extra_params) { { organization: '1' } }
 
         it_behaves_like 'fails to set the feature flag'
       end

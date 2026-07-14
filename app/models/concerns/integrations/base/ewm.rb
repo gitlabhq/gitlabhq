@@ -37,7 +37,7 @@ module Integrations
         end
 
         def issue_url(iid)
-          issues_url.gsub(':id', iid.to_s.split(' ')[-1])
+          issues_url&.gsub(':id', iid.to_s.split(' ')[-1])
         end
       end
     end

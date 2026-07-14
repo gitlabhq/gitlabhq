@@ -8,7 +8,7 @@ RSpec.describe Resolvers::BoardListResolver do
 
   let_it_be(:guest)         { create(:user) }
   let_it_be(:unauth_user)   { create(:user) }
-  let_it_be(:group)         { create(:group, :private) }
+  let_it_be(:group)         { create(:group, :private, guests: guest) }
   let_it_be(:group_label)   { create(:group_label, group: group, name: 'Development') }
   let_it_be(:board)         { create(:board, resource_parent: group) }
   let_it_be(:label_list)    { create(:list, board: board, label: group_label) }
@@ -24,10 +24,6 @@ RSpec.describe Resolvers::BoardListResolver do
 
     context 'when authorized' do
       let(:current_user) { guest }
-
-      before do
-        group.add_guest(guest)
-      end
 
       it { is_expected.to eq label_list }
     end

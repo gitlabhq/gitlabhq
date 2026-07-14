@@ -55,7 +55,7 @@ RSpec.describe 'Project.user_access_authorized_agents', feature_category: :deplo
     end
 
     context 'when user is developer in the agent management project' do
-      before do
+      before_all do
         agent_management_project.add_developer(deployment_developer)
       end
 

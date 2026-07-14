@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_category: :importers do
   let_it_be(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let_it_be(:exportable_path) { 'project' }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:private_project) { create(:project, :private, group: group) }
   let_it_be(:private_mr) { create(:merge_request, source_project: private_project, project: private_project) }
@@ -17,11 +17,10 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
     subject { get_json(full_path, exportable_path, relation_name) }
 
     describe 'saves project tree attributes' do
-      let_it_be(:shared, freeze: false) { project.import_export_shared }
+      let_it_be_with_reload(:shared) { project.import_export_shared }
 
       let(:relation_name) { :projects }
-
-      let_it_be(:full_path, freeze: false) { File.join(shared.export_path, 'tree') }
+      let(:full_path) { File.join(shared.export_path, 'tree') }
 
       before_all do
         RSpec::Mocks.with_temporary_scope do
@@ -337,10 +336,10 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
     end
 
     describe '#saves project tree' do
-      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be_with_reload(:user) { create(:user) }
       let_it_be(:group) { create(:group) }
+      let_it_be_with_refind(:project) { setup_project }
 
-      let(:project) { setup_project }
       let(:full_path) { File.join(shared.export_path, 'tree') }
 
       let(:shared) { project.import_export_shared }
@@ -469,6 +468,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
     let(:info_params) do
       {
         'error.class': error_class,
+        Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
         project_name: project.name,
         project_id: project.id
       }
@@ -509,7 +509,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
   def setup_project
     release = create(:release)
 
-    project = create(:project,
+    create(:project,
       :public,
       :repository,
       :issues_disabled,
@@ -520,60 +520,58 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
       group: group,
       approvals_before_merge: 1,
       merge_commit_template: 'merge commit message template',
-      squash_commit_template: 'squash commit message template')
+      squash_commit_template: 'squash commit message template').tap do |project|
+      issue = create(:issue, :task, assignees: [user], project: project, title: 'task issue')
+      snippet = create(:project_snippet, project: project)
+      project_label = create(:label, project: project)
+      group_label = create(:group_label, group: group)
+      create(:label_link, label: project_label, target: issue)
+      create(:label_link, label: group_label, target: issue)
+      create(:label_priority, label: group_label, priority: 1)
+      milestone = create(:milestone, project: project)
+      merge_request = create(:merge_request, source_project: project, milestone: milestone, assignees: [user], reviewers: [user])
+      create(:approval, merge_request: merge_request, user: user)
+      create(:diff_note_on_merge_request, project: project, author: user, noteable: merge_request)
 
-    issue = create(:issue, :task, assignees: [user], project: project, title: 'task issue')
-    snippet = create(:project_snippet, project: project)
-    project_label = create(:label, project: project)
-    group_label = create(:group_label, group: group)
-    create(:label_link, label: project_label, target: issue)
-    create(:label_link, label: group_label, target: issue)
-    create(:label_priority, label: group_label, priority: 1)
-    milestone = create(:milestone, project: project)
-    merge_request = create(:merge_request, source_project: project, milestone: milestone, assignees: [user], reviewers: [user])
-    create(:approval, merge_request: merge_request, user: user)
-    create(:diff_note_on_merge_request, project: project, author: user, noteable: merge_request)
+      ci_build = create(:ci_build, project: project, when: nil)
+      ci_build.pipeline.update!(project: project)
+      create(:commit_status, project: project, pipeline: ci_build.pipeline)
+      create(:generic_commit_status, pipeline: ci_build.pipeline, ci_stage: ci_build.ci_stage, project: project)
+      create(:ci_bridge, pipeline: ci_build.pipeline, ci_stage: ci_build.ci_stage, project: project)
 
-    ci_build = create(:ci_build, project: project, when: nil)
-    ci_build.pipeline.update!(project: project)
-    create(:commit_status, project: project, pipeline: ci_build.pipeline)
-    create(:generic_commit_status, pipeline: ci_build.pipeline, ci_stage: ci_build.ci_stage, project: project)
-    create(:ci_bridge, pipeline: ci_build.pipeline, ci_stage: ci_build.ci_stage, project: project)
+      create(:milestone, project: project)
+      discussion_note = create(:discussion_note, noteable: issue, project: project)
+      mr_note = create(:note, noteable: merge_request, project: project)
+      create(:system_note, noteable: merge_request, project: project, author: user, note: 'merged')
+      private_system_note = "mentioned in merge request #{private_mr.to_reference(project)}"
+      create(:system_note, noteable: merge_request, project: project, author: user, note: private_system_note)
+      create(:note, noteable: snippet, project: project)
+      create(:note_on_commit,
+        author: user,
+        project: project,
+        commit_id: ci_build.pipeline.sha)
 
-    create(:milestone, project: project)
-    discussion_note = create(:discussion_note, noteable: issue, project: project)
-    mr_note = create(:note, noteable: merge_request, project: project)
-    create(:system_note, noteable: merge_request, project: project, author: user, note: 'merged')
-    private_system_note = "mentioned in merge request #{private_mr.to_reference(project)}"
-    create(:system_note, noteable: merge_request, project: project, author: user, note: private_system_note)
-    create(:note, noteable: snippet, project: project)
-    create(:note_on_commit,
-      author: user,
-      project: project,
-      commit_id: ci_build.pipeline.sha)
+      create(:system_note_metadata, action: 'description', note: discussion_note)
+      create(:system_note_metadata, commit_count: 1, action: 'commit', note: mr_note)
 
-    create(:system_note_metadata, action: 'description', note: discussion_note)
-    create(:system_note_metadata, commit_count: 1, action: 'commit', note: mr_note)
+      create(:resource_label_event, label: project_label, issue: issue)
+      create(:resource_label_event, label: group_label, merge_request: merge_request)
 
-    create(:resource_label_event, label: project_label, issue: issue)
-    create(:resource_label_event, label: group_label, merge_request: merge_request)
+      create(:event, :created, target: milestone, project: project, author: user)
 
-    create(:event, :created, target: milestone, project: project, author: user)
+      create(:project_custom_attribute, project: project)
+      create(:project_custom_attribute, project: project)
 
-    create(:project_custom_attribute, project: project)
-    create(:project_custom_attribute, project: project)
+      create(:project_badge, project: project)
+      create(:project_badge, project: project)
 
-    create(:project_badge, project: project)
-    create(:project_badge, project: project)
+      board = create(:board, project: project, name: 'TestBoard')
+      create(:list, board: board, position: 0, label: project_label)
 
-    board = create(:board, project: project, name: 'TestBoard')
-    create(:list, board: board, position: 0, label: project_label)
-
-    design = create(:design, :with_file, versions_count: 2, issue: issue)
-    create(:diff_note_on_design, noteable: design, project: project, author: user)
-    create(:ci_pipeline_schedule, project: project, owner: user)
-
-    project
+      design = create(:design, :with_file, versions_count: 2, issue: issue)
+      create(:diff_note_on_design, noteable: design, project: project, author: user)
+      create(:ci_pipeline_schedule, project: project, owner: user)
+    end
   end
   # rubocop: enable Metrics/AbcSize
 end

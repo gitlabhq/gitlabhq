@@ -11,10 +11,14 @@ module Projects
       # https://github.com/git-lfs/git-lfs/issues/419
       REQUEST_BATCH_SIZE = 100
 
+      # Cap on how much of the response body we log so a verbose error page can't bloat the logs.
+      RESPONSE_BODY_LOG_LIMIT = 1000
+
       DownloadLinksError = Class.new(StandardError)
       DownloadLinkNotFound = Class.new(StandardError)
       DownloadLinksRequestEntityTooLargeError = Class.new(StandardError)
       DownloadLinksRequestTooManyRequestsError = Class.new(StandardError)
+      DownloadLinksRequestUnauthorizedError = Class.new(DownloadLinksError)
 
       attr_reader :remote_uri
 
@@ -53,12 +57,33 @@ module Projects
         raise DownloadLinksError, 'Unable to download due to TooManyRequests error'
       end
 
+      def log_failed_response(response)
+        log_error(
+          Labkit::Fields::GL_PROJECT_ID => project&.id,
+          Labkit::Fields::LOG_MESSAGE => 'LFS batch API returned an unsuccessful response',
+          Labkit::Fields::HTTP_URL => Gitlab::UrlSanitizer.new(remote_uri.to_s).sanitized_url,
+          Labkit::Fields::HTTP_STATUS_CODE => response.code,
+          response_body: Gitlab::UrlSanitizer.sanitize(
+            Gitlab::EncodingHelper.encode_utf8(response.body.to_s.truncate(RESPONSE_BODY_LOG_LIMIT))
+          )
+        )
+      rescue StandardError
+        nil
+      end
+
       def download_links_for(oids)
         response = ::Import::Clients::HTTP.post(remote_uri, body: request_body(oids), headers: headers)
 
         raise DownloadLinksRequestTooManyRequestsError if response.too_many_requests?
         raise DownloadLinksRequestEntityTooLargeError if response.request_entity_too_large?
-        raise DownloadLinksError, response.message unless response.success?
+
+        unless response.success?
+          log_failed_response(response)
+
+          raise DownloadLinksRequestUnauthorizedError, response.message if response.unauthorized?
+
+          raise DownloadLinksError, response.message
+        end
 
         # Since the LFS Batch API may return a Content-Type of
         # application/vnd.git-lfs+json

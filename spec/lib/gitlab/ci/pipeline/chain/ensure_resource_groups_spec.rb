@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups do
-  let(:project)  { create(:project) }
-  let(:user)     { create(:user) }
+  let_it_be(:project)  { create(:project) }
+  let_it_be(:user)     { create(:user) }
   let(:stage) { build(:ci_stage, project: project, statuses: [job]) }
   let(:pipeline) { build(:ci_pipeline, project: project, stages: [stage]) }
-  let!(:environment) { create(:environment, name: 'production', project: project) }
+  let_it_be(:environment) { create(:environment, name: 'production', project: project) }
 
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(project: project, current_user: user)

@@ -15,7 +15,7 @@ module Gitlab
       end.force_encoding(input.encoding)
 
       context[:pipeline] ||= if Gitlab::MarkupHelper.org_mode?(file_name)
-                               :org_markup
+                               :orgmode
                              else
                                :markup
                              end

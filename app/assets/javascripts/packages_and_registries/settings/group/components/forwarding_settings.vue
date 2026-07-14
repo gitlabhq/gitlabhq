@@ -45,6 +45,7 @@ export default {
       },
     },
   },
+  emits: ['update'],
   computed: {
     fields() {
       return [

@@ -26,6 +26,7 @@ describe('NoteBody', () => {
   const findAwardsList = () => wrapper.findComponent(AwardsList);
   const findNoteAttachment = () => wrapper.findComponent(NoteAttachment);
   const findNoteSuggestions = () => wrapper.findComponent(NoteSuggestions);
+  const findDuoReviewFooter = () => wrapper.find('[data-testid="duo-review-feedback"]');
 
   beforeEach(() => {
     defaultProps = {
@@ -114,10 +115,10 @@ describe('NoteBody', () => {
       expect(wrapper.emitted('input')).toStrictEqual([['updated content']]);
     });
 
-    it('emits cancelEditing event when form is cancelled', () => {
+    it('emits cancel-editing event when form is cancelled', () => {
       createComponent({ isEditing: true });
       findNoteForm().vm.$emit('cancel', true);
-      expect(wrapper.emitted('cancelEditing')).toStrictEqual([[true]]);
+      expect(wrapper.emitted('cancel-editing')).toStrictEqual([[true]]);
     });
   });
 
@@ -280,6 +281,33 @@ describe('NoteBody', () => {
       const noteAttachment = findNoteAttachment();
       expect(noteAttachment.exists()).toBe(true);
       expect(noteAttachment.props('attachment')).toEqual(attachment);
+    });
+  });
+
+  describe('Duo first review comment', () => {
+    const duoNote = (overrides = {}) => ({
+      ...defaultProps.note,
+      author: {
+        ...defaultProps.note.author,
+        user_type: 'duo_code_review_bot',
+        username: 'GitLabDuo',
+      },
+      ...overrides,
+    });
+
+    it('does not render when author is not the Duo code review bot', () => {
+      createComponent({ isFirstNote: true });
+      expect(findDuoReviewFooter().exists()).toBe(false);
+    });
+
+    it('does not render when the note is not the first note', () => {
+      createComponent({ note: duoNote(), isFirstNote: false });
+      expect(findDuoReviewFooter().exists()).toBe(false);
+    });
+
+    it('renders when the note is the first Duo code review bot note', () => {
+      createComponent({ note: duoNote(), isFirstNote: true });
+      expect(findDuoReviewFooter().exists()).toBe(true);
     });
   });
 });

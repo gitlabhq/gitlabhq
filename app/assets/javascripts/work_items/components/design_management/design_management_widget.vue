@@ -9,6 +9,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_DESIGN_VERSION } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { findDesignsWidget, canRouterNav, trackCrudCollapse } from '~/work_items/utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import {
@@ -32,6 +33,7 @@ import DesignVersionDropdown from './design_version_dropdown.vue';
 import ArchiveDesignButton from './archive_design_button.vue';
 
 export default {
+  name: 'DesignManagementWidget',
   isLoggedIn: isLoggedIn(),
   components: {
     GlAlert,
@@ -47,6 +49,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['fullPath'],
   props: {
     workItemId: {
@@ -120,6 +123,7 @@ export default {
         return {
           id: this.workItemId,
           atVersion: this.designsVersion,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       update(data) {
@@ -220,7 +224,11 @@ export default {
     designCollectionQueryBody() {
       return {
         query: getWorkItemDesignListQuery,
-        variables: { id: this.workItemId, atVersion: null },
+        variables: {
+          id: this.workItemId,
+          atVersion: null,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
+        },
       };
     },
     selectAllButtonText() {
@@ -239,6 +247,7 @@ export default {
       );
     },
     isDesignDetailActive() {
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Vue Router path segment comparison, not a navigational URL
       return this.$route.path.includes('/designs/') || this.$route.name === 'design';
     },
     enablePasteOnNoDesign() {
@@ -371,6 +380,11 @@ export default {
       this.dragStartPosition = { x: clientX, y: clientY };
     },
     onPointerUp(event) {
+      // Skip `no-drag` elements (i.e. the selection checkbox)
+      if (event.target.closest?.('.no-drag')) {
+        return;
+      }
+
       const { clientX, clientY } = event;
       const deltaX = this.dragStartPosition ? Math.abs(clientX - this.dragStartPosition.x) : 0;
       const deltaY = this.dragStartPosition ? Math.abs(clientY - this.dragStartPosition.y) : 0;
@@ -467,6 +481,8 @@ export default {
     animation: 200,
     ghostClass: 'gl-invisible',
     forceFallback: true,
+    fallbackOnBody: true,
+    fallbackTolerance: 1,
     tag: 'ol',
     filter: '.no-drag',
     draggable: '.js-design-tile',
@@ -603,7 +619,7 @@ export default {
             <li
               v-for="design in designs"
               :key="design.id"
-              class="js-design-tile gl-relative gl-bg-transparent gl-px-3 gl-shadow-none"
+              class="js-design-tile gl-relative gl-list-none gl-bg-transparent gl-px-3 gl-shadow-none"
               @mousedown="onMouseDown"
               @pointerup="onPointerUp"
             >
@@ -612,7 +628,7 @@ export default {
                 :is-uploading="false"
                 :is-dragging="isDraggingDesign"
                 :work-item-iid="workItemIid"
-                :work-item-web-url="workItemWebUrl"
+                :work-item-full-path="workItemFullPath"
                 :use-router="canUseRouter"
                 data-testid="design-item"
                 @pointerup="onPointerUp"

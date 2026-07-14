@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Taggable, feature_category: :continuous_integration do
-  let_it_be(:taggings_model, freeze: false) do
+  let_it_be(:taggings_model) do
     Class.new(Ci::ApplicationRecord) do |_model|
       connection.create_table :_test_gitlab_ci_taggings, force: true do |t|
         t.integer :tag_id
@@ -24,7 +24,7 @@ RSpec.describe Ci::Taggable, feature_category: :continuous_integration do
     end
   end
 
-  let_it_be(:taggable_model, freeze: false) do
+  let_it_be(:taggable_model) do
     Class.new(Ci::ApplicationRecord) do |_model|
       connection.create_table :_test_gitlab_ci_taggable, force: true do |t|
         t.string :name
@@ -40,7 +40,7 @@ RSpec.describe Ci::Taggable, feature_category: :continuous_integration do
     end
   end
 
-  let_it_be(:configuration_class, freeze: false) do
+  let_it_be(:configuration_class) do
     Class.new do
       attr_accessor :join_model, :unique_by
 
@@ -54,7 +54,7 @@ RSpec.describe Ci::Taggable, feature_category: :continuous_integration do
     end
   end
 
-  let_it_be(:configuration, freeze: false) do
+  let_it_be(:configuration) do
     configuration_class.new.tap do |c|
       c.join_model = taggings_model
       c.unique_by = [:tag_id, :test_ci_taggable_id]

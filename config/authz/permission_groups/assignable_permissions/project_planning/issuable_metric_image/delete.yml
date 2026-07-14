@@ -1,0 +1,9 @@
+---
+name: delete_issuable_metric_image
+description: Grants the ability to delete issuable metric images
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_issuable_metric_image

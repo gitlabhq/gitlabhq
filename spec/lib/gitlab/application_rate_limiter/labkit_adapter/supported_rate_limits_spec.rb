@@ -1,38 +1,76 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits,
   feature_category: :system_access do
-  describe 'feature flag YAML coverage' do
-    def yaml_exists?(flag_name)
-      %w[config/feature_flags/wip ee/config/feature_flags/wip].any? do |dir|
-        Rails.root.join(dir, "#{flag_name}.yml").exist?
-      end
+  describe 'registry coverage' do
+    # The labkit adapter is the only rate-limiting path; there is no legacy
+    # fallback. A rate_limits key with no registry entry would not have a Labkit
+    # rule to route through. This guard fails
+    # loudly when a new key is added to ApplicationRateLimiter.rate_limits
+    # without a matching SupportedRateLimits entry.
+    it 'registers every ApplicationRateLimiter.rate_limits key' do
+      rate_limit_keys = ::Gitlab::ApplicationRateLimiter.rate_limits.keys.to_set
+      registered = described_class.all.keys.to_set
+
+      unregistered = rate_limit_keys - registered
+
+      expect(unregistered).to be_empty,
+        "These ApplicationRateLimiter.rate_limits keys have no Labkit::RateLimit registry " \
+          "entry, so they would not be rate limited: #{unregistered.to_a.sort.join(', ')}. " \
+          "Add an entry in SupportedRateLimits (or its EE counterpart)."
     end
+  end
 
-    it 'has a use_labkit / _enforce YAML pair for every cohort-wide flag_scope' do
-      scopes = described_class.all.values.filter_map { |entry| entry[:flag_scope] }.uniq
+  describe 'limit/period parity with the legacy rate_limits hash' do
+    # The registry now carries each key's limit/period, and the
+    # rate_limiter_resolve_limits_from_registry flag selects whether
+    # ApplicationRateLimiter.threshold/interval (and therefore the labkit
+    # adapter) resolve from this registry (flag on) or from the legacy
+    # ApplicationRateLimiter.rate_limits hash (flag off). For the flag to be a
+    # safe, value-preserving switch, both sources must resolve to identical
+    # values for every key. The registry-coverage guard only checks key
+    # presence, not values, so this is the spec that catches a mistranscribed
+    # limit or period.
+    #
+    # Iterates the live rate_limits map: under EE it also covers the EE
+    # overrides and additions, without naming any EE-only key here (so the
+    # spec stays correct under FOSS_ONLY).
+    it 'resolves identical threshold and interval whether the flag is on or off', :aggregate_failures do
+      arl = ::Gitlab::ApplicationRateLimiter
 
-      missing = scopes.flat_map do |scope|
-        ["rate_limiter_use_labkit_#{scope}", "rate_limiter_use_labkit_#{scope}_enforce"]
-          .reject { |name| yaml_exists?(name) }
+      # Make every application setting return a value derived from its own name.
+      # A registry callable that reads a *different* setting than its rate_limits
+      # counterpart (e.g. a sibling like users_api_limit_gpg_key vs _gpg_keys that
+      # shares a default) then resolves to a different number, so the eq assertions
+      # below catch the mistranscription. Static-integer entries are unaffected:
+      # both sides return the literal and never touch settings.
+      fake_settings = Class.new do
+        def method_missing(name, *)
+          name.to_s.hash.abs
+        end
+
+        def respond_to_missing?(*)
+          true
+        end
+      end.new
+      allow(::Gitlab::CurrentSettings).to receive(:current_application_settings).and_return(fake_settings)
+
+      arl.rate_limits.each_key do |key|
+        stub_feature_flags(rate_limiter_resolve_limits_from_registry: false)
+        legacy_threshold = arl.threshold(key)
+        legacy_interval = arl.interval(key)
+
+        stub_feature_flags(rate_limiter_resolve_limits_from_registry: true)
+        registry_threshold = arl.threshold(key)
+        registry_interval = arl.interval(key)
+
+        expect(registry_threshold).to eq(legacy_threshold),
+          "threshold mismatch for #{key}: registry=#{registry_threshold} legacy=#{legacy_threshold}"
+        expect(registry_interval).to eq(legacy_interval),
+          "interval mismatch for #{key}: registry=#{registry_interval} legacy=#{legacy_interval}"
       end
-
-      expect(missing).to be_empty,
-        "Missing FF YAMLs for cohort-wide flag_scopes: #{missing.join(', ')}"
-    end
-
-    it 'has a use_labkit / _enforce YAML pair for every per-key (cohort 1) entry' do
-      per_key = described_class.all.reject { |_, entry| entry[:flag_scope] }
-
-      missing = per_key.keys.flat_map do |key|
-        ["rate_limiter_use_labkit_#{key}", "rate_limiter_use_labkit_#{key}_enforce"]
-          .reject { |name| yaml_exists?(name) }
-      end
-
-      expect(missing).to be_empty,
-        "Missing FF YAMLs for per-key entries: #{missing.join(', ')}"
     end
   end
 end

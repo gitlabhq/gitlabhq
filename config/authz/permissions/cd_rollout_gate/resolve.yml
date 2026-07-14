@@ -1,0 +1,4 @@
+---
+name: resolve_cd_rollout_gate
+description: Grants the ability to resolve approval gates on continuous deployment
+  rollouts

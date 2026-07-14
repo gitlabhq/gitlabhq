@@ -368,7 +368,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   end
 
   describe '#identity_verification_alert_data' do
-    let_it_be(:current_user, freeze: false) { build_stubbed(:user) }
+    let_it_be(:current_user) { build_stubbed(:user) }
     let(:merge_request) { build_stubbed(:merge_request, author: current_user) }
 
     subject { helper.identity_verification_alert_data(merge_request) }

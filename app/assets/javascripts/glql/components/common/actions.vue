@@ -23,6 +23,7 @@ export default {
       default: false,
     },
   },
+  emits: ['copy-as-gfm', 'copy-source', 'reload', 'view-source'],
   data() {
     return {
       toggleId: uniqueId('dropdown-toggle-btn-'),
@@ -35,15 +36,15 @@ export default {
       return [
         {
           text: __('View source'),
-          action: () => this.$emit('viewSource', { title: this.modalTitle }),
+          action: () => this.$emit('view-source', { title: this.modalTitle }),
         },
         {
           text: __('Copy source'),
-          action: () => this.$emit('copySource'),
+          action: () => this.$emit('copy-source'),
         },
         this.cachedShowCopy && {
           text: __('Copy contents'),
-          action: () => this.$emit('copyAsGFM'),
+          action: () => this.$emit('copy-as-gfm'),
         },
         {
           text: __('Reload'),

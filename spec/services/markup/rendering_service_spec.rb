@@ -17,7 +17,7 @@ RSpec.describe Markup::RenderingService, feature_category: :groups_and_projects 
     let(:file_name) { nil }
     let(:text) { 'Noël' }
 
-    subject do
+    subject(:execute_result) do
       described_class
         .new(text, file_name: file_name, context: context, postprocess_context: postprocess_context)
         .execute
@@ -118,7 +118,10 @@ RSpec.describe Markup::RenderingService, feature_category: :groups_and_projects 
       let(:text) { "####\nPART\n####" }
 
       it 'returns rendered html' do
-        is_expected.to eq("<h1>PART</h1>\n\n")
+        doc = Nokogiri::HTML.fragment(execute_result)
+        heading = doc.css('h1').first
+        expect(heading).to be_present
+        expect(heading.text).to include('PART')
       end
 
       context 'when input has an invalid syntax' do
@@ -132,23 +135,13 @@ RSpec.describe Markup::RenderingService, feature_category: :groups_and_projects 
 
     context 'with org-mode markup' do
       let(:file_name) { 'foo.org' }
-      let(:text) do
-        <<~ORG
-          #+begin_src ruby
-          def hello
-            puts "world"
-          end
-          #+end_src
-        ORG
-      end
+      let(:text) { '* PART' }
 
-      let(:rendered) { subject }
-
-      it 'renders with syntax highlighting' do
-        doc = Nokogiri::HTML.fragment(rendered)
-        pre = doc.css('pre').first
-        expect(pre).to be_present
-        expect(pre['data-canonical-lang']).to eq('ruby')
+      it 'returns rendered html' do
+        doc = Nokogiri::HTML.fragment(execute_result)
+        heading = doc.css('h1').first
+        expect(heading).to be_present
+        expect(heading.text).to include('PART')
       end
     end
   end

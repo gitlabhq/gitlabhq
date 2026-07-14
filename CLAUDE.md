@@ -15,7 +15,7 @@ Load the following instruction files based on your current task:
 - When working with **merge requests**: Read .ai/merge-requests.md
 - When **reviewing code or giving feedback**: Read .ai/code-review.md
 - When working with **CI/CD pipelines or `.gitlab-ci.yml`**: Read .ai/ci-cd.md
-- Before planning or implementing code changes, load the `gitlab-coding-principles` skill.
+- Before planning, implementing, OR reviewing code changes (including MR reviews), load the `gitlab-coding-principles` skill. This applies even when `.ai/code-review.md` is also loaded.
 
 ## Always-on rules
 

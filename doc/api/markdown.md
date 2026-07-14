@@ -14,7 +14,7 @@ title: Markdown API
 
 {{< history >}}
 
-- Introduced [required authentication](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93727) in GitLab 15.3 [with a flag](../administration/feature_flags/_index.md) named `authenticate_markdown_api`. Enabled by default.
+- Introduced [required authentication](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93727) in GitLab 15.3 [with a feature flag](../administration/feature_flags/_index.md) named `authenticate_markdown_api`. Enabled by default.
 
 {{< /history >}}
 

@@ -89,10 +89,21 @@ module Gitlab
 
             First reconcile the prior checklist against the SSOT (system prompt
             rule 16): read each SSOT source file in full, ADD checklist items for
-            new SSOT content (new sections, rules, tooling, enforcement), REVISE
-            any item whose SSOT guidance changed, and DROP items no longer
-            supported. Then apply the imperative-mood rule to every item. Do not
-            simply re-emit the prior checklist.
+            genuinely new SSOT content (new sections, rules, tooling,
+            enforcement), REVISE any item whose SSOT guidance changed (including
+            new enforcement for behavior an existing item already mandates — fold
+            it into that item, do not add a duplicate), and DROP an item ONLY when
+            you confirm its rule is absent from the FULL SSOT sources (grep them).
+            NEVER drop an item just because it is missing from a diff — keep it
+            when unsure (system prompt rule 16c). But if a prior item's topic is
+            wholly absent from the full SSOT sources (confirmed by grep), DROP it
+            even if it looks useful — it belongs to another principle's SSOT
+            (system prompt rule 16d). Likewise, DO NOT emit a standalone bullet
+            for an SSOT mapping row that only delegates detail to another guide
+            or is already covered by a generic rule you emit (rule 16d). Then
+            apply the imperative-mood
+            rule to every item. Do not simply re-emit the prior checklist. Keep
+            all other lines untouched (system prompt rule 18).
 
             Current distilled file (the PRIOR version — reconcile it against the
             SSOT, do not assume it is still complete or correct):
@@ -183,13 +194,15 @@ module Gitlab
         end
 
         # Pre-empts late agent failures by verifying every SSOT source
-        # file exists on disk before triggering the workflow.
+        # file (each `sources[].path` plus the `baseline:`) exists on disk
+        # before triggering the workflow. Delegates both the path set and the
+        # existence rule (including the `_index.md` fallback) to Manifest so
+        # the shift-left Validator and this runtime guard stay in lockstep.
         def validate_sources!(config)
-          config.fetch('sources', []).each do |source|
-            full_path = Workspace.safe_join(source['path'])
-            next if File.exist?(full_path) || File.exist?(full_path.sub(/(\.md)$/, '/_index.md'))
+          manifest.config_source_paths(config).each do |path|
+            next if manifest.source_file_exists?(path)
 
-            raise "SSOT source file not found: #{source['path']} — " \
+            raise "SSOT source file not found: #{path} — " \
               'check that the path in manifest.yml matches an existing file on the current branch'
           end
         end

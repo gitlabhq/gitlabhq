@@ -10,7 +10,6 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
   let_it_be(:project, freeze: false) { create(:project, :public, :repository, namespace: user.namespace) }
 
   before do
-    stub_feature_flags(rapid_diffs_on_commit_show: false)
     stub_feature_flags(project_commits_refactor: false)
     sign_in(user)
   end
@@ -22,10 +21,8 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
         wait_for_requests
       end
 
-      it 'renders commit' do
+      it 'renders the commit message' do
         expect(page).to have_content(sample_commit.message.gsub(/\s+/, ' '))
-          .and have_content("Showing #{sample_commit.files_changed_count} changed files")
-          .and have_content('Side-by-side')
       end
 
       it 'fill commit sha when click new tag from commit page' do
@@ -38,20 +35,6 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
 
         expect(page).to have_selector("input[value='#{sample_commit.id}']", visible: :hidden)
       end
-
-      it 'renders inline diff button when click side-by-side diff button' do
-        find('#parallel-diff-btn').click
-
-        expect(page).to have_content 'Inline'
-      end
-    end
-
-    it 'renders diff links to both the previous and current image', :js do
-      visit project_commit_path(project, sample_image_commit.id)
-
-      links = page.all('.file-actions a')
-      expect(links[0]['href']).to match %r{blob/#{sample_image_commit.old_blob_id}}
-      expect(links[1]['href']).to match %r{blob/#{sample_image_commit.new_blob_id}}
     end
 
     context 'when commit has ci status' do
@@ -113,10 +96,12 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
         end
 
         visit(project_commit_path(project, commit))
+        wait_for_requests
 
-        click_button '2 changed files'
-
-        expect(find_by_testid('diff-stats-dropdown')).to have_content('files/ruby/popen.rb')
+        # The commit page renders the diffs and the file browser without erroring,
+        # even though one of the diff file blobs is missing.
+        expect(page).to have_selector('[data-testid="rd-diff-file"]')
+        expect(page).to have_selector('[data-testid="tree-list-scroll"] [data-file-row]')
       end
     end
   end

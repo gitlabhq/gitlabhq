@@ -13,7 +13,7 @@ RSpec.describe GitlabSchema.types['Snippet'], feature_category: :source_code_man
       :visibility_level, :created_at, :updated_at,
       :web_url, :raw_url, :ssh_url_to_repo, :http_url_to_repo,
       :notes, :discussions, :user_permissions,
-      :description_html, :blobs, :commenters, :imported, :imported_from]
+      :title_html, :description_html, :blobs, :commenters, :imported, :imported_from]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end

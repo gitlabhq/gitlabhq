@@ -28,6 +28,13 @@ RSpec.describe 'Update of an existing merge request', feature_category: :code_re
       group.add_developer(current_user)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_merge_request do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) { graphql_mutation(:merge_request_update, input_params, 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     it_behaves_like 'updating time estimate' do
       let(:resource) { merge_request }
       let(:mutation_name) { 'mergeRequestUpdate' }

@@ -67,7 +67,6 @@ describe('DiffFileDiscussions', () => {
     wrapper = shallowMount(DiffFileDiscussions, {
       provide: {
         store,
-        userPermissions: { can_create_note: true },
         filePaths: { oldPath, newPath },
         ...extraProvide,
       },
@@ -85,6 +84,17 @@ describe('DiffFileDiscussions', () => {
     const discussions = wrapper.findComponent(DiffDiscussions).props('discussions');
     expect(discussions).toHaveLength(1);
     expect(discussions[0].id).toBe('file-disc-1');
+  });
+
+  it('passes the injected diffRefs to findAllFileDiscussionsForFile', () => {
+    const diffRefs = { base_sha: 'base', start_sha: 'start', head_sha: 'head' };
+    store.discussions = [createFileDiscussion()];
+    createComponent({ diffRefs });
+    expect(store.findAllFileDiscussionsForFile).toHaveBeenCalledWith({
+      oldPath,
+      newPath,
+      diffRefs,
+    });
   });
 
   it('renders expansion component for collapsed (hidden) file discussions', () => {

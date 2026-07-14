@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Members::Groups::CreatorService, feature_category: :groups_and_projects do
   let_it_be_with_reload(:source) { create(:group, :public) }
   let_it_be_with_reload(:source2) { create(:group, :public) }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   describe '.access_levels' do
     it 'returns Gitlab::Access.options_with_owner' do
@@ -17,18 +17,18 @@ RSpec.describe Members::Groups::CreatorService, feature_category: :groups_and_pr
 
   describe '.add_members' do
     it_behaves_like 'bulk member creation' do
-      let_it_be(:source_type, freeze: false) { Group }
-      let_it_be(:member_type, freeze: false) { GroupMember }
+      let_it_be(:source_type) { Group }
+      let_it_be(:member_type) { GroupMember }
     end
   end
 
   describe '.add_member' do
     it_behaves_like 'member creation' do
-      let_it_be(:member_type, freeze: false) { GroupMember }
+      let_it_be(:member_type) { GroupMember }
     end
 
     it_behaves_like 'member creation with organization isolation' do
-      let_it_be(:source_type, freeze: false) { Group }
+      let_it_be(:source_type) { Group }
     end
 
     context 'authorized projects update' do
@@ -42,6 +42,14 @@ RSpec.describe Members::Groups::CreatorService, feature_category: :groups_and_pr
           described_class.add_member(source, user, :maintainer)
         end
       end
+
+      context 'with skip_authorized_projects_refresh: true' do
+        it 'does not schedule a project authorization update job' do
+          expect(AuthorizedProjectsWorker).not_to receive(:new)
+
+          described_class.add_member(source, user, :maintainer, skip_authorized_projects_refresh: true)
+        end
+      end
     end
 
     context 'with immediately_sync_authorizations: true' do
@@ -53,7 +61,7 @@ RSpec.describe Members::Groups::CreatorService, feature_category: :groups_and_pr
     end
 
     context 'service account membership eligibility' do
-      let_it_be(:owner, freeze: false) { create(:user, owner_of: source) }
+      let_it_be(:owner) { create(:user, owner_of: source) }
 
       context 'when the service account is not eligible for membership' do
         let(:ineligible_sa) do

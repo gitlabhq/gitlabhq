@@ -42,6 +42,10 @@ module Banzai
         # Allow marks
         allowlist[:elements].push('mark')
 
+        # Allow data-lang on pre tags
+        allowlist[:attributes]['pre'] ||= []
+        allowlist[:attributes]['pre'].push('data-lang')
+
         # Allow any classes in `span`, `i`, `div`, `td`, `ul`, `ol` and `a` elements
         # but then remove any unknown classes
         allowlist[:attributes]['span'] = %w[class]

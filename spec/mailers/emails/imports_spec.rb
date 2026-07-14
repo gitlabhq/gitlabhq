@@ -51,6 +51,74 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     end
   end
 
+  describe '#bulk_import_offline_complete' do
+    let(:bulk_import) { build_stubbed(:bulk_import, :finished, :with_offline_configuration) }
+    let(:configuration) { bulk_import.offline_configuration }
+
+    subject { Notify.bulk_import_offline_complete('user_id', 'bulk_import_id') }
+
+    before do
+      allow(User).to receive(:find).and_return(user)
+      allow(BulkImport).to receive(:find).and_return(bulk_import)
+    end
+
+    it 'sends complete email', :aggregate_failures do
+      start_date = I18n.l(bulk_import.created_at.to_date, format: :long)
+
+      is_expected.to have_subject('Offline transfer import completed')
+      is_expected.to have_content('Offline transfer import completed')
+      is_expected.to have_content("The offline transfer import you started on #{start_date} " \
+        "from export #{configuration.export_prefix} has completed. You can now review your import results.")
+      is_expected.to have_content('is not verified, so it may not be trustworthy')
+      is_expected.to have_content(configuration.source_hostname)
+      is_expected.to have_body_text(history_import_bulk_import_url(bulk_import.id))
+    end
+
+    context 'when source_hostname contains credentials' do
+      let(:configuration) do
+        build_stubbed(:offline_configuration, source_hostname: 'https://user:secret@gitlab.example.com')
+      end
+
+      before do
+        allow(bulk_import).to receive(:offline_configuration).and_return(configuration)
+      end
+
+      it 'sanitizes the source_hostname' do
+        is_expected.to have_content('https://*****:*****@gitlab.example.com')
+      end
+    end
+
+    context 'when source_hostname is not present' do
+      let(:configuration) do
+        build_stubbed(:offline_configuration, source_hostname: nil)
+      end
+
+      before do
+        allow(bulk_import).to receive(:offline_configuration).and_return(configuration)
+      end
+
+      it 'omits the unverified source section', :aggregate_failures do
+        is_expected.to have_content('Offline transfer import completed')
+        is_expected.not_to have_content('is not verified, so it may not be trustworthy')
+      end
+    end
+
+    context 'when the bulk import has no configuration' do
+      before do
+        allow(bulk_import).to receive(:offline_configuration).and_return(nil)
+      end
+
+      it 'omits the unverified source section and export prefix', :aggregate_failures do
+        is_expected.to have_content('Offline transfer import completed')
+        is_expected.not_to have_content('is not verified, so it may not be trustworthy')
+        is_expected.not_to have_content('from export')
+      end
+    end
+
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+  end
+
   describe '#bulk_import_csv_user_mapping' do
     let(:group) { build_stubbed(:group) }
     let(:failed_count) { 0 }

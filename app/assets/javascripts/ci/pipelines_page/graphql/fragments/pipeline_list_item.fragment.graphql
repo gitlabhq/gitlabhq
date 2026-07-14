@@ -1,0 +1,17 @@
+#import "~/ci/common/graphql/fragments/pipeline_list_item_base.fragment.graphql"
+
+fragment PipelineListItem on Pipeline {
+  ...PipelineListItemBase
+  mergeRequest {
+    id
+    iid
+    webPath
+    title
+    sourceBranch
+  }
+  pipelineSchedule {
+    id
+    description
+    editPath
+  }
+}

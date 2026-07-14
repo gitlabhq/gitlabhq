@@ -26,6 +26,10 @@ export const useCommitDiffDiscussions = defineStore('commitDiffDiscussions', () 
     diffDiscussions.addDiscussion(discussion);
   }
 
+  async function createImageDiscussion({ position, noteBody }) {
+    await createNewDiscussion({ note: noteBody, position });
+  }
+
   async function createLineDiscussion({ discussion: formDiscussion, noteBody, showWhitespace }) {
     const resolvedShowWhitespace = showWhitespace ?? useDiffsView().showWhitespace;
     const position = {
@@ -82,6 +86,7 @@ export const useCommitDiffDiscussions = defineStore('commitDiffDiscussions', () 
   return {
     setDiscussionsEndpoint,
     createNewDiscussion,
+    createImageDiscussion,
     createLineDiscussion,
     replyToDiscussion,
     saveNote,
@@ -114,7 +119,11 @@ export const useCommitDiffDiscussions = defineStore('commitDiffDiscussions', () 
     findDiscussionsForFile: computed(() => diffDiscussions.findDiscussionsForFile),
     findLinePositionsForFile: computed(() => diffDiscussions.findLinePositionsForFile),
     findLineDiscussionsForPosition: computed(() => diffDiscussions.findLineDiscussionsForPosition),
-    findAllImageDiscussionsForFile: computed(() => diffDiscussions.findAllImageDiscussionsForFile),
+    findAllImageDiscussionsForFile: computed(
+      () =>
+        ({ oldPath, newPath }) =>
+          diffDiscussions.findAllImageDiscussionsForFile(oldPath, newPath),
+    ),
     timelineDiscussions,
   };
 });

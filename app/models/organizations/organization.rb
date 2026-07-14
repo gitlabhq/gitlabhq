@@ -12,6 +12,7 @@ module Organizations
     include Cells::Claimable
 
     cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, feature_flag: :cells_claims_organizations
+    cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::ORGANIZATION_IDS, feature_flag: :cells_claims_organizations
 
     cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :id
 
@@ -34,7 +35,6 @@ module Organizations
 
     has_many :namespaces
     has_many :groups
-    has_many :root_groups, -> { roots }, class_name: 'Group', inverse_of: :organization
     has_many :pool_repositories
     has_many :projects
     has_many :snippets
@@ -82,6 +82,8 @@ module Organizations
       :state_metadata=,
       :soft_deleted_at,
       :soft_deleted_at=,
+      :read_only_reason,
+      :read_only_reason=,
       to: :organization_detail
 
     accepts_nested_attributes_for :organization_detail
@@ -128,6 +130,14 @@ module Organizations
 
     def empty?
       groups.none? && projects.none?
+    end
+
+    # Single source of truth for "is this organization read-only AND is the
+    # enforcement feature flag enabled for it?". The request-level enforcement
+    # concern, the OAuth new-user guard, and the API helpers all call this so
+    # the cutover-safety decision cannot drift between call sites.
+    def read_only_enforced?
+      read_only? && Feature.enabled?(:organization_read_only_enforcement, self)
     end
 
     def to_param
@@ -183,11 +193,15 @@ module Organizations
       "/o/#{path}"
     end
 
+    def max_group_visibility_level
+      groups.where(parent_id: nil).maximum(:visibility_level)
+    end
+
     private
 
     # The visibility must be broader than the visibility of any contained root groups.
     def check_visibility_level_broader_than_groups
-      max_group_level = root_groups.maximum(:visibility_level)
+      max_group_level = max_group_visibility_level
       return unless max_group_level
 
       return if visibility_level >= max_group_level

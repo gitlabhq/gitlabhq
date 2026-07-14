@@ -6,8 +6,8 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
   using RSpec::Parameterized::TableSyntax
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :repository, developers: developer, reporters: reporter) }
-  let_it_be(:pipeline, freeze: false) do
+  let_it_be_with_reload(:project) { create(:project, :repository, developers: developer, reporters: reporter) }
+  let_it_be_with_reload(:pipeline) do
     create(:ci_pipeline, project: project, sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
   end
 
@@ -27,7 +27,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
   end
 
   shared_context 'retryable bridge' do
-    let_it_be(:downstream_project) { create(:project, :repository) }
+    let_it_be(:downstream_project) { create(:project) }
 
     let_it_be_with_refind(:job) do
       create(:ci_bridge, :success, :teardown_environment,
@@ -399,7 +399,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
     context 'when the job to be retried is a bridge' do
       context 'and it is not retryable' do
-        let_it_be(:job, freeze: false) { create(:ci_bridge, :failed, :reached_max_descendant_pipelines_depth) }
+        let_it_be_with_reload(:job) { create(:ci_bridge, :failed, :reached_max_descendant_pipelines_depth) }
 
         it_behaves_like 'does not retry the job'
       end
@@ -462,7 +462,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
     context 'when the job to be retried is a build' do
       context 'and it is not retryable' do
-        let_it_be(:job, freeze: false) { create(:ci_build, :deployment_rejected, pipeline: pipeline) }
+        let_it_be_with_reload(:job) { create(:ci_build, :deployment_rejected, pipeline: pipeline) }
 
         it_behaves_like 'does not retry the job'
       end

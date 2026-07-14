@@ -19,10 +19,22 @@ module Gitlab
 
         logger&.info "DRY RUN:" if dry_run
 
-        tables_sorted = Gitlab::Database::TablesSortedByForeignKeys.new(connection, tables_to_truncate).execute
+        # Tables removed from the schema docs (moved to db/docs/deleted_tables/) but whose
+        # DROP migration has not run yet still exist in the database with live FK constraints.
+        # They must be truncated together with the registered tables they are connected to, so
+        # include them in the FK sort. This keeps both FK directions correct: tables that
+        # reference the truncation list, and registered tables that reference these extra tables.
+        extra_fk_tables = unregistered_fk_referencing_tables(tables_to_truncate)
+          .select { |t| existing_tables_set.include?(t) }
+        all_tables_to_truncate = tables_to_truncate + extra_fk_tables
+
+        tables_sorted = Gitlab::Database::TablesSortedByForeignKeys.new(connection, all_tables_to_truncate).execute
         # Checking if all the tables have the write-lock triggers
         # to make sure we are deleting the right tables on the right database.
+        # Schema-deleted tables (extra_fk_tables) are not locked for writes, so skip them here.
         tables_sorted.flatten.each do |table_name|
+          next if extra_fk_tables.include?(table_name)
+
           lock_writes_manager = Gitlab::Database::LockWritesManager.new(
             table_name: table_name,
             connection: connection,
@@ -139,24 +151,6 @@ module Gitlab
           end
         end
 
-        # Find tables with FK constraints pointing to our truncation list that are absent
-        # from the schema docs. These are tables removed from the docs (e.g. pending a DROP
-        # migration) but still present in the database. PostgreSQL requires them to appear in
-        # the same TRUNCATE statement as the tables they reference.
-        extra_fk_tables = unregistered_fk_referencing_tables(tables_sorted.flatten)
-          .select { |t| existing_tables_set.include?(t) }
-        extra_fk_tables.each do |table|
-          disable_locks_on_table(table)
-
-          # Disable write locks on attached partitions too, otherwise TRUNCATE
-          # of a partitioned parent fires the partition's write-lock trigger.
-          Gitlab::Database::SharedModel.using_connection(connection) do
-            Gitlab::Database::PostgresPartition.for_parent_table(table).each do |partition|
-              disable_locks_on_table(remove_schema_name(partition.identifier))
-            end
-          end
-        end
-
         # We do the truncation in stages to avoid high IO
         # In each stage, we truncate the new tables along with the already truncated
         # tables before. That's because PostgreSQL doesn't allow to truncate any table (A)
@@ -166,11 +160,10 @@ module Gitlab
           new_tables_to_truncate = tables_groups.flatten
           logger&.info "= New tables to truncate: #{new_tables_to_truncate.join(', ')}"
           truncated_tables.push(*new_tables_to_truncate).tap(&:sort!)
-          all_tables = (truncated_tables + extra_fk_tables).sort
           sql_statements = [
             "SET LOCAL statement_timeout = 0",
             "SET LOCAL lock_timeout = 0",
-            "TRUNCATE TABLE #{all_tables.join(', ')} RESTRICT"
+            "TRUNCATE TABLE #{truncated_tables.join(', ')} RESTRICT"
           ]
 
           sql_statements.each { |sql_statement| logger&.info(sql_statement) }

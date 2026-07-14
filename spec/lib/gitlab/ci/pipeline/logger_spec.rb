@@ -172,8 +172,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger, feature_category: :continuous_int
           'meta.project' => project.full_path,
           'meta.root_namespace' => project.root_namespace.full_path,
           'class' => described_class.name.to_s,
-          'pipeline_id' => pipeline.id,
-          'pipeline_persisted' => true,
+          'pipeline_persisted' => pipeline.persisted?,
           'project_id' => project.id,
           'pipeline_creation_service_duration_s' => a_kind_of(Numeric),
           'pipeline_creation_caller' => 'source',
@@ -199,16 +198,19 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger, feature_category: :continuous_int
       end
 
       context 'when pipeline has builds with tags' do
-        let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
-        let_it_be(:stage1) { create(:ci_stage, project: project, pipeline: pipeline, name: 'first', position: 1) }
-        let_it_be(:stage2) { create(:ci_stage, project: project, pipeline: pipeline, name: 'second', position: 2) }
+        let(:pipeline) { build(:ci_pipeline, project: project) }
 
         let(:expected_builds_tags_count) { 4 }
         let(:expected_distinct_builds_tags_count) { 3 }
 
         before do
-          create(:ci_build, pipeline: pipeline, ci_stage: stage1, tag_list: %w[a b])
-          create(:ci_build, pipeline: pipeline, ci_stage: stage2, tag_list: %w[b c])
+          [%w[a b], %w[b c]].each.with_index do |tag_list, index|
+            stage = build(:ci_stage, project: project, name: "stage-#{index}", position: index)
+            status = build(:ci_build, temp_job_definition: build(:ci_job_definition, config: { tag_list: tag_list }))
+
+            stage.statuses << status
+            pipeline.stages << stage
+          end
         end
 
         it 'logs to application.json with correct tag count' do

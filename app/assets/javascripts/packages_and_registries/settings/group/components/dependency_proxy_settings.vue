@@ -56,6 +56,7 @@ export default {
       default: false,
     },
   },
+  emits: ['error', 'success'],
   computed: {
     enabled: {
       get() {

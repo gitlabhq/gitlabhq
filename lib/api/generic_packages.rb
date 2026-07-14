@@ -27,6 +27,10 @@ module API
       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
 
       namespace ':id/packages/generic' do
+        params do
+          requires :package_name, type: String, desc: 'Package name', regexp: Gitlab::Regex.generic_package_name_regex, file_path: true
+          requires :file_name, type: String, desc: 'Package file name', regexp: Gitlab::Regex.generic_package_file_name_regex, file_path: true
+        end
         namespace ':package_name/*package_version/(*path/):file_name', requirements: GENERIC_PACKAGES_REQUIREMENTS do
           desc 'Workhorse authorize generic package file' do
             detail 'This feature was introduced in GitLab 13.5'

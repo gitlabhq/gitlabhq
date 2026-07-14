@@ -83,6 +83,7 @@ export const humanizeDisplayUnit = ({ unit, data = 0 }) => {
     case 'days':
       return n__('day', 'days', data === '-' ? 0 : data);
     case 'per_day':
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- False positive, not a URL
       return __('/day');
     case 'percent':
       return '%';

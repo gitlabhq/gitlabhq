@@ -40,7 +40,7 @@ Results are based on AI analysis and should be reviewed by security professional
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../../_index.md#prerequisites).
 - Turn on **Allow foundational flows** and **Secret Detection False Positive Detection** [for the top-level group](_index.md#turn-foundational-flows-on-or-off).
 - [Configure push rules to allow a service account](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Configure your own runners](../execution.md#configure-runners) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
+- [Configure your own runners](../execution.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
 
 ## Running secret false positive detection
 

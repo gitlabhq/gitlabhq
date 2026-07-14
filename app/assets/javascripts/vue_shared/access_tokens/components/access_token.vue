@@ -5,6 +5,7 @@ import InputCopyToggleVisibility from '~/vue_shared/components/input_copy_toggle
 import { useAccessTokens } from '../stores/access_tokens';
 
 export default {
+  name: 'AccessToken',
   components: { GlAlert, InputCopyToggleVisibility },
   computed: {
     ...mapState(useAccessTokens, ['token']),

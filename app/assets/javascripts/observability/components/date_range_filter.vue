@@ -38,6 +38,7 @@ export default {
       default: null,
     },
   },
+  emits: ['on-date-range-selected'],
   data() {
     return {
       dateRange: this.selected ?? {
@@ -78,7 +79,7 @@ export default {
         startDate: new Date(startDate),
         endDate: new Date(endDate),
       };
-      this.$emit('onDateRangeSelected', this.dateRange);
+      this.$emit('on-date-range-selected', this.dateRange);
     },
     onSelectCustomDateRange() {
       this.dateRange = {
@@ -93,7 +94,7 @@ export default {
         startDate: new Date(startDate),
         endDate: new Date(endDate),
       };
-      this.$emit('onDateRangeSelected', this.dateRange);
+      this.$emit('on-date-range-selected', this.dateRange);
     },
   },
 };

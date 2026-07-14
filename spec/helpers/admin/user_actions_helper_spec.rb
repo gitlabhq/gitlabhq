@@ -13,7 +13,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is a bot' do
-      let_it_be(:user, freeze: false) { build(:user, :bot) }
+      let_it_be(:user) { build(:user, :bot) }
 
       it { is_expected.to be_empty }
     end
@@ -25,6 +25,11 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is a standard user' do
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:user, freeze: false) { create(:user) }
 
       it do
@@ -132,7 +137,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the current_user does not have permission to delete the user' do
-      let_it_be(:user, freeze: false) { build(:user) }
+      let_it_be(:user) { build(:user) }
 
       before do
         allow(helper).to receive(:can?).and_call_original
@@ -146,7 +151,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
       let_it_be(:group) { create(:group) }
       let_it_be(:user, freeze: false) { create(:user) }
 
-      before do
+      before_all do
         group.add_owner(user)
       end
 

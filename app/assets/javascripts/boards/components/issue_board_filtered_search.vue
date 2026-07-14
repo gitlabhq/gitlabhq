@@ -4,12 +4,14 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { orderBy } from 'lodash-es';
 import BoardFilteredSearch from 'ee_else_ce/boards/components/board_filtered_search.vue';
 import axios from '~/lib/utils/axios_utils';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { autocompleteAwardEmojisPath } from '~/lib/utils/path_helpers/autocomplete';
 import issueBoardFilters from 'ee_else_ce/boards/issue_board_filters';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import {
+  OPTIONS_NONE_ANY,
+  OPTIONS_NONE_ANY_ME,
   OPERATORS_IS_NOT,
   OPERATORS_IS,
   TOKEN_TITLE_ASSIGNEE,
@@ -38,6 +40,7 @@ import WorkItemTypeToken from '~/vue_shared/components/filtered_search_bar/token
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
+  name: 'IssueBoardFilteredSearch',
   components: { BoardFilteredSearch },
   mixins: [glFeatureFlagMixin()],
   inject: ['isSignedIn', 'releasesFetchPath', 'fullPath', 'isGroupBoard'],
@@ -57,6 +60,7 @@ export default {
       required: true,
     },
   },
+  emits: ['setFilters'],
   computed: {
     tokensCE() {
       const { fetchLabels } = issueBoardFilters(this.$apollo, this.fullPath, this.isGroupBoard);
@@ -73,6 +77,7 @@ export default {
           isProject: !this.isGroupBoard,
           fullPath: this.fullPath,
           preloadedUsers: this.preloadedUsers(),
+          defaultUsers: this.isSignedIn ? OPTIONS_NONE_ANY_ME : OPTIONS_NONE_ANY,
         },
         {
           icon: 'pencil',
@@ -108,18 +113,16 @@ export default {
                 unique: true,
                 fetchEmojis: (search = '') => {
                   // TODO: Switch to GraphQL query when backend is ready: https://gitlab.com/gitlab-org/gitlab/-/issues/339694
-                  return axios
-                    .get(`${gon.relative_url_root || ''}/-/autocomplete/award_emojis`)
-                    .then(({ data }) => {
-                      if (search) {
-                        return {
-                          data: fuzzaldrinPlus.filter(data, search, {
-                            key: ['name'],
-                          }),
-                        };
-                      }
-                      return { data };
-                    });
+                  return axios.get(autocompleteAwardEmojisPath()).then(({ data }) => {
+                    if (search) {
+                      return {
+                        data: fuzzaldrinPlus.filter(data, search, {
+                          key: ['name'],
+                        }),
+                      };
+                    }
+                    return { data };
+                  });
                 },
               },
               {
@@ -163,16 +166,14 @@ export default {
           token: ReleaseToken,
           fetchReleases: (search) => {
             // TODO: Switch to GraphQL query when backend is ready: https://gitlab.com/gitlab-org/gitlab/-/issues/337686
-            return axios
-              .get(joinPaths(gon.relative_url_root, this.releasesFetchPath))
-              .then(({ data }) => {
-                if (search) {
-                  return fuzzaldrinPlus.filter(data, search, {
-                    key: ['tag'],
-                  });
-                }
-                return data;
-              });
+            return axios.get(this.releasesFetchPath).then(({ data }) => {
+              if (search) {
+                return fuzzaldrinPlus.filter(data, search, {
+                  key: ['tag'],
+                });
+              }
+              return data;
+            });
           },
         },
       ];

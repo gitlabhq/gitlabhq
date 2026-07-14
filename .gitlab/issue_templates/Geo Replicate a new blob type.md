@@ -20,52 +20,51 @@ You can look into the following examples of MRs for implementing replication/ver
 
 ### Generate Geo SSF boilerplate
 
-The [`scripts/geo/generate-blob-replicator`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/geo/generate-blob-replicator) script automates the creation of all boilerplate files and patches required by the Geo Self-Service Framework for a new blob replicator.
+The `geo:blob_replicator` Rails generator automates the creation of all boilerplate files and patches required by the Geo Self-Service Framework for a new blob replicator. Run `rails generate geo:blob_replicator --help` for the full option list.
 
 #### Step 1. Run the generator
 
-- [ ] Run the generator script with the appropriate options:
+- [ ] Run the generator with the appropriate options:
 
   ```bash
-  # Standard blob replicator
-  scripts/geo/generate-blob-replicator \
-    --replicable-name=cool_widget \
+  # Standard blob replicator (--model-class required)
+  rails generate geo:blob_replicator cool_widget \
     --model-class=CoolWidget \
     --table-name=cool_widgets \
     --sharding-key=project_id \
     --milestone=XX.Y
 
-  # Upload partition replicator (for upload partition tables)
-  scripts/geo/generate-blob-replicator \
-    --replicable-name=cool_widget_upload \
-    --model-class=CoolWidget \
+  # Upload partition replicator (--model-class defaults to the CamelCase of NAME)
+  rails generate geo:blob_replicator cool_widget_upload \
     --table-name=cool_widget_uploads \
     --sharding-key=organization_id \
     --milestone=XX.Y \
     --upload-partition
 
   # Dry run (preview without writing)
-  scripts/geo/generate-blob-replicator \
-    --replicable-name=cool_widget \
+  rails generate geo:blob_replicator cool_widget \
     --model-class=CoolWidget \
     --table-name=cool_widgets \
     --sharding-key=project_id \
     --milestone=XX.Y \
-    --dry-run
+    --pretend
   ```
 
   **Options:**
   | Option | Description |
   |---|---|
-  | `--replicable-name` | Snake_case replicable name (e.g. `cool_widget`) |
-  | `--model-class` | Ruby model class name (e.g. `CoolWidget`) |
+  | `NAME` | Snake_case replicable name, passed as the positional argument (e.g. `cool_widget`) |
   | `--table-name` | Database table name (e.g. `cool_widgets`) |
-  | `--sharding-key` | Sharding key column(s): `project_id`, `namespace_id`, or `organization_id`. Can be comma-separated for multiple keys. |
+  | `--sharding-key` | Sharding key column(s): `project_id`, `namespace_id`, `organization_id`, or `uploaded_by_user_id`. Space- or comma-separated for multiple keys. |
   | `--milestone` | Milestone version (e.g. `18.10`) |
   | `--upload-partition` | Generate a dedicated read-only model for an upload partition table |
-  | `--dry-run` | Print file paths without writing |
+  | `--model-class` | Ruby model class name (required unless `--upload-partition`; then defaults to the CamelCase of `NAME`) |
+  | `--parent-factory` | Parent model factory in upload-partition mode (defaults to `NAME` minus `_upload`) |
+  | `--pretend` | Preview without writing |
+  | `--skip-post-generate` | Skip the post-generation rake tasks and RuboCop autocorrect |
+  | `--only-post-generate` | Post-rebase: skip new-file creation, but re-apply the (idempotent) framework patches and re-run the derived-doc regeneration rake tasks (and RuboCop autocorrect) |
 
-  The script generates 17+ new files and patches 14+ existing files. See the script's output for the full list.
+  After writing the files and applying the patches, the generator regenerates the derived docs/metrics (gettext, SSF metrics, DB dictionary, GraphQL and OpenAPI docs) and runs `rubocop --autocorrect` over the generated and patched Ruby.
 
 #### Step 2. Run migrations and commit generated schema files
 

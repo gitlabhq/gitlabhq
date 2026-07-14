@@ -60,6 +60,7 @@ export default {
       default: () => gon.suggested_label_colors,
     },
   },
+  emits: ['input'],
   computed: {
     description() {
       return this.hasSuggestedColors

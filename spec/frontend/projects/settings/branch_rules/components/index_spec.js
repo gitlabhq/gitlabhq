@@ -93,7 +93,9 @@ describe('View branch rules', () => {
 
   const createComponent = async ({
     canAdminProtectedBranches = true,
-    allowEditSquashSetting = true,
+    squashOptionsFeatureAvailable = true,
+    canReadSquashOption = true,
+    canUpdateSquashOption = true,
     branchRulesQueryHandler = branchRulesMockRequestHandler,
     squashOptionQueryHandler = squashOptionMockRequestHandler,
     deleteMutationHandler = deleteBranchRuleSuccessHandler,
@@ -118,7 +120,9 @@ describe('View branch rules', () => {
         protectedBranchesPath,
         branchRulesPath,
         canAdminProtectedBranches,
-        allowEditSquashSetting,
+        squashOptionsFeatureAvailable,
+        canReadSquashOption,
+        canUpdateSquashOption,
       },
       stubs: {
         ApprovalRulesApp: true,
@@ -179,33 +183,39 @@ describe('View branch rules', () => {
 
   describe('Squash settings', () => {
     it.each`
-      scenario                           | canAdminProtectedBranches | expectedIsEditAvailable | description
-      ${'user has permission'}           | ${true}                   | ${true}                 | ${'shows edit button'}
-      ${'user does not have permission'} | ${false}                  | ${false}                | ${'hides edit button'}
-    `(
-      '$description when $scenario',
-      async ({ canAdminProtectedBranches, expectedIsEditAvailable }) => {
-        await createComponent({
-          canAdminProtectedBranches,
-        });
+      scenario                           | canUpdateSquashOption | expectedIsEditAvailable | description
+      ${'user has permission'}           | ${true}               | ${true}                 | ${'shows edit button'}
+      ${'user does not have permission'} | ${false}              | ${false}                | ${'hides edit button'}
+    `('$description when $scenario', async ({ canUpdateSquashOption, expectedIsEditAvailable }) => {
+      await createComponent({
+        canUpdateSquashOption,
+      });
 
-        expect(findSquashSettingSection().props('isEditAvailable')).toBe(expectedIsEditAvailable);
-      },
-    );
+      expect(findSquashSettingSection().props('isEditAvailable')).toBe(expectedIsEditAvailable);
+    });
+
+    it('does not render squash settings section when canReadSquashOption is false', async () => {
+      await createComponent({ canReadSquashOption: false });
+      expect(findSquashSettingSection().exists()).toBe(false);
+    });
+
+    it('does not render squash settings section when squashOptionsFeatureAvailable is false for a branch rule', async () => {
+      await createComponent({ squashOptionsFeatureAvailable: false });
+      expect(findSquashSettingSection().exists()).toBe(false);
+    });
 
     it.each`
-      allowEditSquashSetting | branch            | expectedIsEditAvailable | description
-      ${true}                | ${'main'}         | ${true}                 | ${'allowEditSquashSetting is true and branch is main'}
-      ${false}               | ${'main'}         | ${false}                | ${'allowEditSquashSetting is false and branch is main'}
-      ${false}               | ${'All branches'} | ${true}                 | ${'allowEditSquashSetting is false and target is All branches'}
+      squashOptionsFeatureAvailable | branch            | expectedIsEditAvailable | description
+      ${true}                       | ${'main'}         | ${true}                 | ${'squashOptionsFeatureAvailable is true and branch is main'}
+      ${false}                      | ${'All branches'} | ${true}                 | ${'squashOptionsFeatureAvailable is false and target is All branches'}
     `(
       'expectedIsEditAvailable: $expectedIsEditAvailable when $description',
-      async ({ allowEditSquashSetting, branch, expectedIsEditAvailable }) => {
+      async ({ squashOptionsFeatureAvailable, branch, expectedIsEditAvailable }) => {
         jest.spyOn(util, 'getParameterByName').mockReturnValueOnce(branch);
 
         await createComponent({
-          canAdminProtectedBranches: true,
-          allowEditSquashSetting,
+          canUpdateSquashOption: true,
+          squashOptionsFeatureAvailable,
         });
 
         expect(findSquashSettingSection().props('isEditAvailable')).toBe(expectedIsEditAvailable);

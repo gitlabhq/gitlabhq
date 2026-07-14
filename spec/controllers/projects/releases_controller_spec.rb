@@ -5,21 +5,20 @@ require 'spec_helper'
 RSpec.describe Projects::ReleasesController do
   include AccessMatchersForController
 
-  let!(:project) { create(:project, :repository, :public) }
-  let_it_be(:private_project, freeze: false) { create(:project, :repository, :private) }
-  let_it_be(:developer, freeze: false)  { create(:user) }
-  let_it_be(:reporter, freeze: false)   { create(:user) }
-  let_it_be(:guest, freeze: false)      { create(:user) }
-  let_it_be(:user, freeze: false)       { developer }
-
-  let!(:release_1)       { create(:release, project: project, released_at: Time.zone.parse('2018-10-18')) }
-  let!(:release_2)       { create(:release, project: project, released_at: Time.zone.parse('2019-10-19')) }
-
-  before do
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-    project.add_guest(guest)
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:reporter)  { create(:user) }
+  let_it_be(:guest)     { create(:user) }
+  let_it_be_with_reload(:project) do
+    create(:project, :small_repo, :public, developers: developer, reporters: reporter, guests: guest)
   end
+
+  let_it_be(:private_project, freeze: false) do
+    create(:project, :small_repo, :private, developers: developer, reporters: reporter, guests: guest)
+  end
+
+  let(:user) { developer }
+  let!(:release_1) { create(:release, project: project, released_at: Time.zone.parse('2018-10-18')) }
+  let!(:release_2) { create(:release, project: project, released_at: Time.zone.parse('2019-10-19')) }
 
   shared_examples_for 'successful request' do
     it 'renders a 200' do
@@ -264,7 +263,7 @@ RSpec.describe Projects::ReleasesController do
     end
 
     context 'when there are no releases for the project' do
-      let(:project) { create(:project, :repository, :public) }
+      let(:project) { create(:project, :small_repo, :public) }
       let(:user) { developer }
 
       before do

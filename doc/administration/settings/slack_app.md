@@ -20,7 +20,7 @@ description: "Administer, configure, and troubleshoot the GitLab for Slack app o
 {{< /history >}}
 
 > [!note]
-> This page contains administrator documentation for the GitLab for Slack app. For user documentation, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md).
+> For user documentation, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md).
 
 The GitLab for Slack app distributed through the Slack App Directory only works with GitLab.com.
 On GitLab Self-Managed, you can create your own copy of the GitLab for Slack app from a [manifest file](https://api.slack.com/reference/manifests#creating_apps) and configure your instance.
@@ -70,7 +70,7 @@ After you've [created a GitLab for Slack app](#create-a-gitlab-for-slack-app), y
 
 {{< history >}}
 
-- Installation for a specific instance [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
+- Installation for a specific instance [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a feature flag](../feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175803) in GitLab 17.8. Feature flag `gitlab_for_slack_app_instance_and_group_level` removed.
 
@@ -154,8 +154,6 @@ To configure the GitLab for Slack app as an unlisted distributed app:
 ## Troubleshooting
 
 When administering the GitLab for Slack app, you might encounter the following issues.
-
-For user documentation, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_app_troubleshooting.md).
 
 ### Slash commands return `dispatch_failed` in Slack
 

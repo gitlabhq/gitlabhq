@@ -31,6 +31,14 @@ module QA
         @gitlab_url ||= ENV["QA_GITLAB_URL"] || "http://127.0.0.1:3000" # default to GDK
       end
 
+      def runner_gitlab_url
+        ENV['QA_RUNNER_GITLAB_URL'].presence
+      end
+
+      def runner_clone_url
+        ENV['QA_RUNNER_CLONE_URL'].presence
+      end
+
       # Retrieves the value of the gitlab_canary cookie if set or returns an empty hash.
       #
       # @return [Hash]

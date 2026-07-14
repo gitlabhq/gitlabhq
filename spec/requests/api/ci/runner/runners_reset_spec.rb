@@ -13,8 +13,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     stub_application_setting(valid_runner_registrars: ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
   end
 
-  let_it_be(:group_settings, freeze: false) { create(:namespace_settings, runner_token_expiration_interval: 5.days.to_i) }
-  let_it_be(:group, freeze: false) { create(:group, namespace_settings: group_settings) }
+  let_it_be_with_reload(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 5.days.to_i) }
+  let_it_be_with_reload(:group) { create(:group, namespace_settings: group_settings) }
   let_it_be_with_reload(:instance_runner) { create(:ci_runner, :instance) }
   let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], token_expires_at: 1.day.from_now) }
 

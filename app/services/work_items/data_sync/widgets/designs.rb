@@ -8,6 +8,11 @@ module WorkItems
           return unless target_work_item.get_widget(:designs)
           return unless work_item.designs.exists?
 
+          if cross_organization?
+            log_error("Cannot copy designs across organizations")
+            return
+          end
+
           unless user_can_copy?
             log_error("User cannot copy designs to work item")
             return
@@ -31,6 +36,14 @@ module WorkItems
         end
 
         private
+
+        # Design repositories live on the container's cell-local Gitaly storage and
+        # cannot be copied to another cell, so designs never cross organizations.
+        def cross_organization?
+          return false unless Feature.enabled?(:prevent_cross_organization_work_item_actions, work_item.root_ancestor)
+
+          !work_item.same_organization_as?(target_work_item)
+        end
 
         def user_can_copy?
           current_user.can?(:read_design, work_item) && current_user.can?(:admin_issue, target_work_item)

@@ -6,7 +6,9 @@ import {
   GlFormCheckbox,
 } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
+import Vue, { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -15,8 +17,10 @@ import { fetchGroups } from '~/jira_connect/subscriptions/api';
 import GroupsList from '~/jira_connect/subscriptions/components/add_namespace_modal/groups_list.vue';
 import GroupsListItem from '~/jira_connect/subscriptions/components/add_namespace_modal/groups_list_item.vue';
 import { DEFAULT_GROUPS_PER_PAGE } from '~/jira_connect/subscriptions/constants';
-import createStore from '~/jira_connect/subscriptions/store';
+import { useJiraConnectSubscriptions } from '~/jira_connect/subscriptions/store';
 import { mockGroup1, mockGroup2 } from '../../mock_data';
+
+Vue.use(PiniaVuePlugin);
 
 const createMockGroup = (groupId) => {
   return {
@@ -48,7 +52,9 @@ describe('GroupsList', () => {
   };
 
   const createComponent = ({ initialState } = {}) => {
-    store = createStore({
+    const pinia = createTestingPinia();
+    store = useJiraConnectSubscriptions();
+    store.$patch({
       accessToken: mockAccessToken,
       currentUser: mockUser,
       ...initialState,
@@ -56,7 +62,7 @@ describe('GroupsList', () => {
 
     wrapper = extendedWrapper(
       shallowMount(GroupsList, {
-        store,
+        pinia,
         provide: {
           groupsPath: mockGroupsPath,
         },

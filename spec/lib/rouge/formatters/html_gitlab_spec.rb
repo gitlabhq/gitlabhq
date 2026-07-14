@@ -15,14 +15,14 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
       let(:options) { { tag: lang, ellipsis_indexes: [0], ellipsis_svg: "svg_icon" } }
 
       it 'returns highlighted ruby code with svg' do
-        code = %q(<span id="LC1" class="line" lang="ruby"><span class="k">def</span> <span class="nf">hello</span><span class="gl-px-2 gl-rounded-base gl-mx-2 gl-bg-gray-100 gl-cursor-help has-tooltip" title="Content has been trimmed">svg_icon</span></span>)
+        code = %q(<span id="LC1" class="line" data-lang="ruby"><span class="k">def</span> <span class="nf">hello</span><span class="gl-px-2 gl-rounded-base gl-mx-2 gl-bg-gray-100 gl-cursor-help has-tooltip" title="Content has been trimmed">svg_icon</span></span>)
 
         is_expected.to eq(code)
       end
     end
 
     it 'returns highlighted ruby code' do
-      code = %q(<span id="LC1" class="line" lang="ruby"><span class="k">def</span> <span class="nf">hello</span></span>)
+      code = %q(<span id="LC1" class="line" data-lang="ruby"><span class="k">def</span> <span class="nf">hello</span></span>)
 
       is_expected.to eq(code)
     end
@@ -30,27 +30,27 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
     context 'when options are empty' do
       let(:options) { {} }
 
-      it 'returns highlighted code without lang' do
-        code = %q(<span id="LC1" class="line"><span class="k">def</span> <span class="nf">hello</span></span>)
+      it 'returns highlighted code with plaintext default' do
+        code = %q(<span id="LC1" class="line" data-lang="plaintext"><span class="k">def</span> <span class="nf">hello</span></span>)
 
         is_expected.to eq(code)
       end
     end
 
-    context 'when fix_attributes is true' do
-      let(:options) { { fix_attributes: true } }
+    context 'when suppress_line_ids is true' do
+      let(:options) { { suppress_line_ids: true } }
 
-      it 'returns highlighted code without data-lang' do
-        code = %q(<span class="line"><span class="k">def</span> <span class="nf">hello</span></span>)
+      it 'returns highlighted code without line id attribute' do
+        code = %q(<span class="line" data-lang="plaintext"><span class="k">def</span> <span class="nf">hello</span></span>)
 
         is_expected.to eq(code)
       end
     end
 
-    context 'when fix_attributes is true with a language tag' do
-      let(:options) { { fix_attributes: true, tag: lang } }
+    context 'when suppress_line_ids is true with a language tag' do
+      let(:options) { { suppress_line_ids: true, tag: lang } }
 
-      it 'returns highlighted code with data-lang attribute' do
+      it 'returns highlighted code with data-lang but without line id attribute' do
         code = %q(<span class="line" data-lang="ruby"><span class="k">def</span> <span class="nf">hello</span></span>)
 
         is_expected.to eq(code)
@@ -61,7 +61,7 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
       let(:options) { { tag: lang, line_number: 10 } }
 
       it 'returns highlighted ruby code with correct line number' do
-        code = %q(<span id="LC10" class="line" lang="ruby"><span class="k">def</span> <span class="nf">hello</span></span>)
+        code = %q(<span id="LC10" class="line" data-lang="ruby"><span class="k">def</span> <span class="nf">hello</span></span>)
 
         is_expected.to eq(code)
       end
@@ -100,7 +100,7 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
 
       it 'replaces the space characters with spaces' do
         is_expected.to eq(
-          "<span id=\"LC1\" class=\"line\" lang=\"ruby\">" \
+          "<span id=\"LC1\" class=\"line\" data-lang=\"ruby\">" \
           "<span class=\"k\">def</span><span class=\"err\">                </span><span class=\"n\">hello</span>" \
           "</span>"
         )

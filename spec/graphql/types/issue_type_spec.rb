@@ -120,7 +120,7 @@ RSpec.describe GitlabSchema.types['Issue'], feature_category: :team_planning do
         it_behaves_like 'does not include private notes'
 
         context 'when user member of the project' do
-          before do
+          before_all do
             project.add_developer(user)
           end
 

@@ -3,6 +3,7 @@ import DownloadViewer from '../../content_viewer/viewers/download_viewer.vue';
 import { diffModes } from '../constants';
 
 export default {
+  name: 'DownloadDiffViewer',
   components: {
     DownloadViewer,
   },

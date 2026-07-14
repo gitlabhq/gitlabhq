@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be_with_refind(:pipeline) { create(:ci_pipeline, :success, project: project, sha: project.commit.id) }
 
   let(:service) { described_class.new(project, user) }

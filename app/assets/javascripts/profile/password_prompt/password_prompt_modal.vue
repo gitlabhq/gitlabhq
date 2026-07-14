@@ -9,6 +9,7 @@ import {
 } from './constants';
 
 export default {
+  name: 'PasswordPromptModal',
   components: {
     GlModal,
     GlForm,

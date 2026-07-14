@@ -7,12 +7,12 @@ RSpec.describe Resolvers::Wikis::WikiPageResolver, feature_category: :wiki do
 
   describe '#resolve' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, :private, developers: user) }
+    let_it_be_with_reload(:project) { create(:project, :private, developers: user) }
 
     let(:slug) { wiki_page_meta.canonical_slug }
 
     context 'for project wikis' do
-      let_it_be(:wiki_page_meta, freeze: false) { create(:wiki_page_meta, :for_wiki_page, container: project) }
+      let_it_be_with_reload(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
 
       subject(:resolved_wiki_page) do
         resolve_wiki_page('slug' => slug, 'project_id' => global_id_of(project))

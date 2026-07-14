@@ -23,9 +23,16 @@ module Gitlab
           topology_service_address,
           service_credentials,
           interceptors: build_interceptors,
-          channel_args: { 'grpc.max_receive_message_length' => MAX_RECEIVE_MESSAGE_BYTES },
+          channel_args: channel_args,
           **options
         )
+      end
+
+      # Base gRPC channel arguments shared by every topology service client.
+      # Subclasses override this to add per-service tuning (for example, keepalive
+      # settings to keep a low-traffic channel warm).
+      def channel_args
+        { 'grpc.max_receive_message_length' => MAX_RECEIVE_MESSAGE_BYTES }
       end
 
       def build_interceptors

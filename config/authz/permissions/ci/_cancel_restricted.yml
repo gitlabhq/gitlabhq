@@ -5,3 +5,4 @@ description: Private permission that gates the ability to cancel CI pipelines
   The project policy combines this permission with the cancellation
   restriction setting to conditionally prevent cancel_pipeline and
   cancel_build. Must not be checked directly at enforcement points.
+conditionally_enables: null

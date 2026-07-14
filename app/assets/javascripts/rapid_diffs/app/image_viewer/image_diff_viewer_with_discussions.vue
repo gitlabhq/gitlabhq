@@ -21,9 +21,6 @@ export default {
     userPermissions: {
       type: Object,
     },
-    endpoints: {
-      type: Object,
-    },
   },
   props: {
     imageData: {
@@ -40,6 +37,11 @@ export default {
       required: false,
       default: null,
     },
+    diffRefs: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -51,7 +53,11 @@ export default {
       return `${window.location.pathname}-image-${[this.oldPath || '-', this.newPath || '-'].join('-')}`;
     },
     discussions() {
-      return this.store.findAllImageDiscussionsForFile(this.oldPath, this.newPath);
+      return this.store.findAllImageDiscussionsForFile({
+        oldPath: this.oldPath,
+        newPath: this.newPath,
+        diffRefs: this.diffRefs,
+      });
     },
   },
   methods: {
@@ -60,8 +66,9 @@ export default {
     },
     async saveNote(noteBody) {
       try {
-        await this.store.createNewDiscussion({
+        await this.store.createImageDiscussion({
           position: {
+            ...this.diffRefs,
             old_path: this.oldPath,
             new_path: this.newPath,
             position_type: 'image',
@@ -70,7 +77,7 @@ export default {
             x: this.commentForm.x,
             y: this.commentForm.y,
           },
-          note: noteBody,
+          noteBody,
         });
         clearDraft(this.autosaveKey);
         this.commentForm = null;

@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Workflow Catalog
+stage: Agent Foundations
+group: AI Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Agent tools
 ---
@@ -15,13 +15,14 @@ The following tools are available to custom agents.
 |------|------|-------------|
 | Add New Task | `add_new_task` | Add a task. |
 | Build Review Merge Request Context | `build_review_merge_request_context` | Build comprehensive merge request context for code review. |
-| Ci Linter | `ci_linter` | Validate CI/CD YAML configurations against CI/CD syntax rules. |
+| CI Linter | `ci_linter` | Validate CI/CD YAML configurations against CI/CD syntax rules. |
 | Confirm Vulnerability | `confirm_vulnerability` | Change the state of a vulnerability in a project to `CONFIRMED`. |
 | Create Commit | `create_commit` | Create a commit with multiple file actions in a repository. |
 | Create Epic | `create_epic` | Create epics in a group. |
 | Create Issue | `create_issue` | Create issues in a project. |
 | Create Issue Note | `create_issue_note` | Add notes to an issue. |
 | Create Merge Request | `create_merge_request` | Create merge requests in a project. |
+| Create Merge Request Diff Note | `create_merge_request_diff_note` | Add inline diff notes to a merge request. Quick actions are not supported. |
 | Create Merge Request Note | `create_merge_request_note` | Add notes to a merge request. Quick actions are not supported. |
 | Create Plan | `create_plan` | Create a list of tasks. |
 | Create Vulnerability Issue | `create_vulnerability_issue` | Create an issue linked to security vulnerabilities in a project. |

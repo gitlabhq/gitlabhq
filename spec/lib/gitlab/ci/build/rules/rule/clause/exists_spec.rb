@@ -51,6 +51,83 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
       end
     end
 
+    context 'when regexp: is provided' do
+      let(:clause) { { regexp: regexp_pattern } }
+      let(:context) do
+        Gitlab::Ci::Config::External::Context.new(
+          project: project, sha: project.commit.sha, user: user, variables: variables)
+      end
+
+      context 'when the regexp matches an existing file' do
+        let(:regexp_pattern) { '^subdir/.*' }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when the regexp does not match any file' do
+        let(:regexp_pattern) { '^nonexistent/.*' }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the pattern contains a CI/CD variable' do
+        context 'when the expanded pattern matches an existing file' do
+          let(:regexp_pattern) { '^$SUBDIR/.*' }
+
+          it 'expands the variable before matching' do
+            is_expected.to be_truthy
+          end
+        end
+
+        context 'when the expanded pattern excludes all files via lookahead' do
+          let(:regexp_pattern) { '^(?!$SUBDIR/)' }
+
+          it 'expands the variable before matching' do
+            is_expected.to be_falsey
+          end
+        end
+      end
+
+      context 'when regexp is used with project:' do
+        let(:clause) { { regexp: '^file.*', project: other_project.full_path } }
+
+        before_all do
+          other_project.add_developer(user)
+        end
+
+        it 'matches files in the specified project' do
+          is_expected.to be_truthy
+        end
+
+        context 'when no file matches in the specified project' do
+          let(:clause) { { regexp: '^nonexistent/.*', project: other_project.full_path } }
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'when the project path is invalid' do
+          let(:clause) { { regexp: '^src/.*', project: 'invalid/path' } }
+
+          it 'raises ParseError' do
+            expect { satisfied_by? }.to raise_error(
+              Gitlab::Ci::Build::Rules::Rule::Clause::ParseError
+            )
+          end
+        end
+      end
+
+      context 'with request store caching', :request_store do
+        let(:regexp_pattern) { '^subdir/.*' }
+        let(:instance) { described_class.new(clause) }
+
+        it 'returns the same result on repeated calls without re-fetching worktree paths', :aggregate_failures do
+          expect(context).to receive(:all_worktree_paths).once.and_call_original
+
+          2.times { expect(instance.satisfied_by?(pipeline, context)).to be_truthy }
+        end
+      end
+    end
+
     shared_examples 'a rules:exists with a context' do
       it_behaves_like 'a glob matching rule' do
         let(:project) { create(:project, :small_repo, files: files) }

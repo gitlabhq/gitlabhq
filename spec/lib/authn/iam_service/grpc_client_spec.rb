@@ -10,9 +10,9 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
   let(:iam_service_address) { 'localhost:5004' }
   let(:iam_secret) { 'test-secret-token' }
 
-  let(:auth_stub) { instance_double(::Auth::V1::AuthService::Stub) }
-  let(:login_stub) { instance_double(::Auth::V1::LoginService::Stub) }
-  let(:consent_stub) { instance_double(::Auth::V1::ConsentService::Stub) }
+  let(:auth_stub) { instance_double(::Gitlab::Iam::Auth::V1::AuthService::Stub) }
+  let(:login_stub) { instance_double(::Gitlab::Iam::Auth::V1::LoginService::Stub) }
+  let(:consent_stub) { instance_double(::Gitlab::Iam::Auth::V1::ConsentService::Stub) }
 
   before do
     allow(Authn::IamAuthService).to receive_messages(
@@ -20,31 +20,64 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
       secret: iam_secret
     )
 
-    allow(::Auth::V1::AuthService::Stub).to receive(:new).and_return(auth_stub)
-    allow(::Auth::V1::LoginService::Stub).to receive(:new).and_return(login_stub)
-    allow(::Auth::V1::ConsentService::Stub).to receive(:new).and_return(consent_stub)
+    allow(::Gitlab::Iam::Auth::V1::AuthService::Stub).to receive(:new).and_return(auth_stub)
+    allow(::Gitlab::Iam::Auth::V1::LoginService::Stub).to receive(:new).and_return(login_stub)
+    allow(::Gitlab::Iam::Auth::V1::ConsentService::Stub).to receive(:new).and_return(consent_stub)
   end
 
   describe 'gRPC calls' do
     where(:method, :rpc_method, :stub_let, :request_class, :response_class, :params) do
-      :health                   | :health | :auth_stub    | ::Auth::V1::HealthRequest               | ::Auth::V1::HealthResponse               | {}
-      :accept_login_challenge   | :accept | :login_stub   | ::Auth::V1::LoginServiceAcceptRequest   | ::Auth::V1::LoginServiceAcceptResponse   | { challenge: 'test-challenge', subject: '42', name: 'Jane Doe', email: 'jane.doe@example.com' }
-      :get_consent_challenge    | :get    | :consent_stub | ::Auth::V1::ConsentServiceGetRequest    | ::Auth::V1::ConsentServiceGetResponse    | { challenge: 'test-challenge' }
-      :accept_consent_challenge | :accept | :consent_stub | ::Auth::V1::ConsentServiceAcceptRequest | ::Auth::V1::ConsentServiceAcceptResponse | { challenge: 'test-challenge', granted_scopes: %w[openid profile] }
-      :reject_consent_challenge | :reject | :consent_stub | ::Auth::V1::ConsentServiceRejectRequest | ::Auth::V1::ConsentServiceRejectResponse | { challenge: 'test-challenge' }
+      :health                   | :health | :auth_stub    | ::Gitlab::Iam::Auth::V1::HealthRequest               | ::Gitlab::Iam::Auth::V1::HealthResponse               | {}
+      :accept_login_challenge   | :accept | :login_stub   | ::Gitlab::Iam::Auth::V1::LoginServiceAcceptRequest   | ::Gitlab::Iam::Auth::V1::LoginServiceAcceptResponse   | { challenge: 'test-challenge', subject: '42', name: 'Jane Doe', email: 'jane.doe@example.com' }
+      :get_consent_challenge    | :get    | :consent_stub | ::Gitlab::Iam::Auth::V1::ConsentServiceGetRequest    | ::Gitlab::Iam::Auth::V1::ConsentServiceGetResponse    | { challenge: 'test-challenge' }
+      :accept_consent_challenge | :accept | :consent_stub | ::Gitlab::Iam::Auth::V1::ConsentServiceAcceptRequest | ::Gitlab::Iam::Auth::V1::ConsentServiceAcceptResponse | { challenge: 'test-challenge', granted_scopes: %w[openid profile] }
+      :reject_consent_challenge | :reject | :consent_stub | ::Gitlab::Iam::Auth::V1::ConsentServiceRejectRequest | ::Gitlab::Iam::Auth::V1::ConsentServiceRejectResponse | { challenge: 'test-challenge' }
     end
 
     with_them do
       let(:stub) { send(stub_let) }
       let(:response) { response_class.new }
 
-      it 'sends the request with IAM auth metadata and returns the response', :aggregate_failures do
+      it 'sends the request with the routing header and returns the response', :aggregate_failures do
         expect(stub).to receive(rpc_method).with(
           an_instance_of(request_class),
-          metadata: a_hash_including('gitlab-iam-auth-token' => iam_secret)
+          metadata: a_hash_including('x-gitlab-svc' => 'iam-auth-grpc')
         ).and_return(response)
 
         expect(client.public_send(method, **params)).to eq(response)
+      end
+    end
+  end
+
+  describe 'service token' do
+    context 'with a real stub and interceptor chain' do
+      # Everything up to the stub is unmocked here (including
+      # ServiceTokenInterceptor and GRPC::ClientStub#request_response) so the
+      # real interceptor dispatch runs; only the network-facing ActiveCall is
+      # replaced, so no actual connection is attempted.
+      let(:fake_active_call) { instance_double(GRPC::ActiveCall) }
+
+      before do
+        allow(::Gitlab::Iam::Auth::V1::AuthService::Stub).to receive(:new).and_call_original
+        allow(GRPC::ActiveCall).to receive(:new).and_return(fake_active_call)
+        allow(fake_active_call).to receive(:interceptable).and_return(fake_active_call)
+      end
+
+      it 'delivers the service token and routing headers on the actual outbound gRPC call' do
+        received_metadata = nil
+        allow(fake_active_call).to receive(:request_response) do |_request, metadata:|
+          received_metadata = metadata
+          ::Gitlab::Iam::Auth::V1::HealthResponse.new
+        end
+
+        client.health
+
+        # a_hash_including, not eq: the real interceptor chain also carries
+        # Labkit's correlation-id interceptor, which adds its own header.
+        expect(received_metadata).to include(
+          'x-gitlab-svc' => 'iam-auth-grpc',
+          Authn::IamAuthService::IAM_AUTH_TOKEN_HEADER => iam_secret
+        )
       end
     end
   end
@@ -85,7 +118,6 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
       'localhost:5004'                  | 'localhost:5004'              | false
       'tls://iam.example.com:5004'      | 'iam.example.com:5004'        | true
       'tcp://iam.example.com:5004'      | 'iam.example.com:5004'        | false
-      'dns+tls:///iam.example.com:5004' | 'dns:///iam.example.com:5004' | true
       ':::invalid'                      | ':::invalid'                  | false
     end
 
@@ -96,17 +128,20 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
       before do
         allow(::Gitlab::X509::Certificate).to receive(:ca_certs_bundle).and_return('cert-data')
         allow(GRPC::Core::ChannelCredentials).to receive(:new).with('cert-data').and_return(tls_credentials)
-        allow(auth_stub).to receive(:health).and_return(::Auth::V1::HealthResponse.new)
+        allow(auth_stub).to receive(:health).and_return(::Gitlab::Iam::Auth::V1::HealthResponse.new)
       end
 
       it 'configures the gRPC channel with the expected endpoint and credentials' do
         client.health
 
         expected_credentials = expects_tls ? tls_credentials : :this_channel_is_insecure
-        expect(::Auth::V1::AuthService::Stub).to have_received(:new).with(
+        expect(::Gitlab::Iam::Auth::V1::AuthService::Stub).to have_received(:new).with(
           expected_endpoint,
           expected_credentials,
-          interceptors: [Labkit::Correlation::GRPC::ClientInterceptor.instance],
+          interceptors: [
+            Labkit::Correlation::GRPC::ClientInterceptor.instance,
+            an_instance_of(Authn::IamService::ServiceTokenInterceptor)
+          ],
           timeout: described_class::TIMEOUT_SECONDS
         )
       end

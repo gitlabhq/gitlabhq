@@ -435,7 +435,7 @@ RSpec.describe 'Email Verification On Login', :with_current_organization, :clean
 
     before do
       stub_feature_flags(skip_require_email_verification: false)
-      Feature.enable(:email_based_mfa, user)
+      stub_application_setting(email_otp_enabled: true)
       # email verification is skipped unless last_sign_in_at is populated
       user.update!(last_sign_in_at: today - 2.days)
       travel_to(today)

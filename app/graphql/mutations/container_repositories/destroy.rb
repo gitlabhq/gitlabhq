@@ -7,7 +7,7 @@ module Mutations
 
       authorize :destroy_container_image
       authorize_granular_token permissions: :delete_container_repository,
-        boundary_argument: :id, boundary_type: :project
+        boundary_argument: :id, boundary: :project, boundary_type: :project
 
       argument :id,
         ::Types::GlobalIDType[::ContainerRepository],

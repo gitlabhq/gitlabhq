@@ -6,6 +6,7 @@ import k8sCronJobsQuery from '../graphql/queries/k8s_dashboard_cron_jobs.query.g
 import { STATUS_FAILED, STATUS_READY, STATUS_SUSPENDED, STATUS_LABELS } from '../constants';
 
 export default {
+  name: 'CronJobsPage',
   components: {
     WorkloadLayout,
   },

@@ -191,7 +191,7 @@ authentication are supported by Admin Mode. Admin Mode status is stored in the c
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438674) in GitLab 16.10 [with a flag](../feature_flags/_index.md) named `show_admin_mode_within_active_sessions`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438674) in GitLab 16.10 [with a feature flag](../feature_flags/_index.md) named `show_admin_mode_within_active_sessions`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/444188) in GitLab 16.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/438674) in GitLab 17.0. Feature flag `show_admin_mode_within_active_sessions` removed.
 
@@ -223,7 +223,7 @@ The following access methods are not protected by Admin Mode:
 In other words, administrators who are otherwise limited by Admin Mode can still use
 Git clients without additional authentication steps.
 
-To use the GitLab REST- or GraphQL API, administrators must [create a personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token) or [OAuth token](../../api/oauth2.md) with the [`admin_mode` scope](../../user/profile/personal_access_tokens.md#personal-access-token-scopes).
+To use the GitLab REST- or GraphQL API, administrators must [create a personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token) or [OAuth token](../../api/oauth2.md) with the [`admin_mode` scope](../../security/tokens/access_token_scopes.md).
 
 If an administrator with a personal access token with the `admin_mode` scope loses their administrator access, that user cannot access the API as an administrator even though they still have the token with the `admin_mode` scope.
 For more information, see [epic 2158](https://gitlab.com/groups/gitlab-org/-/epics/2158).

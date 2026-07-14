@@ -99,6 +99,52 @@ RSpec.describe Gitlab::Conflict::FileCollection do
       expect(file_collection.can_be_resolved_in_ui?).to be false
     end
 
+    context 'when Gitaly is unavailable' do
+      def raise_command_error_with_cause(grpc_error)
+        raise grpc_error
+      rescue StandardError
+        raise Gitlab::Git::CommandError, grpc_error.message
+      end
+
+      it 'propagates Gitlab::Git::CommandError for GRPC::Unavailable' do
+        grpc_error = GRPC::Unavailable.new('Gitaly unavailable')
+
+        expect(file_collection).to receive(:files) { raise_command_error_with_cause(grpc_error) }
+
+        expect { file_collection.can_be_resolved_in_ui? }.to raise_error(Gitlab::Git::CommandError)
+      end
+
+      it 'propagates Gitlab::Git::CommandError for GRPC::DeadlineExceeded' do
+        grpc_error = GRPC::DeadlineExceeded.new('Gitaly timeout')
+
+        expect(file_collection).to receive(:files) { raise_command_error_with_cause(grpc_error) }
+
+        expect { file_collection.can_be_resolved_in_ui? }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
+
+    context 'when ref is missing (not Gitaly unavailability)' do
+      def raise_command_error_with_cause(grpc_error)
+        raise grpc_error
+      rescue StandardError
+        raise Gitlab::Git::CommandError, grpc_error.message
+      end
+
+      it 'returns false for GRPC::Unknown (missing ref)' do
+        grpc_error = GRPC::Unknown.new('reference not found')
+
+        expect(file_collection).to receive(:files) { raise_command_error_with_cause(grpc_error) }
+
+        expect(file_collection.can_be_resolved_in_ui?).to be false
+      end
+
+      it 'returns false for CommandError without GRPC cause' do
+        expect(file_collection).to receive(:files).and_raise(Gitlab::Git::CommandError, 'some error')
+
+        expect(file_collection.can_be_resolved_in_ui?).to be false
+      end
+    end
+
     it 'caches the result' do
       expect(file_collection).to receive(:files).twice.and_call_original
 

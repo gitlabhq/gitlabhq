@@ -29,8 +29,17 @@ import WorkItemMetadataProvider from '~/work_items/components/work_item_metadata
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import {
   findAssigneesWidget,
+  findColorWidget,
   findCrmContactsWidget,
+  findCustomFieldsWidget,
+  findHealthStatusWidget,
   findHierarchyWidget,
+  findParticipantsWidget,
+  findIterationWidget,
+  findLabelsWidget,
+  findMilestoneWidget,
+  findStatusWidget,
+  findWeightWidget,
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
   getNewWorkItemWidgetsAutoSaveKey,
@@ -51,7 +60,6 @@ import {
   WIDGET_TYPE_COLOR,
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_HEALTH_STATUS,
-  WIDGET_TYPE_PARTICIPANTS,
   WIDGET_TYPE_DESCRIPTION,
   NEW_WORK_ITEM_GID,
   WIDGET_TYPE_LABELS,
@@ -93,6 +101,7 @@ import WorkItemLoading from './work_item_loading.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
 
 export default {
+  name: 'CreateWorkItem',
   components: {
     GlButton,
     GlAlert,
@@ -404,7 +413,7 @@ export default {
     hasWidgets() {
       return (
         this.workItem?.widgets?.length > 0 ||
-        (this.useWorkItemFeatures && Object.keys(this.workItem?.feautures || {}))
+        (this.useWorkItemFeatures && Object.keys(this.workItem?.features || {}).length > 0)
       );
     },
     relatedItemId() {
@@ -420,24 +429,22 @@ export default {
       return findAssigneesWidget(this.workItem);
     },
     workItemMilestone() {
-      return this.useWorkItemFeatures
-        ? this.workItem?.features?.milestone || {}
-        : findWidget(WIDGET_TYPE_MILESTONE, this.workItem);
+      return findMilestoneWidget(this.workItem);
     },
     workItemLabels() {
-      return findWidget(WIDGET_TYPE_LABELS, this.workItem);
+      return findLabelsWidget(this.workItem);
     },
     workItemIteration() {
-      return findWidget(WIDGET_TYPE_ITERATION, this.workItem);
+      return findIterationWidget(this.workItem);
     },
     workItemWeight() {
-      return findWidget(WIDGET_TYPE_WEIGHT, this.workItem);
+      return findWeightWidget(this.workItem);
     },
     workItemHealthStatus() {
-      return findWidget(WIDGET_TYPE_HEALTH_STATUS, this.workItem);
+      return findHealthStatusWidget(this.workItem);
     },
     workItemColor() {
-      return findWidget(WIDGET_TYPE_COLOR, this.workItem);
+      return findColorWidget(this.workItem);
     },
     workItemHierarchy() {
       return findHierarchyWidget(this.workItem);
@@ -528,7 +535,7 @@ export default {
       return this.workItemParticipants?.participants?.nodes ?? [];
     },
     workItemParticipants() {
-      return findWidget(WIDGET_TYPE_PARTICIPANTS, this.workItem);
+      return findParticipantsWidget(this.workItem);
     },
     workItemAssigneeIds() {
       return (
@@ -536,11 +543,11 @@ export default {
       );
     },
     workItemLabelIds() {
-      const labelsWidget = findWidget(WIDGET_TYPE_LABELS, this.workItem);
+      const labelsWidget = findLabelsWidget(this.workItem);
       return labelsWidget?.labels?.nodes?.map((label) => label.id) || [];
     },
     workItemWeightValue() {
-      const weightWidget = findWidget(WIDGET_TYPE_WEIGHT, this.workItem);
+      const weightWidget = findWeightWidget(this.workItem);
       return weightWidget?.weight ?? null;
     },
     workItemMilestoneId() {
@@ -553,11 +560,11 @@ export default {
       return this.workItemHierarchy?.parent || null;
     },
     workItemColorValue() {
-      const colorWidget = findWidget(WIDGET_TYPE_COLOR, this.workItem);
+      const colorWidget = findColorWidget(this.workItem);
       return colorWidget?.color || '';
     },
     workItemHealthStatusValue() {
-      const healthStatusWidget = findWidget(WIDGET_TYPE_HEALTH_STATUS, this.workItem);
+      const healthStatusWidget = findHealthStatusWidget(this.workItem);
       return healthStatusWidget?.healthStatus || null;
     },
     workItemTitle() {
@@ -581,7 +588,7 @@ export default {
       return this.workItem?.id;
     },
     workItemStatus() {
-      return findWidget(WIDGET_TYPE_STATUS, this.workItem);
+      return findStatusWidget(this.workItem);
     },
     workItemIid() {
       return this.workItem?.iid;
@@ -644,7 +651,7 @@ export default {
       )?.canRollUp;
     },
     workItemCustomFields() {
-      return findWidget(WIDGET_TYPE_CUSTOM_FIELDS, this.workItem)?.customFieldValues ?? null;
+      return findCustomFieldsWidget(this.workItem)?.customFieldValues ?? null;
     },
     inputNamespacePath() {
       if (this.shouldShowNamespaceSelector) {
@@ -1091,6 +1098,7 @@ export default {
             input: {
               ...workItemCreateInput,
             },
+            useWorkItemFeatures: this.useWorkItemFeatures,
           },
           update: (store, { data: { workItemCreate } }) => {
             const { workItem } = workItemCreate;
@@ -1284,7 +1292,7 @@ export default {
                 :work-item-iid="workItemIid"
                 :work-item-widgets-auto-save-key="workItemWidgetsAutoSaveKey"
                 @error="updateError = $event"
-                @cancelCreate="handleCancelClick"
+                @cancel-create="handleCancelClick"
                 @updateDraft="updateDraftData('description', $event)"
               />
               <div
@@ -1345,7 +1353,7 @@ export default {
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
                   :work-item-type="selectedWorkItemTypeName"
-                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
                 />
                 <work-item-assignees
@@ -1360,7 +1368,7 @@ export default {
                   :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
                   :work-item-type="selectedWorkItemTypeName"
                   :can-invite-members="workItemAssignees.canInviteMembers"
-                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
                 />
                 <work-item-labels
@@ -1372,7 +1380,7 @@ export default {
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
                   :work-item-type="selectedWorkItemTypeName"
-                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
                 />
                 <work-item-parent
@@ -1385,7 +1393,7 @@ export default {
                   :full-path="inputNamespacePath"
                   :parent="workItemParent"
                   :allowed-parent-types-for-new-work-item="allowedParentTypesForSelectedType"
-                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
                   @parentMilestone="onParentMilestone"
                 />
@@ -1397,7 +1405,7 @@ export default {
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
                   :work-item-type="selectedWorkItemTypeName"
-                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
                 />
                 <work-item-milestone
@@ -1410,7 +1418,7 @@ export default {
                   :work-item-milestone="workItemMilestone.milestone || selectedParentMilestone"
                   :work-item-type="selectedWorkItemTypeName"
                   :can-update="canUpdate"
-                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
                   @parentMilestone="onParentMilestone"
                 />
@@ -1424,7 +1432,7 @@ export default {
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
                   :work-item-type="selectedWorkItemTypeName"
-                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
                 />
                 <work-item-dates
@@ -1437,7 +1445,7 @@ export default {
                   :should-roll-up="shouldDatesRollup"
                   :work-item-type="selectedWorkItemTypeName"
                   :work-item="workItem"
-                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
                 />
                 <work-item-health-status
@@ -1448,7 +1456,7 @@ export default {
                   :work-item-type="selectedWorkItemTypeName"
                   :full-path="inputNamespacePath"
                   :is-work-item-closed="false"
-                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
                 />
                 <work-item-color
@@ -1456,7 +1464,7 @@ export default {
                   class="work-item-attributes-item"
                   :work-item="workItem"
                   :can-update="canUpdate"
-                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
                 />
                 <work-item-custom-fields
@@ -1465,7 +1473,7 @@ export default {
                   :work-item-type="selectedWorkItemTypeName"
                   :custom-fields="workItemCustomFields"
                   :can-update="canUpdate"
-                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
                 />
                 <work-item-crm-contacts
@@ -1475,7 +1483,7 @@ export default {
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
                   :work-item-type="selectedWorkItemTypeName"
-                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
                 />
               </template>

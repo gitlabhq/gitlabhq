@@ -32,6 +32,7 @@ import DesignNote from './design_note.vue';
 import ToggleRepliesWidget from './toggle_replies_widget.vue';
 
 export default {
+  name: 'DesignDiscussion',
   isLoggedIn: isLoggedIn(),
   i18n: {
     deleteNote: {

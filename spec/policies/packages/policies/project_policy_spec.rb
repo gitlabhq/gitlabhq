@@ -165,7 +165,7 @@ RSpec.describe Packages::Policies::ProjectPolicy, feature_category: :package_reg
     end
 
     context 'when accessing a project from another project with job token' do
-      let_it_be(:other_project, freeze: false) { build_stubbed(:project) }
+      let_it_be(:other_project) { build_stubbed(:project) }
       let(:current_user) { guest }
 
       before do

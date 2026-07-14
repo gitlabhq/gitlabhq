@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'getting dependency proxy blobs in a group', feature_category: :virtual_registry do

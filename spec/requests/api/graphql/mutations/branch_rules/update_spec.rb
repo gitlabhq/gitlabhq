@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'BranchRuleUpdate', feature_category: :source_code_management do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:protected_branch, freeze: false) do
+  let_it_be_with_reload(:protected_branch) do
     create(:protected_branch, project: project)
   end
 

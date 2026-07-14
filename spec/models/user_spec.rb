@@ -686,7 +686,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
           it 'does not check if the username did not change' do
             expect(user).not_to receive(:namespace_move_dir_allowed)
-            expect(user.username_changed?).to eq(false)
+            expect(user.username_changed?).to be(false)
 
             user.validate
           end
@@ -695,7 +695,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         it 'does not check if the user is a new record' do
           user = described_class.new(username: 'newuser')
 
-          expect(user.new_record?).to eq(true)
+          expect(user.new_record?).to be(true)
           expect(user).not_to receive(:namespace_move_dir_allowed)
 
           user.validate
@@ -754,6 +754,46 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         it 'rejects denied names' do
           expect(user).not_to be_valid
           expect(user.errors.messages[:username]).to contain_exactly 'dashboard is a reserved name'
+        end
+      end
+
+      context 'when username is a shadowing top-level route followed by a dot' do
+        let(:username) { 'admin.foo' }
+
+        it 'rejects the username because the profile URL would be unreachable' do
+          expect(user).not_to be_valid
+          expect(user.errors.messages[:username]).to contain_exactly(
+            "cannot start with 'admin.' because the profile URL would be intercepted by an existing route. " \
+              "Please choose a different name."
+          )
+        end
+      end
+
+      context 'when username is a non-shadowing top-level route followed by a dot' do
+        # `api` is a reserved word, but `/api.foo` is not intercepted by the
+        # `/api` route, so the profile resolves and the username is allowed.
+        let(:username) { 'api.foo' }
+
+        it 'allows the username' do
+          expect(user).to be_valid
+        end
+      end
+
+      context 'when username only shares a prefix with a shadowing route' do
+        let(:username) { 'administrator' }
+
+        it 'allows the username' do
+          expect(user).to be_valid
+        end
+      end
+
+      context 'when username matches a shadowing route in a different case' do
+        # Rails route matching is case-sensitive, so `/Admin.foo` reaches the
+        # user and the username remains valid.
+        let(:username) { 'Admin.foo' }
+
+        it 'allows the username' do
+          expect(user).to be_valid
         end
       end
 
@@ -1021,6 +1061,35 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
           expect(user).to be_invalid
           expect(user.errors.messages[:username].first).to eq(_('cannot be changed if a personal project has container registry tags.'))
         end
+
+        it 'surfaces the shadowed-route error alongside another username error' do
+          user.username = 'admin.foo'
+
+          expect(user).to be_invalid
+          expect(user.errors.messages[:username]).to contain_exactly(
+            "cannot start with 'admin.' because the profile URL would be intercepted by an existing route. " \
+              "Please choose a different name.",
+            _('cannot be changed if a personal project has container registry tags.')
+          )
+        end
+      end
+
+      context 'when an existing record already has a shadowing username' do
+        # Simulates a record created before this validation existed. Writing the
+        # column directly bypasses the validation, like legacy data. The
+        # validation is gated on `username_changed?`, so an unrelated update must
+        # not retroactively invalidate the record.
+        before do
+          user.update_columns(username: 'admin.foo')
+          user.reload
+        end
+
+        it 'stays valid when saving an unrelated change' do
+          user.private_profile = !user.private_profile
+
+          expect(user).to be_valid
+          expect(user.errors[:username]).to be_empty
+        end
       end
 
       context 'with an enforced composite_identity' do
@@ -1052,7 +1121,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it 'has a DB-level NOT NULL constraint on projects_limit' do
       user = create(:user)
 
-      expect(user.persisted?).to eq(true)
+      expect(user.persisted?).to be(true)
 
       expect do
         user.update_columns(projects_limit: nil)
@@ -1294,9 +1363,9 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
           import_user = create(:user, :import_user, email: "info2@test.example.com")
           security_policy_bot = create(:user, :security_policy_bot, email: "info3@test.example.com")
 
-          expect(placeholder_user.update!(email: "test@notexample.com")).to eq(true)
-          expect(import_user.update!(email: "test2@notexample.com")).to eq(true)
-          expect(security_policy_bot.update!(email: "test3@notexample.com")).to eq(true)
+          expect(placeholder_user.update!(email: "test@notexample.com")).to be(true)
+          expect(import_user.update!(email: "test2@notexample.com")).to be(true)
+          expect(security_policy_bot.update!(email: "test3@notexample.com")).to be(true)
         end
       end
 
@@ -1788,20 +1857,20 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     context 'when user is not a service account' do
       let_it_be(:user) { create(:user) }
 
-      it { expect(user.sa_provisioned_by_project?).to eq(false) }
+      it { expect(user.sa_provisioned_by_project?).to be(false) }
     end
 
     context 'when service account has no provisioning source' do
       let_it_be(:service_account) { create(:user, :service_account) }
 
-      it { expect(service_account.sa_provisioned_by_project?).to eq(false) }
+      it { expect(service_account.sa_provisioned_by_project?).to be(false) }
     end
 
     context 'when service account is provisioned by a group' do
       let_it_be(:group) { create(:group) }
       let_it_be(:service_account) { create(:user, :service_account, provisioned_by_group: group) }
 
-      it { expect(service_account.sa_provisioned_by_project?).to eq(false) }
+      it { expect(service_account.sa_provisioned_by_project?).to be(false) }
     end
 
     context 'when service account is provisioned by a project' do
@@ -1812,7 +1881,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         end
       end
 
-      it { expect(service_account.sa_provisioned_by_project?).to eq(true) }
+      it { expect(service_account.sa_provisioned_by_project?).to be(true) }
     end
   end
 
@@ -1820,20 +1889,20 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     context 'when user is not a service account' do
       let_it_be(:user) { create(:user) }
 
-      it { expect(user.sa_provisioned_by_subgroup?).to eq(false) }
+      it { expect(user.sa_provisioned_by_subgroup?).to be(false) }
     end
 
     context 'when service account has no provisioning source' do
       let_it_be(:service_account) { create(:user, :service_account) }
 
-      it { expect(service_account.sa_provisioned_by_subgroup?).to eq(false) }
+      it { expect(service_account.sa_provisioned_by_subgroup?).to be(false) }
     end
 
     context 'when service account is provisioned by a root group' do
       let_it_be(:root_group) { create(:group) }
       let_it_be(:service_account) { create(:user, :service_account, provisioned_by_group: root_group) }
 
-      it { expect(service_account.sa_provisioned_by_subgroup?).to eq(false) }
+      it { expect(service_account.sa_provisioned_by_subgroup?).to be(false) }
     end
 
     context 'when service account is provisioned by a subgroup' do
@@ -1841,7 +1910,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       let_it_be(:subgroup) { create(:group, parent: root_group) }
       let_it_be(:service_account) { create(:user, :service_account, provisioned_by_group: subgroup) }
 
-      it { expect(service_account.sa_provisioned_by_subgroup?).to eq(true) }
+      it { expect(service_account.sa_provisioned_by_subgroup?).to be(true) }
     end
 
     context 'when service account is provisioned by a deeply nested subgroup' do
@@ -1850,7 +1919,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       let_it_be(:nested_subgroup) { create(:group, parent: subgroup) }
       let_it_be(:service_account) { create(:user, :service_account, provisioned_by_group: nested_subgroup) }
 
-      it { expect(service_account.sa_provisioned_by_subgroup?).to eq(true) }
+      it { expect(service_account.sa_provisioned_by_subgroup?).to be(true) }
     end
 
     context 'when provisioning group has been deleted' do
@@ -1861,7 +1930,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         allow(service_account).to receive(:provisioned_by_group).and_return(nil)
       end
 
-      it { expect(service_account.sa_provisioned_by_subgroup?).to eq(false) }
+      it { expect(service_account.sa_provisioned_by_subgroup?).to be(false) }
     end
   end
 
@@ -2595,7 +2664,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     let_it_be(:user) { create(:user, organization: other_organization) }
 
     it 'includes the user' do
-      expect(user.member_of_organization?(other_organization)).to eq(true)
+      expect(user.member_of_organization?(other_organization)).to be(true)
     end
   end
 
@@ -2643,7 +2712,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         user.update!(email: secondary.email)
         user.reload
         expect(user.email).to eq secondary.email
-        expect(user.unconfirmed_email).to eq nil
+        expect(user.unconfirmed_email).to be_nil
         expect(user.confirmed?).to be_truthy
       end
     end
@@ -3654,19 +3723,19 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it 'is false when reset_password_sent_at is nil' do
       user = build_stubbed(:user, reset_password_sent_at: nil)
 
-      expect(user.recently_sent_password_reset?).to eq false
+      expect(user.recently_sent_password_reset?).to be false
     end
 
     it 'is false when sent more than one minute ago' do
       user = build_stubbed(:user, reset_password_sent_at: 5.minutes.ago)
 
-      expect(user.recently_sent_password_reset?).to eq false
+      expect(user.recently_sent_password_reset?).to be false
     end
 
     it 'is true when sent less than one minute ago' do
       user = build_stubbed(:user, reset_password_sent_at: Time.current)
 
-      expect(user.recently_sent_password_reset?).to eq true
+      expect(user.recently_sent_password_reset?).to be true
     end
   end
 
@@ -3764,7 +3833,10 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     # Full behavior tests for `set_email_otp_required_after_based_on_restrictions`
     # are in email_otp_enrollment_spec.rb
     it 'enrolls the user in email OTP when email OTP is required at minimum', :freeze_time do
-      stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+      stub_application_setting(
+        email_otp_enabled: true,
+        require_minimum_email_based_otp_for_users_with_passwords: true
+      )
 
       user = create(:user, :two_factor, email_otp_required_after: nil)
       user.disable_two_factor!
@@ -3781,7 +3853,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     context 'when 2FA is enabled by an MFA Device' do
       let(:user) { create(:user, :two_factor) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'FortiAuthenticator' do
@@ -3795,7 +3867,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
             stub_feature_flags(forti_authenticator: false)
           end
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
 
         context 'when feature is enabled for the user' do
@@ -3803,7 +3875,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
             stub_feature_flags(forti_authenticator: user)
           end
 
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
         end
       end
 
@@ -3812,7 +3884,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
           allow(::Gitlab.config.forti_authenticator).to receive(:enabled).and_return(false)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -3822,7 +3894,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
           allow(::Gitlab.config.duo_auth).to receive(:enabled).and_return(true)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when disabled via GitLab settings' do
@@ -3830,7 +3902,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
           allow(::Gitlab.config.duo_auth).to receive(:enabled).and_return(false)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -3845,7 +3917,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
             stub_feature_flags(forti_token_cloud: false)
           end
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
 
         context 'when feature is enabled for the user' do
@@ -3853,7 +3925,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
             stub_feature_flags(forti_token_cloud: user)
           end
 
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
         end
       end
 
@@ -3862,7 +3934,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
           allow(::Gitlab.config.forti_token_cloud).to receive(:enabled).and_return(false)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end
@@ -3874,19 +3946,19 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       let_it_be_with_reload(:user) { create(:user, :two_factor_via_webauthn) }
 
       it 'returns true if otp_secret_expires_at is nil' do
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
 
       it 'returns true if the otp_secret_expires_at has passed' do
         user.update!(otp_secret_expires_at: 10.minutes.ago)
 
-        expect(user.reload.needs_new_otp_secret?).to eq(true)
+        expect(user.reload.needs_new_otp_secret?).to be(true)
       end
 
       it 'returns false if the otp_secret_expires_at has not passed' do
         user.update!(otp_secret_expires_at: 10.minutes.from_now)
 
-        expect(user.reload.needs_new_otp_secret?).to eq(false)
+        expect(user.reload.needs_new_otp_secret?).to be(false)
       end
     end
 
@@ -3896,7 +3968,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       it 'returns false even if ttl is expired' do
         user.otp_secret_expires_at = 10.minutes.ago
 
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
   end
@@ -3907,19 +3979,19 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     let_it_be_with_reload(:user) { create(:user) }
 
     it 'returns true if otp_secret_expires_at is nil' do
-      is_expected.to eq(true)
+      is_expected.to be(true)
     end
 
     it 'returns true if the otp_secret_expires_at has passed' do
       user.otp_secret_expires_at = 10.minutes.ago
 
-      is_expected.to eq(true)
+      is_expected.to be(true)
     end
 
     it 'returns false if the otp_secret_expires_at has not passed' do
       user.otp_secret_expires_at = 20.minutes.from_now
 
-      is_expected.to eq(false)
+      is_expected.to be(false)
     end
   end
 
@@ -3928,84 +4000,53 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     let_it_be_with_reload(:user) { create(:user) }
 
-    it 'returns false when email_otp_required_after is missing' do
-      user.email_otp_required_after = nil
-
-      is_expected.to eq(false)
-    end
-
-    it 'returns false when email_otp_required_after is in the future' do
-      user.email_otp_required_after = 1.second.since
-
-      is_expected.to eq(false)
-    end
-
-    it 'returns true when email_otp_required_after is in the past' do
+    it 'returns false despite email_otp_required_after is in the past' do
       user.email_otp_required_after = 1.second.ago
 
-      is_expected.to eq(true)
+      is_expected.to be(false)
     end
 
-    it 'returns true when email_otp_required_after is the current time' do
-      user.email_otp_required_after = Time.current
-
-      is_expected.to eq(true)
-    end
-
-    context 'when :email_based_mfa feature flag is disabled' do
+    context 'when email_otp_enabled application setting is enabled' do
       before do
-        stub_feature_flags(email_based_mfa: false)
+        stub_application_setting(email_otp_enabled: true)
       end
 
-      it 'returns false despite email_otp_required_after is in the past' do
+      it 'returns false when email_otp_required_after is missing' do
+        user.email_otp_required_after = nil
+
+        is_expected.to be(false)
+      end
+
+      it 'returns false when email_otp_required_after is in the future' do
+        user.email_otp_required_after = 1.second.since
+
+        is_expected.to be(false)
+      end
+
+      it 'returns true when email_otp_required_after is in the past' do
         user.email_otp_required_after = 1.second.ago
 
-        is_expected.to eq(false)
+        is_expected.to be(true)
       end
 
-      context 'and email_otp_enabled application setting is enabled' do
-        before do
-          stub_application_setting(email_otp_enabled: true)
-        end
+      it 'returns true when email_otp_required_after is the current time' do
+        user.email_otp_required_after = Time.current
 
-        it 'returns true when email_otp_required_after is in the past' do
-          user.email_otp_required_after = 1.second.ago
-
-          is_expected.to eq(true)
-        end
-      end
-    end
-
-    # Ensuring the valid state of `email_otp_required_after`, by
-    # `set_email_otp_required_after_based_on_restrictions` method, is
-    # tested in depth in spec/models/concerns/users/email_otp_enrollment_spec.rb
-    it 'ensures that `email_otp_required_after` is set to a valid state' do
-      stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
-
-      expect(user).to receive(:set_email_otp_required_after_based_on_restrictions)
-        .with(save: true).and_call_original
-
-      is_expected.to eq(true)
-    end
-
-    context 'when only the email_otp_enabled application setting enables email OTP' do
-      let_it_be_with_reload(:user) do
-        create(:user, password_automatically_set: false, email_otp_required_after: nil)
+        is_expected.to be(true)
       end
 
-      before do
-        stub_feature_flags(email_based_mfa: false)
-        stub_application_setting(email_otp_enabled: true)
-        stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
-      end
-
+      # Ensuring the valid state of `email_otp_required_after`, by
+      # `set_email_otp_required_after_based_on_restrictions` method, is
+      # tested in depth in spec/models/concerns/users/email_otp_enrollment_spec.rb
       it 'persists email_otp_required_after via set_email_otp_required_after_based_on_restrictions' do
-        expect(user.two_factor_enabled?).to eq(false)
+        stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+
+        expect(user.two_factor_enabled?).to be(false)
         expect(user.email_otp_required_after).to be_nil
         expect(user).to receive(:set_email_otp_required_after_based_on_restrictions)
           .with(save: true).and_call_original
 
-        is_expected.to eq(true)
+        is_expected.to be(true)
 
         expect(user.reload.email_otp_required_after).not_to be_nil
       end
@@ -4250,11 +4291,11 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     context 'an active user' do
       it 'can be blocked pending approval' do
-        expect(user.blocked_pending_approval?).to eq(true)
+        expect(user.blocked_pending_approval?).to be(true)
       end
 
       it 'behaves like a blocked user' do
-        expect(user.blocked?).to eq(true)
+        expect(user.blocked?).to be(true)
       end
     end
   end
@@ -4308,8 +4349,8 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       it 'bans and blocks the user' do
         user.ban
 
-        expect(user.banned?).to eq(true)
-        expect(user.blocked?).to eq(true)
+        expect(user.banned?).to be(true)
+        expect(user.blocked?).to be(true)
       end
 
       it 'creates a BannedUser record' do
@@ -4372,8 +4413,8 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       it 'unbans the user' do
         user.unban
 
-        expect(user.banned?).to eq(false)
-        expect(user.active?).to eq(true)
+        expect(user.banned?).to be(false)
+        expect(user.active?).to be(true)
       end
 
       it 'deletes the BannedUser record' do
@@ -4553,7 +4594,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       it 'returns false when the user has 1 or more SSH keys' do
         key = create(:personal_key)
 
-        expect(key.user.require_ssh_key?).to eq(false)
+        expect(key.user.require_ssh_key?).to be(false)
       end
     end
   end
@@ -5169,7 +5210,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
         context 'without the follow_redirects option' do
           it 'returns nil' do
-            expect(described_class.find_by_full_path(redirect_route.path)).to eq(nil)
+            expect(described_class.find_by_full_path(redirect_route.path)).to be_nil
           end
         end
 
@@ -5188,13 +5229,13 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       context 'without a route or a redirect route matching the given path' do
         context 'without the follow_redirects option' do
           it 'returns nil' do
-            expect(described_class.find_by_full_path('unknown')).to eq(nil)
+            expect(described_class.find_by_full_path('unknown')).to be_nil
           end
         end
 
         context 'with the follow_redirects option set to true' do
           it 'returns nil' do
-            expect(described_class.find_by_full_path('unknown', follow_redirects: true)).to eq(nil)
+            expect(described_class.find_by_full_path('unknown', follow_redirects: true)).to be_nil
           end
         end
       end
@@ -5208,13 +5249,13 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
           end
 
           it 'returns nil' do
-            expect(described_class.find_by_full_path('group_path')).to eq(nil)
+            expect(described_class.find_by_full_path('group_path')).to be_nil
           end
         end
 
         context 'when the group namespace does not have an owner_id' do
           it 'returns nil' do
-            expect(described_class.find_by_full_path('group_path')).to eq(nil)
+            expect(described_class.find_by_full_path('group_path')).to be_nil
           end
         end
       end
@@ -5759,7 +5800,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       it 'finds the identity when the DN is formatted differently' do
         user = create(:omniauth_user, provider: 'ldapmain', extern_uid: 'uid=john smith,ou=people,dc=example,dc=com')
 
-        expect(user.matches_identity?('ldapmain', 'uid=John Smith, ou=People, dc=example, dc=com')).to eq(true)
+        expect(user.matches_identity?('ldapmain', 'uid=John Smith, ou=People, dc=example, dc=com')).to be(true)
       end
     end
 
@@ -5984,7 +6025,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       it 'does not follow' do
         followee = create(:user)
 
-        expect(user.follow(followee)).to eq(false)
+        expect(user.follow(followee)).to be(false)
 
         expect(user.following?(followee)).to be_falsey
       end
@@ -5998,7 +6039,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
 
       it 'does not follow' do
-        expect(user.follow(followee)).to eq(false)
+        expect(user.follow(followee)).to be(false)
 
         expect(user.following?(followee)).to be_falsey
       end
@@ -6043,7 +6084,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
 
     it 'is false when user and followee is the same user' do
-      expect(user.following_users_allowed?(user)).to eq(false)
+      expect(user.following_users_allowed?(user)).to be(false)
     end
   end
 
@@ -6142,7 +6183,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       let(:last_activity_on) { nil }
 
       it 'returns nil' do
-        expect(user.last_active_at).to eq(nil)
+        expect(user.last_active_at).to be_nil
       end
     end
   end
@@ -6377,7 +6418,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       let_it_be(:user) { create(:user, organizations: [organization, organization_2]) }
 
       it 'returns true' do
-        expect(user.has_multiple_organizations?).to eq(true)
+        expect(user.has_multiple_organizations?).to be(true)
       end
     end
 
@@ -6385,8 +6426,39 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       let_it_be(:user) { create(:user, organizations: [organization]) }
 
       it 'returns false' do
-        expect(user.has_multiple_organizations?).to eq(false)
+        expect(user.has_multiple_organizations?).to be(false)
       end
+    end
+  end
+
+  describe '#has_active_non_default_organization?' do
+    subject { user.has_active_non_default_organization? }
+
+    context 'when user belongs to an active non-default organization' do
+      let_it_be(:organization) { create(:organization, state: :active) }
+      let_it_be(:user) { create(:user, organizations: [organization]) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when user only belongs to the default organization' do
+      let_it_be(:default_organization) { create(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required for full covearge on this method
+      let_it_be(:user) { create(:user, organizations: [default_organization]) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when user belongs to a non-default organization that is not active' do
+      let_it_be(:organization) { create(:organization, :unconfirmed) }
+      let_it_be(:user) { create(:user, organizations: [organization]) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when user does not belong to any organization' do
+      let_it_be(:user) { create(:user, organizations: []) }
+
+      it { is_expected.to be(false) }
     end
   end
 
@@ -6394,7 +6466,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     let(:user) { create(:user) }
 
     it 'returns true' do
-      expect(user.can_remove_self?).to eq true
+      expect(user.can_remove_self?).to be true
     end
   end
 
@@ -6722,10 +6794,10 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       expect(user.projects_where_can_admin_issues.to_a).to contain_exactly(
         maintainer_project, developer_project, reporter_project, planner_project
       )
-      expect(user.can?(:admin_issue, maintainer_project)).to eq(true)
-      expect(user.can?(:admin_issue, developer_project)).to eq(true)
-      expect(user.can?(:admin_issue, reporter_project)).to eq(true)
-      expect(user.can?(:admin_issue, planner_project)).to eq(true)
+      expect(user.can?(:admin_issue, maintainer_project)).to be(true)
+      expect(user.can?(:admin_issue, developer_project)).to be(true)
+      expect(user.can?(:admin_issue, reporter_project)).to be(true)
+      expect(user.can?(:admin_issue, planner_project)).to be(true)
     end
 
     it 'does not include for which the user access level is below planner' do
@@ -6733,22 +6805,22 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       guest_project = create(:project, guests: user)
 
       expect(user.projects_where_can_admin_issues.to_a).to be_empty
-      expect(user.can?(:admin_issue, guest_project)).to eq(false)
-      expect(user.can?(:admin_issue, project)).to eq(false)
+      expect(user.can?(:admin_issue, guest_project)).to be(false)
+      expect(user.can?(:admin_issue, project)).to be(false)
     end
 
     it 'does not include archived projects' do
       project = create(:project, :archived)
 
       expect(user.projects_where_can_admin_issues.to_a).to be_empty
-      expect(user.can?(:admin_issue, project)).to eq(false)
+      expect(user.can?(:admin_issue, project)).to be(false)
     end
 
     it 'does not include projects for which issues are disabled' do
       project = create(:project, :issues_disabled)
 
       expect(user.projects_where_can_admin_issues.to_a).to be_empty
-      expect(user.can?(:admin_issue, project)).to eq(false)
+      expect(user.can?(:admin_issue, project)).to be(false)
     end
   end
 
@@ -7245,8 +7317,8 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
 
     it 'stores the correct access levels' do
-      expect(user.project_authorizations.where(access_level: Gitlab::Access::GUEST).exists?).to eq(true)
-      expect(user.project_authorizations.where(access_level: Gitlab::Access::REPORTER).exists?).to eq(true)
+      expect(user.project_authorizations.where(access_level: Gitlab::Access::GUEST).exists?).to be(true)
+      expect(user.project_authorizations.where(access_level: Gitlab::Access::REPORTER).exists?).to be(true)
     end
   end
 
@@ -7385,11 +7457,11 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
-  describe '#can_admin_organization?' do
+  describe '#can_update_organization?' do
     let_it_be_with_refind(:user) { create(:user) }
     let_it_be_with_refind(:organization) { create(:organization) }
 
-    subject(:can_admin_organization) { user.can_admin_organization?(organization) }
+    subject(:can_update_organization) { user.can_update_organization?(organization) }
 
     it_behaves_like 'organization owner'
   end
@@ -8877,8 +8949,8 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     context 'when source is nil' do
       it 'returns a blank global notification settings object' do
-        expect(subject.source).to eq(nil)
-        expect(subject.notification_email).to eq(nil)
+        expect(subject.source).to be_nil
+        expect(subject.notification_email).to be_nil
         expect(subject.level).to eq('global')
       end
     end
@@ -8891,7 +8963,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
         context 'when group has no ancestors' do
           it 'is a default Global notification setting' do
-            expect(subject.notification_email).to eq(nil)
+            expect(subject.notification_email).to be_nil
             expect(subject.level).to eq('global')
           end
         end
@@ -8919,7 +8991,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
               subject { user.notification_settings_for(group) }
 
               it 'does not inherit settings' do
-                expect(subject.notification_email).to eq(nil)
+                expect(subject.notification_email).to be_nil
                 expect(subject.level).to eq('global')
               end
             end
@@ -9034,7 +9106,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     context 'user with disallowed password' do
       let(:user) { create(:user, :disallowed_password) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'using a correct password' do
@@ -9042,7 +9114,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         let(:user) { create(:user) }
         let(:password) { user.password }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
 
         context 'when password authentication is disabled' do
           before do
@@ -9050,7 +9122,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
             stub_application_setting(password_authentication_enabled_for_git: false)
           end
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
 
         context 'when user with LDAP identity' do
@@ -9058,7 +9130,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
             create(:identity, provider: 'ldapmain', user: user)
           end
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
       end
 
@@ -9069,28 +9141,28 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       let(:user) { create(:user) }
       let(:password) { 'WRONG PASSWORD' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'using a nil password' do
       let(:user) { create(:user) }
       let(:password) { nil }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'using a blank password' do
       let(:user) { create(:user) }
       let(:password) { '' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'user with autogenerated_password' do
       let(:user) { build_stubbed(:user, password_automatically_set: true) }
       let(:password) { user.password }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'using an array' do
@@ -9345,7 +9417,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     context 'when no callout dismissal record exists' do
       it 'returns false when no ignore_dismissal_earlier_than provided' do
-        expect(user.dismissed_callout?(feature_name: feature_name)).to eq false
+        expect(user.dismissed_callout?(feature_name: feature_name)).to be false
       end
     end
 
@@ -9355,15 +9427,15 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
 
       it 'returns true when no ignore_dismissal_earlier_than provided' do
-        expect(user.dismissed_callout?(feature_name: feature_name)).to eq true
+        expect(user.dismissed_callout?(feature_name: feature_name)).to be true
       end
 
       it 'returns true when ignore_dismissal_earlier_than is earlier than dismissed_at' do
-        expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 6.months.ago)).to eq true
+        expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 6.months.ago)).to be true
       end
 
       it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
-        expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
+        expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 3.months.ago)).to be false
       end
     end
   end
@@ -9414,7 +9486,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     context 'when no callout dismissal record exists' do
       it 'returns false when no ignore_dismissal_earlier_than provided' do
-        expect(user.dismissed_callout_for_group?(feature_name: feature_name, group: group)).to eq false
+        expect(user.dismissed_callout_for_group?(feature_name: feature_name, group: group)).to be false
       end
     end
 
@@ -9430,15 +9502,15 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
 
       it 'returns true when no ignore_dismissal_earlier_than provided' do
-        expect(user.dismissed_callout_for_group?(feature_name: feature_name, group: group)).to eq true
+        expect(user.dismissed_callout_for_group?(feature_name: feature_name, group: group)).to be true
       end
 
       it 'returns true when ignore_dismissal_earlier_than is earlier than dismissed_at' do
-        expect(user.dismissed_callout_for_group?(feature_name: feature_name, group: group, ignore_dismissal_earlier_than: 6.months.ago)).to eq true
+        expect(user.dismissed_callout_for_group?(feature_name: feature_name, group: group, ignore_dismissal_earlier_than: 6.months.ago)).to be true
       end
 
       it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
-        expect(user.dismissed_callout_for_group?(feature_name: feature_name, group: group, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
+        expect(user.dismissed_callout_for_group?(feature_name: feature_name, group: group, ignore_dismissal_earlier_than: 3.months.ago)).to be false
       end
     end
   end
@@ -9450,7 +9522,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     context 'when no callout dismissal record exists' do
       it 'returns false when no ignore_dismissal_earlier_than provided' do
-        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project)).to eq false
+        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project)).to be false
       end
     end
 
@@ -9466,15 +9538,15 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
 
       it 'returns true when no ignore_dismissal_earlier_than provided' do
-        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project)).to eq true
+        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project)).to be true
       end
 
       it 'returns true when ignore_dismissal_earlier_than is earlier than dismissed_at' do
-        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project, ignore_dismissal_earlier_than: 6.months.ago)).to eq true
+        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project, ignore_dismissal_earlier_than: 6.months.ago)).to be true
       end
 
       it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
-        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
+        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project, ignore_dismissal_earlier_than: 3.months.ago)).to be false
       end
     end
   end
@@ -10350,13 +10422,13 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         create(:user_custom_attribute, user: user, key: UserCustomAttribute::DELETED_OWN_ACCOUNT_AT, value: 'now')
       end
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     context 'when user does not have a DELETED_OWN_ACCOUNT_AT custom attribute' do
       let_it_be(:user) { create(:user) }
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
   end
 
@@ -10859,41 +10931,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
         expect(unlock_access_by_token).to be_a(described_class)
         expect(unlock_access_by_token.errors[:organization_id]).not_to be_empty
-      end
-    end
-  end
-
-  describe '#legacy_otp_secret' do
-    let_it_be_with_reload(:user) { create(:user) }
-
-    subject(:legacy_otp_secret) { user.send(:legacy_otp_secret) }
-
-    context 'when encrypted_otp_secret is nil' do
-      it { is_expected.to be_nil }
-    end
-
-    context 'when otp_secret_encryption_key is nil' do
-      before do
-        user.update!(encrypted_otp_secret: 'dummy')
-        allow(described_class).to receive(:otp_secret_encryption_key).and_return(nil)
-      end
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when user has two factor auth enabled' do
-      let_it_be_with_reload(:user) { create(:user, :two_factor) }
-      let(:otp_secret) { 'my-otp-secret' }
-
-      before do
-        encrypted_secret = user.attr_encrypted_encrypt(:otp_secret, otp_secret)
-        user.update!(encrypted_otp_secret: encrypted_secret)
-      end
-
-      it { is_expected.to eq(otp_secret) }
-
-      it 'resolves the legacy otp secret' do
-        expect(user.reload.otp_secret).to eq(otp_secret)
       end
     end
   end

@@ -7,6 +7,7 @@ import TodoItemTimestamp from './todo_item_timestamp.vue';
 import TodoItemActions from './todo_item_actions.vue';
 
 export default {
+  name: 'TodoItem',
   TRACK_ACTION: INSTRUMENT_TODO_ITEM_FOLLOW,
   components: {
     GlLink,
@@ -15,7 +16,6 @@ export default {
     TodoItemTimestamp,
     TodoItemActions,
   },
-  inject: ['currentTab'],
   props: {
     todo: {
       type: Object,

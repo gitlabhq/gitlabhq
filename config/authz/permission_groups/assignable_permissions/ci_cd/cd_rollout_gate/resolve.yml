@@ -1,0 +1,10 @@
+---
+name: resolve_cd_rollout_gate
+description: Grants the ability to resolve approval gates on continuous deployment
+  rollouts
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - resolve_cd_rollout_gate

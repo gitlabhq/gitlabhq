@@ -20,7 +20,7 @@ RSpec.describe Mutations::Issues::Move, feature_category: :api do
       end
 
       context 'when user does not have permissions' do
-        before do
+        before_all do
           issue.project.add_developer(current_user)
         end
 
@@ -31,7 +31,7 @@ RSpec.describe Mutations::Issues::Move, feature_category: :api do
       end
 
       context 'when user has sufficient permissions' do
-        before do
+        before_all do
           issue.project.add_developer(current_user)
           target_project.add_developer(current_user)
         end

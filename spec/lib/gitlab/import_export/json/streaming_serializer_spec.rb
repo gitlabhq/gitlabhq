@@ -86,6 +86,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
             exception_message: 'Error!',
             exception_class: 'StandardError',
             relation: :issues,
+            Labkit::Fields::GL_ORGANIZATION_ID => exportable.organization_id,
             project_id: exportable.id,
             project_name: exportable.name,
             project_path: exportable.full_path,
@@ -109,6 +110,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
               exception_message: 'PG::QueryCanceled: statement timeout',
               exception_class: 'ActiveRecord::QueryCanceled',
               relation: :issues,
+              Labkit::Fields::GL_ORGANIZATION_ID => exportable.organization_id,
               project_id: exportable.id,
               project_name: exportable.name,
               project_path: exportable.full_path,
@@ -129,6 +131,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
           message: "Exporting relation: issues",
           number_of_records: 16,
           relation: 'issues',
+          Labkit::Fields::GL_ORGANIZATION_ID => exportable.organization_id,
           project_id: exportable.id,
           project_name: exportable.name,
           project_path: exportable.full_path
@@ -260,10 +263,42 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
           importer: 'Import/Export',
           message: 'Exporting relation: namespace',
           relation: 'namespace',
+          Labkit::Fields::GL_ORGANIZATION_ID => exportable.organization_id,
           project_id: exportable.id,
           project_name: exportable.name,
           project_path: exportable.full_path
         )
+      end
+
+      context 'when offline_export_id is present' do
+        subject(:serializer) do
+          described_class.new(
+            exportable,
+            relations_schema,
+            json_writer,
+            exportable_path: exportable_path,
+            logger: logger,
+            current_user: user,
+            offline_export_id: offline_export.id
+          )
+        end
+
+        it 'logs the relation name with the offline transfer importer' do
+          allow(json_writer).to receive(:write_relation)
+          allow(logger).to receive(:info)
+
+          serializer.execute
+
+          expect(logger).to have_received(:info).with(
+            importer: ::Import::SOURCE_OFFLINE_TRANSFER,
+            message: 'Exporting relation: namespace',
+            relation: 'namespace',
+            Labkit::Fields::GL_ORGANIZATION_ID => exportable.organization_id,
+            project_id: exportable.id,
+            project_name: exportable.name,
+            project_path: exportable.full_path
+          )
+        end
       end
 
       context 'contributing user id caching' do
@@ -338,6 +373,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
           message: 'Exporting relation: project_members',
           relation: 'project_members',
           number_of_records: 1,
+          Labkit::Fields::GL_ORGANIZATION_ID => exportable.organization_id,
           project_id: exportable.id,
           project_name: exportable.name,
           project_path: exportable.full_path
@@ -610,6 +646,29 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
 
           serializer.serialize_relation({ merge_requests: { include: [] } }, batch_ids: exportable.merge_requests.pluck(:id))
         end
+      end
+    end
+
+    context 'when serializing commit notes' do
+      let(:json_writer) do
+        Class.new do
+          def write_relation_array(_, _, enumerator)
+            enumerator.each(&:itself)
+          end
+        end.new
+      end
+
+      let_it_be(:commit_note, freeze: false) { create(:note_on_commit, project: exportable) }
+
+      it 'logs the relation without counting the records', :aggregate_failures do
+        allow(logger).to receive(:info)
+
+        serializer.serialize_relation({ commit_notes: { include: [] } })
+
+        expect(logger).to have_received(:info).with(
+          hash_including(message: 'Exporting relation: commit_notes', relation: 'commit_notes')
+        )
+        expect(logger).not_to have_received(:info).with(hash_including(number_of_records: anything))
       end
     end
 

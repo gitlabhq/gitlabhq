@@ -62,8 +62,8 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
     end
 
     context 'Deploy keys', :js do
-      let_it_be(:private_deploy_key, freeze: false) { create(:deploy_key, title: 'private_deploy_key', public: false) }
-      let_it_be(:public_deploy_key, freeze: false) do
+      let_it_be(:private_deploy_key) { create(:deploy_key, title: 'private_deploy_key', public: false) }
+      let_it_be(:public_deploy_key) do
         create(:another_deploy_key, title: 'public_deploy_key', public: true)
       end
 
@@ -300,6 +300,8 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
       let(:mirrored_project) { create(:project, :repository, :remote_mirror) }
 
       before do
+        stub_feature_flags(vue_mirror_table: false)
+
         mirrored_project.add_maintainer(user)
 
         visit project_settings_repository_path(mirrored_project)
@@ -316,6 +318,8 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
     end
 
     it 'shows a disabled mirror' do
+      stub_feature_flags(vue_mirror_table: false)
+
       create(:remote_mirror, project: project, enabled: false)
 
       visit project_settings_repository_path(project)
@@ -325,6 +329,98 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
       expect(mirror).to have_selector('.rspec-delete-mirror')
       expect(mirror).to have_selector('.rspec-disabled-mirror-badge')
       expect(mirror).not_to have_selector('.rspec-update-now-button')
+    end
+
+    context 'with Vue mirror table enabled', :js do
+      let(:project) { create(:project, :repository) }
+
+      context 'with an enabled remote mirror' do
+        let!(:remote_mirror) { create(:remote_mirror, project: project, enabled: true) }
+
+        before do
+          visit project_settings_repository_path(project)
+        end
+
+        it 'renders a row per remote mirror', :aggregate_failures do
+          expect(page).to have_css('table tbody tr', count: 1)
+          expect(page).to have_content(remote_mirror.safe_url)
+        end
+
+        it 'shows an Update now button that triggers a sync' do
+          button = find_by_testid('update-now-button')
+
+          expect(button).not_to be_disabled
+
+          Sidekiq::Testing.fake! do
+            expect do
+              button.click
+
+              wait_for_requests
+            end.to change { RepositoryUpdateRemoteMirrorWorker.jobs.size }.by(1)
+          end
+        end
+
+        it 'disables the mirror through the toggle button' do
+          find_by_testid('disable-mirror-button').click
+
+          expect(page).to have_css('[data-testid="enable-mirror-button"]')
+
+          wait_for_requests
+
+          expect(remote_mirror.reload.read_attribute(:enabled)).to be(false)
+        end
+
+        it 'deletes the mirror through the delete button' do
+          expect(project.remote_mirrors.count).to eq(1)
+
+          find_by_testid('delete-mirror-button').click
+
+          expect(page).to have_css('[data-testid="mirror-table-empty-state"]')
+
+          wait_for_requests
+
+          expect(project.remote_mirrors.count).to eq(0)
+        end
+
+        it 'shows the relative time of the last successful update' do
+          travel_to(Time.current) do
+            remote_mirror.update!(last_update_at: 5.minutes.ago)
+
+            visit project_settings_repository_path(project)
+
+            expect(page).to have_content('5 minutes ago')
+          end
+        end
+      end
+
+      context 'with a disabled remote mirror' do
+        before do
+          create(:remote_mirror, project: project, enabled: false)
+
+          visit project_settings_repository_path(project)
+        end
+
+        it 'shows the disabled badge and enable button without an update button', :aggregate_failures do
+          expect(page).to have_content(s_('Mirror|Disabled'))
+          expect(page).to have_css('[data-testid="enable-mirror-button"]')
+          expect(page).not_to have_css('[data-testid="update-now-button"]')
+        end
+
+        it 'shows "Never" when the mirror has never been updated' do
+          expect(page).to have_content(s_('Mirror|Never'))
+        end
+      end
+
+      context 'without any remote mirrors' do
+        before do
+          visit project_settings_repository_path(project)
+        end
+
+        it 'shows the empty state' do
+          expect(page).to have_css('[data-testid="mirror-table-empty-state"]')
+          expect(page).to have_content(_('There are currently no mirrored repositories.'))
+        end
+      end
     end
   end
 

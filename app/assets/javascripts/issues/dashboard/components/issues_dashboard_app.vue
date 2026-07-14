@@ -202,9 +202,6 @@ export default {
       }
       return params;
     },
-    defaultWorkItemTypes() {
-      return this.workItemTypes.filter((type) => type.isFilterableListView).map((type) => type.id);
-    },
     dropdownItems() {
       return [
         { href: this.rssPath, text: __('Subscribe to RSS feed') },
@@ -248,7 +245,6 @@ export default {
         state: this.state,
         ...this.pageParams,
         ...this.apiFilterParams,
-        workItemTypeIds: this.apiFilterParams.workItemTypeIds || this.defaultWorkItemTypes,
       };
     },
     renderedIssues() {

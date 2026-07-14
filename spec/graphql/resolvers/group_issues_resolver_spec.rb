@@ -60,7 +60,7 @@ RSpec.describe Resolvers::GroupIssuesResolver do
       end
 
       context "when user is not allowed to see confidential issues" do
-        before do
+        before_all do
           group.add_guest(current_user)
         end
 

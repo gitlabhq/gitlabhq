@@ -13,7 +13,6 @@ import PipelineOperations from '~/ci/pipelines_page/components/pipeline_operatio
 import PipelineTriggerer from '~/ci/pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '~/ci/pipelines_page/components/pipeline_url.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
-import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import PipelinesTimeago from '~/ci/pipelines_page/components/pipelines_timeago.vue';
 import {
   PIPELINE_ID_KEY,
@@ -49,7 +48,7 @@ describe('Pipelines Table', () => {
 
   const [firstPipeline] = pipelines;
 
-  const createComponent = ({ props = {}, provide = {}, stubs = {} } = {}) => {
+  const createComponent = ({ props = {}, provide = {}, stubs = {}, slots = {} } = {}) => {
     wrapper = mountExtended(PipelinesTable, {
       propsData: {
         ...defaultProps,
@@ -65,6 +64,7 @@ describe('Pipelines Table', () => {
         PipelineFailedJobsWidget: stubComponent(PipelineFailedJobsWidget),
         ...stubs,
       },
+      slots,
       apolloProvider: createMockApollo(),
     });
   };
@@ -233,6 +233,13 @@ describe('Pipelines Table', () => {
             }
           });
         });
+
+        it('forwards "job-action-executed" with the row item when the widget emits "retried"', () => {
+          findPipelineFailureWidget().vm.$emit('retried');
+
+          expect(wrapper.emitted('job-action-executed')).toHaveLength(1);
+          expect(wrapper.emitted('job-action-executed')[0][0].iid).toBe(firstPipeline.iid);
+        });
       });
 
       describe('and `useFailedJobsWidget` value is not provided', () => {
@@ -351,17 +358,16 @@ describe('Pipelines Table', () => {
     });
   });
 
-  describe('run pipeline button in header', () => {
-    it('should render run pipeline button when showRunPipelineButton is true', () => {
+  describe('actions header', () => {
+    it('renders the table-header-actions slot content when provided', () => {
       createComponent({
-        props: { showRunPipelineButton: true },
-        stubs: { RunPipelineButton: true },
+        slots: { 'table-header-actions': '<button data-testid="slotted-action">Run</button>' },
       });
 
-      expect(findActionsTh().findComponent(RunPipelineButton).exists()).toBe(true);
+      expect(findActionsTh().find('[data-testid="slotted-action"]').exists()).toBe(true);
     });
 
-    it('should show default actions label when showRunPipelineButton is false', () => {
+    it('shows the default actions label when no slot is provided', () => {
       createComponent();
 
       expect(findActionsTh().text()).toBe('Actions');

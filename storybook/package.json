@@ -23,6 +23,7 @@
     "@storybook/test-runner": "^0.16.0",
     "@storybook/vue": "^7.6.24",
     "@storybook/vue-webpack5": "^7.6.24",
+    "axe-playwright": "^2.1.0",
     "graphql-tag": "^2.12.5",
     "http-server": "^14.1.1",
     "postcss-loader": "^8.1.1",
@@ -30,10 +31,10 @@
     "sass-loader": "^10",
     "storybook": "^7.6.24",
     "storybook-dark-mode": "4.0.2",
-    "vue-loader": "^15.8.3",
-    "axe-playwright": "^2.1.0"
+    "vue-loader": "^15.8.3"
   },
   "resolutions": {
+    "browserslist": "^4.28.2",
     "chokidar": "^3.5.2",
     "string-width": "^4.2.0"
   },

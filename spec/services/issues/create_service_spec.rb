@@ -212,6 +212,17 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         issue
       end
 
+      it 'enqueues GroupMentionWorker with native JSON argument types' do
+        expect(Integrations::GroupMentionWorker).to receive(:perform_async) do |args|
+          # Sidekiq rejects job arguments that are not native JSON types (e.g. symbols or
+          # Time objects). `as_json` is idempotent only on fully JSON-native structures, so
+          # equality here proves the enqueued arguments contain no non-JSON types.
+          expect(args).to eq(args.as_json)
+        end
+
+        issue
+      end
+
       context 'when a build_service is provided' do
         let(:result) { described_class.new(container: project, current_user: user, params: opts, build_service: build_service).execute }
 
@@ -513,7 +524,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         end
 
         it 'does not assign the sentry error' do
-          expect(issue.sentry_issue).to eq(nil)
+          expect(issue.sentry_issue).to be_nil
         end
 
         context 'user is reporter or above' do
@@ -842,7 +853,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
 
           reloaded_discussion = MergeRequest.find(merge_request.id).discussions.first
 
-          expect(reloaded_discussion.last_note.system).to eq(true)
+          expect(reloaded_discussion.last_note.system).to be(true)
         end
 
         it 'sets default title and description values if not provided' do
@@ -902,7 +913,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
 
           reloaded_discussion = MergeRequest.find(merge_request.id).discussions.first
 
-          expect(reloaded_discussion.last_note.system).to eq(true)
+          expect(reloaded_discussion.last_note.system).to be(true)
         end
 
         it 'sets default title and description values if not provided' do

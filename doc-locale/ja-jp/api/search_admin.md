@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Global Search
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 検索管理者API
 ---
 
@@ -14,32 +14,32 @@ title: 検索管理者API
 
 {{< history >}}
 
-- [導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120751) GitLab 16.1
+- GitLab 16.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120751)されました
 
 {{< /history >}}
 
-このAPIを使用して、[高度な検索](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)移行に関する取得情報を取得します。
+このAPIを使用して、[高度な検索移行](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)に関する情報を取得することができます。
 
-前提要件: 
+前提条件: 
 
 - 管理者である必要があります。
 
 ## すべての高度な検索移行を一覧表示 {#list-all-advanced-search-migrations}
 
-GitLabインスタンスのすべての高度な検索移行のリストを取得します。
+GitLabインスタンスのすべての高度な検索移行を一覧表示します。
 
 ```plaintext
 GET /admin/search/migrations
 ```
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://primary.example.com/api/v4/admin/search/migrations"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -84,9 +84,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 高度な検索移行を取得 {#get-an-advanced-search-migration}
+## 高度な検索移行を取得する {#retrieve-an-advanced-search-migration}
 
-移行のバージョンまたは名前を指定して、単一の高度な検索移行を取得します。
+指定された高度な検索移行を、移行バージョンまたは名前で取得することができます。
 
 ```plaintext
 GET /admin/search/migrations/:version_or_name
@@ -98,7 +98,7 @@ GET /admin/search/migrations/:version_or_name
 |-------------------|----------------|----------|--------------------------------------|
 | `version_or_name` | 整数または文字列 | はい      | 移行のバージョンまたは名前。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -107,7 +107,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://primary.example.com/api/v4/admin/search/migrations/BackfillProjectPermissionsInBlobsUsingPermutations"
 ```
 
-成功した場合、[`200`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性         | 型     | 説明                                           |
 |:------------------|:---------|:------------------------------------------------------|
@@ -116,10 +116,10 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 | `started_at`      | 日時 | 移行の開始日。                         |
 | `completed_at`    | 日時 | 移行の完了日。                    |
 | `completed`       | ブール値  | `true`の場合、移行は完了しています。                |
-| `obsolete`        | ブール値  | `true`の場合、移行は廃止としてマークされています。 |
-| `migration_state` | オブジェクト   | 保存された移行の状態。                               |
+| `obsolete`        | ブール値  | `true`の場合、移行は廃止済みとしてマークされています。 |
+| `migration_state` | オブジェクト   | 保存された移行状態。                               |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

@@ -69,6 +69,7 @@ describe('WorkItemAttributesWrapper component', () => {
     groupPath = '',
     workItemParticipantsQueryHandler = workItemParticipantsQuerySuccessHandler,
     allowedParentTypesHandler = allowedParentTypesSuccessHandler,
+    glFeatures = {},
   } = {}) => {
     wrapper = shallowMount(WorkItemAttributesWrapper, {
       apolloProvider: createMockApollo([
@@ -84,6 +85,7 @@ describe('WorkItemAttributesWrapper component', () => {
       provide: {
         hasSubepicsFeature: true,
         getWorkItemTypeConfiguration: jest.fn().mockReturnValue({ widgetDefinitions: [] }),
+        glFeatures,
       },
       stubs: {
         WorkItemWeight: true,
@@ -366,6 +368,52 @@ describe('WorkItemAttributesWrapper component', () => {
 
       expect(findWorkItemParticipants().exists()).toBe(true);
       expect(findWorkItemParticipants().props('participantCount')).toBe(20);
+    });
+
+    describe('when workItemFeaturesField feature flag is enabled', () => {
+      const workItemParticipantsFeaturesResponse = {
+        data: {
+          namespace: {
+            __typename: 'Namespace',
+            id: workItemQueryResponse.data.workItem.namespace.id,
+            workItem: {
+              id: workItemQueryResponse.data.workItem.id,
+              features: {
+                participants: {
+                  type: 'PARTICIPANTS',
+                  participants: mockParticipantWidget.participants,
+                },
+              },
+            },
+          },
+        },
+      };
+      let workItemParticipantsFeaturesHandler;
+
+      beforeEach(async () => {
+        mockParticipantWidget.participants.count = 15;
+        workItemParticipantsFeaturesHandler = jest
+          .fn()
+          .mockResolvedValue(workItemParticipantsFeaturesResponse);
+
+        createComponent({
+          glFeatures: { workItemFeaturesField: true },
+          workItemParticipantsQueryHandler: workItemParticipantsFeaturesHandler,
+        });
+
+        await waitForPromises();
+      });
+
+      it('requests participants via the features field', () => {
+        expect(workItemParticipantsFeaturesHandler).toHaveBeenCalledWith(
+          expect.objectContaining({ useWorkItemFeatures: true }),
+        );
+      });
+
+      it('renders participants from the features field', () => {
+        expect(findWorkItemParticipants().exists()).toBe(true);
+        expect(findWorkItemParticipants().props('participantCount')).toBe(15);
+      });
     });
   });
 });

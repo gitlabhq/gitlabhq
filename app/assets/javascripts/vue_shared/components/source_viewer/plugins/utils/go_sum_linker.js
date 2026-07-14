@@ -21,6 +21,7 @@ const handleReplace = (packagePath, version, tag) => {
   const lowercasePath = packagePath.toLowerCase();
   const packageHref = `${GO_PACKAGE_URL}${lowercasePath}`;
   const packageLink = createLink(packageHref, packagePath);
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- External URL, not a GitLab Rails URL
   const tagHref = `${TAG_URL}${lowercasePath}@${version.split('/go.mod')[0]}`;
   const tagLink = createLink(tagHref, tag);
 

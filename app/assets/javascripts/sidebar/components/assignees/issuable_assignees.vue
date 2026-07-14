@@ -29,6 +29,7 @@ export default {
       required: true,
     },
   },
+  emits: ['assign-self'],
   computed: {
     emptyUsers() {
       return this.users.length === 0;

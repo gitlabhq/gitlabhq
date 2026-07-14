@@ -363,7 +363,7 @@ You can group environments into collapsible sections in the UI.
 For example, if all of your environments start with the name `review`,
 then in the UI, the environments are grouped under that heading:
 
-![Environment groups](img/environments_dynamic_groups_v13_10.png)
+![Environments page with review environments grouped in a collapsible folder.](img/environments_dynamic_groups_v13_10.png)
 
 The following example shows how to start your environment names with `review`.
 The `$CI_COMMIT_REF_SLUG` variable is populated with the branch name at runtime:
@@ -778,7 +778,7 @@ If you [set up an alert integration](../../operations/incident_management/integr
 alerts for environments are shown on the environments page. The alert with the highest
 severity is shown, so you can identify which environments need immediate attention.
 
-![Environment alert](img/alert_for_environment_v13_4.png)
+![Environments page with a critical alert banner for the production environment.](img/alert_for_environment_v13_4.png)
 
 When the issue that triggered the alert is resolved, it is removed and is no
 longer visible on the environments page.
@@ -875,7 +875,7 @@ In the UI, to view the Web terminal, either:
 
 - From the **Actions** menu, select **Terminal**:
 
-  ![Terminal button on environment index](img/environments_terminal_button_on_index_v14_3.png)
+  ![The Terminal button in the Actions dropdown list on the Environments page.](img/environments_terminal_button_on_index_v14_3.png)
 
 - On the page for a specific environment, on the right, select **Terminal** ({{< icon name="terminal" >}}).
 

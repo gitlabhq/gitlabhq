@@ -20,9 +20,8 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import {
   planningViewAllItemsFilters,
-  planningViewSavedViewFilterTokens,
-  setPlanningViewAllItemsFilters,
-  setPlanningViewSavedViewFilterTokens,
+  getSavedViewSessionFilters,
+  resetPlanningViewState,
 } from '~/work_items/pages/planning_view_state';
 
 import {
@@ -41,6 +40,8 @@ import {
   OPERATOR_IS,
   FILTERED_SEARCH_TERM,
   OPERATORS_IS_NOT_OR,
+  OPTIONS_NONE_ANY,
+  OPTIONS_NONE_ANY_ME,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CLOSED,
@@ -67,6 +68,8 @@ import {
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_TICKET,
   STATE_CLOSED,
+  VIEW_MODE_LIST,
+  VIEW_MODE_BOARD,
 } from '~/work_items/constants';
 
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
@@ -78,14 +81,13 @@ import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_save
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 
-import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
+import { saveSavedView, getFilterTokens } from 'ee_else_ce/work_items/list/utils';
 
 import PlanningView from '~/work_items/pages/planning_view.vue';
 import ListView from 'ee_else_ce/work_items/list/list_view.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
-import WorkItemUserPreferences from '~/work_items/list/components/work_item_user_preferences.vue';
 import WorkItemDisplaySettingsDrawer from '~/work_items/list/components/work_item_display_settings_drawer.vue';
 import InfoBanner from '~/work_items/list/components/info_banner.vue';
 import WorkItemListActions from '~/work_items/list/components/work_item_list_actions.vue';
@@ -145,10 +147,16 @@ jest.mock('~/lib/utils/url_utility');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => ({
   confirmAction: jest.fn().mockResolvedValue(true),
 }));
-jest.mock('ee_else_ce/work_items/list/utils', () => ({
-  ...jest.requireActual('ee_else_ce/work_items/list/utils'),
-  saveSavedView: jest.fn(),
-}));
+jest.mock('ee_else_ce/work_items/list/utils', () => {
+  const actual = jest.requireActual('ee_else_ce/work_items/list/utils');
+  return {
+    ...actual,
+    saveSavedView: jest.fn(),
+    // Wrap so individual tests can override the URL-to-token parsing; defaults to
+    // the real implementation so unrelated tests are unaffected.
+    getFilterTokens: jest.fn(actual.getFilterTokens),
+  };
+});
 
 useLocalStorageSpy();
 
@@ -223,7 +231,6 @@ const subscribedSavedViewsHandler = jest.fn().mockResolvedValue({
 
 const findListView = () => wrapper.findComponent(ListView);
 const findBoardView = () => wrapper.findComponent({ name: 'BoardView' });
-const findToggleViewModeButton = () => wrapper.findByTestId('toggle-view-mode-button');
 const findDetailPanel = () => wrapper.findComponent(WorkItemDetailPanel);
 const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
 const findGlIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
@@ -236,7 +243,6 @@ const findNewSavedViewModal = () => wrapper.findComponent(WorkItemsNewSavedViewM
 const findWorkItemsSavedViewsSelectors = () => wrapper.findComponent(WorkItemsSavedViewsSelectors);
 const findViewNotFoundModal = () => wrapper.findByTestId('view-not-found-modal');
 const findViewLimitWarningModal = () => wrapper.findByTestId('view-limit-warning-modal');
-const findWorkItemUserPreferences = () => wrapper.findComponent(WorkItemUserPreferences);
 const findDisplaySettingsDrawer = () => wrapper.findComponent(WorkItemDisplaySettingsDrawer);
 const findDisplaySettingsButton = () => wrapper.findByTestId('display-settings-button');
 const findServiceDeskInfoBanner = () => wrapper.findComponent(InfoBanner);
@@ -383,8 +389,7 @@ describe('planning-view', () => {
     getParameterByName.mockImplementation((...args) =>
       jest.requireActual('~/lib/utils/url_utility').getParameterByName(...args),
     );
-    setPlanningViewAllItemsFilters(null);
-    setPlanningViewSavedViewFilterTokens({});
+    resetPlanningViewState();
   });
 
   it('passes correct queryVariables to list-view', async () => {
@@ -396,17 +401,6 @@ describe('planning-view', () => {
       sort: CREATED_DESC,
       state: STATUS_OPEN,
       firstPageSize: 20,
-    });
-  });
-
-  it('renders the WorkItemUserPreferences component', async () => {
-    await mountComponent();
-
-    expect(findWorkItemUserPreferences().props()).toMatchObject({
-      fullPath: 'full/path',
-      // TODO re-add shouldOpenItemsInSidePanel
-      commonPreferences: {},
-      namespacePreferences: {},
     });
   });
 
@@ -691,6 +685,28 @@ describe('planning-view', () => {
           customToken.type,
         ]);
       });
+
+      it('re-parses the URL for custom field tokens once hasCustomFieldsFeature resolves', async () => {
+        setWindowLocation('?custom-field[1]=123');
+
+        const hasCustomFieldsFeature = ref(false);
+        await mountComponent({
+          provide: { hasCustomFieldsFeature: computed(() => hasCustomFieldsFeature.value) },
+        });
+
+        expect(getFilterTokens).not.toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({ hasCustomFieldsFeature: true }),
+        );
+
+        hasCustomFieldsFeature.value = true;
+        await nextTick();
+
+        expect(getFilterTokens).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({ hasCustomFieldsFeature: true }),
+        );
+      });
     });
 
     describe('Organization filter token', () => {
@@ -962,6 +978,25 @@ describe('planning-view', () => {
         expect(labelToken.multiSelect).toBe(true);
       });
     });
+
+    describe('assignee token defaultUsers', () => {
+      const findAssigneeToken = () =>
+        findFilteredSearchBar()
+          .props('tokens')
+          .find((token) => token.type === TOKEN_TYPE_ASSIGNEE);
+
+      it('includes the "Me" option when logged in', async () => {
+        await mountComponent({ isLoggedInValue: true });
+
+        expect(findAssigneeToken().defaultUsers).toBe(OPTIONS_NONE_ANY_ME);
+      });
+
+      it('excludes the "Me" option when logged out', async () => {
+        await mountComponent({ isLoggedInValue: false });
+
+        expect(findAssigneeToken().defaultUsers).toBe(OPTIONS_NONE_ANY);
+      });
+    });
   });
 
   describe('sort options', () => {
@@ -976,7 +1011,7 @@ describe('planning-view', () => {
           },
         });
 
-        expect(findFilteredSearchBar().props('sortOptions')).toEqual([
+        expect(findDisplaySettingsDrawer().props('sortOptions')).toEqual([
           expect.objectContaining({ title: 'Priority' }),
           expect.objectContaining({ title: 'Created date' }),
           expect.objectContaining({ title: 'Updated date' }),
@@ -1007,7 +1042,7 @@ describe('planning-view', () => {
           },
         });
 
-        expect(findFilteredSearchBar().props('sortOptions')).toEqual([
+        expect(findDisplaySettingsDrawer().props('sortOptions')).toEqual([
           expect.objectContaining({ title: 'Priority' }),
           expect.objectContaining({ title: 'Created date' }),
           expect.objectContaining({ title: 'Updated date' }),
@@ -1035,7 +1070,7 @@ describe('planning-view', () => {
           },
         });
 
-        expect(findFilteredSearchBar().props('sortOptions')).toEqual([
+        expect(findDisplaySettingsDrawer().props('sortOptions')).toEqual([
           expect.objectContaining({ title: 'Created date' }),
           expect.objectContaining({ title: 'Updated date' }),
           expect.objectContaining({ title: 'Closed date' }),
@@ -1061,7 +1096,7 @@ describe('planning-view', () => {
             workItemType: WORK_ITEM_TYPE_NAME_TICKET,
           },
         });
-        const sortOptions = findFilteredSearchBar()
+        const sortOptions = findDisplaySettingsDrawer()
           .props('sortOptions')
           .map((sort) => sort.title);
 
@@ -1182,6 +1217,56 @@ describe('planning-view', () => {
         search: 'find issues',
         authorUsername: 'homer',
         in: 'TITLE',
+      });
+    });
+
+    describe('when the same filter is submitted again', () => {
+      const filterTokens = [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+      ];
+      const getCache = () => wrapper.vm.$apollo.provider.defaultClient.cache;
+
+      it('reloads the list by evicting the cached work items, even though the filter is unchanged', async () => {
+        await mountComponent();
+
+        // First submit changes the variables, so Apollo reloads the list reactively.
+        findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+        await waitForPromises();
+
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        // Re-submitting identical tokens does not change the variables, so the list
+        // must be reloaded explicitly.
+        findFilteredSearchBar().vm.$emit('onFilter', [...filterTokens]);
+        await waitForPromises();
+
+        expect(evictSpy).toHaveBeenCalledWith(expect.objectContaining({ fieldName: 'workItems' }));
+      });
+
+      it('refetches the work item counts', async () => {
+        await mountComponent();
+
+        findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+        await waitForPromises();
+        const initialCallCount = defaultCountsOnlyHandler.mock.calls.length;
+
+        findFilteredSearchBar().vm.$emit('onFilter', [...filterTokens]);
+        await waitForPromises();
+
+        expect(defaultCountsOnlyHandler.mock.calls.length).toBeGreaterThan(initialCallCount);
+      });
+
+      it('does not force a reload when the submitted filter actually changes', async () => {
+        await mountComponent();
+
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+
+        findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+        await waitForPromises();
+
+        // A changed filter changes the variables, so Apollo reloads reactively and no
+        // explicit cache eviction is needed.
+        expect(evictSpy).not.toHaveBeenCalled();
       });
     });
   });
@@ -1650,7 +1735,7 @@ describe('planning-view', () => {
         });
 
         it('renders "Save changes" and "Reset to defaults" buttons when display preferences change', async () => {
-          findWorkItemUserPreferences().vm.$emit('local-update', {
+          findDisplaySettingsDrawer().vm.$emit('update-settings', {
             hiddenMetadataKeys: ['labels'],
           });
 
@@ -1678,7 +1763,7 @@ describe('planning-view', () => {
           ]);
           await nextTick();
 
-          expect(planningViewSavedViewFilterTokens.value['3']).toEqual(
+          expect(getSavedViewSessionFilters('3')).toEqual(
             expect.arrayContaining([
               expect.objectContaining({
                 type: TOKEN_TYPE_AUTHOR,
@@ -1819,7 +1904,7 @@ describe('planning-view', () => {
           route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
         });
 
-        findWorkItemUserPreferences().vm.$emit('local-update', {
+        findDisplaySettingsDrawer().vm.$emit('update-settings', {
           hiddenMetadataKeys: ['labels'],
         });
 
@@ -2529,118 +2614,86 @@ describe('planning-view', () => {
   });
 
   describe('display settings drawer', () => {
-    describe('when work_item_list_display_settings_drawer is enabled', () => {
-      beforeEach(async () => {
-        await mountComponent({
-          provide: {
-            glFeatures: { workItemListDisplaySettingsDrawer: true },
-          },
-        });
-      });
+    beforeEach(async () => {
+      await mountComponent();
+    });
 
-      it('renders the Display button', () => {
-        expect(findDisplaySettingsButton().exists()).toBe(true);
-      });
+    it('renders the Display button', () => {
+      expect(findDisplaySettingsButton().exists()).toBe(true);
+    });
 
-      it('renders the drawer closed by default', () => {
-        expect(findDisplaySettingsDrawer().props('open')).toBe(false);
-      });
+    it('renders the drawer closed by default with the Display button unselected', () => {
+      expect(findDisplaySettingsDrawer().props('open')).toBe(false);
+      expect(findDisplaySettingsButton().props('selected')).toBe(false);
+    });
 
-      it('opens the drawer when the Display button is clicked', async () => {
-        findDisplaySettingsButton().vm.$emit('click');
-        await nextTick();
+    it('opens the drawer and selects the Display button when the button is clicked', async () => {
+      findDisplaySettingsButton().vm.$emit('click');
+      await nextTick();
 
-        expect(findDisplaySettingsDrawer().props('open')).toBe(true);
-      });
+      expect(findDisplaySettingsDrawer().props('open')).toBe(true);
+      expect(findDisplaySettingsButton().props('selected')).toBe(true);
+    });
 
-      it('closes the drawer when the drawer emits close', async () => {
-        findDisplaySettingsButton().vm.$emit('click');
-        await nextTick();
+    it('toggles the drawer closed when the Display button is clicked again', async () => {
+      findDisplaySettingsButton().vm.$emit('click');
+      await nextTick();
+      findDisplaySettingsButton().vm.$emit('click');
+      await nextTick();
 
-        findDisplaySettingsDrawer().vm.$emit('close');
-        await nextTick();
+      expect(findDisplaySettingsDrawer().props('open')).toBe(false);
+      expect(findDisplaySettingsButton().props('selected')).toBe(false);
+    });
 
-        expect(findDisplaySettingsDrawer().props('open')).toBe(false);
-      });
+    it('closes the drawer when the drawer emits close', async () => {
+      findDisplaySettingsButton().vm.$emit('click');
+      await nextTick();
 
-      it('does not render the existing user preferences dropdown', () => {
-        expect(findWorkItemUserPreferences().exists()).toBe(false);
-      });
+      findDisplaySettingsDrawer().vm.$emit('close');
+      await nextTick();
 
-      it('hides the sort dropdown by passing an empty sortOptions array to FilteredSearchBar', () => {
-        expect(findFilteredSearchBar().props('sortOptions')).toEqual([]);
-      });
+      expect(findDisplaySettingsDrawer().props('open')).toBe(false);
+    });
 
-      it('still propagates sort changes when FilteredSearchBar emits onSort', async () => {
-        expect(findFilteredSearchBar().props('initialSortBy')).toBe(CREATED_DESC);
+    it('hides the sort dropdown by passing an empty sortOptions array to FilteredSearchBar', () => {
+      expect(findFilteredSearchBar().props('sortOptions')).toEqual([]);
+    });
 
-        findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
-        await waitForPromises();
+    it('still propagates sort changes when FilteredSearchBar emits onSort', async () => {
+      expect(findFilteredSearchBar().props('initialSortBy')).toBe(CREATED_DESC);
 
-        expect(findFilteredSearchBar().props('initialSortBy')).toBe(UPDATED_DESC);
-        expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_DESC });
-      });
+      findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+      await waitForPromises();
 
-      it('passes sortOptions and the current sortKey to the drawer', () => {
-        const drawerProps = findDisplaySettingsDrawer().props();
+      expect(findFilteredSearchBar().props('initialSortBy')).toBe(UPDATED_DESC);
+      expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_DESC });
+    });
 
-        expect(drawerProps.sortKey).toBe(CREATED_DESC);
-        expect(Array.isArray(drawerProps.sortOptions)).toBe(true);
-        expect(drawerProps.sortOptions.length).toBeGreaterThan(0);
-      });
+    it('passes sortOptions and the current sortKey to the drawer', () => {
+      const drawerProps = findDisplaySettingsDrawer().props();
 
-      it('passes commonPreferences to the drawer', () => {
-        expect(findDisplaySettingsDrawer().props('commonPreferences')).toEqual({
-          shouldOpenItemsInSidePanel: true,
-        });
-      });
+      expect(drawerProps.sortKey).toBe(CREATED_DESC);
+      expect(Array.isArray(drawerProps.sortOptions)).toBe(true);
+      expect(drawerProps.sortOptions.length).toBeGreaterThan(0);
+    });
 
-      it('updates sort and saves the preference when the drawer emits sort', async () => {
-        findDisplaySettingsDrawer().vm.$emit('sort', UPDATED_DESC);
-        await waitForPromises();
-        await nextTick();
-
-        expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_DESC });
-        expect(findDisplaySettingsDrawer().props('sortKey')).toBe(UPDATED_DESC);
-        expect(userPreferenceMutationHandler).toHaveBeenCalledWith({
-          sort: UPDATED_DESC,
-          namespace: 'full/path',
-          workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
-        });
+    it('passes commonPreferences to the drawer', () => {
+      expect(findDisplaySettingsDrawer().props('commonPreferences')).toEqual({
+        shouldOpenItemsInSidePanel: true,
       });
     });
 
-    describe('when work_item_list_display_settings_drawer is disabled', () => {
-      beforeEach(async () => {
-        await mountComponent();
-      });
+    it('updates sort and saves the preference when the drawer emits sort', async () => {
+      findDisplaySettingsDrawer().vm.$emit('sort', UPDATED_DESC);
+      await waitForPromises();
+      await nextTick();
 
-      it('does not render the Display button', () => {
-        expect(findDisplaySettingsButton().exists()).toBe(false);
-      });
-
-      it('does not render the drawer', () => {
-        expect(findDisplaySettingsDrawer().exists()).toBe(false);
-      });
-
-      it('still renders the existing user preferences dropdown', () => {
-        expect(findWorkItemUserPreferences().exists()).toBe(true);
-      });
-
-      it('passes the full sortOptions array to FilteredSearchBar', () => {
-        const sortOptions = findFilteredSearchBar().props('sortOptions');
-        expect(Array.isArray(sortOptions)).toBe(true);
-        expect(sortOptions.length).toBeGreaterThan(0);
-      });
-
-      it('still propagates sort changes when FilteredSearchBar emits onSort', async () => {
-        expect(findFilteredSearchBar().props('initialSortBy')).toBe(CREATED_DESC);
-
-        findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
-        await waitForPromises();
-
-        expect(findFilteredSearchBar().props('initialSortBy')).toBe(UPDATED_DESC);
-        expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_DESC });
+      expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_DESC });
+      expect(findDisplaySettingsDrawer().props('sortKey')).toBe(UPDATED_DESC);
+      expect(userPreferenceMutationHandler).toHaveBeenCalledWith({
+        sort: UPDATED_DESC,
+        namespace: 'full/path',
+        workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
       });
     });
   });
@@ -2648,13 +2701,59 @@ describe('planning-view', () => {
   describe('view mode toggle', () => {
     const savedViewsSelectorsStub = {
       name: 'WorkItemsSavedViewsSelectors',
+      props: ['displaySettings'],
       template: '<div><slot name="header-area"></slot></div>',
     };
     const boardViewStub = {
       name: 'BoardView',
-      props: ['rootPageFullPath', 'queryVariables'],
+      props: [
+        'rootPageFullPath',
+        'queryVariables',
+        'collapsedGroups',
+        'activeItem',
+        'detailPanelEnabled',
+        'visibleGroups',
+      ],
       template: '<div />',
     };
+
+    // get_user_preferences response carrying namespace-level display settings.
+    const preferencesHandlerWith = (displaySettings) =>
+      jest.fn().mockResolvedValue({
+        data: {
+          currentUser: {
+            id: 'gid://gitlab/User/1',
+            userPreferences: {
+              workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
+              __typename: 'UserPreferences',
+            },
+            workItemPreferences: {
+              displaySettings,
+              __typename: 'WorkItemTypesUserPreference',
+            },
+            workItemPreferencesWithType: {
+              sort: CREATED_DESC,
+              __typename: 'WorkItemTypesUserPreference',
+            },
+            __typename: 'CurrentUser',
+          },
+        },
+      });
+
+    const userPrefUpdateHandlerWith = (displaySettings) =>
+      jest.fn().mockResolvedValue({
+        data: {
+          workItemUserPreferenceUpdate: {
+            errors: [],
+            userPreferences: {
+              displaySettings,
+              sort: CREATED_DESC,
+              __typename: 'WorkItemTypesUserPreference',
+            },
+            __typename: 'WorkItemUserPreferenceUpdatePayload',
+          },
+        },
+      });
 
     describe('by default', () => {
       beforeEach(async () => {
@@ -2670,20 +2769,14 @@ describe('planning-view', () => {
       });
     });
 
-    describe('when planningViewBoards feature flag is disabled', () => {
-      beforeEach(async () => {
-        await mountComponent({ stubs: { WorkItemsSavedViewsSelectors: savedViewsSelectorsStub } });
-      });
-
-      it('does not render the toggle button', () => {
-        expect(findToggleViewModeButton().exists()).toBe(false);
-      });
-    });
-
     describe('when planningViewBoards feature flag is enabled', () => {
       beforeEach(async () => {
         await mountComponent({
-          provide: { glFeatures: { planningViewBoards: true } },
+          provide: {
+            glFeatures: {
+              planningViewBoards: true,
+            },
+          },
           stubs: {
             WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
             BoardView: boardViewStub,
@@ -2691,48 +2784,186 @@ describe('planning-view', () => {
         });
       });
 
-      it('renders the toggle button labelled "Show Board" by default', () => {
-        expect(findToggleViewModeButton().exists()).toBe(true);
-        expect(findToggleViewModeButton().text()).toBe('Show Board');
+      it('passes the current viewMode to the drawer (list by default)', () => {
+        expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_LIST);
       });
 
-      it('switches to board view and updates the button label when clicked', async () => {
-        findToggleViewModeButton().vm.$emit('click');
+      it('switches to board view when the drawer emits toggle-view-mode with "board"', async () => {
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         expect(findListView().exists()).toBe(false);
         expect(findBoardView().exists()).toBe(true);
-        expect(findToggleViewModeButton().text()).toBe('Show List');
+        expect(findDisplaySettingsDrawer().props('viewMode')).toBe('board');
       });
 
       it('passes rootPageFullPath and queryVariables to the board view', async () => {
-        findToggleViewModeButton().vm.$emit('click');
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', 'board');
         await waitForPromises();
 
         expect(findBoardView().props('rootPageFullPath')).toBe('full/path');
         expect(findBoardView().props('queryVariables')).toMatchObject({
           fullPath: 'full/path',
-          sort: CREATED_DESC,
+          sort: RELATIVE_POSITION_ASC,
           state: STATUS_OPEN,
         });
       });
 
-      it('switches back to list view on a second click', async () => {
-        findToggleViewModeButton().vm.$emit('click');
+      describe('when board card is selected', () => {
+        it('opens the detail panel and marks the card active', async () => {
+          const payload = { id: 'gid://gitlab/WorkItem/1', iid: '1' };
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+
+          findBoardView().vm.$emit('set-active-item', payload);
+          await waitForPromises();
+
+          expect(findDetailPanel().props('open')).toBe(true);
+          expect(findDetailPanel().props('activeItem')).toEqual(payload);
+          expect(findBoardView().props('activeItem')).toEqual(payload);
+        });
+
+        it('keeps the detail panel open when switching from board to list view', async () => {
+          const payload = { id: 'gid://gitlab/WorkItem/1', iid: '1' };
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+
+          findBoardView().vm.$emit('set-active-item', payload);
+          await waitForPromises();
+
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+          await waitForPromises();
+
+          expect(findBoardView().exists()).toBe(false);
+          expect(findDetailPanel().props('open')).toBe(true);
+          expect(findDetailPanel().props('activeItem')).toEqual(payload);
+          expect(findListView().props('activeItem')).toEqual(payload);
+        });
+
+        it('disables the side panel on the board when the preference is off', async () => {
+          await mountComponent({
+            provide: {
+              glFeatures: {
+                planningViewBoards: true,
+              },
+            },
+            stubs: {
+              WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+              BoardView: boardViewStub,
+            },
+            mockPreferencesHandler: jest.fn().mockResolvedValue({
+              data: {
+                currentUser: {
+                  __typename: 'CurrentUser',
+                  id: 'gid://gitlab/User/1',
+                  userPreferences: {
+                    __typename: 'UserPreferences',
+                    workItemsDisplaySettings: { shouldOpenItemsInSidePanel: false },
+                  },
+                  workItemPreferences: null,
+                  workItemPreferencesWithType: null,
+                },
+              },
+            }),
+          });
+
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+
+          expect(findBoardView().props('detailPanelEnabled')).toBe(false);
+          expect(findDetailPanel().exists()).toBe(false);
+        });
+      });
+
+      it('enforces Manual sort on the board and restores the list sort on exit', async () => {
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
-        findToggleViewModeButton().vm.$emit('click');
+
+        expect(findDisplaySettingsDrawer().props('sortOptions')).toEqual([
+          expect.objectContaining({ title: 'Manual' }),
+        ]);
+        expect(findDisplaySettingsDrawer().props('sortKey')).toBe(RELATIVE_POSITION_ASC);
+
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+        await waitForPromises();
+
+        expect(findDisplaySettingsDrawer().props('sortOptions').length).toBeGreaterThan(1);
+        expect(findDisplaySettingsDrawer().props('sortKey')).toBe(CREATED_DESC);
+      });
+
+      it('does not persist the sort when the locked Manual option is selected on the board', async () => {
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+
+        findDisplaySettingsDrawer().vm.$emit('sort', RELATIVE_POSITION_ASC);
+        await waitForPromises();
+
+        expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+
+        // The list sort is preserved so it is restored on exit.
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+        await waitForPromises();
+
+        expect(findDisplaySettingsDrawer().props('sortKey')).toBe(CREATED_DESC);
+      });
+
+      it('switches back to list view when the drawer emits toggle-view-mode with "list"', async () => {
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
         await waitForPromises();
 
         expect(findListView().exists()).toBe(true);
         expect(findBoardView().exists()).toBe(false);
-        expect(findToggleViewModeButton().text()).toBe('Show Board');
+        expect(findDisplaySettingsDrawer().props('viewMode')).toBe('list');
+      });
+
+      it('persists view mode for All Items', async () => {
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+
+        await mountComponent({
+          provide: {
+            glFeatures: {
+              planningViewBoards: true,
+            },
+          },
+          stubs: {
+            WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+            BoardView: boardViewStub,
+          },
+        });
+
+        expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_BOARD);
+        expect(findBoardView().exists()).toBe(true);
+        expect(findListView().exists()).toBe(false);
+      });
+
+      describe('when creating a new saved view in board mode', () => {
+        beforeEach(async () => {
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('saves the current view mode', async () => {
+          findFilteredSearchBar().vm.$emit('onFilter', [
+            { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+          ]);
+          await nextTick();
+          await findSaveViewButton().trigger('click');
+          await nextTick();
+
+          expect(findNewSavedViewModal().props('displaySettings')).toEqual(
+            expect.objectContaining({ viewMode: VIEW_MODE_BOARD }),
+          );
+        });
       });
 
       describe('when board-view emits set-error', () => {
         const message = 'Something went wrong when fetching the board columns.';
 
         beforeEach(async () => {
-          findToggleViewModeButton().vm.$emit('click');
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
           findBoardView().vm.$emit('set-error', message);
           await nextTick();
@@ -2740,6 +2971,253 @@ describe('planning-view', () => {
 
         it('renders the error in a GlAlert', () => {
           expect(wrapper.findComponent(GlAlert).text()).toBe(message);
+        });
+      });
+    });
+
+    describe('persistence on a saved view', () => {
+      const mountSavedViewWithDrawer = async (savedViewOverride = {}) => {
+        const savedView = { ...singleSavedView[0], ...savedViewOverride };
+        await mountComponent({
+          provide: {
+            glFeatures: {
+              planningViewBoards: true,
+            },
+          },
+          savedViewHandler: jest
+            .fn()
+            .mockResolvedValue(savedViewResponseFactory({ savedViews: [savedView] })),
+          stubs: {
+            WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+            BoardView: boardViewStub,
+          },
+          route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
+        });
+        await waitForPromises();
+      };
+
+      it('does not render "Save changes" or "Reset to defaults" buttons before the view mode changes', async () => {
+        await mountSavedViewWithDrawer({ displaySettings: { viewMode: VIEW_MODE_LIST } });
+
+        expect(findResetViewButton().exists()).toBe(false);
+        expect(findUpdateViewButton().exists()).toBe(false);
+      });
+
+      describe('when the view mode is toggled', () => {
+        beforeEach(async () => {
+          await mountSavedViewWithDrawer({ displaySettings: { viewMode: VIEW_MODE_LIST } });
+
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await nextTick();
+        });
+
+        it('renders "Save changes" and "Reset to defaults" buttons', () => {
+          expect(findResetViewButton().exists()).toBe(true);
+          expect(findUpdateViewButton().exists()).toBe(true);
+        });
+
+        it('persists the chosen view mode to the localStorage draft', () => {
+          expect(localStorage.setItem).toHaveBeenCalledWith(
+            'full/path-saved-view-3',
+            expect.stringContaining(`"viewMode":"${VIEW_MODE_BOARD}"`),
+          );
+        });
+
+        it('reverts to the saved view mode when "Reset to defaults" is clicked', async () => {
+          findResetViewButton().vm.$emit('click');
+          await nextTick();
+
+          expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_LIST);
+          expect(findResetViewButton().exists()).toBe(false);
+          expect(findUpdateViewButton().exists()).toBe(false);
+        });
+
+        it('sends the chosen view mode in the displaySettings payload when "Save changes" is clicked', async () => {
+          saveSavedView.mockResolvedValue({
+            data: {
+              workItemSavedViewUpdate: {
+                errors: [],
+                savedView: singleSavedView[0],
+              },
+            },
+          });
+
+          await findUpdateViewButton().vm.$emit('click');
+          await waitForPromises();
+
+          expect(saveSavedView).toHaveBeenCalledWith(
+            expect.objectContaining({
+              displaySettings: expect.objectContaining({ viewMode: VIEW_MODE_BOARD }),
+            }),
+          );
+        });
+      });
+    });
+
+    describe('column collapse', () => {
+      const collapsedId = 'status:gid://gitlab/WorkItems::Statuses::Custom::Status/2';
+
+      const mountAllItemsBoard = async (options = {}) => {
+        await mountComponent({
+          provide: {
+            glFeatures: {
+              planningViewBoards: true,
+              workItemListDisplaySettingsDrawer: true,
+            },
+          },
+          stubs: {
+            WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+            BoardView: boardViewStub,
+          },
+          ...options,
+        });
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+      };
+
+      describe('on All Items', () => {
+        it('passes the persisted collapsed columns to the board view', async () => {
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({ collapsedGroups: [collapsedId] }),
+          });
+
+          expect(findBoardView().props('collapsedGroups')).toEqual([collapsedId]);
+        });
+
+        it('passes the persisted visible groups to the board view', async () => {
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({ visibleGroups: [collapsedId] }),
+          });
+
+          expect(findBoardView().props('visibleGroups')).toEqual([collapsedId]);
+        });
+
+        it('defaults visibleGroups to null when none are persisted', async () => {
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({}),
+          });
+
+          expect(findBoardView().props('visibleGroups')).toBeNull();
+        });
+
+        it('persists a newly collapsed column, merged with existing display settings', async () => {
+          const mutationHandler = userPrefUpdateHandlerWith({
+            hiddenMetadataKeys: ['labels'],
+            collapsedGroups: [collapsedId],
+          });
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({ hiddenMetadataKeys: ['labels'] }),
+            userPreferenceMutationResponse: mutationHandler,
+          });
+
+          findBoardView().vm.$emit('toggle-collapse', collapsedId);
+          await waitForPromises();
+
+          expect(mutationHandler).toHaveBeenCalledWith({
+            namespace: 'full/path',
+            displaySettings: {
+              hiddenMetadataKeys: ['labels'],
+              collapsedGroups: [collapsedId],
+            },
+          });
+        });
+
+        it('removes a column from collapsed columns when toggled again', async () => {
+          const mutationHandler = userPrefUpdateHandlerWith({ collapsedGroups: [] });
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({ collapsedGroups: [collapsedId] }),
+            userPreferenceMutationResponse: mutationHandler,
+          });
+
+          findBoardView().vm.$emit('toggle-collapse', collapsedId);
+          await waitForPromises();
+
+          expect(mutationHandler).toHaveBeenCalledWith({
+            namespace: 'full/path',
+            displaySettings: { collapsedGroups: [] },
+          });
+        });
+
+        it('does not call the mutation when signed out', async () => {
+          await mountAllItemsBoard({ isLoggedInValue: false });
+
+          findBoardView().vm.$emit('toggle-collapse', collapsedId);
+          await waitForPromises();
+
+          expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+        });
+
+        it('shows an alert when persisting the collapse fails', async () => {
+          await mountAllItemsBoard({
+            userPreferenceMutationResponse: jest.fn().mockRejectedValue(new Error('boom')),
+          });
+
+          findBoardView().vm.$emit('toggle-collapse', collapsedId);
+          await waitForPromises();
+
+          expect(createAlert).toHaveBeenCalledWith({
+            message: 'Something went wrong while saving the preference.',
+            captureError: true,
+            error: expect.any(Error),
+          });
+        });
+      });
+
+      describe('on a saved view', () => {
+        const mountSavedViewBoard = async (displaySettings = {}) => {
+          const savedView = {
+            ...singleSavedView[0],
+            displaySettings: { viewMode: VIEW_MODE_BOARD, ...displaySettings },
+          };
+          await mountComponent({
+            provide: {
+              glFeatures: {
+                planningViewBoards: true,
+                workItemListDisplaySettingsDrawer: true,
+              },
+            },
+            savedViewHandler: jest
+              .fn()
+              .mockResolvedValue(savedViewResponseFactory({ savedViews: [savedView] })),
+            stubs: {
+              WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+              BoardView: boardViewStub,
+            },
+            route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
+          });
+          await waitForPromises();
+        };
+
+        it('writes the collapse to the localStorage draft without calling the mutation', async () => {
+          await mountSavedViewBoard();
+
+          findBoardView().vm.$emit('toggle-collapse', collapsedId);
+          await nextTick();
+
+          expect(localStorage.setItem).toHaveBeenCalledWith(
+            'full/path-saved-view-3',
+            expect.stringContaining(collapsedId),
+          );
+          expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+          expect(findUpdateViewButton().exists()).toBe(true);
+        });
+
+        it('includes the collapsed columns in the payload when the view is saved', async () => {
+          saveSavedView.mockResolvedValue({
+            data: { workItemSavedViewUpdate: { errors: [], savedView: singleSavedView[0] } },
+          });
+          await mountSavedViewBoard();
+
+          findBoardView().vm.$emit('toggle-collapse', collapsedId);
+          await nextTick();
+          await findUpdateViewButton().vm.$emit('click');
+          await waitForPromises();
+
+          expect(saveSavedView).toHaveBeenCalledWith(
+            expect.objectContaining({
+              displaySettings: expect.objectContaining({ collapsedGroups: [collapsedId] }),
+            }),
+          );
         });
       });
     });
@@ -2763,19 +3241,8 @@ describe('planning-view', () => {
       removeParams.mockReturnValue('/work_items');
     });
 
-    describe.each([
-      {
-        workItemRestApiFrontendUsers: true,
-        workItemRestApiIndex: true,
-        workItemRestApi: false,
-      },
-      {
-        workItemRestApiFrontendUsers: true,
-        workItemRestApiIndex: false,
-        workItemRestApi: true,
-      },
-    ])('when REST API feature flags are enabled (%o)', (glFeatures) => {
-      const restProvide = { glFeatures };
+    describe('when REST API feature flag is enabled', () => {
+      const restProvide = { glFeatures: { workItemRestApiFrontendUsers: true } };
 
       it('passes the cursor through unchanged when it is a REST-style cursor', async () => {
         setWindowLocation(`?page_after=${encodeURIComponent(restCursor)}`);
@@ -2817,28 +3284,9 @@ describe('planning-view', () => {
       });
     });
 
-    describe.each([
-      {
-        workItemRestApiFrontendUsers: true,
-        workItemRestApiIndex: false,
-        workItemRestApi: false,
-      },
-      {
-        workItemRestApiFrontendUsers: false,
-        workItemRestApiIndex: true,
-        workItemRestApi: true,
-      },
-      {
-        workItemRestApiFrontendUsers: false,
-        workItemRestApiIndex: true,
-        workItemRestApi: false,
-      },
-      {
-        workItemRestApiFrontendUsers: false,
-        workItemRestApiIndex: false,
-        workItemRestApi: true,
-      },
-    ])('when the REST API flag combination is not satisfied (%o)', (glFeatures) => {
+    describe('when the REST API flag is not enabled', () => {
+      const glFeatures = { workItemRestApiFrontendUsers: false };
+
       it('treats the cursor as a GraphQL-style cursor', async () => {
         setWindowLocation(`?page_after=${graphqlCursor}`);
         await mountComponent({ provide: { glFeatures } });

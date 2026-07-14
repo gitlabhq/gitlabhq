@@ -111,6 +111,7 @@ describe('mergeRequestDiscussions store', () => {
     'createNewDiscussion',
     'createLineDiscussion',
     'createFileDiscussion',
+    'createImageDiscussion',
     'replyToDiscussion',
     'saveNote',
     'destroyNote',
@@ -210,10 +211,16 @@ describe('mergeRequestDiscussions store', () => {
 
   describe('createLineDiscussion', () => {
     it('delegates to notes store saveNote and removes the form', async () => {
+      const position = {
+        old_line: 1,
+        base_sha: 'start111',
+        start_sha: 'start111',
+        head_sha: 'head222',
+      };
       const formDiscussion = {
         id: 'form-1',
         isForm: true,
-        position: { old_line: 1 },
+        position,
         lineChange: { change: 'added', position: 'new' },
         lineCode: 'hash_0_1',
       };
@@ -234,10 +241,7 @@ describe('mergeRequestDiscussions store', () => {
           note: {
             note: 'test',
             position: JSON.stringify({
-              base_sha: 'start111',
-              start_sha: 'start111',
-              head_sha: 'head222',
-              old_line: 1,
+              ...position,
               position_type: 'text',
               ignore_whitespace_change: !useDiffsView().showWhitespace,
             }),
@@ -270,6 +274,51 @@ describe('mergeRequestDiscussions store', () => {
 
       const sentPosition = JSON.parse(mockNotesStore.saveNote.mock.calls[0][0].data.note.position);
       expect(sentPosition.ignore_whitespace_change).toBe(false);
+    });
+  });
+
+  describe('createImageDiscussion', () => {
+    it('delegates to notes store saveNote with the image position', async () => {
+      const position = {
+        base_sha: 'base000',
+        start_sha: 'start111',
+        head_sha: 'head222',
+        old_path: 'files/images/logo.png',
+        new_path: 'files/images/logo.png',
+        position_type: 'image',
+        width: 100,
+        height: 200,
+        x: 10,
+        y: 20,
+      };
+
+      await store.createImageDiscussion({ position, noteBody: 'image note' });
+
+      expect(mockNotesStore.saveNote).toHaveBeenCalledWith({
+        endpoint: '/api/notes',
+        data: {
+          view: useDiffsView().viewType,
+          line_type: undefined,
+          merge_request_diff_head_sha: 'head222',
+          note_project_id: '',
+          target_type: 'merge_request',
+          target_id: 42,
+          return_discussion: true,
+          note: {
+            note: 'image note',
+            position: JSON.stringify({
+              ...position,
+              position_type: 'image',
+              ignore_whitespace_change: !useDiffsView().showWhitespace,
+            }),
+            noteable_type: 'MergeRequest',
+            noteable_id: 42,
+            commit_id: null,
+            type: 'DiffNote',
+            line_code: null,
+          },
+        },
+      });
     });
   });
 
@@ -310,6 +359,7 @@ describe('mergeRequestDiscussions store', () => {
         lineRange,
         lineChange: { change: 'added', position: 'new' },
         lineCode: 'abc_0_5',
+        diffRefs: { base_sha: 'start111', start_sha: 'start111', head_sha: 'head222' },
       });
       const form = useDiffDiscussions().discussionForms[0];
       expect(form.previewParams).toStrictEqual({
@@ -332,6 +382,173 @@ describe('mergeRequestDiscussions store', () => {
       });
       const form = useDiffDiscussions().discussionForms[0];
       expect(form.previewParams).toBeNull();
+    });
+
+    it('uses per-file diffRefs over the global version refs when provided', () => {
+      const fileDiffRefs = {
+        base_sha: 'file_base',
+        start_sha: 'file_start',
+        head_sha: 'file_head',
+      };
+      store.addNewLineDiscussionForm({
+        oldPath: 'a.rb',
+        newPath: 'a.rb',
+        lineRange,
+        lineChange: { change: 'added', position: 'new' },
+        lineCode: 'abc_0_5',
+        diffRefs: fileDiffRefs,
+      });
+      const form = useDiffDiscussions().discussionForms[0];
+      expect(form.position).toMatchObject(fileDiffRefs);
+      expect(form.previewParams).toMatchObject({
+        base_sha: 'file_base',
+        start_sha: 'file_start',
+        head_sha: 'file_head',
+      });
+    });
+
+    it('falls back to the global version refs when no per-file refs are provided', () => {
+      store.addNewLineDiscussionForm({
+        oldPath: 'a.rb',
+        newPath: 'a.rb',
+        lineRange,
+        lineChange: { change: 'added', position: 'new' },
+        lineCode: 'abc_0_5',
+      });
+      const form = useDiffDiscussions().discussionForms[0];
+      expect(form.position).toMatchObject({
+        base_sha: 'start111',
+        start_sha: 'start111',
+        head_sha: 'head222',
+      });
+    });
+  });
+
+  describe('addNewFileDiscussionForm', () => {
+    it('uses the per-file diffRefs for the form position', () => {
+      const fileDiffRefs = {
+        base_sha: 'file_base',
+        start_sha: 'file_start',
+        head_sha: 'file_head',
+      };
+      store.addNewFileDiscussionForm({ oldPath: 'a.rb', newPath: 'a.rb', diffRefs: fileDiffRefs });
+      const form = useDiffDiscussions().discussionForms[0];
+      expect(form.position).toMatchObject(fileDiffRefs);
+    });
+
+    it('falls back to the global version refs when no per-file refs are provided', () => {
+      store.addNewFileDiscussionForm({ oldPath: 'a.rb', newPath: 'a.rb' });
+      const form = useDiffDiscussions().discussionForms[0];
+      expect(form.position).toMatchObject({
+        base_sha: 'start111',
+        start_sha: 'start111',
+        head_sha: 'head222',
+      });
+    });
+  });
+
+  describe('line range editing', () => {
+    const lineRange = {
+      start: { old_line: null, new_line: 5, type: 'new' },
+      end: { old_line: null, new_line: 8, type: 'new' },
+    };
+
+    const createForm = () => {
+      store.addNewLineDiscussionForm({
+        oldPath: 'a.rb',
+        newPath: 'a.rb',
+        lineRange,
+        lineChange: { change: 'added', position: 'new' },
+        lineCode: 'abc_0_8',
+        extraOptions: { lines: ['l5', 'l6', 'l7', 'l8'] },
+      });
+      const form = useDiffDiscussions().discussionForms[0];
+      form.noteBody = 'draft text';
+      return form;
+    };
+
+    it('keeps the form mounted, flags only that form, and stores the editing context', () => {
+      const form = createForm();
+      store.startLineRangeEditing(form);
+
+      expect(useDiffDiscussions().discussionForms).toHaveLength(1);
+      expect(form.editingLineRange).toBe(true);
+      expect(store.lineRangeEditing).toMatchObject({ discussion: form, lineRange });
+    });
+
+    it('commitLineRangeEditing re-creates the form at the new range end with the note body', () => {
+      const form = createForm();
+      store.startLineRangeEditing(form);
+
+      const newRange = {
+        start: { old_line: null, new_line: 3, type: 'new' },
+        end: { old_line: null, new_line: 6, type: 'new' },
+      };
+      store.lineRangeEditing.lineRange = newRange;
+      store.commitLineRangeEditing({
+        lineChange: { change: 'added', position: 'new' },
+        lineCode: 'abc_0_6',
+        lines: ['l3', 'l4', 'l5', 'l6'],
+      });
+
+      const updated = useDiffDiscussions().discussionForms[0];
+      expect(store.lineRangeEditing).toBeNull();
+      expect(useDiffDiscussions().discussionForms).toHaveLength(1);
+      expect(updated.position.line_range).toStrictEqual(newRange);
+      expect(updated.position.new_line).toBe(6);
+      expect(updated.lineCode).toBe('abc_0_6');
+      expect(updated.lines).toStrictEqual(['l3', 'l4', 'l5', 'l6']);
+      expect(updated.noteBody).toBe('draft text');
+      expect(updated.editingLineRange).toBe(false);
+    });
+
+    it('cancelLineRangeEditing clears the flag and requests focus without changing the form', () => {
+      const form = createForm();
+      form.shouldFocus = false;
+      store.startLineRangeEditing(form);
+
+      store.cancelLineRangeEditing();
+
+      expect(store.lineRangeEditing).toBeNull();
+      expect(useDiffDiscussions().discussionForms).toHaveLength(1);
+      expect(form.editingLineRange).toBe(false);
+      expect(form.shouldFocus).toBe(true);
+      expect(form.position.line_range).toStrictEqual(lineRange);
+      expect(form.noteBody).toBe('draft text');
+    });
+
+    it('does nothing when committing without an active editing session', () => {
+      createForm();
+      store.commitLineRangeEditing({});
+      expect(store.lineRangeEditing).toBeNull();
+      expect(useDiffDiscussions().discussionForms).toHaveLength(1);
+    });
+
+    it("re-creates the form with the file's own diff refs so it is not filtered out", () => {
+      const fileDiffRefs = {
+        base_sha: 'file_base',
+        start_sha: 'file_start',
+        head_sha: 'file_head',
+      };
+      store.addNewLineDiscussionForm({
+        oldPath: 'a.rb',
+        newPath: 'a.rb',
+        lineRange,
+        lineChange: { change: 'added', position: 'new' },
+        lineCode: 'abc_0_8',
+        diffRefs: fileDiffRefs,
+      });
+      const form = useDiffDiscussions().discussionForms[0];
+      expect(form.position).toMatchObject(fileDiffRefs);
+
+      store.startLineRangeEditing(form);
+      store.commitLineRangeEditing({
+        lineChange: { change: 'added', position: 'new' },
+        lineCode: 'abc_0_8',
+        lines: [],
+      });
+
+      expect(useDiffDiscussions().discussionForms[0].position).toMatchObject(fileDiffRefs);
     });
   });
 
@@ -584,10 +801,19 @@ describe('mergeRequestDiscussions store', () => {
   });
 
   describe('createDraftLineDiscussion', () => {
+    const position = {
+      old_line: 1,
+      new_line: 1,
+      old_path: 'a.rb',
+      new_path: 'a.rb',
+      base_sha: 'start111',
+      start_sha: 'start111',
+      head_sha: 'head222',
+    };
     const formDiscussion = {
       id: 'form-1',
       isForm: true,
-      position: { old_line: 1, new_line: 1, old_path: 'a.rb', new_path: 'a.rb' },
+      position,
       lineCode: 'hash_0_1',
     };
 
@@ -605,13 +831,7 @@ describe('mergeRequestDiscussions store', () => {
           note: {
             note: 'draft comment',
             position: JSON.stringify({
-              base_sha: 'start111',
-              start_sha: 'start111',
-              head_sha: 'head222',
-              old_line: 1,
-              new_line: 1,
-              old_path: 'a.rb',
-              new_path: 'a.rb',
+              ...position,
               position_type: 'text',
               ignore_whitespace_change: !useDiffsView().showWhitespace,
             }),
@@ -672,7 +892,7 @@ describe('mergeRequestDiscussions store', () => {
   describe('version-aware discussion matching', () => {
     const diffRefs = { base_sha: 'start111', head_sha: 'head222', start_sha: 'start111' };
     const otherRefs = { base_sha: 'other', head_sha: 'other', start_sha: 'other' };
-    const filePaths = { oldPath: 'a.js', newPath: 'a.js' };
+    const filePaths = { oldPath: 'a.js', newPath: 'a.js', diffRefs };
     const makePos = (refs, line = 5) => ({
       old_path: 'a.js',
       new_path: 'a.js',
@@ -963,7 +1183,9 @@ describe('mergeRequestDiscussions store', () => {
           },
         ]);
 
-        expect(store.findAllImageDiscussionsForFile('a.js', 'a.js')).toHaveLength(expected);
+        expect(
+          store.findAllImageDiscussionsForFile({ oldPath: 'a.js', newPath: 'a.js', diffRefs }),
+        ).toHaveLength(expected);
       });
 
       it('excludes image drafts until comments are ready', () => {
@@ -971,7 +1193,9 @@ describe('mergeRequestDiscussions store', () => {
           { id: 'draft_1', isDraft: true },
         ]);
 
-        expect(store.findAllImageDiscussionsForFile('a.js', 'a.js')).toHaveLength(0);
+        expect(
+          store.findAllImageDiscussionsForFile({ oldPath: 'a.js', newPath: 'a.js', diffRefs }),
+        ).toHaveLength(0);
       });
 
       it('includes image drafts after fetchNotesAndDrafts', async () => {
@@ -981,7 +1205,9 @@ describe('mergeRequestDiscussions store', () => {
 
         await store.fetchNotesAndDrafts();
 
-        expect(store.findAllImageDiscussionsForFile('a.js', 'a.js')).toHaveLength(1);
+        expect(
+          store.findAllImageDiscussionsForFile({ oldPath: 'a.js', newPath: 'a.js', diffRefs }),
+        ).toHaveLength(1);
       });
 
       it('appends draft replies to discussion notes', async () => {
@@ -1004,7 +1230,11 @@ describe('mergeRequestDiscussions store', () => {
 
         await store.fetchNotesAndDrafts();
 
-        const [discussion] = store.findAllImageDiscussionsForFile('a.js', 'a.js');
+        const [discussion] = store.findAllImageDiscussionsForFile({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          diffRefs,
+        });
         expect(discussion.notes).toHaveLength(2);
         expect(discussion.notes[1]).toBe(draftReply);
       });

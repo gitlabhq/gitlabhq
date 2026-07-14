@@ -35,7 +35,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   inject: {
-    wikiPath: { default: null },
     cloneSshUrl: { default: null },
     cloneHttpUrl: { default: null },
   },

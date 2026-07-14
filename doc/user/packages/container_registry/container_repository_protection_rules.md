@@ -16,7 +16,7 @@ description: Protected container repositories in GitLab limit which user roles c
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463669) in GitLab 16.7 [with a flag](../../../administration/feature_flags/_index.md) named `container_registry_protected_containers`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463669) in GitLab 16.7 [with a feature flag](../../../administration/feature_flags/_index.md) named `container_registry_protected_containers`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/429074) in GitLab 17.8.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/480385) in GitLab 17.8. Feature flag `container_registry_protected_containers` removed.
 

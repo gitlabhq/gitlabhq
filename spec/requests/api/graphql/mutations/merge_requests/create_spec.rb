@@ -34,6 +34,13 @@ RSpec.describe 'Creation of a new merge request', feature_category: :code_review
   context 'when user has permissions to create a merge request' do
     let(:current_user) { developer }
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_merge_request do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) { graphql_mutation(:merge_request_create, input, 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     it 'creates a new merge request' do
       post_graphql_mutation(mutation, current_user: current_user)
 

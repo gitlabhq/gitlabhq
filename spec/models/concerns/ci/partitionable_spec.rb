@@ -103,7 +103,7 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
               create(:ci_partition, id: 126)
             end
 
-            it { is_expected.to eq(true) }
+            it { is_expected.to be(true) }
 
             context 'when it is creating non default partitions' do
               let(:active_partition) do
@@ -111,13 +111,13 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
                   .new(ci_model.table_name, 125)
               end
 
-              it { is_expected.to eq(true) }
+              it { is_expected.to be(true) }
             end
           end
 
           context 'when current ci_partition does not exist' do
             context 'when it is creating the first partition' do
-              it { is_expected.to eq(true) }
+              it { is_expected.to be(true) }
             end
 
             context 'when it is creating non default partitions' do
@@ -126,7 +126,7 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
                   .new(ci_model.table_name, non_existing_record_id)
               end
 
-              it { is_expected.to eq(false) }
+              it { is_expected.to be(false) }
             end
           end
         end
@@ -191,9 +191,7 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
 
     it 'returns a list of CI models being partitioned' do
       expected_list = %w[
-        Ci::BuildExecutionConfig
         Ci::BuildName
-        Ci::BuildTag
         Ci::BuildSource
         Ci::JobAnnotation
         Ci::JobArtifact

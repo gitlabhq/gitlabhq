@@ -3,6 +3,7 @@ import { GlIcon, GlLink } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 export default {
+  name: 'WorkItemLinkedResources',
   components: {
     CrudComponent,
     GlIcon,

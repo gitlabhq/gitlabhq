@@ -16,7 +16,7 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::CheckGitignore, fe
   describe '.check' do
     context 'when .gitignore contains all required entries' do
       before do
-        File.write(gitignore_path, "CLAUDE.local.md\n.ai/*\n")
+        File.write(gitignore_path, "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
       end
 
       it 'reports OK' do
@@ -28,7 +28,7 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::CheckGitignore, fe
 
     context 'when CLAUDE.local.md entry is missing' do
       before do
-        File.write(gitignore_path, ".ai/*\n")
+        File.write(gitignore_path, "AGENTS.local.md\n.ai/*\n")
       end
 
       it 'reports FAIL with missing entry detail' do
@@ -40,9 +40,23 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::CheckGitignore, fe
       end
     end
 
+    context 'when AGENTS.local.md entry is missing' do
+      before do
+        File.write(gitignore_path, "CLAUDE.local.md\n.ai/*\n")
+      end
+
+      it 'reports FAIL with missing entry detail' do
+        result = described_class.check(context)
+
+        check = result[:results].last
+        expect(check[:status]).to eq('FAIL')
+        expect(check[:details].join).to include('AGENTS.local.md')
+      end
+    end
+
     context 'when .ai/* entry is missing' do
       before do
-        File.write(gitignore_path, "CLAUDE.local.md\n")
+        File.write(gitignore_path, "CLAUDE.local.md\nAGENTS.local.md\n")
       end
 
       it 'reports FAIL with missing entry detail' do
@@ -64,7 +78,7 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::CheckGitignore, fe
 
     context 'when entries are rooted (start with /)' do
       before do
-        File.write(gitignore_path, "/CLAUDE.local.md\n/.ai/*\n")
+        File.write(gitignore_path, "/CLAUDE.local.md\n/AGENTS.local.md\n/.ai/*\n")
       end
 
       it 'reports FAIL (rooted entries do not satisfy the check)' do
@@ -73,6 +87,7 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::CheckGitignore, fe
         check = result[:results].last
         expect(check[:status]).to eq('FAIL')
         expect(check[:details].join).to include('CLAUDE.local.md')
+        expect(check[:details].join).to include('AGENTS.local.md')
       end
     end
 
@@ -83,12 +98,13 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::CheckGitignore, fe
         File.write(gitignore_path, '')
       end
 
-      it 'appends both entries and reports FIXED' do
+      it 'appends all required entries and reports FIXED' do
         result = described_class.check(context)
 
         expect(result[:results].last[:status]).to eq('FIXED')
         content = File.read(gitignore_path)
         expect(content).to include('CLAUDE.local.md')
+        expect(content).to include('AGENTS.local.md')
         expect(content).to include('.ai/*')
       end
     end
@@ -97,7 +113,7 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::CheckGitignore, fe
       let(:fix) { true }
 
       before do
-        File.write(gitignore_path, ".ai/*\n")
+        File.write(gitignore_path, "AGENTS.local.md\n.ai/*\n")
       end
 
       it 'appends only the missing entry and reports FIXED' do
@@ -119,6 +135,7 @@ RSpec.describe AiHarness::Doctor::Steps::PerformDoctorChecks::CheckGitignore, fe
         expect(File.exist?(gitignore_path)).to be true
         content = File.read(gitignore_path)
         expect(content).to include('CLAUDE.local.md')
+        expect(content).to include('AGENTS.local.md')
         expect(content).to include('.ai/*')
       end
     end

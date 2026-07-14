@@ -40,8 +40,8 @@ For a full list of reference architectures, see
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
 1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#supported-machine-types) for more information.
-2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
-3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
+3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS).
    Sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. See [Load Balancers](_index.md#load-balancers) for more information.
 5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
@@ -290,7 +290,7 @@ Use a reputable provider that runs a [supported PostgreSQL version](../../instal
 
 For more information, including guidance on high availability and database load balancing, see:
 
-- [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services).
+- [Infrastructure and services](_index.md#infrastructure-and-services).
 - [Best practices for the database services](_index.md#best-practices-for-the-database-services).
 
 If you use a third party external service:
@@ -375,11 +375,11 @@ to be used with GitLab.
 
 You can optionally use a [third party external service for the Redis instance](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) with the following guidance:
 
-- A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/memorystore-for-redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
+- A reputable provider or solution should be used for this. [Google Memorystore](https://docs.cloud.google.com/memorystore/docs/redis/memorystore-for-redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
 - Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
 - You must set the [Redis eviction mode](../redis/replication_and_failover_external.md#setting-the-eviction-policy) according to your setup.
 
-For more information, see [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services).
+For more information, see [Infrastructure and services](_index.md#infrastructure-and-services).
 
 ### Standalone Redis using the Linux package
 
@@ -1019,7 +1019,7 @@ running [Prometheus](../monitoring/prometheus/_index.md):
 GitLab supports using an [object storage](../object_storage.md) service for holding numerous types of data.
 It's recommended over [NFS](../nfs.md) for data objects and in general it's better
 in larger setups as object storage is typically much more performant, reliable,
-and scalable. See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+and scalable. See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 
 There are two ways of specifying object storage configuration in GitLab:
 
@@ -1138,8 +1138,8 @@ services where applicable):
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
 1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#supported-machine-types) for more information.
-2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
-3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
+3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly specifications are based on the use of normal-sized repositories in good health.
    However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.

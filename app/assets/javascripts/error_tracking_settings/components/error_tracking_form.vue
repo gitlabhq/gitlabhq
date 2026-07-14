@@ -4,6 +4,7 @@ import { mapActions, mapState } from 'pinia';
 import { useErrorTrackingSettings } from '../store';
 
 export default {
+  name: 'ErrorTrackingForm',
   components: { GlFormInput, GlIcon, GlButton },
   computed: {
     ...mapState(useErrorTrackingSettings, [

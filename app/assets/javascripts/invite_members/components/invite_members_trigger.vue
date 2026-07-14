@@ -10,6 +10,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'InviteMembersTrigger',
   components: { GlButton, GlLink, GlDropdownItem, GlDisclosureDropdownItem },
   props: {
     displayText: {
@@ -47,6 +48,7 @@ export default {
       default: 'button',
     },
   },
+  emits: ['modal-opened'],
   computed: {
     componentAttributes() {
       return {

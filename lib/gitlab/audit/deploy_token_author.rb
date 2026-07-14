@@ -4,7 +4,7 @@ module Gitlab
   module Audit
     class DeployTokenAuthor < Gitlab::Audit::NullAuthor
       def initialize(name: nil)
-        super(id: -2, name: name)
+        super(id: DEPLOY_TOKEN_AUTHOR_ID, name: name)
       end
 
       # Events that are authored by a deploy token, should be

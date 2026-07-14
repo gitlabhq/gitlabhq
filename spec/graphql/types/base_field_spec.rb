@@ -252,5 +252,40 @@ RSpec.describe Types::BaseField, feature_category: :api do
       field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true, scopes: [:api, :foobar_scope])
       field.authorized?(object, nil, context)
     end
+
+    describe 'granular token authorization' do
+      let(:object) { :object }
+      let(:args) { { full_path: 'group-path' } }
+      let(:context) { { current_user: nil } }
+
+      it 'forwards the field arguments to the granular scope authorization' do
+        expect_next_instance_of(::Gitlab::Graphql::Authz::GranularScopeAuthorization) do |authz|
+          allow(authz).to receive(:empty?).and_return(false)
+          expect(authz).to receive(:ok?).with(object, context, arguments: args).and_return(true)
+        end
+
+        field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true)
+
+        expect(field).to be_authorized(object, args, context)
+      end
+
+      it 'does not check granular directives on mutation fields' do
+        mutation = Class.new(::Mutations::BaseMutation) do
+          graphql_name 'TestGranularFieldMutation'
+
+          authorize_granular_token permissions: :read_wiki, boundary_argument: :full_path, boundary_type: :group
+        end
+
+        field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true, resolver_class: mutation)
+
+        allow(Ability).to receive(:allowed?).and_return(true)
+        allow_next_instance_of(::Gitlab::Graphql::Authz::GranularScopeAuthorization) do |authz|
+          allow(authz).to receive(:empty?).and_return(false)
+          expect(authz).not_to receive(:ok?)
+        end
+
+        expect(field).to be_authorized(nil, { input: {} }, context)
+      end
+    end
   end
 end

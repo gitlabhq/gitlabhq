@@ -1,8 +1,8 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { MarkdownCell, CodeCell } from './cells';
 
 export default {
+  name: 'NotebookIndex',
   components: {
     CodeCell,
     MarkdownCell,

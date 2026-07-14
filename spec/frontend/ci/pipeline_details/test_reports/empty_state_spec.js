@@ -1,5 +1,6 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import EMPTY_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-todos-md.svg?url';
 import EmptyState, { i18n } from '~/ci/pipeline_details/test_reports/empty_state.vue';
 
 describe('Test report empty state', () => {
@@ -10,7 +11,6 @@ describe('Test report empty state', () => {
   const createComponent = ({ hasTestReport = true } = {}) => {
     wrapper = shallowMount(EmptyState, {
       provide: {
-        emptyStateImagePath: '/image/path',
         hasTestReport,
       },
       stubs: {
@@ -24,6 +24,7 @@ describe('Test report empty state', () => {
       createComponent();
 
       expect(findEmptyState().props()).toMatchObject({
+        svgPath: EMPTY_STATE_SVG,
         primaryButtonText: i18n.noTestsButton,
         description: i18n.noTestsDescription,
         title: i18n.noTestsTitle,

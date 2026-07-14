@@ -37,6 +37,7 @@ export default {
       default: 'id',
     },
   },
+  emits: ['delete', 'next-page', 'prev-page'],
   data() {
     return {
       selectedReferences: {},

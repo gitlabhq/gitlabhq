@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review_workflow do
-  let_it_be(:merge_request, freeze: false) { create(:merge_request) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
 
   subject(:after_create_service) do
@@ -47,9 +47,8 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
       execute_service
     end
 
-    it 'writes diffs to the cache' do
-      expect(merge_request)
-        .to receive_message_chain(:diffs, :write_cache)
+    it 'enqueues a worker to write diffs to the cache' do
+      expect(MergeRequests::WriteDiffsCacheWorker).to receive(:perform_async).with(merge_request.id)
 
       execute_service
     end
@@ -68,18 +67,6 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
       execute_service
     end
 
-    context 'when async_mr_pipeline_creation feature flag is disabled' do
-      it 'creates a pipeline synchronously and updates the HEAD pipeline' do
-        stub_feature_flags(async_mr_pipeline_creation: false)
-
-        expect(after_create_service)
-          .to receive(:create_pipeline_for).with(merge_request, merge_request.author, async: false)
-        expect(merge_request).to receive(:update_head_pipeline)
-
-        execute_service
-      end
-    end
-
     it 'executes hooks and integrations' do
       expected_payload = hash_including(
         object_kind: 'merge_request',
@@ -95,6 +82,17 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
 
     it 'calls GroupMentionWorker' do
       expect(Integrations::GroupMentionWorker).to receive(:perform_async)
+
+      execute_service
+    end
+
+    it 'enqueues GroupMentionWorker with native JSON argument types' do
+      expect(Integrations::GroupMentionWorker).to receive(:perform_async) do |args|
+        # Sidekiq rejects job arguments that are not native JSON types (e.g. symbols or
+        # Time objects). `as_json` is idempotent only on fully JSON-native structures, so
+        # equality here proves the enqueued arguments contain no non-JSON types.
+        expect(args).to eq(args.as_json)
+      end
 
       execute_service
     end
@@ -155,7 +153,7 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
           # This is only one of the possible cases that can fail. This is to
           # simulate a failure that happens during the service call.
           allow(merge_request)
-            .to receive_message_chain(:diffs, :write_cache)
+            .to receive(:create_cross_references!)
             .and_raise(StandardError)
         end
 
@@ -208,8 +206,8 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
       end
 
       context 'when merge request is assigned to someone' do
-        let_it_be(:assignee, freeze: false) { create(:user) }
-        let_it_be(:merge_request, freeze: false) { create(:merge_request, assignees: [assignee]) }
+        let_it_be_with_reload(:assignee) { create(:user) }
+        let_it_be_with_reload(:merge_request) { create(:merge_request, assignees: [assignee]) }
 
         it 'creates a todo for new assignee' do
           attributes = {
@@ -227,8 +225,8 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
       end
 
       context 'when reviewer is assigned' do
-        let_it_be(:reviewer, freeze: false) { create(:user) }
-        let_it_be(:merge_request, freeze: false) { create(:merge_request, reviewers: [reviewer]) }
+        let_it_be_with_reload(:reviewer) { create(:user) }
+        let_it_be_with_reload(:merge_request) { create(:merge_request, reviewers: [reviewer]) }
 
         it 'creates a todo for new reviewer' do
           attributes = {
@@ -247,8 +245,8 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
     end
 
     context 'when saving references to issues that the created merge request closes' do
-      let_it_be(:first_issue, freeze: false) { create(:issue, project: merge_request.target_project) }
-      let_it_be(:second_issue, freeze: false) { create(:issue, project: merge_request.target_project) }
+      let_it_be(:first_issue) { create(:issue, project: merge_request.target_project) }
+      let_it_be(:second_issue) { create(:issue, project: merge_request.target_project) }
 
       it 'creates a `MergeRequestsClosingIssues` record for each issue' do
         merge_request.description = "Closes #{first_issue.to_reference} and #{second_issue.to_reference}"
@@ -298,35 +296,6 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
         end
 
         execute_service
-      end
-
-      context 'when async_mr_pipeline_creation feature flag is disabled' do
-        before do
-          stub_feature_flags(async_mr_pipeline_creation: false)
-        end
-
-        it 'logs specific events' do
-          ::Gitlab::ApplicationContext.push(caller_id: 'NewMergeRequestWorker')
-
-          allow(Gitlab::AppLogger).to receive(:info).and_call_original
-
-          [
-            'Executing hooks',
-            'Executed hooks',
-            'Creating pipeline',
-            'Pipeline created'
-          ].each do |message|
-            expect(Gitlab::AppLogger).to receive(:info).with(
-              hash_including(
-                'meta.caller_id' => 'NewMergeRequestWorker',
-                message: message,
-                merge_request_id: merge_request.id
-              )
-            ).and_call_original
-          end
-
-          execute_service
-        end
       end
     end
   end

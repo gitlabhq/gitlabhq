@@ -8,7 +8,7 @@ module QA
     module DockerRun
       class GitlabRunner < Base
         attr_reader :tags
-        attr_accessor :token, :address, :image, :run_untagged
+        attr_accessor :token, :address, :image, :run_untagged, :clone_url
         attr_writer :config, :executor, :executor_image
 
         CONFLICTING_VARIABLES_MESSAGE = <<~MSG
@@ -76,6 +76,7 @@ module QA
           args << '--non-interactive'
           args << "--name #{@name}"
           args << "--url #{@address}"
+          args << "--clone-url #{@clone_url}" if @clone_url
 
           if @token.starts_with?('glrt-')
             args << "--token #{@token}"

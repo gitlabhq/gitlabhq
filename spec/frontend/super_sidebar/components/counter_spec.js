@@ -1,4 +1,4 @@
-import { GlIcon } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Counter from '~/super_sidebar/components/counter.vue';
 
@@ -12,9 +12,7 @@ describe('Counter component', () => {
     label: 'Issues',
   };
 
-  const findButton = () => wrapper.find('button');
-  const findIcon = () => wrapper.getComponent(GlIcon);
-  const findLink = () => wrapper.find('a');
+  const findButton = () => wrapper.getComponent(GlButton);
 
   const createWrapper = (props = {}) => {
     wrapper = shallowMountExtended(Counter, {
@@ -31,21 +29,19 @@ describe('Counter component', () => {
 
   describe('default', () => {
     it('renders icon', () => {
-      expect(findIcon().props('name')).toBe('issues');
+      expect(findButton().props('icon')).toBe('issues');
     });
 
     it('renders button', () => {
       expect(findButton().attributes('aria-label')).toBe('3 Issues');
-      expect(findLink().exists()).toBe(false);
     });
   });
 
   describe('link', () => {
-    it('renders link', () => {
+    it('renders as a link', () => {
       createWrapper({ href: '/dashboard/todos' });
-      expect(findLink().attributes('aria-label')).toBe('3 Issues');
-      expect(findLink().attributes('href')).toBe('/dashboard/todos');
-      expect(findButton().exists()).toBe(false);
+      expect(findButton().attributes('aria-label')).toBe('3 Issues');
+      expect(findButton().attributes('href')).toBe('/dashboard/todos');
     });
   });
 

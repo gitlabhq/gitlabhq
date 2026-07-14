@@ -1,6 +1,6 @@
 ---
-source_checksum: 6fe8057bc1c8d386
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: c22e8bf4ebee1953
+distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -48,7 +48,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Use `add_concurrent_foreign_key` with `validate: false` when adding a FK to an existing column, then validate in a separate migration
 - DO NOT validate a foreign key while a batched background migration cleaning up related data is still running
 - DO NOT use `add_foreign_key` or `add_concurrent_foreign_key` more than once per migration file unless source and target tables are identical
-- Use `reverse_lock_order: true` for high-traffic tables when adding or removing foreign keys to avoid deadlocks
+- `add_concurrent_foreign_key`, `add_concurrent_partitioned_foreign_key`, `remove_foreign_key_if_exists`, and `remove_partitioned_foreign_key` all default to `reverse_lock_order: true`; set `reverse_lock_order: false` explicitly only when the FK points from a parent table to a child table
 - Use `remove_partitioned_foreign_key` instead of `remove_foreign_key` when removing FKs from partitioned tables
 - For composite indexes serving as FK indexes, ensure the FK column is in the leading position
 - DO NOT use `dependent: :destroy` or `dependent: :delete` on associations; let the database handle cascading deletes via FK constraints
@@ -114,7 +114,6 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 
 - Use `CHECK` constraints to enforce data integrity rules beyond `NOT NULL`
 - When adding a `CHECK` constraint with a default value that satisfies the constraint, add with `validate: false` in the regular migration and validate in a post-deployment migration
-- Follow the naming convention: `check_<table>_<column>[_<suffix>]`
 
 ### Constraint Naming
 

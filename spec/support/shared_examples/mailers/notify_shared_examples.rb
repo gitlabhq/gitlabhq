@@ -248,7 +248,11 @@ RSpec.shared_examples 'an unsubscribeable thread' do |group_level = false|
 
   describe 'reply_key' do
     unless group_level
-      it { is_expected.to have_header('X-GitLab-Reply-Key', SentNotification::PARTITIONED_REPLY_KEY_REGEX) }
+      it do
+        is_expected.to have_header(
+          'X-GitLab-Reply-Key', Gitlab::EmailHandler::ReplyKey::PARTITIONED_REPLY_KEY_REGEX
+        )
+      end
     end
   end
 end

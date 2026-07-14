@@ -5,9 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Setting namespace commit email', feature_category: :user_profile do
   include GraphqlHelpers
 
-  let(:current_user) { create(:user) }
-  let(:group) { create(:group, :public) }
-  let(:email) { create(:email, :confirmed, user: current_user) }
+  let_it_be(:current_user) { create(:user) }
+  let_it_be(:group) { create(:group, :public, reporters: current_user) }
+  let_it_be(:email) { create(:email, :confirmed, user: current_user) }
+
   let(:input) { {} }
   let(:namespace_id) { group.to_global_id }
   let(:email_id) { email.to_global_id }
@@ -46,10 +47,6 @@ RSpec.describe 'Setting namespace commit email', feature_category: :user_profile
     end
   end
 
-  before do
-    group.add_reporter(current_user)
-  end
-
   context 'when current_user is nil' do
     it 'returns the top level error' do
       post_graphql_mutation(mutation, current_user: nil)
@@ -72,13 +69,13 @@ RSpec.describe 'Setting namespace commit email', feature_category: :user_profile
   end
 
   context 'when the namespace is public' do
-    let(:namespace_id) { create(:group).to_global_id }
+    let_it_be(:namespace_id) { create(:group).to_global_id }
 
     it_behaves_like 'success'
   end
 
   context 'when the service returns an error' do
-    let(:email_id) { create(:email).to_global_id }
+    let_it_be(:email_id) { create(:email).to_global_id }
 
     it 'returns the error' do
       post_graphql_mutation(mutation, current_user: current_user)
@@ -93,19 +90,15 @@ RSpec.describe 'Setting namespace commit email', feature_category: :user_profile
   end
 
   context 'when namespace is a user' do
-    let(:namespace_id) { current_user.namespace.to_global_id }
+    let_it_be(:namespace_id) { current_user.namespace.to_global_id }
 
     it_behaves_like 'success'
   end
 
   context 'when namespace is a project' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project) { create(:project, reporters: current_user) }
 
     let(:namespace_id) { project.project_namespace.to_global_id }
-
-    before do
-      project.add_reporter(current_user)
-    end
 
     it_behaves_like 'success'
   end

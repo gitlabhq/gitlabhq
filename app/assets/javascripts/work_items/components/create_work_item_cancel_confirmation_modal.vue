@@ -3,6 +3,7 @@ import { GlButton, GlModal } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 
 export default {
+  name: 'CreateWorkItemCancelConfirmationModal',
   components: {
     GlButton,
     GlModal,

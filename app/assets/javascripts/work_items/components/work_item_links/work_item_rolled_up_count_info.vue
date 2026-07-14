@@ -3,6 +3,7 @@ import { GlSprintf } from '@gitlab/ui';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 
 export default {
+  name: 'WorkItemRolledUpCountInfo',
   components: {
     GlSprintf,
     WorkItemTypeIcon,

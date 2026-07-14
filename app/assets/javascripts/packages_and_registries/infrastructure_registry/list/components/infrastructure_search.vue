@@ -14,6 +14,7 @@ export default {
       default: false,
     },
   },
+  emits: ['update'],
   computed: {
     ...mapState(useInfrastructureList, ['sorting', 'filter']),
     sortableFields() {

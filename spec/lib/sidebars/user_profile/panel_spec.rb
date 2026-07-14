@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::UserProfile::Panel, feature_category: :navigation do
-  legacy_menu_classes = [
+  profile_menu_classes = [
     Sidebars::UserProfile::Menus::ActivityMenu,
     Sidebars::UserProfile::Menus::GroupsMenu,
     Sidebars::UserProfile::Menus::ContributedProjectsMenu,
@@ -32,21 +32,9 @@ RSpec.describe Sidebars::UserProfile::Panel, feature_category: :navigation do
     specify { expect(subject.super_sidebar_context_header).to eq(_('Profile')) }
   end
 
-  it 'does not add legacy menu items' do
+  it 'adds the profile menu items' do
     menu_classes = subject.renderable_menus.map(&:class)
 
-    expect(menu_classes).not_to include(*legacy_menu_classes)
-  end
-
-  context 'when profile_tabs_vue feature is disabled' do
-    before do
-      stub_feature_flags(profile_tabs_vue: false)
-    end
-
-    it 'add legacy menu items' do
-      menu_classes = subject.renderable_menus.map(&:class)
-
-      expect(menu_classes).to include(*legacy_menu_classes)
-    end
+    expect(menu_classes).to include(*profile_menu_classes)
   end
 end

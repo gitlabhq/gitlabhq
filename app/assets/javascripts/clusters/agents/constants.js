@@ -60,7 +60,7 @@ export const INTEGRATION_STATUS_NO_TOKEN = {
 
 export const INTEGRATION_STATUS_RESTRICTED_CI_CD = {
   icon: 'information',
-  iconClass: 'text-info',
+  iconClass: '!gl-fill-icon-info',
   text: s__('ClusterAgents|CI/CD workflow with restricted access'),
   helpUrl: helpPagePath('user/clusters/agent/ci_cd_workflow', {
     anchor: 'restrict-project-and-group-access-by-using-impersonation',

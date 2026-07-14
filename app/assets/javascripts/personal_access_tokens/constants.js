@@ -197,11 +197,25 @@ export const NAMESPACE_ACCESS_TYPES = [
 export const ACCESS_USER_ENUM = 'USER';
 export const ACCESS_INSTANCE_ENUM = 'INSTANCE';
 export const ACCESS_NAMESPACE_ENUMS = ['GROUP', 'PROJECT'];
+export const ACCESS_SCOPES = [
+  { key: 'namespace', boundaries: ACCESS_NAMESPACE_ENUMS },
+  { key: 'user', boundaries: [ACCESS_USER_ENUM] },
+  { key: 'instance', boundaries: [ACCESS_INSTANCE_ENUM] },
+];
+
+export const ACCESS_SCOPE_KEYS = ACCESS_SCOPES.map(({ key }) => key);
 
 export const MAX_NAME_LENGTH = 200;
 export const MAX_DESCRIPTION_LENGTH = 255;
 
 export const SEARCH = 'search';
+
+export const CLICK_GENERATE_FINE_GRAINED_PERSONAL_ACCESS_TOKEN =
+  'click_generate_fine_grained_personal_access_token';
+export const COMPLETE_FINE_GRAINED_PERSONAL_ACCESS_TOKEN_FORM =
+  'complete_fine_grained_personal_access_token_form';
+export const ABANDON_FINE_GRAINED_PERSONAL_ACCESS_TOKEN_FORM =
+  'abandon_fine_grained_personal_access_token_form';
 
 export const ACTIONS = {
   REVOKE: 'revoke',

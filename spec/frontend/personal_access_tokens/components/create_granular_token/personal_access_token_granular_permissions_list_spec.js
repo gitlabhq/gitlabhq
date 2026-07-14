@@ -63,7 +63,12 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
     it('shows empty state when no resources are selected', () => {
       createComponent({ props: { selectedResources: [] } });
 
-      expect(wrapper.text()).toContain('No resources added');
+      expect(wrapper.text()).toContain('No resources selected. Add resources to set permissions.');
+    });
+
+    it('renders the resource and permissions column headers', () => {
+      expect(wrapper.text()).toContain('Resource');
+      expect(wrapper.text()).toContain('Permissions');
     });
 
     it('renders a row for each selected resource with category', () => {
@@ -128,6 +133,7 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
     it('renders button to remove resource', () => {
       expect(findButtons()).toHaveLength(3);
       expect(findButton(0).props('icon')).toBe('close');
+      expect(findButton(0).attributes('aria-label')).toBe('Remove Project');
     });
 
     describe('for user scope', () => {

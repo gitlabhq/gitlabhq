@@ -41,6 +41,24 @@ RSpec.shared_examples 'model with redactable field' do
     end
   end
 
+  context 'when the unsubscribe link is namespace-scoped' do
+    it 'redacts the legacy reply key' do
+      model[field] = 'some text /namespace/13/sent_notifications/00000000000000000000000000000000/unsubscribe more text'
+
+      model.save!
+
+      expect(model[field]).to eq 'some text /sent_notifications/REDACTED/unsubscribe more text'
+    end
+
+    it 'redacts the partitioned reply key' do
+      model[field] = "some text /namespace/13/sent_notifications/1-#{SentNotification.reply_key}/unsubscribe more text"
+
+      model.save!
+
+      expect(model[field]).to eq 'some text /sent_notifications/REDACTED/unsubscribe more text'
+    end
+  end
+
   it 'ignores not hexadecimal tokens' do
     text = 'some text /sent_notifications/token/unsubscribe more text'
     model[field] = text

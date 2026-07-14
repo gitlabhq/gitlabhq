@@ -350,7 +350,7 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags
 | `name_regex_keep`   | 文字列         | いいえ       | 保持する名前の[re2](https://github.com/google/re2/wiki/Syntax)正規表現。この値は、`name_regex_delete`からの一致を上書きします。このフィールドは検証されます。注: `.*`に設定すると、何も実行されません。 |
 | `older_than`        | 文字列         | いいえ       | 指定された時刻より前の削除対象のタグ。`1h`、`1d`、`1month`など、人間が読める形式で記述されています。 |
 
-このAPIは成功した場合、[HTTP応答ステータスコード202](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/202)を返し、次の操作を実行します。
+このAPIは成功した場合、[HTTP応答ステータスコード202](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/202)を返し、次の操作を実行します。
 
 - すべてのタグを作成日順に並べ替えます。作成日は、タグのプッシュ時刻ではなく、マニフェストの作成時刻です。
 - 指定された`name_regex_delete`（または非推奨の`name_regex`）に一致するタグのみを削除し、`name_regex_keep`に一致するものは保持します。

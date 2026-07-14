@@ -12,6 +12,7 @@ import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { initializeValuesFromQuery } from '../utils';
 
 export default {
+  name: 'AdminUsersFilterApp',
   components: { GlFilteredSearch },
   mixins: [glLicensedFeaturesMixin(), glFeatureFlagsMixin(), glAbilitiesMixin()],
   data() {

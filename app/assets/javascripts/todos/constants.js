@@ -72,3 +72,11 @@ export const INSTRUMENT_TAB_LABELS = [
 
 export const DEFAULT_PAGE_SIZE = 20;
 export const TODO_WAIT_BEFORE_RELOAD = 1 * 1000; // 1 second
+
+// Inline-only allowlist for the to-do note preview (renders on one truncated line).
+// `bodyFirstLineHtml` comes from the block-capable `first_line_in_markdown` helper;
+// block tags would break the row. Allowlist not denylist, so new block tags can't re-break it.
+export const TODO_NOTE_PREVIEW_SAFE_HTML_CONFIG = {
+  ALLOWED_TAGS: ['a', 'b', 'strong', 'i', 'em', 'code', 'span'],
+  ADD_TAGS: ['gl-emoji'],
+};

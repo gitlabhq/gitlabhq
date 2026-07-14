@@ -37,6 +37,20 @@ RSpec.describe 'Setting locked status of a merge request', feature_category: :co
     project.add_developer(current_user)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_merge_request do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(
+        :merge_request_set_locked,
+        { project_path: project.full_path, iid: merge_request.iid.to_s }.merge(input),
+        'errors'
+      )
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'returns an error if the user is not allowed to update the merge request' do
     post_graphql_mutation(mutation, current_user: create(:user))
 
@@ -47,7 +61,7 @@ RSpec.describe 'Setting locked status of a merge request', feature_category: :co
     post_graphql_mutation(mutation, current_user: current_user)
 
     expect(response).to have_gitlab_http_status(:success)
-    expect(mutation_response).to eq(true)
+    expect(mutation_response).to be(true)
   end
 
   it 'does not do anything if the merge request was already locked' do
@@ -56,7 +70,7 @@ RSpec.describe 'Setting locked status of a merge request', feature_category: :co
     post_graphql_mutation(mutation, current_user: current_user)
 
     expect(response).to have_gitlab_http_status(:success)
-    expect(mutation_response).to eq(true)
+    expect(mutation_response).to be(true)
   end
 
   context 'when passing locked false as input' do
@@ -66,7 +80,7 @@ RSpec.describe 'Setting locked status of a merge request', feature_category: :co
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:success)
-      expect(mutation_response).to eq(false)
+      expect(mutation_response).to be(false)
     end
 
     it 'unmarks the merge request as locked' do
@@ -75,7 +89,7 @@ RSpec.describe 'Setting locked status of a merge request', feature_category: :co
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:success)
-      expect(mutation_response).to eq(false)
+      expect(mutation_response).to be(false)
     end
   end
 end

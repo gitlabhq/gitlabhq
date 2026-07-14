@@ -60,7 +60,7 @@ RSpec.describe Featurable do
   describe '#feature_available?' do
     context 'when features are disabled' do
       it 'returns false' do
-        expect(subject.feature_available?(:feature1)).to eq(false)
+        expect(subject.feature_available?(:feature1)).to be(false)
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe Featurable do
 
       context 'when user is not present' do
         it 'returns false' do
-          expect(subject.feature_available?(:feature3)).to eq(false)
+          expect(subject.feature_available?(:feature3)).to be(false)
         end
       end
 
@@ -81,7 +81,7 @@ RSpec.describe Featurable do
         it 'returns true' do
           allow(user).to receive(:can_read_all_resources?).and_return(true)
 
-          expect(subject.feature_available?(:feature3, user)).to eq(true)
+          expect(subject.feature_available?(:feature3, user)).to be(true)
         end
       end
 
@@ -96,7 +96,7 @@ RSpec.describe Featurable do
 
     context 'when feature is enabled for everyone' do
       it 'returns true' do
-        expect(subject.feature_available?(:feature2)).to eq(true)
+        expect(subject.feature_available?(:feature2)).to be(true)
       end
     end
   end

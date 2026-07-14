@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "spec_helper"
 
 RSpec.describe Pajamas::RadioComponent, :aggregate_failures, type: :component do

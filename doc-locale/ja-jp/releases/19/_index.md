@@ -6,6 +6,7 @@ title: GitLab 19.0リリースノート
 
 {{< cards >}}
 
+- [GitLab 19.1](gitlab-19-1-released/index.md)
 - [GitLab 19.0](gitlab-19-0-released.md)
 
 {{< /cards >}}

@@ -95,6 +95,7 @@ export default {
       required: true,
     },
   },
+  emits: ['delete-all-files'],
   apollo: {
     packageFiles: {
       query: getPackageFilesQuery,

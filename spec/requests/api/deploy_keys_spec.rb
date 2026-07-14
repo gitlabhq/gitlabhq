@@ -338,7 +338,7 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
       post api(project_path, admin, admin_mode: true), params: key_attrs
 
       expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['can_push']).to eq(true)
+      expect(json_response['can_push']).to be(true)
     end
 
     it 'accepts expires_at parameter' do

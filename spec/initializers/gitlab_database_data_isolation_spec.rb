@@ -39,6 +39,19 @@ RSpec.describe 'Gitlab Organization Data Isolation', feature_category: :organiza
     end
   end
 
+  context 'when the table has multiple sharding keys' do
+    # Snippets are sharded by both project_id and organization_id. Tables with
+    # multiple sharding keys are not isolated yet, because scoping them requires
+    # a poorly performing OR condition.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/594726
+    let_it_be(:snippet_isolated) { create(:personal_snippet, organization: isolated_organization) }
+    let_it_be(:snippet_other) { create(:personal_snippet, organization: other_organization) }
+
+    it 'does not apply the isolation scope' do
+      expect(Snippet.all).to contain_exactly(snippet_isolated, snippet_other)
+    end
+  end
+
   context 'when sharded by namespace_id' do
     # This implicitly creates Namespace::Detail records
     let_it_be(:namespace_isolated) { create(:namespace, organization: isolated_organization) }

@@ -41,7 +41,7 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
     end
 
     context 'when Redis calls are made' do
-      let_it_be(:redis_store_class, freeze: false) { define_helper_redis_store_class }
+      let_it_be(:redis_store_class) { define_helper_redis_store_class }
       let(:redis_store_name) { redis_store_class.store_name.underscore }
 
       before do
@@ -123,6 +123,33 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
         subject
 
         expect(payload[:throttle_safelist]).to eq('foobar')
+      end
+    end
+
+    context 'when Gitaly cost is accumulated' do
+      it 'adds cost_score_gitaly to payload' do
+        Gitlab::RequestCost.current.add(10, resource: :gitaly)
+
+        subject
+
+        expect(payload[:cost_score_gitaly]).to eq(10)
+      end
+    end
+
+    context 'when Gitaly cost is zero' do
+      it 'does not add cost_score_gitaly to payload' do
+        subject
+
+        expect(payload).not_to have_key(:cost_score_gitaly)
+      end
+    end
+
+    context 'when SafeRequestStore is not active' do
+      it 'does not fail' do
+        allow(Gitlab::SafeRequestStore).to receive(:active?).and_return(false)
+
+        expect { subject }.not_to raise_error
+        expect(payload).not_to have_key(:cost_score_gitaly)
       end
     end
 

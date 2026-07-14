@@ -128,7 +128,7 @@ export default {
         </gl-badge>
       </gl-button>
       <gl-popover
-        :target="() => $refs.tryButton.$el"
+        :target="() => $refs.tryButton"
         placement="bottom"
         :title="$options.i18n.popoverTitle"
       >

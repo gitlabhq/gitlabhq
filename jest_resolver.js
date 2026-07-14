@@ -3,7 +3,9 @@ const fs = require('fs');
 // Wrap jest default resolver to detect missing frontend fixtures.
 module.exports = (request, options) => {
   try {
-    return options.defaultResolver(request.replace(/\?vue3$/, ''), options);
+    // Strip webpack loader queries; the resolved file is handled by the normal
+    // transform pipeline (e.g. workers, raw text, static assets).
+    return options.defaultResolver(request.replace(/\?(vue3|worker|raw|url)$/, ''), options);
   } catch (e) {
     if (request.match(/tmp\/tests\/frontend\/fixtures/) && !fs.existsSync(request)) {
       console.error(

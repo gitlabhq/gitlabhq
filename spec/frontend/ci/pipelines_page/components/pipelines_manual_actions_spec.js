@@ -11,7 +11,7 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_m
 import PipelinesManualActions from '~/ci/pipelines_page/components/pipelines_manual_actions.vue';
 import getPipelineActionsQuery from '~/ci/pipelines_page/graphql/queries/get_pipeline_actions.query.graphql';
 import jobPlayMutation from '~/ci/jobs_page/graphql/mutations/job_play.mutation.graphql';
-import { TRACKING_CATEGORIES } from '~/ci/constants';
+import { TRACKING_CATEGORIES, DEFAULT_MANUAL_ACTIONS_LIMIT } from '~/ci/constants';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 
 Vue.use(VueApollo);
@@ -22,7 +22,7 @@ jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 describe('Pipeline manual actions', () => {
   let wrapper;
 
-  const queryHandler = jest.fn().mockResolvedValue(mockPipelineActionsQueryResponse);
+  let queryHandler;
   const jobPlayMutationHandler = jest.fn();
 
   const {
@@ -35,16 +35,27 @@ describe('Pipeline manual actions', () => {
     },
   } = mockPipelineActionsQueryResponse;
 
-  const createComponent = (limit = 50) => {
+  const responseWithNodes = (actionNodes) => ({
+    data: {
+      project: {
+        ...mockPipelineActionsQueryResponse.data.project,
+        pipeline: {
+          ...mockPipelineActionsQueryResponse.data.project.pipeline,
+          jobs: { nodes: actionNodes },
+        },
+      },
+    },
+  });
+
+  const createComponent = (queryResponse = mockPipelineActionsQueryResponse) => {
+    queryHandler = jest.fn().mockResolvedValue(queryResponse);
+
     const apolloProvider = createMockApollo([
       [getPipelineActionsQuery, queryHandler],
       [jobPlayMutation, jobPlayMutationHandler],
     ]);
 
     wrapper = shallowMountExtended(PipelinesManualActions, {
-      provide: {
-        manualActionsLimit: limit,
-      },
       propsData: {
         fullPath: 'root/ci-project',
         iid: 100,
@@ -200,7 +211,11 @@ describe('Pipeline manual actions', () => {
     });
 
     it('limit message does show', async () => {
-      createComponent(3);
+      const maxNodes = Array.from({ length: DEFAULT_MANUAL_ACTIONS_LIMIT }, (_, index) => ({
+        ...nodes[0],
+        id: `gid://gitlab/Ci::Build/${index}`,
+      }));
+      createComponent(responseWithNodes(maxNodes));
 
       findDropdown().vm.$emit('shown');
 

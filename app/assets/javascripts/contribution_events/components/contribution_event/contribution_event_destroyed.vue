@@ -1,6 +1,6 @@
 <script>
-import { EVENT_DESTROYED_I18N, EVENT_DESTROYED_ICONS } from '../../constants';
-import { getValueByEventTarget } from '../../utils';
+import { EVENT_DESTROYED_I18N, EVENT_DESTROYED_ICONS, VARIANT_DEFAULT } from '../../constants';
+import { getValueByEventTarget, isValidVariant } from '../../utils';
 import ContributionEventBase from './contribution_event_base.vue';
 
 export default {
@@ -10,6 +10,12 @@ export default {
     event: {
       type: Object,
       required: true,
+    },
+    variant: {
+      type: String,
+      required: false,
+      default: VARIANT_DEFAULT,
+      validator: isValidVariant,
     },
   },
   computed: {
@@ -24,5 +30,10 @@ export default {
 </script>
 
 <template>
-  <contribution-event-base :event="event" :message="message" :icon-name="iconName" />
+  <contribution-event-base
+    :event="event"
+    :message="message"
+    :variant="variant"
+    :icon-name="iconName"
+  />
 </template>

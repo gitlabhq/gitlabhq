@@ -1,4 +1,7 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { visitUrl } from '~/lib/utils/url_utility';
 import DraggableList from '~/lib/utils/vue3compat/draggable_compat.vue';
@@ -12,9 +15,36 @@ import { mockBlockingLinkedItem, incidentType, ticketType } from '../../mock_dat
 
 jest.mock('~/lib/utils/url_utility');
 
+Vue.use(VueApollo);
+
+const removeLinkedItemsSuccessResponse = {
+  data: {
+    workItemRemoveLinkedItems: {
+      __typename: 'WorkItemRemoveLinkedItemsPayload',
+      errors: [],
+      message: null,
+    },
+  },
+};
+
+const addLinkedItemsSuccessResponse = {
+  data: {
+    workItemAddLinkedItems: {
+      __typename: 'WorkItemAddLinkedItemsPayload',
+      errors: [],
+      workItem: {
+        __typename: 'WorkItem',
+        id: 'gid://gitlab/WorkItem/1',
+        widgets: [],
+      },
+    },
+  },
+};
+
 describe('WorkItemRelationshipList', () => {
   let wrapper;
-  let mutationSpy = jest.fn();
+  let removeLinkedItemsHandler;
+  let addLinkedItemsHandler;
   const mockLinkedItems = mockBlockingLinkedItem.linkedItems.nodes;
   const workItemFullPath = 'test-project-path';
 
@@ -27,12 +57,20 @@ describe('WorkItemRelationshipList', () => {
     canUpdate = true,
     isLoggedIn = true,
     activeChildItemId = null,
+    glFeatures = {},
   } = {}) => {
     if (isLoggedIn) {
       window.gon.current_user_id = 1;
     }
 
+    removeLinkedItemsHandler = jest.fn().mockResolvedValue(removeLinkedItemsSuccessResponse);
+    addLinkedItemsHandler = jest.fn().mockResolvedValue(addLinkedItemsSuccessResponse);
+
     wrapper = shallowMountExtended(WorkItemRelationshipList, {
+      apolloProvider: createMockApollo([
+        [removeLinkedItemsMutation, removeLinkedItemsHandler],
+        [addLinkedItemsMutation, addLinkedItemsHandler],
+      ]),
       provide: {
         workItemTypesConfiguration: [
           { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue', useIssueView: false },
@@ -45,6 +83,7 @@ describe('WorkItemRelationshipList', () => {
           { id: 'gid://gitlab/WorkItems::Type/8', name: 'Epic', useIssueView: false },
           { id: 'gid://gitlab/WorkItems::Type/9', name: 'Ticket', useIssueView: true },
         ],
+        glFeatures,
       },
       propsData: {
         parentWorkItemId,
@@ -55,11 +94,6 @@ describe('WorkItemRelationshipList', () => {
         canUpdate,
         workItemFullPath,
         activeChildItemId,
-      },
-      mocks: {
-        $apollo: {
-          mutate: mutationSpy,
-        },
       },
     });
   };
@@ -218,23 +252,6 @@ describe('WorkItemRelationshipList', () => {
     };
 
     beforeEach(() => {
-      mutationSpy = jest
-        .fn()
-        .mockResolvedValueOnce({
-          data: {
-            workItemRemoveLinkedItems: {
-              errors: [],
-            },
-          },
-        })
-        .mockResolvedValueOnce({
-          data: {
-            workItemAddLinkedItems: {
-              errors: [],
-            },
-          },
-        });
-
       createComponent({ linkedItems: mockLinkedItems });
     });
 
@@ -276,17 +293,12 @@ describe('WorkItemRelationshipList', () => {
     it('triggers mutation to remove item from source list', async () => {
       await emitDragEnd(mockFrom, mockTo);
 
-      expect(mutationSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          mutation: removeLinkedItemsMutation,
-          variables: {
-            input: {
-              id: 'gid://gitlab/WorkItem/1',
-              workItemsIds: [mockItem.dataset.workItemId],
-            },
-          },
-        }),
-      );
+      expect(removeLinkedItemsHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          workItemsIds: [mockItem.dataset.workItemId],
+        },
+      });
     });
 
     it('triggers mutation to add item to target list', async () => {
@@ -294,21 +306,36 @@ describe('WorkItemRelationshipList', () => {
 
       await waitForPromises();
 
-      expect(mutationSpy).toHaveBeenCalledTimes(2);
+      expect(removeLinkedItemsHandler).toHaveBeenCalledTimes(1);
+      expect(addLinkedItemsHandler).toHaveBeenCalledTimes(1);
 
-      expect(mutationSpy).toHaveBeenNthCalledWith(
-        2,
-        expect.objectContaining({
-          mutation: addLinkedItemsMutation,
-          variables: {
-            input: {
-              id: 'gid://gitlab/WorkItem/1',
-              linkType: 'BLOCKED_BY',
-              workItemsIds: [mockItem.dataset.workItemId],
-            },
-          },
-        }),
-      );
+      expect(addLinkedItemsHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          linkType: 'BLOCKED_BY',
+          workItemsIds: [mockItem.dataset.workItemId],
+        },
+        useWorkItemFeatures: false,
+      });
+    });
+
+    describe('when the workItemFeaturesField flag is enabled', () => {
+      beforeEach(() => {
+        createComponent({
+          linkedItems: mockLinkedItems,
+          glFeatures: { workItemFeaturesField: true },
+        });
+      });
+
+      it('passes useWorkItemFeatures as true to the add mutation', async () => {
+        await emitDragEnd(mockFrom, mockTo);
+
+        await waitForPromises();
+
+        expect(addLinkedItemsHandler).toHaveBeenCalledWith(
+          expect.objectContaining({ useWorkItemFeatures: true }),
+        );
+      });
     });
   });
 });

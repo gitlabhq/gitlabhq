@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Agent Foundations
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use AI-native features throughout your development lifecycle.
 title: Get started with the GitLab Duo Agent Platform
@@ -19,8 +19,7 @@ which are available in the GitLab UI and IDEs.
 
 ## Step 1: Access GitLab Duo Chat
 
-GitLab Duo Agentic Chat, in the UI or your local environment, is your interface
-for asking questions and interacting with agents.
+GitLab Duo Agentic Chat is your interface for asking questions and interacting with agents.
 It can provide advice, but it can also propose and implement solutions.
 
 Chat has access to your project, including issues, merge requests, commits,
@@ -28,11 +27,16 @@ and CI/CD pipelines, and Chat maintains context across conversations.
 You can build up complexity gradually, reference previous responses, and iterate
 until you reach the desired outcome.
 
-GitLab Duo Chat is available in the GitLab UI and a variety of IDEs.
+GitLab Duo Chat is available in:
+
+- The GitLab UI.
+- A variety of IDEs.
+- The GitLab Duo CLI.
 
 For more information, see:
 
 - [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md).
+- [GitLab Duo CLI](../gitlab_duo_cli/_index.md).
 
 ## Step 2: Work with agents
 

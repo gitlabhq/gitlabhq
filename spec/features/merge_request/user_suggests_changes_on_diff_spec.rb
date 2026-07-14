@@ -14,6 +14,22 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     expect(suggested_content).to eq(expected_suggested_content)
   end
 
+  # Opens the "Apply suggestion" disclosure dropdown and confirms the apply.
+  # The dropdown renders the commit message field and "Apply" button only once
+  # open, so we wait for the field before clicking "Apply" to avoid racing the
+  # dropdown render.
+  def apply_suggestion(toggle_text: 'Apply suggestion', match: :smart)
+    click_button(toggle_text, match: match)
+
+    # Wait for the dropdown to finish opening (it renders the commit message
+    # field) before clicking Apply, otherwise the click races the render.
+    expect(page).to have_field('Commit message')
+
+    click_button('Apply')
+
+    wait_for_requests
+  end
+
   let(:project) { create(:project, :repository) }
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
@@ -86,13 +102,13 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
       find_field('Reply…', match: :first).click
 
-      find('.js-suggestion-btn').click
+      find_by_testid('suggestion-button').click
 
-      expect(find('.js-vue-issue-note-form').value).to include("url = https://github.com/gitlabhq/gitlab-shell.git")
+      reply_field = find('.js-vue-issue-note-form')
+      expect(reply_field.value).to include("url = https://github.com/gitlabhq/gitlab-shell.git")
     end
 
-    it 'suggestion is appliable',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/601810' do
+    it 'suggestion is appliable' do
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
         click_button('Add comment now')
@@ -103,9 +119,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       page.within('.diff-discussions') do
         expect(page).not_to have_content('Applied')
 
-        click_button('Apply suggestion')
-        click_button('Apply')
-        wait_for_requests
+        apply_suggestion
 
         expect(page).to have_content('Applied')
       end
@@ -139,7 +153,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         container = find_in_panel_by_scrolling("[id='#{file[:hash]}']")
 
         page.within(container) do
-          find('.js-diff-more-actions').click
+          find_by_testid('options-dropdown-button').click
           click_button 'Show full file'
           wait_for_requests
 
@@ -206,9 +220,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
       container = find_in_panel_by_scrolling("[id='#{files[0][:hash]}']")
       page.within(container) do
-        click_button("Apply #{files.count} suggestions")
-        click_button('Apply')
-        wait_for_requests
+        apply_suggestion(toggle_text: "Apply #{files.count} suggestions")
       end
 
       expect(page).to have_content('Applied').twice
@@ -234,7 +246,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
       container = find_in_panel_by_scrolling("[id='#{hash}']")
       page.within(container) do
-        find('.js-diff-more-actions').click
+        find_by_testid('options-dropdown-button').click
         click_button 'Show full file'
         wait_for_requests
 
@@ -270,16 +282,12 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
       container = find_in_panel_by_scrolling("[id='#{hash}']")
       page.within(container) do
-        all('button', text: 'Apply suggestion').first.click
-        click_button('Apply')
-        wait_for_requests
+        apply_suggestion(match: :first)
 
         expect(page).to have_content('Applied').once
         expect(page).to have_button('Apply suggestion').once
 
-        click_button('Apply suggestion')
-        click_button('Apply')
-        wait_for_requests
+        apply_suggestion
 
         expect(page).to have_content('A file has been changed.')
       end
@@ -304,6 +312,8 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       end
 
       page.within('.diff-discussions') do
+        expect(page).to have_css('.md-suggestion-diff', count: 2)
+
         suggestion_1 = page.all(:css, '.md-suggestion-diff')[0]
         suggestion_2 = page.all(:css, '.md-suggestion-diff')[1]
 
@@ -386,27 +396,21 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       end
     end
 
-    it 'suggestion is appliable',
-      quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/601810' } do
+    it 'suggestion is appliable' do
       page.within("[id='#{hash}']") do
         expect(page).not_to have_content('Applied')
 
-        click_button('Apply suggestion')
-        click_button('Apply')
-        wait_for_requests
+        apply_suggestion
 
         expect(page).to have_content('Applied')
       end
     end
 
-    it 'resolves discussion when applied',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/601810' do
+    it 'resolves discussion when applied' do
       page.within("[id='#{hash}']") do
         expect(page).not_to have_content('Reopen thread')
 
-        click_button('Apply suggestion')
-        click_button('Apply')
-        wait_for_requests
+        apply_suggestion
 
         expect(page).to have_content('Reopen thread')
       end

@@ -22,7 +22,6 @@ export default {
     TestSummary,
     TestSummaryTable,
   },
-  inject: ['blobPath', 'summaryEndpoint', 'suiteEndpoint'],
   computed: {
     ...mapState('testReports', ['isLoading', 'selectedSuiteIndex', 'testReports']),
     ...mapGetters('testReports', ['getSelectedSuite', 'getTestSuites']),

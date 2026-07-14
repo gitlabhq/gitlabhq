@@ -1,0 +1,10 @@
+---
+name: arkose_labs_signup_challenge_loading_state
+description: Adds a loading state and timeout when submitting the signup form before the Arkose Labs challenge verification token has arrived, preventing a misleading error message.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/591805
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241265
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/604110
+milestone: '19.2'
+group: group::acquisition
+type: gitlab_com_derisk
+default_enabled: false

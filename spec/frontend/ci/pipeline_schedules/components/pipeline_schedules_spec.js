@@ -187,7 +187,7 @@ describe('Pipeline schedules app', () => {
 
       await waitForPromises();
 
-      findDeleteModal().vm.$emit('deleteSchedule');
+      findDeleteModal().vm.$emit('delete-schedule');
 
       await waitForPromises();
 
@@ -205,11 +205,11 @@ describe('Pipeline schedules app', () => {
 
       const scheduleId = mockPipelineScheduleNodes[0].id;
 
-      findTable().vm.$emit('showDeleteModal', scheduleId);
+      findTable().vm.$emit('show-delete-modal', scheduleId);
 
       expect(successHandler).toHaveBeenCalledTimes(1);
 
-      findDeleteModal().vm.$emit('deleteSchedule');
+      findDeleteModal().vm.$emit('delete-schedule');
 
       await waitForPromises();
 
@@ -227,14 +227,14 @@ describe('Pipeline schedules app', () => {
 
       expect(findDeleteModal().props('visible')).toBe(false);
 
-      findTable().vm.$emit('showDeleteModal', mockPipelineScheduleNodes[0].id);
+      findTable().vm.$emit('show-delete-modal', mockPipelineScheduleNodes[0].id);
 
       await nextTick();
 
       expect(findDeleteModal().props('visible')).toBe(true);
       expect(findTakeOwnershipModal().props('visible')).toBe(false);
 
-      findDeleteModal().vm.$emit('hideModal');
+      findDeleteModal().vm.$emit('hide-modal');
 
       await nextTick();
 
@@ -252,7 +252,7 @@ describe('Pipeline schedules app', () => {
 
       await waitForPromises();
 
-      findTable().vm.$emit('playPipelineSchedule');
+      findTable().vm.$emit('play-pipeline-schedule');
 
       await waitForPromises();
 
@@ -270,7 +270,7 @@ describe('Pipeline schedules app', () => {
 
       const scheduleId = mockPipelineScheduleNodes[0].id;
 
-      findTable().vm.$emit('playPipelineSchedule', scheduleId);
+      findTable().vm.$emit('play-pipeline-schedule', scheduleId);
 
       await waitForPromises();
 
@@ -293,7 +293,7 @@ describe('Pipeline schedules app', () => {
 
       await waitForPromises();
 
-      findTakeOwnershipModal().vm.$emit('takeOwnership');
+      findTakeOwnershipModal().vm.$emit('take-ownership');
 
       await waitForPromises();
 
@@ -313,11 +313,11 @@ describe('Pipeline schedules app', () => {
 
       const scheduleId = mockPipelineScheduleNodes[1].id;
 
-      findTable().vm.$emit('showTakeOwnershipModal', scheduleId);
+      findTable().vm.$emit('show-take-ownership-modal', scheduleId);
 
       expect(successHandler).toHaveBeenCalledTimes(1);
 
-      findTakeOwnershipModal().vm.$emit('takeOwnership');
+      findTakeOwnershipModal().vm.$emit('take-ownership');
 
       await waitForPromises();
 
@@ -335,14 +335,14 @@ describe('Pipeline schedules app', () => {
 
       expect(findTakeOwnershipModal().props('visible')).toBe(false);
 
-      findTable().vm.$emit('showTakeOwnershipModal', mockPipelineScheduleNodes[0].id);
+      findTable().vm.$emit('show-take-ownership-modal', mockPipelineScheduleNodes[0].id);
 
       await nextTick();
 
       expect(findTakeOwnershipModal().props('visible')).toBe(true);
       expect(findDeleteModal().props('visible')).toBe(false);
 
-      findTakeOwnershipModal().vm.$emit('hideModal');
+      findTakeOwnershipModal().vm.$emit('hide-modal');
 
       await nextTick();
 
@@ -643,9 +643,9 @@ describe('Pipeline schedules app', () => {
 
         await waitForPromises();
 
-        findTable().vm.$emit('showDeleteModal', mockPipelineScheduleNodes[0].id);
+        findTable().vm.$emit('show-delete-modal', mockPipelineScheduleNodes[0].id);
 
-        findDeleteModal().vm.$emit('deleteSchedule');
+        findDeleteModal().vm.$emit('delete-schedule');
 
         await waitForPromises();
 

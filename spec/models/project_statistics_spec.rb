@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ProjectStatistics, feature_category: :source_code_management do
-  let(:project) { create :project }
+  let_it_be_with_reload(:project) { create(:project) }
   let(:statistics) { project.statistics }
 
   describe 'associations' do
@@ -46,6 +46,8 @@ RSpec.describe ProjectStatistics, feature_category: :source_code_management do
     end
 
     describe 'with race conditions' do
+      let(:project) { create(:project) }
+
       before do
         statistics.update!(storage_size: 14621247)
       end
@@ -242,8 +244,8 @@ RSpec.describe ProjectStatistics, feature_category: :source_code_management do
     end
 
     context 'when the column is namespace relatable' do
-      let(:namespace) { create(:group) }
-      let(:project) { create(:project, namespace: namespace) }
+      let_it_be(:namespace) { create(:group) }
+      let_it_be_with_reload(:project) { create(:project, namespace: namespace) }
 
       context 'when arguments are passed' do
         it 'schedules the aggregation worker' do
@@ -529,6 +531,7 @@ RSpec.describe ProjectStatistics, feature_category: :source_code_management do
     end
 
     context 'when the amount is 0' do
+      let_it_be(:project) { create(:project) }
       let(:increment) { Gitlab::Counters::Increment.new(amount: 0) }
 
       it 'does not execute a query' do

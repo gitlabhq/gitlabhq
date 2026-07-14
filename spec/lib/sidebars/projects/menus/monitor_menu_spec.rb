@@ -179,4 +179,28 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu, feature_category: :naviga
       it_behaves_like 'access rights checks'
     end
   end
+
+  describe 'Feature Library metadata' do
+    let_it_be(:group) { create(:group) }
+    let_it_be_with_refind(:project) { create(:project, group: group) }
+
+    let(:user) { project.first_owner }
+
+    before do
+      stub_feature_flags(observability_sass_features: project.group)
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?)
+        .with(user, :read_observability_portal, project.group)
+        .and_return(true)
+    end
+
+    it 'gives every item a description and a unique library_icon', :aggregate_failures do
+      serialized = described_class.new(context).renderable_items.map(&:serialize_for_super_sidebar)
+
+      expect(serialized).not_to be_empty
+      expect(serialized).to all(include(:description, :library_icon))
+      icons = serialized.map { |item| item[:library_icon] }
+      expect(icons).to match_array(icons.uniq)
+    end
+  end
 end

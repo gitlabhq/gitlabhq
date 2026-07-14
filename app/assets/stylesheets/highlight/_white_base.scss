@@ -453,7 +453,8 @@ $white-gc-bg: #eaf2f5;
   .sr { color: $white-sr; }
 
   .s1,
-  .hljs-string { color: $white-s1; }
+  .hljs-string,
+  .hljs-code { color: $white-s1; }
   .ss { color: $white-ss; }
   .bp { color: $white-bp; }
   .vc { color: $white-vc; }

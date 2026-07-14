@@ -43,6 +43,7 @@ export default {
       required: true,
     },
   },
+  emits: ['next', 'onRequiredFieldsUpdate'],
   data() {
     return {
       runUntagged: this.isRunUntagged,

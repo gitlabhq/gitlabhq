@@ -205,6 +205,29 @@ RSpec.describe Gitlab::TopologyServiceClient::ClaimService, feature_category: :c
         expect(result).to eq(mock_response)
       end
     end
+
+    context 'with created_after' do
+      # Sub-second precision to exercise both the seconds and nanos fields of the Timestamp.
+      let(:created_after) { Time.utc(2026, 1, 1, 12, 0, 5, 250_000) }
+
+      it 'maps created_after to a protobuf Timestamp on the request' do
+        expected_request = Gitlab::Cells::TopologyService::Claims::V1::ListLeasesRequest.new(
+          cell_id: cell_id,
+          created_after: Google::Protobuf::Timestamp.new(
+            seconds: created_after.to_i, nanos: created_after.nsec
+          )
+        )
+
+        expect(client_double)
+          .to receive(:list_leases)
+          .with(expected_request, deadline: nil)
+          .and_return(mock_response)
+
+        result = service.list_leases(created_after: created_after)
+
+        expect(result).to eq(mock_response)
+      end
+    end
   end
 
   describe '#list_records' do
@@ -295,6 +318,42 @@ RSpec.describe Gitlab::TopologyServiceClient::ClaimService, feature_category: :c
 
         expect(result).to eq(mock_response)
       end
+    end
+  end
+
+  describe '#warmup!', :freeze_time do
+    let(:created_after) { 1.hour.from_now }
+    let(:expected_request) do
+      Gitlab::Cells::TopologyService::Claims::V1::ListLeasesRequest.new(
+        limit: 1, cell_id: cell_id,
+        created_after: Google::Protobuf::Timestamp.new(seconds: created_after.to_i, nanos: created_after.nsec)
+      )
+    end
+
+    before do
+      allow(service).to receive(:client).and_return(client_double)
+      allow(GRPC::Core::TimeConsts).to receive(:from_relative_time)
+        .with(described_class::WARMUP_TIMEOUT_IN_SECONDS).and_return('warmup-deadline')
+    end
+
+    it 'establishes the connection via a lightweight ListLeases and returns nil' do
+      expect(client_double).to receive(:list_leases)
+        .with(expected_request, deadline: 'warmup-deadline')
+        .and_return(Gitlab::Cells::TopologyService::Claims::V1::ListLeasesResponse.new)
+
+      expect(service.warmup!).to be_nil
+    end
+  end
+
+  describe '#channel_args' do
+    it 'adds keepalive settings on top of the base channel args' do
+      expect(service.send(:channel_args)).to include(
+        'grpc.max_receive_message_length' => Gitlab::TopologyServiceClient::MAX_RECEIVE_MESSAGE_BYTES,
+        'grpc.keepalive_time_ms' => described_class::KEEPALIVE_TIME_MS,
+        'grpc.keepalive_timeout_ms' => described_class::KEEPALIVE_TIMEOUT_MS,
+        'grpc.keepalive_permit_without_calls' => 1,
+        'grpc.client_idle_timeout_ms' => described_class::CLIENT_IDLE_TIMEOUT_MS
+      )
     end
   end
 end

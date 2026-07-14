@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
-  let_it_be(:group, freeze: false) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
-  let_it_be(:guest, freeze: false) { create(:user, guest_of: project) }
-  let_it_be(:planner, freeze: false) { create(:user, planner_of: project) }
-  let_it_be(:reporter, freeze: false) { create(:user, reporter_of: project) }
-  let_it_be(:user, freeze: false) { create(:user, developer_of: project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, :repository, group: group) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:planner) { create(:user, planner_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
+  let_it_be_with_reload(:user) { create(:user, developer_of: project) }
   let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [user]) }
 
   let(:serializer) { IssueSerializer.new(current_user: user, project: project) }
@@ -77,7 +77,7 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
   end
 
   describe 'current_user' do
-    let_it_be(:incident, freeze: false) { create(:issue, :incident, project: project, assignees: [user]) }
+    let_it_be(:incident) { create(:issue, :incident, project: project, assignees: [user]) }
 
     it 'contains attributes related to the current user' do
       expect(entity[:current_user]).to include(
@@ -94,7 +94,7 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
       end
 
       context 'for an incident issue' do
-        let_it_be(:issue, freeze: false) { incident }
+        let_it_be(:issue) { incident }
 
         it 'is present and true' do
           expect(entity[:current_user][:can_update_escalation_status]).to be(true)
@@ -131,7 +131,7 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
       end
 
       context 'for a incident issue' do
-        let_it_be(:issue, freeze: false) { incident }
+        let_it_be(:issue) { incident }
 
         context 'with edit permissions' do
           let(:user) { reporter }

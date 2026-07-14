@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Events::DestroyService, feature_category: :user_profile do
   subject(:service) { described_class.new(project) }
 
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:another_project) { create(:project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:user) { create(:user) }

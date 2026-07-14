@@ -6,6 +6,8 @@ module Ci
     LAST_STATIC_PARTITION_VALUE = 102
     DEFAULT_PARTITION_VALUES = (INITIAL_PARTITION_VALUE..LAST_STATIC_PARTITION_VALUE).to_a.freeze
 
+    RECENT_PARTITIONS_COUNT = 3
+
     validates :id, :status, presence: true
     validates :status, uniqueness: { if: ->(partition) { partition.status_changed? && partition.current? } }
 
@@ -50,6 +52,11 @@ module Ci
 
       def current
         with_status(:current).first
+      end
+
+      def recent_ids
+        ids = with_status(:current, :active).order(id: :desc).limit(RECENT_PARTITIONS_COUNT).pluck(:id)
+        ids.presence || [INITIAL_PARTITION_VALUE]
       end
 
       def create_next!

@@ -1,0 +1,9 @@
+---
+name: update_duo_workflow
+description: Grants the ability to update duo workflows
+available_for:
+  - granular_access_token
+permissions:
+  - update_duo_workflow
+boundaries:
+  - user

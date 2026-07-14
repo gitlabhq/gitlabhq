@@ -15,6 +15,7 @@ RSpec.describe API::Entities::Organizations::Organization, feature_category: :or
   it 'exposes all the correct attributes' do
     expect(json).to match_array(
       id: organization.id,
+      uuid: organization.uuid,
       name: organization.name,
       path: organization.path,
       description: organization.description,

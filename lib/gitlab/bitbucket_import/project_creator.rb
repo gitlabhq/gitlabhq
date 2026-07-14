@@ -25,7 +25,7 @@ module Gitlab
           description: repo.description,
           namespace_id: namespace.id,
           organization_id: namespace.organization_id,
-          visibility_level: repo.visibility_level,
+          visibility_level: repo.private? ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::VisibilityLevel::PUBLIC,
           import_type: 'bitbucket',
           import_source: repo.full_name,
           import_url: url,

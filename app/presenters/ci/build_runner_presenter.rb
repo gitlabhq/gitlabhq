@@ -105,6 +105,10 @@ module Ci
       }.compact
     end
 
+    def runner_uuid
+      runner.uuid
+    end
+
     private
 
     def create_archive(artifacts)

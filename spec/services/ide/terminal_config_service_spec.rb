@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ide::TerminalConfigService, feature_category: :web_ide do
-  let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :small_repo, developers: user) }
 
   let(:sha) { 'sha' }
 
@@ -12,8 +12,6 @@ RSpec.describe Ide::TerminalConfigService, feature_category: :web_ide do
     subject { described_class.new(project, user, sha: sha).execute }
 
     before do
-      project.add_developer(user)
-
       allow(project.repository).to receive(:blob_data_at).with('sha', anything) do
         config_content
       end

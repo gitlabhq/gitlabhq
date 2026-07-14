@@ -36,7 +36,9 @@ module Sidebars
             link: group_runners_path(context.group),
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::BuildMenu,
             active_routes: { controller: 'groups/runners' },
-            item_id: :runners
+            item_id: :runners,
+            description: _('Scale your CI/CD pipelines with shared compute resources'),
+            library_icon: 'runners'
           )
         end
 

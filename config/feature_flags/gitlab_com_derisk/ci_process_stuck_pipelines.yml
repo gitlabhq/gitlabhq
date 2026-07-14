@@ -1,0 +1,11 @@
+---
+name: ci_process_stuck_pipelines
+description: |
+  Enables Ci::StuckPipelines::ProcessWorker, which reprocesses pipelines that are
+  in the 'running' state but have no pending or running jobs.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231261
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/604716
+milestone: '19.2'
+type: gitlab_com_derisk
+group: group::pipeline execution
+default_enabled: false

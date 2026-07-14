@@ -2,6 +2,7 @@ import { HEADER_ADAPTERS, VIEWER_ADAPTERS } from '~/rapid_diffs/app/adapter_conf
 import { createLineDiscussionsAdapter } from '~/rapid_diffs/adapters/line_discussions';
 import { createFileDiscussionsAdapter } from '~/rapid_diffs/adapters/file_discussions';
 import { createNoPreviewDiscussionsAdapter } from '~/rapid_diffs/adapters/no_preview_discussions';
+import { mergeRequestImageViewerAdapter } from '~/rapid_diffs/adapters/merge_request_image_viewer';
 import { lineHighlightingAdapter } from '~/rapid_diffs/adapters/line_highlighting';
 import { lineCoverageAdapter } from '~/rapid_diffs/adapters/line_coverage';
 import { useMergeRequestDiscussions } from '~/merge_request/stores/merge_request_discussions';
@@ -45,10 +46,6 @@ export const adapters = {
     fileDiscussionsAdapter,
     lineCoverageAdapter,
   ],
-  image: [
-    ...MR_HEADER_ADAPTERS,
-    ...VIEWER_ADAPTERS.image.slice(HEADER_ADAPTERS.length),
-    fileDiscussionsAdapter,
-  ],
+  image: [...MR_HEADER_ADAPTERS, mergeRequestImageViewerAdapter, fileDiscussionsAdapter],
   no_preview: [...MR_HEADER_ADAPTERS, fileDiscussionsAdapter, noPreviewDiscussionsAdapter],
 };

@@ -717,9 +717,6 @@ todos:
 - project_id
 - target_id
 - user_id
-trending_projects:
-- id
-- project_id
 uploads:
 - id
 - model_id

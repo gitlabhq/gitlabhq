@@ -74,9 +74,6 @@ export default {
     alertId: {
       default: '',
     },
-    projectId: {
-      default: '',
-    },
     projectIssuesPath: {
       default: '',
     },

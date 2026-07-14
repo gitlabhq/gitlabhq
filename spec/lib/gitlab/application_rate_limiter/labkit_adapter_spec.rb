@@ -7,166 +7,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
-  describe '.shadow_or_enforce?' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:scenario, :key, :threshold_override, :interval_override, :flag_on, :expected) do
-      'key not handled by the adapter'             | :not_a_supported_key | nil | nil | true | false
-      'threshold override forces the legacy path'  | :pipelines_create    | 10  | nil | true  | false
-      'interval override forces the legacy path'   | :pipelines_create    | nil | 60  | true  | false
-      'use_labkit flag is off'                     | :pipelines_create    | nil | nil | false | false
-      'handled key, no overrides, flag on'         | :pipelines_create    | nil | nil | true  | true
-    end
-
-    with_them do
-      before do
-        stub_feature_flags(rate_limiter_use_labkit_pipelines_create: flag_on)
-      end
-
-      it 'returns the expected dispatch decision' do
-        expect(
-          described_class.shadow_or_enforce?(key,
-            context: { threshold: threshold_override, interval: interval_override })
-        ).to be(expected)
-      end
-    end
-
-    context 'with flag basis resolution' do
-      it 'reads the per-key flag for cohort 1 entries' do
-        expect(described_class.shadow_or_enforce?(:pipelines_create, context: {})).to be(true)
-
-        stub_feature_flags(rate_limiter_use_labkit_pipelines_create: false)
-        expect(described_class.shadow_or_enforce?(:pipelines_create, context: {})).to be(false)
-      end
-
-      it 'reads the cohort-wide flag for cohort 2 entries' do
-        expect(described_class.shadow_or_enforce?(:ai_action, context: {})).to be(true)
-
-        stub_feature_flags(rate_limiter_use_labkit_cohort_2: false)
-        expect(described_class.shadow_or_enforce?(:ai_action, context: {})).to be(false)
-      end
-
-      it 'reads the cohort-wide flag for cohort 3 entries' do
-        expect(described_class.shadow_or_enforce?(:glql, context: {})).to be(true)
-
-        stub_feature_flags(rate_limiter_use_labkit_cohort_3: false)
-        expect(described_class.shadow_or_enforce?(:glql, context: {})).to be(false)
-      end
-
-      # Cohort 4 keys are EE-only, so the cohort-4 flag-basis assertion lives
-      # in the EE spec where the registry merges them in. Asserting it here
-      # would fail under FOSS, where SupportedRateLimits.all has no cohort-4
-      # entry and shadow_or_enforce? short-circuits to false.
-    end
-
-    context 'with a count_distinct (set-mode) entry' do
-      let(:override_counter) { instance_double(Prometheus::Client::Counter, increment: nil) }
-
-      before do
-        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits).to receive(:all).and_return(
-          opt_in_key: {
-            limiter_name: 'applimiter_opt_in',
-            rule_name: 'limit_opt_in',
-            characteristics: %i[user],
-            count_distinct: :project_id,
-            action: :block,
-            flag_scope: :cohort_4
-          }
-        )
-        allow(Gitlab::Metrics).to receive(:counter).and_call_original
-        allow(Gitlab::Metrics).to receive(:counter)
-          .with(:gitlab_rate_limiter_labkit_override_total, anything, anything)
-          .and_return(override_counter)
-      end
-
-      it 'allows dispatch when threshold and interval overrides are passed' do
-        expect(override_counter).not_to receive(:increment)
-
-        expect(described_class.shadow_or_enforce?(:opt_in_key,
-          context: { threshold: 10, interval: 60 })).to be(true)
-      end
-    end
-
-    context 'with a threshold_from_caller (web_hook_calls) entry' do
-      let(:override_counter) { instance_double(Prometheus::Client::Counter, increment: nil) }
-
-      before do
-        allow(Gitlab::Metrics).to receive(:counter).and_call_original
-        allow(Gitlab::Metrics).to receive(:counter)
-          .with(:gitlab_rate_limiter_labkit_override_total, anything, anything)
-          .and_return(override_counter)
-      end
-
-      it 'routes through labkit and records no override for a caller-supplied threshold', :aggregate_failures do
-        expect(override_counter).not_to receive(:increment)
-
-        expect(described_class.shadow_or_enforce?(:web_hook_calls,
-          context: { threshold: 500, interval: nil })).to be(true)
-      end
-
-      # The threshold opt-out is threshold-scoped: the interval is registry-owned
-      # (1.minute) for these keys, so an interval override still bails to legacy.
-      it 'still bails to legacy when an interval override is passed' do
-        expect(described_class.shadow_or_enforce?(:web_hook_calls,
-          context: { threshold: nil, interval: 120 })).to be(false)
-      end
-    end
-
-    context 'with a cost-mode entry' do
-      # cost-mode entries resolve both threshold and interval per call, so an
-      # interval override is forwarded through rule_context rather than routing
-      # the call to legacy. Contrast with the threshold_from_caller-only
-      # web_hook_calls regression guard above, which still bails to legacy on an
-      # interval override.
-      it 'does not route to legacy when an interval override is passed' do
-        expect(described_class.shadow_or_enforce?(:main_db_duration_limit_per_worker,
-          context: { threshold: 10, interval: 60 })).to be(true)
-      end
-    end
-
-    context 'when an override is passed' do
-      let(:override_counter) { instance_double(Prometheus::Client::Counter, increment: nil) }
-
-      before do
-        stub_feature_flags(rate_limiter_use_labkit_pipelines_create: true)
-        allow(Gitlab::Metrics).to receive(:counter).and_call_original
-        allow(Gitlab::Metrics).to receive(:counter)
-          .with(:gitlab_rate_limiter_labkit_override_total, anything, anything)
-          .and_return(override_counter)
-      end
-
-      where(:threshold_override, :interval_override, :expected_kind) do
-        10  | nil | :threshold
-        nil | 60  | :interval
-        10  | 60  | :both
-      end
-
-      with_them do
-        it 'records the override kind on the counter' do
-          expect(override_counter).to receive(:increment)
-            .with(key: :pipelines_create, override: expected_kind)
-
-          described_class.shadow_or_enforce?(:pipelines_create,
-            context: { threshold: threshold_override, interval: interval_override })
-        end
-      end
-
-      it 'does not record overrides for keys the adapter does not handle' do
-        expect(override_counter).not_to receive(:increment)
-
-        described_class.shadow_or_enforce?(:not_a_supported_key, context: { threshold: 10, interval: nil })
-      end
-
-      it 'does not record when no override is passed' do
-        expect(override_counter).not_to receive(:increment)
-
-        described_class.shadow_or_enforce?(:pipelines_create, context: {})
-      end
-    end
-  end
-
   describe '.set_mode?' do
-    it 'returns true for entries with count_distinct (cohort 4-style set-mode rules)' do
+    it 'returns true for entries with count_distinct (set-mode rules)' do
       allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits).to receive(:all).and_return(
         fake_key: { count_distinct: :project_id, characteristics: %i[user], action: :block }
       )
@@ -179,7 +21,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     end
 
     it 'returns false for keys not in the registry' do
-      expect(described_class.set_mode?(:web_hook_calls)).to be(false)
+      expect(described_class.set_mode?(:not_a_registered_key)).to be(false)
     end
   end
 
@@ -194,36 +36,6 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
 
     it 'returns false for keys not in the registry' do
       expect(described_class.cost_mode?(:not_a_registered_key)).to be(false)
-    end
-  end
-
-  describe '.enforce?' do
-    it 'reflects the per-key enforce flag for cohort 1 entries' do
-      expect(described_class.enforce?(:pipelines_create)).to be(true)
-
-      stub_feature_flags(rate_limiter_use_labkit_pipelines_create_enforce: false)
-      expect(described_class.enforce?(:pipelines_create)).to be(false)
-    end
-
-    it 'reflects the cohort-wide enforce flag for cohort 2 entries' do
-      expect(described_class.enforce?(:ai_action)).to be(true)
-
-      stub_feature_flags(rate_limiter_use_labkit_cohort_2_enforce: false)
-      expect(described_class.enforce?(:ai_action)).to be(false)
-    end
-
-    it 'reflects the cohort-wide enforce flag for cohort 3 entries' do
-      expect(described_class.enforce?(:glql)).to be(true)
-
-      stub_feature_flags(rate_limiter_use_labkit_cohort_3_enforce: false)
-      expect(described_class.enforce?(:glql)).to be(false)
-    end
-
-    it 'reflects the cohort-wide enforce flag for cohort 6 entries', :aggregate_failures do
-      expect(described_class.enforce?(:web_hook_calls)).to be(true)
-
-      stub_feature_flags(rate_limiter_use_labkit_cohort_6_enforce: false)
-      expect(described_class.enforce?(:web_hook_calls)).to be(false)
     end
   end
 
@@ -568,6 +380,29 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
         expect(rule.period.call({ threshold: 42, interval: 600 })).to eq(600)
       end
     end
+
+    context 'with a plain INCR key called with a per-call override' do
+      let(:spec) { Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits.all[:pipelines_create] }
+
+      # Overrides used to route to the legacy path; with the legacy path gone,
+      # labkit honours them through the rule_context lambdas.
+      it 'resolves limit/period from the override in rule_context', :aggregate_failures do
+        rule = described_class.send(:build_rule, :pipelines_create, spec)
+
+        expect(rule.limit.call({ threshold: 7, interval: 30 })).to eq(7)
+        expect(rule.period.call({ threshold: 7, interval: 30 })).to eq(30)
+      end
+
+      it 'falls back to the registry when no override is supplied', :aggregate_failures do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:pipelines_create).and_return(99)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:interval).with(:pipelines_create).and_return(60)
+
+        rule = described_class.send(:build_rule, :pipelines_create, spec)
+
+        expect(rule.limit.call({})).to eq(99)
+        expect(rule.period.call({})).to eq(60)
+      end
+    end
   end
 
   describe '.run_peek!' do
@@ -649,53 +484,6 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
               "than #{table[later]}."
         end
       end
-    end
-  end
-
-  describe '.record_divergence' do
-    let(:counter) { instance_double(Prometheus::Client::Counter, increment: nil) }
-
-    before do
-      allow(Gitlab::Metrics).to receive(:counter).and_return(counter)
-    end
-
-    it 'increments the match label when decisions agree' do
-      allow(described_class).to receive(:window_boundary?).and_return(false)
-      expect(counter).to receive(:increment)
-        .with(key: :pipelines_create, agreement: :match, boundary: false)
-
-      described_class.record_divergence(:pipelines_create, true, true, interval_seconds: 60)
-    end
-
-    it 'increments the diverge label when decisions disagree' do
-      allow(described_class).to receive(:window_boundary?).and_return(false)
-      expect(counter).to receive(:increment)
-        .with(key: :pipelines_create, agreement: :diverge, boundary: false)
-
-      described_class.record_divergence(:pipelines_create, true, false, interval_seconds: 60)
-    end
-
-    it 'tags increments inside the boundary noise window with boundary: true' do
-      allow(described_class).to receive(:window_boundary?).and_return(true)
-      expect(counter).to receive(:increment)
-        .with(key: :pipelines_create, agreement: :diverge, boundary: true)
-
-      described_class.record_divergence(:pipelines_create, true, false, interval_seconds: 60)
-    end
-
-    # Regression: cohort 4's unique_project_downloads_for_namespace
-    # registers interval: 0 (real values arrive per-call), and the older
-    # `interval(key)`-driven boundary check raised ZeroDivisionError. The
-    # caller now plumbs the actually-used interval through; a 0 (or nil)
-    # value untags the call rather than raising.
-    it 'does not raise when interval_seconds is zero' do
-      expect(counter).to receive(:increment)
-        .with(key: :unique_project_downloads_for_namespace, agreement: :match, boundary: false)
-
-      expect do
-        described_class.record_divergence(:unique_project_downloads_for_namespace, true, true,
-          interval_seconds: 0)
-      end.not_to raise_error
     end
   end
 end

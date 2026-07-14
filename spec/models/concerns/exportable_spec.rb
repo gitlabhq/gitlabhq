@@ -11,7 +11,7 @@ RSpec.describe Exportable, feature_category: :importers do
   let_it_be(:note2) { create(:system_note, project: project, noteable: issue) }
   let_it_be(:options) { { include: [{ notes: { only: [:note] }, milestone: { only: :title } }] } }
 
-  let_it_be(:model_klass, freeze: false) do
+  let_it_be(:model_klass) do
     Class.new(ApplicationRecord) do
       include Exportable
 
@@ -149,7 +149,7 @@ RSpec.describe Exportable, feature_category: :importers do
   describe '.exportable_association?' do
     context 'when model does not respond to association name' do
       it 'returns false' do
-        expect(subject.exportable_association?(:tests)).to eq(false)
+        expect(subject.exportable_association?(:tests)).to be(false)
 
         allow(issue).to receive(:respond_to?).with(:tests).and_return(false)
       end
@@ -165,7 +165,7 @@ RSpec.describe Exportable, feature_category: :importers do
 
         context 'when current_user is not present' do
           it 'returns false' do
-            expect(model_record.exportable_association?(:milestone)).to eq(false)
+            expect(model_record.exportable_association?(:milestone)).to be(false)
           end
         end
 
@@ -175,7 +175,7 @@ RSpec.describe Exportable, feature_category: :importers do
           end
 
           it 'returns true' do
-            expect(model_record.exportable_association?(:milestone, current_user: user)).to eq(true)
+            expect(model_record.exportable_association?(:milestone, current_user: user)).to be(true)
           end
         end
 
@@ -185,7 +185,7 @@ RSpec.describe Exportable, feature_category: :importers do
           end
 
           it 'returns false' do
-            expect(model_record.exportable_association?(:milestone, current_user: user)).to eq(false)
+            expect(model_record.exportable_association?(:milestone, current_user: user)).to be(false)
           end
         end
       end
@@ -197,13 +197,13 @@ RSpec.describe Exportable, feature_category: :importers do
         end
 
         it 'returns true' do
-          expect(model_record.exportable_association?(:milestone, current_user: user)).to eq(true)
+          expect(model_record.exportable_association?(:milestone, current_user: user)).to be(true)
         end
       end
 
       context 'when association type is has_many' do
         it 'returns true' do
-          expect(subject.exportable_association?(:notes)).to eq(true)
+          expect(subject.exportable_association?(:notes)).to be(true)
         end
       end
     end

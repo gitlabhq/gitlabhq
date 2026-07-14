@@ -197,7 +197,7 @@ RSpec.describe API::ServiceAccounts, :with_current_organization, :aggregate_fail
 
   describe "PATCH /service_accounts/:user_id" do
     let_it_be(:params) { { name: 'Updated Name', username: 'updated_username', email: 'test@test.com' } }
-    let_it_be(:service_account_user, freeze: false) { create(:user, :service_account, username: "sa_user") }
+    let_it_be_with_reload(:service_account_user) { create(:user, :service_account, username: "sa_user") }
 
     subject(:perform_request) do
       patch api("/service_accounts/#{service_account_user.id}", current_user), params: params

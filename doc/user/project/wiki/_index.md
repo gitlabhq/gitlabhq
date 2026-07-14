@@ -55,15 +55,13 @@ To rename your wiki's default branch, [update the default branch name in your re
 
 {{< history >}}
 
-- Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags/_index.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
+- Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with feature flags](../../../administration/feature_flags/_index.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
 - Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
-- Immersive editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231662) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_immersive_editor`. Enabled by default.
+- Immersive editor:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231662) in GitLab 19.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_immersive_editor`. Enabled by default.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238053) in GitLab 19.2. Feature flags `wiki_immersive_editor` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of the immersive editor is controlled by a feature flag.
-> For more information, see the history.
 
 When a wiki is created, it is empty. On your first visit, you can create the
 home page users see when viewing the wiki. This page requires a specific path
@@ -90,16 +88,13 @@ to be used as your wiki's home page. To create it:
 
 {{< history >}}
 
-- Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags/_index.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
+- Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with feature flags](../../../administration/feature_flags/_index.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
 - Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
 - Create a wiki page from the top bar [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/591976) in GitLab 18.10.
-- Immersive editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231662) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_immersive_editor`. Enabled by default.
-
+- Immersive editor:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231662) in GitLab 19.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_immersive_editor`. Enabled by default.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238053) in GitLab 19.2. Feature flags `wiki_immersive_editor` removed.
 {{< /history >}}
-
-> [!flag]
-> The availability of the immersive editor is controlled by a feature flag.
-> For more information, see the history.
 
 Prerequisites:
 
@@ -214,7 +209,7 @@ Files with unsupported extensions don't display when pushed to GitLab:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133521) front matter based titles in GitLab 16.7 [with flags](../../../administration/feature_flags/_index.md) named `wiki_front_matter` and `wiki_front_matter_title`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133521) front matter based titles in GitLab 16.7 [with feature flags](../../../administration/feature_flags/_index.md) named `wiki_front_matter` and `wiki_front_matter_title`. Disabled by default.
 - Feature flags [`wiki_front_matter`](https://gitlab.com/gitlab-org/gitlab/-/issues/435056) and [`wiki_front_matter_title`](https://gitlab.com/gitlab-org/gitlab/-/issues/428259) enabled by default in GitLab 17.2.
 - Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
 
@@ -260,13 +255,11 @@ may not be able to check out the wiki locally afterward.
 {{< history >}}
 
 - Sticky **Edit** in preview mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590255) in GitLab 18.11.
-- Immersive editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231662) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_immersive_editor`. Enabled by default.
+- Immersive editor:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231662) in GitLab 19.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_immersive_editor`. Enabled by default.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238053) in GitLab 19.2. Feature flags `wiki_immersive_editor` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of the immersive editor is controlled by a feature flag.
-> For more information, see the history.
 
 Prerequisites:
 
@@ -349,8 +342,8 @@ Prerequisites:
 
 {{< history >}}
 
-- Redirects for moved or renamed wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/257892) in GitLab 17.1 [with a flag](../../../administration/feature_flags/_index.md) named `wiki_redirection`. Enabled by default.
-- Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags/_index.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
+- Redirects for moved or renamed wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/257892) in GitLab 17.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_redirection`. Enabled by default.
+- Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with feature flags](../../../administration/feature_flags/_index.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
 - Feature flags `wiki_redirection`, `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
 
 {{< /history >}}
@@ -378,7 +371,7 @@ Prerequisites:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414691) in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `print_wiki`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414691) in GitLab 16.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `print_wiki`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134251/) in GitLab 16.5.
 - Feature flag `print_wiki` removed in GitLab 16.6.
 
@@ -703,16 +696,14 @@ Support includes:
 
 {{< history >}}
 
-- Immersive editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231662) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_immersive_editor`. Enabled by default.
+- Immersive editor:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231662) in GitLab 19.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_immersive_editor`. Enabled by default.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238053) in GitLab 19.2. Feature flags `wiki_immersive_editor` removed.
 
 {{< /history >}}
 
-> [!flag]
-> The availability of the immersive editor is controlled by a feature flag.
-> For more information, see the history.
-
 1. [Create](#create-a-new-wiki-page) a new wiki page, or [edit](#edit-a-wiki-page) an existing one.
-1. Select **Markdown** as your format. In the immersive editor, select **Edit page options**
+1. Select **Markdown** as your format. Select **Edit page options**
    ({{< icon name="chevron-down" >}}) in the editor header to change the format.
 1. In the editor's header, select **Switch to rich text editing**.
 1. Customize your page's content using the various formatting options available in the rich text editor.

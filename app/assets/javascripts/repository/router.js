@@ -93,6 +93,17 @@ export default function createRouter(base, baseRef, fullName) {
     ],
   });
 
+  // Tree/blob views want a fluid container so the file tree browser + content get the
+  // extra horizontal space. The Rails @force_fluid_layout only fires on initial render,
+  // so client-side navigation needs to update the outer container class here. The
+  // container is the parent of #content-body — the alert wrapper rendered above it is
+  // also a .container-fluid direct child of .js-static-panel-inner, so class selectors
+  // alone would match the wrong element. We capture the initial container-limited
+  // state once so non-fluid routes restore the user's layout preference rather than
+  // unconditionally re-adding container-limited.
+  const containerEl = document.getElementById('content-body')?.parentElement;
+  const wasLimitedInitially = containerEl?.classList.contains('container-limited') ?? false;
+
   router.afterEach(({ params: { path }, name }) => {
     const needsClosingSlash = !name.includes('blobPath');
     const normalizedPath = normalizePathParam(path);
@@ -111,6 +122,11 @@ export default function createRouter(base, baseRef, fullName) {
     const titlePath = Array.isArray(path) ? joinPaths(...path) : path; // Vue 3 returns an array of strings for the path
 
     setTitle(titlePath || '', baseRef, fullName);
+
+    if (containerEl) {
+      const fluidRoute = name?.startsWith('treePath') || name?.startsWith('blobPath');
+      containerEl.classList.toggle('container-limited', fluidRoute ? false : wasLimitedInitially);
+    }
   });
 
   return router;

@@ -315,8 +315,8 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
 
   describe '#wiki_event' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:wiki_page, freeze: false) { create(:wiki_page) }
-    let_it_be(:meta, freeze: false) { create(:wiki_page_meta, :for_wiki_page, wiki_page: wiki_page) }
+    let_it_be_with_reload(:wiki_page) { create(:wiki_page) }
+    let_it_be_with_reload(:meta) { create(:wiki_page_meta, :for_wiki_page, wiki_page: wiki_page) }
 
     let(:fingerprint) { generate(:sha) }
 

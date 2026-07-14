@@ -43,6 +43,8 @@ project:
   - read_limit_alert
   - read_member_role
   - read_milestone
+  - read_model_experiments
+  - read_model_registry
   - read_namespace
   - read_namespace_via_membership
   - read_note

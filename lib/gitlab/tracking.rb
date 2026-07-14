@@ -33,6 +33,10 @@ module Gitlab
         track_struct_event(tracker, category, action, label: label, property: property, value: value, contexts: contexts)
       end
 
+      def billing_event(category, action, context: [])
+        billing_tracker.event(category, action, context: context)
+      end
+
       def frontend_client_options
         tracker.frontend_client_options
       end
@@ -51,6 +55,16 @@ module Gitlab
                      else
                        Gitlab::Tracking::Destinations::Snowplow.new
                      end
+      end
+
+      def billing_tracker
+        @billing_tracker ||= if snowplow_micro_enabled?
+                               Gitlab::Tracking::Destinations::SnowplowMicro.new
+                             else
+                               Gitlab::Tracking::Destinations::Snowplow.new(
+                                 Gitlab::Tracking::Destinations::DestinationConfiguration.billing_configuration
+                               )
+                             end
       end
 
       private

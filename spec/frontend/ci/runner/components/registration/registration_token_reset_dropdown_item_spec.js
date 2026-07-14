@@ -113,8 +113,8 @@ describe('RegistrationTokenResetDropdownItem', () => {
       });
 
       it('emits result', () => {
-        expect(wrapper.emitted('tokenReset')).toHaveLength(1);
-        expect(wrapper.emitted('tokenReset')[0]).toEqual([mockNewRegistrationToken]);
+        expect(wrapper.emitted('token-reset')).toHaveLength(1);
+        expect(wrapper.emitted('token-reset')[0]).toEqual([mockNewRegistrationToken]);
       });
 
       it('does not show a loading state', () => {
@@ -140,7 +140,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
     });
 
     it('does not emit any result', () => {
-      expect(wrapper.emitted('tokenReset')).toBeUndefined();
+      expect(wrapper.emitted('token-reset')).toBeUndefined();
     });
 
     it('does not show a loading state', () => {

@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Groups::GroupLinks::UpdateService, '#execute', feature_category: :groups_and_projects do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group_member_user) { create(:user) }
 
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:shared_group) { create(:group, :private) }
   let_it_be(:project) { create(:project, group: shared_group) }
 
-  let(:group_member_user) { create(:user) }
-  let!(:link) { create(:group_group_link, shared_group: shared_group, shared_with_group: group) }
+  let_it_be_with_reload(:link) { create(:group_group_link, shared_group: shared_group, shared_with_group: group) }
 
   let(:expiry_date) { 1.month.from_now.to_date }
   let(:group_link_params) do
@@ -18,11 +18,11 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute', feature_category: 
       expires_at: expiry_date }
   end
 
-  subject { described_class.new(link, user).execute(group_link_params) }
-
-  before do
+  before_all do
     group.add_developer(group_member_user)
   end
+
+  subject { described_class.new(link, user).execute(group_link_params) }
 
   it 'updates existing link' do
     expect(link.group_access).to eq(Gitlab::Access::DEVELOPER)

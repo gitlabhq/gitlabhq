@@ -47,6 +47,8 @@ module Mutations
           config: response(result),
           errors: []
         }
+      rescue ::Gitlab::Ci::Lint::RateLimitError
+        raise_resource_not_available_error!(_('This endpoint has been requested too many times. Try again later.'))
       rescue GRPC::InvalidArgument => e
         Gitlab::ErrorTracking.track_and_raise_exception(e, ref: ref)
       end

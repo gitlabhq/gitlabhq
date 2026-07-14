@@ -3,6 +3,8 @@ target_languages: [fr-fr, ja-jp, ko-kr]
 argo_request_key: GITTECH
 translation_mr_labels: [gitlab-translation-service]
 translation_mr_branch_name: docs-i18n/
+pipelines:
+  request_template_key: GITTECHC
 components:
   - name: Technical Documentation
     create_request: false
@@ -46,6 +48,7 @@ components:
       - 'doc/tutorials/dependency_scanning/dependency_scanning_by_sbom.md'
       - 'doc/administration/settings/rate_limit_on_pipelines_creation.md'
       - 'doc/administration/gitlab_duo/configure/gitlab_self_managed.md'
+      - 'doc/api/openapi/openapi_v3.yaml'
 
   # Special files that need a specific template to process
   - name: Technical Documentation markdown.md
@@ -53,6 +56,13 @@ components:
     paths:
       - source: 'doc/user/markdown.md'
         target: 'doc-locale/{{language}}/user/markdown.md'
+  
+  # Special files that need a specific template to process
+  - name: Technical Documentation OpenAPI
+    create_request: false
+    paths:
+      - source: 'doc/api/openapi/openapi_v3.yaml'
+        target: 'doc-locale/{{language}}/api/openapi/openapi_v3.yaml'
   
   # Redirects list generated 2026-05-29
   # This list contains all Redirects files. It is auto generated through the monthly maintenance tasks.

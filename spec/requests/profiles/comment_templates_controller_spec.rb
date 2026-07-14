@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Profiles::CommentTemplatesController, feature_category: :user_profile do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -17,7 +17,7 @@ RSpec.describe Profiles::CommentTemplatesController, feature_category: :user_pro
     it { expect(response).to have_gitlab_http_status(:ok) }
 
     it 'sets hide search settings ivar' do
-      expect(assigns(:hide_search_settings)).to eq(true)
+      expect(assigns(:hide_search_settings)).to be(true)
     end
   end
 end

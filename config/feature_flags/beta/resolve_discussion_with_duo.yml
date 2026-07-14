@@ -1,0 +1,10 @@
+---
+name: resolve_discussion_with_duo
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600990
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235596
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/603482
+milestone: '19.0'
+group: group::code review
+type: beta
+default_enabled: true

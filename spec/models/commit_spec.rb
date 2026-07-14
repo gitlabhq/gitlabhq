@@ -579,7 +579,8 @@ TEXT
   end
 
   describe '#hook_attrs' do
-    let(:data) { commit.hook_attrs(with_changed_files: true) }
+    let(:data) { commit.hook_attrs(with_changed_files: true, changed_paths: changed_paths) }
+    let(:changed_paths) { nil }
 
     it { expect(data).to be_a(Hash) }
 
@@ -591,6 +592,42 @@ TEXT
     it { expect(data[:added]).to contain_exactly("bar/branch-test.txt") }
     it { expect(data[:modified]).to eq([]) }
     it { expect(data[:removed]).to eq([]) }
+
+    context 'with changed paths' do
+      let(:changed_paths) do
+        [
+          Gitlab::Git::ChangedPath.new(status: :ADDED, path: 'added.md', old_mode: '0', new_mode: '100644'),
+          Gitlab::Git::ChangedPath.new(status: :MODIFIED, path: 'modified.md', old_mode: '100644', new_mode: '100644'),
+          Gitlab::Git::ChangedPath.new(status: :DELETED, path: 'removed.md', old_mode: '100644', new_mode: '0')
+        ]
+      end
+
+      it 'merges classified changed path buckets without raw deltas', :aggregate_failures do
+        expect(commit).not_to receive(:raw_deltas)
+
+        expect(data[:added]).to contain_exactly('added.md')
+        expect(data[:modified]).to contain_exactly('modified.md')
+        expect(data[:removed]).to contain_exactly('removed.md')
+      end
+    end
+
+    context 'with nil changed paths' do
+      it 'uses raw deltas', :aggregate_failures do
+        expect(commit).to receive(:raw_deltas).and_call_original
+
+        expect(data[:added]).to contain_exactly('bar/branch-test.txt')
+      end
+    end
+
+    context 'with pure rename changed paths' do
+      let(:commit) { project.commit('94bb47ca1297b7b3731ff2a36923640991e9236f') }
+      let(:changed_paths) { project.repository.find_changed_paths([commit], find_renames: true) }
+
+      it 'collapses the rename into a single added path, matching legacy behavior', :aggregate_failures do
+        expect(data[:added]).to contain_exactly('CHANGELOG.md')
+        expect(data[:removed]).to be_empty
+      end
+    end
   end
 
   describe '#cherry_pick_message' do

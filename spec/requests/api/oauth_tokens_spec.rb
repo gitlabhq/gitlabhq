@@ -14,7 +14,7 @@ RSpec.describe 'OAuth tokens', feature_category: :system_access do
   end
 
   context 'Device Grant flow' do
-    let_it_be(:client, freeze: false) { create(:oauth_application, :with_device_code_enabled, confidential: false) }
+    let_it_be_with_reload(:client) { create(:oauth_application, :with_device_code_enabled, confidential: false) }
     let_it_be(:user) { create(:user) }
 
     def request_device_token(app_id, headers = {})

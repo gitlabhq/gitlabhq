@@ -133,7 +133,19 @@ class GenerateAsIfFossEnv
       variable_set.merge(variables_matching_job(job.name))
     end
 
-    variable_set.to_h { |v| [v.to_sym, 'true'] }
+    mirrored = variable_set.to_h { |v| [v.to_sym, 'true'] }
+
+    # RUN_ALL_RUBOCOP is only set by the merge request rules of the `rubocop`
+    # job. Those rules don't match in the downstream (triggered) as-if-foss
+    # pipeline, so the job defaults to running RuboCop in predictive mode on the
+    # changed files only. Predictive mode runs a plain `rubocop` invocation that
+    # bypasses the graceful formatter, and therefore ignores cops in their
+    # "grace period" -- causing offenses that are silenced in the parent
+    # pipeline to fail here. When we mirror the parent pipeline (a full run), run
+    # the full graceful RuboCop too so the two pipelines stay consistent.
+    mirrored[:RUN_ALL_RUBOCOP] = 'true' if mirrored.key?(:ENABLE_RUBOCOP)
+
+    mirrored
   end
 
   def each_parent_pipeline_job

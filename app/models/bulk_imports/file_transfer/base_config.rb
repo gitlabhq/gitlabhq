@@ -51,6 +51,10 @@ module BulkImports
         relation == SELF_RELATION
       end
 
+      def commit_notes_export_via_git?(_relation)
+        false
+      end
+
       def max_iids_relation?(relation)
         relation == MAX_IIDS_RELATION
       end

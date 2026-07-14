@@ -183,11 +183,7 @@ they cannot access their primary email address.
 
 ## Configuration
 
-**Feature flags:**
-
-- [`email_based_mfa`](https://gitlab.com/gitlab-org/gitlab/-/issues/584355) - Global toggle for Email OTP enforcement
-
-**Application setting:**
+**Application settings:**
 
 - `email_otp_enabled` - Global toggle for Email OTP enforcement availability.
 - `require_minimum_email_based_otp_for_users_with_passwords` - Makes Email OTP mandatory for users without other 2FA, and enrolls new users with passwords. Requires `email_otp_enabled` to be enabled.
@@ -215,10 +211,10 @@ Test enrollment states using commands like those below:
 ```ruby
 user = User.find_by(username: 'test_user')
 
-# Enable Email OTP
-Feature.enable(:email_based_mfa, user)
-# Disable Email OTP
-Feature.disable(:email_based_mfa, user)
+# Enable Email OTP for the instance
+ApplicationSetting.current.update!(sign_in_restrictions: { email_otp_enabled: true })
+# Disable Email OTP for the instance
+ApplicationSetting.current.update!(sign_in_restrictions: { email_otp_enabled: false })
 
 # Require Email OTP as a minimum (also enrols new users with passwords)
 ApplicationSetting.current.update!(sign_in_restrictions: {require_minimum_email_based_otp_for_users_with_passwords: true })

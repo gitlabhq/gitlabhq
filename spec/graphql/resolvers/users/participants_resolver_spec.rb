@@ -6,45 +6,45 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
   include GraphqlHelpers
 
   describe '#resolve' do
-    let_it_be(:user, freeze: false) { create(:user) }
-    let_it_be(:guest, freeze: false) { create(:user) }
-    let_it_be(:project, freeze: false) do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:guest) { create(:user) }
+    let_it_be(:project) do
       create(:project, :public).tap do |r|
         r.add_developer(user)
         r.add_guest(guest)
       end
     end
 
-    let_it_be(:private_project, freeze: false) { create(:project, :private, developers: user) }
+    let_it_be(:private_project) { create(:project, :private, developers: user) }
 
-    let_it_be(:issue, freeze: false) { create(:issue, project: project) }
-    let_it_be(:private_issue, freeze: false) { create(:issue, project: private_project) }
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:private_issue) { create(:issue, project: private_project) }
 
-    let_it_be(:public_note_author, freeze: false) { create(:user) }
-    let_it_be(:public_reply_author, freeze: false) { create(:user) }
-    let_it_be(:internal_note_author, freeze: false) { create(:user) }
-    let_it_be(:internal_reply_author, freeze: false) { create(:user) }
-    let_it_be(:system_note_author, freeze: false) { create(:user) }
-    let_it_be(:internal_system_note_author, freeze: false) { create(:user) }
+    let_it_be(:public_note_author) { create(:user) }
+    let_it_be(:public_reply_author) { create(:user) }
+    let_it_be(:internal_note_author) { create(:user) }
+    let_it_be(:internal_reply_author) { create(:user) }
+    let_it_be(:system_note_author) { create(:user) }
+    let_it_be(:internal_system_note_author) { create(:user) }
 
-    let_it_be(:public_note, freeze: false) { create(:note, project: project, noteable: issue, author: public_note_author) }
-    let_it_be(:internal_note, freeze: false) { create(:note, :confidential, project: project, noteable: issue, author: internal_note_author) }
+    let_it_be_with_reload(:public_note) { create(:note, project: project, noteable: issue, author: public_note_author) }
+    let_it_be_with_reload(:internal_note) { create(:note, :confidential, project: project, noteable: issue, author: internal_note_author) }
 
-    let_it_be(:public_reply, freeze: false) do
+    let_it_be_with_reload(:public_reply) do
       create(:note, noteable: issue, in_reply_to: public_note, project: project, author: public_reply_author)
     end
 
-    let_it_be(:internal_reply, freeze: false) do
+    let_it_be_with_reload(:internal_reply) do
       create(:note, :confidential, noteable: issue, in_reply_to: internal_note, project: project, author: internal_reply_author)
     end
 
-    let_it_be(:issue_emoji_author, freeze: false) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: issue).user }
-    let_it_be(:public_note_emoji_author, freeze: false) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: public_note).user }
-    let_it_be(:internal_note_emoji_author, freeze: false) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: internal_note).user }
-    let_it_be(:public_reply_emoji_author, freeze: false) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: public_reply).user }
-    let_it_be(:internal_reply_emoji_author, freeze: false) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: internal_reply).user }
+    let_it_be(:issue_emoji_author) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: issue).user }
+    let_it_be_with_reload(:public_note_emoji_author) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: public_note).user }
+    let_it_be_with_reload(:internal_note_emoji_author) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: internal_note).user }
+    let_it_be_with_reload(:public_reply_emoji_author) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: public_reply).user }
+    let_it_be_with_reload(:internal_reply_emoji_author) { create(:award_emoji, name: AwardEmoji::THUMBS_UP, awardable: internal_reply).user }
 
-    let_it_be(:expected_participants, freeze: false) do
+    let_it_be(:expected_participants) do
       [
         issue.author,
         issue_emoji_author,

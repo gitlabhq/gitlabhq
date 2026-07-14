@@ -72,6 +72,7 @@ export default {
       required: true,
     },
   },
+  emits: ['change', 'primary'],
   data() {
     return {
       userInput: null,

@@ -21,10 +21,10 @@ description: Use the Member Roles API to manage custom roles for GitLab.com grou
 - [Admin vulnerability added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) in GitLab 16.1.
 - [Read dependency added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126247) in GitLab 16.3.
 - [Name and description fields added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126423) in GitLab 16.3.
-- [Admin merge request introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128302) in GitLab 16.4 [with a flag](../administration/feature_flags/_index.md) named `admin_merge_request`. Disabled by default.
+- [Admin merge request introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128302) in GitLab 16.4 [with a feature flag](../administration/feature_flags/_index.md) named `admin_merge_request`. Disabled by default.
 - [Feature flag `admin_merge_request` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132578) in GitLab 16.5.
-- [Admin group members introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) in GitLab 16.5 [with a flag](../administration/feature_flags/_index.md) named `admin_group_member`. Disabled by default. The feature flag has been removed in GitLab 16.6.
-- [Manage project access tokens introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132342) in GitLab 16.5 in [with a flag](../administration/feature_flags/_index.md) named `manage_project_access_tokens`. Disabled by default.
+- [Admin group members introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) in GitLab 16.5 [with a feature flag](../administration/feature_flags/_index.md) named `admin_group_member`. Disabled by default. The feature flag has been removed in GitLab 16.6.
+- [Manage project access tokens introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132342) in GitLab 16.5 [with a feature flag](../administration/feature_flags/_index.md) named `manage_project_access_tokens`. Disabled by default.
 - [Archive project introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134998) in GitLab 16.7.
 - [Delete project introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139696) in GitLab 16.8.
 - [Manage group access tokens introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140115) in GitLab 16.8.

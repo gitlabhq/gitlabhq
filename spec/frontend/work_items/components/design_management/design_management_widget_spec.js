@@ -27,6 +27,7 @@ import {
 
 import {
   designCollectionResponse,
+  designCollectionFeaturesResponse,
   mockDesign,
   mockDesign2,
   mockArchiveDesignMutationResponse,
@@ -106,6 +107,7 @@ describe('DesignWidget', () => {
     canAddDesign = true,
     canUpdateDesign = true,
     canPasteDesign = false,
+    glFeatures = {},
     stubs = {},
   } = {}) {
     wrapper = shallowMountExtended(DesignWidget, {
@@ -135,6 +137,7 @@ describe('DesignWidget', () => {
       },
       provide: {
         fullPath: 'gitlab-org/gitlab-shell',
+        glFeatures,
       },
       stubs: {
         RouterView: true,
@@ -178,6 +181,7 @@ describe('DesignWidget', () => {
       expect(oneDesignQueryHandler).toHaveBeenCalledWith({
         id: workItemId,
         atVersion: null,
+        useWorkItemFeatures: false,
       });
     });
 
@@ -209,7 +213,10 @@ describe('DesignWidget', () => {
       createComponent({ designCollectionQueryHandler: twoDesignsQueryHandler });
       await moveDesigns();
 
-      expect(moveDesignSuccessMutationHandler).toHaveBeenCalled();
+      expect(moveDesignSuccessMutationHandler).toHaveBeenCalledWith({
+        id: mockDesign2.id,
+        next: mockDesign.id,
+      });
 
       await waitForPromises();
 
@@ -292,6 +299,7 @@ describe('DesignWidget', () => {
     expect(oneDesignQueryHandler).toHaveBeenCalledWith({
       id: workItemId,
       atVersion: `gid://gitlab/DesignManagement::Version/${PREVIOUS_VERSION_ID}`,
+      useWorkItemFeatures: false,
     });
   });
 
@@ -594,6 +602,59 @@ describe('DesignWidget', () => {
       findCrudCollapseToggle().vm.$emit('click');
 
       expect(findWidgetWrapper().emitted(eventLabel)).toEqual([[]]);
+    });
+  });
+
+  describe('workItemFeaturesField feature flag', () => {
+    describe('when the feature flag is disabled', () => {
+      let queryHandler;
+
+      beforeEach(async () => {
+        queryHandler = jest.fn().mockResolvedValue(designCollectionResponse([mockDesign]));
+        createComponent({ designCollectionQueryHandler: queryHandler });
+        await waitForPromises();
+      });
+
+      it('passes useWorkItemFeatures as false to the query', () => {
+        expect(queryHandler).toHaveBeenCalledWith({
+          id: workItemId,
+          atVersion: null,
+          useWorkItemFeatures: false,
+        });
+      });
+
+      it('renders designs from the widgets field', () => {
+        expect(findAllDesignItems()).toHaveLength(1);
+        expect(findAllDesignItems().at(0).props('id')).toBe(mockDesign.id);
+      });
+    });
+
+    describe('when the feature flag is enabled', () => {
+      let queryHandler;
+
+      beforeEach(async () => {
+        // Use a distinct design so the assertion proves the rendered data comes
+        // from the features field rather than the widgets field.
+        queryHandler = jest.fn().mockResolvedValue(designCollectionFeaturesResponse([mockDesign2]));
+        createComponent({
+          designCollectionQueryHandler: queryHandler,
+          glFeatures: { workItemFeaturesField: true },
+        });
+        await waitForPromises();
+      });
+
+      it('passes useWorkItemFeatures as true to the query', () => {
+        expect(queryHandler).toHaveBeenCalledWith({
+          id: workItemId,
+          atVersion: null,
+          useWorkItemFeatures: true,
+        });
+      });
+
+      it('renders designs from the features field', () => {
+        expect(findAllDesignItems()).toHaveLength(1);
+        expect(findAllDesignItems().at(0).props('id')).toBe(mockDesign2.id);
+      });
     });
   });
 });

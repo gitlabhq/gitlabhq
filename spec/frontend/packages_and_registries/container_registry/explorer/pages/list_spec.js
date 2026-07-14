@@ -793,7 +793,7 @@ describe('List Page', () => {
 
     it('send an event when cancel is pressed on modal', () => {
       const deleteModal = findDeleteModal();
-      deleteModal.vm.$emit('cancel');
+      deleteModal.vm.$emit('cancel-delete');
       testTrackingCall('cancel_delete');
     });
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuted do
+RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuted, feature_category: :scalability do
   it_behaves_like 'deduplicating jobs when scheduling', :until_executed do
     before do
       allow(fake_duplicate_job).to receive(:strategy).and_return(:until_executed)

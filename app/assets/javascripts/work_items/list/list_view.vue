@@ -195,10 +195,7 @@ export default {
   },
   computed: {
     useRestApi() {
-      return (
-        this.glFeatures.workItemRestApiFrontendUsers &&
-        (this.glFeatures.workItemRestApiIndex || this.glFeatures.workItemRestApi)
-      );
+      return this.glFeatures.workItemRestApiFrontendUsers;
     },
     issuablesWrapper() {
       return this.isManualOrdering ? VueDraggable : 'ul';
@@ -414,9 +411,10 @@ export default {
         });
     },
     updateWorkItemsCache(cache, oldIndex, newIndex) {
+      const query = this.useRestApi ? getWorkItemsRestQuery : getWorkItemsQuery;
       cache.updateQuery(
         {
-          query: getWorkItemsQuery,
+          query,
           variables: this.queryVariables,
         },
         (existingData) => {

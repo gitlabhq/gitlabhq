@@ -114,13 +114,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   end
 
   def commit
-    commit_id = params[:commit_id].presence
-    return unless commit_id
-
-    return unless @merge_request.commit_exists?(commit_id) ||
-      @merge_request.recent_context_commits.map(&:id).include?(commit_id)
-
-    @commit ||= @project.commit(commit_id)
+    @commit ||= ::Gitlab::MergeRequests::CommitResolver.new(@merge_request, params[:commit_id]).resolve
   end
 
   def build_merge_request

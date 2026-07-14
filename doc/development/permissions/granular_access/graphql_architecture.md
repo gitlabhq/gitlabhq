@@ -5,21 +5,26 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: GraphQL Granular Token Authorization Architecture
 ---
 
-This document explains how the `GranularTokenAuthorization` field extension works to enforce granular Personal Access Token (PAT) permissions on GraphQL queries and mutations. For a step-by-step implementation guide, see [GraphQL implementation guide](graphql_implementation_guide.md).
+This document explains how `GranularScopeAuthorization` enforces granular Personal Access Token (PAT) permissions on GraphQL types, fields, and mutations.
+For a step-by-step implementation guide, see [GraphQL implementation guide](graphql_implementation_guide.md).
 
 ## Overview
 
-The granular token authorization system adds fine-grained permission checks to GraphQL fields based on directives applied to types, fields, and mutations. It ensures that granular PATs can only access resources they have explicit permissions for within specific project or group boundaries.
+The granular token authorization system adds fine-grained permission checks to GraphQL based on `authorize_granular_token` directives applied to types, fields, and mutations.
+It ensures that granular PATs can only access resources they have explicit permissions for within specific project, group, user, or instance boundaries.
 
-**Feature Flag**: This feature requires the `granular_personal_access_tokens` feature flag to be enabled for the token's user. When the flag is disabled, granular PATs do not work for GraphQL requests.
+**Feature flag**: This feature requires the `granular_personal_access_tokens` feature flag to be enabled for the token's user.
+When the flag is disabled, granular PATs do not work for GraphQL requests.
 
-## Architecture Components
+## Architecture components
 
-### 1. Field Extension
+### 1. Authorization check
 
-- **Location**: `lib/gitlab/graphql/authz/granular_token_authorization.rb`
-- **Purpose**: Intercepts field resolution to perform authorization checks
-- **Applied to**: All GraphQL fields via `Types::BaseField`
+- **Location**: `lib/gitlab/graphql/authz/granular_scope_authorization.rb`
+- **Purpose**: Evaluates the `authorize_granular_token` directives declared on a type, field, or mutation against the request's granular PAT
+- **Public methods**:
+  - `ok?(object, context, arguments: nil)`: Returns `true` or `false`. Used for type-level and field-level authorization.
+  - `authorize!(object, context, arguments: nil)`: Raises `Gitlab::Graphql::Errors::ArgumentError` with the denial message when authorization fails. Used for mutations.
 
 ### 2. Directive
 
@@ -36,24 +41,13 @@ The granular token authorization system adds fine-grained permission checks to G
     itself. Use for entry-point fields like `Query.group(fullPath:)` where downstream
     fields enforce the real permissions.
 
-### 3. Directive Finder
-
-- **Location**: `lib/gitlab/graphql/authz/directive_finder.rb`
-- **Purpose**: Locates applicable directives in priority order: field, implementing type, return type, owner type
-- **Includes**: `TypeUnwrapper` module for unwrapping GraphQL type wrappers
-
-### 4. Boundary Extractor
+### 3. Boundary extractor
 
 - **Location**: `lib/gitlab/graphql/authz/boundary_extractor.rb`
-- **Purpose**: Extracts the authorization boundary from various sources
+- **Purpose**: Resolve the object the token must be scoped to. The object can be a project, group, `:user`, or `:instance`, but is not limited to these.
+- **Behavior**: Extracts the boundary from the source each directive declares: directives with `boundary_argument` read from the field or mutation arguments, all other directives read from the already-resolved object.
 
-### 5. Type Unwrapper
-
-- **Location**: `lib/gitlab/graphql/authz/type_unwrapper.rb`
-- **Purpose**: Shared module for unwrapping GraphQL type wrappers (List, NonNull, Connection)
-- **Used by**: DirectiveFinder and SkipRules
-
-### 6. Helper Module
+### 4. Helper module
 
 - **Location**: `lib/gitlab/graphql/authz/authorize_granular_token.rb`
 - **Purpose**: Provides the `authorize_granular_token` helper method for cleaner directive syntax
@@ -61,615 +55,284 @@ The granular token authorization system adds fine-grained permission checks to G
 - **Method**: `authorize_granular_token(permissions:, boundary_type:, boundary: nil, boundary_argument: nil)`
 - **Validation**: Permissions are validated by the `gitlab:permissions:validate` Rake task against `Authz::PermissionGroups::Assignable.all_permissions`.
 
-## Request Flow Timeline
+### 5. Authorization service
 
-### Phase 1: Request Initiation
+- **Location**: `app/services/authz/tokens/authorize_granular_scopes_service.rb`
+- **Purpose**: Checks whether the token holds the required permissions on the resolved boundaries
+- **Returns**: A `ServiceResponse.success`. On failure, a `ServiceResponse.error` with an error message describing which permissions the token is missing.
 
-```plaintext
-1. GraphQL request arrives (query or mutation)
-2. GraphQL Ruby begins parsing and validation
-3. Execution begins with root fields
-```
+## Request flow timeline
 
-### Phase 2: Field Resolution (per field)
+### Phase 1: Authorization entry points
 
-For each field being resolved:
+Authorization runs at three points, each constructing `GranularScopeAuthorization` from the directives declared at that level.
 
-```plaintext
-1. GraphQL Ruby calls field extensions in order
-   ├─ CallsGitaly::FieldExtension (dev/test only)
-   ├─ Present::FieldExtension
-   ├─ Authorize::FieldExtension
-   └─ GranularTokenAuthorization ← WE ARE HERE
-```
+| Level | Entry point | Directives source | On failure |
+| ----- | ----------- | ----------------- | ---------- |
+| Type | `Types::BaseObject.authorized?` | The type's directives | Returns `false`, which denies access |
+| Field | `Types::BaseField#field_authorized?` | The field's directives | Returns `false` for query fields, raises a resource-not-available error for `MutationType` fields |
+| Mutation | `Mutations::BaseMutation#authorized?` | The mutation class's directives | Raises `Gitlab::Graphql::Errors::ArgumentError` |
 
-### Phase 3: Authorization Check
+### Phase 2: Authorization check
 
-**Step 1: Early Exit Conditions**
+At each entry point, `GranularScopeAuthorization` evaluates the request in these steps:
 
-```ruby
-def authorize_field(object, arguments, context)
-  return unless authorization_enabled?(context)  # Only authorize granular PATs
-  return if SkipRules.new(@field).should_skip?  # Skip certain fields
-  # ...
-end
+**Step 1: Token check**
 
-def authorization_enabled?(context)
-  token = context[:access_token]
-  token && token.try(:granular?)
-end
-```
+The check applies only to granular PATs.
+Legacy PATs pass this step and rely on the existing scope authorization, unless enforcement applies (see [Phase 3](#phase-3-legacy-token-enforcement)).
 
-- If not using a granular PAT, granular scope authorization is skipped (legacy PATs
-  use existing scope authorization).
-- Certain fields are automatically skipped:
-  - **Mutation response fields** (for example, `createIssue.issue`). Authorization
-    happens on the mutation itself, not the response wrapper.
-  - **Permission metadata fields** (for example, `issue.userPermissions`). These
-    return permission information, not actual data.
-  - **Edge wrapper fields** (for example, `groupMembers.nodes`,
-    `groupMembers.cursor`). These traverse to the underlying node type, which
-    enforces authorization on its own fields.
-  - **Traversal to an authorized return type**. When a field has no own directive,
-    its owner type carries a directive, and the unwrapped return type carries its
-    own directive and has deeper authorized sub-fields, the owner-level directive
-    is skipped. The return type's directive applies when fields on the child object
-    are resolved. Leaf return types (all scalar fields) are not skipped because an
-    empty result would bypass the check entirely. For more details, see
-    [Traversal to an authorized return type](#traversal-to-an-authorized-return-type).
+**Step 2: Directive check**
 
-**Step 2: Directive Discovery**
+If no granular directives are declared, authorization fails.
 
-```ruby
-directive = DirectiveFinder.new(@field).find(object)
-```
+**Step 3: Boundary extraction**
 
-The `DirectiveFinder` checks for directives in this priority order, **returning the first match found**:
+The boundaries are extracted from the source each directive declares: the resolved object for type-level checks, or the arguments for mutations and root query fields.
+For details, see [Boundary extraction](#boundary-extraction).
 
-1. **Field-level directive** (`FIELD_DEFINITION`): Applied directly to the field
-1. **Implementing type directive** (for interfaces): Applied to the concrete type implementing an interface
-   - Only checked when the field owner is an interface and an `object` is provided
-   - Resolves the actual model type (for example, `Issue`) from `GitlabSchema.types`
-1. **Return type directive**: Applied to the type returned by the field
-   - Unwraps GraphQL type wrappers to find the base type:
-     - List types: `[Type]` → `Type`
-     - NonNull types: `Type!` → `Type`
-     - Connection types: `TypeConnection` → `Type` (for example, `IssueConnection` → `IssueType`)
-   - Works with both `boundary_argument` and `boundary` strategies
-   - When using `boundary` with an `:id` argument, enables ID fallback for boundary extraction
-1. **Owner type directive** (`OBJECT`): Applied to the type that owns the field
-   - Checked last so that a field leading to a leaf authorized type (for example,
-     `project.languages` → `RepositoryLanguageType`) uses that type's directive rather than
-     the containing type's directive (for example, `read_project`). This ensures the correct
-     permission is enforced even when the result is empty.
+**Step 4: Authorization**
 
-**Step 3: Boundary Extraction**
+`AuthorizeGranularScopesService` checks whether the token holds the required permissions on the extracted boundaries, and the result is cached.
+
+### Phase 3: Legacy token enforcement
+
+Granular permission checks also apply to legacy (non-granular) tokens when a boundary's root namespace enforces granular tokens.
+`AuthorizeGranularScopesService` reads each boundary's root namespace setting through `granular_tokens_enforced?`:
+
+- When enforcement is on, the legacy token is held to the same permission checks as a granular token.
+- When enforcement is off, the legacy token passes and relies on the existing scope authorization.
+
+## Boundary extraction
+
+Each directive declares where its boundary comes from, and `BoundaryExtractor` reads from that source.
+Type-level checks authorize an object that GraphQL has already resolved, so the boundary is reached by calling a method on that object.
+Mutations and root query fields authorize before any object is resolved, so the boundary must be derived from the arguments.
+
+### 1. From a resolved object (types and nested fields)
+
+Directives without a `boundary_argument` read from the resolved object.
+The extractor reads the `boundary` method from the directive and resolves the boundary from the already-resolved object:
+
+- `boundary: :itself` returns the object as its own boundary. Use this for types that are themselves a Project or Group.
+- Any other value calls that method on the object.
+
+For example, `ProjectType` is its own boundary:
 
 ```ruby
-boundary = BoundaryExtractor.new(object:, arguments:, context:, directive:).extract
-permissions = directive.arguments[:permissions]
+authorize_granular_token permissions: :read_project, boundary: :itself, boundary_type: :project
+# boundary => the Project itself
 ```
 
-> [!note]
-> When no directive is found, `boundary` and `permissions` are both `nil`. The authorization service will return the error message: "Unable to determine boundaries and permissions for authorization".
-
-The boundary extractor behavior:
-
-- **For standalone resources** (`boundary: 'user'` or `boundary: 'instance'`): Returns `Authz::Boundary::NilBoundary`
-- **For valid project/group resources**: Returns wrapped boundary (`ProjectBoundary` or `GroupBoundary`)
-- **When resource not found**: Returns `nil` (not wrapped in NilBoundary)
-
-Supported boundary types:
-
-- `Authz::Boundary::ProjectBoundary` - for Project resources
-- `Authz::Boundary::GroupBoundary` - for Group resources
-- `Authz::Boundary::NilBoundary` - for standalone resources (user-scoped or instance-wide)
-
-The extractor uses one of four strategies:
-
-**Strategy A: `boundary_argument` (for mutations and query fields)**
+`IssueType` reaches its boundary through a method:
 
 ```ruby
-# Directive says: boundary_argument: 'project_path'
-# Field argument: project_path: "gitlab-org/gitlab"
-
-extract_from_argument('project_path')
-  ↓
-args[:project_path] = "gitlab-org/gitlab"
-  ↓
-resolve_path("gitlab-org/gitlab")
-  ↓
-Project.find_by_full_path("gitlab-org/gitlab") || Group.find_by_full_path("gitlab-org/gitlab")
-  ↓
-returns Project or Group instance
+authorize_granular_token permissions: :read_issue, boundary: :project, boundary_type: :project
+# boundary => issue.project
 ```
 
-**Strategy B: `boundary` (for type fields with resolved object)**
+### 2. From arguments (mutations and root query fields)
 
-The boundary method must be one of the valid accessor methods: `project`, `group`, or `itself`. An `ArgumentError` is raised for any other value.
+Directives with a `boundary_argument` read from the arguments.
+This applies to mutations and to root query fields, where no parent object exists to reach a boundary from.
+The extractor reads the `boundary_argument` from the directive and locates the record:
+
+- A GlobalID is located through `GitlabSchema.find_by_gid` (forced with `Gitlab::Graphql::Lazy`), so the lookup participates in GraphQL batch loading.
+- A full-path string is located through `Project.find_by_full_path` or `Group.find_by_full_path`.
+- A Project or Group record is returned directly.
+- Any other record has the directive's `boundary` method called on it to reach the Project or Group.
+
+When the argument resolves to a Project or Group directly, only `boundary_argument` is needed:
 
 ```ruby
-# Directive says: boundary: 'project'
-# Object: Issue instance
-
-extract_from_method('project')
-  ↓
-unwrap_object(object)  # Issue
-  ↓
-object_matches_boundary_type?('project')  # false (Issue ≠ Project)
-  ↓
-VALID_BOUNDARY_ACCESSOR_METHODS.include?('project')  # true
-  ↓
-object.respond_to?(:project) # true
-  ↓
-object.project
-  ↓
-returns Project instance
+authorize_granular_token permissions: :create_issue, boundary_argument: :project_path, boundary_type: :project
+# boundary => Project.find_by_full_path(project_path)
 ```
 
-When using `boundary: 'itself'`, the object is returned as its own boundary. This is useful for types that are themselves a Project or Group:
+When the argument resolves to some other record, add `boundary` to reach the Project or Group from it:
 
 ```ruby
-# Directive says: boundary: 'itself'
-# Object: Project instance
-
-extract_from_method('itself')
-  ↓
-unwrap_object(object)  # Project
-  ↓
-object_matches_boundary_type?('itself')  # false (Project ≠ Itself)
-  ↓
-VALID_BOUNDARY_ACCESSOR_METHODS.include?('itself')  # true
-  ↓
-object.itself  # Ruby's Object#itself returns self
-  ↓
-returns Project instance
+authorize_granular_token permissions: :create_note, boundary_argument: :id, boundary: :project, boundary_type: :project
+# boundary => located_record.project
 ```
 
-**Strategy C: ID Fallback (for query fields with GlobalID)**
+## Multiple boundaries
 
-Used when:
+A type can declare more than one boundary when the same resource can belong to different boundary types.
+A concrete boundary is a specific Project or Group record.
+A standalone boundary is the `user` or `instance` boundary type, which does not belong to a project or group.
 
-- Directive specifies `boundary: 'project'`
-- Object is nil or doesn't respond to boundary method
-- Field has `:id` argument with GlobalID
+Concrete boundaries take precedence.
+A standalone boundary is used only when no concrete boundary resolves.
+A directive is also skipped when its resolved object does not match its declared `boundary_type`, so the same `boundary` method can serve more than one type.
+
+For example, `Ci::RunnerType` declares three boundaries because a runner can belong to a project, belong to a group, or be instance-wide:
 
 ```ruby
-# Query: issue(id: "gid://gitlab/Issue/123")
-# Directive says: boundary: 'project'
-# Object: nil (query field, not resolved yet)
-
-extract_from_id_argument
-  ↓
-args[:id] = "gid://gitlab/Issue/123"
-  ↓
-GlobalID.parse("gid://gitlab/Issue/123")
-  ↓
-GlobalID::Locator.locate(gid)  # Issue.find(123) - extra DB query
-  ↓
-extract_boundary_from_object(issue)
-  ↓
-issue.project
-  ↓
-returns Project instance
+authorize_granular_token(
+  permissions: :read_runner,
+  boundaries: [
+    { boundary: :owner, boundary_type: :project },
+    { boundary: :owner, boundary_type: :group },
+    { boundary: :instance, boundary_type: :instance }
+  ]
+)
 ```
 
-**Performance note**: This strategy fetches the record twice - once for authorization and once during field resolution, although the query will be cached.
+The boundary that applies depends on the runner:
 
-**Strategy D: Standalone boundaries (for user-scoped or instance-wide resources)**
+- For a project runner, `runner.owner` is a Project, so the project boundary resolves and is used.
+- For a group runner, `runner.owner` is a Group, so the group boundary resolves and is used.
+- For an instance runner, `runner.owner` is neither a Project nor a Group, so both concrete directives are skipped. The standalone `instance` boundary is used instead, and the token is checked for `read_runner` on the instance.
 
-Used when:
+The standalone boundary is preferred over the concrete boundaries only in the last case, where the runner has no owning project or group.
 
-- Directive specifies `boundary: 'user'` (user-scoped resources)
-- Directive specifies `boundary: 'instance'` (instance-wide resources)
-
-```ruby
-# Directive says: boundary: 'user'
-# Resource doesn't belong to a specific project/group
-
-standalone_boundary?('user')
-  ↓
-@boundary_accessor.to_sym  # :user
-  ↓
-Authz::Boundary.for(:user)
-  ↓
-returns Authz::Boundary::NilBoundary.new(:user)
-  ↓
-Authorization checks token has appropriate permissions
-```
-
-This strategy is used for resources that don't belong to a specific project or group boundary but are user-scoped or instance-wide.
-
-**Step 4: Authorization Check**
-
-```ruby
-authorize_with_cache!(context, boundary, permissions)
-```
-
-This method:
-
-1. **Checks cache**: `context[:authz_cache]` to avoid duplicate checks.
-1. **Calls authorization service**:
-
-   ```ruby
-   ::Authz::Tokens::AuthorizeGranularScopesService.new(
-     boundaries: boundary,
-     permissions: permissions,
-     token: context[:access_token]
-   ).execute
-   ```
-
-1. **Verifies**: Token has required permissions for the boundary.
-1. **Raises error** if unauthorized: `raise_resource_not_available_error!(response.message)`.
-1. **Caches result** to avoid redundant checks.
-
-When the matched directive has `traversal: true`, the extension uses a separate
-authorization path that only verifies the boundary is visible to the token. For
-more details, see [Entry-point fields with `traversal: true`](#entry-point-fields-with-traversal-true).
-
-**Step 5: Field Resolution**
-
-```ruby
-yield(object, arguments, **rest)
-```
-
-If authorization passes, the field resolver executes and returns its value.
-
-## Example Scenarios
+## Example scenarios
 
 ### Scenario 1: Mutation with `boundary_argument`
 
-**GraphQL Request:**
+A `createIssue` mutation passes the project as a path argument:
 
 ```graphql
 mutation {
-  createIssue(input: {
-    projectPath: "gitlab-org/gitlab",
-    title: "New issue"
-  }) {
+  createIssue(input: { projectPath: "gitlab-org/gitlab", title: "New issue" }) {
     issue { id }
   }
 }
 ```
 
-**Directive:**
+`Mutations::Issues::Create` declares:
 
 ```ruby
-class Create < BaseMutation
-  authorize_granular_token permissions: :create_issue, boundary_argument: :project_path, boundary_type: :project
-end
+authorize_granular_token permissions: :create_issue, boundary_argument: :project_path, boundary_type: :project
 ```
 
-**Timeline:**
+1. GraphQL Ruby calls `Mutations::BaseMutation#authorized?` before the mutation runs.
+1. `BoundaryExtractor` reads `project_path` and resolves the Project through `Project.find_by_full_path`.
+1. `AuthorizeGranularScopesService` checks whether the token has `create_issue` on that project.
+1. When the token has the permission, the mutation runs. Otherwise, `Gitlab::Graphql::Errors::ArgumentError` is raised.
 
-1. Extension called for `createIssue` field
-1. `object` = `nil` (root mutation field)
-1. Directive found on mutation class
-1. Boundary extracted from `arguments[:input][:project_path]`
-1. `Project.find_by_full_path("gitlab-org/gitlab")` → Project
-1. Authorization service checks: Does token have `create_issue` permission for this project?
-1. If yes: mutation executes
-1. If no: raises error, mutation doesn't execute
+### Scenario 2: Query type with `boundary`
 
-### Scenario 2: Type with `boundary` (nested field)
-
-**GraphQL Request:**
+A query reads fields on resolved issues:
 
 ```graphql
 query {
   project(fullPath: "gitlab-org/gitlab") {
     issues {
-      nodes {
-        title        # ← Authorization here
-        description  # ← And here
-      }
+      nodes { title }
     }
   }
 }
 ```
 
-**Directive:**
+`IssueType` declares:
 
 ```ruby
-class IssueType < BaseObject
-  authorize_granular_token permissions: :read_issue, boundary: :project, boundary_type: :project
-end
+authorize_granular_token permissions: :read_issue, boundary: :project, boundary_type: :project
 ```
 
-**Timeline (for `title` field):**
+1. When each `Issue` is resolved, `Types::BaseObject.authorized?` runs for `IssueType`.
+1. `BoundaryExtractor` calls `issue.project` to reach the boundary.
+1. `AuthorizeGranularScopesService` checks whether the token has `read_issue` on that project.
+1. When the token has the permission, the issue resolves. Otherwise, access is denied and the check returns `false`.
 
-1. Extension called for `title` field
-1. `object` = Issue instance (already resolved)
-1. Directive found on `IssueType` (owner of `title` field)
-1. Boundary extracted by calling `issue.project`
-1. Authorization service checks: Does token have `read_issue` permission for this project?
-1. Cache hit on subsequent fields (`description`, etc.) - no additional DB queries
-1. If yes: field resolves and returns title
-1. If no: raises error
+### Scenario 3: Mutation with a GlobalID and `boundary`
 
-### Scenario 3: Query field with ID fallback
+A `createNote` mutation passes a GlobalID, and the boundary is reached from the located record:
 
-**GraphQL Request:**
+```ruby
+authorize_granular_token permissions: :create_note, boundary_argument: :id, boundary: :project, boundary_type: :project
+```
+
+For the argument `id: "gid://gitlab/Issue/1"`, `BoundaryExtractor` locates the Issue through `GitlabSchema.find_by_gid`, then calls `issue.project` to reach the boundary.
+
+### Scenario 4: Root query field with `boundary_argument`
+
+A root query field resolves computed data for a namespace passed as an argument, so there is no parent object and no resolved record to reach a boundary from:
 
 ```graphql
 query {
-  issue(id: "gid://gitlab/Issue/123") {
-    title
+  aiToolRules(fullPath: "gitlab-org") {
+    nodes { id }
   }
 }
 ```
 
-**Directive:**
+The field's resolver declares:
 
 ```ruby
-class IssueType < BaseObject
-  authorize_granular_token permissions: :read_issue, boundary: :project, boundary_type: :project
-end
+authorize_granular_token permissions: :read_ai_tool_rule, boundary_argument: :full_path, boundary_type: :group
 ```
 
-**Timeline:**
+1. GraphQL Ruby calls `Types::BaseField#authorized?` with the field arguments before the resolver runs.
+1. `BoundaryExtractor` reads `full_path` and resolves the Group through `Group.find_by_full_path`.
+1. `AuthorizeGranularScopesService` checks whether the token has `read_ai_tool_rule` on that group.
+1. When the token has the permission, the field resolves. Otherwise, the field is nulled.
 
-1. Extension called for `issue` field (returns IssueType)
-1. `object` = `nil` (root query field)
-1. Directive found on return type (`IssueType`)
-1. Boundary extraction detects: object is nil, but `:id` argument present
-1. Uses ID fallback: extracts GlobalID → locates Issue → gets `issue.project`
-1. Authorization service checks: Does token have `read_issue` permission for this project?
-1. If yes: field resolves (Issue is fetched again by resolver)
-1. If no: raises error before field resolution
+Directives declared on a resolver class are applied to the fields the resolver is mounted on, so `authorize_granular_token` can be declared either on the resolver or on the field definition itself with `directives: granular_scope_directive(...)`.
 
-### Scenario 4: Entry-point field with `traversal: true`
+## Performance optimizations
 
-**GraphQL Request:**
+### 1. Per-request authorization cache
 
-```graphql
-query {
-  group(fullPath: "gitlab-org") {
-    groupMembers {
-      nodes {
-        id
-      }
-    }
-  }
-}
-```
+Authorization results are cached per request.
+Multiple fields that resolve to the same boundary and permissions reuse the cached result, so the authorization service runs only once for them.
 
-**Entry-point directive** on `Query.group`:
+### 2. Batched boundary preloading
 
-```ruby
-field :group, Types::GroupType,
-  resolver: Resolvers::GroupResolver,
-  directives: granular_scope_directive(
-    permissions: :read_group, boundary_argument: :full_path, boundary_type: :group,
-    traversal: true
-  )
-```
+Resolving a boundary from each node in a collection one at a time produces an N+1 query.
+For example, if `IssueType` declares `authorize_granular_token permissions: :read_issue, boundary: :project`, then for each resolved issue object the extractor calls `issue.project`, which creates an N+1 problem.
 
-**Timeline:**
+`BoundaryExtractors::Preloader` solves this by preloading the collection's nodes before authorization runs:
 
-1. Extension called for `group` field.
-1. Directive resolved on the field, with `traversal: true`.
-1. Boundary extracted from `arguments[:full_path]` (`"gitlab-org"`).
-1. Authorization service runs in traversal mode and verifies
-   `token.can?(:read_boundary, boundary)`. The `read_group` permission is not
-   enforced.
-1. Extension called for `groupMembers` field. Owner is `GroupType` (which carries
-   a `read_group` directive). Return type is `GroupMemberType` (which carries a
-   `read_member` directive). The traversal skip applies, so no token check fires.
-1. Extension called for `nodes` field. Skipped as an edge wrapper.
-1. Extension called for `id` field on each `GroupMember`. Owner is
-   `GroupMemberType`, which requires `read_member`. The token is checked for
-   `read_member` against the group boundary.
+- The preloader batch-loads the boundary associations across all nodes in one set of queries, then caches the loaded records in `Gitlab::SafeRequestStore`.
+- The boundary extractors reuse these cached records instead of querying again.
 
-The token reaches the members data with only `read_member`, matching the REST
-endpoint `GET /api/v4/groups/:id/members`.
+### 3. Enforcement preloading
 
-## Traversal to an authorized return type
+Legacy tokens are blocked from accessing a namespace's resources when the namespace setting that enforces granular tokens is enabled.
+For more information, see [issue 20180](https://gitlab.com/gitlab-org/gitlab/-/issues/20180).
 
-A field on a granular-token-authorized type would otherwise inherit the owner
-type's directive. The owner directive becomes redundant when the field's
-unwrapped return type also carries a granular-token directive. The return
-type's directive enforces authorization when fields on the child object
-resolve. The `SkipRules` class detects this case and skips the owner-level
-check.
+Instead of loading the root namespace of a boundary and its settings on every check, GitLab preloads them and stores the `granular_tokens_enforced?` value in a cache.
+`AuthorizeGranularScopesService` later reads this cached value.
 
-The skip applies when **all** of the following are true:
+## Error handling
 
-- The field has no own granular-token directive (an explicit field-level
-  directive always wins).
-- The field's owner type carries a granular-token directive.
-- The field's unwrapped return type (after stripping list, non-null, and
-  connection wrappers) carries a granular-token directive.
-- The return type has at least one field whose own unwrapped return type carries
-  a granular-token directive (that is, it is not a "leaf" type whose fields all
-  return plain scalars).
-
-The fourth condition is required for safety: when the return type is a leaf
-(all its fields return scalars, for example `RepositoryLanguageType` or
-`PushRulesType`), no per-item resolver fires for an empty collection or a `nil`
-result. Skipping the collection-level check would let an empty result bypass
-authorization entirely. For leaf types, the collection-level check is the only
-enforcement point, so the skip must not fire.
-
-**Effect**: a token with only the child resource's permission can traverse to it
-through the parent, without also needing the parent's read permission. Data
-fields on the parent (which return scalars or other unauthorized types) still
-require the parent's permission.
-
-**Example**: `Group.groupMembers` returns `GroupMemberType`. Both `GroupType`
-and `GroupMemberType` declare granular-token directives. Resolving
-`group.groupMembers` no longer requires `read_group`. Resolving any field on
-each `GroupMember` requires `read_member`. Resolving `group.name` (a scalar)
-still requires `read_group`.
-
-## Entry-point fields with `traversal: true`
-
-Top-level fields like `Query.group(fullPath:)` and `Query.project(fullPath:)`
-exist to resolve a boundary from a path argument. They do not expose data
-themselves. Downstream fields enforce the actual permissions. Set
-`traversal: true` on the directive to declare this intent.
-
-When `traversal: true`:
-
-- The boundary is resolved from `boundary_argument` as usual.
-- The authorization service runs in traversal mode and checks only
-  `token.can?(:read_boundary, boundary)`. The `permissions` argument is not
-  enforced. It remains in the directive for documentation.
-- If no boundary resolves, or the boundary is not visible to the token, the
-  service returns `404 Not Found` and the field returns `null` with an error.
-
-The traversal cache key is `[:traversal, boundary.class, boundary.namespace&.id]`,
-separate from permission-based cache keys.
-
-`traversal: true` only applies to `project` and `group` boundary types. For all other
-boundary types, the extension falls back to the regular permission check.
-
-## Performance Optimizations
-
-### 1. Caching
-
-**Per-Request Cache:**
-
-```ruby
-context[:authz_cache] = Set.new
-cache_key = [permissions&.sort, boundary&.class, boundary&.namespace&.id]
-
-# Example cache key for `read_issue` on a project:
-# [["read_issue"], Authz::Boundary::ProjectBoundary, 123]
-```
-
-- Authorization results are cached per request using a Set
-- Prevents redundant authorization checks for the same boundary and permissions
-- Example: Checking 10 issue fields on the same project only hits authorization service once
-- Cache key components:
-  - `permissions&.sort`: Sorted array of lowercase permission strings
-  - `boundary&.class`: The boundary wrapper class (e.g., `Authz::Boundary::ProjectBoundary`)
-  - `boundary&.namespace&.id`: The namespace ID (varies by boundary type):
-    - `ProjectBoundary`: `project.project_namespace.id`
-    - `GroupBoundary`: `group.id`
-    - `NilBoundary`: `nil`
-
-### 2. Early Returns
-
-```ruby
-return unless authorization_enabled?(context)
-return if SkipRules.new(@field).should_skip?
-```
-
-- Non-granular tokens skip the entire system (zero overhead)
-- Mutation response fields and permission metadata fields are automatically skipped (see Phase 3, Step 1 for details)
-
-## Error Handling
-
-### Authorization Failures
+### 1. Authorization failures
 
 When authorization fails:
 
-```ruby
-raise_resource_not_available_error!(response.message)
-```
-
-**For GraphQL:**
-
-- Returns service error in `errors` array
-- Field returns `null`
-
-**Example response:**
+- Mutations raise `Gitlab::Graphql::Errors::ArgumentError`, with an error message that tells the user which granular permissions the token is missing. The message is carried into the GraphQL response `errors` array.
+- Type-level checks return `false`, which denies access to the object.
+- Field-level checks return `false` for query fields, which denies access. Fields on `MutationType` instead raise a resource-not-available error, so the mutation response populates `errors`.
 
 ```json
 {
   "data": { "issue": null },
   "errors": [{
-    "message": "Insufficient permissions",
+    "message": "Access denied: This operation requires a fine-grained personal access token with the following project permissions: [Issue: Read].",
     "path": ["issue"]
   }]
 }
 ```
 
-### Edge Cases and Error Scenarios
+### 2. Boundary resolution errors
 
-#### Missing Configuration Errors
+The extractor returns an empty array when it cannot resolve a boundary.
+This happens when a path or GlobalID does not match a record, when a boundary method returns `nil`, or when the directive is missing the `boundary` or `boundary_argument` it needs.
 
-1. **No directive found (with granular PAT)**
-   - **Behavior**: Authorization proceeds with `boundary: nil, permissions: nil`
-   - **Result**: Authorization service returns error
-   - **Error message**: `"Unable to determine boundaries and permissions for authorization"`
-   - **Note**: All fields accessed with granular PATs must have directives
+`AuthorizeGranularScopesService` treats an empty boundary set with requested permissions as an unresolved resource and returns a `404 Not Found` error.
+Returning `404 Not Found` rather than a permission error avoids disclosing whether the resource exists.
 
-1. **Directive has empty permissions array**
-   - **Behavior**: Authorization proceeds with `permissions: []` (boundary provided)
-   - **Result**: Authorization service returns error
-   - **Error message**: `"Unable to determine permissions for authorization"`
-   - **Cause**: Directive defined with `permissions: []`
+### 3. Configuration errors
 
-#### Boundary Resolution Errors
+These errors indicate that a directive is misconfigured, and are surfaced during development or validation rather than at request time:
 
-1. **Boundary extraction returns nil (resource not found)**
-   - **Behavior**: Authorization proceeds with `boundary: nil` (permissions still provided)
-   - **Result**: Authorization service returns error
-   - **Error message**: `"Unable to determine boundaries for authorization"`
-   - **Causes**:
-     - Invalid path/GlobalID that doesn't resolve to a resource
-     - Object missing expected association (e.g., `issue.project` returns `nil`)
-     - Directive has neither `boundary` nor `boundary_argument` configured
-   - **Note**: This is different from standalone boundaries which return `NilBoundary` object
+- An invalid permission name raises `InvalidInputError` in `AuthorizeGranularScopesService`, and is also caught by the `gitlab:permissions:validate` Rake task against `Authz::PermissionGroups::Assignable.all_permissions`.
+- A `boundaries:` entry that is not a Hash with a `boundary_type` key raises `ArgumentError`.
+- Passing `traversal: true` to a type-level `authorize_granular_token` raises `ArgumentError`. Use `granular_scope_directive(traversal: true)` on the field definition instead.
 
-1. **Invalid GlobalID format**
-   - **Behavior**: `GlobalID.parse("invalid")` returns `nil`
-   - **Result**: Boundary extraction returns `nil` → authorization error
-   - **Error message**: `"Unable to determine boundaries for authorization"`
-   - **Note**: Fails gracefully without raising exceptions
-
-1. **Boundary method returns nil**
-   - **Behavior**: `issue.project` returns `nil`
-   - **Result**: Returns `nil` → authorization error
-   - **Error message**: `"Unable to determine boundaries for authorization"`
-   - **Common causes**: Soft-deleted associations, orphaned records
-
-1. **GlobalID points to non-existent record**
-   - **Behavior**: `GlobalID::Locator.locate(gid)` raises `ActiveRecord::RecordNotFound`, rescued and returns `nil`
-   - **Result**: Boundary extraction returns `nil` → authorization error
-   - **Error message**: `"Unable to determine boundaries for authorization"`
-
-#### Configuration Errors
-
-1. **Invalid boundary method**
-   - **Behavior**: Raises `ArgumentError: "Invalid boundary method: 'foo'"`
-   - **Cause**: Using a `boundary` value not in the valid accessor methods (`project`, `group`, `itself`)
-   - **Note**: This validation runs before checking if the object responds to the method
-
-1. **Object doesn't respond to boundary method**
-   - **Behavior**: Raises `ArgumentError: "Boundary method 'project' not found on Project"`
-   - **Cause**: Using a valid boundary method (e.g., `boundary: 'project'`) but the object doesn't have that method
-   - **Exceptions**:
-     - If field has `:id` argument, uses ID fallback instead
-     - If object type matches boundary name, returns object directly
-   - **Example**:
-
-     ```ruby
-     # IssueType has: boundary: 'project'
-     # Field: project.issue(iid: "1")
-     # object = Project (not Issue)
-     # Project matches 'project' → returns Project
-     ```
-
-1. **Invalid permission name**
-   - **Behavior**: Detected by the `gitlab:permissions:validate` Rake task
-   - **Cause**: Using a permission symbol that doesn't exist in `Authz::PermissionGroups::Assignable.all_permissions`
-   - **Note**: This validation runs as part of CI to ensure all directive permissions reference valid assignable permissions
-
-1. **Multiple directives found**
-   - **Behavior**: Uses first match in priority order (field, implementing type,
-     return type, owner).
-   - **Result**: May not use expected directive if multiple apply.
-   - **Best practice**: Apply directive at only one level per field to avoid
-     confusion.
-   - **Note**: The directive finder stops at the first match and does not check
-     subsequent levels. The owner-level directive is also skipped when the field
-     traverses to an authorized return type with deeper authorized sub-fields.
-     For more details, see
-     [Traversal to an authorized return type](#traversal-to-an-authorized-return-type).
-
-## See Also
+## See also
 
 - [GraphQL implementation guide](graphql_implementation_guide.md)

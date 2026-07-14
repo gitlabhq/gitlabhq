@@ -4,7 +4,7 @@ module Mcp
   module Tools
     module WorkItems
       class BaseTool < Mcp::Tools::GraphqlTool
-        include Mcp::Tools::Concerns::Constants
+        include Mcp::Tools::Concerns::ContentValidation
         include Mcp::Tools::Concerns::ResourceFinder
         include Mcp::Tools::Concerns::UrlParser
 
@@ -22,12 +22,6 @@ module Mcp
                                      else
                                        resolve_work_item_from_params
                                      end
-        end
-
-        def validate_no_quick_actions!(text, field_name: 'text')
-          return unless text&.match?(URL_PATTERNS[:quick_action])
-
-          raise ArgumentError, "Quick actions (commands starting with /) are not allowed in #{field_name}"
         end
 
         private

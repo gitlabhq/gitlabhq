@@ -405,15 +405,12 @@ can change the project setting to another value if needed.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230311) in GitLab 19.0
-  [with a flag](../../administration/feature_flags/_index.md) named `mcp_server_availability_setting`.
+  [with a feature flag](../../administration/feature_flags/_index.md) named `mcp_server_availability_setting`.
   Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/598279) in GitLab 19.2.
+  Feature flag `mcp_server_availability_setting` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 Prerequisites:
 

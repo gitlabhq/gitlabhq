@@ -318,6 +318,21 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
       it_behaves_like 'unverified signature'
     end
 
+    context 'when the signature blob has a malformed (truncated) ed25519 signature' do
+      before do
+        allow(signature).to receive(:signature).and_wrap_original do |m, *args|
+          sig = m.call(*args)
+          allow(sig).to receive(:verify).and_raise(ArgumentError, 'expected 64 byte signature, got 63')
+          sig
+        end
+      end
+
+      it 'does not raise and reports unverified status', :aggregate_failures do
+        expect { signature.verification_status }.not_to raise_error
+        expect(signature.verification_status).to eq(:unverified)
+      end
+    end
+
     context 'when signature is for a different namespace' do
       let(:signature_text) do
         <<~SIG

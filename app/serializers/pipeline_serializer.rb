@@ -31,13 +31,13 @@ class PipelineSerializer < BaseSerializer
     manual_and_scheduled_actions_relations =
       if disable_manual_and_scheduled_actions
         {
-          manual_actions: [],
-          scheduled_actions: []
+          manual_actions: [:job_environment],
+          scheduled_actions: [:job_environment]
         }
       else
         {
-          manual_actions: [:metadata, :job_definition],
-          scheduled_actions: [:metadata, :job_definition]
+          manual_actions: [:job_definition, :job_environment],
+          scheduled_actions: [:job_definition, :job_environment]
         }
       end
 
@@ -52,7 +52,7 @@ class PipelineSerializer < BaseSerializer
       (:latest_statuses if preload_statuses),
       (:limited_failed_builds if disable_failed_builds),
       {
-        **(disable_failed_builds ? {} : { failed_builds: %i[project metadata] }),
+        **(disable_failed_builds ? {} : { failed_builds: %i[project job_definition] }),
         **manual_and_scheduled_actions_relations,
         merge_request: {
           source_project: [:route, { namespace: :route }],

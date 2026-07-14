@@ -6,7 +6,7 @@ RSpec.describe API::Validations::Validators::Limit do
   include ApiValidatorsHelpers
 
   subject do
-    described_class.new(['test'], 255, false, scope.new)
+    described_class.new(['test'], 255, false, scope.new, {})
   end
 
   context 'valid limit param' do

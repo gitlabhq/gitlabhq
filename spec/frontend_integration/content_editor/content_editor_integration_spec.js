@@ -1,8 +1,13 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import savedRepliesQuery from 'ee_else_ce/vue_shared/components/markdown/saved_replies.query.graphql';
 import { ContentEditor } from '~/content_editor';
 import waitForPromises from 'helpers/wait_for_promises';
+
+Vue.use(VueApollo);
 
 /**
  * This spec exercises some workflows in the Content Editor without mocking
@@ -14,6 +19,10 @@ describe('content_editor', () => {
   let renderMarkdown;
 
   const buildWrapper = ({ markdown = '', listeners = {} } = {}) => {
+    const apolloProvider = createMockApollo([
+      [savedRepliesQuery, jest.fn().mockResolvedValue({ data: { currentUser: null } })],
+    ]);
+
     wrapper = mountExtended(ContentEditor, {
       propsData: {
         markdownDocsPath: '',
@@ -25,15 +34,7 @@ describe('content_editor', () => {
       listeners: {
         ...listeners,
       },
-      mocks: {
-        $apollo: {
-          queries: {
-            currentUser: {
-              loading: false,
-            },
-          },
-        },
-      },
+      apolloProvider,
     });
   };
 

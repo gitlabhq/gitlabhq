@@ -1,0 +1,9 @@
+---
+name: delete_todo
+description: Grants the ability to delete todos
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - delete_todo

@@ -1,12 +1,11 @@
-import { GlSearchBoxByType, GlSkeletonLoader, GlTab } from '@gitlab/ui';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import PersonalAccessTokenPermissionsSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_permissions_selector.vue';
-import PersonalAccessTokenResourcesList from '~/personal_access_tokens/components/create_granular_token/personal_access_token_resources_list.vue';
+import PersonalAccessTokenResourcePanel from '~/personal_access_tokens/components/create_granular_token/personal_access_token_resource_panel.vue';
 import PersonalAccessTokenGranularPermissionsList from '~/personal_access_tokens/components/create_granular_token/personal_access_token_granular_permissions_list.vue';
 import getAccessTokenPermissions from '~/personal_access_tokens/graphql/get_access_token_permissions.query.graphql';
 import {
@@ -20,6 +19,8 @@ jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
+const emptyPermissions = () => ({ namespace: [], user: [], instance: [] });
+
 describe('PersonalAccessTokenPermissionsSelector', () => {
   let wrapper;
   let mockApollo;
@@ -32,52 +33,61 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
     wrapper = shallowMountExtended(PersonalAccessTokenPermissionsSelector, {
       apolloProvider: mockApollo,
       propsData: {
-        targetBoundaries: ['GROUP', 'PROJECT'],
+        value: emptyPermissions(),
         ...props,
       },
     });
   };
 
-  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
-  const findTab = () => wrapper.findComponent(GlTab);
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findResourcesList = () => wrapper.findComponent(PersonalAccessTokenResourcesList);
-  const findPermissionsList = () =>
-    wrapper.findComponent(PersonalAccessTokenGranularPermissionsList);
+  const findResourcePanel = () => wrapper.findComponent(PersonalAccessTokenResourcePanel);
+  const findPermissionsLists = () =>
+    wrapper.findAllComponents(PersonalAccessTokenGranularPermissionsList);
+  const findPermissionsList = (index) => findPermissionsLists().at(index);
   const findErrorMessage = () => wrapper.find('.invalid-feedback');
+
+  const setActiveBoundary = (boundary) => findResourcePanel().vm.$emit('boundary-change', boundary);
+  const setResources = (resources) => findResourcePanel().vm.$emit('resources-input', resources);
 
   beforeEach(() => {
     createComponent();
   });
 
   describe('rendering', () => {
-    it('renders group tab', () => {
-      expect(findTab().attributes('title')).toBe('Group and project');
+    it('renders the selector title', () => {
+      expect(wrapper.text()).toContain('Resource and permission selector');
     });
 
-    it('renders user tab', () => {
-      createComponent({ props: { targetBoundaries: ['USER'] } });
-
-      expect(findTab().attributes('title')).toBe('User');
+    it('passes the selected resources for every boundary to the resource panel', () => {
+      expect(findResourcePanel().props('selectedResources')).toEqual({
+        namespace: [],
+        user: [],
+        instance: [],
+      });
     });
 
-    it('renders global tab', () => {
-      createComponent({ props: { targetBoundaries: ['INSTANCE'] } });
-
-      expect(findTab().attributes('title')).toBe('Global');
+    it('defaults the active boundary to namespace', () => {
+      expect(findResourcePanel().props('activeBoundary')).toBe('namespace');
     });
 
-    it('renders tab with an initial count', () => {
-      expect(findTab().attributes('tabcount')).toBe('0');
+    it('forwards the loading state to the resource panel', () => {
+      expect(findResourcePanel().props('isLoading')).toBe(true);
     });
 
-    it('renders the search box', () => {
-      expect(findSearchBox().exists()).toBe(true);
-      expect(findSearchBox().attributes('placeholder')).toBe('Search for resources to add');
+    it('renders a permissions list for each boundary', () => {
+      expect(findPermissionsLists()).toHaveLength(3);
+      expect(findPermissionsList(0).props('scope')).toBe('namespace');
+      expect(findPermissionsList(1).props('scope')).toBe('user');
+      expect(findPermissionsList(2).props('scope')).toBe('instance');
     });
 
-    it('shows skeleton loader while loading', () => {
-      expect(findSkeletonLoader().exists()).toBe(true);
+    it('passes each boundary its selected permissions from the value prop', () => {
+      createComponent({
+        props: { value: { namespace: ['read_project'], user: ['read_user'], instance: [] } },
+      });
+
+      expect(findPermissionsList(0).props('value')).toEqual(['read_project']);
+      expect(findPermissionsList(1).props('value')).toEqual(['read_user']);
+      expect(findPermissionsList(2).props('value')).toEqual([]);
     });
 
     it('shows error message when error prop is provided', () => {
@@ -111,80 +121,93 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
     });
   });
 
-  describe('permissions filtering', () => {
+  describe('permissions bucketing', () => {
     beforeEach(async () => {
       await waitForPromises();
     });
 
-    it('renders resources list when permissions are loaded', () => {
-      expect(findResourcesList().exists()).toBe(true);
-      expect(findPermissionsList().exists()).toBe(true);
-
-      expect(findSkeletonLoader().exists()).toBe(false);
+    it('passes each boundary its own permissions to the permissions lists', () => {
+      expect(findPermissionsList(0).props('permissions')).toStrictEqual(mockGroupPermissions);
+      expect(findPermissionsList(1).props('permissions')).toStrictEqual(mockUserPermissions);
+      expect(findPermissionsList(2).props('permissions')).toStrictEqual(mockInstancePermissions);
     });
 
-    it('filters permissions by target boundaries', () => {
-      expect(findResourcesList().props('scope')).toBe('namespace');
-      expect(findResourcesList().props('permissions')).toStrictEqual(mockGroupPermissions);
-
-      expect(findPermissionsList().props('permissions')).toStrictEqual(mockGroupPermissions);
-      expect(findPermissionsList().props('scope')).toEqual('namespace');
+    it('passes the active boundary permissions to the resource panel', () => {
+      expect(findResourcePanel().props('activeBoundary')).toBe('namespace');
+      expect(findResourcePanel().props('permissions')).toStrictEqual(mockGroupPermissions);
     });
 
-    it('filters user permissions correctly', async () => {
-      createComponent({ props: { targetBoundaries: ['USER'] } });
+    it('switches the resource panel permissions when the active boundary changes', async () => {
+      await setActiveBoundary('user');
 
+      expect(findResourcePanel().props('activeBoundary')).toBe('user');
+      expect(findResourcePanel().props('permissions')).toStrictEqual(mockUserPermissions);
+
+      await setActiveBoundary('instance');
+
+      expect(findResourcePanel().props('activeBoundary')).toBe('instance');
+      expect(findResourcePanel().props('permissions')).toStrictEqual(mockInstancePermissions);
+    });
+
+    it('passes the updated selected resources to the resource panel', async () => {
+      await setResources(['project']);
+
+      expect(findResourcePanel().props('selectedResources')).toEqual({
+        namespace: ['project'],
+        user: [],
+        instance: [],
+      });
+    });
+  });
+
+  describe('event handling', () => {
+    beforeEach(async () => {
       await waitForPromises();
-
-      expect(findResourcesList().props('scope')).toBe('user');
-      expect(findResourcesList().props('permissions')).toStrictEqual(mockUserPermissions);
-
-      expect(findPermissionsList().props('permissions')).toStrictEqual(mockUserPermissions);
-      expect(findPermissionsList().props('scope')).toEqual('user');
     });
 
-    it('filters instance permissions correctly', async () => {
-      createComponent({ props: { targetBoundaries: ['INSTANCE'] } });
+    it('updates the active boundary selected resources when the resource panel changes', async () => {
+      const selectedResources = ['project', 'repository'];
 
-      await waitForPromises();
+      await setResources(selectedResources);
 
-      expect(findResourcesList().props('scope')).toBe('instance');
-      expect(findResourcesList().props('permissions')).toStrictEqual(mockInstancePermissions);
-
-      expect(findPermissionsList().props('permissions')).toStrictEqual(mockInstancePermissions);
-      expect(findPermissionsList().props('scope')).toEqual('instance');
+      expect(findPermissionsList(0).props('selectedResources')).toEqual(selectedResources);
     });
 
-    it('searches by permission description', async () => {
-      await findSearchBox().vm.$emit('input', 'Repository');
+    it('emits input with the boundary updated when a permissions list changes', async () => {
+      await findPermissionsList(0).vm.$emit('input', ['read_project', 'write_project']);
 
-      expect(findResourcesList().props('permissions')).toStrictEqual([mockGroupPermissions[2]]);
-
-      expect(findPermissionsList().props('permissions')).toStrictEqual(mockGroupPermissions);
-    });
-
-    it('searches by permission category', async () => {
-      await findSearchBox().vm.$emit('input', 'groups');
-
-      expect(findResourcesList().props('permissions')).toStrictEqual([
-        mockGroupPermissions[0],
-        mockGroupPermissions[1],
-        mockGroupPermissions[3],
+      expect(wrapper.emitted('input')[0]).toEqual([
+        { namespace: ['read_project', 'write_project'], user: [], instance: [] },
       ]);
-
-      expect(findPermissionsList().props('permissions')).toStrictEqual(mockGroupPermissions);
     });
 
-    it('shows message when no matches are found', async () => {
-      await findSearchBox().vm.$emit('input', 'unknown');
+    it('emits input scoped to the boundary of the changed list', async () => {
+      await findPermissionsList(2).vm.$emit('input', ['read_compliance_policy_setting']);
 
-      expect(wrapper.text()).toContain('No resources found');
+      expect(wrapper.emitted('input')[0]).toEqual([
+        { namespace: [], user: [], instance: ['read_compliance_policy_setting'] },
+      ]);
     });
 
-    it('displays the selected permissions based on the value prop', () => {
-      createComponent({ props: { value: ['read_project', 'write_project'] } });
+    it('removes a resource permissions when a resource is unchecked', async () => {
+      await setResources(['project']);
+      await wrapper.setProps({ value: { namespace: ['read_project'], user: [], instance: [] } });
 
-      expect(findPermissionsList().props('value')).toEqual(['read_project', 'write_project']);
+      await setResources([]);
+
+      expect(wrapper.emitted('input').at(-1)).toEqual([{ namespace: [], user: [], instance: [] }]);
+    });
+
+    it('handles `remove-resource` event by clearing that resource permissions', async () => {
+      await setResources(['project']);
+      await wrapper.setProps({
+        value: { namespace: ['read_project', 'write_project'], user: [], instance: [] },
+      });
+
+      await findPermissionsList(0).vm.$emit('remove-resource', 'project');
+
+      expect(findPermissionsList(0).props('selectedResources')).not.toContain('project');
+      expect(wrapper.emitted('input').at(-1)).toEqual([{ namespace: [], user: [], instance: [] }]);
     });
   });
 
@@ -194,53 +217,103 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
       await waitForPromises();
     });
 
-    describe('when AI suggests permissions', () => {
-      it('selects the suggested permissions and their resources', async () => {
-        await wrapper.setProps({ aiPermissions: { suggested: ['read_project'], removed: [] } });
+    const emptySuggestion = () => ({ namespace: [], user: [], instance: [] });
 
-        expect(wrapper.vm.selectedResources).toContain('project');
-        expect(wrapper.emitted('input')[0]).toEqual([['read_project']]);
+    describe('when AI suggests permissions', () => {
+      it('selects the suggested permissions and their resources in the correct boundary', async () => {
+        await wrapper.setProps({
+          aiPermissions: {
+            suggested: { ...emptySuggestion(), namespace: ['read_project'] },
+            removed: emptySuggestion(),
+          },
+        });
+
+        expect(wrapper.vm.selectedResources.namespace).toContain('project');
+        expect(wrapper.emitted('input')[0]).toEqual([
+          { namespace: ['read_project'], user: [], instance: [] },
+        ]);
+      });
+
+      it('applies each boundary bucket to its own section', async () => {
+        await wrapper.setProps({
+          aiPermissions: {
+            suggested: { ...emptySuggestion(), user: ['read_user'] },
+            removed: emptySuggestion(),
+          },
+        });
+
+        expect(wrapper.vm.selectedResources.user).toContain('user');
+        expect(wrapper.emitted('input')[0]).toEqual([
+          { namespace: [], user: ['read_user'], instance: [] },
+        ]);
       });
 
       it('applies permissions when set before the permissions query resolves', async () => {
         createComponent({
-          props: { aiPermissions: { suggested: ['read_project'], removed: [] } },
+          props: {
+            aiPermissions: {
+              suggested: { ...emptySuggestion(), namespace: ['read_project'] },
+              removed: emptySuggestion(),
+            },
+          },
         });
 
         expect(wrapper.emitted('input')).toBeUndefined();
 
         await waitForPromises();
 
-        expect(wrapper.emitted('input')[0]).toEqual([['read_project']]);
+        expect(wrapper.emitted('input')[0]).toEqual([
+          { namespace: ['read_project'], user: [], instance: [] },
+        ]);
       });
 
       it('merges with already selected permissions', async () => {
-        await wrapper.setProps({ value: ['write_project'] });
-        await wrapper.setProps({ aiPermissions: { suggested: ['read_project'], removed: [] } });
+        await wrapper.setProps({ value: { namespace: ['write_project'], user: [], instance: [] } });
+        await wrapper.setProps({
+          aiPermissions: {
+            suggested: { ...emptySuggestion(), namespace: ['read_project'] },
+            removed: emptySuggestion(),
+          },
+        });
 
-        expect(wrapper.emitted('input')[0]).toEqual([['write_project', 'read_project']]);
+        expect(wrapper.emitted('input').at(-1)).toEqual([
+          { namespace: ['write_project', 'read_project'], user: [], instance: [] },
+        ]);
       });
 
       it('merges suggested resources with already selected resources', async () => {
-        await findResourcesList().vm.$emit('input', ['repository']);
-        await wrapper.setProps({ aiPermissions: { suggested: ['read_project'], removed: [] } });
+        await setResources(['repository']);
+        await wrapper.setProps({
+          aiPermissions: {
+            suggested: { ...emptySuggestion(), namespace: ['read_project'] },
+            removed: emptySuggestion(),
+          },
+        });
 
-        expect(wrapper.vm.selectedResources).toContain('repository');
-        expect(wrapper.vm.selectedResources).toContain('project');
+        expect(wrapper.vm.selectedResources.namespace).toEqual(
+          expect.arrayContaining(['repository', 'project']),
+        );
       });
     });
 
     describe('when AI removes permissions', () => {
       beforeEach(async () => {
-        await findResourcesList().vm.$emit('input', ['project']);
-        await findPermissionsList().vm.$emit('input', ['read_project', 'write_project']);
-        await wrapper.setProps({ value: ['read_project', 'write_project'] });
+        await wrapper.setProps({
+          value: { namespace: ['read_project', 'write_project'], user: [], instance: [] },
+        });
       });
 
-      it('removes the specified permissions', async () => {
-        await wrapper.setProps({ aiPermissions: { suggested: [], removed: ['read_project'] } });
+      it('removes the specified permissions from their boundary', async () => {
+        await wrapper.setProps({
+          aiPermissions: {
+            suggested: emptySuggestion(),
+            removed: { ...emptySuggestion(), namespace: ['read_project'] },
+          },
+        });
 
-        expect(wrapper.emitted('input')[1]).toEqual([['write_project']]);
+        expect(wrapper.emitted('input').at(-1)).toEqual([
+          { namespace: ['write_project'], user: [], instance: [] },
+        ]);
       });
 
       it('does not remove the resource when all its permissions are cleared', async () => {
@@ -248,106 +321,81 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
           aiPermissions: { suggested: [], removed: ['read_project', 'write_project'] },
         });
 
-        expect(findPermissionsList().props('selectedResources')).toContain('project');
+        expect(wrapper.vm.selectedResources.namespace).toContain('project');
       });
+    });
+
+    it('applies both suggestions and removals from a single response without clobbering', async () => {
+      await wrapper.setProps({ value: { namespace: ['write_project'], user: [], instance: [] } });
+
+      await wrapper.setProps({
+        aiPermissions: {
+          suggested: { ...emptySuggestion(), namespace: ['read_project'] },
+          removed: { ...emptySuggestion(), namespace: ['write_project'] },
+        },
+      });
+
+      expect(wrapper.emitted('input').at(-1)).toEqual([
+        { namespace: ['read_project'], user: [], instance: [] },
+      ]);
     });
   });
 
   describe('pre-filling resources from permissions', () => {
-    it('selects resources when value prop is provided', async () => {
+    it('selects resources for the boundary each permission belongs to', async () => {
       await waitForPromises();
 
-      await wrapper.setProps({ value: ['read_project', 'read_repository'] });
+      await wrapper.setProps({
+        value: {
+          namespace: ['read_project', 'read_repository'],
+          user: ['read_user'],
+          instance: [],
+        },
+      });
 
-      expect(wrapper.vm.selectedResources).toContain('project');
-      expect(wrapper.vm.selectedResources).toContain('repository');
+      expect(wrapper.vm.selectedResources.namespace).toContain('project');
+      expect(wrapper.vm.selectedResources.namespace).toContain('repository');
+      expect(wrapper.vm.selectedResources.user).toContain('user');
     });
 
     it('merges with already selected resources', async () => {
       await waitForPromises();
+      await setResources(['repository']);
 
-      await findResourcesList().vm.$emit('input', ['repository']);
-      await wrapper.setProps({ value: ['read_project'] });
+      await wrapper.setProps({
+        value: { namespace: ['read_project'], user: [], instance: [] },
+      });
 
-      expect(wrapper.vm.selectedResources).toContain('repository');
-      expect(wrapper.vm.selectedResources).toContain('project');
+      expect(wrapper.vm.selectedResources.namespace).toEqual(
+        expect.arrayContaining(['repository', 'project']),
+      );
     });
   });
 
-  describe('event handling', () => {
+  describe('boundary isolation', () => {
     beforeEach(async () => {
       await waitForPromises();
     });
 
-    it('updates selected resources when resources list changes', async () => {
-      const selectedResources = ['project', 'repository'];
-
-      await findResourcesList().vm.$emit('input', selectedResources);
-
-      expect(findPermissionsList().props('selectedResources')).toEqual(selectedResources);
-
-      expect(findTab().attributes('tabcount')).toBe('2');
-    });
-
-    it('updates tab count when selected resources change', async () => {
-      const selectedResources = ['project', 'repository'];
-
-      await findResourcesList().vm.$emit('input', selectedResources);
-
-      expect(findTab().attributes('tabcount')).toBe('2');
-    });
-
-    it('emits input event when permissions list changes', async () => {
-      await findPermissionsList().vm.$emit('input', ['read_project', 'write_project']);
-
-      expect(wrapper.emitted('input')[0]).toEqual([['read_project', 'write_project']]);
-
-      await findPermissionsList().vm.$emit('input', ['read_repository']);
-
-      expect(wrapper.emitted('input')[1]).toEqual([['read_repository']]);
-    });
-
-    it('handles resource uncheck event', async () => {
-      await findResourcesList().vm.$emit('input', ['project', 'repository']);
-
-      await findPermissionsList().vm.$emit('input', ['read_project', 'read_repository']);
-
-      expect(wrapper.emitted('input')[0]).toEqual([['read_project', 'read_repository']]);
-
-      await wrapper.setProps({ value: ['read_project', 'read_repository'] });
-
-      // simulate unchecking `project` resource
-      await findResourcesList().vm.$emit('input', ['repository']);
-
-      await nextTick();
-
-      expect(wrapper.emitted('input')[1]).toEqual([['read_repository']]);
-    });
-
-    it('handles `remove-resource` event', async () => {
-      await findResourcesList().vm.$emit('input', ['project', 'repository', 'contributed_project']);
-
-      await findPermissionsList().vm.$emit('input', [
-        'read_project',
-        'read_repository',
-        'read_contributed_project',
-      ]);
-
-      expect(wrapper.emitted('input')[0]).toEqual([
-        ['read_project', 'read_repository', 'read_contributed_project'],
-      ]);
-
+    it('does not leak a resource into another boundary for a shared permission name', async () => {
       await wrapper.setProps({
-        value: ['read_project', 'read_repository', 'read_contributed_project'],
+        value: { namespace: [], user: ['read_contributed_project'], instance: [] },
       });
 
-      // simulate unchecking `project` resource
-      await findPermissionsList().vm.$emit('remove-resource', 'project');
+      expect(wrapper.vm.selectedResources.user).toContain('project');
+      expect(wrapper.vm.selectedResources.namespace).toEqual([]);
+    });
 
-      await nextTick();
+    it('applies an AI suggestion only to its boundary for a shared permission name', async () => {
+      await wrapper.setProps({
+        aiPermissions: {
+          suggested: { namespace: [], user: ['read_contributed_project'], instance: [] },
+          removed: { namespace: [], user: [], instance: [] },
+        },
+      });
 
-      expect(wrapper.emitted('input')[1]).toEqual([
-        ['read_repository', 'read_contributed_project'],
+      expect(wrapper.emitted('input').at(-1)).toEqual([
+        { namespace: [], user: ['read_contributed_project'], instance: [] },
       ]);
     });
   });

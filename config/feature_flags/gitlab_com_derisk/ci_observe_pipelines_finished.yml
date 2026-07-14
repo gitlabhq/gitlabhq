@@ -1,0 +1,10 @@
+---
+name: ci_observe_pipelines_finished
+description: Emit Prometheus metrics counting finished pipelines and measuring wall-clock time from pipeline creation to finished
+feature_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/work_items/592819"
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244288"
+rollout_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/605233"
+milestone: "19.2"
+type: gitlab_com_derisk
+group: group::pipeline execution
+default_enabled: false

@@ -34,14 +34,12 @@ describe('Merge request utils', () => {
       targetType: 'merge_request',
     };
 
-    const diffRefs = { head_sha: 'head222' };
-
     it('builds the correct payload', () => {
       const result = buildReplyData({
         discussion: { reply_id: 'reply-1' },
         noteText: 'reply text',
         noteableData,
-        diffRefs,
+        sourceHeadSha: 'source999',
       });
 
       expect(result).toEqual({
@@ -50,7 +48,7 @@ describe('Merge request utils', () => {
           in_reply_to_discussion_id: 'reply-1',
           target_type: 'merge_request',
           note: { note: 'reply text' },
-          merge_request_diff_head_sha: 'head222',
+          merge_request_diff_head_sha: 'source999',
         },
       });
     });
@@ -90,14 +88,16 @@ describe('Merge request utils', () => {
       showWhitespace: true,
     };
 
-    const diffRefs = {
-      base_sha: 'base000',
-      start_sha: 'start111',
-      head_sha: 'head222',
-    };
-
     const discussion = {
-      position: { old_path: 'a.rb', new_path: 'a.rb', old_line: null, new_line: 5 },
+      position: {
+        old_path: 'a.rb',
+        new_path: 'a.rb',
+        old_line: null,
+        new_line: 5,
+        base_sha: 'base000',
+        start_sha: 'start111',
+        head_sha: 'head222',
+      },
       lineChange: { change: 'added', position: 'new' },
       lineCode: 'abc_0_5',
     };
@@ -108,7 +108,7 @@ describe('Merge request utils', () => {
         noteBody: 'test comment',
         noteableData,
         viewConfig,
-        diffRefs,
+        sourceHeadSha: 'source999',
       });
 
       expect(result).toEqual({
@@ -116,7 +116,7 @@ describe('Merge request utils', () => {
         data: {
           view: 'inline',
           line_type: 'new',
-          merge_request_diff_head_sha: 'head222',
+          merge_request_diff_head_sha: 'source999',
           note_project_id: '',
           target_type: 'merge_request',
           target_id: 42,
@@ -124,13 +124,7 @@ describe('Merge request utils', () => {
           note: {
             note: 'test comment',
             position: JSON.stringify({
-              base_sha: 'base000',
-              start_sha: 'start111',
-              head_sha: 'head222',
-              old_path: 'a.rb',
-              new_path: 'a.rb',
-              old_line: null,
-              new_line: 5,
+              ...discussion.position,
               position_type: 'text',
               ignore_whitespace_change: false,
             }),
@@ -150,10 +144,24 @@ describe('Merge request utils', () => {
         noteBody: 'test comment',
         noteableData,
         viewConfig,
-        diffRefs,
+        sourceHeadSha: 'source999',
       });
 
       expect(result.data.note.commit_id).toBe('abc123');
+    });
+
+    it('builds the position refs from the discussion position', () => {
+      const result = buildLineDiscussionData({
+        discussion,
+        noteBody: 'test comment',
+        noteableData,
+        viewConfig,
+        sourceHeadSha: 'source999',
+      });
+      const position = JSON.parse(result.data.note.position);
+      expect(position.base_sha).toBe('base000');
+      expect(position.start_sha).toBe('start111');
+      expect(position.head_sha).toBe('head222');
     });
 
     it('sets ignore_whitespace_change to true when whitespace is hidden', () => {
@@ -162,7 +170,7 @@ describe('Merge request utils', () => {
         noteBody: 'test comment',
         noteableData,
         viewConfig: { ...viewConfig, showWhitespace: false },
-        diffRefs,
+        sourceHeadSha: 'source999',
       });
       const position = JSON.parse(result.data.note.position);
       expect(position.ignore_whitespace_change).toBe(true);
@@ -174,7 +182,7 @@ describe('Merge request utils', () => {
         noteBody: 'test comment',
         noteableData,
         viewConfig: { ...viewConfig, showWhitespace: false },
-        diffRefs,
+        sourceHeadSha: 'source999',
         showWhitespace: true,
       });
       const position = JSON.parse(result.data.note.position);
@@ -184,9 +192,16 @@ describe('Merge request utils', () => {
 
   describe('buildDraftLineDiscussionData', () => {
     const viewConfig = { viewType: 'inline', showWhitespace: true };
-    const diffRefs = { base_sha: 'base000', start_sha: 'start111', head_sha: 'head222' };
     const discussion = {
-      position: { old_path: 'a.rb', new_path: 'a.rb', old_line: null, new_line: 5 },
+      position: {
+        old_path: 'a.rb',
+        new_path: 'a.rb',
+        old_line: null,
+        new_line: 5,
+        base_sha: 'base000',
+        start_sha: 'start111',
+        head_sha: 'head222',
+      },
       lineCode: 'abc_0_5',
     };
 
@@ -195,20 +210,13 @@ describe('Merge request utils', () => {
         discussion,
         noteBody: 'draft comment',
         viewConfig,
-        diffRefs,
       });
 
       expect(result).toEqual({
         note: {
           note: 'draft comment',
           position: JSON.stringify({
-            base_sha: 'base000',
-            start_sha: 'start111',
-            head_sha: 'head222',
-            old_path: 'a.rb',
-            new_path: 'a.rb',
-            old_line: null,
-            new_line: 5,
+            ...discussion.position,
             position_type: 'text',
             ignore_whitespace_change: false,
           }),
@@ -223,7 +231,6 @@ describe('Merge request utils', () => {
         discussion,
         noteBody: 'draft comment',
         viewConfig: { ...viewConfig, showWhitespace: false },
-        diffRefs,
       });
       const position = JSON.parse(result.note.position);
       expect(position.ignore_whitespace_change).toBe(true);
@@ -234,7 +241,6 @@ describe('Merge request utils', () => {
         discussion,
         noteBody: 'draft comment',
         viewConfig: { ...viewConfig, showWhitespace: false },
-        diffRefs,
         showWhitespace: true,
       });
       const position = JSON.parse(result.note.position);
@@ -249,7 +255,6 @@ describe('Merge request utils', () => {
         },
         noteBody: 'draft comment',
         viewConfig,
-        diffRefs,
       });
       const position = JSON.parse(result.note.position);
       expect(position.position_type).toBe('image');
@@ -260,38 +265,24 @@ describe('Merge request utils', () => {
         discussion: { position: discussion.position },
         noteBody: 'draft comment',
         viewConfig,
-        diffRefs,
       });
       expect(result.note.line_code).toBeNull();
     });
 
-    it('uses sourceHeadSha as head_sha when provided', () => {
+    it('builds the position refs from the discussion position', () => {
       const result = buildDraftLineDiscussionData({
         discussion,
         noteBody: 'draft comment',
         viewConfig,
-        diffRefs,
-        sourceHeadSha: 'source_branch_head',
       });
       const position = JSON.parse(result.note.position);
-      expect(position.head_sha).toBe('source_branch_head');
-    });
-
-    it('falls back to diffRefs.head_sha when sourceHeadSha is not provided', () => {
-      const result = buildDraftLineDiscussionData({
-        discussion,
-        noteBody: 'draft comment',
-        viewConfig,
-        diffRefs,
-      });
-      const position = JSON.parse(result.note.position);
+      expect(position.base_sha).toBe('base000');
+      expect(position.start_sha).toBe('start111');
       expect(position.head_sha).toBe('head222');
     });
   });
 
   describe('buildDraftReplyData', () => {
-    const diffRefs = { head_sha: 'head222' };
-
     it.each`
       resolveDiscussion | expectedResolve
       ${undefined}      | ${false}
@@ -302,14 +293,14 @@ describe('Merge request utils', () => {
         const result = buildDraftReplyData({
           discussion: { reply_id: 'reply-1' },
           noteText: 'draft reply',
-          diffRefs,
+          sourceHeadSha: 'source999',
           resolveDiscussion,
         });
 
         expect(result).toEqual({
           in_reply_to_discussion_id: 'reply-1',
           draft_note: { note: 'draft reply', resolve_discussion: expectedResolve },
-          merge_request_diff_head_sha: 'head222',
+          merge_request_diff_head_sha: 'source999',
         });
       },
     );

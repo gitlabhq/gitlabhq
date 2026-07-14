@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Organizations, feature_category: :organization do
   include WorkhorseHelpers
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   shared_examples 'organization avatar upload' do
     context 'when valid' do
@@ -206,6 +206,86 @@ RSpec.describe API::Organizations, feature_category: :organization do
           post api("/organizations", user), params: params
 
           expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+  end
+
+  describe 'DELETE /organizations/:id' do
+    let_it_be_with_refind(:organization) { create(:organization) }
+
+    it_behaves_like 'authorizing granular token permissions', :delete_organization do
+      let(:boundary_object) { :instance }
+      let(:request) { delete api("/organizations/#{organization.id}", personal_access_token: pat) }
+
+      before do
+        create(:organization_user, :owner, organization: organization, user: user)
+      end
+    end
+
+    context 'when user is not authenticated' do
+      it 'returns unauthorized' do
+        delete api("/organizations/#{organization.id}")
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when user does not have permission' do
+      it 'returns forbidden with an error message' do
+        delete api("/organizations/#{organization.id}", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('Insufficient permissions')
+      end
+    end
+
+    context 'when user has permission' do
+      before_all do
+        create(:organization_user, :owner, organization: organization, user: user)
+      end
+
+      context 'when organization does not exist' do
+        it 'returns not found' do
+          delete api("/organizations/#{non_existing_record_id}", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when organization is not empty' do
+        before do
+          create(:group, organization: organization)
+        end
+
+        it 'returns bad request with an error message' do
+          delete api("/organizations/#{organization.id}", user)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('Organization must be empty before it can be deleted')
+        end
+      end
+
+      context 'when organization is already soft-deleted' do
+        before do
+          ::Organizations::SoftDeleteService.new(organization, current_user: user).execute
+          organization.reload
+        end
+
+        it 'returns bad request with an error message' do
+          delete api("/organizations/#{organization.id}", user)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('Organization has already been deleted')
+        end
+      end
+
+      context 'when organization is empty and not default' do
+        it 'soft-deletes the organization and returns accepted' do
+          expect { delete api("/organizations/#{organization.id}", user) }
+            .to change { organization.reload.state }.from('active').to('soft_deleted')
+
+          expect(response).to have_gitlab_http_status(:accepted)
         end
       end
     end

@@ -71,7 +71,9 @@ module Types
       field :job_count, GraphQL::Types::Int, null: true,
         description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to " \
           "indicate that more items exist).\n`jobCount` is an optimized version of `jobs { count }`, " \
-          "and can be requested for multiple runners on the same request.",
+          "and can be requested for multiple runners on the same request. " \
+          "When the `runner_job_count_recent_partitions` feature flag is enabled, the count only " \
+          "includes jobs on recent CI build partitions; when disabled, it includes jobs on all partitions.",
         resolver: ::Resolvers::Ci::RunnerJobCountResolver
       field :job_execution_status,
         Types::Ci::RunnerJobExecutionStatusEnum,

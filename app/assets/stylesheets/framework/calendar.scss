@@ -1,3 +1,8 @@
+.new-activities-block {
+  // Set min-height to avoid big layout shift
+  min-height: 240px;
+}
+
 .user-contrib-cell {
   &:hover,
   &:focus,
@@ -31,4 +36,82 @@
   &[data-level="4"] {
     fill: var(--user-contribution-graph-cell-level-4);
   }
+}
+
+.contribution-event {
+  @apply gl-gap-x-3;
+  @apply gl-gap-y-2;
+  display: grid;
+  align-items: center;
+
+  &::before {
+    @apply gl-w-1;
+    @apply gl-left-4;
+    @apply gl-top-6;
+    @apply gl-bottom-0;
+    @apply gl-bg-strong;
+    content: "";
+    transform: translateX(-50%);
+    position: absolute;
+  }
+}
+
+.contribution-event-avatar {
+  grid-template-columns: var(--gl-spacing-scale-6) auto 1fr;
+  grid-template-areas:
+      "author author author"
+      ". icon title"
+      ". description description"
+      ". timestamp timestamp";
+
+  @include gl-container-width-up(sm, panel) {
+    grid-template-columns: var(--gl-spacing-scale-6) min-content 1fr auto;
+    grid-template-areas:
+        "author author author timestamp"
+        ". icon title ."
+        ". description description .";
+  }
+
+  .contribution-event-icon {
+    @apply -gl-mr-1; // Visual alignment fix
+  }
+}
+
+.contribution-event-default {
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+      "icon title"
+      ". description"
+      ". timestamp";
+
+  @include gl-container-width-up(sm, panel) {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+        "icon title timestamp"
+        ". description .";
+  }
+}
+
+.contribution-event-author {
+  grid-area: author;
+}
+
+.contribution-event-icon {
+  grid-area: icon;
+}
+
+.contribution-event-timestamp {
+  grid-area: timestamp;
+}
+
+.contribution-event-title {
+  grid-area: title;
+}
+
+.contribution-event-description {
+  grid-area: description;
+}
+
+.contribution-event:last-of-type::before {
+  display: none;
 }

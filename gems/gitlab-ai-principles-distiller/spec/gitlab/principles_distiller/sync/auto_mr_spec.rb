@@ -262,6 +262,179 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
   end
 
+  describe '.mr_assignee_id' do
+    subject(:assignee_id) { sync.send(:mr_assignee_id, 'api-token') }
+
+    let(:fake_response) { instance_double(Net::HTTPResponse, code: '200', body: response_body) }
+    let(:http_instance) { instance_double(Net::HTTP) }
+    let(:captured_request) { [] }
+
+    before do
+      allow(sync.workflow).to receive(:gitlab_host).and_return('https://gitlab.com')
+      allow(Net::HTTP).to receive(:new).and_return(http_instance)
+      allow(http_instance).to receive(:use_ssl=)
+      allow(http_instance).to receive(:read_timeout=)
+      allow(http_instance).to receive(:request) do |request|
+        captured_request << request
+        fake_response
+      end
+      allow(fake_response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(http_success)
+    end
+
+    context 'when GET /user succeeds' do
+      let(:http_success) { true }
+      let(:response_body) { '{"id":4242,"username":"service-account"}' }
+
+      it 'returns the current user id', :aggregate_failures do
+        expect(assignee_id).to eq(4242)
+        expect(captured_request.first.uri.to_s).to eq('https://gitlab.com/api/v4/user')
+        expect(captured_request.first['PRIVATE-TOKEN']).to eq('api-token')
+      end
+    end
+
+    context 'when GET /user fails' do
+      let(:http_success) { false }
+      let(:response_body) { 'Too Many Requests' }
+
+      it 'returns nil so the MR is created unassigned' do
+        expect(assignee_id).to be_nil
+      end
+
+      it 'memoizes the nil result so a fan-out run does not re-query', :aggregate_failures do
+        2.times { sync.send(:mr_assignee_id, 'api-token') }
+
+        expect(captured_request.size).to eq(1)
+      end
+    end
+  end
+
+  describe '.version_milestone_title' do
+    subject(:title) { sync.send(:version_milestone_title) }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+    end
+
+    context 'when VERSION holds a pre-release version' do
+      before do
+        File.write(File.join(tmpdir, 'VERSION'), "19.1.0-pre\n")
+      end
+
+      it 'returns MAJOR.MINOR' do
+        expect(title).to eq('19.1')
+      end
+    end
+
+    context 'when VERSION holds a plain version' do
+      before do
+        File.write(File.join(tmpdir, 'VERSION'), "20.10.3\n")
+      end
+
+      it 'returns MAJOR.MINOR' do
+        expect(title).to eq('20.10')
+      end
+    end
+
+    context 'when VERSION is missing' do
+      it 'returns nil' do
+        expect(title).to be_nil
+      end
+    end
+
+    context 'when VERSION is malformed' do
+      before do
+        File.write(File.join(tmpdir, 'VERSION'), "not-a-version\n")
+      end
+
+      it 'returns nil' do
+        expect(title).to be_nil
+      end
+    end
+  end
+
+  describe '.current_milestone_id' do
+    subject(:milestone_id) do
+      sync.send(:current_milestone_id, 'gitlab-org%2Fgitlab', 'api-token')
+    end
+
+    let(:fake_response) { instance_double(Net::HTTPResponse, code: '200', body: response_body) }
+    let(:http_instance) { instance_double(Net::HTTP) }
+    let(:captured_request) { [] }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      File.write(File.join(tmpdir, 'VERSION'), "19.1.0-pre\n")
+      allow(sync.workflow).to receive(:gitlab_host).and_return('https://gitlab.com')
+      allow(Net::HTTP).to receive(:new).and_return(http_instance)
+      allow(http_instance).to receive(:use_ssl=)
+      allow(http_instance).to receive(:read_timeout=)
+      allow(http_instance).to receive(:request) do |request|
+        captured_request << request
+        fake_response
+      end
+      allow(fake_response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(http_success)
+    end
+
+    context 'when a milestone matches the VERSION title' do
+      let(:http_success) { true }
+      let(:response_body) { '[{"id":6177882,"title":"19.1","state":"active"}]' }
+
+      it 'returns the milestone id and queries with include_ancestors', :aggregate_failures do
+        expect(milestone_id).to eq(6177882)
+        query = captured_request.first.uri.query
+        expect(query).to include('title=19.1')
+        expect(query).to include('include_ancestors=true')
+      end
+    end
+
+    context 'when no milestone matches the title' do
+      let(:http_success) { true }
+      let(:response_body) { '[{"id":1,"title":"18.0"}]' }
+
+      it 'returns nil so the MR is created without a milestone' do
+        expect(milestone_id).to be_nil
+      end
+
+      it 'memoizes the nil result so a fan-out run does not re-query', :aggregate_failures do
+        2.times { sync.send(:current_milestone_id, 'gitlab-org%2Fgitlab', 'api-token') }
+
+        expect(captured_request.size).to eq(1)
+      end
+    end
+
+    context 'when the API returns a 2xx non-JSON response' do
+      let(:http_success) { true }
+      let(:response_body) { '<html>not json</html>' }
+
+      it 'returns nil so the MR is created without a milestone' do
+        expect(milestone_id).to be_nil
+      end
+    end
+
+    context 'when the milestone lookup fails' do
+      let(:http_success) { false }
+      let(:response_body) { 'Forbidden' }
+
+      it 'returns nil' do
+        expect(milestone_id).to be_nil
+      end
+    end
+
+    context 'when VERSION is missing' do
+      let(:http_success) { true }
+      let(:response_body) { '[]' }
+
+      before do
+        FileUtils.rm_f(File.join(tmpdir, 'VERSION'))
+      end
+
+      it 'returns nil without attempting a milestone lookup', :aggregate_failures do
+        expect(milestone_id).to be_nil
+        expect(captured_request).to be_empty
+      end
+    end
+  end
+
   describe '.prefetch_prior_shas!' do
     # prefetch_prior_shas! is private; reach it via send. We stub
     # `sha_present_locally?` and `system` to avoid touching real git.
@@ -506,7 +679,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     def capture_post_body
       captured = nil
       allow(sync.workflow).to receive(:post_json) do |_url, body:, **|
-        captured = body unless body[:title].to_s.end_with?('tooling')
+        captured = body unless body[:title].to_s.start_with?('tooling: ')
         mock_response
       end
       create_branch_and_mr
@@ -526,6 +699,60 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       create_branch_and_mr
 
       expect(sync.workflow).to have_received(:post_json).twice
+    end
+
+    it 'does not stage the Duo review-instructions file on the tooling branch' do
+      staged = []
+      # Mirror the default stub (return true), but record the paths passed to
+      # `git add -f` so we can assert the Duo file is NOT among them.
+      allow(sync).to receive(:system) do |*args, **_kwargs|
+        staged.concat(args[5..]) if args[0,
+          5] == ['git', '-C', Gitlab::PrinciplesDistiller::Workspace.path, 'add', '-f']
+
+        true
+      end
+
+      create_branch_and_mr
+
+      # The Duo fences are reconciled from merged master by the separate
+      # scheduled reconcile job, so the distillation tooling branch must never
+      # carry the mr-review-instructions.yaml change.
+      expect(staged).not_to include(described_class::Manifest::DUO_REVIEW_INSTRUCTIONS_PATH)
+    end
+
+    it 'regenerates static artifacts without any distilled-content overrides' do
+      # Fence regeneration is decoupled from distillation, so the tooling
+      # branch just regenerates the manifest-driven routing tables -- no
+      # in-memory distilled content is threaded through anymore.
+      expect(sync).to receive(:regenerate_static_artifacts).with(no_args)
+
+      create_branch_and_mr
+    end
+
+    context 'when the assignee and milestone lookups succeed' do
+      before do
+        allow(sync).to receive_messages(mr_assignee_id: 4242, current_milestone_id: 6177882)
+      end
+
+      it 'sets assignee_id and milestone_id on the MR body', :aggregate_failures do
+        body = capture_post_body
+
+        expect(body[:assignee_id]).to eq(4242)
+        expect(body[:milestone_id]).to eq(6177882)
+      end
+    end
+
+    context 'when the assignee and milestone lookups fail' do
+      before do
+        allow(sync).to receive_messages(mr_assignee_id: nil, current_milestone_id: nil)
+      end
+
+      it 'omits assignee_id and milestone_id so MR creation still proceeds', :aggregate_failures do
+        body = capture_post_body
+
+        expect(body).not_to have_key(:assignee_id)
+        expect(body).not_to have_key(:milestone_id)
+      end
     end
 
     context 'with principles spanning multiple teams' do
@@ -576,19 +803,22 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         expect(sync.workflow).to have_received(:post_json).exactly(3).times
       end
 
-      it 'gives each team MR an owner_team-suffixed title and scoped content', :aggregate_failures do
+      it 'gives each team MR a slug-prefixed title and scoped content', :aggregate_failures do
         bodies = capture_all_bodies
         create_branch_and_mr
         titles = bodies.map { |b| b[:title] }
 
+        # Titles are prefixed with the team_slug (never the @handle), so the
+        # title itself never pings anyone.
         expect(titles).to include(
-          a_string_ending_with('— @abdwdd @alexpooley'),
-          a_string_ending_with('— @gitlab-com/gl-security/appsec'),
-          a_string_ending_with('— tooling')
+          a_string_starting_with('qa: '),
+          a_string_starting_with('appsec: '),
+          a_string_starting_with('tooling: ')
         )
+        expect(titles).to all(satisfy { |t| !t.include?('@') })
 
-        testing = bodies.find { |b| b[:title].end_with?('— @abdwdd @alexpooley') }
-        security = bodies.find { |b| b[:title].end_with?('— @gitlab-com/gl-security/appsec') }
+        testing = bodies.find { |b| b[:title].start_with?('qa: ') }
+        security = bodies.find { |b| b[:title].start_with?('appsec: ') }
 
         expect(testing[:description]).to include('#### `qa`')
         expect(testing[:description]).not_to include('#### `security`')
@@ -639,18 +869,140 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         }
       end
 
-      it 'lists the secondary teams in a "Request a review from" section', :aggregate_failures do
+      it 'lists secondary teams as inline code (no bare mention) in a review section', :aggregate_failures do
         # Capture the team (non-tooling) MR body.
         captured = nil
         allow(sync.workflow).to receive(:post_json) do |_url, body:, **|
-          captured = body unless body[:title].to_s.end_with?('tooling')
+          captured = body unless body[:title].to_s.start_with?('tooling: ')
           mock_response
         end
 
         create_branch_and_mr
 
         expect(captured[:description]).to include('Request a review from')
-        expect(captured[:description]).to include('@gitlab-com/gl-security/appsec')
+        # Inline code, not a bare @mention, so the secondary group is not pinged.
+        expect(captured[:description]).to include('`@gitlab-com/gl-security/appsec`')
+        expect(captured[:description]).not_to match(/^- @gitlab-com/)
+      end
+    end
+
+    context 'when the team opts out of pings (ping_team: false)' do
+      let(:distilled_contents) do
+        { 'backend-ruby' => "---\nsource_checksum: a\n---\n# Ruby\n" }
+      end
+
+      let(:affected) do
+        {
+          'backend-ruby' => {
+            config: { 'sources' => [{ 'path' => 'doc/development/backend/ruby_style_guide.md' }] },
+            changed_sources: [{ 'path' => 'doc/development/backend/ruby_style_guide.md' }], prior_sha: nil
+          }
+        }
+      end
+
+      before do
+        sync.manifest.data = {
+          'principles' => {
+            'backend-ruby' => {
+              'owner_team' => '@gitlab-org/maintainers/rails-backend', 'ping_team' => false,
+              'sources' => [{ 'path' => 'doc/development/backend/ruby_style_guide.md' }]
+            }
+          }
+        }
+      end
+
+      it 'uses the team_slug (not the @handle) in the title, commit, and summary', :aggregate_failures do
+        captured = nil
+        commits = []
+        allow(sync.workflow).to receive(:post_json) do |_url, body:, **|
+          captured = body unless body[:title].to_s.start_with?('tooling: ')
+          mock_response
+        end
+        allow(sync).to receive(:commit_and_push) do |_branch, _pid, _tok, msg|
+          commits << msg
+        end
+
+        create_branch_and_mr
+
+        expect(captured[:title]).to start_with('rails-backend: ')
+        expect(captured[:title]).not_to include('@')
+        expect(captured[:description]).to include('**rails-backend**')
+        expect(captured[:description]).not_to include('@gitlab-org/maintainers/rails-backend')
+        expect(commits).to include(a_string_including('Update rails-backend AI development principles'))
+      end
+    end
+
+    context 'with a long owner_team handle and several principles' do
+      # A long owner_team handle plus several principles is the worst case for
+      # both the subject (handle would overflow) and the body (Updated: list).
+      let(:distilled_contents) do
+        {
+          'authentication' => "---\nsource_checksum: a\n---\n# Auth\n",
+          'permissions-fundamentals' => "---\nsource_checksum: b\n---\n# Perms\n"
+        }
+      end
+
+      let(:affected) do
+        {
+          'authentication' => { config: { 'sources' => [] }, changed_sources: [], prior_sha: nil },
+          'permissions-fundamentals' => { config: { 'sources' => [] }, changed_sources: [], prior_sha: nil }
+        }
+      end
+
+      let(:long_handle) { '@gitlab-org/software-supply-chain-security/authorization/approvers' }
+
+      before do
+        sync.manifest.data = {
+          'principles' => {
+            'authentication' => {
+              'owner_team' => long_handle, 'team_slug' => 'authorization',
+              'sources' => []
+            },
+            'permissions-fundamentals' => {
+              'owner_team' => long_handle, 'team_slug' => 'authorization',
+              'sources' => []
+            }
+          }
+        }
+      end
+
+      it 'keeps every commit line within 72 chars and uses a slug subject + bullet body', :aggregate_failures do
+        commits = []
+        allow(sync).to receive(:commit_and_push).and_wrap_original do |_orig, *args|
+          commits << args.last
+          # Still exercise the guard, but skip the real git/push side effects.
+          sync.send(:assert_commit_lines_within_limit!, args.last)
+        end
+
+        expect { create_branch_and_mr }.not_to raise_error
+
+        team_commit = commits.find { |m| m.start_with?('Update authorization') }
+        expect(team_commit).not_to be_nil
+        expect(team_commit).to start_with('Update authorization AI development principles from SSOT')
+        expect(team_commit).not_to include(long_handle)
+        expect(team_commit).to include("Updated:\n- authentication\n- permissions-fundamentals")
+        expect(team_commit.lines.map(&:chomp)).to all(satisfy { |l| l.length <= 72 })
+      end
+    end
+
+    describe '#assert_commit_lines_within_limit!' do
+      it 'raises when a non-URL line exceeds 72 characters' do
+        msg = "Subject line ok\n\n#{'x' * 73}"
+
+        expect { sync.send(:assert_commit_lines_within_limit!, msg) }
+          .to raise_error(/over 72 chars/)
+      end
+
+      it 'allows long lines that contain a URL' do
+        msg = "Subject line ok\n\nSee https://gitlab.com/#{'a' * 80}"
+
+        expect { sync.send(:assert_commit_lines_within_limit!, msg) }.not_to raise_error
+      end
+
+      it 'passes when all lines are within the limit' do
+        msg = "Update foo AI principles\n\nUpdated:\n- foo"
+
+        expect { sync.send(:assert_commit_lines_within_limit!, msg) }.not_to raise_error
       end
     end
 
@@ -672,7 +1024,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         create_branch_and_mr
 
         # Exactly the team MR; the tooling MR is skipped (no staged changes).
-        expect(bodies.map { |b| b[:title] }).to contain_exactly(a_string_ending_with('— @abdwdd @alexpooley'))
+        expect(bodies.map { |b| b[:title] }).to contain_exactly(a_string_starting_with('qa: '))
       end
     end
 
@@ -691,7 +1043,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         end
 
         expect { create_branch_and_mr }.not_to raise_error
-        expect(bodies.map { |b| b[:title] }).to contain_exactly(a_string_ending_with('— tooling'))
+        expect(bodies.map { |b| b[:title] }).to contain_exactly(a_string_starting_with('tooling: '))
       end
     end
 
@@ -744,7 +1096,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         end
 
         expect { create_branch_and_mr }.not_to raise_error
-        expect(bodies.map { |b| b[:title] }).to include(a_string_ending_with('— tooling'))
+        expect(bodies.map { |b| b[:title] }).to include(a_string_starting_with('tooling: '))
       end
     end
 
@@ -804,10 +1156,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         }
       end
 
-      it 'applies auto_mr_cfg values to the MR title (with team suffix), labels, and flag', :aggregate_failures do
+      it 'applies auto_mr_cfg values to the MR title (slug-prefixed), labels, and flag', :aggregate_failures do
         today = Time.now.utc.strftime('%Y%m%d')
 
-        expect(received_body[:title]).to eq("Custom title #{today} — @abdwdd @alexpooley")
+        expect(received_body[:title]).to eq("qa: Custom title #{today}")
         expect(received_body[:labels]).to eq('label-a,label-b')
         expect(received_body[:remove_source_branch]).to be(false)
       end
@@ -955,6 +1307,260 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
           expect { create_branch_and_mr }.to raise_error(SystemExit)
             .and output(/cleanup deletion of branch.+failed/).to_stderr
         end
+      end
+    end
+  end
+
+  # Coverage for the decoupled reconcile path: the working tree already holds
+  # the fences regenerated by pure projection from merged master (done by
+  # Sync#reconcile_duo_instructions), and this helper cuts a fresh branch off
+  # origin/master, re-applies just the Duo file, and opens/updates a dedicated
+  # reconcile MR carrying only that change.
+  describe '.create_reconcile_mr_from_working_tree' do
+    subject(:reconcile) { sync.create_reconcile_mr_from_working_tree(auto_mr_cfg, manifest) }
+
+    let(:manifest) { sync.manifest }
+    let(:duo_dir) { File.join(tmpdir, '.gitlab', 'duo') }
+    let(:duo_path) { File.join(duo_dir, 'mr-review-instructions.yaml') }
+
+    let(:auto_mr_cfg) do
+      {
+        'branch_prefix' => 'docs-sync/principles',
+        'title_template' => 'Update AI development principles from SSOT (%{date})',
+        'labels' => %w[ai-agent documentation type::maintenance],
+        'remove_source_branch' => true
+      }
+    end
+
+    let(:mock_response) do
+      instance_double(Net::HTTPResponse, is_a?: true, body: '{"web_url":"https://gitlab.com/foo"}', code: '201')
+    end
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      FileUtils.mkdir_p(duo_dir)
+      File.write(duo_path, "instructions:\n")
+
+      stub_const('ENV', { 'GITLAB_API_TOKEN' => 'token', 'CI_PROJECT_ID' => 'gitlab-org/gitlab',
+                          'CI_DEFAULT_BRANCH' => 'master', 'CI_PROJECT_PATH' => 'gitlab-org/gitlab',
+                          'CI_PROJECT_DIR' => tmpdir })
+
+      allow(File).to receive(:realpath) { |arg| arg }
+      allow(sync).to receive_messages(system: true, git_has_staged_changes?: true, find_open_mr_iid: nil)
+      # The fences are projected AFTER the fresh branch is cut, so the manifest
+      # regenerates against the branch's base. Default: a change is produced.
+      allow(manifest).to receive(:generate_duo_review_instructions).and_return(true)
+      allow(sync.workflow).to receive_messages(
+        post_json: mock_response,
+        gitlab_host: 'https://gitlab.com',
+        catalog_project_path: 'gitlab-org/gitlab',
+        default_branch: 'master'
+      )
+    end
+
+    it 'opens a dedicated reconcile MR carrying only the fence update' do
+      date = Time.now.utc.strftime('%Y%m%d')
+
+      reconcile
+
+      expect(sync.workflow).to have_received(:post_json)
+        .with(a_string_including('/merge_requests'), hash_including(body: hash_including(
+          title: a_string_starting_with('reconcile fences: '),
+          source_branch: "docs-sync/principles-#{date}-reconcile-fences"
+        )))
+    end
+
+    it 'projects the fences after cutting the fresh branch, then stages only the Duo file' do
+      calls = []
+      allow(sync).to receive(:checkout_fresh_branch) { |*_a| calls << :checkout }
+      allow(manifest).to receive(:generate_duo_review_instructions) do
+        calls << :project
+        true
+      end
+      staged = []
+      allow(sync).to receive(:system) do |*args, **_kwargs|
+        prefix = ['git', '-C', Gitlab::PrinciplesDistiller::Workspace.path, 'add', '-f']
+        staged.concat(args[5..]) if args[0, 5] == prefix
+        true
+      end
+
+      reconcile
+
+      # Projection must happen after the branch is cut so it reads the branch's
+      # base ref (gitlab-org/gitlab#604890), and only the Duo file is staged.
+      expect(calls).to eq(%i[checkout project])
+      expect(staged).to eq([described_class::Manifest::DUO_REVIEW_INSTRUCTIONS_PATH])
+    end
+
+    context 'when the projection produces no change' do
+      before do
+        allow(manifest).to receive(:generate_duo_review_instructions).and_return(false)
+      end
+
+      it 'skips the reconcile MR without calling the API' do
+        reconcile
+
+        expect(sync.workflow).not_to have_received(:post_json)
+      end
+    end
+
+    context 'when the fences already match master' do
+      before do
+        allow(sync).to receive(:git_has_staged_changes?).and_return(false)
+      end
+
+      it 'skips the reconcile MR without calling the API' do
+        reconcile
+
+        expect(sync.workflow).not_to have_received(:post_json)
+      end
+    end
+  end
+
+  describe '.publish_tooling_branch' do
+    subject(:publish) do
+      sync.publish_tooling_branch('master', 'gitlab-org/gitlab', 'token', '20260702', auto_mr_cfg)
+    end
+
+    let(:duo_dir) { File.join(tmpdir, '.gitlab', 'duo') }
+    let(:duo_path) { File.join(duo_dir, 'mr-review-instructions.yaml') }
+
+    let(:auto_mr_cfg) do
+      {
+        'branch_prefix' => 'docs-sync/principles',
+        'title_template' => 'Update AI development principles from SSOT (%{date})',
+        'labels' => %w[ai-agent documentation type::maintenance],
+        'remove_source_branch' => true
+      }
+    end
+
+    let(:mock_response) do
+      instance_double(Net::HTTPResponse, is_a?: true, body: '{"web_url":"https://gitlab.com/foo"}', code: '201')
+    end
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      FileUtils.mkdir_p(duo_dir)
+
+      # A Duo file exists in the workspace, but the tooling branch must never
+      # touch it -- the reconcile job owns it.
+      File.write(duo_path, <<~YAML)
+        instructions:
+          # >>> generated: documentation — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
+          # distilled_at_sha: stalesha
+          # source_checksum: stalesum
+          - name: Documentation
+            fileFilters:
+              - "doc/**/*.md"
+            instructions: |
+              old body
+          # <<< end generated: documentation
+      YAML
+
+      sync.manifest.data = {
+        'principles' => {
+          'documentation' => {
+            'group' => 'Documentation',
+            'file_filters' => ['doc/**/*.md'],
+            'owner_team' => '@gitlab-org/technical-writing',
+            'sources' => [{ 'path' => 'a.md', 'url' => 'https://docs.gitlab.com/a/' }]
+          }
+        }
+      }
+
+      stub_const('ENV', { 'GITLAB_API_TOKEN' => 'token', 'CI_PROJECT_ID' => 'gitlab-org/gitlab',
+                          'CI_DEFAULT_BRANCH' => 'master', 'CI_PROJECT_PATH' => 'gitlab-org/gitlab',
+                          'CI_PROJECT_DIR' => tmpdir })
+
+      allow(File).to receive(:realpath) { |arg| arg }
+      allow(sync).to receive_messages(system: true, git_has_staged_changes?: true, find_open_mr_iid: nil)
+      allow(sync.workflow).to receive_messages(
+        post_json: mock_response,
+        gitlab_host: 'https://gitlab.com',
+        catalog_project_path: 'gitlab-org/gitlab',
+        default_branch: 'master'
+      )
+    end
+
+    it 'never regenerates or stages the Duo review-instructions file' do
+      staged = []
+      allow(sync).to receive(:system) do |*args, **_kwargs|
+        prefix = ['git', '-C', Gitlab::PrinciplesDistiller::Workspace.path, 'add', '-f']
+        staged.concat(args[5..]) if args[0, 5] == prefix
+        true
+      end
+
+      publish
+
+      expect(staged).not_to include(described_class::Manifest::DUO_REVIEW_INSTRUCTIONS_PATH)
+      # The Duo file on disk is left untouched by the tooling branch.
+      expect(File.read(duo_path)).to include('old body')
+    end
+  end
+
+  describe '#push_with_retries' do
+    subject(:push) { sync.send(:push_with_retries, env, push_url, branch) }
+
+    let(:env) { { 'GIT_CONFIG_COUNT' => '1' } }
+    let(:push_url) { 'https://gitlab.com/gitlab-org/gitlab.git' }
+    let(:branch) { 'docs-sync/principles-20260703-tooling' }
+
+    before do
+      # Don't actually sleep between retries.
+      allow(sync).to receive(:sleep)
+    end
+
+    context 'when the push succeeds on the first attempt' do
+      before do
+        allow(sync).to receive(:system).and_return(true)
+      end
+
+      it 'pushes exactly once and does not back off' do
+        push
+
+        expect(sync).to have_received(:system)
+          .with(env, 'git', '-C', anything, 'push', '--force', push_url, "#{branch}:#{branch}", exception: true)
+          .once
+        expect(sync).not_to have_received(:sleep)
+      end
+    end
+
+    context 'when the push fails transiently then succeeds' do
+      before do
+        # `system(..., exception: true)` raises on a non-zero git exit; the
+        # first attempt raises, the second returns normally.
+        call_count = 0
+        allow(sync).to receive(:system) do
+          call_count += 1
+          raise 'the remote end hung up unexpectedly' if call_count == 1
+
+          true
+        end
+      end
+
+      it 'retries after a backoff and eventually succeeds', :aggregate_failures do
+        expect { push }.not_to raise_error
+
+        expect(sync).to have_received(:system).twice
+        expect(sync).to have_received(:sleep).with(described_class::PUSH_RETRY_BACKOFF_SECONDS[0]).once
+      end
+
+      it 'warns about the transient failure before retrying' do
+        expect { push }.to output(/push of #{Regexp.escape(branch)} failed .*retrying in/m).to_stderr
+      end
+    end
+
+    context 'when the push keeps failing' do
+      before do
+        allow(sync).to receive(:system).and_raise('HTTP 502')
+      end
+
+      it 'retries up to PUSH_MAX_ATTEMPTS then re-raises the last error', :aggregate_failures do
+        expect { push }.to raise_error(/HTTP 502/)
+
+        expect(sync).to have_received(:system).exactly(described_class::PUSH_MAX_ATTEMPTS).times
+        # One backoff between each pair of attempts: MAX_ATTEMPTS - 1 sleeps.
+        expect(sync).to have_received(:sleep).exactly(described_class::PUSH_MAX_ATTEMPTS - 1).times
       end
     end
   end

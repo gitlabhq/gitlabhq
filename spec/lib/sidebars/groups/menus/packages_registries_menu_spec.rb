@@ -10,7 +10,7 @@ RSpec.describe Sidebars::Groups::Menus::PackagesRegistriesMenu, feature_category
     end
   end
 
-  let_it_be(:harbor_integration, freeze: false) { create(:harbor_integration, group: group, project: nil) }
+  let_it_be_with_reload(:harbor_integration) { create(:harbor_integration, group: group, project: nil) }
 
   let(:user) { owner }
   let(:context) { Sidebars::Groups::Context.new(current_user: user, container: group) }
@@ -140,7 +140,7 @@ RSpec.describe Sidebars::Groups::Menus::PackagesRegistriesMenu, feature_category
           it_behaves_like 'the menu entry is available'
 
           context 'when the group settings exist' do
-            let_it_be(:dependency_proxy_group_setting, freeze: false) do
+            let_it_be_with_reload(:dependency_proxy_group_setting) do
               create(:dependency_proxy_group_setting, group: group)
             end
 
@@ -212,6 +212,22 @@ RSpec.describe Sidebars::Groups::Menus::PackagesRegistriesMenu, feature_category
 
         it_behaves_like 'the menu entry is available'
       end
+    end
+  end
+
+  describe 'Feature Library metadata' do
+    before do
+      stub_container_registry_config(enabled: true)
+      stub_config(packages: { enabled: true })
+      stub_config(dependency_proxy: { enabled: true })
+    end
+
+    it 'gives every item a description and a unique library_icon', :aggregate_failures do
+      serialized = menu.renderable_items.map(&:serialize_for_super_sidebar)
+
+      expect(serialized).to all(include(:description, :library_icon))
+      icons = serialized.map { |item| item[:library_icon] }
+      expect(icons).to match_array(icons.uniq)
     end
   end
 

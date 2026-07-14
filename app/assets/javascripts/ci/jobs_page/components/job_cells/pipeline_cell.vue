@@ -1,5 +1,5 @@
 <script>
-import { GlAvatar, GlLink } from '@gitlab/ui';
+import { GlAvatar, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import LinkCell from '~/ci/runner/components/cells/link_cell.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -13,6 +13,9 @@ export default {
     GlAvatar,
     GlLink,
     LinkCell,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     job: {
@@ -37,6 +40,9 @@ export default {
     showAvatar() {
       return this.job.pipeline?.user;
     },
+    pipelineUserName() {
+      return this.job.pipeline?.user?.name;
+    },
   },
 };
 </script>
@@ -50,7 +56,14 @@ export default {
 
       <span class="gl-text-subtle">
         <span>{{ __('created by') }}</span>
-        <gl-link v-if="showAvatar" :href="userPath" data-testid="pipeline-user-link">
+        <gl-link
+          v-if="showAvatar"
+          v-gl-tooltip
+          :href="userPath"
+          :title="pipelineUserName"
+          :aria-label="pipelineUserName"
+          data-testid="pipeline-user-link"
+        >
           <gl-avatar :src="pipelineUserAvatar" :size="16" />
         </gl-link>
         <span v-else>{{ __('API') }}</span>

@@ -6,7 +6,7 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemNoteTool, feature_category: 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:work_item) { create(:work_item, :issue, project: project, iid: 42) }
-  let_it_be(:discussion, freeze: false) do
+  let_it_be_with_reload(:discussion) do
     create(:discussion_note_on_issue, project: project, noteable: work_item).discussion
   end
 
@@ -15,35 +15,6 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemNoteTool, feature_category: 
 
   before_all do
     project.add_developer(user)
-  end
-
-  describe 'class methods' do
-    describe '.build_mutation' do
-      it 'returns the GraphQL mutation string' do
-        mutation = described_class.build_mutation
-
-        expect(mutation).to include('mutation CreateNote($input: CreateNoteInput!)')
-        expect(mutation).to include('createNote(input: $input)')
-        expect(mutation).to include('note {')
-        expect(mutation).to include('id')
-        expect(mutation).to include('body')
-        expect(mutation).to include('internal')
-        expect(mutation).to include('createdAt')
-        expect(mutation).to include('updatedAt')
-        expect(mutation).to include('author {')
-        expect(mutation).to include('discussion {')
-        expect(mutation).to include('errors')
-      end
-
-      it 'includes author fields' do
-        mutation = described_class.build_mutation
-
-        expect(mutation).to include('name')
-        expect(mutation).to include('username')
-        expect(mutation).to include('avatarUrl')
-        expect(mutation).to include('webUrl')
-      end
-    end
   end
 
   describe 'versioning' do
@@ -58,7 +29,7 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemNoteTool, feature_category: 
     it 'has correct GraphQL operation for version 0.1.0' do
       operation = tool.graphql_operation
 
-      expect(operation).to include('mutation CreateNote')
+      expect(operation).to include('mutation createNote')
       expect(operation).to include('createNote(input: $input)')
     end
   end
@@ -257,13 +228,18 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemNoteTool, feature_category: 
       )
     end
 
-    it 'returns note data' do
+    it 'returns note data with the full payload shape the tool promises' do
       result = tool.execute
 
       expect(result[:isError]).to be(false)
-      expect(result[:structuredContent]['note']).to be_a(Hash)
-      expect(result[:structuredContent]['note']['id']).to be_present
-      expect(result[:structuredContent]['note']['body']).to eq('Test comment')
+      expect(result[:structuredContent].keys).to match_array(%w[note errors])
+
+      note = result[:structuredContent]['note']
+      expect(note.keys).to match_array(%w[id body internal createdAt updatedAt author discussion])
+      expect(note['body']).to eq('Test comment')
+      expect(note['author'].keys).to match_array(%w[id name username avatarUrl webUrl])
+      expect(note['author']['username']).to eq(user.username)
+      expect(note['discussion'].keys).to match_array(%w[id])
     end
 
     context 'with optional parameters' do

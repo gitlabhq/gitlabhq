@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_planning do
-  let_it_be(:project, freeze: false) { create(:project) }
-  let_it_be(:developer, freeze: false) { create(:user, developer_of: project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be_with_refind(:list_work_item) do
     create(:work_item, project: project, description: "- [ ] Item to be converted\n    second line\n    third line")
   end

@@ -1054,6 +1054,7 @@ Supported attributes:
 | `merge_request_to_resolve_discussions_of` | integer        | No       | The IID of a merge request in which to resolve all issues. This fills out the issue with a default description and mark all discussions as resolved. When passing a description or title, these values take precedence over the default values.|
 | `milestone_id`                            | integer        | No       | The global ID of a milestone to assign issue. To find the `milestone_id` associated with a milestone, view an issue with the milestone assigned and [use the API](#retrieve-a-project-issue) to retrieve the issue's details. Mutually exclusive with `milestone`. |
 | `milestone`                               | string         | No       | The title of a project or ancestor-group milestone to assign the issue to. Matched exactly (case-sensitive). Mutually exclusive with `milestone_id`. |
+| `severity`                                | string         | No       | The severity of the issue. Applies only to incidents. One of `unknown`, `low`, `medium`, `high`, or `critical`. |
 | `start_date`                              | string         | No       | The start date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238041) in GitLab 19.1. |
 | `title`                                   | string         | Yes      | The title of an issue. |
 | `weight`                                  | integer        | No       | The weight of the issue. Valid values are greater than or equal to 0. Premium and Ultimate only. |
@@ -1209,6 +1210,7 @@ At least one of the following parameters is required for the request to be succe
 - `:issue_type`
 - `:labels`
 - `:milestone_id`
+- `:severity`
 - `:start_date`
 - `:state_event`
 - `:title`
@@ -1236,6 +1238,7 @@ Supported attributes:
 | `milestone_id` | integer | No       | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone. Mutually exclusive with `milestone`.|
 | `milestone`    | string  | No       | The title of a project or ancestor-group milestone to assign the issue to. Matched exactly (case-sensitive). Mutually exclusive with `milestone_id`. |
 | `remove_labels`| string  | No       | Comma-separated label names to remove from an issue.                                                       |
+| `severity`     | string  | No       | The severity of the issue. Only applies to incidents. One of `unknown`, `low`, `medium`, `high`, or `critical`. |
 | `start_date`   | string  | No       | The start date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238041) in GitLab 19.1. |
 | `state_event`  | string  | No       | The state event of an issue. To close the issue, use `close`, and to reopen it, use `reopen`.                      |
 | `title`        | string  | No       | The title of an issue.                                                                                      |

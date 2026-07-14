@@ -27,6 +27,7 @@ export default {
       },
     }),
     approvePath() {
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Acceptable since memberPath is a polymorphic path that is generated in Rails
       return this.memberPath.replace(/:id$/, `${this.memberId}/approve_access_request`);
     },
   },

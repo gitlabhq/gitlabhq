@@ -34,6 +34,13 @@ class SandboxController < ApplicationController # rubocop:disable Gitlab/Namespa
     # * script-src allows 'self' (for the webpack/Vite bundle served from the same origin) and
     #   'unsafe-eval' (required by Mermaid's rendering engine).
     #
+    #   The instance's own origin is also listed explicitly alongside 'self'. The sandbox iframe
+    #   is rendered without allow-same-origin, so its origin is opaque/null; Safari/WebKit matches
+    #   'self' against that opaque origin and refuses the same-origin bundle, while Chrome/Firefox
+    #   match 'self' against the response URL origin. Naming the origin explicitly authorises the
+    #   same-origin assets in all browsers without weakening the sandbox (it's the same origin,
+    #   just expressed explicitly rather than via 'self').
+    #
     #   Critically, 'unsafe-inline' is NOT included -- this is what blocks inline event handlers
     #   injected via Mermaid XSS payloads (e.g. <img onerror="...">).
     #
@@ -70,11 +77,14 @@ class SandboxController < ApplicationController # rubocop:disable Gitlab/Namespa
     private
 
     def mermaid_sandbox_directives
+      # base_url, not url, since for CSP we don't want to include any path part at all.
+      origin = Gitlab.config.gitlab.base_url
+
       {
         'img_src' => "'self' data: blob: http: https:",
         'media_src' => "'self' data: blob: http: https:",
-        'script_src' => "'self' 'unsafe-eval'",
-        'style_src' => "'self' 'unsafe-inline'",
+        'script_src' => "'self' #{origin} 'unsafe-eval'",
+        'style_src' => "'self' #{origin} 'unsafe-inline'",
         'base_uri' => "'self'",
         'default_src' => "'self'",
         'font_src' => "'self'",

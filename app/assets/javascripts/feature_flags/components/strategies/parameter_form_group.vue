@@ -3,6 +3,7 @@ import { GlFormGroup } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 
 export default {
+  name: 'ParameterFormGroup',
   components: {
     GlFormGroup,
   },

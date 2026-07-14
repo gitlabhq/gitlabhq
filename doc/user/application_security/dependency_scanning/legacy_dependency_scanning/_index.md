@@ -311,7 +311,7 @@ The following languages and dependency managers are supported by dependency scan
       <td><a href="https://go.dev/">Go</a></td>
       <td>
         <ul>
-          <li><code>go.mod</code></li>
+          <li><code>go.sum</code></li>
         </ul>
       </td>
       <td>Y</td>

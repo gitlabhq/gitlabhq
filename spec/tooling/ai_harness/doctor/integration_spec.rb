@@ -46,7 +46,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
     write_file('CLAUDE.md', "# Instructions\nRead .ai/git.md and .ai/testing.md")
     write_file('.ai/git.md', '# Git')
     write_file('.ai/testing.md', '# Testing')
-    write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+    write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
   end
 
   describe 'happy path' do
@@ -96,7 +96,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
 
     it 'treats gitignored tool files as fine' do
       setup_valid_repo
-      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n.claude/\n.opencode/\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n.claude/\n.opencode/\n")
       write_file('.claude/rules/my-rule.md', '# rule')
       write_file('.opencode/config.json', '{}')
 
@@ -130,7 +130,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
   describe 'parity check' do
     it 'fails when CLAUDE.md is missing at root' do
       write_file('AGENTS.md', '# Content')
-      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
 
       result = run_doctor
 
@@ -141,7 +141,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
 
     it 'fails when AGENTS.md is missing at root' do
       write_file('CLAUDE.md', '# Content')
-      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
 
       result = run_doctor
 
@@ -153,7 +153,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
     it 'reports parity failure when content differs' do
       write_file('AGENTS.md', '# Source of truth')
       write_file('CLAUDE.md', '# Different content')
-      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
 
       result = run_doctor
 
@@ -199,7 +199,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
     it 'fails when CLAUDE.md is a symlink to AGENTS.md' do
       write_file('AGENTS.md', '# Content')
       File.symlink('AGENTS.md', File.join(repo_root, 'CLAUDE.md'))
-      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
 
       result = run_doctor
 
@@ -212,7 +212,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
     it 'fails when AGENTS.md is a symlink' do
       write_file('CLAUDE.md', '# Content')
       File.symlink('CLAUDE.md', File.join(repo_root, 'AGENTS.md'))
-      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
 
       result = run_doctor
 
@@ -241,7 +241,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
     it 'passes when AGENTS.md has no .ai/ references' do
       write_file('AGENTS.md', '# No references here')
       write_file('CLAUDE.md', '# No references here')
-      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
 
       result = run_doctor
 
@@ -252,7 +252,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
   describe 'gitignore check' do
     it 'fails when CLAUDE.local.md entry is missing' do
       setup_valid_repo
-      write_file('.gitignore', ".ai/*\n")
+      write_file('.gitignore', "AGENTS.local.md\n.ai/*\n")
 
       result = run_doctor
 
@@ -261,9 +261,20 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
       expect(result[:stdout]).to include('CLAUDE.local.md')
     end
 
+    it 'fails when AGENTS.local.md entry is missing' do
+      setup_valid_repo
+      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+
+      result = run_doctor
+
+      expect(result[:exit_code]).to eq(1)
+      expect(result[:stdout]).to include('FAIL')
+      expect(result[:stdout]).to include('AGENTS.local.md')
+    end
+
     it 'fails when .ai/* entry is missing' do
       setup_valid_repo
-      write_file('.gitignore', "CLAUDE.local.md\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n")
 
       result = run_doctor
 
@@ -284,13 +295,14 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
 
     it 'fails when entries are rooted' do
       setup_valid_repo
-      write_file('.gitignore', "/CLAUDE.local.md\n.ai/*\n")
+      write_file('.gitignore', "/CLAUDE.local.md\n/AGENTS.local.md\n.ai/*\n")
 
       result = run_doctor
 
       expect(result[:exit_code]).to eq(1)
       expect(result[:stdout]).to include('FAIL')
       expect(result[:stdout]).to include('CLAUDE.local.md')
+      expect(result[:stdout]).to include('AGENTS.local.md')
     end
   end
 
@@ -422,6 +434,16 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
       expect(result[:stdout]).not_to include('.claude/skills/glab/')
     end
 
+    it 'allows files under the .claude/skills/split-mr/ directory committed' do
+      setup_valid_repo
+      add_tracked_file('.claude/skills/split-mr/SKILL.md')
+
+      result = run_doctor
+
+      expect(result[:exit_code]).to eq(0)
+      expect(result[:stdout]).not_to include('.claude/skills/split-mr/')
+    end
+
     it 'reports AGENTS.local.md as forbidden when force-committed at root' do
       setup_valid_repo
       add_tracked_file('AGENTS.local.md', '# personal overrides')
@@ -496,7 +518,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
     it 'syncs CLAUDE.md from AGENTS.md when content differs' do
       write_file('AGENTS.md', '# Source of truth')
       write_file('CLAUDE.md', '# Different')
-      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
 
       result = run_doctor(['--fix'])
 
@@ -508,7 +530,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
     it 'fixes what it can and reports what it cannot' do
       write_file('AGENTS.md', '# Source of truth')
       write_file('CLAUDE.md', '# Different')
-      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
       add_tracked_file('.claude/rules/foo.md')
 
       result = run_doctor(['--fix'])
@@ -522,7 +544,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
     it 'does not fix missing .ai/ references' do
       write_file('AGENTS.md', "Read .ai/missing.md")
       write_file('CLAUDE.md', "Read .ai/missing.md")
-      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
 
       result = run_doctor(['--fix'])
 
@@ -532,7 +554,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
 
     it 'creates AGENTS.md from CLAUDE.md when only CLAUDE.md exists' do
       write_file('CLAUDE.md', '# Claude only')
-      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
 
       result = run_doctor(['--fix'])
 
@@ -553,7 +575,7 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
     it 'replaces symlink with regular file' do
       write_file('AGENTS.md', '# Content')
       File.symlink('AGENTS.md', File.join(repo_root, 'CLAUDE.md'))
-      write_file('.gitignore', "CLAUDE.local.md\n.ai/*\n")
+      write_file('.gitignore', "CLAUDE.local.md\nAGENTS.local.md\n.ai/*\n")
 
       result = run_doctor(['--fix'])
 

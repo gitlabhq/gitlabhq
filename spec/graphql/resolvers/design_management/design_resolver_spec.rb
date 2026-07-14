@@ -19,17 +19,13 @@ RSpec.describe Resolvers::DesignManagement::DesignResolver do
     let_it_be(:project) { issue.project }
     let_it_be(:first_version) { create(:design_version) }
     let_it_be(:first_design) { create(:design, issue: issue, versions: [first_version]) }
-    let_it_be(:current_user) { create(:user) }
+    let_it_be(:current_user) { create(:user, developer_of: project) }
     let_it_be(:design_on_other_issue) do
       create(:design, issue: create(:issue, project: project), versions: [create(:design_version)])
     end
 
     let(:args) { { id: GitlabSchema.id_from_object(first_design) } }
     let(:gql_context) { { current_user: current_user } }
-
-    before do
-      project.add_developer(current_user)
-    end
 
     context 'when the user cannot see designs' do
       let(:gql_context) { { current_user: create(:user) } }

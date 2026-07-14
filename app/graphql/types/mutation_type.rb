@@ -108,9 +108,11 @@ module Types
     mount_mutation Mutations::MergeRequests::SetSubscription
     mount_mutation Mutations::MergeRequests::SetDraft, calls_gitaly: true
     mount_mutation Mutations::MergeRequests::SetAssignees
-    mount_mutation Mutations::MergeRequests::SetReviewers
+    mount_mutation Mutations::MergeRequests::SetReviewers, scopes: [:api, :ai_workflows]
     mount_mutation Mutations::MergeRequests::ReviewerRereview
     mount_mutation Mutations::MergeRequests::RequestChanges
+    mount_mutation Mutations::MergeRequests::WorkItemRelations::Create
+    mount_mutation Mutations::MergeRequests::WorkItemRelations::Destroy
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Create, deprecated: {
       reason: 'Underlying feature was removed in 16.0',
       milestone: '16.0'
@@ -129,6 +131,7 @@ module Types
     mount_mutation Mutations::Notes::ConvertToThread
     mount_mutation Mutations::Notes::RepositionImageDiffNote
     mount_mutation Mutations::Notes::Destroy
+    mount_mutation Mutations::Organizations::Confirm, experiment: { milestone: '19.2' }
     mount_mutation Mutations::Organizations::Create, experiment: { milestone: '16.6' }
     mount_mutation Mutations::Organizations::Delete, experiment: { milestone: '19.1' }
     mount_mutation Mutations::Organizations::Update, experiment: { milestone: '16.7' }

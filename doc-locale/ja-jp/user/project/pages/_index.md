@@ -2,9 +2,8 @@
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: 追加費用なしで、GitLab Pagesを使用して静的ウェブサイトをデプロイする方法を説明します。
 title: GitLab Pages
-description: 静的サイトホスティング、ドキュメント公開、プロジェクトウェブサイト、カスタムドメイン。
+description: リポジトリから自動CI/CDデプロイで静的ウェブサイトを公開します。
 ---
 
 {{< details >}}
@@ -138,7 +137,7 @@ document.cookie = "key=value;domain=example.gitlab.io";
 プロジェクトのメンテナーは、この機能を無効にできます。
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **デプロイ** > **Pages**を選択します。
+1. 左側のサイドバーで、**デプロイ** > **Pages**を選択します。
 1. **一意のドメインを使用**チェックボックスをオフにします。
 1. **変更を保存**を選択します。
 
@@ -160,7 +159,7 @@ URLの例については、[GitLab Pagesのデフォルトドメイン名](getti
 - [カスタムドメイン](custom_domains_ssl_tls_certification/_index.md#set-up-a-custom-domain)が設定されている必要があります。
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **デプロイ** > **Pages**を選択します。
+1. 左側のサイドバーで、**デプロイ** > **Pages**を選択します。
 1. **プライマリドメイン**ドロップダウンリストから、リダイレクト先のドメインを選択します。
 1. **変更を保存**を選択します。
 
@@ -199,7 +198,7 @@ create-pages:
 まだ削除されていない停止したデプロイを復元するには、以下を実行します。
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **デプロイ** > **Pages**を選択します。
+1. 左側のサイドバーで、**デプロイ** > **Pages**を選択します。
 1. **デプロイ**の近くにある**停止したデプロイを含める**切替をオンにします。デプロイがまだ削除されていない場合は、リストに含まれているはずです。
 1. 復元するデプロイを展開し、**復元**を選択します。
 
@@ -208,7 +207,7 @@ create-pages:
 デプロイを削除するには、以下を実行します。
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **デプロイ** > **Pages**を選択します。
+1. 左側のサイドバーで、**デプロイ** > **Pages**を選択します。
 1. **デプロイ**で、削除するデプロイの任意のエリアを選択します。デプロイの詳細が展開されます。
 1. **削除**を選択します。
 
@@ -237,7 +236,7 @@ deploy-my-pages-site:
   pages: true  # specifies that this is a Pages job and publishes the default public directory
 ```
 
-たとえば、ハッシュをを使用します。
+たとえば、ハッシュを使用します:
 
 ```yaml
 deploy-pages-review-app:
@@ -256,7 +255,7 @@ pages:
 ```
 
 > [!warning]
-> 複数のPagesジョブがパイプライン内で`path_prefix`と同じ値を持つ場合、最後に完了したジョブがPagesでデプロイされます。
+> パイプラインに同じ`path_prefix`値を持つ複数のPagesジョブがある場合、最後に完了したジョブがPagesでデプロイされます。
 
 ## 並列デプロイ {#parallel-deployments}
 

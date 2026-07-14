@@ -156,9 +156,14 @@ module MergeRequests
     def outdated_merge_ref?
       return false unless merge_request.open?
 
-      return true unless ref_head = merge_request.merge_ref_head
-      return true unless target_sha = merge_request.target_branch_sha
-      return true unless source_sha = merge_request.source_branch_sha
+      ref_head = merge_request.merge_ref_head
+      return true unless ref_head
+
+      target_sha = merge_request.target_branch_sha
+      return true unless target_sha
+
+      source_sha = merge_request.source_branch_sha
+      return true unless source_sha
 
       ref_head.parent_ids != [target_sha, source_sha]
     end

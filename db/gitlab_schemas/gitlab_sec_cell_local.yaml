@@ -1,0 +1,14 @@
+name: gitlab_sec_cell_local
+description: Schema for all Cell-local Security tables that hold non-customer reference data, ex. malware and package-metadata advisories.
+allow_cross_joins:
+  - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
+  - gitlab_sec
+allow_cross_transactions:
+  - gitlab_internal
+  - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
+  - gitlab_sec
+require_sharding_key: false

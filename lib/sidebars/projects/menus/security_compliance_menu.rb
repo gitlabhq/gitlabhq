@@ -42,7 +42,9 @@ module Sidebars
             link: project_security_configuration_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::SecureMenu,
             active_routes: { path: configuration_menu_item_paths },
-            item_id: :configuration
+            item_id: :configuration,
+            description: _('Configure security scanning and settings'),
+            library_icon: 'secrets-manager'
           )
         end
 

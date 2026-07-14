@@ -1,0 +1,31 @@
+#import "./ai_metric_item.fragment.graphql"
+
+query aiMetricsQuery(
+  $fullPath: ID!
+  $startDate: Date!
+  $endDate: Date!
+  $languages: [String!] = null
+  $ideNames: [String!] = null
+  $skipCodeSuggestionsUsersCount: Boolean = false
+  $skipCodeSuggestionsAcceptanceRate: Boolean = false
+  $skipRcaUsersCount: Boolean = false
+  $skipChatContributorsCount: Boolean = false
+  $skipUsedCount: Boolean = false
+  $skipReviewRequestsCount: Boolean = false
+  $skipReviewCommentCount: Boolean = false
+  $skipAgentPlatformChats: Boolean = false
+  $skipAgentPlatformFlows: Boolean = false
+) {
+  project(fullPath: $fullPath) {
+    id
+    aiMetrics(startDate: $startDate, endDate: $endDate) {
+      ...AiMetricItem
+    }
+  }
+  group(fullPath: $fullPath) {
+    id
+    aiMetrics(startDate: $startDate, endDate: $endDate) {
+      ...AiMetricItem
+    }
+  }
+}

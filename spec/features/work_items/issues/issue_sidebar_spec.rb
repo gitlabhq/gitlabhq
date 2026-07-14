@@ -176,6 +176,8 @@ RSpec.describe 'Issue Sidebar', :js, feature_category: :team_planning do
         it 'creates new label' do
           within_testid('work-item-labels') do
             click_button 'Edit'
+            expect(page).to have_selector('.gl-new-dropdown-item[role="option"]', minimum: 1)
+
             click_button 'Create project label'
 
             expect(page).to have_text 'Create label'

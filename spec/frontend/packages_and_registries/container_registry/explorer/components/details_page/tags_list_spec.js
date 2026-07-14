@@ -537,7 +537,7 @@ describe('Tags List', () => {
       it('tracks cancel_delete', async () => {
         await mountComponent();
 
-        findDeleteModal().vm.$emit('cancel');
+        findDeleteModal().vm.$emit('cancel-delete');
 
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'cancel_delete', {
           label: 'registry_tag_delete',

@@ -6,9 +6,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::ComponentUsage, feature_category: :p
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:resource, freeze: false) { create(:ci_catalog_resource) }
+  let_it_be_with_reload(:resource) { create(:ci_catalog_resource) }
 
-  let_it_be(:release, freeze: false) do
+  let_it_be_with_reload(:release) do
     create(:release, project: resource.project, tag: '1.2.0', sha: 'my_component_sha')
   end
 

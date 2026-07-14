@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: リソースイテレーションイベントAPI
 ---
 
@@ -12,13 +12,11 @@ title: リソースイテレーションイベントAPI
 
 {{< /details >}}
 
-リソースイテレーションイベントは、GitLab [issue](../user/project/issues/_index.md)に発生したことを追跡します。
-
-これらを使用して、どのイテレーションが設定されたか、誰がそれを行ったか、そしてそれがいつ発生したかを追跡します。
+このAPIを使用して、イシューの[イテレーションイベント](../user/group/iterations/_index.md)にアクセスできます。
 
 ## イシュー {#issues}
 
-### プロジェクトイシューイテレーションイベントの一覧表示 {#list-project-issue-iteration-events}
+### プロジェクトのイシューイテレーションイベントを一覧表示 {#list-project-issue-iteration-events}
 
 単一のイシューに対するすべてのイテレーションイベントのリストを取得します。
 
@@ -31,13 +29,15 @@ GET /projects/:id/issues/:issue_iid/resource_iteration_events
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `issue_iid` | 整数        | はい      | イシューのIID                                                             |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_iteration_events"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_iteration_events"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -98,9 +98,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-### 単一イシューイテレーションイベントの取得 {#get-single-issue-iteration-event}
+### イシューイテレーションイベントを取得する {#retrieve-an-issue-iteration-event}
 
-特定のプロジェクトイシューに対する単一のイテレーションイベントを返します。
+指定されたプロジェクトイシューの単一のイテレーションイベントを取得します。
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_iteration_events/:resource_iteration_event_id
@@ -114,13 +114,15 @@ GET /projects/:id/issues/:issue_iid/resource_iteration_events/:resource_iteratio
 | `issue_iid`                   | 整数        | はい      | イシューのIID                                                             |
 | `resource_iteration_event_id` | 整数        | はい      | イテレーションイベントのID                                                     |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_iteration_events/143"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_iteration_events/143"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

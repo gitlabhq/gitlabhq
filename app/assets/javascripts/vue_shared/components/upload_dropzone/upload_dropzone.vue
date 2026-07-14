@@ -93,6 +93,7 @@ export default {
       default: false,
     },
   },
+  emits: ['change', 'dragenter', 'dragleave', 'error'],
   data() {
     return {
       dragCounter: 0,

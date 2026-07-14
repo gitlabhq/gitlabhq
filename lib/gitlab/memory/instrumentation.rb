@@ -49,7 +49,7 @@ module Gitlab
 
         # calculate difference in a memory allocations
         result = previous.to_h do |key, value|
-          [KEY_MAPPING.fetch(key), current[key].to_i - value]
+          [KEY_MAPPING.fetch(key), [current[key].to_i - value, 0].max]
         end
 
         slot_size = GC::INTERNAL_CONSTANTS[:RVALUE_SIZE]

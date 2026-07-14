@@ -29,6 +29,7 @@ const SORT_OPTIONS = [
 ];
 
 export default {
+  name: 'DiscussionFilter',
   SORT_OPTIONS,
   components: {
     GlIcon,

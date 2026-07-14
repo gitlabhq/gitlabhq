@@ -239,9 +239,17 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
+        enqueue_ai_pipeline_results_viewed_tracking
         render 'show'
       end
     end
+  end
+
+  def enqueue_ai_pipeline_results_viewed_tracking
+    return unless current_user
+    return unless Feature.enabled?(:track_ai_pipeline_results_viewed, @pipeline.project)
+
+    ::Ci::TrackAiPipelineResultsViewedService.new(@pipeline).execute(current_user.id)
   end
 
   def show_represent_params
@@ -278,7 +286,7 @@ class Projects::PipelinesController < Projects::ApplicationController
       end
 
     @pipeline = pipelines
-      .includes(builds: :tags, user: :status)
+      .includes(builds: :job_definition, user: :status)
       .take
       &.present(current_user: current_user)
 

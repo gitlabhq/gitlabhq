@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 mutation deleteWorkItemNote($input: DestroyNoteInput!) {
   destroyNote(input: $input) {
     note {

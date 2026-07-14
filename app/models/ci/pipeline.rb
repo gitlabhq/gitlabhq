@@ -35,6 +35,9 @@ module Ci
     DEFAULT_CONFIG_PATH = '.gitlab-ci.yml'
 
     UNLOCKABLE_STATUSES = (Ci::Pipeline.completed_statuses + [:manual]).freeze
+    # Excludes `waiting_for_callback` and `canceling` because those statuses lack a
+    # suitable index, making queries on them expensive on large tables.
+    INDEXED_ALIVE_STATUSES = (Ci::HasStatus::ALIVE_STATUSES - %w[waiting_for_callback canceling]).freeze
     # UI only shows 100+. TODO: pass constant to UI for SSoT
     COUNT_FAILED_JOBS_LIMIT = 101
     INPUTS_LIMIT = 20
@@ -98,8 +101,8 @@ module Ci
     has_many :statuses_order_id_desc, ->(pipeline) { in_partition(pipeline).order_id_desc }, class_name: 'CommitStatus', foreign_key: :commit_id,
       inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :bridges, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::Bridge', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :latest_bridges, ->(pipeline) { in_partition(pipeline).latest.with_project_and_job_definition }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Bridge', partition_foreign_key: :partition_id
     has_many :builds, ->(pipeline) { in_partition(pipeline) }, foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
-    has_many :build_execution_configs, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::BuildExecutionConfig', inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :generic_commit_statuses, ->(pipeline) { in_partition(pipeline) }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'GenericCommitStatus', partition_foreign_key: :partition_id
     #
     # NEW:
@@ -111,9 +114,9 @@ module Ci
     has_many :job_artifacts, through: :builds
     has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
     has_many :variables, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::PipelineVariable', inverse_of: :pipeline, partition_foreign_key: :partition_id
-    has_many :latest_builds, ->(pipeline) { in_partition(pipeline).latest.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
-    has_many :latest_successful_jobs, ->(pipeline) { in_partition(pipeline).latest.success.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
-    has_many :latest_finished_jobs, ->(pipeline) { in_partition(pipeline).latest.finished.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
+    has_many :latest_builds, ->(pipeline) { in_partition(pipeline).latest.with_project_and_job_definition }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
+    has_many :latest_successful_jobs, ->(pipeline) { in_partition(pipeline).latest.success.with_project_and_job_definition }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
+    has_many :latest_finished_jobs, ->(pipeline) { in_partition(pipeline).latest.finished.with_project_and_job_definition }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
     has_many :downloadable_artifacts, -> do
       not_expired.or(where_exists(Ci::Pipeline.artifacts_locked.where("#{Ci::Pipeline.quoted_table_name}.id = #{Ci::Build.quoted_table_name}.commit_id"))).downloadable.with_job
     end, through: :latest_builds, source: :job_artifacts
@@ -363,7 +366,12 @@ module Ci
       after_transition any => ::Ci::Pipeline.completed_with_manual_statuses do |pipeline|
         pipeline.run_after_commit do
           Gitlab::EventStore.publish(
-            ::Ci::PipelineFinishedEvent.new(data: { pipeline_id: pipeline.id, status: pipeline.status })
+            ::Ci::PipelineFinishedEvent.new(data: {
+              pipeline_id: pipeline.id,
+              status: pipeline.status,
+              source: pipeline.source,
+              partition_id: pipeline.partition_id
+            })
           )
         end
       end
@@ -453,6 +461,34 @@ module Ci
         end
       end
 
+      # Skipped pipelines are completed but never receive a finished_at, so
+      # they have no wall clock to observe.
+      after_transition any => ::Ci::Pipeline.completed_statuses - [:skipped] do |pipeline|
+        pipeline.run_after_commit do
+          # Defensive: both timestamps are always set for these transitions.
+          # Metrics emission must never raise into the caller's worker.
+          next unless pipeline.finished_at && pipeline.created_at
+
+          if ::Feature.enabled?(:ci_observe_pipelines_finished, ::Project.actor_from_id(pipeline.project_id))
+            labels = { source: pipeline.source, status: pipeline.status }
+
+            ::Gitlab::Ci::Pipeline::Metrics.pipelines_finished_counter
+              .increment(labels.merge(partition_id: pipeline.partition_id))
+            ::Gitlab::Ci::Pipeline::Metrics.pipeline_time_to_finished_histogram
+              .observe(labels, (pipeline.finished_at - pipeline.created_at).to_f)
+
+            Labkit::UserExperienceSli.observed(
+              :run_pipeline,
+              start_time: pipeline.created_at,
+              Labkit::Fields::GL_PIPELINE_ID.to_sym => pipeline.id,
+              Labkit::Fields::GL_PROJECT_ID.to_sym => pipeline.project_id,
+              pipeline_source: pipeline.source,
+              pipeline_status: pipeline.status
+            )
+          end
+        end
+      end
+
       after_transition any => [:running, *::Ci::Pipeline.completed_statuses] do |pipeline|
         project = pipeline&.project
 
@@ -475,6 +511,7 @@ module Ci
     end
 
     scope :with_unlockable_status, -> { with_status(*UNLOCKABLE_STATUSES) }
+    scope :indexed_alive, -> { with_status(*INDEXED_ALIVE_STATUSES) }
     scope :internal, -> { where(source: internal_sources) }
     scope :tag, -> { where(tag: true) }
     scope :no_tag, -> { where(tag: false) }
@@ -538,6 +575,14 @@ module Ci
       )
     end
 
+    scope :without_active_builds, ->(partition_id) do
+      build_join_condition = Arel.sql('partition_id = p_ci_builds.partition_id AND build_id = p_ci_builds.id')
+      builds = Ci::Build.scoped_pipeline.in_partition(partition_id)
+
+      where_not_exists(builds.where_exists(Ci::PendingBuild.where(build_join_condition)))
+        .where_not_exists(builds.where_exists(Ci::RunningBuild.where(build_join_condition)))
+    end
+
     # Returns the pipelines that associated with the given merge request.
     # In general, please use `Ci::PipelinesForMergeRequestFinder` instead,
     # for checking permission of the actor.
@@ -552,6 +597,7 @@ module Ci
     scope :order_id_asc, -> { order(id: :asc) }
     scope :order_id_desc, -> { order(id: :desc) }
     scope :order_created_at_asc_id_asc, -> { order(created_at: :asc, id: :asc) }
+    scope :order_updated_at_asc_id_asc, -> { order(updated_at: :asc, id: :asc) }
 
     scope :not_archived, -> do
       archive_cutoff = Gitlab::CurrentSettings.archive_builds_older_than
@@ -561,6 +607,12 @@ module Ci
 
     def self.find_by_id(id)
       Gitlab::Ci::Pipeline::ByIdLookup.new(self, id).execute
+    end
+
+    def self.find_by_id_and_partition(id, partition_id)
+      return find_by_id(id) unless partition_id
+
+      in_partition(partition_id).find_by_id(id)
     end
 
     # Returns the pipelines in descending order (= newest first), optionally
@@ -649,8 +701,31 @@ module Ci
     # ref - The ref to scope the data to (e.g. "master"). If the ref is not
     #       given we simply get the latest pipelines for the commits, regardless
     #       of what refs the pipelines belong to.
-    def self.latest_pipeline_per_commit(commits, ref = nil)
-      sql = select('DISTINCT ON (sha) *')
+    # in_current_partition - When true, look up the pipelines in the current
+    #       partition first and only fall back to a cross-partition scan for the
+    #       SHAs whose latest pipeline predates it. `p_ci_pipelines` is
+    #       partitioned by `partition_id`, so an unscoped query opens every
+    #       partition and locks each one, causing LWLock contention that grows
+    #       with the partition count. A newer pipeline for a SHA always has both
+    #       a higher `id` and a partition id >= any older pipeline's, so the
+    #       latest pipeline found in the current partition is the global latest.
+    #       Defaults to false to preserve the behavior of existing callers.
+    def self.latest_pipeline_per_commit(commits, ref = nil, in_current_partition: false)
+      return latest_pipeline_per_commit_in_partition(commits, ref, nil) unless in_current_partition
+
+      found = latest_pipeline_per_commit_in_partition(commits, ref, current_partition_value)
+
+      missing = Array.wrap(commits) - found.keys
+      return found if missing.empty?
+
+      found.merge(latest_pipeline_per_commit_in_partition(missing, ref, nil))
+    end
+
+    def self.latest_pipeline_per_commit_in_partition(commits, ref, partition_id)
+      scope = partition_id ? in_partition(partition_id) : all
+
+      sql = scope
+              .select('DISTINCT ON (sha) *')
               .where(sha: commits)
               .order(:sha, id: :desc)
 
@@ -658,6 +733,7 @@ module Ci
 
       sql.index_by(&:sha)
     end
+    private_class_method :latest_pipeline_per_commit_in_partition
 
     # Returns a hash containing latest pipeline for each ref which aligns with
     # the sha value. This allows us to look up all of the latest pipelines for
@@ -824,7 +900,7 @@ module Ci
         .id_and_partition_in(pairs)
         .order(id: :desc)
         .preload(
-          :source_job,
+          { source_job: { project: :project_namespace } },
           :retryable_builds,
           project: [:route, { namespace: :route }]
         )
@@ -1260,24 +1336,11 @@ module Ci
       in_pipelines_and_partitions(Ci::Bridge.latest, self_and_project_descendants)
     end
 
-    def jobs_in_self_and_project_descendants
-      in_pipelines_and_partitions(Ci::Processable.latest, self_and_project_descendants)
-    end
-
     def environments_in_self_and_project_descendants(deployment_status: nil)
       # We limit to 100 unique environments for application safety.
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
       #
-      # TODO: This metadata query can be removed when historical job environment
-      # records have been backfilled.
-      expanded_environment_names =
-        jobs_in_self_and_project_descendants.joins(:metadata)
-                                      .where.not(Ci::BuildMetadata.table_name => { expanded_environment_name: nil })
-                                      .distinct("#{Ci::BuildMetadata.quoted_table_name}.expanded_environment_name")
-                                      .limit(100)
-                                      .pluck(:expanded_environment_name)
-
-      expanded_environment_names += Environments::Job
+      expanded_environment_names = Environments::Job
         .where(ci_pipeline_id: self_and_project_descendants.pluck(:id))
         .limit(100)
         .distinct
@@ -1396,11 +1459,11 @@ module Ci
     end
 
     def latest_test_report_builds_in_self_and_project_descendants
-      latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata, :job_definition, job_artifacts: :artifact_report)
+      latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:test)).preload(:project, :job_definition, job_artifacts: :artifact_report)
     end
 
     def latest_test_report_builds
-      latest_report_builds(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata, :job_definition, job_artifacts: :artifact_report)
+      latest_report_builds(Ci::JobArtifact.of_report_type(:test)).preload(:project, :job_definition, job_artifacts: :artifact_report)
     end
 
     def latest_report_builds_in_self_and_project_descendants(reports_scope = ::Ci::JobArtifact.all_reports)
@@ -1498,10 +1561,6 @@ module Ci
           build.collect_terraform_reports!(terraform_reports)
         end
       end
-    end
-
-    def has_archive_artifacts?
-      complete? && builds.latest.with_existing_job_artifacts(Ci::JobArtifact.archive.or(Ci::JobArtifact.metadata)).exists?
     end
 
     def has_exposed_artifacts?

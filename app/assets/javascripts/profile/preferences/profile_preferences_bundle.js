@@ -2,6 +2,28 @@ import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
 import { initListboxInputs } from '~/vue_shared/components/listbox_input/init_listbox_inputs';
 import ProfilePreferences from './components/profile_preferences.vue';
+import ColorModeSelector from './components/color_mode_selector.vue';
+
+function initColorModeSelector() {
+  const el = document.querySelector('#js-color-mode-selector');
+
+  if (!el) return null;
+
+  const colorModes = JSON.parse(el.dataset.colorModes);
+  const initialColorModeId = Number(el.dataset.initialColorModeId);
+
+  return new Vue({
+    el,
+    name: 'ColorModeSelectorRoot',
+    render: (createElement) =>
+      createElement(ColorModeSelector, {
+        props: {
+          colorModes,
+          initialColorModeId,
+        },
+      }),
+  });
+}
 
 function initTextEditorPreference() {
   const defaultTextEditorEnabledCheckbox = document.querySelector(
@@ -61,6 +83,7 @@ export default () => {
   initListboxInputs();
   initTextEditorPreference();
   initOrbitSubsettings();
+  initColorModeSelector();
 
   const el = document.querySelector('#js-profile-preferences-app');
   const formEl = document.querySelector('#profile-preferences-form');

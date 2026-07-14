@@ -239,7 +239,7 @@ RSpec.shared_examples 'create access token' do
 
   context "when POST is successful" do
     it "renders JSON with a new token" do
-      post url, params: { personal_access_token: token_attributes }
+      post url, params: token_attributes
 
       parsed_body = Gitlab::Json.parse(response.body)
       expect(parsed_body['token']).not_to be_blank
@@ -250,7 +250,7 @@ RSpec.shared_examples 'create access token' do
 
   context "when POST is unsuccessful" do
     it "renders JSON with an error" do
-      post url, params: { personal_access_token: token_attributes.merge(scopes: []) }
+      post url, params: token_attributes.merge(scopes: [])
 
       parsed_body = Gitlab::Json.parse(response.body)
       expect(parsed_body['token']).to be_blank

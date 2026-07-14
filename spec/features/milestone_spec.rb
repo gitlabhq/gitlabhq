@@ -136,8 +136,8 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
         find_by_testid('milestone-more-actions-dropdown-toggle').click
         click_link 'Reopen'
 
-        expect(page).not_to have_selector('.badge-danger')
         expect(page).to have_selector('.badge-success')
+        expect(page).not_to have_selector('.badge-danger')
       end
     end
 
@@ -148,8 +148,8 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
         find_by_testid('milestone-more-actions-dropdown-toggle').click
         click_link 'Reopen'
 
-        expect(page).not_to have_selector('.badge-danger')
         expect(page).to have_selector('.badge-success')
+        expect(page).not_to have_selector('.badge-danger')
       end
     end
   end

@@ -6,7 +6,7 @@ RSpec.describe API::Validations::Validators::BulkImports::DestinationNamespacePa
   include ApiValidatorsHelpers
 
   subject do
-    described_class.new(['test'], {}, false, scope.new)
+    described_class.new(['test'], {}, false, scope.new, {})
   end
 
   context 'when destination namespace param is valid' do

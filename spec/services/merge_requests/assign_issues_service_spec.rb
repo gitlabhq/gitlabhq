@@ -3,15 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::AssignIssuesService, feature_category: :code_review_workflow do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :public, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository, developers: user) }
   let(:issue) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project, author: user, description: "fixes #{issue.to_reference}") }
   let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request }) }
-
-  before do
-    project.add_developer(user)
-  end
 
   it 'finds unassigned issues fixed in merge request' do
     expect(service.assignable_issues.map(&:id)).to include(issue.id)

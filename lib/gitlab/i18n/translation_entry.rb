@@ -109,6 +109,10 @@ module Gitlab
         msgid_matches.sort != translation_matches.sort
       end
 
+      def msgid_contains_multiple_spaces?
+        msgid_without_namespace.match?(MULTIPLE_CONSECUTIVE_SPACES_REGEX)
+      end
+
       def msgid_contains_unescaped_chars?
         contains_unescaped_chars?(msgid)
       end

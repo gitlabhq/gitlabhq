@@ -93,62 +93,48 @@ RSpec.describe VerifiesWithEmailHelper, feature_category: :system_access do
 
     subject { helper.permitted_to_skip_email_otp_in_warning_period?(user) }
 
-    context 'when all conditions are met' do
+    it { is_expected.to be false }
+
+    context 'when email_otp_enabled application setting is enabled' do
       before do
-        stub_feature_flags(email_based_mfa: true)
+        stub_application_setting(email_otp_enabled: true)
       end
 
       it { is_expected.to be true }
-    end
 
-    context 'when email_based_mfa feature is disabled' do
-      before do
-        stub_feature_flags(email_based_mfa: false)
-      end
-
-      it { is_expected.to be false }
-
-      context 'and email_otp_enabled application setting is enabled' do
+      context 'when user has two factor authentication enabled' do
         before do
-          stub_application_setting(email_otp_enabled: true)
+          allow(user).to receive(:two_factor_enabled?).and_return(true)
         end
 
-        it { is_expected.to be true }
-      end
-    end
-
-    context 'when user has two factor authentication enabled' do
-      before do
-        allow(user).to receive(:two_factor_enabled?).and_return(true)
+        it { is_expected.to be false }
       end
 
-      it { is_expected.to be false }
-    end
+      context 'when IP address is not trusted' do
+        let(:trusted_ip) { false }
 
-    context 'when IP address is not trusted' do
-      let(:trusted_ip) { false }
-
-      it { is_expected.to be false }
-    end
-
-    context 'when user is treated as locked due to access_locked' do
-      before do
-        allow(user).to receive(:access_locked?).and_return(true)
+        it { is_expected.to be false }
       end
 
-      it { is_expected.to be false }
-    end
+      context 'when user is treated as locked due to access_locked' do
+        before do
+          allow(user).to receive(:access_locked?).and_return(true)
+        end
 
-    context 'when user is treated as locked due to unlock token' do
-      let(:user_unlock_token) { 'some_token' }
+        it { is_expected.to be false }
+      end
 
-      it { is_expected.to be false }
-    end
+      context 'when user is treated as locked due to unlock token' do
+        let(:user_unlock_token) { 'some_token' }
 
-    context 'when user is not in email OTP warning period' do
-      let(:in_warning_period) { false }
+        it { is_expected.to be false }
+      end
 
-      it { is_expected.to be false }
+      context 'when user is not in email OTP warning period' do
+        let(:in_warning_period) { false }
+
+        it { is_expected.to be false }
+      end
     end
   end
 

@@ -13,7 +13,6 @@ import CommitChangesModal from '~/repository/components/commit_changes_modal.vue
 import BlobEditHeader from '~/repository/pages/blob_edit_header.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { stubComponent } from 'helpers/stub_component';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import * as redirectUtils from '~/repository/utils/blob_edit_redirect_utils';
 
 jest.mock('~/alert');
@@ -46,7 +45,7 @@ describe('BlobEditHeader', () => {
     },
   };
 
-  const createWrapper = ({ action = 'update', glFeatures = {}, provided = {} } = {}) => {
+  const createWrapper = ({ action = 'update', provided = {} } = {}) => {
     wrapper = shallowMountExtended(BlobEditHeader, {
       provide: {
         action,
@@ -68,9 +67,7 @@ describe('BlobEditHeader', () => {
         targetProjectPath: 'gitlab-org/gitlab',
         nextForkBranchName: null,
         ...provided,
-        glFeatures: { blobEditRefactor: true, ...glFeatures },
       },
-      mixins: [glFeatureFlagMixin()],
       stubs: {
         PageHeading,
         CommitChangesModal: stubComponent(CommitChangesModal, {
@@ -168,7 +165,7 @@ describe('BlobEditHeader', () => {
       window.location = originalLocation;
     });
 
-    describe('when blobEditRefactor is enabled', () => {
+    describe('when submitting the form', () => {
       beforeEach(() => {
         clickCommitChangesButton();
       });
@@ -278,7 +275,6 @@ describe('BlobEditHeader', () => {
         );
 
         createWrapper({
-          glFeatures: { blobEditRefactor: true },
           provided: {
             branchAllowsCollaboration: true,
           },
@@ -468,7 +464,6 @@ describe('BlobEditHeader', () => {
       describe('when working on a fork', () => {
         beforeEach(async () => {
           createWrapper({
-            glFeatures: { blobEditRefactor: true },
             provided: {
               canPushToBranch: false,
               targetProjectId: 456,
@@ -513,7 +508,6 @@ describe('BlobEditHeader', () => {
       describe('when working on a fork and user deselects "Create a merge request for this change"', () => {
         beforeEach(async () => {
           createWrapper({
-            glFeatures: { blobEditRefactor: true },
             provided: {
               canPushToBranch: false,
               targetProjectId: 456,
@@ -554,7 +548,6 @@ describe('BlobEditHeader', () => {
       describe('when renaming a file in fork', () => {
         beforeEach(async () => {
           createWrapper({
-            glFeatures: { blobEditRefactor: true },
             provided: {
               canPushToBranch: false,
               targetProjectId: 456,
@@ -593,75 +586,6 @@ describe('BlobEditHeader', () => {
             targetBranch: 'main',
           });
           expect(redirectUtils.redirectToBlobWithAlert).not.toHaveBeenCalled();
-        });
-      });
-    });
-
-    describe('when blobEditRefactor is disabled', () => {
-      beforeEach(() => {
-        createWrapper({ glFeatures: { blobEditRefactor: false } });
-        clickCommitChangesButton();
-      });
-
-      it('on submit, redirects to the updated file using controller', async () => {
-        mock.onPut('/update').replyOnce(HTTP_STATUS_OK, { filePath: '/update/path' });
-        await submitForm();
-
-        expect(mock.history.put).toHaveLength(1);
-        expect(mock.history.put[0].url).toBe('/update');
-        const putData = JSON.parse(mock.history.put[0].data);
-        expect(putData.file).toBe(content);
-        expect(visitUrlSpy).toHaveBeenCalledWith('/update/path');
-      });
-
-      describe('error handling', () => {
-        const errorMessage = 'Controller error message';
-
-        it('shows error message in modal when response contains error', async () => {
-          mock.onPut('/update').replyOnce(HTTP_STATUS_OK, { error: errorMessage });
-          await submitForm();
-
-          expect(findCommitChangesModal().props('error')).toBe(errorMessage);
-          expect(visitUrlSpy).not.toHaveBeenCalled();
-        });
-
-        it('shows error message in modal when request fails', async () => {
-          mock
-            .onPut('/update')
-            .replyOnce(HTTP_STATUS_UNPROCESSABLE_ENTITY, { error: errorMessage });
-          await submitForm();
-
-          expect(findCommitChangesModal().props('error')).toBe(errorMessage);
-        });
-
-        it('shows error message when response does not contain filePath', async () => {
-          mock.onPut('/update').replyOnce(HTTP_STATUS_OK, { message: 'success' });
-          await submitForm();
-
-          expect(findCommitChangesModal().props('error')).toBe(
-            'An error occurred editing the blob',
-          );
-          expect(visitUrlSpy).not.toHaveBeenCalled();
-        });
-
-        it('clears error on successful submission', async () => {
-          findCommitChangesButton().vm.$emit('click');
-          await nextTick();
-
-          mock.onPut('/update').replyOnce(HTTP_STATUS_UNPROCESSABLE_ENTITY);
-          await submitForm();
-
-          expect(findCommitChangesModal().props('error')).toBe(
-            'An error occurred editing the blob',
-          );
-
-          visitUrlSpy.mockImplementation(() => {});
-          mock.onPut('/update').replyOnce(HTTP_STATUS_OK, { filePath: '/update/path' });
-
-          await submitForm();
-          await nextTick();
-
-          expect(findCommitChangesModal().props('error')).toBeNull();
         });
       });
     });

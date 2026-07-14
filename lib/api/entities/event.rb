@@ -3,13 +3,13 @@
 module API
   module Entities
     class Event < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 1 }
-      expose :project_id, documentation: { type: 'Integer', example: 2 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
+      expose :project_id, documentation: { type: 'Integer', format: 'int64', example: 2 }
       expose :action_name, documentation: { type: 'String', example: 'closed' }
-      expose :target_id, documentation: { type: 'Integer', example: 160 }
+      expose :target_id, documentation: { type: 'Integer', format: 'int64', example: 160 }
       expose :target_iid, documentation: { type: 'Integer', example: 157 }
       expose :target_type, documentation: { type: 'String', example: 'Issue' }
-      expose :author_id, documentation: { type: 'Integer', example: 25 }
+      expose :author_id, documentation: { type: 'Integer', format: 'int64', example: 25 }
       expose :target_title, documentation: { type: 'String', example: 'Public project search field' }
       expose :created_at, documentation: { type: 'String', example: '2017-02-09T10:43:19.667Z' }
       expose :note, using: Entities::Note, if: ->(event, options) { event.note? }

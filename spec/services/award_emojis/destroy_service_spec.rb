@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe AwardEmojis::DestroyService, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
-  let_it_be(:awardable, freeze: false) { create(:note) }
+  let_it_be_with_reload(:awardable) { create(:note) }
   let_it_be(:project) { awardable.project }
 
-  let_it_be(:name, freeze: false) { AwardEmoji::THUMBS_UP }
-  let_it_be(:award_from_other_user, freeze: false) do
+  let_it_be(:name) { AwardEmoji::THUMBS_UP }
+  let_it_be_with_reload(:award_from_other_user) do
     create(:award_emoji, name: name, awardable: awardable, user: create(:user))
   end
 

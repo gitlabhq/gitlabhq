@@ -26,6 +26,7 @@ module RuboCop
           Keeps
           Gitlab::SidekiqMiddleware::PauseControl::Strategies::AdvancedSearch
           Gitlab::Metrics::GlobalSearchSlis EE::Gitlab::Metrics::GlobalSearchSlis
+          Gitlab::Metrics
         ].map { |x| x.split('::') }.freeze
 
         SEARCH_REGEXES = [
@@ -37,7 +38,7 @@ module RuboCop
         def on_module(node)
           add_identifiers(node)
 
-          run_search_namespace_cop(node) if node.child_nodes.none? { |n| n.module_type? || n.class_type? }
+          run_search_namespace_cop(node) if node.child_nodes.none? { |n| n.type?(:module, :class) }
         end
 
         def on_class(node)

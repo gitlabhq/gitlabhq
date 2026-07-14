@@ -31,9 +31,20 @@ module Files
     def validate!
       super
 
+      raise Commits::CreateService::ValidationError, _('Path is a directory, not a file') if path_is_directory?
+
       if file_has_changed?(@file_path, @last_commit_sha)
         raise FileChangedError, _('You are attempting to update a file that has changed since you started editing it.')
       end
+    end
+
+    def path_is_directory?
+      ref = @start_branch.presence || @branch_name
+      commit = @start_project.repository.commit(ref)
+      return false unless commit
+
+      entry = commit.tree_entry(@file_path)
+      entry.present? && entry[:type] == :tree
     end
   end
 end

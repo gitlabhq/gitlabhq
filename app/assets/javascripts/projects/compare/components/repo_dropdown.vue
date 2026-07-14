@@ -7,6 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
 export default {
+  name: 'RepoDropdown',
   components: {
     GlCollapsibleListbox,
   },

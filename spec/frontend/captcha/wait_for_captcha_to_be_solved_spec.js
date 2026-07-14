@@ -17,7 +17,7 @@ describe('waitForCaptchaToBeSolved', () => {
   it('opens a modal, resolves with captcha response on success', async () => {
     CaptchaModal.mounted.mockImplementationOnce(function mounted() {
       return nextTick().then(() => {
-        this.$emit('receivedCaptchaResponse', response);
+        this.$emit('received-captcha-response', response);
         this.$emit('hidden');
       });
     });
@@ -38,7 +38,7 @@ describe('waitForCaptchaToBeSolved', () => {
   it("opens a modal, rejects with error in case the captcha isn't solved", async () => {
     CaptchaModal.mounted.mockImplementationOnce(function mounted() {
       return nextTick().then(() => {
-        this.$emit('receivedCaptchaResponse', null);
+        this.$emit('received-captcha-response', null);
         this.$emit('hidden');
       });
     });

@@ -6,7 +6,7 @@ RSpec.describe 'Project.languages', feature_category: :internationalization do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let_it_be(:query) do
     %(
       query {

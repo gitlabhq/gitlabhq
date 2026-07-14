@@ -87,7 +87,7 @@ module Gitlab
             operation_name: query.operation_name,
             operation_fingerprint: query.operation_fingerprint,
             is_mutation: query.mutation?,
-            variables: clean_variables(query.provided_variables),
+            variables: clean_variables(query.provided_variables, query.operation_name),
             query_string: clean_query_string(query)
           }
 
@@ -104,12 +104,12 @@ module Gitlab
           ::Gitlab::GraphqlLogger.info(info)
         end
 
-        def clean_variables(variables)
+        def clean_variables(variables, operation_name)
           filtered = ActiveSupport::ParameterFilter
             .new(::Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer::FILTER_PARAMETERS)
             .filter(variables)
 
-          filtered&.to_s
+          ::Gitlab::Graphql::VariableFilters::Registry.filter(filtered, operation_name)&.to_s
         end
 
         def clean_query_string(query)

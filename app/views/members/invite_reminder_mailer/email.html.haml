@@ -8,5 +8,5 @@
         options.merge(tag_pair(tag.strong,
         :strong_start, :strong_end)).merge(@email_instance.extra_body_options(@member.created_at.to_date)))
     %p.invite-actions
-      = link_to s_('InviteReminderEmail|Accept invitation'), invite_url(@token), class: 'invite-btn-join'
-      = link_to s_('InviteReminderEmail|Decline invitation'), decline_invite_url(@token), class: 'invite-btn-decline'
+      = link_to s_('InviteReminderEmail|Accept invitation'), invite_url_for(@member, @token), class: 'invite-btn-join'
+      = link_to s_('InviteReminderEmail|Decline invitation'), decline_invite_url_for(@member, @token), class: 'invite-btn-decline'

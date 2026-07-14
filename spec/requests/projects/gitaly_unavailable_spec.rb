@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Gitaly unavailable graceful degradation', feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before_all do
     project.add_maintainer(user)
@@ -176,6 +176,18 @@ RSpec.describe 'Gitaly unavailable graceful degradation', feature_category: :sou
           allow(repository).to receive(:blob_at)
             .and_raise(Gitlab::Git::CommandError, 'Gitaly unavailable')
         end
+      end
+
+      it_behaves_like 'handles Gitaly errors for request specs'
+    end
+  end
+
+  describe 'Projects::AvatarsController' do
+    include_context 'when Repository#blob_at_branch raises Gitaly error'
+
+    describe '#show' do
+      let(:make_request) do
+        get namespace_project_avatar_path(namespace_id: project.namespace, project_id: project)
       end
 
       it_behaves_like 'handles Gitaly errors for request specs'
@@ -582,6 +594,125 @@ RSpec.describe 'Gitaly unavailable graceful degradation', feature_category: :sou
     describe '#logs_tree' do
       let(:make_request) do
         get logs_tree_project_ref_path(project, id: 'master', format: :json)
+      end
+
+      it_behaves_like 'handles Gitaly errors for json format'
+    end
+  end
+
+  describe 'Projects::RepositoriesController' do
+    describe '#archive' do
+      let(:allow_gitaly_to_raise_error) do
+        allow_next_instance_of(Repository) do |repository|
+          allow(repository).to receive(:archive_metadata)
+            .and_raise(Gitlab::Git::CommandError, 'Gitaly unavailable')
+        end
+      end
+
+      context 'with GET request' do
+        let(:make_request) { get project_archive_path(project, id: 'master', format: :zip) }
+
+        it_behaves_like 'handles Gitaly errors for request specs'
+      end
+
+      context 'with HEAD request' do
+        let(:make_request) { head project_archive_path(project, id: 'master', format: :zip) }
+
+        it_behaves_like 'handles Gitaly errors for request specs'
+      end
+
+      context 'when repository or ref is not found' do
+        it 'returns 404 for ArchiveNotFoundError from Workhorse' do
+          allow_next_instance_of(Projects::RepositoriesController) do |controller|
+            allow(controller).to receive(:send_git_archive)
+              .and_raise(Gitlab::Workhorse::ArchiveNotFoundError, 'Repository or ref not found')
+          end
+
+          get project_archive_path(project, id: 'master', format: :zip)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
+  describe 'Projects::ProtectedBranchesController' do
+    include_context 'when RefsFinder#execute raises Gitaly error'
+
+    let_it_be_with_reload(:protected_refs_project) { create(:project, :public, :repository) }
+    let_it_be(:protected_branch) { create(:protected_branch, project: protected_refs_project) }
+
+    before_all do
+      protected_refs_project.add_maintainer(user)
+    end
+
+    describe '#show' do
+      let(:make_request) { get project_protected_branch_path(protected_refs_project, protected_branch) }
+
+      it_behaves_like 'handles Gitaly errors for request specs'
+    end
+  end
+
+  describe 'Projects::ProtectedTagsController' do
+    include_context 'when RefsFinder#execute raises Gitaly error'
+
+    let_it_be_with_reload(:protected_refs_project) { create(:project, :public, :repository) }
+    let_it_be(:protected_tag) { create(:protected_tag, project: protected_refs_project) }
+
+    before_all do
+      protected_refs_project.add_maintainer(user)
+    end
+
+    describe '#show' do
+      let(:make_request) { get project_protected_tag_path(protected_refs_project, protected_tag) }
+
+      it_behaves_like 'handles Gitaly errors for request specs'
+    end
+  end
+
+  describe 'Projects::MergeRequests::ConflictsController' do
+    include_context 'when Conflict::Resolver#conflicts raises Gitaly error'
+
+    let_it_be(:merge_request) do
+      create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start',
+        source_project: project, merge_status: :unchecked, &:mark_as_unmergeable)
+    end
+
+    describe '#show' do
+      context 'with HTML format' do
+        let(:make_request) { get conflicts_project_merge_request_path(project, merge_request) }
+
+        it_behaves_like 'handles Gitaly errors for request specs'
+      end
+
+      context 'with JSON format' do
+        let(:make_request) { get conflicts_project_merge_request_path(project, merge_request, format: :json) }
+
+        it_behaves_like 'handles Gitaly errors for json format'
+      end
+    end
+
+    describe '#conflict_for_path' do
+      let(:make_request) do
+        get conflict_for_path_project_merge_request_path(
+          project,
+          merge_request,
+          old_path: 'files/ruby/popen.rb',
+          new_path: 'files/ruby/popen.rb',
+          format: :json
+        )
+      end
+
+      it_behaves_like 'handles Gitaly errors for json format'
+    end
+
+    describe '#resolve_conflicts' do
+      let(:make_request) do
+        post resolve_conflicts_project_merge_request_path(
+          project,
+          merge_request,
+          format: :json
+        ), params: { files: [], commit_message: 'Resolve conflicts' }
       end
 
       it_behaves_like 'handles Gitaly errors for json format'

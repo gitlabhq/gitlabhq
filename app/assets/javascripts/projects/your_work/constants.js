@@ -89,7 +89,7 @@ export const PERSONAL_TAB = {
 
 export const MEMBER_TAB = {
   ...baseTab,
-  text: __('Member'),
+  text: s__('YourWork|Member'),
   value: 'member',
   query: projectsQuery,
   variables: { membership: true },
@@ -123,8 +123,6 @@ export const PROJECT_DASHBOARD_TABS = [
   MEMBER_TAB,
   INACTIVE_TAB,
 ];
-
-export const BASE_ROUTE = '/dashboard/projects';
 
 export const ROOT_ROUTE_NAME = 'root';
 

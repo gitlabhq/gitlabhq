@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require_relative 'shared_examples'
 
 RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
   include RepoHelpers
@@ -10,6 +11,9 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
   let_it_be(:issue)   { create(:issue, project: project) }
 
   it_behaves_like 'sanitize pipeline'
+  it_behaves_like 'applies heading localization filter',
+    heading_input: '## My Heading',
+    heading_text: 'My Heading'
 
   describe 'References' do
     before do
@@ -307,6 +311,10 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
     let_it_be(:ref)            { 'markdown' }
     let_it_be(:requested_path) { '/' }
     let_it_be(:commit)         { project.commit(ref) }
+    # `freeze: false` is kept here because this `let_it_be` subject is not an
+    # ActiveRecord record, so freezing gives no cross-example isolation benefit
+    # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+    # gitlab-org/gitlab#602925).
     let_it_be(:context, freeze: false) do
       {
         commit: commit,
@@ -440,6 +448,31 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
 
       expect(anchor).to be_present
       expect(anchor['href']).to eq('https://example.com')
+    end
+  end
+
+  describe 'diagram proxy' do
+    def full_then_postprocess(markdown, context)
+      full_doc = described_class.to_document(markdown, context)
+      Banzai::Pipeline::PostProcessPipeline.to_document(full_doc, described_class.transform_context(context))
+    end
+
+    where(:diagram_type, :source, :settings) do
+      'plantuml' | 'Bob -> Sara : Hello' | { plantuml_enabled: true, plantuml_url: 'http://localhost:8080', plantuml_diagram_proxy_enabled: true }
+      'graphviz' | 'digraph { a -> b }'  | { kroki_enabled: true, kroki_url: 'http://localhost:8000', kroki_diagram_proxy_enabled: true }
+    end
+
+    with_them do
+      it 'rewrites the diagram <img> to the proxy URL' do
+        stub_application_setting(settings)
+
+        markdown = "```#{diagram_type}\n#{source}\n```"
+        result = full_then_postprocess(markdown, project: project)
+
+        # FullPipeline runs ImageLazyLoadFilter, so the rewritten proxy URL ends up in data-src.
+        uri = Addressable::URI.parse(result.at_css('img')['data-src'])
+        expect(uri.path).to start_with('/-/diagram-proxy/')
+      end
     end
   end
 

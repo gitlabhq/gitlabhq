@@ -4,6 +4,10 @@ module Types
   class SubscriptionType < ::Types::BaseObject
     graphql_name 'Subscription'
 
+    # Authorization is enforced per subscription and by each payload type's directive; the root
+    # type opts out to avoid failing closed on the payload object passed to `authorized?` at delivery.
+    authorize_granular_token skip_reason: :subscription_root
+
     field :ci_job_processed,
       subscription: Subscriptions::Ci::Jobs::JobProcessed, null: true,
       description: 'Triggered when a job changes state.'

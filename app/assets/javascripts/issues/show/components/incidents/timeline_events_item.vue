@@ -37,6 +37,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['delete', 'edit'],
   computed: {
     time() {
       return formatDate(this.occurredAt, 'HH:MM', true);

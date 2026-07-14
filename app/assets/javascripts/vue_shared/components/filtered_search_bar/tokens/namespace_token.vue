@@ -7,6 +7,7 @@ import { camelizeKeys } from '~/lib/utils/object_utils';
 import BaseToken from './base_token.vue';
 
 export default {
+  name: 'NamespaceToken',
   components: {
     BaseToken,
     GlFilteredSearchSuggestion,

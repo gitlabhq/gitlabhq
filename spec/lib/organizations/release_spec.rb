@@ -21,44 +21,104 @@ RSpec.describe Organizations::Release, feature_category: :organization do
   end
 
   describe '.enabled?' do
-    context 'when the flag is at a gated stage' do
+    let(:actor) { build_stubbed(:user) }
+
+    # The argument to `enabled?` is an organization flag (such as
+    # :ui_for_organizations): the registry key for one feature. The feature's
+    # stage decides which org_stage_* stage flags gate it.
+    context 'when a feature is registered at a stage' do
       before do
         stub_flag(name: :ui_for_organizations, stage: :beta)
       end
 
-      it 'is true when the stage flag is enabled' do
-        expect(described_class.enabled?(:ui_for_organizations, build_stubbed(:user))).to be(true)
+      it 'is enabled when the backing stage flag is on' do
+        expect(described_class.enabled?(:ui_for_organizations, actor)).to be(true)
       end
 
-      context 'when the stage flag is disabled' do
-        before do
-          stub_feature_flags(org_stage_beta: false)
-        end
+      it 'is disabled when the backing stage flag and every earlier stage flag are off' do
+        stub_feature_flags(org_stage_experimental: false, org_stage_beta: false)
 
-        it 'is false' do
-          expect(described_class.enabled?(:ui_for_organizations, build_stubbed(:user))).to be(false)
-        end
-      end
-    end
-
-    context 'when the actor is nil' do
-      before do
-        stub_flag(name: :ui_for_organizations, stage: :beta)
+        expect(described_class.enabled?(:ui_for_organizations, actor)).to be(false)
       end
 
-      it 'checks the stage flag instance-wide gate' do
+      it 'checks the stage flags instance-wide when the actor is nil' do
         expect(described_class.enabled?(:ui_for_organizations, nil)).to be(true)
       end
     end
 
-    context 'when the flag is unknown' do
+    describe 'cascading stages' do
+      context 'when a feature is at the Experimental stage' do
+        before do
+          stub_flag(name: :ui_for_organizations, stage: :experimental)
+          stub_feature_flags(org_stage_experimental: false)
+        end
+
+        it 'stays disabled when only a later stage flag is on' do
+          stub_feature_flags(org_stage_beta: true)
+
+          expect(described_class.enabled?(:ui_for_organizations, actor)).to be(false)
+        end
+      end
+
+      context 'when a feature is at the Beta stage' do
+        before do
+          stub_flag(name: :ui_for_organizations, stage: :beta)
+          stub_feature_flags(org_stage_experimental: false, org_stage_beta: false)
+        end
+
+        it 'is enabled when an earlier stage flag is on' do
+          stub_feature_flags(org_stage_experimental: true)
+
+          expect(described_class.enabled?(:ui_for_organizations, actor)).to be(true)
+        end
+
+        it 'stays disabled when only a later stage flag is on' do
+          stub_feature_flags(org_stage_la_25: true, org_stage_ga: true)
+
+          expect(described_class.enabled?(:ui_for_organizations, actor)).to be(false)
+        end
+      end
+
+      context 'when a feature is at an LA stage' do
+        before do
+          stub_flag(name: :ui_for_organizations, stage: :la_50)
+          stub_feature_flags(org_stage_experimental: false, org_stage_beta: false, org_stage_la_50: false)
+        end
+
+        it 'is enabled when an earlier cascading stage flag is on' do
+          stub_feature_flags(org_stage_beta: true)
+
+          expect(described_class.enabled?(:ui_for_organizations, actor)).to be(true)
+        end
+
+        it 'stays disabled when only another LA stage flag is on' do
+          stub_feature_flags(org_stage_la_25: true)
+
+          expect(described_class.enabled?(:ui_for_organizations, actor)).to be(false)
+        end
+      end
+
+      context 'when a feature is at the GA stage' do
+        before do
+          stub_flag(name: :ui_for_organizations, stage: :ga)
+        end
+
+        it 'checks only the GA stage flag and ignores earlier stages' do
+          stub_feature_flags(org_stage_ga: false, org_stage_experimental: true, org_stage_beta: true)
+
+          expect(described_class.enabled?(:ui_for_organizations, actor)).to be(false)
+        end
+      end
+    end
+
+    context 'when the organization flag is unknown' do
       before do
         allow(registry).to receive(:find).with(:nope)
           .and_raise(described_class::UnknownFlagError)
       end
 
       it 'raises' do
-        expect { described_class.enabled?(:nope, build_stubbed(:user)) }
+        expect { described_class.enabled?(:nope, actor) }
           .to raise_error(described_class::UnknownFlagError)
       end
     end
@@ -70,9 +130,9 @@ RSpec.describe Organizations::Release, feature_category: :organization do
         .to eq(%i[experimental beta la_25 la_50 la_75 la_100 ga])
     end
 
-    # `.enabled?` builds the flag inline as `:"org_stage_#{stage.key}"` so the
-    # feature-flag usage check can track the family. That is only correct while
-    # every stage's flag matches that convention.
+    # `enabled?` builds each stage flag inline as `:"org_stage_#{key}"`, and the
+    # feature-flag usage scanner only tracks them while every stage flag follows
+    # that name. This test guards the convention.
     it 'names every flag org_stage_<key>', :aggregate_failures do
       described_class.stages.each do |stage|
         expect(stage.flag).to eq(:"org_stage_#{stage.key}")

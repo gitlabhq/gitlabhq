@@ -5,6 +5,8 @@ module Mutations
     class UnsnoozeMany < BaseMany
       graphql_name 'TodoUnsnoozeMany'
 
+      authorize_granular_token permissions: :update_todo, boundary: :user, boundary_type: :user
+
       field :todos, [::Types::TodoType],
         null: false,
         description: 'Unsnoozed to-do items.'

@@ -1,0 +1,44 @@
+{
+  "consumer": {
+    "name": "Pipelines#show"
+  },
+  "provider": {
+    "name": "DELETE pipeline"
+  },
+  "interactions": [
+    {
+      "description": "a request to delete the pipeline",
+      "providerState": "a pipeline for a project exists",
+      "request": {
+        "method": "POST",
+        "path": "/api/graphql",
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "query": "mutation deletePipeline($id: CiPipelineID!) {\n  pipelineDestroy(input: { id: $id }) {\n    errors\n  }\n}\n",
+          "variables": {
+            "id": "gid://gitlab/Ci::Pipeline/316112"
+          }
+        },
+        "matchingRules": {
+          "$.body.query": {
+            "match": "regex",
+            "regex": "mutation\\s*deletePipeline\\(\\$id:\\s*CiPipelineID!\\)\\s*\\{\\s*pipelineDestroy\\(input:\\s*\\{\\s*id:\\s*\\$id\\s*\\}\\)\\s*\\{\\s*errors\\s*\\}\\s*\\}\\s*"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

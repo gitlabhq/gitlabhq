@@ -4,7 +4,6 @@
  */
 $super-sidebar-transition-delay: 0.4s;
 $super-sidebar-transition-duration: 0.2s;
-$super-sidebar-transition-hint-duration: $super-sidebar-transition-duration * 0.25;
 $command-palette-spacing: px-to-rem(14px);
 
 /**
@@ -199,7 +198,7 @@ $command-palette-spacing: px-to-rem(14px);
   bottom: $calc-application-footer-height;
   left: 0;
   @apply gl-h-full;
-  @apply xl:-gl-mx-3;
+  @apply xl:-gl-ml-3;
   background-color: var(--body-background-color);
   @apply xl:gl-bg-transparent;
   transform: translate3d(0, 0, 0);
@@ -226,6 +225,11 @@ $command-palette-spacing: px-to-rem(14px);
     z-index: $super-sidebar-nav-flayout-menu-z-index;
     @include gl-prefers-reduced-motion-transition;
     transition: opacity .2s $gl-easing-out-cubic;
+
+    .gl-nav-item-label {
+      width: max-content;
+      overflow-wrap: anywhere;
+    }
 
     @starting-style {
       opacity: 0;
@@ -265,14 +269,6 @@ $command-palette-spacing: px-to-rem(14px);
     mix-blend-mode: var(--super-sidebar-hr-mix-blend-mode);
   }
 
-  .btn-with-notification {
-    position: relative;
-  }
-
-  .super-sidebar-help-center-toggle[aria-expanded='true'] {
-    background-color: $gray-50 !important;
-  }
-
   #trial-status-sidebar-widget:hover {
     text-decoration: none;
     color: var(--gl-color-neutral-0);
@@ -294,25 +290,6 @@ $command-palette-spacing: px-to-rem(14px);
 }
 
 /**
- * Nav item
- */
-.super-sidebar .super-sidebar-nav-item {
-  font-weight: 425;
-  min-height: 1.75rem;
-
-  // stylelint-disable-next-line gitlab/no-has -- scoped to a specific button within the sidebar
-  &:has(.gl-button-text.gl-hidden) .gl-button-icon {
-    @apply gl-mr-0 #{!important};
-  }
-
-  &.super-sidebar-nav-item-current:not(:hover) {
-    .nav-item-link-label {
-      @apply gl-font-semibold;
-    }
-  }
-}
-
-/**
  * What's new badge
  */
 .super-sidebar-whats-new-badge {
@@ -329,34 +306,6 @@ $command-palette-spacing: px-to-rem(14px);
  */
 .super-sidebar-overlay {
   display: none;
-}
-
-/**
- * Peek
- */
-.super-sidebar-has-peeked {
-  margin-top: calc(#{$header-height} - #{$gl-spacing-scale-2});
-  margin-bottom: #{$gl-spacing-scale-2};
-}
-
-.super-sidebar-peek {
-  margin-left: #{$gl-spacing-scale-2};
-}
-
-.super-sidebar-peek,
-.super-sidebar-peek-hint {
-  @apply gl-shadow;
-  border-right: 0;
-}
-
-.super-sidebar-peek-hint {
-  @media (prefers-reduced-motion: no-preference) {
-    transition: transform $super-sidebar-transition-hint-duration ease-out;
-  }
-}
-
-.super-sidebar-peek {
-  @apply gl-rounded-base;
 }
 
 /**
@@ -395,14 +344,6 @@ $command-palette-spacing: px-to-rem(14px);
   .super-sidebar {
     @apply gl-m-0;
     transform: translate3d(-100%, 0, 0);
-
-    &.super-sidebar-peek {
-      transform: translate3d(0, 0, 0);
-    }
-
-    &.super-sidebar-peek-hint {
-      transform: translate3d(calc(#{$gl-spacing-scale-3} - 100%), 0, 0);
-    }
   }
 
   @include media-breakpoint-up(xl) {
@@ -414,13 +355,31 @@ $command-palette-spacing: px-to-rem(14px);
   }
 }
 
-.gl-dark {
-  .super-sidebar {
-    .gl-new-dropdown-custom-toggle {
-      .btn-with-notification.btn-with-notification {
-        mix-blend-mode: unset;
+/**
+ * Feature Library modal
+ */
+.feature-library-modal {
+  &.gl-modal .modal-dialog {
+    align-items: flex-start;
+    margin-top: 5vh;
+    min-height: 0;
+
+    .modal-content {
+      min-height: auto;
+      max-height: 90vh;
+    }
+
+    @include gl-media-breakpoint-up(sm) {
+      margin-top: 10vh;
+
+      .modal-content {
+        max-height: 80vh;
       }
     }
+  }
+
+  .feature-library-scroll-area {
+    min-height: 20rem;
   }
 }
 

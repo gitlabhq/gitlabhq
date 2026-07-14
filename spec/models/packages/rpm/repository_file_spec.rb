@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Rpm::RepositoryFile, type: :model, feature_category: :package_registry do

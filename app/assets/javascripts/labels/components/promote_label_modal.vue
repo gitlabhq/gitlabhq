@@ -8,6 +8,7 @@ import { s__, __, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
+  name: 'PromoteLabelModal',
   primaryProps: {
     text: s__('Labels|Promote Label'),
     attributes: { variant: 'confirm' },

@@ -24,9 +24,7 @@ module Ci
 
     attr_reader :job, :current_user
 
-    delegate :persisted_environment, :expanded_environment_name,
-      :job_definition_instance, :project, :project_id,
-      :partition_id, :metadata, :pipeline,
+    delegate :job_definition_instance, :project, :project_id,
       to: :job
 
     def clone_accessors
@@ -66,56 +64,11 @@ module Ci
     end
 
     def add_job_definition_attributes!(attributes)
-      if job_definition_instance
-        add_existing_job_definition_attributes!(attributes)
-      else
-        add_new_job_definition_attributes!(attributes)
-      end
-    end
-
-    def add_existing_job_definition_attributes!(attributes)
       attributes[:job_definition_instance_attributes] = {
         project_id: project_id,
         job_definition_id: job_definition_instance.job_definition_id,
         partition_id: job_definition_instance.partition_id
       }
-    end
-
-    def add_new_job_definition_attributes!(attributes)
-      persisted_job_definition = find_or_create_job_definition
-
-      attributes[:job_definition_instance_attributes] = {
-        project: project,
-        job_definition: persisted_job_definition,
-        partition_id: partition_id
-      }
-    end
-
-    def find_or_create_job_definition
-      definition = ::Ci::JobDefinition.fabricate(
-        config: build_definition_attributes,
-        project_id: project_id,
-        partition_id: partition_id
-      )
-
-      ::Gitlab::Ci::JobDefinitions::FindOrCreate.new(
-        pipeline, definitions: [definition]
-      ).execute.first
-    end
-
-    def build_definition_attributes
-      attrs = {
-        options: metadata.config_options,
-        yaml_variables: metadata.config_variables,
-        id_tokens: metadata.id_tokens,
-        secrets: metadata.secrets,
-        tag_list: job.tag_list.to_a,
-        run_steps: job.run_steps
-      }
-
-      attrs[:interruptible] = metadata.interruptible unless metadata.interruptible.nil?
-
-      attrs
     end
   end
 end

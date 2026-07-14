@@ -54,7 +54,8 @@ module PersonalAccessTokens
         expires_at: pat_expiration,
         organization_id: organization_id,
         description: params[:description],
-        granular: params[:granular] || false
+        granular: params[:granular] || false,
+        sudo: params[:sudo] || false
       }
     end
 

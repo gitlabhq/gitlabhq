@@ -6,4 +6,4 @@
     The Phabricator task importer is being deprecated. Phabricator itself as a project is no longer actively maintained since June 1, 2021. We haven't observed imports using this tool. There has been no activity on the open related issues on GitLab.
   stage: Foundations
   tiers:
-  documentation_url: https://docs.gitlab.com/user/project/import/
+  documentation_url: https://docs.gitlab.com/user/import/

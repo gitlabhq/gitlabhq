@@ -16,7 +16,7 @@ description: Namespace hierarchy.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409913) in GitLab 16.1 [with a flag](../../administration/feature_flags/_index.md) named `ui_for_organizations`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409913) in GitLab 16.1 [with a feature flag](../../administration/feature_flags/_index.md) named `ui_for_organizations`. Disabled by default.
 
 {{< /history >}}
 
@@ -40,7 +40,7 @@ see [epic 9265](https://gitlab.com/groups/gitlab-org/-/epics/9265).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441531) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `allow_organization_creation`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441531) in GitLab 16.11 [with a feature flag](../../administration/feature_flags/_index.md) named `allow_organization_creation`. Disabled by default.
 - Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/549062) to `organization_switching` in GitLab 18.4. Disabled by default. Feature flag `allow_organization_creation` removed.
 
 {{< /history >}}
@@ -56,7 +56,7 @@ see [epic 9265](https://gitlab.com/groups/gitlab-org/-/epics/9265).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440741) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `organization_switching`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440741) in GitLab 16.11 [with a feature flag](../../administration/feature_flags/_index.md) named `organization_switching`. Disabled by default.
 
 {{< /history >}}
 

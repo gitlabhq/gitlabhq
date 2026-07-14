@@ -2,6 +2,7 @@
 
 class Projects::ProtectedRefsController < Projects::ApplicationController
   include RepositorySettingsRedirect
+  include HandlesGitalyErrors
 
   # Authorize
   before_action :authorize_admin_protected_refs!

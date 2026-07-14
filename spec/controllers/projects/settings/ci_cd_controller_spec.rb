@@ -361,7 +361,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         }, format: :csv
       end
 
-      let!(:authorizations) do
+      let_it_be(:authorizations) do
         create_list(:ci_job_token_authorization, 3, accessed_project: project)
       end
 

@@ -696,8 +696,10 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers, fea
 
   describe '#unprepare_partitioned_async_index_by_name' do
     let(:index_name) { connection.index_name(table_name, 'id') }
-    let!(:async_index1) { create(:postgres_async_index, name: async_index_name1) }
-    let!(:async_index2) { create(:postgres_async_index, name: async_index_name2) }
+    let_it_be(:async_index_name1) { 'index_4a5e03c187' }
+    let_it_be(:async_index_name2) { 'index_acc0d9e04e' }
+    let_it_be(:async_index1) { create(:postgres_async_index, name: async_index_name1) }
+    let_it_be(:async_index2) { create(:postgres_async_index, name: async_index_name2) }
 
     it 'destroys the records' do
       expect do

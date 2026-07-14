@@ -499,6 +499,16 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
               expect { subject.execute }.to change { environment.flux_resource_path }.from(nil).to(flux_resource_path)
             end
           end
+
+          context 'when the flux resource path contains variables' do
+            let(:flux_resource_path) { 'path/to/$CI_PROJECT_PATH/resource' }
+
+            it 'expands variables and assigns the Flux resource path to the environment' do
+              expect { subject.execute }
+                .to change { environment.flux_resource_path }
+                .from(nil).to("path/to/#{project.full_path}/resource")
+            end
+          end
         end
       end
     end

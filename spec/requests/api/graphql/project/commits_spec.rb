@@ -16,7 +16,7 @@ RSpec.describe 'Project.repository.commit', feature_category: :source_code_manag
     )
   end
 
-  it_behaves_like 'authorizing granular token permissions for GraphQL', :read_code do
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_code] do
     let(:user) { current_user }
     let(:boundary_object) { project }
     let(:request) { post_graphql(query, token: { personal_access_token: pat }) }

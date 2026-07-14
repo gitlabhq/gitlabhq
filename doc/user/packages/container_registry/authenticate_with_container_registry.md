@@ -113,7 +113,7 @@ To use CI/CD to authenticate with the container registry, you can use:
 
 ## Troubleshooting
 
-### `docker login` command fails with `access forbidden`
+### Error: `docker login` command fails with `access forbidden`
 
 The container registry returns the GitLab API URL to the Docker client
 to validate credentials. The Docker client uses basic auth, so the request contains
@@ -136,7 +136,48 @@ For example, a proxy in front of GitLab might be redirecting to the `/jwt/auth` 
 
 For more information about credential validation with Docker clients, see [Container registry architecture](../../../administration/packages/container_registry.md#container-registry-architecture).
 
-### `unauthorized: authentication required` when pushing large images
+### Error: `docker login` fails with an authentication error
+
+When GitLab rejects a `docker login` request, the Docker client displays a JSON error envelope containing an error code and message.
+
+To resolve the error, identify the error code and follow the instructions:
+
+- `UNAUTHORIZED` (`401`): GitLab could not verify the credentials. To resolve:
+  - Confirm the password or token is correct and not expired.
+  - Confirm a personal access token or deploy token has the `read_registry` scope for pull
+    access, or the `read_registry` and `write_registry` scopes for push access.
+  - If the account uses two-factor authentication, authenticate with a token instead of a
+    password. For more information, see [authenticate with a token](#authenticate-with-a-token).
+- `DENIED` (`403`): GitLab denied access. Check the message:
+  - `access forbidden`: the credentials are valid but do not grant registry access. Confirm
+    the token has the `read_registry` scope (and `write_registry` for push access), and that
+    your role allows access to the project's registry.
+  - `Pushing to protected repository path forbidden`: the target path is protected by
+    container registry protection rules.
+  - `Access denied: too many failed authentication attempts from this network`: abuse
+    protection blocked your network. Wait for the block to expire, or retry from a
+    different network.
+  - `Access denied: too many distinct sources for this account`: the account was used from
+    too many IP addresses. Review where the account is used, then consolidate or stagger
+    the requests.
+- `UNSUPPORTED` (`404`): GitLab does not recognize the requested authentication service. To resolve:
+  - Verify the registry token service is configured correctly.
+
+If the Docker client instead reports `unexpected end of JSON input`, the response body was empty
+or contained invalid JSON:
+
+### Error: `unexpected end of JSON input`
+
+When a proxy or load balancer in front of GitLab strips the response body, you might receive
+the following error:
+
+```plaintext
+Error response from daemon: error parsing HTTP <status> response body: unexpected end of JSON input: ""
+```
+
+To resolve this issue, check the request path between the Docker client and GitLab.
+
+### Error: `unauthorized: authentication required` when pushing large images
 
 When pushing large images, you may see an authentication error like the following:
 

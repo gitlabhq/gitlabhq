@@ -45,7 +45,6 @@ UsageData/HistogramWithLargeTable:
     - 'Ci::Bridge'
     - 'Ci::Build'
     - 'GenericCommitStatus'
-    - 'Ci::BuildMetadata'
     - 'Ci::JobArtifact'
     - 'Ci::PipelineVariable'
     - 'Ci::Pipeline'

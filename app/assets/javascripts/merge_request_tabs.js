@@ -109,15 +109,8 @@ function mountPipelines() {
     },
     apolloProvider,
     provide: {
-      artifactsEndpoint: pipelineTableViewEl.dataset.artifactsEndpoint,
-      artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
-      targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
-      fullPath: pipelineTableViewEl.dataset.fullPath,
       newPipelinePath: pipelineTableViewEl.dataset.newPipelinePath,
       graphqlPath: pipelineTableViewEl.dataset.graphqlPath,
-      manualActionsLimit: 50,
-      mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
-      sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
       useFailedJobsWidget: true,
       mergeRequestPath: mrWidgetData?.merge_request_path
         ? `${gon.gitlab_url}${mrWidgetData.merge_request_path}`
@@ -126,9 +119,6 @@ function mountPipelines() {
     render(createElement) {
       return createElement('merge-request-pipelines-table', {
         props: {
-          endpoint: pipelineTableViewEl.dataset.endpoint,
-          emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
-          errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
           canCreatePipelineInTargetProject: Boolean(
             mrWidgetData?.can_create_pipeline_in_target_project,
           ),
@@ -136,6 +126,9 @@ function mountPipelines() {
           targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
           projectId: pipelineTableViewEl.dataset.projectId,
           mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
+
+          // Only used by legacy_pipelines_table_wrapper.vue:
+          endpoint: pipelineTableViewEl.dataset.endpoint,
           isMergeRequestTable: true,
         },
       });
@@ -143,7 +136,7 @@ function mountPipelines() {
   }).$mount();
 
   // $mount(el) replaces the el with the new rendered component. We need it in order to mount
-  // it everytime this tab is clicked - https://vuejs.org/v2/api/#vm-mount
+  // it every time this tab is clicked - https://vuejs.org/v2/api/#vm-mount
   pipelineTableViewEl.appendChild(table.$el);
 
   return table;

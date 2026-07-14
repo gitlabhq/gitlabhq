@@ -15,8 +15,9 @@ module Types
               null: true,
               description: part.description do
               params.each do |param_name, param_config|
-                argument param_name, adapter.graphql_type(param_config[:type]),
-                  required: false, description: param_config[:description]
+                gql_type = adapter.graphql_type(param_config[:type])
+                gql_type = [gql_type] if param_config[:array]
+                argument param_name, gql_type, required: false, description: param_config[:description]
               end
             end
 

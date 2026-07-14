@@ -271,6 +271,42 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     end
   end
 
+  describe '#target_namespace' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:group) { create(:group, organization: organization) }
+
+    before do
+      params[:target_namespace] = group.full_path
+    end
+
+    context 'when organization_id is passed' do
+      before do
+        params[:organization_id] = organization.id
+      end
+
+      it 'finds the namespace in the passed organization' do
+        expect(github_importer.target_namespace).to eq(group)
+      end
+    end
+
+    context 'when organization_id belongs to a different organization' do
+      before do
+        params[:organization_id] = other_organization.id
+      end
+
+      it 'does not find a namespace from another organization' do
+        expect(github_importer.target_namespace).to be_nil
+      end
+    end
+
+    context 'when organization_id is absent' do
+      it 'falls back to searching all namespaces' do
+        expect(github_importer.target_namespace).to eq(group)
+      end
+    end
+  end
+
   context 'when namespace to import repository into does not exist' do
     before do
       params[:target_namespace] = 'unknown_path'

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Packages
   module Pypi
     def self.table_name_prefix

@@ -33,7 +33,7 @@ The current ClickHouse database schema is stored in a single [`main.sql`](https:
 Sometimes, the `main.sql` file is not updated or committed in a merge request, leading to inconsistencies between the schema built from migrations and the committed schema file.
 To detect this issue, a CI job (`clickhouse:check-schema`) runs during the **test** stage. This job compares the newly built schema with `main.sql` and fails if discrepancies are found.
 
-- This job is **not** allowed to fail. If it fails, the MR pipeline fails.
+- This job is not allowed to fail. If it fails, the MR pipeline fails.
 - As a reviewer, always check the job logs. If it fails, inspect the differences carefully. Non-whitespace related differences should be discussed with the MR author.
 - In cases of false positives (for example, differences caused by ClickHouse version mismatches), add the `pipeline:skip-check-clickhouse-schema` label to the MR to skip this check.
 
@@ -157,7 +157,7 @@ Make sure materialized view is created with the `POPULATE` keyword or has a back
 
 ## Table Engine Specific Behavior
 
-With the **MergeTree** family, the *primary key* (i.e., `ORDER BY`) defines the sort/index, **not** a uniqueness constraint. Rows with the same primary-key values can coexist. If your ingestion pipeline may produce duplicates or updates, you must handle them at read time (or pick an engine that collapses versions).
+With the **MergeTree** family, the *primary key* (i.e., `ORDER BY`) defines the sort/index, not a uniqueness constraint. Rows with the same primary-key values can coexist. If your ingestion pipeline may produce duplicates or updates, you must handle them at read time (or pick an engine that collapses versions).
 
 ### `MergeTree` engine
 

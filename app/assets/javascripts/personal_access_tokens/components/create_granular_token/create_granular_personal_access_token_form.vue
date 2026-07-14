@@ -5,11 +5,10 @@ import {
   GlFormInput,
   GlFormTextarea,
   GlButton,
-  GlExperimentBadge,
-  GlTabs,
   GlLink,
   GlSprintf,
   GlLoadingIcon,
+  GlFormCheckbox,
 } from '@gitlab/ui';
 import { union } from 'lodash-es';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
@@ -20,6 +19,7 @@ import { s__, __, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER, TYPENAME_PERSONAL_ACCESS_TOKEN } from '~/graphql_shared/constants';
+import { InternalEvents } from '~/tracking';
 import createGranularPersonalAccessTokenMutation from '~/personal_access_tokens/graphql/create_granular_personal_access_token.mutation.graphql';
 import getSourcePersonalAccessToken from '~/personal_access_tokens/graphql/get_source_personal_access_token.query.graphql';
 import {
@@ -28,11 +28,13 @@ import {
   MAX_DESCRIPTION_LENGTH,
   ACCESS_USER_ENUM,
   ACCESS_INSTANCE_ENUM,
-  ACCESS_NAMESPACE_ENUMS,
   NAMESPACE_ACCESS_TYPES,
+  COMPLETE_FINE_GRAINED_PERSONAL_ACCESS_TOKEN_FORM,
+  ABANDON_FINE_GRAINED_PERSONAL_ACCESS_TOKEN_FORM,
 } from '~/personal_access_tokens/constants';
 import ConfirmUnsavedChangesDialog from '~/vue_shared/components/confirm_unsaved_changes_dialog.vue';
 import { defaultDate } from '~/vue_shared/access_tokens/utils';
+import { emptyByScope } from '~/personal_access_tokens/utils';
 import CreatedPersonalAccessToken from '../created_personal_access_token.vue';
 import PersonalAccessTokenExpirationDate from './personal_access_token_expiration_date.vue';
 import PersonalAccessTokenScopeSelector from './personal_access_token_scope_selector.vue';
@@ -54,17 +56,21 @@ export default {
     GlButton,
     ConfirmUnsavedChangesDialog,
     CreatedPersonalAccessToken,
-    GlExperimentBadge,
-    GlTabs,
     GlLink,
     GlSprintf,
     GlLoadingIcon,
+    GlFormCheckbox,
     AskDapPermissions: () =>
       import(
         'ee_component/personal_access_tokens/components/create_granular_token/ask_dap_permissions.vue'
       ),
   },
-  inject: ['accessTokenMaxDate', 'accessTokenTableUrl'],
+  mixins: [InternalEvents.mixin()],
+  inject: {
+    accessTokenMaxDate: { default: '' },
+    accessTokenTableUrl: { default: '' },
+    canEnableSudo: { default: false },
+  },
   data() {
     return {
       sourceTokenId: getParameterByName('source_token_id'),
@@ -74,13 +80,10 @@ export default {
         name: '',
         description: '',
         expirationDate: defaultDate(this.accessTokenMaxDate),
+        sudo: false,
         access: null,
         namespaces: [],
-        permissions: {
-          namespace: [],
-          user: [],
-          instance: [],
-        },
+        permissions: emptyByScope(),
       },
       errors: {
         name: '',
@@ -91,8 +94,8 @@ export default {
         permissions: '',
       },
       aiPermissions: {
-        suggested: [],
-        removed: [],
+        suggested: emptyByScope(),
+        removed: emptyByScope(),
       },
       isFormDirty: false,
       isSubmitting: false,
@@ -173,12 +176,23 @@ export default {
       },
     },
   },
+  created() {
+    window.addEventListener('beforeunload', this.trackFormAbandonment);
+  },
+  beforeDestroy() {
+    window.removeEventListener('beforeunload', this.trackFormAbandonment);
+  },
   methods: {
-    handlePermissionsSelected(permissionNames) {
-      this.aiPermissions.suggested = [...permissionNames];
+    trackFormAbandonment() {
+      if (this.createdToken) return;
+
+      this.trackEvent(ABANDON_FINE_GRAINED_PERSONAL_ACCESS_TOKEN_FORM);
     },
-    handlePermissionsCleared(permissionNames) {
-      this.aiPermissions.removed = [...permissionNames];
+    handlePermissionsSelected(permissionsByBoundary) {
+      this.aiPermissions.suggested = { ...permissionsByBoundary };
+    },
+    handlePermissionsCleared(permissionsByBoundary) {
+      this.aiPermissions.removed = { ...permissionsByBoundary };
     },
     duplicateToken(token) {
       let access = '';
@@ -193,7 +207,7 @@ export default {
 
         if (NAMESPACE_ACCESS_TYPES.includes(scope.access)) {
           access = scope.access;
-          namespaces.push(scope.project || scope.namespace);
+          namespaces.push(scope.project || scope.group || scope.namespace);
           namespacePermissions = union(namespacePermissions, scopePermissions);
         } else if (scope.access === ACCESS_USER_ENUM) {
           userPermissions = union(userPermissions, scopePermissions);
@@ -206,6 +220,7 @@ export default {
         name: sprintf(this.$options.i18n.duplicateTokenName, { name: token.name }),
         description: token.description || '',
         expirationDate: defaultDate(this.accessTokenMaxDate),
+        sudo: this.canEnableSudo && Boolean(token.sudo),
         access,
         namespaces: namespaces.filter(Boolean),
         permissions: {
@@ -278,6 +293,7 @@ export default {
               name: this.form.name,
               description: this.form.description,
               expiresAt: this.form.expirationDate,
+              sudo: this.form.sudo,
               granularScopes: this.granularScopes,
             },
           },
@@ -290,6 +306,7 @@ export default {
         } else {
           this.createdToken = token;
           this.isFormDirty = false;
+          this.trackEvent(COMPLETE_FINE_GRAINED_PERSONAL_ACCESS_TOKEN_FORM);
         }
       } catch (error) {
         this.showCreateError(error, this.$options.i18n.createError);
@@ -312,6 +329,10 @@ export default {
     nameError: s__('AccessTokens|Add token name.'),
     descriptionLabel: s__('AccessTokens|Description'),
     descriptionError: s__('AccessTokens|Add token description.'),
+    sudoLabel: s__('AccessTokens|Use token to act on behalf of other users (sudo)'),
+    sudoHelp: s__(
+      'AccessTokens|Allows the token to %{linkStart}make API requests as another user%{linkEnd}. The token cannot perform actions that are restricted for either the impersonated user or the token itself.',
+    ),
     expirationDateError: s__('AccessTokens|Add token expiration date.'),
     scopeError: s__('AccessTokens|Set group and project access.'),
     namespaceError: s__('AccessTokens|At least one group or project is required.'),
@@ -332,6 +353,7 @@ export default {
     ),
   },
   fineGrainedTokensDocPath: helpPagePath('auth/tokens/fine_grained_access_tokens.md'),
+  sudoDocPath: helpPagePath('api/rest/authentication.md', { anchor: 'sudo' }),
   publiclyAccessibleEndpointsDocPath: helpPagePath(
     'auth/tokens/fine_grained_access_tokens_rest.md',
     {
@@ -340,11 +362,6 @@ export default {
   ),
   MAX_NAME_LENGTH,
   MAX_DESCRIPTION_LENGTH,
-  permissionTabs: [
-    { key: 'namespace', boundaries: ACCESS_NAMESPACE_ENUMS },
-    { key: 'user', boundaries: [ACCESS_USER_ENUM] },
-    { key: 'instance', boundaries: [ACCESS_INSTANCE_ENUM] },
-  ],
 };
 </script>
 
@@ -362,7 +379,6 @@ export default {
         <template #heading>
           <span class="gl-flex">
             {{ $options.i18n.heading }}
-            <gl-experiment-badge type="beta" class="gl-self-center" />
           </span>
         </template>
         <template #description>
@@ -407,6 +423,22 @@ export default {
             v-model="form.expirationDate"
             :error="errors.expirationDate"
           />
+
+          <gl-form-checkbox
+            v-if="canEnableSudo"
+            v-model="form.sudo"
+            class="gl-mt-5"
+            data-testid="sudo-checkbox"
+          >
+            {{ $options.i18n.sudoLabel }}
+            <template #help>
+              <gl-sprintf :message="$options.i18n.sudoHelp">
+                <template #link="{ content }">
+                  <gl-link :href="$options.sudoDocPath" target="_blank">{{ content }}</gl-link>
+                </template>
+              </gl-sprintf>
+            </template>
+          </gl-form-checkbox>
         </section>
         <section class="gl-mt-8">
           <personal-access-token-scope-selector v-model="form.access" :error="errors.access">
@@ -438,23 +470,20 @@ export default {
               </template>
             </gl-sprintf>
           </p>
-          <gl-tabs content-class="!gl-p-0">
-            <template #tabs-end>
+          <personal-access-token-permissions-selector
+            v-model="form.permissions"
+            :error="errors.permissions"
+            :ai-permissions="aiPermissions"
+          >
+            <template #header-actions>
               <ask-dap-permissions
                 v-if="$options.components.AskDapPermissions"
+                :form-permissions="form.permissions"
                 @permissions-selected="handlePermissionsSelected"
                 @permissions-cleared="handlePermissionsCleared"
               />
             </template>
-            <personal-access-token-permissions-selector
-              v-for="tab in $options.permissionTabs"
-              :key="tab.key"
-              v-model="form.permissions[tab.key]"
-              :error="errors.permissions"
-              :target-boundaries="tab.boundaries"
-              :ai-permissions="aiPermissions"
-            />
-          </gl-tabs>
+          </personal-access-token-permissions-selector>
         </section>
 
         <div class="settings-sticky-footer gl-flex gl-flex-wrap gl-gap-3">

@@ -7305,7 +7305,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "ENUM",
-                  "name": "AnalyzerTypeEnum",
+                  "name": "AnalyzerTypeForStatus",
                   "ofType": null
                 }
               },
@@ -7444,7 +7444,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "ENUM",
-                  "name": "AnalyzerTypeEnum",
+                  "name": "AnalyzerTypeForStatus",
                   "ofType": null
                 }
               },
@@ -7576,6 +7576,107 @@
           "inputFields": null,
           "interfaces": null,
           "enumValues": [
+            {
+              "name": "SAST",
+              "description": "Sast analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SAST_ADVANCED",
+              "description": "Sast advanced analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SAST_IAC",
+              "description": "Sast iac analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DAST",
+              "description": "Dast analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DEPENDENCY_SCANNING",
+              "description": "Dependency scanning analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COVERAGE_FUZZING",
+              "description": "Coverage fuzzing analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "API_FUZZING",
+              "description": "Api fuzzing analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CLUSTER_IMAGE_SCANNING",
+              "description": "Cluster image scanning analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SECRET_DETECTION_PIPELINE_BASED",
+              "description": "Secret detection analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CONTAINER_SCANNING_PIPELINE_BASED",
+              "description": "Container scanning analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SECRET_DETECTION_SECRET_PUSH_PROTECTION",
+              "description": "Secret push protection. Managed via project security settings.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CONTAINER_SCANNING_FOR_REGISTRY",
+              "description": "Container scanning for registry. Managed via project security settings.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CONTAINER_SCANNING",
+              "description": "Any kind of container scanning.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SECRET_DETECTION",
+              "description": "Any kind of secret detection.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AnalyzerTypeForStatus",
+          "description": "Analyzer types that can appear in project and group analyzer statuses.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "DEPENDENCY_SCANNING_POST_PROCESSING",
+              "description": "Dependency scanning post-processing.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "SAST",
               "description": "Sast analyzer.",
@@ -8198,6 +8299,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "coverageMinimumThreshold",
+              "description": "Minimum code coverage threshold (0-100). Approval is required if coverage falls below the specified threshold.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -9220,6 +9333,12 @@
             {
               "name": "ANY",
               "description": "An assignee is assigned.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ME",
+              "description": "Logged-in user is assigned.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -22609,59 +22728,6 @@
               "deprecationReason": null
             },
             {
-              "name": "previousStageJobs",
-              "description": "Jobs from the previous stage.",
-              "args": [
-                {
-                  "name": "after",
-                  "description": "Returns the elements in the list that come after the specified cursor.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "before",
-                  "description": "Returns the elements in the list that come before the specified cursor.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "first",
-                  "description": "Returns the first _n_ elements from the list.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "last",
-                  "description": "Returns the last _n_ elements from the list.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "CiJobConnection",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "project",
               "description": "Project that the job belongs to.",
               "args": [],
@@ -26240,59 +26306,6 @@
               "deprecationReason": null
             },
             {
-              "name": "projects",
-              "description": "Compute usage data for projects in the namespace.",
-              "args": [
-                {
-                  "name": "after",
-                  "description": "Returns the elements in the list that come after the specified cursor.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "before",
-                  "description": "Returns the elements in the list that come before the specified cursor.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "first",
-                  "description": "Returns the first _n_ elements from the list.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "last",
-                  "description": "Returns the last _n_ elements from the list.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "CiMinutesProjectMonthlyUsageConnection",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "sharedRunnersDuration",
               "description": "Total duration (in seconds) of shared runners use by the namespace for the month.",
               "args": [],
@@ -27247,7 +27260,7 @@
             },
             {
               "name": "jobCount",
-              "description": "Number of jobs processed by the runner (limited to 1000, plus one to indicate that more items exist).\n`jobCount` is an optimized version of `jobs { count }`, and can be requested for multiple runners on the same request.",
+              "description": "Number of jobs processed by the runner (limited to 1000, plus one to indicate that more items exist).\n`jobCount` is an optimized version of `jobs { count }`, and can be requested for multiple runners on the same request. When the `runner_job_count_recent_partitions` feature flag is enabled, the count only includes jobs on recent CI build partitions; when disabled, it includes jobs on all partitions.",
               "args": [
                 {
                   "name": "statuses",
@@ -33082,6 +33095,18 @@
                   "name": "ID",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "latestPipeline",
+              "description": "Latest pipeline that determines the commit CI status. Excludes dangling pipelines, such as security policy scans, that do not affect the commit CI status.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Pipeline",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -51153,6 +51178,18 @@
               "deprecationReason": null
             },
             {
+              "name": "titleIcon",
+              "description": "Icon displayed next to the title of the panel.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "tooltip",
               "description": "Tooltip for the panel containing descriptive text and an optional link.",
               "args": [],
@@ -65183,6 +65220,18 @@
               "deprecationReason": null
             },
             {
+              "name": "incrementalCheckpointsEnabled",
+              "description": "Indicates incremental checkpoints were enabled for the session at creation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "lastExecutorLogsUrl",
               "description": "URL to the latest executor logs of the workflow.",
               "args": [],
@@ -65538,6 +65587,69 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "WorkItem",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workItemLinks",
+              "description": "Work items linked to the session.",
+              "args": [
+                {
+                  "name": "linkType",
+                  "description": "Filter links by their link type.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "DuoWorkflowWorkItemLinkType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflowWorkItemLinkConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -66079,6 +66191,194 @@
             {
               "name": "CANCELED",
               "description": "Flow sessions with a status group of canceled.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DuoWorkflowWorkItemLink",
+          "description": "Link between a GitLab Duo Agent Platform session and a work item.",
+          "fields": [
+            {
+              "name": "createdAt",
+              "description": "Timestamp of when the link was created.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "linkType",
+              "description": "How the work item relates to the session.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "DuoWorkflowWorkItemLinkType",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workItem",
+              "description": "Linked work item.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "WorkItem",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workflow",
+              "description": "Linked GitLab Duo Agent Platform session.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflow",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DuoWorkflowWorkItemLinkConnection",
+          "description": "The connection type for DuoWorkflowWorkItemLink.",
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DuoWorkflowWorkItemLinkEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DuoWorkflowWorkItemLink",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DuoWorkflowWorkItemLinkEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflowWorkItemLink",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "DuoWorkflowWorkItemLinkType",
+          "description": "Type of link between a GitLab Duo Agent Platform session and a work item.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "SOURCE",
+              "description": "Link of type `source` between a session and a work item.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED",
+              "description": "Link of type `created` between a session and a work item.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -88512,6 +88812,22 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "userPermissions",
+              "description": "Permissions for the current user on the resource",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "GroupSecretsManagerPermissions",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -88697,6 +89013,81 @@
                 "kind": "OBJECT",
                 "name": "GroupSecretsManager",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GroupSecretsManagerPermissions",
+          "description": "Permissions the current user has on a group secrets manager.",
+          "fields": [
+            {
+              "name": "createSecrets",
+              "description": "Indicates the user can create secrets in this group secrets manager.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "deleteSecrets",
+              "description": "Indicates the user can delete secrets in this group secrets manager.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "readMetadata",
+              "description": "Indicates the user can read secret metadata in this group secrets manager.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updateSecrets",
+              "description": "Indicates the user can update secrets in this group secrets manager.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -95045,6 +95436,16 @@
                   "name": "ID",
                   "ofType": null
                 }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "targetWorkItemTypeId",
+              "description": "Work item type to use in the target project. When omitted, the source work item type is preserved.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "WorkItemsTypeID",
+                "ofType": null
               },
               "defaultValue": null
             }
@@ -103703,6 +104104,12 @@
               "deprecationReason": null
             },
             {
+              "name": "DESTROY_PACKAGE",
+              "description": "Delete packages and package files in the package registry.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "REMOVE_PROJECT",
               "description": "Allows deletion of projects.",
               "isDeprecated": false,
@@ -103819,6 +104226,12 @@
             {
               "name": "ADMIN_WEB_HOOK",
               "description": "Manage webhooks",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "READ_AGENT_ARTIFACTS",
+              "description": "Read GitLab Duo Agent Platform artifacts, including audit events and session metadata, that are exposed through the agent artifacts dashboard.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -106655,6 +107068,77 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workItemRelations",
+              "description": "Relations between this merge request and work items (closing or mentioned).",
+              "args": [
+                {
+                  "name": "types",
+                  "description": "Filter by link types. Returns all types if not specified.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "MergeRequestWorkItemLinkType",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MergeRequestWorkItemRelationConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -114025,6 +114509,166 @@
         },
         {
           "kind": "INPUT_OBJECT",
+          "name": "MergeRequestCreateWorkItemRelationsInput",
+          "description": "Autogenerated input type of MergeRequestCreateWorkItemRelations",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "projectPath",
+              "description": "Project the merge request to mutate is in.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "iid",
+              "description": "IID of the merge request to mutate.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "workItemIds",
+              "description": "Global IDs of the work items to link.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "WorkItemID",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "linkType",
+              "description": "Type of relationship to create. Defaults to MENTIONED.",
+              "type": {
+                "kind": "ENUM",
+                "name": "MergeRequestWorkItemLinkType",
+                "ofType": null
+              },
+              "defaultValue": "MENTIONED"
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MergeRequestCreateWorkItemRelationsPayload",
+          "description": "Autogenerated return type of MergeRequestCreateWorkItemRelations.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeRequest",
+              "description": "Merge request after mutation.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MergeRequest",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workItemRelations",
+              "description": "Created merge request to work item relations.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "MergeRequestWorkItemRelation",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
           "name": "MergeRequestDestroyRequestedChangesInput",
           "description": "Autogenerated input type of MergeRequestDestroyRequestedChanges",
           "fields": null,
@@ -114121,6 +114765,156 @@
                 "kind": "OBJECT",
                 "name": "MergeRequest",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "MergeRequestDestroyWorkItemRelationsInput",
+          "description": "Autogenerated input type of MergeRequestDestroyWorkItemRelations",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "projectPath",
+              "description": "Project the merge request to mutate is in.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "iid",
+              "description": "IID of the merge request to mutate.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "ids",
+              "description": "Global IDs of the relations to remove.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "MergeRequestsClosingIssuesID",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MergeRequestDestroyWorkItemRelationsPayload",
+          "description": "Autogenerated return type of MergeRequestDestroyWorkItemRelations.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeRequest",
+              "description": "Merge request after mutation.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MergeRequest",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "removedRelationIds",
+              "description": "Global IDs of the removed relations.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "MergeRequestsClosingIssuesID",
+                    "ofType": null
+                  }
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -123510,6 +124304,204 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "MergeRequestWorkItemLinkType",
+          "description": "Type of relationship between a merge request and a work item",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "CLOSES",
+              "description": "Work item will be closed when the merge request is merged.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MENTIONED",
+              "description": "Work item is mentioned in the merge request but will not be closed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "RELATED",
+              "description": "Work item is related to the merge request but will not be closed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MergeRequestWorkItemRelation",
+          "description": "A relation between a merge request and a work item",
+          "fields": [
+            {
+              "name": "fromMrDescription",
+              "description": "Whether the relation was derived from a closing pattern in the merge request description.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "Global ID of the merge request to work item relation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "MergeRequestsClosingIssuesID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "linkType",
+              "description": "Type of relationship between the merge request and the work item.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "MergeRequestWorkItemLinkType",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workItem",
+              "description": "Related work item.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "WorkItem",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MergeRequestWorkItemRelationConnection",
+          "description": "The connection type for MergeRequestWorkItemRelation.",
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "MergeRequestWorkItemRelationEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "MergeRequestWorkItemRelation",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MergeRequestWorkItemRelationEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MergeRequestWorkItemRelation",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "SCALAR",
           "name": "MergeRequestsClosingIssuesID",
           "description": "A `MergeRequestsClosingIssuesID` is a global ID. It is encoded as a string.\n\nAn example `MergeRequestsClosingIssuesID` is: `\"gid://gitlab/MergeRequestsClosingIssues/1\"`.",
@@ -123757,6 +124749,35 @@
             {
               "name": "MERGE_WHEN_CHECKS_PASS",
               "description": "Use the merge_when_checks_pass merge strategy.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "MergeTrainEnforcement",
+          "description": "Merge train enforcement levels for a project.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ALLOW_BYPASS",
+              "description": "Users with permission to merge can bypass the merge train through the UI or API.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ENFORCE_FOR_ALL_USERS",
+              "description": "All merge requests must go through the merge train. The merge train cannot be bypassed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ENFORCE_WITH_OWNER_OVERRIDE",
+              "description": "All merge requests must go through the merge train. Owners and administrators can bypass the merge train for individual merge requests.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -129908,6 +130929,33 @@
               "deprecationReason": null
             },
             {
+              "name": "mergeRequestCreateWorkItemRelations",
+              "description": "Links work items to a merge request.",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for MergeRequestCreateWorkItemRelations",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "MergeRequestCreateWorkItemRelationsInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MergeRequestCreateWorkItemRelationsPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "mergeRequestDestroyRequestedChanges",
               "description": null,
               "args": [
@@ -129929,6 +130977,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "MergeRequestDestroyRequestedChangesPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeRequestDestroyWorkItemRelations",
+              "description": "Removes relations between a merge request and work items.",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for MergeRequestDestroyWorkItemRelations",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "MergeRequestDestroyWorkItemRelationsInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MergeRequestDestroyWorkItemRelationsPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -138267,6 +139342,59 @@
               "deprecationReason": null
             },
             {
+              "name": "suggestions",
+              "description": "Suggested changes contained in the note.",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SuggestionConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "system",
               "description": "Indicates whether the note was created by the system or by a user.",
               "args": [],
@@ -143739,6 +144867,12 @@
             {
               "name": "PNPM",
               "description": "Package manager: pnpm.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BUN",
+              "description": "Package manager: bun.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -149954,7 +151088,7 @@
             },
             {
               "name": "ref",
-              "description": "Ref on which to run the pipeline.",
+              "description": "Ref on which to run the pipeline. Ignored when `mergeRequestIid` is provided; the merge request ref path is used instead.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -166054,6 +167188,22 @@
               "deprecationReason": null
             },
             {
+              "name": "mergeTrainEnforcement",
+              "description": "Merge train enforcement level for the project. Ignored unless the `merge_train_enforcement` feature flag is enabled.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "MergeTrainEnforcement",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "mergeTrainsEnabled",
               "description": "Whether merge trains are enabled.",
               "args": [],
@@ -166128,6 +167278,18 @@
               "type": {
                 "kind": "ENUM",
                 "name": "ResourceGroupsProcessMode",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "skipBranchPipelinesForMrs",
+              "description": "Indicates whether branch pipelines are skipped if a merge request is open.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -166230,6 +167392,16 @@
               "defaultValue": null
             },
             {
+              "name": "skipBranchPipelinesForMrs",
+              "description": "Indicates whether branch pipelines are skipped if a merge request is open.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "pipelineVariablesMinimumOverrideRole",
               "description": "Minimum role required to set variables when creating a pipeline or running a job.",
               "type": {
@@ -166275,6 +167447,16 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "mergeTrainEnforcement",
+              "description": "Merge train enforcement level for the project. Ignored unless the `merge_train_enforcement` feature flag is also enabled.",
+              "type": {
+                "kind": "ENUM",
+                "name": "MergeTrainEnforcement",
                 "ofType": null
               },
               "defaultValue": null
@@ -169897,6 +171079,22 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "userPermissions",
+              "description": "Permissions for the current user on the resource",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ProjectSecretsManagerPermissions",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -170082,6 +171280,81 @@
                 "kind": "OBJECT",
                 "name": "ProjectSecretsManager",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ProjectSecretsManagerPermissions",
+          "description": "Permissions the current user has on a project secrets manager.",
+          "fields": [
+            {
+              "name": "createSecrets",
+              "description": "Indicates the user can create secrets in this project secrets manager.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "deleteSecrets",
+              "description": "Indicates the user can delete secrets in this project secrets manager.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "readMetadata",
+              "description": "Indicates the user can read secret metadata in this project secrets manager.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updateSecrets",
+              "description": "Indicates the user can update secrets in this project secrets manager.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -174486,6 +175759,79 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "CiDedicatedHostedRunnerUsageConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ciMinutesProjectMonthlyUsage",
+              "description": "Compute usage data for projects in a namespace for a given month. Returns project usage independent of whether a namespace-level usage record exists.",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "namespaceId",
+                  "description": "Global ID of the Namespace for the project compute usage.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "NamespaceID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "date",
+                  "description": "Date for which to retrieve the usage data, should be the first day of a month. Defaults to the current month.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Date",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CiMinutesProjectMonthlyUsageConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -181200,6 +182546,22 @@
               "deprecationReason": null
             },
             {
+              "name": "branchCount",
+              "description": "Number of branches in the repository.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "branchNames",
               "description": "Names of branches available in this repository that match the search pattern.",
               "args": [
@@ -181308,6 +182670,22 @@
                 "kind": "OBJECT",
                 "name": "Commit",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "commitCount",
+              "description": "Number of commits in the default branch of the repository.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -181500,6 +182878,22 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "tagCount",
+              "description": "Number of tags in the repository.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -187268,6 +188662,12 @@
             {
               "name": "READ",
               "description": "Read secrets.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "READ_VALUE",
+              "description": "Read secret values.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -194821,6 +196221,18 @@
               "deprecationReason": null
             },
             {
+              "name": "titleHtml",
+              "description": "HTML rendering of `title`.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "updatedAt",
               "description": "Timestamp the snippet was updated.",
               "args": [],
@@ -197493,6 +198905,221 @@
           ],
           "inputFields": null,
           "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Suggestion",
+          "description": null,
+          "fields": [
+            {
+              "name": "applied",
+              "description": "Indicates whether the suggestion has been applied.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "fromContent",
+              "description": "Original content being replaced by the suggestion.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "fromLine",
+              "description": "First line number of the change being suggested.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "ID of the suggestion.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "SuggestionID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "toContent",
+              "description": "Content suggested as the replacement.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "toLine",
+              "description": "Last line number of the change being suggested.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SuggestionConnection",
+          "description": "The connection type for Suggestion.",
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SuggestionEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Suggestion",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SuggestionEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Suggestion",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "SuggestionID",
+          "description": "A `SuggestionID` is a global ID. It is encoded as a string.\n\nAn example `SuggestionID` is: `\"gid://gitlab/Suggestion/1\"`.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },
@@ -213022,6 +214649,12 @@
               "description": "Callout feature name for security_manager_role.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "SECRETS_MANAGER_NAV_BADGE",
+              "description": "Callout feature name for secrets_manager_nav_badge.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -217004,6 +218637,18 @@
               "description": "Callout feature name for duo_code_review_enabled_by_default.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "REACHED_SEAT_COUNT_THRESHOLD",
+              "description": "Callout feature name for reached_seat_count_threshold.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "OVERAGE_SEAT_COUNT_THRESHOLD",
+              "description": "Callout feature name for overage_seat_count_threshold.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -217115,6 +218760,18 @@
                   "name": "Boolean",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updatedAt",
+              "description": "Timestamp of when the reviewer was last updated. `null` for records that have not transitioned state since GitLab 19.2.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -227365,6 +229022,18 @@
               "deprecationReason": null
             },
             {
+              "name": "slug",
+              "description": "URL slug of the wiki page.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "subscribed",
               "description": "Whether the current user is subscribed to notifications on the wiki page.",
               "args": [],
@@ -227630,6 +229299,69 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "duoWorkflowLinks",
+              "description": "GitLab Duo Agent Platform sessions linked to the work item.",
+              "args": [
+                {
+                  "name": "linkType",
+                  "description": "Filter links by their link type.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "DuoWorkflowWorkItemLinkType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflowWorkItemLinkConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -235262,19 +236994,15 @@
               "name": "permissions",
               "description": "Granular scope permissions required to access the field or type.",
               "type": {
-                "kind": "NON_NULL",
+                "kind": "LIST",
                 "name": null,
                 "ofType": {
-                  "kind": "LIST",
+                  "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
                   }
                 }
               },
@@ -235284,13 +237012,19 @@
               "name": "boundaryType",
               "description": "The type of authorization boundary (project, group, user, instance). Used for validation and documentation of the permission boundary.",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "PermissionBoundary",
-                  "ofType": null
-                }
+                "kind": "ENUM",
+                "name": "PermissionBoundary",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "skipReason",
+              "description": "Reason the field or type intentionally opts out of granular token authorization. ",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             },

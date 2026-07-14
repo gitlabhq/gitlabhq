@@ -1,0 +1,17 @@
+# @feature_category: product_analytics
+#import "./duo_feature_usage_metric_item.fragment.graphql"
+
+query duoFeatureUsageQuery($fullPath: ID!, $startDate: Date!, $endDate: Date!) {
+  project(fullPath: $fullPath) {
+    id
+    aiMetrics(startDate: $startDate, endDate: $endDate) {
+      ...DuoFeatureUsageMetricItem
+    }
+  }
+  group(fullPath: $fullPath) {
+    id
+    aiMetrics(startDate: $startDate, endDate: $endDate) {
+      ...DuoFeatureUsageMetricItem
+    }
+  }
+}

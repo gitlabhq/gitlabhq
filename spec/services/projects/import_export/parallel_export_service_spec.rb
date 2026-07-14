@@ -69,8 +69,8 @@ RSpec.describe Projects::ImportExport::ParallelExportService, feature_category: 
 
       expect { service.execute }.to raise_error(StandardError)
 
-      expect(File.exist?(shared.export_path)).to eq(false)
-      expect(File.exist?(shared.archive_path)).to eq(false)
+      expect(File.exist?(shared.export_path)).to be(false)
+      expect(File.exist?(shared.archive_path)).to be(false)
     end
 
     context 'when export fails' do

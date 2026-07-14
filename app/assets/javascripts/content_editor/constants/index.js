@@ -83,6 +83,7 @@ export const TIPTAP_AUTOFOCUS_OPTIONS = [true, false, 'start', 'end', 'all'];
 /**
  * Command related constants
  */
+/* eslint-disable @gitlab/no-hardcoded-urls -- False positive, not URLs */
 export const COMMANDS = {
   ASSIGN: '/assign',
   ASSIGN_REVIEWER: '/assign_reviewer',
@@ -100,5 +101,6 @@ export const COMMANDS = {
   STATUS: '/status',
   TYPE: '/type',
 };
+/* eslint-enable @gitlab/no-hardcoded-urls */
 
 export const COMMANDS_WITH_LOCAL_DATA = [COMMANDS.UNASSIGN, COMMANDS.UNLABEL, COMMANDS.UNLINK];

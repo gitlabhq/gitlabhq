@@ -211,7 +211,7 @@ RSpec.describe GenerateMessageToRunE2ePipeline, feature_category: :tooling do
       end
 
       it 'returns nil' do
-        expect(subject.send(:existing_note)).to eq nil
+        expect(subject.send(:existing_note)).to be_nil
       end
     end
   end

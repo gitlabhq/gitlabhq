@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'duo_instructions'
+
 module Gitlab
   module PrinciplesDistiller
     class Sync
@@ -16,6 +18,7 @@ module Gitlab
         CLAUDE_SKILL_PATH = "#{CLAUDE_SKILL_DIR}/SKILL.md".freeze
         AGENTS_SKILL_PATH = '.agents/skills/gitlab-coding-principles/SKILL.md'
         CODEOWNERS_PATH = '.gitlab/CODEOWNERS'
+        DUO_REVIEW_INSTRUCTIONS_PATH = DuoInstructions::DUO_PATH
 
         # Markers delimiting the gem-managed per-file CODEOWNERS block. The
         # block is inserted right after the broad `/.ai/` rule so that, by
@@ -28,10 +31,17 @@ module Gitlab
         # file). Kept in sync with .gitlab/CODEOWNERS.
         CODEOWNERS_AI_RULE = %r{^/\.ai/ .+$}
 
-        # Global, cross-cutting files regenerated from the manifest on every
-        # run. They embed the full routing table for ALL principles, so SSOT
-        # teams have no stake in their content; the per-team MR fan-out routes
-        # them to a separate "tooling" MR (see Sync::AutoMr).
+        # Files regenerated from the manifest/distilled principles on every
+        # run that are committed to the separate "tooling" MR rather than any
+        # per-team branch (see Sync::AutoMr). AGENTS.md, CLAUDE.md, and the
+        # SKILL.md files embed the full routing table for ALL principles, so
+        # SSOT teams have no stake in their content.
+        #
+        # The Duo review-instructions file is intentionally NOT here: its fences
+        # are reconciled from merged-master content by a separate scheduled job
+        # (see Sync#reconcile_duo_instructions), decoupled from distillation so
+        # a team's distilled MR and the fence update are independently
+        # mergeable.
         TOOLING_PATHS = [
           'AGENTS.md',
           'CLAUDE.md',
@@ -120,6 +130,34 @@ module Gitlab
         # the auto-MR fan-out and per-team branch naming.
         def principle_team(name)
           principle_owner_team(name) || 'Other'
+        end
+
+        # Whether a principle's owner_team should be @-mentioned (pinged) in
+        # the MR commit subject and description summary. Defaults to true;
+        # large groups (e.g. all of frontend/rails-backend) set `ping_team:
+        # false` to avoid mass-notifying every member on each weekly MR.
+        def principle_ping_team?(name)
+          principle_config(name)&.fetch('ping_team', true) != false
+        end
+
+        # Whether the team identified by an owner_team handle should be pinged.
+        # The fan-out groups by handle, so a team is pinged unless *every*
+        # principle it owns opts out (mirrors explicit_slug_for_handle).
+        # Delegates the per-principle check to principle_ping_team? so the
+        # ping_team semantics live in one place.
+        def team_pings?(handle)
+          owned = principles.keys.select { |name| principle_owner_team(name) == handle }
+          return true if owned.empty?
+
+          owned.any? { |name| principle_ping_team?(name) }
+        end
+
+        # The human-facing label for a team in pinging surfaces: the raw
+        # owner_team handle when the team opts into pings (so it notifies), or
+        # the non-mention team_slug when it does not. CODEOWNERS routing always
+        # uses the real handle regardless of this.
+        def team_display(handle)
+          team_pings?(handle) ? handle : team_slug(handle)
         end
 
         # URL/branch-safe slug for the per-team branch suffix. Prefers the
@@ -270,12 +308,38 @@ module Gitlab
               if File.exist?(full_path)
                 File.read(full_path)
               else
-                dir = full_path.sub(%r{(\.md|/)$}, '')
-                idx_path = File.join(dir, '_index.md')
+                idx_path = index_fallback_path(full_path)
                 File.read(idx_path) if File.exist?(idx_path)
               end
             end
           end
+        end
+
+        # Whether a manifest-referenced SSOT path resolves to a file on disk,
+        # accounting for docs that were converted to a directory with an
+        # `_index.md` (e.g. `doc/foo.md` -> `doc/foo/_index.md`). Shared by
+        # the Validator and Workflow so the existence rule lives in one place.
+        def source_file_exists?(path)
+          full_path = Workspace.safe_join(path)
+
+          File.exist?(full_path) || File.exist?(index_fallback_path(full_path))
+        end
+
+        # Every manifest-referenced SSOT path (each principle's `sources[].path`
+        # plus its `baseline:`) that does not resolve to a file on disk. Returns
+        # a flat, de-duplicated, sorted list so callers can report all broken
+        # references at once rather than failing on the first.
+        def missing_source_files
+          referenced_source_paths.uniq.reject { |path| source_file_exists?(path) }.sort
+        end
+
+        # Every SSOT path a single principle's config references: its
+        # `sources[].path` entries plus its `baseline:`. The runtime guard
+        # (Workflow#validate_sources!) and the aggregate shift-left check both
+        # build on this so they cover the same set of paths.
+        def config_source_paths(config)
+          paths = Array(config['sources']).filter_map { |source| source['path'] }
+          paths + [config['baseline']].compact
         end
 
         def sources_footer(config)
@@ -300,7 +364,7 @@ module Gitlab
           skill_content = <<~SKILL
             ---
             name: gitlab-coding-principles
-            description: Load all relevant GitLab development principles before planning or implementing. Evaluates every principle group to ensure cross-domain coverage.
+            description: "MUST USE before planning, implementing, refactoring, OR reviewing any GitLab code changes (including merge request reviews, code review feedback, new features, bug fixes). Evaluate every principle group to ensure cross-domain coverage. Triggers: review, reviewing, plan, planning, implement, implementing, refactor, refactoring, MR review, code review."
             ---
 
             # Load Project Principles
@@ -393,6 +457,103 @@ module Gitlab
           puts "  Updated #{CODEOWNERS_PATH} (#{principles.size} per-file owner rules)"
         end
 
+        # Regenerates the gem-managed fenced regions in the Duo Code Review
+        # custom-instructions file from the committed distilled principles by
+        # pure projection: each region's directives and body come from the
+        # on-disk distilled file's frontmatter and checklist. Only principles
+        # that already have a fence are refreshed (marker-only discovery);
+        # seeding a new fence is a deliberate manual step.
+        #
+        # Idempotent: rewrites each region's body and directives from the
+        # current distilled file, preserving the hand-authored group name and
+        # fileFilters. Skips silently when the file is absent.
+        #
+        # Returns true when the file changed on disk, false otherwise, so the
+        # scheduled reconcile job can decide whether to open an MR.
+        def generate_duo_review_instructions
+          path = Workspace.safe_join(DUO_REVIEW_INSTRUCTIONS_PATH)
+          unless File.exist?(path)
+            puts Rainbow("  #{DUO_REVIEW_INSTRUCTIONS_PATH} not found; skipping Duo review instructions").faint
+            return false
+          end
+
+          content = File.read(path)
+          fences = build_duo_fences(DuoInstructions.fenced_principles(content))
+          updated = DuoInstructions.regenerate(content, fences: fences)
+
+          if updated == content
+            puts Rainbow('  Duo review instructions already up to date').faint
+            return false
+          end
+
+          File.write(path, updated)
+          puts "  Updated #{DUO_REVIEW_INSTRUCTIONS_PATH} (#{fences.size} generated region(s))"
+          true
+        end
+
+        # Classifies the fenced principles whose region needs attention and
+        # returns a DuoInstructions::Result grouping them into stale (recorded
+        # directives differ from the distilled frontmatter), malformed (a BEGIN
+        # marker without exactly one matching region), pending (a freshly seeded
+        # fence whose manifest entry exists but whose distilled file has not been
+        # generated yet), and orphaned (a fence with neither a distilled file nor
+        # a manifest entry). Every category is empty when the file is absent.
+        # Read-only; drives the --check-duo-instructions CI guard.
+        #
+        # `seeded` is the full set of manifest principle keys, so the guard can
+        # tell a valid pending seed from a truly orphaned fence.
+        def problematic_duo_review_instructions
+          path = Workspace.safe_join(DUO_REVIEW_INSTRUCTIONS_PATH)
+          unless File.exist?(path)
+            return DuoInstructions::Result.new(stale: [], malformed: [], pending: [],
+              orphaned: [])
+          end
+
+          content = File.read(path)
+          fences = build_duo_fences(DuoInstructions.fenced_principles(content))
+          DuoInstructions.check(content, fences: fences, seeded: principles.keys)
+        end
+
+        # Builds the DuoInstructions fence data for the given principle names by
+        # reading each distilled file's frontmatter and checklist body. Skips
+        # principles whose distilled file or frontmatter is missing so a fence
+        # for a not-yet-distilled principle is left untouched rather than
+        # blanked.
+        def build_duo_fences(names)
+          names.each_with_object({}) do |name, fences|
+            config = principle_config(name)
+            next unless config
+
+            content = duo_fence_source_content(name)
+            next unless content
+
+            frontmatter = extract_frontmatter(content)
+            next unless frontmatter&.key?('source_checksum')
+
+            fences[name] = {
+              name: config['group'],
+              file_filters: Array(config['file_filters']),
+              distilled_body: extract_checklist_body(content),
+              distilled_at_sha: frontmatter['distilled_at_sha'],
+              source_checksum: frontmatter['source_checksum'],
+              references: Array(config['sources']).filter_map { |s| s['path'] }
+            }
+          end
+        end
+
+        # Extracts the checklist sections from a distilled file: every line from
+        # the first `### ` section header up to (but excluding) the
+        # `## Authoritative sources` footer. Returns '' when no section header
+        # is present.
+        def extract_checklist_body(content)
+          lines = strip_frontmatter(content).lines
+          first = lines.index { |line| line.start_with?('### ') }
+          return '' unless first
+
+          last = lines.index { |line| line.start_with?('## Authoritative sources') } || lines.length
+          lines[first...last].join.rstrip
+        end
+
         # Idempotent. Updates existing notes if wording changed.
         def inject_prerequisite_notes
           principles.each_key do |name|
@@ -445,6 +606,36 @@ module Gitlab
         end
 
         private
+
+        # The committed distilled content to build a fence from. Returns nil
+        # when the file is absent so a not-yet-distilled fence is left
+        # untouched. Reading only from disk keeps fence reconciliation a pure
+        # projection of merged-master content (see
+        # generate_duo_review_instructions).
+        def duo_fence_source_content(name)
+          path = Workspace.safe_join(principles_path(name))
+          File.read(path) if File.exist?(path)
+        end
+
+        # `doc/foo.md` -> `doc/foo/_index.md`; `doc/foo/` -> `doc/foo/_index.md`.
+        # Mirrors the directory-index convention used across docs.gitlab.com.
+        def index_fallback_path(full_path)
+          dir = full_path.sub(%r{(\.md|/)$}, '')
+          File.join(dir, '_index.md')
+        end
+
+        # Flat list of every on-disk path the manifest references: each
+        # principle's `sources[].path` and `baseline:`, plus every
+        # `static_entries[].path`. Static entries are wired into the generated
+        # AGENTS.md / SKILL.md routing table (see build_skill_routing_table), so
+        # a renamed static-entry file produces a dead `Read .ai/...` link, the
+        # same silent-staleness failure mode this validator guards against.
+        def referenced_source_paths
+          principle_paths = principles.flat_map { |_name, config| config_source_paths(config) }
+          static_paths = static_entries.filter_map { |entry| entry['path'] }
+
+          principle_paths + static_paths
+        end
 
         # Surfaces misconfigured principles at load time. Only invoked
         # from `load`; specs injecting via `data=` skip this.

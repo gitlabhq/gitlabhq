@@ -129,6 +129,73 @@ RSpec.describe Lint::UnusedMethods, feature_category: :tooling do
     end
   end
 
+  describe 'scoping to changed files' do
+    let(:source_files) do
+      {
+        'app/models/user.rb' => ["def alpha_method\n", "def beta_method\n"],
+        'app/helpers/foo_helper.rb' => ["def gamma_method\n"],
+        'app/views/show.html.haml' => ["beta_method\n"]
+      }
+    end
+
+    before do
+      allow(linter).to receive(:ee_directory_exists?).and_return(true)
+      allow(linter).to receive(:load_source_files) do
+        linter.source_files.merge!(source_files)
+      end
+    end
+
+    context 'when changed_files is given' do
+      let(:linter) do
+        described_class.new(
+          excluded_methods_path: excluded_methods_path,
+          potential_methods_path: potential_methods_path,
+          changed_files: ['app/models/user.rb']
+        )
+      end
+
+      it 'only checks methods defined in the changed files', :aggregate_failures do
+        linter.run
+
+        expect(linter.unused_method_collection.keys).to contain_exactly('app/models/user.rb')
+        expect(linter.unused_method_collection['app/models/user.rb']).to contain_exactly('alpha_method')
+      end
+
+      it 'limits removed-method detection to the changed files' do
+        File.write(potential_methods_path, {
+          'app/models/user.rb' => ['beta_method'],
+          'app/helpers/foo_helper.rb' => ['gamma_method']
+        }.to_yaml)
+
+        linter.run
+
+        expect(linter.removed_methods).to contain_exactly(['app/models/user.rb', 'beta_method'])
+      end
+    end
+
+    context 'when changed_files is nil' do
+      it 'checks methods across all files' do
+        linter.run
+
+        expect(linter.unused_method_collection.keys)
+          .to contain_exactly('app/models/user.rb', 'app/helpers/foo_helper.rb')
+      end
+    end
+
+    context 'when the potential methods file is empty' do
+      before do
+        File.write(potential_methods_path, '')
+      end
+
+      it 'does not raise and flags all current unused methods as new', :aggregate_failures do
+        expect { linter.run }.not_to raise_error
+
+        expect(linter.new_unused_methods)
+          .to contain_exactly(['app/models/user.rb', 'alpha_method'], ['app/helpers/foo_helper.rb', 'gamma_method'])
+      end
+    end
+  end
+
   describe 'method detection in builder files' do
     # This test verifies the fix for the issue where methods called from
     # .builder files (like Atom feeds) were incorrectly flagged as unused
@@ -158,6 +225,77 @@ RSpec.describe Lint::UnusedMethods, feature_category: :tooling do
     it 'would not match builder files outside app directory' do
       expect(File.fnmatch('app/**/*.builder', 'spec/fixtures/test.builder')).to be false
       expect(File.fnmatch('ee/app/**/*.builder', 'spec/fixtures/test.builder')).to be false
+    end
+  end
+
+  describe 'YAML output indentation' do
+    # These tests verify that YAML output has properly indented list items.
+    # Ruby's to_yaml outputs "- item" but our YAML files use "  - item".
+
+    describe '#print_full_report' do
+      let(:start_time) { Process.clock_gettime(Process::CLOCK_MONOTONIC) }
+
+      before do
+        allow(linter).to receive(:ee_directory_exists?).and_return(true)
+        # Simulate finding unused methods
+        linter.unused_method_collection['app/models/user.rb'] = %w[method_one method_two]
+        linter.unused_method_collection['app/helpers/application_helper.rb'] = ['helper_method?']
+      end
+
+      it 'outputs YAML with properly indented list items' do
+        expect { linter.send(:print_full_report, start_time) }
+          .to output(/  - method_one.*  - method_two.*  - helper_method\?/m).to_stdout
+      end
+
+      it 'does not output unindented list items' do
+        expect { linter.send(:print_full_report, start_time) }
+          .not_to output(/\n-\s+\S/).to_stdout
+      end
+
+      it 'handles special method names with ? and !' do
+        linter.unused_method_collection['app/models/test.rb'] = %w[valid? save! normal_method]
+
+        expect { linter.send(:print_full_report, start_time) }
+          .to output(/  - valid\?.*  - save!.*  - normal_method/m).to_stdout
+      end
+    end
+
+    describe '#print_new_unused_methods' do
+      before do
+        linter.instance_variable_set(:@new_unused_methods, [
+          ['app/models/user.rb', 'unused_method'],
+          ['app/models/user.rb', 'another_unused?']
+        ])
+      end
+
+      it 'outputs YAML with properly indented list items' do
+        expect { linter.send(:print_new_unused_methods) }
+          .to output(/  - unused_method.*  - another_unused\?/m).to_stdout
+      end
+
+      it 'does not output unindented list items' do
+        expect { linter.send(:print_new_unused_methods) }
+          .not_to output(/\n-\s+\S/).to_stdout
+      end
+    end
+
+    describe '#print_removed_methods' do
+      before do
+        linter.instance_variable_set(:@removed_methods, [
+          ['app/helpers/foo_helper.rb', 'removed_helper'],
+          ['app/helpers/foo_helper.rb', 'another_removed!']
+        ])
+      end
+
+      it 'outputs YAML with properly indented list items' do
+        expect { linter.send(:print_removed_methods) }
+          .to output(/  - removed_helper.*  - another_removed!/m).to_stdout
+      end
+
+      it 'does not output unindented list items' do
+        expect { linter.send(:print_removed_methods) }
+          .not_to output(/\n-\s+\S/).to_stdout
+      end
     end
   end
 end

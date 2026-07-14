@@ -3,7 +3,7 @@ import GpgBadges from '~/gpg_badges';
 import { initCompareApp } from '~/merge_requests/init_compare_app';
 
 import MergeRequest from '~/merge_request';
-import initPipelines from '~/commit/pipelines/pipelines_bundle';
+import { initPipelineCountListener } from '~/commit/pipelines/utils';
 import { createRapidDiffsApp } from '~/rapid_diffs';
 import { initMarkdownEditor } from 'ee_else_ce/pages/projects/merge_requests/init_markdown_editor';
 
@@ -19,6 +19,7 @@ if (mrNewCompareNode) {
     action: mrNewSubmitNode.dataset.mrSubmitAction,
     createRapidDiffsApp,
   });
-  initPipelines();
+
+  initPipelineCountListener(document.querySelector('#commit-pipeline-table-view'));
   initMarkdownEditor();
 }

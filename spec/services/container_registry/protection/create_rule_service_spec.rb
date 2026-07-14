@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', feature_category: :container_registry do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
   let(:service) { described_class.new(project: project, current_user: current_user, params: params) }

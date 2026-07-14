@@ -90,7 +90,7 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
         it 'sets impersonation_error_text to nil' do
           get :show, params: { id: user.username.downcase }
 
-          expect(assigns(:impersonation_error_text)).to eq(nil)
+          expect(assigns(:impersonation_error_text)).to be_nil
         end
       end
 
@@ -162,7 +162,7 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
         it 'sets can_impersonate to true' do
           get :show, params: { id: user.username.downcase }
 
-          expect(assigns(:can_impersonate)).to eq(true)
+          expect(assigns(:can_impersonate)).to be(true)
         end
       end
 
@@ -176,7 +176,7 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
         it 'sets can_impersonate to false' do
           get :show, params: { id: user.username.downcase }
 
-          expect(assigns(:can_impersonate)).to eq(false)
+          expect(assigns(:can_impersonate)).to be(false)
         end
       end
 
@@ -188,7 +188,7 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
         it 'sets can_impersonate to false' do
           get :show, params: { id: user.username.downcase }
 
-          expect(assigns(:can_impersonate)).to eq(false)
+          expect(assigns(:can_impersonate)).to be(false)
         end
       end
     end
@@ -576,7 +576,7 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
       it 'disables 2FA for the user' do
         subject
 
-        expect(user.reload.two_factor_enabled?).to eq(false)
+        expect(user.reload.two_factor_enabled?).to be(false)
       end
 
       it 'redirects back' do
@@ -723,7 +723,7 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
           user: { organization_users_attributes: [{ organization_id: organization.id }] }
         }
 
-        expect(organization.user?(new_user)).to eq(true)
+        expect(organization.user?(new_user)).to be(true)
       end
     end
 

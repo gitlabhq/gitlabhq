@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -28,6 +27,7 @@ const messageHtml = `
 `;
 
 export default {
+  name: 'UsersReject',
   components: {
     GlDisclosureDropdownItem,
   },

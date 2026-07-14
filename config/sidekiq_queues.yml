@@ -57,13 +57,19 @@
   - 1
 - - ai_catalog_flows_execute_merge_request_approved_workflow_triggers
   - 1
+- - ai_catalog_flows_execute_merge_request_ready_workflow_triggers
+  - 1
 - - ai_catalog_flows_execute_work_item_created_workflow_triggers
+  - 1
+- - ai_catalog_flows_execute_work_item_status_changed_workflow_triggers
   - 1
 - - ai_catalog_flows_sync_project_foundational_flows
   - 1
 - - ai_catalog_item_consumers_bulk_create
   - 1
 - - ai_duo_workflows_cancel_associated_pipelines
+  - 1
+- - ai_duo_workflows_code_review_publish_comments
   - 1
 - - ai_duo_workflows_code_review_timeout
   - 1
@@ -78,6 +84,10 @@
 - - ai_duo_workflows_update_workflow_status_event
   - 1
 - - ai_messaging_callback
+  - 1
+- - ai_messaging_callback_dispatch
+  - 1
+- - ai_messaging_progress_delivery
   - 1
 - - ai_repository_xray_scan_dependencies
   - 1
@@ -247,6 +257,12 @@
   - 1
 - - bulk_imports_user_contributions_export
   - 1
+- - cd_artifact_sources_publish_from_registry
+  - 1
+- - cd_rollouts_start
+  - 1
+- - cd_versions_create_from_artifact
+  - 1
 - - cells_bulk_claims
   - 1
 - - cells_claims_verification
@@ -292,6 +308,8 @@
 - - ci_safe_disable_pipeline_variables
   - 1
 - - ci_slsa_publish_provenance
+  - 1
+- - ci_track_ai_pipeline_results_viewed
   - 1
 - - ci_track_first_pipeline_succeeded
   - 1
@@ -417,7 +435,15 @@
   - 1
 - - dependency_management_security_update_create_merge_request
   - 1
+- - dependency_management_security_update_reschedule
+  - 1
 - - dependency_management_security_update_scheduler
+  - 1
+- - dependency_management_security_update_track_closed_mr
+  - 1
+- - dependency_management_security_update_track_merged_mr
+  - 1
+- - dependency_management_security_update_trigger_resolve_dependency_bump_workflow
   - 1
 - - dependency_proxy
   - 1
@@ -751,6 +777,8 @@
   - 1
 - - merge_requests_update_head_pipeline
   - 1
+- - merge_requests_write_diffs_cache
+  - 1
 - - metrics_patched_files
   - 1
 - - migrate_external_diffs
@@ -805,11 +833,17 @@
   - 1
 - - onboarding_self_managed_create_welcome_product_interaction
   - 1
+- - organizations_activate
+  - 1
 - - organizations_check_organization_isolation_status
+  - 1
+- - organizations_confirm
   - 1
 - - organizations_groups_transfer
   - 1
 - - organizations_hard_delete
+  - 1
+- - organizations_root_group_organization_backfill
   - 1
 - - package_cleanup
   - 1
@@ -1055,6 +1089,8 @@
   - 1
 - - secrets_management_deprovision_project_secrets_manager
   - 1
+- - secrets_management_emit_secrets_stored_billable_event
+  - 1
 - - secrets_management_provision_group_secrets_manager
   - 1
 - - secrets_management_provision_group_secrets_manager_task
@@ -1160,6 +1196,8 @@
 - - security_process_tracked_context_project_transfer_events
   - 1
 - - security_project_tracked_contexts_create_or_update_default_tracked_context
+  - 1
+- - security_project_tracked_contexts_reindex_sbom_occurrences_on_default_branch_change
   - 1
 - - security_project_tracked_contexts_reindex_vulnerabilities_on_default_branch_change
   - 1

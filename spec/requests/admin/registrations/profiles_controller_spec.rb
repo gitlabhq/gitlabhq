@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Admin::Registrations::ProfilesController, feature_category: :onboarding do
-  let_it_be(:admin, freeze: false) { create(:admin) }
-  let_it_be(:regular_user, freeze: false) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:regular_user) { create(:user) }
 
   describe 'GET /admin/registrations/profile/new' do
     subject(:get_new) { get new_admin_registrations_profile_path }

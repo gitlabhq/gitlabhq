@@ -37,19 +37,95 @@ GitLab offers the following machine type for hosted runners on Windows.
 The Windows runner virtual machine instances do not use the GitLab Docker executor. This means that you can't specify
 [`image`](../../yaml/_index.md#image) or [`services`](../../yaml/_index.md#services) in your pipeline configuration.
 
+The latest Docker version is installed when the image build runs and you can use literal Docker commands in shell runner jobs.
+
 You can execute your job in one of the following Windows versions:
 
 | Version      | Status |
 |--------------|--------|
 | Windows 2022 | `GA`   |
 
-You can find a full list of available pre-installed software in
-the [pre-installed software documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/attributes/default.rb).
+## Available runtimes
+
+The following files list the available pre-installed software:
+
+- [Chocolatey](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/chocolatey/recipes/default.rb), which you can use to perform additional installs.
+- [Git, Git LFS, and GitLab Runner](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/tree/main/cookbooks/gitlab-runner-dependencies/recipes)
+- Pre-installed development tools:
+  - [Docker](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/docker.rb)
+  - [.NET Core SDK 3.1, Ruby, Go, Nodejs, OpenJDK, Python3](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/languages.rb)
+  - [7-Zip, wget, curl, jq, Docker Compose, NuGet CLI, cmake, GitLab CLI (glab)](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/utils.rb)
+  - [Visual C Runtimes](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/vcpkg.rb). See linked file for version.
+  - [Visual Studio Build Tools](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/visual-studio-build-tools.rb). See linked file for version.
+
+## .NET runtimes
+
+The installed .NET Core SDK version and the specific version of Visual Studio Build Tools
+together determine the pre-installed .NET runtime versions.
+
+The following code runs on a schedule in
+[PowerShell Pipelines on GitLab CI](https://gitlab.com/guided-explorations/microsoft/powershell/powershell-pipelines-on-gitlab-ci/-/pipeline)
+and produces this example list:
+
+For all three runtimes (`Microsoft.AspNetCore.App`, `Microsoft.NETCore.App`, `Microsoft.WindowsDesktop.App`), the available versions are:
+
+- 3.1.32
+- 8.0.24
+- 9.0.13
+
+.NET Framework is version 4.8.04161.
+
+To discover the current state, run the following code or look at a recent log of
+[PowerShell Pipelines on GitLab CI](https://gitlab.com/guided-explorations/microsoft/powershell/powershell-pipelines-on-gitlab-ci/-/pipeline):
+
+```powershell
+
+Write-Host "=== Modern .NET (Core 3.1, 5, 6, 7, 8+) runtimes ===" -ForegroundColor Cyan
+if (Get-Command dotnet -ErrorAction SilentlyContinue) {
+    dotnet --list-runtimes
+} else {
+    Write-Host "Not present"
+}
+
+Write-Host "`n=== .NET Framework versions ===" -ForegroundColor Cyan
+$ndp = "HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP"
+if (Test-Path $ndp) {
+    $found = Get-ChildItem $ndp -Recurse |
+        Get-ItemProperty -Name Version, Release -ErrorAction SilentlyContinue |
+        Where-Object { $_.Version -and $_.PSChildName -notmatch '^S' } |
+        Select-Object @{n='Component';e={$_.PSChildName}}, Version, Release |
+        Sort-Object Version -Unique
+    if ($found) { $found } else { Write-Host "Not present" }
+} else {
+    Write-Host "Not present"
+}
+```
+
+## Docker runtimes
+
+The latest Docker version is installed when the image build runs and you can use literal Docker commands in shell runner jobs.
+
+To discover versions, run the following code or look at pipelines from
+[PowerShell Pipelines on GitLab CI](https://gitlab.com/guided-explorations/microsoft/powershell/powershell-pipelines-on-gitlab-ci/-/pipeline):
+
+```powershell
+      write-host "Docker client and service version:"
+      docker version
+```
 
 ## Supported shell
 
 Hosted runners on Windows have PowerShell configured as the shell.
 The `script` section of your `.gitlab-ci.yml` file therefore requires PowerShell commands.
+
+## Elevated permissions
+
+Hosted runners on Windows for GitLab.com run CI/CD jobs as an elevated admin 
+process. This process lets you install additional software or configure the OS 
+before job execution.
+This permission level is acceptable because the runner creates a new VM for each individual
+job and discards it after the job completes. This process is essentially the same
+as how container jobs work for security and disposal.
 
 ## Example `.gitlab-ci.yml` file
 

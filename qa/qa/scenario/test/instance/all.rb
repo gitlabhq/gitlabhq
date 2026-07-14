@@ -12,8 +12,8 @@ module QA
           include Bootable
           include SharedAttributes
 
-          pipeline_mappings test_on_cng: %w[cng-instance],
-            test_on_gdk: %w[gdk-instance gdk-instance-gitaly-transactions gdk-instance-ff-inverse],
+          pipeline_mappings test_on_cng: %w[cng-instance cng-instance-ff-inverse],
+            test_on_gdk: %w[gdk-instance gdk-instance-gitaly-transactions],
             test_on_omnibus: %w[git-sha256-repositories]
         end
       end

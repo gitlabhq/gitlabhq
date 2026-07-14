@@ -8,9 +8,10 @@ require_relative '../lib/generators/post_deployment_migration/post_deployment_mi
 
 module Keeps
   # For each PostgreSQL index with no activity on GitLab.com, generates a
-  # post-deploy migration calling `prepare_async_index_removal` and yields a
-  # Change so the runner opens a draft MR. The synchronous follow-up removal
-  # is left to the reviewer per `doc/development/database/adding_database_indexes.md`.
+  # post-deploy migration that removes it synchronously with
+  # `remove_concurrent_index_by_name` and yields a Change so the runner opens a
+  # merge request. For large tables the reviewer should switch to asynchronous
+  # removal instead, per `doc/development/database/adding_database_indexes.md`.
   #
   # Requires `GITLAB_GRAFANA_API_URL`, `GITLAB_GRAFANA_API_KEY`,
   # `GITLAB_GRAFANA_DATASOURCE_UID`. Optional `GITLAB_GRAFANA_ENV` selects the
@@ -75,6 +76,12 @@ module Keeps
         built.migration_file,
         built.digest_file
       ]
+
+      # The synchronous removal alters the schema, so apply it to regenerate
+      # db/structure.sql, then restore the test DB for the next change.
+      migrate
+      change.changed_files << Pathname.new('db').join('structure.sql').to_s
+      reset_db
 
       build_change_details(change, ctx)
       change
@@ -162,13 +169,10 @@ module Keeps
     end
 
     def build_change_details(change, ctx)
-      change.title = "Draft: Async-remove unused index #{ctx[:name]}".truncate(72)
-      # The follow-up sync removal MR carries the real changelog.
+      change.title = "Remove unused index #{ctx[:name]}".truncate(72)
       change.changelog_type = 'other'
       change.labels = labels(ctx[:tablename])
-      reviewer = pick_reviewer(ctx[:tablename], change.identifiers)
-      change.reviewers = Array(reviewer)
-      change.assignees = Array(reviewer)
+      change.reviewers = Array(pick_reviewer(ctx[:tablename], change.identifiers))
       change.description = description_for(ctx)
     end
 
@@ -176,16 +180,27 @@ module Keeps
       <<~MARKDOWN.chomp
         ## What does this MR do and why?
 
-        Async-remove `#{ctx[:schema]}.#{ctx[:name]}` on `#{ctx[:tablename]}`. The
-        index reported **zero scans** over a #{MIMIR_LOOKBACK_DAYS}-day pre-filter
-        window on the `#{ctx[:cluster_type]}` Patroni cluster. Verify the 180-day
-        chart below as confirmation before merging.
+        Remove the unused index `#{ctx[:schema]}.#{ctx[:name]}` on `#{ctx[:tablename]}`
+        with `remove_concurrent_index_by_name`. The index reported **zero scans**
+        over a #{MIMIR_LOOKBACK_DAYS}-day pre-filter window on the
+        `#{ctx[:cluster_type]}` Patroni cluster. Verify the 180-day chart below as
+        confirmation before merging.
 
         Definition:
 
         ~~~sql
         #{ctx[:definition]}
         ~~~
+
+        ## :warning: Large tables: remove asynchronously instead
+
+        This MR drops the index **synchronously**, which is fine for small and
+        medium tables. On a **large** table a synchronous removal can run for a
+        long time, block the deployment, and starve `autovacuum`. If
+        `#{ctx[:tablename]}` is a large table, do not merge this as-is: switch to
+        asynchronous removal (`prepare_async_index_removal` + a synchronous
+        follow-up) per
+        [Drop indexes asynchronously](https://docs.gitlab.com/development/database/adding_database_indexes/#drop-indexes-asynchronously).
 
         ## Required: verify the 180-day Grafana chart before merging
 
@@ -212,13 +227,7 @@ module Keeps
 
         - [ ] No GitLab Self-Managed or GitLab Dedicated feature relies on this index.
         - [ ] No low-frequency (quarterly, yearly) cron uses the column(s) this index covers.
-        - [ ] Kibana logs (last 7 days) show no query plan using this index.
-
-        ## Follow-up
-
-        Once async removal completes on production, open a follow-up MR with
-        `remove_concurrent_index_by_name` to drop the index synchronously and
-        regenerate `db/structure.sql`.
+        - [ ] Kibana (`pubsub-postgres-inf-gprd*`, last 7 days): review `json.sql: #{ctx[:tablename]} AND json.sql: *#{ctx[:columns].first}*` and confirm no query filters/orders on `#{ctx[:columns].map(&:to_s).join(', ')}` in a way this index would serve. A text match alone is not index usage; PostgreSQL favours the index when a query filters on its leading column(s).
 
         ## If this index must be kept
 
@@ -292,6 +301,8 @@ module Keeps
       end.uniq
 
       group_labels + [
+        # Dedicated label so every MR from this keep is collectible in one query.
+        'automation:cleanup-unused-indexes',
         'maintenance::removal',
         'type::maintenance',
         'Category:Database',

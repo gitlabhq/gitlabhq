@@ -10,6 +10,11 @@ RSpec.describe Gitlab::WorkItems::Instrumentation::EventActions, feature_categor
 
     described_class::WORK_ITEM_EVENTS.each do |event_name|
       it "defines a valid internal event for '#{event_name}'" do
+        # Some events (for example the agent plan events) are only defined in EE,
+        # so skip validating them when their definition is not loaded in this edition.
+        skip "'#{event_name}' has no internal event definition in this edition" unless
+          Gitlab::Tracking::EventDefinition.internal_event_exists?(event_name)
+
         expect do
           Gitlab::InternalEvents.track_event(event_name, user: user, project: project, namespace: namespace)
         end.not_to raise_error

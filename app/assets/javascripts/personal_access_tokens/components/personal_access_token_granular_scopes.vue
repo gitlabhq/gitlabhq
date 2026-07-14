@@ -2,10 +2,8 @@
 import { GlButton, GlCollapse, GlIcon, GlLink } from '@gitlab/ui';
 import { camelCase, xor } from 'lodash-es';
 import { groupPermissionsByResourceAndCategory } from '~/personal_access_tokens/utils';
-import { s__ } from '~/locale';
+import { s__, n__, sprintf } from '~/locale';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
-import { getTypeFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_PROJECT_NAMESPACE } from '~/graphql_shared/constants';
 import {
   ACCESS_PERSONAL_PROJECTS_ENUM,
   ACCESS_SELECTED_MEMBERSHIPS_ENUM,
@@ -59,7 +57,9 @@ export default {
         return {
           type,
           access: scopes.at(0)?.access,
-          namespaces: scopes.map(({ namespace }) => namespace).filter(Boolean),
+          namespaces: scopes
+            .map(({ project, group, namespace }) => project || group || namespace)
+            .filter(Boolean),
           categories,
           actionsCount,
         };
@@ -70,8 +70,18 @@ export default {
     namespaceAccessDescription(access) {
       return this.$options.i18n.namespace[camelCase(access)];
     },
-    namespaceIcon(namespaceId) {
-      return getTypeFromGraphQLId(namespaceId) === TYPENAME_PROJECT_NAMESPACE ? 'project' : 'group';
+    subGroupCount({ descendantGroupsCount }) {
+      return sprintf(n__('%{count} subgroup', '%{count} subgroups', descendantGroupsCount), {
+        count: descendantGroupsCount,
+      });
+    },
+    projectCount({ projectsCount }) {
+      return sprintf(n__('%{count} project', '%{count} projects', projectsCount), {
+        count: projectsCount,
+      });
+    },
+    hasDescendantsCount({ descendantGroupsCount, projectsCount }) {
+      return descendantGroupsCount != null && projectsCount != null;
     },
     toggle(key) {
       this.expanded = xor(this.expanded, [key]);
@@ -111,13 +121,12 @@ export default {
       <div class="gl-pl-5">
         <template v-if="namespaceAccessDescription(section.access)">
           <div class="gl-mb-2 gl-font-bold">{{ $options.i18n.namespace.access }}</div>
-          <div class="gl-mb-5 gl-text-subtle">
+          <div class="gl-mb-4 gl-text-subtle">
             <gl-icon name="group" />
             {{ namespaceAccessDescription(section.access) }}
           </div>
 
-          <div v-for="namespace in section.namespaces" :key="namespace.id" class="gl-mb-5">
-            <gl-icon :name="namespaceIcon(namespace.id)" class="gl-mr-3 gl-shrink-0" />
+          <div v-for="namespace in section.namespaces" :key="namespace.id" class="gl-mb-5 gl-flex">
             <project-avatar
               :alt="namespace.name"
               :project-id="namespace.id"
@@ -126,7 +135,16 @@ export default {
               class="gl-mr-3"
               :size="24"
             />
-            <gl-link :href="namespace.webUrl">{{ namespace.fullName }}</gl-link>
+            <div>
+              <gl-link :href="namespace.webUrl">{{ namespace.fullPath }}</gl-link>
+              <div
+                v-if="hasDescendantsCount(namespace)"
+                class="gl-text-sm gl-text-subtle"
+                data-testid="descendant-counts"
+              >
+                {{ subGroupCount(namespace) }}, {{ projectCount(namespace) }}
+              </div>
+            </div>
           </div>
         </template>
       </div>

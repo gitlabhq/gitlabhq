@@ -256,6 +256,11 @@ mapping:
       - 'spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb'
       - 'spec/lib/gitlab/organizations/sharding_key_spec.rb'
 
+  # Always run the ClickHouse siphon tables spec when anything under db/ changes,
+  # so PG schema / migration / siphon-definition drift vs ClickHouse is caught.
+  - source: 'db/.+'
+    test: 'spec/db/clickhouse_siphon_tables_spec.rb'
+
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1360
   - source: 'vendor/project_templates/.*'
     test: 'spec/lib/gitlab/project_template_spec.rb'

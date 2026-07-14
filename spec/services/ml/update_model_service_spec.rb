@@ -20,7 +20,7 @@ RSpec.describe ::Ml::UpdateModelService, feature_category: :mlops do
 
     context 'with an existing model' do
       it 'description is initially blank' do
-        expect(model.description).to eq(nil)
+        expect(model.description).to be_nil
       end
 
       it 'updates the description' do

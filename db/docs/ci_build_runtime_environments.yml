@@ -1,0 +1,13 @@
+---
+table_name: ci_build_runtime_environments
+classes:
+- Ci::BuildRuntimeEnvironment
+feature_categories:
+- runner_core
+description: One row per build that takes part in suspend/resume. Holds the build's suspension triggers (suspend_on_success, suspend_on_failure), its link to the runtime environment it created or resumed, and the runner machine that ran it. runtime_environment_id may dangle after the runtime environment partition is dropped.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243035
+milestone: '19.2'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: small

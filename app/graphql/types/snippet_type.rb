@@ -91,6 +91,7 @@ module Types
       null: false,
       description: 'Import source of the snippet.'
 
+    markdown_field :title_html, null: true, description: "HTML rendering of `title`."
     markdown_field :description_html, null: true, method: :description
 
     def author

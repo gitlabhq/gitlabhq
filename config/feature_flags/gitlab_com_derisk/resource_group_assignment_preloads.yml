@@ -1,0 +1,11 @@
+---
+name: resource_group_assignment_preloads
+description:
+  Preload associations in resource group assignment to avoid per-processable
+  read queries
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241627
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/603640
+milestone: "19.2"
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

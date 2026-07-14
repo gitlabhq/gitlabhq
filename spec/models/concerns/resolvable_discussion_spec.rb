@@ -6,6 +6,11 @@ RSpec.describe Discussion, ResolvableDiscussion, feature_category: :code_review_
   subject { described_class.new([first_note, second_note, third_note]) }
 
   let_it_be_with_reload(:first_note) { create(:discussion_note_on_merge_request) }
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:noteable, freeze: false) { first_note.noteable }
   let_it_be_with_reload(:project) { first_note.project }
   let_it_be_with_reload(:second_note) { create(:discussion_note_on_merge_request, noteable: noteable, project: project, in_reply_to: first_note) }

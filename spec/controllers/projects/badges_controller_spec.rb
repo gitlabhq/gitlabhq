@@ -78,8 +78,9 @@ RSpec.describe Projects::BadgesController do
   shared_context 'customization' do |badge_type|
     render_views
 
+    before_all { project.add_maintainer(user) }
+
     before do
-      project.add_maintainer(user)
       sign_in(user)
     end
 
@@ -112,8 +113,9 @@ RSpec.describe Projects::BadgesController do
 
   shared_examples 'a badge resource' do |badge_type|
     context 'format' do
+      before_all { project.add_maintainer(user) }
+
       before do
-        project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -162,9 +164,10 @@ RSpec.describe Projects::BadgesController do
     context 'with ignore_skipped param' do
       render_views
 
+      before_all { project.add_maintainer(user) }
+
       before do
         pipeline.update!(status: :skipped)
-        project.add_maintainer(user)
         sign_in(user)
       end
 

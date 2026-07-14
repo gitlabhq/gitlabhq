@@ -26,8 +26,10 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get a list of project packages' do
-        detail 'This feature was introduced in GitLab 11.8'
+      desc 'List all packages for a project' do
+        detail 'Lists all packages for a specified project. All package types are included in results. ' \
+          'Unauthenticated requests return only packages of public projects. By default, packages with `default`, ' \
+          '`deprecated`, and `error` status are returned. Use the `status` parameter to view other packages.'
         success code: 200, model: ::API::Entities::Package
         failure [
           { code: 403, message: 'Forbidden' },
@@ -65,8 +67,9 @@ module API
         present paginate(packages), with: ::API::Entities::Package, user: current_user, namespace: user_project.namespace
       end
 
-      desc 'Get a single project package' do
-        detail 'This feature was introduced in GitLab 11.9'
+      desc 'Retrieve a project package' do
+        detail 'Retrieves a specified project package. Only packages with status `default` or `deprecated` are ' \
+          'returned.'
         success code: 200, model: ::API::Entities::Package
         failure [
           { code: 403, message: 'Forbidden' },
@@ -86,8 +89,9 @@ module API
         present package, with: ::API::Entities::Package, user: current_user, namespace: user_project.namespace
       end
 
-      desc 'Get the pipelines for a single project package' do
-        detail 'This feature was introduced in GitLab 16.1'
+      desc 'List all package pipelines' do
+        detail 'Lists all pipelines for a specified package. The results are sorted by `id` in descending order. The ' \
+          'results are paginated and return up to 20 records per page. This feature was introduced in GitLab 16.1.'
         success code: 200, model: ::API::Entities::Package::Pipeline
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -125,7 +129,7 @@ module API
       end
 
       desc 'Delete a project package' do
-        detail 'This feature was introduced in GitLab 11.9'
+        detail 'Deletes a specified project package.'
         success code: 204
         failure [
           { code: 403, message: 'Forbidden' },

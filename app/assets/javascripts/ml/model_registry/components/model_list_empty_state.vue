@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
 import { MLFLOW_USAGE_MODAL_ID } from '../constants';
 
 export default {
+  name: 'ModelListEmptyState',
   components: {
     GlEmptyState,
     GlButton,
@@ -13,7 +14,6 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  inject: ['mlflowTrackingUrl'],
   props: {
     primaryLink: {
       type: String,

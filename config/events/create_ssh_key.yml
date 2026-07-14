@@ -1,0 +1,21 @@
+---
+description: Creation of an SSH key
+internal_events: true
+status: active
+action: create_ssh_key
+identifiers:
+  - user
+additional_properties:
+  creation_source:
+    description: Source that created the key ("ui" for controller, "api" for REST/GraphQL, "unknown" when unspecified)
+  usage_type:
+    description: Usage type of the SSH key (auth, signing, auth_and_signing)
+product_group: authentication
+product_categories:
+  - system_access
+milestone: '19.2'
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241066'
+tiers:
+  - free
+  - premium
+  - ultimate

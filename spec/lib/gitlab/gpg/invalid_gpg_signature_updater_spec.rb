@@ -12,8 +12,8 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater, :sidekiq_inline do
     end
 
     let(:committer_email) { GpgHelpers::User1.emails.first }
-    let!(:commit_sha)     { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
-    let!(:project)        { create :project, :repository, path: 'sample-project' }
+    let_it_be(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
+    let_it_be(:project) { create :project, :small_repo, path: 'sample-project' }
     let!(:raw_commit) do
       raw_commit = double(
         :raw_commit,
@@ -41,9 +41,9 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater, :sidekiq_inline do
     end
 
     context 'gpg signature did have an associated gpg key which was removed later' do
-      let!(:user) { create :user, email: GpgHelpers::User1.emails.first }
+      let_it_be(:user) { create :user, email: GpgHelpers::User1.emails.first }
 
-      let!(:valid_gpg_signature) do
+      let_it_be_with_reload(:valid_gpg_signature) do
         create :gpg_signature,
           project: project,
           commit_sha: commit_sha,
@@ -84,9 +84,9 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater, :sidekiq_inline do
     end
 
     context 'gpg signature did not have an associated gpg key' do
-      let!(:user) { create :user, email: GpgHelpers::User1.emails.first }
+      let_it_be(:user) { create :user, email: GpgHelpers::User1.emails.first }
 
-      let!(:invalid_gpg_signature) do
+      let_it_be_with_reload(:invalid_gpg_signature) do
         create :gpg_signature,
           project: project,
           commit_sha: commit_sha,
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater, :sidekiq_inline do
         end
       end
 
-      let!(:invalid_gpg_signature) do
+      let_it_be_with_reload(:invalid_gpg_signature) do
         create :gpg_signature,
           project: project,
           commit_sha: commit_sha,

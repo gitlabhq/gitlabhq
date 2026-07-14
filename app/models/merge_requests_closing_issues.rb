@@ -15,7 +15,9 @@ class MergeRequestsClosingIssues < ApplicationRecord
 
   scope :with_opened_merge_request, -> { joins(:merge_request).merge(MergeRequest.with_state(:opened)) }
   scope :from_mr_description, -> { where(from_mr_description: true) }
+  scope :user_created, -> { where(from_mr_description: false) }
   scope :with_issues, ->(ids) { where(issue_id: ids) }
+  scope :by_link_types, ->(types) { where(link_type: types) }
   scope :with_merge_requests_enabled, -> do
     joins(:merge_request)
       .joins('INNER JOIN project_features ON merge_requests.target_project_id = project_features.project_id')

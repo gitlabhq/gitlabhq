@@ -280,7 +280,7 @@ Prerequisites:
    editor server.crt
    ```
 
-1. To set up PostgreSQL TLS verification on the secondary site, install `server.crt`:
+1. To set up PostgreSQL TLS verification on the secondary site, install `server.crt` for the `gitlab-psql` user:
 
    ```shell
    install \
@@ -294,6 +294,20 @@ Prerequisites:
    PostgreSQL now recognizes only this exact certificate when verifying TLS
    connections. The certificate can be replicated by someone with access
    to the private key, which is present on only the primary site.
+
+   Because `gitlab-ctl replicate-geo-database` runs as root, install
+   the certificate also for the root user. Otherwise, the replication
+   command fails with a `could not open certificate file` error
+   when you use `sslmode=verify-ca` or `sslmode=verify-full`:
+
+   ```shell
+   install \
+      -D \
+      -o root \
+      -g root \
+      -m 0400 \
+      -T server.crt /root/.postgresql/root.crt
+   ```
 
 1. Test that the `gitlab-psql` user can connect to the primary site database.
    The default Linux package name is `gitlabhq_production`:

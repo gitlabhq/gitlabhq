@@ -3,6 +3,17 @@
 module WorkItems
   module DataSync
     class MoveService < ::WorkItems::DataSync::BaseService
+      # `skip_work_item_type_check` is an explicit keyword (not a params key) so
+      # user-supplied params can never enable the bypass. Used by internal
+      # hierarchy moves to skip the `supports_move_and_clone?` gate.
+      def initialize(work_item:, target_namespace:, current_user: nil, params: {}, skip_work_item_type_check: false)
+        @skip_work_item_type_check = skip_work_item_type_check
+        super(
+          work_item: work_item, target_namespace: target_namespace,
+          current_user: current_user, params: params
+        )
+      end
+
       class << self
         def transaction_callback(new_work_item, original_work_item, current_user)
           original_work_item.update(moved_to: new_work_item)
@@ -80,7 +91,7 @@ module WorkItems
           return error(error_message, :unprocessable_entity)
         end
 
-        unless work_item.supports_move_and_clone? || move_any_work_item_type
+        unless work_item.supports_move_and_clone? || @skip_work_item_type_check
           error_message = format(s_('MoveWorkItem|Unable to move. Moving \'%{work_item_type}\' is not supported.'),
             { work_item_type: work_item.work_item_type.name })
 
@@ -93,9 +104,19 @@ module WorkItems
           return error(error_message, :unprocessable_entity)
         end
 
-        return success({}) if same_namespace?(target_namespace, work_item)
-
         success({})
+      end
+
+      # Skip resolution for same-namespace moves (conversion is a no-op there).
+      def skip_target_work_item_type_resolution?
+        same_namespace?(target_namespace, work_item)
+      end
+
+      # Internal hierarchy moves fully control the resulting type, so discard any
+      # caller-supplied id. The source type is still verified at the destination
+      # because the target may be on a different top-level group.
+      def ignore_target_work_item_type_id_param?
+        @skip_work_item_type_check
       end
 
       def same_namespace?(target_namespace, work_item)
@@ -107,7 +128,7 @@ module WorkItems
           work_item: work_item,
           target_namespace: target_namespace,
           current_user: current_user,
-          target_work_item_type: work_item.work_item_type,
+          target_work_item_type: resolved_target_work_item_type,
           params: params.merge(operation: :move),
           overwritten_params: {
             moved_issue: true
@@ -126,8 +147,8 @@ module WorkItems
         create_response
       end
 
-      def move_any_work_item_type
-        !!params.delete(:skip_work_item_type_check)
+      def target_work_item_type_not_available_error_message
+        s_("MoveWorkItem|Unable to move. The selected work item type is not available in the target namespace.")
       end
     end
   end

@@ -13,6 +13,27 @@ module Ci
       where("traversal_ids @> '{?}'", id)
     end
 
+    # Resolves a single group and its descendants using the
+    # `index_ci_namespace_mirrors_on_traversal_ids_unnest` covering index instead of the
+    # GIN `traversal_ids @>` operator. The GIN path requires a bitmap heap scan that becomes
+    # prohibitively expensive for large subtrees (see
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/601877), whereas the unnest index supports
+    # an index-only scan via the `(traversal_ids[1..N]) IN (...)` form built by
+    # `contains_traversal_ids`.
+    #
+    # Unlike `by_group_and_descendants`, this only accepts a single id. The GIN scope's array
+    # form (`traversal_ids @> '{a, b}'`) expresses per-row ancestry containment, which the
+    # single-prefix lookup here does not reproduce.
+    scope :by_group_and_descendants_using_covering_index, ->(id) do
+      raise ArgumentError, 'only a single id is supported' if id.is_a?(Enumerable)
+
+      traversal_ids = by_namespace_id(id).pick(:traversal_ids)
+
+      next none if traversal_ids.blank?
+
+      contains_traversal_ids([traversal_ids])
+    end
+
     scope :contains_traversal_ids, ->(traversal_ids) do
       mirrors = []
 

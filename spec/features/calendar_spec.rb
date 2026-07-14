@@ -91,9 +91,9 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
     end
   end
 
-  context 'with `profile_tabs_vue` feature flag disabled' do
+  context 'with the legacy profile tabs' do
     before do
-      stub_feature_flags(profile_tabs_vue: false)
+      stub_feature_flags(vue_profile_activity_calendar: false)
       sign_in user
     end
 
@@ -230,120 +230,6 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
         it 'displays calendar activity square for today' do
           today = Date.today.strftime(date_format)
           expect(find('#js-legacy-tabs-container')).to have_selector(get_cell_date_selector(1, today), count: 1)
-        end
-      end
-    end
-
-    describe 'first_day_of_week setting' do
-      context 'when first day of the week is set to Monday' do
-        before do
-          stub_application_setting(first_day_of_week: 1)
-        end
-
-        include_context 'when user page is visited'
-
-        it 'shows calendar with Monday as the first day of the week' do
-          expect(get_days_of_week).to eq(%w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday])
-        end
-      end
-
-      context 'when first day of the week is set to Sunday' do
-        before do
-          stub_application_setting(first_day_of_week: 0)
-        end
-
-        include_context 'when user page is visited'
-
-        it 'shows calendar with Sunday as the first day of the week' do
-          expect(get_days_of_week).to eq(%w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday])
-        end
-      end
-    end
-  end
-
-  context 'with `profile_tabs_vue` feature flag enabled' do
-    before do
-      sign_in user
-    end
-
-    include_context 'when user page is visited'
-
-    it 'displays calendar' do
-      expect(page).to have_css('[data-testid="contrib-calendar"]')
-    end
-
-    describe 'calendar daily activities' do
-      shared_examples 'a day with activity' do |contribution_count:|
-        include_context 'when user page is visited'
-
-        it 'displays calendar activity square for 1 contribution', :sidekiq_inline do
-          expect(page).to have_selector(get_cell_level_selector(contribution_count), count: 1)
-
-          today = Date.today.strftime(date_format)
-          expect(page).to have_selector(get_cell_date_selector(contribution_count, today), count: 1)
-        end
-      end
-
-      describe '1 issue and 1 work item creation calendar activity' do
-        before do
-          Issues::CreateService.new(
-            container: contributed_project,
-            current_user: user,
-            params: issue_params
-          ).execute
-          WorkItems::CreateService.new(
-            container: contributed_project,
-            current_user: user,
-            params: { title: 'new task' }
-          ).execute
-        end
-
-        it_behaves_like 'a day with activity', contribution_count: 2
-      end
-
-      describe '1 comment calendar activity' do
-        before do
-          note_comment_contribution
-        end
-
-        it_behaves_like 'a day with activity', contribution_count: 1
-      end
-
-      describe '10 calendar activities' do
-        before do
-          10.times { push_code_contribution }
-        end
-
-        it_behaves_like 'a day with activity', contribution_count: 10
-      end
-
-      describe 'calendar activity on two days' do
-        before do
-          push_code_contribution
-
-          travel_to(Date.yesterday) do
-            Issues::CreateService.new(
-              container: contributed_project,
-              current_user: user,
-              params: issue_params
-            ).execute
-          end
-        end
-
-        include_context 'when user page is visited'
-
-        it 'displays calendar activity squares for both days', :sidekiq_inline do
-          expect(page).to have_selector(get_cell_level_selector(1), count: 2)
-        end
-
-        it 'displays calendar activity square for yesterday', :sidekiq_inline do
-          yesterday = Date.yesterday.strftime(date_format)
-          expect(page).to have_selector(get_cell_date_selector(1, yesterday), count: 1)
-        end
-
-        it 'displays calendar activity square for today' do
-          today = Date.today.strftime(date_format)
-          expect(page).to have_selector(get_cell_date_selector(1, today), count: 1)
         end
       end
     end

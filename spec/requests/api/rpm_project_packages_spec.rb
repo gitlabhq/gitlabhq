@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe API::RpmProjectPackages, feature_category: :package_registry do
@@ -132,6 +133,16 @@ RSpec.describe API::RpmProjectPackages, feature_category: :package_registry do
 
     subject { get api(url), headers: headers }
 
+    it_behaves_like 'authorizing granular token permissions', :read_rpm_package do
+      let(:boundary_object) { project }
+      let(:headers) { basic_auth_header(user.username, pat.token) }
+      let(:request) { get api(url), headers: headers }
+
+      before_all do
+        project.add_developer(user)
+      end
+    end
+
     it_behaves_like 'a job token for RPM requests', :success
     it_behaves_like 'a deploy token for RPM requests', :success
     it_behaves_like 'a user token for RPM requests', :success
@@ -146,6 +157,17 @@ RSpec.describe API::RpmProjectPackages, feature_category: :package_registry do
     let(:url) { "/projects/#{project.id}/packages/rpm/#{package_file_id}/#{package_name}" }
 
     subject { get api(url), headers: headers }
+
+    it_behaves_like 'authorizing granular token permissions', :download_rpm_package,
+      expected_success_status: :not_found do
+      let(:boundary_object) { project }
+      let(:headers) { basic_auth_header(user.username, pat.token) }
+      let(:request) { get api(url), headers: headers }
+
+      before_all do
+        project.add_developer(user)
+      end
+    end
 
     it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
     it_behaves_like 'a job token for RPM requests'
@@ -166,6 +188,17 @@ RSpec.describe API::RpmProjectPackages, feature_category: :package_registry do
     let(:file_upload) { fixture_file_upload('spec/fixtures/packages/rpm/hello-0.0.1-1.fc29.x86_64.rpm') }
 
     subject { post api(url), params: { file: file_upload }, headers: headers }
+
+    it_behaves_like 'authorizing granular token permissions', :upload_rpm_package,
+      expected_success_status: :not_found do
+      let(:boundary_object) { project }
+      let(:headers) { basic_auth_header(user.username, pat.token).merge(workhorse_headers) }
+      let(:request) { post api(url), params: { file: file_upload }, headers: headers }
+
+      before_all do
+        project.add_developer(user)
+      end
+    end
 
     context 'with user token' do
       context 'with valid project' do

@@ -28,14 +28,14 @@ RSpec.describe 'gitlab:password rake tasks', :silence_stdout do
 
     context 'when all inputs are correct' do
       it 'updates the password properly' do
-        expect(user_1.password_automatically_set?).to eq(true)
+        expect(user_1.password_automatically_set?).to be(true)
 
         run_rake_task('gitlab:password:reset', user_1.username)
 
         user_1.reload
 
-        expect(user_1.valid_password?(password)).to eq(true)
-        expect(user_1.password_automatically_set?).to eq(false)
+        expect(user_1.valid_password?(password)).to be(true)
+        expect(user_1.password_automatically_set?).to be(false)
       end
     end
 

@@ -187,14 +187,19 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
       create(:project_authorization, user: user, project: project_1, access_level: Gitlab::Access::MAINTAINER)
 
       attributes = [
-        { user_id: user.id, project_id: project_1.id, access_level: Gitlab::Access::MAINTAINER },
-        { user_id: user.id, project_id: project_2.id, access_level: Gitlab::Access::MAINTAINER },
-        { user_id: user.id, project_id: project_3.id, access_level: Gitlab::Access::MAINTAINER }
+        { user_id: user.id, project_id: project_1.id, access_level: Gitlab::Access::MAINTAINER, is_unique: true },
+        { user_id: user.id, project_id: project_1.id, access_level: Gitlab::Access::DEVELOPER, is_unique: true },
+        { user_id: user.id, project_id: project_2.id, access_level: Gitlab::Access::MAINTAINER, is_unique: true },
+        { user_id: user.id, project_id: project_3.id, access_level: Gitlab::Access::MAINTAINER, is_unique: true }
       ]
 
       described_class.insert_all(attributes)
 
-      expect(user.project_authorizations.pluck(:user_id, :project_id, :access_level)).to match_array(attributes.map(&:values))
+      expect(user.project_authorizations.pluck(:user_id, :project_id, :access_level)).to match_array([
+        [user.id, project_1.id, Gitlab::Access::MAINTAINER],
+        [user.id, project_2.id, Gitlab::Access::MAINTAINER],
+        [user.id, project_3.id, Gitlab::Access::MAINTAINER]
+      ])
     end
   end
 

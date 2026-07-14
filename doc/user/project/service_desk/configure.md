@@ -268,7 +268,7 @@ To enable this setting:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329990) in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `service_desk_custom_email`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329990) in GitLab 16.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `service_desk_custom_email`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.4.
 - Ability to select the SMTP authentication method [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429680) in GitLab 16.6.
 - [Feature flag `service_desk_custom_email` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.7.
@@ -1309,3 +1309,41 @@ move new unread emails to GitLab.
    ```
 
 1. [Reconfigure GitLab](../../../administration/restart_gitlab.md) on this node for the changes to take effect.
+
+## Turn off Service Desk for multiple projects
+
+To turn off Service Desk across many projects in a namespace, use the
+[API](../../../api/projects.md#turn-off-service-desk-for-multiple-projects) or, on
+GitLab Self-Managed, the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+After you turn off Service Desk for the projects in a group or namespace, the following applies:
+
+- Project members can turn Service Desk back on.
+- Projects you create later have Service Desk set to active by default.
+
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+To turn off Service Desk for all projects in a namespace, run the following commands.
+Replace `my-namespace` with the full path of a group or personal namespace.
+
+```ruby
+namespace = Namespace.find_by_full_path!('my-namespace')
+scope = namespace.is_a?(Group) ? namespace.all_projects : namespace.projects
+
+scope.where(service_desk_enabled: true).each_batch(of: 100) do |batch|
+  batch.update_all(service_desk_enabled: false)
+end
+```
+
+To keep Service Desk active for some projects, exclude their project IDs:
+
+```ruby
+keep_ids = [42, 1337]
+namespace = Namespace.find_by_full_path!('my-namespace')
+scope = namespace.is_a?(Group) ? namespace.all_projects : namespace.projects
+
+scope.where(service_desk_enabled: true).where.not(id: keep_ids).each_batch(of: 100) do |batch|
+  batch.update_all(service_desk_enabled: false)
+end
+```

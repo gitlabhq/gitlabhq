@@ -1,13 +1,14 @@
 <script>
 import { GlFormFields, GlButton, GlForm, GlCard } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { visitUrlWithAlerts, joinPaths } from '~/lib/utils/url_utility';
+import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import OrganizationUrlField from '~/organizations/shared/components/organization_url_field.vue';
 import { FORM_FIELD_PATH, FORM_FIELD_PATH_VALIDATORS } from '~/organizations/shared/constants';
 import FormErrorsAlert from '~/organizations/shared/components/errors_alert.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
+import { generalSettingsOrganizationPath } from '~/lib/utils/path_helpers/organizations';
 import organizationUpdateMutation from '../graphql/mutations/organization_update.mutation.graphql';
 
 export default {
@@ -67,7 +68,7 @@ export default {
           return;
         }
 
-        visitUrlWithAlerts(joinPaths(organization.webUrl, '/-/settings/general'), [
+        visitUrlWithAlerts(generalSettingsOrganizationPath(organization.path), [
           {
             id: 'organization-url-successfully-changed',
             message: this.$options.i18n.successAlertMessage,

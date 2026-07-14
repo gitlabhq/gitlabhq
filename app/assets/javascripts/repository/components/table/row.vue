@@ -50,14 +50,6 @@ export default {
       required: false,
       default: null,
     },
-    totalEntries: {
-      type: Number,
-      required: true,
-    },
-    id: {
-      type: String,
-      required: true,
-    },
     sha: {
       type: String,
       required: true,
@@ -67,10 +59,6 @@ export default {
       required: true,
     },
     currentPath: {
-      type: String,
-      required: true,
-    },
-    name: {
       type: String,
       required: true,
     },

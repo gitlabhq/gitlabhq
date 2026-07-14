@@ -14,27 +14,6 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewTool, feature_category: :mcp_s
     group.add_developer(user)
   end
 
-  describe 'class methods' do
-    describe '.build_query' do
-      it 'returns the saved view GraphQL query string' do
-        query = described_class.build_query
-
-        expect(query).to include('query GetNamespaceSavedView')
-        expect(query).to include('$fullPath: ID!')
-        expect(query).to include('$id: WorkItemsSavedViewsSavedViewID!')
-        expect(query).to include('namespace(fullPath: $fullPath)')
-        expect(query).to include('savedViews(id: $id)')
-      end
-
-      it 'includes saved view fields' do
-        query = described_class.build_query
-
-        saved_view_fields = %w[name description filters sort]
-        saved_view_fields.each { |field| expect(query).to include(field) }
-      end
-    end
-  end
-
   describe 'versioning' do
     it 'registers version 0.1.0' do
       expect(tool.version).to eq(Mcp::Tools::Concerns::Constants::VERSIONS[:v0_1_0])
@@ -47,7 +26,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewTool, feature_category: :mcp_s
     it 'has correct GraphQL operation for version 0.1.0' do
       operation = tool.graphql_operation
 
-      expect(operation).to include('query GetNamespaceSavedView')
+      expect(operation).to include('query getNamespaceSavedView')
       expect(operation).to include('namespace(fullPath: $fullPath)')
     end
   end
@@ -82,7 +61,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewTool, feature_category: :mcp_s
       tool.execute
 
       expect(GitlabSchema).to have_received(:execute).with(
-        a_string_including('GetNamespaceSavedView'),
+        a_string_including('getNamespaceSavedView'),
         variables: hash_including(
           fullPath: group.full_path,
           id: saved_view_gid
@@ -98,10 +77,9 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewTool, feature_category: :mcp_s
       expect(result[:content]).to be_an(Array)
       expect(result[:content].first[:type]).to eq('text')
       expect(result[:structuredContent]).to be_a(Hash)
+      expect(result[:structuredContent].keys).to match_array(%w[id name description filters sort])
       expect(result[:structuredContent]['name']).to eq('Open Bugs')
       expect(result[:structuredContent]['description']).to eq('All open bugs')
-      expect(result[:structuredContent]).to have_key('filters')
-      expect(result[:structuredContent]).to have_key('sort')
     end
 
     context 'when saved view does not exist' do

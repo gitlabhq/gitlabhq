@@ -6,7 +6,7 @@ RSpec.describe DesignManagement::VersionsFinder do
   include DesignManagementTestHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:project) { create(:project, :private, developers: user) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:design_1) { create(:design, :with_file, issue: issue, versions_count: 1) }
   let_it_be(:design_2) { create(:design, :with_file, issue: issue, versions_count: 1) }
@@ -41,10 +41,6 @@ RSpec.describe DesignManagement::VersionsFinder do
     end
 
     context 'when user can read designs of an issue' do
-      before do
-        project.add_developer(user)
-      end
-
       context 'when design management feature is disabled' do
         include_examples 'returns no results'
       end

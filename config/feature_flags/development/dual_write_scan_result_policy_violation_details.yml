@@ -1,0 +1,8 @@
+---
+name: dual_write_scan_result_policy_violation_details
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241883
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/603756
+milestone: '19.2'
+type: development
+group: group::security policies
+default_enabled: false

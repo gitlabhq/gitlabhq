@@ -28,7 +28,7 @@ module Types
         when ::Group
           group_open_issues_count
         when ::Namespaces::ProjectNamespace
-          namespace.project.open_issues_count(context[:current_user])
+          ::Projects::OpenIssuesCountService.new(namespace.project, context[:current_user]).count
         end
       end
 
@@ -37,7 +37,7 @@ module Types
         when Group
           ::Groups::MergeRequestsCountService.new(namespace, context[:current_user]).count
         when ::Namespaces::ProjectNamespace
-          namespace.project.open_merge_requests_count
+          ::Projects::OpenMergeRequestsCountService.new(namespace.project).count
         end
       end
 

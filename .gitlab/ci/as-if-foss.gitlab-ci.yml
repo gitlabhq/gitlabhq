@@ -111,6 +111,10 @@ start-as-if-foss:
     ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB: $ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB
     ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION: $ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION
     ENABLE_RUBOCOP: $ENABLE_RUBOCOP
+    # Mirror the parent pipeline's full RuboCop run (graceful formatter) instead
+    # of defaulting to predictive mode in the downstream pipeline. See the
+    # comment in scripts/setup/generate-as-if-foss-env.rb.
+    RUN_ALL_RUBOCOP: $RUN_ALL_RUBOCOP
     ENABLE_QA_INTERNAL: $ENABLE_QA_INTERNAL
     ENABLE_QA_SELECTORS: $ENABLE_QA_SELECTORS
     ENABLE_STATIC_ANALYSIS: $ENABLE_STATIC_ANALYSIS

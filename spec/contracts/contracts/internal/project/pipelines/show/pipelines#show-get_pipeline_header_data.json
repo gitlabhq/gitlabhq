@@ -1,0 +1,152 @@
+{
+  "consumer": {
+    "name": "Pipelines#show"
+  },
+  "provider": {
+    "name": "GET pipeline header data"
+  },
+  "interactions": [
+    {
+      "description": "a request for the pipeline header data",
+      "providerState": "a pipeline for a project exists",
+      "request": {
+        "method": "POST",
+        "path": "/api/graphql",
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "query": "query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {\n  project(fullPath: $fullPath) {\n    id\n    pipeline(iid: $iid) {\n      id\n      iid\n      status\n      retryable\n      cancelable\n      userPermissions {\n        destroyPipeline\n        updatePipeline\n      }\n      detailedStatus {\n        id\n        detailsPath\n        icon\n        group\n        text\n      }\n      createdAt\n      user {\n        id\n        name\n        username\n        webPath\n        webUrl\n        email\n        avatarUrl\n        status {\n          message\n          emoji\n        }\n      }\n    }\n  }\n}\n",
+          "variables": {
+            "fullPath": "gitlab-org/gitlab-qa",
+            "iid": 1
+          }
+        },
+        "matchingRules": {
+          "$.body.query": {
+            "match": "regex",
+            "regex": "query\\s*getPipelineHeaderData\\(\\$fullPath:\\s*ID!,\\s*\\$iid:\\s*ID!\\)\\s*\\{\\s*project\\(fullPath:\\s*\\$fullPath\\)\\s*\\{\\s*id\\s*pipeline\\(iid:\\s*\\$iid\\)\\s*\\{\\s*id\\s*iid\\s*status\\s*retryable\\s*cancelable\\s*userPermissions\\s*\\{\\s*destroyPipeline\\s*updatePipeline\\s*\\}\\s*detailedStatus\\s*\\{\\s*id\\s*detailsPath\\s*icon\\s*group\\s*text\\s*\\}\\s*createdAt\\s*user\\s*\\{\\s*id\\s*name\\s*username\\s*webPath\\s*webUrl\\s*email\\s*avatarUrl\\s*status\\s*\\{\\s*message\\s*emoji\\s*\\}\\s*\\}\\s*\\}\\s*\\}\\s*\\}\\s*"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": {
+          "data": {
+            "project": {
+              "id": "gid://gitlab/Project/278964",
+              "pipeline": {
+                "id": "gid://gitlab/Ci::Pipeline/577266584",
+                "iid": "1175084",
+                "status": "RUNNING",
+                "retryable": false,
+                "cancelable": true,
+                "userPermissions": {
+                  "destroyPipeline": false,
+                  "updatePipeline": true
+                },
+                "detailedStatus": {
+                  "id": "running-577266584-577266584",
+                  "detailsPath": "/gitlab-org/gitlab/-/pipelines/577266584",
+                  "icon": "status_running",
+                  "group": "running",
+                  "text": "running"
+                },
+                "createdAt": "2022-06-30T16:58:59Z",
+                "user": {
+                  "id": "gid://gitlab/User/194645",
+                  "name": "John Doe",
+                  "username": "jdoe",
+                  "webPath": "/gitlab-bot",
+                  "webUrl": "https://gitlab.com/gitlab-bot",
+                  "email": null,
+                  "avatarUrl": "https://www.gravatar.com/avatar/10fc7f102be8de7657fb4d80898bbfe3?s=80&d=identicon",
+                  "status": null
+                }
+              }
+            }
+          }
+        },
+        "matchingRules": {
+          "$.body.data.project.id": {
+            "match": "type"
+          },
+          "$.body.data.project.pipeline.id": {
+            "match": "type"
+          },
+          "$.body.data.project.pipeline.iid": {
+            "match": "type"
+          },
+          "$.body.data.project.pipeline.status": {
+            "match": "regex",
+            "regex": "^(CANCELED|CREATED|FAILED|MANUAL|PENDING|PREPARING|RUNNING|SCHEDULED|SKIPPED|SUCCESS|WAITING_FOR_RESOURCE)$"
+          },
+          "$.body.data.project.pipeline.retryable": {
+            "match": "type"
+          },
+          "$.body.data.project.pipeline.cancelable": {
+            "match": "type"
+          },
+          "$.body.data.project.pipeline.userPermissions.destroyPipeline": {
+            "match": "type"
+          },
+          "$.body.data.project.pipeline.userPermissions.updatePipeline": {
+            "match": "type"
+          },
+          "$.body.data.project.pipeline.detailedStatus.id": {
+            "match": "type"
+          },
+          "$.body.data.project.pipeline.detailedStatus.detailsPath": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.data.project.pipeline.detailedStatus.icon": {
+            "match": "regex",
+            "regex": "^status_(canceled|created|failed|manual|pending|preparing|running|scheduled|skipped|success|warning)$"
+          },
+          "$.body.data.project.pipeline.detailedStatus.group": {
+            "match": "regex",
+            "regex": "^(canceled|created|failed|manual|pending|preparing|running|scheduled|skipped|success|success_warning|waiting-for-resource)$"
+          },
+          "$.body.data.project.pipeline.detailedStatus.text": {
+            "match": "regex",
+            "regex": "^(canceled|created|delayed|failed|manual|passed|pending|preparing|running|skipped|waiting)$"
+          },
+          "$.body.data.project.pipeline.createdAt": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d:[0-5]\\d|Z)$"
+          },
+          "$.body.data.project.pipeline.user.id": {
+            "match": "type"
+          },
+          "$.body.data.project.pipeline.user.name": {
+            "match": "type"
+          },
+          "$.body.data.project.pipeline.user.username": {
+            "match": "type"
+          },
+          "$.body.data.project.pipeline.user.webPath": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.data.project.pipeline.user.webUrl": {
+            "match": "regex",
+            "regex": "^(http|https):\\/\\/[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$"
+          },
+          "$.body.data.project.pipeline.user.avatarUrl": {
+            "match": "regex",
+            "regex": "^(http|https):\\/\\/[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

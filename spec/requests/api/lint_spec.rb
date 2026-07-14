@@ -11,7 +11,7 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
         params: { content_ref: content_ref, dry_run: dry_run, include_jobs: include_jobs }
     end
 
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :small_repo) }
     let(:content_ref) { nil }
     let(:dry_run) { nil }
     let(:include_jobs) { nil }
@@ -676,7 +676,7 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
     end
 
     context 'when the project is public' do
-      let_it_be(:project) { create(:project, :repository, :public) }
+      let_it_be(:project) { create(:project, :small_repo, :public) }
 
       context 'with valid .gitlab-ci.yml content' do
         let_it_be(:yaml_content) do
@@ -730,12 +730,55 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
         project.add_developer(user)
       end
     end
+
+    context 'when ci_lint rate limit is exceeded', :freeze_time, :clean_gitlab_redis_rate_limiting do
+      let_it_be(:api_user) { create(:user) }
+
+      before do
+        project.add_developer(api_user)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:ci_lint).and_return(1)
+      end
+
+      context 'when ci_enforce_ci_lint_rate_limit is enabled' do
+        it 'returns 429 Too Many Requests on the second call within a minute', :aggregate_failures do
+          get api("/projects/#{project.id}/ci/lint", api_user)
+          expect(response).to have_gitlab_http_status(:ok)
+
+          get api("/projects/#{project.id}/ci/lint", api_user)
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(response.headers['Retry-After']).to be_present
+        end
+      end
+
+      context 'when ci_enforce_ci_lint_rate_limit is disabled (log-only mode)' do
+        before do
+          stub_feature_flags(ci_enforce_ci_lint_rate_limit: false)
+        end
+
+        it 'does not block requests over the limit', :aggregate_failures do
+          get api("/projects/#{project.id}/ci/lint", api_user)
+          expect(response).to have_gitlab_http_status(:ok)
+
+          get api("/projects/#{project.id}/ci/lint", api_user)
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'still checks (and increments) the rate limit counter' do
+          expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:ci_lint, scope: [api_user])
+            .and_call_original
+
+          get api("/projects/#{project.id}/ci/lint", api_user)
+        end
+      end
+    end
   end
 
   describe 'POST /projects/:id/ci/lint' do
     subject(:ci_lint) { post api("/projects/#{project.id}/ci/lint", api_user), params: { dry_run: dry_run, content: yaml_content, include_jobs: include_jobs } }
 
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :small_repo) }
     let(:dry_run) { nil }
     let(:include_jobs) { nil }
 
@@ -1084,6 +1127,49 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
       let(:request) { post api("/projects/#{project.id}/ci/lint", personal_access_token: pat), params: { content: yaml_content } }
       before do
         project.add_developer(user)
+      end
+    end
+
+    context 'when ci_lint rate limit is exceeded', :freeze_time, :clean_gitlab_redis_rate_limiting do
+      let_it_be(:api_user) { create(:user) }
+
+      before do
+        project.add_developer(api_user)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:ci_lint).and_return(1)
+      end
+
+      context 'when ci_enforce_ci_lint_rate_limit is enabled' do
+        it 'returns 429 Too Many Requests on the second call within a minute', :aggregate_failures do
+          post api("/projects/#{project.id}/ci/lint", api_user), params: { content: yaml_content }
+          expect(response).to have_gitlab_http_status(:ok)
+
+          post api("/projects/#{project.id}/ci/lint", api_user), params: { content: yaml_content }
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(response.headers['Retry-After']).to be_present
+        end
+      end
+
+      context 'when ci_enforce_ci_lint_rate_limit is disabled (log-only mode)' do
+        before do
+          stub_feature_flags(ci_enforce_ci_lint_rate_limit: false)
+        end
+
+        it 'does not block requests over the limit', :aggregate_failures do
+          post api("/projects/#{project.id}/ci/lint", api_user), params: { content: yaml_content }
+          expect(response).to have_gitlab_http_status(:ok)
+
+          post api("/projects/#{project.id}/ci/lint", api_user), params: { content: yaml_content }
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'still checks (and increments) the rate limit counter' do
+          expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:ci_lint, scope: [api_user])
+            .and_call_original
+
+          post api("/projects/#{project.id}/ci/lint", api_user), params: { content: yaml_content }
+        end
       end
     end
   end

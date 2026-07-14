@@ -16,45 +16,50 @@ module Gitlab
       #
       # Each fallback logs the count of ids that fell through.
       #
-      # Returns a Hash<Integer, Ci::Pipeline> keyed by pipeline id.
+      # With `fallback: false`, only the partition-pruned records are returned
+      # and the full-table scan is skipped. This is useful when the caller
+      # (e.g. ActiveRecord's Preloader via `available_records:`) already loads
+      # the remaining ids itself, so we avoid issuing a duplicate scan here.
+      #
+      # Returns an Array<Ci::Pipeline>.
       class BulkByIdLookup
-        def initialize(ids)
+        def initialize(ids, fallback: true)
           @ids = Array.wrap(ids).compact.uniq
+          @fallback = fallback
         end
 
         def execute
-          return {} if ids.empty?
+          return [] if ids.empty?
 
           found = find_in_partitions
-          @missing_ids = ids - found.keys
-          found.merge!(full_scan)
-          found
+          return found unless fallback
+
+          @missing_ids = ids - found.map(&:id)
+          found + full_scan
         end
 
         private
 
-        attr_reader :ids, :missing_ids
+        attr_reader :ids, :missing_ids, :fallback
 
-        # rubocop:disable CodeReuse/ActiveRecord -- partition-pruning queries are intentionally co-located here
         def find_in_partitions
           partition_ids = PartitionCache.partition_ids_for(ids)
 
           if partition_ids.empty?
             log_cache_miss
-            return {}
+            return []
           end
 
-          ::Ci::Pipeline.where(id: ids, partition_id: partition_ids).index_by(&:id)
+          ::Ci::Pipeline.in_partition(partition_ids).id_in(ids).to_a
         end
 
         def full_scan
-          return {} if missing_ids.empty?
+          return [] if missing_ids.empty?
 
           log_full_table_scan
 
-          ::Ci::Pipeline.where(id: missing_ids).index_by(&:id)
+          ::Ci::Pipeline.id_in(missing_ids).to_a
         end
-        # rubocop:enable CodeReuse/ActiveRecord
 
         def log_cache_miss
           Gitlab::AppLogger.info(

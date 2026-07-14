@@ -46,29 +46,29 @@ describe('GlqlActions', () => {
   );
 
   describe('dropdown actions', () => {
-    it('emits viewSource event with title when clicked', async () => {
+    it('emits view-source event with title when clicked', async () => {
       createComponent({ modalTitle: 'Test Modal' });
 
       findDropdown().props('items')[0].action();
       await nextTick();
 
-      expect(wrapper.emitted('viewSource').at(0)).toEqual([{ title: 'Test Modal' }]);
+      expect(wrapper.emitted('view-source').at(0)).toEqual([{ title: 'Test Modal' }]);
     });
 
-    it('emits copySource event when clicked', async () => {
+    it('emits copy-source event when clicked', async () => {
       findDropdown().props('items')[1].action();
       await nextTick();
 
-      expect(wrapper.emitted('copySource').at(0)).toEqual([]);
+      expect(wrapper.emitted('copy-source').at(0)).toEqual([]);
     });
 
-    it('emits copyAsGFM event when copy contents is clicked', async () => {
+    it('emits copy-as-gfm event when copy contents is clicked', async () => {
       createComponent({ showCopyContents: true });
 
       findDropdown().props('items')[2].action();
       await nextTick();
 
-      expect(wrapper.emitted('copyAsGFM').at(0)).toEqual([]);
+      expect(wrapper.emitted('copy-as-gfm').at(0)).toEqual([]);
     });
 
     it('emits reload event when clicked', async () => {

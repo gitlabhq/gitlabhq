@@ -30,7 +30,11 @@ module WorkItems
             promoted_to_epic_id: work_item.promoted_to_epic_id,
             upvotes_count: work_item.upvotes_count,
             blocking_issues_count: work_item.blocking_issues_count,
-            work_item_type: target_work_item_type,
+            # Use `persistable_id` directly: the `work_item_type=` setter resolves via a
+            # namespace-scoped Provider, but `namespace_id` is not set yet at this point,
+            # so it cannot resolve non-converted custom types. `validate_work_item_type_id`
+            # re-validates at save time.
+            work_item_type_id: target_work_item_type&.persistable_id,
             project_id: project&.id,
             namespace_id: target_namespace.id,
             title: work_item.title,

@@ -63,7 +63,7 @@ flowchart TD
 | **CI Job Token** | Automatic | Very limited ([specific endpoints only](../ci/jobs/ci_job_token.md#job-token-access)) | Built-in logs | Limited pipeline API access | All tiers |
 | **Project Access Token** | Manual/API | Single project | Email notifications | Single-project automation | Premium+ |
 | **Group Access Token** | Manual/API | Group + subgroups/projects (**HIGH RISK**) | Email notifications | **Rarely recommended** - use Service Account instead | Free+ (Self-managed) |
-| **Service Account PAT** | Manual/API | **Selective project/group membership** | Email possible | Multi-project with precise control | Premium+ |
+| **Service Account PAT** | Manual/API | **Selective project/group membership** | Email possible | Multi-project with precise control | Free+ (except CE) |
 | **Bot User PAT** | Manual only | User-level permissions | Manual setup required | Legacy/fallback option | All tiers |
 
 ## When to use each token type
@@ -151,7 +151,7 @@ See the [service accounts documentation](../user/profile/service_accounts.md) fo
 **Avoid when:**
 
 - Simpler scoped tokens meet the requirements
-- Don't have Premium+ license
+- Running GitLab Community Edition (CE), where service accounts are not available
 - Cannot manage service accounts at org level
 
 ### Bot User PAT (Legacy)

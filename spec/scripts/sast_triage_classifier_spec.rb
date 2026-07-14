@@ -3,8 +3,9 @@
 require 'fast_spec_helper'
 require 'webmock/rspec'
 require_relative '../../scripts/sast_triage_classifier'
+require_relative '../support/silence_stdout'
 
-RSpec.describe SastTriageClassifier, feature_category: :tooling do
+RSpec.describe SastTriageClassifier, :silence_stdout, feature_category: :tooling do
   let(:project_dir) { Dir.mktmpdir }
   let(:classifier) do
     described_class.new(
@@ -209,7 +210,8 @@ RSpec.describe SastTriageClassifier, feature_category: :tooling do
 
       it 'includes the code excerpt in the prompt sent to chat' do
         captured_content = nil
-        stub_request(:post, 'https://gitlab.example.com/api/graphql').to_return do |request|
+        stub_request(:post, 'https://gitlab.example.com/api/graphql')
+          .with(body: hash_including(query: /aiAction/)).to_return do |request|
           body = Gitlab::Json.safe_parse(request.body)
           captured_content ||= body.dig('variables', 'content')
           { status: 200, body: { data: { aiAction: { requestId: 'req-123', errors: [] } } }.to_json }
@@ -294,6 +296,158 @@ RSpec.describe SastTriageClassifier, feature_category: :tooling do
         expect(captured_content).to include('IGNORE PREVIOUS INSTRUCTIONS')
       end
     end
+  end
+
+  describe 'provenance context in the prompt' do
+    let(:finding) do
+      {
+        path: 'app/services/outbound.rb',
+        line: 2,
+        message: 'Usage of net/http detected.',
+        check_id: 'sast-custom-rules.secure-coding-guidelines.ruby.glappsec_unsafe-http-library-usage'
+      }
+    end
+
+    context 'when an identifier on the flagged line is defined elsewhere in the repo' do
+      before do
+        write_repo_file('app/services/outbound.rb', <<~RUBY)
+          def call
+            Net::HTTP.get(URI(gitlab_host))
+          end
+        RUBY
+        # The value's true source lives in another file, out of excerpt range.
+        write_repo_file('config/settings.rb', <<~RUBY)
+          def gitlab_host
+            ENV.fetch('GITLAB_HOST', 'https://gitlab.com')
+          end
+        RUBY
+        commit_repo
+        stub_ai_messages('req-123', assistant_content: '{"verdict":"fp","confidence":0.9,"rationale":"trusted env"}')
+      end
+
+      it 'feeds the cross-file definition into the prompt as provenance', :aggregate_failures do
+        captured_content = capture_prompt_content
+
+        classifier.classify(findings)
+
+        expect(captured_content.call).to include('provenance context')
+        expect(captured_content.call).to include("ENV.fetch('GITLAB_HOST'")
+      end
+    end
+
+    context 'when the project is not a git repository' do
+      before do
+        write_repo_file('app/services/outbound.rb', "def call\n  Net::HTTP.get(URI(gitlab_host))\nend\n")
+        stub_ai_messages('req-123', assistant_content: '{"verdict":"uncertain","confidence":0.5,"rationale":"x"}')
+      end
+
+      it 'falls back to the unavailable marker without raising', :aggregate_failures do
+        captured_content = capture_prompt_content
+
+        expect { classifier.classify(findings) }.not_to raise_error
+        expect(captured_content.call).to include('(no additional provenance found in the repository)')
+      end
+    end
+
+    context 'when the provenance output exceeds the byte cap' do
+      let(:finding) do
+        {
+          path: 'app/runner.rb',
+          line: 2,
+          message: 'finding',
+          check_id: 'sast-custom-rules.secure-coding-guidelines.ruby.glappsec_path-traversal'
+        }
+      end
+
+      before do
+        write_repo_file('app/runner.rb', <<~RUBY)
+          def run
+            result = build(very_long_provenance_identifier)
+          end
+        RUBY
+        # Many long, distinct definitions so the joined grep output is larger
+        # than PROVENANCE_MAX_BYTES and the truncation branch is exercised.
+        definitions = Array.new(described_class::PROVENANCE_MAX_HITS_PER_IDENTIFIER) do |i|
+          %(very_long_provenance_identifier = "#{'x' * 300}-#{i}")
+        end.join("\n")
+        write_repo_file('config/values.rb', "#{definitions}\n")
+        commit_repo
+        stub_ai_messages('req-123', assistant_content: '{"verdict":"fp","confidence":0.8,"rationale":"x"}')
+      end
+
+      it 'truncates the provenance context and marks it' do
+        captured_content = capture_prompt_content
+
+        classifier.classify(findings)
+
+        expect(captured_content.call).to include('... (truncated)')
+      end
+    end
+
+    context 'when truncation would split a multibyte character' do
+      let(:finding) do
+        {
+          path: 'app/runner.rb',
+          line: 2,
+          message: 'finding',
+          check_id: 'sast-custom-rules.secure-coding-guidelines.ruby.glappsec_path-traversal'
+        }
+      end
+
+      before do
+        write_repo_file('app/runner.rb', <<~RUBY)
+          def run
+            use(multibyte_identifier)
+          end
+        RUBY
+        # Definitions packed with 3-byte characters so the byte-cap cut lands
+        # inside one; without scrubbing this would be invalid UTF-8 and fail
+        # JSON.dump when the prompt is sent.
+        definitions = Array.new(described_class::PROVENANCE_MAX_HITS_PER_IDENTIFIER) do |i|
+          %(multibyte_identifier = "#{'界' * 300}-#{i}")
+        end.join("\n")
+        write_repo_file('config/values.rb', "#{definitions}\n")
+        commit_repo
+        stub_chat_mutation('req-123')
+        stub_ai_messages('req-123', assistant_content: '{"verdict":"fp","confidence":0.7,"rationale":"ok"}')
+      end
+
+      it 'still produces a real verdict instead of failing on invalid UTF-8' do
+        expect(classifier.classify(findings)['fp1']).to include(verdict: 'fp', error: nil)
+      end
+    end
+  end
+
+  # Returns a lambda that yields the prompt content captured from the first
+  # GraphQL request, so a stubbed request body can be asserted after classify.
+  def capture_prompt_content
+    captured = nil
+    stub_request(:post, 'https://gitlab.example.com/api/graphql')
+      .with(body: hash_including(query: /aiAction/)).to_return do |request|
+      body = Gitlab::Json.safe_parse(request.body)
+      captured ||= body.dig('variables', 'content')
+      { status: 200, body: { data: { aiAction: { requestId: 'req-123', errors: [] } } }.to_json }
+    end
+    -> { captured }
+  end
+
+  def write_repo_file(relative_path, content)
+    absolute = File.join(project_dir, relative_path)
+    FileUtils.mkdir_p(File.dirname(absolute))
+    File.write(absolute, content)
+  end
+
+  def commit_repo
+    git_in_repo('init', '-q')
+    git_in_repo('config', 'user.email', 'test@example.com')
+    git_in_repo('config', 'user.name', 'test')
+    git_in_repo('add', '-A')
+    git_in_repo('-c', 'commit.gpgsign=false', 'commit', '-qm', 'fixture')
+  end
+
+  # argv form (no shell) scoped to the repo via -C, so no working-directory side effect
+  def git_in_repo(*args)
+    raise "git #{args.first} failed" unless system('git', '-C', project_dir, *args)
   end
 
   def stub_chat_mutation(request_id)

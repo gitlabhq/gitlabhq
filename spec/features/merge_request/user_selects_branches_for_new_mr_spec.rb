@@ -166,6 +166,10 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
         click_link 'Pipelines'
 
         expect(page).to have_content "##{pipeline.id}"
+
+        within('.merge-request-tabs') do
+          expect(page).to have_link('Pipelines 1')
+        end
       end
     end
   end

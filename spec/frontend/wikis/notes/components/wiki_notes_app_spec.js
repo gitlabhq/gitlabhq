@@ -120,7 +120,6 @@ describe('WikiNotesApp', () => {
         };
       },
       provide: {
-        containerId: noteableId,
         noteCount: 5,
         ...provideData,
       },

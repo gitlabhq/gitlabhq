@@ -8,7 +8,7 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
   let(:service) { described_class.new(project, user) }
 
   shared_examples_for 'stopping environment' do
-    let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :private, :repository) }
     let_it_be(:developer) { create(:user, developer_of: project) }
     let_it_be(:reporter) { create(:user, reporter_of: project) }
 
@@ -106,7 +106,7 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
   end
 
   describe '#execute_for_branch' do
-    let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :private, :repository) }
     let_it_be(:user) { create(:user) }
 
     context 'when environment with review app exists' do
@@ -204,7 +204,7 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
     subject { service.execute_for_merge_request_pipeline(merge_request) }
 
     let_it_be_with_reload(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
-    let_it_be(:project, freeze: false) { merge_request.project }
+    let_it_be_with_reload(:project) { merge_request.project }
     let_it_be(:user) { create(:user) }
 
     let(:pipeline) do

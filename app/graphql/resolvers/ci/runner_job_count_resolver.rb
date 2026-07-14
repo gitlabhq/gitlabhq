@@ -34,6 +34,7 @@ module Resolvers
         runners_tbl = ::Ci::Runner.arel_table
         lateral_query = ::Ci::Build.select(1).where(builds_tbl['runner_id'].eq(runners_tbl['id']))
         lateral_query = lateral_query.where(status: statuses) if statuses
+        lateral_query = lateral_query.where(partition_id: recent_partition_ids) if bound_to_recent_partitions?
         # We limit to 1 above the JOB_COUNT_LIMIT to indicate that more items exist after JOB_COUNT_LIMIT
         lateral_query = lateral_query.limit(::Types::Ci::RunnerType::JOB_COUNT_LIMIT + 1)
         ::Ci::Runner.joins("JOIN LATERAL (#{lateral_query.to_sql}) builds_with_limit ON true")
@@ -42,6 +43,14 @@ module Resolvers
           .group(:id)
           .index_by(&:id)
         # rubocop: enable CodeReuse/ActiveRecord
+      end
+
+      def bound_to_recent_partitions?
+        Feature.enabled?(:runner_job_count_recent_partitions, Feature.current_request)
+      end
+
+      def recent_partition_ids
+        Gitlab::SafeRequestStore.fetch(:runner_job_count_recent_partition_ids) { ::Ci::Partition.recent_ids }
       end
     end
   end

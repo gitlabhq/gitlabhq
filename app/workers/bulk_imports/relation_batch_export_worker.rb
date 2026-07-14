@@ -32,13 +32,16 @@ module BulkImports
 
       return unless batch
 
-      portable = batch.export.portable
+      export = batch.export
+      portable = export.portable
 
       Gitlab::ErrorTracking.track_exception(
         exception,
         portable_id: portable.id,
         portable_type: portable.class.name,
-        offline_export_id: batch.export.offline_export_id
+        relation: export.relation,
+        offline_export_id: export.offline_export_id,
+        importer: export.import_source
       )
 
       batch.update!(status_event: 'fail_op', error: exception.message.truncate(255))

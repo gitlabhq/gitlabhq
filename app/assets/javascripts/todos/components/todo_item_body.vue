@@ -21,11 +21,14 @@ import {
   TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON,
   DUO_ACCESS_GRANTED_ACTIONS,
   TODO_ACTION_TYPE_DUO_WORKFLOW_INPUT_REQUIRED,
+  TODO_NOTE_PREVIEW_SAFE_HTML_CONFIG,
 } from '../constants';
 import TodoItemTitle from './todo_item_title.vue';
 import TodoItemTitleHiddenBySaml from './todo_item_title_hidden_by_saml.vue';
 
 export default {
+  safeHtmlConfig: TODO_NOTE_PREVIEW_SAFE_HTML_CONFIG,
+  name: 'TodoItemBody',
   components: {
     GlLink,
     GlAvatar,
@@ -51,7 +54,7 @@ export default {
       if (!this.todo.note) {
         return null;
       }
-      return this.todo.note.bodyFirstLineHtml.replace(/(<\/?)p>/g, '$1span>');
+      return this.todo.note.bodyFirstLineHtml;
     },
     showAuthorOnNote() {
       return (
@@ -222,7 +225,7 @@ export default {
         <span v-if="actionName" data-testid="todo-action-name-content">
           {{ actionName }}
         </span>
-        <span v-if="noteText" v-safe-html="noteText"></span>
+        <span v-if="noteText" v-safe-html:[$options.safeHtmlConfig]="noteText"></span>
       </div>
     </div>
   </div>

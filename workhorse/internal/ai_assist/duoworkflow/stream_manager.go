@@ -26,6 +26,25 @@ var errUsageQuotaExceededError = errors.New("usage quota exceeded")
 // a StopWorkflowRequest and tears down the workflow.
 var errStreamUnavailable = errors.New("stream unavailable")
 
+// errInvalidRequest is returned by Recv when DWS closes the gRPC stream
+// with an InvalidArgument status code. This happens when a client reconnects
+// to a workflow that is paused at a stable boundary (INPUT_REQUIRED,
+// PLAN_APPROVAL_REQUIRED, TOOL_CALL_APPROVAL_REQUIRED) with an empty goal.
+// The server signals "your reconnect was rejected due to invalid input; the
+// session is still paused".
+var errInvalidRequest = errors.New("invalid request: workflow rejected the reconnect due to invalid input")
+
+// invalidRequestError carries the DWS gRPC status message for an InvalidArgument
+// rejection while still matching errInvalidRequest via errors.Is. This lets the
+// caller both detect the case and forward the clean, human-readable status
+// message to the WebSocket close frame, instead of the full wrapped error chain
+// which would overflow the 125-byte control-frame limit and get dropped.
+type invalidRequestError struct{ msg string }
+
+func (e *invalidRequestError) Error() string { return e.msg }
+
+func (e *invalidRequestError) Is(target error) bool { return target == errInvalidRequest }
+
 type streamManager struct {
 	wf                 workflowStream
 	client             *Client
@@ -193,6 +212,17 @@ func (sm *streamManager) Recv() (*pb.Action, error) {
 		// from other gRPC errors.
 		if grpcCode == codes.Unavailable {
 			return nil, fmt.Errorf("failed to read a gRPC message: %w", errStreamUnavailable)
+		}
+
+		// InvalidArgument means the client reconnected to a workflow that is
+		// paused at a stable boundary with an empty goal. Return an error that
+		// carries only the DWS status message (not the full wrapped chain) so
+		// the caller can detect the case via errors.Is(err, errInvalidRequest)
+		// while forwarding a close reason that fits the 125-byte control-frame
+		// limit. Forwarding the wrapped err.Error() here overflowed that limit
+		// and caused the 4400 close frame to be silently dropped.
+		if grpcCode == codes.InvalidArgument {
+			return nil, &invalidRequestError{msg: status.Convert(err).Message()}
 		}
 
 		return nil, fmt.Errorf("failed to read a gRPC message: %w", err)

@@ -15,8 +15,8 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::CreateService, fe
 
     status = incident.escalation_status
 
-    expect(status.policy_id).to eq(nil)
-    expect(status.escalations_started_at).to eq(nil)
+    expect(status.policy_id).to be_nil
+    expect(status.escalations_started_at).to be_nil
     expect(status.status_name).to eq(:triggered)
   end
 

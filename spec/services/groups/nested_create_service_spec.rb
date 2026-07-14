@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Groups::NestedCreateService, feature_category: :groups_and_projects do
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:organization, freeze: false) { create(:organization, users: [user]) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:organization) { create(:organization, users: [user]) }
   let(:visibility_level) { Gitlab::CurrentSettings.current_application_settings.default_group_visibility }
 
   subject(:service) { described_class.new(user, params) }

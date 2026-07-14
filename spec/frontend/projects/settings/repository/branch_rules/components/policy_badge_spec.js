@@ -8,9 +8,6 @@ describe('PolicyBadge', () => {
   const createComponent = (props = {}) => {
     wrapper = shallowMount(PolicyBadge, {
       propsData: props,
-      provide: {
-        securityPoliciesPath: '/security/policies',
-      },
     });
   };
 

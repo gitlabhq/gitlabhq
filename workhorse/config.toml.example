@@ -5,6 +5,11 @@
 
 [redis]
 URL = "unix:/home/git/gitlab/redis/redis.socket"
+# Optional: Redis 6+ ACL credentials for the primary instance. Username and
+# Password also apply to the primary when Sentinel is used, where the URL is
+# not consulted for credentials.
+#   username = "redis-user"
+#   password = "redis-password"
 # Optional: Sentinel configuration for Redis high availability
 #   sentinel = ["redis://sentinel1.example.com:26379", "redis://sentinel2.example.com:26379"]
 #   sentinel_master = "mymaster"

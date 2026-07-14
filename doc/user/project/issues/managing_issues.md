@@ -670,7 +670,7 @@ The following sections describe how to work with the issue list.
 
 {{< history >}}
 
-- OR filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags/_index.md) named `or_issuable_queries`. Disabled by default.
+- OR filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `or_issuable_queries`. Disabled by default.
 - OR filtering [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
 - OR filtering [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/296031) in GitLab 17.0. Feature flag `or_issuable_queries` removed.
 - Filtering the list of issues by custom status or the parent item [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/520791) in GitLab 18.7.
@@ -748,7 +748,7 @@ It's a limitation of PostgreSQL full text search.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `issues_list_drawer`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `issues_list_drawer`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/463829) in GitLab 18.6. Feature flag `issues_list_drawer` removed.
 
 {{< /history >}}
@@ -909,7 +909,7 @@ quick actions.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543862) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `work_item_status_feature_flag`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543862) in GitLab 18.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `work_item_status_feature_flag`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/521286) in GitLab 18.4. Feature flag `work_item_status_feature_flag` removed.
 
 {{< /history >}}

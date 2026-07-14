@@ -41,7 +41,8 @@ module Gitlab
       :kubernetes_agent_id,
       :auth_fail_token_type,
       :auth_fail_auth_header_type,
-      :mvcc_manifest
+      :mvcc_manifest,
+      :duo_workflow_id
     ].freeze
     private_constant :KNOWN_KEYS
 
@@ -52,7 +53,8 @@ module Gitlab
       :http_router_rule_action,
       :http_router_rule_type,
       :auth_fail_token_type,
-      :auth_fail_auth_header_type
+      :auth_fail_auth_header_type,
+      :duo_workflow_id
     ].freeze
     private_constant :WEB_ONLY_KEYS
 
@@ -84,7 +86,8 @@ module Gitlab
       Attribute.new(:kubernetes_agent, ::Clusters::Agent),
       Attribute.new(:auth_fail_token_type, String),
       Attribute.new(:auth_fail_auth_header_type, String),
-      Attribute.new(:mvcc_manifest, String)
+      Attribute.new(:mvcc_manifest, String),
+      Attribute.new(:duo_workflow_id, String)
     ].freeze
     private_constant :APPLICATION_ATTRIBUTES
 
@@ -165,6 +168,7 @@ module Gitlab
         assign_hash_if_value(hash, :auth_fail_token_type)
         assign_hash_if_value(hash, :auth_fail_auth_header_type)
         assign_hash_if_value(hash, :mvcc_manifest)
+        assign_hash_if_value(hash, :duo_workflow_id)
 
         hash[:user] = -> { username } if include_user?
         hash[Labkit::Fields::GL_USER_ID] = -> { user_id } if include_user?
@@ -239,11 +243,14 @@ module Gitlab
     end
 
     def include_client?
-      # Don't overwrite an existing more specific client id with an `ip/` one.
-      original_client_id = self.class.current_context_attribute(:client_id).to_s
-      return false if original_client_id.starts_with?('user/') || original_client_id.starts_with?('runner/')
+      return false unless include_user? || set_values.include?(:runner) || set_values.include?(:remote_ip)
 
-      include_user? || set_values.include?(:runner) || set_values.include?(:remote_ip)
+      # Don't overwrite an existing more specific client id with an `ip/` one.
+      # The check is intentionally last because evaluating the existing client_id
+      # lambda transitively memoizes the user lazy-attribute reader; skipping it
+      # when we already know the result is false avoids that side effect.
+      original_client_id = self.class.current_context_attribute(:client_id).to_s
+      !original_client_id.starts_with?('user/') && !original_client_id.starts_with?('runner/')
     end
 
     def include_user?

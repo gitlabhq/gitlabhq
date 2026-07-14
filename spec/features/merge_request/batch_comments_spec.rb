@@ -28,7 +28,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       expect(find('.draft-note')).to have_content('Line is wrong')
 
-      expect(first('[data-testid="review-drawer-toggle"] .gl-badge')).to have_content('1')
+      expect(first('[data-testid="review-drawer-toggle"] .gl-button-count')).to have_content('1')
     end
 
     it 'publishes review' do
@@ -128,7 +128,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
         expect(find('.new .draft-note')).to have_content('Line is wrong')
         expect(find('.old .draft-note')).to have_content('Another wrong line')
 
-        expect(first('[data-testid="review-drawer-toggle"] .gl-badge')).to have_content('2')
+        expect(first('[data-testid="review-drawer-toggle"] .gl-button-count')).to have_content('2')
       end
     end
   end

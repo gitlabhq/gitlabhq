@@ -1,6 +1,6 @@
 ---
 source_checksum: 1bc92ed264b6835e
-distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
+distilled_at_sha: 56d6e7df2193336003a2368db3b4c1ae9cb6f911
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -47,6 +47,8 @@ distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 - Always create a fresh Pinia instance per test case; DO NOT reuse Pinia instances across test cases
 - Register `PiniaVuePlugin` and provide the Pinia instance explicitly to `shallowMount`/`mount` in component tests
 - Create stores before rendering components in tests (to avoid Vue 3 compat issues)
+- In component tests using `createTestingPinia` with stubbed actions, set initial store state directly (e.g., `useMyStore().someState = { value: 1 }`); stubbed actions are no-ops and cannot mutate state (this is a testing-mechanics rule, not store-design advice — in app code, prefer actions to set state)
+- In component tests, stub async actions that return promises explicitly (e.g., `useMyStore().someAsyncAction.mockResolvedValue()`) since `createTestingPinia` stubs do not return promises by default
 
 ### JavaScript Style
 
@@ -69,7 +71,7 @@ distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 
 ### TypeScript (satellite projects only)
 
-- Set `"strict": true` in `tsconfig.json`
+- Set `"strict": true` and `"skipLibCheck": true` in `tsconfig.json`; place TypeScript-specific ESLint rules in an `overrides` block for `**/*.ts` files
 - DO NOT use `any`; use `unknown` with type narrowing or well-defined types
 - DO NOT cast with `<>` or `as`; use type predicates instead
 - Prefer `interface` over `type` for new structures
@@ -100,12 +102,15 @@ distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 - Use namespaces (PascalCase, pipe-separated) for all UI strings; prefer granular subcategories (e.g., `WorkItemsStatusConfigure|Add to`) over broad ones (e.g., `WorkItems|Add to`)
 - DO NOT use `downcase` or `toLocaleLowerCase()` on translatable strings; let translators control casing
 - Always pass string literals to translation helpers; DO NOT pass variables, function calls, or template literals
-- Extract translation strings to a static `i18n` object on the Vue component (e.g., `$options.i18n.myString`) instead of inlining `s__()`/`__()` calls directly in `<template>`
 - In Jest tests, DO NOT wrap expected strings in `__()` or `s__()`; use plain string literals (i18n is mocked in the test environment)
 - Run `tooling/bin/gettext_extractor locale/gitlab.pot` after adding new translatable strings
 - Keep translations dynamic (in methods, not class-level constants or memoized class methods)
 - DO NOT use variables as arguments to translation helpers when the string can be made unique per case; create separate strings instead
 - DO NOT add errors to specific model attributes when the error message is a complete sentence; add to `:base` instead so Rails does not prepend the humanized attribute name
+- Place translations close to where they are used
+- Prefer `__()` / `s__()` calls over module-level constants (e.g., `const MY_STRING = __('...')`)
+- DO NOT import translation constants into specs
+- When sharing a translation across multiple uses in a Vue SFC, define it in the component's `$options.i18n` object rather than as a module-level constant
 
 ### Vue Testing
 
@@ -136,6 +141,7 @@ distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 - Frontend or feature tests exist to prevent premature code removal
 - Tests cover experiment variants and tracking behavior
 - Temporary assets (icons/illustrations) are in `/ee/app/assets/images` or `/app/assets/images`, not Pajamas library
+
 
 ## Authoritative sources
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin visits dashboard' do
+RSpec.describe 'admin visits dashboard', feature_category: :tooling do
   include ProjectForksHelper
   include VersionCheckHelpers
 

@@ -2,26 +2,34 @@
 
 module IssueLinks
   class CreateService < IssuableLinks::CreateService
+    extend ::Gitlab::Utils::Override
     include IncidentManagement::UsageData
+    include Gitlab::Utils::StrongMemoize
 
     def success(...)
       GraphqlTriggers.work_item_updated(issuable)
       super
     end
 
-    def linkable_issuables(issues)
-      @linkable_issuables ||= issues.select { |issue| can?(current_user, :admin_issue_link, issue) }
+    override :linkable_issuables
+    def linkable_issuables
+      referenced_issuables.select { |issue| can?(current_user, :admin_issue_link, issue) }
     end
+    strong_memoize_attr :linkable_issuables
 
+    override :previous_related_issuables
     def previous_related_issuables
-      @related_issues ||= issuable.related_issues(authorize: false).to_a
+      issuable.related_issues(authorize: false).to_a
     end
+    strong_memoize_attr :previous_related_issuables
 
     private
 
-    def readonly_issuables(issuables)
-      @readonly_issuables ||= issuables.select { |issuable| issuable.readable_by?(current_user) }
+    override :readonly_issuables
+    def readonly_issuables
+      referenced_issuables.select { |issuable| issuable.readable_by?(current_user) }
     end
+    strong_memoize_attr :readonly_issuables
 
     def track_event
       track_incident_action(current_user, issuable, :incident_relate)
@@ -29,10 +37,6 @@ module IssueLinks
 
     def link_class
       IssueLink
-    end
-
-    def issuables_no_permission_error_message
-      _("Couldn't link issues. You must have at least the Guest role in both projects.")
     end
 
     def extractor_context

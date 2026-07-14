@@ -4,6 +4,7 @@ import ImageViewer from '../../../content_viewer/viewers/image_viewer.vue';
 import { pixeliseValue } from '../../../lib/utils/dom_utils';
 
 export default {
+  name: 'SwipeViewer',
   components: {
     ImageViewer,
   },

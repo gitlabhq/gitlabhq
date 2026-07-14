@@ -52,6 +52,7 @@ export default {
       default: 0,
     },
   },
+  emits: ['setFilters'],
   data() {
     return {
       activeBoardItem: undefined,
@@ -143,7 +144,7 @@ export default {
 
       // Legacy types need to be shown in the legacy view until they're migrated to work items
       if (type?.useIssueView) {
-        visitUrl(this.item.webUrl);
+        visitUrl(this.item.webPath);
         return;
       }
 
@@ -253,7 +254,7 @@ export default {
             'gl-border-l-4 gl-pl-4 gl-border-l-solid': itemColor,
           },
         ]"
-        :href="item.webUrl"
+        :href="item.webPath"
         :aria-label="createIssueLabelwithNumber()"
         :data-col-index="columnIndex"
         :data-row-index="rowIndex"

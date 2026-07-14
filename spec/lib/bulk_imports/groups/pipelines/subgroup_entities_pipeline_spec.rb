@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, feature_category: :importers do
   let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:group, freeze: false) { create(:group, path: 'group') }
-  let_it_be(:parent, freeze: false) { create(:group, name: 'Imported Group', path: 'imported-group') }
+  let_it_be(:parent, freeze: false) { create(:group, name: 'Imported Group', path: 'imported-group', owners: [user]) }
   let_it_be(:parent_entity, freeze: false) { create(:bulk_import_entity, destination_namespace: parent.full_path, group: parent) }
   let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: parent_entity) }
   let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
@@ -26,8 +26,6 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, feature
       end
 
       allow(subject).to receive(:set_source_objects_counter)
-
-      parent.add_owner(user)
     end
 
     it 'creates entities for the subgroups' do

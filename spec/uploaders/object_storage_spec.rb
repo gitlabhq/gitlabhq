@@ -383,7 +383,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
           include_examples "updates the underlying <mounted>_store"
 
           it "local file does not exist" do
-            expect(File.exist?(uploader.path)).to eq(false)
+            expect(File.exist?(uploader.path)).to be(false)
           end
 
           it "remote file exist" do
@@ -394,7 +394,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
             subject
 
             expect(uploader.object_store).to eq(new_store)
-            expect(File.exist?(uploader.path)).to eq(true)
+            expect(File.exist?(uploader.path)).to be(true)
           end
         end
 
@@ -403,7 +403,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
           let!(:current_path) { uploader.path }
 
           it "file does exist" do
-            expect(File.exist?(current_path)).to eq(true)
+            expect(File.exist?(current_path)).to be(true)
           end
 
           context 'when storage is disabled' do
@@ -432,7 +432,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
             it "does delete original file" do
               subject
 
-              expect(File.exist?(current_path)).to eq(false)
+              expect(File.exist?(current_path)).to be(false)
             end
 
             context 'when subject save fails' do
@@ -443,7 +443,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
               it "original file is not removed" do
                 expect { subject }.to raise_error(/exception/)
 
-                expect(File.exist?(current_path)).to eq(true)
+                expect(File.exist?(current_path)).to be(true)
               end
             end
           end
@@ -503,7 +503,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
   end
 
   describe '#fog_credentials' do
-    let(:connection) { GitlabSettings::Options.build("provider" => "AWS") }
+    let(:connection) { Gitlab::Configs.build_options("provider" => "AWS") }
 
     before do
       allow(uploader_class).to receive(:options) do
@@ -519,7 +519,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
   describe '#fog_public' do
     subject { uploader.fog_public }
 
-    it { is_expected.to eq(nil) }
+    it { is_expected.to be_nil }
   end
 
   describe '#fog_attributes' do
@@ -536,7 +536,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
         }
       end
 
-      let(:options) { GitlabSettings::Options.build(raw_options) }
+      let(:options) { Gitlab::Configs.build_options(raw_options) }
 
       before do
         allow(uploader_class).to receive(:options) do
@@ -641,7 +641,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
           expect(subject[:RemoteObject][:GetURL]).to include(upload_path)
           expect(subject[:RemoteObject][:DeleteURL]).to include(upload_path)
           expect(subject[:RemoteObject][:StoreURL]).to include(upload_path)
-          expect(subject[:RemoteObject][:SkipDelete]).to eq(false)
+          expect(subject[:RemoteObject][:SkipDelete]).to be(false)
 
           ::Gitlab::Redis::SharedState.with do |redis|
             expect(redis.hlen(ObjectStorage::PendingDirectUpload::KEY)).to be_zero
@@ -712,11 +712,11 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
               expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to include(escaped_path)
             end
 
-            expect(subject[:RemoteObject][:SkipDelete]).to eq(true)
+            expect(subject[:RemoteObject][:SkipDelete]).to be(true)
 
             expect(
               ObjectStorage::PendingDirectUpload.exists?(uploader_class.storage_location_identifier, final_store_path)
-            ).to eq(true)
+            ).to be(true)
           end
 
           context 'and bucket prefix is configured' do
@@ -751,7 +751,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
               expect(
                 ObjectStorage::PendingDirectUpload.exists?(uploader_class.storage_location_identifier, final_store_path)
-              ).to eq(true)
+              ).to be(true)
             end
           end
         end
@@ -777,11 +777,11 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
               expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to include(override_path)
             end
 
-            expect(subject[:RemoteObject][:SkipDelete]).to eq(true)
+            expect(subject[:RemoteObject][:SkipDelete]).to be(true)
 
             expect(
               ObjectStorage::PendingDirectUpload.exists?(uploader_class.storage_location_identifier, override_path)
-            ).to eq(true)
+            ).to be(true)
           end
         end
       end
@@ -1418,8 +1418,8 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
     let(:file) { double(read: true, size: true, path: true) }
 
     it 'delegates read and size methods' do
-      expect(subject.read).to eq(true)
-      expect(subject.size).to eq(true)
+      expect(subject.read).to be(true)
+      expect(subject.size).to be(true)
     end
 
     it 'does not delegate path method' do

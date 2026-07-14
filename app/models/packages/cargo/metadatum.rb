@@ -8,6 +8,16 @@ module Packages
       belongs_to :package, class_name: 'Packages::Cargo::Package', inverse_of: :cargo_metadatum
       belongs_to :project
 
+      scope :for_project_and_normalized_name, ->(project, normalized_name) do
+        where(project_id: project.id, normalized_name: normalized_name)
+      end
+
+      scope :with_installable_package, -> do
+        joins(:package).merge(::Packages::Cargo::Package.installable)
+      end
+
+      scope :order_by_package_id_desc, -> { order(package_id: :desc) }
+
       validates :package, presence: true
       validates :index_content,
         json_schema: { filename: 'cargo_package_index_content', detail_errors: true, size_limit: 64.kilobytes }

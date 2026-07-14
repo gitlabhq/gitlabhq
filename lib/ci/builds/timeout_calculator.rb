@@ -6,7 +6,7 @@ module Ci
 
     class TimeoutCalculator
       def self.timeout_sources
-        Ci::BuildMetadata.timeout_sources
+        Ci::Build.timeout_sources
       end
 
       def initialize(build)

@@ -109,6 +109,92 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata, feature_category: 
       end
     end
 
+    context 'with a masked variable interpolated into the name' do
+      before do
+        create(:ci_variable, project: project, key: 'MASKED_VARIABLE', value: 'ThisIsMasked', masked: true)
+      end
+
+      let(:config) do
+        {
+          workflow: {
+            name: 'My masked value: $MASKED_VARIABLE'
+          },
+          rspec: { script: 'rspec' }
+        }
+      end
+
+      it 'masks the value in the pipeline name' do
+        run_chain
+
+        expect(pipeline.pipeline_metadata.name).not_to include('ThisIsMasked')
+      end
+    end
+
+    context 'with an unmasked variable interpolated into the name' do
+      before do
+        create(:ci_variable, project: project, key: 'UNMASKED_VARIABLE', value: 'ThisIsUnmasked', masked: false)
+      end
+
+      let(:config) do
+        {
+          workflow: {
+            name: 'My unmasked value: $UNMASKED_VARIABLE'
+          },
+          rspec: { script: 'rspec' }
+        }
+      end
+
+      it 'shows the value in the pipeline name' do
+        run_chain
+
+        expect(pipeline.pipeline_metadata.name).to include('ThisIsUnmasked')
+      end
+    end
+
+    context 'with a mix of masked and unmasked variables interpolated into the name' do
+      before do
+        create(:ci_variable, project: project, key: 'MASKED_VARIABLE', value: 'ThisIsMasked', masked: true)
+        create(:ci_variable, project: project, key: 'UNMASKED_VARIABLE', value: 'ThisIsUnmasked', masked: false)
+      end
+
+      let(:config) do
+        {
+          workflow: {
+            name: 'Masked: $MASKED_VARIABLE, unmasked: $UNMASKED_VARIABLE'
+          },
+          rspec: { script: 'rspec' }
+        }
+      end
+
+      it 'masks only the masked value in the pipeline name' do
+        run_chain
+
+        expect(pipeline.pipeline_metadata.name).not_to include('ThisIsMasked')
+        expect(pipeline.pipeline_metadata.name).to include('ThisIsUnmasked')
+      end
+    end
+
+    context 'with the same masked variable interpolated multiple times into the name' do
+      before do
+        create(:ci_variable, project: project, key: 'MASKED_VARIABLE', value: 'ThisIsMasked', masked: true)
+      end
+
+      let(:config) do
+        {
+          workflow: {
+            name: 'First: $MASKED_VARIABLE, second: $MASKED_VARIABLE'
+          },
+          rspec: { script: 'rspec' }
+        }
+      end
+
+      it 'masks all occurrences in the pipeline name' do
+        run_chain
+
+        expect(pipeline.pipeline_metadata.name).not_to include('ThisIsMasked')
+      end
+    end
+
     context 'with invalid name' do
       let(:config) do
         {

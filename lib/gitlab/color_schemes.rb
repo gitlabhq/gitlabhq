@@ -14,6 +14,7 @@ module Gitlab
         Scheme.new(3, s_('SynthaxHighlightingTheme|Solarized Light'), 'solarized-light'),
         Scheme.new(4, s_('SynthaxHighlightingTheme|Solarized Dark'),  'solarized-dark'),
         Scheme.new(5, s_('SynthaxHighlightingTheme|Monokai'),         'monokai'),
+        Scheme.new(7, s_('SynthaxHighlightingTheme|Dracula'),         'dracula'),
         Scheme.new(6, s_('SynthaxHighlightingTheme|None'),            'none')
       ]
     end

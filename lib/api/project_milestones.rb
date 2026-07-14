@@ -19,7 +19,8 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get a list of project milestones' do
+      desc 'List all project milestones' do
+        detail 'Lists all milestones for a specified project.'
         success Entities::Milestone
         tags ['milestones']
       end
@@ -33,7 +34,8 @@ module API
         list_milestones_for(user_project)
       end
 
-      desc 'Get a single project milestone' do
+      desc 'Retrieve a project milestone' do
+        detail 'Retrieves a specified project milestone.'
         success Entities::Milestone
         tags ['milestones']
       end
@@ -47,7 +49,8 @@ module API
         get_milestone_for(user_project)
       end
 
-      desc 'Create a new project milestone' do
+      desc 'Create a project milestone' do
+        detail 'Creates a project milestone.'
         success Entities::Milestone
         tags ['milestones']
       end
@@ -62,7 +65,8 @@ module API
         create_milestone_for(user_project)
       end
 
-      desc 'Update an existing project milestone' do
+      desc 'Update a project milestone' do
+        detail 'Updates a specified project milestone.'
         success Entities::Milestone
         tags ['milestones']
       end
@@ -76,7 +80,9 @@ module API
         update_milestone_for(user_project)
       end
 
-      desc 'Remove a project milestone' do
+      desc 'Delete a project milestone' do
+        detail 'Deletes a specified project milestone. Only for users with the Planner, Reporter, Developer, ' \
+          'Maintainer, or Owner role for the project.'
         tags ['milestones']
         success code: 204
       end
@@ -90,7 +96,8 @@ module API
         no_content!
       end
 
-      desc 'Get all issues for a single project milestone' do
+      desc 'List all issues for a project milestone' do
+        detail 'Lists all issues assigned to a specified project milestone.'
         success Entities::IssueBasic
         tags ['milestones']
       end
@@ -105,8 +112,8 @@ module API
         milestone_issuables_for(user_project, :issue)
       end
 
-      desc 'Get all merge requests for a single project milestone' do
-        detail 'This feature was introduced in GitLab 9.'
+      desc 'List all merge requests for a project milestone' do
+        detail 'Lists all merge requests assigned to a specified project milestone.'
         success Entities::MergeRequestBasic
         tags ['milestones']
       end
@@ -121,8 +128,9 @@ module API
         milestone_issuables_for(user_project, :merge_request)
       end
 
-      desc 'Promote a milestone to group milestone' do
-        detail 'This feature was introduced in GitLab 11.9'
+      desc 'Promote a project milestone to a group milestone' do
+        detail 'Promotes a specified project milestone to a group milestone. Only for users with the Planner, ' \
+          'Reporter, Developer, Maintainer, or Owner role for the group.'
         tags ['milestones']
       end
       route_setting :authorization, permissions: :promote_milestone, boundary_type: :project

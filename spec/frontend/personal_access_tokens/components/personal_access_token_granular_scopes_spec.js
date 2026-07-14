@@ -4,6 +4,7 @@ import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import PersonalAccessTokenGranularScopes from '~/personal_access_tokens/components/personal_access_token_granular_scopes.vue';
 import {
   mockGranularGroupScope,
+  mockGranularProjectScope,
   mockGranularUserScope,
   mockGranularInstanceScope,
 } from '../mock_data';
@@ -18,6 +19,7 @@ describe('PersonalAccessTokenGranularScopes', () => {
   };
 
   const findProjectAvatar = () => wrapper.findComponent(ProjectAvatar);
+  const findDescendantCounts = () => wrapper.findByTestId('descendant-counts');
   const findLinks = () => wrapper.findAllComponents(GlLink);
   const findIcons = () => wrapper.findAllComponents(GlIcon);
 
@@ -86,8 +88,8 @@ describe('PersonalAccessTokenGranularScopes', () => {
     });
 
     it('renders link to namespace', () => {
-      expect(findLinks().at(0).attributes('href')).toBe(mockGranularGroupScope.namespace.webUrl);
-      expect(findLinks().at(0).text()).toBe(mockGranularGroupScope.namespace.fullName);
+      expect(findLinks().at(0).attributes('href')).toBe(mockGranularGroupScope.group.webUrl);
+      expect(findLinks().at(0).text()).toBe(mockGranularGroupScope.group.fullPath);
     });
 
     it('renders group icon for namespace', () => {
@@ -96,32 +98,40 @@ describe('PersonalAccessTokenGranularScopes', () => {
       });
     });
 
-    it('renders multiple namespaces when multiple `SELECTED_MEMBERSHIPS` scopes are provided', () => {
-      const multipleScopes = [
-        mockGranularGroupScope,
-        {
-          ...mockGranularGroupScope,
-          namespace: {
-            id: 'gid://gitlab/Namespaces::ProjectNamespace/1',
-            fullName: 'My Project',
-            fullPath: 'my-project',
-            webUrl: 'https://gitlab.com/projects/my-project',
-            avatarUrl: '/avatar.png',
-          },
-        },
-      ];
+    it('renders descendant counts for a group scope', () => {
+      expect(findDescendantCounts().text()).toBe('2 subgroups, 5 projects');
+    });
 
-      createComponent({ scopes: multipleScopes });
+    it('does not render descendant counts when they are unavailable', () => {
+      createComponent({
+        scopes: [
+          {
+            ...mockGranularGroupScope,
+            group: {
+              ...mockGranularGroupScope.group,
+              projectsCount: null,
+              descendantGroupsCount: null,
+            },
+          },
+        ],
+      });
+
+      expect(findDescendantCounts().exists()).toBe(false);
+    });
+
+    it('renders multiple namespaces when multiple `SELECTED_MEMBERSHIPS` scopes are provided', () => {
+      createComponent({ scopes: [mockGranularGroupScope, mockGranularProjectScope] });
 
       expect(wrapper.findAllComponents(ProjectAvatar)).toHaveLength(2);
 
-      expect(findIcons().at(2).props()).toMatchObject({
-        name: 'project',
-      });
+      expect(findLinks().at(0).text()).toBe(mockGranularGroupScope.group.fullPath);
+      expect(findLinks().at(1).text()).toBe(mockGranularProjectScope.project.fullPath);
     });
 
     it('handles scope without namespace', () => {
-      createComponent({ scopes: [{ ...mockGranularGroupScope, namespace: null }] });
+      createComponent({
+        scopes: [{ ...mockGranularGroupScope, namespace: null, group: null, project: null }],
+      });
 
       expect(findProjectAvatar().exists()).toBe(false);
     });

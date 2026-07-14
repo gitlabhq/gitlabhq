@@ -15,7 +15,7 @@ title: Customize review instructions for the Agent Platform
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/545136) in GitLab 18.2 as a [beta](../../../policy/development_stages_support.md#beta) [with a flag](../../../administration/feature_flags/_index.md) named `duo_code_review_custom_instructions`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/545136) in GitLab 18.2 as a [beta](../../../policy/development_stages_support.md#beta) [with a feature flag](../../../administration/feature_flags/_index.md) named `duo_code_review_custom_instructions`. Disabled by default.
 - Feature flag `duo_code_review_custom_instructions` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199802) in GitLab 18.3.
 - Feature flag `duo_code_review_custom_instructions` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202262) in GitLab 18.4.
 - Union patterns (for example, `{rb,ts}`) in `fileFilters` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237952) in GitLab 19.1.
@@ -36,7 +36,7 @@ conventions for Go files.
 GitLab Duo appends your custom review instructions to its standard review criteria,
 instead of replacing them.
 
-Code Review Flow supports custom review instructions set for a specific project or for all projects within a group.
+Code Review Flow supports custom review instructions for a project, group, or instance.
 
 ## Configure custom review instructions for a project
 
@@ -181,8 +181,44 @@ To configure custom review instructions for a group:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
 1. In the left sidebar, select **Settings** > **General** > **GitLab Duo features**.
-1. Under **Custom review instructions for groups**, select the project that contains the
+1. Under **Customize code review**, select the project that contains the
    `.gitlab/duo/mr-review-instructions.yaml` file with your group's review instructions.
+1. Select **Save changes**.
+
+## Configure custom review instructions for an instance
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237573) in GitLab 19.1.
+
+{{< /history >}}
+
+On GitLab Self-Managed and GitLab Dedicated, you can define instance-wide custom review instructions
+by specifying a project to use as a template.
+The template project must contain a `.gitlab/duo/mr-review-instructions.yaml` file with review
+instructions that apply to every project on the instance.
+
+When GitLab Duo performs a code review, it combines instance instructions with the group and
+project instructions.
+
+Prerequisites:
+
+- Administrator access for the instance.
+- A project on the instance contains the custom review instructions that you want to use as a template.
+
+To configure custom review instructions for an instance:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Customize code review for all groups in this instance**, select the project that
+   contains the `.gitlab/duo/mr-review-instructions.yaml` file with your review instructions.
 1. Select **Save changes**.
 
 ## Reference files in instructions

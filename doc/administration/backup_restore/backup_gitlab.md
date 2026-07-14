@@ -57,7 +57,6 @@ This file includes:
 > [!warning]
 > You are highly advised to read about [storing configuration files](#storing-configuration-files) to back up those separately.
 
-- [Mattermost data](../../integration/mattermost/_index.md#back-up-gitlab-mattermost)
 - Redis (and thus Sidekiq jobs)
 - [Object storage](#object-storage) on Linux package (Omnibus) / Docker / Self-compiled installations
 - [Global server hooks](../server_hooks.md#create-global-server-hooks-for-all-repositories)
@@ -161,7 +160,7 @@ Provider-specific backup guides:
 
 - [Amazon S3 backups](https://docs.aws.amazon.com/aws-backup/latest/devguide/s3-backups.html)
 - [Google Cloud Storage Transfer Service](https://cloud.google.com/storage-transfer-service)
-- [Google Cloud Storage Object Versioning](https://cloud.google.com/storage/docs/object-versioning)
+- [Google Cloud Storage Object Versioning](https://docs.cloud.google.com/storage/docs/object-versioning)
 
 See also:
 
@@ -182,7 +181,7 @@ The backup command does not back up registry data when they are stored in Object
 
 #### Metadata database
 
-If you have enabled the [container registry metadata database](https://docs.gitlab.com/charts/charts/registry/metadata_database), you must configure access to the registry database during the backup. Follow the instructions for your GitLab installation to configure the required credentials:
+If you have enabled the [container registry metadata database](https://docs.gitlab.com/charts/charts/registry/metadata_database/), you must configure access to the registry database during the backup. Follow the instructions for your GitLab installation to configure the required credentials:
 
 - [Linux packaged instructions](https://docs.gitlab.com/omnibus/settings/backups/#container-registry-metadata-database-backup-credentials)
 - [GitLab Helm chart](https://docs.gitlab.com/charts/charts/gitlab/toolbox/#registry-metadata-database-credentials)
@@ -1600,17 +1599,50 @@ sudo -u git -H bundle exec rake gitlab:backup:create SKIP=repositories RAILS_ENV
 
 For manually backing up the Git repository data on disk, there are multiple possible strategies:
 
-- Use snapshots, such as the previous examples of Amazon EBS drive snapshots, or LVM snapshots + rsync.
 - Use [GitLab Geo](../geo/_index.md) and rely on the repository data on a Geo secondary site.
 - [Prevent writes and copy the Git repository data](#prevent-writes-and-copy-the-git-repository-data).
 - [Create an online backup by marking repositories as read-only (experimental)](#online-backup-through-marking-repositories-as-read-only-experimental).
+- Take [disk snapshots](#disk-snapshots) of the Gitaly storage disks.
+
+#### Disk snapshots
+
+Disk snapshots are a best-effort backup strategy in the event that:
+
+- The regular GitLab backup script can't be used.
+- You are using standalone Gitaly, and you can't mark all repositories as read-only
+  for the duration of the backup.
+- Other backup strategies like `rsync`, `tar`, or `scp` introduce too much latency.
+
+Before taking a disk snapshot, you must [place GitLab in a read-only state](../read_only_gitlab.md).
+Git ensures that files on disk remain physically consistent despite file system activity. While repository
+corruption is unlikely to occur, a Gitaly disk snapshot will likely be logically
+inconsistent with what the GitLab application expects. Matching a restored Gitaly snapshot
+with other GitLab components is difficult.
+
+Disk snapshots are only supported for standalone Gitaly nodes.
+Support for disk snapshots in Gitaly Cluster (Praefect) is being tracked in [issue 7128](https://gitlab.com/gitlab-org/gitaly/-/work_items/7128).
+
+The method of taking a disk snapshot depends on where the Gitaly node is deployed.
+All major cloud services provide a mechanism for taking snapshots of disks attached
+to live instances, so check the documentation for the cloud provider you use.
+
+Some customers [have advised](https://gitlab.com/gitlab-org/gitaly/-/work_items/1476)
+a hybrid approach, where two disk snapshots are taken at each backup interval. An
+initial snapshot is taken while Gitaly is actively serving traffic. This snapshot
+includes the larger of the two deltas and takes longer. After the first snapshot is
+taken, GitLab is put into maintenance mode and a second snapshot is taken which
+completes much faster. This strategy can reduce downtime, but GitLab does not use this
+approach internally.
+
+When restoring from a disk snapshot, it is necessary to verify the integrity of
+the restored repositories. `git-fsck(1)` can be used to perform this check. For
+more information, see [run a check using the command line](../repository_checks.md#run-a-check-using-the-command-line).
 
 #### Prevent writes and copy the Git repository data
 
 Git repositories must be copied in a consistent way. If repositories are copied
-during concurrent write operations, inconsistencies or corruption issues can
-occur. This can lead to repository corruption, missing commits, or incomplete
-backup data.
+during concurrent write operations, inconsistencies can occur. This can lead to
+logical corruption, missing commits, or incomplete backup data.
 
 To prevent writes to the Git repository data, there are two possible approaches:
 

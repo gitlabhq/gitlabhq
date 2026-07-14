@@ -9,6 +9,7 @@ import {
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { reportToSentry } from '~/ci/utils';
 import axios from '~/lib/utils/axios_utils';
+import { downloadableArtifactsProjectPipelinePath } from '~/lib/utils/path_helpers/pipelines';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { TRACKING_CATEGORIES } from '../../constants';
@@ -36,15 +37,11 @@ export default {
     GlLoadingIcon,
   },
   mixins: [Tracking.mixin()],
-  inject: {
-    artifactsEndpoint: {
-      default: '',
-    },
-    artifactsEndpointPlaceholder: {
-      default: '',
-    },
-  },
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
     pipelineId: {
       type: Number,
       required: true,
@@ -98,11 +95,9 @@ export default {
       this.hasError = false;
       this.isLoading = true;
 
-      // Replace the placeholder with the ID of the pipeline we are viewing
-      const endpoint = this.artifactsEndpoint.replace(
-        this.artifactsEndpointPlaceholder,
-        this.pipelineId,
-      );
+      const endpoint = downloadableArtifactsProjectPipelinePath(this.fullPath, this.pipelineId, {
+        format: 'json',
+      });
       return axios
         .get(endpoint)
         .then(({ data }) => {
@@ -169,14 +164,16 @@ export default {
       </gl-alert>
     </template>
 
-    <gl-loading-icon v-if="isLoading" class="gl-m-3" size="sm" />
-    <p
-      v-else-if="filteredArtifacts.length === 0"
-      class="gl-m-0 gl-px-4 gl-py-3 gl-text-subtle"
-      data-testid="artifacts-empty-message"
-    >
-      {{ $options.i18n.emptyArtifactsMessage }}
-    </p>
+    <template #default>
+      <gl-loading-icon v-if="isLoading" class="gl-m-3" size="sm" />
+      <p
+        v-else-if="filteredArtifacts.length === 0"
+        class="gl-m-0 gl-px-4 gl-py-3 gl-text-subtle"
+        data-testid="artifacts-empty-message"
+      >
+        {{ $options.i18n.emptyArtifactsMessage }}
+      </p>
+    </template>
 
     <template #footer>
       <p

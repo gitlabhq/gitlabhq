@@ -58,6 +58,7 @@ module API
           optional :url_text, type: String, desc: 'A description of the image or URL',
             documentation: { example: 'An example metric' }
         end
+        route_setting :authorization, permissions: :create_alert_metric_image, boundary_type: :project
         post do
           require_gitlab_workhorse!
           bad_request!('File is too large') if max_file_size_exceeded?
@@ -89,6 +90,7 @@ module API
           ]
           tags %w[alert_management]
         end
+        route_setting :authorization, permissions: :read_alert_metric_image, boundary_type: :project
         get do
           if can?(current_user, :read_alert_management_metric_image, @alert)
             present @alert.metric_images.order_created_at_asc, with: Entities::MetricImage
@@ -115,6 +117,7 @@ module API
           optional :url_text, type: String, desc: 'A description of the image or URL',
             documentation: { example: 'An example metric' }
         end
+        route_setting :authorization, permissions: :update_alert_metric_image, boundary_type: :project
         put ':metric_image_id' do
           authorize!(:update_alert_management_metric_image, @alert)
 
@@ -142,6 +145,7 @@ module API
           requires :metric_image_id, type: Integer, desc: 'The ID of metric image',
             documentation: { example: 42 }
         end
+        route_setting :authorization, permissions: :delete_alert_metric_image, boundary_type: :project
         delete ':metric_image_id' do
           authorize!(:destroy_alert_management_metric_image, @alert)
 

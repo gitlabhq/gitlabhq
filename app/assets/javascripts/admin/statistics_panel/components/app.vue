@@ -5,6 +5,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import statisticsLabels from '../constants';
 
 export default {
+  name: 'StatisticsPanelApp',
   components: {
     CrudComponent,
   },

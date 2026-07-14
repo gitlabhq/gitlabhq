@@ -8,5 +8,4 @@ Style/RedundantRegexpCharacterClass:
     - 'ee/lib/gitlab/duo/chat/parsers/final_answer_parser.rb'
     - 'ee/spec/models/package_metadata/package_spec.rb'
     - 'qa/qa/specs/features/browser_ui/1_manage/migration/gitlab_migration_user_contribution_reassignment_spec.rb'
-    - 'scripts/geo/generate-blob-replicator'
     - 'scripts/release_environment/construct-release-environments-versions.rb'

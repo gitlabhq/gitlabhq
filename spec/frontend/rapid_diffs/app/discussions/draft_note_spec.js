@@ -136,7 +136,7 @@ describe('DraftNote', () => {
     it('cancels editing via store', () => {
       const draft = createDraft({ isEditing: true });
       createComponent(draft);
-      wrapper.findComponent(NoteBody).vm.$emit('cancelEditing');
+      wrapper.findComponent(NoteBody).vm.$emit('cancel-editing');
       expect(store.setEditingMode).toHaveBeenCalledWith(draft, false);
     });
   });

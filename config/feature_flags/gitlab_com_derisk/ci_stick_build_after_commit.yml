@@ -1,0 +1,10 @@
+---
+name: ci_stick_build_after_commit
+description: |
+  Defers sticking running CI builds until after the build status update commits.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230249
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/604616
+milestone: '19.2'
+type: gitlab_com_derisk
+group: group::pipeline execution
+default_enabled: false

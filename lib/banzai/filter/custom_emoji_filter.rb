@@ -5,6 +5,7 @@ module Banzai
     class CustomEmojiFilter < HTML::Pipeline::Filter
       prepend Concerns::TimeoutFilterHandler
       prepend Concerns::PipelineTimingCheck
+      include Concerns::ContextAccessors
       include Gitlab::Utils::StrongMemoize
 
       IGNORED_ANCESTOR_TAGS = %w[pre code tt].to_set
@@ -56,7 +57,7 @@ module Banzai
       strong_memoize_attr :has_custom_emoji?
 
       def resource_parent
-        context[:project] || context[:group]
+        project || group
       end
 
       def custom_emoji_candidates

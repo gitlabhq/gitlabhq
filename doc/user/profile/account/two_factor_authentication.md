@@ -133,13 +133,16 @@ account if you lose access.
 - Introduced in GitLab 18.7 [with a feature flag](../../../administration/feature_flags/_index.md) named `email_based_mfa`. Disabled by default.
 - Enabled on GitLab.com in GitLab 18.7, with progressive rollout to all users throughout 2026.
 - New application setting `email_otp_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599948) in GitLab 19.1. Disabled by default.
+- Feature flag `email_based_mfa` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/599948) in GitLab 19.2. Email OTP is now controlled by the `email_otp_enabled` application setting.
 
 {{< /history >}}
 
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
+Email OTP allows you to [verify your identity](../../../security/email_verification.md) by sending a six-digit
+verification code to your email address.
 
-Email OTP allows you to verify your identity by sending a six-digit verification code to your email address.
+Prerequisites:
+
+- Email OTP must be enabled for your instance.
 
 To enable email OTP for your account:
 

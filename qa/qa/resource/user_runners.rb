@@ -97,7 +97,8 @@ module QA
           end
 
           runner.token = token
-          runner.address = Runtime::Scenario.gitlab_address
+          runner.address = Runtime::Env.runner_gitlab_url || Runtime::Scenario.gitlab_address
+          runner.clone_url = Runtime::Env.runner_clone_url if Runtime::Env.runner_clone_url
           runner.config = config if config
           runner.executor = executor
           runner.executor_image = executor_image if executor == :docker

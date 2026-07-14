@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Troubleshooting tips for deploying GitLab Duo Self-Hosted
 title: Troubleshooting self-hosted models
@@ -15,7 +15,7 @@ title: Troubleshooting self-hosted models
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a feature flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Feature flag `ai_custom_model` removed in GitLab 17.8.
@@ -389,11 +389,43 @@ Common causes include:
 To resolve timeout errors:
 
 1. [Configure a higher AI Gateway timeout value](configure_duo_features.md#configure-timeout-for-the-ai-gateway). You can set the timeout between 60 and 600 seconds (10 minutes).
+1. For GitLab Duo Chat, if requests still time out, [increase the chat model request timeout](configure_duo_features.md#configure-the-chat-model-request-timeout) on the AI Gateway.
 1. Monitor your logs after adjusting the timeout to verify the errors are resolved.
 1. If timeout errors persist even with a higher timeout value:
    - Check your model's performance and resource allocation.
    - Verify network connectivity between the AI Gateway and model endpoint.
    - Consider using a more performant model or deployment configuration.
+
+If responses are cut off without an error instead of failing with `A1000`, see
+[responses are truncated without an error](#responses-are-truncated-without-an-error).
+
+## Responses are truncated without an error
+
+A long response, particularly from a large or reasoning model, can stop partway through
+with no error message. The stream ends before the model finishes, and the partial
+response can look complete.
+
+This issue happens when a proxy, load balancer, or firewall between components ends the
+connection before the model finishes responding. When GitLab detects the broken
+stream, GitLab returns [`Error A1000`](#error-a1000) if it timed out waiting, or
+[`Error A1003`](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) if the stream itself failed.
+
+Check the timeout at each hop and see whether an error appears.
+To resolve this issue:
+
+1. For the AI Gateway, [configure a higher timeout value](configure_duo_features.md#configure-timeout-for-the-ai-gateway)
+   so GitLab waits long enough for the gateway.
+1. For GitLab Duo Chat, [increase the chat model request timeout](configure_duo_features.md#configure-the-chat-model-request-timeout)
+   so the AI Gateway waits long enough for the model.
+1. Check any reverse proxy or load balancer in front of the AI Gateway. If you use the
+   [NGINX reverse proxy](../../install/install_ai_gateway.md#set-up-docker-with-nginx-and-ssl),
+   raise `proxy_read_timeout` to cover the longest pause between response chunks and
+   keep `proxy_buffering off`.
+1. Check any proxy or load balancer between the AI Gateway and your model-serving
+   platform for similar requests or idle timeouts.
+1. For GitLab Duo Agentic Chat, check the reverse proxy in front of GitLab for a
+   WebSocket idle or read timeout that can cut a long streamed answer. For more information, see
+   [response from Agentic Chat does not display in the UI](#response-from-agentic-chat-does-not-display-in-the-ui).
 
 ## Verify GitLab setup
 

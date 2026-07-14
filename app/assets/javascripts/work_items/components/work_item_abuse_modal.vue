@@ -54,6 +54,7 @@ export default {
       required: true,
     },
   },
+  emits: ['close-modal'],
   data() {
     return {
       selectedOption: CATEGORY_OPTIONS[0].value,

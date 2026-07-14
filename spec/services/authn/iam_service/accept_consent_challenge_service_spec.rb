@@ -42,7 +42,7 @@ RSpec.describe Authn::IamService::AcceptConsentChallengeService, feature_categor
   end
 
   describe '#execute' do
-    let(:response) { ::Auth::V1::ConsentServiceAcceptResponse.new(redirect_to: redirect_url) }
+    let(:response) { ::Gitlab::Iam::Auth::V1::ConsentServiceAcceptResponse.new(redirect_to: redirect_url) }
 
     before do
       allow(grpc_client).to receive(:accept_consent_challenge).and_return(response)
@@ -149,7 +149,7 @@ RSpec.describe Authn::IamService::AcceptConsentChallengeService, feature_categor
     end
 
     context 'when redirect_to is missing' do
-      let(:response) { ::Auth::V1::ConsentServiceAcceptResponse.new(redirect_to: '') }
+      let(:response) { ::Gitlab::Iam::Auth::V1::ConsentServiceAcceptResponse.new(redirect_to: '') }
 
       it_behaves_like 'does not create a consent record'
 
@@ -161,7 +161,7 @@ RSpec.describe Authn::IamService::AcceptConsentChallengeService, feature_categor
     end
 
     context 'when redirect_to is an untrusted URL' do
-      let(:response) { ::Auth::V1::ConsentServiceAcceptResponse.new(redirect_to: 'https://untrusted.example.com/oauth2/authorize') }
+      let(:response) { ::Gitlab::Iam::Auth::V1::ConsentServiceAcceptResponse.new(redirect_to: 'https://untrusted.example.com/oauth2/authorize') }
 
       it_behaves_like 'does not create a consent record'
 

@@ -319,13 +319,25 @@ describe('Actions Notes Store', () => {
       expect(store.state.lastFetchedAt).toBe('123456');
     });
 
-    describe('when includes duo code review note', () => {
-      it('removes duo code review sytem note', () => {
-        const systemNote = { author: { user_type: 'duo_code_review_bot' }, system: true };
+    describe('when a Duo mention reply note arrives', () => {
+      it('removes the started (thinking) note from the same discussion', () => {
+        const startedNote = {
+          id: 'started-note-1',
+          system: true,
+          duo_session_status: 'running',
+          discussion_id: 'discussion-1',
+          author: { id: 101 },
+        };
+        const replyNote = {
+          id: 'reply-note-1',
+          system: false,
+          discussion_id: 'discussion-1',
+          author: { id: 101 },
+        };
 
-        store.state.discussions = [{ notes: [systemNote] }];
+        store.state.discussions = [{ id: 'discussion-1', notes: [startedNote] }];
         axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_OK, {
-          notes: [{ author: { user_type: 'duo_code_review_bot' }, system: false }],
+          notes: [replyNote],
           last_fetched_at: '123456',
         });
 
@@ -336,7 +348,39 @@ describe('Actions Notes Store', () => {
           expect.arrayContaining([
             {
               type: 'DELETE_NOTE',
-              payload: systemNote,
+              payload: startedNote,
+            },
+          ]),
+          expect.anything(),
+        );
+      });
+
+      it('does not remove notes without duo_session_status', () => {
+        const regularSystemNote = {
+          id: 'system-note-1',
+          system: true,
+          discussion_id: 'discussion-1',
+        };
+        const replyNote = {
+          id: 'reply-note-1',
+          system: false,
+          discussion_id: 'discussion-1',
+        };
+
+        store.state.discussions = [{ id: 'discussion-1', notes: [regularSystemNote] }];
+        axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_OK, {
+          notes: [replyNote],
+          last_fetched_at: '123456',
+        });
+
+        return testAction(
+          actions.fetchUpdatedNotes,
+          undefined,
+          store.state,
+          expect.not.arrayContaining([
+            {
+              type: 'DELETE_NOTE',
+              payload: regularSystemNote,
             },
           ]),
           expect.anything(),

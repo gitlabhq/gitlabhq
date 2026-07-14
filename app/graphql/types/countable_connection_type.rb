@@ -17,6 +17,21 @@ module Types
     def count(limit: nil)
       relation = object.items
 
+      precomputed_count = relation.try(:precomputed_total_count)
+      return resolve_precomputed_count(precomputed_count, limit) if precomputed_count
+
+      resolve_count(relation, limit)
+    end
+
+    private
+
+    def resolve_precomputed_count(precomputed_count, limit)
+      return precomputed_count unless limit
+
+      [precomputed_count, limit.next].min
+    end
+
+    def resolve_count(relation, limit)
       if limit
         # Limited counting for performance
         limited_count(relation, limit)

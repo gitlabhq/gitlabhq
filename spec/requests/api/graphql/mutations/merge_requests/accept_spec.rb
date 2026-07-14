@@ -33,6 +33,13 @@ RSpec.describe 'accepting a merge request', :request_store, feature_category: :c
       project.add_maintainer(current_user)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :merge_merge_request do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) { graphql_mutation(:merge_request_accept, input, 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     it 'merges the merge request asynchronously' do
       expect_next_found_instance_of(MergeRequest) do |instance|
         expect(instance).to receive(:merge_async).with(current_user.id, {

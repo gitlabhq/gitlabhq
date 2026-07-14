@@ -10,6 +10,8 @@ module Types
         graphql_name 'WorkItemWidgetErrorTracking'
         description 'Represents the error tracking widget'
 
+        authorize_granular_token skip_reason: :parent_authorizes
+
         implements ::Types::WorkItems::WidgetInterface
 
         field :identifier, GraphQL::Types::BigInt, null: true,

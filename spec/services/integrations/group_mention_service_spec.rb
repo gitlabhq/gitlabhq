@@ -7,25 +7,24 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
 
   let_it_be(:author, freeze: false) { create(:user) }
   let_it_be(:member, freeze: false) { create(:user) }
-  let_it_be(:group_1, freeze: false) { create(:group) }
-  let_it_be(:group_2, freeze: false) { create(:group) }
+  let_it_be(:group_1, freeze: false) { create(:group, developers: [member]) }
+  let_it_be(:group_2, freeze: false) { create(:group, developers: [member]) }
   let_it_be(:group_3, freeze: false) { create(:group) }
   let_it_be(:groups, freeze: false) { nil }
-  let_it_be(:all_groups, freeze: false) { [group_1, group_2, group_3] }
-  let_it_be(:groups_with_integrations, freeze: false) { [group_1, group_2] }
   let_it_be(:public_project_with_group, freeze: false) { create(:project, :public) }
   let_it_be(:public_project_without_group, freeze: false) { create(:project, :public) }
   let_it_be(:private_project_with_group, freeze: false) { create(:project, :private) }
   let_it_be(:private_project_without_group, freeze: false) { create(:project, :private) }
 
+  let(:all_groups) { [group_1, group_2, group_3] }
+  let(:groups_with_integrations) { [group_1, group_2] }
+
   before_all do
-    group_1.add_developer(member)
     create(:integrations_slack, :group, group: group_1, group_mention_events: true,
       group_confidential_mention_events: true)
     create(:project_group_link, :developer, project: public_project_with_group, group: group_1)
     create(:project_group_link, :developer, project: private_project_with_group, group: group_1)
 
-    group_2.add_developer(member)
     create(:integrations_slack, :group, group: group_2, group_mention_events: true,
       group_confidential_mention_events: true)
     create(:project_group_link, :developer, project: public_project_with_group, group: group_2)
@@ -448,7 +447,7 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
 
   context 'for invalid mentionables' do
     let_it_be(:mentionable, freeze: false) { Object.new }
-    let_it_be(:hook_data, freeze: false) { {} }
+    let(:hook_data) { {} }
     let_it_be(:is_confidential, freeze: false) { false }
 
     it_behaves_like 'no_success'
@@ -462,7 +461,7 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
 
   context 'when mentionable is nil' do
     let_it_be(:mentionable, freeze: false) { nil }
-    let_it_be(:hook_data, freeze: false) { {} }
+    let(:hook_data) { {} }
     let_it_be(:is_confidential, freeze: false) { false }
 
     it 'returns success without executing any integrations' do

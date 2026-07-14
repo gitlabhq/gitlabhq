@@ -83,7 +83,7 @@ RSpec.describe 'getting project members information', feature_category: :groups_
     end
 
     context 'when a member is invited only via email and current_user is a maintainer' do
-      before do
+      before_all do
         parent_project.add_maintainer(user)
         create(:project_member, :invited, source: parent_project)
       end

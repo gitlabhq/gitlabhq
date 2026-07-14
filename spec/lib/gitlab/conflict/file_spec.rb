@@ -98,7 +98,7 @@ RSpec.describe Gitlab::Conflict::File do
     # ensure that the lines are actually highlighted.
     it 'highlights the lines correctly' do
       expect(conflict_file.lines.first.rich_text)
-        .to eq("<span id=\"LC1\" class=\"line\" lang=\"ruby\"><span class=\"k\">module</span> <span class=\"nn\">Gitlab</span></span>\n")
+        .to eq("<span id=\"LC1\" class=\"line\" data-lang=\"ruby\"><span class=\"k\">module</span> <span class=\"nn\">Gitlab</span></span>\n")
     end
   end
 

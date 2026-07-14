@@ -15,7 +15,7 @@ title: Web IDE extension host domain
 
 The extension host domain is a wildcard domain name used by the Web IDE to isolate third-party code installed
 using [Extension Marketplace](../../user/project/web_ide/_index.md#manage-extensions). The Web IDE
-relies on the web browser's [same origin](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)
+relies on the web browser's [same origin](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Same-origin_policy)
 policy to run extensions in a sandbox environment.
 
 GitLab provides a default extension host domain `*.cdn.web-ide.gitlab-static.net` that is available to all

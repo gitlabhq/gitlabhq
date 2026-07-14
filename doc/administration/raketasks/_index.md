@@ -50,7 +50,7 @@ The following Rake tasks are available for use with GitLab:
 | [SMTP maintenance](smtp.md)                                                                           | SMTP-related tasks. |
 | [SPDX license list import](spdx.md)                                                                   | Import a local copy of the [SPDX license list](https://spdx.org/licenses/) for matching [License approval policies](../../user/compliance/license_approval_policies.md). |
 | [Reset user passwords](../../security/reset_user_password.md#use-a-rake-task)                         | Reset user passwords using Rake. |
-| [Semantic code search](../../user/gitlab_duo/semantic_code_search.md#check-semantic-code-search-status) | Check semantic code search status. |
+| [Semantic code search](../semantic_code_search.md#check-semantic-code-search-status) | Check semantic code search status. |
 | [Uploads migrate](uploads/migrate.md)                                                                 | Migrate uploads between local storage and object storage. |
 | [Uploads sanitize](uploads/sanitize.md)                                                               | Remove EXIF data from images uploaded to earlier versions of GitLab. |
 | Service Data                                                                                          | Generate and troubleshoot Service Ping. For more information, see Service Ping development documentation. |

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitAccessWiki do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :wiki_repo) }
 
   let(:wiki) { create(:project_wiki, project: project) }
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::GitAccessWiki do
     with_them do
       before do
         project.update!(visibility_level: project_visibility)
-        project.add_developer(user) if project_member?
+        project.add_developer(user) if project_member? # rubocop:disable RSpec/BeforeAllRoleAssignment -- parameterized via with_them; `project_member?` is not available in `before_all`
         project.project_feature.update_attribute(:wiki_access_level, wiki_access_level)
         allow(wiki.repository).to receive(:exists?).and_return(wiki_repo?)
       end
@@ -77,7 +77,7 @@ RSpec.describe Gitlab::GitAccessWiki do
     subject { access.check('git-receive-pack', changes) }
 
     context 'when user can :create_wiki' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -99,6 +99,70 @@ RSpec.describe Gitlab::GitAccessWiki do
     end
   end
 
+  describe '#check_granular_pat_permissions!', feature_category: :source_code_management do
+    let(:access) do
+      described_class.new(user, wiki, 'web',
+        authentication_abilities: authentication_abilities,
+        personal_access_token: personal_access_token)
+    end
+
+    let(:personal_access_token) do
+      create(:granular_pat, user: user, boundary: boundary, permissions: permissions)
+    end
+
+    let(:boundary) { Authz::Boundary.for(project) }
+    let(:pull_access_check) { access.check('git-upload-pack', changes) }
+    let(:push_access_check) { access.check('git-receive-pack', changes) }
+
+    before_all do
+      project.add_developer(user)
+    end
+
+    context 'when the token has read_wiki permission' do
+      let(:permissions) { :read_wiki }
+
+      it 'allows git pull' do
+        expect { pull_access_check }.not_to raise_error
+      end
+
+      it 'denies git push' do
+        expect { push_access_check }.to raise_error(Gitlab::GitAccess::ForbiddenError,
+          'Access denied: This operation requires a fine-grained personal access token ' \
+            'with the following project permissions: [Wiki: Create].')
+      end
+    end
+
+    context 'when the token has create_wiki permission' do
+      let(:permissions) { :create_wiki }
+
+      it 'allows git push' do
+        expect { push_access_check }.not_to raise_error
+      end
+
+      it 'denies git pull' do
+        expect { pull_access_check }.to raise_error(Gitlab::GitAccess::ForbiddenError,
+          'Access denied: This operation requires a fine-grained personal access token ' \
+            'with the following project permissions: [Wiki: Read].')
+      end
+    end
+
+    context 'when the token has no wiki permissions' do
+      let(:permissions) { [] }
+
+      it 'denies git pull' do
+        expect { pull_access_check }.to raise_error(Gitlab::GitAccess::ForbiddenError,
+          'Access denied: This operation requires a fine-grained personal access token ' \
+            'with the following project permissions: [Wiki: Read].')
+      end
+
+      it 'denies git push' do
+        expect { push_access_check }.to raise_error(Gitlab::GitAccess::ForbiddenError,
+          'Access denied: This operation requires a fine-grained personal access token ' \
+            'with the following project permissions: [Wiki: Create].')
+      end
+    end
+  end
+
   describe '#check_download_access!' do
     subject { access.check('git-upload-pack', Gitlab::GitAccess::ANY) }
 
@@ -107,8 +171,8 @@ RSpec.describe Gitlab::GitAccessWiki do
     end
 
     context 'when the actor is a deploy token' do
-      let_it_be(:actor, freeze: false) { create(:deploy_token, projects: [project]) }
-      let_it_be(:user, freeze: false) { actor }
+      let_it_be_with_reload(:actor) { create(:deploy_token, projects: [project]) }
+      let_it_be(:user) { actor }
 
       before do
         project.project_feature.update_attribute(:wiki_access_level, wiki_access_level)
@@ -136,12 +200,12 @@ RSpec.describe Gitlab::GitAccessWiki do
     end
 
     context 'when the actor is a deploy key' do
-      let_it_be(:actor, freeze: false) { create(:deploy_key) }
-      let_it_be(:deploy_key_project, freeze: false) do
+      let_it_be_with_reload(:actor) { create(:deploy_key) }
+      let_it_be_with_reload(:deploy_key_project) do
         create(:deploy_keys_project, project: project, deploy_key: actor)
       end
 
-      let_it_be(:user, freeze: false) { actor }
+      let(:user) { actor }
 
       before do
         project.project_feature.update_attribute(:wiki_access_level, wiki_access_level)

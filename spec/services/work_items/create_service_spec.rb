@@ -138,7 +138,7 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
           end
 
           context 'when parent type is invalid' do
-            let_it_be(:parent, freeze: false) { create(:work_item, :task, **container_args) }
+            let_it_be(:parent) { create(:work_item, :task, **container_args) }
 
             it_behaves_like 'fails creating work item and returns errors' do
               let(:error_message) { "it's not allowed to add this type of parent item" }
@@ -148,7 +148,7 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
 
         context 'when user cannot admin parent link' do
           let(:current_user) { guest }
-          let_it_be(:parent, freeze: false) { create(:work_item, :confidential, **container_args) }
+          let_it_be(:parent) { create(:work_item, :confidential, **container_args) }
 
           let(:opts) do
             {

@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import { DEFAULT_MANUAL_ACTIONS_LIMIT } from '~/ci/constants';
 import { initPipelineCountListener } from './utils';
 
 Vue.use(VueApollo);
@@ -12,10 +11,7 @@ const apolloProvider = new VueApollo({
 
 /**
  * Used in:
- *  - Project Pipelines List (projects:pipelines)
  *  - Commit details View > Pipelines Tab > Pipelines Table (projects:commit:pipelines)
- *  - Merge request details View > Pipelines Tab > Pipelines Table (projects:merge_requests:show)
- *  - New merge request View > Pipelines Tab > Pipelines Table (projects:merge_requests:creations:new)
  */
 export default () => {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
@@ -24,31 +20,26 @@ export default () => {
     // Update MR and Commits tabs
     initPipelineCountListener(pipelineTableViewEl);
 
-    if (pipelineTableViewEl.dataset.disableInitialization === undefined) {
-      const table = new Vue({
-        name: 'CommitPipelinesTableRoot',
-        components: {
-          CommitPipelinesTable: () =>
-            import('~/commit/pipelines/legacy_pipelines_table_wrapper.vue'),
+    const table = new Vue({
+      name: 'CommitPipelinesTableRoot',
+      components: {
+        CommitPipelinesTable: () => {
+          return gon.features.commitPipelinesTabGraphql
+            ? import('~/ci/commit/components/commit_pipelines_list.vue')
+            : import('~/commit/pipelines/legacy_pipelines_table_wrapper.vue');
         },
-        apolloProvider,
-        provide: {
-          artifactsEndpoint: pipelineTableViewEl.dataset.artifactsEndpoint,
-          artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
-          fullPath: pipelineTableViewEl.dataset.fullPath,
-          manualActionsLimit: DEFAULT_MANUAL_ACTIONS_LIMIT,
-        },
-        render(createElement) {
-          return createElement('commit-pipelines-table', {
-            props: {
-              endpoint: pipelineTableViewEl.dataset.endpoint,
-              emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
-              errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
-            },
-          });
-        },
-      }).$mount();
-      pipelineTableViewEl.appendChild(table.$el);
-    }
+      },
+      apolloProvider,
+      render(createElement) {
+        return createElement('commit-pipelines-table', {
+          props: {
+            endpoint: pipelineTableViewEl.dataset.endpoint,
+            projectFullPath: pipelineTableViewEl.dataset.projectFullPath,
+            commitSha: pipelineTableViewEl.dataset.commitSha,
+          },
+        });
+      },
+    }).$mount();
+    pipelineTableViewEl.appendChild(table.$el);
   }
 };

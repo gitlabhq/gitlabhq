@@ -117,6 +117,12 @@ module PreferencesHelper
     user_application_color_mode == 'gl-system'
   end
 
+  def application_stylesheet_name(base = 'application')
+    return base unless Feature.enabled?(:no_bootstrap_utils_stylesheet, current_user)
+
+    "#{base}_no_bootstrap_utils"
+  end
+
   def user_theme_primary_color(dark = false)
     return Gitlab::Themes.for_user(current_user).primary_color_dark if dark
 

@@ -7,6 +7,7 @@ import { RICH_BLOB_VIEWER, SIMPLE_BLOB_VIEWER, BLAME_VIEWER } from './constants'
 import TableOfContents from './table_contents.vue';
 
 export default {
+  name: 'BlobHeader',
   components: {
     BlameHeader,
     ViewerSwitcher,

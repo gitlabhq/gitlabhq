@@ -36,6 +36,7 @@ export default {
       required: true,
     },
   },
+  emits: ['close-drawer'],
   i18n: {
     title: __('Report abuse to administrator'),
     close: __('Close'),

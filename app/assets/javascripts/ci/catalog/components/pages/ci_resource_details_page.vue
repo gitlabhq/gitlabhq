@@ -46,7 +46,7 @@ export default {
         const formatted = nodes.map((version) => ({
           value: version.id,
           text: version.name,
-          createdAt: formatDate(version.createdAt, ISO_SHORT_FORMAT),
+          releasedAt: formatDate(version.releasedAt, ISO_SHORT_FORMAT),
         }));
 
         if (formatted.length > 0 && !this.selectedVersion) {

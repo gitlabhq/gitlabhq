@@ -6,7 +6,7 @@ module API
       class EmailParticipant < Grape::Entity
         include ConditionalExposureHelpers
 
-        expose :id, documentation: { type: 'Integer', example: 42 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 42 }
 
         expose :email,
           documentation: { type: 'String', example: 'us**@ex*****.com' } do |participant, options|

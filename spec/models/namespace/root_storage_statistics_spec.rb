@@ -26,10 +26,6 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
     let(:root_storage_statistics) { create(:namespace_root_storage_statistics, namespace: namespace) }
 
-    let(:project1) { create(:project, namespace: namespace) }
-    let(:project2) { create(:project, namespace: namespace) }
-    let(:project3) { create(:project, namespace: namespace, marked_for_deletion_at: 1.day.ago, pending_delete: true) }
-
     shared_examples 'project data refresh' do
       it 'aggregates eligible project statistics' do
         root_storage_statistics.recalculate!
@@ -96,23 +92,42 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
     end
 
     context 'with project statistics' do
-      let!(:project_stat1) { create(:project_statistics, project: project1, with_data: true, size_multiplier: 100) }
-      let!(:project_stat2) { create(:project_statistics, project: project2, with_data: true, size_multiplier: 200) }
-      let!(:project_stat3) { create(:project_statistics, project: project3, with_data: true, size_multiplier: 300) }
+      let_it_be_with_reload(:project1) { create(:project, namespace: namespace) }
+      let_it_be_with_reload(:project2) { create(:project, namespace: namespace) }
+      let_it_be_with_reload(:project3) do
+        create(:project, namespace: namespace, marked_for_deletion_at: 1.day.ago, pending_delete: true)
+      end
+
+      let_it_be_with_reload(:project_stat1) do
+        create(:project_statistics, project: project1, with_data: true, size_multiplier: 100)
+      end
+
+      let_it_be_with_reload(:project_stat2) do
+        create(:project_statistics, project: project2, with_data: true, size_multiplier: 200)
+      end
+
+      let_it_be(:project_stat3) do
+        create(:project_statistics, project: project3, with_data: true, size_multiplier: 300)
+      end
 
       it_behaves_like 'project data refresh'
       it_behaves_like 'does not include personal snippets'
     end
 
     context 'with subgroups' do
-      let(:subgroup1) { create(:group, parent: namespace) }
-      let(:subgroup2) { create(:group, parent: subgroup1) }
+      let_it_be(:subgroup1) { create(:group, parent: namespace) }
+      let_it_be(:subgroup2) { create(:group, parent: subgroup1) }
 
-      let(:project1) { create(:project, namespace: subgroup1) }
-      let(:project2) { create(:project, namespace: subgroup2) }
+      let_it_be_with_reload(:project1) { create(:project, namespace: subgroup1) }
+      let_it_be_with_reload(:project2) { create(:project, namespace: subgroup2) }
 
-      let!(:project_stat1) { create(:project_statistics, project: project1, with_data: true, size_multiplier: 100) }
-      let!(:project_stat2) { create(:project_statistics, project: project2, with_data: true, size_multiplier: 200) }
+      let_it_be_with_reload(:project_stat1) do
+        create(:project_statistics, project: project1, with_data: true, size_multiplier: 100)
+      end
+
+      let_it_be_with_reload(:project_stat2) do
+        create(:project_statistics, project: project2, with_data: true, size_multiplier: 200)
+      end
 
       it_behaves_like 'project data refresh'
       it_behaves_like 'does not include personal snippets'
@@ -141,8 +156,16 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
       let(:namespace) { root_group }
 
-      let!(:project_stat1) { create(:project_statistics, project: project1, with_data: true, size_multiplier: 100) }
-      let!(:project_stat2) { create(:project_statistics, project: project2, with_data: true, size_multiplier: 200) }
+      let_it_be_with_reload(:project1) { create(:project, namespace: root_group) }
+      let_it_be_with_reload(:project2) { create(:project, namespace: root_group) }
+
+      let_it_be_with_reload(:project_stat1) do
+        create(:project_statistics, project: project1, with_data: true, size_multiplier: 100)
+      end
+
+      let_it_be_with_reload(:project_stat2) do
+        create(:project_statistics, project: project2, with_data: true, size_multiplier: 200)
+      end
 
       it 'aggregates namespace statistics' do
         # This group is not a descendant of the root_group so it shouldn't be included in the final stats.
@@ -194,8 +217,16 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
       let(:namespace) { user.namespace }
 
-      let!(:project_stat1) { create(:project_statistics, project: project1, with_data: true, size_multiplier: 100) }
-      let!(:project_stat2) { create(:project_statistics, project: project2, with_data: true, size_multiplier: 200) }
+      let_it_be_with_reload(:project1) { create(:project, namespace: user.namespace) }
+      let_it_be_with_reload(:project2) { create(:project, namespace: user.namespace) }
+
+      let_it_be_with_reload(:project_stat1) do
+        create(:project_statistics, project: project1, with_data: true, size_multiplier: 100)
+      end
+
+      let_it_be_with_reload(:project_stat2) do
+        create(:project_statistics, project: project2, with_data: true, size_multiplier: 200)
+      end
 
       it_behaves_like 'project data refresh'
 

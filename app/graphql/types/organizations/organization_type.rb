@@ -66,6 +66,11 @@ module Types
         null: false,
         description: 'State of the organization.',
         experiment: { milestone: '19.0' }
+      field :uuid,
+        GraphQL::Types::String,
+        null: false,
+        description: 'Globally unique identifier (UUID) of the organization.',
+        experiment: { milestone: '19.2' }
       field :visibility,
         Types::Organizations::VisibilityEnum,
         null: true,

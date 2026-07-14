@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'getting merge request information nested in a project', feature_category: :code_review_workflow do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
+  let_it_be_with_reload(:project) { create(:project, :repository, :public) }
   let_it_be(:current_user) { create(:user) }
   let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project) }
 
@@ -18,6 +18,45 @@ RSpec.describe 'getting merge request information nested in a project', feature_
       { full_path: project.full_path },
       query_graphql_field(:merge_request, { iid: merge_request.iid.to_s }, mr_fields)
     )
+  end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_merge_request] do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:query) do
+      graphql_query_for(
+        :project,
+        { full_path: project.full_path },
+        query_graphql_field(:merge_request, { iid: merge_request.iid.to_s }, 'id')
+      )
+    end
+
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+  end
+
+  describe 'granular PAT authorization for merge request assignees' do
+    # The public project lets the token pass the parent Project and MergeRequest
+    # type authorizations via the public-access bypass, so the test gates on
+    # MergeRequestAssignee's `read_user` permission at the user boundary.
+    let_it_be(:assignee) { create(:user, developer_of: project) }
+
+    before_all do
+      merge_request.assignees << assignee
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_user do
+      let(:user) { assignee }
+      let(:boundary_object) { :user }
+      let(:query) do
+        graphql_query_for(
+          :project,
+          { full_path: project.full_path },
+          query_graphql_field(:merge_request, { iid: merge_request.iid.to_s }, 'assignees { nodes { id } }')
+        )
+      end
+
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
   end
 
   it_behaves_like 'a working graphql query' do

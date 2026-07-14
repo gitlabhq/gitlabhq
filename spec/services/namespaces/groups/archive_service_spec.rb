@@ -33,7 +33,7 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
   end
 
   context 'when ancestor group is already archived' do
-    let_it_be(:parent, freeze: false) { create(:group) }
+    let_it_be_with_reload(:parent) { create(:group) }
     let_it_be(:group) { create(:group, parent: parent) }
     let_it_be(:user) { create(:user) }
 

@@ -50,6 +50,7 @@ export default {
       validator: (v) => isDocument(v),
     },
   },
+  emits: ['back', 'next', 'update:compiled', 'update:highlight'],
   data() {
     return {
       wasCompiled: false,

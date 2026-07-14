@@ -1,4 +1,4 @@
-/* eslint-disable @gitlab/require-i18n-strings */
+/* eslint-disable @gitlab/require-i18n-strings, @gitlab/no-hardcoded-urls -- Mock data, not real URLs */
 export const mockCommits = [
   {
     id: '111',

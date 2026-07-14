@@ -52,12 +52,12 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
         context 'when resource access token within top-level group' do
           let(:project_bot) { create(:user, :project_bot, bot_namespace: resource) }
-          let_it_be(:top_level_group, freeze: false) { create(:group) }
-          let_it_be(:subgroup, freeze: false) { create(:group, parent: top_level_group) }
-          let_it_be(:project, freeze: false) { create(:project, namespace: subgroup) }
+          let_it_be(:top_level_group) { create(:group) }
+          let_it_be(:subgroup) { create(:group, parent: top_level_group) }
+          let_it_be(:project) { create(:project, namespace: subgroup) }
 
           context 'when resource is top-level group' do
-            let_it_be(:resource, freeze: false) { top_level_group }
+            let_it_be(:resource) { top_level_group }
 
             it 'sets group_id to top-level group id' do
               expect(personal_access_token.group_id).to be_nil
@@ -69,7 +69,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
           end
 
           context 'when resource is subgroup' do
-            let_it_be(:resource, freeze: false) { subgroup }
+            let_it_be(:resource) { subgroup }
 
             it 'sets group_id to top-level group id' do
               expect(personal_access_token.group_id).to be_nil
@@ -81,7 +81,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
           end
 
           context 'when resource is project' do
-            let_it_be(:resource, freeze: false) { project.project_namespace }
+            let_it_be(:resource) { project.project_namespace }
 
             it 'sets group_id to top-level group id' do
               expect(personal_access_token.group_id).to be_nil
@@ -94,8 +94,8 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
         end
 
         context 'when resource access token within user namespace' do
-          let_it_be(:user_namespace, freeze: false) { create(:user, :with_namespace).namespace }
-          let_it_be(:project, freeze: false) { create(:project, namespace: user_namespace) }
+          let_it_be(:user_namespace) { create(:user, :with_namespace).namespace }
+          let_it_be(:project) { create(:project, namespace: user_namespace) }
 
           let(:project_bot) { create(:user, :project_bot, bot_namespace: project.project_namespace) }
 
@@ -124,7 +124,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   end
 
   describe 'associations' do
-    let_it_be(:project_access_token, freeze: false) { create(:personal_access_token) }
+    let_it_be_with_reload(:project_access_token) { create(:personal_access_token) }
 
     subject { project_access_token }
 
@@ -153,9 +153,9 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
   describe 'scopes' do
     describe '.project_access_tokens' do
-      let_it_be(:user, freeze: false) { create(:user, :project_bot) }
-      let_it_be(:project_member, freeze: false) { create(:project_member, user: user) }
-      let_it_be(:project_access_token, freeze: false) { create(:personal_access_token, user: user) }
+      let_it_be(:user) { create(:user, :project_bot) }
+      let_it_be(:project_member) { create(:project_member, user: user) }
+      let_it_be(:project_access_token) { create(:personal_access_token, user: user) }
 
       subject { described_class.project_access_token }
 
@@ -185,23 +185,23 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe '.for_user_types' do
-      let_it_be(:human_user, freeze: false) { create(:user) }
-      let_it_be(:service_account_user, freeze: false) { create(:user, :service_account) }
-      let_it_be(:project_bot_user, freeze: false) { create(:user, :project_bot) }
+      let_it_be(:human_user) { create(:user) }
+      let_it_be(:service_account_user) { create(:user, :service_account) }
+      let_it_be(:project_bot_user) { create(:user, :project_bot) }
 
-      let_it_be(:human_user_personal_access_token1, freeze: false) do
+      let_it_be(:human_user_personal_access_token1) do
         create(:personal_access_token, user: human_user)
       end
 
-      let_it_be(:human_user_personal_access_token2, freeze: false) do
+      let_it_be(:human_user_personal_access_token2) do
         create(:personal_access_token, user: human_user)
       end
 
-      let_it_be(:service_account_user_personal_access_token, freeze: false) do
+      let_it_be(:service_account_user_personal_access_token) do
         create(:personal_access_token, user: service_account_user)
       end
 
-      let_it_be(:project_bot_user_personal_access_token, freeze: false) do
+      let_it_be(:project_bot_user_personal_access_token) do
         create(:personal_access_token, user: project_bot_user)
       end
 
@@ -261,9 +261,9 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe 'expires scopes', :time_freeze do
-      let_it_be(:expires_last_month_token, freeze: false) { create(:personal_access_token, expires_at: 1.month.ago) }
-      let_it_be(:expires_next_month_token, freeze: false) { create(:personal_access_token, expires_at: 1.month.from_now) }
-      let_it_be(:expires_two_months_token, freeze: false) { create(:personal_access_token, expires_at: 2.months.from_now) }
+      let_it_be(:expires_last_month_token) { create(:personal_access_token, expires_at: 1.month.ago) }
+      let_it_be(:expires_next_month_token) { create(:personal_access_token, expires_at: 1.month.from_now) }
+      let_it_be(:expires_two_months_token) { create(:personal_access_token, expires_at: 2.months.from_now) }
 
       describe '.expires_before' do
         it 'finds tokens that expire before or on date' do
@@ -281,10 +281,10 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
     describe '.last_used_before' do
       context 'last_used_*' do
-        let_it_be(:date, freeze: false) { DateTime.new(2022, 01, 01) }
-        let_it_be(:token, freeze: false) { create(:personal_access_token, last_used_at: date) }
+        let_it_be(:date) { DateTime.new(2022, 01, 01) }
+        let_it_be(:token) { create(:personal_access_token, last_used_at: date) }
         # This token should never occur in the following tests and indicates that filtering was done correctly with it
-        let_it_be(:never_used_token, freeze: false) { create(:personal_access_token) }
+        let_it_be(:never_used_token) { create(:personal_access_token) }
 
         describe '.last_used_before' do
           it 'returns personal access tokens used before the specified date only' do
@@ -340,9 +340,9 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe ".in_organization" do
-      let_it_be(:organization, freeze: false) { create(:organization) }
-      let_it_be(:personal_access_token, freeze: false) { create(:personal_access_token, organization: organization) }
-      let_it_be(:personal_access_token_2, freeze: false) { create(:personal_access_token) }
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:personal_access_token) { create(:personal_access_token, organization: organization) }
+      let_it_be(:personal_access_token_2) { create(:personal_access_token) }
 
       it "returns personal access tokens for the specified organization only" do
         expect(described_class.in_organization(organization)).to contain_exactly(personal_access_token)
@@ -350,11 +350,11 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe ".for_group" do
-      let_it_be(:group, freeze: false) { create(:group) }
-      let_it_be(:personal_access_token1, freeze: false) { create(:personal_access_token, group: group) }
-      let_it_be(:personal_access_token2, freeze: false) { create(:personal_access_token) }
-      let_it_be(:personal_access_token3, freeze: false) { create(:personal_access_token, group: group) }
-      let_it_be(:personal_access_token4, freeze: false) { create(:personal_access_token, group: create(:group)) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:personal_access_token1) { create(:personal_access_token, group: group) }
+      let_it_be(:personal_access_token2) { create(:personal_access_token) }
+      let_it_be(:personal_access_token3) { create(:personal_access_token, group: group) }
+      let_it_be(:personal_access_token4) { create(:personal_access_token, group: create(:group)) }
 
       it "returns personal access tokens for the specified group only" do
         expect(described_class.for_group(group)).to contain_exactly(
@@ -365,10 +365,10 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe '.preload_granular_scopes' do
-      let_it_be(:user, freeze: false) { create(:user) }
-      let_it_be(:project, freeze: false) { create(:project) }
-      let_it_be(:boundary, freeze: false) { Authz::Boundary.for(project) }
-      let_it_be(:granular_pat, freeze: false) { create(:granular_pat, user: user, boundary: boundary, permissions: :read_member_role) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:boundary) { Authz::Boundary.for(project) }
+      let_it_be(:granular_pat) { create(:granular_pat, user: user, boundary: boundary, permissions: :read_member_role) }
 
       subject(:preload_granular_scopes) { described_class.preload_granular_scopes }
 
@@ -382,10 +382,10 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   end
 
   describe 'PolicyActor methods' do
-    let_it_be(:user, freeze: false) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, developers: user) }
-    let_it_be(:boundary, freeze: false) { Authz::Boundary.for(project) }
-    let_it_be(:granular_pat, freeze: false) { create(:granular_pat, user: user, boundary: boundary, permissions: :create_work_item) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, developers: user) }
+    let_it_be(:boundary) { Authz::Boundary.for(project) }
+    let_it_be(:granular_pat) { create(:granular_pat, user: user, boundary: boundary, permissions: :create_work_item) }
 
     let(:methods) { PolicyActor.instance_methods }
 
@@ -397,6 +397,105 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
     describe '#can?' do
       it { expect(granular_pat.can?(:create_issue, boundary)).to be true }
+    end
+  end
+
+  describe '#permitted_for_boundary?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:root_group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: root_group) }
+    let_it_be(:project) { create(:project, group: subgroup) }
+    let_it_be(:other_project) { create(:project) }
+
+    let_it_be(:project_boundary) { Authz::Boundary.for(project) }
+    let_it_be(:other_project_boundary) { Authz::Boundary.for(other_project) }
+    let_it_be(:root_group_boundary) { Authz::Boundary.for(root_group) }
+    let_it_be(:instance_boundary) { Authz::Boundary.for(:instance) }
+    let_it_be(:all_memberships_boundary) { Authz::Boundary.for(:all_memberships) }
+
+    let_it_be(:token) do
+      create(:granular_pat, user: user, boundary: project_boundary, permissions: :create_work_item)
+    end
+
+    subject(:permitted_for_boundary) { token.permitted_for_boundary?(boundary, permissions) }
+
+    context 'when the token is a legacy token' do
+      let_it_be(:token) { create(:personal_access_token, user: user) }
+
+      let(:boundary) { project_boundary }
+      let(:permissions) { :create_issue }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when a scope grants the required permission for the boundary' do
+      let(:boundary) { project_boundary }
+      let(:permissions) { :create_issue }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when the required permission is not granted by any scope' do
+      let(:boundary) { project_boundary }
+      let(:permissions) { :create_member_role }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when no scope is applicable to the boundary' do
+      let(:boundary) { other_project_boundary }
+      let(:permissions) { :create_issue }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when a scope on an ancestor group applies to a descendant boundary' do
+      let_it_be(:token) do
+        create(:granular_pat, user: user, boundary: root_group_boundary, permissions: :create_work_item)
+      end
+
+      let(:boundary) { project_boundary }
+      let(:permissions) { :create_issue }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when a scope grants all memberships' do
+      let_it_be(:token) do
+        create(:granular_pat, user: user, boundary: all_memberships_boundary, permissions: :create_work_item)
+      end
+
+      let(:boundary) { project_boundary }
+      let(:permissions) { :create_issue }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with an instance-level scope and boundary' do
+      let_it_be(:token) do
+        create(:granular_pat, user: user, boundary: instance_boundary, permissions: :create_member_role)
+      end
+
+      let(:boundary) { instance_boundary }
+      let(:permissions) { :create_member_role }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when several permissions are required' do
+      let(:boundary) { project_boundary }
+
+      context 'and all are granted' do
+        let(:permissions) { [:create_issue, :create_work_item] }
+
+        it { is_expected.to be true }
+      end
+
+      context 'and at least one is not granted' do
+        let(:permissions) { [:create_issue, :create_member_role] }
+
+        it { is_expected.to be false }
+      end
     end
   end
 
@@ -420,8 +519,8 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     context 'with a granular personal access token' do
-      let_it_be(:user, freeze: false) { create(:user) }
-      let_it_be(:personal_access_token, freeze: false) { create(:granular_pat, user: user) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:personal_access_token) { create(:granular_pat, user: user) }
 
       context 'when the granular_personal_access_tokens feature flag is enabled for the token owner' do
         before do
@@ -510,6 +609,29 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
         expect(personal_access_token).not_to be_valid
         expect(personal_access_token.errors[:name].first).to eq "can't be blank"
+      end
+    end
+
+    describe 'sudo' do
+      let_it_be(:user) { create(:user) }
+
+      it 'is valid when sudo is enabled and the user can administer all resources' do
+        allow(user).to receive(:can_admin_all_resources?).and_return(true)
+
+        expect(build(:personal_access_token, :sudo, user: user)).to be_valid
+      end
+
+      it 'is invalid when sudo is enabled and the user cannot administer all resources', :aggregate_failures do
+        allow(user).to receive(:can_admin_all_resources?).and_return(false)
+
+        token = build(:personal_access_token, :sudo, user: user)
+
+        expect(token).not_to be_valid
+        expect(token.errors[:sudo].first).to eq 'can only be enabled for administrators'
+      end
+
+      it 'is valid when sudo is disabled' do
+        expect(build(:personal_access_token, user: user)).to be_valid
       end
     end
 
@@ -671,18 +793,22 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
         end
       end
     end
-  end
 
-  describe 'delegations' do
-    it { is_expected.to delegate_method(:permitted_for_boundary?).to(:granular_scopes) }
+    describe 'description' do
+      it "can't exceed MAX_DESCRIPTION_LENGTH characters", :aggregate_failures do
+        personal_access_token.description = 'a' * (described_class::MAX_DESCRIPTION_LENGTH + 1)
+        expect(personal_access_token).not_to be_valid
+        expect(personal_access_token.errors[:description]).to include("is too long (maximum is #{described_class::MAX_DESCRIPTION_LENGTH} characters)")
+      end
+    end
   end
 
   describe 'scopes' do
     describe '.inactive', :freeze_time do
-      let_it_be(:token_expired_today, freeze: false) { create(:personal_access_token, expires_at: Date.current) }
-      let_it_be(:token_expired_yesterday, freeze: false) { create(:personal_access_token, expires_at: Date.yesterday) }
-      let_it_be(:revoked_token, freeze: false) { create(:personal_access_token, :revoked) }
-      let_it_be(:active_token, freeze: false) { create(:personal_access_token) }
+      let_it_be(:token_expired_today) { create(:personal_access_token, expires_at: Date.current) }
+      let_it_be(:token_expired_yesterday) { create(:personal_access_token, expires_at: Date.yesterday) }
+      let_it_be(:revoked_token) { create(:personal_access_token, :revoked) }
+      let_it_be(:active_token) { create(:personal_access_token) }
 
       it 'includes token that expired today' do
         expect(described_class.inactive).to include(token_expired_today)
@@ -702,11 +828,11 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe '.active' do
-      let_it_be(:revoked_token, freeze: false) { create(:personal_access_token, :revoked) }
-      let_it_be(:not_revoked_false_token, freeze: false) { create(:personal_access_token, revoked: false) }
-      let_it_be(:not_revoked_nil_token, freeze: false) { create(:personal_access_token, revoked: nil) }
-      let_it_be(:expired_token, freeze: false) { create(:personal_access_token, :expired) }
-      let_it_be(:not_expired_token, freeze: false) { create(:personal_access_token) }
+      let_it_be(:revoked_token) { create(:personal_access_token, :revoked) }
+      let_it_be(:not_revoked_false_token) { create(:personal_access_token, revoked: false) }
+      let_it_be(:not_revoked_nil_token) { create(:personal_access_token, revoked: nil) }
+      let_it_be(:expired_token) { create(:personal_access_token, :expired) }
+      let_it_be(:not_expired_token) { create(:personal_access_token) }
 
       it 'includes non-revoked tokens' do
         expect(described_class.active)
@@ -715,12 +841,12 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe '.expiring_and_not_notified' do
-      let_it_be(:expired_token, freeze: false) { create(:personal_access_token, expires_at: 2.days.ago) }
-      let_it_be(:revoked_token, freeze: false) { create(:personal_access_token, revoked: true) }
-      let_it_be(:valid_token_and_notified, freeze: false) { create(:personal_access_token, expires_at: 2.days.from_now, expire_notification_delivered: true) }
-      let_it_be(:valid_token_and_7d_notified, freeze: false) { create(:personal_access_token, expires_at: 2.days.from_now, seven_days_notification_sent_at: Time.current) }
-      let_it_be(:valid_token, freeze: false) { create(:personal_access_token, expires_at: 2.days.from_now) }
-      let_it_be(:long_expiry_token, freeze: false) { create(:personal_access_token, expires_at: described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now) }
+      let_it_be(:expired_token) { create(:personal_access_token, expires_at: 2.days.ago) }
+      let_it_be(:revoked_token) { create(:personal_access_token, revoked: true) }
+      let_it_be(:valid_token_and_notified) { create(:personal_access_token, expires_at: 2.days.from_now, expire_notification_delivered: true) }
+      let_it_be(:valid_token_and_7d_notified) { create(:personal_access_token, expires_at: 2.days.from_now, seven_days_notification_sent_at: Time.current) }
+      let_it_be(:valid_token) { create(:personal_access_token, expires_at: 2.days.from_now) }
+      let_it_be(:long_expiry_token) { create(:personal_access_token, expires_at: described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now) }
 
       context 'in one day' do
         it "doesn't have any tokens" do
@@ -736,15 +862,15 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     context 'with existing tokens' do
-      let_it_be(:expired_token, freeze: false) { create(:personal_access_token, expires_at: 2.days.ago) }
-      let_it_be(:revoked_token, freeze: false) { create(:personal_access_token, revoked: true) }
-      let_it_be(:impersonation_token, freeze: false) { create(:personal_access_token, :impersonation) }
-      let_it_be(:valid_token_and_notified, freeze: false) { create(:personal_access_token, expires_at: 2.days.from_now, expire_notification_delivered: true) }
-      let_it_be(:valid_token_and_7d_notified, freeze: false) { create(:personal_access_token, expires_at: 2.days.from_now, seven_days_notification_sent_at: Time.current) }
-      let_it_be(:valid_token, freeze: false) { create(:personal_access_token, expires_at: 2.days.from_now, impersonation: false) }
-      let_it_be(:thirty_days_token, freeze: false) { create(:personal_access_token, expires_at: 28.days.from_now) }
-      let_it_be(:sixty_days_token, freeze: false) { create(:personal_access_token, expires_at: 55.days.from_now) }
-      let_it_be(:long_expiry_token, freeze: false) { create(:personal_access_token, expires_at: described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now) }
+      let_it_be(:expired_token) { create(:personal_access_token, expires_at: 2.days.ago) }
+      let_it_be(:revoked_token) { create(:personal_access_token, revoked: true) }
+      let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation) }
+      let_it_be(:valid_token_and_notified) { create(:personal_access_token, expires_at: 2.days.from_now, expire_notification_delivered: true) }
+      let_it_be(:valid_token_and_7d_notified) { create(:personal_access_token, expires_at: 2.days.from_now, seven_days_notification_sent_at: Time.current) }
+      let_it_be_with_reload(:valid_token) { create(:personal_access_token, expires_at: 2.days.from_now, impersonation: false) }
+      let_it_be(:thirty_days_token) { create(:personal_access_token, expires_at: 28.days.from_now) }
+      let_it_be(:sixty_days_token) { create(:personal_access_token, expires_at: 55.days.from_now) }
+      let_it_be(:long_expiry_token) { create(:personal_access_token, expires_at: described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now) }
 
       describe '.scope_for_notification_interval' do
         let(:interval) { :seven_days }
@@ -766,7 +892,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
         end
 
         context 'with min_expires_at' do
-          let_it_be(:five_days_token, freeze: false) { create(:personal_access_token, expires_at: 5.days.from_now, impersonation: false) }
+          let_it_be(:five_days_token) { create(:personal_access_token, expires_at: 5.days.from_now, impersonation: false) }
           let(:min_expires_at) { 4.days.from_now }
           let(:max_expires_at) { 8.days.from_now }
 
@@ -839,11 +965,11 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe '.expired_today_and_not_notified' do
-      let_it_be(:active, freeze: false) { create(:personal_access_token) }
-      let_it_be(:expired_yesterday, freeze: false) { create(:personal_access_token, expires_at: Date.yesterday) }
-      let_it_be(:revoked_token, freeze: false) { create(:personal_access_token, expires_at: Date.current, revoked: true) }
-      let_it_be(:expired_today, freeze: false) { create(:personal_access_token, expires_at: Date.current) }
-      let_it_be(:expired_today_and_notified, freeze: false) { create(:personal_access_token, expires_at: Date.current, after_expiry_notification_delivered: true) }
+      let_it_be(:active) { create(:personal_access_token) }
+      let_it_be(:expired_yesterday) { create(:personal_access_token, expires_at: Date.yesterday) }
+      let_it_be(:revoked_token) { create(:personal_access_token, expires_at: Date.current, revoked: true) }
+      let_it_be(:expired_today) { create(:personal_access_token, expires_at: Date.current) }
+      let_it_be(:expired_today_and_notified) { create(:personal_access_token, expires_at: Date.current, after_expiry_notification_delivered: true) }
 
       it 'returns tokens that have expired today' do
         expect(described_class.expired_today_and_not_notified).to contain_exactly(expired_today)
@@ -851,13 +977,13 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe '.expired_after' do
-      let_it_be(:cut_off, freeze: false) { 3.days.ago }
+      let_it_be(:cut_off) { 3.days.ago }
 
-      let_it_be(:active_token, freeze: false) { create(:personal_access_token) }
+      let_it_be(:active_token) { create(:personal_access_token) }
 
-      let_it_be(:token_expired_before_cut_off, freeze: false) { create(:personal_access_token, expires_at: cut_off - 1.day) }
-      let_it_be(:token_expired_at_cut_off, freeze: false) { create(:personal_access_token, expires_at: cut_off) }
-      let_it_be(:token_expired_after_cut_off, freeze: false) { create(:personal_access_token, expires_at: cut_off + 1.day) }
+      let_it_be(:token_expired_before_cut_off) { create(:personal_access_token, expires_at: cut_off - 1.day) }
+      let_it_be(:token_expired_at_cut_off) { create(:personal_access_token, expires_at: cut_off) }
+      let_it_be(:token_expired_after_cut_off) { create(:personal_access_token, expires_at: cut_off + 1.day) }
 
       it 'returns tokens that are expired after date passed in' do
         expect(described_class.expired_after(cut_off)).to contain_exactly(token_expired_at_cut_off, token_expired_after_cut_off)
@@ -865,8 +991,8 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe '.without_impersonation' do
-      let_it_be(:impersonation_token, freeze: false) { create(:personal_access_token, :impersonation) }
-      let_it_be(:personal_access_token, freeze: false) { create(:personal_access_token) }
+      let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation) }
+      let_it_be(:personal_access_token) { create(:personal_access_token) }
 
       it 'returns only non-impersonation tokens' do
         expect(described_class.without_impersonation).to contain_exactly(personal_access_token)
@@ -874,9 +1000,9 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe 'revoke scopes' do
-      let_it_be(:revoked_token, freeze: false) { create(:personal_access_token, :revoked, updated_at: 4.days.ago) }
-      let_it_be(:non_revoked_token, freeze: false) { create(:personal_access_token, revoked: false) }
-      let_it_be(:non_revoked_token2, freeze: false) { create(:personal_access_token, revoked: nil) }
+      let_it_be(:revoked_token) { create(:personal_access_token, :revoked, updated_at: 4.days.ago) }
+      let_it_be(:non_revoked_token) { create(:personal_access_token, revoked: false) }
+      let_it_be(:non_revoked_token2) { create(:personal_access_token, revoked: nil) }
 
       describe '.revoked' do
         it { expect(described_class.revoked).to contain_exactly(revoked_token) }
@@ -887,15 +1013,15 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       end
 
       describe '.revoked_after' do
-        let_it_be(:cut_off, freeze: false) { 3.days.ago }
+        let_it_be(:cut_off) { 3.days.ago }
 
-        let_it_be(:token_revoked_before_cut_off, freeze: false) { create(:personal_access_token, :revoked, updated_at: cut_off - 1.second) }
-        let_it_be(:token_revoked_at_cut_off, freeze: false) { create(:personal_access_token, :revoked, updated_at: cut_off) }
-        let_it_be(:token_revoked_after_cut_off, freeze: false) { create(:personal_access_token, :revoked, updated_at: cut_off + 1.second) }
+        let_it_be(:token_revoked_before_cut_off) { create(:personal_access_token, :revoked, updated_at: cut_off - 1.second) }
+        let_it_be(:token_revoked_at_cut_off) { create(:personal_access_token, :revoked, updated_at: cut_off) }
+        let_it_be(:token_revoked_after_cut_off) { create(:personal_access_token, :revoked, updated_at: cut_off + 1.second) }
 
-        let_it_be(:non_revoked_token_updated_before_cut_off, freeze: false) { create(:personal_access_token, updated_at: cut_off - 1.second) }
-        let_it_be(:non_revoked_token_updated_at_cut_off, freeze: false) { create(:personal_access_token, updated_at: cut_off) }
-        let_it_be(:non_revoked_token_updated_after_cut_off, freeze: false) { create(:personal_access_token, updated_at: cut_off + 1.second) }
+        let_it_be(:non_revoked_token_updated_before_cut_off) { create(:personal_access_token, updated_at: cut_off - 1.second) }
+        let_it_be(:non_revoked_token_updated_at_cut_off) { create(:personal_access_token, updated_at: cut_off) }
+        let_it_be(:non_revoked_token_updated_after_cut_off) { create(:personal_access_token, updated_at: cut_off + 1.second) }
 
         it 'returns tokens that are revoked after date passed in' do
           expect(described_class.revoked_after(cut_off)).to contain_exactly(token_revoked_at_cut_off, token_revoked_after_cut_off)
@@ -933,11 +1059,11 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   end
 
   describe 'ordering by name' do
-    let_it_be(:earlier_token, freeze: false) { create(:personal_access_token, name: 'Token A') }
-    let_it_be(:later_token, freeze: false) { create(:personal_access_token, name: 'Token B') }
+    let_it_be(:earlier_token) { create(:personal_access_token, name: 'Token A') }
+    let_it_be(:later_token) { create(:personal_access_token, name: 'Token B') }
 
     describe '.order_name_asc_id_asc' do
-      let_it_be(:earlier_token_2, freeze: false) { create(:personal_access_token, name: 'Token A') }
+      let_it_be(:earlier_token_2) { create(:personal_access_token, name: 'Token A') }
 
       it 'returns ordered list in combination of name ascending and id ascending' do
         expect(described_class.order_name_asc_id_asc).to eq [earlier_token, earlier_token_2, later_token]
@@ -945,7 +1071,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe '.order_name_desc_id_desc' do
-      let_it_be(:earlier_token_2, freeze: false) { create(:personal_access_token, name: 'Token A') }
+      let_it_be(:earlier_token_2) { create(:personal_access_token, name: 'Token A') }
 
       it 'returns ordered list in combination of name descending and id descending' do
         expect(described_class.order_name_desc_id_desc).to eq [later_token, earlier_token_2, earlier_token]
@@ -954,11 +1080,11 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   end
 
   describe 'ordering by created_at' do
-    let_it_be(:earlier_token, freeze: false) { create(:personal_access_token, created_at: 2.days.ago) }
-    let_it_be(:later_token, freeze: false) { create(:personal_access_token, created_at: 1.day.ago) }
+    let_it_be(:earlier_token) { create(:personal_access_token, created_at: 2.days.ago) }
+    let_it_be(:later_token) { create(:personal_access_token, created_at: 1.day.ago) }
 
     describe '.order_created_at_asc_id_asc' do
-      let_it_be(:earlier_token_2, freeze: false) { create(:personal_access_token, created_at: 2.days.ago) }
+      let_it_be(:earlier_token_2) { create(:personal_access_token, created_at: 2.days.ago) }
 
       it 'returns ordered list in combination of created_at ascending and id ascending' do
         expect(described_class.order_created_at_asc_id_asc).to eq [earlier_token, earlier_token_2, later_token]
@@ -966,7 +1092,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe '.order_created_at_desc_id_desc' do
-      let_it_be(:earlier_token_2, freeze: false) { create(:personal_access_token, created_at: 2.days.ago) }
+      let_it_be(:earlier_token_2) { create(:personal_access_token, created_at: 2.days.ago) }
 
       it 'returns ordered list in combination of created_at descending and id descending' do
         expect(described_class.order_created_at_desc_id_desc).to eq [later_token, earlier_token_2, earlier_token]
@@ -975,11 +1101,11 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   end
 
   describe 'ordering by expires_at' do
-    let_it_be(:earlier_token, freeze: false) { create(:personal_access_token, expires_at: 2.days.ago) }
-    let_it_be(:later_token, freeze: false) { create(:personal_access_token, expires_at: 1.day.ago) }
+    let_it_be(:earlier_token) { create(:personal_access_token, expires_at: 2.days.ago) }
+    let_it_be(:later_token) { create(:personal_access_token, expires_at: 1.day.ago) }
 
     describe '.order_expires_at_asc_id_asc' do
-      let_it_be(:earlier_token_2, freeze: false) { create(:personal_access_token, expires_at: 2.days.ago) }
+      let_it_be(:earlier_token_2) { create(:personal_access_token, expires_at: 2.days.ago) }
 
       it 'returns ordered list in combination of expires_at ascending and id ascending' do
         expect(described_class.order_expires_at_asc_id_asc).to eq [earlier_token, earlier_token_2, later_token]
@@ -987,7 +1113,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe '.order_expires_at_desc_id_desc' do
-      let_it_be(:earlier_token_2, freeze: false) { create(:personal_access_token, expires_at: 2.days.ago) }
+      let_it_be(:earlier_token_2) { create(:personal_access_token, expires_at: 2.days.ago) }
 
       it 'returns ordered list in combination of expires_at descending and id descending' do
         expect(described_class.order_expires_at_desc_id_desc).to eq [later_token, earlier_token_2, earlier_token]
@@ -996,12 +1122,12 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   end
 
   describe 'ordering by last_used_at' do
-    let_it_be(:two_days_ago, freeze: false) { 2.days.ago }
-    let_it_be(:earlier_token, freeze: false) { create(:personal_access_token, last_used_at: two_days_ago) }
-    let_it_be(:later_token, freeze: false) { create(:personal_access_token, last_used_at: 1.day.ago) }
+    let_it_be(:two_days_ago) { 2.days.ago }
+    let_it_be(:earlier_token) { create(:personal_access_token, last_used_at: two_days_ago) }
+    let_it_be(:later_token) { create(:personal_access_token, last_used_at: 1.day.ago) }
 
     describe '.order_last_used_at_asc_id_asc' do
-      let_it_be(:earlier_token_2, freeze: false) { create(:personal_access_token, last_used_at: two_days_ago) }
+      let_it_be(:earlier_token_2) { create(:personal_access_token, last_used_at: two_days_ago) }
 
       it 'returns ordered list in combination of last_used_at ascending and id ascending' do
         expect(described_class.order_last_used_at_asc_id_asc).to eq [earlier_token, earlier_token_2, later_token]
@@ -1009,7 +1135,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     describe '.order_last_used_at_desc_id_desc' do
-      let_it_be(:earlier_token_2, freeze: false) { create(:personal_access_token, last_used_at: 2.days.ago) }
+      let_it_be(:earlier_token_2) { create(:personal_access_token, last_used_at: 2.days.ago) }
 
       it 'returns ordered list in combination of expires_at descending and id descending' do
         expect(described_class.order_last_used_at_desc_id_desc).to eq [later_token, earlier_token_2, earlier_token]
@@ -1024,8 +1150,8 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   describe '#token' do
     let(:random_bytes) { 'a' * Authn::TokenField::Generator::RoutableToken::RANDOM_BYTES_LENGTH }
     let(:devise_token) { 'devise-token' }
-    let_it_be(:user, freeze: false) { create(:user) }
-    let_it_be(:organization, freeze: false) { create(:organization) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:organization) { create(:organization) }
     let(:token_digest) { nil }
     let(:token_owner_record) do
       create(:personal_access_token,
@@ -1075,7 +1201,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     context 'with custom personal access token prefix' do
-      let_it_be(:personal_access_token_prefix, freeze: false) { 'custom-pat-prefix-' }
+      let_it_be(:personal_access_token_prefix) { 'custom-pat-prefix-' }
 
       before do
         stub_application_setting(personal_access_token_prefix: personal_access_token_prefix)

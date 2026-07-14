@@ -38,7 +38,7 @@ RSpec.describe 'getting group members information', feature_category: :groups_an
       end
     end
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_member do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_group, :read_member] do
       let(:user) { user_1 }
       let(:boundary_object) { parent_group }
       let(:query) do

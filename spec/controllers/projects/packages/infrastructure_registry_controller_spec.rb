@@ -3,14 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Packages::InfrastructureRegistryController, feature_category: :package_registry do
-  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   let(:params) { { namespace_id: project.namespace, project_id: project } }
 
   before do
     sign_in(user)
-    project.add_maintainer(user)
   end
 
   describe 'GET #index' do

@@ -207,12 +207,82 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
         end
       end
 
-      context 'when account_id response returns non-200 status' do
-        let(:account_id_response) do
-          instance_double(HTTParty::Response, code: '404', body: 'Not Found')
+      [
+        { code: '404', body: 'Not Found' },
+        { code: '401', body: 'Unauthorized' },
+        { code: '403', body: 'Forbidden' }
+      ].each do |test_case|
+        context "when account_id response returns a #{test_case[:code]} status" do
+          let(:account_id_response) do
+            instance_double(HTTParty::Response, code: test_case[:code], body: test_case[:body])
+          end
+
+          before do
+            allow(Gitlab::HTTP).to receive(:get).and_return(account_id_response)
+          end
+
+          it 'logs a login rejected warning, skips authentication and returns empty hash' do
+            aggregate_failures do
+              expect(Gitlab::AppLogger).to receive(:warn)
+                .with(
+                  message: "O11y authentication failed: invalid credentials or login rejected",
+                  class: described_class.name,
+                  response_code: test_case[:code]
+                )
+              expect(Gitlab::HTTP).not_to receive(:post)
+              expect(generate_tokens).to eq({})
+            end
+          end
+        end
+      end
+
+      [
+        { code: '503', body: 'Service Unavailable' },
+        { code: '502', body: 'Bad Gateway' },
+        { code: '500', body: 'Internal Server Error' }
+      ].each do |test_case|
+        context "when account_id response returns a #{test_case[:code]} status and settings are not new" do
+          let(:account_id_response) do
+            instance_double(HTTParty::Response, code: test_case[:code], body: test_case[:body])
+          end
+
+          before do
+            allow(Gitlab::HTTP).to receive(:get).and_return(account_id_response)
+          end
+
+          it 'logs an instance unavailable warning, skips authentication and returns empty hash' do
+            aggregate_failures do
+              expect(Gitlab::AppLogger).to receive(:warn)
+                .with(
+                  message: "O11y authentication failed: observability instance unavailable",
+                  class: described_class.name,
+                  response_code: test_case[:code]
+                )
+              expect(Gitlab::HTTP).not_to receive(:post)
+              expect(generate_tokens).to eq({})
+            end
+          end
+        end
+      end
+
+      context 'when the account_id request raises a connection error' do
+        before do
+          allow(Gitlab::HTTP).to receive(:get).and_raise(SocketError.new('Connection refused'))
         end
 
-        include_examples 'returns empty hash and skips authentication'
+        it 'logs a connection error warning with the exception details, skips authentication and returns empty hash' do
+          aggregate_failures do
+            expect(Gitlab::AppLogger).to receive(:warn)
+              .with(
+                message: "O11y authentication failed: connection error",
+                class: described_class.name,
+                error_class: 'SocketError',
+                error_message: 'Connection refused'
+              )
+            expect(Gitlab::HTTP).not_to receive(:post)
+            expect(generate_tokens).to eq({})
+          end
+        end
       end
 
       context 'when account_id response returns 200 but no orgs available' do

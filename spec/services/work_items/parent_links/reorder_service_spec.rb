@@ -5,11 +5,14 @@ require 'spec_helper'
 RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfolio_management do
   describe '#execute' do
     let_it_be(:guest) { create(:user) }
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project) { create(:project, guests: guest) }
     let_it_be_with_reload(:parent) { create(:work_item, :issue, project: project) }
     let_it_be_with_reload(:work_item) { create(:work_item, :task, project: project) }
     let_it_be_with_reload(:top_adjacent) { create(:work_item, :task, project: project) }
     let_it_be_with_reload(:last_adjacent) { create(:work_item, :task, project: project) }
+
+    let_it_be(:_top_parent_link) { create(:parent_link, work_item: top_adjacent, work_item_parent: parent) }
+    let_it_be(:_last_parent_link) { create(:parent_link, work_item: last_adjacent, work_item_parent: parent) }
 
     let(:parent_link_class) { WorkItems::ParentLink }
     let(:user) { guest }
@@ -18,13 +21,6 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
     let(:relative_range) { [top_adjacent, last_adjacent].map(&:parent_link).map(&:relative_position).sort }
 
     subject(:reorder) { described_class.new(parent, user, params).execute }
-
-    before do
-      project.add_guest(guest)
-
-      create(:parent_link, work_item: top_adjacent, work_item_parent: parent)
-      create(:parent_link, work_item: last_adjacent, work_item_parent: parent)
-    end
 
     shared_examples 'raises a service error' do |message, status = 409|
       it { is_expected.to eq(service_error(message, http_status: status)) }
@@ -71,7 +67,7 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
     end
 
     context 'when user has insufficient permissions' do
-      let(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       it_behaves_like 'returns not found error'
 
@@ -85,7 +81,7 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
     end
 
     context 'when child and parent are already linked' do
-      before do
+      before_all do
         create(:parent_link, work_item: work_item, work_item_parent: parent)
       end
 

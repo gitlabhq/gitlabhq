@@ -43,7 +43,9 @@ module Sidebars
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: :packages },
             item_id: :packages_registry,
-            container_html_options: { class: 'shortcuts-container-registry' }
+            container_html_options: { class: 'shortcuts-container-registry' },
+            description: _('Publish and share packages across your organization'),
+            library_icon: 'package'
           )
         end
 
@@ -57,7 +59,9 @@ module Sidebars
             link: project_container_registry_index_path(context.project),
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: 'projects/registry/repositories' },
-            item_id: :container_registry
+            item_id: :container_registry,
+            description: _('Store and deploy container images'),
+            library_icon: 'container-image'
           )
         end
 
@@ -71,7 +75,9 @@ module Sidebars
             link: project_infrastructure_registry_index_path(context.project),
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: :infrastructure_registry },
-            item_id: :infrastructure_registry
+            item_id: :infrastructure_registry,
+            description: _('Share and reuse infrastructure code'),
+            library_icon: 'infrastructure-registry'
           )
         end
 
@@ -100,7 +106,9 @@ module Sidebars
             link: project_ml_experiments_path(context.project),
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
             active_routes: { controller: %w[projects/ml/experiments projects/ml/candidates] },
-            item_id: :model_experiments
+            item_id: :model_experiments,
+            description: _('Track and manage machine learning experiments'),
+            library_icon: 'machine-learning'
           )
         end
 
@@ -114,7 +122,9 @@ module Sidebars
             link: project_ml_models_path(context.project),
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: %w[projects/ml/models] },
-            item_id: :model_registry
+            item_id: :model_registry,
+            description: _('Store and manage machine learning models'),
+            library_icon: 'model-registry'
           )
         end
 

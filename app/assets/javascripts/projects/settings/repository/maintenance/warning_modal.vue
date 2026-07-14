@@ -4,6 +4,7 @@ import { uniqueId } from 'lodash-es';
 import { __, s__ } from '~/locale';
 
 export default {
+  name: 'WarningModal',
   i18n: {
     title: __('Are you absolutely sure?'),
     confirmText: __('Enter the following to confirm:'),

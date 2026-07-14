@@ -3,10 +3,10 @@ import { kebabCase } from 'lodash-es';
 import {
   GlCollapse,
   GlIcon,
+  GlNavItem,
   GlAnimatedChevronRightDownIcon,
   GlOutsideDirective as Outside,
 } from '@gitlab/ui';
-import { NAV_ITEM_LINK_ACTIVE_CLASS } from '../constants';
 import NavItem from './nav_item.vue';
 import FlyoutMenu from './flyout_menu.vue';
 
@@ -15,6 +15,7 @@ export default {
   components: {
     GlCollapse,
     GlIcon,
+    GlNavItem,
     GlAnimatedChevronRightDownIcon,
     NavItem,
     FlyoutMenu,
@@ -76,7 +77,6 @@ export default {
     },
     computedLinkClasses() {
       return {
-        [NAV_ITEM_LINK_ACTIVE_CLASS]: this.isActive,
         'with-mouse-over-flyout': this.isMouseOverFlyout,
       };
     },
@@ -148,38 +148,29 @@ export default {
 
 <template>
   <component :is="tag">
-    <button
+    <gl-nav-item
       :id="`menu-section-button-${itemId}`"
       v-outside="handleClickOutside"
-      class="application-chrome-nav-item super-sidebar-nav-item gl-relative gl-mb-1 gl-flex gl-w-full gl-appearance-none gl-items-center gl-gap-3 gl-border-0 gl-bg-transparent gl-px-2 gl-py-1 gl-text-left !gl-text-default !gl-no-underline focus:gl-focus"
+      class="gl-relative gl-mb-1"
       :class="computedLinkClasses"
       data-testid="menu-section-button"
       :data-qa-section-name="item.title"
       :aria-label="item.title"
+      :icon="item.icon"
+      :is-icon-only="isIconOnly"
+      :expanded="isExpanded"
+      :selected="isActive"
+      is-parent
       v-bind="buttonProps"
       @click="handleClick"
-      @keydown.escape="handleClickOutside"
+      @escape="handleClickOutside"
       @pointerover="handlePointerover"
       @pointerleave="handlePointerleave"
     >
-      <span class="gl-flex gl-h-6 gl-w-6 gl-shrink-0">
-        <slot name="icon">
-          <gl-icon
-            v-if="item.icon"
-            :name="item.icon"
-            class="super-sidebar-nav-item-icon gl-m-auto"
-          />
-        </slot>
-      </span>
-
-      <span v-show="!isIconOnly" class="gl-truncate-end menu-section-button-label gl-grow">
+      <span class="gl-truncate-end menu-section-button-label">
         {{ item.title }}
       </span>
-
-      <span v-if="!isIconOnly" class="gl-mr-2 gl-text-right gl-text-subtle">
-        <gl-animated-chevron-right-down-icon :is-on="showExpanded" />
-      </span>
-    </button>
+    </gl-nav-item>
 
     <flyout-menu
       v-if="hasFlyout && isMouseOver && !showExpanded && !keepFlyoutClosed && navItems.length > 0"

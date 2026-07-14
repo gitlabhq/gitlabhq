@@ -25,6 +25,7 @@ type Handler struct {
 	rails               *api.API
 	rdb                 *redis.Client
 	backend             http.Handler
+	relativeURLRoot     string
 	upgrader            websocket.Upgrader
 	runners             sync.Map // map[*runner]bool
 	stopWorkflowTimeout time.Duration
@@ -33,12 +34,17 @@ type Handler struct {
 // NewHandler creates a new Handler for managing Duo Workflow WebSocket connections.
 // The handler maintains a registry of active runners to support graceful shutdown
 // of WebSocket connections during server termination.
-func NewHandler(rails *api.API, rdb *redis.Client, backend http.Handler) *Handler {
+//
+// relativeURLRoot is GitLab's URL prefix (e.g. "/gitlab/"), empty at the domain
+// root. It is forwarded to the action handler so DWS action paths resolve
+// against the correct prefix when re-entering the upstream router.
+func NewHandler(rails *api.API, rdb *redis.Client, backend http.Handler, relativeURLRoot string) *Handler {
 	return &Handler{
-		rails:    rails,
-		backend:  backend,
-		rdb:      rdb,
-		upgrader: websocket.Upgrader{},
+		rails:           rails,
+		backend:         backend,
+		relativeURLRoot: relativeURLRoot,
+		rdb:             rdb,
+		upgrader:        websocket.Upgrader{},
 	}
 }
 
@@ -93,7 +99,7 @@ func (h *Handler) handleWebSocketConnection(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *Handler) createRunner(conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow, r *http.Request) (*runner, error) {
-	runner, err := newRunner(conn, h.rails, h.backend, r, duoWorkflowConfig, h.rdb)
+	runner, err := newRunner(conn, h.rails, h.backend, h.relativeURLRoot, r, duoWorkflowConfig, h.rdb)
 	if err != nil {
 		return nil, err
 	}

@@ -43,6 +43,12 @@ RSpec.describe 'Query.mergeRequest.linkedWorkItems', feature_category: :code_rev
     post_graphql(query, current_user: current_user)
   end
 
+  it 'is deprecated in favor of workItemRelations' do
+    field = ::Types::MergeRequestType.fields['linkedWorkItems']
+
+    expect(field.deprecation_reason).to include('workItemRelations')
+  end
+
   context 'when filtering by CLOSES type' do
     let(:linked_work_items_fields) do
       <<~GRAPHQL

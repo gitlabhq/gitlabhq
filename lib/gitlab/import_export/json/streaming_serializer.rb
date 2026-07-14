@@ -81,14 +81,16 @@ module Gitlab
 
           return if @excluded_relations.include?(key.to_s)
 
+          batch_ids = options[:batch_ids]
+
+          return if batch_ids && batch_ids.empty?
+
           record = exportable.public_send(key) # rubocop: disable GitlabSecurity/PublicSend
 
-          if options[:batch_ids]
-            record = record.where(record.model.primary_key => Array.wrap(options[:batch_ids]).map(&:to_i))
-          end
+          record = record.where(record.model.primary_key => Array.wrap(batch_ids).map(&:to_i)) if batch_ids
 
           if record.is_a?(ActiveRecord::Relation)
-            batch_order = batch_ordering(record, key, options[:batch_ids])
+            batch_order = batch_ordering(record, key, batch_ids)
             serialize_many_relations(key, record, definition_options, batch_order: batch_order)
           elsif record.respond_to?(:each) # this is to support `project_members` that return an Array
             serialize_many_each(key, record, definition_options)
@@ -102,7 +104,7 @@ module Gitlab
         attr_reader :json_writer, :relations_schema, :exportable, :logger, :current_user
 
         def serialize_many_relations(key, records, options, batch_order:)
-          log_relation_export(key, records.size)
+          log_relation_export(key, record_count(key, records))
 
           # Temporarily skip preloading associations for epics as that results in not preloading
           # epic work item associations
@@ -313,9 +315,17 @@ module Gitlab
         strong_memoize_attr :user_contributions_export_mapper
 
         def log_base_data
-          log = { importer: 'Import/Export' }
+          importer = @offline_export_id ? ::Import::SOURCE_OFFLINE_TRANSFER : 'Import/Export'
+          log = { importer: importer }
           log.merge!(Gitlab::ImportExport::LogUtil.exportable_to_log_payload(exportable))
           log
+        end
+
+        # Skip `records.size` for commit_notes due to a lack of good database index
+        def record_count(key, records)
+          return if key == :commit_notes
+
+          records.size
         end
 
         def log_relation_export(relation, size = nil)

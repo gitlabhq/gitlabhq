@@ -16,6 +16,7 @@ const messageHtml = `
 `;
 
 export default {
+  name: 'TrustUser',
   components: {
     GlDisclosureDropdownItem,
   },

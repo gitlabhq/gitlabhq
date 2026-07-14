@@ -54,6 +54,10 @@ describe('Test case details', () => {
       expect(findModal().props('title')).toBe(defaultTestCase.classname);
     });
 
+    it('renders the modal with correct size', () => {
+      expect(findModal().props('size')).toBe('lg');
+    });
+
     it('renders the test case name', () => {
       expect(findName().text()).toBe(defaultTestCase.name);
     });

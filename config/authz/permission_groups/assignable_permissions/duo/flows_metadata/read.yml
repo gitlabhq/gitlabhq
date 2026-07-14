@@ -1,0 +1,11 @@
+---
+name: read_flows_metadata
+description: Grants the ability to read Duo Agent Platform flow capability metadata
+available_for:
+  - granular_access_token
+permissions:
+  - read_flows_metadata
+boundaries:
+  - instance
+  - group
+  - project

@@ -6,9 +6,9 @@ RSpec.describe Banzai::ReferenceParser::DesignParser, feature_category: :design_
   include ReferenceParserHelpers
   include DesignManagementTestHelpers
 
-  let_it_be(:issue, freeze: false) { create(:issue) }
-  let_it_be(:design, freeze: false) { create(:design, :with_versions, issue: issue) }
-  let_it_be(:user, freeze: false) { create(:user, developer_of: issue.project) }
+  let_it_be_with_reload(:issue) { create(:issue) }
+  let_it_be_with_reload(:design) { create(:design, :with_versions, issue: issue) }
+  let_it_be_with_reload(:user) { create(:user, developer_of: issue.project) }
   let(:link) { design_link(design) }
 
   subject(:instance) { described_class.new(Banzai::RenderContext.new(issue.project, user)) }
@@ -23,17 +23,17 @@ RSpec.describe Banzai::ReferenceParser::DesignParser, feature_category: :design_
     end
 
     describe 'specific states' do
-      let_it_be(:public_project, freeze: false) { create(:project, :public) }
+      let_it_be_with_reload(:public_project) { create(:project, :public) }
 
-      let_it_be(:other_project_link, freeze: false) do
+      let_it_be_with_reload(:other_project_link) do
         design_link(create(:design, :with_versions))
       end
 
-      let_it_be(:public_link, freeze: false) do
+      let_it_be_with_reload(:public_link) do
         design_link(create(:design, :with_versions, issue: create(:issue, project: public_project)))
       end
 
-      let_it_be(:public_but_confidential_link, freeze: false) do
+      let_it_be_with_reload(:public_but_confidential_link) do
         design_link(create(:design, :with_versions, issue: create(:issue, :confidential, project: public_project)))
       end
 

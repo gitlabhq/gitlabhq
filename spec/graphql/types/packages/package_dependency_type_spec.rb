@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['PackageDependency'] do
+RSpec.describe GitlabSchema.types['PackageDependency'], feature_category: :package_registry do
   it 'includes package file fields' do
     expected_fields = %w[
       id name version_pattern

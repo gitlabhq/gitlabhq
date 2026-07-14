@@ -52,6 +52,7 @@ module API
         optional :domain, type: String, desc: 'The domain of the GitLab Pages site to filter on.'
         use :pagination
       end
+      route_setting :authorization, permissions: :read_pages_domain, boundary_type: :instance
       get "domains", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         if params[:domain].present?
           domain = PagesDomain.find_by_domain_case_insensitive(params[:domain])

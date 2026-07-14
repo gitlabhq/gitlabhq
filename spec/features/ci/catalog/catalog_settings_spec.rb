@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_composition do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:namespace) { create(:group) }
   let_it_be_with_reload(:project_with_ci_components) do
     create(
@@ -14,7 +14,7 @@ RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_compos
     )
   end
 
-  let_it_be(:catalog_resource, freeze: false) { create(:ci_catalog_resource, project: project_with_ci_components) }
+  let_it_be_with_reload(:catalog_resource) { create(:ci_catalog_resource, project: project_with_ci_components) }
 
   context 'when user is not the owner' do
     before_all do
@@ -47,7 +47,7 @@ RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_compos
     end
 
     context 'when a project is not a Catalog resource' do
-      let_it_be(:plain_project, freeze: false) { create(:project, namespace: namespace) }
+      let_it_be(:plain_project) { create(:project, namespace: namespace) }
 
       before do
         visit project_path(plain_project)

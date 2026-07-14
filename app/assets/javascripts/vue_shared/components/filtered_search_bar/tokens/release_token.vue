@@ -6,6 +6,7 @@ import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_t
 import { OPTIONS_NONE_ANY } from '../constants';
 
 export default {
+  name: 'ReleaseToken',
   components: {
     BaseToken,
     GlFilteredSearchSuggestion,

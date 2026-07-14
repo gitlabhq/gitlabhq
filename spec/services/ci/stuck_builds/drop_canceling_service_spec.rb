@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::StuckBuilds::DropCancelingService, feature_category: :continuous_integration do
+RSpec.describe Ci::StuckBuilds::DropCancelingService, feature_category: :continuous_integration, factory_default: :keep do
+  let_it_be(:project) { create_default(:project) }
   let_it_be(:runner) { create :ci_runner }
   let!(:job) { create(:ci_build, runner: runner, created_at: created_at, updated_at: updated_at, status: status) }
-  let(:outdated_time) { described_class::TIMEOUT.ago - 15.minutes }
-  let(:fresh_time) { described_class::TIMEOUT.ago + 15.minutes }
+  let(:outdated_time) { described_class::BUILD_CANCELING_OUTDATED_TIMEOUT.ago - 15.minutes }
+  let(:fresh_time) { described_class::BUILD_CANCELING_OUTDATED_TIMEOUT.ago + 15.minutes }
 
   subject(:service) { described_class.new }
 

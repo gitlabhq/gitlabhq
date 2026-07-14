@@ -1,3 +1,4 @@
 ---
 name: _reopen_authored_work_item
 description: Grants the ability to reopen work items that were authored by the user. Does not apply to incidents.
+conditionally_enables: reopen_issue

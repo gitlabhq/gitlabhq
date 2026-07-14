@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AppearancesHelper do
+RSpec.describe AppearancesHelper, feature_category: :navigation do
   let_it_be(:gitlab_logo) { ActionController::Base.helpers.image_path('logo.svg') }
 
   before do

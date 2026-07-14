@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLabをマイクロサービスとして使用する
 ---
 
@@ -12,10 +12,10 @@ title: GitLabをマイクロサービスとして使用する
 
 {{< /details >}}
 
-多くのアプリケーションはJSON APIにアクセスする必要があるため、アプリケーションテストもAPIにアクセスする必要がある場合があります。次の例では、GitLab APIへのテストアクセスを許可するために、GitLabをマイクロサービスとして使用する方法を示します。
+多くのアプリケーションがJSON APIにアクセスする必要があるため、アプリケーションテストでもAPIへのアクセスが必要になる場合があります。次の例は、GitLabをマイクロサービスとして使用して、テストにGitLab APIへのアクセスを許可する方法を示しています。
 
-1. DockerまたはKubernetes executorで[Runner](../runners/_index.md)を設定します。
-1. `.gitlab-ci.yml`に以下を追加します:
+1. [Runner](../runners/_index.md)をDockerまたはKubernetes executorで設定します。
+1. お使いの`.gitlab-ci.yml`に追加します:
 
    ```yaml
    services:
@@ -27,16 +27,13 @@ title: GitLabをマイクロサービスとして使用する
      GITLAB_ROOT_PASSWORD: "password"  # to access the api with user root:password
    ```
 
-{{< alert type="note" >}}
+> [!note]
+> GitLab UIで設定された変数は、サービスコンテナには渡されません。詳細については、[GitLab CI/CD変数](../variables/_index.md)を参照してください。
 
-GitLab UIで設定された変数は、サービスコンテナに渡されません。詳細については、[GitLab CI/CD変数](../variables/_index.md)を参照してください。
+その後、`.gitlab-ci.yml`ファイルの`script`セクションのコマンドは、`http://gitlab/api/v4`でAPIにアクセスできます。
 
-{{< /alert >}}
+`Host`に`gitlab`が使用される理由の詳細については、[ジョブにサービスがリンクされる方法](../docker/using_docker_images.md#extended-docker-configuration-options)を参照してください。
 
-次に、`script`ファイルの`.gitlab-ci.yml`セクションのコマンドは、`http://gitlab/api/v4`でAPIにアクセスできます。
+[Docker Hub](https://hub.docker.com/u/gitlab)で利用可能な他のDockerイメージも使用できます。
 
-`gitlab`が`Host`に使用される理由の詳細については、[サービスをジョブにリンクする方法](../docker/using_docker_images.md#extended-docker-configuration-options)を参照してください。
-
-[Docker Hub](https://hub.docker.com/u/gitlab)で利用可能な他のDockerイメージを使用することもできます。
-
-`gitlab`イメージは、環境変数を受け入れることができます。詳細については、[Linuxパッケージ](../../install/_index.md)ドキュメントを参照してください。
+`gitlab`イメージは環境変数を受け入れることができます。詳細については、[Linuxパッケージドキュメント](../../install/_index.md)を参照してください。

@@ -256,7 +256,7 @@ class ProjectTeam
     # This check is next since it is more efficient than the organization ownership check
     return ProjectMember::OWNER if personal_namespace_owner?(user)
 
-    return ProjectMember::OWNER if !only_concrete_membership && user.can_admin_organization?(project.organization)
+    return ProjectMember::OWNER if !only_concrete_membership && user.can_update_organization?(project.organization)
 
     max_member_access(user.id)
   end

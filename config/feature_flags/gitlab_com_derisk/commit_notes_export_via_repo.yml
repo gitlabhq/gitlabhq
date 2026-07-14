@@ -1,0 +1,10 @@
+---
+name: commit_notes_export_via_repo
+description: Export commit notes by walking repository commits and querying notes by commit_id IN (...) instead of by noteable_type='Commit', to avoid statement timeouts on large projects.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/554953
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240277
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/602755
+milestone: '19.2'
+group: group::import
+type: gitlab_com_derisk
+default_enabled: false

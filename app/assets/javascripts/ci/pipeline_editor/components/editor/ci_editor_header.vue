@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlLink } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { exploreCatalogIndexPath } from '~/lib/utils/path_helpers/explore';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -24,7 +25,6 @@ export default {
     GlLink,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin()],
-  inject: ['ciCatalogPath'],
   props: {
     showHelpDrawer: {
       type: Boolean,
@@ -37,6 +37,9 @@ export default {
   },
   emits: ['switch-drawer'],
   computed: {
+    exploreCatalogIndexPath() {
+      return exploreCatalogIndexPath();
+    },
     editorA11yHelpPagePath() {
       return helpPagePath('ci/pipeline_editor/_index.md', {
         anchor: 'editor-accessibility-options',
@@ -77,7 +80,7 @@ export default {
   >
     <slot></slot>
     <gl-button
-      :href="ciCatalogPath"
+      :href="exploreCatalogIndexPath"
       size="small"
       icon="catalog-checkmark"
       target="_blank"

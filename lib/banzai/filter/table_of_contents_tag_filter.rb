@@ -25,7 +25,6 @@ module Banzai
       HEADER_XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(HEADER_CSS).freeze
 
       def call
-        return doc unless MarkdownFilter.glfm_markdown?(context)
         return doc if context[:no_header_anchors]
 
         doc.xpath(GOLLUM_TOC_QUERY).each do |node|

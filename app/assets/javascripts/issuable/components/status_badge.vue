@@ -35,6 +35,7 @@ const mergeRequestPropertiesMap = {
 };
 
 export default {
+  name: 'StatusBadge',
   components: {
     GlBadge,
   },

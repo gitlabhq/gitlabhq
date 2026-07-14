@@ -18,6 +18,7 @@ import { GroupByParamType } from 'ee_else_ce/boards/constants';
 const trackingMixin = Tracking.mixin();
 
 export default {
+  name: 'BoardOptions',
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
@@ -41,6 +42,7 @@ export default {
       default: false,
     },
   },
+  emits: ['toggleSwimlanes'],
   data() {
     return {
       isShowingLabels: null,

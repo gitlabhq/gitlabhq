@@ -47,8 +47,8 @@ describe('Design item component', () => {
           notesCount,
           updatedAt: '01-01-2019',
           useRouter: true,
-          workItemWebUrl: '/gitlab-org/gitlab-test/-/work_items/1',
-          workItemIid: 'gid://gitlab/WorkItem/1',
+          workItemFullPath: 'gitlab-org/gitlab-test',
+          workItemIid: '1',
           ...props,
         },
         data() {
@@ -77,7 +77,7 @@ describe('Design item component', () => {
         expect.objectContaining({
           params: {
             id: 'test',
-            iid: 'gid://gitlab/WorkItem/1',
+            iid: '1',
           },
         }),
       );

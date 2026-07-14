@@ -22,7 +22,7 @@ RSpec.describe Members::Enumerable, feature_category: :groups_and_projects do
     # rubocop:enable RSpec/AnyInstanceOf
   end
 
-  let_it_be(:klass, freeze: false) do
+  let_it_be(:klass) do
     Class.new(Namespace) do
       include Members::Enumerable
 
@@ -32,7 +32,7 @@ RSpec.describe Members::Enumerable, feature_category: :groups_and_projects do
     end
   end
 
-  let_it_be(:source, freeze: false) { create(:namespace).becomes(klass) } # rubocop: disable Cop/AvoidBecomes -- easier to reuse existing factory object for a dummy model
+  let_it_be(:source) { create(:namespace).becomes(klass) } # rubocop: disable Cop/AvoidBecomes -- easier to reuse existing factory object for a dummy model
   let!(:owner) { create(:member, :owner, source: source).user }
   let!(:guest) { create(:member, :guest, source: source).user }
   let!(:requested) { create(:member, :access_request, source: source).user }

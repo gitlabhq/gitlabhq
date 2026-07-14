@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workflow do
@@ -276,7 +277,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
   end
 
   context 'with no draft notes' do
-    let(:merge_request) { create(:merge_request) }
+    let_it_be_with_reload(:merge_request) { create(:merge_request) }
 
     it 'does not publish a DraftNotePublishedEvent' do
       expect(::Gitlab::EventStore).not_to receive(:publish)

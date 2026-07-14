@@ -7,7 +7,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
   let_it_be(:users) { create_list(:user, 2) }
 
-  let_it_be(:group, freeze: false) { create(:group, owners: users.first) }
+  let_it_be_with_reload(:group) { create(:group, owners: users.first) }
   let_it_be(:subgroup) { create(:group, parent: group) }
 
   let_it_be(:organization) { create_default(:organization) }
@@ -73,7 +73,17 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
     end
   end
 
+  # NOTE: No cross-organization isolation test for the user-scoped path (`GET /runners` /
+  # `User#ci_available_runners`). Organization filtering on this path was implemented in #591183
+  # (MR !226892) but reverted in MR !229222 due to a cross-database query incident, so no organization
+  # boundary is enforced in master today. A boundary test should be added once the filtering is reinstated.
   describe 'GET /runners' do
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { :user }
+      let(:user) { admin }
+      let(:request) { get api('/runners', personal_access_token: pat) }
+    end
+
     let(:path) { "/runners?#{query_path}" }
 
     subject(:perform_request) { get api(path, current_user) }
@@ -274,6 +284,24 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
   end
 
   describe 'GET /runners/:id/managers' do
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api("/runners/#{shared_runner.id}/managers", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { project }
+      let(:user) { users.first }
+      let(:request) { get api("/runners/#{project_runner.id}/managers", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { group }
+      let(:user) { users.first }
+      let(:request) { get api("/runners/#{group_runner_a.id}/managers", personal_access_token: pat) }
+    end
+
     let(:path) { "/runners/#{runner.id}/managers" }
 
     subject(:perform_request) { get api(path, current_user) }
@@ -375,7 +403,16 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
     end
   end
 
+  # NOTE: No cross-organization isolation test for the admin path (`GET /runners/all`). It is
+  # cell-scoped by design (admins see every runner on the cell, across all organizations), so a
+  # second-organization runner is expected to be returned here, not filtered out.
   describe 'GET /runners/all' do
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api('/runners/all', personal_access_token: pat) }
+    end
+
     let(:path) { "/runners/all?#{query_path}" }
 
     subject(:perform_request) { get api(path, current_user) }
@@ -655,6 +692,24 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
   end
 
   describe 'GET /runners/:id' do
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api("/runners/#{shared_runner.id}", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { project }
+      let(:user) { users.first }
+      let(:request) { get api("/runners/#{project_runner.id}", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { group }
+      let(:user) { users.first }
+      let(:request) { get api("/runners/#{group_runner_a.id}", personal_access_token: pat) }
+    end
+
     let(:runner_id) { runner.id }
     let(:path) { "/runners/#{runner_id}?#{query_path}" }
 
@@ -677,8 +732,8 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
           expect(json_response['description']).to eq(shared_runner.description)
           expect(json_response['maximum_timeout']).to be_nil
           expect(json_response['status']).to eq('never_contacted')
-          expect(json_response['active']).to eq(true)
-          expect(json_response['paused']).to eq(false)
+          expect(json_response['active']).to be(true)
+          expect(json_response['paused']).to be(false)
           expect(json_response['maintenance_note']).to be_nil
         end
 
@@ -866,6 +921,24 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
   end
 
   describe 'PUT /runners/:id' do
+    it_behaves_like 'authorizing granular token permissions', :update_runner do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { put api("/runners/#{shared_runner.id}", personal_access_token: pat), params: { description: 'gpat' } }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_runner do
+      let(:boundary_object) { project }
+      let(:user) { users.first }
+      let(:request) { put api("/runners/#{project_runner.id}", personal_access_token: pat), params: { description: 'gpat' } }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_runner do
+      let(:boundary_object) { group }
+      let(:user) { users.first }
+      let(:request) { put api("/runners/#{group_runner_a.id}", personal_access_token: pat), params: { description: 'gpat' } }
+    end
+
     let(:runner_id) { runner.id }
     let(:path) { "/runners/#{runner_id}?#{query_path}" }
 
@@ -1168,6 +1241,24 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
   end
 
   describe 'DELETE /runners/:id' do
+    it_behaves_like 'authorizing granular token permissions', :delete_runner do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { delete api("/runners/#{shared_runner.id}", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_runner do
+      let(:boundary_object) { project }
+      let(:user) { users.first }
+      let(:request) { delete api("/runners/#{project_runner.id}", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_runner do
+      let(:boundary_object) { group }
+      let(:user) { users.first }
+      let(:request) { delete api("/runners/#{group_runner_a.id}", personal_access_token: pat) }
+    end
+
     let(:runner_id) { runner.id }
     let(:path) { "/runners/#{runner_id}?#{query_path}" }
 
@@ -1466,6 +1557,24 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
   end
 
   describe 'GET /runners/:id/projects' do
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api("/runners/#{shared_runner.id}/projects", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { project }
+      let(:user) { users.first }
+      let(:request) { get api("/runners/#{project_runner.id}/projects", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { group }
+      let(:user) { users.first }
+      let(:request) { get api("/runners/#{group_runner_a.id}/projects", personal_access_token: pat) }
+    end
+
     let(:runner_id) { runner.id }
     let(:path) { "/runners/#{runner_id}/projects?#{query_path}" }
 
@@ -1669,6 +1778,24 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
   end
 
   describe 'POST /runners/:id/reset_authentication_token' do
+    it_behaves_like 'authorizing granular token permissions', :update_runner do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { post api("/runners/#{shared_runner.id}/reset_authentication_token", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_runner do
+      let(:boundary_object) { project }
+      let(:user) { users.first }
+      let(:request) { post api("/runners/#{project_runner.id}/reset_authentication_token", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_runner do
+      let(:boundary_object) { group }
+      let(:user) { users.first }
+      let(:request) { post api("/runners/#{group_runner_a.id}/reset_authentication_token", personal_access_token: pat) }
+    end
+
     let(:runner_id) { runner.id }
     let(:path) { "/runners/#{runner_id}/reset_authentication_token?#{query_path}" }
 
@@ -1888,6 +2015,24 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
   end
 
   describe 'GET /runners/:id/jobs' do
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api("/runners/#{shared_runner.id}/jobs", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { project }
+      let(:user) { users.first }
+      let(:request) { get api("/runners/#{project_runner.id}/jobs", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:boundary_object) { group }
+      let(:user) { users.first }
+      let(:request) { get api("/runners/#{group_runner_a.id}/jobs", personal_access_token: pat) }
+    end
+
     let_it_be(:shared_runner_manager1) { create(:ci_runner_machine, runner: shared_runner, system_xid: 'id2') }
     let_it_be(:jobs) do
       project_runner_manager1 = create(:ci_runner_machine, runner: project_runner, system_xid: 'id1')
@@ -2490,6 +2635,34 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       end
     end
 
+    context 'with a runner in another organization' do
+      let_it_be(:current_org_maintainer) { create(:user) }
+      let_it_be(:current_org_project) do
+        create(:project, organization: organization, maintainers: current_org_maintainer)
+      end
+
+      let_it_be(:current_org_runner) { create(:ci_runner, :project, projects: [current_org_project]) }
+
+      let_it_be(:other_org_runner) do
+        other_organization = create(:organization)
+        other_org_group = create(:group, organization: other_organization)
+        other_org_project = create(:project, group: other_org_group, organization: other_organization)
+        create(:ci_runner, :project, projects: [other_org_project])
+      end
+
+      let(:current_user) { current_org_maintainer }
+      let(:path) { "/projects/#{current_org_project.id}/runners?#{query_path}" }
+
+      it 'returns the current organization runner and excludes the other organization runner',
+        :aggregate_failures do
+        perform_request
+
+        runner_ids = json_response.pluck('id')
+        expect(runner_ids).to include(current_org_runner.id)
+        expect(runner_ids).not_to include(other_org_runner.id)
+      end
+    end
+
     context 'with request authorized with access token' do
       include_context 'access token setup'
 
@@ -2632,6 +2805,30 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       end
     end
 
+    context 'with a runner in another organization' do
+      let_it_be(:current_org_owner) { create(:user) }
+      let_it_be(:current_org_group) { create(:group, organization: organization, owners: current_org_owner) }
+      let_it_be(:current_org_runner) { create(:ci_runner, :group, groups: [current_org_group]) }
+
+      let_it_be(:other_org_runner) do
+        other_organization = create(:organization)
+        other_org_group = create(:group, organization: other_organization)
+        create(:ci_runner, :group, groups: [other_org_group])
+      end
+
+      let(:current_user) { current_org_owner }
+      let(:path) { "/groups/#{current_org_group.id}/runners?#{query_path}" }
+
+      it 'returns the current organization runner and excludes the other organization runner',
+        :aggregate_failures do
+        perform_request
+
+        runner_ids = json_response.pluck('id')
+        expect(runner_ids).to include(current_org_runner.id)
+        expect(runner_ids).not_to include(other_org_runner.id)
+      end
+    end
+
     context 'with request authorized with access token' do
       include_context 'access token setup'
 
@@ -2674,7 +2871,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
     end
 
     context 'authorized user' do
-      let_it_be(:project_runner2, freeze: false) { create(:ci_runner, :project, projects: [project2]) }
+      let_it_be_with_reload(:project_runner2) { create(:ci_runner, :project, projects: [project2]) }
 
       let(:current_user) { users.first }
       let(:runner) { project_runner2 }

@@ -9,8 +9,8 @@ module API
     feature_category :source_code_management
 
     resource :projects do
-      desc 'Download a (possibly inconsistent) snapshot of a repository' do
-        detail 'This feature was introduced in GitLab 10.7'
+      desc 'Download snapshot of a Git repository' do
+        detail 'Downloads snapshot of a Git repository.'
         success File
         tags ['project_snapshots']
         produces 'application/x-tar'

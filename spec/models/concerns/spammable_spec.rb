@@ -52,7 +52,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
               spammable_model.assign_attributes(attr => 'x')
             end
 
-            it { is_expected.to eq(true) }
+            it { is_expected.to be(true) }
           end
         end
 
@@ -61,18 +61,18 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
             spammable_model.other_attr = true
           end
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
       end
 
       it 'returns true for public project' do
         issue.project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
 
-        expect(issue.check_for_spam?(user: issue.author)).to eq(true)
+        expect(issue.check_for_spam?(user: issue.author)).to be(true)
       end
 
       it 'returns true for other visibility levels' do
-        expect(issue.check_for_spam?(user: issue.author)).to eq(true)
+        expect(issue.check_for_spam?(user: issue.author)).to be(true)
       end
     end
 
@@ -204,7 +204,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
           let(:recaptcha_enabled) { false }
 
           it 'returns false' do
-            expect(issue.render_recaptcha?).to eq(false)
+            expect(issue.render_recaptcha?).to be(false)
           end
         end
 
@@ -218,7 +218,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
             end
 
             it 'returns false' do
-              expect(issue.render_recaptcha?).to eq(false)
+              expect(issue.render_recaptcha?).to be(false)
             end
           end
 
@@ -233,7 +233,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
               end
 
               it 'returns false' do
-                expect(issue.render_recaptcha?).to eq(false)
+                expect(issue.render_recaptcha?).to be(false)
               end
             end
 
@@ -243,7 +243,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
               end
 
               it 'returns false' do
-                expect(issue.render_recaptcha?).to eq(true)
+                expect(issue.render_recaptcha?).to be(true)
               end
             end
           end
@@ -284,7 +284,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
       subject { spammable_model.allow_possible_spam?(user) }
 
       context 'when the `allow_possible_spam` application setting is turned off' do
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when the `allow_possible_spam` application setting is turned on' do
@@ -292,7 +292,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
           stub_application_setting(allow_possible_spam: true)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
   end

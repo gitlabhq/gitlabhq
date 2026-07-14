@@ -10,7 +10,7 @@ RSpec.describe Admin::PlanLimitsController do
     let(:params) do
       {
         plan_limits: {
-          plan_id: plan.id,
+          plan_name_uid: plan.plan_name_uid_before_type_cast,
           conan_max_file_size: file_size, id: plan_limits.id
         }
       }
@@ -26,6 +26,40 @@ RSpec.describe Admin::PlanLimitsController do
 
         expect(response).to redirect_to(general_admin_application_settings_path)
         expect(plan_limits.reload.conan_max_file_size).to eq(file_size)
+        expect(plan_limits.plan_name_uid).to eq(Plan::PLAN_NAME_UID_LIST[:default])
+        expect(plan_limits.plan_id).to eq(plan.id)
+      end
+
+      it 'falls back to plan_id when plan_name_uid is absent', :aggregate_failures do
+        other_plan = create(:plan, name: 'free')
+        other_plan_limits = create(:plan_limits, plan: other_plan)
+
+        sign_in(create(:admin))
+
+        post :create, params: { plan_limits: { plan_id: other_plan.id, conan_max_file_size: file_size } }
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(other_plan_limits.reload.conan_max_file_size).to eq(file_size)
+        expect(plan_limits.reload.conan_max_file_size).not_to eq(file_size)
+      end
+
+      it 'prefers plan_name_uid when both plan_id and plan_name_uid are present' do
+        other_plan = create(:plan, name: 'free')
+        other_plan_limits = create(:plan_limits, plan: other_plan)
+
+        sign_in(create(:admin))
+
+        post :create, params: {
+          plan_limits: {
+            plan_id: other_plan.id,
+            plan_name_uid: plan.plan_name_uid_before_type_cast,
+            conan_max_file_size: file_size
+          }
+        }
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(plan_limits.reload.conan_max_file_size).to eq(file_size)
+        expect(other_plan_limits.reload.conan_max_file_size).not_to eq(file_size)
       end
     end
 
@@ -33,7 +67,7 @@ RSpec.describe Admin::PlanLimitsController do
       let(:params) do
         {
           plan_limits: {
-            plan_id: plan.id,
+            plan_name_uid: plan.plan_name_uid_before_type_cast,
             pipeline_hierarchy_size: 200, id: plan_limits.id
           }
         }

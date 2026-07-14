@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI Coding
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Set a merge request dependency to control the merge order of merge requests with related or dependent content.
@@ -15,7 +15,7 @@ title: Merge request dependencies
 
 {{< history >}}
 
-- Support for complex merge dependencies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11393) in GitLab 16.6 [with a flag](../../../administration/feature_flags/_index.md) named `remove_mr_blocking_constraints`. Disabled by default.
+- Support for complex merge dependencies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11393) in GitLab 16.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `remove_mr_blocking_constraints`. Disabled by default.
 - Support for complex merge dependencies [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136775) in GitLab 16.7. Feature flag `remove_mr_blocking_constraints` removed.
 
 {{< /history >}}

@@ -19,6 +19,7 @@ export const ANCESTOR_NOT_AVAILABLE = {
 };
 
 export default {
+  name: 'WorkItemAncestors',
   i18n: {
     ancestorLabel: s__('WorkItem|Ancestor'),
     ancestorsTooltipLabel: s__('WorkItem|Show all ancestors'),

@@ -24,6 +24,8 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         let_it_be(:resource_id) { resource.id }
 
         before do
+          stub_feature_flags(expose_last_used_ips_for_access_tokens: true)
+
           if source_type == 'project'
             resource.add_maintainer(project_bot)
           else
@@ -67,7 +69,64 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
           end
 
           expect(api_get_token["expires_at"]).to eq(token.expires_at.to_date.iso8601)
+          expect(api_get_token["last_used_ips"]).to eq([])
           expect(api_get_token).not_to have_key('token')
+        end
+
+        context "when the token has recorded last_used_ips" do
+          let(:ip_address) { '192.0.2.10' }
+
+          before do
+            all_access_tokens.last.last_used_ips.create!(
+              organization: all_access_tokens.last.organization,
+              ip_address: ip_address)
+          end
+
+          it "exposes last_used_ips in the response" do
+            get_tokens
+
+            expect(response).to match_response_schema('public_api/v4/resource_access_tokens')
+            expect(json_response.last["last_used_ips"]).to match_array([ip_address])
+          end
+        end
+
+        context "when the token has multiple recorded last_used_ips" do
+          let(:ip_addresses) { ['192.0.2.10', '192.0.2.11', '192.0.2.12'] }
+
+          before do
+            ip_addresses.each do |ip|
+              all_access_tokens.last.last_used_ips.create!(
+                organization: all_access_tokens.last.organization,
+                ip_address: ip)
+            end
+          end
+
+          it "exposes all recorded IPs in the response" do
+            get_tokens
+
+            expect(response).to match_response_schema('public_api/v4/resource_access_tokens')
+            expect(json_response.last["last_used_ips"]).to match_array(ip_addresses)
+          end
+        end
+
+        it 'avoids N+1 queries when rendering last_used_ips' do
+          path = "/#{source_type}s/#{resource_id}/access_tokens"
+
+          get api(path, user) # warm-up
+
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(path, user) }
+
+          extra_bot = create(:user, :project_bot, bot_namespace: namespace)
+          extra_token = create(:personal_access_token, user: extra_bot)
+          extra_token.last_used_ips.create!(organization: extra_token.organization, ip_address: '192.0.2.20')
+
+          if source_type == 'project'
+            resource.add_maintainer(extra_bot)
+          else
+            resource.add_owner(extra_bot)
+          end
+
+          expect { get api(path, user) }.not_to exceed_all_query_limit(control)
         end
 
         context "when using a #{source_type} access token to GET other #{source_type} access tokens" do
@@ -286,6 +345,10 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
       end
 
       context "when the user has valid permissions" do
+        before do
+          stub_feature_flags(expose_last_used_ips_for_access_tokens: true)
+        end
+
         it_behaves_like 'authorizing granular token permissions', :read_resource_access_token do
           let(:boundary_object) { resource }
           let(:request) do
@@ -313,6 +376,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
           end
 
           expect(json_response["expires_at"]).to eq(token.expires_at.to_date.iso8601)
+          expect(json_response["last_used_ips"]).to eq([])
         end
 
         context "when using #{source_type} access token to GET other #{source_type} access token" do
@@ -865,7 +929,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
   end
 
   context 'when the resource is a project' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:group) { create(:group) }
     let_it_be(:resource) { create(:project, group: group) }
     let_it_be(:namespace) { resource.project_namespace }
     let_it_be(:other_resource) { create(:project) }
@@ -882,7 +946,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
   end
 
   context 'when the resource is a group' do
-    let_it_be(:resource, freeze: false) { create(:group) }
+    let_it_be(:resource) { create(:group) }
     let_it_be(:namespace) { resource }
     let_it_be(:other_resource) { create(:group) }
     let_it_be(:other_resource_namespace) { other_resource }

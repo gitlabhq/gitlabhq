@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::DesignManagement::Designs::RawImagesController do
   include DesignManagementTestHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :private) }
+  let_it_be_with_reload(:project) { create(:project, :private) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:viewer) { issue.author }
 

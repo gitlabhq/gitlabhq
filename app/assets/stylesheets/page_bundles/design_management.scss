@@ -21,7 +21,9 @@ $design-pin-diameter-sm: 24px;
 }
 
 .design-detail {
+  top: $calc-system-headers-height;
   bottom: $calc-application-footer-height;
+  z-index: 1030;
 
   .comment-indicator {
     border-radius: 50%;

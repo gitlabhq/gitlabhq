@@ -233,7 +233,7 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
     end
 
     context 'when a token is owned by a project bot' do
-      let_it_be(:resource, freeze: false) { create(:project) }
+      let_it_be_with_reload(:resource) { create(:project) }
       let_it_be(:namespace_settings) { create(:namespace_settings, namespace: resource.namespace) }
       let(:fake_wh_service) { double }
 
@@ -241,12 +241,12 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
 
       context 'when a project bot has revoked tokens from rotation history' do
         # Created first -> lower ID -> .first returns this without .not_revoked
-        let_it_be(:revoked_token, freeze: false) do
+        let_it_be_with_reload(:revoked_token) do
           create(:resource_access_token, resource: resource, expires_at: 2.days.ago, revoked: true)
         end
 
         # Created second -> higher ID -> only returned when not_revoked filters out the above
-        let_it_be(:active_expiring_token, freeze: false) do
+        let_it_be_with_reload(:active_expiring_token) do
           create(:resource_access_token, resource: resource, expires_at: 5.days.from_now, user: revoked_token.user)
         end
 
@@ -338,7 +338,7 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
     end
 
     context 'when a token is owned by a group bot' do
-      let_it_be(:resource, freeze: false) { create(:group) }
+      let_it_be_with_reload(:resource) { create(:group) }
 
       context 'when the group of the resource bot exists' do
         it_behaves_like 'sends notification about expiry of bot user tokens'

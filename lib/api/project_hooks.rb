@@ -79,6 +79,9 @@ module API
         present paginate(user_project.hooks), with: Entities::ProjectHook, with_url_variables: false, with_custom_headers: false
       end
 
+      params do
+        requires :hook_id, type: Integer, desc: 'The ID of a project hook'
+      end
       namespace ":id/hooks/:hook_id/" do
         desc 'Retrieve a project webhook' do
           detail 'Retrieves a specified webhook for a project.'

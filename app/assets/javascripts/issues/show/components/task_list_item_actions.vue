@@ -12,6 +12,7 @@ const allowedTypes = [
 ];
 
 export default {
+  name: 'TaskListItemActions',
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,

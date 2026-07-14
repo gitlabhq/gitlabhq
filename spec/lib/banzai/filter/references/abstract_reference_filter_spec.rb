@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::References::AbstractReferenceFilter, feature_category: :markdown do
   include FilterSpecHelper
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:issue, freeze: false) { create(:issue, project: project) }
   let_it_be(:doc, freeze: false) { Nokogiri::HTML.fragment('') }

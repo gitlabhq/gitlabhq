@@ -11,8 +11,10 @@ module Ci
         :commands,
         :variables,
         :artifacts_paths,
+        :artifacts_reports,
         :timeout,
         :cache,
+        :id_tokens,
         :tags,
         :services,
         :suspend_on_success,
@@ -59,8 +61,10 @@ module Ci
         }
 
         result[:artifacts] = { paths: artifacts_paths } if artifacts_paths.present?
+        result[:artifacts] = (result[:artifacts] || {}).merge(reports: artifacts_reports) if artifacts_reports.present?
         result[:cache] = cache if cache.present?
         result[:services] = services if services.present?
+        result[:id_tokens] = id_tokens if id_tokens.present?
 
         result[:tags] = tags if tags.present?
 

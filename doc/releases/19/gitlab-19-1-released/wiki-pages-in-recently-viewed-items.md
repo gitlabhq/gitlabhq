@@ -10,8 +10,6 @@ level: secondary
 weight: 50
 ---
 
-<!-- categories: Wiki -->
-
 Wiki pages now appear in your recently viewed items, so you can return to pages you
 visit often.
 

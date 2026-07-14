@@ -41,6 +41,10 @@ You can configure GitLab Duo to use:
   through the proxy server, GitLab Duo features like the GitLab Duo health check,
   the GitLab Credits dashboard, and GitLab Duo Agent Platform might time out or fail.
   For more information, see [issue 602538](https://gitlab.com/gitlab-org/gitlab/-/issues/602538).
+- AI features stream responses over long-lived HTTP connections. An HTTP/S proxy server
+  or firewall that enforces a maximum request duration or idle timeout can cut off long
+  responses without an error. Configure your proxy with a longer timeout than the other
+  components in the path.
 
 ## Allow inbound connections from clients to the GitLab instance
 
@@ -91,6 +95,13 @@ In addition, runners must be able to connect to:
 If your organization cannot allow access to the public npm registry, you can use a
 [custom Docker image](../../../user/duo_agent_platform/flows/execution.md#change-the-default-docker-image)
 with the required dependencies already installed.
+
+> [!note]
+> The runner's connection to the GitLab Duo Agent Platform Service is routed through the
+> GitLab instance. Runners do not connect directly to `duo-workflow-svc.runway.gitlab.net`.
+> The firewall requirement for `duo-workflow-svc.runway.gitlab.net` on port `443` applies to the
+> GitLab instance, not the runner. Your runner network configuration must allow outbound HTTPS
+> traffic to the GitLab instance.
 
 ## Share usage data with GitLab
 

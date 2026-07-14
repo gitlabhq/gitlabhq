@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :markdown do
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:group, freeze: false)    { create(:group) }
   let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
   let_it_be(:project, freeze: false) { create(:project, group: group) }
@@ -12,11 +17,15 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :ma
   let_it_be(:issue3, freeze: false)   { create(:issue, project: project2) }
   let_it_be(:issue4, freeze: false)   { create(:issue, project: project2) }
   let_it_be(:doc, freeze: false)      { Nokogiri::HTML.fragment("#{issue1.to_reference} #{issue2.to_reference} #{issue3.to_reference(full: true)}") }
+  # `freeze: false` is kept here because this `let_it_be` subject is not an
+  # ActiveRecord record, so freezing gives no cross-example isolation benefit
+  # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+  # gitlab-org/gitlab#602925).
   let_it_be(:result, freeze: false)   { {} }
   let_it_be(:filter_class, freeze: false) { Banzai::Filter::References::IssueReferenceFilter }
 
   let(:filter) { filter_class.new(doc, project: project) }
-  let(:cache)  { described_class.new(filter, { project: project }, result) }
+  let(:cache)  { described_class.new(filter, result) }
 
   describe '#load_reference_cache' do
     subject { cache.load_reference_cache(filter.nodes) }
@@ -46,9 +55,14 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :ma
     end
 
     context 'when cache is loaded' do
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:cache, freeze: false) do
         filter = filter_class.new(doc, project: project)
-        cache = described_class.new(filter, { project: project }, result)
+        cache = described_class.new(filter, result)
         cache.load_reference_cache(filter.nodes)
         cache
       end
@@ -86,7 +100,7 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :ma
 
         doc_milestone = Nokogiri::HTML.fragment("/#{milestone1.to_reference(full: true)} /#{milestone2.to_reference(full: true)} #{milestone3.to_reference(full: true)}")
         filter_milestone = Banzai::Filter::References::MilestoneReferenceFilter.new(doc_milestone, project: project)
-        cache_milestone = described_class.new(filter_milestone, { project: project }, {})
+        cache_milestone = described_class.new(filter_milestone, {})
 
         cache_milestone.load_reference_cache(filter_milestone.nodes)
 
@@ -115,7 +129,7 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :ma
     it 'does not have an N+1 query problem with cross projects' do
       doc_single = Nokogiri::HTML.fragment("#1")
       filter_single = filter_class.new(doc_single, project: project)
-      cache_single = described_class.new(filter_single, { project: project }, {})
+      cache_single = described_class.new(filter_single, {})
 
       control = ActiveRecord::QueryRecorder.new do
         cache_single.load_reference_cache(filter_single.nodes)
@@ -202,7 +216,7 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :ma
     context 'when project is nil but group is present' do
       let(:group) { create(:group) }
       let(:filter) { filter_class.new(doc, group: group, project: nil) }
-      let(:cache) { described_class.new(filter, { group: group }, result) }
+      let(:cache) { described_class.new(filter, result) }
 
       it 'returns the path of the group' do
         expect(cache.current_project_namespace_path).to eq group.full_path

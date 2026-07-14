@@ -1,5 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+#import "../fragments/mr_pipeline_list_item.fragment.graphql"
 
 query getMergeRequestPipelines(
   $mergeRequestIid: String!
@@ -21,63 +21,7 @@ query getMergeRequestPipelines(
       pipelines(first: $first, last: $last, after: $after, before: $before) {
         count
         nodes {
-          id
-          iid
-          detailedStatus {
-            ...CiIcon
-            name
-          }
-          name
-          ref
-          refText
-          commit {
-            id
-            shortId
-            title
-            webPath
-            author {
-              id
-              avatarUrl
-              webPath
-              name
-            }
-          }
-          user {
-            id
-            name
-            webPath
-            avatarUrl
-          }
-          source
-          latest
-          yamlErrors
-          yamlErrorMessages
-          failureReason
-          configSource
-          stuck
-          type
-          path
-          retryable
-          cancelable
-          stages {
-            nodes {
-              id
-              name
-              detailedStatus {
-                ...CiIcon
-                name
-                tooltip
-              }
-            }
-          }
-          mergeRequestEventType
-          project {
-            id
-            fullPath
-          }
-          hasManualActions
-          hasScheduledActions
-          failedJobsCount
+          ...MergeRequestPipelineListItem
           downstream(first: 3) {
             count
             nodes {

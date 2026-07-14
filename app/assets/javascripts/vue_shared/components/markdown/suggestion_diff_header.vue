@@ -10,6 +10,7 @@ const APPLY_SUGGESTION_ERROR_MESSAGE = __(
 );
 
 export default {
+  name: 'SuggestionDiffHeader',
   components: { GlBadge, GlButton, GlLoadingIcon, ApplySuggestion, HelpIcon },
   directives: { GlTooltip: GlTooltipDirective },
   props: {
@@ -63,6 +64,7 @@ export default {
       default: false,
     },
   },
+  emits: ['addToBatch', 'apply', 'applyBatch', 'removeFromBatch'],
   data() {
     return {
       isApplyingSingle: false,

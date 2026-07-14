@@ -11,9 +11,9 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Sum, :click_house, fea
 
       metrics do
         sum :session_id, :integer
-        sum :session_id_finished, :integer, -> {
+        sum :session_id_finished, :integer, ->(_params) {
           Arel.sql('session_id')
-        }, if: -> { Arel.sql('anyIfMerge(finished_event_at) IS NOT NULL') }
+        }, if: ->(_params) { Arel.sql('anyIfMerge(finished_event_at) IS NOT NULL') }
       end
     end
   end

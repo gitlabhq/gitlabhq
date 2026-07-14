@@ -76,8 +76,8 @@ export default {
         :is-last-discussion="index === discussions.length - 1"
         @toggleDiscussionReplies="store.toggleDiscussionReplies(discussion)"
         @noteEdited="store.editNote"
-        @startEditing="store.setEditingMode($event, true)"
-        @cancelEditing="store.setEditingMode($event, false)"
+        @start-editing="store.setEditingMode($event, true)"
+        @cancel-editing="store.setEditingMode($event, false)"
         @startReplying="store.startReplying(discussion)"
         @stopReplying="store.stopReplying(discussion)"
       >

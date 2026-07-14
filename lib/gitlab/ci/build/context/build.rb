@@ -42,9 +42,8 @@ module Gitlab
             return unless attributes[:environment].present?
 
             # The initial `environment` parameter is `expanded_environment_name` for a build.
-            # The `expanded_environment_name` method uses `metadata&.expanded_environment_name` first to check
-            # but we don't need it here because `metadata.expanded_environment_name` is only set in
-            # `app/services/environments/create_for_job_service.rb` which is after the pipeline creation.
+            # The persisted job environment is created after pipeline creation, so seed-time
+            # variables expand the environment from the provided attributes.
             ExpandVariables.expand(attributes[:environment], -> { simple_variables.sort_and_expand_all })
           end
 

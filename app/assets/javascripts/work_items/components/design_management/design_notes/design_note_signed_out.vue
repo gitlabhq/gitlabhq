@@ -3,6 +3,7 @@ import { GlSprintf, GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'DesignNoteSignedOut',
   components: {
     GlSprintf,
     GlLink,

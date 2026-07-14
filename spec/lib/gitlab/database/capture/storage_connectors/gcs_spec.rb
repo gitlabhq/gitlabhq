@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Database::Capture::StorageConnectors::Gcs, feature_catego
   let(:client) { instance_double(Google::Cloud::Storage::Project) }
   let(:bucket) { instance_double(Google::Cloud::Storage::Bucket) }
   let(:settings) do
-    GitlabSettings::Options.build(
+    Gitlab::Configs.build_options(
       provider: 'Gcs',
       project_id: 'my-project',
       bucket: 'my-bucket'

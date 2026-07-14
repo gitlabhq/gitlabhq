@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "securerandom"
+
 module Gitlab
   module Orchestrator
     module Deployment
@@ -26,6 +28,16 @@ module Gitlab
           SH
           # @return [String] secret name for OAuth provider
           OAUTH_SECRET_NAME = "gitlab-oauth-github"
+          # @return [String] secret name for OpenBao database password
+          OPENBAO_DB_SECRET_NAME = "gitlab-openbao-postgresql"
+          # @return [String] OpenBao database name
+          OPENBAO_DB_NAME = "openbao"
+          # @return [String] OpenBao database user
+          OPENBAO_DB_USER = "openbao"
+          # @return [String] in-cluster active OpenBao service (release-name-prefixed, see OPENBAO_DB_SECRET_NAME)
+          OPENBAO_ACTIVE_SERVICE = "gitlab-openbao-active"
+          # @return [Integer] OpenBao API port (chart config.apiPort)
+          OPENBAO_API_PORT = 8200
 
           # Instance of kind deployment configuration
           #
@@ -58,6 +70,7 @@ module Gitlab
             create_initial_root_password
             create_pre_receive_hook
             create_oauth_secret if oauth_enabled?
+            create_openbao_db_secret if secrets_manager_enabled?
           end
 
           # Run post-deployment setup
@@ -168,7 +181,7 @@ module Gitlab
                   }
                 }
               }
-            }.deep_merge(ResourcePresets.resource_values(resource_preset))
+            }.deep_merge(openbao_values).deep_merge(ResourcePresets.resource_values(resource_preset))
           end
 
           # Gitlab url
@@ -202,7 +215,8 @@ module Gitlab
 
             @cnpg = Services::CloudNativePG.new(
               kubeclient: kubeclient, helm: helm, namespace: namespace,
-              cluster_name: CNPG_CLUSTER_SUFFIX
+              cluster_name: CNPG_CLUSTER_SUFFIX,
+              additional_databases: openbao_databases
             )
             @cnpg.install
 
@@ -323,6 +337,71 @@ module Gitlab
           # @return [Boolean]
           def oauth_enabled?
             ENV['QA_RSPEC_TAGS']&.include?('oauth')
+          end
+
+          # Create OpenBao database password secret
+          #
+          # @return [void]
+          def create_openbao_db_secret
+            log("Creating OpenBao database password secret", :info)
+            secret = Kubectl::Resources::Secret.new(OPENBAO_DB_SECRET_NAME, "password", openbao_db_password)
+            puts mask_secrets(
+              kubeclient.create_resource(secret),
+              [openbao_db_password, Base64.encode64(openbao_db_password)]
+            )
+          end
+
+          # OpenBao logical database to bootstrap in the GitLab CNPG cluster
+          #
+          # @return [Array<Hash>]
+          def openbao_databases
+            return [] unless secrets_manager_enabled?
+
+            [{ name: OPENBAO_DB_NAME, owner: OPENBAO_DB_USER, password: openbao_db_password }]
+          end
+
+          # @return [String]
+          def openbao_db_password
+            @openbao_db_password ||= SecureRandom.hex(16)
+          end
+
+          # Chart values enabling OpenBao backed by its own logical database
+          #
+          # @return [Hash]
+          def openbao_values
+            return {} unless secrets_manager_enabled?
+
+            {
+              global: {
+                openbao: {
+                  enabled: true,
+                  # url is what Rails hands to the runner for CI secret resolution; the runner is a
+                  # host-side container that reaches the cluster only through the ingress NodePort, so
+                  # it needs the external host + mapped port (same shape as gitlab_url). internal_url
+                  # is Rails' own server-to-server path, kept on the in-cluster service.
+                  url: "http://openbao.#{gitlab_domain}:#{host_http_port}",
+                  internal_url: "http://#{OPENBAO_ACTIVE_SERVICE}.#{namespace}.svc.cluster.local:#{OPENBAO_API_PORT}",
+                  psql: {
+                    host: @cnpg.host,
+                    database: OPENBAO_DB_NAME,
+                    username: OPENBAO_DB_USER,
+                    password: { secret: OPENBAO_DB_SECRET_NAME, key: "password" }
+                  }
+                }
+              },
+              # The subchart's ingress.tls.enabled defaults to true regardless of global TLS, which
+              # renders a TLS host and makes nginx force a 308 http->https redirect. The deploy is
+              # http-only (no cert), so the runner's http call followed the redirect to nothing and
+              # parsed the redirect HTML as JSON. Disable it so the external http path stays plain http.
+              openbao: { install: true, ingress: { tls: { enabled: false } } }
+            }
+          end
+
+          # Check if Secrets Manager (OpenBao) is enabled
+          #
+          # @return [Boolean]
+          def secrets_manager_enabled?
+            ENV['QA_RSPEC_TAGS']&.include?('secrets_manager')
           end
         end
       end

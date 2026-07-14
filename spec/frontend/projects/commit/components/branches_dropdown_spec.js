@@ -1,32 +1,30 @@
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BranchesDropdown from '~/projects/commit/components/branches_dropdown.vue';
+import { useCherryPickCommit } from '~/projects/commit/store/cherry_pick_commit';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('BranchesDropdown', () => {
   let wrapper;
+  let pinia;
   let store;
-  const spyFetchBranches = jest.fn();
 
   const createComponent = (props, state = { isFetching: false, branch: '_main_' }) => {
-    store = new Vuex.Store({
-      getters: {
-        joinedBranches: () => ['_main_', '_branch_1_', '_branch_2_'],
-      },
-      actions: {
-        fetchBranches: spyFetchBranches,
-      },
-      state,
-    });
+    pinia = createTestingPinia();
+    store = useCherryPickCommit();
+    store.$patch({ branches: ['_main_', '_branch_1_', '_branch_2_'], ...state });
 
     wrapper = extendedWrapper(
       shallowMount(BranchesDropdown, {
-        store,
+        pinia,
+        provide: {
+          modalStore: store,
+        },
         propsData: {
           value: props.value,
           blanked: props.blanked || false,
@@ -41,13 +39,9 @@ describe('BranchesDropdown', () => {
     createComponent({ value: '' });
   });
 
-  afterEach(() => {
-    spyFetchBranches.mockReset();
-  });
-
   describe('On mount', () => {
     it('invokes fetchBranches', () => {
-      expect(spyFetchBranches).toHaveBeenCalled();
+      expect(store.fetchBranches).toHaveBeenCalled();
     });
   });
 
@@ -55,7 +49,7 @@ describe('BranchesDropdown', () => {
     it('triggers fetchBranches call', async () => {
       await wrapper.setProps({ value: 'new value' });
 
-      expect(spyFetchBranches).toHaveBeenCalled();
+      expect(store.fetchBranches).toHaveBeenCalled();
     });
   });
 
@@ -73,7 +67,7 @@ describe('BranchesDropdown', () => {
 
       await nextTick();
 
-      expect(spyFetchBranches).toHaveBeenCalledWith(expect.any(Object), '_anything_');
+      expect(store.fetchBranches).toHaveBeenCalledWith('_anything_');
     });
   });
 });

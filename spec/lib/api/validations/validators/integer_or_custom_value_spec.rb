@@ -7,7 +7,23 @@ RSpec.describe API::Validations::Validators::IntegerOrCustomValue do
 
   let(:custom_values) { %w[None Any Started Current] }
 
-  subject { described_class.new(['test'], { values: custom_values }, false, scope.new) }
+  subject { described_class.new(['test'], { values: custom_values }, false, scope.new, {}) }
+
+  describe '#initialize' do
+    let(:opts) { { fail_fast: false, allow_blank: false } }
+
+    # Grape's ValidatorFactory passes the options hash positionally on Grape 2.4
+    # and as keywords on Grape 2.0. The validator must instantiate under both.
+    it 'accepts the options argument passed positionally' do
+      expect { described_class.new(['test'], { values: custom_values }, false, scope.new, opts) }
+        .not_to raise_error
+    end
+
+    it 'accepts the options argument passed as keywords' do
+      expect { described_class.new(['test'], { values: custom_values }, false, scope.new, **opts) }
+        .not_to raise_error
+    end
+  end
 
   context 'valid parameters' do
     it 'does not raise a validation error' do

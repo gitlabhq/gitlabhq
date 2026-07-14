@@ -5,6 +5,7 @@ import { INTEGRATION_TABS_CONFIG, I18N_INTEGRATION_TABS } from '../constants';
 import PagerDutySettingsForm from './pagerduty_form.vue';
 
 export default {
+  name: 'IncidentsSettingsTabs',
   components: {
     GlButton,
     GlTabs,

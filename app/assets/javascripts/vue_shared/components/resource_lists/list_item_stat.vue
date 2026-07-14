@@ -29,6 +29,7 @@ export default {
       default: null,
     },
   },
+  emits: ['click', 'hover'],
   computed: {
     component() {
       return this.href ? GlLink : 'div';

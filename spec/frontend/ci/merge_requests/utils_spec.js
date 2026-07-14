@@ -1,77 +1,7 @@
-import {
-  updatePipelineInQueryResult,
-  updateDownstreamPipelineInList,
-} from '~/ci/merge_requests/utils';
-import {
-  mockPipelineUpdateResponse,
-  mockPipelines,
-  generateMockPipeline,
-  generateMockDownstreamPipeline,
-} from './mock_data';
-
-const wrapAsQueryResult = (nodes) => ({
-  project: {
-    mergeRequest: {
-      pipelines: { nodes },
-    },
-  },
-});
-
-const getNodes = (queryResult) => queryResult.project.mergeRequest.pipelines.nodes;
+import { updateDownstreamPipelineInList } from '~/ci/merge_requests/utils';
+import { generateMockPipeline, generateMockDownstreamPipeline } from './mock_data';
 
 describe('Pipelines utility functions', () => {
-  describe('updatePipelineInQueryResult', () => {
-    it('merges subscription update correctly when pipeline transitions from completed to running', () => {
-      const pipeline = mockPipelines[0];
-      const unchangedPipeline = mockPipelines[1];
-
-      // Before update: pipeline is completed with warnings
-      expect(pipeline.detailedStatus.icon).toBe('status_warning');
-      expect(pipeline.detailedStatus.name).toBe('SUCCESS_WITH_WARNINGS');
-      expect(pipeline.detailedStatus.label).toBe('passed with warnings');
-      expect(pipeline.duration).toBe(17);
-      expect(pipeline.finishedAt).toBe('2025-09-25T16:24:02Z');
-      expect(pipeline.retryable).toBe(true);
-      expect(pipeline.cancelable).toBe(false);
-      expect(pipeline.stages.nodes).toHaveLength(3);
-      expect(pipeline.stages.nodes[0].detailedStatus.icon).toBe('status_success');
-
-      const queryResult = wrapAsQueryResult(mockPipelines);
-      const updatedResult = updatePipelineInQueryResult(
-        queryResult,
-        mockPipelineUpdateResponse.data.ciPipelineStatusUpdated,
-      );
-      const updatedPipelines = getNodes(updatedResult);
-
-      // After subscription update: pipeline is now running with updated status and stages
-      expect(updatedPipelines[0].detailedStatus.icon).toBe('status_running');
-      expect(updatedPipelines[0].detailedStatus.name).toBe('RUNNING');
-      expect(updatedPipelines[0].detailedStatus.label).toBe('running');
-      expect(updatedPipelines[0].duration).toBeNull();
-      expect(updatedPipelines[0].finishedAt).toBeNull();
-      expect(updatedPipelines[0].retryable).toBe(false);
-      expect(updatedPipelines[0].cancelable).toBe(true);
-
-      expect(updatedPipelines[0].stages.nodes).toHaveLength(3);
-      expect(updatedPipelines[0].stages.nodes[0].name).toBe('build');
-      expect(updatedPipelines[0].stages.nodes[0].detailedStatus.icon).toBe('status_running');
-      expect(updatedPipelines[0].stages.nodes[0].detailedStatus.tooltip).toBe('running');
-      expect(updatedPipelines[0].stages.nodes[1].detailedStatus.icon).toBe('status_created');
-      expect(updatedPipelines[0].stages.nodes[2].detailedStatus.icon).toBe('status_created');
-
-      expect(updatedPipelines[1]).toEqual(unchangedPipeline);
-    });
-
-    it('returns the input unchanged when there are no pipelines to patch', () => {
-      const queryResult = wrapAsQueryResult([]);
-      const result = updatePipelineInQueryResult(
-        queryResult,
-        mockPipelineUpdateResponse.data.ciPipelineStatusUpdated,
-      );
-      expect(result).toBe(queryResult);
-    });
-  });
-
   describe('updateDownstreamPipelineInList', () => {
     const downstreamRunning = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
     const downstreamPending = generateMockDownstreamPipeline({ id: '200', status: 'PENDING' });

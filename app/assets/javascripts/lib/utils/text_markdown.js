@@ -552,7 +552,7 @@ export function insertMarkdownText({
     }
   } else if (tag.indexOf(textPlaceholder) > -1) {
     textToUpdate = tag.replace(textPlaceholder, () =>
-      selected.replace(/\\n/g, '\n').replace(/%br/g, '\\n'),
+      selected.replace(/\\n/g, '\n').replace(/\uE000/g, '\\n'),
     );
   } else if (shouldUseSelectedWithoutTags) {
     textToUpdate = getSelectedWithoutTags();

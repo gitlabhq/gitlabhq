@@ -22,7 +22,7 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
   it "shows last commit for current directory", :js do
     visit(tree_path_root_ref)
 
-    click_link("files")
+    within_testid('file-tree-table') { click_link("files") }
 
     last_commit = project.repository.last_commit_for_path(project.default_branch, "files")
 
@@ -43,7 +43,7 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
     end
 
     it "copies permalink URL" do
-      click_link(".gitignore")
+      within_testid('file-tree-table') { click_link(".gitignore") }
       click_button("File actions")
       click_button("Copy permalink")
 
@@ -58,7 +58,7 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
       end
 
       it "copies permalink URL" do
-        click_link(".gitignore")
+        within_testid('file-tree-table') { click_link(".gitignore") }
         click_button("File actions")
         click_button("Copy permalink")
 
@@ -171,13 +171,13 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
         .and have_content(".gitignore")
         .and have_content("LICENSE")
 
-      click_link("files")
+      within_testid('file-tree-table') { click_link("files") }
 
       page.within('.repo-breadcrumb') do
         expect(page).to have_link('files')
       end
 
-      click_link("html")
+      within_testid('file-tree-table') { click_link("html") }
 
       page.within('.repo-breadcrumb') do
         expect(page).to have_link('html')
@@ -198,13 +198,13 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
         .and have_content(".gitignore")
         .and have_content("LICENSE")
 
-      click_link("files")
+      within_testid('file-tree-table') { click_link("files") }
 
       page.within('.repo-breadcrumb') do
         expect(page).to have_link('files')
       end
 
-      click_link("html")
+      within_testid('file-tree-table') { click_link("html") }
 
       page.within('.repo-breadcrumb') do
         expect(page).to have_link('html')
@@ -225,13 +225,13 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
         .and have_content(".gitignore")
         .and have_content("LICENSE")
 
-      click_link("files")
+      within_testid('file-tree-table') { click_link("files") }
 
       page.within('.repo-breadcrumb') do
         expect(page).to have_link('files')
       end
 
-      click_link("html")
+      within_testid('file-tree-table') { click_link("html") }
 
       page.within('.repo-breadcrumb') do
         expect(page).to have_link('html')
@@ -291,7 +291,7 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
       visit(tree_path_root_ref)
       wait_for_requests
 
-      click_link(".gitignore")
+      within_testid('file-tree-table') { click_link(".gitignore") }
     end
 
     it "shows a file content" do
@@ -343,7 +343,7 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
       visit(tree_path_root_ref)
       wait_for_requests
 
-      click_link(".gitignore")
+      within_testid('file-tree-table') { click_link(".gitignore") }
       wait_for_requests
     end
 

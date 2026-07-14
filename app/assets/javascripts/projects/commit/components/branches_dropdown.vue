@@ -1,7 +1,5 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
 import { debounce, uniqBy } from 'lodash-es';
 import {
   I18N_NO_RESULTS_MESSAGE,
@@ -14,6 +12,7 @@ export default {
   components: {
     GlCollapsibleListbox,
   },
+  inject: ['modalStore'],
   props: {
     value: {
       type: String,
@@ -33,8 +32,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['joinedBranches']),
-    ...mapState(['isFetching', 'branch']),
+    joinedBranches() {
+      return this.modalStore.joinedBranches;
+    },
+    isFetching() {
+      return this.modalStore.isFetching;
+    },
+    branch() {
+      return this.modalStore.branch;
+    },
     listboxItems() {
       const selectedItem = { value: this.branch, text: this.branch };
       const transformedList = this.joinedBranches.map((value) => ({ value, text: value }));
@@ -51,7 +57,9 @@ export default {
     this.fetchBranches();
   },
   methods: {
-    ...mapActions(['fetchBranches']),
+    fetchBranches(query) {
+      this.modalStore.fetchBranches(query);
+    },
     selectBranch(branch) {
       this.$emit('input', branch);
     },

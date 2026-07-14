@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # fog-core v2 changed the namespace format:
 #

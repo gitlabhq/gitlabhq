@@ -134,9 +134,7 @@ const confirmJobConfirmationMessage = (jobName, message) => {
       jobName: sanitize(jobName),
     }),
     modalHtmlMessage: `
-      <p>${sprintf(__('Custom confirmation message: %{message}'), {
-        message: sanitize(message),
-      })}</p>
+      <p>${sanitize(message)}</p>
       <p>${s__('PipelineGraph|Do you want to continue?')}</p>
     `,
     primaryBtnText: sprintf(__('Yes, run %{jobName}'), {

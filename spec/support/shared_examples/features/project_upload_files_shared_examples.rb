@@ -146,7 +146,7 @@ end
 
 RSpec.shared_examples 'it uploads a file to a sub-directory' do |drop: false|
   it 'uploads a file to a sub-directory', :js do
-    click_link 'files'
+    within_testid('file-tree-table') { click_link 'files' }
 
     page.within('.repo-breadcrumb') do
       expect(page).to have_content('files')

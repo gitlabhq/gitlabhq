@@ -9,6 +9,7 @@ RSpec.describe Gitlab::GitalyClient::DiffService, feature_category: :gitaly do
   let(:repository_message) { repository.gitaly_repository }
   let(:left_blob) { '1e292f8fedd741b75372e19097c76d327140c312' }
   let(:right_blob) { 'ddd0f15ae83993f5cb66a927a28673882e99100b' }
+  let(:gitaly_operation_double) { instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}) }
 
   describe '#diff_blobs' do
     # SHAs used are from https://gitlab.com/gitlab-org/gitlab-test.
@@ -32,6 +33,7 @@ RSpec.describe Gitlab::GitalyClient::DiffService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::DiffService::Stub) do |instance|
         expect(instance).to receive(:diff_blobs)
           .with(request, kind_of(Hash))
+          .and_return(gitaly_operation_double)
       end
 
       diff_blobs
@@ -67,6 +69,7 @@ RSpec.describe Gitlab::GitalyClient::DiffService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::DiffService::Stub) do |instance|
         expect(instance).to receive(:diff_blobs)
           .with(request, kind_of(Hash))
+          .and_return(gitaly_operation_double)
       end
 
       diff_blobs_raw_info

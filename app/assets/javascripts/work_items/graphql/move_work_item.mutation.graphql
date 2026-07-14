@@ -1,5 +1,7 @@
 #import "ee_else_ce/work_items/graphql/work_item_hierarchy.fragment.graphql"
+#import "~/work_items/graphql/work_item_hierarchy_slim.fragment.graphql"
 
+# @feature_category: team_planning
 mutation workItemMove(
   $input: workItemsHierarchyReorderInput!
   $pageSize: Int = 100
@@ -8,7 +10,7 @@ mutation workItemMove(
 ) {
   workItemsHierarchyReorder(input: $input) {
     workItem {
-      ...WorkItemHierarchy
+      ...WorkItemHierarchySlim
     }
     parentWorkItem {
       ...WorkItemHierarchy

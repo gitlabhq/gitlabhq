@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GrapeLogging::Loggers::FilterParameters do
+RSpec.describe Gitlab::GrapeLogging::Loggers::FilterParameters, feature_category: :api do
   subject { described_class.new }
 
   describe ".parameters" do
@@ -38,6 +38,33 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::FilterParameters do
             'other' => 'Unaffected'
           }
         )
+      end
+    end
+
+    context 'when log_safety includes unsafe_nested' do
+      before do
+        mock_request.params['inputs'] = [
+          { 'name' => 'secret_input', 'value' => 'top-secret' },
+          { 'name' => 'other_input', 'value' => 'also-secret' }
+        ]
+      end
+
+      let(:settings) { { log_safety: { unsafe_nested: [%w[inputs value]] } } }
+
+      it 'redacts the nested value field within each array element' do
+        data = subject.parameters(mock_request, nil)
+
+        expect(data[:params]['inputs']).to eq([
+          { 'name' => 'secret_input', 'value' => '[FILTERED]' },
+          { 'name' => 'other_input', 'value' => '[FILTERED]' }
+        ])
+      end
+
+      it 'does not affect other parameters', :aggregate_failures do
+        data = subject.parameters(mock_request, nil)
+
+        expect(data[:params]['other']).to eq('Unaffected')
+        expect(data[:params]['foo']).to eq('wibble')
       end
     end
 

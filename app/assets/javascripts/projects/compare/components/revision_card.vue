@@ -3,6 +3,7 @@ import RepoDropdown from './repo_dropdown.vue';
 import RevisionDropdown from './revision_dropdown.vue';
 
 export default {
+  name: 'RevisionCard',
   components: {
     RepoDropdown,
     RevisionDropdown,

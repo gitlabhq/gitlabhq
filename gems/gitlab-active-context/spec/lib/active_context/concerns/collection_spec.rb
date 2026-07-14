@@ -121,10 +121,10 @@ RSpec.describe ActiveContext::Concerns::Collection do
 
       context "when the collection record's model metadata is set" do
         before do
-          allow(model_selector_class).to receive(:for).and_call_original
+          allow(model_factory_class).to receive(:for).and_call_original
         end
 
-        let(:model_selector_class) { collection_class.embedding_model_selector }
+        let(:model_factory_class) { collection_class.embedding_model_factory }
         let(:model_metadata) { { model: 'some-model', field: 'some-field' } }
         let(:collection_record) do
           double(
@@ -134,8 +134,8 @@ RSpec.describe ActiveContext::Concerns::Collection do
           )
         end
 
-        it "builds an embedding_model object through the embedding_model_selector" do
-          expect(model_selector_class).to receive(:for).with(
+        it "builds an embedding_model object through the embedding_model_factory" do
+          expect(model_factory_class).to receive(:for).with(
             model_metadata, **expected_custom_build_params
           )
 
@@ -288,8 +288,8 @@ RSpec.describe ActiveContext::Concerns::Collection do
       expect { base_collection_class.ids_to_objects(nil) }.to raise_error(NotImplementedError)
     end
 
-    it 'requires embedding_model_selector to be implemented' do
-      expect { base_collection_class.embedding_model_selector }.to raise_error(NotImplementedError)
+    it 'requires embedding_model_factory to be implemented' do
+      expect { base_collection_class.embedding_model_factory }.to raise_error(NotImplementedError)
     end
   end
 

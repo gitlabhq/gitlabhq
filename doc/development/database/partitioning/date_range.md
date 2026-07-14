@@ -101,9 +101,10 @@ suffers.
 
 ## Time-range Partitioning Strategies
 
-GitLab supports two strategies for time-range partitioning:
+GitLab supports three strategies for time-range partitioning:
 
 - Daily partitioning
+- Weekly partitioning
 - Monthly partitioning
 
 ### Using Time-range Partitioning
@@ -128,6 +129,14 @@ The daily strategy creates one partition per day:
 partitioned_by :created_at, strategy: :daily, retain_for: 7.days
 ```
 
+#### Weekly Strategy (`:weekly`)
+
+The weekly strategy creates one partition per week. Weeks start on Monday:
+
+```ruby
+partitioned_by :created_at, strategy: :weekly, retain_for: 4.weeks
+```
+
 #### Monthly Strategy (`:monthly`)
 
 The monthly strategy creates one partition per month:
@@ -139,11 +148,51 @@ partitioned_by :created_at, strategy: :monthly, retain_for: 3.months, analyze_in
 ### Configuration Options
 
 - `column`: The column to partition on (required, must be a timestamp or date column)
-- `strategy`: Either `:daily` or `:monthly` (required)
-- `retain_for`: Duration to retain partitions (optional)
+- `strategy`: One of `:daily`, `:weekly`, or `:monthly` (required)
+- `retain_for`: How long to retain partitions: a duration, or `:ever` (required, see [Retention](#retention))
 - `analyze_interval`: How often to run ANALYZE on new partitions (optional)
+- `retain_detached_partitions_for`: How long to keep a detached partition before dropping it: a duration (optional,
+  see [Post-detach retention](#post-detach-retention))
 
-Choose `:daily` for high-volume tables that need fine-grained partitioning, or `:monthly` for tables with moderate data volume where daily partitioning would be excessive.
+Choose `:daily` for high-volume tables that need fine-grained partitioning, `:weekly` for an intermediate granularity, or `:monthly` for tables with moderate data volume where daily partitioning would be excessive.
+
+### Retention
+
+Time-based strategies require `retain_for` so each table makes a conscious retention
+decision. Without retention, the table keeps every partition forever, which costs
+storage and slows down queries that do not bound the partition key.
+
+Pass a duration to prune old partitions automatically:
+
+```ruby
+partitioned_by :created_at, strategy: :monthly, retain_for: 6.months
+```
+
+To keep all partitions, opt out explicitly with `retain_for: :ever` and a comment that
+explains why:
+
+```ruby
+# Audit events are retained indefinitely for compliance.
+partitioned_by :created_at, strategy: :monthly, retain_for: :ever
+```
+
+`retain_for` must be a duration or `:ever`. Omitting it, or passing any other value
+such as `nil`, raises an `ArgumentError`.
+
+### Post-detach retention
+
+After the partition manager detaches a partition, it keeps the detached table around for a
+grace period before dropping it, in case the data is still needed. `PartitionManager` defaults
+this grace period to `RETAIN_DETACHED_PARTITIONS_FOR` (one week) for every partitioned table.
+
+To use a shorter or longer grace period for a specific table, pass `retain_detached_partitions_for`:
+
+```ruby
+partitioned_by :created_at, strategy: :daily, retain_for: 14.days, retain_detached_partitions_for: 2.days
+```
+
+`retain_detached_partitions_for` must be a duration. If not set, the table uses the
+default grace period.
 
 ## Example
 
@@ -182,7 +231,7 @@ Gitlab::Database::Partitioning.register_tables(
     {
       limit_connection_names: %i[main],
       table_name: 'audit_events_partitioned_table_name',
-      partitioned_column: :created_at, strategy: :monthly
+      partitioned_column: :created_at, strategy: :monthly, retain_for: :ever
     }
   ]
 )
@@ -193,13 +242,16 @@ The example includes the following:
 - `table_name`: The name of your temporary partitioned table
   (for example, `audit_events_b8088ecbd2`).
 - `partitioned_column`: The column used for partitioning.
-- `strategy`: Either `:daily` or `:monthly`.
+- `strategy`: One of `:daily`, `:weekly`, or `:monthly`.
+- `retain_for`: Set to `:ever` for this registration (see the following warning).
 
 > [!warning]
-> Do not add `retain_for` to this registration, even if your data should be deleted after a certain period.
-> During the backfill, the partition manager might detach old partitions if `retain_for` is set,
-> causing the backfill to fail when it tries to copy data into detached partitions.
-> Add `retain_for` to your model only after the table swap is complete (Step 4).
+> Set `retain_for: :ever` for this registration. Time-based strategies require `retain_for`,
+> but you must not set a real duration here, even if your data should be deleted after a
+> certain period. During the backfill, the partition manager might detach old partitions if
+> `retain_for` is set to a duration, causing the backfill to fail when it tries to copy data
+> into detached partitions. Set the real `retain_for` on your model only after the table swap
+> is complete (Step 4).
 
 After the table swap is complete (Step 4), you can remove this registration.
 

@@ -80,6 +80,7 @@ export default {
       default: null,
     },
   },
+  emits: ['copied', 'input', 'visibility-change'],
   data() {
     if (!this.readonly && !this.value) {
       return {

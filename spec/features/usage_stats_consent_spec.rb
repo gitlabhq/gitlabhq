@@ -30,8 +30,8 @@ RSpec.describe 'Usage stats consent', feature_category: :service_ping do
 
         click_link button_text
 
-        expect(page).not_to have_content(message)
         expect(page).to have_content('Application settings saved successfully')
+        expect(page).not_to have_content(message)
 
         gitlab_sign_out
         gitlab_sign_in(user)

@@ -2,6 +2,7 @@
 import { GlTooltipDirective } from '@gitlab/ui';
 
 export default {
+  name: 'RequestWarning',
   directives: {
     GlTooltip: GlTooltipDirective,
   },

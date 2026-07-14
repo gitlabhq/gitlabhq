@@ -12,6 +12,7 @@ import { __, s__, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
+  name: 'UserListsTable',
   i18n: {
     showMore: __('Show more'),
     showLess: __('Show less'),
@@ -55,11 +56,6 @@ export default {
     },
   },
   methods: {
-    createdTimeago(list) {
-      return sprintf(this.$options.translations.createdTimeagoLabel, {
-        timeago: this.timeFormatted(list.created_at),
-      });
-    },
     displayList(list) {
       return list.user_xids.replace(/,/g, ', ');
     },
@@ -90,7 +86,11 @@ export default {
           data-testid="ffUserListTimestamp"
           class="gl-mb-2 gl-text-gray-300"
         >
-          {{ createdTimeago(list) }}
+          <gl-sprintf :message="$options.translations.createdTimeagoLabel">
+            <template #timeago>
+              <time :datetime="list.created_at">{{ timeFormatted(list.created_at) }}</time>
+            </template>
+          </gl-sprintf>
         </span>
         <gl-truncate-text
           :lines="2"

@@ -50,6 +50,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['delete'],
 
   data() {
     return {

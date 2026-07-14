@@ -4,27 +4,9 @@ module Mcp
   module Tools
     module WorkItems
       class LinkWorkItemsTool < BaseTool
-        class << self
-          def build_mutation
-            <<~GRAPHQL
-              mutation LinkWorkItems($input: WorkItemAddLinkedItemsInput!) {
-                workItemAddLinkedItems(input: $input) {
-                  workItem {
-                    id
-                    iid
-                    title
-                  }
-                  message
-                  errors
-                }
-              }
-            GRAPHQL
-          end
-        end
-
         register_version VERSIONS[:v0_1_0], {
           operation_name: 'workItemAddLinkedItems',
-          graphql_operation: build_mutation
+          graphql_operation: load_graphql('work_items/link_work_items.mutation.graphql')
         }
 
         def build_variables

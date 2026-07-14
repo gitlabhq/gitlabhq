@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user, :with_namespace) }
   let_it_be_with_reload(:project) do
-    create(:project, :repository, namespace: user.namespace)
+    create(:project, namespace: user.namespace)
   end
 
   let(:original_project_path) { project.path }

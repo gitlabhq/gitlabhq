@@ -6,7 +6,7 @@ product_categories:
 - product_analytics
 performance_indicator_type: []
 value_type: number
-status: active
+status: removed
 milestone: '18.8'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217833
 time_frame:
@@ -21,3 +21,5 @@ tiers:
 events:
 - name: render_data_explorer_query
   unique: label
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242368
+milestone_removed: '19.2'

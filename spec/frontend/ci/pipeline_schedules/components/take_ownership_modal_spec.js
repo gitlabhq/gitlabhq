@@ -26,15 +26,15 @@ describe('Take ownership modal', () => {
     );
   });
 
-  it('emits the takeOwnership event', () => {
+  it('emits the take-ownership event', () => {
     findModal().vm.$emit('primary');
 
-    expect(wrapper.emitted()).toEqual({ takeOwnership: [[]] });
+    expect(wrapper.emitted()).toEqual({ 'take-ownership': [[]] });
   });
 
-  it('emits the hideModal event', () => {
+  it('emits the hide-modal event', () => {
     findModal().vm.$emit('hide');
 
-    expect(wrapper.emitted()).toEqual({ hideModal: [[]] });
+    expect(wrapper.emitted()).toEqual({ 'hide-modal': [[]] });
   });
 });

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe WorkItems::DataSync::Widgets::Labels, feature_category: :team_planning do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:group) { create(:group, developers: [current_user]) }
-  let_it_be(:project1, freeze: false) { create(:project, group: group) }
+  let_it_be(:project1) { create(:project, group: group) }
   let_it_be(:project2) { create(:project, group: group) }
   let_it_be(:group_label) { create(:group_label, group: group) }
   let_it_be(:project_label) { create(:label, project: project1) }

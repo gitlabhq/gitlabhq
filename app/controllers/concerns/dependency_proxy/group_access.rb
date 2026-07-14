@@ -43,8 +43,21 @@ module DependencyProxy
     end
 
     def authorize_read_dependency_proxy_for_tokens!
+      access_denied! unless pat_authorized_for_group?
+
       access_denied! unless can?(auth_user_or_token, :read_dependency_proxy,
         group&.dependency_proxy_for_containers_policy_subject)
+    end
+
+    # Confines a PAT to the group its scope allows. Legacy tokens are also
+    # checked so that a namespace enforcing granular tokens rejects them here,
+    # even when they reach consumption through a scopeless `docker login`.
+    def pat_authorized_for_group?
+      token = auth_user_or_token
+      return true unless token.is_a?(::PersonalAccessToken)
+      return false unless group # defensive: verify_dependency_proxy_available! already 404s on nil group
+
+      ::DependencyProxy::GranularAuthorization.pull_authorized?(token, group)
     end
   end
 end

@@ -10,6 +10,7 @@ import {
 import { __ } from '~/locale';
 
 export default {
+  name: 'DropdownWidget',
   components: {
     GlLoadingIcon,
     GlDropdown,
@@ -70,6 +71,7 @@ export default {
       default: __('No options found'),
     },
   },
+  emits: ['set-option', 'set-search'],
   computed: {
     isSearchEmpty() {
       return this.searchTerm === '' && !this.isLoading;

@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { GlAvatar, GlButton, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlButtonGroup, GlLink, GlSprintf } from '@gitlab/ui';
 import { loadCSSFile } from '~/lib/utils/css_utils';
 import SafeHtmlDirective from '~/vue_shared/directives/safe_html';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
@@ -12,6 +12,7 @@ export default {
   components: {
     GlAvatar,
     GlButton,
+    GlButtonGroup,
     GlLink,
     GlSprintf,
     SettingsSection,
@@ -153,7 +154,7 @@ export default {
               <img :alt="$options.i18n.cropAvatarImageAltText" class="modal-profile-crop-image" />
             </div>
             <div class="gl-mt-4 gl-text-center">
-              <div class="btn-group">
+              <gl-button-group>
                 <gl-button
                   :aria-label="__('Zoom out')"
                   icon="search-minus"
@@ -166,7 +167,7 @@ export default {
                   data-method="zoom"
                   data-option="0.1"
                 />
-              </div>
+              </gl-button-group>
             </div>
           </div>
           <div class="modal-footer">

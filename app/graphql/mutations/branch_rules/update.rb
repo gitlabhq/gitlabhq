@@ -7,7 +7,7 @@ module Mutations
 
       authorize :update_branch_rule
       authorize_granular_token permissions: :update_branch_rule,
-        boundary_argument: :id, boundary_type: :project
+        boundary_argument: :id, boundary: :project, boundary_type: :project
 
       argument :id, ::Types::GlobalIDType[::Projects::BranchRule],
         required: true,

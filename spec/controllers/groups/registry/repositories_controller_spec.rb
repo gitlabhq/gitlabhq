@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Groups::Registry::RepositoriesController, feature_category: :container_registry do
   let_it_be(:user)  { create(:user) }
   let_it_be(:guest) { create(:user) }
-  let_it_be_with_reload(:group) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group, owners: user, guests: guest) }
 
   let(:additional_parameters) { {} }
 
@@ -20,8 +20,6 @@ RSpec.describe Groups::Registry::RepositoriesController, feature_category: :cont
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
     stub_container_registry_info
-    group.add_owner(user)
-    group.add_guest(guest)
     sign_in(user)
   end
 

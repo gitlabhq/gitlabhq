@@ -2,6 +2,7 @@
 import { GlButton, GlTooltipDirective, GlAnimatedTodoIcon } from '@gitlab/ui';
 
 import { s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
 import createWorkItemTodosMutation from '../../graphql/create_work_item_todos.mutation.graphql';
 import updateWorkItemCurrentUserTodosMutation from '../../graphql/update_work_item_current_user_todos.mutation.graphql';
@@ -9,6 +10,7 @@ import updateWorkItemCurrentUserTodosMutation from '../../graphql/update_work_it
 import { TODO_ADD_ICON, TODO_DONE_ICON, TODO_PENDING_STATE } from '../../constants';
 
 export default {
+  name: 'TodosToggle',
   i18n: {
     addATodo: s__('WorkItem|Add a to-do item'),
     markAsDone: s__('WorkItem|Mark to-do items done'),
@@ -20,6 +22,7 @@ export default {
     GlButton,
     GlAnimatedTodoIcon,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     itemId: {
       type: String,
@@ -36,6 +39,7 @@ export default {
       default: 'tertiary',
     },
   },
+  emits: ['error', 'todosUpdated'],
   data() {
     return {
       isLoading: false,
@@ -139,6 +143,7 @@ export default {
                 action: 'MARK_AS_DONE',
               },
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
           update: (cache) => {
             this.$emit('todosUpdated', { cache, todos: [] });

@@ -42,7 +42,7 @@ describe('ContributionEventPushed', () => {
     });
 
     it('renders message', () => {
-      expect(wrapper.findByTestId('event-body').text()).toContain(expectedMessage);
+      expect(wrapper.findByTestId('event-title').text()).toContain(expectedMessage);
     });
 
     it('renders resource parent link', () => {

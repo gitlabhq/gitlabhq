@@ -8,7 +8,7 @@ module API
 
         # NOTE: instance runner managers are exposed by default to any authenticated user,
         # remember to protect any sensitive fields
-        expose :id, documentation: { type: 'Integer', example: 8 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 8 }
         expose :system_xid, as: :system_id, documentation: { type: 'String', example: 'runner-1' }
         expose :version, documentation: { type: 'String', example: '16.11.0' }
         expose :revision, documentation: { type: 'String', example: '91a27b2a' }

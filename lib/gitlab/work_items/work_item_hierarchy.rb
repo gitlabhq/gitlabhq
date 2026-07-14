@@ -16,7 +16,7 @@ module Gitlab
       end
 
       override :parent_id_column
-      def parent_id_column(cte)
+      def parent_id_column(_cte)
         middle_table[:work_item_parent_id]
       end
 

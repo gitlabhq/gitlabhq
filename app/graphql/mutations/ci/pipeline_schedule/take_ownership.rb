@@ -7,7 +7,8 @@ module Mutations
         graphql_name 'PipelineScheduleTakeOwnership'
 
         authorize :admin_pipeline_schedule
-        authorize_granular_token permissions: :own_pipeline_schedule, boundary_argument: :id, boundary_type: :project
+        authorize_granular_token permissions: :own_pipeline_schedule, boundary_argument: :id, boundary: :project,
+          boundary_type: :project
 
         field :pipeline_schedule,
           Types::Ci::PipelineScheduleType,

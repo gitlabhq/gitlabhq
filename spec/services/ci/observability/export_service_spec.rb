@@ -244,6 +244,39 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
     it_behaves_like 'exports data type', 'metrics', Gitlab::Observability::PipelineToMetrics, :export_metrics
     it_behaves_like 'exports data type', 'logs', Gitlab::Observability::PipelineToLogs, :export_logs
 
+    describe 'trace correlation feature flag' do
+      before do
+        allow(variables_collection).to receive(:find).and_return(create_export_variable('traces'))
+        allow(Gitlab::Observability::PipelineToTraces).to receive(:new).and_return(instance_double(
+          Gitlab::Observability::PipelineToTraces, convert: {}))
+        allow(exporter).to receive(:export_traces)
+      end
+
+      context 'when the flag is enabled', :aggregate_failures do
+        before do
+          stub_feature_flags(ci_pipeline_otlp_trace_correlation: pipeline.project)
+        end
+
+        it 'sets trace_correlation_enabled to true on pipeline data' do
+          service.send(:export_data)
+
+          expect(pipeline_data[:trace_correlation_enabled]).to be(true)
+        end
+      end
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(ci_pipeline_otlp_trace_correlation: false)
+        end
+
+        it 'sets trace_correlation_enabled to false' do
+          service.send(:export_data)
+
+          expect(pipeline_data[:trace_correlation_enabled]).to be(false)
+        end
+      end
+    end
+
     context 'when multiple export types are specified' do
       let(:export_variable) { create_export_variable('traces,metrics,logs') }
       let(:traces_converter) { instance_double(Gitlab::Observability::PipelineToTraces) }

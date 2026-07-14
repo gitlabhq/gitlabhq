@@ -23,7 +23,7 @@ perform any action.
 {{< history >}}
 
 - Planner role [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482733) in GitLab 17.7.
-- Security Manager role [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20123) as a [beta](../policy/development_stages_support.md#beta) in GitLab 18.11. Disabled by default. 
+- Security Manager role [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20123) as a [beta](../policy/development_stages_support.md#beta) in GitLab 18.11. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/594930) in GitLab 18.11.
 
 {{< /history >}}
@@ -148,8 +148,8 @@ Group permissions for [Application Security](application_security/secure_your_ap
 | View [dependency list](application_security/dependency_list/_index.md)           |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
 | View [vulnerability report](application_security/vulnerability_report/_index.md) |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
 | View [security dashboard](application_security/security_dashboard/_index.md)     |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
-| Create [security policy project](application_security/policies/_index.md)        |       |         |          |                  |           |            |   ✓   |
-| Assign [security policy project](application_security/policies/_index.md)        |       |         |          |                  |           |            |   ✓   |
+| Create [security policy project](application_security/policies/_index.md)        |       |         |          |           ✓       |           |            |   ✓   |
+| Assign [security policy project](application_security/policies/_index.md)        |       |         |          |          ✓        |           |            |   ✓   |
 | Manage [Secrets Manager](../ci/secrets/secrets_manager/_index.md)                |       |         |          |                  |           |            |   ✓   |
 
 ### Group CI/CD
@@ -430,13 +430,17 @@ Project permissions for [application security](application_security/secure_your_
 | Change vulnerability status <sup>1</sup>                                                                                            |       |         |          |        ✓         |           |     ✓      |   ✓   |
 | Create [security policy project](application_security/policies/_index.md)                                                           |       |         |          |                  |           |            |   ✓   |
 | Assign [security policy project](application_security/policies/_index.md)                                                           |       |         |          |                  |           |            |   ✓   |
-| Manage [security configurations](application_security/detect/security_configuration.md) <sup>2</sup>                               |       |         |          |        ✓         |           |     ✓      |   ✓   |
+| Configure [SAST vulnerability resolution](application_security/vulnerabilities/agentic_vulnerability_resolution.md) <sup>2</sup>    |       |         |          |        ✓         |           |     ✓      |   ✓   |
+| Configure [SAST false positive detection](application_security/vulnerabilities/false_positive_detection.md) <sup>2</sup>            |       |         |          |        ✓         |           |     ✓      |   ✓   |
+| Configure [Secret detection false positive detection](application_security/vulnerabilities/secret_false_positive_detection.md) <sup>2</sup> |       |         |          |        ✓         |           |     ✓      |   ✓   |
+| Manage other [security configurations](application_security/detect/security_configuration.md) <sup>3</sup>                         |       |         |          |        ✓         |           |     ✓      |   ✓   |
 | Manage [Secrets Manager](../ci/secrets/secrets_manager/_index.md)                                                                   |       |         |          |                  |           |            |   ✓   |
 
 **Footnotes**:
 
 1. The `admin_vulnerability` permission was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) from the Developer role in GitLab 17.0.
-1. Security Managers can only manage security configurations through the UI (**Secure > Security configuration**).
+1. Security Managers can configure these settings in **Settings > General > GitLab Duo**.
+1. Security Managers can only manage other security configurations through the UI (**Secure > Security configuration**).
 
 ### Project CI/CD
 

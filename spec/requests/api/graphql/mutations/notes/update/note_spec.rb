@@ -19,6 +19,16 @@ RSpec.describe 'Updating a Note', feature_category: :team_planning do
     graphql_mutation_response(:update_note)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_note do
+    let(:user) { note.author }
+    let(:boundary_object) { note.project }
+    let(:request) do
+      post_graphql_mutation(
+        graphql_mutation(:update_note, { id: global_id_of(note).to_s, body: 'updated' }, 'errors'),
+        token: { personal_access_token: pat })
+    end
+  end
+
   context 'when the user does not have permission' do
     let_it_be(:current_user) { create(:user) }
 

@@ -1,6 +1,5 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import Counter from '~/super_sidebar/components/counter.vue';
 import UserCounts from '~/super_sidebar/components/user_counts.vue';
 import { userCounts, useCachedUserCounts } from '~/super_sidebar/user_counts_manager';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
@@ -31,18 +30,6 @@ describe('UserCounts component', () => {
     });
   };
 
-  it('applies counterClass to counter components', () => {
-    const customClass = 'custom-counter-class';
-    createWrapper({
-      counterClass: customClass,
-    });
-
-    const counters = wrapper.findAllComponents(Counter);
-    counters.wrappers.forEach((counter) => {
-      expect(counter.classes()).toContain(customClass);
-    });
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createWrapper();
@@ -51,7 +38,7 @@ describe('UserCounts component', () => {
     it('renders issues counter', () => {
       const issuesCounter = findIssuesCounter();
       expect(issuesCounter.props('count')).toBe(userCounts.assigned_issues);
-      expect(issuesCounter.props('href')).toBe(mockSidebarData.issues_dashboard_path);
+      expect(issuesCounter.props('href')).toBe('/dashboard/issues?assignee_username=root');
       expect(issuesCounter.props('label')).toBe('Assigned work items');
       expect(issuesCounter.props('icon')).toBe('work-items');
       expect(issuesCounter.attributes('data-track-action')).toBe('click_link');
@@ -70,6 +57,7 @@ describe('UserCounts component', () => {
     it('renders merge requests counter', () => {
       const mrsCounter = findMRsCounter();
       expect(mrsCounter.props('count')).toBe(userCounts.total_merge_requests);
+      expect(mrsCounter.props('href')).toBe('/dashboard/merge_requests');
       expect(mrsCounter.props('label')).toBe('Merge requests');
       expect(mrsCounter.attributes('data-track-action')).toBe('click_dropdown');
       expect(mrsCounter.attributes('data-track-label')).toBe('merge_requests_menu');
@@ -80,7 +68,7 @@ describe('UserCounts component', () => {
       it('renders it', () => {
         const todosCounter = findTodosCounter();
         expect(todosCounter.props('count')).toBe(userCounts.todos);
-        expect(todosCounter.props('href')).toBe(mockSidebarData.todos_dashboard_path);
+        expect(todosCounter.props('href')).toBe('/dashboard/todos');
         expect(todosCounter.props('label')).toBe('To-do items');
         expect(todosCounter.attributes('data-track-action')).toBe('click_link');
         expect(todosCounter.attributes('data-track-label')).toBe('todos_link');

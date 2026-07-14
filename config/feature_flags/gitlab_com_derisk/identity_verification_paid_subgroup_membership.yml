@@ -1,0 +1,10 @@
+---
+name: identity_verification_paid_subgroup_membership
+description: Exempt users from identity verification when they hold a Reporter+ role on a subgroup of a paid namespace (resolved to the root ancestor's subscription), not only on the root group itself.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/22443
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243890
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605000
+milestone: '19.2'
+group: group::abuse engineering
+type: gitlab_com_derisk
+default_enabled: false

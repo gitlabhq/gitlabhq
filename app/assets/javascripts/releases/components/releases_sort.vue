@@ -25,6 +25,7 @@ export default {
       validator: (sort) => ALL_SORTS.includes(sort),
     },
   },
+  emits: ['input'],
   computed: {
     orderBy() {
       if (this.value === RELEASED_AT_ASC || this.value === RELEASED_AT_DESC) {

@@ -7,6 +7,24 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   include RepoHelpers
   using RSpec::Parameterized::TableSyntax
 
+  shared_context 'when Gitaly raises while finding changed paths' do
+    where(:error_class_name) do
+      [
+        'Gitlab::Git::CommandError',
+        'TypeError',
+        'Gitlab::Git::Repository::NoRepository'
+      ]
+    end
+
+    let(:error_class) { error_class_name.constantize }
+    let(:gitaly_commit_client) { double('Gitlab::GitalyClient::CommitService') }
+
+    before do
+      allow(repository).to receive(:gitaly_commit_client).and_return(gitaly_commit_client)
+      allow(gitaly_commit_client).to receive(:find_changed_paths).and_raise(error_class)
+    end
+  end
+
   shared_examples 'wrapping gRPC errors' do |gitaly_client_class, gitaly_client_method|
     context 'when commit is not found' do
       let(:find_commits_error) { Gitaly::FindCommitsError.new }
@@ -296,6 +314,28 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
           expect(result['CommitId']).to eq(branch_master_commit_id)
         end
+      end
+    end
+
+    context 'when ref is blank' do
+      where(:ref) { [nil, ''] }
+
+      with_them do
+        it 'falls back to root_ref' do
+          expect(metadata['CommitId']).to start_with(TestEnv::BRANCH_SHA['master'])
+        end
+      end
+    end
+
+    context 'when the repository is empty' do
+      let_it_be(:empty_project, freeze: false) { create(:project, :empty_repo) }
+      let_it_be(:repository, freeze: false) { empty_project.repository.raw }
+
+      let(:ref) { nil }
+
+      it 'returns empty metadata without raising', :aggregate_failures do
+        expect { metadata }.not_to raise_error
+        expect(metadata).to eq({})
       end
     end
   end
@@ -1859,12 +1899,15 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
-  describe '#find_changed_paths' do
+  shared_examples 'changed path lookup' do |lookup_method|
+    subject(:collection) { repository.public_send(lookup_method, treeish_objects, **options) }
+
     let_it_be(:commit_1) { repository.commit(TestEnv::BRANCH_SHA['with-executables']) }
     let_it_be(:commit_2) { repository.commit(TestEnv::BRANCH_SHA['master']) }
     let_it_be(:commit_3) { repository.commit('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
 
     let_it_be(:initial_commit) { repository.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') }
+    let(:options) { {} }
 
     let(:commit_1_files) do
       [
@@ -1921,51 +1964,57 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       ]
     end
 
-    it 'returns a list of paths' do
-      collection = repository.find_changed_paths([commit_1, commit_2, commit_3, initial_commit])
+    context 'with commits' do
+      let(:treeish_objects) { [commit_1, commit_2, commit_3, initial_commit] }
 
-      expect(collection).to be_a(Enumerable)
-      expect(collection.as_json).to eq((commit_1_files + commit_2_files + commit_3_files + initial_commit_files).as_json)
+      it 'returns a list of paths', :aggregate_failures do
+        expect(collection).to be_a(Enumerable)
+        expect(collection.as_json).to eq((commit_1_files + commit_2_files + commit_3_files + initial_commit_files).as_json)
+      end
     end
 
-    it 'returns only paths with valid SHAs' do
-      collection = repository.find_changed_paths(['invalid', commit_1])
+    context 'with an invalid SHA and a commit' do
+      let(:treeish_objects) { ['invalid', commit_1] }
 
-      expect(collection).to be_a(Enumerable)
-      expect(collection.as_json).to eq(commit_1_files.as_json)
+      it 'returns only paths with valid SHAs', :aggregate_failures do
+        expect(collection).to be_a(Enumerable)
+        expect(collection.as_json).to eq(commit_1_files.as_json)
+      end
     end
 
-    it 'returns a list of paths even when containing a blank ref' do
-      collection = repository.find_changed_paths([nil, commit_1])
+    context 'with a blank ref and a commit' do
+      let(:treeish_objects) { [nil, commit_1] }
 
-      expect(collection).to be_a(Enumerable)
-      expect(collection.as_json).to eq(commit_1_files.as_json)
+      it 'returns a list of paths', :aggregate_failures do
+        expect(collection).to be_a(Enumerable)
+        expect(collection.as_json).to eq(commit_1_files.as_json)
+      end
     end
 
-    it 'returns no paths when the commits are nil' do
-      expect_any_instance_of(Gitlab::GitalyClient::CommitService)
-        .not_to receive(:find_changed_paths)
+    context 'with only blank refs' do
+      let(:treeish_objects) { [nil, nil] }
 
-      collection = repository.find_changed_paths([nil, nil])
+      it 'returns no paths without calling Gitaly', :aggregate_failures do
+        expect(repository).not_to receive(:gitaly_commit_client)
 
-      expect(collection).to be_a(Enumerable)
-      expect(collection.to_a).to be_empty
+        expect(collection).to be_a(Enumerable)
+        expect(collection.to_a).to be_empty
+      end
     end
 
     describe 'optional arguments' do
       let(:gitaly_commit_client) { double('Gitlab::GitalyClient::CommitService') }
+      let(:treeish_objects) { ['sha'] }
 
       before do
         allow(repository).to receive(:gitaly_commit_client).and_return(gitaly_commit_client)
-        allow(gitaly_commit_client).to receive(:find_changed_paths)
+        allow(gitaly_commit_client).to receive(:find_changed_paths).and_return([])
       end
 
       context 'when omitted' do
-        before do
-          repository.find_changed_paths(['sha'])
-        end
-
         it 'returns default values' do
+          collection
+
           expect(gitaly_commit_client)
             .to have_received(:find_changed_paths)
             .with(['sha'], merge_commit_diff_mode: nil, find_renames: false, diff_filters: nil)
@@ -1975,28 +2024,55 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       context 'merge_commit_diff_mode is given' do
         let(:merge_commit_diff_mode) { 'foobar' }
 
-        before do
-          repository.find_changed_paths(['sha'], merge_commit_diff_mode: merge_commit_diff_mode)
-        end
+        let(:options) { { merge_commit_diff_mode: merge_commit_diff_mode } }
 
         it 'passes the value on to the commit client' do
+          collection
+
           expect(gitaly_commit_client)
             .to have_received(:find_changed_paths)
             .with(['sha'], merge_commit_diff_mode: merge_commit_diff_mode, find_renames: false, diff_filters: nil)
         end
       end
 
-      context 'find_names is included' do
+      context 'find_renames is included' do
         let(:find_renames) { true }
-
-        before do
-          repository.find_changed_paths(['sha'], find_renames: find_renames)
-        end
+        let(:options) { { find_renames: find_renames } }
 
         it 'passes the value on to the commit client' do
+          collection
+
           expect(gitaly_commit_client)
             .to have_received(:find_changed_paths)
             .with(['sha'], merge_commit_diff_mode: nil, find_renames: find_renames, diff_filters: nil)
+        end
+      end
+    end
+  end
+
+  describe '#find_changed_paths' do
+    it_behaves_like 'changed path lookup', :find_changed_paths
+
+    context 'when Gitaly raises an error' do
+      include_context 'when Gitaly raises while finding changed paths'
+
+      with_them do
+        it 'returns no paths' do
+          expect(repository.find_changed_paths(['sha'])).to eq([])
+        end
+      end
+    end
+  end
+
+  describe '#find_changed_paths!' do
+    it_behaves_like 'changed path lookup', :find_changed_paths!
+
+    context 'when Gitaly raises an error' do
+      include_context 'when Gitaly raises while finding changed paths'
+
+      with_them do
+        it 'raises the error' do
+          expect { repository.find_changed_paths!(['sha']) }.to raise_error(error_class)
         end
       end
     end

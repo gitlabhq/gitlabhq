@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 query namespaceProjectsForLinksWidget($fullPath: ID!, $projectSearch: String) {
   namespace(fullPath: $fullPath) {
     id

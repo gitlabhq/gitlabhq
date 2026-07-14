@@ -17,10 +17,6 @@ module QA
           element 'catalog-sorting-option-button', required: true
         end
 
-        def sort_by_created_at
-          switch_catalog_sorting_option('CREATED')
-        end
-
         def sort_in_ascending_order
           # Switching from descending to ascending
           click_element('sort-highest-icon')
@@ -45,7 +41,7 @@ module QA
 
         private
 
-        # Current acceptable options: 'CREATED', 'RELEASED'
+        # Current acceptable options: 'RELEASED'
         def switch_catalog_sorting_option(option)
           click_element('catalog-sorting-option-button')
           find("[data-testid='listbox-item-#{option}']").click

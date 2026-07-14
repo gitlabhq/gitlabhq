@@ -42,7 +42,7 @@ RSpec.describe Ci::SecureFileUploader do
 
   describe '.direct_upload_enabled?' do
     it 'returns false' do
-      expect(described_class.direct_upload_enabled?).to eq(false)
+      expect(described_class.direct_upload_enabled?).to be(false)
     end
   end
 

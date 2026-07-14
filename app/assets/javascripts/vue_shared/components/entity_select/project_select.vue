@@ -13,6 +13,7 @@ import EntitySelector from './entity_select.vue';
 import { initialSelectionPropValidator } from './utils';
 
 export default {
+  name: 'ProjectSelect',
   components: {
     GlAlert,
     EntitySelector,

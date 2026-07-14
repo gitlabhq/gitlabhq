@@ -21,11 +21,40 @@ RSpec.describe MergeRequests::PushedBranchesService, feature_category: :source_c
       create(:merge_request, :closed, source_branch: 'closed-branch2', source_project: project)
       create(:merge_request, source_branch: 'extra1')
 
-      expect(service.execute).to contain_exactly(
+      expect(service.all_branches).to contain_exactly(
         'branch1',
         'branch2',
         'closed-branch2'
       )
+    end
+  end
+
+  describe '#open_source_branches' do
+    context 'when branches pushed' do
+      let(:pushed_branches) do
+        %w[branch1 branch2 closed-branch1 extra1].map do |branch|
+          { ref: "refs/heads/#{branch}" }
+        end
+      end
+
+      it 'returns only source branches of open merge requests' do
+        create(:merge_request, source_branch: 'branch1', source_project: project)
+        create(:merge_request, source_branch: 'branch2', source_project: project)
+        create(:merge_request, :closed, source_branch: 'closed-branch1', source_project: project)
+        create(:merge_request, target_branch: 'extra1', source_project: project)
+
+        expect(service.open_source_branches).to contain_exactly('branch1', 'branch2')
+      end
+    end
+
+    context 'when tags pushed' do
+      let(:pushed_branches) do
+        %w[v10.0.0].map { |tag| { ref: "refs/tags/#{tag}" } }
+      end
+
+      it 'returns empty result' do
+        expect(service.open_source_branches).to be_empty
+      end
     end
   end
 
@@ -38,7 +67,7 @@ RSpec.describe MergeRequests::PushedBranchesService, feature_category: :source_c
 
     it 'returns empty result without any SQL query performed' do
       control = ActiveRecord::QueryRecorder.new do
-        expect(service.execute).to be_empty
+        expect(service.all_branches).to be_empty
       end
 
       expect(control.count).to be_zero

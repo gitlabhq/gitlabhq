@@ -1,5 +1,3 @@
-// To run this spec locally first run `bundle exec rake gitlab:js:routes`
-
 import { sharedPathHelperTests } from './shared';
 
 const testCases = [

@@ -3,25 +3,25 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder, feature_category: :database do
-  let_it_be(:two_weeks_ago, freeze: false) { 2.weeks.ago }
-  let_it_be(:three_weeks_ago, freeze: false) { 3.weeks.ago }
-  let_it_be(:four_weeks_ago, freeze: false) { 4.weeks.ago }
-  let_it_be(:five_weeks_ago, freeze: false) { 5.weeks.ago }
+  let_it_be(:two_weeks_ago) { 2.weeks.ago }
+  let_it_be(:three_weeks_ago) { 3.weeks.ago }
+  let_it_be(:four_weeks_ago) { 4.weeks.ago }
+  let_it_be(:five_weeks_ago) { 5.weeks.ago }
 
-  let_it_be(:top_level_group, freeze: false) { create(:group) }
-  let_it_be(:sub_group_1, freeze: false) { create(:group, parent: top_level_group) }
-  let_it_be(:sub_group_2, freeze: false) { create(:group, parent: top_level_group) }
-  let_it_be(:sub_sub_group_1, freeze: false) { create(:group, parent: sub_group_2) }
+  let_it_be(:top_level_group) { create(:group) }
+  let_it_be(:sub_group_1) { create(:group, parent: top_level_group) }
+  let_it_be(:sub_group_2) { create(:group, parent: top_level_group) }
+  let_it_be(:sub_sub_group_1) { create(:group, parent: sub_group_2) }
 
-  let_it_be(:project_1, freeze: false) { create(:project, group: top_level_group) }
-  let_it_be(:project_2, freeze: false) { create(:project, group: top_level_group) }
+  let_it_be(:project_1) { create(:project, group: top_level_group) }
+  let_it_be(:project_2) { create(:project, group: top_level_group) }
 
-  let_it_be(:project_3, freeze: false) { create(:project, group: sub_group_1) }
-  let_it_be(:project_4, freeze: false) { create(:project, group: sub_group_2) }
+  let_it_be(:project_3) { create(:project, group: sub_group_1) }
+  let_it_be(:project_4) { create(:project, group: sub_group_2) }
 
-  let_it_be(:project_5, freeze: false) { create(:project, group: sub_sub_group_1) }
+  let_it_be(:project_5) { create(:project, group: sub_sub_group_1) }
 
-  let_it_be(:issues, freeze: false) do
+  let_it_be(:issues) do
     [
       create(:issue, project: project_1, created_at: three_weeks_ago, relative_position: 5),
       create(:issue, project: project_1, created_at: two_weeks_ago, relative_position: nil),
@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder,
     ]
   end
 
-  let_it_be(:ignored_column_model, freeze: false) do
+  let_it_be(:ignored_column_model) do
     Class.new(ApplicationRecord) do
       self.table_name = 'issues'
 

@@ -159,7 +159,7 @@ RSpec.describe DeployKey, :mailer, feature_category: :continuous_delivery do
       it { expect(user.can?(:read_project, project)).to be true }
 
       context 'when a read deploy key is enabled in the project' do
-        let!(:deploy_keys_project) { create(:deploy_keys_project, project: project, deploy_key: deploy_key) }
+        let_it_be(:deploy_keys_project) { create(:deploy_keys_project, project: project, deploy_key: deploy_key) }
 
         it { expect(subject.can?(:read_project, project)).to be false }
         it { expect(subject.can?(:download_code, project)).to be true }
@@ -167,7 +167,7 @@ RSpec.describe DeployKey, :mailer, feature_category: :continuous_delivery do
       end
 
       context 'when a write deploy key is enabled in the project' do
-        let!(:deploy_keys_project) { create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key) }
+        let_it_be(:deploy_keys_project) { create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key) }
 
         it { expect(subject.can?(:read_project, project)).to be false }
         it { expect(subject.can?(:download_code, project)).to be true }
@@ -195,9 +195,9 @@ RSpec.describe DeployKey, :mailer, feature_category: :continuous_delivery do
   end
 
   describe 'search' do
-    let!(:deploy_key1) { create(:deploy_key, title: 'Production key') }
-    let!(:deploy_key2) { create(:deploy_key, title: 'Staging key') }
-    let!(:deploy_key3) { create(:deploy_key, title: 'Development key') }
+    let_it_be(:deploy_key1) { create(:deploy_key, title: 'Production key') }
+    let_it_be(:deploy_key2) { create(:deploy_key, title: 'Staging key') }
+    let_it_be(:deploy_key3) { create(:deploy_key, title: 'Development key') }
 
     describe '.search_by_title' do
       it 'returns deploy keys with matching titles' do

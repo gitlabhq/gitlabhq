@@ -12,8 +12,9 @@ module API
         not_found! unless Feature.enabled?(:usage_data_queries_api, type: :ops)
       end
 
-      desc 'Get raw SQL queries for usage data SQL metrics' do
-        detail 'This feature was introduced in GitLab 13.11.'
+      desc 'List all Service Ping SQL queries' do
+        detail 'Lists all raw SQL queries used to compute Service Ping. This action is behind the ' \
+          '`usage_data_queries_api` feature flag. Administrators only.'
         success code: 200
         failure [
           { code: 401, message: 'Unauthorized' },

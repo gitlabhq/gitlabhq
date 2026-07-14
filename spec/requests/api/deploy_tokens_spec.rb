@@ -6,7 +6,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
   let_it_be(:user)          { create(:user) }
   let_it_be(:creator)       { create(:user) }
   let_it_be(:project)       { create(:project, creator_id: creator.id) }
-  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group) }
 
   let!(:deploy_token) { create(:deploy_token, projects: [project]) }
   let!(:revoked_deploy_token) { create(:deploy_token, projects: [project], revoked: true) }
@@ -465,7 +465,7 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['username']).to match(/gitlab\+deploy-token-\d+/)
-            expect(json_response['expires_at']).to eq(nil)
+            expect(json_response['expires_at']).to be_nil
           end
         end
 

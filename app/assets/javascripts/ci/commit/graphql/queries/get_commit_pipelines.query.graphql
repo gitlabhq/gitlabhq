@@ -1,0 +1,25 @@
+# @feature_category: continuous_integration
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "../fragments/commit_pipeline_list_item.fragment.graphql"
+
+query getCommitPipelines(
+  $fullPath: ID!
+  $sha: String
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+) {
+  project(fullPath: $fullPath) {
+    id
+    pipelines(sha: $sha, first: $first, last: $last, after: $after, before: $before) {
+      count
+      nodes {
+        ...CommitPipelineListItem
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

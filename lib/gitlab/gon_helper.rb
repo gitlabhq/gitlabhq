@@ -110,6 +110,8 @@ module Gitlab
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
       push_frontend_feature_flag(:editor_sticky_table_headers, current_user)
       push_frontend_feature_flag(:explore_analytics_dashboards, current_user)
+      push_frontend_feature_flag(:feature_library_modal, current_user)
+      push_frontend_feature_flag(:accessible_disabled_button, current_user, type: :gitlab_com_derisk)
 
       push_force_frontend_feature_flag(:security_manager_role_enabled, Gitlab::Security::SecurityManagerConfig.enabled?)
     end
@@ -142,6 +144,21 @@ module Gitlab
       raise ArgumentError, 'enabled flag must be a Boolean' unless enabled.in?([true, false])
 
       push_to_gon_attributes(:features, name, enabled)
+    end
+
+    # Exposes the state of an Organizations release flag to the frontend code.
+    #
+    # Resolves the organization flag through the release layer, which maps it
+    # to its backing org_stage_* flag, then pushes the result under the
+    # organization flag's own name. Frontend code keys on the stable
+    # organization flag name and stays decoupled from the backing stage, the
+    # same way the backend call sites and the release spec helper do.
+    #
+    # flag - The organization flag name, e.g. `:ui_for_organizations`.
+    # actor - The actor to check the flag against; pass nil for the
+    #   instance-wide gate.
+    def push_frontend_organization_release(flag, actor)
+      push_force_frontend_feature_flag(flag, ::Organizations::Release.enabled?(flag, actor))
     end
 
     def push_application_setting(key)

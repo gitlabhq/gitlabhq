@@ -6,7 +6,7 @@ module API
       class UserList < BasicUserList
         include RequestAwareEntity
 
-        expose :project_id, documentation: { type: 'Integer', example: 2 }
+        expose :project_id, documentation: { type: 'Integer', format: 'int64', example: 2 }
         expose :created_at, documentation: { type: 'DateTime', example: '2020-02-04T08:13:10.507Z' }
         expose :updated_at, documentation: { type: 'DateTime', example: '2020-02-04T08:13:10.507Z' }
 

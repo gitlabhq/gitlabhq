@@ -9,6 +9,7 @@ import {
   editRuleData,
   editRuleDataNoAccessLevels,
   editRuleDataNoOne,
+  customRolesMock,
 } from 'ee_else_ce_jest/projects/settings/branch_rules/components/mock_data';
 
 jest.mock('~/lib/utils/dom_utils', () => ({ getContentWrapperHeight: jest.fn() }));
@@ -140,6 +141,123 @@ describe('Edit Access Levels Drawer', () => {
     it('does not render a checkbox for Administrators', () => {
       expect(findCheckboxes()).toHaveLength(3);
       expect(findAdministratorsCheckbox().exists()).toBe(false);
+    });
+  });
+
+  describe('custom role selection', () => {
+    // Minimal props: no users/groups/deployKeys so the emitted payload only
+    // contains what each test explicitly sets.
+    const minimalProps = {
+      isLoading: false,
+      isOpen: false,
+      title: 'Edit allowed to merge',
+      roles: [],
+      users: [],
+      groups: [],
+      deployKeys: [],
+    };
+
+    // savedMemberRoles: GlobalID form as returned by the EE GraphQL query.
+    // Reuse the shared fixture (id + name only — the fields the CE drawer cares about).
+    const savedMemberRoles = customRolesMock.map(({ id, name }) => ({ id, name }));
+
+    const openDrawer = async () => {
+      wrapper.setProps({ isOpen: true });
+      await nextTick();
+    };
+
+    it('includes memberRoleId entries in the editRule payload when custom roles are selected', async () => {
+      createComponent(minimalProps);
+      // handleCustomRolesSelected is the slot's on-change handler; calling it
+      // directly is the only way to drive the ee-custom-roles slot in shallowMount.
+      wrapper.vm.handleCustomRolesSelected([1, 2]);
+      await nextTick();
+
+      findSaveButton().vm.$emit('click');
+
+      expect(wrapper.emitted('editRule')[0][0]).toEqual(
+        expect.arrayContaining([
+          { memberRoleId: 'gid://gitlab/MemberRole/1' },
+          { memberRoleId: 'gid://gitlab/MemberRole/2' },
+        ]),
+      );
+    });
+
+    it('places memberRoleId entries before plain accessLevel entries in the payload', async () => {
+      createComponent(minimalProps);
+      wrapper.vm.handleCustomRolesSelected([1]);
+      findMaintainersCheckbox().vm.$emit('input', true);
+      await nextTick();
+
+      findSaveButton().vm.$emit('click');
+
+      const emitted = wrapper.emitted('editRule')[0][0];
+      expect(emitted.findIndex((e) => e.memberRoleId !== undefined)).toBeLessThan(
+        emitted.findIndex((e) => e.accessLevel !== undefined),
+      );
+    });
+
+    it('does not include a plain accessLevel for a custom-role-only selection', async () => {
+      createComponent(minimalProps);
+      wrapper.vm.handleCustomRolesSelected([1]);
+      await nextTick();
+
+      findSaveButton().vm.$emit('click');
+
+      expect(wrapper.emitted('editRule')[0][0]).toEqual([
+        { memberRoleId: 'gid://gitlab/MemberRole/1' },
+      ]);
+    });
+
+    it('preselects saved custom roles from memberRoles prop when drawer opens', async () => {
+      createComponent({ ...minimalProps, memberRoles: savedMemberRoles });
+      await openDrawer();
+
+      // Verify preselection via the emitted payload (integer ids → GlobalIDs).
+      findSaveButton().vm.$emit('click');
+      expect(wrapper.emitted('editRule')[0][0]).toEqual(
+        expect.arrayContaining([
+          { memberRoleId: 'gid://gitlab/MemberRole/1' },
+          { memberRoleId: 'gid://gitlab/MemberRole/2' },
+        ]),
+      );
+    });
+
+    it('clears custom role selection when No one is selected', async () => {
+      createComponent({ ...minimalProps, memberRoles: savedMemberRoles });
+      await openDrawer();
+
+      // Emit both `input` (v-model) and `change` (@change handler) to fully simulate a checkbox click.
+      findNoOneCheckbox().vm.$emit('input', true);
+      findNoOneCheckbox().vm.$emit('change', true);
+      await nextTick();
+
+      findSaveButton().vm.$emit('click');
+      const emitted = wrapper.emitted('editRule')[0][0];
+      expect(emitted.some((e) => e.memberRoleId !== undefined)).toBe(false);
+      expect(emitted).toEqual([{ accessLevel: 0 }]);
+    });
+
+    it('restores saved custom roles when drawer is reopened after deselection', async () => {
+      createComponent({ ...minimalProps, memberRoles: savedMemberRoles });
+      await openDrawer();
+
+      // Deselect all custom roles
+      wrapper.vm.handleCustomRolesSelected([]);
+      await nextTick();
+
+      // Close and reopen — watcher should restore saved state
+      wrapper.setProps({ isOpen: false });
+      await nextTick();
+      await openDrawer();
+
+      findSaveButton().vm.$emit('click');
+      expect(wrapper.emitted('editRule')[0][0]).toEqual(
+        expect.arrayContaining([
+          { memberRoleId: 'gid://gitlab/MemberRole/1' },
+          { memberRoleId: 'gid://gitlab/MemberRole/2' },
+        ]),
+      );
     });
   });
 });

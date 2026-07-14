@@ -16,6 +16,7 @@ export default {
       default: undefined,
     },
   },
+  emits: ['change'],
   methods: {
     onChange(value) {
       this.$emit('change', value);

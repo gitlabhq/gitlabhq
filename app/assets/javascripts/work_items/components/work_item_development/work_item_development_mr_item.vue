@@ -18,6 +18,7 @@ import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 
 export default {
+  name: 'WorkItemDevelopmentMrItem',
   components: {
     GlLink,
     GlIcon,

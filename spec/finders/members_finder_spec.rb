@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe MembersFinder, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group) }
-  let_it_be(:nested_group, freeze: false) { create(:group, parent: group) }
+  let_it_be(:nested_group) { create(:group, parent: group) }
   let_it_be_with_reload(:project) { create(:project, namespace: nested_group) }
-  let_it_be(:user1, freeze: false) { create(:user) }
+  let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:user4) { create(:user) }
@@ -37,7 +37,7 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
 
   it 'returns active users and excludes invited users' do
     member1 = project.add_maintainer(user2)
-    create(:project_member, :invited, project: project, invite_email: create(:user).email)
+    create(:project_member, :invited, project: project, invite_email: build_stubbed(:user).email)
     project.add_maintainer(blocked_user)
 
     result = described_class.new(project, user2, params: { active_without_invites_and_requests: true }).execute
@@ -58,7 +58,7 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
   end
 
   it 'includes only non-invite members if user do not have amdin permissions on project' do
-    create(:project_member, :invited, project: project, invite_email: create(:user).email)
+    create(:project_member, :invited, project: project, invite_email: build_stubbed(:user).email)
     member1 = project.add_maintainer(user1)
     member2 = project.add_developer(user2)
 
@@ -68,7 +68,7 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
   end
 
   it 'includes invited members if user have admin permissions on project' do
-    member_invite = create(:project_member, :invited, project: project, invite_email: create(:user).email)
+    member_invite = create(:project_member, :invited, project: project, invite_email: build_stubbed(:user).email)
     member1 = project.add_maintainer(user1)
     member2 = project.add_maintainer(user2)
 
@@ -120,7 +120,7 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
   end
 
   it 'returns the members.access_level when the user is invited', :nested_groups do
-    member_invite = create(:project_member, :invited, project: project, invite_email: create(:user).email)
+    member_invite = create(:project_member, :invited, project: project, invite_email: build_stubbed(:user).email)
     member1 = group.add_maintainer(user2)
 
     result = described_class.new(project, user2).execute(include_relations: [:direct, :descendants])
@@ -182,17 +182,17 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
   end
 
   context 'with :shared_into_ancestors' do
-    let_it_be(:invited_group, freeze: false) do
+    let_it_be(:invited_group) do
       create(:group).tap do |invited_group|
         create(:group_group_link, shared_group: nested_group, shared_with_group: invited_group)
       end
     end
 
-    let_it_be(:invited_group_member, freeze: false) do
+    let_it_be(:invited_group_member) do
       create(:group_member, :developer, group: invited_group, user: user1)
     end
 
-    let_it_be(:namespace_parent_member, freeze: false) { create(:group_member, :owner, group: group, user: user2) }
+    let_it_be(:namespace_parent_member) { create(:group_member, :owner, group: group, user: user2) }
     let_it_be(:namespace_member) { create(:group_member, :developer, group: nested_group, user: user3) }
     let_it_be(:project_member) { create(:project_member, :developer, project: project, user: user4) }
 
@@ -220,7 +220,7 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
       described_class.new(project, user2).execute(include_relations: [:inherited, :direct, :invited_groups])
     end
 
-    let_it_be(:linked_group, freeze: false) { create(:group, parent: group) }
+    let_it_be(:linked_group) { create(:group, parent: group) }
     let_it_be(:nested_linked_group) { create(:group, parent: linked_group) }
     let_it_be(:linked_group_member) { linked_group.add_guest(user1) }
     let_it_be(:nested_linked_group_member) { nested_linked_group.add_guest(user2) }

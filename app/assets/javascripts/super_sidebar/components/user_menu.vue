@@ -24,6 +24,11 @@ import { logError } from '~/lib/logger';
 import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import { isExperimentVariant } from '~/experimentation/utils';
 import WhatsNewForYouMenuItem from '~/whats_new/components/whats_new_for_you_menu_item.vue';
+import { adminImpersonationPath, adminRootPath } from '~/lib/utils/path_helpers/admin';
+import { profilePreferencesPath } from '~/lib/utils/path_helpers/profile';
+import { destroyUserSessionPath } from '~/lib/utils/path_helpers/routes';
+import { userPath } from '~/lib/utils/path_helpers/user';
+import { userSettingsProfilePath } from '~/lib/utils/path_helpers/user_settings';
 import { USER_MENU_TRACKING_DEFAULTS } from '../constants';
 import UserMenuProfileItem from './user_menu_profile_item.vue';
 import UserCounts from './user_counts.vue';
@@ -32,6 +37,7 @@ const WHATS_NEW_EXPERIMENT = 'whats_new_placement';
 const WHATS_NEW_PLACEMENT = 'profile_menu';
 
 export default {
+  name: 'UserMenu',
   SET_STATUS_MODAL_ID,
   WHATS_NEW_EXPERIMENT,
   // "GitLab Next" is a proper noun, so it is intentionally not translated
@@ -100,7 +106,7 @@ export default {
     adminLinkItem() {
       return {
         text: this.$options.i18n.adminArea,
-        href: this.data.admin_url,
+        href: adminRootPath(),
       };
     },
     statusLabel() {
@@ -120,7 +126,7 @@ export default {
     editProfileItem() {
       return {
         text: this.$options.i18n.editProfile,
-        href: this.data.settings.profile_path,
+        href: userSettingsProfilePath(),
         extraAttrs: {
           'data-testid': 'edit-profile-link',
           ...USER_MENU_TRACKING_DEFAULTS,
@@ -131,7 +137,7 @@ export default {
     preferencesItem() {
       return {
         text: this.$options.i18n.preferences,
-        href: this.data.settings.profile_preferences_path,
+        href: profilePreferencesPath(),
         extraAttrs: {
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'user_preferences',
@@ -189,7 +195,7 @@ export default {
     signOutItem() {
       return {
         text: this.$options.i18n.signOut,
-        href: this.data.sign_out_link,
+        href: destroyUserSessionPath(),
         extraAttrs: {
           'data-method': 'post',
           'data-testid': 'sign-out-link',
@@ -250,6 +256,8 @@ export default {
     document.removeEventListener('userAvatar:update', this.updateAvatar);
   },
   methods: {
+    adminImpersonationPath,
+    userPath,
     updateAvatar(event) {
       this.updatedAvatarUrl = event.detail?.url;
     },
@@ -318,7 +326,7 @@ export default {
     <gl-button
       v-if="isImpersonating"
       v-gl-tooltip.bottom
-      :href="data.stop_impersonation_path"
+      :href="adminImpersonationPath()"
       :title="$options.i18n.stopImpersonating"
       :aria-label="$options.i18n.stopImpersonating"
       icon="incognito"
@@ -338,8 +346,8 @@ export default {
       <template #toggle>
         <gl-button
           category="tertiary"
-          class="btn-with-notification !gl-rounded-full !gl-border-none !gl-px-0"
-          :href="data.link_to_profile"
+          class="gl-relative !gl-rounded-full !gl-border-none !gl-px-0"
+          :href="userPath(data.username)"
           data-testid="user-menu-toggle"
           data-track-action="click_dropdown"
           data-track-label="user_profile_menu"
@@ -380,11 +388,7 @@ export default {
         class="gl-border-t gl-flex gl-pt-2 md:gl-hidden"
         data-testid="user-counts-item"
       >
-        <user-counts
-          :sidebar-data="data"
-          class="gl-w-full"
-          counter-class="gl-button btn btn-default btn-default-tertiary"
-        />
+        <user-counts :sidebar-data="data" class="gl-w-full" />
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-group bordered>

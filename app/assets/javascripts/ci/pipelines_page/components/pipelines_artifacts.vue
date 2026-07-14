@@ -16,14 +16,6 @@ export default {
   components: {
     GlDisclosureDropdown,
   },
-  inject: {
-    artifactsEndpoint: {
-      default: '',
-    },
-    artifactsEndpointPlaceholder: {
-      default: '',
-    },
-  },
   props: {
     artifacts: {
       type: Array,

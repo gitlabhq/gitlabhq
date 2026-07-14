@@ -51,10 +51,6 @@ module Banzai
             end: { line: [1, end_line.to_i].max - 1, column: [1, end_column.to_i].max - 1 }
           }
         end
-
-        def glfm_markdown?(context)
-          (context[:markdown_engine] || DEFAULT_ENGINE) == GLFM_ENGINE
-        end
       end
     end
   end

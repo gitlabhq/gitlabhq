@@ -22,6 +22,11 @@ monitored.
 
 ## Defining a new SLI
 
+> [!note]
+> The SLI implementation lives in `labkit-ruby` as `Labkit::ApplicationSli`. For more information, see
+> [`Labkit::ApplicationSli` README](https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/blob/master/lib/labkit/application_sli/README.md).
+> In GitLab-Rails, `Gitlab::Metrics::Sli` is a backward-compatible alias, so existing code continues to work.
+
 An SLI can be defined with the `Gitlab::Metrics::Sli::Apdex` or
 `Gitlab::Metrics::Sli::ErrorRate` class. When you define an SLI, two
 [Prometheus counters](https://prometheus.io/docs/concepts/metric_types/#counter)

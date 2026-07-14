@@ -14,6 +14,7 @@ RSpec.shared_examples 'user applies wiki templates' do
   end
 
   it 'shows the templates in the dropdown' do
+    click_on "Edit page options"
     click_on "Choose a template"
 
     expect(page).to have_css("li", text: "Template title 1")
@@ -21,6 +22,7 @@ RSpec.shared_examples 'user applies wiki templates' do
   end
 
   it 'shows a link to the templates page' do
+    click_on "Edit page options"
     click_on "Choose a template"
 
     expect(find_by_testid('manage-templates-link')).to be_present
@@ -28,6 +30,7 @@ RSpec.shared_examples 'user applies wiki templates' do
   end
 
   it 'applies the template on select' do
+    click_on "Edit page options"
     click_on "Choose a template"
     page.find("li", text: "Template title 1").click
 
@@ -37,6 +40,7 @@ RSpec.shared_examples 'user applies wiki templates' do
   it 'shows warning if existing text will be overridden by the template' do
     fill_in :wiki_content, with: "Existing content"
 
+    click_on "Edit page options"
     click_on "Choose a template"
     page.find("li", text: "Template title 1").click
 

@@ -7,7 +7,7 @@ export default {
   components: {
     GlBreadcrumb,
   },
-  inject: ['projectFullPath', 'projectPath', 'escapedRef', 'refType'],
+  inject: ['projectPath', 'escapedRef', 'refType'],
   props: {
     filePath: {
       type: String,

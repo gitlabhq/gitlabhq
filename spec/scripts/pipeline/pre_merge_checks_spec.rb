@@ -12,6 +12,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
   let(:project_id)         { '42' }
   let(:merge_request_iid)  { '1' }
   let(:target_branch)      { 'master' }
+  let(:source_branch)      { 'my-feature' }
   let(:mr_pipelines_url)   { "https://gitlab.test/api/v4/projects/#{project_id}/merge_requests/#{merge_request_iid}/pipelines" }
 
   let(:latest_mr_pipeline_ref)        { "refs/merge-requests/1/merge" }
@@ -87,7 +88,8 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
       'CI_API_V4_URL' => 'https://gitlab.test/api/v4',
       'CI_PROJECT_ID' => project_id,
       'CI_MERGE_REQUEST_IID' => merge_request_iid,
-      'CI_MERGE_REQUEST_TARGET_BRANCH_NAME' => target_branch
+      'CI_MERGE_REQUEST_TARGET_BRANCH_NAME' => target_branch,
+      'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' => source_branch
     )
   end
 
@@ -127,6 +129,8 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
     # rubocop:disable RSpec/VerifiedDoubles -- See the disclaimer above
     let(:api_client) { double('Gitlab::Client') }
     let(:latest_mr_pipeline) { double('pipeline', **latest_mr_pipeline_detailed) }
+    let(:mr_author_username) { 'some-user' }
+    let(:merge_request) { double('merge_request', author: double('author', username: mr_author_username)) }
 
     # We need to take some precautions when using the `gitlab` gem in this project.
     #
@@ -137,6 +141,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
 
       allow(instance).to receive(:api_client).and_return(api_client)
       allow(api_client).to yield_pipelines(:merge_request_pipelines, mr_pipelines)
+      allow(api_client).to receive(:merge_request).with(project_id, merge_request_iid.to_i).and_return(merge_request)
 
       # Ensure we don't output to stdout while running tests
       allow(instance).to receive(:puts)
@@ -291,6 +296,36 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
               "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be a tier-3 pipeline"
             )
             expect(instance.execute.message).to include("Pipeline name was \"#{latest_mr_pipeline_name}\".")
+          end
+        end
+
+        context 'and it is not a tier-3 pipeline on the release-tools/update-gitaly branch' do
+          let(:source_branch) { 'release-tools/update-gitaly' }
+          let(:latest_mr_pipeline_name) { "Ruby 3.3 MR [tier:1]" }
+
+          context 'when the author is the release-tools bot' do
+            let(:mr_author_username) { 'gitlab-release-tools-bot' }
+
+            it 'returns a successful PreMergeChecksStatus', :aggregate_failures do
+              result = instance.execute
+
+              expect(result).to be_a(described_class::PreMergeChecksStatus)
+              expect(result).to be_success
+            end
+          end
+
+          context 'when the author is not the release-tools bot' do
+            let(:mr_author_username) { 'malicious-user' }
+
+            it 'returns a failed PreMergeChecksStatus', :aggregate_failures do
+              result = instance.execute
+
+              expect(result).to be_a(described_class::PreMergeChecksStatus)
+              expect(result).not_to be_success
+              expect(result.message).to include(
+                "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be a tier-3 pipeline"
+              )
+            end
           end
         end
 

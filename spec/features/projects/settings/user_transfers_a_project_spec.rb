@@ -68,6 +68,13 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
       old_path = project_path(project)
       project_path = project.path
       transfer_project(project, group)
+
+      # Wait for the transfer to complete (redirect to the new path) before creating
+      # the new project. Otherwise the test thread can race ahead of the server thread
+      # and reuse `project_path` while the original project's route still occupies it,
+      # making the new project invalid and producing a misleading members source_id error.
+      expect(page).to have_current_path(edit_namespace_project_path(group, project))
+
       new_project = create(:project, namespace: user.namespace, path: project_path)
       visit old_path
 

@@ -19,7 +19,13 @@ default:
   timeout: 90m
   interruptible: true
 
+# per-test-coverage:trigger merges this jest child config and the rspec
+# child config into one pipeline. A later include's `stages:` replaces
+# earlier ones wholesale rather than unioning, so both templates must list
+# the same stages or the other suite's jobs reference a stage that does not
+# exist and the whole child fails to create with zero jobs.
 stages:
+  - test
   - test-frontend
 
 workflow:
@@ -41,8 +47,6 @@ jest per-test-coverage:
     # Required (not optional): the maintenance schedule pipeline always runs
     # these, and GitLab rejects `optional` on cross-pipeline needs. The jest run
     # needs the generated JS routes and fe-islands assets to pass.
-    - pipeline: $PARENT_PIPELINE_ID
-      job: generate-js-routes
     - pipeline: $PARENT_PIPELINE_ID
       job: compile-fe-islands
     - pipeline: $PARENT_PIPELINE_ID

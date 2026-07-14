@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Fine-grained permissions for personal access tokens in the GraphQL API
+title: Fine-grained permissions for GraphQL API
 ---
 
 <!--
@@ -19,13 +19,18 @@ title: Fine-grained permissions for personal access tokens in the GraphQL API
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
-Fine-grained personal access tokens scope access to specific permissions in the GraphQL API.
-To create a fine-grained personal access token, see
-[Fine-grained permissions for personal access tokens](fine_grained_access_tokens.md#create-a-fine-grained-personal-access-token).
+{{< history >}}
+
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/596613) in GitLab 19.2.
+
+{{< /history >}}
+
+A fine-grained personal access token can access only the resources and permissions you grant it.
+To use one with the GraphQL API, create a token and define its scope. For more information, see
+[fine-grained personal access tokens](fine_grained_access_tokens.md).
 
 ## Available fine-grained permissions
 
@@ -49,6 +54,17 @@ Grants the ability to read pipeline execution project schedules.
 | ------ | ------ | ---- | ---- |
 | Read | Project | Type | `PipelineExecutionProjectSchedule` |
 
+#### Secrets Manager
+
+Grants the ability to read secrets managers.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Project | Type | `ProjectSecretsManager` |
+| Read | Group | Type | `GroupSecretsManager` |
+| Read | Group | Type | `SecretsManagerEntitlement` |
+| Read | Group | Mutation | `SecretsManagerStartTrial` |
+
 #### Vulnerability
 
 Grants the ability to create, read, and update vulnerabilities.
@@ -58,12 +74,115 @@ Grants the ability to create, read, and update vulnerabilities.
 | Create | Project | Mutation | `VulnerabilityCreate` |
 | Read | Project | Type | `CountableVulnerability` |
 | Read | Project | Type | `Vulnerability` |
+| Read | Project | Type | `VulnerabilityScanner` |
+| Read | Project | Field | `MergeRequest.findingReportsComparer` |
+| Update | Project | Mutation | `VulnerabilityAutoRemediation` |
 | Update | Project | Mutation | `VulnerabilityConfirm` |
 | Update | Project | Mutation | `VulnerabilityDismiss` |
 | Update | Project | Mutation | `VulnerabilityResolve` |
 | Update | Project | Mutation | `VulnerabilityRevertToDetected` |
 
 ### CI/CD resources
+
+#### Catalog Resource
+
+Grants the ability to create and delete CI catalog resources.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `CatalogResourcesCreate` |
+| Delete | Project | Mutation | `CatalogResourcesDestroy` |
+
+#### CD Application
+
+Grants the ability to create, read, and update continuous deployment applications.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `CdApplicationCreate` |
+| Read | Instance | Type | `CdApplication` |
+| Update | Instance | Mutation | `CdApplicationUpdate` |
+
+#### CD Application Flow Definition
+
+Grants the ability to create and read continuous deployment application flow definitions.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `CdApplicationFlowDefinitionCreate` |
+| Read | Instance | Type | `CdApplicationFlowDefinition` |
+
+#### CD Application Link
+
+Grants the ability to create and read continuous deployment application links.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `CdApplicationLinkCreate` |
+| Read | Instance | Type | `CdApplicationLink` |
+
+#### CD Artifact Source
+
+Grants the ability to create and read continuous deployment artifact sources.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `CdArtifactSourceCreate` |
+| Read | Instance | Type | `CdArtifactSource` |
+| Read | Instance | Type | `CdVersion` |
+
+#### CD Environment
+
+Grants the ability to create, read, and update continuous deployment environments.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `CdEnvironmentCreate` |
+| Read | Instance | Type | `CdEnvironment` |
+| Read | Instance | Type | `CdEnvironmentDriverBinding` |
+| Update | Instance | Mutation | `CdEnvironmentUpdate` |
+
+#### CD Rollout
+
+Grants the ability to create and read CD rollouts.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `CdRolloutCreate` |
+| Read | Instance | Type | `CdDeployment` |
+| Read | Instance | Type | `CdDeploymentTransition` |
+| Read | Instance | Type | `CdRollout` |
+| Read | Instance | Type | `CdRolloutEnvironment` |
+| Read | Instance | Type | `CdRolloutTransition` |
+
+#### CD Rollout Gate
+
+Grants the ability to resolve CD rollout gates.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Resolve | Instance | Mutation | `CdRolloutGateResolve` |
+
+#### CD Service
+
+Grants the ability to create, read, and update continuous deployment services.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `CdServiceCreate` |
+| Read | Instance | Type | `CdService` |
+| Read | Instance | Type | `CdServiceEnvironmentHealth` |
+| Update | Instance | Mutation | `CdServiceUpdate` |
+
+#### CD Version Set
+
+Grants the ability to create and read continuous deployment version sets.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `CdVersionSetCreate` |
+| Read | Instance | Type | `CdVersionSet` |
+| Read | Instance | Type | `CdVersionSetEntry` |
 
 #### CI Config
 
@@ -81,37 +200,6 @@ Grants the ability to update CI/CD settings.
 | ------ | ------ | ---- | ---- |
 | Update | Project | Mutation | `ProjectCiCdSettingsUpdate` |
 | Update | Group | Mutation | `SafeDisablePipelineVariables` |
-
-#### Catalog Resource
-
-Grants the ability to create and delete CI catalog resources.
-
-| Action | Access | Kind | Name |
-| ------ | ------ | ---- | ---- |
-| Create | Project | Mutation | `CatalogResourcesCreate` |
-| Delete | Project | Mutation | `CatalogResourcesDestroy` |
-
-#### Cd Application
-
-Grants the ability to create and read cd applications.
-
-| Action | Access | Kind | Name |
-| ------ | ------ | ---- | ---- |
-| Create | Group | Mutation | `CdApplicationCreate` |
-| Create | Instance | Mutation | `CdApplicationCreate` |
-| Read | Group | Type | `CdApplication` |
-| Read | Instance | Type | `CdApplication` |
-
-#### Cd Environment
-
-Grants the ability to create and read cd environments.
-
-| Action | Access | Kind | Name |
-| ------ | ------ | ---- | ---- |
-| Create | Group | Mutation | `CdEnvironmentCreate` |
-| Create | Instance | Mutation | `CdEnvironmentCreate` |
-| Read | Group | Type | `CdEnvironment` |
-| Read | Instance | Type | `CdEnvironment` |
 
 #### Cluster Agent
 
@@ -213,7 +301,6 @@ Grants the ability to create, delete, read, and update pipeline schedules.
 | Create | Project | Mutation | `PipelineScheduleCreate` |
 | Delete | Project | Mutation | `PipelineScheduleDelete` |
 | Read | Project | Type | `PipelineSchedule` |
-| Read | Project | Field | `Project.pipelineSchedules` |
 | Update | Project | Mutation | `PipelineSchedulePlay` |
 | Update | Project | Mutation | `PipelineScheduleTakeOwnership` |
 | Update | Project | Mutation | `PipelineScheduleUpdate` |
@@ -233,14 +320,8 @@ Grants the ability to assign, create, delete, read, and update runners.
 | Delete | Group | Mutation | `RunnerDelete` |
 | Delete | Instance | Mutation | `RunnerDelete` |
 | Read | Project | Type | `CiRunner` |
-| Read | Project | Field | `Project.runners` |
-| Read | Project | Field | `Query.runner` |
 | Read | Group | Type | `CiRunner` |
-| Read | Group | Field | `Group.runners` |
-| Read | Group | Field | `Query.runner` |
 | Read | Instance | Type | `CiRunner` |
-| Read | Instance | Field | `Query.runner` |
-| Read | Instance | Field | `Query.runners` |
 | Update | Project | Mutation | `RunnerCacheClear` |
 | Update | Project | Mutation | `RunnerUpdate` |
 | Update | Group | Mutation | `RunnerUpdate` |
@@ -290,6 +371,35 @@ Grants the ability to restore AI catalog items.
 | ------ | ------ | ---- | ---- |
 | Restore | Project | Mutation | `AiCatalogItemVersionRestore` |
 
+#### AI tool rule
+
+Grants the ability to read and update AI tool rules, which control per-tool approval (Allow, Ask, Deny) for the Duo Agent Platform.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Group | Field | `Query.aiToolRules` |
+| Update | Group | Mutation | `BulkUpdateAiToolRules` |
+| Update | Group | Mutation | `UpdateAiToolRule` |
+
+#### Duo Workflow
+
+Grants the ability to create, read, resume, and update duo workflows.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | User | Type | `DuoWorkflowWorkItemLink` |
+| Update | User | Mutation | `UpdateDuoWorkflowAgentPrivileges` |
+
+#### Flows Metadata
+
+Grants the ability to read flows metadata.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Project | Type | `AiFlowsMetadata` |
+| Read | Group | Type | `AiFlowsMetadata` |
+| Read | Instance | Type | `AiFlowsMetadata` |
+
 #### Model Selection Allowlist
 
 Grants the ability to read and update model selection allowlists.
@@ -323,7 +433,6 @@ Grants the ability to archive, create, delete, read, share, transfer, and update
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Read | Group | Type | `Group` |
-| Read | Group | Field | `Query.group` |
 | Update | Group | Mutation | `GroupUpdate` |
 
 #### LDAP Admin Role Link
@@ -363,6 +472,39 @@ Grants the ability to create, delete, merge, read, and update topics.
 | ------ | ------ | ---- | ---- |
 | Read | Instance | Type | `Topic` |
 
+### Monitoring resources
+
+#### Escalation Policy
+
+Grants the ability to read escalation policies.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Project | Type | `EscalationPolicyType` |
+
+### Notifications resources
+
+#### Todo
+
+Grants the ability to create, delete, read, and update todos.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `TodoCreate` |
+| Create | Group | Mutation | `TodoCreate` |
+| Delete | User | Mutation | `TodoDeleteAllDone` |
+| Delete | User | Mutation | `TodoDeleteMany` |
+| Read | User | Type | `Todo` |
+| Update | User | Mutation | `TodoMarkDone` |
+| Update | User | Mutation | `TodoResolveMany` |
+| Update | User | Mutation | `TodoRestore` |
+| Update | User | Mutation | `TodoRestoreMany` |
+| Update | User | Mutation | `TodoSnooze` |
+| Update | User | Mutation | `TodoSnoozeMany` |
+| Update | User | Mutation | `TodoUnSnooze` |
+| Update | User | Mutation | `TodoUnsnoozeMany` |
+| Update | User | Mutation | `TodosMarkAllDone` |
+
 ### Organizations resources
 
 #### Organization
@@ -375,12 +517,11 @@ Grants the ability to create, delete, read, and update organizations.
 | Delete | Instance | Mutation | `OrganizationDelete` |
 | Read | Instance | Type | `Organization` |
 | Read | Instance | Type | `OrganizationUser` |
-| Read | Instance | Field | `Query.organization` |
-| Read | Instance | Field | `Query.organizations` |
+| Update | Instance | Mutation | `OrganizationConfirm` |
 | Update | Instance | Mutation | `OrganizationUpdate` |
 | Update | Instance | Mutation | `OrganizationUserUpdate` |
 
-### Packages And Registry resources
+### Packages and Registry resources
 
 #### Container Registry Protection Tag Rule
 
@@ -413,7 +554,7 @@ Grants the ability to create, delete, read, and update container repository prot
 
 #### Dependency Proxy
 
-Grants the ability to update dependency proxies.
+Grants the ability to read and update dependency proxies.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
@@ -444,6 +585,15 @@ Grants the ability to create, delete, read, and update badges.
 | ------ | ------ | ---- | ---- |
 | Read | Instance | Type | `OrganizationUserBadge` |
 
+#### Cycle Analytics
+
+Grants the ability to read cycle analytics.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Project | Field | `Analytics.mergeRequests` |
+| Read | Group | Field | `Analytics.mergeRequests` |
+
 #### Release
 
 Grants the ability to create, delete, read, and update releases.
@@ -468,11 +618,11 @@ Grants the ability to create, delete, read, and update snippets.
 | Update | Project | Mutation | `UpdateSnippet` |
 | Update | User | Mutation | `UpdateSnippet` |
 
-### Project Model Registry And Experiments resources
+### Project Model Registry and Experiments resources
 
 #### Model Version
 
-Grants the ability to create, delete, and update model versions.
+Grants the ability to create, delete, read, and update model versions.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
@@ -495,7 +645,7 @@ Grants the ability to delete, read, and update custom attributes.
 
 #### Label
 
-Grants the ability to create, delete, promote, read, and update labels.
+Grants the ability to create, delete, promote, read, subscribe, and update labels.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
@@ -512,24 +662,42 @@ Grants the ability to create, delete, read, and update work items such as epics 
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `CreateDiffNote` |
+| Create | Project | Mutation | `CreateDiscussion` |
+| Create | Project | Mutation | `CreateImageDiffNote` |
 | Create | Project | Mutation | `CreateIssue` |
+| Create | Project | Mutation | `CreateLatestDiffNote` |
+| Create | Project | Mutation | `CreateNote` |
 | Create | Project | Mutation | `WorkItemCreate` |
 | Create | Project | Field | `EpicIssue.createNoteEmail` |
 | Create | Project | Field | `Issue.createNoteEmail` |
 | Create | Project | Field | `WorkItem.createNoteEmail` |
+| Create | Group | Mutation | `CreateDiffNote` |
+| Create | Group | Mutation | `CreateDiscussion` |
+| Create | Group | Mutation | `CreateImageDiffNote` |
+| Create | Group | Mutation | `CreateLatestDiffNote` |
+| Create | Group | Mutation | `CreateNote` |
 | Create | Group | Mutation | `IterationCadenceCreate` |
 | Create | Group | Mutation | `WorkItemCreate` |
+| Delete | Project | Mutation | `DestroyNote` |
 | Delete | Project | Mutation | `WorkItemDelete` |
+| Delete | Group | Mutation | `DestroyNote` |
 | Delete | Group | Mutation | `IterationCadenceDestroy` |
 | Delete | Group | Mutation | `IterationDelete` |
 | Delete | Group | Mutation | `WorkItemDelete` |
+| Read | Project | Type | `Board` |
 | Read | Project | Type | `EpicIssue` |
 | Read | Project | Type | `Issue` |
 | Read | Project | Type | `Milestone` |
+| Read | Project | Type | `Note` |
 | Read | Project | Type | `WorkItem` |
+| Read | Group | Type | `Board` |
+| Read | Group | Type | `BoardEpic` |
+| Read | Group | Type | `Epic` |
 | Read | Group | Type | `Iteration` |
 | Read | Group | Type | `IterationCadence` |
 | Read | Group | Type | `Milestone` |
+| Read | Group | Type | `Note` |
 | Read | Group | Type | `WorkItemMoveTarget` |
 | Update | Project | Mutation | `IssueLinkAlerts` |
 | Update | Project | Mutation | `IssueMove` |
@@ -545,17 +713,20 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Project | Mutation | `IssueSetSeverity` |
 | Update | Project | Mutation | `IssueSetWeight` |
 | Update | Project | Mutation | `IssueUnlinkAlert` |
+| Update | Project | Mutation | `UpdateImageDiffNote` |
 | Update | Project | Mutation | `UpdateIssue` |
+| Update | Project | Mutation | `UpdateNote` |
 | Update | Project | Mutation | `WorkItemAddClosingMergeRequest` |
 | Update | Project | Mutation | `WorkItemConvert` |
 | Update | Project | Mutation | `WorkItemCreateFromTask` |
 | Update | Project | Mutation | `WorkItemUpdate` |
 | Update | Project | Mutation | `workItemsReorder` |
 | Update | Group | Mutation | `IterationCadenceUpdate` |
+| Update | Group | Mutation | `UpdateImageDiffNote` |
 | Update | Group | Mutation | `UpdateIteration` |
+| Update | Group | Mutation | `UpdateNote` |
 | Update | Group | Mutation | `WorkItemAddClosingMergeRequest` |
 | Update | Group | Mutation | `WorkItemConvert` |
-| Update | Group | Mutation | `WorkItemCreateFromTask` |
 | Update | Group | Mutation | `WorkItemUpdate` |
 | Update | Group | Mutation | `workItemsReorder` |
 
@@ -593,7 +764,6 @@ Grants the ability to archive, create, delete, fork, read, share, transfer, and 
 | ------ | ------ | ---- | ---- |
 | Read | Project | Type | `Project` |
 | Read | Project | Type | `RepositoryLanguage` |
-| Read | Project | Field | `Query.project` |
 | Update | Project | Mutation | `ProjectSettingsUpdate` |
 | Update | Project | Mutation | `StarProject` |
 
@@ -644,11 +814,29 @@ Grants the ability to download, push, and read code via Git.
 
 #### Merge Request
 
-Grants the ability to approve, create, delete, merge, read, and update merge requests.
+Grants the ability to approve, create, delete, merge, read, subscribe, and update merge requests.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `MergeRequestCreate` |
+| Merge | Project | Mutation | `MergeRequestAccept` |
+| Read | Project | Type | `MergeRequest` |
 | Read | Project | Type | `MergeRequestApprovalState` |
+| Read | Project | Type | `MergeRequestWorkItemRelation` |
+| Update | Project | Mutation | `DismissPolicyViolations` |
+| Update | Project | Mutation | `MergeRequestBypassSecurityPolicy` |
+| Update | Project | Mutation | `MergeRequestCreateWorkItemRelations` |
+| Update | Project | Mutation | `MergeRequestDestroyRequestedChanges` |
+| Update | Project | Mutation | `MergeRequestDestroyWorkItemRelations` |
+| Update | Project | Mutation | `MergeRequestRequestChanges` |
+| Update | Project | Mutation | `MergeRequestSetAssignees` |
+| Update | Project | Mutation | `MergeRequestSetBlockingMergeRequests` |
+| Update | Project | Mutation | `MergeRequestSetDraft` |
+| Update | Project | Mutation | `MergeRequestSetLabels` |
+| Update | Project | Mutation | `MergeRequestSetLocked` |
+| Update | Project | Mutation | `MergeRequestSetMilestone` |
+| Update | Project | Mutation | `MergeRequestSetReviewers` |
+| Update | Project | Mutation | `MergeRequestUpdate` |
 
 #### Push Rule
 

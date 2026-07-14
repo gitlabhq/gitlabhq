@@ -9,7 +9,7 @@ RSpec.describe Groups::StepUpAuthsController, type: :controller, feature_categor
   let(:oidc_provider_name) { 'openid_connect' }
 
   let(:oidc_provider_config) do
-    GitlabSettings::Options.new(
+    Gitlab::Configs.build_options(
       name: oidc_provider_name,
       step_up_auth: {
         namespace: {
@@ -97,7 +97,7 @@ RSpec.describe Groups::StepUpAuthsController, type: :controller, feature_categor
         let(:another_provider_name) { 'keycloak2' }
 
         let(:another_provider_config) do
-          GitlabSettings::Options.new(
+          Gitlab::Configs.build_options(
             name: another_provider_name,
             step_up_auth: {
               namespace: {

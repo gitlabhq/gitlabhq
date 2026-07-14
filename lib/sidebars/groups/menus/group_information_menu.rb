@@ -46,7 +46,9 @@ module Sidebars
             link: activity_group_path(context.group),
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ManageMenu,
             active_routes: { path: 'groups#activity' },
-            item_id: :activity
+            item_id: :activity,
+            description: _('Track what your team is working on and stay informed of changes'),
+            library_icon: 'history'
           )
         end
 
@@ -60,7 +62,9 @@ module Sidebars
             link: group_labels_path(context.group),
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ManageMenu,
             active_routes: { controller: :labels },
-            item_id: :labels
+            item_id: :labels,
+            description: _('Organize and categorize work across your group with consistent labels'),
+            library_icon: 'labels'
           )
         end
 
@@ -75,7 +79,9 @@ module Sidebars
             sprite_icon: nil,
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ManageMenu,
             active_routes: { path: 'group_members#index' },
-            item_id: :members
+            item_id: :members,
+            description: _('Control who has access to your group and what they can do'),
+            library_icon: 'users'
           )
         end
 
@@ -89,7 +95,9 @@ module Sidebars
             link: group_achievements_path(context.group),
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ManageMenu,
             active_routes: { controller: :achievements },
-            item_id: :achievements
+            item_id: :achievements,
+            description: _('View achievements earned by your group'),
+            library_icon: 'star'
           )
         end
       end

@@ -6,6 +6,7 @@ import { STATUS_OPEN } from '~/issues/constants';
 import { __ } from '~/locale';
 
 export default {
+  name: 'IssuableTitle',
   i18n: {
     editTitleAndDescription: __('Edit title and description'),
   },

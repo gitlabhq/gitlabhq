@@ -7,6 +7,8 @@ require 'uri'
 
 module Gitlab
   class Workhorse
+    ArchiveNotFoundError = Class.new(StandardError)
+
     SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'
     SEND_DEPENDENCY_CONTENT_TYPE_HEADER = 'Workhorse-Proxy-Content-Type'
     VERSION_FILE = 'GITLAB_WORKHORSE_VERSION'
@@ -116,7 +118,7 @@ module Gitlab
           ref_type: ref_type
         )
 
-        raise "Repository or ref not found" if metadata.empty?
+        raise ArchiveNotFoundError, "Repository or ref not found" if metadata.empty?
 
         params = send_git_archive_params(repository, metadata, path, archive_format(format), include_lfs_blobs,
           exclude_paths)
@@ -402,6 +404,11 @@ module Gitlab
         )
         metadata['retry_config'] = retry_config
         metadata['client_name'] = client_name if client_name.present?
+        # Forward the requesting user and IP so Gitaly attributes these RPCs and
+        # applies the authenticated (vs unauthenticated) concurrency limits,
+        # matching what Gitlab::GitalyClient#request_kwargs already does for
+        # direct gRPC calls. Anonymous requests simply omit the user identity.
+        metadata.merge!(Gitlab::GitalyClient.application_context_metadata)
 
         {
           address: Gitlab::GitalyClient.address(repository.shard),

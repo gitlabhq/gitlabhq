@@ -727,6 +727,26 @@ describe('AnalyticsDashboardPanel', () => {
     });
   });
 
+  describe('panel title icon', () => {
+    it('renders the titleIcon prop as-is when no visualization options titleIcon is set', () => {
+      createWrapper({ props: { titleIcon: 'chart' } });
+      expect(findExtendedDashboardPanel().props('titleIcon')).toBe('chart');
+    });
+
+    it('renders the visualization options titleIcon when set', () => {
+      createWrapper({
+        props: {
+          titleIcon: 'chart',
+          visualization: {
+            ...mockPanel.visualization,
+            options: { ...mockPanel.visualization.options, titleIcon: 'group' },
+          },
+        },
+      });
+      expect(findExtendedDashboardPanel().props('titleIcon')).toBe('group');
+    });
+  });
+
   describe('tooltip', () => {
     it('sets the tooltip on the panels base component', () => {
       createWrapper({ props: { tooltip: mockPanel.tooltip } });

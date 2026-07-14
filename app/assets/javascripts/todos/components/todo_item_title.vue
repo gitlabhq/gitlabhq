@@ -16,6 +16,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'TodoItemTitle',
   components: {
     StatusBadge,
     GlIcon,

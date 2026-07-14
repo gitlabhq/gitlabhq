@@ -61,3 +61,13 @@
     = _('Configure Sentry integration for error tracking')
   - c.with_body do
     = render 'sentry'
+
+- if Feature.enabled?(:logging_field_variant_versioning, :instance)
+  = render ::Layouts::SettingsBlockComponent.new(_('Logging fields'),
+    id: 'js-logging-field-naming-settings',
+    testid: 'logging-field-naming-settings-content',
+    expanded: expanded_by_default?) do |c|
+    - c.with_description do
+      = _('Control the version of the logging field naming')
+    - c.with_body do
+      = render 'logging_field_settings'

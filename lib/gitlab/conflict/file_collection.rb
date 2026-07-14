@@ -44,10 +44,18 @@ module Gitlab
         # when there are no conflict files.
         files.each(&:lines)
         files.any?
-      rescue Gitlab::Git::CommandError,
-        Gitlab::Git::Conflict::Parser::UnresolvableError,
+      rescue Gitlab::Git::Conflict::Parser::UnresolvableError,
         Gitlab::Git::Conflict::Resolver::ConflictSideMissing,
-        Gitlab::Git::Conflict::File::UnsupportedEncoding
+        Gitlab::Git::Conflict::File::UnsupportedEncoding,
+        Gitlab::Git::CommandError => e
+        # These errors indicate conflicts exist but can't be parsed/resolved
+        # in the UI - return false to show "cannot be resolved" message.
+        # CommandError covers cases like missing refs after force push.
+        #
+        # However, if the underlying cause is Gitaly unavailability (not just
+        # a missing ref), re-raise so the controller can return 503.
+        raise if gitaly_unavailable?(e)
+
         false
       end
       cache_method :can_be_resolved_in_ui?
@@ -84,6 +92,20 @@ TEXT
       end
 
       private
+
+      # Check if the error indicates Gitaly service unavailability
+      # (as opposed to a legitimate "ref not found" type error)
+      def gitaly_unavailable?(error)
+        cause = error.cause
+        return false unless cause.is_a?(GRPC::BadStatus)
+
+        # These status codes indicate service unavailability
+        [
+          GRPC::Core::StatusCodes::UNAVAILABLE,
+          GRPC::Core::StatusCodes::DEADLINE_EXCEEDED,
+          GRPC::Core::StatusCodes::RESOURCE_EXHAUSTED
+        ].include?(cause.code)
+      end
 
       def cache
         @cache ||= begin

@@ -102,8 +102,7 @@ const updateCustomFieldsWidget = (sourceData, draftData, customField) => {
   if (!widget) return;
 
   const currentValues =
-    sourceData?.namespace?.workItem?.widgets?.find((w) => w.type === WIDGET_TYPE_CUSTOM_FIELDS)
-      ?.customFieldValues ?? [];
+    findCustomFieldsWidget(sourceData?.namespace?.workItem)?.customFieldValues ?? [];
 
   const updatedCustomFieldValues = currentValues.map((field) => {
     if (field?.customField?.id === customField.id) {

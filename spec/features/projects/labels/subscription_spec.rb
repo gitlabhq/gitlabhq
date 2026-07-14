@@ -26,8 +26,8 @@ RSpec.describe 'Labels subscription', feature_category: :team_planning do
 
         click_button 'Subscribe'
 
-        expect(page).not_to have_button 'Subscribe'
         expect(page).to have_button 'Unsubscribe'
+        expect(page).not_to have_button 'Subscribe'
 
         click_button 'Unsubscribe'
 
@@ -40,8 +40,8 @@ RSpec.describe 'Labels subscription', feature_category: :team_planning do
 
         click_link_on_dropdown('Subscribe at group level')
 
-        expect(page).not_to have_selector('.dropdown-group-label')
         expect(page).to have_button 'Unsubscribe'
+        expect(page).not_to have_selector('.dropdown-group-label')
 
         click_button 'Unsubscribe'
 
@@ -49,8 +49,8 @@ RSpec.describe 'Labels subscription', feature_category: :team_planning do
 
         click_link_on_dropdown('Subscribe at project level')
 
-        expect(page).not_to have_selector('.dropdown-group-label')
         expect(page).to have_button 'Unsubscribe'
+        expect(page).not_to have_selector('.dropdown-group-label')
       end
     end
   end

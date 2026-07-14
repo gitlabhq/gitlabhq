@@ -10,6 +10,11 @@ module API
           { namespace: { parent: :route } }
         ].freeze
 
+        WORK_ITEM_POLICY_PRELOADS = [
+          { project: [:project_feature, { namespace: :route }] },
+          { namespace: { parent: :route } }
+        ].freeze
+
         NOTE_REFERENCE_PRELOADS = %i[author project noteable updated_by system_note_metadata].freeze
 
         FEATURE_PRELOADS = {
@@ -129,6 +134,10 @@ module API
 
           preloads[:award_emoji_counts] = preload_award_emoji_counts(work_items) if feature_keys.include?(:award_emoji)
 
+          if feature_keys.include?(:development)
+            preloads[:closing_merge_requests_counts] = preload_closing_merge_requests_counts(work_items)
+          end
+
           preloads
         end
 
@@ -200,6 +209,14 @@ module API
             work_items.first.class.base_class.name,
             'COUNT(DISTINCT discussion_id) AS count'
           ).each_with_object({}) { |row, hash| hash[row.noteable_id] = row.count.to_i }
+        end
+
+        # Visibility-aware bulk count of closing merge requests keyed by work item id, so the development
+        # feature entity reads each count from memory instead of issuing one query per work item.
+        def preload_closing_merge_requests_counts(work_items)
+          return {} if work_items.empty?
+
+          ::MergeRequestsClosingIssues.count_for_collection(work_items.map(&:id), current_user).to_h
         end
 
         def preload_award_emoji_counts(work_items)

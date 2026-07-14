@@ -18,7 +18,7 @@ RSpec.describe Mutations::AlertManagement::UpdateAlertStatus, feature_category: 
     subject(:resolve) { mutation_for(project, current_user).resolve(**args) }
 
     context 'user has access to project' do
-      before do
+      before_all do
         project.add_developer(current_user)
       end
 

@@ -102,6 +102,9 @@ Before you install OpenBao, verify your setup meets these requirements:
 
 {{< /tabs >}}
 
+Before going to production, review [Security hardening](#security-hardening) for additional
+recommendations for deployments, particularly when components span multiple hosts.
+
 ## Before you begin
 
 {{< tabs >}}
@@ -203,7 +206,6 @@ To install OpenBao by using Helm:
            port: 5432
            database: openbao
            username: openbao
-           sslMode: "disable"
            password:
              secret: openbao-db-secret
              key: password
@@ -496,3 +498,64 @@ To verify the installation:
    ```
 
 1. [Enable the GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md#enable-gitlab-secrets-manager).
+
+## Security hardening
+
+The following recommendations help you reduce risk when running OpenBao with the Linux package in production.
+Most of the underlying controls depend on choices in your Kubernetes distribution and the
+surrounding infrastructure, which GitLab does not manage.
+
+For general GitLab hardening recommendations, see
+[GitLab hardening recommendations](../../security/hardening.md).
+
+### Encrypt traffic between components
+
+In a single-host colocated installation, traffic between Rails, Sidekiq, OpenBao, and PostgreSQL
+stays on the host's shared network and is not exposed outside the host. As soon as the topology
+spans multiple hosts (for example, an external cluster or an external PostgreSQL instance),
+unencrypted traffic between components travels over the network
+and is exposed to anyone with access to it.
+
+Encrypt traffic between components, including the OpenBao connection to PostgreSQL, using either:
+
+- Application-layer mTLS.
+- TLS with load balancer offloading.
+- A dedicated network-layer.
+
+In multi-node topologies, encryption applies to traffic between Kubernetes pods, nodes, and Linux package nodes.
+Refer to your Kubernetes distribution, CNI, and database documentation for the configuration
+steps that apply to your environment.
+
+### Encrypt the Kubernetes datastore
+
+The Kubernetes datastore (`etcd` for most distributions) stores Kubernetes `Secret` objects
+without encryption by default. The OpenBao Helm chart stores the unseal key as a Kubernetes
+`Secret`, so a compromise of the datastore exposes the key that grants access to the entire
+OpenBao vault.
+
+Enable encryption at rest for Kubernetes Secrets in your distribution. Alternatively,
+configure OpenBao auto-unseal with a key management service (KMS) so that the unseal key
+is not stored in a Kubernetes Secret. For chart options, see the
+[OpenBao Helm chart documentation](https://docs.gitlab.com/charts/charts/openbao/).
+
+### Restrict pod-to-host network access
+
+The Linux package PostgreSQL accepts TCP connections from the entire Kubernetes pod CIDR you
+set in `postgresql['md5_auth_cidr_addresses']`. Any pod scheduled in that cluster, including
+workloads unrelated to OpenBao, can reach PostgreSQL and NGINX on the shared network. Only
+application-layer controls, such as PostgreSQL passwords and JWT validation, protect those
+services from access by other pods.
+
+To limit this exposure:
+
+- If the cluster is shared with other workloads, use a CNI that enforces Kubernetes
+  `NetworkPolicy`. Some distributions do not enforce `NetworkPolicy` by default, including k3s
+  with its default CNI.
+- Narrow `postgresql['md5_auth_cidr_addresses']` to the smallest CIDR that covers OpenBao pods.
+
+### Limit Kubernetes API server exposure
+
+Several Kubernetes distributions bind the API server to `0.0.0.0` by default.
+An exposed API server provides a direct path into the cluster and, by extension, to OpenBao.
+Bind the API server to a local interface or to the shared network IP, and restrict
+reachability with firewall or security group rules.

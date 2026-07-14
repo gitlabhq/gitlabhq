@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'getting container repositories in a project', feature_category: :container_registry do
@@ -93,7 +94,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
             expect(repository_response.dig('node', 'userPermissions', 'destroyContainerRepository')).to eq(destroy_container_repository)
           end
         else
-          expect(container_repositories_response).to eq(nil)
+          expect(container_repositories_response).to be_nil
         end
       end
     end
@@ -224,7 +225,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
       container_repositories_response
         .reject { |cr| cr.dig('node', 'path') == container_repository.path }
         .each do |repository_response|
-          expect(repository_response.dig('node', 'protectionRuleExists')).to eq false
+          expect(repository_response.dig('node', 'protectionRuleExists')).to be false
         end
     end
 

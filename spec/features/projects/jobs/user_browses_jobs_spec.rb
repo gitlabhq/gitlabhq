@@ -26,18 +26,15 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
       end
 
       it 'shows a tab for All jobs and count' do
-        expect(find_by_testid('jobs-all-tab').text).to include('All')
-        within_testid('jobs-all-tab') do
-          expect(page.find('.badge').text).to include('0')
-        end
+        expect(page).to have_testid('jobs-all-tab', text: 'All 0', exact_text: true)
       end
 
       it 'shows a tab for Finished jobs and count' do
-        expect(find_by_testid('jobs-finished-tab').text).to include('Finished')
+        expect(page).to have_testid('jobs-finished-tab', text: 'Finished')
       end
 
       it 'updates the content when tab is clicked' do
-        find_by_testid('jobs-finished-tab').click
+        click_on 'Finished'
         wait_for_requests
 
         expect(page).to have_content('No results found')
@@ -73,7 +70,7 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
           include_context 'when canceling support'
 
           it 'cancels a job successfully' do
-            find_by_testid('cancel-button').click
+            click_button 'Cancel'
 
             wait_for_requests
 
@@ -84,7 +81,7 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
 
         context 'when supports canceling is false' do
           it 'cancels a job successfully' do
-            find_by_testid('cancel-button').click
+            click_button 'Cancel'
 
             wait_for_requests
 
@@ -106,7 +103,7 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
         end
 
         it 'retries a job successfully' do
-          find_by_testid('retry').click
+          click_button 'Retry'
 
           wait_for_requests
 
@@ -142,10 +139,10 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
         end
 
         it 'plays a job successfully' do
-          find_by_testid('play-scheduled').click
+          click_button 'Start now'
 
           page.within '#play-job-modal' do
-            page.find_button('OK').click
+            click_button 'OK'
           end
 
           wait_for_requests
@@ -154,7 +151,7 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
         end
 
         it 'unschedules a job successfully' do
-          find_by_testid('unschedule').click
+          click_button 'Unschedule'
 
           wait_for_requests
 

@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 module Ci
-  class ArchiveTraceWorker # rubocop:disable Scalability/IdempotentWorker
+  class ArchiveTraceWorker
     include ApplicationWorker
 
+    idempotent!
+    deduplicate :until_executed
     data_consistency :sticky
 
     sidekiq_options retry: 3

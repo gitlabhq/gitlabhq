@@ -18,8 +18,11 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder do
     described_class.new(stage: stage, params: params).build.to_a
   end
 
-  before do
+  before_all do
     project.add_maintainer(user)
+  end
+
+  before do
     mr1.metrics.update!(merged_at: 1.month.ago)
     mr2.metrics.update!(merged_at: Time.now)
     freeze_time

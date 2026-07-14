@@ -13,6 +13,7 @@ jest.mock('~/alert');
 const useDiscussionsStore = defineStore('discussionsStore', {
   state: () => ({
     discussions: [],
+    lineRangeEditing: null,
   }),
   actions: {
     findLinePositionsForFile() {
@@ -359,6 +360,30 @@ describe('discussions adapters', () => {
       );
     });
 
+    it("forwards the diff file's refs to the store", () => {
+      const diffRefs = { base_sha: 'base000', start_sha: 'start111', head_sha: 'head222' };
+      setupFixture({ diff_refs: diffRefs });
+      let event;
+      const button = getDiffFile().querySelector('[data-click="newDiscussion"]');
+      const pos = { old_line: 2, new_line: null, type: null };
+      const lineRange = { start: pos, end: pos };
+      button.lineRange = lineRange;
+      button.addEventListener('click', (e) => {
+        event = e;
+      });
+      button.click();
+      getDiffFile().onClick(event);
+      expect(store.addNewLineDiscussionForm).toHaveBeenCalledWith(
+        expect.objectContaining({ diffRefs }),
+      );
+    });
+
+    it("matches existing comments against the diff file's refs", () => {
+      const diffRefs = { base_sha: 'base000', start_sha: 'start111', head_sha: 'head222' };
+      setupFixture({ diff_refs: diffRefs });
+      expect(store.findLinePositionsForFile).toHaveBeenCalledWith({ oldPath, newPath, diffRefs });
+    });
+
     it('resolves lineCode on start-thread from discussion row', async () => {
       store.discussions = [
         {
@@ -477,6 +502,23 @@ describe('discussions adapters', () => {
         await nextTick();
         document.querySelector('#discussions-component').instance().emitClearHighlight();
         expect(clearHighlightSpy).toHaveBeenCalled();
+      });
+
+      it('does not trigger highlight or clear while a line range is being edited', async () => {
+        store.discussions = [
+          {
+            id: 'abc',
+            diff_discussion: true,
+            position: { old_path: oldPath, new_path: newPath, old_line: 1, new_line: null },
+          },
+        ];
+        await nextTick();
+        store.lineRangeEditing = { discussion: {} };
+        const component = document.querySelector('#discussions-component').instance();
+        component.emitHighlight({ start: { old_line: 1 }, end: { old_line: 1 } });
+        component.emitClearHighlight();
+        expect(highlightSpy).not.toHaveBeenCalled();
+        expect(clearHighlightSpy).not.toHaveBeenCalled();
       });
 
       it('triggers CLEAR_HIGHLIGHT when discussion row becomes empty', async () => {

@@ -61,6 +61,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['on-mapping-update'],
   data() {
     return {
       gitlabFields: cloneDeep(this.alertFields),

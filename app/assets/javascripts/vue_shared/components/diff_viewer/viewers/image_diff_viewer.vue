@@ -6,6 +6,7 @@ import SwipeViewer from './image_diff/swipe_viewer.vue';
 import TwoUpViewer from './image_diff/two_up_viewer.vue';
 
 export default {
+  name: 'ImageDiffViewer',
   components: {
     ImageViewer,
   },

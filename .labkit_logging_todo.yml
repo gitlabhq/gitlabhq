@@ -642,10 +642,6 @@ offenses:
   callsite: config/initializers/900_gem_gitlab-utils.rb
   deprecated_field: exception.message
   standard_field: Labkit::Fields::ERROR_MESSAGE
-- logger_class: Gitlab::ActiveContext::Logger
-  callsite: ee/app/controllers/admin/application_settings/semantic_search_embeddings_controller.rb
-  deprecated_field: class
-  standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/controllers/concerns/arkose/token_verifiable.rb
   deprecated_field: reason
@@ -738,18 +734,6 @@ offenses:
   callsite: ee/app/models/preloaders/user_member_roles_in_projects_preloader.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
-- logger_class: Gitlab::ActiveContext::Logger
-  callsite: ee/app/services/ai/active_context/code/indexer_base.rb
-  deprecated_field: class
-  standard_field: Labkit::Fields::CLASS_NAME
-- logger_class: Gitlab::ActiveContext::Logger
-  callsite: ee/app/services/ai/active_context/code/indexing_service_base.rb
-  deprecated_field: class
-  standard_field: Labkit::Fields::CLASS_NAME
-- logger_class: Gitlab::ActiveContext::Logger
-  callsite: ee/app/services/ai/active_context/update_queue_shard_count_service.rb
-  deprecated_field: class
-  standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/ai/catalog/mcp_servers/revoke_token_service.rb
   deprecated_field: error
@@ -1078,14 +1062,6 @@ offenses:
   callsite: ee/app/services/vulnerability_exports/export_service.rb
   deprecated_field: exception.message
   standard_field: Labkit::Fields::ERROR_MESSAGE
-- logger_class: Gitlab::ActiveContext::Logger
-  callsite: ee/app/workers/ai/active_context/code/repository_delete_worker.rb
-  deprecated_field: class
-  standard_field: Labkit::Fields::CLASS_NAME
-- logger_class: Gitlab::ActiveContext::Logger
-  callsite: ee/app/workers/ai/active_context/code/repository_index_worker.rb
-  deprecated_field: class
-  standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::Elasticsearch::Logger
   callsite: ee/app/workers/concerns/elastic/bulk_cron_worker.rb
   deprecated_field: class
@@ -1518,18 +1494,6 @@ offenses:
   callsite: ee/spec/lib/gitlab/geo/log_cursor/logger_spec.rb
   deprecated_field: gitlab_host
   standard_field: Labkit::Fields::HTTP_HOST
-- logger_class: Gitlab::ActiveContext::Logger
-  callsite: gems/gitlab-active-context/lib/active_context/bulk_process_queue.rb
-  deprecated_field: class
-  standard_field: Labkit::Fields::CLASS_NAME
-- logger_class: Gitlab::ActiveContext::Logger
-  callsite: gems/gitlab-active-context/lib/active_context/concerns/preprocessor.rb
-  deprecated_field: class
-  standard_field: Labkit::Fields::CLASS_NAME
-- logger_class: Gitlab::ActiveContext::Logger
-  callsite: gems/gitlab-active-context/lib/active_context/embedding_model.rb
-  deprecated_field: class
-  standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
   callsite: lib/api/ci/helpers/runner.rb
   deprecated_field: class

@@ -19,6 +19,10 @@ class Projects::Ci::LintsController < Projects::ApplicationController
       .legacy_validate(content, dry_run: dry_run)
 
     render json: ::Ci::Lint::ResultSerializer.new.represent(result)
+  rescue Gitlab::Ci::Lint::RateLimitError
+    response.set_header('Retry-After', Gitlab::ApplicationRateLimiter.interval(:ci_lint).to_s)
+    render json: { error: _('This endpoint has been requested too many times. Try again later.') },
+      status: :too_many_requests
   end
 
   def safe_params

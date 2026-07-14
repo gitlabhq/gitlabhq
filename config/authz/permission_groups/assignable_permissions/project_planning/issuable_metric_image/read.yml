@@ -1,0 +1,9 @@
+---
+name: read_issuable_metric_image
+description: Grants the ability to read issuable metric images
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_issuable_metric_image

@@ -74,7 +74,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
   end
 
   describe 'configuration purge' do
-    let_it_be(:export, freeze: false) { create(:offline_export, :started) }
+    let_it_be_with_reload(:export) { create(:offline_export, :started) }
     let_it_be(:configuration) { create(:offline_configuration, offline_export: export) }
 
     describe 'after transitioning to finished' do
@@ -87,7 +87,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
       end
 
       context 'when export has no configuration' do
-        let_it_be(:export_without_config, freeze: false) { create(:offline_export) }
+        let_it_be_with_reload(:export_without_config) { create(:offline_export) }
 
         it 'does not schedule configuration purge worker' do
           expect(Import::Offline::ConfigurationPurgeWorker).not_to receive(:perform_in)
@@ -107,7 +107,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
       end
 
       context 'when export has no configuration' do
-        let_it_be(:export_without_config, freeze: false) { create(:offline_export) }
+        let_it_be_with_reload(:export_without_config) { create(:offline_export) }
 
         it 'does not schedule configuration purge worker' do
           export_without_config.start
@@ -121,7 +121,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
   end
 
   describe 'email notification' do
-    let_it_be(:export, freeze: false) { create(:offline_export, :started) }
+    let_it_be_with_reload(:export) { create(:offline_export, :started) }
     let_it_be(:configuration) { create(:offline_configuration, offline_export: export) }
 
     describe 'after transitioning to finished' do
@@ -186,7 +186,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
   end
 
   describe 'included routes methods' do
-    let_it_be(:export, freeze: false) { create(:offline_export) }
+    let_it_be_with_reload(:export) { create(:offline_export) }
     let_it_be(:included_project_1) { create(:project) }
     let_it_be(:included_project_2) { create(:project) }
     let_it_be(:excluded_project) { create(:project) }

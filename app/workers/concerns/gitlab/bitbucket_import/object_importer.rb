@@ -44,7 +44,11 @@ module Gitlab
       def import_canceled?(project)
         return false unless project.import_state&.canceled?
 
-        info(project.id, message: 'project import canceled')
+        info(
+          project.id,
+          message: 'project import canceled',
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+        )
         true
       end
 
@@ -52,7 +56,11 @@ module Gitlab
         import(project, hash)
         false
       rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
-        info(project.id, message: 'token refresh lock contended, re-enqueueing')
+        info(
+          project.id,
+          message: 'token refresh lock contended, re-enqueueing',
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+        )
         self.class.perform_in(REENQUEUE_DELAY, project.id, hash, notify_key)
         true
       end
@@ -60,11 +68,11 @@ module Gitlab
       # project - An instance of `Project` to import the data into.
       # hash - A Hash containing the details of the object to import.
       def import(project, hash)
-        info(project.id, message: 'importer started')
+        info(project.id, message: 'importer started', Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id)
 
         importer_class.new(project, hash).execute
 
-        info(project.id, message: 'importer finished')
+        info(project.id, message: 'importer finished', Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id)
       rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
         raise
       rescue ActiveRecord::RecordInvalid => e
@@ -91,7 +99,7 @@ module Gitlab
         extra.merge(
           project_id: project_id,
           importer: importer_class.name
-        )
+        ).compact
       end
 
       def track_exception(project, exception, fail_import: false)

@@ -4,19 +4,16 @@ require 'spec_helper'
 
 RSpec.describe Projects::LabelsController, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
-  let_it_be_with_reload(:project) { create(:project, namespace: group) }
-  let_it_be(:project_2) { create(:project, namespace: group) }
   let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, namespace: group, maintainers: user) }
+  let_it_be(:project_2) { create(:project, namespace: group, maintainers: user) }
 
   before do
-    project.add_maintainer(user)
-    project_2.add_maintainer(user)
-
     sign_in(user)
   end
 
   describe 'GET #index' do
-    let_it_be(:label_1, freeze: false) { create(:label, project: project, priority: 1, title: 'Label 1') }
+    let_it_be_with_reload(:label_1) { create(:label, project: project, priority: 1, title: 'Label 1') }
     let_it_be(:label_2) { create(:label, project: project, priority: 3, title: 'Label 2') }
     let_it_be(:label_3) { create(:label, project: project, priority: 1, title: 'Label 3') }
     let_it_be(:label_4) { create(:label, project: project, title: 'Label 4') }
@@ -32,7 +29,7 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
     let_it_be(:group_priority_labels) { [group_label_1, group_label_2] }
     let_it_be(:project_priority_labels) { [label_1, label_2, label_3] }
 
-    before do
+    before_all do
       create(:label_priority, project: project, label: group_label_1, priority: 3)
       create(:label_priority, project: project, label: group_label_2, priority: 1)
     end
@@ -182,7 +179,7 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
 
   describe 'POST #promote' do
     let_it_be(:promoted_label_name) { "Promoted Label" }
-    let_it_be(:label_1, freeze: false) { create(:label, title: promoted_label_name, project: project) }
+    let_it_be_with_reload(:label_1) { create(:label, title: promoted_label_name, project: project) }
 
     context 'not group reporters' do
       it 'denies access' do
@@ -193,7 +190,7 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
     end
 
     context 'group reporter' do
-      before do
+      before_all do
         group.add_reporter(user)
       end
 

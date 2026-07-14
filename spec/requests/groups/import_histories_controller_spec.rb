@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Groups::ImportHistoriesController, feature_category: :importers do
-  let_it_be(:owner, freeze: false) { create(:user) }
-  let_it_be(:developer, freeze: false) { create(:user) }
-  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be(:owner) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, namespace: group) }
 

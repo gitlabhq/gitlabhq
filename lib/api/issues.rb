@@ -117,12 +117,15 @@ module API
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential', allow_blank: false
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
         optional :issue_type, type: String, values: ::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues, desc: "The type of the issue. Accepts: #{::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues.join(', ')}"
+        optional :severity, type: String, values: IssuableSeverity.severities.keys, desc: "The severity of the issue. Only applies to incidents. Accepts: #{IssuableSeverity.severities.keys.join(', ')}"
 
         use :optional_issue_params_ee
       end
     end
 
-    desc "Get currently authenticated user's issues statistics" do
+    desc 'Retrieve issues statistics for the currently authenticated user' do
+      detail 'Retrieves statistics for issues accessible by the currently authenticated user. By default, ' \
+        'returns only issues created by the current user. To get all issues, set the `scope` attribute to `all`.'
       success code: 200
       tags ['issues']
     end
@@ -140,7 +143,9 @@ module API
     end
 
     resource :issues do
-      desc "Get currently authenticated user's issues" do
+      desc 'List all issues for the currently authenticated user' do
+        detail 'Lists all issues accessible by the currently authenticated user. By default, returns only issues ' \
+          'created by the current user. To list all issues, use parameter `scope=all`.'
         success Entities::Issue
         tags ['issues']
       end
@@ -173,7 +178,8 @@ module API
         present issues, options
       end
 
-      desc "Get specified issue (admin only)" do
+      desc 'Retrieve an issue' do
+        detail 'Retrieves a specified issue. Administrators only.'
         success Entities::Issue
         tags ['issues']
       end
@@ -193,7 +199,9 @@ module API
       requires :id, type: String, desc: 'The ID of a group'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get a list of group issues' do
+      desc 'List all issues for a group' do
+        detail 'Lists all issues for a specified group. If the group is private, you must provide credentials to ' \
+          'authorize. In most cases, you should authenticate with a personal access token.'
         tags ['groups']
         success Entities::Issue
       end
@@ -217,7 +225,8 @@ module API
         present issues, options
       end
 
-      desc 'Get statistics for the list of group issues' do
+      desc 'Retrieve issues statistics for a group' do
+        detail 'Retrieves statistics for issues in a specified group.'
         success code: 200
         tags ['groups']
       end
@@ -238,7 +247,9 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       include TimeTrackingEndpoints
 
-      desc 'Get a list of project issues' do
+      desc 'List all project issues' do
+        detail 'Lists all issues for a specified project. If the project is private, you need to provide credentials ' \
+          'to authorize. In most cases, you should authenticate with a personal access token.'
         success Entities::Issue
         tags ['projects']
       end
@@ -273,7 +284,8 @@ module API
         present paginate_with_strategies(issues), options
       end
 
-      desc 'Get statistics for the list of project issues' do
+      desc 'Retrieve issues statistics for a project' do
+        detail 'Retrieves statistics for issues in a specified project.'
         tags ['projects']
         success code: 200
       end
@@ -287,7 +299,10 @@ module API
         present issues_statistics(project_id: user_project.id), with: Grape::Presenters::Presenter
       end
 
-      desc 'Get a single project issue' do
+      desc 'Retrieve a project issue' do
+        detail 'Retrieves a specified issue for a project. If the project is private or the issue is confidential, ' \
+          'you need to provide credentials to authorize. In most cases, you should authenticate with a personal ' \
+          'access token.'
         success Entities::Issue
         tags ['projects']
       end
@@ -302,7 +317,8 @@ module API
         present issue, with: Entities::Issue, current_user: current_user, project: user_project
       end
 
-      desc 'Create a new project issue' do
+      desc 'Create an issue' do
+        detail 'Creates an issue for a specified project.'
         success Entities::Issue
         tags ['projects']
       end
@@ -356,7 +372,11 @@ module API
         end
       end
 
-      desc 'Update an existing issue' do
+      desc 'Update an issue' do
+        detail 'Updates a specified issue for a project. This request is also used to close or reopen an issue using ' \
+          'the `state_event` parameter. At least one of the following parameters is required for the request to be ' \
+          'successful: `assignee_id`, `assignee_ids`, `confidential`, `created_at`, `description`, ' \
+          '`discussion_locked`, `due_date`, `issue_type`, `labels`, `milestone_id`, `state_event`, `title`.'
         success Entities::Issue
         tags ['projects']
       end
@@ -404,7 +424,9 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Reorder an existing issue' do
+      desc 'Update the order of an issue' do
+        detail 'Updates the order of a specified issue in a project. You can see the results when sorting issues ' \
+          'manually.'
         success Entities::Issue
         tags ['projects']
       end
@@ -430,7 +452,11 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Move an existing issue' do
+      desc 'Move an issue' do
+        detail 'Moves a specified issue to a different project. If the target project is the source project or the ' \
+          'user has insufficient permissions, an error message with status code `400` is returned. If a label or ' \
+          'milestone with the same name also exists in the target project, it is then assigned to the issue being ' \
+          'moved.'
         success Entities::Issue
         tags ['projects']
       end
@@ -462,7 +488,10 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Clone an existing issue' do
+      desc 'Clone an issue' do
+        detail 'Clones a specified issue to a project. Copies as much data as possible as long as the target project ' \
+          'contains equivalent criteria, such as labels or milestones. If you have insufficient permissions, an error ' \
+          'message with status code `400` is returned.'
         success Entities::Issue
         tags ['projects']
       end
@@ -496,7 +525,8 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Delete a project issue' do
+      desc 'Delete an issue' do
+        detail 'Deletes a specified issue.'
         success code: 204
         tags ['projects']
       end
@@ -517,7 +547,10 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'List merge requests that are related to the issue' do
+      desc 'List all merge requests related to an issue' do
+        detail 'Lists all merge requests that are related to a specified issue. If the project is private or the ' \
+          'issue is confidential, you need to provide credentials to authorize. In most cases, you should ' \
+          'authenticate with a personal access token.'
         success Entities::MergeRequestBasic
         tags ['issues']
       end
@@ -540,7 +573,10 @@ module API
           include_subscribed: false
       end
 
-      desc 'List merge requests closing issue' do
+      desc 'List all merge requests that close an issue on merge' do
+        detail 'Lists all merge requests that close a specified issue when merged. If the project is private or the ' \
+          'issue is confidential, you need to provide credentials to authorize. In most cases, you should ' \
+          'authenticate with a personal access token.'
         success Entities::MergeRequestBasic
         tags ['projects']
       end
@@ -561,8 +597,8 @@ module API
 
       desc 'List all participants in an issue' do
         detail 'Lists all users that are participants in a specified issue. If the project is private or the issue ' \
-          'is confidential, you need to provide credentials to authorize. In most cases, you should authenticate with a ' \
-          'personal access token.'
+          'is confidential, you need to provide credentials to authorize. In most cases, you should authenticate ' \
+          'with a personal access token.'
         success Entities::UserBasic
         tags ['issues']
       end
@@ -577,7 +613,8 @@ module API
         present paginate(participants), with: Entities::UserBasic, current_user: current_user, project: user_project
       end
 
-      desc 'Get the user agent details for an issue' do
+      desc 'Retrieve user agent details for an issue' do
+        detail 'Retrieves user agent details for an issue.'
         success Entities::UserAgentDetail
         tags ['issues']
       end

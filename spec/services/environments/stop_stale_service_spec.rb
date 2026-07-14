@@ -6,7 +6,7 @@ RSpec.describe Environments::StopStaleService,
   :clean_gitlab_redis_shared_state,
   :sidekiq_inline,
   feature_category: :continuous_delivery do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
   let(:params) { { after: nil } }
@@ -15,7 +15,7 @@ RSpec.describe Environments::StopStaleService,
   describe '#execute' do
     subject { service.execute }
 
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
     let_it_be(:stale_environment) { create(:environment, project: project, updated_at: 2.weeks.ago) }
     let_it_be(:stale_environment2) { create(:environment, project: project, updated_at: 2.weeks.ago) }

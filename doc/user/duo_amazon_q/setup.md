@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Set up and manage GitLab Duo with Amazon Q on a Self-Managed instance using AWS integration.
 title: Set up GitLab Duo with Amazon Q
@@ -16,7 +16,7 @@ title: Set up GitLab Duo with Amazon Q
 
 {{< history >}}
 
-- Introduced as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `amazon_q_integration`. Disabled by default.
+- Introduced as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 17.7 [with a feature flag](../../administration/feature_flags/_index.md) named `amazon_q_integration`. Disabled by default.
 - Feature flag `amazon_q_integration` removed in GitLab 17.8.
 - Generally available in GitLab 17.11.
 

@@ -48,6 +48,21 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
           expect(result.map { |a| a[:name] }).to match_array(%w[ECDSA ED25519 RSA])
         end
 
+        context 'when FIPS mode is enabled' do
+          before do
+            allow(Gitlab::FIPS).to receive(:enabled?).and_return(true)
+            stub_pub_file(pub_file)
+          end
+
+          it 'omits the md5 fingerprint but still returns sha256', :aggregate_failures do
+            result = subject.settings[:ssh_algorithms_hashes]
+
+            expect(result).to be_present
+            expect(result.map { |a| a[:md5] }).to all(be_nil)
+            expect(result.map { |a| a[:sha256] }).to all(be_present)
+          end
+        end
+
         def pub_file(exist: true)
           path = exist ? 'spec/fixtures/ssh_host_example_key.pub' : 'spec/fixtures/ssh_host_example_key.pub.random'
 

@@ -15,6 +15,7 @@ export default {
     GlTooltip,
   },
   inject: ['tiptapEditor'],
+  emits: ['execute'],
   methods: {
     emitExecute(source = 'url') {
       this.$emit('execute', { contentType: Link.name, value: source });

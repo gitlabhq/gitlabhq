@@ -57,6 +57,7 @@ export default {
       default: true,
     },
   },
+  emits: ['handle-checkbox-change'],
   computed: {
     author() {
       return this.commit.author || {};

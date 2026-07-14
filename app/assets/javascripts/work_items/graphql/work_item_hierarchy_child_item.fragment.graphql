@@ -1,5 +1,6 @@
 #import "~/work_items/graphql/work_item_parent_fields.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/work_item_metadata_widgets.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item_child_metadata_features.fragment.graphql"
 
 fragment WorkItemHierarchyChildItemFields on WorkItemWidgetHierarchy {
   type
@@ -40,8 +41,9 @@ fragment WorkItemHierarchyChildItem on WorkItem {
   closedAt
   webUrl
   reference(full: true)
-  widgets(onlyTypes: [HIERARCHY, ASSIGNEES, LABELS, LINKED_ITEMS, MILESTONE, START_AND_DUE_DATE]) {
-    ... on WorkItemWidgetHierarchy @skip(if: $useWorkItemFeatures) {
+  widgets(onlyTypes: [HIERARCHY, ASSIGNEES, LABELS, LINKED_ITEMS, MILESTONE, START_AND_DUE_DATE])
+    @skip(if: $useWorkItemFeatures) {
+    ... on WorkItemWidgetHierarchy {
       ...WorkItemHierarchyChildItemFields
     }
     ...WorkItemMetadataWidgets
@@ -50,5 +52,6 @@ fragment WorkItemHierarchyChildItem on WorkItem {
     hierarchy {
       ...WorkItemHierarchyChildItemFields
     }
+    ...WorkItemChildMetadataFeatures
   }
 }

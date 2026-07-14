@@ -1,0 +1,3 @@
+---
+name: read_database_migration
+description: Grants the ability to read database migrations

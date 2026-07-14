@@ -1,6 +1,7 @@
 <script>
 import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
+import { ACCESS_SCOPE_KEYS } from '~/personal_access_tokens/constants';
 import { groupPermissionsByResourceAndCategory } from '~/personal_access_tokens/utils';
 
 export default {
@@ -28,7 +29,7 @@ export default {
     scope: {
       type: String,
       required: true,
-      validator: (value) => ['namespace', 'user', 'instance'].includes(value),
+      validator: (value) => ACCESS_SCOPE_KEYS.includes(value),
     },
   },
   emits: ['input', 'remove-resource'],
@@ -72,6 +73,9 @@ export default {
 
       return selectedNames || this.$options.i18n.selectPermissions;
     },
+    removeResourceAriaLabel(resourceName) {
+      return sprintf(this.$options.i18n.removeResource, { resource: resourceName });
+    },
   },
   i18n: {
     namespace: {
@@ -83,23 +87,39 @@ export default {
     instance: {
       permissionsTitle: s__('AccessTokens|Global'),
     },
-    noResourcesSelected: s__('AccessTokens|No resources added'),
+    resource: s__('AccessTokens|Resource'),
+    permissions: s__('AccessTokens|Permissions'),
+    noResourcesSelected: s__(
+      'AccessTokens|No resources selected. Add resources to set permissions.',
+    ),
     selectPermissions: s__('AccessTokens|Select permissions'),
+    removeResource: s__('AccessTokens|Remove %{resource}'),
   },
 };
 </script>
 <template>
-  <div class="gl-border gl-w-full gl-border-t-0 gl-p-5 lg:gl-border-l-0">
-    <div class="gl-mb-2 gl-text-lg">{{ permissionsTitle }}</div>
+  <div
+    class="gl-border-b-1 gl-border-b-section gl-py-5 gl-border-b-solid"
+    data-testid="granular-permissions-section"
+  >
+    <div class="gl-mb-3 gl-text-lg">{{ permissionsTitle }}</div>
 
-    <template v-if="!selectedResources.length">
-      <div class="gl-my-8 gl-text-center">
-        {{ $options.i18n.noResourcesSelected }}
-      </div>
-    </template>
+    <div class="gl-flex gl-items-center gl-justify-between gl-gap-3 gl-pb-3 gl-font-bold">
+      <span>{{ $options.i18n.resource }}</span>
+      <span>{{ $options.i18n.permissions }}</span>
+    </div>
+
+    <div
+      v-if="!selectedResources.length"
+      class="gl-py-6 gl-text-center gl-text-subtle"
+      data-testid="empty-state"
+    >
+      {{ $options.i18n.noResourcesSelected }}
+    </div>
 
     <div
       v-for="category in selectedResourcesGroupedByCategory"
+      v-else
       :key="category.key"
       data-testid="selected-category"
     >
@@ -134,11 +154,11 @@ export default {
           <gl-button
             icon="close"
             category="tertiary"
+            :aria-label="removeResourceAriaLabel(resource.name)"
             @click="$emit('remove-resource', resource.key)"
           />
         </div>
       </div>
-      <hr />
     </div>
   </div>
 </template>

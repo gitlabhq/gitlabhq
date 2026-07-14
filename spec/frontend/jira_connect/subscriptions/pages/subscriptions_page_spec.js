@@ -1,9 +1,14 @@
 import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
+import Vue from 'vue';
 import SubscriptionsPage from '~/jira_connect/subscriptions/pages/subscriptions_page.vue';
 import AddNamespaceButton from '~/jira_connect/subscriptions/components/add_namespace_button.vue';
 import SubscriptionsList from '~/jira_connect/subscriptions/components/subscriptions_list.vue';
-import createStore from '~/jira_connect/subscriptions/store';
+import { useJiraConnectSubscriptions } from '~/jira_connect/subscriptions/store';
+
+Vue.use(PiniaVuePlugin);
 
 describe('SubscriptionsPage', () => {
   let wrapper;
@@ -15,10 +20,12 @@ describe('SubscriptionsPage', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   const createComponent = ({ props, initialState } = {}) => {
-    store = createStore(initialState);
+    const pinia = createTestingPinia();
+    store = useJiraConnectSubscriptions();
+    if (initialState) store.$patch(initialState);
 
     wrapper = shallowMount(SubscriptionsPage, {
-      store,
+      pinia,
       propsData: { hasSubscriptions: false, ...props },
       stubs: {
         GlEmptyState,

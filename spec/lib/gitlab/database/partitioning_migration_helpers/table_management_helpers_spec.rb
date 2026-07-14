@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     ActiveRecord::Migration.new.extend(described_class)
   end
 
-  let_it_be(:connection) { ActiveRecord::Base.connection }
+  let(:connection) { ActiveRecord::Base.connection }
 
   let(:source_table) { :_test_original_table }
   let(:partitioned_table) { :_test_migration_partitioned_table }

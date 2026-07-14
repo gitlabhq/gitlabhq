@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SlashCommands::Presenters::IssueSearch do
+RSpec.describe Gitlab::SlashCommands::Presenters::IssueSearch, feature_category: :team_planning do
   let(:project) { create(:project) }
   let(:message) { subject[:text] }
 

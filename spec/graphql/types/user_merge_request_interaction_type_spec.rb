@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['UserMergeRequestInteraction'] do
+RSpec.describe GitlabSchema.types['UserMergeRequestInteraction'], feature_category: :code_review_workflow do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
@@ -21,6 +21,7 @@ RSpec.describe GitlabSchema.types['UserMergeRequestInteraction'] do
       review_state
       reviewed
       approved
+      updated_at
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least
@@ -110,6 +111,39 @@ RSpec.describe GitlabSchema.types['UserMergeRequestInteraction'] do
       end
 
       it { is_expected.to be true }
+    end
+  end
+
+  describe '#updated_at' do
+    subject(:updated_at) { resolve(:updated_at) }
+
+    context 'when the user is not a reviewer' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the user has been asked to review the MR' do
+      before do
+        merge_request.reviewers << user
+      end
+
+      it 'returns the reviewer record timestamp', :aggregate_failures do
+        reviewer = merge_request.merge_request_reviewers.find_by(user_id: user.id)
+
+        expect(reviewer.updated_at).not_to be_nil
+        expect(updated_at).to be_like_time(reviewer.updated_at)
+      end
+
+      context 'when reviewer state changes' do
+        before do
+          travel_to(1.hour.from_now) do
+            merge_request.batch_update_reviewer_state([user.id], :reviewed)
+          end
+        end
+
+        it 'updates the timestamp' do
+          expect(interaction.updated_at).to be_like_time(1.hour.from_now)
+        end
+      end
     end
   end
 end

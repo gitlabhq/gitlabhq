@@ -3,7 +3,7 @@ import { Fragment } from '@tiptap/pm/model';
 import Code from '@tiptap/extension-code';
 import { EXTENSION_PRIORITY_LOWER } from '../constants';
 
-export const inputRegex = /(^|[^`])`([^`]+)`(?!`)$/;
+export const inputRegex = /(?<=(^|[^`]))`([^`]+)`(?!`)$/;
 
 export default Code.extend({
   excludes: null,

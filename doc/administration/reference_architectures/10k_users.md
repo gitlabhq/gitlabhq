@@ -49,8 +49,8 @@ For a full list of reference architectures, see
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
 1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#supported-machine-types) for more information.
-2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
-3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
+3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
    - Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores. For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance.
 4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
    The sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](_index.md#load-balancers) for more information.
@@ -538,7 +538,7 @@ Use a reputable provider that runs a [supported PostgreSQL version](../../instal
 
 For more information, including guidance on high availability and database load balancing, see:
 
-- [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services).
+- [Infrastructure and services](_index.md#infrastructure-and-services).
 - [Best practices for the database services](_index.md#best-practices-for-the-database-services).
 
 If you use a third party external service:
@@ -869,7 +869,7 @@ You can optionally use a [third party external service for the Redis Cache and P
 - Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
 - You must set the [Redis eviction mode](../redis/replication_and_failover_external.md#setting-the-eviction-policy) according to your setup.
 
-For more information, see [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services).
+For more information, see [Infrastructure and services](_index.md#infrastructure-and-services).
 
 ### Configure the Redis Cache cluster
 
@@ -1334,7 +1334,7 @@ A reputable provider or solution should be used for this. [Google Cloud SQL](htt
 and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from
 [14.4.0](https://archives.docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes/#1440).
 
-See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 
 Once the database is set up, follow the [post configuration](#praefect-postgresql-post-configuration).
 
@@ -2216,7 +2216,7 @@ To configure the Monitoring node:
 GitLab supports using an [object storage](../object_storage.md) service for holding numerous types of data.
 It's recommended over [NFS](../nfs.md) for data objects and in general it's better
 in larger setups as object storage is typically much more performant, reliable,
-and scalable. See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+and scalable. See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 
 There are two ways of specifying object storage configuration in GitLab:
 
@@ -2331,8 +2331,8 @@ services where applicable):
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
 1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#supported-machine-types) for more information.
-2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
-3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
+3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
    - Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores. For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance.
 4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
    Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](_index.md#load-balancers) for more information.

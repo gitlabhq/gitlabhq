@@ -22,8 +22,8 @@ RSpec.describe Projects::BatchOpenIssuesCountService, feature_category: :groups_
         subject.refresh_cache_and_retrieve_data
 
         # It does not update total issues cache
-        expect(Rails.cache.read(get_cache_key(subject, project_1))).to eq(nil)
-        expect(Rails.cache.read(get_cache_key(subject, project_2))).to eq(nil)
+        expect(Rails.cache.read(get_cache_key(subject, project_1))).to be_nil
+        expect(Rails.cache.read(get_cache_key(subject, project_2))).to be_nil
 
         expect(Rails.cache.read(get_cache_key(subject, project_1, true))).to eq(1)
         expect(Rails.cache.read(get_cache_key(subject, project_1, true))).to eq(1)

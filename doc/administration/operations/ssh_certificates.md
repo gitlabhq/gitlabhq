@@ -36,23 +36,21 @@ configuration. For more information, see [manage group SSH certificates](../../u
 
 ## Why use OpenSSH certificates?
 
-When you use OpenSSH certificates, information about which GitLab user owns the key is
-encoded in the key itself. OpenSSH guarantees that users can't fake this because they need
-access to the private CA signing key.
+With OpenSSH certificates, the information about which GitLab user owns the key is encoded in the key itself.
+Users cannot fake this information because they need access to the private CA signing key.
 
-When correctly set up, this does away with the requirement of
-uploading user SSH keys to GitLab entirely.
+When set up correctly, OpenSSH certificates remove the requirement to upload user SSH keys to GitLab.
 
-## Setting up SSH certificate lookup via GitLab Shell
+## Set up SSH certificate lookup with GitLab Shell
 
-How to fully set up SSH certificates is outside the scope of this
-document. See
-[OpenSSH's`PROTOCOL.certkeys`](https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL.certkeys?annotate=HEAD)
-for how it works, for example
-[RedHat's documentation about it](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-using_openssh_certificate_authentication).
+A full SSH certificate setup is outside the scope of this page.
+For how SSH certificates work, see the OpenSSH
+[`PROTOCOL.certkeys` specification](https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL.certkeys?annotate=HEAD)
+and the
+[Red Hat documentation on OpenSSH certificate authentication](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-using_openssh_certificate_authentication).
 
-We assume that you already have SSH certificates set up, and have
-added the `TrustedUserCAKeys` of your CA to your `sshd_config`, for example:
+Before you begin, ensure you have already set up SSH certificates and added the `TrustedUserCAKeys` of your CA
+to your `sshd_config`, for example:
 
 ```plaintext
 TrustedUserCAKeys /etc/security/mycompany_user_ca.pub
@@ -64,9 +62,13 @@ the GitLab server itself, but your setup may vary. If the CA is only
 used for GitLab consider putting this in the `Match User git` section
 (described below).
 
-The SSH certificates being issued by that CA **must** have a "key ID"
-corresponding to that user's username on GitLab, for example (some output
-omitted for brevity):
+Each SSH certificate issued by that CA must have a "key ID" that corresponds to the user's GitLab
+username.
+The `AuthorizedPrincipalsCommand` maps this key ID to a GitLab username, so that GitLab extracts the
+username from the certificate instead of relying on a public key to username mapping.
+The default command shipped with GitLab assumes a 1:1 mapping between the key ID and the GitLab username.
+
+The following example shows a certificate with the key ID `aearnfjord` (some output omitted for brevity):
 
 ```shell
 $ ssh-add -L | grep cert | ssh-keygen -L -f -
@@ -84,22 +86,13 @@ $ ssh-add -L | grep cert | ssh-keygen -L -f -
         [...]
 ```
 
-Technically that's not strictly true, for example, it could be
-`prod-aearnfjord` if it's a SSH certificate you'd usually sign in to
-servers as the `prod-aearnfjord` user, but then you must specify your
-own `AuthorizedPrincipalsCommand` to do that mapping instead of using
-our provided default.
+Key IDs do not have to match GitLab usernames directly.
+For example, a user who signs in to servers as `prod-aearnfjord` might have a `prod-aearnfjord` key ID.
+In that case, you must supply your own `AuthorizedPrincipalsCommand` to perform the mapping instead of
+using the default.
 
-The important part is that the `AuthorizedPrincipalsCommand` must be
-able to map from the "key ID" to a GitLab username because the
-default command we ship assumes there's a 1=1 mapping between the two.
-The whole point of this is to allow us to extract a GitLab
-username from the key itself, instead of relying on something like the
-default public key to username mapping.
-
-Then, in your `sshd_config` set up `AuthorizedPrincipalsCommand` for
-the `git` user. Hopefully you can use the default one shipped with
-GitLab:
+Next, set up `AuthorizedPrincipalsCommand` for the `git` user in your `sshd_config`.
+In most cases, you can use the default command shipped with GitLab:
 
 ```plaintext
 Match User git
@@ -129,62 +122,59 @@ one of which is present for the user, for example:
 
 ## Principals and security
 
-You can supply as many principals as you want, these are turned
-into multiple lines of `authorized_keys` output, as described in the
-`AuthorizedPrincipalsFile` documentation in `sshd_config(5)`.
+You can supply as many principals as you want.
+Each principal becomes a separate line of `authorized_keys` output, as described for
+`AuthorizedPrincipalsFile` in `sshd_config(5)`.
 
-Usually when using the `AuthorizedKeysCommand` with OpenSSH the
-principal is some "group" that's allowed to sign in to that
-server. However with GitLab it's only used to appease OpenSSH's
-requirement for it, we effectively only care about the "key ID" being
-correct. Once that's extracted GitLab enforces its own ACLs for
-that user (for example, what projects the user can access).
+With OpenSSH, the principal in an `AuthorizedKeysCommand` is typically a "group" that's allowed to sign
+in to a server.
+GitLab uses the principal only to satisfy this OpenSSH requirement, and what matters is that the key ID
+is correct.
+After GitLab extracts the key ID, it enforces its own access controls for the user, such as which
+projects the user can access.
 
-It's therefore fine to be overly generous in what you accept. For example, if the user has no access
-to GitLab, an error is produced with a message about an invalid user.
-message about this being an invalid user.
+You can be generous in the principals you accept.
+For example, if a user has no access to GitLab, authentication fails with an invalid user error.
 
 ## Interaction with the `authorized_keys` file
 
-If SSH certificates are set up as described previously, they can be used with the `authorized_keys` file so that the `authorized_keys` file serves as a fallback.
+SSH certificates work alongside the `authorized_keys` file, which acts as a fallback.
+When the `AuthorizedPrincipalsCommand` cannot authenticate a user, OpenSSH falls back to the
+`~/.ssh/authorized_keys` file or the `AuthorizedKeysCommand`.
+For this reason, you might still need
+[fast lookup of authorized SSH keys in the database](fast_ssh_key_lookup.md) with SSH certificates.
 
-When the `AuthorizedPrincipalsCommand` is unable to authenticate a user, OpenSSH reverts to checking the `~/.ssh/authorized_keys` file or using the `AuthorizedKeysCommand`.
-Therefore, you might still need to use [Fast lookup of authorized SSH keys in the database](fast_ssh_key_lookup.md) with SSH certificates.
+For most users, the `AuthorizedPrincipalsCommand` handles authentication, and the `authorized_keys`
+file serves only specific cases such as deploy keys.
+Depending on your setup, the `AuthorizedPrincipalsCommand` alone might be sufficient for typical users,
+which leaves the `authorized_keys` file for automated deploy key access.
 
-For most users, SSH certificates handle authentication by using the `AuthorizedPrincipalsCommand`, with the `~/.ssh/authorized_keys` file primarily serving as a fallback for
-specific cases such as deploy keys. However, depending on your setup, you might find that using the `AuthorizedPrincipalsCommand` exclusively for typical users is sufficient.
-In such cases, the `authorized_keys` file is only necessary for automated deployment key access or other specific scenarios.
-
-Consider the balance between the number of keys for typical users (especially if they are frequently renewed) and deploy keys to help you determine whether maintaining the
-`authorized_keys` fallback is necessary for your environment.
+To decide whether to maintain the `authorized_keys` fallback, weigh the number of keys for typical
+users, especially frequently renewed keys, against the number of deploy keys.
 
 ## Other security caveats
 
-Users can still bypass SSH certificate authentication by manually
-uploading an SSH public key to their profile, relying on the
-`~/.ssh/authorized_keys` fallback to authenticate it.
+Users can still bypass SSH certificate authentication by manually uploading an SSH public key to their
+profile and relying on the `~/.ssh/authorized_keys` fallback.
+A setting to prevent users from uploading SSH keys that are not deploy keys is proposed in
+[issue 23260](https://gitlab.com/gitlab-org/gitlab/-/issues/23260).
 
-There's an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/23260)
-to add a setting that prevents users from uploading SSH keys that are not deploy keys.
+To enforce this restriction yourself, provide a custom `AuthorizedKeysCommand`.
+The command checks whether the key ID returned from `gitlab-shell-authorized-keys-check` is a deploy key,
+and refuses all non-deploy keys.
 
-You can build a check to enforce this restriction yourself.
-For example, provide a custom `AuthorizedKeysCommand` which checks
-if the discovered key-ID returned from `gitlab-shell-authorized-keys-check`
-is a deploy key or not (all non-deploy keys should be refused).
+## Disable the global warning about users lacking SSH keys
 
-## Disabling the global warning about users lacking SSH keys
+By default, GitLab shows a "You won't be able to pull or push repositories via SSH until you add an SSH key to your profile" warning to users who
+have not uploaded an SSH key to their profile.
+This warning is counterproductive with SSH certificates because users are not expected to upload their
+own keys.
 
-By default GitLab shows a "You won't be able to pull or push
-project code via SSH" warning to users who have not uploaded an SSH
-key to their profile.
+To disable this warning globally:
 
-This is counterproductive when using SSH certificates because users
-aren't expected to upload their own keys.
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. In the **Account and limit** section, clear the **Inform users without uploaded SSH keys that they can't push over SSH until one is added** checkbox.
 
-To disable this warning globally, go to "Application settings ->
-Account and limit settings" and disable the "Show user add SSH key
-message" setting.
-
-This setting was added specifically for use with SSH certificates, but
-can be turned off without using them if you'd like to hide the warning
-for some other reason.
+This setting was added specifically for use with SSH certificates.
+You can also turn it off without SSH certificates, to hide the warning for other reasons.

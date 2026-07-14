@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
+RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache, feature_category: :team_planning do
   describe '#issuable_templates' do
     include_context 'project issuable templates context'
 

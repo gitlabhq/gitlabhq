@@ -458,20 +458,6 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
           expect(build.reload.finished_at).to be_like_time(pending_state_created_at)
         end
 
-        context 'when ci_anchor_finished_at_to_pending_state is disabled' do
-          before do
-            stub_feature_flags(ci_anchor_finished_at_to_pending_state: false)
-          end
-
-          it 'sets finished_at to Time.current at transition time (pre-fix behavior)' do
-            freeze_time do
-              execute
-
-              expect(build.reload.finished_at).to be_like_time(Time.current)
-            end
-          end
-        end
-
         it 'increments discarded traces metric' do
           execute_with_stubbed_metrics!
 

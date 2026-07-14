@@ -2,13 +2,28 @@
 
 module BulkImports
   class Logger < ::Import::Framework::Logger
-    IMPORTER_NAME = 'gitlab_migration'
+    # Derive the importer tag from a bulk import so offline transfer entries are
+    # distinguishable from direct transfer ones. Falls back to the default
+    # gitlab_migration tag when no bulk import is available, preserving backward
+    # compatibility for existing log consumers.
+    # @param bulk_import [BulkImport, nil]
+    def self.importer_for(bulk_import)
+      bulk_import&.import_source&.to_s || Import::SOURCE_DIRECT_TRANSFER.to_s
+    end
 
     # Extract key information from a provided entity and include it in log
     # entries created from this logger instance.
     # @param entity [BulkImports::Entity]
     def with_entity(entity)
       @entity = entity
+      self
+    end
+
+    # Extract key information from a provided bulk import and include it in log
+    # entries created from this logger instance.
+    # @param bulk_import [BulkImport]
+    def with_bulk_import(bulk_import)
+      @bulk_import = bulk_import
       self
     end
 
@@ -46,7 +61,7 @@ module BulkImports
 
     def default_attributes
       super.merge(
-        { importer: IMPORTER_NAME },
+        { importer: importer_name },
         entity_attributes,
         tracker_attributes
       )
@@ -55,5 +70,9 @@ module BulkImports
     private
 
     attr_reader :entity, :tracker
+
+    def importer_name
+      self.class.importer_for(entity&.bulk_import || @bulk_import)
+    end
   end
 end

@@ -63,6 +63,7 @@ export default {
       default: '',
     },
   },
+  emits: ['load-file'],
   computed: {
     ...mapState(useLegacyDiffs, [
       'projectPath',

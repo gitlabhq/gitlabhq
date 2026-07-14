@@ -21,7 +21,7 @@ RSpec.describe BulkImports::FinishBatchedRelationExportWorker, feature_category:
 
         perform_multiple(job_args)
 
-        expect(export.reload.finished?).to eq(true)
+        expect(export.reload.finished?).to be(true)
       end
 
       context 'when export is finished' do
@@ -30,7 +30,7 @@ RSpec.describe BulkImports::FinishBatchedRelationExportWorker, feature_category:
         it 'returns without updating export' do
           perform_multiple(job_args)
 
-          expect(export.reload.finished?).to eq(true)
+          expect(export.reload.finished?).to be(true)
         end
       end
 
@@ -40,7 +40,7 @@ RSpec.describe BulkImports::FinishBatchedRelationExportWorker, feature_category:
         it 'returns without updating export' do
           perform_multiple(job_args)
 
-          expect(export.reload.failed?).to eq(true)
+          expect(export.reload.failed?).to be(true)
         end
       end
 
@@ -50,7 +50,7 @@ RSpec.describe BulkImports::FinishBatchedRelationExportWorker, feature_category:
 
           perform_multiple(job_args)
 
-          expect(export.reload.started?).to eq(true)
+          expect(export.reload.started?).to be(true)
         end
       end
 
@@ -72,15 +72,15 @@ RSpec.describe BulkImports::FinishBatchedRelationExportWorker, feature_category:
 
       context 'when export timed out' do
         it 'marks export as failed' do
-          expect(export.reload.failed?).to eq(false)
-          expect(batch.reload.failed?).to eq(false)
+          expect(export.reload.failed?).to be(false)
+          expect(batch.reload.failed?).to be(false)
 
           export.update!(updated_at: 1.day.ago)
 
           perform_multiple(job_args)
 
-          expect(export.reload.failed?).to eq(true)
-          expect(batch.reload.failed?).to eq(true)
+          expect(export.reload.failed?).to be(true)
+          expect(batch.reload.failed?).to be(true)
         end
       end
 

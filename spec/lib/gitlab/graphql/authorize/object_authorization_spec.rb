@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::Graphql::Authorize::ObjectAuthorization do
+RSpec.describe ::Gitlab::Graphql::Authorize::ObjectAuthorization, feature_category: :api do
   describe '#ok?' do
     subject(:authorization) { described_class.new(%i[go_fast go_slow]) }
 

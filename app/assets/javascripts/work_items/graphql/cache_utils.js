@@ -29,6 +29,9 @@ import {
   STATE_CLOSED,
   WIDGET_TYPE_CUSTOM_FIELDS,
   WIDGET_TYPE_STATUS,
+  WIDGET_TYPE_CURRENT_USER_TODOS,
+  WIDGET_TYPE_ERROR_TRACKING,
+  WIDGET_TYPE_NOTIFICATIONS,
 } from 'ee_else_ce/work_items/constants';
 import {
   findCurrentUserTodosWidget,
@@ -388,6 +391,9 @@ export const getNewWorkItemSharedCache = ({
     },
     assignees: {
       ...widgetDefinitionsHash[WIDGET_TYPE_ASSIGNEES],
+      allowsMultipleAssignees:
+        widgetDefinitionsHash[WIDGET_TYPE_ASSIGNEES]?.allowsMultipleAssignees ?? false,
+      canInviteMembers: widgetDefinitionsHash[WIDGET_TYPE_ASSIGNEES]?.canInviteMembers ?? false,
       assignees: {
         nodes: draftWorkItemCache[WIDGET_TYPE_ASSIGNEES]?.assignees?.nodes || [],
         __typename: 'UserCoreConnection',
@@ -396,6 +402,7 @@ export const getNewWorkItemSharedCache = ({
     },
     labels: {
       ...widgetDefinitionsHash[WIDGET_TYPE_LABELS],
+      allowsScopedLabels: widgetDefinitionsHash[WIDGET_TYPE_LABELS]?.allowsScopedLabels ?? false,
       labels: {
         nodes: draftWorkItemCache[WIDGET_TYPE_LABELS]?.labels?.nodes || [],
         __typename: 'LabelConnection',
@@ -415,6 +422,8 @@ export const getNewWorkItemSharedCache = ({
     weight: {
       ...widgetDefinitionsHash[WIDGET_TYPE_WEIGHT],
       weight: draftWorkItemCache[WIDGET_TYPE_WEIGHT]?.weight || null,
+      rolledUpWeight: null,
+      rolledUpCompletedWeight: null,
       __typename: 'WorkItemWidgetWeight',
     },
     startAndDueDate: {
@@ -429,6 +438,7 @@ export const getNewWorkItemSharedCache = ({
     healthStatus: {
       ...widgetDefinitionsHash[WIDGET_TYPE_HEALTH_STATUS],
       healthStatus: draftWorkItemCache[WIDGET_TYPE_HEALTH_STATUS]?.healthStatus || null,
+      rolledUpHealthStatus: null,
       __typename: 'WorkItemWidgetHealthStatus',
     },
     color: {
@@ -451,6 +461,7 @@ export const getNewWorkItemSharedCache = ({
     })(),
     hierarchy: {
       ...widgetDefinitionsHash[WIDGET_TYPE_HIERARCHY],
+      type: WIDGET_TYPE_HIERARCHY,
       hasChildren: false,
       hasParent: false,
       parent: null,
@@ -516,6 +527,15 @@ export const getNewWorkItemSharedCache = ({
       discussionLocked: false,
       __typename: 'WorkItemWidgetNotes',
     },
+    participants: {
+      ...widgetDefinitionsHash[WIDGET_TYPE_PARTICIPANTS],
+      participants: {
+        count: 0,
+        nodes: [],
+        __typename: 'UserCoreConnection',
+      },
+      __typename: 'WorkItemWidgetParticipants',
+    },
     linkedResources: {
       ...widgetDefinitionsHash[WIDGET_TYPE_LINKED_RESOURCES],
       linkedResources: {
@@ -529,6 +549,39 @@ export const getNewWorkItemSharedCache = ({
       closingMergeRequests: {
         count: 0,
       },
+    },
+    currentUserTodos: {
+      ...widgetDefinitionsHash[WIDGET_TYPE_CURRENT_USER_TODOS],
+      currentUserTodos: {
+        nodes: [],
+        __typename: 'TodoConnection',
+      },
+      __typename: 'WorkItemWidgetCurrentUserTodos',
+    },
+    errorTracking: {
+      ...widgetDefinitionsHash[WIDGET_TYPE_ERROR_TRACKING],
+      identifier: null,
+      __typename: 'WorkItemWidgetErrorTracking',
+    },
+    notifications: {
+      ...widgetDefinitionsHash[WIDGET_TYPE_NOTIFICATIONS],
+      subscribed: false,
+      __typename: 'WorkItemWidgetNotifications',
+    },
+    progress: {
+      ...widgetDefinitionsHash[WIDGET_TYPE_PROGRESS],
+      progress: draftWorkItemCache[WIDGET_TYPE_PROGRESS]?.progress ?? null,
+      updatedAt: null,
+      __typename: 'WorkItemWidgetProgress',
+    },
+    agentPlan: {
+      content: null,
+      contentHtml: null,
+      __typename: 'WorkItemWidgetAgentPlan',
+    },
+    customFields: {
+      customFieldValues: [],
+      __typename: 'WorkItemWidgetCustomFields',
     },
   };
 
@@ -1034,6 +1087,7 @@ export const setNewWorkItemCache = ({
           createdAt: null,
           updatedAt: null,
           closedAt: null,
+          // eslint-disable-next-line @gitlab/no-hardcoded-urls -- placeholder webUrl for unsaved work item in Apollo cache, actual URL not known at this point
           webUrl: `${baseURL}/groups/gitlab-org/-/work_items/new`,
           reference: '',
           createNoteEmail: null,

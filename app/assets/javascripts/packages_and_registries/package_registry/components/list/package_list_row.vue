@@ -52,6 +52,7 @@ export default {
       required: false,
     },
   },
+  emits: ['delete', 'select'],
   computed: {
     containsWebPathLink() {
       return Boolean(this.packageEntity?._links?.webPath);

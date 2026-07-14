@@ -33,7 +33,7 @@ RSpec.describe Ci::DailyBuildGroupReportResult, feature_category: :continuous_in
   end
 
   describe '.upsert_reports' do
-    let!(:rspec_coverage) do
+    let_it_be_with_reload(:rspec_coverage) do
       create(
         :ci_daily_build_group_report_result,
         group_name: 'rspec',
@@ -42,7 +42,7 @@ RSpec.describe Ci::DailyBuildGroupReportResult, feature_category: :continuous_in
       )
     end
 
-    let!(:new_pipeline) { create(:ci_pipeline) }
+    let_it_be(:new_pipeline) { create(:ci_pipeline) }
 
     it 'creates or updates matching report results' do
       described_class.upsert_reports(

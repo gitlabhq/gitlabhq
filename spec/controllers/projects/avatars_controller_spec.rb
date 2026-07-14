@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::AvatarsController do
   describe 'GET #show' do
-    let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :public, :repository) }
 
     before do
       controller.instance_variable_set(:@project, project)
@@ -41,7 +41,7 @@ RSpec.describe Projects::AvatarsController do
           sign_in(project.first_owner)
           subject
 
-          expect(response.cache_control[:public]).to eq(true)
+          expect(response.cache_control[:public]).to be(true)
           expect(response.cache_control[:max_age]).to eq(60)
           expect(response.cache_control[:no_store]).to be_nil
         end

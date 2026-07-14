@@ -21,8 +21,8 @@ module Test
         object.id
       end
 
-      def self.embedding_model_selector
-        Test::MockEmbeddingModelSelector
+      def self.embedding_model_factory
+        Test::MockEmbeddingModelFactory
       end
     end
   end

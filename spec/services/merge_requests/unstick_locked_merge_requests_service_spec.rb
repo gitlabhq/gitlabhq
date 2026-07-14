@@ -140,6 +140,7 @@ RSpec.describe MergeRequests::UnstickLockedMergeRequestsService, :clean_gitlab_r
 
         service.execute
 
+        expect(broken_mr.reload).to be_locked
         expect(Gitlab::MergeRequests::LockedSet.all).to eq([broken_mr.id.to_s])
       end
     end
@@ -153,6 +154,46 @@ RSpec.describe MergeRequests::UnstickLockedMergeRequestsService, :clean_gitlab_r
 
         expect { service.execute }.not_to change { merge_request.reload.state }.from('locked')
         expect(Gitlab::MergeRequests::LockedSet.all).not_to be_empty
+      end
+    end
+
+    context 'when a locked MR conflicts with a newer opened MR on the same source branch' do
+      # Reproduces #600038: MR A is stuck `locked` (its merge silently failed).
+      # A newer MR B is then opened for the same (source_branch, target_branch)
+      # pair, which is allowed because the duplicate-branch validation only
+      # considers `opened` MRs. When the unstick cron later tries to reopen A,
+      # `validate_branches` fails ("Another open merge request already exists..."),
+      # so `unlock_mr` returns false and A is left `locked` forever.
+      let!(:stuck_mr) do
+        create(:merge_request, :locked,
+          source_project: project, target_project: project,
+          source_branch: 'feature', target_branch: 'master',
+          merge_jid: nil)
+      end
+
+      let_it_be(:conflicting_mr) do
+        create(:merge_request,
+          source_project: project, target_project: project,
+          source_branch: 'feature', target_branch: 'master')
+      end
+
+      before do
+        stuck_mr.add_to_locked_set
+      end
+
+      it 'force-closes the stuck MR, logs it, and clears it from the locked set', :aggregate_failures do
+        expect(Gitlab::AppJsonLogger).to receive(:info)
+          .with(hash_including(
+            message: 'Force-closed stuck locked merge request',
+            merge_request_id: stuck_mr.id
+          ))
+          .and_call_original
+
+        service.execute
+
+        stuck_mr.reload
+        expect(stuck_mr).to be_closed
+        expect(Gitlab::MergeRequests::LockedSet.all).not_to include(stuck_mr.id.to_s)
       end
     end
 
@@ -221,6 +262,7 @@ RSpec.describe MergeRequests::UnstickLockedMergeRequestsService, :clean_gitlab_r
 
         service.execute
 
+        expect(broken_mr.reload).to be_locked
         expect(Gitlab::MergeRequests::LockedSet.all).to eq([broken_mr.id.to_s])
       end
 

@@ -9,8 +9,6 @@ work_item: "https://gitlab.com/groups/gitlab-org/-/work_items/11471"
 categories: [ Source Code Management ]
 ---
 
-<!-- categories: Source Code Management -->
-
 Previously, viewing blame information required navigating to a separate page,
 breaking your flow when reviewing code.
 

@@ -2,7 +2,7 @@
 
 module API
   module Entities
-    class ImpersonationToken < Entities::PersonalAccessToken
+    class ImpersonationToken < Entities::PersonalAccessTokenWithLastUsedIps
       expose :impersonation
     end
   end

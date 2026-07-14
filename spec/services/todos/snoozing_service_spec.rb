@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Todos::SnoozingService, feature_category: :team_planning do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, developer_of: project) }
   let(:service) { described_class.new }
 

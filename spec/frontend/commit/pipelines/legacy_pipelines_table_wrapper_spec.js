@@ -10,6 +10,8 @@ import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import LegacyPipelinesTableWrapper from '~/commit/pipelines/legacy_pipelines_table_wrapper.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
+import PipelinesEmptyState from '~/ci/common/empty_state/pipelines_empty_state.vue';
+import PipelinesErrorState from '~/ci/common/empty_state/pipelines_error_state.vue';
 import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import {
   HTTP_STATUS_BAD_REQUEST,
@@ -18,7 +20,7 @@ import {
   HTTP_STATUS_UNAUTHORIZED,
 } from '~/lib/utils/http_status';
 import { createAlert } from '~/alert';
-import { TOAST_MESSAGE } from '~/ci/pipeline_details/constants';
+import { CREATING_PIPELINE_TOAST_MESSAGE } from '~/ci/pipeline_details/constants';
 import axios from '~/lib/utils/axios_utils';
 import getPipelineCreationRequests from '~/ci/merge_requests/graphql/queries/get_pipeline_creation_requests.query.graphql';
 import pipelineCreationRequestsUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
@@ -45,10 +47,9 @@ const generateMockPipelineCreationMergeRequest = (requests) => ({
 
 const generatePipelineCreationRequestsResponse = ({
   requests = [
-    { status: 'IN_PROGRESS', pipelineId: null, error: null, pipeline: null },
+    { status: 'IN_PROGRESS', error: null, pipeline: null },
     {
       status: 'SUCCEEDED',
-      pipelineId: '123',
       error: null,
       pipeline: generateMockPipeline({ id: '123' }),
     },
@@ -65,10 +66,9 @@ const generatePipelineCreationRequestsResponse = ({
 
 const generatePipelineCreationSubscriptionUpdateResponse = ({
   requests = [
-    { status: 'IN_PROGRESS', pipelineId: null, error: null, pipeline: null },
+    { status: 'IN_PROGRESS', error: null, pipeline: null },
     {
       status: 'SUCCEEDED',
-      pipelineId: '123',
       error: null,
       pipeline: generateMockPipeline({ id: '123' }),
     },
@@ -89,8 +89,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
   const findRunPipelineBtn = () => wrapper.findComponent(RunPipelineButton);
   const findLoadingState = () => wrapper.findComponent(GlLoadingIcon);
-  const findErrorEmptyState = () => wrapper.findByTestId('pipeline-error-empty-state');
-  const findEmptyState = () => wrapper.findByTestId('pipeline-empty-state');
+  const findErrorEmptyState = () => wrapper.findComponent(PipelinesErrorState);
+  const findEmptyState = () => wrapper.findComponent(PipelinesEmptyState);
   const findTable = () => wrapper.findComponent(GlTableLite);
   const findTableRows = () => wrapper.findAllByTestId('pipeline-table-row');
   const findModal = () => wrapper.findComponent(GlModal);
@@ -121,8 +121,6 @@ describe('Pipelines table in Commits and Merge requests', () => {
     wrapper = mountFn(LegacyPipelinesTableWrapper, {
       propsData: {
         endpoint: 'endpoint.json',
-        emptyStateSvgPath: 'foo',
-        errorStateSvgPath: 'foo',
         ...props,
       },
       provide: {
@@ -311,11 +309,19 @@ describe('Pipelines table in Commits and Merge requests', () => {
           jest.spyOn(Api, 'postMergeRequestPipeline').mockResolvedValue();
         });
 
+        it('does not run a second pipeline while a request is in flight', async () => {
+          findRunPipelineBtn().vm.$emit('run-pipeline');
+          findRunPipelineBtn().vm.$emit('run-pipeline');
+
+          await waitForPromises();
+
+          expect(Api.postMergeRequestPipeline).toHaveBeenCalledTimes(1);
+        });
+
         describe('when the table is a merge request table', () => {
-          beforeEach(async () => {
+          it('shows a loading button', async () => {
             createComponent({
               props: {
-                canRunPipeline: true,
                 isMergeRequestTable: true,
                 mergeRequestId: 3,
                 projectId: '5',
@@ -324,20 +330,72 @@ describe('Pipelines table in Commits and Merge requests', () => {
             });
 
             await waitForPromises();
-          });
-
-          it('shows a loading button', async () => {
-            await findRunPipelineBtn().vm.$emit('run-pipeline');
 
             expect(findRunPipelineBtn().props('isLoading')).toBe(true);
+          });
+
+          it('refetches creation requests so the button stays disabled across a creationRequestsResponse gap', async () => {
+            getPipelineCreationRequestsHandler.mockResolvedValue(
+              generatePipelineCreationRequestsResponse({ requests: [] }),
+            );
+
+            createComponent({
+              props: {
+                isMergeRequestTable: true,
+                mergeRequestId: 3,
+                projectId: '5',
+                targetProjectFullPath: 'test/project',
+              },
+            });
+            await waitForPromises();
+
+            expect(findRunPipelineBtn().props('isLoading')).toBe(false);
+
+            getPipelineCreationRequestsHandler.mockResolvedValue(
+              generatePipelineCreationRequestsResponse({
+                requests: [{ status: 'IN_PROGRESS', error: null, pipeline: null }],
+              }),
+            );
+
+            await findRunPipelineBtn().vm.$emit('run-pipeline');
+            await waitForPromises();
+
+            expect(findRunPipelineBtn().props('isLoading')).toBe(true);
+          });
+
+          it('allows running another pipeline when the creation requests refetch fails', async () => {
+            createComponent({
+              props: {
+                isMergeRequestTable: true,
+                mergeRequestId: 3,
+                projectId: '5',
+                targetProjectFullPath: 'test/project',
+              },
+            });
+            await waitForPromises();
+
+            // The post-creation refetch that gates re-submission fails.
+            getPipelineCreationRequestsHandler.mockRejectedValue(new Error('refetch failed'));
+
+            await findRunPipelineBtn().vm.$emit('run-pipeline');
+            await waitForPromises();
+
+            // The in-flight guard is still released, so the user is not stuck:
+            // a second submission goes through instead of being silently ignored.
+            await findRunPipelineBtn().vm.$emit('run-pipeline');
+            await waitForPromises();
+
+            expect(Api.postMergeRequestPipeline).toHaveBeenCalledTimes(2);
           });
         });
 
         describe('when the table is not a merge request table', () => {
           it('displays a toast message during pipeline creation', async () => {
-            await findRunPipelineBtn().vm.$emit('run-pipeline');
+            findRunPipelineBtn().vm.$emit('run-pipeline');
 
-            expect($toast.show).toHaveBeenCalledWith(TOAST_MESSAGE);
+            await waitForPromises();
+
+            expect($toast.show).toHaveBeenCalledWith(CREATING_PIPELINE_TOAST_MESSAGE);
           });
 
           it('shows a loading button', async () => {
@@ -349,6 +407,26 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
             expect(findRunPipelineBtn().props('isLoading')).toBe(false);
           });
+
+          it('does not show the creating-pipeline toast when the run fails', async () => {
+            jest
+              .spyOn(Api, 'postMergeRequestPipeline')
+              .mockRejectedValue({ response: { status: HTTP_STATUS_BAD_REQUEST } });
+
+            await findRunPipelineBtn().vm.$emit('run-pipeline');
+            await waitForPromises();
+
+            expect(createAlert).toHaveBeenCalledWith({
+              message:
+                'An error occurred while trying to run a new pipeline for this merge request.',
+              primaryButton: {
+                text: 'Learn more',
+                link: '/help/ci/pipelines/merge_request_pipelines.md',
+              },
+            });
+
+            expect($toast.show).not.toHaveBeenCalledWith('Creating pipeline.');
+          });
         });
       });
 
@@ -358,14 +436,13 @@ describe('Pipelines table in Commits and Merge requests', () => {
           'An error occurred while trying to run a new pipeline for this merge request.';
 
         it.each`
-          status                               | message
-          ${HTTP_STATUS_BAD_REQUEST}           | ${defaultMsg}
-          ${HTTP_STATUS_UNAUTHORIZED}          | ${permissionsMsg}
-          ${HTTP_STATUS_INTERNAL_SERVER_ERROR} | ${defaultMsg}
-        `('displays permissions error message', async ({ status, message }) => {
-          const response = { response: { status } };
-
-          jest.spyOn(Api, 'postMergeRequestPipeline').mockRejectedValue(response);
+          response                                         | message
+          ${{ status: HTTP_STATUS_BAD_REQUEST }}           | ${defaultMsg}
+          ${{ status: HTTP_STATUS_UNAUTHORIZED }}          | ${permissionsMsg}
+          ${{ status: HTTP_STATUS_INTERNAL_SERVER_ERROR }} | ${defaultMsg}
+          ${undefined}                                     | ${defaultMsg}
+        `('displays error message for "$response"', async ({ response, message }) => {
+          jest.spyOn(Api, 'postMergeRequestPipeline').mockRejectedValue({ response });
 
           await findRunPipelineBtn().vm.$emit('run-pipeline');
 
@@ -450,9 +527,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
     });
 
     it('should render error state', () => {
-      expect(findErrorEmptyState().text()).toBe(
-        'There was an error fetching the pipelines. Try again in a few moments or contact your support team.',
-      );
+      expect(findErrorEmptyState().exists()).toBe(true);
     });
   });
 
@@ -671,9 +746,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
     describe('Pipeline creation failed alert', () => {
       it('shows alert when pipeline creation fails', async () => {
-        const failedRequests = [
-          { status: 'FAILED', pipelineId: null, pipeline: null, error: 'Creation failed' },
-        ];
+        const failedRequests = [{ status: 'FAILED', pipeline: null, error: 'Creation failed' }];
 
         getPipelineCreationRequestsHandler.mockResolvedValue(
           generatePipelineCreationRequestsResponse({ requests: failedRequests }),
@@ -698,9 +771,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
       });
 
       it('hides alert when dismissed', async () => {
-        const failedRequests = [
-          { status: 'FAILED', pipelineId: null, pipeline: null, error: 'Creation failed' },
-        ];
+        const failedRequests = [{ status: 'FAILED', pipeline: null, error: 'Creation failed' }];
 
         getPipelineCreationRequestsHandler.mockResolvedValue(
           generatePipelineCreationRequestsResponse({ requests: failedRequests }),
@@ -736,9 +807,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
         expect(findCreationFailedAlert().exists()).toBe(false);
 
-        const failedRequests = [
-          { status: 'FAILED', pipelineId: null, pipeline: null, error: 'Creation failed' },
-        ];
+        const failedRequests = [{ status: 'FAILED', pipeline: null, error: 'Creation failed' }];
 
         getPipelineCreationRequestsHandler.mockResolvedValue(
           generatePipelineCreationRequestsResponse({ requests: failedRequests }),
@@ -765,9 +834,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
             findRunButton: () => findRunPipelineBtn(),
           },
         ])('disables the $buttonType button & enables loading', async ({ findRunButton }) => {
-          const inProgressRequests = [
-            { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
-          ];
+          const inProgressRequests = [{ status: 'IN_PROGRESS', pipeline: null, error: null }];
 
           getPipelineCreationRequestsHandler.mockResolvedValue(
             generatePipelineCreationRequestsResponse({ requests: inProgressRequests }),
@@ -819,7 +886,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
         it('when hasInProgressCreationRequests becomes true', async () => {
           getPipelineCreationRequestsHandler.mockResolvedValue(
             generatePipelineCreationRequestsResponse({
-              requests: [{ status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null }],
+              requests: [{ status: 'IN_PROGRESS', pipeline: null, error: null }],
             }),
           );
 
@@ -872,13 +939,10 @@ describe('Pipelines table in Commits and Merge requests', () => {
       });
 
       it('stops showing skeleton loader when pipeline creation completes', async () => {
-        const inProgressRequests = [
-          { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
-        ];
+        const inProgressRequests = [{ status: 'IN_PROGRESS', pipeline: null, error: null }];
         const completedRequests = [
           {
             status: 'SUCCEEDED',
-            pipelineId: '123',
             pipeline: generateMockPipeline({ id: '123' }),
             error: null,
           },
@@ -917,8 +981,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
       it('continues showing skeleton loader when there are still in-progress requests', async () => {
         const inProgressRequests = [
-          { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
-          { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
+          { status: 'IN_PROGRESS', pipeline: null, error: null },
+          { status: 'IN_PROGRESS', pipeline: null, error: null },
         ];
 
         getPipelineCreationRequestsHandler.mockResolvedValue(
@@ -941,10 +1005,9 @@ describe('Pipelines table in Commits and Merge requests', () => {
         expect(findSkeletonLoader().exists()).toBe(true);
 
         const mixedRequests = [
-          { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
+          { status: 'IN_PROGRESS', pipeline: null, error: null },
           {
             status: 'SUCCEEDED',
-            pipelineId: '123',
             pipeline: generateMockPipeline({ id: '123' }),
             error: null,
           },

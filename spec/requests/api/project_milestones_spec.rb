@@ -9,7 +9,7 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
   let_it_be_with_reload(:project) { create(:project, namespace: user.namespace, reporters: user) }
   let_it_be(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
   let_it_be(:route) { "/projects/#{project.id}/milestones" }
-  let_it_be(:milestone, freeze: false) do
+  let_it_be_with_reload(:milestone) do
     create(:milestone, project: project, title: 'version2', description: 'open milestone', updated_at: 5.days.ago)
   end
 

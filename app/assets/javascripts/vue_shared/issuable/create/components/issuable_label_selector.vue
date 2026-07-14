@@ -5,6 +5,7 @@ import LabelsSelect from '~/sidebar/components/labels/labels_select_widget/label
 import { __ } from '~/locale';
 
 export default {
+  name: 'IssuableLabelSelector',
   components: {
     GlFormGroup,
     LabelsSelect,

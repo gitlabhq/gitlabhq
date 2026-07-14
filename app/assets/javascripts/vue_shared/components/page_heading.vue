@@ -34,7 +34,9 @@ export default {
 </script>
 
 <template>
-  <header class="gl-my-5 gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-y-3">
+  <header
+    class="gl-mb-5 gl-mt-2 gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-y-3"
+  >
     <div
       class="gl-flex gl-w-full gl-flex-wrap gl-items-start gl-justify-between gl-gap-x-5 gl-gap-y-3 @md/panel:gl-flex-nowrap"
     >

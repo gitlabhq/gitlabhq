@@ -37,6 +37,16 @@ class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
 
     params.require(:protected_branch).permit(attrs)
   end
+
+  private
+
+  def handle_gitaly_error(exception)
+    Gitlab::ErrorTracking.track_exception(exception)
+
+    @gitaly_unavailable = true
+
+    render 'protected_branches/show', status: :service_unavailable
+  end
 end
 
 Projects::ProtectedBranchesController.prepend_mod_with('Projects::ProtectedBranchesController')

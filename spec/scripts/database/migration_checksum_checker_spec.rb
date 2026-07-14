@@ -45,6 +45,11 @@ RSpec.describe MigrationChecksumChecker, "#check", feature_category: :database d
       expect(check.error_message).to include('Missing checksum file for migration')
       expect(check.error_message).to include(migration_file)
     end
+
+    it 'includes remediation guidance in the error message' do
+      expect(check.error_message).to include('bundle exec rails db:migrate')
+      expect(check.error_message).to include(MigrationChecksumChecker::DOC_URL)
+    end
   end
 
   context "when a migration has an empty checksum file" do

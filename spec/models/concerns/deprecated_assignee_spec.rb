@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DeprecatedAssignee do
+RSpec.describe DeprecatedAssignee, feature_category: :code_review_workflow do
   let(:user) { create(:user) }
 
   describe '#assignee_id=' do

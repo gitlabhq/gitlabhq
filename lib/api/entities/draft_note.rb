@@ -3,14 +3,14 @@
 module API
   module Entities
     class DraftNote < Grape::Entity
-      expose :id,                 documentation: { type: 'Integer', example: 2 }
-      expose :author_id,          documentation: { type: 'Integer', example: 4 }
-      expose :merge_request_id,   documentation: { type: 'Integer', example: 52 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 2 }
+      expose :author_id, documentation: { type: 'Integer', format: 'int64', example: 4 }
+      expose :merge_request_id,   documentation: { type: 'Integer', format: 'int64', example: 52 }
       expose :resolve_discussion, documentation: { type: 'Boolean', example: true }
-      expose :discussion_id,      documentation: { type: 'Integer', example: 613 }
-      expose :note,               documentation: { type: 'String',  example: 'This is a note' }
-      expose :commit_id,          documentation: { type: 'Integer', example: 4 }
-      expose :line_code,          documentation: { type: 'String',  example: '1c497fbb3a46b78edf0_2_4' }
+      expose :discussion_id, documentation: { type: 'String', example: '6a9c1750b37d513a43987b574953fceb50b03ce7' }
+      expose :note, documentation: { type: 'String', example: 'This is a note' }
+      expose :commit_id, documentation: { type: 'String', example: '6104942438c14ec7bd21c6cd5bd995272b3faff6' }
+      expose :line_code, documentation: { type: 'String', example: '1c497fbb3a46b78edf0_2_4' }
       expose :position, documentation: {
         type: 'Hash',
         example: {

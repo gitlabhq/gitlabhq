@@ -29,8 +29,8 @@ module Ci
       url_helpers.project_pipeline_path(project, pipeline, format: :json)
     end
 
-    def commit_pipelines_path(project, commit)
-      url_helpers.pipelines_project_commit_path(project, commit.id, format: :json)
+    def commit_pipelines_path(project, sha)
+      url_helpers.pipelines_project_commit_path(project, sha, format: :json)
     end
 
     def new_merge_request_pipelines_path(project)
@@ -91,7 +91,7 @@ module Ci
         graphql_project_on_demand_scan_counts_path(project)
       ]
 
-      etag_paths << commit_pipelines_path(project, pipeline.commit) if pipeline.sha && pipeline.commit.present?
+      etag_paths << commit_pipelines_path(project, pipeline.sha) if Gitlab::Git.commit_id?(pipeline.sha)
 
       each_pipelines_merge_request_path(pipeline) do |path|
         etag_paths << path

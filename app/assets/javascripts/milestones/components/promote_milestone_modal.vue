@@ -29,6 +29,7 @@ export default {
       required: true,
     },
   },
+  emits: ['promotion-modal-visible'],
   computed: {
     title() {
       return sprintf(s__('Milestones|Promote %{milestoneTitle} to group milestone?'), {

@@ -130,6 +130,12 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_milestone do
+      let(:request) do
+        get api(resource_route, personal_access_token: pat)
+      end
+    end
   end
 
   describe "POST #{route_definition}" do

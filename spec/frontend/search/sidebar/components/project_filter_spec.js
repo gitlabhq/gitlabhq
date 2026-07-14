@@ -80,11 +80,12 @@ describe('ProjectFilter', () => {
           });
         });
 
-        it('calls setUrlParams with null, no group id, nav_source null, then calls visitUrl', () => {
+        it('calls setUrlParams with null, no group id, nav_source null, page null, then calls visitUrl', () => {
           expect(setUrlParams).toHaveBeenCalledWith({
             include_archived: null,
             project_id: null,
             nav_source: null,
+            page: null,
             repository_ref: null,
             scope: CURRENT_SCOPE,
           });
@@ -101,12 +102,13 @@ describe('ProjectFilter', () => {
           findSearchableDropdown().vm.$emit('change', MOCK_PROJECT);
         });
 
-        it('calls setUrlParams with project id, group id, nav_source null, then calls visitUrl', () => {
+        it('calls setUrlParams with project id, group id, nav_source null, page null, then calls visitUrl', () => {
           expect(setUrlParams).toHaveBeenCalledWith({
             group_id: MOCK_PROJECT.namespace.id,
             include_archived: null,
             project_id: MOCK_PROJECT.id,
             nav_source: null,
+            page: null,
             scope: CURRENT_SCOPE,
           });
           expect(visitUrl).toHaveBeenCalled();

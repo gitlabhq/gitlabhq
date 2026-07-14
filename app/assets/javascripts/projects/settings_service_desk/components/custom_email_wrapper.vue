@@ -17,6 +17,7 @@ import CustomEmailForm from './custom_email_form.vue';
 import CustomEmail from './custom_email.vue';
 
 export default {
+  name: 'CustomEmailWrapper',
   components: {
     GlExperimentBadge,
     GlAlert,

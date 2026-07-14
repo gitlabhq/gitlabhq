@@ -5,12 +5,11 @@ require 'spec_helper'
 RSpec.describe Projects::RunnerProjectsController, feature_category: :fleet_visibility do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:project) { create(:project, group: group, maintainers: user) }
   let_it_be(:source_project) { create(:project, organization: project.organization) }
 
   before do
     sign_in(user)
-    project.add_maintainer(user)
   end
 
   describe '#create' do
@@ -32,6 +31,19 @@ RSpec.describe Projects::RunnerProjectsController, feature_category: :fleet_visi
 
         expect(flash[:success]).to be_present
         expect(response).to have_gitlab_http_status(:redirect)
+        expect(response).to redirect_to project_runners_path(project)
+      end
+    end
+
+    context 'when the runner belongs to another organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_org_project) { create(:project, organization: other_organization, maintainers: user) }
+      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [other_org_project]) }
+
+      it 'does not assign the runner and redirects with a flash error', :aggregate_failures do
+        expect { send_create }.not_to change { project.runner_projects.count }
+
+        expect(flash[:alert]).to eq(_('runner can only be assigned to projects in the same organization'))
         expect(response).to redirect_to project_runners_path(project)
       end
     end

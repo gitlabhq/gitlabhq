@@ -54,6 +54,70 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
     end
   end
 
+  describe '#id_tokens' do
+    context 'when config contains id_tokens' do
+      let(:config_content) do
+        <<~YAML
+          id_tokens:
+            SIGSTORE_ID_TOKEN:
+              aud: sigstore
+            VAULT_ID_TOKEN:
+              aud:
+                - https://vault.example.com
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns the id_tokens hash' do
+        expect(config.id_tokens).to eq(
+          'SIGSTORE_ID_TOKEN' => { 'aud' => 'sigstore' },
+          'VAULT_ID_TOKEN' => { 'aud' => ['https://vault.example.com'] }
+        )
+      end
+    end
+
+    context 'when config does not contain id_tokens' do
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return("image: ruby:3.0")
+      end
+
+      it 'returns nil' do
+        expect(config.id_tokens).to be_nil
+      end
+    end
+
+    context 'when config file does not exist' do
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(config.id_tokens).to be_nil
+      end
+    end
+
+    context 'when id_tokens is not a hash' do
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return("id_tokens: invalid")
+      end
+
+      it 'returns nil' do
+        expect(config.id_tokens).to be_nil
+      end
+    end
+  end
+
   describe '#setup_script' do
     context 'when config contains setup_script as array' do
       let(:config_content) do
@@ -447,6 +511,127 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
         expect(Gitlab::ErrorTracking).to receive(:track_exception)
                                            .with(instance_of(Psych::SyntaxError), project_id: project.id)
 
+        expect(config.valid_format?).to be false
+      end
+    end
+
+    context 'with id_tokens configuration' do
+      let(:config_content) do
+        <<~YAML
+          id_tokens:
+            SIGSTORE_ID_TOKEN:
+              aud: sigstore
+            VAULT_ID_TOKEN:
+              aud:
+                - https://vault.example.com
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns true' do
+        expect(config.valid_format?).to be true
+      end
+    end
+
+    context 'with invalid id_tokens missing aud' do
+      let(:config_content) do
+        <<~YAML
+          id_tokens:
+            SIGSTORE_ID_TOKEN:
+              foo: bar
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns false' do
+        expect(config.valid_format?).to be false
+      end
+    end
+
+    context 'with an empty string aud' do
+      let(:config_content) do
+        <<~YAML
+          id_tokens:
+            SIGSTORE_ID_TOKEN:
+              aud: ""
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns false' do
+        expect(config.valid_format?).to be false
+      end
+    end
+
+    context 'with an empty string aud array entry' do
+      let(:config_content) do
+        <<~YAML
+          id_tokens:
+            SIGSTORE_ID_TOKEN:
+              aud:
+                - ""
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns false' do
+        expect(config.valid_format?).to be false
+      end
+    end
+
+    context 'with an id_tokens name that is not a valid CI variable name' do
+      let(:config_content) do
+        <<~YAML
+          id_tokens:
+            "GIT_SSH COMMAND":
+              aud: sigstore
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns false' do
+        expect(config.valid_format?).to be false
+      end
+    end
+
+    context 'with more id_tokens than the maximum allowed' do
+      let(:config_content) do
+        tokens = (1..21).map { |i| "  TOKEN_#{i}:\n    aud: sigstore" }.join("\n")
+        "id_tokens:\n#{tokens}\n"
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns false' do
         expect(config.valid_format?).to be false
       end
     end

@@ -7,17 +7,20 @@ import DraggableList from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
 import addLinkedItemsMutation from '../../graphql/add_linked_items.mutation.graphql';
 import { RELATIONSHIP_TYPE_ENUM } from '../../constants';
 
 export default {
+  name: 'WorkItemRelationshipList',
   RELATIONSHIP_TYPE_ENUM,
   components: {
     WorkItemLinkChildContents,
     DraggableList,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['workItemTypesConfiguration'],
   props: {
     parentWorkItemId: {
@@ -72,6 +75,7 @@ export default {
       default: false,
     },
   },
+  emits: ['removeLinkedItem', 'showModal', 'updateLinkedItem'],
   data() {
     return {
       dragCancelled: false,
@@ -200,6 +204,7 @@ export default {
               linkType: this.$options.RELATIONSHIP_TYPE_ENUM[toRelationshipType],
               workItemsIds: [workItemId],
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
         });
 

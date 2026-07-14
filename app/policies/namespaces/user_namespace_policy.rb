@@ -24,7 +24,7 @@ module Namespaces
       enable :transfer_projects
     end
 
-    rule { ~can_create_personal_project }.prevent :create_projects, :import_projects
+    rule { ~can_create_personal_project }.prevent :create_projects, :import_projects, :transfer_projects
 
     rule { bot_user_namespace }.prevent :create_projects, :import_projects, :transfer_projects
   end

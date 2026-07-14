@@ -1,0 +1,12 @@
+---
+api_type:
+attr: self_hosted_duo_agent_platform_service_secure
+clusterwide: false
+column: self_hosted_duo_agent_platform_service_secure
+db_type: boolean
+default: 'true'
+description: Whether the self-hosted Duo Agent Platform service uses secure transport (TLS). Moved from the ai_settings table because it is per-cell infrastructure configuration.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

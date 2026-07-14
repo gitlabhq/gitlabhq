@@ -21,7 +21,6 @@ describe('~/ci/pipeline_details/pipeline_tabs.js', () => {
       el.id = SELECTOR;
       el.dataset.canGenerateCodequalityReports = 'true';
       el.dataset.codequalityReportDownloadPath = 'codequalityReportDownloadPath';
-      el.dataset.downloadablePathForReportType = 'downloadablePathForReportType';
       el.dataset.exposeSecurityDashboard = 'true';
       el.dataset.exposeLicenseScanningData = 'true';
       el.dataset.failedJobsCount = 1;
@@ -44,7 +43,6 @@ describe('~/ci/pipeline_details/pipeline_tabs.js', () => {
       expect(options.provide).toMatchObject({
         canGenerateCodequalityReports: true,
         codequalityReportDownloadPath: 'codequalityReportDownloadPath',
-        downloadablePathForReportType: 'downloadablePathForReportType',
         exposeSecurityDashboard: true,
         exposeLicenseScanningData: true,
         failedJobsCount: '1',

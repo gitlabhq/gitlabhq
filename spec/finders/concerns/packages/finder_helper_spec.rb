@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:finder_class, freeze: false) do
     Class.new do
       include ::Packages::FinderHelper
@@ -25,6 +30,11 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
 
   describe '#packages_for_project' do
     let_it_be_with_reload(:project1) { create(:project) }
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:package1, freeze: false) { create(:generic_package, project: project1) }
     let_it_be(:package2, freeze: false) { create(:generic_package, :error, project: project1) }
     let_it_be(:project2, freeze: false) { create(:project) }
@@ -66,6 +76,11 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       subject { finder.packages_visible_to_user(user, within_group: group) }
 
       context 'with a user' do
+        # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+        # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+        # subject, or an in-memory mutation that survives reload/refind). Do not
+        # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+        # (see gitlab-org/gitlab#602925).
         let_it_be(:user, freeze: false) { create(:user) }
 
         where(:group_visibility, :subgroup_visibility, :project2_visibility, :user_role, :shared_example_name) do
@@ -336,6 +351,11 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       it_behaves_like 'returning project1'
 
       context 'when within_public_package_registry set to true' do
+        # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+        # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+        # subject, or an in-memory mutation that survives reload/refind). Do not
+        # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+        # (see gitlab-org/gitlab#602925).
         let_it_be(:project_with_public_package_registry, freeze: false) { create(:project, group: group) }
 
         let(:within_public_package_registry) { true }

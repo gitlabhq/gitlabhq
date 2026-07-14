@@ -275,7 +275,8 @@ considered equivalent to rebasing.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183928) in GitLab 18.0 [with a feature flag](../../../../administration/feature_flags/_index.md) named `rebase_on_merge_automatic`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/524048) in GitLab 18.11.
-- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/16803) in GitLab 19.0. Feature flag `rebase_on_merge_automatic` removed.
+- Feature flag `rebase_on_merge_automatic` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231406) in GitLab 19.0.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243879) in GitLab 19.2.
 
 {{< /history >}}
 

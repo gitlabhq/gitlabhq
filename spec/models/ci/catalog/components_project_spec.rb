@@ -27,6 +27,20 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
       end
     end
 
+    context 'when a component template filename contains dots' do
+      let(:project) do
+        create(:project, :small_repo, description: 'description',
+          files: { 'templates/component-name.derivate.yml' => 'image: alpine' }
+        )
+      end
+
+      it 'retrieves the path' do
+        paths = components_project.fetch_component_paths(project.default_branch)
+
+        expect(paths).to contain_exactly('templates/component-name.derivate.yml')
+      end
+    end
+
     it 'retrieves all the valid paths for components' do
       paths = components_project.fetch_component_paths(project.default_branch)
 
@@ -60,6 +74,8 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
         'templates/d-a-s_t/template.yml'         | 'd-a-s_t'
         'templates/template.yml'                 | 'template'
         'templates/blank-yaml.yml'               | 'blank-yaml'
+        'templates/component-name.derivate.yml'  | 'component-name.derivate'
+        'templates/component.derivate/template.yml' | 'component.derivate'
       end
 
       with_them do

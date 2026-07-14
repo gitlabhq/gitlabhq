@@ -102,7 +102,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
 
           expect(job).to be_persisted
           expect(job.reload.tag_list).to eq(%w[tag1 tag2])
-          expect(job.reload.taggings).to be_empty
           expect(Ci::Tag.named(%w[tag1 tag2])).to be_empty
         end
       end
@@ -352,6 +351,35 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
   end
 
   it_behaves_like 'pipeline creation'
+
+  describe 'merge request main database WAL pinning' do
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    before do
+      pipeline.stages.build(name: 'test', position: 0, project: project)
+    end
+
+    context 'when the pipeline has a merge request' do
+      let(:pipeline) do
+        build(:ci_empty_pipeline, project: project, ref: 'master', user: user, merge_request: merge_request)
+      end
+
+      it 'sticks the merge request to the primary on the main database' do
+        expect(::MergeRequest.sticking)
+          .to receive(:stick).with(:merge_request, merge_request.id)
+
+        step.perform!
+      end
+    end
+
+    context 'when the pipeline has no merge request' do
+      it 'does not stick the merge request' do
+        expect(::MergeRequest.sticking).not_to receive(:stick)
+
+        step.perform!
+      end
+    end
+  end
 
   describe 'bulk insert path' do
     let(:pipeline) { build(:ci_empty_pipeline, project: project, ref: 'master', user: user) }
@@ -630,7 +658,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       end
 
       it 'retries and succeeds after flushing internal id' do
-        expect(InternalId).to receive(:flush_records!).with(project: project, usage: :ci_pipelines).and_call_original
+        expect(InternalId).to receive(:flush_records!).with(project: project,
+          usage: :ci_pipelines).and_call_original
 
         step.perform!
 

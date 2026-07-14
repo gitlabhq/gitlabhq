@@ -30,6 +30,7 @@ export default {
       required: true,
     },
   },
+  emits: ['change', 'success'],
   data() {
     return {
       isLoading: false,

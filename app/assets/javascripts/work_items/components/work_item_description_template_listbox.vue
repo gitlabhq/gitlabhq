@@ -5,7 +5,6 @@ import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import workItemDescriptionTemplatesListQuery from '../graphql/work_item_description_templates_list.query.graphql';
 import { DEFAULT_DESCRIPTION_TEMPLATE_NAME } from '../constants';
-import { isWorkplanTemplate } from '../utils';
 
 /* eslint-disable @gitlab/require-i18n-strings */
 const PROJECT_SETTINGS_TEMPLATE = {
@@ -34,6 +33,7 @@ export default {
       default: null,
     },
   },
+  emits: ['clear', 'reset', 'selectTemplate'],
   data() {
     return {
       descriptionTemplates: [],
@@ -69,7 +69,7 @@ export default {
         : this.template.name;
     },
     hasTemplates() {
-      return this.descriptionTemplates.some(({ name }) => !isWorkplanTemplate(name));
+      return this.descriptionTemplates.length > 0;
     },
     selectedTemplateValue() {
       // When no template is provided, don't select anything in the dropdown
@@ -107,7 +107,6 @@ export default {
     },
     items() {
       return this.descriptionTemplates
-        .filter(({ name }) => !isWorkplanTemplate(name))
         .filter(({ name }) =>
           this.searchTerm ? name.toLowerCase().includes(this.searchTerm.toLowerCase()) : true,
         )

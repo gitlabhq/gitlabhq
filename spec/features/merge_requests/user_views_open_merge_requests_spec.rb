@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User views open merge requests', :js, feature_category: :code_review_workflow do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   shared_examples_for 'shows merge requests' do
     it 'shows merge requests' do
@@ -12,7 +12,7 @@ RSpec.describe 'User views open merge requests', :js, feature_category: :code_re
   end
 
   context 'when project is public' do
-    let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :public, :repository) }
 
     context 'when not signed in' do
       context "when the target branch is the project's default branch" do
@@ -116,7 +116,7 @@ RSpec.describe 'User views open merge requests', :js, feature_category: :code_re
   context 'when project is internal' do
     let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
-    let_it_be(:project, freeze: false) { create(:project, :internal, :repository) }
+    let_it_be(:project) { create(:project, :internal, :repository) }
 
     context 'when signed in' do
       before do

@@ -616,4 +616,36 @@ describe('MRWidgetPipeline', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
   });
+
+  describe('when a pipeline is created on a retargeted merge request', () => {
+    beforeEach(() => {
+      createWrapper({ retargeted: true });
+    });
+
+    it('replaces the retargeted message with the creating message in place', async () => {
+      expect(findRetargetedMessage().exists()).toBe(true);
+      expect(findPipelineCreationMessage().exists()).toBe(false);
+
+      mockSubscription.next(mockPipelineInProgressSubscription);
+
+      await waitForPromises();
+
+      expect(findRetargetedMessage().exists()).toBe(false);
+      expect(findPipelineCreationMessage().exists()).toBe(true);
+    });
+
+    it('transitions to the live pipeline once the new pipeline ID arrives', async () => {
+      mockSubscription.next(mockPipelineInProgressSubscription);
+
+      await waitForPromises();
+
+      expect(findPipelineCreationMessage().exists()).toBe(true);
+
+      await wrapper.setProps({ pipeline: { ...mockData.pipeline, id: 133 } });
+
+      expect(findRetargetedMessage().exists()).toBe(false);
+      expect(findPipelineCreationMessage().exists()).toBe(false);
+      expect(findPipelineMiniGraph().exists()).toBe(true);
+    });
+  });
 });

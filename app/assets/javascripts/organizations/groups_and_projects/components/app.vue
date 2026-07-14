@@ -31,6 +31,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'GroupsAndProjectsApp',
   i18n: {
     pageTitle: __('Groups and projects'),
     displayListboxHeaderText: __('Display'),

@@ -31,20 +31,20 @@ RSpec.describe Gitlab::TenantContainerLifecycle::Stateful::TransitionLogging, fe
   end
 
   it 'logs successful state transitions without a user' do
-    organization.update_column(:state, Organizations::Organization.states['soft_deleted'])
+    organization.update_column(:state, Organizations::Organization.states['confirmed'])
 
     expect(Gitlab::AppLogger).to receive(:info).with(
       hash_including(
         message: 'Organization state transition',
         organization_id: organization.id,
-        from_state: :soft_deleted,
+        from_state: :confirmed,
         to_state: :active,
-        event: :restore,
+        event: :activate,
         Labkit::Fields::GL_USER_ID => nil
       )
     )
 
-    organization.restore!
+    organization.activate!
   end
 
   it 'logs failed state transitions' do

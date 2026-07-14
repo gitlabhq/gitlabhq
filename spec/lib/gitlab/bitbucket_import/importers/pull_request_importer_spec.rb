@@ -10,7 +10,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
   let_it_be(:user_2) { create(:user) }
   let_it_be(:user_3) { create(:user) }
   let_it_be(:closed_by_user) { create(:user) }
-  let_it_be(:identity, freeze: false) do
+  let_it_be_with_reload(:identity) do
     create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket)
   end
 

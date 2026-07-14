@@ -48,17 +48,28 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
       project.add_developer(user)
     end
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_pipeline do
-      let(:boundary_object) { project }
-      let(:mutation) do
-        graphql_mutation(
-          :pipeline_create,
-          { project_path: project.full_path, **params },
-          'errors'
-        )
+    context 'when inputs contain sensitive values' do
+      let(:operation_name) { 'internalPipelineCreate' }
+      let(:params) do
+        { ref: 'master', inputs: [{ name: 'SECRET', value: 'top-secret-value' }] }
       end
 
-      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      let(:logger_instance) { instance_double(Gitlab::GraphqlLogger) }
+      let(:logged_payloads) { [] }
+
+      before do
+        allow(Gitlab::GraphqlLogger).to receive(:build).and_return(logger_instance)
+        allow(logger_instance).to receive(:info) { |payload| logged_payloads << payload }
+      end
+
+      it 'does not log input values in plaintext', :aggregate_failures do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(logged_payloads).not_to be_empty
+        logged_variables = logged_payloads.map { |payload| payload[:variables].to_s }
+        expect(logged_variables).to all(exclude('top-secret-value'))
+        expect(logged_variables).to include(a_string_including('[FILTERED]'))
+      end
     end
 
     context 'when the pipeline creation is not successful' do
@@ -73,9 +84,11 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
     end
 
     context 'when the pipeline creation is successful' do
-      it 'creates a pipeline' do
+      before do
         stub_ci_pipeline_to_return_yaml_file
+      end
 
+      it 'creates a pipeline' do
         expect do
           post_graphql_mutation(mutation, current_user: user)
         end.to change { ::Ci::Pipeline.count }.by(1)
@@ -84,6 +97,19 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
 
         expect(created_pipeline.source).to eq('api')
         expect(mutation_response['pipeline']['id']).to eq(created_pipeline.to_global_id.to_s)
+      end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :create_pipeline do
+        let(:boundary_object) { project }
+        let(:mutation) do
+          graphql_mutation(
+            :pipeline_create,
+            { project_path: project.full_path, **params },
+            'errors'
+          )
+        end
+
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
       end
 
       context 'when passing inputs' do
@@ -178,15 +204,54 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
         }))
       end
 
-      it 'creates a pipeline linked to the merge request' do
+      it 'creates a pipeline linked to the merge request', :aggregate_failures do
         expect do
           post_graphql_mutation(mutation, current_user: user)
         end.to change { ::Ci::Pipeline.count }.by(1)
 
-        created_pipeline = ::Ci::Pipeline.last
+        created_pipeline = ::Ci::Pipeline.order(:id).last
         expect(created_pipeline.merge_request).to eq(merge_request)
         expect(created_pipeline.source).to eq('merge_request_event')
+        expect(created_pipeline.ref).to eq(merge_request.ref_path)
+        expect(created_pipeline.merge_request_ref?).to be(true)
         expect(mutation_response['pipeline']['id']).to eq(created_pipeline.to_global_id.to_s)
+      end
+
+      context 'when passing variables and inputs (Run pipeline with modified values)' do
+        let(:params) do
+          {
+            ref: merge_request.source_branch,
+            merge_request_iid: merge_request.iid.to_s,
+            variables: [{ key: 'DEPLOY_ENV', value: 'staging', variable_type: 'ENV_VAR' }],
+            inputs: [{ name: 'job_name', value: 'my-input-job' }]
+          }
+        end
+
+        before do
+          stub_ci_pipeline_yaml_file(<<~YAML)
+            spec:
+              inputs:
+                job_name:
+            ---
+            "$[[ inputs.job_name ]]":
+              script: echo test
+              rules:
+                - when: always
+          YAML
+        end
+
+        it 'creates the pipeline on the merge request ref with the overrides applied', :aggregate_failures do
+          expect do
+            post_graphql_mutation(mutation, current_user: user)
+          end.to change { ::Ci::Pipeline.count }.by(1)
+
+          created_pipeline = ::Ci::Pipeline.order(:id).last
+
+          expect(created_pipeline.ref).to eq(merge_request.ref_path)
+          expect(created_pipeline.merge_request).to eq(merge_request)
+          expect(created_pipeline.variables.map(&:key)).to include('DEPLOY_ENV')
+          expect(created_pipeline.builds.map(&:name)).to contain_exactly('my-input-job')
+        end
       end
 
       context 'when merge request does not exist' do

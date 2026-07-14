@@ -16,7 +16,7 @@ RSpec.describe UploaderHelper do
   describe '#extension_match?' do
     it 'returns false if file does not exist' do
       expect(uploader.file).to be_nil
-      expect(uploader.send(:extension_match?, 'jpg')).to eq false
+      expect(uploader.send(:extension_match?, 'jpg')).to be false
     end
   end
 end

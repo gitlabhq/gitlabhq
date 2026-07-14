@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe SystemHooksService, feature_category: :webhooks do
   describe '#execute_hooks_for' do
-    let_it_be(:user, freeze: false) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project) }
-    let_it_be(:group_member, freeze: false) { create(:group_member, source: group, user: user) }
+    let_it_be(:group_member) { create(:group_member, source: group, user: user) }
     let_it_be(:project_member) { create(:project_member, source: project, user: user) }
     let_it_be(:key) { create(:key, user: user) }
     let_it_be(:deploy_key) { create(:key) }

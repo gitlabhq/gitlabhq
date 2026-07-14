@@ -39,6 +39,30 @@ RSpec.describe Resolvers::Ci::RunnerJobCountResolver, feature_category: :fleet_v
       context 'without statuses argument' do
         it { is_expected.to eq 3 }
       end
+
+      it 'counts jobs on recent partitions' do
+        allow(::Ci::Partition).to receive(:recent_ids).and_return([build_one.partition_id])
+
+        expect(job_count).to eq(3)
+      end
+
+      it 'excludes jobs that are not on a recent partition' do
+        allow(::Ci::Partition).to receive(:recent_ids).and_return([non_existing_record_id])
+
+        expect(job_count).to eq(0)
+      end
+
+      context 'with the runner_job_count_recent_partitions feature flag disabled' do
+        before do
+          stub_feature_flags(runner_job_count_recent_partitions: false)
+        end
+
+        it 'counts jobs across all partitions, ignoring the recent partition scope' do
+          allow(::Ci::Partition).to receive(:recent_ids).and_return([non_existing_record_id])
+
+          expect(job_count).to eq(3)
+        end
+      end
     end
 
     context 'with unauthorized user' do

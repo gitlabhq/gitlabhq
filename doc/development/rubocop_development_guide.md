@@ -191,6 +191,34 @@ This allows you to reveal existing RuboCop exceptions during your daily work cyc
 > [!note]
 > Define `Include`s and permanent `Exclude`s in `.rubocop.yml` instead of `.rubocop_todo/**/*.yml`.
 
+## Local, uncommitted RuboCop overrides
+
+To apply machine-local RuboCop settings without editing the tracked project-level `.rubocop.yml` configuration,
+create a `.rubocop.local.yml` file at the repository root. For example, to exclude a personal scratch directory:
+
+```yaml
+# .rubocop.local.yml
+AllCops:
+  Exclude:
+    - 'scratch/**/*'
+```
+
+The override file is:
+
+- Listed in `.gitignore`, so it is never committed.
+- Included in the tracked configuration through a conditional `inherit_from` that runs
+only when the file exists, so a checkout without it behaves the same as the default.
+
+Because the override is inherited at the root level, its `AllCops/Exclude` entries
+apply whenever RuboCop discovers files itself, such as a directory or glob scan, and
+to explicit paths run with `--force-exclusion`.
+
+The project's lefthook hooks run RuboCop with `--force-exclusion`, so a root-level
+exclude keeps a personal scratch directory out of local linting.
+
+Use the override for machine-local concerns only.
+Permanent, project-wide `Include`s and `Exclude`s belong in the tracked configuration.
+
 ## RuboCop documentation
 
 When creating internal RuboCop rules, these should include RDoc style docs.

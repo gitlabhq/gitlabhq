@@ -44,8 +44,8 @@ RSpec.describe Gitlab::GithubImport::Attachments::ImportNoteWorker, feature_cate
   end
 
   describe '#perform' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:import_state, freeze: false) { create(:import_state, :started, project: project) }
+    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be_with_reload(:import_state) { create(:import_state, :started, project: project) }
 
     context 'when rate limited' do
       before do

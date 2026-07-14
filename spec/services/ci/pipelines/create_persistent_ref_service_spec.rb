@@ -8,33 +8,65 @@ RSpec.describe Ci::Pipelines::CreatePersistentRefService, :use_clean_rails_memor
 
   subject(:service) { described_class.new(pipeline) }
 
-  it 'creates persistent ref and caches true' do
+  before do
+    stub_feature_flags(stop_ci_persistent_ref_creation_override: false)
+  end
+
+  it 'does not create persistent ref' do
     expect { service.execute }
-      .to change { pipeline.persistent_ref.exist? }.from(false).to(true)
-      .and change { Rails.cache.read(service.send(:pipeline_persistent_ref_cache_key)) }.from(nil).to(true)
+      .to not_change { pipeline.persistent_ref.exist? }.from(false)
+      .and not_change { Rails.cache.read(service.send(:pipeline_persistent_ref_cache_key)) }.from(nil)
       .and not_change { pipeline.status }
   end
 
-  context 'when persistent ref is already created' do
+  context 'when stop_ci_persistent_ref_creation_override is enabled for the project' do
     before do
-      pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang -- not ActiveRecord
+      stub_feature_flags(stop_ci_persistent_ref_creation_override: project)
     end
 
-    it 'does not create persistent ref and caches true' do
+    it 'creates persistent ref and caches true' do
       expect { service.execute }
-        .to not_change { pipeline.persistent_ref.exist? }.from(true)
+        .to change { pipeline.persistent_ref.exist? }.from(false).to(true)
         .and change { Rails.cache.read(service.send(:pipeline_persistent_ref_cache_key)) }.from(nil).to(true)
         .and not_change { pipeline.status }
     end
   end
 
-  context 'when persistent ref creation raises error' do
-    it 'drops the pipeline and caches false' do
-      expect(pipeline.persistent_ref).to receive(:create_ref).and_raise('Error')
+  context 'when stop_ci_persistent_ref_creation is disabled' do
+    before do
+      stub_feature_flags(stop_ci_persistent_ref_creation: false)
+    end
+
+    it 'creates persistent ref and caches true' do
       expect { service.execute }
-        .to not_change { pipeline.persistent_ref.exist? }.from(false)
-        .and change { Rails.cache.read(service.send(:pipeline_persistent_ref_cache_key)) }.from(nil).to(false)
-        .and change { pipeline.status }.to('failed')
+        .to change { pipeline.persistent_ref.exist? }.from(false).to(true)
+        .and change { Rails.cache.read(service.send(:pipeline_persistent_ref_cache_key)) }.from(nil).to(true)
+        .and not_change { pipeline.status }
+    end
+
+    context 'when persistent ref is already created' do
+      before do
+        pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang -- not ActiveRecord
+      end
+
+      it 'does not create persistent ref and caches true' do
+        expect(pipeline.persistent_ref).not_to receive(:create)
+
+        expect { service.execute }
+          .to not_change { pipeline.persistent_ref.exist? }.from(true)
+          .and change { Rails.cache.read(service.send(:pipeline_persistent_ref_cache_key)) }.from(nil).to(true)
+          .and not_change { pipeline.status }
+      end
+    end
+
+    context 'when persistent ref creation raises error' do
+      it 'drops the pipeline and caches false' do
+        expect(pipeline.persistent_ref).to receive(:create_ref).and_raise('Error')
+        expect { service.execute }
+          .to not_change { pipeline.persistent_ref.exist? }.from(false)
+          .and change { Rails.cache.read(service.send(:pipeline_persistent_ref_cache_key)) }.from(nil).to(false)
+          .and change { pipeline.status }.to('failed')
+      end
     end
   end
 end

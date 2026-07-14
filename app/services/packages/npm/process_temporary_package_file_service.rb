@@ -68,9 +68,18 @@ module Packages
       end
 
       def handle_creation(json_doc)
+        firewall_response = enforce_dependency_firewall(json_doc)
+        return firewall_response if firewall_response&.error?
+
         ::Packages::Npm::CreatePackageService
           .new(project, current_user, json_doc.merge(temp_package: package)).execute
       end
+
+      # Overridden in EE to enforce the Dependency Firewall on publish, before the
+      # package is persisted. CE intentionally does nothing.
+      def enforce_dependency_firewall(_json_doc); end
     end
   end
 end
+
+Packages::Npm::ProcessTemporaryPackageFileService.prepend_mod

@@ -18,6 +18,7 @@ title: Managing security configuration profiles
 - Secret detection profile [added](https://gitlab.com/groups/gitlab-org/-/epics/19903) in GitLab 18.10.
 - SAST profile [added](https://gitlab.com/groups/gitlab-org/-/epics/19951) in GitLab 18.11.
 - Dependency scanning profile [introduced](https://gitlab.com/groups/gitlab-org/-/epics/19952) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_scan_profiles_dependency_scanning`. Enabled by default.
+- Dependency scanning auto-remediation profile [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/604588) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_remediation_profiles`. Enabled by default.
 
 {{< /history >}}
 
@@ -92,6 +93,30 @@ When you enable the dependency scanning profile, your project's dependencies are
 - **Merge Request Pipelines**: Automatically runs a dependency scan each time new commits are pushed to a branch with an open merge request. Results include only new vulnerabilities introduced by the merge request. Targets all branches.
 - **Branch Pipelines (default only)**: Runs automatically when changes are merged or pushed to the default branch, providing a complete picture of your default branch's dependency vulnerability posture. Targets the default branch.
 
+### Dependency scanning auto-remediation profile
+
+When you enable the dependency scanning auto-remediation profile, GitLab opens merge requests
+that bump vulnerable dependencies to non-vulnerable versions. For more information about this
+capability, see [dependency scanning auto-remediation](../remediate/dependency_scanning_auto_remediation.md).
+
+Prerequisites:
+
+- The `security_remediation_profiles` [feature flag](../../../administration/feature_flags/_index.md)
+  must be enabled for the project's root namespace. This flag is enabled by default in GitLab 19.2.
+
+Use the [GitLab CLI](../../../editor_extensions/gitlab_cli/_index.md) (`glab`) to attach the
+profile to a project:
+
+```shell
+glab security config enable dependency_scanning_post_processing -R <project-path>
+```
+
+For example, to enable the profile for `my-group/my-project`:
+
+```shell
+glab security config enable dependency_scanning_post_processing -R my-group/my-project
+```
+
 ### View details about a profile
 
 To view technical details about the secret detection profile:
@@ -109,6 +134,68 @@ To view technical details about the secret detection profile:
 To apply profiles to projects that lack scanner coverage, use the
 [scanner enablement wizard](scanner_enablement_wizard.md). The wizard identifies uncovered projects
 and lets you apply default or custom profiles across your group.
+
+## Apply a profile with the GraphQL API
+
+Use the GraphQL API to apply any security configuration profile, including profiles that
+are not yet available in the UI. You can run these queries with the
+[interactive GraphQL explorer](../../../api/graphql/_index.md#interactive-graphql-explorer),
+or by sending requests directly to the `/api/graphql` endpoint.
+
+For more information about running queries, authentication, and pagination, see
+[run GraphQL API queries and mutations](../../../api/graphql/getting_started.md).
+
+Prerequisites:
+
+- At least the Maintainer role or the Security Manager role for the associated projects or groups.
+
+To apply a security configuration profile:
+
+1. Get the available profiles and their IDs for a group:
+
+```graphql
+   query {
+     group(fullPath: "my-group") {
+       availableSecurityScanProfiles {
+         id
+         name
+         scanType
+       }
+     }
+   }
+```
+
+   A default profile that is not yet saved returns a virtual ID based on its scan type.
+   For example: `gid://gitlab/Security::ScanProfile/dependency_scanning_post_processing`.
+
+   For more information, see the
+   [`Group.availableSecurityScanProfiles` field](../../../api/graphql/reference/_index.md#groupavailablesecurityscanprofiles).
+
+1. Apply the profile with the `securityScanProfileAttach` mutation, using the virtual ID or
+   the real ID of the profile you want:
+
+```graphql
+   mutation {
+     securityScanProfileAttach(input: {
+       securityScanProfileId: "gid://gitlab/Security::ScanProfile/dependency_scanning_post_processing",
+       projectIds: ["gid://gitlab/Project/123"]
+     }) {
+       errors
+     }
+   }
+```
+
+   For more information, see the
+   [`securityScanProfileAttach` mutation](../../../api/graphql/reference/_index.md#mutationsecurityscanprofileattach).
+
+1. To choose where the profile applies, set one or both of these arguments:
+   - `projectIds`: Applies the profile to specific projects.
+   - `groupIds`: Applies the profile to all projects in one or more groups.
+
+   All specified projects and groups must belong to the same top-level group.
+   A single mutation accepts a maximum of 100 IDs, counting project and group IDs together.
+
+1. Check the `errors` field in the response to confirm that the profile was applied.
 
 ## Coverage status indicators
 

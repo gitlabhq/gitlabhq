@@ -58,6 +58,7 @@ export default {
       required: false,
     },
   },
+  emits: ['delete'],
   i18n: {
     REMOVE_REPOSITORY_LABEL,
     ROW_SCHEDULED_FOR_DELETION,

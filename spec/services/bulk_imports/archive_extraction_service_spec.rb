@@ -27,9 +27,9 @@ RSpec.describe BulkImports::ArchiveExtractionService, feature_category: :importe
 
       service.execute
 
-      expect(File.exist?(file)).to eq(true)
-      expect(Dir.exist?(folder)).to eq(true)
-      expect(File.exist?(symlink)).to eq(false)
+      expect(File.exist?(file)).to be(true)
+      expect(Dir.exist?(folder)).to be(true)
+      expect(File.exist?(symlink)).to be(false)
     end
 
     context 'when dir is not in tmpdir' do

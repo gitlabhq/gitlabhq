@@ -74,6 +74,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   inject: ['projectId', 'projectPath', 'canDestroyArtifacts', 'jobArtifactsCountLimit'],
+  emits: ['artifact-count-update'],
   apollo: {
     jobArtifacts: {
       query: getJobArtifactsQuery,

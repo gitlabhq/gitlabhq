@@ -56,6 +56,7 @@ This creates two files:
 |-------|-------------|
 | `name` | Permission name (auto-populated from the action and resource) |
 | `description` | Human-readable description of what the permission allows |
+| `conditionally_enables` | Required for private (underscore-prefixed) permissions. The broader permission, or permissions, that imply this one. Use `null` when none apply. For more information, see [Declare broader permissions with conditionally_enables](../conventions.md#declare-broader-permissions-with-conditionally_enables). |
 
 ### Resource Metadata Fields
 

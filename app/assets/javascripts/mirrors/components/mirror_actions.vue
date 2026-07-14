@@ -67,21 +67,21 @@ export default {
       :aria-label="syncButtonTitle"
       :icon-classes="syncButtonIconClasses"
       data-testid="update-now-button"
-      @click="$emit('sync', mirror.id)"
+      @click="$emit('sync', { id: mirror.id, direction: mirror.direction })"
     />
     <gl-button
       v-if="showToggleButton && mirror.enabled"
       icon="stop"
       :aria-label="$options.i18n.disable"
       data-testid="disable-mirror-button"
-      @click="$emit('toggle', mirror.id)"
+      @click="$emit('toggle', { id: mirror.id, direction: mirror.direction })"
     />
     <gl-button
       v-if="showToggleButton && !mirror.enabled"
       icon="play"
       :aria-label="$options.i18n.enable"
       data-testid="enable-mirror-button"
-      @click="$emit('toggle', mirror.id)"
+      @click="$emit('toggle', { id: mirror.id, direction: mirror.direction })"
     />
     <gl-button
       variant="danger"
@@ -89,7 +89,7 @@ export default {
       icon="remove"
       :aria-label="$options.i18n.remove"
       data-testid="delete-mirror-button"
-      @click="$emit('delete', mirror.id)"
+      @click="$emit('delete', { id: mirror.id, direction: mirror.direction })"
     />
   </div>
 </template>

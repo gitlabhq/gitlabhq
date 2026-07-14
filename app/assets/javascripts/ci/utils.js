@@ -7,3 +7,21 @@ export const reportToSentry = (component, error) => {
     },
   });
 };
+
+export const buildFixPipelineContext = ({ sourceBranch, source, mergeRequestPath } = {}) => {
+  return [
+    {
+      Category: 'merge_request',
+      Content: JSON.stringify({
+        url: mergeRequestPath || '',
+      }),
+    },
+    {
+      Category: 'pipeline',
+      Content: JSON.stringify({
+        source_branch: sourceBranch || '',
+        source: source || '',
+      }),
+    },
+  ];
+};

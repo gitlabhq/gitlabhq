@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Timeline Events', feature_category: :incident_management do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, developers: user) }
   let_it_be(:incident) { create(:incident, project: project) }
 
   describe 'POST /preview_markdown' do
@@ -29,7 +29,6 @@ RSpec.describe 'Timeline Events', feature_category: :incident_management do
       end
 
       before do
-        project.add_developer(user)
         login_as(user)
       end
 

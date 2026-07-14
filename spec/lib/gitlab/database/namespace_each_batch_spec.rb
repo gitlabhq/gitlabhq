@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::NamespaceEachBatch, feature_category: :database do
-  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group) }
   let_it_be(:other_group) { create(:group) }
   let_it_be(:user) { create(:user, :admin) }
 

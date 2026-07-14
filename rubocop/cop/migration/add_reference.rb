@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative '../../migration_helpers'
 
 module RuboCop
@@ -76,7 +77,7 @@ module RuboCop
 
           index = pair.children[1]
 
-          index.true_type? || index.hash_type?
+          %i[true hash].include?(index.type)
         end
 
         def hash_key_type(pair)

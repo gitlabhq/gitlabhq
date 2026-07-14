@@ -14,24 +14,6 @@ RSpec.describe Banzai::Filter::References::PersonalSnippetReferenceFilter, featu
     { project: nil, user: user, current_user: user, skip_project_check: true }.merge(overrides)
   end
 
-  context 'when feature flag is disabled' do
-    before do
-      stub_feature_flags(personal_snippet_reference_filters: false)
-    end
-
-    it 'does not enrich personal snippet URLs' do
-      doc = reference_filter("See #{url}", context_options)
-
-      expect(doc.css('a.gfm').length).to eq(0)
-    end
-
-    it 'does not resolve bare text references' do
-      doc = reference_filter("See #{reference}", context_options)
-
-      expect(doc.css('a.gfm').length).to eq(0)
-    end
-  end
-
   context 'with bare text reference' do
     it 'resolves a bare $N to a personal snippet' do
       doc = reference_filter("See #{reference}", context_options)

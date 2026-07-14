@@ -201,7 +201,7 @@ describe('RelatedIssuableItem', () => {
     it('triggers onRemoveRequest when clicked', () => {
       findRemoveButton().vm.$emit('click');
 
-      expect(wrapper.emitted('relatedIssueRemoveRequest')).toEqual([[defaultProps.idKey]]);
+      expect(wrapper.emitted('related-issue-remove-request')).toEqual([[defaultProps.idKey]]);
     });
   });
 
@@ -283,12 +283,12 @@ describe('RelatedIssuableItem', () => {
     });
 
     describe('when it emits "work-item-deleted" event', () => {
-      it('emits "relatedIssueRemoveRequest" event', () => {
+      it('emits "related-issue-remove-request" event', () => {
         mountComponent();
 
         findWorkItemDetailModal().vm.$emit('work-item-deleted', workItemId);
 
-        expect(wrapper.emitted('relatedIssueRemoveRequest')).toEqual([[workItemId]]);
+        expect(wrapper.emitted('related-issue-remove-request')).toEqual([[workItemId]]);
       });
     });
 

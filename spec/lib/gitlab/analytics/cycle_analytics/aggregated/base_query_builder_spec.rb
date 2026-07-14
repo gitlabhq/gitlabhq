@@ -3,23 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::BaseQueryBuilder do
-  let_it_be(:group, freeze: false) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, namespace: group) }
-  let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
-  let_it_be(:user_1, freeze: false) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, namespace: group) }
+  let_it_be_with_reload(:milestone) { create(:milestone, project: project) }
+  let_it_be_with_reload(:user_1) { create(:user) }
 
-  let_it_be(:label_1, freeze: false) { create(:label, project: project) }
-  let_it_be(:label_2, freeze: false) { create(:label, project: project) }
+  let_it_be(:label_1) { create(:label, project: project) }
+  let_it_be(:label_2) { create(:label, project: project) }
 
-  let_it_be(:issue_1, freeze: false) do
+  let_it_be(:issue_1) do
     create(:issue, project: project, author: project.creator, labels: [label_1, label_2])
   end
 
-  let_it_be(:issue_2, freeze: false) { create(:issue, project: project, milestone: milestone, assignees: [user_1]) }
-  let_it_be(:issue_3, freeze: false) { create(:issue, project: project) }
-  let_it_be(:issue_outside_project, freeze: false) { create(:issue) }
+  let_it_be_with_reload(:issue_2) { create(:issue, project: project, milestone: milestone, assignees: [user_1]) }
+  let_it_be(:issue_3) { create(:issue, project: project) }
+  let_it_be(:issue_outside_project) { create(:issue) }
 
-  let_it_be(:stage, freeze: false) do
+  let_it_be(:stage) do
     create(
       :cycle_analytics_stage,
       project: project,
@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::BaseQueryBuilder d
     )
   end
 
-  let_it_be(:stage_event_1, freeze: false) do
+  let_it_be(:stage_event_1) do
     create(
       :cycle_analytics_issue_stage_event,
       stage_event_hash_id: stage.stage_event_hash_id,
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::BaseQueryBuilder d
     )
   end
 
-  let_it_be(:stage_event_2, freeze: false) do
+  let_it_be(:stage_event_2) do
     create(
       :cycle_analytics_issue_stage_event,
       stage_event_hash_id: stage.stage_event_hash_id,
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::BaseQueryBuilder d
     )
   end
 
-  let_it_be(:stage_event_3, freeze: false) do
+  let_it_be(:stage_event_3) do
     create(
       :cycle_analytics_issue_stage_event,
       stage_event_hash_id: stage.stage_event_hash_id,

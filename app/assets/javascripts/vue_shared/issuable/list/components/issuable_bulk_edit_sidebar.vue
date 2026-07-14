@@ -2,6 +2,7 @@
 const getLayoutPage = () => document.querySelector('.layout-page');
 
 export default {
+  name: 'IssuableBulkEditSidebar',
   props: {
     expanded: {
       type: Boolean,

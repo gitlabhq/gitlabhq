@@ -49,7 +49,7 @@ RSpec.describe User, feature_category: :system_access do
     shared_examples 'password validation fails when the password is encrypted using an unsupported method' do
       let(:encrypted_password) { '$argon2i$v=19$m=512,t=4,p=2$eM+ZMyYkpDRGaI3xXmuNcQ$c5DeJg3eb5dskVt1mDdxfw' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when the default encryption method is BCrypt' do
@@ -66,7 +66,7 @@ RSpec.describe User, feature_category: :system_access do
           let(:user) { create(:user) }
           let(:password) { 'short' }
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
       end
 
@@ -78,7 +78,7 @@ RSpec.describe User, feature_category: :system_access do
             password, 20_000, Devise.friendly_token[0, 16])
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
 
         it 're-encrypts the password as BCrypt' do
           expect(user.encrypted_password).to start_with('$pbkdf2-sha512$')
@@ -117,7 +117,7 @@ RSpec.describe User, feature_category: :system_access do
       context 'when the user password BCrypt' do
         let(:encrypted_password) { Devise::Encryptor.digest(described_class, password) }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
 
         it 're-encrypts the password as PBKDF2+SHA512' do
           expect(user.encrypted_password).to start_with('$2a$')
@@ -172,7 +172,7 @@ RSpec.describe User, feature_category: :system_access do
         user.password = password
         user.save!
 
-        expect(compare_pbkdf2_password(user, password)).to eq(true)
+        expect(compare_pbkdf2_password(user, password)).to be(true)
         expect { compare_bcrypt_password(user, password) }.to raise_error(::BCrypt::Errors::InvalidHash)
       end
     end
@@ -190,7 +190,7 @@ RSpec.describe User, feature_category: :system_access do
 
       expect { compare_pbkdf2_password(user, password) }
         .to raise_error Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
-      expect(compare_bcrypt_password(user, password)).to eq(true)
+      expect(compare_bcrypt_password(user, password)).to be(true)
     end
   end
 end

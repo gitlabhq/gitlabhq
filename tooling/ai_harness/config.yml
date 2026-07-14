@@ -22,6 +22,7 @@ allowed_committed_files:
   # Project-scope glab skill (gitlab-org/gitlab#601836). The directory prefix
   # allows all of the skill's files.
   - .claude/skills/glab/
-  # Project-scope skill for extending dependency management auto remediation
-  # to new ecosystems. The directory prefix allows all of the skill's files.
-  - .claude/skills/dependency-management-auto-remediation/
+  # Project-scope split-mr skill. Analyzes all changes on the current branch
+  # (uncommitted or already committed) and reasons about whether they should be
+  # split into smaller, more focused MRs.
+  - .claude/skills/split-mr/

@@ -267,6 +267,37 @@ RSpec.describe SentNotification, :request_store, feature_category: :notification
         end
       end
     end
+
+    context 'when a namespace_id is given' do
+      let_it_be(:sent_notification) { create(:sent_notification, project: project) }
+      let(:reply_key) { sent_notification.partitioned_reply_key }
+
+      subject(:found_sent_notification) { described_class.for(reply_key, namespace_id) }
+
+      context 'when the namespace_id matches' do
+        let(:namespace_id) { sent_notification.namespace_id }
+
+        it { is_expected.to eq(sent_notification) }
+
+        it 'scopes the query by namespace_id' do
+          expect { found_sent_notification }.to make_queries_matching(/"namespace_id" = #{namespace_id}/)
+        end
+      end
+
+      context 'when the namespace_id does not match' do
+        let(:namespace_id) { non_existing_record_id }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when the reply key uses the legacy format' do
+        let_it_be(:sent_notification) { create(:sent_notification, :legacy_reply_key, project: project) }
+        let(:reply_key) { sent_notification.reply_key }
+        let(:namespace_id) { sent_notification.namespace_id }
+
+        it { is_expected.to eq(sent_notification) }
+      end
+    end
   end
 
   describe '.record' do
@@ -339,7 +370,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :notification
 
     subject { sent_notification.partitioned_reply_key }
 
-    it { is_expected.to match(described_class::PARTITIONED_REPLY_KEY_REGEX) }
+    it { is_expected.to match(Gitlab::EmailHandler::ReplyKey::PARTITIONED_REPLY_KEY_REGEX) }
 
     # This might seem a bit redundant, but here `namespace_id` is not optional
     it { is_expected.to match(/\A[0-9a-z]{1,4}-[0-9a-z]{25}-[0-9a-z]{1,13}\z/) }

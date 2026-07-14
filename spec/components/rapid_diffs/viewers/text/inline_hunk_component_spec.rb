@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, feature_category: :code_review_workflow do
-  let_it_be(:diff_file, freeze: false) { build(:diff_file) }
+  let_it_be_with_reload(:diff_file) { build(:diff_file) }
   let(:lines) { diff_file.diff_lines_with_match_tail }
   let(:hunk) { diff_file.viewer_hunks.first }
 
@@ -148,6 +148,17 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, feature_category:
     render_component(diff_hunk)
     expect(page).to have_selector("td[data-position] span")
     expect(page).not_to have_selector("td[data-position] a")
+  end
+
+  describe 'copy as GFM markers' do
+    it 'marks the content cell as a GFM source and its overlays as ignored' do
+      added_line = Gitlab::Diff::Line.new("added", 'new', 1, nil, 5)
+      diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [added_line])
+      render_component(diff_hunk)
+      expect(page).to have_selector('td.rd-line-content[data-gfm-source]')
+      expect(page).to have_selector('[data-line-coverage="5"][data-gfm-ignore]')
+      expect(page).to have_selector('[data-line-codequality="5"][data-gfm-ignore]')
+    end
   end
 
   describe 'line coverage slot' do

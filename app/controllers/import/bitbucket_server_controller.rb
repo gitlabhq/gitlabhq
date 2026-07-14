@@ -84,7 +84,12 @@ class Import::BitbucketServerController < Import::BaseController
   private
 
   def client
-    @client ||= BitbucketServer::Client.new(credentials)
+    @client ||= BitbucketServer::Client.new(
+      credentials.merge(
+        logger: Gitlab::BitbucketServerImport::Logger
+      ),
+      http_client: Import::Clients::HTTP
+    )
   end
 
   def bitbucket_repos

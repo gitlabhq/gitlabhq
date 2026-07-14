@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Ci::Config::Yaml::Tags::Reference, feature_category: :pip
         'a: !reference str'      | '!reference "str" is not valid'
         'a: !reference 1'        | '!reference "1" is not valid'
         'a: !reference [1]'      | '!reference [1] is not valid'
-        'a: !reference { b: c }' | '!reference {"b"=>"c"} is not valid'
+        'a: !reference { b: c }' | format('!reference %s is not valid', { 'b' => 'c' })
       end
 
       with_them do

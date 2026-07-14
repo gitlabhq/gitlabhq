@@ -22,7 +22,7 @@ RSpec.describe Ci::BulkInsertableTags do
       expect(Thread.current['ci_bulk_insert_tags']).to be_nil
 
       described_class.with_bulk_insert_tags do
-        expect(Thread.current['ci_bulk_insert_tags']).to eq(true)
+        expect(Thread.current['ci_bulk_insert_tags']).to be(true)
       end
 
       expect(Thread.current['ci_bulk_insert_tags']).to be_nil
@@ -33,7 +33,7 @@ RSpec.describe Ci::BulkInsertableTags do
     it 'calls super' do
       record.save_tags
 
-      expect(record.tags_saved).to eq(true)
+      expect(record.tags_saved).to be(true)
     end
 
     it 'does not call super with BulkInsertableTags.with_bulk_insert_tags' do
@@ -60,7 +60,7 @@ RSpec.describe Ci::BulkInsertableTags do
       [t1, t2].each(&:join)
 
       expect(record.tags_saved).to be_nil
-      expect(record2.tags_saved).to eq(true)
+      expect(record2.tags_saved).to be(true)
     end
   end
 end

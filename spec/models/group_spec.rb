@@ -1658,6 +1658,26 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.requiring_two_factor_authentication' do
+      subject { described_class.requiring_two_factor_authentication(enabled) }
+
+      let_it_be(:group_requiring_2fa) { create(:group, require_two_factor_authentication: true) }
+      let_it_be(:group_not_requiring_2fa) { create(:group, require_two_factor_authentication: false) }
+
+      context 'when requiring_two_factor_authentication is enabled' do
+        let(:enabled) { true }
+
+        it { is_expected.to contain_exactly(group_requiring_2fa) }
+      end
+
+      context 'when requiring_two_factor_authentication is disabled' do
+        let(:enabled) { false }
+
+        it { is_expected.to include(group_not_requiring_2fa) }
+        it { is_expected.not_to include(group_requiring_2fa) }
+      end
+    end
+
     describe 'descendants_with_shared_with_groups' do
       subject { described_class.descendants_with_shared_with_groups(parent_group) }
 
@@ -1960,6 +1980,24 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     it 'returns groups with a matching path regardless of the casing' do
       expect(described_class.search(group.path.upcase)).to eq([group])
+    end
+  end
+
+  describe '#add_owner' do
+    let(:user) { create(:user) }
+
+    it 'adds the user as an owner' do
+      group.add_owner(user)
+
+      expect(group.owners).to include(user)
+    end
+
+    it 'forwards extra keyword arguments to add_member' do
+      expect(group).to receive(:add_member).with(
+        user, :owner, current_user: nil, skip_authorized_projects_refresh: true
+      )
+
+      group.add_owner(user, skip_authorized_projects_refresh: true)
     end
   end
 

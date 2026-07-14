@@ -32,6 +32,9 @@ module API
       end
     end
 
+    params do
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+    end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Workhorse authorize the file upload' do
         detail 'This feature was introduced in GitLab 13.11'
@@ -93,7 +96,8 @@ module API
       end
 
       desc 'Download an uploaded file by ID' do
-        detail 'Downloads an uploaded file by ID. You must have the Maintainer or Owner role for the project.'
+        detail 'Downloads an uploaded file with a specified ID. You must have the Maintainer or Owner role for the ' \
+          'project.'
         success File
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -116,7 +120,8 @@ module API
       end
 
       desc 'Download an uploaded file by secret and filename' do
-        detail 'Downloads an uploaded file by secret and filename.'
+        detail 'Downloads an uploaded file with a specified secret and filename. You must have the Guest, Planner, ' \
+          'Reporter, Developer, Maintainer, or Owner role for the project.'
         success File
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -138,7 +143,8 @@ module API
       end
 
       desc 'Delete an uploaded file by ID' do
-        detail 'Deletes an uploaded file by ID. You must have the Maintainer or Owner role for the project.'
+        detail 'Deletes an uploaded file with a specified ID. You must have the Maintainer or Owner role for the ' \
+          'project.'
         success code: 204
         failure [
           { code: 400, message: 'Bad request' },
@@ -165,8 +171,8 @@ module API
       end
 
       desc 'Delete an uploaded file by secret and filename' do
-        detail 'Deletes an uploaded file by secret and filename. You must have the Maintainer or Owner role for the ' \
-          'project.'
+        detail 'Deletes an uploaded file with a specified secret and filename. You must have the Maintainer or ' \
+          'Owner role for the project.'
         success code: 204
         failure [
           { code: 400, message: 'Bad request' },
@@ -194,6 +200,9 @@ module API
       end
     end
 
+    params do
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
+    end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Workhorse authorize the file upload' do
         detail 'This feature was introduced in GitLab 19.0'

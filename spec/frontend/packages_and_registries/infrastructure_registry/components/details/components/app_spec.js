@@ -1,17 +1,23 @@
 import { GlEmptyState, GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { nextTick } from 'vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import stubChildren from 'helpers/stub_children';
+import waitForPromises from 'helpers/wait_for_promises';
+import Api from '~/api';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
+import { FETCH_PACKAGE_VERSIONS_ERROR } from '~/packages_and_registries/infrastructure_registry/details/constants';
 import PackagesApp from '~/packages_and_registries/infrastructure_registry/details/components/app.vue';
 import PackageFiles from '~/packages_and_registries/infrastructure_registry/details/components/package_files.vue';
 import PackageHistory from '~/packages_and_registries/infrastructure_registry/details/components/package_history.vue';
-import * as getters from '~/packages_and_registries/infrastructure_registry/details/store/getters';
 import PackageListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
-import { TRACKING_ACTIONS } from '~/packages_and_registries/shared/constants';
+import {
+  DELETE_PACKAGE_ERROR_MESSAGE,
+  DELETE_PACKAGE_FILE_ERROR_MESSAGE,
+  DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
+  TRACKING_ACTIONS,
+} from '~/packages_and_registries/shared/constants';
 import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
 import TerraformTitle from '~/packages_and_registries/infrastructure_registry/details/components/details_title.vue';
 import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/details/components/terraform_installation.vue';
@@ -20,16 +26,12 @@ import { stubComponent } from 'helpers/stub_component';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { mavenPackage, mavenFiles, npmPackage, terraformModule } from '../../mock_data';
 
-Vue.use(Vuex);
-
 useMockLocationHelper();
+jest.mock('~/alert');
+jest.mock('~/api.js');
 
 describe('PackagesApp', () => {
   let wrapper;
-  let store;
-  const fetchPackageVersions = jest.fn();
-  const deletePackage = jest.fn();
-  const deletePackageFile = jest.fn();
   const defaultProjectName = 'bar';
 
   const defaultProvide = {
@@ -41,25 +43,13 @@ describe('PackagesApp', () => {
   function createComponent({
     packageEntity = mavenPackage,
     packageFiles = mavenFiles,
-    isLoading = false,
     projectName = defaultProjectName,
   } = {}) {
-    store = new Vuex.Store({
-      state: {
-        isLoading,
-        packageEntity,
-        packageFiles,
-      },
-      actions: {
-        deletePackage,
-        fetchPackageVersions,
-        deletePackageFile,
-      },
-      getters,
-    });
-
     wrapper = mount(PackagesApp, {
-      store,
+      propsData: {
+        initialPackageEntity: packageEntity,
+        initialPackageFiles: packageFiles,
+      },
       provide: {
         ...defaultProvide,
         projectName,
@@ -76,6 +66,10 @@ describe('PackagesApp', () => {
       },
     });
   }
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   const packageTitle = () => wrapper.findComponent(TerraformTitle);
   const emptyState = () => wrapper.findComponent(GlEmptyState);
@@ -97,6 +91,11 @@ describe('PackagesApp', () => {
     createComponent();
 
     expect(packageTitle().exists()).toBe(true);
+    expect(packageTitle().props()).toMatchObject({
+      packageEntity: mavenPackage,
+      packageFiles: mavenFiles,
+      packagePipeline: null,
+    });
   });
 
   it('renders an empty state component when no an invalid package is passed as a prop', () => {
@@ -110,8 +109,8 @@ describe('PackagesApp', () => {
   it('package history has the right props', () => {
     createComponent();
     expect(findPackageHistory().exists()).toBe(true);
-    expect(findPackageHistory().props('packageEntity')).toEqual(wrapper.vm.packageEntity);
-    expect(findPackageHistory().props('projectName')).toEqual(wrapper.vm.projectName);
+    expect(findPackageHistory().props('packageEntity')).toEqual(mavenPackage);
+    expect(findPackageHistory().props('projectName')).toEqual(defaultProjectName);
   });
 
   it('terraform installation exists', () => {
@@ -146,34 +145,80 @@ describe('PackagesApp', () => {
   });
 
   describe('versions', () => {
+    const createPackageVersions = () => [
+      { ...mavenPackage, id: 3, version: '3.0.0' },
+      { ...mavenPackage, id: 4, version: '4.0.0' },
+    ];
+
+    const createDeferredVersionsRequest = () => {
+      let resolveRequest;
+      const promise = new Promise((resolve) => {
+        resolveRequest = resolve;
+      });
+
+      return { promise, resolve: resolveRequest };
+    };
+
     describe('api call', () => {
       beforeEach(() => {
         createComponent();
       });
 
-      it('makes api request on first click of tab', () => {
-        versionsTab().vm.$emit('click');
+      it('makes api request on first click of tab', async () => {
+        const packageVersions = createPackageVersions();
+        Api.projectPackage.mockResolvedValue({ data: { versions: packageVersions } });
 
-        expect(fetchPackageVersions).toHaveBeenCalled();
+        versionsTab().vm.$emit('click');
+        await waitForPromises();
+
+        expect(Api.projectPackage).toHaveBeenCalledWith(mavenPackage.project_id, mavenPackage.id);
       });
     });
 
-    it('displays the loader when state is loading', () => {
-      createComponent({ isLoading: true });
+    it('displays the loader while package versions are loading', async () => {
+      const request = createDeferredVersionsRequest();
+      Api.projectPackage.mockReturnValue(request.promise);
+      createComponent();
+
+      versionsTab().vm.$emit('click');
+      await nextTick();
 
       expect(packagesLoader().exists()).toBe(true);
+
+      request.resolve({ data: { versions: [] } });
+      await waitForPromises();
     });
 
-    it('displays the correct version count when the package has versions', () => {
-      createComponent({ packageEntity: npmPackage });
+    it('displays the fetched versions in reverse order', async () => {
+      const packageVersions = createPackageVersions();
+      Api.projectPackage.mockResolvedValue({ data: { versions: packageVersions } });
+      createComponent();
 
-      expect(packagesVersionRows()).toHaveLength(npmPackage.versions.length);
+      versionsTab().vm.$emit('click');
+      await waitForPromises();
+
+      expect(packagesVersionRows()).toHaveLength(packageVersions.length);
+      expect(packagesVersionRows().at(0).props('packageLink')).toBe('4');
     });
 
     it('displays the no versions message when there are none', () => {
       createComponent();
 
       expect(noVersionsMessage().exists()).toBe(true);
+    });
+
+    it('shows an alert when loading versions fails', async () => {
+      Api.projectPackage.mockRejectedValue();
+      createComponent();
+
+      versionsTab().vm.$emit('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: FETCH_PACKAGE_VERSIONS_ERROR,
+        variant: VARIANT_WARNING,
+      });
+      expect(packagesLoader().exists()).toBe(false);
     });
   });
 
@@ -221,39 +266,128 @@ describe('PackagesApp', () => {
 
   describe('tracking and delete', () => {
     describe('delete package', () => {
-      it('calls the proper vuex action', () => {
+      it('calls the delete package API', async () => {
+        Api.deleteProjectPackage.mockResolvedValue();
         createComponent({ packageEntity: npmPackage });
+
         findDeleteModal().vm.$emit('primary');
-        expect(deletePackage).toHaveBeenCalled();
+        await waitForPromises();
+
+        expect(Api.deleteProjectPackage).toHaveBeenCalledWith(npmPackage.project_id, npmPackage.id);
       });
 
       it('calls window.replace with project url', async () => {
-        deletePackage.mockResolvedValue({ status: 204 });
+        Api.deleteProjectPackage.mockResolvedValue({ status: 204 });
         createComponent({ packageEntity: npmPackage });
+
         findDeleteModal().vm.$emit('primary');
-        await deletePackage();
+        await waitForPromises();
+
         expect(window.location.replace).toHaveBeenCalledWith(
           'project_url?showSuccessDeleteAlert=true',
         );
       });
 
       it('does not redirect on delete failure', async () => {
-        deletePackage.mockResolvedValue();
+        Api.deleteProjectPackage.mockRejectedValue(new Error('error'));
         createComponent({ packageEntity: npmPackage });
+
         findDeleteModal().vm.$emit('primary');
-        await deletePackage();
+        await waitForPromises();
+
         expect(window.location.replace).not.toHaveBeenCalled();
+      });
+
+      it('creates an alert with the default error message', async () => {
+        Api.deleteProjectPackage.mockRejectedValue(new Error('error'));
+        createComponent({ packageEntity: npmPackage });
+
+        findDeleteModal().vm.$emit('primary');
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: DELETE_PACKAGE_ERROR_MESSAGE,
+          variant: VARIANT_WARNING,
+        });
+      });
+
+      it('creates an alert with the server error message', async () => {
+        const serverMessage = 'Package is deletion protected.';
+        const apiError = new Error('error');
+        apiError.response = { data: { message: serverMessage } };
+        Api.deleteProjectPackage.mockRejectedValue(apiError);
+        createComponent({ packageEntity: npmPackage });
+
+        findDeleteModal().vm.$emit('primary');
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: serverMessage,
+          variant: VARIANT_WARNING,
+        });
       });
     });
 
     describe('delete file', () => {
-      it('calls the proper vuex action', () => {
+      it('calls the delete package file API', async () => {
+        Api.deleteProjectPackageFile.mockResolvedValue();
         createComponent({ packageEntity: npmPackage });
 
         findPackageFiles().vm.$emit('delete-file', mavenFiles[0]);
         findDeleteFileModal().vm.$emit('primary');
+        await waitForPromises();
 
-        expect(deletePackageFile).toHaveBeenCalled();
+        expect(Api.deleteProjectPackageFile).toHaveBeenCalledWith(
+          npmPackage.project_id,
+          npmPackage.id,
+          mavenFiles[0].id,
+        );
+      });
+
+      it('removes the deleted file and shows a success alert', async () => {
+        Api.deleteProjectPackageFile.mockResolvedValue();
+        createComponent({ packageEntity: npmPackage });
+
+        findPackageFiles().vm.$emit('delete-file', mavenFiles[0]);
+        findDeleteFileModal().vm.$emit('primary');
+        await waitForPromises();
+
+        expect(findPackageFiles().props('packageFiles')).toEqual([mavenFiles[1]]);
+        expect(createAlert).toHaveBeenCalledWith({
+          message: DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
+          variant: VARIANT_SUCCESS,
+        });
+      });
+
+      it('creates an alert with the default error message', async () => {
+        Api.deleteProjectPackageFile.mockRejectedValue();
+        createComponent({ packageEntity: npmPackage });
+
+        findPackageFiles().vm.$emit('delete-file', mavenFiles[0]);
+        findDeleteFileModal().vm.$emit('primary');
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: DELETE_PACKAGE_FILE_ERROR_MESSAGE,
+          variant: VARIANT_WARNING,
+        });
+      });
+
+      it('creates an alert with the server error message', async () => {
+        const serverMessage = '403 Forbidden - Package is deletion protected.';
+        const apiError = new Error('error');
+        apiError.response = { data: { message: serverMessage } };
+        Api.deleteProjectPackageFile.mockRejectedValue(apiError);
+        createComponent({ packageEntity: npmPackage });
+
+        findPackageFiles().vm.$emit('delete-file', mavenFiles[0]);
+        findDeleteFileModal().vm.$emit('primary');
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: serverMessage,
+          variant: VARIANT_WARNING,
+        });
       });
     });
 
@@ -303,6 +437,7 @@ describe('PackagesApp', () => {
       });
 
       it(`confirming a file deletion tracks  ${TRACKING_ACTIONS.DELETE_PACKAGE_FILE}`, () => {
+        Api.deleteProjectPackageFile.mockResolvedValue();
         createComponent({ packageEntity: npmPackage });
 
         findPackageFiles().vm.$emit('delete-file', npmPackage);
@@ -310,7 +445,7 @@ describe('PackagesApp', () => {
 
         expect(eventSpy).toHaveBeenCalledWith(
           TRACK_CATEGORY,
-          TRACKING_ACTIONS.REQUEST_DELETE_PACKAGE_FILE,
+          TRACKING_ACTIONS.DELETE_PACKAGE_FILE,
           expect.any(Object),
         );
       });

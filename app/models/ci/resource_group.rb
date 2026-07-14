@@ -47,6 +47,24 @@ module Ci
       success
     end
 
+    # In some cases, state machine hooks in `Ci::Build` are skipped
+    # even if the job status transitions to a complete state.
+    # For example, `Ci::Build#doom!` (a.k.a `data_integrity_failure`) doesn't execute state machine hooks.
+    # To handle these edge cases, we check the staleness of the jobs that currently
+    # assigned to the resources, and release if it's stale.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/335537#note_632925914 for more information.
+    def stale_processables
+      # Resolve the retained `(build_id, partition_id)` pairs first so the
+      # `p_ci_builds` lookup gets literal `partition_id` values and can prune
+      # partitions at plan time. A correlated subquery cannot prune because
+      # the planner does not know the partition IDs ahead of time.
+      # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- bounded by resource-group cardinality
+      retained_pairs = resources.retained.pluck(:build_id, :partition_id)
+      # rubocop:enable Database/AvoidUsingPluckWithoutLimit
+
+      Ci::Processable.id_and_partition_in(retained_pairs).complete.updated_at_before(5.minutes.ago)
+    end
+
     def upcoming_processables
       if unordered?
         processables.waiting_for_resource

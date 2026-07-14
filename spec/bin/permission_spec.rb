@@ -3,16 +3,7 @@
 require 'fast_spec_helper'
 require_relative '../../lib/authz/validation'
 
-# Suppress output while loading the permission script to avoid printing during file execution
-original_stdout = $stdout
-original_stderr = $stderr
-$stdout = StringIO.new
-$stderr = StringIO.new
-
 load File.expand_path('../../bin/permission', __dir__)
-
-$stdout = original_stdout
-$stderr = original_stderr
 
 STUB_FEATURE_CATEGORIES = %w[custom_dashboards_foundation permissions continuous_integration].freeze
 

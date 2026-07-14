@@ -5,6 +5,7 @@ import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '../constants';
 import eventHub from '../event_hub';
 
 export default {
+  name: 'CommitOptionsDropdown',
   i18n: {
     gitlabTag: s__('CreateTag|Tag'),
   },

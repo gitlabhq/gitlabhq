@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Observability::AccessRequestService, feature_category: :observability do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, group: group) }
@@ -22,7 +24,7 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
     end
 
     context 'with invalid parameters' do
-      it_behaves_like 'returns error with status', 'Group is required', :bad_request do
+      it_behaves_like 'returns error with status', 'Namespace is required', :bad_request do
         subject(:service) { described_class.new(nil, user) }
       end
 
@@ -53,7 +55,7 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
           expect(description).to include("@#{user.username}")
           expect(description).to include(user.email)
           expect(description).to include(group.name)
-          expect(description).to include("Group ID:** #{group.id}")
+          expect(description).to include("Namespace ID:** #{group.id}")
           expect(description).to include("Member Count:** #{group.members.count}")
         end
 
@@ -98,7 +100,7 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
 
         it 'enqueues CreateGroupO11ySettingWorker job when issue creation succeeds' do
           expect(Observability::CreateGroupO11ySettingWorker).to receive(:perform_async)
-            .with(user.id, group.id)
+            .with(user.id, group.id, nil)
 
           result = service.execute
           expect(result).to be_success
@@ -131,7 +133,7 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
         it_behaves_like 'returns error with status', 'Project not found', :not_found do
           before do
             allow(Rails.env).to receive(:production?).and_return(false)
-            allow(group).to receive_message_chain(:projects, :first).and_return(nil)
+            allow(group).to receive_message_chain(:projects, :projects_order_id_asc, :first).and_return(nil)
           end
         end
       end
@@ -184,6 +186,59 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
           :forbidden do
           before_all do
             group.add_guest(user)
+          end
+        end
+      end
+    end
+
+    context 'with personal namespace' do
+      let_it_be(:owner) { create(:user, :with_namespace) }
+      let_it_be(:user_namespace) { owner.namespace }
+      let_it_be(:personal_project) { create(:project, :empty_repo, namespace: user_namespace) }
+      let_it_be(:other_user) { create(:user) }
+      let_it_be(:other_project) { create(:project) }
+
+      subject(:service) { described_class.new(user_namespace, owner, project: personal_project) }
+
+      context 'with valid parameters' do
+        it 'creates a confidential issue with namespace-based content' do
+          result = service.execute
+
+          expect(result).to be_success
+
+          issue = result[:issue]
+          expect(issue).to be_confidential
+          expect(issue.title).to eq("Request Observability Access for #{user_namespace.name}")
+
+          description = issue.description
+          expect(description).to include(owner.name)
+          expect(description).to include("Namespace ID:** #{user_namespace.id}")
+          expect(description).to include('Namespace Type:** Personal namespace')
+          expect(description).to include('Member Count:** 1')
+        end
+
+        it 'enqueues worker with namespace id and project id' do
+          expect(Observability::CreateGroupO11ySettingWorker).to receive(:perform_async)
+            .with(owner.id, user_namespace.id, personal_project.id)
+
+          service.execute
+        end
+      end
+
+      context 'when access is forbidden' do
+        where(:scenario, :service_user, :service_project) do
+          'user is not the namespace owner'   | ref(:other_user) | ref(:personal_project)
+          'project is nil'                    | ref(:owner)      | nil
+          'project does not belong to namespace' | ref(:owner)   | ref(:other_project)
+        end
+
+        with_them do
+          subject(:service) { described_class.new(user_namespace, service_user, project: service_project) }
+
+          it 'returns forbidden error' do
+            result = service.execute
+            expect(result).to be_error
+            expect(result.http_status).to eq(:forbidden)
           end
         end
       end

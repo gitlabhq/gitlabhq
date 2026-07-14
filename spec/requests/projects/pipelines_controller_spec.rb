@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::PipelinesController, feature_category: :continuous_integration do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 

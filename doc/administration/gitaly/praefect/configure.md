@@ -1268,7 +1268,7 @@ scope of the GitLab documentation.
 
 We hope that if you're managing fault-tolerant systems like GitLab, you have a load balancer
 of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
-(open-source), [Google Internal Load Balancer](https://cloud.google.com/load-balancing/docs/internal/),
+(open-source), [Google Internal Load Balancer](https://docs.cloud.google.com/load-balancing/docs/internal),
 [AWS Elastic Load Balancer](https://aws.amazon.com/elasticloadbalancing/), F5
 Big-IP LTM, and Citrix Net Scaler. This documentation outlines what ports
 and protocols you need configure.

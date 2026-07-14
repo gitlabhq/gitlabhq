@@ -20,6 +20,7 @@ import WorkloadDetailsItem from './workload_details_item.vue';
 import K8sEventItem from './k8s_event_item.vue';
 
 export default {
+  name: 'WorkloadDetails',
   components: {
     GlBadge,
     GlTruncate,

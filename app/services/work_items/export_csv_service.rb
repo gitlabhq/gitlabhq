@@ -18,7 +18,9 @@ module WorkItems
     end
 
     def widget_preloads
-      [:assignees, :work_item_parent, :milestone, :dates_source, :labels, :timelogs]
+      preloads = [:assignees, :work_item_parent, :milestone, :dates_source, :labels]
+      preloads << :timelogs unless preload_associations_in_batches?
+      preloads
     end
 
     def header_to_value_hash
@@ -84,8 +86,24 @@ module WorkItems
     def time_tracking_data
       {
         'Time Estimate' => ->(work_item) { widget_value_for(work_item, :time_tracking, :human_time_estimate) },
-        'Time Spent' => ->(work_item) { widget_value_for(work_item, :time_tracking, :human_total_time_spent) }
+        'Time Spent' => ->(work_item) { total_time_spent_for(work_item) }
       }
+    end
+
+    def total_time_spent_for(work_item)
+      return unless work_item.get_widget(:time_tracking)
+
+      ::Gitlab::TimeTrackingFormatter.output(batched_time_spent_for(work_item))
+    end
+
+    def on_batch_loaded(records)
+      @time_spent_by_id = ::Timelog.total_time_spent_by_issue_id(records.map(&:id))
+    end
+
+    def batched_time_spent_for(work_item)
+      return @time_spent_by_id[work_item.id].to_i if @time_spent_by_id
+
+      work_item.timelogs.sum(&:time_spent)
     end
 
     def widget_value_for(work_item, widget_name, attr = nil)
@@ -94,6 +112,10 @@ module WorkItems
 
       field = attr.nil? ? widget_name : attr
       widget.try(field)
+    end
+
+    def preload_associations_in_batches?
+      Feature.enabled?(:export_csv_preload_in_batches, resource_parent)
     end
   end
 end

@@ -176,7 +176,10 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         'storybook/.babelrc.json',
         'yarn-error.log'
       ] +
-      Dir.glob('.claude/**/*') +
+      # .claude/** is tool-local config that does not gate CI, EXCEPT the
+      # committed shared skills under .claude/skills/, which are matched by
+      # `.skills-patterns` (see the skills-version-bump CI job).
+      (Dir.glob('.claude/**/*') - Dir.glob('.claude/skills/**/*')) +
       Dir.glob('.bundle/**/*') +
       Dir.glob('.github/*') +
       Dir.glob('.gitlab/{issue,merge_request}_templates/**/*') +

@@ -66,7 +66,7 @@ module RuboCop
         end
 
         def basic_type?(node)
-          node.str_type? || node.lvar_type? || node.const_type?
+          node.type?(:str, :lvar, :const)
         end
 
         def multiline_string?(node)

@@ -235,6 +235,26 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
       end
     end
 
+    context 'when Cells::TransactionRecord::AlreadyClaimedError exception is raised during the source user creation' do
+      before do
+        allow_next_instance_of(::Import::SourceUser) do |source_user|
+          allow(source_user).to receive(:save!).and_raise(::Cells::TransactionRecord::AlreadyClaimedError)
+        end
+      end
+
+      it 'logs the exception and raises DuplicatedUserError', :aggregate_failures do
+        expect(::Import::Framework::Logger).to receive(:warn).with(
+          message: 'Source user creation encountered a transient self-collision, retrying as duplicate',
+          source_user_identifier: source_user_identifier,
+          namespace_id: namespace.id,
+          import_type: import_type,
+          exception_class: 'Cells::TransactionRecord::AlreadyClaimedError'
+        )
+
+        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedUserError)
+      end
+    end
+
     context 'when ActiveRecord::RecordInvalid exception because the placeholder user email or username is taken' do
       it 'rescue the exception and raises DuplicatedUserError' do
         create(:user, email: 'user@example.com')

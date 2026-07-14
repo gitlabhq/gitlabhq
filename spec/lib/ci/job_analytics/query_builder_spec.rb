@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, feature_category: :fleet_visibility do
-  include_context 'with CI job analytics test data'
+  include_context 'with CI job analytics test data', with_siphon: true
 
   let_it_be(:user) { create(:user, maintainer_of: project) }
 
@@ -203,63 +203,59 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
 
     subject(:finder) { instance.send(:build_finder) }
 
-    it 'builds finder with all configurations' do
-      is_expected.to be_a(ClickHouse::Finders::Ci::FinishedBuildsFinder)
-      expect(finder.to_sql).to include('ci_finished_builds')
+    it 'builds the siphon finder' do
+      is_expected.to be_a(ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder)
     end
 
-    it 'applies project filter' do
-      expect(finder.to_sql).to include(project.project_namespace.traversal_path)
+    it 'takes precedence over the deduplicated finder even while the backfill is in progress' do
+      allow(ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper)
+        .to receive(:backfill_in_progress?).and_return(true)
+
+      is_expected.to be_a(ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder)
     end
 
-    context 'when deduplication migration is in progress' do
-      before do
-        allow(ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper)
-          .to receive(:backfill_in_progress?).and_return(true)
-      end
-
-      it 'uses the deduplicated finder' do
-        is_expected.to be_a(ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder)
-      end
-
-      it 'generates valid SQL' do
-        expected_sql = <<~SQL.squish
-          SELECT `finished_builds`.`name`, round((avg(`finished_builds`.`duration`) / 1000.0), 2) AS mean_duration
-          FROM (SELECT `ci_finished_builds`.`id`,
-                       argMax(`ci_finished_builds`.`name`, `ci_finished_builds`.`version`)     AS name,
-                       argMax(`ci_finished_builds`.`duration`, `ci_finished_builds`.`version`) AS duration
-                FROM `ci_finished_builds`
-                WHERE `ci_finished_builds`.`project_id` = #{project.id}
-                  AND `ci_finished_builds`.`pipeline_id` IN (SELECT `ci_finished_pipelines`.`id`
-                                                             FROM `ci_finished_pipelines`
-                                                             WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path}'
-                                                               AND `ci_finished_pipelines`.`started_at` >=
-                                                                   toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
-                                                               AND `ci_finished_pipelines`.`started_at` <
-                                                                   toDateTime64('#{1.hour.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
-                                                               AND `ci_finished_pipelines`.`finished_at` >=
-                                                                   toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
-                                                               AND `ci_finished_pipelines`.`source` = 'web'
-                                                               AND `ci_finished_pipelines`.`ref` = 'main')
-                  AND `ci_finished_builds`.`finished_at` >= toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
-                GROUP BY id
-                HAVING argMax(`ci_finished_builds`.`name`, `ci_finished_builds`.`version`) ILIKE '%test%') finished_builds
-          GROUP BY `finished_builds`.`name`
-          ORDER BY `finished_builds`.`name` ASC
-        SQL
-
-        expect(query_builder.to_sql).to eq(expected_sql)
-      end
+    it 'reads from siphon_p_ci_builds scoped by the container' do
+      expect(finder.to_sql).to include(
+        'siphon_p_ci_builds',
+        project.project_namespace.traversal_path(with_organization: true)
+      )
     end
 
-    context 'when deduplication migration is not in progress' do
-      before do
-        allow(ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper)
-          .to receive(:backfill_in_progress?).and_return(false)
+    it 'filters the date window on started_at' do
+      expect(finder.to_sql).to include('`siphon_p_ci_builds`.`started_at`')
+    end
+
+    describe 'stage_name handling' do
+      context 'when stage_name is not requested' do
+        let(:options) { { select_fields: [:name], aggregations: [:mean_duration] } }
+
+        it 'does not add the stages join' do
+          expect(finder.to_sql).not_to include('`stages`')
+        end
       end
 
-      it 'uses the regular finder' do
-        is_expected.to be_a(ClickHouse::Finders::Ci::FinishedBuildsFinder)
+      context 'when stage_name is selected' do
+        let(:options) { { select_fields: [:name, :stage_name], aggregations: [:mean_duration] } }
+
+        it 'adds the stages join' do
+          expect(finder.to_sql).to include('siphon_p_ci_stages', '`stages`.`name`')
+        end
+      end
+
+      context 'when sorting by stage_name' do
+        let(:options) { { select_fields: [:name, :stage_name], sort: 'stage_name_asc' } }
+
+        it 'adds the stages join for the ordered column' do
+          expect(finder.to_sql).to include('siphon_p_ci_stages')
+        end
+      end
+
+      context 'when sorting by stage_name without selecting it' do
+        let(:options) { { select_fields: [:name], sort: 'stage_name_asc' } }
+
+        it 'still adds the stages join' do
+          expect(finder.to_sql).to include('siphon_p_ci_stages')
+        end
       end
     end
   end
@@ -300,52 +296,6 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     end
   end
 
-  describe 'integration with FinishedBuildsFinder' do
-    let(:options) do
-      {
-        select_fields: [:name],
-        aggregations: [:mean_duration],
-        name_search: 'compile'
-      }
-    end
-
-    it 'produces same results as direct FinishedBuildsFinder usage' do
-      direct_finder_result = ClickHouse::Finders::Ci::FinishedBuildsFinder.new
-                                                                          .for_project(project.id)
-                                                                          .select(:name)
-                                                                          .mean_duration
-                                                                          .filter_by_job_name('compile')
-                                                                          .execute
-
-      expect(query_result.size).to eq(direct_finder_result.size)
-      expect(query_result.pluck('name')).to match_array(direct_finder_result.pluck('name'))
-    end
-  end
-
-  describe 'SQL generation' do
-    let(:options) do
-      {
-        select_fields: [:name],
-        aggregations: [:mean_duration]
-      }
-    end
-
-    it 'generates valid SQL' do
-      sql = query_builder.to_sql
-      formatted_time = 7.days.ago.utc.strftime('%Y-%m-%d %H:%M:%S')
-      expected_sql = <<~SQL.squish.lines(chomp: true).join(' ')
-        SELECT `ci_finished_builds`.`name`, round((avg(`ci_finished_builds`.`duration`) / 1000.0), 2) AS mean_duration
-        FROM `ci_finished_builds` WHERE `ci_finished_builds`.`project_id` = #{project.id} AND `ci_finished_builds`.`pipeline_id` IN
-        (SELECT `ci_finished_pipelines`.`id` FROM `ci_finished_pipelines` WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path}'
-        AND `ci_finished_pipelines`.`started_at` >= toDateTime64('#{formatted_time}', 6, 'UTC')
-        AND `ci_finished_pipelines`.`finished_at` >= toDateTime64('#{formatted_time}', 6, 'UTC'))
-        AND `ci_finished_builds`.`finished_at` >= toDateTime64('#{formatted_time}', 6, 'UTC')
-        GROUP BY `ci_finished_builds`.`name`
-      SQL
-      expect(sql).to eq(expected_sql)
-    end
-  end
-
   describe 'basic query building' do
     it 'returns query builder instance' do
       expect(query_builder).to respond_to(:to_sql)
@@ -355,7 +305,140 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       sql = query_builder.to_sql
 
       expect(sql).to include('SELECT')
-      expect(sql).to include('ci_finished_builds')
+      expect(sql).to include('siphon_p_ci_builds')
+    end
+  end
+
+  # TODO: Remove this whole block together with the job_analytics_siphon feature flag.
+  # Rollout: https://gitlab.com/gitlab-org/gitlab/-/issues/604585
+  # Once the flag is gone, the ci_finished_builds finders are no longer selected and
+  # the siphon finder (covered by the default examples above) is the only path.
+  describe 'with job_analytics_siphon disabled (legacy finders)' do
+    before do
+      stub_feature_flags(job_analytics_siphon: false)
+    end
+
+    describe '#build_finder' do
+      let(:options) do
+        {
+          select_fields: [:name],
+          aggregations: [:mean_duration],
+          sort: 'name_asc',
+          name_search: 'test',
+          source: 'web',
+          ref: 'main',
+          from_time: 2.hours.ago,
+          to_time: 1.hour.ago
+        }
+      end
+
+      subject(:finder) { instance.send(:build_finder) }
+
+      it 'builds finder with all configurations' do
+        is_expected.to be_a(ClickHouse::Finders::Ci::FinishedBuildsFinder)
+        expect(finder.to_sql).to include('ci_finished_builds')
+      end
+
+      it 'applies project filter' do
+        expect(finder.to_sql).to include(project.project_namespace.traversal_path)
+      end
+
+      context 'when deduplication migration is in progress' do
+        before do
+          allow(ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper)
+            .to receive(:backfill_in_progress?).and_return(true)
+        end
+
+        it 'uses the deduplicated finder' do
+          is_expected.to be_a(ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder)
+        end
+
+        it 'generates valid SQL' do
+          expected_sql = <<~SQL.squish
+            SELECT `finished_builds`.`name`, round((avg(`finished_builds`.`duration`) / 1000.0), 2) AS mean_duration
+            FROM (SELECT `ci_finished_builds`.`id`,
+                         argMax(`ci_finished_builds`.`name`, `ci_finished_builds`.`version`)     AS name,
+                         argMax(`ci_finished_builds`.`duration`, `ci_finished_builds`.`version`) AS duration
+                  FROM `ci_finished_builds`
+                  WHERE `ci_finished_builds`.`project_id` = #{project.id}
+                    AND `ci_finished_builds`.`pipeline_id` IN (SELECT `ci_finished_pipelines`.`id`
+                                                               FROM `ci_finished_pipelines`
+                                                               WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path}'
+                                                                 AND `ci_finished_pipelines`.`started_at` >=
+                                                                     toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+                                                                 AND `ci_finished_pipelines`.`started_at` <
+                                                                     toDateTime64('#{1.hour.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+                                                                 AND `ci_finished_pipelines`.`finished_at` >=
+                                                                     toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+                                                                 AND `ci_finished_pipelines`.`source` = 'web'
+                                                                 AND `ci_finished_pipelines`.`ref` = 'main')
+                    AND `ci_finished_builds`.`finished_at` >= toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+                  GROUP BY id
+                  HAVING argMax(`ci_finished_builds`.`name`, `ci_finished_builds`.`version`) ILIKE '%test%') finished_builds
+            GROUP BY `finished_builds`.`name`
+            ORDER BY `finished_builds`.`name` ASC
+          SQL
+
+          expect(query_builder.to_sql).to eq(expected_sql)
+        end
+      end
+
+      context 'when deduplication migration is not in progress' do
+        before do
+          allow(ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper)
+            .to receive(:backfill_in_progress?).and_return(false)
+        end
+
+        it 'uses the regular finder' do
+          is_expected.to be_a(ClickHouse::Finders::Ci::FinishedBuildsFinder)
+        end
+      end
+    end
+
+    describe 'integration with FinishedBuildsFinder' do
+      let(:options) do
+        {
+          select_fields: [:name],
+          aggregations: [:mean_duration],
+          name_search: 'compile'
+        }
+      end
+
+      it 'produces same results as direct FinishedBuildsFinder usage' do
+        direct_finder_result = ClickHouse::Finders::Ci::FinishedBuildsFinder.new
+                                                                            .for_project(project.id)
+                                                                            .select(:name)
+                                                                            .mean_duration
+                                                                            .filter_by_job_name('compile')
+                                                                            .execute
+
+        expect(query_result.size).to eq(direct_finder_result.size)
+        expect(query_result.pluck('name')).to match_array(direct_finder_result.pluck('name'))
+      end
+    end
+
+    describe 'SQL generation' do
+      let(:options) do
+        {
+          select_fields: [:name],
+          aggregations: [:mean_duration]
+        }
+      end
+
+      it 'generates valid SQL' do
+        sql = query_builder.to_sql
+        formatted_time = 7.days.ago.utc.strftime('%Y-%m-%d %H:%M:%S')
+        expected_sql = <<~SQL.squish.lines(chomp: true).join(' ')
+          SELECT `ci_finished_builds`.`name`, round((avg(`ci_finished_builds`.`duration`) / 1000.0), 2) AS mean_duration
+          FROM `ci_finished_builds` WHERE `ci_finished_builds`.`project_id` = #{project.id} AND `ci_finished_builds`.`pipeline_id` IN
+          (SELECT `ci_finished_pipelines`.`id` FROM `ci_finished_pipelines` WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path}'
+          AND `ci_finished_pipelines`.`started_at` >= toDateTime64('#{formatted_time}', 6, 'UTC')
+          AND `ci_finished_pipelines`.`finished_at` >= toDateTime64('#{formatted_time}', 6, 'UTC'))
+          AND `ci_finished_builds`.`finished_at` >= toDateTime64('#{formatted_time}', 6, 'UTC')
+          GROUP BY `ci_finished_builds`.`name`
+        SQL
+        expect(sql).to eq(expected_sql)
+      end
     end
   end
 
@@ -523,18 +606,18 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
     end
 
     context 'with source filter' do
-      let(:options) { { source: 'web' } }
+      let(:options) { { select_fields: [:name], source: 'web' } }
 
       it 'filters by pipeline source' do
-        expect(query_result.pluck('pipeline_id')).to include(source_pipeline.id)
+        expect(query_result.pluck('name')).to contain_exactly('source-build')
       end
     end
 
     context 'with ref filter' do
-      let(:options) { { ref: 'feature-branch' } }
+      let(:options) { { select_fields: [:name], ref: 'feature-branch' } }
 
       it 'filters by pipeline ref' do
-        expect(query_result.pluck('pipeline_id')).to include(ref_pipeline.id)
+        expect(query_result.pluck('name')).to contain_exactly('ref-build')
       end
     end
 

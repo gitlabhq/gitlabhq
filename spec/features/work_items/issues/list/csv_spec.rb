@@ -2,14 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issues csv', :js, feature_category: :team_planning, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/579444' do
+RSpec.describe 'Issues csv', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
-  let(:milestone) { create(:milestone, title: 'v1.0', project: project) }
-  let(:idea_label) { create(:label, project: project, title: 'Idea') }
-  let(:feature_label) { create(:label, project: project, title: 'Feature', priority: 10) }
-  let!(:issue) { create(:issue, project: project, author: user) }
+  include Features::SortingHelpers
+
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be(:idea_label) { create(:label, project: project, title: 'Idea') }
+  let_it_be(:feature_label) { create(:label, project: project, title: 'Feature', priority: 10) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project, author: user) }
 
   before do
     create(:callout, user: user, feature_name: :work_items_onboarding_modal)
@@ -17,10 +18,19 @@ RSpec.describe 'Issues csv', :js, feature_category: :team_planning, quarantine: 
     visit project_work_items_path(project)
   end
 
+  def wait_for_list_to_load
+    expect(page).to have_selector('.issue')
+  end
+
   def request_csv
+    wait_for_list_to_load
+
     click_button 'Actions'
     click_button 'Export as CSV'
-    click_on 'Export issues'
+    click_on 'Export work items'
+
+    # Wait for the async export to finish before inspecting the result.
+    expect(page).to have_css("[data-testid='alert-success']")
   end
 
   def attachment
@@ -32,21 +42,22 @@ RSpec.describe 'Issues csv', :js, feature_category: :team_planning, quarantine: 
   end
 
   it 'triggers an email export' do
-    expect(IssuableExportCsvWorker).to receive(:perform_async).with(:issue, user.id, project.id, hash_including("project_id" => project.id))
+    expect(IssuableExportCsvWorker).to receive(:perform_async).with(:work_item, user.id, project.id, anything)
 
     request_csv
   end
 
   it "doesn't send request params to ExportCsvWorker" do
-    expect(IssuableExportCsvWorker).to receive(:perform_async).with(:issue, anything, anything, hash_excluding("controller" => anything, "action" => anything))
+    expect(IssuableExportCsvWorker).to receive(:perform_async)
+      .with(:work_item, anything, anything, hash_excluding("controller" => anything, "action" => anything))
 
     request_csv
   end
 
-  it 'displays flash message' do
+  it 'displays flash message', :aggregate_failures do
     request_csv
 
-    expect(page).to have_content 'CSV export has started'
+    expect(page).to have_content 'Your CSV export request has succeeded'
     expect(page).to have_content "emailed to #{user.notification_email_or_default}"
   end
 
@@ -65,20 +76,25 @@ RSpec.describe 'Issues csv', :js, feature_category: :team_planning, quarantine: 
   end
 
   it 'uses filters from issue index', :sidekiq_inline do
-    click_link 'Closed'
+    closed_issue = create(:issue, :closed, project: project, author: user)
+
+    visit project_work_items_path(project, state: 'closed')
     request_csv
 
-    expect(csv.count).to eq 0
+    expect(csv.count).to eq 1
+    expect(csv.first['IID']).to eq closed_issue.iid.to_s
   end
 
   it 'ignores sorting from issue index', :sidekiq_inline do
     issue2 = create(:labeled_issue, project: project, author: user, labels: [feature_label])
 
-    change_sort_by("Label priority")
+    click_button 'Display'
+    pajamas_sort_by 'Label priority', from: 'Created date'
+    send_keys :escape # close the display settings drawer so it does not overlay the CSV export buttons
     request_csv
 
     expected = [issue.iid.to_s, issue2.iid.to_s]
-    expect(csv.map { |row| row['Issue ID'] }).to eq expected
+    expect(csv.map { |row| row['IID'] }).to eq expected
   end
 
   it 'uses array filters, such as label_name', :sidekiq_inline do
@@ -91,8 +107,8 @@ RSpec.describe 'Issues csv', :js, feature_category: :team_planning, quarantine: 
   end
 
   context "with multiple issue authors" do
-    let(:user2) { create(:user, developer_of: project) }
-    let!(:issue2) { create(:issue, project: project, author: user2) }
+    let_it_be(:user2) { create(:user, developer_of: project) }
+    let_it_be(:issue2) { create(:issue, project: project, author: user2) }
 
     it 'exports issues by selected author', :sidekiq_inline do
       select_tokens 'Author', '=', user2.username, submit: true
@@ -109,10 +125,14 @@ RSpec.describe 'Issues csv', :js, feature_category: :team_planning, quarantine: 
     end
 
     it 'does not export issues by excluded multiple authors', :sidekiq_inline do
+      user3 = create(:user, developer_of: project)
+      issue3 = create(:issue, project: project, author: user3)
+
       select_tokens 'Author', '!=', user.username, user2.username, submit: true
       request_csv
 
-      expect(csv.count).to eq 0
+      expect(csv.count).to eq 1
+      expect(csv.first['IID']).to eq issue3.iid.to_s
     end
   end
 end

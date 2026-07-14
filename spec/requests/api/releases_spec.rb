@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_orchestration do
-  let(:project) { create(:project, :repository, :private) }
-  let(:maintainer) { create(:user) }
-  let(:reporter) { create(:user) }
-  let(:developer) { create(:user) }
-  let(:guest) { create(:user) }
-  let(:non_project_member) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project, :repository, :private) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:non_project_member) { create(:user) }
   let(:commit) { create(:commit, project: project) }
 
   before do
@@ -877,6 +877,8 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
   end
 
   describe 'POST /projects/:id/releases' do
+    let(:project) { create(:project, :repository, :private) }
+
     let(:params) do
       {
         name: 'New release',
@@ -1451,6 +1453,8 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
   end
 
   describe 'PUT /projects/:id/releases/:tag_name' do
+    let(:project) { create(:project, :repository, :private) }
+
     let(:params) { { description: 'Best release ever!' } }
 
     let!(:release) do

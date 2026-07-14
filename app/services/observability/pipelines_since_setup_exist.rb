@@ -7,15 +7,16 @@ module Observability
     # bounded. Order is non-deterministic; that's fine for an existence check.
     MAX_PROJECTS = 10_000
 
-    def initialize(group)
-      @group = group
+    # namespace - a Group or personal (user) Namespace.
+    def initialize(namespace)
+      @namespace = namespace
     end
 
     def execute
-      setting = @group.observability_group_o11y_setting
+      setting = @namespace.observability_group_o11y_setting
       return false unless setting
 
-      project_ids = @group.all_active_project_ids.limit(MAX_PROJECTS).pluck(:id) # rubocop:disable CodeReuse/ActiveRecord -- pluck avoids cross-join with CI schema
+      project_ids = active_project_ids
       return false if project_ids.empty?
 
       Ci::Pipeline
@@ -25,6 +26,12 @@ module Observability
         .created_after(setting.created_at)
         .finished_after(setting.created_at)
         .exists?
+    end
+
+    private
+
+    def active_project_ids
+      @namespace.all_active_project_ids.limit(MAX_PROJECTS).pluck(:id) # rubocop:disable CodeReuse/ActiveRecord -- pluck avoids cross-join with CI schema
     end
   end
 end

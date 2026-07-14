@@ -141,6 +141,15 @@ export default {
       required: true,
     },
   },
+  emits: [
+    'cancel-editing',
+    'delete-note',
+    'error',
+    'report-abuse',
+    'resolve',
+    'start-editing',
+    'start-replying',
+  ],
   data() {
     return {
       isEditing: false,

@@ -6,6 +6,10 @@ require_relative 'contract_pb'
 
 module DuoWorkflowService
   module DuoWorkflow
+    # DuoWorkflow is the gRPC service that orchestrates AI-powered workflow execution
+    # for GitLab Duo. It serves all GitLab deployment types (SaaS, self-managed, dedicated,
+    # self-hosted) and provides RPCs for running workflows, managing authentication,
+    # discovering available tools and flows, and self-hosted billing tracking.
     class Service
 
       include ::GRPC::GenericService
@@ -14,11 +18,23 @@ module DuoWorkflowService
       self.unmarshal_class_method = :decode
       self.service_name = 'DuoWorkflow'
 
+      # ExecuteWorkflow starts a bidirectional streaming session for running a Duo Workflow.
       rpc :ExecuteWorkflow, stream(::DuoWorkflowService::ClientEvent), stream(::DuoWorkflowService::Action)
+      # GenerateToken issues a short-lived authentication token for a workflow session.
       rpc :GenerateToken, ::DuoWorkflowService::GenerateTokenRequest, ::DuoWorkflowService::GenerateTokenResponse
+      # ListCapabilities returns the capabilities advertised by the server for capability negotiation.
+      rpc :ListCapabilities, ::DuoWorkflowService::ListCapabilitiesRequest, ::DuoWorkflowService::ListCapabilitiesResponse
+      # ListTools returns the set of tools available to the workflow executor.
       rpc :ListTools, ::DuoWorkflowService::ListToolsRequest, ::DuoWorkflowService::ListToolsResponse
+      # ListFlows returns the set of flow configurations available for execution.
       rpc :ListFlows, ::DuoWorkflowService::ListFlowsRequest, ::DuoWorkflowService::ListFlowsResponse
+      # TrackSelfHostedExecuteWorkflow is the billing bridge for self-hosted Duo deployments using
+      # cloud (online) licensing. Workhorse opens this bidirectional stream to Cloud DWS for the
+      # lifetime of a workflow. Cloud DWS performs an upfront quota check on stream open. For each
+      # LLM call, the self-hosted DWS sends a TrackSelfHostedClientEvent; Cloud DWS responds with a
+      # TrackSelfHostedAction to allow or deny the call. LLM traffic never leaves customer infrastructure.
       rpc :TrackSelfHostedExecuteWorkflow, stream(::DuoWorkflowService::TrackSelfHostedClientEvent), stream(::DuoWorkflowService::TrackSelfHostedAction)
+      # ValidateFlowConfig validates a provided flow configuration against the registered schema.
       rpc :ValidateFlowConfig, ::DuoWorkflowService::ValidateFlowConfigRequest, ::DuoWorkflowService::ValidateFlowConfigResponse
     end
 

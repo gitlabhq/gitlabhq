@@ -6,7 +6,7 @@ module Mutations
       class Delete < Base
         graphql_name 'TerraformStateDelete'
 
-        authorize_granular_token permissions: :delete_terraform_state, boundary_argument: :id,
+        authorize_granular_token permissions: :delete_terraform_state, boundary_argument: :id, boundary: :project,
           boundary_type: :project
 
         def resolve(id:)

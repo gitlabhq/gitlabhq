@@ -5,6 +5,8 @@ module Todos
     class EntityLeaveService < ::Todos::Destroy::BaseService
       extend ::Gitlab::Utils::Override
 
+      BATCH_SIZE = 1000
+
       attr_reader :user, :entity
 
       def initialize(user_id, entity_id, entity_type)
@@ -47,7 +49,7 @@ module Todos
           .for_target(confidential_issues.select(:id))
           .for_type(Issue.name)
           .for_user(user)
-          .delete_all
+          .each_batch(of: BATCH_SIZE) { |batch| batch.delete_all }
 
         # Deletes todos for internal notes on unauthorized projects
         Todo
@@ -55,7 +57,7 @@ module Todos
           .for_internal_notes
           .for_project(non_authorized_planner_projects) # Only Planner+ can read internal notes
           .for_user(user)
-          .delete_all
+          .each_batch(of: BATCH_SIZE) { |batch| batch.delete_all }
       end
 
       def remove_project_todos
@@ -64,14 +66,14 @@ module Todos
         Todo
           .for_project(non_authorized_guest_projects)
           .for_user(user)
-          .delete_all
+          .each_batch(of: BATCH_SIZE) { |batch| batch.delete_all }
 
         # MRs require planner access, so remove those todos that are not authorized
         Todo
           .for_project(non_authorized_planner_projects)
           .for_type(MergeRequest.name)
           .for_user(user)
-          .delete_all
+          .each_batch(of: BATCH_SIZE) { |batch| batch.delete_all }
       end
 
       def remove_group_todos
@@ -80,7 +82,7 @@ module Todos
         Todo
           .for_group(unauthorized_private_groups)
           .for_user(user)
-          .delete_all
+          .each_batch(of: BATCH_SIZE) { |batch| batch.delete_all }
       end
 
       def projects
@@ -120,14 +122,12 @@ module Todos
 
         groups = entity.self_and_descendants.private_only
 
-        groups.select(:id)
-          .id_not_in(GroupsFinder.new(user, all_available: false).execute.select(:id).reorder(nil))
+        groups.select(:id).id_not_in(GroupsFinder.new(user, all_available: false).execute.select(:id).reorder(nil))
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
       def non_authorized_planner_groups
-        entity.self_and_descendants.select(:id)
-          .id_not_in(authorized_planner_groups)
+        entity.self_and_descendant_ids.id_not_in(authorized_planner_groups)
       end
 
       def user_can_read_confidential_issues?

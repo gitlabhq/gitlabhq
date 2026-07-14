@@ -45,3 +45,6 @@ export const getDeployKeys = (query) => {
     },
   });
 };
+
+// CE has no custom roles; the real implementation lives in the EE counterpart.
+export const getMemberRoles = () => Promise.resolve({ data: [] });

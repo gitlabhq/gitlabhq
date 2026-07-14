@@ -17,6 +17,7 @@ module Banzai
         prepend Concerns::PipelineTimingCheck
         include Concerns::HtmlWriter
         include Concerns::TextReplacer
+        include Concerns::ContextAccessors
 
         REFERENCE_TYPE_ATTRIBUTE = :reference_type
         REFERENCE_TYPE_DATA_ATTRIBUTE_NAME = "data-#{REFERENCE_TYPE_ATTRIBUTE.to_s.dasherize}".freeze
@@ -139,14 +140,6 @@ module Banzai
           self.class.object_class
         end
 
-        def project
-          context[:project]
-        end
-
-        def group
-          context[:group]
-        end
-
         def requires_unescaping?
           false
         end
@@ -195,10 +188,6 @@ module Banzai
         # Note that while the key might exist, its value could be nil!
         def validate
           needs :project unless skip_project_check?
-        end
-
-        def user
-          context[:user]
         end
 
         def skip_project_check?

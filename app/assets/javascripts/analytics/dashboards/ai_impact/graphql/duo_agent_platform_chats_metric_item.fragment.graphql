@@ -1,0 +1,5 @@
+fragment DuoAgentPlatformChatsMetricItem on AiMetrics {
+  agentPlatformChats: agentPlatform(flowTypes: ["chat"]) {
+    createdSessionEventCount
+  }
+}

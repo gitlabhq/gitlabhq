@@ -1,0 +1,87 @@
+---
+name: siphon_packages_package_files
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (traversal_path, id) ORDER BY (traversal_path, id) SETTINGS index_granularity =
+  2048
+primary_key: traversal_path, id
+sorting_key: traversal_path, id
+settings:
+  index_granularity: '2048'
+columns:
+- name: id
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: package_id
+  type: Int64
+- name: created_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: updated_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: size
+  type: Nullable(Int64)
+- name: file_store
+  type: Int64
+  default_kind: DEFAULT
+  default_expression: '1'
+- name: file_md5
+  type: Nullable(String)
+- name: file_sha1
+  type: Nullable(String)
+- name: file_name
+  type: String
+- name: file
+  type: String
+- name: file_sha256
+  type: Nullable(String)
+- name: verification_retry_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: verified_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: verification_failure
+  type: Nullable(String)
+- name: verification_retry_count
+  type: Nullable(Int64)
+- name: verification_checksum
+  type: Nullable(String)
+- name: verification_state
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: verification_started_at
+  type: Nullable(DateTime64(6, 'UTC'))
+- name: status
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: file_final_path
+  type: Nullable(String)
+- name: project_id
+  type: Int64
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict',
+    'traversal_path', project_id, '0/'), '0/')
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))
+- name: _siphon_watermark
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))

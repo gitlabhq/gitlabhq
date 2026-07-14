@@ -6,7 +6,7 @@ RSpec.describe Resolvers::Ci::JobTokenScopeResolver, feature_category: :continuo
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
+  let_it_be_with_reload(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
 
   specify do
     expect(described_class).to have_nullable_graphql_type(::Types::Ci::JobTokenScopeType)

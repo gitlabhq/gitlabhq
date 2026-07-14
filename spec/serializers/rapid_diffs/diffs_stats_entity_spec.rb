@@ -21,7 +21,7 @@ RSpec.describe RapidDiffs::DiffsStatsEntity, feature_category: :code_review_work
       expect(diffs_stats).to include(
         {
           diffs_stats: {
-            added_lines: 119,
+            added_lines: 118,
             removed_lines: 9,
             diffs_count: 20,
             real_size: '20'

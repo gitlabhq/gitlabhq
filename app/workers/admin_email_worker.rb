@@ -23,6 +23,19 @@ class AdminEmailWorker # rubocop:disable Scalability/IdempotentWorker
     repository_check_failed_count = Project.last_repository_check_failed.count
     return if repository_check_failed_count == 0
 
-    RepositoryCheckMailer.notify(repository_check_failed_count).deliver_now
+    # rubocop: disable CodeReuse/ActiveRecord -- simple system-context lookup, not worth extracting to a finder
+    recipients = User.admins.active.pluck(:email)
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    recipients.each do |recipient|
+      RepositoryCheckMailer.notify(repository_check_failed_count, recipient).deliver_now
+
+    # These are permanent recipient errors and won't be corrected even if Sidekiq retries
+    rescue Net::SMTPFatalError, Net::SMTPSyntaxError => e
+      logger.info(
+        structured_payload(message: 'Failed to send repository check notification', recipient: recipient,
+          error_message: e.message)
+      )
+    end
   end
 end

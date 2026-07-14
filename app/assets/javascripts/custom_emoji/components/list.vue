@@ -38,6 +38,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input'],
   computed: {
     primaryAction() {
       if (!this.userPermissions.createCustomEmoji) return undefined;

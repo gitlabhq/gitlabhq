@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::SecureFiles::P12 do
+RSpec.describe Gitlab::Ci::SecureFiles::P12, feature_category: :mobile_devops do
   context 'when the supplied certificate cannot be parsed' do
     let(:invalid_certificate) { described_class.new('xyzabc') }
 

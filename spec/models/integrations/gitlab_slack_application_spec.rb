@@ -35,7 +35,7 @@ RSpec.describe Integrations::GitlabSlackApplication, feature_category: :integrat
   end
 
   describe '#execute' do
-    let_it_be(:user, freeze: false) { build_stubbed(:user) }
+    let_it_be(:user) { build_stubbed(:user) }
 
     let(:slack_integration) { build(:slack_integration) }
     let(:data) { Gitlab::DataBuilder::Push.build_sample(integration.project, user) }

@@ -14,7 +14,7 @@ title: Group labels API
 
 {{< history >}}
 
-- `archived` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4233) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `labels_archive`.
+- `archived` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4233) in GitLab 18.3 [with a feature flag](../administration/feature_flags/_index.md) named `labels_archive`.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556700) in GitLab 18.10. Feature flag `labels_archive` removed.
 
 {{< /history >}}

@@ -100,6 +100,8 @@ module Gitlab
           @jobs = {}
         end
 
+        alias_method :variables_with_prefill_data, :root_variables_with_prefill_data
+
         private
 
         def has_nested_key?(hash, *keys)

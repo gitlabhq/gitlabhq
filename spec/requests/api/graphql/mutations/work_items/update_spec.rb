@@ -239,7 +239,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
       let(:add_label_ids) { [] }
       let(:remove_label_ids) { [] }
-      let_it_be(:group_work_item, freeze: false) { create(:work_item, :task, :group_level, namespace: group) }
+      let_it_be_with_reload(:group_work_item) { create(:work_item, :task, :group_level, namespace: group) }
 
       before_all do
         work_item.update!(labels: [existing_label])
@@ -391,7 +391,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
 
       context 'when the work item type does not support labels widget' do
-        let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project) }
+        let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
         let(:input) { { 'descriptionWidget' => { 'description' => "Updating labels.\n/labels ~\"#{label1.name}\"" } } }
 
@@ -509,7 +509,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         end
 
         context 'when the work item type does not support start and due date widget' do
-          let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project) }
+          let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
           let(:input) { { 'descriptionWidget' => { 'description' => "Updating due date.\n/due today" } } }
 
@@ -1033,13 +1033,13 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         end
 
         context 'when changing work item type' do
-          let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project) }
+          let_it_be(:work_item) { create(:work_item, :task, project: project) }
           let(:description) { "/type issue" }
 
           let(:input) { { 'descriptionWidget' => { 'description' => description } } }
 
           context 'with multiple commands' do
-            let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project) }
+            let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
             let(:description) { "Updating work item\n/type issue\n/due tomorrow\n/title Foo" }
 
@@ -1063,7 +1063,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           end
 
           context 'when conversion is not permitted' do
-            let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project) }
+            let_it_be(:work_item) { create(:work_item, :task, project: project) }
             let_it_be(:issue) { create(:work_item, project: project) }
             let_it_be(:link) { create(:parent_link, work_item_parent: issue, work_item: work_item) }
 
@@ -1116,7 +1116,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
 
       context 'when the work item type does not support the assignees widget' do
-        let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project) }
+        let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
         let(:input) do
           { 'descriptionWidget' => { 'description' => "Updating assignee.\n/assign @#{developer.username}" } }
@@ -1931,7 +1931,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
       context 'when the work item type does not support time tracking widget' do
         context 'with quick action' do
-          let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project) }
+          let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
           let(:spent_at) { Date.current }
           let(:input) { { 'descriptionWidget' => { 'description' => "some description\n\n/estimate 12h\n/spend 2h" } } }
@@ -2050,8 +2050,8 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     end
 
     context 'when unsupported widget input is sent' do
-      let_it_be(:issue_type, freeze: false) { build(:work_item_system_defined_type, :issue) }
-      let_it_be(:work_item, freeze: false) { create(:work_item, work_item_type: issue_type, project: project) }
+      let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
+      let_it_be(:work_item) { create(:work_item, work_item_type: issue_type, project: project) }
 
       let(:input) do
         {
@@ -2071,6 +2071,71 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
       it_behaves_like 'a mutation that returns top-level errors',
         errors: ["Following widget keys are not supported by Issue type: [:assignees_widget]"]
+    end
+
+    context 'when reordering the work item', :aggregate_failures do
+      let_it_be_with_reload(:sibling1) { create(:work_item, :issue, project: project, relative_position: 10) }
+      let_it_be_with_reload(:sibling2) { create(:work_item, :issue, project: project, relative_position: 20) }
+      let_it_be_with_reload(:mutation_work_item) do
+        create(:work_item, :issue, project: project, relative_position: 30)
+      end
+
+      context 'when moving it before another item' do
+        let(:input) { { 'moveBeforeId' => sibling1.to_gid.to_s } }
+
+        it 'positions the work item after the given item' do
+          expect { post_graphql_mutation(mutation, current_user: current_user) }
+            .to change { mutation_work_item.reload.relative_position }.to(be > sibling1.relative_position)
+
+          expect(mutation_response['errors']).to be_blank
+        end
+      end
+
+      context 'when moving it after another item' do
+        let(:input) { { 'moveAfterId' => sibling2.to_gid.to_s } }
+
+        it 'positions the work item before the given item' do
+          expect { post_graphql_mutation(mutation, current_user: current_user) }
+            .to change { mutation_work_item.reload.relative_position }.to(be < sibling2.relative_position)
+
+          expect(mutation_response['errors']).to be_blank
+        end
+      end
+
+      context 'when reordering alongside a regular attribute update' do
+        let(:input) { { 'title' => 'updated title', 'moveAfterId' => sibling2.to_gid.to_s } }
+
+        it 'applies both the reorder and the attribute update' do
+          expect { post_graphql_mutation(mutation, current_user: current_user) }
+            .to change { mutation_work_item.reload.relative_position }.to(be < sibling2.relative_position)
+            .and change { mutation_work_item.title }.to('updated title')
+
+          expect(mutation_response['errors']).to be_blank
+        end
+      end
+
+      context 'when neither move id is given' do
+        let(:input) { { 'title' => 'updated title' } }
+
+        it 'does not change the relative position' do
+          expect { post_graphql_mutation(mutation, current_user: current_user) }
+            .to not_change { mutation_work_item.reload.relative_position }
+
+          expect(mutation_response['errors']).to be_blank
+        end
+      end
+
+      context 'when the user does not have permission to update the work item' do
+        let(:current_user) { guest }
+        let(:input) { { 'moveBeforeId' => sibling1.to_gid.to_s } }
+
+        it_behaves_like 'a mutation that returns a top-level access error'
+
+        it 'does not change the relative position' do
+          expect { post_graphql_mutation(mutation, current_user: current_user) }
+            .to not_change { mutation_work_item.reload.relative_position }
+        end
+      end
     end
   end
 end

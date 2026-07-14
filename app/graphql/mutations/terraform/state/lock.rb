@@ -6,7 +6,7 @@ module Mutations
       class Lock < Base
         graphql_name 'TerraformStateLock'
 
-        authorize_granular_token permissions: :lock_terraform_state, boundary_argument: :id,
+        authorize_granular_token permissions: :lock_terraform_state, boundary_argument: :id, boundary: :project,
           boundary_type: :project
 
         def resolve(id:)

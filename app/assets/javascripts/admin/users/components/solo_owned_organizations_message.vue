@@ -4,6 +4,7 @@ import { n__ } from '~/locale';
 import { SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT } from '../constants';
 
 export default {
+  name: 'SoloOwnedOrganizationsMessage',
   components: { GlSprintf, GlLink },
   props: {
     organizations: {

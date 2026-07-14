@@ -19,13 +19,14 @@ module Banzai
   module Filter
     class IframeLinkFilter < PlayableLinkFilter
       extend ::Gitlab::Utils::Override
+      include Concerns::ContextAccessors
       include ::Gitlab::Utils::StrongMemoize
 
       def call
         return doc unless Gitlab::CurrentSettings.iframe_rendering_enabled?
 
-        return doc unless context[:project]&.allow_iframes_in_markdown_feature_flag_enabled? ||
-          context[:group]&.allow_iframes_in_markdown_feature_flag_enabled?
+        return doc unless project&.allow_iframes_in_markdown_feature_flag_enabled? ||
+          group&.allow_iframes_in_markdown_feature_flag_enabled?
 
         transform_urls!
 

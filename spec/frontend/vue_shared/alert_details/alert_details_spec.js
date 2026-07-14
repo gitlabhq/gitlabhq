@@ -2,6 +2,8 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -17,14 +19,15 @@ import createIssueMutation from '~/vue_shared/alert_details/graphql/mutations/al
 import alertQuery from '~/vue_shared/alert_details/graphql/queries/alert_sidebar_details.query.graphql';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 import DetailLayout from '~/vue_shared/components/detail_layout.vue';
+import { useMetricImages } from '~/vue_shared/components/metric_images/store';
 import MetricImagesTab from '~/vue_shared/components/metric_images/metric_images_tab.vue';
-import createStore from '~/vue_shared/components/metric_images/store/';
-import service from '~/vue_shared/alert_details/service';
 import mockAlerts from './mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];
 const environmentName = 'Production';
 const environmentPath = '/fake/path';
+
+Vue.use(PiniaVuePlugin);
 
 jest.mock('~/vue_shared/alert_details/service');
 
@@ -80,6 +83,10 @@ describe('AlertDetails', () => {
     stubs = {},
     handlers = defaultHandlers,
   } = {}) {
+    const pinia = createTestingPinia();
+    const metricImagesStore = useMetricImages();
+    metricImagesStore.fetchImages.mockResolvedValue();
+
     wrapper = extendedWrapper(
       mountMethod(AlertDetails, {
         apolloProvider: createMockApolloProvider(handlers),
@@ -112,7 +119,7 @@ describe('AlertDetails', () => {
           }),
           ...stubs,
         },
-        store: createStore({}, service),
+        pinia,
       }),
     );
   }

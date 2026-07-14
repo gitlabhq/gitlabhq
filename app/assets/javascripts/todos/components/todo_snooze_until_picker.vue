@@ -10,6 +10,7 @@ import { INSTRUMENT_TODO_ITEM_CLICK } from '~/todos/constants';
 import SnoozeTodoModal from './snooze_todo_modal.vue';
 
 export default {
+  name: 'TodoSnoozeUntilPicker',
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,

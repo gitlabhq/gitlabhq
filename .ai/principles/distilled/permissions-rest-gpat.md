@@ -1,6 +1,6 @@
 ---
-source_checksum: 4dd2031b74a69933
-distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
+source_checksum: 2d3fc0da7ad3e90f
+distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -14,6 +14,7 @@ distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 
 - Generate raw permission definition files using the `bin/permission` command rather than creating them manually.
 - Place raw permission definition files at exactly `config/authz/permissions/<resource>/<action>.yml`; DO NOT add extra directories between the base path and the filename.
+- When the permission name contains a multi-word action (e.g., `force_delete_ai_catalog_item`), pass `-a <action> -r <resource>` flags to `bin/permission` to override the default split; otherwise the command places the file under the wrong resource directory.
 - Name permissions based on what the endpoint **modifies or returns**, not the route structure (e.g., `DELETE /projects/:id/jobs/:job_id/artifacts` → `delete_job_artifact`).
 - Use a single `read_<resource>` permission for both list and show (GET) operations on the same resource.
 - Include the parent resource in the permission name for nested resources (e.g., `create_pipeline_schedule_variable`).
@@ -71,7 +72,6 @@ For the full picture, see:
 
 - doc/development/permissions/granular_access/rest_api_implementation_guide.md
 - doc/development/permissions/granular_access/job_tokens.md
-- doc/development/permissions/job_tokens.md
 - doc/development/permissions/granular_access/permission_definitions.md
 - doc/development/permissions/granular_access/assignable_permissions.md
 

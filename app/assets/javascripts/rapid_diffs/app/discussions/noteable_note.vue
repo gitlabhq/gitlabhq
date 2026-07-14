@@ -37,6 +37,11 @@ export default {
       type: Object,
     },
   },
+  provide() {
+    return {
+      reportAbusePath: this.endpoints.reportAbuse,
+    };
+  },
   props: {
     note: {
       type: Object,
@@ -82,8 +87,13 @@ export default {
       required: false,
       default: false,
     },
+    isFirstNote: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
-  emits: ['cancelEditing', 'noteEdited', 'resolve', 'startEditing', 'startReplying'],
+  emits: ['cancel-editing', 'noteEdited', 'resolve', 'start-editing', 'startReplying'],
   data() {
     return {
       isDeleting: false,
@@ -121,6 +131,9 @@ export default {
       return this.note.resolved_by_push
         ? __('Automatically resolved %{timeago} by %{author}')
         : __('Resolved %{timeago} by %{author}');
+    },
+    isAmazonQCodeReview() {
+      return this.author.username === 'amazon-q';
     },
   },
   watch: {
@@ -164,7 +177,7 @@ export default {
 
       try {
         await this.store.saveNote(this.note, noteText);
-        this.$emit('cancelEditing');
+        this.$emit('cancel-editing');
       } catch (error) {
         createAlert({
           message: updateNoteErrorMessage(error),
@@ -188,7 +201,7 @@ export default {
         });
         if (!confirmed) return;
       }
-      this.$emit('cancelEditing');
+      this.$emit('cancel-editing');
     }),
     async toggleAward(name) {
       try {
@@ -267,6 +280,8 @@ export default {
           <note-actions
             class="gl-pt-1"
             :author-id="authorId"
+            :note-id="note.id"
+            :is-amazon-q-code-review="isAmazonQCodeReview"
             :note-url="note.noteable_note_url"
             :access-level="note.human_access"
             :is-contributor="note.is_contributor"
@@ -283,7 +298,7 @@ export default {
             :is-resolving="isResolving"
             @resolve="$emit('resolve')"
             @delete="onDelete"
-            @startEditing="$emit('startEditing')"
+            @start-editing="$emit('start-editing')"
             @startReplying="$emit('startReplying')"
             @award="toggleAward"
           />
@@ -313,7 +328,8 @@ export default {
             :restore-from-autosave="restoreFromAutosave"
             :save-note="saveNote"
             :save-note-error-messages="$options.UPDATE_COMMENT_FORM"
-            @cancelEditing="onCancelEditing"
+            :is-first-note="isFirstNote"
+            @cancel-editing="onCancelEditing"
             @input="$emit('noteEdited', $event)"
             @award="toggleAward"
           />

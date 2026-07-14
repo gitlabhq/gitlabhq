@@ -5,6 +5,7 @@ import { PERCENT_ROLLOUT_GROUP_ID } from '../../constants';
 import ParameterFormGroup from './parameter_form_group.vue';
 
 export default {
+  name: 'PercentRollout',
   components: {
     GlFormInput,
     ParameterFormGroup,
@@ -15,6 +16,7 @@ export default {
       type: Object,
     },
   },
+  emits: ['change'],
   i18n: {
     rolloutPercentageDescription: __('Enter an integer number between 0 and 100'),
     rolloutPercentageInvalid: s__(

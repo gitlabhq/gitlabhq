@@ -94,7 +94,8 @@ module Types
         description: 'Indicates the job can be played.'
       field :previous_stage_jobs, Types::Ci::JobType.connection_type,
         null: true,
-        description: 'Jobs from the previous stage.'
+        description: 'Jobs from the previous stage.',
+        deprecated: { reason: 'No longer required. Previous stage jobs are now computed on the client side', milestone: '19.2' }
       field :previous_stage_jobs_or_needs, Types::Ci::JobNeedUnion.connection_type,
         null: true,
         description: 'Jobs that must complete before the job runs. Returns `BuildNeed`, ' \
@@ -146,7 +147,8 @@ module Types
         end
 
       field :inputs, [Types::Ci::Inputs::FieldType], null: true,
-        description: 'Input values that were used when the job was created or retried. A value is only present in the field if it differs from the default value in the input configuration. This field can only be resolved for one job in any single request.' do
+        description: 'Input values that were used when the job was created or retried. A value is only present in the field if it differs from the default value in the input configuration. This field can only be resolved for one job in any single request.',
+        authorize: :read_job_inputs do
           extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
         end
 

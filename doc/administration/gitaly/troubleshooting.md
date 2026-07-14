@@ -526,7 +526,7 @@ go tool trace heap.bin
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5700) in GitLab 16.9 [with a flag](../feature_flags/_index.md) named `log_git_traces`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5700) in GitLab 16.9 [with a feature flag](../feature_flags/_index.md) named `log_git_traces`. Disabled by default.
 
 {{< /history >}}
 

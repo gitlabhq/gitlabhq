@@ -174,6 +174,7 @@ export const MEMBERS_TAB_TYPES = Object.freeze({
   invite: 'invite',
   accessRequest: 'accessRequest',
   placeholder: 'placeholder',
+  directMembers: 'directMembers',
 });
 
 // `app/models/members/group_member.rb`
@@ -187,6 +188,7 @@ export const TAB_QUERY_PARAM_VALUES = Object.freeze({
   invite: 'invited',
   accessRequest: 'access_requests',
   placeholder: 'placeholders',
+  directMembers: 'direct_members',
 });
 
 /**
@@ -213,6 +215,11 @@ export const REMOVE_GROUP_LINK_MODAL_ID = 'remove-group-link-modal-id';
 export const SORT_QUERY_PARAM_NAME = 'sort';
 export const ACTIVE_TAB_QUERY_PARAM_NAME = 'tab';
 export const ACTIVE_SUBTAB_QUERY_PARAM = 'subtab';
+
+// The Direct members tab must always include this page param so the backend
+// loads direct members via the dedicated finder (correct, complete pagination)
+// instead of deriving them in-memory from the combined members page.
+export const DIRECT_MEMBERS_PAGE_QUERY_PARAM_NAME = 'direct_members_page';
 
 export const MEMBER_ACCESS_LEVEL_PROPERTY_NAME = 'access_level';
 

@@ -1,0 +1,10 @@
+---
+name: require_sha_for_merge_updated
+description: Added when require_sha_for_merge is changed.
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/599954
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236732
+feature_category: code_review_workflow
+milestone: '19.2'
+saved_to_database: true
+streamed: true
+scope: [Group]

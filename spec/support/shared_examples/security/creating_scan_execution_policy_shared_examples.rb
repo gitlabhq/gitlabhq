@@ -18,12 +18,7 @@ RSpec.shared_examples 'creating scan execution policy with valid properties' do
     fill_in _('Name'), with: 'Run secret detection scan on every branch'
     click_button _('Configure with a merge request')
     expect(page).to have_current_path(
-      organization_namespace_project_merge_request_path(
-        organization_path: policy_management_project.organization.path,
-        namespace_id: policy_management_project.namespace.to_param,
-        project_id: policy_management_project.to_param,
-        id: 1
-      )
+      project_merge_request_path(policy_management_project, 1)
     )
   end
 end

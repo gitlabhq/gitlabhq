@@ -32,6 +32,7 @@ const MSG_CANCEL = __('Cancel');
  * Please see https://gitlab.com/gitlab-org/gitlab/-/issues/349441
  */
 export default {
+  name: 'CrmForm',
   components: {
     GlAlert,
     GlButton,

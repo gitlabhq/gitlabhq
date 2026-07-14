@@ -1,6 +1,7 @@
 <script>
 import {
   GlBadge,
+  GlButtonGroup,
   GlDisclosureDropdown,
   GlLink,
   GlSprintf,
@@ -23,6 +24,7 @@ import DeployBoardWrapper from './deploy_board_wrapper.vue';
 export default {
   name: 'EnvironmentItem',
   components: {
+    GlButtonGroup,
     GlDisclosureDropdown,
     GlBadge,
     GlLink,
@@ -227,7 +229,7 @@ export default {
         >{{ $options.i18n.actions }}</strong
       >
       <div class="gl-ml-auto">
-        <div class="btn-group" role="group">
+        <gl-button-group>
           <external-url
             v-if="externalUrl"
             :external-url="externalUrl"
@@ -288,7 +290,7 @@ export default {
               data-track-label="environment_delete"
             />
           </gl-disclosure-dropdown>
-        </div>
+        </gl-button-group>
         <p
           v-if="canShowAutoStopDate"
           class="gl-mb-0 gl-mt-3 gl-text-sm gl-text-subtle"

@@ -131,7 +131,8 @@ module Users
       work_items_onboarding_modal: 127,
       duo_panel_empty_state_auto_expanded: 128, # EE-only
       inline_blame_popover: 129,
-      security_manager_role: 130
+      security_manager_role: 130,
+      secrets_manager_nav_badge: 131 # EE-only
     }
 
     validates :feature_name,

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Packages
   DuplicatePackageError = Class.new(StandardError)
   PackageProtectedError = Class.new(StandardError)

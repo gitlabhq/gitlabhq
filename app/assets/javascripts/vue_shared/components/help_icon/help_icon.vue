@@ -2,6 +2,7 @@
 import { GlIcon } from '@gitlab/ui';
 
 export default {
+  name: 'HelpIcon',
   components: {
     GlIcon,
   },

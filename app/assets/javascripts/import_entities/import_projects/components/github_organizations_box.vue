@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 
 export default {
+  name: 'GithubOrganizationsBox',
   ORGANIZATIONS_PER_PAGE: 25, // Same value as PAGE_LENGTH in `app/controllers/import/github_groups_controller.rb`
   components: {
     GlCollapsibleListbox,

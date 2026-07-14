@@ -1,0 +1,18 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+Gemfile/MissingFeatureCategory:
+  Enabled: false
+
+RSpec/InstanceVariable:
+  Exclude:
+    - spec/**/*.rb
+
+# This is a standalone gem that does not load Rails/ActiveSupport, so the
+# ActiveSupport-only `String#exclude?` is not available; keep `!...include?`.
+Rails/NegateInclude:
+  Enabled: false
+
+# False positive: `@param url` in YARD documentation is not a Lookbook preview.
+Gitlab/Lookbook/NoUrlParamInPreview:
+  Enabled: false

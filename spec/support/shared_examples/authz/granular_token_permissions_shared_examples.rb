@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'authorizing granular token permissions' do |permissions, expected_success_status: :success,
-    context_type: :rest|
+    context_type: :rest, legacy_token_scopes: nil|
   granular_permissions = Array(permissions)
   individual_permission_labels = granular_permissions.map do |permission|
     assignable = Authz::PermissionGroups::Assignable.for_permission(permission).first
@@ -20,7 +20,14 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
       request
 
       expect(response).to have_gitlab_http_status(expected_success_status)
-      expect(graphql_errors).to be_nil if is_graphql
+
+      if is_graphql
+        expect_graphql_errors_to_be_empty
+        expect(graphql_data).to be_present
+        expect(graphql_data.values).to all(be_present)
+
+        expect_graphql_mutation_errors_to_be_empty if respond_to?(:mutation)
+      end
     end
   end
 
@@ -30,9 +37,17 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
 
       if is_graphql
         expect(response).to have_gitlab_http_status(:success)
-        expect(graphql_errors).to include(
-          a_hash_including('message' => satisfy { |m| acceptable_messages.any? { |e| m.include?(e) } })
-        )
+
+        # queries return nil values when unauthorized, mutations raise an error
+        if respond_to?(:mutation)
+          expect(graphql_errors).to include(
+            a_hash_including('message' => satisfy { |m| acceptable_messages.any? { |e| m.include?(e) } })
+          )
+        else
+          expect(graphql_data.values).to all(
+            satisfy { |value| value.nil? || value['nodes'] == [] }
+          )
+        end
       else
         expect(response).to have_gitlab_http_status(:forbidden)
 
@@ -46,7 +61,7 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
   end
 
   context 'when authenticating with a legacy personal access token' do
-    let(:pat) { create(:personal_access_token, :admin_mode, user:) }
+    let(:pat) { create(:personal_access_token, :admin_mode, user: user, scopes: legacy_token_scopes || %w[api]) }
     let(:root_ancestor) { boundary.namespace&.root_ancestor }
 
     it_behaves_like 'granting access'
@@ -56,9 +71,6 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
 
       before do
         skip 'namespace has no top-level group' unless root_ancestor&.group_namespace?
-
-        # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/594556
-        skip 'not applicable for GraphQL' if is_graphql
 
         stub_feature_flags(granular_personal_access_tokens_enforcement_saas: root_ancestor)
 
@@ -120,25 +132,36 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
       it_behaves_like 'denying access'
     end
 
-    context 'when compared to a non-member request' do
-      it 'fine-grained PAT without scope mirrors a non-member request' do
-        unless boundary_object.is_a?(::Project) || boundary_object.is_a?(::Group)
-          skip 'only meaningful on Project/Group boundaries'
+    # A granular PAT reaches a public resource only through the public-access bypass, which mirrors
+    # anonymous access. We compare against a legacy non-member because a true anonymous request 401s
+    # on authenticate! endpoints. That baseline only holds for reads: an authenticated non-member can
+    # write to public resources while the bypass (anonymous) cannot. So we branch on the HTTP verb
+    # rather than the permission name, which keeps this correct for any read permission (read_*,
+    # download_*, use_global_search, ...). Dispatching the scopeless granular token is safe even for
+    # writes: it is denied at the boundary before the endpoint runs, so nothing mutates.
+    if context_type != :graphql
+      context 'when compared to a legacy non-member request' do
+        it 'mirrors the legacy non-member outcome via the public-access bypass' do
+          unless boundary_object.is_a?(::Project) || boundary_object.is_a?(::Group)
+            skip 'only meaningful on Project/Group boundaries'
+          end
+
+          # The public-access bypass only grants access on public resources. On internal or private
+          # resources an authenticated non-member may still read (internal visibility), which the
+          # bypass does not and should not mirror.
+          skip 'public-access bypass only applies to public resources' unless boundary_object.public?
+
+          non_member = create(:user)
+          granular_granted = dispatch_request_as(create(:granular_pat, user: non_member))
+
+          if response.request.get?
+            # Read: the bypass must grant the same access a legacy non-member has.
+            expect(granular_granted).to eq(dispatch_request_as(create(:personal_access_token, user: non_member)))
+          else
+            # Write: the bypass must never grant a mutation; legacy is not dispatched (no side effects).
+            expect(granular_granted).to be(false)
+          end
         end
-
-        skip 'GraphQL bypass parity is covered by per-resolver authorization' if is_graphql
-
-        # Pick a baseline that the bypass should mirror: a logged-in non-member when
-        # all declared permissions are in public_anonymous (an anonymous HTTP probe
-        # is unusable on `authenticate!` endpoints), or anonymous otherwise (the
-        # bypass shouldn't grant permissions outside public_anonymous, and a
-        # legacy non-member would false-positive for writes on public resources).
-        non_member = create(:user)
-        granular_pat = create(:granular_pat, user: non_member)
-        all_anonymous = granular_permissions.all? { |p| ::Users::Anonymous.can?(p, boundary_object) }
-        baseline_pat = create(:personal_access_token, user: non_member) if all_anonymous
-
-        expect(dispatch_request_as(granular_pat)).to eq(dispatch_request_as(baseline_pat))
       end
     end
   end
@@ -170,5 +193,40 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
 end
 
 RSpec.shared_examples 'authorizing granular token permissions for GraphQL' do |permissions|
-  it_behaves_like 'authorizing granular token permissions', permissions, context_type: :graphql
+  # `include_examples` (not `it_behaves_like`) so the inner example group's
+  # default `let` definitions (e.g. `error_boundary_object`) land on this
+  # group and remain overridable from the caller's customization block.
+  include_examples 'authorizing granular token permissions', permissions, context_type: :graphql
+end
+
+RSpec.shared_examples 'authorizing granular token permissions for GraphQL with a skipped child type' do |permissions|
+  context 'when a granular token authorizes the parent type' do
+    let(:assignables) do
+      Array(permissions).map do |permission|
+        ::Authz::PermissionGroups::Assignable.for_permission(permission).min_by(&:name).name
+      end.uniq
+    end
+
+    let(:pat) do
+      create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(boundary_object), permissions: assignables)
+    end
+
+    it 'returns the data of the type that skips granular token authorization', :aggregate_failures do
+      request
+
+      expect(graphql_errors).to be_nil
+      expect(graphql_data_at(*skipped_data_path)).to be_present
+    end
+  end
+
+  context 'when a granular token does not authorize the parent type' do
+    let(:pat) { create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(boundary_object)) }
+
+    it 'does not return the data of the type that skips granular token authorization', :aggregate_failures do
+      request
+
+      expect(graphql_errors).to be_nil
+      expect(graphql_data_at(*skipped_data_path)).to be_nil
+    end
+  end
 end

@@ -81,7 +81,7 @@ module API
               end
 
               desc 'Download the latest version of a module' do
-                detail 'This feature was introduced in GitLab 16.7'
+                detail 'Downloads the latest version of a specified module. This feature was introduced in GitLab 16.7.'
                 success code: 204
                 failure [
                   { code: 401, message: 'Unauthorized' },
@@ -117,7 +117,7 @@ module API
                   use :terraform_get
                 end
                 route_setting :authorization, permissions: :download_terraform_module, boundary_type: :project
-                get format: false do
+                get requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
                   present_package_file
                 end
 

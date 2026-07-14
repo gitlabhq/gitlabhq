@@ -7,7 +7,7 @@ RSpec.describe Resolvers::Repositories::RefCommitResolver, feature_category: :so
 
   subject(:commit) { resolve(described_class, obj: ref) }
 
-  let_it_be(:repository, freeze: false) { create(:project, :repository).repository }
+  let_it_be_with_reload(:repository) { create(:project, :repository).repository }
 
   let(:ref) { repository.find_branch('master') }
 

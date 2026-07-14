@@ -31,6 +31,7 @@ module API
             optional :tags, type: Array, desc: 'Additional metadata for a model version.'
             optional :run_id, type: String, desc: 'Run ID of the candidate to be promoted to a model version'
           end
+          route_setting :authorization, permissions: :create_model_version, boundary_type: :project
           post 'create', urgency: :low do
             result = ::Ml::CreateModelVersionService.new(
               model,
@@ -58,6 +59,7 @@ module API
             requires :name, type: String, desc: 'Model version name'
             requires :version, type: Integer, desc: 'Model version ID'
           end
+          route_setting :authorization, permissions: :read_model_version, boundary_type: :project
           get 'get-download-uri' do
             present params[:version], with: Entities::Ml::Mlflow::GetDownload
           end
@@ -71,6 +73,7 @@ module API
             requires :name, type: String, desc: 'Model version name'
             requires :version, type: String, desc: 'Model version number'
           end
+          route_setting :authorization, permissions: :read_model_version, boundary_type: :project
           get 'get', urgency: :low do
             present find_model_version(user_project, params[:name], params[:version]),
               with: Entities::Ml::Mlflow::ModelVersion, root: :model_version
@@ -90,6 +93,7 @@ module API
             optional :version, type: String, desc: 'Model version number'
             optional :description, type: String, desc: 'Model version description'
           end
+          route_setting :authorization, permissions: :update_model_version, boundary_type: :project
           patch 'update', urgency: :low do
             invalid_parameter! unless params[:name] && params[:version] && params[:description]
             result = ::Ml::ModelVersions::UpdateModelVersionService.new(

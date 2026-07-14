@@ -3,15 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe API::Events, feature_category: :user_profile do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:non_member) { create(:user) }
-  let_it_be(:private_project, freeze: false) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
+  let_it_be_with_reload(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
   let_it_be(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
   let_it_be(:closed_issue_event) { create(:event, :closed, project: private_project, author: user, target: closed_issue, created_at: Date.new(2016, 12, 30)) }
   let_it_be(:closed_issue2) { create(:closed_issue, project: private_project, author: non_member) }
   let_it_be(:closed_issue_event2) { create(:event, :closed, project: private_project, author: non_member, imported_from: :github, target: closed_issue2, created_at: Date.new(2016, 12, 30)) }
 
   describe 'GET /events' do
+    it_behaves_like 'authorizing granular token permissions', :read_event do
+      let(:boundary_object) { :user }
+      let(:request) { get api('/events', personal_access_token: pat) }
+    end
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
         get api('/events')
@@ -63,6 +68,27 @@ RSpec.describe API::Events, feature_category: :user_profile do
       end
     end
 
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'returns users events' do
+        get api('/events?action=closed&target_type=issue&after=2016-12-1&before=2016-12-31',
+          oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+      end
+
+      it 'returns "200" response on head request' do
+        head api('/events?action=closed&target_type=issue&after=2016-12-1&before=2016-12-31',
+          oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     context 'when the requesting token does not have "read_user" or "api" scope' do
       let(:token_without_scopes) { create(:personal_access_token, scopes: ['read_repository'], user: user) }
 
@@ -75,6 +101,21 @@ RSpec.describe API::Events, feature_category: :user_profile do
   end
 
   describe 'GET /users/:id/events' do
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'returns a "403" response' do
+        get api("/users/#{user.id}/events", oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_event do
+      let(:boundary_object) { :user }
+      let(:request) { get api("/users/#{user.id}/events", personal_access_token: pat) }
+    end
+
     context "as a user that cannot see another user" do
       it 'returns a "404" response' do
         allow(Ability).to receive(:allowed?).and_call_original
@@ -123,9 +164,9 @@ RSpec.describe API::Events, feature_category: :user_profile do
       it 'returns the correct import state' do
         get api('/events?action=closed&target_type=issue&after=2016-12-1&before=2016-12-31&scope=all', user)
 
-        expect(json_response[0]['imported']).to eq(true)
+        expect(json_response[0]['imported']).to be(true)
         expect(json_response[0]['imported_from']).to eq('github')
-        expect(json_response[1]['imported']).to eq(false)
+        expect(json_response[1]['imported']).to be(false)
         expect(json_response[1]['imported_from']).to eq('none')
       end
 
@@ -238,6 +279,65 @@ RSpec.describe API::Events, feature_category: :user_profile do
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
+    end
+  end
+
+  describe 'organization filtering' do
+    include StubCurrentOrganization
+
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:other_organization) { create(:organization) }
+
+    let_it_be(:org_user) { create(:user) }
+
+    let_it_be(:org_project) do
+      create(:project, :public, organization: organization, creator: org_user).tap do |project|
+        project.add_developer(org_user)
+      end
+    end
+
+    let_it_be(:other_org_project) do
+      create(:project, :public, organization: other_organization, creator: org_user).tap do |project|
+        project.add_developer(org_user)
+      end
+    end
+
+    let_it_be(:org_event) do
+      create(:event, :created, project: org_project, author: org_user)
+    end
+
+    let_it_be(:other_org_event) do
+      create(:event, :created, project: other_org_project, author: org_user)
+    end
+
+    before do
+      stub_current_organization(organization)
+    end
+
+    describe 'GET /events' do
+      context 'when current organization is set' do
+        it 'returns only events from the current organization' do
+          get api('/events', org_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          event_ids = json_response.pluck('id')
+          expect(event_ids).to include(org_event.id)
+          expect(event_ids).not_to include(other_org_event.id)
+        end
+      end
+    end
+
+    describe 'GET /users/:id/events' do
+      context 'when current organization is set' do
+        it 'returns only events from the current organization' do
+          get api("/users/#{org_user.id}/events", org_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          event_ids = json_response.pluck('id')
+          expect(event_ids).to include(org_event.id)
+          expect(event_ids).not_to include(other_org_event.id)
+        end
+      end
     end
   end
 end

@@ -1,0 +1,9 @@
+---
+name: update_active_context_collection
+description: Grants the ability to update ActiveContext collections
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_active_context_collection

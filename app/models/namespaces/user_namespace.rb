@@ -54,7 +54,7 @@ module Namespaces
     def max_member_access_for_user(user, only_concrete_membership: false)
       return Gitlab::Access::NO_ACCESS unless user
 
-      if !only_concrete_membership && (user.can_admin_all_resources? || user.can_admin_organization?(organization))
+      if !only_concrete_membership && (user.can_admin_all_resources? || user.can_update_organization?(organization))
         return Gitlab::Access::OWNER
       end
 

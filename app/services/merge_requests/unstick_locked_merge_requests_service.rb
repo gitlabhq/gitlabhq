@@ -147,6 +147,21 @@ module MergeRequests
           next
         end
 
+        # Some MRs can never be reopened because doing so now fails a structural
+        # validation (e.g. a newer opened MR occupies the same source branch, or
+        # the fork relationship is gone). Without recovery they stay locked
+        # forever (#600038), so we force them closed instead of only logging.
+        if merge_request.force_unlock_and_close
+          merge_request.remove_from_locked_set
+
+          log_info(
+            message: 'Force-closed stuck locked merge request',
+            merge_request_id: merge_request.id,
+            merge_jid: merge_jid
+          )
+          next
+        end
+
         log_error(
           message: 'Failed to unlock locked merge request',
           merge_request_id: merge_request.id,

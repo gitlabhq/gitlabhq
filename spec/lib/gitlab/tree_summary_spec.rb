@@ -9,7 +9,7 @@ RSpec.describe Gitlab::TreeSummary, feature_category: :source_code_management do
   let(:project) { create(:project, :empty_repo) }
   let(:repo) { project.repository }
   let(:commit) { repo.head_commit }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   let(:path) { nil }
   let(:offset) { nil }
@@ -288,6 +288,24 @@ RSpec.describe Gitlab::TreeSummary, feature_category: :source_code_management do
       end
     end
 
+    context 'when path contains replacement characters from non-UTF-8 encoding' do
+      let(:encoded_path) { "invalid-\u{FFFD}\u{FFFD}.txt" }
+
+      before do
+        allow(project.repository).to receive(:list_last_commits_for_tree).and_return(
+          { encoded_path => commit }
+        )
+      end
+
+      it 'produces valid JSON without raising', :aggregate_failures do
+        result = summary.summarize
+
+        expect(result).not_to be_empty
+        expect(result.first[:file_name]).to be_valid_encoding
+        expect { Gitlab::Json.dump(result.as_json) }.not_to raise_error
+      end
+    end
+
     context 'rendering commits' do
       it 'does not perform N + 1 request' do
         summary
@@ -300,8 +318,8 @@ RSpec.describe Gitlab::TreeSummary, feature_category: :source_code_management do
   end
 
   describe 'References in commit messages' do
-    let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
-    let_it_be(:issue, freeze: false) { create(:issue, project: project) }
+    let_it_be_with_reload(:project) { create(:project, :empty_repo) }
+    let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
     let(:entries) { summary.summarize }
     let(:entry) { entries.find { |entry| entry[:file_name] == 'issue.txt' } }

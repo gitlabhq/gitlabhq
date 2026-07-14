@@ -511,34 +511,6 @@ RSpec.describe 'File blob', :js, feature_category: :source_code_management do
   end
 
   context 'files with auxiliary viewers' do
-    describe '.gitlab-ci.yml' do
-      before do
-        project.add_maintainer(project.creator)
-
-        Files::CreateService.new(
-          project,
-          project.creator,
-          start_branch: 'master',
-          branch_name: 'master',
-          commit_message: "Add .gitlab-ci.yml",
-          file_path: '.gitlab-ci.yml',
-          file_content: File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
-        ).execute
-
-        visit_blob('.gitlab-ci.yml')
-      end
-
-      it 'displays an auxiliary viewer' do
-        aggregate_failures do
-          # shows that configuration is valid
-          expect(page).to have_content('This GitLab CI configuration is valid.')
-
-          # shows a learn more link
-          expect(page).to have_link('Learn more')
-        end
-      end
-    end
-
     describe '.gitlab/route-map.yml' do
       before do
         project.add_maintainer(project.creator)

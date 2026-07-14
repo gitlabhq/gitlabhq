@@ -7,6 +7,13 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
       include Gitlab::ClassAttributes
 
+      UnknownCloudEventTypeError = Class.new(StandardError)
+      UnsupportedPayloadError = Class.new(StandardError)
+
+      # Registered at class-load time (single-threaded boot) and only read at
+      # runtime, so a plain Hash is safe without synchronization.
+      REGISTRY = {} # rubocop:disable Style/MutableConstant -- mutated by .register
+
       # CloudEvents v1.0 attributes that are not required context attributes
       # (id, source, spec_version, type). The CloudEvents spec calls these
       # "Optional & Extension Attributes"; in the protobuf representation
@@ -55,6 +62,79 @@ module Gitlab
               data: event_data
             }
           )
+        end
+
+        def register(type, klass)
+          raise ArgumentError, "type must be a String, got #{type.class}" unless type.is_a?(String)
+
+          unless klass.is_a?(Class) && klass < Gitlab::EventStore::CloudEvent
+            raise ArgumentError, "klass must be a Gitlab::EventStore::CloudEvent subclass, got #{klass.inspect}"
+          end
+
+          REGISTRY[type] = klass
+        end
+
+        def lookup(type)
+          REGISTRY[type]
+        end
+
+        # Inverse of #to_proto. The matching subclass must already be registered,
+        # which means production callers must reference the event classes before
+        # calling from_proto (Rails autoloading won't trigger registration on its own).
+        #
+        # An incomplete proto (e.g. missing a required attribute) surfaces as
+        # Gitlab::EventStore::InvalidEvent from the constructor's schema validation.
+        def from_proto(proto)
+          klass = lookup(proto.type)
+
+          unless klass
+            raise UnknownCloudEventTypeError, "no registered class for CloudEvent type: #{proto.type.inspect}"
+          end
+
+          klass.new(data: build_data(proto))
+        end
+
+        private
+
+        def build_data(proto)
+          # Merge attributes first so the explicit spec fields win: a malformed
+          # proto must not override them via its attributes map.
+          unwrap_attributes(proto.attributes).merge(
+            id: proto.id,
+            source: proto.source,
+            specversion: proto.spec_version,
+            type: proto.type,
+            data: decode_payload(proto)
+          )
+        end
+
+        def unwrap_attributes(attributes)
+          # Iterate the Map directly; #to_h would recursively convert each value
+          # into a Hash, losing the #attr oneof accessor used below.
+          attributes.each_with_object({}) do |(key, value), unwrapped|
+            unwrapped[key.to_sym] = unwrap_attribute_value(value)
+          end
+        end
+
+        def unwrap_attribute_value(attribute_value)
+          # Only the variants #to_proto produces are supported.
+          case attribute_value.attr
+          when :ce_string then attribute_value.ce_string
+          when :ce_integer then attribute_value.ce_integer
+          else
+            raise UnsupportedPayloadError, "unsupported attribute variant: #{attribute_value.attr.inspect}"
+          end
+        end
+
+        def decode_payload(proto)
+          case proto.data
+          when :text_data
+            proto.text_data.present? ? ::Gitlab::Json.safe_parse(proto.text_data) : {}
+          when :binary_data, :proto_data
+            raise UnsupportedPayloadError, "only text_data is supported in v1, got #{proto.data}"
+          else
+            {} # payload oneof unset: a legitimately empty event
+          end
         end
       end
 

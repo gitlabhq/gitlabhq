@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::GroupsController, :routing, feature_category: :organization do
-  let_it_be(:organization, freeze: false) { build(:organization) }
-  let_it_be(:project, freeze: false) { create(:project, organization: organization) }
+  let_it_be_with_reload(:organization) { build(:organization) }
+  let_it_be_with_reload(:project) { create(:project, organization: organization) }
 
   specify 'to projects#edit' do
     expect(get("/o/#{organization.path}/-/projects/#{project.path_with_namespace}/edit"))

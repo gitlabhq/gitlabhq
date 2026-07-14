@@ -274,14 +274,10 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
     end
 
     context 'when request exceeds the rate limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
-      before do
-        stub_application_setting(notes_create_limit: 1)
-        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-          allow(strategy).to receive(:increment).and_return(2)
-        end
-      end
-
       it 'prevents user from creating more notes' do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+          .with(:notes_create, scope: anything, users_allowlist: anything).and_return(true)
+
         subject
 
         expect(response).to have_gitlab_http_status(:too_many_requests)

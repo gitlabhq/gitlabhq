@@ -7,6 +7,12 @@ module Types
     accepts ::Board
     authorize :read_issue_board
 
+    authorize_granular_token permissions: :read_issue_board,
+      boundaries: [
+        { boundary: :resource_parent, boundary_type: :project },
+        { boundary: :resource_parent, boundary_type: :group }
+      ]
+
     present_using BoardPresenter
 
     field :id, type: GraphQL::Types::ID, null: false,

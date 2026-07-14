@@ -11,6 +11,4 @@ weight: 50
 ---
 
 
-<!-- categories: System Access -->
-
 By default, OAuth access tokens in GitLab expire after two hours. In GitLab 19.1, instance administrators on GitLab Self-Managed and GitLab Dedicated can set a custom lifetime for new OAuth access tokens. You can configure any value from 300 to 7200 seconds. This helps you enforce shorter-lived tokens for security-sensitive OAuth integrations, including MCP clients, without changing the behavior of existing tokens.

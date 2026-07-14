@@ -1,0 +1,11 @@
+fragment PipelineAggregateMetricItem on PipelineAnalytics {
+  aggregate {
+    pipelineCount: count @skip(if: $skipPipelineCount)
+    pipelineSuccessCount: count(status: SUCCESS) @skip(if: $skipPipelineSuccessRate)
+    pipelineFailedCount: count(status: FAILED) @skip(if: $skipPipelineFailureRate)
+    pipelineOtherCount: count(status: OTHER) @skip(if: $skipPipelineOtherRate)
+    durationStatistics @skip(if: $skipPipelineMedian) {
+      pipelineDurationMedian: p50
+    }
+  }
+}

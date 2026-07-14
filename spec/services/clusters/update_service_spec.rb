@@ -15,7 +15,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
         let(:params) { { enabled: true } }
 
         it 'enables cluster' do
-          is_expected.to eq(true)
+          is_expected.to be(true)
           expect(cluster.enabled).to be_truthy
         end
       end
@@ -24,7 +24,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
         let(:params) { { enabled: false } }
 
         it 'disables cluster' do
-          is_expected.to eq(true)
+          is_expected.to be(true)
           expect(cluster.enabled).to be_falsy
         end
       end
@@ -43,7 +43,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
         end
 
         it 'updates namespace' do
-          is_expected.to eq(true)
+          is_expected.to be(true)
           expect(cluster.platform.namespace).to eq('custom-namespace')
         end
       end
@@ -59,7 +59,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
 
         it 'does not update the token' do
           current_token = cluster.platform.token
-          is_expected.to eq(true)
+          is_expected.to be(true)
           cluster.platform.reload
 
           expect(cluster.platform.token).to eq(current_token)
@@ -76,7 +76,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
         end
 
         it 'updates the token' do
-          is_expected.to eq(true)
+          is_expected.to be(true)
           expect(cluster.platform.token).to eq('new secret token')
         end
       end
@@ -92,7 +92,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
       end
 
       it 'returns false' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
         expect(cluster.errors[:"platform_kubernetes.namespace"]).to be_present
       end
     end
@@ -107,7 +107,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
       end
 
       it 'does not change cluster name' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
 
         cluster.reload
         expect(cluster.name).to eq('test-cluster')
@@ -117,7 +117,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
         let(:cluster) { create(:cluster, :providing_by_gcp) }
 
         it 'rejects changes' do
-          is_expected.to eq(false)
+          is_expected.to be(false)
 
           expect(cluster.errors.full_messages).to include('Cannot modify provider during creation')
         end
@@ -131,7 +131,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
         end
 
         it 'does not update management_project_id' do
-          is_expected.to eq(false)
+          is_expected.to be(false)
 
           expect(cluster.errors[:management_project_id]).to include('Project does not exist or you don\'t have permission to perform this action')
 
@@ -151,7 +151,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
           end
 
           it 'updates management_project_id' do
-            is_expected.to eq(true)
+            is_expected.to be(true)
 
             expect(cluster.management_project).to eq(management_project)
           end
@@ -163,7 +163,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
           end
 
           it 'does not update management_project_id' do
-            is_expected.to eq(false)
+            is_expected.to be(false)
 
             expect(cluster.errors[:management_project_id]).to include('Project does not exist or you don\'t have permission to perform this action')
 
@@ -182,7 +182,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
           end
 
           it 'unsets management_project_id' do
-            is_expected.to eq(true)
+            is_expected.to be(true)
 
             cluster.reload
             expect(cluster.management_project_id).to be_nil
@@ -205,7 +205,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
           end
 
           it 'does not update management_project_id' do
-            is_expected.to eq(false)
+            is_expected.to be(false)
 
             expect(cluster.errors[:management_project_id]).to include('Project does not exist or you don\'t have permission to perform this action')
 
@@ -232,7 +232,7 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
           end
 
           it 'does not update management_project_id' do
-            is_expected.to eq(false)
+            is_expected.to be(false)
 
             expect(cluster.errors[:management_project_id]).to include('Project does not exist or you don\'t have permission to perform this action')
 

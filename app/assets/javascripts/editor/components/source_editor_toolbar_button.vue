@@ -18,6 +18,7 @@ export default {
       },
     },
   },
+  emits: ['click'],
   computed: {
     icon() {
       return this.button.selected ? this.button.selectedIcon || this.button.icon : this.button.icon;

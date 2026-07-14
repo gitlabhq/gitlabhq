@@ -22,14 +22,14 @@ RSpec.describe AlertManagement::MetricImages::UploadService, feature_category: :
     shared_examples 'uploads the metric' do
       it 'uploads the metric and returns a success' do
         expect { subject }.to change { AlertManagement::MetricImage.count }.by(1)
-        expect(subject.success?).to eq(true)
+        expect(subject.success?).to be(true)
         expect(subject.payload).to match({ metric: instance_of(AlertManagement::MetricImage), alert: alert })
       end
     end
 
     shared_examples 'no metric saved, an error given' do |message|
       it 'returns an error and does not upload', :aggregate_failures do
-        expect(subject.success?).to eq(false)
+        expect(subject.success?).to be(false)
         expect(subject.message).to match(a_string_matching(message))
         expect(AlertManagement::MetricImage.count).to eq(0)
       end

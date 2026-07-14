@@ -3,8 +3,8 @@
 require 'spec_helper'
 require 'lib/gitlab/ci/badge/shared/metadata'
 
-RSpec.describe Gitlab::Ci::Badge::Pipeline::Metadata do
-  let(:badge) { double(project: create(:project), ref: 'feature') }
+RSpec.describe Gitlab::Ci::Badge::Pipeline::Metadata, feature_category: :pipeline_reports do
+  let(:badge) { double(project: build_stubbed(:project), ref: 'feature') }
   let(:metadata) { described_class.new(badge) }
 
   it_behaves_like 'badge metadata'

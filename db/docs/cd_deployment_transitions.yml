@@ -1,0 +1,14 @@
+---
+table_name: cd_deployment_transitions
+classes:
+- Cd::DeploymentTransition
+feature_categories:
+- continuous_delivery
+description: Append-only audit journal of deployment state changes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240649
+milestone: '19.2'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: todo
+table_size: small

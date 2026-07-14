@@ -383,5 +383,29 @@ module Gitlab
         raise ArgumentError, "extra_timestamp_bits must be in 0..12, got: #{extra_timestamp_bits}"
       end
     end
+
+    # Number of 100-ns intervals between the UUID (Gregorian) epoch 1582-10-15
+    # and the Unix epoch, used to decode the timestamp embedded in a v6 UUID.
+    UUID_GREGORIAN_OFFSET_100NS = 0x01B21DD213814000
+
+    # Extracts the embedded creation time from a time-based UUID. The companion
+    # to .uuid_v7. v6 and v7 lay the timestamp out differently, so both are
+    # handled. Returns nil for UUIDs that don't embed a time (e.g. v4) and for
+    # malformed input, leaving the fallback policy to the caller.
+    #
+    # @return [Time, nil]
+    def time_from_uuid(uuid)
+      int = Integer(uuid.to_s.delete('-'), 16)
+
+      case (int >> 76) & 0xF
+      when 6
+        gregorian_100ns = ((int >> 96) << 28) | (((int >> 80) & 0xFFFF) << 12) | ((int >> 64) & 0x0FFF)
+        Time.at(Rational(gregorian_100ns - UUID_GREGORIAN_OFFSET_100NS, 10_000_000)).utc
+      when 7
+        Time.at(Rational(int >> 80, 1_000)).utc
+      end
+    rescue ArgumentError, TypeError
+      nil
+    end
   end
 end

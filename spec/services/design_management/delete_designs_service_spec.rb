@@ -1,12 +1,13 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design_management do
   include DesignManagementTestHelpers
 
-  let_it_be(:project) { create(:project) }
-  let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, reporters: user) }
+  let_it_be(:issue) { create(:issue, project: project) }
 
   let(:designs) { create_designs }
   let(:response) { run_service }
@@ -48,7 +49,6 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
 
   before do
     enable_design_management(enabled)
-    project.add_reporter(user)
   end
 
   describe "#execute" do

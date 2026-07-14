@@ -6,6 +6,7 @@ import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_OBJECTIVE } from '../../constants';
 
 export default {
+  name: 'WorkItemActionsSplitButton',
   components: {
     GlDisclosureDropdown,
     GlPopover,

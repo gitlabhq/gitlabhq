@@ -10,8 +10,6 @@ level: secondary
 weight: 50
 ---
 
-<!-- Category: Security Testing Integrations -->
-
 You can now use security findings from any SARIF 2.1.0-compliant scanner with GitLab vulnerability management.
 
 Define a CI/CD job that runs your scanner and outputs a SARIF artifact. GitLab parses, validates, and imports those findings into your security workflows. Results appear alongside GitLab native scanner output in the pipeline security tab, the vulnerability report, the security dashboard, the merge request security widget, and security policies. This feature gives security teams a single, consolidated view of vulnerabilities regardless of which tool produced them.

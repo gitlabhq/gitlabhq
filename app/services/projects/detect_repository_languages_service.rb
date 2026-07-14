@@ -37,31 +37,9 @@ module Projects
 
     private
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def ensure_programming_languages(detection)
-      existing_languages = ProgrammingLanguage.where(name: detection.languages)
-      return existing_languages if detection.languages.size == existing_languages.size
-
-      missing_languages = detection.languages - existing_languages.map(&:name)
-      created_languages = missing_languages.map do |name|
-        create_language(name, detection.language_color(name), detection.language_gitaly_id(name))
-      end
-
-      existing_languages + created_languages
+      Gitlab::LanguageDetection::ProgrammingLanguageResolver.new(detection.detected_languages).execute
     end
-    # rubocop: enable CodeReuse/ActiveRecord
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def create_language(name, color, language_id = nil)
-      attrs = { color: color, language_id: language_id }.compact
-
-      ProgrammingLanguage.transaction do
-        ProgrammingLanguage.where(name: name).first_or_create(attrs)
-      end
-    rescue ActiveRecord::RecordNotUnique
-      retry
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def set_detected_repository_languages
       return if project.detected_repository_languages?

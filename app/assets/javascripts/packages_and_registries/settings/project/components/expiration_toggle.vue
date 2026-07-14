@@ -28,6 +28,7 @@ export default {
       default: false,
     },
   },
+  emits: ['input'],
   computed: {
     enabled: {
       get() {

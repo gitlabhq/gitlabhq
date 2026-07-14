@@ -14,6 +14,7 @@ export default {
     GlSprintf,
     Shortcut,
   },
+  emits: ['hidden'],
   data() {
     return {
       searchTerm: '',

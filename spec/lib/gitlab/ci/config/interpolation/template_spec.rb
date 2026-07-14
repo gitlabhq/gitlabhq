@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :pipeline_composition do
+  before do
+    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
+      .with(:ci_interpolation_split_function)
+      .and_return(false)
+  end
+
   subject { described_class.new(YAML.safe_load(config), ctx) }
 
   let(:config) do

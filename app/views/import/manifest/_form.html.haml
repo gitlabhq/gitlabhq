@@ -16,7 +16,7 @@
   .form-group
     = label_tag :manifest, class: 'label-bold' do
       = _('Manifest')
-    = file_field_tag :manifest, class: 'form-control-file w-auto', required: true
+    = file_field_tag :manifest, class: 'form-control-file !gl-w-auto', required: true
     .form-text.gl-text-subtle
       = _('Import multiple repositories by uploading a manifest file.')
       = link_to sprite_icon('question-o'), help_page_path('user/import/third_party_systems/manifest_file.md')

@@ -22,10 +22,10 @@ We can monitor test results in the following Slack channels:
 
 #### When changes include a feature flag definition file
 
-When a feature flag definition file has been added or changed in a merge request, 2 pipelines are triggered in the downstream `E2E GDK` job:
+When a feature flag definition file has been added or changed in a merge request, 2 pipelines are triggered in the downstream `E2E CNG` job:
 
-- `gdk-instance` has the feature flag set to the default value in the feature flag definition file.
-- `gdk-instance-ff-inverse` has the feature flag set to the opposite of the default value.
+- `cng-instance` has the feature flag set to the default value in the feature flag definition file.
+- `cng-instance-ff-inverse` has the feature flag set to the opposite of the default value.
 - The job `e2e:test-on-omnibus-ee` needs to be triggered manually to ensure orchestrated tests also pass.
 
 ##### When the MR is approved (but not yet merged)
@@ -45,7 +45,7 @@ Once the MR is merged and the commit has been picked for auto-deploy to environm
 
 #### When changes do not include a feature flag definition file
 
-If work has been done behind the feature flag but the definition file has not been changed, open a draft MR with the original changes and also edit the definition file to trigger `gdk-instance` and `gdk-instance-ff-inverse` and manually run `e2e:test-on-omnibus-ee` as well to ensure the changes in the original MR do not break any E2E tests.
+If work has been done behind the feature flag but the definition file has not been changed, open a draft MR with the original changes and also edit the definition file to trigger `cng-instance` and `cng-instance-ff-inverse` and manually run `e2e:test-on-omnibus-ee` as well to ensure the changes in the original MR do not break any E2E tests.
 
 ### Feature flag value changes on staging or production
 

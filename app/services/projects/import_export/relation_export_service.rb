@@ -57,15 +57,32 @@ module Projects
           Gitlab::ImportExport::SnippetsRepoSaver.new(project: project, shared: shared, current_user: nil)
         when Projects::ImportExport::RelationExport::DESIGN_REPOSITORY_RELATION
           Gitlab::ImportExport::DesignRepoSaver.new(exportable: project, shared: shared)
+        when Projects::ImportExport::RelationExport::COMMIT_NOTES_RELATION
+          commit_notes_saver
         else
-          Gitlab::ImportExport::Project::RelationSaver.new(
-            project: project,
-            shared: shared,
-            relation: relation,
-            user: user,
-            params: params
-          )
+          default_relation_saver
         end
+      end
+
+      def commit_notes_saver
+        return default_relation_saver unless Feature.enabled?(:commit_notes_export_via_repo, project.root_ancestor)
+
+        ::Import::Export::Project::CommitNotesSaver.new(
+          project: project,
+          shared: shared,
+          user: user,
+          params: params
+        )
+      end
+
+      def default_relation_saver
+        Gitlab::ImportExport::Project::RelationSaver.new(
+          project: project,
+          shared: shared,
+          relation: relation,
+          user: user,
+          params: params
+        )
       end
 
       def upload_compressed_file

@@ -293,7 +293,9 @@ module API
     end
 
     resource :users, requirements: API::USER_REQUIREMENTS do
-      desc 'Get a user projects' do
+      desc 'List all personal projects for a user' do
+        detail 'Lists all personal projects for a specified user. Does not return group or subgroup projects. ' \
+          'If the user profile is private, returns only an empty list.'
         success code: 200, model: Entities::BasicProjectDetails
         failure [{ code: 404, message: '404 User Not Found' }]
         tags %w[projects]
@@ -415,7 +417,11 @@ module API
         present_projects load_projects
       end
 
-      desc 'Create new project' do
+      desc 'Create a project' do
+        detail 'Creates a project owned by the authenticated user. If your HTTP repository is not publicly ' \
+          'accessible, add authentication information to the URL ' \
+          '`https://username:password@gitlab.company.com/group/project.git`, where `password` is a public access key ' \
+          'with the `api` scope.'
         success code: 201, model: Entities::Project
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -459,7 +465,8 @@ module API
         end
       end
 
-      desc 'Create new project for a specified user. Only available to admin users.' do
+      desc 'Create a project for a user' do
+        detail 'Creates a project for a user. Administrators only.'
         success code: 201, model: Entities::Project
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -504,7 +511,8 @@ module API
         end
       end
 
-      desc 'Returns group that can be shared with the given project' do
+      desc 'List all groups available to invite to a project' do
+        detail 'Lists all groups that can be invited to a project.'
         success Entities::Group
         tags %w[projects groups]
       end
@@ -526,7 +534,9 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get a single project' do
+      desc 'Retrieve a project' do
+        detail 'Retrieves details on a specified project. This endpoint can be accessed without authentication if ' \
+          'the project is publicly accessible.'
         success code: 200, model: Entities::ProjectWithAccess
         tags %w[projects]
       end
@@ -555,7 +565,8 @@ module API
         present_project project, options
       end
 
-      desc 'Fork new project for the current user or provided namespace.' do
+      desc 'Create a fork of a project' do
+        detail 'Creates a fork of a project.'
         success code: 201, model: Entities::Project
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -697,6 +708,8 @@ module API
       end
 
       desc 'Archive a project' do
+        detail 'Archives a specified project. You must be an administrator or be assigned the Owner role on the ' \
+          'project.'
         success code: 201, model: Entities::Project
         failure [
           { code: 403, message: 'Unauthenticated' }
@@ -800,7 +813,8 @@ module API
         present paginate(starrers), with: Entities::UserStarsProject
       end
 
-      desc 'Get languages in project repository' do
+      desc 'Retrieve programming language usage information' do
+        detail 'Retrieves information about all programming languages used in a specified project.'
         success code: 200
         failure [
           { code: 404, message: 'Not found' }
@@ -816,6 +830,7 @@ module API
       end
 
       desc 'Delete a project' do
+        detail 'Deletes a specified project.'
         success code: 202
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -1016,7 +1031,8 @@ module API
         present paginate(users), with: Entities::UserBasic
       end
 
-      desc 'Get ancestor and shared groups for a project' do
+      desc 'List all ancestor groups' do
+        detail 'Lists all ancestor groups for a specified project.'
         success code: 200, model: Entities::PublicGroupDetails
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -1046,7 +1062,11 @@ module API
         present_groups groups
       end
 
-      desc 'Get a list of invited groups in this project' do
+      desc 'List all invited groups in a project' do
+        detail 'Lists all invited groups in a project. Unauthenticated requests return only public invited ' \
+          'groups. Limited to 60 requests a minute per user account for authenticated requires and per ' \
+          'IP address for unauthenticated requests. Supports offset-based pagination (up to 50,000 projects) and ' \
+          'keyset-based pagination (greater than 50,000 projects).'
         success Entities::Group
         is_array true
         tags %w[projects]

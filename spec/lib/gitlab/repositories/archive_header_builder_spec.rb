@@ -59,8 +59,11 @@ RSpec.describe Gitlab::Repositories::ArchiveHeaderBuilder, feature_category: :so
     context 'when metadata is empty' do
       let(:metadata) { {} }
 
-      it 'raises an exception' do
-        expect { builder.filename }.to raise_error(RuntimeError, "Repository or ref not found")
+      it 'raises an ArchiveNotFoundError' do
+        expect { builder.filename }.to raise_error(
+          Gitlab::Workhorse::ArchiveNotFoundError,
+          "Repository or ref not found"
+        )
       end
     end
   end
@@ -99,8 +102,11 @@ RSpec.describe Gitlab::Repositories::ArchiveHeaderBuilder, feature_category: :so
     context 'when metadata is empty' do
       let(:metadata) { {} }
 
-      it 'raises an exception' do
-        expect { builder.content_disposition }.to raise_error(RuntimeError, "Repository or ref not found")
+      it 'raises an ArchiveNotFoundError' do
+        expect { builder.content_disposition }.to raise_error(
+          Gitlab::Workhorse::ArchiveNotFoundError,
+          "Repository or ref not found"
+        )
       end
     end
   end

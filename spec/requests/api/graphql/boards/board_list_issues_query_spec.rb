@@ -61,7 +61,7 @@ RSpec.describe 'get board lists', feature_category: :team_planning do
   shared_examples 'group and project board list issues query' do
     let_it_be(:board) { create(:board, resource_parent: board_parent) }
     let_it_be(:label_list) { create(:list, board: board, label: label, position: 10) }
-    let_it_be(:issue1, freeze: false) do
+    let_it_be(:issue1) do
       create(:issue, project: issue_project, labels: [label, label2], relative_position: 9)
     end
 

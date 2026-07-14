@@ -35,4 +35,10 @@ RSpec.describe Gitlab::FogbugzImport::ProjectCreator, feature_category: :importe
     expect(subject.name).to eq(repo_name)
     expect(subject.path).to eq(repo_name)
   end
+
+  it 'creates the project within the namespace organization' do
+    project = project_creator.execute
+
+    expect(project.organization_id).to eq(user.namespace.organization_id)
+  end
 end

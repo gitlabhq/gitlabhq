@@ -9,6 +9,13 @@ class JiraConnectInstallation < ApplicationRecord
     algorithm: 'aes-256-gcm',
     key: :db_key_base_32
 
+  # Forge app system OAuth token, refreshed by the app to call Jira directly.
+  # See Atlassian::Forge::SystemTokenClient.
+  attr_encrypted :forge_system_token,
+    mode: :per_attribute_iv,
+    algorithm: 'aes-256-gcm',
+    key: :db_key_base_32
+
   has_many :subscriptions, class_name: 'JiraConnectSubscription'
   belongs_to :organization, class_name: 'Organizations::Organization'
 
@@ -17,6 +24,10 @@ class JiraConnectInstallation < ApplicationRecord
   validates :base_url, presence: true, public_url: true
   validates :display_url, public_url: true, allow_blank: true
   validates :instance_url, public_url: true, allow_blank: true
+  # Jira site (cloud) id; correlates a FIT to this installation.
+  validates :cloud_id, length: { maximum: 255 }, allow_blank: true
+  # Jira apiBaseUrl that GitLab calls directly with the Forge system token.
+  validates :jira_api_base_url, public_url: true, allow_blank: true
   validate :instance_url_parseable_by_uri, if: :instance_url_changed?
 
   before_validation :normalize_instance_url
@@ -68,6 +79,12 @@ class JiraConnectInstallation < ApplicationRecord
 
   def proxy?
     instance_url.present?
+  end
+
+  # True once the Forge app registered an apiBaseUrl + system token, enabling
+  # direct outbound dev-info. See Atlassian::Forge::SystemTokenClient.
+  def forge_direct?
+    jira_api_base_url.present? && forge_system_token.present?
   end
 
   private

@@ -17,6 +17,7 @@ description: Group-level visibility of assets, scanner coverage, and vulnerabili
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16484) as a [beta](../../../policy/development_stages_support.md) in GitLab 18.2 with a flag named `security_inventory_dashboard`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/588619) in GitLab 18.9. Feature flag `security_inventory_dashboard` removed.
+- Vulnerability counts [changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/600455) in GitLab 19.2 to exclude vulnerabilities that are no longer detected, aligning the security inventory with the security dashboard.
 
 {{< /history >}}
 
@@ -32,7 +33,7 @@ The security inventory shows:
   - Secret detection
   - Dynamic application security testing (DAST)
   - Infrastructure-as-code (IaC) scanning
-- The number of vulnerabilities in each group or project, sorted by severity level.
+- The number of vulnerabilities in each group or project, sorted by severity level. The count excludes vulnerabilities that are no longer detected.
 
 Track the development of the security inventory in [epic 16939](https://gitlab.com/groups/gitlab-org/-/work_items/16939). Share [your feedback](https://gitlab.com/gitlab-org/gitlab/-/issues/553062) as development continues on this feature.
 
@@ -70,7 +71,7 @@ Each security scanner shows one of the following coverage statuses for every pro
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/552224) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `security_inventory_filtering`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/552224) in GitLab 18.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_inventory_filtering`. Enabled by default.
 
 {{< /history >}}
 

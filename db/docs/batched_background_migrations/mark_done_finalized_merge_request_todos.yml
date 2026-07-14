@@ -1,0 +1,9 @@
+---
+migration_job_name: MarkDoneFinalizedMergeRequestTodos
+description: Marks pending merge request to-dos (assigned, review requested, approval required, added approver) as done when their target merge request is already merged or closed.
+feature_category: notifications
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242886
+milestone: '19.2'
+queued_migration_version: 20260708151456
+finalized_by: # Set by the follow-up finalize migration in a later milestone.
+gitlab_schema: gitlab_main_org

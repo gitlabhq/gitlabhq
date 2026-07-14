@@ -22,7 +22,9 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: LABEL_ENDPOINT_REQUIREMENTS do
-      desc 'Get all labels of the project' do
+      desc 'List all project labels' do
+        detail 'Lists all labels for a specified project. By default, this request returns 20 results at a time ' \
+          'because the API results are paginated.'
         success Entities::ProjectLabel
         tags ['labels']
       end
@@ -43,8 +45,8 @@ module API
         get_labels(user_project, Entities::ProjectLabel, declared_params)
       end
 
-      desc 'Get a single label' do
-        detail 'This feature was added in GitLab 12.4.'
+      desc 'Retrieve a project label' do
+        detail 'Retrieves a specified label for a project.'
         success Entities::ProjectLabel
         tags ['labels']
       end
@@ -57,7 +59,8 @@ module API
         get_label(user_project, Entities::ProjectLabel, declared_params)
       end
 
-      desc 'Create a new label' do
+      desc 'Create a project label' do
+        detail 'Creates a label for a specified project.'
         success Entities::ProjectLabel
         tags ['labels']
       end
@@ -71,7 +74,8 @@ module API
       end
 
       desc 'Update an existing label. At least one optional parameter is required.' do
-        detail 'This feature was deprecated in GitLab 12.4.'
+        detail 'Deprecated in GitLab 12.4. Use PUT /projects/:id/labels/:name instead.'
+        deprecated true
         success Entities::ProjectLabel
         tags ['labels']
       end
@@ -87,7 +91,8 @@ module API
       end
 
       desc 'Delete an existing label' do
-        detail 'This feature was deprecated in GitLab 12.4.'
+        detail 'Deprecated in GitLab 12.4. Use DELETE /projects/:id/labels/:name instead.'
+        deprecated true
         success Entities::ProjectLabel
         tags ['labels']
       end
@@ -102,7 +107,9 @@ module API
       end
 
       desc 'Promote a label to a group label' do
-        detail 'This feature was added in GitLab 12.3 and deprecated in GitLab 12.4.'
+        detail 'Added in GitLab 12.3 and deprecated in GitLab 12.4. ' \
+          'Use PUT /projects/:id/labels/:name/promote instead.'
+        deprecated true
         success Entities::GroupLabel
         tags ['labels']
       end
@@ -114,8 +121,9 @@ module API
         promote_label(user_project)
       end
 
-      desc 'Update an existing label. At least one optional parameter is required.' do
-        detail 'This feature was added in GitLab 12.4.'
+      desc 'Update a project label' do
+        detail 'Updates a specified label for a project with a different name or color. At least one parameter is ' \
+          'required to update the label.'
         success Entities::ProjectLabel
         tags ['labels']
       end
@@ -128,8 +136,8 @@ module API
         update_label(user_project, Entities::ProjectLabel)
       end
 
-      desc 'Delete an existing label' do
-        detail 'This feature was added in GitLab 12.4.'
+      desc 'Delete a project label' do
+        detail 'Deletes a specified label from a project.'
         success Entities::ProjectLabel
         tags ['labels']
       end
@@ -141,8 +149,8 @@ module API
         delete_label(user_project)
       end
 
-      desc 'Promote a label to a group label' do
-        detail 'This feature was added in GitLab 12.4.'
+      desc 'Promote a project label to a group label' do
+        detail 'Promotes a specified project label to a group label. The label keeps its ID.'
         success Entities::GroupLabel
         tags ['labels']
       end

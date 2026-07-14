@@ -16,6 +16,7 @@ export const i18n = Object.freeze({
 });
 
 export default {
+  name: 'LockedWarning',
   components: {
     GlSprintf,
     GlLink,

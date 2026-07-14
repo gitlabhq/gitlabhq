@@ -2,11 +2,13 @@
 
 module Organizations
   class CreateService < ::Organizations::BaseService
-    def execute
-      return error_no_permissions unless can?(current_user, :create_organization)
-      return error_feature_flag unless Feature.enabled?(:organization_switching, current_user)
+    def execute(skip_authorization: false)
+      unless skip_authorization
+        return error_no_permissions unless can?(current_user, :create_organization)
+        return error_feature_flag unless Feature.enabled?(:organization_switching, current_user)
+      end
 
-      add_organization_owner_attributes
+      add_organization_owner_attributes unless skip_authorization
       organization = Organization.new(params)
 
       saved = Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification

@@ -97,7 +97,10 @@ RSpec.describe Webauthn::DestroyService, feature_category: :system_access do
         # This spec is for testing in depth - full behavior is tested
         # in email_otp_enrollment_spec.rb
         it 'enrolls the user in email OTP when email OTP is required at minimum', :freeze_time do
-          stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+          stub_application_setting(
+            email_otp_enabled: true,
+            require_minimum_email_based_otp_for_users_with_passwords: true
+          )
 
           subject
           user.reload

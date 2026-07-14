@@ -33,6 +33,13 @@ module ActiveContext
         collection.collection_record.update_metadata!(metadata.merge(collection_class: collection.name))
       end
 
+      def set_collection_class(collection)
+        collection_record = collection.collection_record
+        return if collection_record.metadata[:collection_class].present?
+
+        collection_record.update_metadata!(collection_class: collection.name)
+      end
+
       def drop_collection(name)
         ActiveContext.adapter.executor.drop_collection(name)
       end

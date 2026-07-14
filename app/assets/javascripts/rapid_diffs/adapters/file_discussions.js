@@ -14,7 +14,15 @@ function provideAppData(appData) {
   };
 }
 
-function mountFileDiscussionsApp({ container, oldPath, newPath, appData, store, showWhitespace }) {
+function mountFileDiscussionsApp({
+  container,
+  oldPath,
+  newPath,
+  appData,
+  store,
+  showWhitespace,
+  diffRefs,
+}) {
   if (container.destroyApp) return;
   const mountTarget = document.createElement('div');
   container.appendChild(mountTarget);
@@ -31,6 +39,7 @@ function mountFileDiscussionsApp({ container, oldPath, newPath, appData, store, 
         endpoints: provideAppData(appData),
         noteableType: appData.noteableType,
         filePaths: { oldPath, newPath },
+        diffRefs,
         linkedFileData: appData.linkedFileData,
         newCommentTemplatePaths: appData.newCommentTemplatePaths || [],
         showWhitespace,
@@ -57,18 +66,26 @@ function focusForm(id) {
 export const createFileDiscussionsAdapter = (store) => ({
   [MOUNTED](addCleanup) {
     const { diffElement, appData } = this;
-    const { oldPath, newPath, showWhitespace } = this.data;
+    const { oldPath, newPath, showWhitespace, diffRefs } = this.data;
     const fileCommentToggle = diffElement.querySelector('[data-click="fileComment"]');
     fileCommentToggle.disabled = false;
     fileCommentToggle.classList.remove('disabled');
     fileCommentToggle.removeAttribute('aria-disabled');
     const stopWatcher = watch(
-      () => store.findAllFileDiscussionsForFile({ oldPath, newPath }),
+      () => store.findAllFileDiscussionsForFile({ oldPath, newPath, diffRefs }),
       (matchedDiscussions) => {
         if (matchedDiscussions.length === 0) return;
         const container = diffElement.querySelector('[data-file-discussions]');
         if (!container) return;
-        mountFileDiscussionsApp({ container, oldPath, newPath, appData, store, showWhitespace });
+        mountFileDiscussionsApp({
+          container,
+          oldPath,
+          newPath,
+          appData,
+          store,
+          showWhitespace,
+          diffRefs,
+        });
       },
       { immediate: true },
     );
@@ -79,8 +96,8 @@ export const createFileDiscussionsAdapter = (store) => ({
   },
   clicks: {
     fileComment() {
-      const { oldPath, newPath } = this.data;
-      const existingFormId = store.addNewFileDiscussionForm({ oldPath, newPath });
+      const { oldPath, newPath, diffRefs } = this.data;
+      const existingFormId = store.addNewFileDiscussionForm({ oldPath, newPath, diffRefs });
       if (existingFormId) focusForm(existingFormId);
     },
   },

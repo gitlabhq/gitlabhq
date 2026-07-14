@@ -24,9 +24,15 @@ module API
         ].each do |endpoint|
           is_note_endpoint = endpoint.include?(':note_id')
           permission_suffix = is_note_endpoint ? "#{awardable_params[:type]}_note_award_emoji" : "#{awardable_params[:type]}_award_emoji"
+          awardable_name = awardable_params[:type].humanize(capitalize: false)
+          awardable_article = awardable_name.match?(/\A[aeiou]/i) ? 'an' : 'a'
 
-          desc "List an awardable's emoji reactions for #{awardable_params[:resource]}" do
-            detail 'Get a list of all emoji reactions for a specified awardable. This feature was introduced in 8.9'
+          desc "List all emoji reactions for " \
+            "#{awardable_article} #{awardable_name}#{' comment' if is_note_endpoint}" do
+            detail "Lists all emoji reactions for a specified " \
+              "#{is_note_endpoint ? "comment on #{awardable_article} #{awardable_name}" : awardable_name}. " \
+              "This endpoint can be accessed without authentication if the " \
+              "#{is_note_endpoint ? 'comment' : awardable_name} is publicly accessible."
             success Entities::AwardEmoji
             failure [{ code: 404, message: 'Not Found' }]
             is_array true
@@ -47,8 +53,12 @@ module API
             end
           end
 
-          desc 'Get a single emoji reaction' do
-            detail 'Get a single emoji reaction from an issue, snippet, or merge request. This feature was introduced in 8.9'
+          desc "Retrieve an emoji reaction from " \
+            "#{awardable_article} #{awardable_name}#{' comment' if is_note_endpoint}" do
+            detail "Retrieves a specified emoji reaction from " \
+              "#{'a comment on ' if is_note_endpoint}#{awardable_article} #{awardable_name}. This endpoint " \
+              "can be accessed without authentication if the " \
+              "#{is_note_endpoint ? 'comment' : awardable_name} is publicly accessible."
             success Entities::AwardEmoji
             failure [{ code: 404, message: 'Not Found' }]
             tags AWARD_EMOJI_TAG
@@ -65,8 +75,10 @@ module API
             end
           end
 
-          desc 'Add a new emoji reaction' do
-            detail 'Add an emoji reaction on the specified awardable. This feature was introduced in 8.9'
+          desc "Add an emoji reaction to " \
+            "#{awardable_article} #{awardable_name}#{' comment' if is_note_endpoint}" do
+            detail "Adds an emoji reaction to " \
+              "#{'a comment on ' if is_note_endpoint}#{awardable_article} #{awardable_name}."
             success Entities::AwardEmoji
             failure [{ code: 400, message: 'Bad Request' }, { code: 404, message: 'Not Found' }]
             tags AWARD_EMOJI_TAG
@@ -87,8 +99,11 @@ module API
             end
           end
 
-          desc 'Delete an emoji reaction' do
-            detail 'Only an administrator or the author of the reaction can delete an emoji reaction. This feature was introduced in 8.9'
+          desc "Delete an emoji reaction from " \
+            "#{awardable_article} #{awardable_name}#{' comment' if is_note_endpoint}" do
+            detail "Deletes a specified emoji reaction from " \
+              "#{'a comment on ' if is_note_endpoint}#{awardable_article} #{awardable_name}. Only an " \
+              "administrator or the user who added the reaction can delete it."
             success code: 204
             failure [{ code: 401, message: 'Unauthorized' }, { code: 404, message: 'Not Found' }]
             tags AWARD_EMOJI_TAG

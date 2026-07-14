@@ -5,11 +5,14 @@ module Ci
     class RemoveProjectService < ::BaseService
       include EditScopeValidations
 
+      TARGET_NOT_IN_SCOPE = "Target project is not in the job token scope"
+      SOURCE_CANNOT_BE_REMOVED = "Source project cannot be removed from the job token scope"
+
       def execute(target_project, direction)
-        validate_source_project_and_target_project_access!(project, target_project, current_user)
+        validate_group_remove!(project, current_user)
 
         if project == target_project
-          return ServiceResponse.error(message: "Source project cannot be removed from the job token scope")
+          return ServiceResponse.error(message: SOURCE_CANNOT_BE_REMOVED)
         end
 
         link = ::Ci::JobToken::ProjectScopeLink
@@ -17,7 +20,7 @@ module Ci
           .for_source_and_target(project, target_project)
 
         unless link
-          return ServiceResponse.error(message: "Target project is not in the job token scope")
+          return ServiceResponse.error(message: TARGET_NOT_IN_SCOPE)
         end
 
         if link.destroy

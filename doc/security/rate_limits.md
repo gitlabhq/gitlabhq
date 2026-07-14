@@ -137,7 +137,7 @@ The rate limit is 20 calls per minute per IP address.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382985) in GitLab 15.7 [with a flag](../administration/feature_flags/_index.md) named `ci_enforce_rate_limits_jobs_api`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382985) in GitLab 15.7 [with a feature flag](../administration/feature_flags/_index.md) named `ci_enforce_rate_limits_jobs_api`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/384186) in GitLab 16.0. Feature flag `ci_enforce_rate_limits_jobs_api` removed.
 
 {{< /history >}}
@@ -210,7 +210,7 @@ the API.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.1 [with a flag](../administration/feature_flags/_index.md) named `rate_limit_notification_emails`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.1 [with a feature flag](../administration/feature_flags/_index.md) named `rate_limit_notification_emails`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.2. Feature flag `rate_limit_notification_emails` removed.
 
 {{< /history >}}
@@ -250,6 +250,20 @@ There is a rate limit per user per project on the `:id/repository/changelog` end
 The rate limit is shared between GET and POST actions.
 
 The rate limit is 5 calls per minute per user per project.
+
+### Delete a deployment
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243738) in GitLab 19.2.
+
+{{< /history >}}
+
+A rate limit applies to [deleting a deployment](../api/deployments.md#delete-a-deployment)
+through the `DELETE /projects/:id/deployments/:deployment_id` endpoint.
+This limit reduces the infrastructure impact of mass deployment deletions.
+
+The rate limit is 500 requests per minute per authenticated user.
 
 ## Troubleshooting
 

@@ -39,6 +39,23 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
     expect(project.reload.last_repository_check_failed).to be(true)
   end
 
+  it 'fails when the project has push events and fsck times out', :aggregate_failures do
+    project = create(:project, :repository)
+    create_push_event(project)
+
+    repository = project.repository.raw
+    expect(repository).to receive(:fsck).and_raise(GRPC::DeadlineExceeded)
+    expect(::Gitlab::Git::Repository).to receive(:new)
+      .with(project.repository_storage, "#{project.disk_path}.git", anything, anything, container: project)
+      .and_return(repository)
+
+    expect do
+      worker.perform(project.id)
+    end.to change { project.reload.last_repository_check_at }
+
+    expect(project.reload.last_repository_check_failed).to be(true)
+  end
+
   it 'succeeds when the project repo is valid' do
     project = create(:project, :repository, :wiki_disabled)
     create_push_event(project)

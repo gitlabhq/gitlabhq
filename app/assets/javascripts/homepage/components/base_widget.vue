@@ -10,6 +10,7 @@ export default {
       default: true,
     },
   },
+  emits: ['visible'],
   data() {
     return {
       debouncedVisibilityHandler: null,

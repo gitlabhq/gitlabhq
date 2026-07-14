@@ -9,6 +9,7 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, SIDEBAR_CLOSE_WIDGET } from '~/behaviors/shortcuts/keybindings';
 
 export default {
+  name: 'WorkItemSidebarWidget',
   components: {
     GlButton,
     GlLoadingIcon,
@@ -39,6 +40,7 @@ export default {
       default: undefined,
     },
   },
+  emits: ['start-editing', 'stopEditing'],
   data() {
     return {
       editing: false,
@@ -58,7 +60,7 @@ export default {
   methods: {
     startEditing() {
       this.editing = true;
-      this.$emit('startEditing');
+      this.$emit('start-editing');
     },
     stopEditing({ target } = {}) {
       // This prevents the v-outside directive from treating a

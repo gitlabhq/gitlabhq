@@ -1,6 +1,6 @@
 ---
-source_checksum: be71c57927b2a703
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: 34d3be0241af852b
+distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -73,8 +73,9 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 
 ### JSON Parsing
 
-- Use `Gitlab::Json.safe_parse` instead of `Gitlab::Json.parse` when handling untrusted input (HTTP bodies, webhook payloads, user-uploaded files, external API responses)
-- Rescue `JSON::ParserError` from `safe_parse` and return a safe error response; DO NOT expose internal limit-exceeded details to callers.
+- Use `Gitlab::Json::SafeParser.parse` instead of `Gitlab::Json.parse` when handling untrusted input (HTTP bodies, webhook payloads, user-uploaded files, external API responses). `Gitlab::Json.safe_parse` is deprecated; migrate call sites to `Gitlab::Json::SafeParser.parse`.
+- Rescue `JSON::ParserError` from `Gitlab::Json::SafeParser.parse` and return a safe error response; DO NOT expose internal error classes (`Oj::Parser::ValidationError`, `Gitlab::Json::SafeParser::PayloadSizeError`) to callers.
+- Use `Gitlab::Json::SafeParser.new` (dedicated instance) only for advanced single-threaded workflows where the caller manages thread affinity; prefer `Gitlab::Json::SafeParser.parse` at almost all call sites.
 
 ### JWT
 
@@ -180,6 +181,10 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 ### Request Parameter Typing
 
 - Use `ActionController::StrongParameters` (`params.require(...).permit(...)`) in all Rails controllers; DO NOT use raw `params[:key]` where a typed value is expected.
+
+### Local Storage
+
+- DO NOT store sensitive data in `localStorage` beyond the minimum necessary; call `localStorage.removeItem` (or `localStorage.clear`) as soon as the data is no longer needed.
 
 ## Authoritative sources
 

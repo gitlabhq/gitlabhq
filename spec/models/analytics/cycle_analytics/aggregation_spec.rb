@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model, feature_category: :value_stream_management do
@@ -168,8 +169,7 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model, feature_cat
     end
 
     context 'when personal namespace is provided' do
-      let_it_be(:user2) { create(:user) }
-      let_it_be(:project) { create(:project, :public, namespace: user2.namespace) }
+      let_it_be(:user2) { create(:user, :with_namespace) }
 
       it 'is successful' do
         aggregation = described_class.safe_create_for_namespace(user2.namespace)
@@ -180,12 +180,12 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model, feature_cat
   end
 
   describe '#load_batch' do
-    let!(:aggregation1) { create(:cycle_analytics_aggregation, last_incremental_run_at: nil, last_consistency_check_updated_at: 3.days.ago).reload }
-    let!(:aggregation2) { create(:cycle_analytics_aggregation, last_incremental_run_at: 5.days.ago).reload }
-    let!(:aggregation3) { create(:cycle_analytics_aggregation, last_incremental_run_at: nil, last_consistency_check_updated_at: 2.days.ago).reload }
-    let!(:aggregation4) { create(:cycle_analytics_aggregation, last_incremental_run_at: 10.days.ago).reload }
+    let_it_be(:aggregation1) { create(:cycle_analytics_aggregation, last_incremental_run_at: nil, last_consistency_check_updated_at: 3.days.ago).reload }
+    let_it_be(:aggregation2) { create(:cycle_analytics_aggregation, last_incremental_run_at: 5.days.ago).reload }
+    let_it_be(:aggregation3) { create(:cycle_analytics_aggregation, last_incremental_run_at: nil, last_consistency_check_updated_at: 2.days.ago).reload }
+    let_it_be(:aggregation4) { create(:cycle_analytics_aggregation, last_incremental_run_at: 10.days.ago).reload }
 
-    before do
+    before_all do
       create(:cycle_analytics_aggregation, :disabled) # disabled rows are skipped
       create(:cycle_analytics_aggregation, last_incremental_run_at: 1.day.ago, last_consistency_check_updated_at: 1.hour.ago) # "early" rows are filtered out
     end

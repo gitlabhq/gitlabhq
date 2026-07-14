@@ -1,0 +1,11 @@
+fragment AiAgentPlatformFlowMetricItem on AiMetrics {
+  agentPlatform {
+    flowMetrics {
+      flowType
+      medianExecutionTime
+      sessionsCount
+      usersCount
+      completionRate
+    }
+  }
+}

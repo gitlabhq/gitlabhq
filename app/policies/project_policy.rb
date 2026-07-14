@@ -5,6 +5,18 @@ class ProjectPolicy < BasePolicy
   include ::Authz::RolePermissions
   include ::Authn::SubgroupProvisionedServiceAccountRestriction
 
+  # Abilities that grant access to the project's edit (general settings) page.
+  # Holding any of these enables :view_edit_page. If a feature moves its settings
+  # off the project edit page, remove its ability from this list so users who only
+  # hold that ability lose :view_edit_page.
+  VIEW_EDIT_PAGE_ABILITIES = %i[
+    admin_project
+    archive_project
+    remove_project
+    update_duo_setting
+    update_sec_ai_workflow_settings
+  ].freeze
+
   define_role_permissions(:project)
 
   # https://docs.gitlab.com/18.2/ci/pipelines/settings/#change-which-users-can-view-your-pipelines
@@ -19,19 +31,8 @@ class ProjectPolicy < BasePolicy
   desc "User has guest access"
   condition(:guest) { team_member? }
 
-  desc "User has owner access"
-  condition :owner do
-    owner_of_personal_namespace = project.owner.present? && project.owner == @user
-
-    unless owner_of_personal_namespace
-      group_or_project_owner = team_access_level >= Gitlab::Access::OWNER
-    end
-
-    owner_of_personal_namespace || group_or_project_owner
-  end
-
   desc "User is a project bot"
-  condition(:project_bot) { user.project_bot? && team_member? }
+  condition(:project_bot) { user&.project_bot? && team_member? }
 
   desc "Project is public"
   condition(:public_project, scope: :subject, score: 0) { project.public? }
@@ -466,6 +467,7 @@ class ProjectPolicy < BasePolicy
     prevent :download_maven_package_file
     prevent :download_npm_package
     prevent :download_nuget_package
+    prevent :download_package
     prevent :download_pypi_package
   end
 
@@ -882,6 +884,7 @@ class ProjectPolicy < BasePolicy
     prevent :read_security_orchestration_policies
     prevent :modify_security_policy
     prevent :read_compliance_dashboard
+    prevent :read_agent_artifacts
     prevent :read_compliance_adherence_report
     prevent :read_compliance_violations_report
     prevent :update_compliance_violations_report
@@ -939,21 +942,19 @@ class ProjectPolicy < BasePolicy
     enable :read_model_registry
   end
 
-  rule { ~public_project & guest & model_registry_enabled }.policy do
-    enable :read_model_registry
+  rule { ~model_registry_enabled }.policy do
+    prevent :read_model_registry
+    prevent :write_model_registry
   end
-
-  rule { ~model_registry_enabled }.prevent :write_model_registry
 
   rule { public_project & model_experiments_enabled }.policy do
     enable :read_model_experiments
   end
 
-  rule { ~public_project & guest & model_experiments_enabled }.policy do
-    enable :read_model_experiments
+  rule { ~model_experiments_enabled }.policy do
+    prevent :read_model_experiments
+    prevent :write_model_experiments
   end
-
-  rule { ~model_experiments_enabled }.prevent :write_model_experiments
 
   rule { ~private_project & guest & external_user }.policy do
     enable :read_container_image
@@ -970,6 +971,10 @@ class ProjectPolicy < BasePolicy
   rule { guest & allow_guest_plus_roles_to_pull_packages_enabled }.enable :read_package
 
   rule { can?(:read_project) }.enable :read_attestation
+
+  VIEW_EDIT_PAGE_ABILITIES.each do |ability|
+    rule { can?(ability) }.enable :view_edit_page
+  end
 
   private
 

@@ -90,6 +90,16 @@ RSpec.describe Gitlab::JsRoutes, feature_category: :tooling do
           )
         end
 
+        it 'annotates each helper with its equivalent Rails route metadata' do
+          file_path = File.join(expected_base_path, 'project.js')
+
+          file_contents = File.read(file_path)
+          expect(file_contents).to include(" * - href: `/:project_full_path/-/preview_markdown(.:format)`")
+          expect(file_contents).to include(" * - Path helper: `project_preview_markdown_path`")
+          expect(file_contents).to include(" * - URL helper: `project_preview_markdown_url`")
+          expect(file_contents).to include(" * - controller#action: `projects#preview_markdown`")
+        end
+
         it 'generates organizations path helpers as unscoped' do
           file_path = File.join(expected_base_path, 'organizations.js')
           expect(File).to exist(file_path)

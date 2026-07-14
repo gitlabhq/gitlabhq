@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuous_integration do
   let(:service) { described_class.new(project, current_user) }
 
-  let_it_be(:project, freeze: false) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
+  let_it_be_with_reload(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
   let_it_be(:target_project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:policies) { %w[read_deployments read_packages] }
@@ -64,7 +65,7 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
       context 'when user has permissions on source and target projects' do
         let(:resulting_direction) { result.payload.fetch(:project_link)&.direction }
 
-        before do
+        before_all do
           project.add_maintainer(current_user)
           target_project.add_developer(current_user)
         end
@@ -124,7 +125,7 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
       end
 
       context 'when target project is same as the source project' do
-        before do
+        before_all do
           project.add_maintainer(current_user)
         end
 

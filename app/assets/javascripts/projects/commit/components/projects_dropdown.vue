@@ -1,7 +1,5 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapState } from 'vuex';
 import { debounce, uniqBy } from 'lodash-es';
 import {
   I18N_NO_RESULTS_MESSAGE,
@@ -14,6 +12,7 @@ export default {
   components: {
     GlCollapsibleListbox,
   },
+  inject: ['modalStore'],
   emits: ['input'],
   i18n: {
     noResultsMessage: I18N_NO_RESULTS_MESSAGE,
@@ -26,8 +25,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['sortedProjects']),
-    ...mapState(['targetProjectId']),
+    sortedProjects() {
+      return this.modalStore.sortedProjects;
+    },
+    targetProjectId() {
+      return this.modalStore.targetProjectId;
+    },
     filteredResults() {
       const lowerCasedFilterTerm = this.filterTerm.toLowerCase();
       return this.sortedProjects.filter((project) =>

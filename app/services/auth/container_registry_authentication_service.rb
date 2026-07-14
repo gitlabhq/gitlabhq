@@ -2,6 +2,8 @@
 
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
+    include Gitlab::Utils::StrongMemoize
+
     AUDIENCE = 'container_registry'
     REGISTRY_LOGIN_ABILITIES = [
       :read_container_image,
@@ -17,8 +19,18 @@ module Auth
     PROTECTED_TAG_ACTIONS = %w[push delete].freeze
     ALLOWED_REGISTRY_SCOPE_NAMES = %w[catalog statistics background-migrations].freeze
 
-    def execute(authentication_abilities:)
+    # User-level registry capabilities a granular (fine-grained) PAT may hold.
+    # These map to granular permissions and are gated per-boundary via
+    # `granular_pat_permitted?` (`read_container_image` -> pull,
+    # `admin_container_image` -> delete). CI build (`build_*`) and push
+    # (`create_*`) capabilities are intentionally excluded, as granular PATs
+    # cannot hold them. Note the `*` (admin) action is also denied for granular
+    # PATs in `can_access?`, since it would otherwise imply push.
+    GRANULAR_REGISTRY_ABILITIES = %i[read_container_image admin_container_image].freeze
+
+    def execute(authentication_abilities:, personal_access_token: nil)
       @authentication_abilities = authentication_abilities
+      @personal_access_token = personal_access_token
 
       return error('UNAVAILABLE', status: 404, message: 'registry not enabled') unless registry.enabled
 
@@ -298,9 +310,12 @@ module Auth
       when 'push'
         build_can_push?(requested_project) || user_can_push?(requested_project) || deploy_token_can_push?(requested_project)
       when 'delete'
-        build_can_delete?(requested_project) || user_can_admin?(requested_project)
+        build_can_delete?(requested_project) || user_can_delete?(requested_project)
       when '*'
-        user_can_admin?(requested_project)
+        # The `*` (admin) action implies all actions, including push. Granular
+        # (fine-grained) PATs have no push permission, so they must never be
+        # granted `*`, otherwise a delete-scoped token would also gain push.
+        granular_personal_access_token.nil? && user_can_admin?(requested_project)
       else
         false
       end
@@ -333,8 +348,15 @@ module Auth
         can_user?(:admin_container_image, requested_project)
     end
 
+    def user_can_delete?(requested_project)
+      has_authentication_ability?(:admin_container_image) &&
+        pat_authorized?(requested_project, :delete_container_repository) &&
+        can_user?(:admin_container_image, requested_project)
+    end
+
     def user_can_pull?(requested_project)
       has_authentication_ability?(:read_container_image) &&
+        pat_authorized?(requested_project, :read_container_repository) &&
         can_user?(:read_container_image, requested_project)
     end
 
@@ -363,6 +385,9 @@ module Auth
     end
 
     def user_can_push?(requested_project)
+      # Granular (fine-grained) PATs can never push: `:create_container_image`
+      # is not in GRANULAR_REGISTRY_ABILITIES, so `has_authentication_ability?`
+      # returns false for them here.
       has_authentication_ability?(:create_container_image) &&
         can_user?(:create_container_image, requested_project)
     end
@@ -371,13 +396,51 @@ module Auth
       { errors: [{ code: code, message: message }], http_status: status }
     end
 
+    # For granular PATs, capabilities are not expressed as legacy authentication
+    # abilities. We grant the user-level registry capabilities here and validate
+    # the actual access per-boundary via `granular_pat_permitted?`.
     def has_authentication_ability?(capability)
+      return GRANULAR_REGISTRY_ABILITIES.include?(capability) if granular_personal_access_token.present?
+
       @authentication_abilities.to_a.include?(capability)
     end
 
     def has_registry_ability?
+      return true if granular_personal_access_token.present?
+
       @authentication_abilities.any? do |ability|
         REGISTRY_LOGIN_ABILITIES.include?(ability)
+      end
+    end
+
+    # Returns the granular (fine-grained) PAT used to authenticate the request,
+    # or nil when the request was not authenticated with one. Mirrors how
+    # `Gitlab::GitAccess` receives the token from the controller.
+    def granular_personal_access_token
+      return unless @personal_access_token&.granular?
+
+      @personal_access_token
+    end
+    strong_memoize_attr :granular_personal_access_token
+
+    # Authorizes the authenticated PAT against the requested project boundary
+    # using the shared authorization service (the same one used by the REST API,
+    # GraphQL, and Git over HTTP). Every PAT is routed through it so granular
+    # enforcement also applies to legacy tokens: for a legacy token the service
+    # returns success unless the namespace enforces granular tokens.
+    #
+    # Memoized per (project, permission) so a request with multiple scopes or
+    # actions (for example `pull,push`) does not re-run the authorization
+    # service for the same pair.
+    def pat_authorized?(requested_project, permission)
+      return true unless @personal_access_token
+
+      strong_memoize_with(:pat_authorized, requested_project.id, permission) do
+        ::Authz::Tokens::AuthorizeGranularScopesService.new(
+          boundaries: ::Authz::Boundary.for(requested_project),
+          permissions: permission,
+          token: @personal_access_token
+        ).execute.success?
       end
     end
 

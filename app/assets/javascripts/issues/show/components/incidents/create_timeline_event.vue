@@ -26,6 +26,7 @@ export default {
       required: true,
     },
   },
+  emits: ['hide-new-timeline-events-form'],
   data() {
     return { createTimelineEventActive: false };
   },

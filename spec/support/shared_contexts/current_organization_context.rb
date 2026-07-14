@@ -46,6 +46,22 @@ RSpec.shared_context 'with Organization URL helpers' do
   end
 end
 
+# Feature specs drive the app through Capybara, so URL helpers evaluated in the example thread are
+# not inside a request and therefore produce unscoped paths. To keep the application's paths aligned
+# with them, treat the current organization as unscoped. `scoped_paths?` is the single source of
+# truth that feeds both the server-side organization-aware URL helpers (Routing::OrganizationsHelper)
+# and the frontend (gon.current_organization.has_scoped_paths), so forcing it to false makes paths
+# unscoped everywhere. Specs that specifically exercise organization-scoped paths can stub it back.
+RSpec.shared_context 'with unscoped Organization paths for feature specs' do
+  before do
+    # rubocop:disable RSpec/AnyInstanceOf -- scoped_paths? is evaluated on Organization records that
+    # are loaded afresh while the app serves a request (in the Capybara server thread), so there is
+    # no single instance to target.
+    allow_any_instance_of(Organizations::Organization).to receive(:scoped_paths?).and_return(false)
+    # rubocop:enable RSpec/AnyInstanceOf
+  end
+end
+
 RSpec.configure do |rspec|
   # Automatically include organization context for all controller specs.
   # This ensures Current.organization is always set, preventing issues where
@@ -61,6 +77,7 @@ RSpec.configure do |rspec|
   # Allow explicit opt-in for non-controller specs using :with_current_organization tag
   rspec.include_context 'with current_organization setting', with_current_organization: true
   rspec.include_context 'with Organization URL helpers', with_organization_url_helpers: true
+  rspec.include_context 'with unscoped Organization paths for feature specs', type: :feature
 end
 
 def seed_internal_bot(bot_type)

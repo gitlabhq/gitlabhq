@@ -2,6 +2,7 @@
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 export default {
+  name: 'FieldView',
   props: {
     isLoading: {
       type: Boolean,

@@ -64,7 +64,6 @@ RSpec.shared_examples 'work item API field parity' do
       Set.new(%w[
         crm_contacts
         current_user_todos
-        development
         email_participants
         linked_resources
         notes
@@ -80,8 +79,12 @@ RSpec.shared_examples 'work item API field parity' do
     # require separate paginated endpoints.
     # award_emoji exposes only upvotes / downvotes / new_custom_emoji_path. The award_emoji
     # collection itself lives on a separate paginated GET /work_items/:iid/award_emoji endpoint.
+    # development exposes only closing_merge_requests_count (the count rendered on the list page).
+    # The full closing merge requests list, related branches / merge requests, and
+    # will_auto_close_by_merge_request are not exposed by the listing REST API (tracked in #601071),
+    # so the per-feature field comparison cannot match.
     let(:skipped_feature_comparison) do
-      Set.new(%w[assignees milestone error_tracking hierarchy award_emoji])
+      Set.new(%w[assignees milestone error_tracking hierarchy award_emoji development])
         .merge(extra_skipped_feature_comparison)
     end
 

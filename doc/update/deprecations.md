@@ -80,6 +80,14 @@ The Dependency Proxy for packages is deprecated and will be removed in a future 
 
 **Action required:** Migrate your package manager configuration from the Dependency Proxy for packages endpoints to the Maven virtual registry. See the [Maven virtual registry documentation](https://docs.gitlab.com/user/packages/virtual_registry/maven/) for setup instructions.
 
+### Deprecate `previousStageJobs` from GraphQL
+
+- Announced in GitLab 19.2
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/603950).
+
+The `previousStageJobs` field in the GraphQL `CiJob` type is deprecated and will be removed in GitLab 20.0. No server-side alternative is required because the GitLab UI no longer needs `previousStageJobs` to calculate dependencies.
+
 ### Design Management deprecated
 
 - Announced in GitLab 18.6
@@ -469,7 +477,7 @@ For more information about updating your storage driver configuration, see [use 
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/569345).
 
-The [Slack slash commands integration](https://docs.gitlab.com/user/project/integrations/slack_slash_commands/) is
+The Slack slash commands integration is
 deprecated in favor of the [GitLab for Slack app](https://docs.gitlab.com/user/project/integrations/gitlab_slack_application/),
 which provides a more secure integration method with the same capabilities.
 
@@ -551,10 +559,10 @@ For more information, see [Upgrade packaged PostgreSQL server](https://docs.gitl
 In GitLab 19.0, we plan to remove support for Redis 6 as part of our commitment to maintaining a secure and
 supportable infrastructure stack.
 
-Before upgrading to GitLab 19.0, you must be running either:
-
-- Redis 7.2.
-- Valkey 7.2, which is available in beta from GitLab 18.9 with general availability planned for GitLab 19.0.
+Before upgrading to GitLab 19.0, migrate to Redis 7.0 or higher, or Valkey 7.2. Redis 7.2 or
+Valkey 7.2 is recommended. Redis 7.0 has reached end-of-life (EOL) upstream, but in some cases
+is actively maintained by vendors, such as Amazon ElastiCache for Redis 7.1, which is built on
+Redis 7.0.
 
 The bundled Redis included with the Linux package has used Redis 7 since GitLab 16.2 and is not affected.
 Only GitLab Self-Managed instances using an external Redis 6 deployment must migrate.
@@ -562,13 +570,14 @@ Only GitLab Self-Managed instances using an external Redis 6 deployment must mig
 See the following resources for migrating an external Redis 6 deployment:
 
 - **AWS ElastiCache**: ElastiCache for Redis 7.2 is not available on AWS. Migrate to
-  [Amazon ElastiCache for Valkey 7.2](https://aws.amazon.com/elasticache/what-is-valkey/).
+  [Amazon ElastiCache for Valkey 7.2](https://aws.amazon.com/elasticache/what-is-valkey/), which is recommended.
+  ElastiCache for Redis 7.1 is built on Redis 7.0 and is known to work.
   For available upgrade paths, see [AWS ElastiCache documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/supported-engine-versions.html).
 - **GCP Memorystore**: Upgrade your Redis 6 instance to Redis 7.2 or Valkey 7.2. For available upgrade paths, see
-  [GCP Memorystore documentation](https://cloud.google.com/memorystore/docs/redis/supported-versions).
+  [GCP Memorystore documentation](https://docs.cloud.google.com/memorystore/docs/redis/supported-versions).
 - **Azure Cache for Redis**: A managed Redis 7.2 or Valkey 7.2 option is not currently available on Azure. You can
   self-host Redis 7.2 or Valkey 7.2 on Azure VMs or AKS. You can also use the GitLab Linux package installation method,
-  which will support Valkey 7.2 with general availability planned for GitLab 19.0.
+  which supports Valkey 7.2.
 - **Self-hosted**: Upgrade your Redis 6 instance to Redis 7.2 or Valkey 7.2.
 
 For more information, see the [requirements documentation](https://docs.gitlab.com/install/requirements/).
@@ -1350,7 +1359,7 @@ For migration instructions, see
 - Removal in GitLab 17.11 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/535298).
 
-GitLab.com requires client authentication for OAuth Resource Owner Password Credentials (ROPC) OAuth grant as of April 8, 2025. ROPC was omitted by the OAuth working group in RFC Version 2.1. Existing ROPC integrations without client credentials will experience service disruption after this date. If you experience disruption, update your integrations to include client credentials before the deadline. More information can be found [on our blog](https://about.gitlab.com/blog/2025/04/01/improving-oauth-ropc-security-on-gitlab-com/).
+GitLab.com requires client authentication for OAuth Resource Owner Password Credentials (ROPC) OAuth grant as of April 8, 2025. ROPC was omitted by the OAuth working group in RFC Version 2.1. Existing ROPC integrations without client credentials will experience service disruption after this date. If you experience disruption, update your integrations to include client credentials before the deadline. More information can be found [on our blog](https://about.gitlab.com/blog/improving-oauth-ropc-security-on-gitlab-com/).
 
 ## GitLab 17.9
 
@@ -2416,7 +2425,7 @@ We are deprecating the built-in pull-based deployment features of the GitLab age
 
 The GitLab agent for Kubernetes **is not deprecated**. This change affects only the pull-based functionality of the agent. All other functionality will remain intact, and GitLab will continue to support the agent for Kubernetes.
 
-If you use the agent for pull-based deployments, you should [migrate to Flux](https://docs.gitlab.com/user/clusters/agent/gitops/agent/#migrate-to-flux). Because Flux is a mature CNCF project for GitOps, we decided to [integrate Flux with GitLab in February 2023](https://about.gitlab.com/blog/2023/02/08/why-did-we-choose-to-integrate-fluxcd-with-gitlab/).
+If you use the agent for pull-based deployments, you should [migrate to Flux](https://docs.gitlab.com/user/clusters/agent/gitops/agent/#migrate-to-flux). Because Flux is a mature CNCF project for GitOps, we decided to [integrate Flux with GitLab in February 2023](https://about.gitlab.com/blog/why-did-we-choose-to-integrate-fluxcd-with-gitlab/).
 
 ### Twitter OmniAuth login option is deprecated from GitLab Self-Managed
 
@@ -2886,7 +2895,7 @@ config file locations instead, for example `config/redis.cache.yml` or
 - Removal in GitLab 16.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/842).
 
-The container registry [pull-through cache](https://docs.docker.com/docker-hub/mirror/) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. The pull-through cache is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution). However, we are removing the pull-through cache in favor of the GitLab Dependency Proxy, which allows you to proxy and cache container images from Docker Hub. Removing the pull-through cache allows us also to remove the upstream client code without sacrificing functionality.
+The container registry [pull-through cache](https://docs.docker.com/docker-hub/image-library/mirror/) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. The pull-through cache is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution). However, we are removing the pull-through cache in favor of the GitLab Dependency Proxy, which allows you to proxy and cache container images from Docker Hub. Removing the pull-through cache allows us also to remove the upstream client code without sacrificing functionality.
 
 ### Container scanning variables that reference Docker
 
@@ -2961,7 +2970,7 @@ The Deployment API will now return an error when `updated_at` filtering and `upd
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352609).
 
 Using environment variables `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configure Gitaly is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352609).
-These variables are being replaced with standard [`config.toml` Gitaly configuration](https://docs.gitlab.com/administration/gitaly/reference/).
+These variables are being replaced with standard [`config.toml` Gitaly configuration](https://docs.gitlab.com/administration/gitaly/).
 
 GitLab instances that use `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configure Gitaly should switch to configuring using
 `config.toml`.
@@ -3355,7 +3364,7 @@ Alternatives to using the `gitlab:import:repos` Rake task include:
 - Migrating projects using either [an export file](https://docs.gitlab.com/user/project/settings/import_export/) or
   [direct transfer](https://docs.gitlab.com/user/group/import/#migrate-groups-by-direct-transfer-recommended) migrate repositories as well.
 - Importing a [repository by URL](https://docs.gitlab.com/user/project/import/repo_by_url/).
-- Importing [repositories from a non-GitLab source](https://docs.gitlab.com/user/project/import/).
+- Importing [repositories from a non-GitLab source](https://docs.gitlab.com/user/import/).
 
 ### Redis 5 deprecated
 
@@ -5009,16 +5018,16 @@ Please review the fully detailed changes below and consult [the migration guide]
 > [!note]
 > This change has been removed from its original milestone and is being reassessed.
 
-In GitLab 19.0, we will update the [SAST CI/CD templates](https://docs.gitlab.com/user/application_security/sast#stable-vs-latest-sast-templates) to enable [GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast) by default in projects with GitLab Ultimate.
+In GitLab 19.0, we will update the [SAST CI/CD templates](https://docs.gitlab.com/user/application_security/sast#stable-vs-latest-sast-templates) to enable [GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast/) by default in projects with GitLab Ultimate.
 Before this change, the GitLab Advanced SAST analyzer is enabled only if you set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
 This change was previously scheduled for GitLab 18.0 and has now been delayed.
 
 Advanced SAST delivers more accurate results by using cross-file, cross-function scanning and a new ruleset.
-Advanced SAST takes over coverage for [supported languages](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#supported-languages) and disables scanning for that language in the previous scanner.
+Advanced SAST takes over coverage for [supported languages](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast/#supported-languages) and disables scanning for that language in the previous scanner.
 An automated process migrates results from previous scanners after the first scan on each project's default branch, if they're still detected.
 
 Because it scans your project in more detail, Advanced SAST may take more time to scan your project.
-If needed, you can [disable GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#disable-gitlab-advanced-sast-scanning) by setting the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `false`.
+If needed, you can [disable GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast/#disable-gitlab-advanced-sast-scanning) by setting the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `false`.
 You can set this variable in your project, group, or policy now to prevent Advanced SAST from being enabled by default in GitLab 19.0.
 
 ### GitLab Runner Docker Machine executor is deprecated
@@ -5159,7 +5168,7 @@ Rate limits will be enabled by default for commonly used [User](https://docs.git
 [Project](https://docs.gitlab.com/administration/settings/rate_limit_on_projects_api/), and [Group](https://docs.gitlab.com/administration/settings/rate_limit_on_groups_api/) endpoints.
 Enabling these rate limits by default can help improve overall system stability,
 by reducing the potential for heavy API usage to negatively impact the broader user experience. Requests made above the rate
-limit will return an [HTTP 429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) error code and [additional rate limit headers](https://docs.gitlab.com/administration/settings/user_and_ip_rate_limits/#response-headers).
+limit will return an [HTTP 429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/429) error code and [additional rate limit headers](https://docs.gitlab.com/administration/settings/user_and_ip_rate_limits/#response-headers).
 
 The default rate limits have been intentionally set fairly high to not disrupt most usage, based on the request rates we see on GitLab.com.
 Instance administrators can set higher or lower limits as needed in the Admin area, similarly to other rate limits already in place.

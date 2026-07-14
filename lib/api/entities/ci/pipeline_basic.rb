@@ -4,9 +4,9 @@ module API
   module Entities
     module Ci
       class PipelineBasic < Grape::Entity
-        expose :id, documentation: { type: 'Integer', example: 1 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
         expose :iid, documentation: { type: 'Integer', example: 2 }
-        expose :project_id, documentation: { type: 'Integer', example: 3 }
+        expose :project_id, documentation: { type: 'Integer', format: 'int64', example: 3 }
         expose :sha, documentation: { type: 'String', example: '0ec9e58fdfca6cdd6652c083c9edb53abc0bad52' }
         expose :ref, documentation: { type: 'String', example: 'feature-branch' }
         expose :status, documentation: { type: 'String', example: 'success' }

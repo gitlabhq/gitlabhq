@@ -47,7 +47,7 @@ To send API requests, install either:
 - curl with your preferred package manager.
 - [GitLab CLI](https://docs.gitlab.com/cli/) and use the `glab api` subcommand.
 
-To format JSON responses, install `jq`. For more information, see [Tips for productive DevOps workflows: JSON formatting with jq and CI/CD linting automation](https://about.gitlab.com/blog/2021/04/21/devops-workflows-json-format-jq-ci-cd-lint/).
+To format JSON responses, install `jq`. For more information, see [Tips for productive DevOps workflows: JSON formatting with jq and CI/CD linting automation](https://about.gitlab.com/blog/devops-workflows-json-format-jq-ci-cd-lint/).
 
 To use these tools with the REST API:
 

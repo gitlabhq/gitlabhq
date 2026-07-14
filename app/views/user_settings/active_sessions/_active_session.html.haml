@@ -1,7 +1,7 @@
 - is_current_session = active_session.current?(session)
 
 %li.list-group-item
-  .float-left.gl-mr-3{ data: { toggle: 'tooltip' }, title: active_session.human_device_type }
+  .gl-mr-3{ class: '!gl-float-left', data: { toggle: 'tooltip' }, title: active_session.human_device_type }
     = active_session_device_type_icon(active_session)
 
   %div{ class: "description !gl-float-left" }

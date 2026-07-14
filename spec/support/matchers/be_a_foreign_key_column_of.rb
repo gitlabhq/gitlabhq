@@ -16,4 +16,12 @@ RSpec::Matchers.define :be_a_foreign_key_column_of do |composite_keys|
       end
     end
   end
+
+  failure_message do |id_columns|
+    missing = id_columns.reject do |id_column|
+      composite_keys.any? { |composite_key| composite_key.include?(id_column) }
+    end
+    "expected all of #{id_columns.inspect} to be foreign key columns in #{composite_keys.inspect}, " \
+      "but these are not: #{missing.inspect}"
+  end
 end

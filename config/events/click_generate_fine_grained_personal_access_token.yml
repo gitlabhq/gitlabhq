@@ -1,0 +1,16 @@
+---
+description: User selects the option to generate a fine-grained personal access token
+internal_events: true
+status: active
+action: click_generate_fine_grained_personal_access_token
+identifiers:
+- user
+product_group: authorization
+product_categories:
+- permissions
+milestone: '19.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242402
+tiers:
+- free
+- premium
+- ultimate

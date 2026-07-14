@@ -21,7 +21,7 @@ RSpec.describe Emails::DestroyService, feature_category: :user_management do
       quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9437' do
       service.execute(email)
 
-      expect(notification_setting.reload.notification_email).to eq nil
+      expect(notification_setting.reload.notification_email).to be_nil
     end
 
     context 'when it corresponds to the user primary email' do

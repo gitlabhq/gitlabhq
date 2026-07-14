@@ -22,12 +22,18 @@ RSpec.shared_context 'with build, pipeline and artifacts' do
   let_it_be(:runner_manager, freeze: false) { create(:ci_runner_machine, runner: runner) }
   let_it_be(:id_token) { "jwt.jwt.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30" }
 
+  let(:attest_method) { nil }
+
   let(:yaml_variables) do
-    [
+    variables = [
       # Temporary mechanism to prevent running in test suite while UX is discused.
       # https://gitlab.com/gitlab-org/gitlab/-/issues/547903#note_2654845642
       { key: 'ATTEST_BUILD_ARTIFACTS', value: 'true', public: true }
     ]
+
+    variables.append({ key: 'ATTEST_METHOD', value: attest_method, public: true }) if attest_method
+
+    variables
   end
 
   before do

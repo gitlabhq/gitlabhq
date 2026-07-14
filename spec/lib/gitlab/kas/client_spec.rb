@@ -74,6 +74,43 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       it { is_expected.to eq(server_info) }
     end
 
+    describe '#start_workflow' do
+      let(:stub) { instance_double(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub) }
+      let(:response) { instance_double(Gitlab::Agent::AutoFlow::Rpc::StartWorkflowResponse) }
+
+      subject(:result) do
+        client.start_workflow(
+          identity_key: 'rollout-1',
+          workflow_definition: "def main(w):\n    pass\n",
+          namespace_id: 600956,
+          kwargs: { 'environment' => { 'id' => '42' } }
+        )
+      end
+
+      before do
+        expect(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
+          .and_return(stub)
+      end
+
+      it 'builds the request from plain arguments and returns the response' do
+        expect(stub).to receive(:start_workflow) do |request, metadata:|
+          expect(metadata).to eq('authorization' => 'bearer test-token', **feature_flags)
+          expect(request.identity_key).to eq('rollout-1')
+          expect(request.namespace_id).to eq(600956)
+          expect(request.kwargs.map(&:name)).to eq(['environment'])
+
+          key_value = request.kwargs.first.value.dict_value.key_values.first
+          expect(key_value.key.string_value).to eq('id')
+          expect(key_value.val.string_value).to eq('42')
+
+          response
+        end
+
+        expect(result).to eq(response)
+      end
+    end
+
     describe '#get_connected_agentks_by_agent_ids' do
       let(:stub) { instance_double(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub) }
       let(:request) { instance_double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentksByAgentIDsRequest) }
@@ -246,6 +283,280 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
     describe '#subscribe_events' do
       let(:topic) { 'test.topic' }
       let(:consumer_group) { 'rails-test' }
+
+      # The resilient wrapper reconnects forever, so every test that lets the loop run must arrange
+      # for it to terminate (block raise, stop_when, Cancelled, or a permanent error). Tests never
+      # sleep for real: the backoff is a stubbed double, or `sleep` is stubbed.
+
+      context 'when the subscribe_events_from_relay feature flag is disabled' do
+        before do
+          stub_feature_flags(subscribe_events_from_relay: false)
+        end
+
+        it 'returns nil and does not subscribe' do
+          expect(client).not_to receive(:subscribe_events_single_stream)
+
+          expect(
+            client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+          ).to be_nil
+        end
+
+        it 'still raises ArgumentError when no block is given' do
+          expect do
+            client.subscribe_events(topic: topic, consumer_group: consumer_group)
+          end.to raise_error(ArgumentError, /block is required/)
+        end
+      end
+
+      it 'raises ArgumentError when no block is given' do
+        expect do
+          client.subscribe_events(topic: topic, consumer_group: consumer_group)
+        end.to raise_error(ArgumentError, /block is required/)
+      end
+
+      describe 'reconnect behavior' do
+        let(:backoff) { instance_double(Gitlab::Kas::ExponentialBackoff, next: 0, reset: nil) }
+
+        it 'reconnects when the single-stream helper returns cleanly' do
+          allow(client).to receive(:sleep) # non-stable closes back off; keep the test fast
+          call_count = 0
+          allow(client).to receive(:subscribe_events_single_stream) do
+            call_count += 1
+            # Simulate a clean stream close by returning; raise on the 3rd attempt to exit the loop.
+            raise 'stop after 3 attempts' if call_count >= 3
+          end
+
+          expect do
+            client.subscribe_events(topic: topic, consumer_group: consumer_group, backoff: backoff) { |_event| nil }
+          end.to raise_error('stop after 3 attempts')
+
+          expect(call_count).to eq(3)
+        end
+
+        it 'sleeps via the backoff between transient retries' do
+          allow(client).to receive(:subscribe_events_single_stream)
+            .and_raise(GRPC::Unavailable.new('broker down'))
+
+          sleep_count = 0
+          allow(client).to receive(:sleep) do |duration|
+            expect(duration).to eq(0)
+            sleep_count += 1
+            raise 'stop' if sleep_count >= 2 # exit the loop after two retries
+          end
+
+          expect do
+            client.subscribe_events(topic: topic, consumer_group: consumer_group, backoff: backoff) { |_event| nil }
+          end.to raise_error('stop')
+
+          expect(backoff).to have_received(:next).twice
+        end
+
+        it 'raises on a permanent gRPC error (InvalidArgument)' do
+          allow(client).to receive(:subscribe_events_single_stream)
+            .and_raise(GRPC::InvalidArgument.new('bad consumer group'))
+
+          expect do
+            client.subscribe_events(topic: topic, consumer_group: consumer_group, backoff: backoff) { |_event| nil }
+          end.to raise_error(GRPC::InvalidArgument)
+        end
+
+        it 'returns cleanly on Cancelled' do
+          allow(client).to receive(:subscribe_events_single_stream)
+            .and_raise(GRPC::Cancelled.new('explicit shutdown'))
+
+          expect(
+            client.subscribe_events(topic: topic, consumer_group: consumer_group, backoff: backoff) { |_event| nil }
+          ).to be_nil
+        end
+
+        it 'retries on Unauthenticated (token rotation can self-heal)' do
+          call_count = 0
+          allow(client).to receive(:subscribe_events_single_stream) do
+            call_count += 1
+            raise GRPC::Unauthenticated, 'stale token' if call_count == 1
+            raise 'stop' if call_count >= 2
+          end
+
+          allow(client).to receive(:sleep)
+
+          expect do
+            client.subscribe_events(topic: topic, consumer_group: consumer_group, backoff: backoff) { |_event| nil }
+          end.to raise_error('stop')
+
+          expect(call_count).to eq(2)
+        end
+
+        it 'returns when stop_when becomes truthy between attempts' do
+          attempts = 0
+          allow(client).to receive(:subscribe_events_single_stream) { attempts += 1 }
+
+          stop_when = -> { attempts >= 2 }
+
+          client.subscribe_events(
+            topic: topic, consumer_group: consumer_group, stop_when: stop_when, backoff: backoff
+          ) { |_event| nil }
+
+          expect(attempts).to eq(2)
+        end
+
+        it 'does not subscribe at all when stop_when is already truthy' do
+          expect(client).not_to receive(:subscribe_events_single_stream)
+
+          client.subscribe_events(
+            topic: topic, consumer_group: consumer_group, stop_when: -> { true }, backoff: backoff
+          ) { |_event| nil }
+        end
+
+        it 'propagates a block-raise without retrying' do
+          attempts = 0
+          allow(client).to receive(:subscribe_events_single_stream) do |&block|
+            attempts += 1
+            block.call(double('event'))
+          end
+
+          expect do
+            client.subscribe_events(topic: topic, consumer_group: consumer_group, backoff: backoff) do |_|
+              raise 'handler error'
+            end
+          end.to raise_error('handler error')
+
+          expect(attempts).to eq(1)
+        end
+
+        it 'forwards subscribe options through to the single-stream helper' do
+          allow(client).to receive(:subscribe_events_single_stream).and_raise('stop')
+
+          expect(client).to receive(:subscribe_events_single_stream).with(
+            topic: topic,
+            consumer_group: consumer_group,
+            event_types: ['com.example.one'],
+            deadline: 5.minutes
+          )
+
+          expect do
+            client.subscribe_events(
+              topic: topic,
+              consumer_group: consumer_group,
+              event_types: ['com.example.one'],
+              deadline: 5.minutes,
+              backoff: backoff
+            ) { |_event| nil }
+          end.to raise_error('stop')
+        end
+      end
+
+      describe 'stable-period backoff reset' do
+        let(:backoff) { instance_double(Gitlab::Kas::ExponentialBackoff, next: 0, reset: nil) }
+
+        it 'resets the backoff only after a stream runs longer than the stable period' do
+          call_count = 0
+          allow(client).to receive(:subscribe_events_single_stream) do
+            call_count += 1
+            case call_count
+            when 1 then travel(1.second) # dies fast: no stable period, no reset
+            when 2 then travel((described_class::STABLE_PERIOD_SECONDS + 5).seconds) # stable: reset
+            else raise 'stop'
+            end
+          end
+
+          expect do
+            client.subscribe_events(topic: topic, consumer_group: consumer_group, backoff: backoff) { |_event| nil }
+          end.to raise_error('stop')
+
+          expect(backoff).to have_received(:reset).once
+        end
+      end
+
+      describe 'structured logging' do
+        let(:backoff) { instance_double(Gitlab::Kas::ExponentialBackoff, next: 0, reset: nil) }
+        let(:logger) { instance_double(Gitlab::EventsPlatform::Logger) }
+
+        before do
+          allow(Gitlab::EventsPlatform::Logger).to receive(:build).and_return(logger)
+          allow(logger).to receive(:info)
+          allow(logger).to receive(:warn)
+          allow(logger).to receive(:error)
+        end
+
+        it 'logs an info entry when a stable stream closes cleanly' do
+          call_count = 0
+          allow(client).to receive(:subscribe_events_single_stream) do
+            call_count += 1
+            travel((described_class::STABLE_PERIOD_SECONDS + 5).seconds) if call_count == 1
+            raise 'stop' if call_count >= 2
+          end
+
+          expect do
+            client.subscribe_events(topic: topic, consumer_group: consumer_group, backoff: backoff) { |_event| nil }
+          end.to raise_error('stop')
+
+          expect(logger).to have_received(:info).with(
+            hash_including(message: 'subscribe_events stream closed cleanly; reconnecting')
+          )
+        end
+
+        it 'logs a warning and backs off when a stream closes before the stable period' do
+          allow(client).to receive(:sleep)
+          call_count = 0
+          allow(client).to receive(:subscribe_events_single_stream) do
+            call_count += 1
+            # Each close is immediate (non-stable); raise on the 2nd to exit the loop.
+            raise 'stop' if call_count >= 2
+          end
+
+          expect do
+            client.subscribe_events(topic: topic, consumer_group: consumer_group, backoff: backoff) { |_event| nil }
+          end.to raise_error('stop')
+
+          expect(logger).to have_received(:warn).with(
+            hash_including(
+              message: 'subscribe_events stream closed before stable period; backing off',
+              consecutive_failures: 1
+            )
+          )
+          expect(backoff).to have_received(:next)
+        end
+
+        it 'logs a warning with the consecutive failure count on a transient error' do
+          allow(client).to receive(:subscribe_events_single_stream)
+            .and_raise(GRPC::Unavailable.new('broker down'))
+
+          sleep_count = 0
+          allow(client).to receive(:sleep) do
+            sleep_count += 1
+            raise 'stop' if sleep_count >= 2
+          end
+
+          expect do
+            client.subscribe_events(topic: topic, consumer_group: consumer_group, backoff: backoff) { |_event| nil }
+          end.to raise_error('stop')
+
+          expect(logger).to have_received(:warn).with(
+            hash_including(
+              message: 'subscribe_events transient error; retrying',
+              consecutive_failures: 1
+            )
+          )
+        end
+
+        it 'logs an error on a permanent gRPC error' do
+          allow(client).to receive(:subscribe_events_single_stream)
+            .and_raise(GRPC::InvalidArgument.new('bad consumer group'))
+
+          expect do
+            client.subscribe_events(topic: topic, consumer_group: consumer_group, backoff: backoff) { |_event| nil }
+          end.to raise_error(GRPC::InvalidArgument)
+
+          expect(logger).to have_received(:error).with(
+            hash_including(message: 'subscribe_events permanent error')
+          )
+        end
+      end
+    end
+
+    describe '#subscribe_events_single_stream (private)' do
+      let(:topic) { 'test.topic' }
+      let(:consumer_group) { 'rails-test' }
       let(:stub) { instance_double(Gitlab::Agent::EventsPlatform::Rpc::EventsPlatform::Stub) }
       let(:expected_metadata) { { 'authorization' => 'bearer test-token', **feature_flags } }
 
@@ -294,11 +605,22 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
         end
       end
 
+      def subscribe_single_stream(event_types: [], deadline: described_class::DEFAULT_SUBSCRIBE_DEADLINE, &block)
+        client.send(
+          :subscribe_events_single_stream,
+          topic: topic,
+          consumer_group: consumer_group,
+          event_types: event_types,
+          deadline: deadline,
+          &block
+        )
+      end
+
       it 'sends SubscribeConfig as the first request' do
         captured = []
         capture_subscribe(server_responses: [], captured: captured)
 
-        client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+        subscribe_single_stream { |_event| nil }
 
         expect(captured.first.config).to have_attributes(
           topic: topic,
@@ -311,7 +633,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
         captured = []
         capture_subscribe(server_responses: server_responses, captured: captured)
 
-        client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+        subscribe_single_stream { |_event| nil }
 
         # The first request is the config; everything after must be an ack, never another config.
         configs = captured.select { |req| req.request == :config }
@@ -330,11 +652,10 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           Enumerator.new { |_y| nil }
         end
 
-        client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+        subscribe_single_stream { |_event| nil }
 
-        # The `ensure` block in #subscribe_events pushes nil into the ack queue,
-        # which breaks the request enumerator's internal loop. Advancing the
-        # enumerator one more time should raise StopIteration.
+        # The `ensure` block pushes nil into the ack queue, which breaks the request enumerator's
+        # internal loop. Advancing the enumerator one more time should raise StopIteration.
         expect { captured_requests_enum.next }.to raise_error(StopIteration)
       end
 
@@ -342,7 +663,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
         capture_subscribe(server_responses: server_responses, captured: [])
 
         received = []
-        client.subscribe_events(topic: topic, consumer_group: consumer_group) do |event|
+        subscribe_single_stream do |event|
           received << event
         end
 
@@ -353,7 +674,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
         captured = []
         capture_subscribe(server_responses: server_responses, captured: captured)
 
-        client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+        subscribe_single_stream { |_event| nil }
 
         # captured = [config, ack(event_one), ack(event_two)]
         acks = captured.drop(1).map { |req| req.ack.message_ids.to_a }
@@ -365,7 +686,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
         capture_subscribe(server_responses: server_responses, captured: captured)
 
         expect do
-          client.subscribe_events(topic: topic, consumer_group: consumer_group) do |_|
+          subscribe_single_stream do |_|
             raise 'boom'
           end
         end.to raise_error(RuntimeError, 'boom')
@@ -378,81 +699,77 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
         captured = []
         capture_subscribe(server_responses: [], captured: captured)
 
-        client.subscribe_events(
-          topic: topic,
-          consumer_group: consumer_group,
-          event_types: ['com.example.one', 'com.example.two']
-        ) { |_event| nil }
+        subscribe_single_stream(event_types: ['com.example.one', 'com.example.two']) { |_event| nil }
 
         expect(captured.first.config.event_types.to_a).to eq(
           ['com.example.one', 'com.example.two']
         )
       end
 
-      it 'passes the auth metadata and the default deadline to the stub' do
-        capture_subscribe(server_responses: [], captured: [])
-        frozen_now = Time.utc(2026, 6, 10, 12, 0, 0)
-        travel_to(frozen_now) do
-          client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+      it 'passes the auth metadata and a seconds-from-epoch deadline to the stub', :aggregate_failures do
+        captured_deadline = nil
+        allow(stub).to receive(:subscribe) do |requests, deadline:, **_kwargs|
+          captured_deadline = deadline
+          requests.next
+          Enumerator.new { |_y| nil }
         end
+
+        # The deadline is anchored to the real system clock (Process::CLOCK_REALTIME), not Timecop,
+        # because that is the clock the gRPC c-core reads. Bound the expected value without freezing
+        # time.
+        before_call = Process.clock_gettime(Process::CLOCK_REALTIME)
+        subscribe_single_stream { |_event| nil }
+        after_call = Process.clock_gettime(Process::CLOCK_REALTIME)
 
         expect(stub).to have_received(:subscribe).with(
           kind_of(Enumerator),
-          deadline: frozen_now + described_class::DEFAULT_SUBSCRIBE_DEADLINE,
+          deadline: kind_of(Numeric),
           metadata: expected_metadata
         )
-      end
 
-      it 'allows the caller to override the deadline' do
-        capture_subscribe(server_responses: [], captured: [])
-        frozen_now = Time.utc(2026, 6, 10, 12, 0, 0)
-        travel_to(frozen_now) do
-          client.subscribe_events(
-            topic: topic,
-            consumer_group: consumer_group,
-            deadline: 5.minutes
-          ) { |_event| nil }
-        end
-
-        expect(stub).to have_received(:subscribe).with(
-          kind_of(Enumerator),
-          deadline: frozen_now + 5.minutes,
-          metadata: expected_metadata
+        # Must be seconds-from-epoch, NOT an ActiveSupport::TimeWithZone (gRPC rejects the latter
+        # with "bad input: (time)->c_timeval").
+        expect(captured_deadline).not_to be_a(ActiveSupport::TimeWithZone)
+        expect(captured_deadline).to be_between(
+          before_call + described_class::DEFAULT_SUBSCRIBE_DEADLINE,
+          after_call + described_class::DEFAULT_SUBSCRIBE_DEADLINE
         )
-      end
-
-      it 'raises ArgumentError when no block is given' do
-        expect do
-          client.subscribe_events(topic: topic, consumer_group: consumer_group)
-        end.to raise_error(ArgumentError, /block is required/)
       end
 
       it 'propagates gRPC errors from the stub' do
         allow(stub).to receive(:subscribe).and_raise(GRPC::Unavailable.new('relay down'))
 
         expect do
-          client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
+          subscribe_single_stream { |_event| nil }
         end.to raise_error(GRPC::Unavailable)
       end
 
-      context 'when the subscribe_events_from_relay feature flag is disabled' do
-        before do
-          stub_feature_flags(subscribe_events_from_relay: false)
+      # Regression: gRPC's bidi machinery drains the request enumerator in a separate (write) thread
+      # and joins it from inside the response iteration when the stream ends. If the request
+      # enumerator blocked forever on the ack queue, that join - and therefore the whole call - would
+      # deadlock on an idle stream. This mimics that contract: a background thread fully drains the
+      # request enumerator, and the response `each` only returns once that thread has finished.
+      it 'does not deadlock on an idle stream and returns at the deadline' do
+        allow(stub).to receive(:subscribe) do |requests, **_kwargs|
+          drain_thread = Thread.new do
+            # Faithfully drain the request enumerator the way the gRPC write loop does, until it
+            # terminates on its own (StopIteration).
+            requests.to_a
+          end
+
+          Enumerator.new do |_y|
+            # Idle stream: no responses are ever produced. gRPC joins the write thread before the
+            # response iteration returns, so we must wait for the enumerator to self-terminate.
+            drain_thread.join
+          end
         end
 
-        it 'returns nil and skips the RPC call' do
-          expect(stub).not_to receive(:subscribe)
-
-          expect(
-            client.subscribe_events(topic: topic, consumer_group: consumer_group) { |_event| nil }
-          ).to be_nil
-        end
-
-        it 'still raises ArgumentError when no block is given' do
-          expect do
-            client.subscribe_events(topic: topic, consumer_group: consumer_group)
-          end.to raise_error(ArgumentError, /block is required/)
-        end
+        # A short deadline keeps the test fast; the enumerator must tear itself down shortly after.
+        expect do
+          Timeout.timeout(15) do
+            subscribe_single_stream(deadline: 2.seconds) { |_event| nil }
+          end
+        end.not_to raise_error
       end
     end
 

@@ -44,7 +44,7 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
         expect(result.payload.reload).to eq(import_source_user)
         expect(result.payload.reassign_to_user).to eq(assignee_user)
         expect(result.payload.reassigned_by_user).to eq(current_user)
-        expect(result.payload.awaiting_approval?).to eq(true)
+        expect(result.payload.awaiting_approval?).to be(true)
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
         expect(result.payload.reload).to eq(import_source_user)
         expect(result.payload.reassign_to_user).to eq(assignee_user)
         expect(result.payload.reassigned_by_user).to eq(current_user)
-        expect(result.payload.reassignment_in_progress?).to eq(true)
+        expect(result.payload.reassignment_in_progress?).to be(true)
       end
     end
 

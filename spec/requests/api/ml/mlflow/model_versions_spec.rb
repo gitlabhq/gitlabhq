@@ -37,6 +37,15 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
   end
 
   describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get' do
+    it_behaves_like 'authorizing granular token permissions', :read_model_version do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        base = "/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/model-versions/get"
+        get api("#{base}?name=#{name}&version=#{version}", personal_access_token: pat)
+      end
+    end
+
     let(:route) do
       "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/get?name=#{name}&version=#{version}"
     end
@@ -86,6 +95,15 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
   end
 
   describe 'UPDATE /projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/update' do
+    it_behaves_like 'authorizing granular token permissions', :update_model_version do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        post_path = "/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/model-versions/update"
+        patch api(post_path, personal_access_token: pat), params: { name: name, version: version, description: "d" }
+      end
+    end
+
     let(:params) { { name: name, version: version, description: 'description-text' } }
     let(:request) { patch api(route), params: params, headers: headers }
 
@@ -138,6 +156,15 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
   end
 
   describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/model_versions/create' do
+    it_behaves_like 'authorizing granular token permissions', :create_model_version do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        post api("/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/model-versions/create", personal_access_token: pat),
+          params: { name: model.name, description: "d" }
+      end
+    end
+
     let(:model_name) { model.name }
     let(:route) do
       "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/create"
@@ -244,6 +271,15 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
   end
 
   describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get-download-uri' do
+    it_behaves_like 'authorizing granular token permissions', :read_model_version do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        base = "/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/model-versions/get-download-uri"
+        get api("#{base}?name=#{name}&version=#{model_version.id}", personal_access_token: pat)
+      end
+    end
+
     let(:route) do
       "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/get-download-uri?name=#{name}
 &version=#{model_version.id}"

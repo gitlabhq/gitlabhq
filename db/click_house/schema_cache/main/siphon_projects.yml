@@ -232,3 +232,8 @@ columns:
   type: Bool
   default_kind: DEFAULT
   default_expression: 'false'
+- name: _siphon_watermark
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))

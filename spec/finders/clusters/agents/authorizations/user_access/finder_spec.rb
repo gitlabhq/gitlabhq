@@ -23,7 +23,7 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::Finder, feature_cat
     end
 
     context 'with project authorizations' do
-      let!(:authorization_1) do
+      let_it_be(:authorization_1) do
         create(:agent_user_access_project_authorization, agent: agent, project: deployment_project)
       end
 
@@ -54,7 +54,7 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::Finder, feature_cat
       context 'with multiple authorizations' do
         let_it_be(:agent_2) { create(:cluster_agent, project: agent_configuration_project) }
         let_it_be(:agent_3) { create(:cluster_agent, project: agent_configuration_project) }
-        let_it_be(:deployment_project_2) { create(:project, namespace: organization) }
+        let_it_be(:deployment_project_2) { create(:project, namespace: organization, developers: deployment_developer) }
 
         let_it_be(:authorization_2) do
           create(:agent_user_access_project_authorization, agent: agent_2, project: deployment_project)
@@ -62,10 +62,6 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::Finder, feature_cat
 
         let_it_be(:authorization_3) do
           create(:agent_user_access_project_authorization, agent: agent_3, project: deployment_project_2)
-        end
-
-        before_all do
-          deployment_project_2.add_developer(deployment_developer)
         end
 
         it 'returns authorizations' do

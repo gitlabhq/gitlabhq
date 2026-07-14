@@ -584,6 +584,63 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
       end
     end
 
+    context 'with cluster transfers' do
+      let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
+      let_it_be_with_refind(:non_group_user) { create(:user, organization: old_organization) }
+
+      before_all do
+        group.add_developer(user1)
+      end
+
+      it 'updates organization_id for clusters created by transferred users' do
+        cluster = create(:cluster, :instance, :provided_by_gcp, user: user1, organization_id: old_organization.id)
+
+        service.execute
+
+        expect(cluster.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'updates organization_id for cluster child tables' do
+        cluster = create(:cluster, :instance, :provided_by_gcp, user: user1, organization_id: old_organization.id)
+        cluster.provider_gcp.update_column(:organization_id, old_organization.id)
+        cluster.platform_kubernetes.update_column(:organization_id, old_organization.id)
+
+        service.execute
+
+        expect(cluster.provider_gcp.reload.organization_id).to eq(new_organization.id)
+        expect(cluster.platform_kubernetes.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'updates organization_id for AWS provider child records' do
+        cluster = create(:cluster, :instance, :provided_by_aws, user: user1, organization_id: old_organization.id)
+        cluster.provider_aws.update_column(:organization_id, old_organization.id)
+
+        service.execute
+
+        expect(cluster.provider_aws.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'updates organization_id for kubernetes namespace child records' do
+        cluster = create(:cluster, :instance, :provided_by_gcp, user: user1, organization_id: old_organization.id)
+        kubernetes_namespace = create(:cluster_kubernetes_namespace,
+          cluster: cluster,
+          namespace: 'test-namespace',
+          cluster_project: nil,
+          project: nil)
+        kubernetes_namespace.update_column(:organization_id, old_organization.id)
+
+        service.execute
+
+        expect(kubernetes_namespace.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'does not update clusters created by users not in the group' do
+        non_group_cluster = create(:cluster, :instance, user: non_group_user, organization_id: old_organization.id)
+
+        expect { service.execute }.not_to change { non_group_cluster.reload.organization_id }
+      end
+    end
+
     context 'with associated organization_id updates', :aggregate_failures do
       let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
       let_it_be_with_refind(:user2) { create(:user, organization: old_organization) }
@@ -609,6 +666,31 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
           non_group_token = create(:personal_access_token, user: non_group_user, organization: old_organization)
 
           expect { service.execute }.not_to change { non_group_token.reload.organization_id }
+        end
+      end
+
+      context 'for oauth applications' do
+        it 'updates organization_id for user-owned oauth applications of transferred users' do
+          app1 = create(:oauth_application, owner: user1, organization: old_organization)
+          app2 = create(:oauth_application, owner: user2, organization: old_organization)
+
+          service.execute
+
+          expect(app1.reload.organization_id).to eq(new_organization.id)
+          expect(app2.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update oauth applications for users not in the group' do
+          non_group_app = create(:oauth_application, owner: non_group_user, organization: old_organization)
+
+          expect { service.execute }.not_to change { non_group_app.reload.organization_id }
+        end
+
+        it 'does not update group-owned oauth applications' do
+          group_app = create(:oauth_application, owner_id: group.id, owner_type: 'Namespace',
+            organization: old_organization)
+
+          expect { service.execute }.not_to change { group_app.reload.organization_id }
         end
       end
 
@@ -818,24 +900,25 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
         context 'with self.skipped_transfer_models' do
           let(:skipped_transfer_models) do
             [
-              'User',
-              'Project',
-              'Group',
               'AbuseReport',
-              'GitlabSubscriptions::AddOnPurchase',
-              'GitlabSubscriptions::SeatAssignment',
-              'GitlabSubscriptions::UserAddOnAssignment',
+              'Ai::Catalog::ItemConsumer',
+              'AntiAbuse::Event',
               'Authz::AdminRole',
               'Authz::GranularScope',
               'Authz::PersonalAccessTokenGranularScope',
+              'BulkImports::Export',
+              'Clusters::Cluster',
+              'Dependencies::DependencyListExport',
+              'GitlabSubscriptions::AddOnPurchase',
+              'GitlabSubscriptions::SeatAssignment',
+              'GitlabSubscriptions::UserAddOnAssignment',
+              'Group',
+              'ImportFailure',
               'MemberRole',
-              'Ai::Catalog::ItemConsumer',
+              'Project',
               'ProjectSnippet',
               'Snippet',
-              'ImportFailure',
-              'Clusters::Cluster',
-              'AntiAbuse::Event',
-              'Dependencies::DependencyListExport'
+              'User'
             ]
           end
 

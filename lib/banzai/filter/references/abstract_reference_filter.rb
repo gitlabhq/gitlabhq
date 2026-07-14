@@ -13,7 +13,7 @@ module Banzai
         def initialize(doc, context = nil, result = nil)
           super
 
-          @reference_cache = ReferenceCache.new(self, context, result)
+          @reference_cache = ReferenceCache.new(self, result)
         end
 
         # See ReferenceFilter#references_in for requirements on the input, block,

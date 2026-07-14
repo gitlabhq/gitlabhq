@@ -30,6 +30,7 @@ export default {
       required: true,
     },
   },
+  emits: ['play-pipeline-schedule', 'show-delete-modal', 'show-take-ownership-modal'],
   computed: {
     canPlay() {
       return this.schedule.userPermissions.playPipelineSchedule;
@@ -65,7 +66,7 @@ export default {
         :aria-label="$options.i18n.playTooltip"
         icon="play"
         data-testid="play-pipeline-schedule-btn"
-        @click="$emit('playPipelineSchedule', schedule.id)"
+        @click="$emit('play-pipeline-schedule', schedule.id)"
       />
       <gl-button
         v-if="canTakeOwnership"
@@ -73,7 +74,7 @@ export default {
         :title="$options.i18n.takeOwnershipTooltip"
         icon="user"
         data-testid="take-ownership-pipeline-schedule-btn"
-        @click="$emit('showTakeOwnershipModal', schedule.id)"
+        @click="$emit('show-take-ownership-modal', schedule.id)"
       />
       <gl-button
         v-if="canUpdate"
@@ -92,7 +93,7 @@ export default {
         icon="remove"
         variant="danger"
         data-testid="delete-pipeline-schedule-btn"
-        @click="$emit('showDeleteModal', schedule.id)"
+        @click="$emit('show-delete-modal', schedule.id)"
       />
     </gl-button-group>
   </div>

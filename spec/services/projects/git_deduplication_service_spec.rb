@@ -6,7 +6,7 @@ RSpec.describe Projects::GitDeduplicationService, feature_category: :source_code
   include ExclusiveLeaseHelpers
 
   let(:pool) { create(:pool_repository, :ready) }
-  let(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo) }
   let(:lease_key) { "git_deduplication:#{project.id}" }
   let(:lease_timeout) { Projects::GitDeduplicationService::LEASE_TIMEOUT }
 
@@ -25,7 +25,7 @@ RSpec.describe Projects::GitDeduplicationService, feature_category: :source_code
       end
 
       context 'when the project has a pool repository' do
-        let(:project) { create(:project, :repository, pool_repository: pool) }
+        let(:project) { create(:project, :small_repo, pool_repository: pool) }
 
         context 'when the project is a source project' do
           let(:lease_key) { "git_deduplication:#{pool.source_project.id}" }

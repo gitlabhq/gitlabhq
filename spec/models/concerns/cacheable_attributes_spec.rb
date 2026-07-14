@@ -51,11 +51,11 @@ RSpec.describe CacheableAttributes do
     it 'wipes the cache' do
       obj = MinimalTestClass.new
       obj.cache!
-      expect(MinimalTestClass.cached).not_to eq(nil)
+      expect(MinimalTestClass.cached).not_to be_nil
 
       MinimalTestClass.expire
 
-      expect(MinimalTestClass.cached).to eq(nil)
+      expect(MinimalTestClass.cached).to be_nil
     end
   end
 

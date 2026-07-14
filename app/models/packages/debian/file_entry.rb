@@ -35,6 +35,7 @@ module Packages
           package_file_digest = package_file["file_#{digest}"]
           sum = public_send("#{digest}sum") # rubocop:disable GitlabSecurity/PublicSend
           next if package_file_digest == sum
+          next if digest == :md5 && package_file_digest.blank? # NB: MD5Sum was removed for FIPS compliance
 
           errors.add(:"#{digest}sum", "mismatch for #{filename}: #{package_file_digest} != #{sum}")
         end

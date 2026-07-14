@@ -8,6 +8,7 @@ import {
 import { __, s__, sprintf } from '~/locale';
 
 export default {
+  name: 'DeleteModelDisclosureDropdownItem',
   components: {
     GlModal,
     GlDisclosureDropdownItem,

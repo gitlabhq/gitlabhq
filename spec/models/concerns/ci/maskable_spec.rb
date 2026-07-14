@@ -70,11 +70,11 @@ RSpec.describe Ci::Maskable, feature_category: :pipeline_composition do
       subject { Ci::Maskable::MASK_AND_RAW_REGEX }
 
       it 'does not match strings shorter than 8 letters' do
-        expect(subject.match?('hello')).to eq(false)
+        expect(subject.match?('hello')).to be(false)
       end
 
       it 'does not match strings with spaces' do
-        expect(subject.match?('hello world')).to eq(false)
+        expect(subject.match?('hello world')).to be(false)
       end
 
       it 'does not match strings that span more than one line' do
@@ -83,14 +83,14 @@ RSpec.describe Ci::Maskable, feature_category: :pipeline_composition do
           world
         TEXT
 
-        expect(subject.match?(string)).to eq(false)
+        expect(subject.match?(string)).to be(false)
       end
 
       it 'matches valid strings' do
-        expect(subject.match?('hello$VARIABLEworld')).to eq(true)
-        expect(subject.match?('Hello+World_123/@:-~.')).to eq(true)
-        expect(subject.match?('hello\rworld')).to eq(true)
-        expect(subject.match?('HelloWorld%#^')).to eq(true)
+        expect(subject.match?('hello$VARIABLEworld')).to be(true)
+        expect(subject.match?('Hello+World_123/@:-~.')).to be(true)
+        expect(subject.match?('hello\rworld')).to be(true)
+        expect(subject.match?('HelloWorld%#^')).to be(true)
       end
     end
 
@@ -98,19 +98,19 @@ RSpec.describe Ci::Maskable, feature_category: :pipeline_composition do
       subject { Ci::Maskable::REGEX }
 
       it 'does not match strings shorter than 8 letters' do
-        expect(subject.match?('hello')).to eq(false)
+        expect(subject.match?('hello')).to be(false)
       end
 
       it 'does not match strings with spaces' do
-        expect(subject.match?('hello world')).to eq(false)
+        expect(subject.match?('hello world')).to be(false)
       end
 
       it 'does not match strings with shell variables' do
-        expect(subject.match?('hello$VARIABLEworld')).to eq(false)
+        expect(subject.match?('hello$VARIABLEworld')).to be(false)
       end
 
       it 'does not match strings with escape characters' do
-        expect(subject.match?('hello\rworld')).to eq(false)
+        expect(subject.match?('hello\rworld')).to be(false)
       end
 
       it 'does not match strings that span more than one line' do
@@ -119,15 +119,15 @@ RSpec.describe Ci::Maskable, feature_category: :pipeline_composition do
           world
         TEXT
 
-        expect(subject.match?(string)).to eq(false)
+        expect(subject.match?(string)).to be(false)
       end
 
       it 'does not match strings using unsupported characters' do
-        expect(subject.match?('HelloWorld%#^')).to eq(false)
+        expect(subject.match?('HelloWorld%#^')).to be(false)
       end
 
       it 'matches valid strings' do
-        expect(subject.match?('Hello+World_123/@:-~.')).to eq(true)
+        expect(subject.match?('Hello+World_123/@:-~.')).to be(true)
       end
     end
   end

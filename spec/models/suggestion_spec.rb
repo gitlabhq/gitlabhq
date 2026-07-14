@@ -30,7 +30,7 @@ RSpec.describe Suggestion, feature_category: :code_review_workflow do
   end
 
   it_behaves_like 'model with associated note' do
-    let_it_be(:note, freeze: false) { create(:diff_note_on_merge_request) }
+    let_it_be_with_reload(:note) { create(:diff_note_on_merge_request) }
     let_it_be(:record_attrs) do
       { relative_order: 0, from_content: "    vars = {\n", to_content: "    vars = [\n", note_id: note.id }
     end
@@ -182,13 +182,13 @@ RSpec.describe Suggestion, feature_category: :code_review_workflow do
     context 'when suggestion is for a single line' do
       let(:suggestion) { build(:suggestion, lines_above: 0, lines_below: 0) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when suggestion is for multiple lines' do
       let(:suggestion) { build(:suggestion, lines_above: 2, lines_below: 0) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

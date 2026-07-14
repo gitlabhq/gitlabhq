@@ -27,7 +27,7 @@ RSpec.describe 'getting organization information', feature_category: :organizati
   let_it_be(:private_organization_owner) { create(:organization_owner, organization: private_organization) }
 
   let_it_be(:organization) { public_organization }
-  let_it_be(:organization_owner, freeze: false) { create(:organization_owner, organization: public_organization) }
+  let_it_be_with_reload(:organization_owner) { create(:organization_owner, organization: public_organization) }
   let_it_be(:user) { organization_owner.user }
   let_it_be(:project) { create(:project, organization: organization) { |p| p.add_developer(user) } }
   let_it_be(:other_group) do
@@ -363,7 +363,7 @@ RSpec.describe 'getting organization information', feature_category: :organizati
       end
 
       context 'when organization is default' do
-        let_it_be(:default_organization, freeze: false) { create(:organization, :default, organization_users: [organization_owner]) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- the application code checks for default organization so we need to test this.
+        let_it_be_with_reload(:default_organization) { create(:organization, :default, organization_users: [organization_owner]) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- the application code checks for default organization so we need to test this.
         let(:object) { default_organization }
 
         it "returns unscoped root path" do

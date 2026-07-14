@@ -204,7 +204,7 @@
   z-index: 2;
   position: sticky;
   @apply gl-rounded-t-lg;
-  top: -1px;
+  top: 0;
 }
 
 /*
@@ -408,13 +408,13 @@
 /**
 * Line connecting activity entries, used in issuables, work items etc
 */
-@mixin vertical-line($top, $left) {
+@mixin vertical-line($top, $left, $offset: $top) {
   content: '';
   position: absolute;
   width: 2px;
   left: $left;
   top: $top;
-  height: calc(100% - #{$top});
+  height: calc(100% - #{$offset});
 }
 
 /**

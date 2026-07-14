@@ -403,6 +403,42 @@ describe('Observability App Component', () => {
         'https://o11y.gitlab.com/traces-explorer',
       );
     });
+
+    it('passes query params to AuthManager as part of targetPath', async () => {
+      AuthManager.mockClear();
+
+      await setupComponent({
+        o11yUrl: 'https://o11y.gitlab.com',
+        path: 'logs/logs-explorer',
+        queryParams: { compositeQuery: '{"queryType":"builder"}', startTime: '123' },
+      });
+
+      expect(AuthManager).toHaveBeenCalledWith(
+        'https://o11y.gitlab.com',
+        DEFAULTS.TOKENS,
+        expect.stringContaining('compositeQuery='),
+      );
+      expect(AuthManager).toHaveBeenCalledWith(
+        'https://o11y.gitlab.com',
+        DEFAULTS.TOKENS,
+        expect.stringContaining('startTime=123'),
+      );
+    });
+
+    it('passes only the pathname to AuthManager as targetPath when no query params are present', async () => {
+      AuthManager.mockClear();
+
+      await setupComponent({
+        o11yUrl: 'https://o11y.gitlab.com',
+        path: 'logs/logs-explorer',
+      });
+
+      expect(AuthManager).toHaveBeenCalledWith(
+        'https://o11y.gitlab.com',
+        DEFAULTS.TOKENS,
+        '/logs/logs-explorer',
+      );
+    });
   });
 
   describe('Props Validation', () => {

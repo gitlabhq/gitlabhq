@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Fine-grained permissions for personal access tokens in the GraphQL API
+title: Fine-grained permissions for GraphQL API
 ---
 
 <!--
@@ -19,13 +19,18 @@ title: Fine-grained permissions for personal access tokens in the GraphQL API
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
-Fine-grained personal access tokens scope access to specific permissions in the GraphQL API.
-To create a fine-grained personal access token, see
-[Fine-grained permissions for personal access tokens](fine_grained_access_tokens.md#create-a-fine-grained-personal-access-token).
+{{< history >}}
+
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/596613) in GitLab 19.2.
+
+{{< /history >}}
+
+A fine-grained personal access token can access only the resources and permissions you grant it.
+To use one with the GraphQL API, create a token and define its scope. For more information, see
+[fine-grained personal access tokens](fine_grained_access_tokens.md).
 
 ## Available fine-grained permissions
 

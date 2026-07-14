@@ -3,16 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Ide::SchemasConfigService, feature_category: :web_ide do
-  let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, developers: user) }
 
   let(:filename) { 'sample.yml' }
   let(:schema_content) { double(body: '{"title":"Sample schema"}') }
 
   describe '#execute' do
     before do
-      project.add_developer(user)
-
       allow(Gitlab::HTTP).to receive(:get).with(anything) do
         schema_content
       end

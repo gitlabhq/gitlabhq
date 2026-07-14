@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Email::FailureHandler do
+RSpec.describe Gitlab::Email::FailureHandler, feature_category: :service_desk do
   let(:raw_message) { fixture_file('emails/valid_reply.eml') }
   let(:receiver) { Gitlab::Email::Receiver.new(raw_message) }
 

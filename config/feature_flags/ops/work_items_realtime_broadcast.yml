@@ -1,0 +1,10 @@
+---
+name: work_items_realtime_broadcast
+description: Enable the backend to broadcast namespace-scoped work item change events to GraphQL subscribers
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/22191
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244516
+rollout_issue_url:
+milestone: '19.2'
+group: group::product planning
+type: ops
+default_enabled: false

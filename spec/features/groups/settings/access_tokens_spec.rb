@@ -6,9 +6,9 @@ RSpec.describe 'Group > Settings > Access tokens', :js, feature_category: :syste
   include Spec::Support::Helpers::ModalHelpers
   include Features::AccessTokenHelpers
 
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:bot_user) { create(:user, :project_bot) }
-  let_it_be(:group, freeze: false) { create(:group, owners: user) }
+  let_it_be_with_reload(:group) { create(:group, owners: user) }
   let_it_be(:resource_settings_access_tokens_path) { group_settings_access_tokens_path(group) }
 
   before do

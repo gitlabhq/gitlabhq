@@ -273,7 +273,7 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService, feature_catego
         expect(result.incident).to eq(incident)
         expect(result.project).to eq(project)
         expect(result.note).to eq(expected_note)
-        expect(result.editable).to eq(false)
+        expect(result.editable).to be(false)
         expect(result.action).to eq(expected_action)
       end
 

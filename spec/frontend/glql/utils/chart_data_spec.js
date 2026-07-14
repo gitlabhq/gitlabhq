@@ -3,10 +3,12 @@ import {
   dimensionsOf,
   metricsOf,
   buildSeries,
+  buildBarSeriesData,
   buildStackedByDimension,
   buildStackedByMetric,
   tooltipContentFromParams,
 } from '~/glql/utils/chart_data';
+import { DISPLAY_TYPES } from '~/glql/constants';
 
 const LANGUAGE = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };
 const USER = { key: 'user', label: 'User', name: 'user', type: 'dimension' };
@@ -127,6 +129,51 @@ describe('buildSeries', () => {
     },
   ])('returns an empty array with $scenario', ({ nodes, dim, metric }) => {
     expect(buildSeries(nodes, dim, metric)).toEqual([]);
+  });
+});
+
+describe('buildBarSeriesData', () => {
+  it('builds an object keyed by metric label with reversed [value, dimension] tuples', () => {
+    const nodes = [
+      { language: 'ruby', totalCount: 21 },
+      { language: 'python', totalCount: 14 },
+    ];
+
+    expect(buildBarSeriesData(nodes, LANGUAGE, [TOTAL_COUNT])).toEqual({
+      'Total count': [
+        [21, 'ruby'],
+        [14, 'python'],
+      ],
+    });
+  });
+
+  it('builds one entry per metric', () => {
+    const nodes = [{ language: 'ruby', totalCount: 21, acceptanceRate: 0.625 }];
+
+    expect(buildBarSeriesData(nodes, LANGUAGE, [TOTAL_COUNT, ACCEPTANCE_RATE])).toEqual({
+      'Total count': [[21, 'ruby']],
+      'Acceptance rate': [[0.625, 'ruby']],
+    });
+  });
+
+  it('defaults missing metric values to 0', () => {
+    const nodes = [{ language: 'ruby' }];
+    expect(buildBarSeriesData(nodes, LANGUAGE, [TOTAL_COUNT])).toEqual({
+      'Total count': [[0, 'ruby']],
+    });
+  });
+
+  it.each([
+    { scenario: 'empty nodes', nodes: [], dim: LANGUAGE, metrics: [TOTAL_COUNT] },
+    {
+      scenario: 'missing dimension',
+      nodes: [{ language: 'ruby' }],
+      dim: null,
+      metrics: [TOTAL_COUNT],
+    },
+    { scenario: 'empty metrics', nodes: [{ language: 'ruby' }], dim: LANGUAGE, metrics: [] },
+  ])('returns an empty object with $scenario', ({ nodes, dim, metrics }) => {
+    expect(buildBarSeriesData(nodes, dim, metrics)).toEqual({});
   });
 });
 
@@ -260,6 +307,30 @@ describe('tooltipContentFromParams', () => {
     expect(tooltipContentFromParams(params)).toEqual({
       'Success rate': { value: 0.819, color: '#aaa' },
       'Duration quantile': { value: 5380, color: '#bbb' },
+    });
+  });
+
+  it('extracts the numeric value from [num, label] tuples when displayType is barChart', () => {
+    const params = {
+      seriesData: [
+        { seriesName: 'Success rate', value: [0.819, 'ruby'], color: '#aaa' },
+        { seriesName: 'Duration quantile', value: [5380, 'ruby'], color: '#bbb' },
+      ],
+    };
+
+    expect(tooltipContentFromParams(params, DISPLAY_TYPES.BAR_CHART)).toEqual({
+      'Success rate': { value: 0.819, color: '#aaa' },
+      'Duration quantile': { value: 5380, color: '#bbb' },
+    });
+  });
+
+  it('defaults to the [label, num] shape for other display types', () => {
+    const params = {
+      seriesData: [{ seriesName: 'Total count', value: ['ruby', 21], color: '#aaa' }],
+    };
+
+    expect(tooltipContentFromParams(params, DISPLAY_TYPES.LINE_CHART)).toEqual({
+      'Total count': { value: 21, color: '#aaa' },
     });
   });
 

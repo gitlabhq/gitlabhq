@@ -115,7 +115,7 @@ Prerequisites:
 - The `load_performance` job must run after the dynamic environment starts.
 
 To configure load performance testing for review apps, capture the dynamic URL in a
-[`.env` file](https://docs.docker.com/compose/environment-variables/env-file/) and pass
+[`.env` file](https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/#use-the-env_file-attribute) and pass
 it to the k6 container using `K6_DOCKER_OPTIONS`. k6 can then use environment variables
 from the file in test scripts with standard JavaScript, for example:
 ``http.get(`${__ENV.ENVIRONMENT_URL}`)``.

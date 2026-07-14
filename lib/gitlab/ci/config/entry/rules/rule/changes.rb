@@ -30,20 +30,34 @@ module Gitlab
                 include ::Gitlab::Config::Entry::Validatable
                 include ::Gitlab::Config::Entry::Attributable
 
-                ALLOWED_KEYS = %i[paths compare_to].freeze
-                REQUIRED_KEYS = %i[paths].freeze
+                ALLOWED_KEYS = %i[paths compare_to regexp].freeze
+                REGEXP_MAX_LENGTH = ::Gitlab::Ci::Build::Rules::Rule::Clause::REGEXP_MAX_LENGTH
 
                 attributes ALLOWED_KEYS
 
                 validations do
                   validates :config, allowed_keys: ALLOWED_KEYS
-                  validates :config, required_keys: REQUIRED_KEYS
+                  validates :config, only_one_of_keys: { in: %i[paths regexp] }
 
-                  with_options allow_nil: false do
-                    validates :paths,
-                      array_of_strings: true,
-                      length: { maximum: 50, too_long: "has too many entries (maximum %{count})" }
-                    validates :compare_to, type: String, allow_nil: true
+                  with_options allow_nil: true do
+                    validates :compare_to, type: String
+                    validates :regexp, type: String, length: { maximum: REGEXP_MAX_LENGTH }
+                  end
+
+                  validates :paths,
+                    array_of_strings: true,
+                    length: { maximum: 50, too_long: "has too many entries (maximum %{count})" },
+                    allow_nil: false,
+                    if: -> { config.key?(:paths) }
+
+                  validate :regexp_is_valid, if: -> { !regexp.nil? }
+
+                  def regexp_is_valid
+                    return unless regexp.is_a?(String)
+
+                    Regexp.new(regexp)
+                  rescue RegexpError => e
+                    errors.add(:regexp, "is invalid: #{e.message}")
                   end
                 end
               end

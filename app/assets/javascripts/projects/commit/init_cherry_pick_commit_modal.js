@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { pinia } from '~/pinia/instance';
 import CommitFormModal from './components/form_modal.vue';
 import {
   I18N_MODAL,
@@ -7,7 +8,7 @@ import {
   OPEN_CHERRY_PICK_MODAL,
   CHERRY_PICK_MODAL_ID,
 } from './constants';
-import createStore from './store';
+import { useCherryPickCommit } from './store/cherry_pick_commit';
 
 export default function initInviteMembersModal(primaryActionEventName) {
   const el = document.querySelector('.js-cherry-pick-commit-modal');
@@ -28,7 +29,8 @@ export default function initInviteMembersModal(primaryActionEventName) {
     projects,
   } = el.dataset;
 
-  const store = createStore({
+  const modalStore = useCherryPickCommit(pinia);
+  modalStore.$patch({
     endpoint,
     branchesEndpoint,
     branch,
@@ -45,7 +47,10 @@ export default function initInviteMembersModal(primaryActionEventName) {
   return new Vue({
     el,
     name: 'CommitFormModalRoot',
-    store,
+    pinia,
+    provide: {
+      modalStore,
+    },
     render: (createElement) =>
       createElement(CommitFormModal, {
         props: {

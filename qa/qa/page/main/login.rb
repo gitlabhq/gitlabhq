@@ -238,6 +238,7 @@ module QA
           end
 
           Flow::UserOnboarding.onboard_user
+          Flow::UserOnboarding.complete_admin_onboarding
 
           wait_for_gitlab_to_respond
 

@@ -16,6 +16,7 @@ import {
 
 import {
   OPTIONS_NONE_ANY,
+  OPTIONS_NONE_ANY_ME,
   OPERATOR_IS,
   OPERATOR_NOT,
   OPERATOR_OR,
@@ -387,6 +388,39 @@ describe('BaseToken', () => {
         it('does not render default suggestions', () => {
           expect(wrapper.findComponent(GlFilteredSearchSuggestion).exists()).toBe(false);
         });
+      });
+
+      describe('with the "Me" wildcard suggestion', () => {
+        it('renders "Me" for the "is" operator', () => {
+          wrapper = createComponent({
+            props: {
+              defaultSuggestions: OPTIONS_NONE_ANY_ME,
+              value: { data: '', operator: OPERATOR_IS },
+            },
+            mountFn: shallowMountExtended,
+          });
+
+          const values = wrapper
+            .findAllComponents(GlFilteredSearchSuggestion)
+            .wrappers.map((c) => c.props('value'));
+
+          expect(values).toEqual(OPTIONS_NONE_ANY_ME.map((opt) => opt.value));
+        });
+
+        it.each([OPERATOR_NOT, OPERATOR_OR])(
+          'does not render "Me" for the %s operator',
+          (operator) => {
+            wrapper = createComponent({
+              props: {
+                defaultSuggestions: OPTIONS_NONE_ANY_ME,
+                value: { data: '', operator },
+              },
+              mountFn: shallowMountExtended,
+            });
+
+            expect(wrapper.findAllComponents(GlFilteredSearchSuggestion)).toHaveLength(0);
+          },
+        );
       });
     });
 

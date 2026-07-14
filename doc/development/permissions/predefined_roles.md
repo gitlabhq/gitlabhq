@@ -38,7 +38,7 @@ Groups and projects can have the following visibility levels:
 - internal (`10`) - an entity is visible to authenticated users
 - private (`0`) - an entity is visible only to the approved members of the entity
 
-By default, subgroups can **not** have higher visibility levels.
+By default, subgroups can not have higher visibility levels.
 For example, if you create a new private group, it cannot include a public subgroup.
 
 The visibility level of a group can be changed only if all subgroups and

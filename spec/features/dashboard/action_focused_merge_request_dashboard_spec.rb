@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'Action focused merge request dashboard', :js, feature_category: :code_review_workflow do
-  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:current_user) { create(:user) }
   let_it_be(:user) { current_user }
-  let_it_be(:project, freeze: false) { create(:project) }
-  let_it_be(:assigned_merge_request, freeze: false) do
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:assigned_merge_request) do
     create(:merge_request,
       assignees: [current_user],
       source_project: project,

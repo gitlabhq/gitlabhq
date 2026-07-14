@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Groups::UpdateTwoFactorRequirementForMembersWorker, feature_category: :system_access do
-  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group) }
 
   let(:worker) { described_class.new }
 

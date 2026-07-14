@@ -1,0 +1,10 @@
+---
+name: stop_ci_persistent_ref_creation
+description: Stop creating Ci::PersistentRef to reduce Gitaly load. When enabled, persistent refs will not be created for pipelines or builds.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/591481
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243310
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/604698
+milestone: '19.2'
+group: group::pipeline execution
+type: beta
+default_enabled: false

@@ -318,9 +318,6 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
     let(:pending_exceptions) do
       %w[
         merge_request_diff_commits
-        p_ci_pipeline_artifact_states
-        packages_nuget_symbol_states
-        packages_package_file_states
         push_rules
       ]
     end

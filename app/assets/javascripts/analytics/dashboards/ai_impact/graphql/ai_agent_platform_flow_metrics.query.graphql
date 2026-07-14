@@ -1,0 +1,16 @@
+#import "./ai_agent_platform_flow_metric_item.fragment.graphql"
+
+query aiAgentPlatformFlowMetricsQuery($fullPath: ID!, $startDate: Date!, $endDate: Date!) {
+  project(fullPath: $fullPath) {
+    id
+    aiMetrics(startDate: $startDate, endDate: $endDate) {
+      ...AiAgentPlatformFlowMetricItem
+    }
+  }
+  group(fullPath: $fullPath) {
+    id
+    aiMetrics(startDate: $startDate, endDate: $endDate) {
+      ...AiAgentPlatformFlowMetricItem
+    }
+  }
+}

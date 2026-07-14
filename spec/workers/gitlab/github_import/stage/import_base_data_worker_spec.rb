@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportBaseDataWorker, feature_category: :importers do
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   let(:importer) { double(:importer) }
   let(:client) { double(:client) }

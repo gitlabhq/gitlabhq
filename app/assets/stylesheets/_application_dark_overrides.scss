@@ -1,0 +1,36 @@
+:root.gl-dark {
+  color-scheme: dark;
+
+  /**
+   * Redefine some colors and values to prevent sourcegraph conflicts
+   */
+  --gray-10: #{$gray-10};
+  --white: #{$white};
+  --black: #{$black};
+
+  /**
+   * Invert image assets in dark mode with same hue
+   */
+  .gl-dark-invert-keep-hue {
+    filter: invert(0.8) hue-rotate(180deg);
+  }
+
+  .gl-dark-invert-keep-hue\! {
+    filter: invert(0.8) hue-rotate(180deg) !important;
+  }
+
+  /**
+   * Decrease brightness and increase contrast for GlLabel in dark mode
+   */
+  .gl-label {
+    filter: brightness(0.9) contrast(1.1);
+  }
+
+  /**
+   * Override <code> background-color in dark mode to provide higher
+   * contrast on background.color.strong surface
+   */
+  .md :not(pre.code) > code {
+    background-color: var(--gl-color-neutral-700);
+  }
+}

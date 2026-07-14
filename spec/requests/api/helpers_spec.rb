@@ -478,9 +478,37 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
         end
       end
     end
+
+    describe 'when authenticating with a deploy token on an endpoint with granular authorization' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:deploy_token) { create(:deploy_token, projects: [project], read_package_registry: true) }
+
+      let(:route_authentication_setting) { { deploy_token_allowed: true } }
+
+      before do
+        allow_any_instance_of(self.class).to receive(:route_authentication_setting)
+          .and_return(route_authentication_setting)
+        allow(self).to receive(:route_setting)
+        allow(self).to receive(:route_setting).with(:authorization)
+          .and_return(permissions: :read_code, boundary_type: :project, boundary_param: nil)
+
+        env['PATH_INFO'] = '/api/v4/projects/endpoint'
+        env['HTTP_AUTHORIZATION'] = "Bearer #{deploy_token.token}"
+      end
+
+      it 'skips granular authorization instead of resolving the credential as a PAT' do
+        expect(::Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+        expect { current_user }.not_to raise_error
+      end
+    end
   end
 
   describe '.set_current_organization' do
+    before do
+      stub_feature_flags(set_current_organization_for_grape_api: false)
+    end
+
     context 'when user argument is omitted' do
       before do
         allow(self).to receive(:current_user).and_return(user)
@@ -512,6 +540,18 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
         set_current_organization(user: user)
 
         expect(Current.organization).to eq(header_organization)
+      end
+    end
+
+    context 'when the set_current_organization_for_grape_api feature flag is enabled' do
+      before do
+        stub_feature_flags(set_current_organization_for_grape_api: true)
+      end
+
+      it 'is a no-op (the global before_validation hook resolves the organization)' do
+        set_current_organization(user: user)
+
+        expect(Current.organization_assigned).to be_falsey
       end
     end
   end
@@ -785,6 +825,44 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
 
       it 'raises an error' do
         expect { current_user }.to raise_error(/Must be authenticated using an OAuth or personal access token to use sudo/)
+      end
+    end
+
+    context 'using a fine-grained (granular) personal access token' do
+      before do
+        stub_feature_flags(granular_personal_access_tokens: true)
+
+        set_param(Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_PARAM, token.token)
+        set_param(API::Helpers::SUDO_PARAM, user.id.to_s)
+      end
+
+      context 'when the token does not have sudo enabled' do
+        let(:token) { create(:granular_pat, user: admin) }
+
+        it 'is forbidden, even though the token bypasses the legacy sudo scope check' do
+          expect { current_user }.to raise_error(/Fine-grained token must have sudo enabled to use sudo/)
+        end
+      end
+
+      context 'when the token has sudo enabled' do
+        let(:token) { create(:granular_pat, :sudo, user: admin) }
+
+        it 'still enforces the token granular permissions while impersonating' do
+          expect_next_instance_of(::Authz::Tokens::AuthorizeGranularScopesService) do |service|
+            expect(service).to receive(:execute).and_return(ServiceResponse.error(message: 'denied'))
+          end
+
+          expect { current_user }.to raise_error(Gitlab::Auth::GranularPermissionsError)
+        end
+
+        it 'impersonates the target user when the granular permissions are satisfied', :aggregate_failures do
+          allow_next_instance_of(::Authz::Tokens::AuthorizeGranularScopesService) do |service|
+            allow(service).to receive(:execute).and_return(ServiceResponse.success)
+          end
+
+          expect(current_user).to eq(user)
+          expect(sudo?).to be_truthy
+        end
       end
     end
   end

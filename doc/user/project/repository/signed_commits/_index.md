@@ -74,7 +74,7 @@ using the [web commits API](../../../../api/web_commits.md#retrieve-public-signi
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425042) in GitLab 17.5 [with a flag](../../../../administration/feature_flags/_index.md) named `check_for_mailmapped_commit_emails`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425042) in GitLab 17.5 [with a feature flag](../../../../administration/feature_flags/_index.md) named `check_for_mailmapped_commit_emails`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/481441) in GitLab 18.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/481441) in GitLab 19.1. Feature flag `check_for_mailmapped_commit_emails` removed.
 

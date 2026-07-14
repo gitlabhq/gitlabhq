@@ -1,0 +1,15 @@
+---
+table_name: p_duo_workflows_checkpoint_blobs
+classes:
+- Ai::DuoWorkflows::CheckpointBlob
+feature_categories:
+- duo_agent_platform
+description: Per-channel versioned blobs for incremental Duo Workflow checkpoint storage. Stores changed channel values per step so the gateway can reconstruct full channel_values without transferring the entire checkpoint.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239245
+milestone: '19.2'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+  namespace_id: namespaces
+table_size: small
+notes: Transient data retained for 30 days. Range-partitioned by workflow_created_at (= the workflow's created_at, set on every blob) so all of a workflow's blobs share one daily partition and a lookup prunes to it; the partition manager drops whole day-partitions older than CHECKPOINT_RETENTION_DAYS, which enforces the TTL. Growth is proportional to workflow steps × active channels per workflow; bounded by per-workflow session lifespan.

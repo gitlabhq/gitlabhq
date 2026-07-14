@@ -18,6 +18,33 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
     it { is_expected.to validate_presence_of(:work_item_parent) }
     it { is_expected.to validate_uniqueness_of(:work_item) }
 
+    describe 'same organization' do
+      let_it_be(:parent) { create(:work_item, project: project) }
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_group) { create(:group, organization: other_organization) }
+      let_it_be(:other_project) { create(:project, group: other_group) }
+      let_it_be(:cross_org_child) { create(:work_item, project: other_project) }
+
+      subject(:link) { build(:parent_link, work_item_parent: parent, work_item: cross_org_child) }
+
+      it 'is invalid when parent and child are in different organizations' do
+        expect(link).to be_invalid
+        expect(link.errors.messages[:work_item]).to include('must belong to the same organization.')
+      end
+
+      context 'when the prevent_cross_organization_work_item_actions flag is disabled' do
+        before do
+          stub_feature_flags(prevent_cross_organization_work_item_actions: false)
+        end
+
+        it 'does not add the organization error' do
+          link.valid?
+
+          expect(link.errors.messages[:work_item]).not_to include('must belong to the same organization.')
+        end
+      end
+    end
+
     describe 'hierarchy validations' do
       let_it_be(:issue, freeze: false) { create(:work_item, project: project) }
       let_it_be(:task1, freeze: false) { create(:work_item, :task, project: project) }

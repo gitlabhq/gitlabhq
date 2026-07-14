@@ -9,7 +9,13 @@ import { pinia } from '~/pinia/instance';
 
 jest.mock('~/rapid_diffs/app/discussions/diff_file_discussions.vue', () => {
   return {
-    inject: ['filePaths', 'linkedFileData', 'newCommentTemplatePaths', 'showWhitespace'],
+    inject: [
+      'filePaths',
+      'diffRefs',
+      'linkedFileData',
+      'newCommentTemplatePaths',
+      'showWhitespace',
+    ],
     methods: {
       empty() {
         this.$emit('empty');
@@ -26,6 +32,7 @@ jest.mock('~/rapid_diffs/app/discussions/diff_file_discussions.vue', () => {
         attrs: {
           id: 'file-discussions-component',
           'data-file-paths': JSON.stringify(this.filePaths),
+          'data-diff-refs': JSON.stringify(this.diffRefs),
           'data-linked-file-data': JSON.stringify(this.linkedFileData),
           'data-new-comment-template-paths': JSON.stringify(this.newCommentTemplatePaths),
           'data-show-whitespace': JSON.stringify(this.showWhitespace),
@@ -171,6 +178,26 @@ describe('fileDiscussionsAdapter', () => {
     expect(JSON.parse(getFileDiscussionsComponent().dataset.newCommentTemplatePaths)).toStrictEqual(
       newCommentTemplatePaths,
     );
+  });
+
+  it('provides the diff file refs to the component', async () => {
+    const diffRefs = { base_sha: 'base', start_sha: 'start', head_sha: 'head' };
+    mountAdapter({ diff_refs: diffRefs });
+    useDiscussions().discussions = [
+      {
+        id: 'file-disc',
+        diff_discussion: true,
+        position: {
+          old_path: oldPath,
+          new_path: newPath,
+          position_type: 'file',
+          old_line: null,
+          new_line: null,
+        },
+      },
+    ];
+    await nextTick();
+    expect(JSON.parse(getFileDiscussionsComponent().dataset.diffRefs)).toStrictEqual(diffRefs);
   });
 
   it('does not mount when there are no file discussions', async () => {

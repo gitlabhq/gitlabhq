@@ -402,7 +402,7 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :observability do
             hash_including(
               'extra.sidekiq' => {
                 'class' => 'PostReceive',
-                'args' => ['1', '{"id"=>2, "name"=>"hello"}', 'some-value', 'another-value']
+                'args' => ['1', { 'id' => 2, 'name' => 'hello' }.to_s, 'some-value', 'another-value']
               }
             )
           )

@@ -27,8 +27,14 @@ default:
   timeout: 90m
   interruptible: true
 
+# per-test-coverage:trigger merges this rspec child config and the jest
+# child config into one pipeline. A later include's `stages:` replaces
+# earlier ones wholesale rather than unioning, so both templates must list
+# the same stages or the other suite's jobs reference a stage that does not
+# exist and the whole child fails to create with zero jobs.
 stages:
   - test
+  - test-frontend
 
 workflow:
   name: '$PIPELINE_NAME'
@@ -78,6 +84,10 @@ workflow:
     expire_in: 7d
     paths:
       - tmp/per-test-coverage-rspec-*.ndjson
+      # Uploaded so the export job can pass these standard rspec reports to the
+      # gem's --test-reports, which attributes feature_category, group, stage,
+      # and section to each test. rspec_parallelized_job writes them regardless.
+      - rspec/rspec-*.json
     when: always
 
 <% if test_suite_prefix.nil? %>

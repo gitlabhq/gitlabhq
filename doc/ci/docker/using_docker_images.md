@@ -67,7 +67,7 @@ For example, you can set the [Docker pull policy](https://docs.gitlab.com/runner
 to use local images.
 
 For more information about images and Docker Hub, see
-the [Docker overview](https://docs.docker.com/get-started/overview/).
+the [Docker overview](https://docs.docker.com/get-started/docker-overview/).
 
 ## Image requirements
 

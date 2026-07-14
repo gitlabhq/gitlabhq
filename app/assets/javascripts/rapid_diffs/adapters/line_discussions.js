@@ -12,7 +12,16 @@ import { createAlert } from '~/alert';
 import { pinia } from '~/pinia/instance';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 
-function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id, showWhitespace }) {
+function mountDiscussionRow({
+  lineRow,
+  parallel,
+  appData,
+  store,
+  trigger,
+  id,
+  showWhitespace,
+  diffRefs,
+}) {
   if (lineRow.nextElementSibling?.dataset.discussionRow === 'true') return;
   const [rowOldLine, rowNewLine] = getLineNumbers(lineRow);
   const changed = lineRow.querySelector('[data-change]') !== null;
@@ -38,6 +47,7 @@ function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id, sh
         },
         noteableType: appData.noteableType,
         filePaths: { oldPath: appData.oldPath, newPath: appData.newPath },
+        diffRefs,
         blobRawPath: appData.blobRawPath,
         suggestionsHelpPath: appData.suggestionsHelpPath,
         defaultSuggestionCommitMessage: appData.defaultSuggestionCommitMessage,
@@ -68,6 +78,7 @@ function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id, sh
               lineChange,
               lineCode,
               lineRange,
+              diffRefs,
               extraOptions: { lines },
             });
           },
@@ -77,9 +88,11 @@ function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id, sh
             instance.$el.remove();
           },
           highlight(lineRange) {
+            if (store.lineRangeEditing) return;
             trigger(HIGHLIGHT_LINES, lineRange);
           },
           'clear-highlight': () => {
+            if (store.lineRangeEditing) return;
             trigger(CLEAR_HIGHLIGHT);
           },
         },
@@ -99,9 +112,9 @@ function mountDiscussionRow({ lineRow, parallel, appData, store, trigger, id, sh
 export const createLineDiscussionsAdapter = ({ store, parallel, errorMessage }) => ({
   [MOUNTED](addCleanup) {
     const { diffElement, appData, trigger, id } = this;
-    const { oldPath, newPath, blobRawPath, showWhitespace } = this.data;
+    const { oldPath, newPath, blobRawPath, showWhitespace, diffRefs } = this.data;
     const stopWatcher = watch(
-      () => store.findLinePositionsForFile({ oldPath, newPath }),
+      () => store.findLinePositionsForFile({ oldPath, newPath, diffRefs }),
       (matchedPositions) => {
         matchedPositions.forEach((position) => {
           try {
@@ -115,6 +128,7 @@ export const createLineDiscussionsAdapter = ({ store, parallel, errorMessage }) 
               trigger,
               id,
               showWhitespace,
+              diffRefs,
             });
           } catch (error) {
             createAlert({
@@ -140,7 +154,7 @@ export const createLineDiscussionsAdapter = ({ store, parallel, errorMessage }) 
       const lineChange = getLineChange(button.closest('[data-position]'));
       const row = button.closest('tr');
       const [oldLine, newLine] = getLineNumbers(row);
-      const { oldPath, newPath } = this.data;
+      const { oldPath, newPath, diffRefs } = this.data;
       const lineCode = getLineCode({ id: this.id, row, oldLine, newLine });
       const lines = getNewLineRangeContent(this.diffElement, button.lineRange, lineChange.position);
       const existingDiscussionId = store.addNewLineDiscussionForm({
@@ -149,6 +163,7 @@ export const createLineDiscussionsAdapter = ({ store, parallel, errorMessage }) 
         lineChange,
         lineCode,
         lineRange: button.lineRange,
+        diffRefs,
         extraOptions: { lines },
       });
       if (existingDiscussionId) {

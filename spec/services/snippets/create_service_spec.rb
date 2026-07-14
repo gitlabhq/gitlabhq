@@ -336,11 +336,7 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
     end
 
     context 'when ProjectSnippet' do
-      let_it_be(:project) { create(:project) }
-
-      before do
-        project.add_developer(user)
-      end
+      let_it_be(:project) { create(:project, developers: user) }
 
       it_behaves_like 'a service that creates a snippet'
       it_behaves_like 'public visibility level restrictions apply'

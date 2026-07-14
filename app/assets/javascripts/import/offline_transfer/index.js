@@ -6,11 +6,18 @@ export const initOfflineTransfer = () => {
 
   if (!el) return null;
 
+  const { exportPath, importPath } = el.dataset;
+
   return new Vue({
     el,
     name: 'OfflineTransferRoot',
     render(createElement) {
-      return createElement(OfflineTransferApp, {});
+      return createElement(OfflineTransferApp, {
+        props: {
+          exportPath,
+          importPath,
+        },
+      });
     },
   });
 };

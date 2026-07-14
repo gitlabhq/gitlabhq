@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_category: :importers do
-  let_it_be(:project, freeze: false) do
+  let_it_be(:project) do
     create(:project, :import_started,
       import_url: 'https://bitbucket.org',
       import_source: 'my-workspace/my-repo',
@@ -280,6 +280,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
           hash_including(
             message: 'Failed to fetch last issue IID for pre-allocation',
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             http_status_code: 404,
             error: 'Repository has no issue tracker.'
           )
@@ -305,6 +306,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
           hash_including(
             message: 'Failed to fetch last pull request IID for pre-allocation',
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             http_status_code: 404,
             error: 'Repository has no issue tracker.'
           )
@@ -351,6 +353,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
           hash_including(
             message: 'Failed to fetch last pull request IID for pre-allocation',
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             error: 'Maximum number of retries (3) exceeded.'
           )
         )

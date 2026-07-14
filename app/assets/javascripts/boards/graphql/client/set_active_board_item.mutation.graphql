@@ -1,5 +1,6 @@
 #import "ee_else_ce/boards/graphql/issue.fragment.graphql"
 
+# @feature_category: portfolio_management
 mutation setActiveBoardItem($boardItem: Issue, $listId: ListID!) {
   setActiveBoardItem(boardItem: $boardItem, listId: $listId) @client {
     ...Issue

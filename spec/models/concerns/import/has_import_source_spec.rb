@@ -13,13 +13,13 @@ RSpec.describe Import::HasImportSource, feature_category: :importers do
 
   describe '#imported?' do
     it 'returns the correct imported state' do
-      expect(snippet_not_imported.imported?).to eq(false)
-      expect(snippet_imported.imported?).to eq(true)
-      expect(merge_request_imported.imported?).to eq(true)
-      expect(merge_request_imported_bb_cloud.imported?).to eq(true)
-      expect(merge_request_imported_github.imported?).to eq(true)
-      expect(merge_request_imported_gitea.imported?).to eq(true)
-      expect(snippet_imported_offline_transfer.imported?).to eq(true)
+      expect(snippet_not_imported.imported?).to be(false)
+      expect(snippet_imported.imported?).to be(true)
+      expect(merge_request_imported.imported?).to be(true)
+      expect(merge_request_imported_bb_cloud.imported?).to be(true)
+      expect(merge_request_imported_github.imported?).to be(true)
+      expect(merge_request_imported_gitea.imported?).to be(true)
+      expect(snippet_imported_offline_transfer.imported?).to be(true)
     end
   end
 
@@ -36,13 +36,13 @@ RSpec.describe Import::HasImportSource, feature_category: :importers do
 
   describe '#imported_from_[importer]?' do
     it 'returns the correct boolean response' do
-      expect(snippet_not_imported.imported_from_github?).to eq(false)
-      expect(snippet_imported.imported_from_bitbucket?).to eq(true)
-      expect(merge_request_imported.imported_from_gitlab_migration?).to eq(false)
-      expect(merge_request_imported_github.imported_from_gitlab_project?).to eq(false)
-      expect(merge_request_imported_gitea.imported_from_gitea?).to eq(true)
-      expect(snippet_imported_offline_transfer.imported_from_offline_transfer?).to eq(true)
-      expect(snippet_imported_offline_transfer.imported_from_gitlab_migration?).to eq(false)
+      expect(snippet_not_imported.imported_from_github?).to be(false)
+      expect(snippet_imported.imported_from_bitbucket?).to be(true)
+      expect(merge_request_imported.imported_from_gitlab_migration?).to be(false)
+      expect(merge_request_imported_github.imported_from_gitlab_project?).to be(false)
+      expect(merge_request_imported_gitea.imported_from_gitea?).to be(true)
+      expect(snippet_imported_offline_transfer.imported_from_offline_transfer?).to be(true)
+      expect(snippet_imported_offline_transfer.imported_from_gitlab_migration?).to be(false)
     end
   end
 end

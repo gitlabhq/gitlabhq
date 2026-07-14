@@ -1,6 +1,6 @@
 - return if remote_mirror.new_record?
 
-%tr.rspec-mirrored-repository-row{ class: ('bg-secondary' if remote_mirror.disabled?), data: { testid: 'mirrored-repository-row-container' } }
+%tr.rspec-mirrored-repository-row{ class: ('!gl-bg-strong' if remote_mirror.disabled?), data: { testid: 'mirrored-repository-row-container' } }
   %td{ data: { testid: 'mirror-repository-url-content' } }
     = remote_mirror.safe_url || _('Invalid URL')
     = render_if_exists 'projects/mirrors/mirror_branches_setting_badge', record: remote_mirror

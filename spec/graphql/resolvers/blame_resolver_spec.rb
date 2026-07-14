@@ -70,11 +70,46 @@ RSpec.describe Resolvers::BlameResolver, feature_category: :source_code_manageme
           it_behaves_like 'argument error', '`to_line` must be greater than or equal to `from_line`'
         end
 
-        context 'when difference between to_line and from_line is greater then 99' do
-          let(:args) { { from_line: 3, to_line: 103 } }
+        context 'when blame_line_range_cap_1000 feature flag is disabled' do
+          before do
+            stub_feature_flags(blame_line_range_cap_1000: false)
+          end
 
-          it_behaves_like 'argument error',
-            '`to_line` must be greater than or equal to `from_line` and smaller than `from_line` + 100'
+          context 'when difference between to_line and from_line is greater than 99' do
+            let(:args) { { from_line: 3, to_line: 103 } }
+
+            it_behaves_like 'argument error',
+              '`to_line` must be greater than or equal to `from_line` and smaller than `from_line` + 100'
+          end
+        end
+
+        context 'when blame_line_range_cap_1000 feature flag is enabled' do
+          before do
+            stub_feature_flags(blame_line_range_cap_1000: true)
+          end
+
+          context 'when difference between to_line and from_line is within new cap' do
+            let(:args) { { from_line: 1, to_line: 999 } }
+
+            it 'returns blame object' do
+              expect(resolve_blame).to be_an_instance_of(Gitlab::Blame)
+            end
+          end
+
+          context 'when difference between to_line and from_line is at the exact upper boundary' do
+            let(:args) { { from_line: 1, to_line: 1000 } }
+
+            it 'returns blame object' do
+              expect(resolve_blame).to be_an_instance_of(Gitlab::Blame)
+            end
+          end
+
+          context 'when difference between to_line and from_line exceeds new cap' do
+            let(:args) { { from_line: 1, to_line: 1001 } }
+
+            it_behaves_like 'argument error',
+              '`to_line` must be greater than or equal to `from_line` and smaller than `from_line` + 1000'
+          end
         end
 
         context 'when to_line and from_line are the same' do

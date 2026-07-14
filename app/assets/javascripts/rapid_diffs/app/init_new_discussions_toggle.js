@@ -15,6 +15,7 @@ export function initNewDiscussionToggle(appElement, { allowExpandedLines = false
     const row = element.closest('[data-hunk-lines]');
     if (!row || !row.querySelector('[data-line-number]')) return false;
     if (element.closest('[data-change="meta"]')) return false;
+    if (element.closest('diff-file')?.dataset.lineRangeEditing != null) return false;
     return allowExpandedLines || !element.closest('[data-expanded]');
   }
 
@@ -51,7 +52,10 @@ export function initNewDiscussionToggle(appElement, { allowExpandedLines = false
     const { change } = toggle.parentElement.dataset;
     const oldLine = change === 'added' ? null : getLineNumber(row, 'old');
     const newLine = change === 'removed' ? null : getLineNumber(row, 'new');
-    const position = { old_line: oldLine, new_line: newLine, type: null };
+    let type = null;
+    if (change === 'added') type = 'new';
+    if (change === 'removed') type = 'old';
+    const position = { old_line: oldLine, new_line: newLine, type };
     toggle.lineRange = { start: position, end: position };
   }
 

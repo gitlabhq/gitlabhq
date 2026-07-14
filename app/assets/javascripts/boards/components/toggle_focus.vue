@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import { hide } from '~/tooltips';
 
 export default {
+  name: 'ToggleFocus',
   components: {
     GlButton,
   },

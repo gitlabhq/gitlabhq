@@ -36,7 +36,7 @@ module Gitlab
         json_data = @redis.get("peek:requests:#{id}")
         raise "No data for #{id}" if json_data.nil?
 
-        Gitlab::Json.parse(json_data)
+        Gitlab::Json.safe_parse(json_data)
       end
 
       def log_queries(id, data, type)

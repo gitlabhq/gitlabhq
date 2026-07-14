@@ -1,8 +1,9 @@
-import { ApolloMutation } from 'vue-apollo';
+import VueApollo, { ApolloMutation } from 'vue-apollo';
 import { GlAvatar, GlAvatarLink, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { ignoreConsoleMessages } from 'helpers/console_watcher';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -11,15 +12,21 @@ import { AWARD_EMOJI_TO_NOTE_ERROR } from '~/work_items/components/design_manage
 import DesignReplyForm from '~/work_items/components/design_management/design_notes/design_reply_form.vue';
 import DesignNote from '~/work_items/components/design_management/design_notes/design_note.vue';
 import designNoteAwardEmojiToggleMutation from '~/work_items/components/design_management/graphql/design_note_award_emoji_toggle.mutation.graphql';
+import getDesignQuery from '~/work_items/components/design_management/graphql/design_details.query.graphql';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { EMOJI_THUMBS_UP } from '~/emoji/constants';
 import { getAwardEmojiResponse } from '../mock_data';
 import { mockAwardEmoji } from './mock_notes';
 
+Vue.use(VueApollo);
+
+const NOTE_ID = 'gid://gitlab/DiffNote/123';
+const DISCUSSION_ID = 'discussion-id';
+
 const scrollIntoViewMock = jest.fn();
 const note = {
-  id: 'gid://gitlab/DiffNote/123',
+  id: NOTE_ID,
   author: {
     id: 'gid://gitlab/User/1',
     username: 'foo-bar',
@@ -29,12 +36,136 @@ const note = {
   awardEmoji: mockAwardEmoji,
   body: 'test',
   imported: false,
+  discussion: {
+    id: DISCUSSION_ID,
+  },
   userPermissions: {
     adminNote: false,
     awardEmoji: true,
   },
   createdAt: '2019-07-26T15:02:20Z',
 };
+
+const designVariables = {
+  atVersion: null,
+  filenames: ['foo.jpg'],
+  fullPath: 'gitlab-org/gitlab-test',
+  iid: '1',
+};
+
+const cachedNote = {
+  __typename: 'Note',
+  id: NOTE_ID,
+  author: {
+    __typename: 'UserCore',
+    id: 'gid://gitlab/User/1',
+    avatarUrl: 'https://gitlab.com/avatar',
+    name: 'foo bar',
+    username: 'foo-bar',
+    webUrl: 'https://gitlab.com/user',
+    webPath: '/foo-bar',
+  },
+  body: 'test',
+  bodyHtml: '<p>test</p>',
+  createdAt: '2019-07-26T15:02:20Z',
+  resolved: false,
+  imported: false,
+  awardEmoji: mockAwardEmoji,
+  position: null,
+  userPermissions: {
+    __typename: 'NotePermissions',
+    adminNote: false,
+    repositionNote: false,
+    awardEmoji: true,
+  },
+  discussion: {
+    __typename: 'Discussion',
+    id: DISCUSSION_ID,
+    notes: {
+      __typename: 'NoteConnection',
+      nodes: [{ __typename: 'Note', id: NOTE_ID }],
+    },
+  },
+};
+
+const designQueryResponse = {
+  designManagement: {
+    __typename: 'DesignManagement',
+    designAtVersion: {
+      __typename: 'DesignAtVersion',
+      id: 'gid://gitlab/DesignManagement::DesignAtVersion/1',
+      event: 'NONE',
+      image: 'raw_image_1',
+      imageV432x230: 'resized_image_v432x230_1',
+      version: {
+        __typename: 'DesignVersion',
+        id: 'gid://gitlab/DesignManagement::Version/1',
+        sha: 'sha',
+        createdAt: '2021-08-09T06:05:00Z',
+        author: {
+          __typename: 'UserCore',
+          id: 'gid://gitlab/User/1',
+          name: 'Administrator',
+          avatarUrl: 'avatar.png',
+        },
+      },
+      design: {
+        __typename: 'Design',
+        id: 'gid://gitlab/DesignManagement::Design/6',
+        filename: 'foo.jpg',
+        notesCount: 1,
+        description: null,
+        descriptionHtml: null,
+        fullPath: 'gitlab-org/gitlab-test',
+        currentUserTodos: {
+          __typename: 'TodoConnection',
+          nodes: [],
+        },
+        diffRefs: {
+          __typename: 'DiffRefs',
+          baseSha: 'base',
+          startSha: 'start',
+          headSha: 'head',
+        },
+        issue: {
+          __typename: 'Issue',
+          id: 'gid://gitlab/Issue/1',
+          title: 'title',
+          webPath: '/issue',
+          webUrl: 'http://test.host/issue',
+          participants: {
+            __typename: 'UserCoreConnection',
+            nodes: [],
+          },
+          userPermissions: {
+            __typename: 'IssuePermissions',
+            createDesign: true,
+            updateDesign: true,
+          },
+        },
+        discussions: {
+          __typename: 'DiscussionConnection',
+          nodes: [
+            {
+              __typename: 'Discussion',
+              id: DISCUSSION_ID,
+              replyId: 'discussion-reply-id',
+              resolvable: true,
+              resolved: false,
+              resolvedAt: null,
+              resolvedBy: null,
+              notes: {
+                __typename: 'NoteConnection',
+                nodes: [cachedNote],
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
 HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
 
 const $route = {
@@ -85,10 +216,17 @@ describe('Design note component', () => {
       GlLink: true,
     },
   } = {}) {
+    const apolloProvider = createMockApollo([
+      [designNoteAwardEmojiToggleMutation, awardEmojiMutationHandler],
+    ]);
+    apolloProvider.clients.defaultClient.cache.writeQuery({
+      query: getDesignQuery,
+      variables: designVariables,
+      data: designQueryResponse,
+    });
+
     wrapper = shallowMountExtended(DesignNote, {
-      apolloProvider: createMockApollo([
-        [designNoteAwardEmojiToggleMutation, awardEmojiMutationHandler],
-      ]),
+      apolloProvider,
       propsData: {
         note: {},
         noteableId: 'gid://gitlab/DesignManagement::Design/6',
@@ -362,6 +500,12 @@ describe('Design note component', () => {
   });
 
   describe('when user has award emoji permissions', () => {
+    // The award-emoji mutation's optimistic `update` writes emoji nodes back to
+    // the design query cache. Those optimistic nodes intentionally omit fields
+    // the query selects, which Apollo reports via console.error. Ignore them so
+    // the console watcher does not fail these tests.
+    ignoreConsoleMessages([/Missing field/]);
+
     const propsData = {
       note: {
         ...note,
@@ -384,16 +528,13 @@ describe('Design note component', () => {
     it('should call mutation to add an emoji', async () => {
       createComponent({
         props: propsData,
-        mocks: {
-          $apollo: {
-            mutate: awardEmojiAddSuccessHandler,
-          },
-        },
+        awardEmojiMutationHandler: awardEmojiAddSuccessHandler,
       });
 
       await waitForPromises();
 
       findEmojiPicker().vm.$emit('click', EMOJI_THUMBS_UP);
+      await waitForPromises();
 
       expect(awardEmojiAddSuccessHandler).toHaveBeenCalled();
     });
@@ -402,20 +543,14 @@ describe('Design note component', () => {
       jest.spyOn(Sentry, 'captureException');
       createComponent({
         props: propsData,
-        mocks: {
-          $route,
-          $apollo: {
-            mutate: awardEmojiUpdateFailureHandler,
-          },
-        },
+        awardEmojiMutationHandler: awardEmojiUpdateFailureHandler,
       });
 
       findEmojiPicker().vm.$emit('click', EMOJI_THUMBS_UP);
 
-      expect(awardEmojiUpdateFailureHandler).toHaveBeenCalled();
-
       await waitForPromises();
 
+      expect(awardEmojiUpdateFailureHandler).toHaveBeenCalled();
       expect(Sentry.captureException).toHaveBeenCalled();
       expect(wrapper.emitted('error')).toEqual([[AWARD_EMOJI_TO_NOTE_ERROR]]);
     });

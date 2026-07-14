@@ -994,7 +994,7 @@ RSpec.describe GraphqlController, feature_category: :api do
       end
 
       context 'when admin is member of the project' do
-        before do
+        before_all do
           project.add_developer(admin)
         end
 

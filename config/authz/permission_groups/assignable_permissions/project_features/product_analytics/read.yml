@@ -1,0 +1,9 @@
+---
+name: read_product_analytics
+description: Grants the ability to read product analytics
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_product_analytics

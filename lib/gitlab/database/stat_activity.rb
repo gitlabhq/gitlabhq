@@ -23,7 +23,7 @@ module Gitlab
       #         "DetectRepositoryLanguagesWorker": {
       #           "idle in transaction": 1
       #         },
-      #         "ContainerRegistry::RecordDataRepairDetailWorker": {
+      #         "ContainerRegistry::DeleteContainerRepositoryWorker": {
       #           "idle": 1,
       #           "active": 2
       #         }

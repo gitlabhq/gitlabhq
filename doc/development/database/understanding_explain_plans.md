@@ -792,6 +792,10 @@ Seq Scan on public.projects  (cost=0.00..2.17 rows=1 width=742) (actual time=0.0
 
 ## Further reading
 
+When a `Seq Scan` appears because the planner mis-estimates an `IN (...)` predicate, see
+[Forcing index seeks with LATERAL joins](lateral_planner_fence.md) for a rewrite that forces one
+index seek per value.
+
 A more extensive guide on understanding query plans can be found in
 the [presentation](https://public.dalibo.com/exports/conferences/_archives/_2012/201211_explain/understanding_explain.pdf)
 from [Dalibo.org](https://www.dalibo.com/en/).

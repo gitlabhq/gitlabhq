@@ -166,7 +166,6 @@ module Gitlab
             noteable_type: "Vulnerability",
             noteable_id: vulnerability.id,
             project_id: vulnerability.project.id,
-            namespace_id: vulnerability.project.project_namespace_id,
             system: true,
             note: COMMENT,
             author_id: record[:bug_transition].author_id,

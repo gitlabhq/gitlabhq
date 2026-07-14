@@ -10,7 +10,7 @@ RSpec.describe Gitlab::ZoomUrlValidator do
       it 'passes validation' do
         zoom_meeting.url = 'https://zoom.us/j/123456789'
 
-        expect(zoom_meeting.valid?).to eq(true)
+        expect(zoom_meeting.valid?).to be(true)
         expect(zoom_meeting.errors).to be_empty
       end
     end
@@ -18,7 +18,7 @@ RSpec.describe Gitlab::ZoomUrlValidator do
     shared_examples 'zoom link does not start with https' do |url|
       it 'fails validation' do
         zoom_meeting.url = url
-        expect(zoom_meeting.valid?).to eq(false)
+        expect(zoom_meeting.valid?).to be(false)
 
         expect(zoom_meeting.errors).to be_present
         expect(zoom_meeting.errors.added?(:url, 'must contain one valid Zoom URL')).to be true

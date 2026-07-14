@@ -21,6 +21,7 @@ import MetadataButton from './metadata/button.vue';
 import MetadataModal from './metadata/modal.vue';
 
 export default {
+  name: 'SecureFilesList',
   components: {
     GlAlert,
     GlButton,
@@ -234,7 +235,7 @@ export default {
             :secure-file="item"
             :admin="admin"
             modal-id="$options.metadataModalId"
-            @selectSecureFile="updateMetadataSecureFile"
+            @select-secure-file="updateMetadataSecureFile"
           />
           <gl-button
             v-if="admin"

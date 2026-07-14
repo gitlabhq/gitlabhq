@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, :request_store, feature_category: :continuous_integration do
@@ -61,9 +62,6 @@ RSpec.describe Ci::CreatePipelineService, :request_store, feature_category: :con
             # 2 select tags.*
             # 1 insert tags
             expect(recording).not_to exceed_all_query_limit(3).for_model(::Ci::Tag)
-
-            # 1 insert taggings
-            expect(recording).not_to exceed_all_query_limit(1).for_model(::Ci::BuildTag)
           end
         end
 
@@ -79,9 +77,6 @@ RSpec.describe Ci::CreatePipelineService, :request_store, feature_category: :con
 
             # 1 select tags.*
             expect(recording).not_to exceed_all_query_limit(1).for_model(::Ci::Tag)
-
-            # 1 insert taggings
-            expect(recording).not_to exceed_all_query_limit(1).for_model(::Ci::BuildTag)
           end
         end
       end

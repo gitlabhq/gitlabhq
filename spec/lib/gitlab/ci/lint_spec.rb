@@ -898,7 +898,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
       end
 
       context 'when the ref is a tag' do
-        let_it_be(:project, freeze: false) { create(:project, :repository) }
+        let_it_be(:project) { create(:project, :repository) }
         let(:ref) { 'test' }
 
         before do
@@ -1200,6 +1200,129 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
           validate
         end
       end
+    end
+  end
+
+  describe 'ci_lint rate limiting', :clean_gitlab_redis_rate_limiting do
+    let(:content) do
+      <<~YAML
+      build:
+        script: echo
+      YAML
+    end
+
+    before do
+      project&.add_developer(user)
+    end
+
+    it 'does not break when the limiter is scoped to a nil user' do
+      expect { Gitlab::ApplicationRateLimiter.throttled?(:ci_lint, scope: [nil]) }
+        .not_to raise_error
+    end
+
+    shared_examples 'rate-limited lint entry point' do
+      context 'when the ci_lint limit is exceeded' do
+        before do
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:ci_lint, scope: [user]).and_return(true)
+        end
+
+        context 'when ci_enforce_ci_lint_rate_limit is enabled' do
+          it 'raises a rate limit error without validating', :aggregate_failures do
+            expect(Gitlab::Ci::YamlProcessor).not_to receive(:new)
+
+            expect { subject }.to raise_error(described_class::RateLimitError)
+          end
+
+          it 'logs the throttled request' do
+            expect(Gitlab::AppJsonLogger).to receive(:info).with(
+              a_hash_including(
+                Labkit::Fields::CLASS_NAME => described_class.name,
+                Labkit::Fields::GL_PROJECT_ID => project&.id,
+                Labkit::Fields::GL_USER_ID => user.id,
+                throttled: true,
+                message: 'CI Lint rate limit exceeded'
+              )
+            )
+
+            expect { subject }.to raise_error(described_class::RateLimitError)
+          end
+        end
+
+        context 'when ci_enforce_ci_lint_rate_limit is disabled (log-only mode)' do
+          before do
+            stub_feature_flags(ci_enforce_ci_lint_rate_limit: false)
+          end
+
+          it 'validates normally and does not raise' do
+            expect { subject }.not_to raise_error
+          end
+
+          it 'logs the throttled request as not enforced' do
+            # Validation proceeds in log-only mode and may emit its own log entries.
+            allow(Gitlab::AppJsonLogger).to receive(:info)
+            expect(Gitlab::AppJsonLogger).to receive(:info).with(
+              a_hash_including(
+                Labkit::Fields::GL_USER_ID => user.id,
+                throttled: false,
+                message: 'CI Lint rate limit exceeded'
+              )
+            )
+
+            subject
+          end
+        end
+      end
+
+      context 'when the ci_lint limit is not exceeded' do
+        it 'does not raise a rate limit error' do
+          expect { subject }.not_to raise_error
+        end
+      end
+    end
+
+    describe '#legacy_validate' do
+      subject { lint.legacy_validate(content, dry_run: false) }
+
+      it_behaves_like 'rate-limited lint entry point'
+
+      context 'when there is no current user' do
+        let(:lint) { described_class.new(project: project, current_user: nil) }
+
+        it 'checks the rate limit scoped to a nil user and does not raise', :aggregate_failures do
+          expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:ci_lint, scope: [nil]).and_call_original
+
+          expect { subject }.not_to raise_error
+        end
+
+        context 'when the ci_lint limit is exceeded' do
+          before do
+            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+              .with(:ci_lint, scope: [nil]).and_return(true)
+          end
+
+          it 'logs a nil user id and raises without a NoMethodError', :aggregate_failures do
+            expect(Gitlab::AppJsonLogger).to receive(:info).with(
+              a_hash_including(
+                Labkit::Fields::GL_USER_ID => nil,
+                throttled: true,
+                message: 'CI Lint rate limit exceeded'
+              )
+            )
+
+            expect { subject }.to raise_error(described_class::RateLimitError)
+          end
+        end
+      end
+    end
+
+    describe '#validate' do
+      subject { lint.validate(content, dry_run: false, ref: ref) }
+
+      it_behaves_like 'rate-limited lint entry point'
     end
   end
 end

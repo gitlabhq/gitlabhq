@@ -3,12 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Projects::GraphsController, feature_category: :source_code_management do
-  let(:project) { create(:project, :repository) }
-  let(:user)    { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :small_repo, maintainers: user) }
 
   before do
     sign_in(user)
-    project.add_maintainer(user)
   end
 
   describe '#show' do
@@ -73,7 +72,7 @@ RSpec.describe Projects::GraphsController, feature_category: :source_code_manage
 
   describe 'charts' do
     context 'with an anonymous user' do
-      let(:project) { create(:project, :repository, :public) }
+      let(:project) { create(:project, :small_repo, :public) }
 
       before do
         sign_out(user)
@@ -150,8 +149,8 @@ RSpec.describe Projects::GraphsController, feature_category: :source_code_manage
     end
 
     context 'when languages were previously detected' do
-      let(:project) { create(:project, :repository, detected_repository_languages: true) }
-      let!(:repository_language) { create(:repository_language, project: project) }
+      let_it_be(:project) { create(:project, :small_repo, detected_repository_languages: true, maintainers: user) }
+      let_it_be(:repository_language) { create(:repository_language, project: project) }
 
       it 'sets the languages properly' do
         get(:charts, params: { namespace_id: project.namespace.path, project_id: project.path, id: 'master' })

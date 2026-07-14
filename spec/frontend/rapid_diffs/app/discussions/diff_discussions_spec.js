@@ -86,17 +86,17 @@ describe('DiffDiscussions', () => {
     expect(useDiffDiscussions().toggleDiscussionReplies).toHaveBeenCalledWith(discussion);
   });
 
-  it('handles startEditing event', () => {
+  it('handles start-editing event', () => {
     const note = { id: '1' };
     createComponent({ discussions: [{ id: '1' }] });
-    wrapper.findComponent(NoteableDiscussion).vm.$emit('startEditing', note);
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('start-editing', note);
     expect(useDiffDiscussions().setEditingMode).toHaveBeenCalledWith(note, true);
   });
 
-  it('handles cancelEditing event', () => {
+  it('handles cancel-editing event', () => {
     const note = { id: '1' };
     createComponent({ discussions: [{ id: '1' }] });
-    wrapper.findComponent(NoteableDiscussion).vm.$emit('cancelEditing', note);
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('cancel-editing', note);
     expect(useDiffDiscussions().setEditingMode).toHaveBeenCalledWith(note, false);
   });
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Autocomplete::GroupFinder do
+RSpec.describe Autocomplete::GroupFinder, feature_category: :user_profile do
   let(:user) { create(:user) }
 
   describe '#execute' do

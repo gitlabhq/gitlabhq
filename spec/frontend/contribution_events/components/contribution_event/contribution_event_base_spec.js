@@ -1,6 +1,7 @@
 import { GlAvatarLabeled, GlAvatarLink, GlIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ContributionEventBase from '~/contribution_events/components/contribution_event/contribution_event_base.vue';
+import { VARIANT_AVATAR, VARIANT_DEFAULT } from '~/contribution_events/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TargetLink from '~/contribution_events/components/target_link.vue';
 import ResourceParentLink from '~/contribution_events/components/resource_parent_link.vue';
@@ -28,18 +29,31 @@ describe('ContributionEventBase', () => {
     });
   };
 
-  it('renders avatar', () => {
-    createComponent();
+  describe.each([
+    { variant: VARIANT_AVATAR, rendersAvatar: true },
+    { variant: VARIANT_DEFAULT, rendersAvatar: false },
+  ])('when `variant` is `$variant`', ({ variant, rendersAvatar }) => {
+    beforeEach(() => {
+      createComponent({ propsData: { variant } });
+    });
 
-    const avatarLink = wrapper.findComponent(GlAvatarLink);
-    const avatarLabeled = avatarLink.findComponent(GlAvatarLabeled);
+    it(`${rendersAvatar ? 'renders' : 'does not render'} avatar`, () => {
+      const avatarLink = wrapper.findComponent(GlAvatarLink);
 
-    expect(avatarLink.attributes('href')).toBe(defaultPropsData.event.author.web_url);
-    expect(avatarLabeled.props()).toMatchObject({
-      src: defaultPropsData.event.author.avatar_url,
-      size: 24,
-      label: defaultPropsData.event.author.name,
-      subLabel: `@${defaultPropsData.event.author.username}`,
+      expect(avatarLink.exists()).toBe(rendersAvatar);
+      expect(wrapper.findComponent(GlAvatarLabeled).exists()).toBe(rendersAvatar);
+
+      if (rendersAvatar) {
+        const avatarLabeled = avatarLink.findComponent(GlAvatarLabeled);
+
+        expect(avatarLink.attributes('href')).toBe(defaultPropsData.event.author.web_url);
+        expect(avatarLabeled.props()).toMatchObject({
+          src: defaultPropsData.event.author.avatar_url,
+          size: 24,
+          label: defaultPropsData.event.author.name,
+          subLabel: `@${defaultPropsData.event.author.username}`,
+        });
+      }
     });
   });
 
@@ -65,7 +79,7 @@ describe('ContributionEventBase', () => {
     });
 
     it('renders message', () => {
-      expect(wrapper.findByTestId('event-body').text()).toBe(
+      expect(wrapper.findByTestId('event-title').text()).toBe(
         `Approved merge request ${defaultPropsData.event.target.reference_link_text} in ${defaultPropsData.event.resource_parent.full_name}.`,
       );
     });

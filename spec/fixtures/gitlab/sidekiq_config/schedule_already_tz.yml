@@ -1,0 +1,3 @@
+already_tz_worker:
+  class: AlreadyTzWorker
+  cron: "0 0 * * * Europe/Berlin"

@@ -31,7 +31,7 @@ This guide assumes that the following GitLab components are up and running:
 - Siphon Producer and Siphon Consumer (for ClickHouse)
 
 > [!note]
-> **Current status:** Siphon is only available for local development via GDK for database tables present in the `main` database. You should set up these dependencies with GDK following [this guide](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/siphon/). You can find help and discuss technical issues in the `#f_siphon` Slack channel.
+> **Current status:** Siphon is available on GitLab.com (SaaS) across all three databases (`ci`, `main`, and `sec`). The [`db/siphon/tables`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/siphon/tables) directory lists the tables currently replicated to ClickHouse. Siphon is also available for local development via GDK. You should set up these dependencies with GDK following [this guide](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/siphon/). You can find help and discuss technical issues in the `#f_siphon` Slack channel.
 
 ## Table Replication Example
 

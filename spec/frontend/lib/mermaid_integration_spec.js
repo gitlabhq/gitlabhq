@@ -10,7 +10,17 @@ jest.mock('mermaid-v11', () => ({
     render: jest.fn().mockResolvedValue({ svg: '<svg></svg>' }),
   },
   initialize: jest.fn(),
+  registerLayoutLoaders: jest.fn(),
 }));
+
+jest.mock(
+  '@mermaid-js/layout-elk',
+  () => ({
+    __esModule: true,
+    default: [{ name: 'elk' }],
+  }),
+  { virtual: true },
+);
 
 jest.mock('dompurify', () => ({
   sanitize: jest.fn(),
@@ -70,6 +80,15 @@ jest.mock('~/lib/utils/webpack');
 
       expect(resetServiceWorkersPublicPath).not.toHaveBeenCalled();
       expect(window.gon).toBeUndefined();
+    });
+
+    it('registers the ELK layout loaders so `layout: elk` is honored', () => {
+      const mermaid = require('mermaid-v11');
+      const elkLayouts = require('@mermaid-js/layout-elk').default;
+
+      require(`~/lib/${entrypoint}`);
+
+      expect(mermaid.registerLayoutLoaders).toHaveBeenCalledWith(elkLayouts);
     });
   });
 });

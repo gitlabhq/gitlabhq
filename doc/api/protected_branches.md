@@ -79,6 +79,7 @@ following response attributes:
 | `merge_access_levels[].access_level_description` | string  | Human-readable description of the access level. |
 | `merge_access_levels[].group_id`                 | integer | ID of the group with merge access. Premium and Ultimate only. |
 | `merge_access_levels[].id`                       | integer | ID of the merge access level configuration. |
+| `merge_access_levels[].member_role_id`           | integer | ID of the custom member role with merge access. Ultimate only. |
 | `merge_access_levels[].user_id`                  | integer | ID of the user with merge access. Premium and Ultimate only. |
 | `name`                                           | string  | Name of the protected branch. |
 | `push_access_levels`                             | array   | Array of push access level configurations. |
@@ -87,6 +88,7 @@ following response attributes:
 | `push_access_levels[].deploy_key_id`             | integer | ID of the deploy key with push access. |
 | `push_access_levels[].group_id`                  | integer | ID of the group with push access. Premium and Ultimate only. |
 | `push_access_levels[].id`                        | integer | ID of the push access level configuration. |
+| `push_access_levels[].member_role_id`            | integer | ID of the custom member role with push access. Ultimate only. |
 | `push_access_levels[].user_id`                   | integer | ID of the user with push access. Premium and Ultimate only. |
 
 In the following example request, the project ID is `5`.
@@ -229,6 +231,7 @@ following response attributes:
 | `merge_access_levels[].access_level_description` | string  | Human-readable description of the access level. |
 | `merge_access_levels[].group_id`                 | integer | ID of the group with merge access. Premium and Ultimate only. |
 | `merge_access_levels[].id`                       | integer | ID of the merge access level configuration. |
+| `merge_access_levels[].member_role_id`           | integer | ID of the custom member role with merge access. Ultimate only. |
 | `merge_access_levels[].user_id`                  | integer | ID of the user with merge access. Premium and Ultimate only. |
 | `name`                                           | string  | Name of the protected branch. |
 | `push_access_levels`                             | array   | Array of push access level configurations. |
@@ -236,6 +239,7 @@ following response attributes:
 | `push_access_levels[].access_level_description`  | string  | Human-readable description of the access level. |
 | `push_access_levels[].group_id`                  | integer | ID of the group with push access. Premium and Ultimate only. |
 | `push_access_levels[].id`                        | integer | ID of the push access level configuration. |
+| `push_access_levels[].member_role_id`            | integer | ID of the custom member role with push access. Ultimate only. |
 | `push_access_levels[].user_id`                   | integer | ID of the user with push access. Premium and Ultimate only. |
 
 In the following example request, the project ID is `5` and branch name is `main`:
@@ -308,6 +312,7 @@ Example response:
 
 - `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166598) in GitLab 17.5.
 - `deploy_key_id` configuration [moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224542) from GitLab Premium to GitLab Free in GitLab 18.10.
+- `member_role_id` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241819) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `custom_roles_for_protected_branches`. Disabled by default.
 
 {{< /history >}}
 
@@ -325,9 +330,9 @@ Supported attributes:
 | `id`                           | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name`                         | string            | Yes      | Name of the branch or wildcard. |
 | `allow_force_push`             | boolean           | No       | If `true`, members who can push to this branch can also force push. Default is `false`. |
-| `allowed_to_merge`             | array             | No       | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
-| `allowed_to_push`              | array             | No       | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. `user_id`, `group_id`, and `access_level` are Premium and Ultimate only. |
-| `allowed_to_unprotect`         | array             | No       | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Access level `No access` is not available for this field. Premium and Ultimate only. |
+| `allowed_to_merge`             | array             | No       | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{member_role_id: integer}`, or `{access_level: integer}`. `user_id`, `group_id`, and `access_level` are Premium and Ultimate only. `member_role_id` is Ultimate only. |
+| `allowed_to_push`              | array             | No       | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{member_role_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. `user_id`, `group_id`, and `access_level` are Premium and Ultimate only. `member_role_id` is Ultimate only. |
+| `allowed_to_unprotect`         | array             | No       | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{member_role_id: integer}`, or `{access_level: integer}`. `user_id`, `group_id`, and `access_level` are Premium and Ultimate only. `member_role_id` is Ultimate only. Access level `No access` is not available for this field. |
 | `code_owner_approval_required` | boolean           | No       | If `true`, prevents pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). Default is `false`. Premium and Ultimate only. |
 | `merge_access_level`           | integer           | No       | Access levels allowed to merge. Default is `40` (Maintainer role). |
 | `push_access_level`            | integer           | No       | Access levels allowed to push. Default is `40` (Maintainer role). |
@@ -358,6 +363,7 @@ following response attributes:
 | `merge_access_levels[].access_level_description`     | string  | Human-readable description of the access level. |
 | `merge_access_levels[].group_id`                     | integer | ID of the group with merge access. Premium and Ultimate only. |
 | `merge_access_levels[].id`                           | integer | ID of the merge access level configuration. |
+| `merge_access_levels[].member_role_id`               | integer | ID of the custom member role with merge access. Ultimate only. |
 | `merge_access_levels[].user_id`                      | integer | ID of the user with merge access. Premium and Ultimate only. |
 | `name`                                               | string  | Name of the protected branch. |
 | `push_access_levels`                                 | array   | Array of push access level configurations. |
@@ -366,12 +372,14 @@ following response attributes:
 | `push_access_levels[].deploy_key_id`                 | integer | ID of the deploy key with push access. |
 | `push_access_levels[].group_id`                      | integer | ID of the group with push access. Premium and Ultimate only. |
 | `push_access_levels[].id`                            | integer | ID of the push access level configuration. |
+| `push_access_levels[].member_role_id`                | integer | ID of the custom member role with push access. Ultimate only. |
 | `push_access_levels[].user_id`                       | integer | ID of the user with push access. Premium and Ultimate only. |
 | `unprotect_access_levels`                            | array   | Array of unprotect access level configurations. |
 | `unprotect_access_levels[].access_level`             | integer | Access level for unprotecting. |
 | `unprotect_access_levels[].access_level_description` | string  | Human-readable description of the access level. |
 | `unprotect_access_levels[].group_id`                 | integer | ID of the group with unprotect access. Premium and Ultimate only. |
 | `unprotect_access_levels[].id`                       | integer | ID of the unprotect access level configuration. |
+| `unprotect_access_levels[].member_role_id`           | integer | ID of the custom member role with unprotect access. Ultimate only. |
 | `unprotect_access_levels[].user_id`                  | integer | ID of the user with unprotect access. Premium and Ultimate only. |
 
 In the following example request, the project ID is `5` and branch name is `*-stable`.
@@ -759,6 +767,7 @@ curl --request DELETE \
 {{< history >}}
 
 - `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166598) in GitLab 17.5.
+- `member_role_id` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241819) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `custom_roles_for_protected_branches`. Disabled by default.
 
 {{< /history >}}
 
@@ -775,9 +784,9 @@ Supported attributes:
 | `id`                           | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name`                         | string            | Yes      | Name of the branch or wildcard. |
 | `allow_force_push`             | boolean           | No       | If `true`, members who can push to this branch can also force push. |
-| `allowed_to_merge`             | array             | No       | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
-| `allowed_to_push`              | array             | No       | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. `user_id`, `group_id`, and `access_level` are Premium and Ultimate only. |
-| `allowed_to_unprotect`         | array             | No       | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{access_level: integer}`, or `{id: integer, _destroy: true}` to destroy an existing access level. Access level `No access` is not available for this field. Premium and Ultimate only. |
+| `allowed_to_merge`             | array             | No       | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{member_role_id: integer}`, or `{access_level: integer}`. `user_id`, `group_id`, and `access_level` are Premium and Ultimate only. `member_role_id` is Ultimate only. |
+| `allowed_to_push`              | array             | No       | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{member_role_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. `user_id`, `group_id`, and `access_level` are Premium and Ultimate only. `member_role_id` is Ultimate only. |
+| `allowed_to_unprotect`         | array             | No       | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{member_role_id: integer}`, `{access_level: integer}`, or `{id: integer, _destroy: true}` to destroy an existing access level. `user_id`, `group_id`, and `access_level` are Premium and Ultimate only. `member_role_id` is Ultimate only. Access level `No access` is not available for this field. |
 | `code_owner_approval_required` | boolean           | No       | If `true`, prevents pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). Premium and Ultimate only. |
 
 For information about how access levels interact when you set multiple values,
@@ -796,6 +805,7 @@ following response attributes:
 | `merge_access_levels[].access_level_description`     | string  | Human-readable description of the access level. |
 | `merge_access_levels[].group_id`                     | integer | ID of the group with merge access. Premium and Ultimate only. |
 | `merge_access_levels[].id`                           | integer | ID of the merge access level configuration. |
+| `merge_access_levels[].member_role_id`               | integer | ID of the custom member role with merge access. Ultimate only. |
 | `merge_access_levels[].user_id`                      | integer | ID of the user with merge access. Premium and Ultimate only. |
 | `name`                                               | string  | Name of the protected branch. |
 | `push_access_levels`                                 | array   | Array of push access level configurations. |
@@ -804,12 +814,14 @@ following response attributes:
 | `push_access_levels[].deploy_key_id`                 | integer | ID of the deploy key with push access. |
 | `push_access_levels[].group_id`                      | integer | ID of the group with push access. Premium and Ultimate only. |
 | `push_access_levels[].id`                            | integer | ID of the push access level configuration. |
+| `push_access_levels[].member_role_id`                | integer | ID of the custom member role with push access. Ultimate only. |
 | `push_access_levels[].user_id`                       | integer | ID of the user with push access. Premium and Ultimate only. |
 | `unprotect_access_levels`                            | array   | Array of unprotect access level configurations. |
 | `unprotect_access_levels[].access_level`             | integer | Access level for unprotecting. |
 | `unprotect_access_levels[].access_level_description` | string  | Human-readable description of the access level. |
 | `unprotect_access_levels[].group_id`                 | integer | ID of the group with unprotect access. Premium and Ultimate only. |
 | `unprotect_access_levels[].id`                       | integer | ID of the unprotect access level configuration. |
+| `unprotect_access_levels[].member_role_id`           | integer | ID of the custom member role with unprotect access. Ultimate only. |
 | `unprotect_access_levels[].user_id`                  | integer | ID of the user with unprotect access. Premium and Ultimate only. |
 
 Example request:
@@ -821,8 +833,8 @@ curl --request PATCH \
 ```
 
 Elements in the `allowed_to_push`, `allowed_to_merge`, and `allowed_to_unprotect` arrays should
-be one of `user_id`, `group_id`, or `access_level`, and take the form `{user_id: integer}`, `{group_id: integer}` or
-`{access_level: integer}`.
+be one of `user_id`, `group_id`, `member_role_id`, or `access_level`, and take the form
+`{user_id: integer}`, `{group_id: integer}`, `{member_role_id: integer}`, or `{access_level: integer}`.
 
 `allowed_to_push` includes an extra element, `deploy_key_id`, that takes the form `{deploy_key_id: integer}`.
 

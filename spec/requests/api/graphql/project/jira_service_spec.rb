@@ -29,8 +29,11 @@ RSpec.describe 'query Jira service', feature_category: :integrations do
   it_behaves_like 'unauthorized users cannot read services'
 
   context 'when user can access project services' do
-    before do
+    before_all do
       project.add_maintainer(current_user)
+    end
+
+    before do
       post_graphql(query, current_user: current_user)
     end
 

@@ -4,6 +4,7 @@ import { GlButton, GlFormCheckbox, GlFormGroup, GlFormSelect } from '@gitlab/ui'
 import { s__ } from '~/locale';
 
 export default {
+  name: 'ServiceAccountsForm',
   ALL_REFS: '*',
   components: { GlButton, GlFormGroup, GlFormSelect, GlFormCheckbox },
   props: {

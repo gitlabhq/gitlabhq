@@ -276,11 +276,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
   end
 
   context 'group namespace' do
-    let(:group) do
-      create(:group).tap do |group|
-        group.add_owner(user)
-      end
-    end
+    let_it_be(:group) { create(:group, owners: user) }
 
     before do
       user.refresh_authorized_projects # Ensure cache is warm
@@ -317,11 +313,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
 
     context 'when project is an import' do
-      let(:group) do
-        create(:group).tap do |group|
-          group.add_developer(user)
-        end
-      end
+      let_it_be(:group) { create(:group, developers: user) }
 
       context 'and import is from a built-in template' do
         let(:project_template) { Gitlab::ProjectTemplate.find(:rails) }
@@ -361,9 +353,9 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
   end
 
   context 'group sharing', :sidekiq_inline do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:shared_group) { create(:group) }
     let_it_be(:shared_group_user) { create(:user) }
+    let_it_be(:group) { create(:group, developers: user) }
+    let_it_be(:shared_group) { create(:group, maintainers: shared_group_user) }
 
     let(:opts) do
       {
@@ -372,11 +364,8 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
       }
     end
 
-    before do
+    before_all do
       create(:group_group_link, shared_group: shared_group, shared_with_group: group)
-
-      shared_group.add_maintainer(shared_group_user)
-      group.add_developer(user)
     end
 
     it 'updates authorization' do
@@ -408,11 +397,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
 
     context 'under group namespace' do
-      let_it_be(:group) do
-        create(:group).tap do |group|
-          group.add_owner(user_with_projects_limit)
-        end
-      end
+      let_it_be(:group) { create(:group, owners: user_with_projects_limit) }
 
       let(:target_namespace) { group }
 
@@ -425,10 +410,10 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
   end
 
   context 'membership overrides', :sidekiq_inline do
-    let_it_be(:group) { create(:group, :private) }
+    let_it_be(:group_maintainer) { create(:user) }
+    let_it_be(:group) { create(:group, :private, maintainers: group_maintainer) }
     let_it_be(:subgroup_for_projects) { create(:group, :private, parent: group) }
     let_it_be(:subgroup_for_access) { create(:group, :private, parent: group) }
-    let_it_be(:group_maintainer) { create(:user) }
 
     let(:group_access_level) { Gitlab::Access::REPORTER }
     let(:subgroup_access_level) { Gitlab::Access::DEVELOPER }
@@ -441,8 +426,6 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
 
     before do
-      group.add_maintainer(group_maintainer)
-
       create(
         :group_group_link,
         shared_group: subgroup_for_projects,
@@ -511,7 +494,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
   context 'error handling' do
     it 'handles invalid options' do
       opts[:invalid] = 'option'
-      expect(create_project(user, opts)).to eq(nil)
+      expect(create_project(user, opts)).to be_nil
     end
   end
 
@@ -562,12 +545,22 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
     describe 'import scheduling' do
       context 'when project import type is gitlab project migration' do
-        it 'does not schedule project import' do
+        it 'does not create or schedule project import state' do
           opts[:import_type] = 'gitlab_project_migration'
 
           project = create_project(user, opts)
 
-          expect(project.import_state.status).to eq('none')
+          expect(project.import_state).to be_nil
+        end
+      end
+
+      context 'when project import type is offline transfer' do
+        it 'does not create or schedule project import state' do
+          opts[:import_type] = Import::SOURCE_OFFLINE_TRANSFER.to_s
+
+          project = create_project(user, opts)
+
+          expect(project.import_state).to be_nil
         end
       end
     end
@@ -904,6 +897,103 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
   end
 
+  context 'when readme initialization is requested for a group project' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:group_user) { create(:user) }
+
+    let(:opts) do
+      {
+        name: 'test-project',
+        namespace_id: group.id,
+        initialize_with_readme: '1'
+      }
+    end
+
+    before_all do
+      group.add_owner(group_user)
+    end
+
+    it 'creates a README.md file', :aggregate_failures do
+      project = create_project(group_user, opts)
+
+      expect(project).to be_persisted
+      expect(project.repository.commit_count).to eq(1)
+      expect(project.repository.readme).to be_present
+      expect(project.repository.readme.name).to eq('README.md')
+    end
+
+    it 'purges the member access cache before creating the README' do
+      # This test verifies the fix - the cache should be purged so the
+      # permission check in Files::CreateService sees the new authorization.
+      #
+      # We pin the expectation to the specific project's team object inside
+      # the wrapper to avoid intercepting unrelated ProjectTeam instances
+      # that may be instantiated earlier in after_create_actions.
+      #
+      # Note: project.team is memoized (see Project#team), so the expectation
+      # targets the same ProjectTeam instance used inside setup_authorizations.
+      allow_next_instance_of(described_class) do |service|
+        allow(service).to receive(:setup_authorizations).and_wrap_original do |original_method|
+          project = service.instance_variable_get(:@project)
+          expect(project.team).to receive(:purge_member_access_cache_for_user_id)
+            .with(group_user.id).and_call_original
+          original_method.call
+        end
+      end
+
+      create_project(group_user, opts)
+    end
+
+    context 'when member access cache is pre-populated with NO_ACCESS', :request_store do
+      # This test reproduces the race condition from issue #599208
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/599208
+      #
+      # The bug occurred when:
+      # 1. A permission check earlier in the request cached NO_ACCESS for the user
+      # 2. Authorization was created synchronously in setup_authorizations
+      # 3. But the cache wasn't purged, so create_readme saw stale NO_ACCESS
+      #    and failed with "namespace could not be found" from Gitaly pre-receive hook
+
+      it 'still creates README even when cache was poisoned with NO_ACCESS', :aggregate_failures do
+        # Simulate the race condition by poisoning the cache during project creation.
+        # We hook into setup_authorizations to inject a stale NO_ACCESS value into
+        # the SafeRequestStore cache BEFORE the authorization is created.
+        #
+        # Without the fix (cache purge), the README creation would fail because
+        # Files::CreateService would see NO_ACCESS from the stale cache.
+        # With the fix, the cache is purged after authorization creation,
+        # so the permission check succeeds.
+
+        allow_next_instance_of(described_class) do |service|
+          allow(service).to receive(:setup_authorizations).and_wrap_original do |original_method|
+            project = service.instance_variable_get(:@project)
+
+            # Poison the cache with NO_ACCESS before authorization is created.
+            # This simulates what happens when a permission check runs earlier
+            # in the request before the project authorization exists.
+            #
+            # Note: We intentionally use the internal cache key method here because
+            # we're testing the exact cache mechanism that caused the bug. The key
+            # is generated by Project#max_member_access_for_resource_key which is
+            # called by ProjectTeam#max_member_access_for_user_ids via SafeRequestLoader.
+            # See: app/models/project_team.rb#max_member_access_for_user_ids
+            Gitlab::SafeRequestStore[project.max_member_access_for_resource_key(User)] = {
+              group_user.id => Gitlab::Access::NO_ACCESS
+            }
+
+            original_method.call
+          end
+        end
+
+        project = create_project(group_user, opts)
+
+        expect(project).to be_persisted
+        expect(project.repository.readme).to be_present
+        expect(project.repository.readme.name).to eq('README.md')
+      end
+    end
+  end
+
   context 'when SAST initialization is requested' do
     let(:project) { create_project(user, opts) }
 
@@ -967,7 +1057,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     subject(:project) { create_project(user, opts) }
 
     context 'when an instance-level instance specific integration' do
-      let!(:instance_specific_integration) { create(:beyond_identity_integration, :instance) }
+      let_it_be(:instance_specific_integration) { create(:beyond_identity_integration, :instance) }
 
       it 'creates integration inheriting from the instance level integration' do
         expect(project.integrations.count).to eq(1)
@@ -983,13 +1073,9 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
           }
         end
 
-        let!(:group) do
-          create(:group).tap do |group|
-            group.add_owner(user)
-          end
-        end
+        let_it_be(:group) { create(:group, owners: user) }
 
-        let!(:group_integration) do
+        let_it_be(:group_integration) do
           create(:beyond_identity_integration, project: nil, group: group, active: false)
         end
 
@@ -1002,7 +1088,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
 
     context 'with an active instance-level integration' do
-      let!(:instance_integration) { create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki') }
+      let_it_be(:instance_integration) { create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki') }
 
       it 'creates an integration from the instance-level integration' do
         expect(project.integrations.count).to eq(1)
@@ -1011,12 +1097,8 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
       end
 
       context 'with an active group-level integration' do
-        let!(:group_integration) { create(:confluence_integration, :group, group: group, confluence_url: 'https://group.atlassian.net/wiki') }
-        let!(:group) do
-          create(:group).tap do |group|
-            group.add_owner(user)
-          end
-        end
+        let_it_be(:group) { create(:group, owners: user) }
+        let_it_be(:group_integration) { create(:confluence_integration, :group, group: group, confluence_url: 'https://group.atlassian.net/wiki') }
 
         let(:opts) do
           {
@@ -1032,12 +1114,8 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
         end
 
         context 'with an active subgroup' do
-          let!(:subgroup_integration) { create(:confluence_integration, :group, group: subgroup, confluence_url: 'https://subgroup.atlassian.net/wiki') }
-          let!(:subgroup) do
-            create(:group, parent: group).tap do |subgroup|
-              subgroup.add_owner(user)
-            end
-          end
+          let_it_be(:subgroup) { create(:group, parent: group, owners: user) }
+          let_it_be(:subgroup_integration) { create(:confluence_integration, :group, group: subgroup, confluence_url: 'https://subgroup.atlassian.net/wiki') }
 
           let(:opts) do
             {
@@ -1193,18 +1271,13 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
   context 'with specialized project_authorization workers' do
     let_it_be(:other_user) { create(:user) }
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group) { create(:group, maintainers: user, developers: other_user) }
 
     let(:opts) do
       {
         name: project_name,
         namespace_id: group.id
       }
-    end
-
-    before do
-      group.add_maintainer(user)
-      group.add_developer(other_user)
     end
 
     it 'updates authorization for current_user' do
@@ -1250,11 +1323,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     let_it_be(:user) { create :user }
 
     context 'when parent group is present' do
-      let_it_be_with_reload(:group) do
-        create(:group) do |group|
-          group.add_owner(user)
-        end
-      end
+      let_it_be_with_reload(:group) { create(:group, owners: user) }
 
       before do
         group.update!(shared_runners_enabled: shared_runners_enabled,
@@ -1314,7 +1383,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
             params = opts.merge(namespace_id: group.id, shared_runners_enabled: desired_config_for_new_project)
             project = create_project(user, params)
 
-            expect(project.persisted?).to eq(false)
+            expect(project.persisted?).to be(false)
             expect(project).to be_invalid
             expect(project.errors[:shared_runners_enabled]).to include('cannot be enabled because parent group does not allow it')
             expect(project.project_namespace).to be_in_sync_with_project(project)
@@ -1412,7 +1481,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
         project = create_project(user, opts)
 
-        expect(project.project_setting.pages_unique_domain_enabled).to eq(true)
+        expect(project.project_setting.pages_unique_domain_enabled).to be(true)
         expect(project.project_setting.pages_unique_domain).to be_present
       end
     end
@@ -1428,7 +1497,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
         project = create_project(user, opts)
 
-        expect(project.project_setting.pages_unique_domain_enabled).to eq(false)
+        expect(project.project_setting.pages_unique_domain_enabled).to be(false)
         expect(project.project_setting.pages_unique_domain).to be_nil
       end
     end

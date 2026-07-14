@@ -17,6 +17,7 @@ const ICON_ON = 'notifications';
 const ICON_OFF = 'notifications-off';
 
 export default {
+  name: 'WorkItemNotificationsWidget',
   i18n: {
     notificationOn: s__('WorkItem|Notifications turned on.'),
     notificationOff: s__('WorkItem|Notifications turned off.'),
@@ -38,6 +39,7 @@ export default {
       default: null,
     },
   },
+  emits: ['error'],
   data() {
     return {
       workItemNotificationsSubscribed: false,

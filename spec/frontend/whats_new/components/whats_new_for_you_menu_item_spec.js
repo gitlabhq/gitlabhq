@@ -109,22 +109,8 @@ describe('WhatsNewForYouMenuItem', () => {
           initialReadArticles: [1],
           markAsReadPath: '/mark_as_read',
           mostRecentReleaseItemsCount: 5,
-          showTranscendPromo: undefined,
           placement: 'profile_menu',
         },
-        expect.any(Function),
-      );
-    });
-
-    it('forwards showTranscendPromo when the sidebarData carries it', async () => {
-      createWrapper({
-        sidebarData: { ...baseSidebarData, whats_new_show_transcend_promo: true },
-      });
-      wrapper.findByTestId('whats-new-for-you-help-menu-item').vm.$emit('action');
-      await waitForPromises();
-
-      expect(toggleWhatsNewDrawer).toHaveBeenCalledWith(
-        expect.objectContaining({ showTranscendPromo: true }),
         expect.any(Function),
       );
     });

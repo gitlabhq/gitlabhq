@@ -6,6 +6,7 @@ import k8sDaemonSetsQuery from '../graphql/queries/k8s_dashboard_daemon_sets.que
 import { STATUS_FAILED, STATUS_READY, STATUS_LABELS } from '../constants';
 
 export default {
+  name: 'DaemonSetsPage',
   components: {
     WorkloadLayout,
   },

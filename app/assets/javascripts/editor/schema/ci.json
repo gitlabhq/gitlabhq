@@ -1618,8 +1618,17 @@
         {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "paths"
+          "oneOf": [
+            {
+              "required": [
+                "paths"
+              ]
+            },
+            {
+              "required": [
+                "regexp"
+              ]
+            }
           ],
           "properties": {
             "paths": {
@@ -1632,6 +1641,11 @@
             "compare_to": {
               "type": "string",
               "description": "Ref for comparing changes."
+            },
+            "regexp": {
+              "type": "string",
+              "description": "Regular expression to match against changed file paths.",
+              "maxLength": 255
             }
           }
         },
@@ -1655,8 +1669,17 @@
         {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "paths"
+          "oneOf": [
+            {
+              "required": [
+                "paths"
+              ]
+            },
+            {
+              "required": [
+                "regexp"
+              ]
+            }
           ],
           "properties": {
             "paths": {
@@ -1669,6 +1692,11 @@
             "project": {
               "type": "string",
               "description": "Path of the project to search in."
+            },
+            "regexp": {
+              "type": "string",
+              "description": "Regular expression to match against file paths in the repository.",
+              "maxLength": 255
             }
           }
         },
@@ -1676,8 +1704,19 @@
           "type": "object",
           "additionalProperties": false,
           "required": [
-            "paths",
             "project"
+          ],
+          "oneOf": [
+            {
+              "required": [
+                "paths"
+              ]
+            },
+            {
+              "required": [
+                "regexp"
+              ]
+            }
           ],
           "properties": {
             "paths": {
@@ -1694,6 +1733,11 @@
             "ref": {
               "type": "string",
               "description": "Ref of the project to search in."
+            },
+            "regexp": {
+              "type": "string",
+              "description": "Regular expression to match against file paths in the repository.",
+              "maxLength": 255
             }
           }
         }

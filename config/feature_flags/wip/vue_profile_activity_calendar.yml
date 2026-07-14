@@ -1,0 +1,8 @@
+---
+name: vue_profile_activity_calendar
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240366
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/602950
+milestone: '19.2'
+type: wip
+group: group::design strategy
+default_enabled: false

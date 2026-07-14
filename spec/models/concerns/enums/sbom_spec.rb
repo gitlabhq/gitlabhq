@@ -114,4 +114,20 @@ RSpec.describe Enums::Sbom, feature_category: :dependency_management do
       end
     end
   end
+
+  describe '.semver_dialects_purl_type' do
+    where(:purl_type, :expected) do
+      'golang'   | 'go'
+      'composer' | 'packagist'
+      'gem'      | 'gem'
+      'npm'      | 'npm'
+      nil        | nil
+    end
+
+    with_them do
+      it 'translates purl types that semver_dialects names differently' do
+        expect(described_class.semver_dialects_purl_type(purl_type)).to eq(expected)
+      end
+    end
+  end
 end

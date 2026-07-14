@@ -97,10 +97,10 @@ curl \
 
 ## Wikiページを作成する {#create-a-wiki-page}
 
-指定されたタイトル、slug、およびコンテンツを持つ特定のプロジェクトのWikiページを作成します。
+特定のグループ向けに、指定されたタイトル、slug、およびコンテンツでWikiページを作成します。
 
 ```plaintext
-POST /projects/:id/wikis
+POST /groups/:id/wikis
 ```
 
 | 属性 | 型           | 必須 | 説明 |

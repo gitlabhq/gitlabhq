@@ -28,6 +28,7 @@ fragment MergeRequestDashboardFragment on MergeRequest {
       ...User
       mergeRequestInteraction {
         reviewState
+        updatedAt @include(if: $updatedAt)
       }
     }
   }

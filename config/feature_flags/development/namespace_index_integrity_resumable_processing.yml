@@ -1,0 +1,8 @@
+---
+name: namespace_index_integrity_resumable_processing
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241795
+rollout_issue_url:
+milestone: '19.2'
+type: development
+group: group::global search
+default_enabled: false

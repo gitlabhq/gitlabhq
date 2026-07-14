@@ -1,5 +1,6 @@
 #import "./work_item_discussion_note.fragment.graphql"
 
+# @feature_category: team_planning
 subscription workItemNoteCreated($noteableId: NoteableID) {
   workItemNoteCreated(noteableId: $noteableId) {
     ...WorkItemDiscussionNote

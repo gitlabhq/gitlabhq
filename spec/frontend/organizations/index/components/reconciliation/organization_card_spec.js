@@ -31,23 +31,6 @@ describe('OrganizationCard', () => {
     });
   };
 
-  const buildOrganization = ({ visibility, groupVisibilities = [] }) => ({
-    ...nonDefaultOrganization,
-    visibility,
-    groups: {
-      ...nonDefaultOrganization.groups,
-      nodes: groupVisibilities.map((groupVisibility, index) => ({
-        id: `gid://gitlab/Group/${index + 1}`,
-        fullName: `group-${index + 1}`,
-        groupMembersCount: 0,
-        projectsCount: 0,
-        descendantGroupsCount: 0,
-        visibility: groupVisibility,
-        __typename: 'Group',
-      })),
-    },
-  });
-
   const findCard = () => wrapper.findComponent(GlCard);
   const findAvatar = () => wrapper.findComponent(GlAvatarLabeled);
   const findVisibilityIcon = () => wrapper.findByTestId('organization-visibility');
@@ -126,22 +109,15 @@ describe('OrganizationCard', () => {
 
     describe('when organization is not the default organization', () => {
       it.each`
-        scenario                                 | orgVisibility | groupVisibilities        | expectedIcon | expectedTooltip
-        ${'no groups, private org'}              | ${'private'}  | ${[]}                    | ${'lock'}    | ${'Private - The organization can only be viewed by members.'}
-        ${'no groups, public org'}               | ${'public'}   | ${[]}                    | ${'earth'}   | ${'Public - The organization can be accessed without any authentication.'}
-        ${'org broader than groups'}             | ${'public'}   | ${['private']}           | ${'earth'}   | ${'Public - The organization can be accessed without any authentication.'}
-        ${'org equal to groups'}                 | ${'private'}  | ${['private']}           | ${'lock'}    | ${'Private - The organization can only be viewed by members.'}
-        ${'group broader than org'}              | ${'private'}  | ${['public']}            | ${'earth'}   | ${'Public - The organization can be accessed without any authentication.'}
-        ${'broadest of multiple groups is used'} | ${'private'}  | ${['private', 'public']} | ${'earth'}   | ${'Public - The organization can be accessed without any authentication.'}
+        visibility   | expectedIcon | expectedTooltip
+        ${'public'}  | ${'earth'}   | ${'Public - The organization can be accessed without any authentication.'}
+        ${'private'} | ${'lock'}    | ${'Private - The organization can only be viewed by members.'}
       `(
-        'renders correct visibility icon and tooltip when $scenario',
-        ({ orgVisibility, groupVisibilities, expectedIcon, expectedTooltip }) => {
+        'renders the $visibility visibility icon and tooltip based on the organization visibility',
+        ({ visibility, expectedIcon, expectedTooltip }) => {
           createComponent({
             props: {
-              organization: buildOrganization({
-                visibility: orgVisibility,
-                groupVisibilities,
-              }),
+              organization: { ...nonDefaultOrganization, visibility },
             },
           });
 

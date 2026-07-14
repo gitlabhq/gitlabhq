@@ -12,7 +12,6 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
 
   before do
     sign_in(user)
-    stub_feature_flags(repository_file_tree_browser: true)
     visit project_tree_path(project, project.default_branch)
     wait_for_requests
   end
@@ -134,18 +133,6 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
 
         expect(all('[data-item-id]').count).to be > initial_count
       end
-    end
-  end
-
-  describe 'when feature flag is disabled' do
-    before do
-      stub_feature_flags(repository_file_tree_browser: false)
-      visit project_tree_path(project, project.default_branch)
-      wait_for_requests
-    end
-
-    it 'does not show file tree browser toggle' do
-      expect(page).not_to have_css('#file-tree-browser-toggle')
     end
   end
 

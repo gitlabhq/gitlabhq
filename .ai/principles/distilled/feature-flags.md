@@ -1,6 +1,6 @@
 ---
-source_checksum: d8c274f01e0056ff
-distilled_at_sha: 38eec71eeabc7ee15c3c39204fae8e675609f903
+source_checksum: 2269df72ed803ec8
+distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -40,7 +40,6 @@ distilled_at_sha: 38eec71eeabc7ee15c3c39204fae8e675609f903
 - DO NOT guess or hard-code the `milestone` value — read it from the `VERSION` file in the repo root and use the `MAJOR.MINOR` portion only (e.g., if `VERSION` contains `19.0.0-pre`, set `milestone: "19.0"`)
 - DO NOT define the same feature flag in both FOSS and EE; define it in one location only.
 - Set `default_enabled: false` for `gitlab_com_derisk`, `wip`, and `experiment` types (setting it to `true` has no effect or is forbidden for these types).
-- Document `beta` and `ops` type flags in the [All feature flags in GitLab](https://docs.gitlab.com/administration/feature_flags/list/) page.
 - Document `beta` and `ops` type flags in the [All feature flags in GitLab](https://docs.gitlab.com/administration/feature_flags/list/) page; for `ops` flags, also maintain an associated operational runbook describing when the flag can be used.
 - Create a rollout issue from the Feature Flag Roll Out template for `gitlab_com_derisk` and `beta` flags.
 - Optionally add a `.patch` file alongside the YAML to enable automated removal via `gitlab-housekeeper`.
@@ -53,6 +52,7 @@ distilled_at_sha: 38eec71eeabc7ee15c3c39204fae8e675609f903
 - Use `beta` when a feature may have scalability concerns or is not yet a complete MVC (max 6 months lifespan).
 - Use `ops` for long-lived operational control flags; evaluate every 12 months and update `milestone` to confirm continued use.
 - Use `experiment` for A/B testing on GitLab.com (max 6 months lifespan); create rollout issue from the Experiment Rollout template.
+- Use `markdown_cache` flags only for phased rollout of a `Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION` bump; DO NOT define a YAML file for these flags — the name is generated from the target cache version (e.g., `markdown_cache_stochastic_rollout_34`).
 - DO NOT use the deprecated `development` type; use `gitlab_com_derisk`, `wip`, or `beta` instead.
 
 ### Backend Usage

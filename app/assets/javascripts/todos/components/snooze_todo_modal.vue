@@ -12,6 +12,7 @@ const DEFAULT_TIME = '09:00';
 const MODAL_ACTION_CLASSES = 'gl-w-full @sm:gl-w-auto';
 
 export default {
+  name: 'SnoozeTodoModal',
   components: {
     GlModal,
     GlForm,

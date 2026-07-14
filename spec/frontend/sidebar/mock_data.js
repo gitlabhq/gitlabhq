@@ -1026,6 +1026,7 @@ export const issuableTimeTrackingResponse = {
   data: {
     namespace: {
       __typename: 'Project',
+      id: 'gid://gitlab/Project/1',
       issuable: {
         __typename: 'Issue',
         id: 'gid://gitlab/Issue/1',
@@ -1034,6 +1035,9 @@ export const issuableTimeTrackingResponse = {
         totalTimeSpent: 5_000, // 1h 23m
         humanTimeEstimate: '2h 46m',
         humanTotalTimeSpent: '1h 23m',
+        timelogs: {
+          nodes: [],
+        },
       },
     },
   },

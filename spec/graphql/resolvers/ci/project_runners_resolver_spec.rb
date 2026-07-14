@@ -40,6 +40,23 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :fleet_v
       it 'returns all runners available to the project' do
         expect(resolve_scope.items.to_a).to match_array(available_runners)
       end
+
+      context 'with a runner in another organization' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:other_org_group) { create(:group, organization: other_organization) }
+        let_it_be(:other_org_project) do
+          create(:project, group: other_org_group, organization: other_organization)
+        end
+
+        let_it_be(:other_org_runner) { create(:ci_runner, :project, projects: [other_org_project]) }
+
+        it 'does not return runners from another organization', :aggregate_failures do
+          runners = resolve_scope.items.to_a
+
+          expect(runners).to match_array(available_runners)
+          expect(runners).not_to include(other_org_runner)
+        end
+      end
     end
 
     context 'with obj set to nil' do

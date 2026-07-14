@@ -85,13 +85,11 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
   shared_examples 'forked project with submodules' do
     render_views
 
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository, developers: user) }
     let(:forked_project) { fork_project_with_submodules(project) }
     let(:merge_request) { create(:merge_request_with_diffs, source_project: forked_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
 
     before do
-      project.add_developer(user)
-
       merge_request.reload
       go
     end
@@ -248,7 +246,7 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
     it_behaves_like 'show the right diff files with previous diff_id'
 
     context 'when not authorized' do
-      let(:another_user) { create(:user) }
+      let_it_be(:another_user) { create(:user) }
 
       before do
         sign_in(another_user)

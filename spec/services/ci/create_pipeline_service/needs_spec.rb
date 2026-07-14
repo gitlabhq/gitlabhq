@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::CreatePipelineService,
   feature_category: :pipeline_composition do
   context 'needs' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
     let_it_be(:user)    { project.first_owner }
 
     let(:ref)      { 'refs/heads/master' }
@@ -13,9 +13,12 @@ RSpec.describe Ci::CreatePipelineService,
     let(:service)  { described_class.new(project, user, { ref: ref }) }
     let(:pipeline) { service.execute(source).payload }
 
+    before_all do
+      project.add_developer(user)
+    end
+
     before do
       stub_ci_pipeline_yaml_file(config)
-      project.add_developer(user)
     end
 
     context 'with a valid config' do

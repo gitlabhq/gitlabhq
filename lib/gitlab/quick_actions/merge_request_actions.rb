@@ -6,9 +6,9 @@ module Gitlab
       extend ActiveSupport::Concern
       include Gitlab::QuickActions::Dsl
 
-      REBASE_FAILURE_UNMERGEABLE = 'This merge request is currently in an unmergeable state, and cannot be rebased.'
-      REBASE_FAILURE_PROTECTED_BRANCH = 'This merge request branch is protected from force push.'
-      REBASE_FAILURE_REBASE_IN_PROGRESS = 'A rebase is already in progress.'
+      REBASE_FAILURE_UNMERGEABLE = N_('This merge request is currently in an unmergeable state, and cannot be rebased.')
+      REBASE_FAILURE_PROTECTED_BRANCH = N_('This merge request branch is protected from force push.')
+      REBASE_FAILURE_REBASE_IN_PROGRESS = N_('A rebase is already in progress.')
 
       included do
         # MergeRequest only quick actions definitions

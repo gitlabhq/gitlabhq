@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Connect AI tools to your GitLab instance with the GitLab MCP server.
 title: GitLab MCP server
@@ -16,7 +16,7 @@ title: GitLab MCP server
 
 {{< history >}}
 
-- Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.3 [with flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
+- Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.3 [with feature flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
 - Changed from experiment to [beta](../../../policy/development_stages_support.md#beta) in GitLab 18.6. Feature flags [`mcp_server`](https://gitlab.com/gitlab-org/gitlab/-/issues/556448) and [`oauth_dynamic_client_registration`](https://gitlab.com/gitlab-org/gitlab/-/issues/555942) removed.
 - Support for `2025-03-26` and `2025-06-18` MCP protocol specifications [added](https://gitlab.com/gitlab-org/gitlab/-/issues/581459) in GitLab 18.7.
 
@@ -308,48 +308,6 @@ To configure the GitLab MCP server in GitHub Copilot in VS Code:
    The OAuth authorization page should appear.
    Otherwise, open the Command Palette and search for **MCP: List Servers**
    to check the status or restart the server.
-
-1. In your browser, review and approve the authorization request.
-
-You can now start a new chat and ask a question depending on the [available tools](mcp_server_tools.md).
-
-> [!warning]
-> You're responsible for guarding against prompt injection when you use these tools.
-> Exercise extreme caution or use MCP tools only on GitLab objects you trust.
-
-## Connect Continue in VS Code to the GitLab MCP server
-
-Prerequisites:
-
-- Install Node.js version 20 or later.
-- Have Node.js available globally in the `PATH` environment variable (`which -a node`).
-
-To configure the GitLab MCP server in Continue in VS Code:
-
-1. In VS Code, in the Activity Bar, select the Continue extension.
-1. Open the settings and select **Tools**.
-1. Next to **MCP Servers**, add a new server.
-1. Edit the configuration file `.continue/mcpServers/new-mcp-server.yaml`:
-   - Replace `<gitlab.example.com>` with:
-     - On GitLab Self-Managed, your GitLab instance URL.
-     - On GitLab.com, `gitlab.com`.
-
-   ```yaml
-   name: GitLab MCP server
-   version: 0.0.1
-   schema: v1
-   mcpServers:
-     - name: GitLab MCP server
-       type: stdio
-       command: npx
-       args:
-         - mcp-remote
-         - https://<gitlab.example.com>/api/v4/mcp
-   ```
-
-1. Save the configuration.
-
-   The OAuth authorization page should appear.
 
 1. In your browser, review and approve the authorization request.
 

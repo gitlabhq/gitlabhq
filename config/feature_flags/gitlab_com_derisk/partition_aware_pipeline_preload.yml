@@ -1,0 +1,10 @@
+---
+name: partition_aware_pipeline_preload
+description: Partition-aware bulk preload of pipeline associations on the paginated page
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/601100
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240414
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/603166
+milestone: '19.2'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

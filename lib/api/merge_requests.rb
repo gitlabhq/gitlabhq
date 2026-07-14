@@ -51,6 +51,9 @@ module API
       def ci_params
         {}
       end
+
+      # Overridden in EE
+      def validate_immediate_merge!(merge_request); end
     end
 
     def self.mr_update?(request)
@@ -141,14 +144,6 @@ module API
       end
 
       def execute_merge(merge_request, auto_merge, merge_params)
-        if Feature.enabled?(:fix_merge_api_train_bypass, merge_request.project)
-          execute_merge_with_train_guard(merge_request, auto_merge, merge_params)
-        else
-          execute_merge_legacy(merge_request, auto_merge, merge_params)
-        end
-      end
-
-      def execute_merge_with_train_guard(merge_request, auto_merge, merge_params)
         if auto_merge
           auto_merge_service = AutoMergeService.new(merge_request.target_project, current_user, merge_params)
           preferred_strategy = auto_merge_service.preferred_strategy(merge_request)
@@ -167,30 +162,9 @@ module API
         end
       end
 
-      def execute_merge_legacy(merge_request, auto_merge, merge_params)
-        if auto_merge
-          strategy_available =
-            AutoMergeService
-              .new(merge_request.project, current_user)
-              .available_strategies(merge_request)
-              .include?(merge_request.default_auto_merge_strategy)
-
-          if strategy_available
-            AutoMergeService.new(merge_request.target_project, current_user, merge_params)
-              .execute(merge_request, merge_request.default_auto_merge_strategy)
-          elsif pipeline_allows_merge?(merge_request)
-            execute_immediate_merge!(merge_request, merge_params)
-          else
-            not_allowed!
-          end
-        elsif merge_request.mergeable?
-          execute_immediate_merge!(merge_request, merge_params)
-        else
-          not_allowed!
-        end
-      end
-
       def execute_immediate_merge!(merge_request, merge_params)
+        validate_immediate_merge!(merge_request)
+
         render_api_error!('Branch cannot be merged', 422) unless merge_request.mergeable?
 
         ::MergeRequests::MergeService
@@ -251,8 +225,9 @@ module API
     end
 
     resource :merge_requests do
-      desc 'List merge requests' do
-        detail 'Get all merge requests the authenticated user has access to. By default it returns only merge requests created by the current user. To get all merge requests, use parameter `scope=all`.'
+      desc 'List all merge requests' do
+        detail 'Lists all merge requests accessible to the authenticated user. By default, returns only merge ' \
+          'requests created by the current user. Use `scope=all` to get all merge requests.'
         success Entities::MergeRequestBasic
         is_array true
         failure [
@@ -282,8 +257,8 @@ module API
       requires :id, type: String, desc: 'The ID or URL-encoded path of the group owned by the authenticated user.'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'List group merge requests' do
-        detail 'Get all merge requests for this group and its subgroups.'
+      desc 'List all group merge requests' do
+        detail 'Lists all merge requests for a specified group and any subgroups.'
         success Entities::MergeRequestBasic
         is_array true
         failure [
@@ -317,7 +292,7 @@ module API
           next
         end
 
-        skip_cache = declared_params[:with_labels_details] == true
+        skip_cache = declared_params[:with_labels_details] == true || !current_user&.bot?
 
         render_merge_requests(merge_requests, options, skip_cache: skip_cache, ttl: 30.minutes)
       end
@@ -373,8 +348,8 @@ module API
         end
       end
 
-      desc 'List project merge requests' do
-        detail 'Get all merge requests for this project.'
+      desc 'List all project merge requests' do
+        detail 'Lists all project merge requests.'
         success Entities::MergeRequestBasic
         is_array true
         failure [
@@ -415,8 +390,8 @@ module API
         render_merge_requests(merge_requests, options, skip_cache: skip_cache)
       end
 
-      desc 'Create merge request' do
-        detail 'Create a new merge request.'
+      desc 'Create a merge request' do
+        detail 'Creates a merge request for a project.'
         failure [
           { code: 400, message: 'Bad request' },
           { code: 401, message: 'Unauthorized' },
@@ -465,7 +440,7 @@ module API
       end
 
       desc 'Delete a merge request' do
-        detail 'Only for administrators and project owners. Deletes the merge request in question. '
+        detail 'Deletes a specified merge request for a project. Administrators and project Owners only.'
         success code: 204
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -494,8 +469,8 @@ module API
         optional :include_diverged_commits_count, type: Boolean, desc: 'If `true`, response includes the commits behind the target branch.'
         optional :include_rebase_in_progress, type: Boolean, desc: 'If `true`, response includes whether a rebase operation is in progress.'
       end
-      desc 'Get single merge request' do
-        detail 'Shows information about a single merge request. Note: the `changes_count` value in the response is a string, not an integer. This is because when an merge request has too many changes to display and store, it is capped at 1,000. In that case, the API returns the string `"1000+"` for the changes count.'
+      desc 'Retrieve a merge request' do
+        detail 'Retrieves a merge request for a specified project.'
 
         success Entities::MergeRequest
         failure [
@@ -522,8 +497,8 @@ module API
           include_rebase_in_progress: params[:include_rebase_in_progress]
       end
 
-      desc 'Get single merge request participants' do
-        detail 'Get a list of merge request participants.'
+      desc 'Retrieve merge request participants' do
+        detail 'Retrieves participants for a specified merge request.'
         success Entities::UserBasic
         is_array true
         failure [
@@ -540,8 +515,8 @@ module API
         present paginate(participants), with: Entities::UserBasic
       end
 
-      desc 'Get single merge request reviewers' do
-        detail 'Get a list of merge request reviewers.'
+      desc 'Retrieve merge request reviewers' do
+        detail 'Retrieves reviewers for a specified merge request.'
         success Entities::MergeRequestReviewer
         is_array true
         failure [
@@ -558,8 +533,8 @@ module API
         present paginate(reviewers), with: Entities::MergeRequestReviewer
       end
 
-      desc 'Get single merge request commits' do
-        detail 'Get a list of merge request commits.'
+      desc 'Retrieve merge request commits' do
+        detail 'Retrieves commits for a specified merge request.'
         success Entities::Commit
         is_array true
         failure [
@@ -589,8 +564,8 @@ module API
         present commits, with: Entities::Commit
       end
 
-      desc 'List merge request context commits' do
-        detail 'Get a list of merge request context commits.'
+      desc 'List all context commits for a merge request' do
+        detail 'Lists all context commits for a specified merge request.'
         success Entities::Commit
         is_array true
         failure [
@@ -614,8 +589,8 @@ module API
           desc: 'The context commits’ SHA.',
           documentation: { is_array: true }
       end
-      desc 'Create merge request context commits' do
-        detail 'Create a list of merge request context commits.'
+      desc 'Create context commits for a merge request' do
+        detail 'Creates context commits for a specified merge request.'
         success Entities::Commit
         is_array true
         failure [
@@ -654,8 +629,8 @@ module API
           desc: 'The context commits’ SHA.',
           documentation: { is_array: true }
       end
-      desc 'Delete merge request context commits' do
-        detail 'Delete a list of merge request context commits.'
+      desc 'Delete context commits from a merge request' do
+        detail 'Deletes specified context commits from a merge request.'
         success code: 204
         failure [
           { code: 400, message: 'Bad request' },
@@ -681,8 +656,8 @@ module API
         status 204
       end
 
-      desc 'Get single merge request changes' do
-        detail 'Shows information about the merge request including its files and changes.'
+      desc 'Retrieve merge request changes' do
+        detail 'Retrieves changes for a specified merge request.'
         success Entities::MergeRequestChanges
         failure [
           { code: 404, message: 'Not found' }
@@ -704,8 +679,8 @@ module API
           enable_unidiff: declared_params[:unidiff]
       end
 
-      desc 'Get the merge request diffs' do
-        detail 'Get a list of merge request diffs.'
+      desc 'List all merge request diffs' do
+        detail 'Lists all merge request diffs.'
         success Entities::Diff
         is_array true
         failure [
@@ -725,7 +700,7 @@ module API
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         diffs = paginate(
-          merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page]),
+          merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page], { expanded: true }),
           skip_pagination_check: true
         ).diffs
         filtered_diffs = filter_diffs_for_mcp(diffs, user_project)
@@ -733,8 +708,8 @@ module API
         present filtered_diffs, with: Entities::Diff, enable_unidiff: declared_params[:unidiff]
       end
 
-      desc 'Get the merge request raw diffs' do
-        detail 'Get the raw diffs of a merge request that can used programmatically.'
+      desc 'Retrieve merge request raw diffs' do
+        detail 'Retrieves the raw diffs of the files changed in a merge request.'
         success code: 200
         failure [
           { code: 403, message: 'Forbidden' },
@@ -751,8 +726,8 @@ module API
         send_git_diff(merge_request.project.repository, merge_request.diff_refs)
       end
 
-      desc 'Get single merge request pipelines' do
-        detail 'Get a list of merge request pipelines.'
+      desc 'List all merge request pipelines' do
+        detail 'Lists all merge request pipelines.'
         success Entities::Ci::PipelineBasic
         is_array true
         failure [
@@ -770,8 +745,9 @@ module API
         present paginate(pipelines), with: Entities::Ci::PipelineBasic
       end
 
-      desc 'Create merge request pipeline' do
-        detail 'Create a new pipeline for a merge request. A pipeline created via this endpoint doesn’t run a regular branch/tag pipeline. It requires `.gitlab-ci.yml` to be configured with `only: [merge_requests]` to create jobs.'
+      desc 'Create a merge request pipeline' do
+        detail 'Creates a merge request pipeline. Pipelines created with this operation must configure ' \
+          '`.gitlab-ci.yml` with `only: [merge_requests]` to create jobs.'
         success ::API::Entities::Ci::Pipeline
         failure [
           { code: 400, message: 'Bad request' },
@@ -812,8 +788,8 @@ module API
         end
       end
 
-      desc 'Update merge request' do
-        detail 'Updates an existing merge request. You can change the target branch, title, or even close the merge request.'
+      desc 'Update a merge request' do
+        detail 'Updates a merge request for a specified project.'
         success Entities::MergeRequest
         failure [
           { code: 400, message: 'Bad request' },
@@ -863,7 +839,7 @@ module API
       end
 
       desc 'Merge a merge request' do
-        detail 'Accept and merge changes submitted with the merge request using this API.'
+        detail 'Merges a merge request. Accepts and merges changes submitted with the merge request.'
         success Entities::MergeRequest
         failure [
           { code: 400, message: 'Bad request' },
@@ -895,6 +871,10 @@ module API
 
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
+        if user_project.namespace.require_sha_for_merge? && !params[:sha].present?
+          render_api_error!("SHA must be provided when merging", 400)
+        end
+
         # Merge request can not be merged because the user doesn't have
         #   permissions to push into target branch.
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
@@ -908,8 +888,10 @@ module API
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
       end
 
-      desc 'Returns the up to date merge-ref HEAD commit' do
-        detail 'Returns the up to date merge-ref HEAD commit'
+      desc 'Merge to default merge ref path' do
+        detail 'Merges the changes between the merge request source and target branches into the ' \
+          '`refs/merge-requests/:iid/merge` ref, of the target project repository, if possible. This ref has the state ' \
+          'the target branch would have if a regular merge action was taken.'
         success code: 200
         failure [
           { code: 400, message: 'Bad request' }
@@ -950,7 +932,8 @@ module API
       end
 
       desc 'Rebase a merge request' do
-        detail 'Automatically rebase the `source_branch` of the merge request against its `target_branch`. This feature was added in GitLab 11.6'
+        detail 'Rebases a merge request. Automatically rebases the `source_branch` of the merge request against its ' \
+          '`target_branch`.'
         success code: 202
         failure [
           { code: 403, message: 'Forbidden' },
@@ -976,8 +959,8 @@ module API
         render_api_error!(e.message, 409)
       end
 
-      desc 'List issues that close on merge' do
-        detail 'Get all the issues that would be closed by merging the provided merge request.'
+      desc 'List all issues that close on merge' do
+        detail 'Lists all issues that close on merge.'
         success Entities::MRNote
         is_array true
         failure [
@@ -1003,8 +986,8 @@ module API
         data.as_json
       end
 
-      desc 'List issues related to merge request' do
-        detail 'Get all the related issues from title, description, commits, comments and discussions of the merge request.'
+      desc 'List all issues related to the merge request' do
+        detail 'Lists all issues related to the merge request.'
         success code: 200
         is_array true
         failure [

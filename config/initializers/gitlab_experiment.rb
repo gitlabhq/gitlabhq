@@ -10,6 +10,14 @@ Gitlab::Experiment.configure do |config|
   #
   config.base_class = 'ApplicationExperiment'
 
+  # Require all experiments to be declaratively defined in a class, with
+  # variants registered. This disallows anonymous experiments that are run
+  # inline without previously defining an experiment class, and raises
+  # Gitlab::Experiment::UnregisteredExperiment when an experiment name
+  # doesn't resolve to a class in /app/experiments or /ee/app/experiments.
+  #
+  config.strict_registration = true
+
   # Customize the logic of our default rollout, which shouldn't include
   # assigning the control yet -- we specifically set it to false for now.
   #

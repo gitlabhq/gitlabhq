@@ -56,6 +56,7 @@ export default {
       default: null,
     },
   },
+  emits: ['close', 'loading', 'role-change'],
   data() {
     return {
       initialAccessLevel: this.user?.accessLevel.stringValue,

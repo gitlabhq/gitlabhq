@@ -220,7 +220,8 @@ module Emails
         'ISSUE_DESCRIPTION' => work_item_description,
         'SYSTEM_HEADER' => text_header_message.to_s,
         'SYSTEM_FOOTER' => text_footer_message.to_s,
-        'UNSUBSCRIBE_URL' => unsubscribe_sent_notification_url(@sent_notification),
+        'UNSUBSCRIBE_URL' => unsubscribe_namespace_sent_notification_url(@sent_notification.namespace_id,
+          @sent_notification),
         'ADDITIONAL_TEXT' => service_desk_email_additional_text.to_s,
         'ISSUE_URL' => full_work_item_url
       }

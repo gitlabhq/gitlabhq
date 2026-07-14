@@ -1,7 +1,7 @@
 ---
-stage: Software Supply Chain Security
-group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: リソースラベルイベントAPI
 ---
 
@@ -12,13 +12,13 @@ title: リソースラベルイベントAPI
 
 {{< /details >}}
 
-このAPIを使用すると、誰が、いつ、どの[label](../user/project/labels.md)がイシュー、マージリクエスト、またはエピックに追加（または削除）されたかを追跡するリソースラベルイベントを取得できます。
+このAPIを使用して、イシュー、マージリクエスト、またはエピックにいつ誰がどの[ラベル](../user/project/labels.md)を追加または削除したかを示すリソースラベルイベントを取得することができます。
 
 ## イシュー {#issues}
 
-### プロジェクトイシューのラベルイベントの一覧表示 {#list-project-issue-label-events}
+### プロジェクトイシューラベルイベントをリスト表示 {#list-project-issue-label-events}
 
-単一イシューのすべてのラベルイベントのリストを取得します。
+単一のイシューのすべてのラベルイベントをリスト表示します。
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_label_events
@@ -77,12 +77,13 @@ GET /projects/:id/issues/:issue_iid/resource_label_events
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events"
 ```
 
-### 単一イシューのラベルイベントを取得 {#get-single-issue-label-event}
+### 単一のイシューラベルイベントを取得する {#retrieve-a-single-issue-label-event}
 
-特定のプロジェクトイシューに対する単一のラベルイベントを返します
+特定のプロジェクトイシューの単一のラベルイベントを取得する。
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_label_events/:resource_label_event_id
@@ -110,15 +111,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
+> [!warning]
+> エピックのREST APIは、GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/460668)となり、APIのv5で削除される予定です。GitLab 17.4から18.0までのバージョンで、[エピックの新しい外観](../user/group/epics/_index.md#epics-as-work-items)が有効になっている場合は、GitLab 18.1以降で、代わりに作業アイテムAPIを使用してください。詳細については、[作業アイテムにエピックAPIを移行する](graphql/epic_work_items_api_migration_guide.md)を参照してください。これは破壊的な変更です。
 
-エピックREST APIは、GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/460668)となり、APIのv5で削除される予定です。GitLab 17.4から18.0までのバージョンで、[エピックの新しい外観](../user/group/epics/_index.md#epics-as-work-items)が有効になっている場合は、GitLab 18.1以降で、代わりに作業アイテムAPIを使用してください。詳細については、[作業アイテムにエピックAPIを移行する](graphql/epic_work_items_api_migration_guide.md)を参照してください。これは破壊的な変更です。
+### グループエピックラベルイベントをリスト表示 {#list-group-epic-label-events}
 
-{{< /alert >}}
-
-### グループエピックのラベルイベントの一覧表示 {#list-group-epic-label-events}
-
-単一エピックのすべてのラベルイベントのリストを取得します。
+単一のエピックのすべてのラベルイベントをリスト表示します。
 
 ```plaintext
 GET /groups/:id/epics/:epic_id/resource_label_events
@@ -181,9 +179,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/11/resource_label_events"
 ```
 
-### 単一エピックのラベルイベントを取得 {#get-single-epic-label-event}
+### 単一のエピックラベルイベントを取得する {#retrieve-a-single-epic-label-event}
 
-特定のグループエピックに対する単一のラベルイベントを返します
+特定のグループエピックの単一のラベルイベントを取得する。
 
 ```plaintext
 GET /groups/:id/epics/:epic_id/resource_label_events/:resource_label_event_id
@@ -198,16 +196,16 @@ GET /groups/:id/epics/:epic_id/resource_label_events/:resource_label_event_id
 | `resource_label_event_id` | 整数        | はい      | ラベルイベントのID |
 
 ```shell
-curl --request POST \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/11/resource_label_events/107"
 ```
 
 ## マージリクエスト {#merge-requests}
 
-### プロジェクトマージリクエストのラベルイベントの一覧表示 {#list-project-merge-request-label-events}
+### プロジェクトマージリクエストラベルイベントをリスト表示 {#list-project-merge-request-label-events}
 
-単一マージリクエストのすべてのラベルイベントのリストを取得します。
+単一のマージリクエストのすべてのラベルイベントをリスト表示します。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/resource_label_events
@@ -270,9 +268,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/resource_label_events"
 ```
 
-### 単一マージリクエストのラベルイベントを取得 {#get-single-merge-request-label-event}
+### 単一のマージリクエストラベルイベントを取得する {#retrieve-a-single-merge-request-label-event}
 
-特定のプロジェクトマージリクエストに対する単一のラベルイベントを返します
+特定のプロジェクトマージリクエストの単一のラベルイベントを取得する。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/resource_label_events/:resource_label_event_id

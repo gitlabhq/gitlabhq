@@ -1,0 +1,17 @@
+---
+title: GitLab Duo reads and responds to reviews in merge requests
+tier: [ Free, Premium, Ultimate ]
+offering: [ gitlab_com, self_managed, gitlab_dedicated, gitlab_dedicated_for_government ]
+stage: ai_foundations
+documentation_link: "../../../user/gitlab_duo/model_context_protocol/mcp_server_tools/"
+work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/597494
+categories: [ Agent Tools ]
+level: secondary
+weight: 50
+---
+
+
+
+You can now use GitLab Duo and MCP-based agents to read merge request review conversations. This gives your AI assistant the full context of reviewer feedback, unresolved threads, and discussion history.
+
+You can ask your agent to summarize review comments, draft responses to feedback, and post replies directly to merge request discussions without ever leaving your workflow.

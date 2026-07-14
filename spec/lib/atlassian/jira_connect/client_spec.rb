@@ -148,11 +148,27 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
     end
 
     context 'when the response is 400 bad request' do
-      let(:response) { double(code: 400, parsed_response: errors) }
+      let(:request) { double(raw_body: { repositories: [] }.to_json) }
+      let(:response) { double(code: 400, parsed_response: errors, request: request) }
 
-      it 'extracts the errors messages' do
+      it 'extracts the errors messages, raw response, and request body', :aggregate_failures do
         expect(subject).to receive(:parse_jira_error_messages).with(errors).and_return(%w[X Y])
-        expect(processed).to eq('errorMessages' => %w[X Y], 'responseCode' => 400)
+        expect(processed).to eq(
+          'errorMessages' => %w[X Y],
+          'responseCode' => 400,
+          'response' => errors,
+          'requestBody' => { 'repositories' => [] }
+        )
+      end
+
+      context 'when the request body exceeds the log limit' do
+        let(:request) { double(raw_body: { repositories: ['a' * 20_000] }.to_json) }
+
+        it 'truncates the request body', :aggregate_failures do
+          expect(processed['requestBody']).to be_a(String)
+          expect(processed['requestBody']).to start_with('Request body truncated')
+          expect(processed['requestBody'].length).to be < 15_000
+        end
       end
     end
 
@@ -726,15 +742,139 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
   describe '#store_dev_info' do
     let_it_be(:merge_requests, freeze: false) { create_list(:merge_request, 2, :unique_branches, source_project: project) }
 
-    before do
-      path = '/rest/devinfo/0.10/bulk'
+    let(:path) { '/rest/devinfo/0.10/bulk' }
 
+    before do
       stub_full_request("https://gitlab-test.atlassian.net#{path}", method: :post)
         .with(headers: expected_headers(path, 'POST'))
+        .to_return(status: 202, body: {}.to_json, headers: { 'Content-Type' => 'application/json' })
     end
 
     it "calls the API with auth headers" do
       subject.send(:store_dev_info, project: project)
+    end
+
+    context 'when Jira accepts the dev info' do
+      before do
+        stub_full_request("https://gitlab-test.atlassian.net#{path}", method: :post)
+          .with(headers: expected_headers(path, 'POST'))
+          .to_return(status: 202, body: {}.to_json, headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'returns a successful response with no error messages' do
+        response = subject.send(:store_dev_info, project: project)
+
+        expect(response['errorMessages']).to eq([])
+        expect(response['responseCode']).to eq(202)
+      end
+
+      it 'does not log the request body on success' do
+        response = subject.send(:store_dev_info, project: project)
+
+        expect(response).not_to have_key('requestBody')
+      end
+    end
+
+    context 'when Jira rejects some dev info entities' do
+      let(:response_body) do
+        {
+          failedDevinfoEntities: {
+            "#{project.id}": {
+              errorMessages: [{ message: 'Repository rejected', errorTraceId: 'trace-1' }],
+              commits: [{ id: 'abc123', errorMessages: [{ message: 'Invalid commit payload' }] }],
+              branches: [{ id: 'feature', errorMessages: [{ message: 'Invalid branch payload' }] }],
+              pullRequests: [{ id: '42', errorMessages: [{ message: 'Invalid PR payload' }] }]
+            }
+          }
+        }
+      end
+
+      before do
+        stub_full_request("https://gitlab-test.atlassian.net#{path}", method: :post)
+          .with(headers: expected_headers(path, 'POST'))
+          .to_return(status: 202, body: response_body.to_json, headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'surfaces the rejection details in the response' do
+        response = subject.send(:store_dev_info, project: project)
+
+        expect(response['errorMessages']).to include('Repository rejected')
+        expect(response['errorMessages']).to include('commits abc123: Invalid commit payload')
+        expect(response['errorMessages']).to include('branches feature: Invalid branch payload')
+        expect(response['errorMessages']).to include('pullRequests 42: Invalid PR payload')
+        expect(response['responseCode']).to eq(202)
+        expect(response['requestBody']).to be_present
+      end
+    end
+
+    context 'when Jira reports only unknown issue keys' do
+      let(:response_body) do
+        { unknownIssueKeys: %w[ABC-123], acceptedDevinfoEntities: {} }
+      end
+
+      before do
+        stub_full_request("https://gitlab-test.atlassian.net#{path}", method: :post)
+          .with(headers: expected_headers(path, 'POST'))
+          .to_return(status: 202, body: response_body.to_json, headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'does not treat unknown issue keys as an error and does not log the request body' do
+        response = subject.send(:store_dev_info, project: project)
+
+        expect(response['errorMessages']).to eq([])
+        expect(response).not_to have_key('requestBody')
+      end
+    end
+
+    context 'when Jira returns an error status' do
+      before do
+        stub_full_request("https://gitlab-test.atlassian.net#{path}", method: :post)
+          .with(headers: expected_headers(path, 'POST'))
+          .to_return(status: 401, body: {}.to_json, headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'returns the mapped error message' do
+        response = subject.send(:store_dev_info, project: project)
+
+        expect(response['errorMessages']).to eq(['Invalid JWT'])
+        expect(response['responseCode']).to eq(401)
+      end
+    end
+
+    context 'when Jira returns a 400 with an errorMessages array body' do
+      let(:error_body) { { errorMessages: ['Request payload is not valid JSON'] } }
+
+      before do
+        stub_full_request("https://gitlab-test.atlassian.net#{path}", method: :post)
+          .with(headers: expected_headers(path, 'POST'))
+          .to_return(status: 400, body: error_body.to_json, headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'surfaces the error messages, raw response, and request body', :aggregate_failures do
+        response = subject.send(:store_dev_info, project: project)
+
+        expect(response['errorMessages']).to eq(['Request payload is not valid JSON'])
+        expect(response['responseCode']).to eq(400)
+        expect(response['response']).to eq('errorMessages' => ['Request payload is not valid JSON'])
+        expect(response['requestBody']).to be_present
+      end
+    end
+
+    context 'when Jira returns a 400 with an unrecognized body' do
+      let(:error_body) { { detail: 'something opaque' } }
+
+      before do
+        stub_full_request("https://gitlab-test.atlassian.net#{path}", method: :post)
+          .with(headers: expected_headers(path, 'POST'))
+          .to_return(status: 400, body: error_body.to_json, headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'falls back to including the raw body in the error message' do
+        response = subject.send(:store_dev_info, project: project)
+
+        expect(response['errorMessages'].first).to include('something opaque')
+        expect(response['responseCode']).to eq(400)
+      end
     end
 
     it 'avoids N+1 database queries' do
@@ -888,8 +1028,41 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
     context 'with hash data without message or error' do
       let(:data) { { 'foo' => 'bar' } }
 
-      it 'returns unknown error' do
-        expect(subject).to match_array(['Unknown error'])
+      it 'falls back to including the raw body' do
+        expect(subject.first).to include('foo')
+        expect(subject.first).to include('bar')
+      end
+    end
+
+    context 'with array data containing hashes without a message key' do
+      let(:data) { [{ 'message' => 'Error 1' }, { 'code' => 42 }] }
+
+      it 'keeps entries without a message key' do
+        expect(subject).to match_array(['Error 1', { 'code' => 42 }.to_s])
+      end
+    end
+
+    context 'with hash data containing an errorMessages array' do
+      let(:data) { { 'errorMessages' => ['Error A', { 'message' => 'Error B' }] } }
+
+      it 'extracts all entries' do
+        expect(subject).to match_array(['Error A', 'Error B'])
+      end
+    end
+
+    context 'with hash data containing errorMessages entries without a message key' do
+      let(:data) { { 'errorMessages' => ['Error A', { 'code' => 42 }] } }
+
+      it 'keeps entries without a message key' do
+        expect(subject).to match_array(['Error A', { 'code' => 42 }.to_s])
+      end
+    end
+
+    context 'with hash data containing only blank errorMessages entries' do
+      let(:data) { { 'errorMessages' => [''] } }
+
+      it 'falls back to including the raw body' do
+        expect(subject.first).to include('Unrecognized error body')
       end
     end
 

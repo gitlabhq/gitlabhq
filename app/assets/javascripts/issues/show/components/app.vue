@@ -34,6 +34,7 @@ function hasDescriptionChanged(oldDesc, newDesc) {
 }
 
 export default {
+  name: 'ShowApp',
   components: {
     HeaderActions,
     IssueHeader,

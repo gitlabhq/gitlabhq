@@ -7,6 +7,15 @@ module API
     feature_category :importers
     urgency :low # Allow more time to validate migration config for immediate user feedback in API responses
 
+    # Maps each object storage configuration param to its provider. `exactly_one_of` on
+    # :object_storage_configuration_params guarantees at most one of these is present.
+    OBJECT_STORAGE_PROVIDERS = {
+      aws_s3_configuration: :aws,
+      s3_compatible_configuration: :s3_compatible,
+      gcs_configuration: :gcs,
+      gcs_hmac_configuration: :gcs_hmac
+    }.freeze
+
     helpers do
       params :object_storage_configuration_params do
         requires :bucket, type: String, desc: 'Name of the object storage bucket where export data is stored'
@@ -27,7 +36,20 @@ module API
           optional :path_style, type: Boolean, default: true,
             desc: 'Use path-style URLs instead of virtual-hosted-style URLs'
         end
-        exactly_one_of :aws_s3_configuration, :s3_compatible_configuration
+        optional :gcs_configuration, type: Hash,
+          desc: 'Google Cloud Storage configuration using a service account JSON key' do
+          requires :google_project, type: String, desc: 'Google Cloud project ID'
+          requires :google_json_key_string, type: String, desc: 'Google Cloud service account JSON key contents'
+        end
+        optional :gcs_hmac_configuration, type: Hash,
+          desc: 'Google Cloud Storage configuration using S3-interoperability HMAC keys' do
+          requires :google_storage_access_key_id, type: String, desc: 'GCS HMAC access key ID'
+          requires :google_storage_secret_access_key, type: String, desc: 'GCS HMAC secret'
+          requires :region, type: String, desc: 'GCS bucket region'
+          optional :path_style, type: Boolean, default: true,
+            desc: 'Use path-style URLs instead of virtual-hosted-style URLs'
+        end
+        exactly_one_of(*OBJECT_STORAGE_PROVIDERS.keys)
       end
 
       def offline_exports
@@ -39,6 +61,16 @@ module API
 
       def offline_export
         @offline_export ||= offline_exports.find(params[:id])
+      end
+
+      # @return [Array(Symbol, Hash)] the provider and credentials for whichever
+      #   object storage configuration param was supplied
+      def object_storage_provider_and_credentials
+        OBJECT_STORAGE_PROVIDERS.each do |param_key, provider|
+          return provider, declared_params[param_key] if params[param_key]
+        end
+
+        raise ArgumentError, "Expected one of #{OBJECT_STORAGE_PROVIDERS.keys} to be present"
       end
     end
 
@@ -64,17 +96,12 @@ module API
             documentation: { example: "'source/full/path' not 'https://example.com/source/full/path'" }
         end
       end
+      route_setting :authorization, permissions: :create_offline_export, boundary_type: :user
       post do
         check_rate_limit!(:offline_export, scope: current_user)
 
-        storage_config = { bucket: declared_params[:bucket] }
-        if params[:aws_s3_configuration]
-          storage_config.merge!(provider: :aws, credentials: declared_params[:aws_s3_configuration])
-        end
-
-        if params[:s3_compatible_configuration]
-          storage_config.merge!(provider: :s3_compatible, credentials: declared_params[:s3_compatible_configuration])
-        end
+        provider, credentials = object_storage_provider_and_credentials
+        storage_config = { bucket: declared_params[:bucket], provider: provider, credentials: credentials }
 
         set_current_organization
         response = ::Import::Offline::Exports::CreateService.new(
@@ -102,6 +129,7 @@ module API
         optional :status, type: String, values: Import::Offline::Export.all_human_statuses,
           desc: 'Return offline transfer exports with specified status'
       end
+      route_setting :authorization, permissions: :read_offline_export, boundary_type: :user
       get do
         present paginate(offline_exports), with: Entities::Import::Offline::Export
       end
@@ -113,6 +141,7 @@ module API
       params do
         requires :id, type: Integer, desc: "The ID of user's offline transfer export"
       end
+      route_setting :authorization, permissions: :read_offline_export, boundary_type: :user
       get ':id' do
         present offline_export, with: Entities::Import::Offline::Export
       end
@@ -148,21 +177,13 @@ module API
 
         check_rate_limit!(:offline_import, scope: current_user)
 
+        provider, credentials = object_storage_provider_and_credentials
         storage_config = {
           bucket: declared_params[:bucket],
-          export_prefix: declared_params[:export_prefix]
+          export_prefix: declared_params[:export_prefix],
+          provider: provider,
+          object_storage_credentials: credentials
         }
-
-        if params[:aws_s3_configuration]
-          storage_config.merge!(provider: :aws, object_storage_credentials: declared_params[:aws_s3_configuration])
-        end
-
-        if params[:s3_compatible_configuration]
-          storage_config.merge!(
-            provider: :s3_compatible,
-            object_storage_credentials: declared_params[:s3_compatible_configuration]
-          )
-        end
 
         set_current_organization
         response = ::Import::Offline::Imports::CreateService.new(

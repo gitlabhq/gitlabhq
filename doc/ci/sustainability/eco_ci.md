@@ -18,16 +18,8 @@ title: Eco CI
 > GitLab does not maintain or provide support for this tool,
 > and makes no representation that this tool satisfies any regulatory or compliance requirements.
 
-[Eco CI](https://www.green-coding.io/products/eco-ci/)
-is an open-source tool that measures the energy consumption and carbon emissions of CI/CD pipelines.
-It runs as lightweight bash scripts within your pipeline jobs and does not require separate servers or databases.
-
-You place measurement scripts before and after commands in your pipeline jobs.
-The tool monitors CPU utilization during command execution and calculates energy
-consumption using pre-calculated power curves from the SPECpower database.
-It stores all measurement results as text files that you can save as job artifacts to
-download and view.
-You can also send results to an external dashboard for historical analysis.
+[Eco CI](https://www.green-coding.io/products/eco-ci/) is an open source tool that measures
+the energy consumption and carbon emissions of CI/CD pipelines.
 
 ## Add Eco CI to your pipeline
 
@@ -112,11 +104,11 @@ To add Eco CI to your pipeline:
 Eco CI stores measurement results in job artifacts that you can access through the
 GitLab interface. The measurement results include:
 
-- Energy consumption: Displayed in joules and watts
-- Carbon emissions: Estimated emissions in grams of CO₂ equivalent (gCO₂eq)
-- Duration: Length of the measured period in seconds
-- CPU utilization: Average CPU usage during measurement
-- Software Carbon Intensity (SCI): Carbon emissions per pipeline run
+- Energy consumption: Displayed in joules and watts.
+- Carbon emissions: Estimated emissions in grams of CO₂ equivalent (gCO₂eq).
+- Duration: Length of the measured period in seconds.
+- CPU utilization: Average CPU usage during measurement.
+- Software Carbon Intensity (SCI): Carbon emissions per pipeline run.
 
 To view measurement results:
 
@@ -187,7 +179,7 @@ Example:
 
 ## Troubleshooting
 
-When you work with Eco CI, you might encounter these issues.
+When you work with Eco CI, you might encounter the following issues.
 
 ### Error: Date has returned a timestamp that is not accurate to microseconds
 
@@ -210,8 +202,9 @@ before_script:
 
 You don't see the `eco-ci-output.txt` file in your job artifacts.
 
-This issue could be caused by missing artifacts configuration, so ensure
-your job contains the correct `artifacts` configuration:
+This issue occurs when the job is missing the `artifacts` configuration.
+
+To resolve this issue, ensure your job contains the correct `artifacts` configuration:
 
 ```yaml
 artifacts:

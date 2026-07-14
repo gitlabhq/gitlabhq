@@ -18,34 +18,34 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       admin_roles
       agent_organization_authorizations
       ai_catalog_item_version_dependencies
-      ai_code_suggestion_events
       ai_conversation_messages
-      ai_duo_chat_events
       analytics_cycle_analytics_stage_event_hashes
       background_operation_jobs
       background_operation_workers
       burned_project_routes
       cd_application_flow_definitions
+      cd_application_links
       cd_applications
       cd_artifact_sources
+      cd_deployment_transitions
       cd_deployments
-      cd_environments
+      cd_environment_driver_bindings
+      cd_rollout_environments
+      cd_rollout_transitions
       cd_rollouts
+      cd_service_environment_healths
       cd_services
       cd_version_set_entries
       cd_version_sets
       cd_versions
-      cluster_platforms_kubernetes
-      cluster_providers_gcp
-      clusters
-      cluster_providers_aws
-      clusters_kubernetes_namespaces
       custom_dashboard_search_data
       custom_dashboards
+      dependency_list_export_part_upload_states
       dependency_list_export_part_uploads
       dependency_list_export_parts
       dependency_list_export_upload_states
       dependency_list_export_uploads
+      iam_outbox
       issue_tracker_data
       jira_connect_installations
       jira_tracker_data
@@ -53,13 +53,12 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       member_roles
       merge_request_diff_commit_users
       non_sql_service_pings
-      oauth_applications
       oauth_device_grants
       oauth_openid_requests
       organization_user_details
-      organization_users
       personal_access_token_last_used_ips
       pool_repositories
+      project_topic_upload_states
       project_topic_uploads
       queries_service_pings
       raw_usage_data
@@ -98,11 +97,13 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       bulk_import_entities
       bulk_import_failures
       bulk_import_trackers
+      cd_environments
       dependency_list_exports
       enabled_foundational_flow_check_results
       import_offline_configurations
       integrations
       labels
+      organization_detail_upload_states
       organization_detail_uploads
       organization_details
       organization_foundational_agent_statuses

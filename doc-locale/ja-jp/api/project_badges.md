@@ -12,6 +12,12 @@ title: プロジェクトバッジAPI
 
 {{< /details >}}
 
+{{< history >}}
+
+- CI/CDジョブトークンによる認証は、GitLab 19.1で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/work_items/326910)。
+
+{{< /history >}}
+
 このAPIを使用して、プロジェクトの[バッジ](../user/project/badges.md)を管理します。
 
 バッジは、リンクと画像URLの両方でリアルタイムに置き換えられるプレースホルダーをサポートしています。次のプレースホルダーを使用できます:

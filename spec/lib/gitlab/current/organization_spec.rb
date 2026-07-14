@@ -140,6 +140,63 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
       end
     end
 
+    context 'when user is given as a callable (proc)' do
+      let(:params) { empty_params }
+      let(:rack_env) { empty_rack_env }
+
+      it 'resolves the user lazily and uses the proc result' do
+        user_param = -> { user }
+
+        expect(described_class.new(params: params, user: user_param, rack_env: rack_env).organization)
+          .to eq(user_organization)
+      end
+
+      it 'falls back to default when the proc returns nil' do
+        user_param = -> { nil }
+
+        expect(described_class.new(params: params, user: user_param, rack_env: rack_env).organization)
+          .to eq(default_organization)
+      end
+
+      it 'does not invoke the proc when params resolve the organization' do
+        proc_was_called = false
+        user_param = -> {
+          proc_was_called = true
+          nil
+        }
+
+        described_class.new(params: params_with_namespace_id, user: user_param, rack_env: rack_env).organization
+
+        expect(proc_was_called).to be(false)
+      end
+
+      it 'does not invoke the proc when headers resolve the organization' do
+        proc_was_called = false
+        user_param = -> {
+          proc_was_called = true
+          nil
+        }
+
+        described_class.new(params: empty_params, user: user_param, rack_env: rack_env_with_valid_org).organization
+
+        expect(proc_was_called).to be(false)
+      end
+
+      it 'memoizes the proc result across multiple calls to organization' do
+        call_count = 0
+        user_param = -> {
+          call_count += 1
+          user
+        }
+
+        resolver = described_class.new(params: empty_params, user: user_param, rack_env: empty_rack_env)
+        resolver.organization
+        resolver.organization
+
+        expect(call_count).to eq(1)
+      end
+    end
+
     context 'when set_current_organization_from_session is disabled' do
       let(:params) { empty_params }
       let(:rack_env) { empty_rack_env }

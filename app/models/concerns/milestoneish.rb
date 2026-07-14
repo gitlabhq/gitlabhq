@@ -64,7 +64,6 @@ module Milestoneish
   def milestone_issues(user)
     work_items_finder_params = issues_finder_params
     work_items_finder_params[:include_descendants] = true if work_items_finder_params[:include_subgroups]
-    work_items_finder_params[:issue_types] = %w[issue epic task incident]
 
     work_item_ids = ::WorkItems::WorkItemsFinder.new(user, work_items_finder_params)
       .execute

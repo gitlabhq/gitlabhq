@@ -29,15 +29,12 @@ import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybin
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import {
   i18n,
-  WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_DESCRIPTION,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_DESIGNS,
   WORK_ITEM_REFERENCE_CHAR,
   WORK_ITEM_TYPE_NAME_EPIC,
   STATE_OPEN,
-  WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_MILESTONE,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   VIEW_CONTEXT,
@@ -53,9 +50,12 @@ import workspacePermissionsQuery from '../graphql/workspace_permissions.query.gr
 import {
   findAssigneesWidget,
   findAwardEmojiWidget,
+  findCurrentUserTodosWidget,
   findDevelopmentWidget,
   findErrorTrackingWidget,
   findHierarchyWidget,
+  findIterationWidget,
+  findLinkedItemsWidget,
   findLinkedResourcesWidget,
   findHierarchyWidgetDefinition,
   findNotesWidget,
@@ -202,6 +202,20 @@ export default {
       default: false,
     },
   },
+  emits: [
+    'add-child',
+    'attributesUpdated',
+    'close',
+    'deleteWorkItem',
+    'openReportAbuse',
+    'promotedToObjective',
+    'update-modal',
+    'work-item-emoji-updated',
+    'work-item-updated',
+    'workItemStateUpdated',
+    'workItemTypeChanged',
+    'workItemUpdated',
+  ],
   data() {
     return {
       error: undefined,
@@ -420,7 +434,7 @@ export default {
       return this.hasDesignWidget && this.workspacePermissions.moveDesign;
     },
     workItemCurrentUserTodos() {
-      return this.findWidget(WIDGET_TYPE_CURRENT_USER_TODOS);
+      return findCurrentUserTodosWidget(this.workItem);
     },
     showWorkItemCurrentUserTodos() {
       return Boolean(this.$options.isLoggedIn && this.workItemCurrentUserTodos);
@@ -450,7 +464,7 @@ export default {
       return findDevelopmentWidget(this.workItem);
     },
     workItemIteration() {
-      return this.findWidget(WIDGET_TYPE_ITERATION)?.iteration;
+      return findIterationWidget(this.workItem)?.iteration;
     },
     workItemMilestone() {
       return this.findWidget(WIDGET_TYPE_MILESTONE)?.milestone;
@@ -466,8 +480,8 @@ export default {
     },
     workItemLinkedItems() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
-        ? this.findWidget(WIDGET_TYPE_LINKED_ITEMS) && this.hasLinkedItemsEpicsFeature
-        : this.findWidget(WIDGET_TYPE_LINKED_ITEMS);
+        ? findLinkedItemsWidget(this.workItem) && this.hasLinkedItemsEpicsFeature
+        : findLinkedItemsWidget(this.workItem);
     },
     showWorkItemTree() {
       return findHierarchyWidget(this.workItem) && this.allowedChildTypes?.length > 0;
@@ -514,7 +528,11 @@ export default {
     designCollectionQueryBody() {
       return {
         query: getWorkItemDesignListQuery,
-        variables: { id: this.workItem.id, atVersion: null },
+        variables: {
+          id: this.workItem.id,
+          atVersion: null,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
+        },
       };
     },
     iid() {
@@ -1037,7 +1055,7 @@ export default {
         </template>
 
         <template #heading-wrapper>
-          <div class="gl-grow">
+          <div class="gl-min-w-0 gl-grow">
             <component :is="isModalOrDetailPanel ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">
               {{ s__('WorkItem|Edit work item') }}
             </component>
@@ -1374,7 +1392,7 @@ export default {
                   :truncation-enabled="truncationEnabled"
                   @updateWorkItem="updateWorkItem"
                   @updateDraft="updateDraft('description', $event)"
-                  @cancelEditing="cancelEditing"
+                  @cancel-editing="cancelEditing"
                   @error="updateError = $event"
                 />
                 <div class="gl-mt-3 gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3">

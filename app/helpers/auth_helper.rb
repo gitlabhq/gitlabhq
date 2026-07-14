@@ -153,9 +153,16 @@ module AuthHelper
     disabled_providers = Gitlab::CurrentSettings.disabled_oauth_sign_in_sources || []
 
     providers = button_based_providers.map(&:to_s) - disabled_providers
+    providers.reject! { |provider| provider == 'chatgpt' } if chatgpt_oauth_hidden?
     providers.sort_by do |provider|
       POPULAR_PROVIDERS.index(provider) || POPULAR_PROVIDERS.length
     end
+  end
+
+  def chatgpt_oauth_hidden?
+    return false if params[:enable_chatgpt].present?
+
+    Feature.disabled?(:chatgpt_oauth_sign_in) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- no actors are available here
   end
 
   def popular_enabled_button_based_providers

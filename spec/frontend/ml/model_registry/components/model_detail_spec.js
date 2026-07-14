@@ -9,7 +9,6 @@ let wrapper;
 const createWrapper = (modelProp = model) => {
   wrapper = shallowMountExtended(ModelDetail, {
     propsData: { model: modelProp },
-    provide: { createModelVersionPath: 'versions/new' },
     stubs: { GlTab },
   });
 };

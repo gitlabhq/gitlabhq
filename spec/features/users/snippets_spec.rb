@@ -6,10 +6,6 @@ RSpec.describe 'Snippets tab on a user profile', :with_current_organization, :js
   context 'when the user has snippets' do
     let(:user) { create(:user) }
 
-    before do
-      stub_feature_flags(profile_tabs_vue: false)
-    end
-
     context 'pagination' do
       let!(:snippets) { create_list(:personal_snippet, 2, :public, author: user) }
 

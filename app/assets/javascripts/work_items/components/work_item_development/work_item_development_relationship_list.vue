@@ -12,6 +12,7 @@ import WorkItemDevelopmentMrItem from './work_item_development_mr_item.vue';
 import WorkItemDevelopmentBranchItem from './work_item_development_branch_item.vue';
 
 export default {
+  name: 'WorkItemDevelopmentRelationshipList',
   components: {
     WorkItemDevelopmentMrItem,
     WorkItemDevelopmentFfItem: () =>

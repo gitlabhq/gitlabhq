@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
@@ -6,6 +5,7 @@ import eventHub, { EVENT_OPEN_CONFIRM_MODAL } from '~/vue_shared/components/conf
 import { I18N_USER_ACTIONS } from '../../constants';
 
 export default {
+  name: 'UsersUnlock',
   components: {
     GlDisclosureDropdownItem,
   },

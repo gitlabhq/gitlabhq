@@ -1,0 +1,10 @@
+---
+name: logging_field_variant_versioning
+description: Exposes the admin application setting that selects the logging field schema version and dual-emit target, hidden until consuming services adopt the setting.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596493
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240426
+rollout_issue_url:
+milestone: '19.1'
+group: "group::development tooling"
+type: wip
+default_enabled: false

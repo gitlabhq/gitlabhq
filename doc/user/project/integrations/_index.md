@@ -14,7 +14,7 @@ description: "User documentation for project and group integrations. Includes a 
 {{< /details >}}
 
 > [!note]
-> This page contains user documentation for project integrations. For administrator documentation, see [Project integration administration](../../../administration/settings/project_integration_management.md).
+> For administrator documentation, see [project integration administration](../../../administration/settings/project_integration_management.md).
 
 You can integrate with external applications to add functionality to GitLab.
 

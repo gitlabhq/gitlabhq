@@ -33,6 +33,7 @@ describe('ContentEditor', () => {
   const findEditorStateObserver = () => wrapper.findComponent(EditorStateObserver);
   const findLoadingIndicator = () => wrapper.findComponent(GlLoadingIcon);
   const findContentEditorAlert = () => wrapper.findComponent(ContentEditorAlert);
+  const findEditorDom = () => findEditorContent().props('editor').view.dom;
   const createWrapper = ({ markdown, autofocus, ...props } = {}) => {
     wrapper = shallowMountExtended(ContentEditor, {
       propsData: {
@@ -334,6 +335,66 @@ describe('ContentEditor', () => {
     expect(commands.focus).toHaveBeenCalled();
     expect(commands.pasteContent).toHaveBeenCalledWith('Paste content');
     expect(commands.run).toHaveBeenCalled();
+  });
+
+  describe('aria attributes', () => {
+    it('uses the default aria-label when no ariaLabel prop is provided', () => {
+      createWrapper();
+
+      expect(findEditorDom().getAttribute('aria-label')).toBe('Rich text editor');
+    });
+
+    it('uses the provided ariaLabel prop', () => {
+      createWrapper({ ariaLabel: 'Description' });
+
+      expect(findEditorDom().getAttribute('aria-label')).toBe('Description');
+    });
+
+    it('uses aria-labelledby when ariaLabelledBy prop is provided', () => {
+      createWrapper({ ariaLabelledBy: 'my-label-id' });
+
+      expect(findEditorDom().getAttribute('aria-labelledby')).toBe('my-label-id');
+      expect(findEditorDom().hasAttribute('aria-label')).toBe(false);
+    });
+
+    it('uses aria-describedby when ariaDescribedBy prop is provided with ariaLabelledBy', () => {
+      createWrapper({ ariaLabelledBy: 'my-label-id', ariaDescribedBy: 'my-desc-id' });
+
+      expect(findEditorDom().getAttribute('aria-labelledby')).toBe('my-label-id');
+      expect(findEditorDom().getAttribute('aria-describedby')).toBe('my-desc-id');
+    });
+
+    it('uses aria-describedby with aria-label fallback when ariaLabelledBy is not provided', () => {
+      createWrapper({ ariaLabel: 'Description', ariaDescribedBy: 'my-desc-id' });
+
+      expect(findEditorDom().getAttribute('aria-label')).toBe('Description');
+      expect(findEditorDom().getAttribute('aria-describedby')).toBe('my-desc-id');
+      expect(findEditorDom().hasAttribute('aria-labelledby')).toBe(false);
+    });
+
+    it('updates aria attributes reactively when props change', async () => {
+      createWrapper({ ariaLabel: 'Initial label' });
+
+      expect(findEditorDom().getAttribute('aria-label')).toBe('Initial label');
+
+      await wrapper.setProps({ ariaLabel: 'Updated label' });
+      await nextTick();
+
+      expect(findEditorDom().getAttribute('aria-label')).toBe('Updated label');
+    });
+
+    it('removes the stale aria-label when switching to aria-labelledby after mount', async () => {
+      createWrapper({ ariaLabel: 'Description' });
+
+      expect(findEditorDom().getAttribute('aria-label')).toBe('Description');
+      expect(findEditorDom().hasAttribute('aria-labelledby')).toBe(false);
+
+      await wrapper.setProps({ ariaLabel: '', ariaLabelledBy: 'work-item-description-label' });
+      await nextTick();
+
+      expect(findEditorDom().getAttribute('aria-labelledby')).toBe('work-item-description-label');
+      expect(findEditorDom().hasAttribute('aria-label')).toBe(false);
+    });
   });
 
   describe('immersive mode', () => {

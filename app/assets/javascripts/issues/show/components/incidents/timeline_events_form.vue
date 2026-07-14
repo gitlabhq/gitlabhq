@@ -74,6 +74,7 @@ export default {
       default: () => TIMELINE_EVENT_TAGS,
     },
   },
+  emits: ['cancel', 'delete', 'save-event'],
   data() {
     // if occurredAt is null, returns "now" in UTC
     const placeholderDate = getUtcShiftedDate(this.previousOccurredAt);

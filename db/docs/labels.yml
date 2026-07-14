@@ -16,4 +16,4 @@ sharding_key:
   project_id: projects
   organization_id: organizations
 organization_transfer_support: no_work_needed
-table_size: small
+table_size: medium

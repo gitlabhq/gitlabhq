@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Authn::OauthApplication, feature_category: :system_access do
-  let(:application) { create(:oauth_application) }
+  let_it_be_with_reload(:application) { create(:oauth_application) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:organization).class_name('Organizations::Organization').required }
@@ -51,8 +51,8 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
   end
 
   describe '#secret_matches?' do
-    let(:plaintext_secret) { 'CzOBzBfU9F-HvsqfTaTXF4ivuuxYZuv3BoAK4pnvmyw' }
-    let(:application) { create(:oauth_application, secret: plaintext_secret) }
+    let_it_be(:plaintext_secret) { 'CzOBzBfU9F-HvsqfTaTXF4ivuuxYZuv3BoAK4pnvmyw' }
+    let_it_be_with_reload(:application) { create(:oauth_application, secret: plaintext_secret) }
 
     it 'returns false when input is nil' do
       expect(application.secret_matches?(nil)).to be false
@@ -122,9 +122,9 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
     end
 
     context 'with actual fallback strategies' do
-      let!(:pbkdf2_token) { create(:oauth_application) }
-      let!(:sha512_token) { create(:oauth_application) }
-      let!(:plain_token) { create(:oauth_application) }
+      let_it_be_with_reload(:pbkdf2_token) { create(:oauth_application) }
+      let_it_be_with_reload(:sha512_token) { create(:oauth_application) }
+      let_it_be_with_reload(:plain_token) { create(:oauth_application) }
 
       before do
         allow(described_class).to receive(:upgrade_fallback_value).and_call_original
@@ -182,13 +182,13 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
   end
 
   describe '.with_token_digests' do
-    let(:hashed_token_1) { described_class.encode('hashed_token_1') }
-    let!(:app1) { create(:oauth_application, secret: hashed_token_1) }
+    let_it_be(:hashed_token_1) { described_class.encode('hashed_token_1') }
+    let_it_be(:app1) { create(:oauth_application, secret: hashed_token_1) }
 
-    let(:hashed_token_2) { described_class.encode('hashed_token_2') }
-    let!(:app2) { create(:oauth_application, secret: hashed_token_2) }
+    let_it_be(:hashed_token_2) { described_class.encode('hashed_token_2') }
+    let_it_be(:app2) { create(:oauth_application, secret: hashed_token_2) }
 
-    let!(:app3) { create(:oauth_application, secret: 'different_token') }
+    let_it_be(:app3) { create(:oauth_application, secret: 'different_token') }
 
     context 'when hashed_tokens is provided' do
       it 'returns applications with matching secret digests' do

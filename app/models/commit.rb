@@ -275,7 +275,7 @@ class Commit
     committed_date.xmlschema
   end
 
-  def hook_attrs(with_changed_files: false)
+  def hook_attrs(with_changed_files: false, changed_paths: nil)
     data = {
       id: id,
       message: safe_message,
@@ -288,7 +288,10 @@ class Commit
       }
     }
 
-    data.merge!(repo_changes) if with_changed_files
+    if with_changed_files
+      changes = changed_paths ? repo_changes_from_paths(changed_paths) : repo_changes
+      data.merge!(changes)
+    end
 
     data
   end
@@ -538,16 +541,6 @@ class Commit
     model_name.singular
   end
 
-  def touch
-    # no-op but needs to be defined since #persisted? is defined
-  end
-
-  def touch_later
-    # No-op.
-    # This method is called by ActiveRecord.
-    # We don't want to do anything for `Commit` model, so this is empty.
-  end
-
   # We are continuing to support `(fixup!|squash!)` here as it is the prefix
   #   added by `git commit --fixup` which is used by some community members.
   #   https://gitlab.com/gitlab-org/gitlab/-/issues/342937#note_892065311
@@ -645,6 +638,25 @@ class Commit
         changes[:added] << diff.new_path
       else
         changes[:modified] << diff.new_path
+      end
+    end
+
+    changes
+  end
+
+  def repo_changes_from_paths(paths)
+    changes = { added: [], modified: [], removed: [] }
+
+    paths.each do |path|
+      # New and renamed files report only their new path under :added; everything
+      # else (content or type changes) reports the path under :modified. This keeps
+      # the webhook payload identical to the previous per-commit diff behavior.
+      if path.deleted_file?
+        changes[:removed] << path.old_path
+      elsif path.new_file? || path.renamed_file?
+        changes[:added] << path.path
+      else
+        changes[:modified] << path.path
       end
     end
 

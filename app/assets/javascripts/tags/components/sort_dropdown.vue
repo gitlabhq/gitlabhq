@@ -11,6 +11,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'SortDropdown',
   i18n: {
     searchPlaceholder: s__('TagsPage|Filter by tag name'),
   },

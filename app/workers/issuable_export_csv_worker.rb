@@ -3,10 +3,8 @@
 class IssuableExportCsvWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  data_consistency :always
-
+  data_consistency :delayed
   sidekiq_options retry: 3
-
   feature_category :team_planning
   worker_resource_boundary :cpu
   loggable_arguments 0, 1, 2, 3

@@ -21,6 +21,40 @@ RSpec.describe ClickHouse::WriteBuffer, :clean_gitlab_redis_shared_state, featur
     end
   end
 
+  describe '.pending' do
+    subject(:pending_count) { described_class.pending(table_name) }
+
+    it 'returns 0 when the buffer is empty' do
+      expect(pending_count).to eq(0)
+    end
+
+    it 'returns the number of events added to the buffer' do
+      described_class.add(table_name, { foo: 'bar' })
+      described_class.add(table_name, { foo: 'baz' })
+      described_class.add(table_name, { foo: 'qux' })
+
+      expect(pending_count).to eq(3)
+    end
+
+    it 'returns an integer (not nil or string)' do
+      expect(pending_count).to be_a(Integer)
+    end
+
+    it 'decrements after pop' do
+      described_class.add(table_name, { foo: 'bar' })
+      described_class.add(table_name, { foo: 'baz' })
+      described_class.pop(table_name, 1)
+
+      expect(pending_count).to eq(1)
+    end
+
+    it 'does not count entries for other tables' do
+      described_class.add('other_table', { foo: 'bar' })
+
+      expect(pending_count).to eq(0)
+    end
+  end
+
   describe '.pop_events' do
     let(:limit) { 2 }
 

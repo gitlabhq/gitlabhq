@@ -18,7 +18,12 @@ module Cells
     def perform
       return unless ::Current.cells_claims_leases?
 
-      result = Cells::Leases::ReconciliationService.new.execute
+      # Reconcile the recent window cheaply every run; once an hour do a full scan, which also
+      # cleans up orphaned leases and catches any lease older than the window. Assumes this
+      # cronjob runs at least once a minute.
+      full_scan = Time.current.min == 0
+
+      result = Cells::Leases::ReconciliationService.new.execute(full_scan: full_scan)
 
       log_hash_metadata_on_done(
         message: 'Lost transaction recovery completed',

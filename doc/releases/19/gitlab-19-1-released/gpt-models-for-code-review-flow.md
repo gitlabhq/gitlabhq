@@ -9,8 +9,6 @@ categories: [ Duo Agent Platform, Duo Code Review ]
 level: secondary
 ---
 
-<!-- categories: Duo Agent Platform, Duo Code Review -->
-
 In previous versions of GitLab, Code Review Flow supported only
 Anthropic Claude models. Teams that could not use Anthropic models due to contractual, policy, or
 procurement constraints had no way to run Code Review Flow.

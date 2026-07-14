@@ -86,7 +86,7 @@ module RuboCop
           end
 
           def unwrap_args(args)
-            return args[0].children if args[0].array_type? || args[0].hash_type?
+            return args[0].children if args[0].type?(:array, :hash)
 
             args
           end

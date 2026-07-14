@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe SidebarsHelper, feature_category: :navigation do
   include Devise::Test::ControllerHelpers
 
-  let_it_be(:current_organization, freeze: false) { build_stubbed(:common_organization) }
+  let_it_be(:current_organization) { build_stubbed(:common_organization) }
 
   before do
     Current.organization = current_organization
@@ -14,11 +14,12 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
   describe '#super_sidebar_context' do
     include_context 'custom session'
 
+    let_it_be(:group) { build(:group) }
+    let_it_be(:group_with_id) { build_stubbed(:group) }
+
     let(:user) { build(:user) }
-    let_it_be(:group, freeze: false) { build(:group) }
-    let_it_be(:group_with_id, freeze: false) { build_stubbed(:group) }
-    let_it_be(:panel, freeze: false) { {} }
-    let_it_be(:panel_type, freeze: false) { 'project' }
+    let(:panel) { {} }
+    let(:panel_type) { 'project' }
     let(:project) { nil }
     let(:current_user_mode) { Gitlab::Auth::CurrentUserMode.new(user) }
     let(:context_with_group_id) do
@@ -102,7 +103,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         is_admin: false,
         name: user.name,
         username: user.username,
-        admin_url: admin_root_path,
         admin_mode: {
           admin_mode_feature_enabled: true,
           admin_mode_active: false,
@@ -112,7 +112,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         },
         avatar_url: user.avatar_url,
         has_link_to_profile: helper.current_user_menu?(:profile),
-        link_to_profile: user_path(user),
         status: {
           can_update: helper.can?(user, :update_user_status, user),
           busy: user.status&.busy?,
@@ -124,9 +123,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           clear_after: nil
         },
         settings: {
-          has_settings: helper.current_user_menu?(:settings),
-          profile_path: user_settings_profile_path,
-          profile_preferences_path: profile_preferences_path
+          has_settings: helper.current_user_menu?(:settings)
         },
         user_counts: {
           assigned_issues: 1,
@@ -136,24 +133,15 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           last_update: 1609459200000
         },
         can_sign_out: helper.current_user_menu?(:sign_out),
-        sign_out_link: destroy_user_session_path,
-        issues_dashboard_path: work_items_dashboard_path(assignee_username: user.username),
-        explore_analytics_dashboards_path: explore_analytics_dashboards_path,
-        todos_dashboard_path: dashboard_todos_path,
         projects_path: dashboard_projects_path,
         groups_path: dashboard_groups_path,
         gitlab_com_and_canary: Gitlab.com_and_canary?,
         pinned_items: %w[foo bar],
-        update_pins_url: pins_path,
         shortcut_links: global_shortcut_links,
-        track_visits_path: track_namespace_visits_path,
         work_items: nil,
-        has_multiple_organizations: false
+        has_multiple_organizations: false,
+        show_feature_library_feedback: true
       })
-    end
-
-    it 'sets issues_dashboard_path to work_items dashboard', :use_clean_rails_memory_store_caching do
-      expect(subject[:issues_dashboard_path]).to eq(work_items_dashboard_path(assignee_username: user.username))
     end
 
     it 'returns sidebar values for work item context with group id', :use_clean_rails_memory_store_caching do
@@ -231,9 +219,13 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
     end
 
+    describe 'show_feature_library_feedback' do
+      it { is_expected.to include(show_feature_library_feedback: true) }
+    end
+
     describe "shortcut links" do
       describe "as the anonymous user" do
-        let_it_be(:user, freeze: false) { nil }
+        let(:user) { nil }
         let(:global_shortcut_links) do
           [
             {
@@ -259,7 +251,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         end
 
         context 'in a project' do
-          let_it_be(:project, freeze: false) { build_stubbed(:project) }
+          let_it_be(:project) { build_stubbed(:project) }
 
           it 'returns project-specific shortcut links' do
             expect(subject[:shortcut_links]).to eq(global_shortcut_links)
@@ -273,7 +265,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         end
 
         context 'in a project' do
-          let_it_be(:project, freeze: false) { build_stubbed(:project) }
+          let_it_be(:project) { build_stubbed(:project) }
 
           it 'returns project-specific shortcut links' do
             expect(subject[:shortcut_links]).to eq([
@@ -453,7 +445,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
     describe 'current context' do
       context 'when current context is a project' do
-        let_it_be(:project, freeze: false) { build(:project) }
+        let_it_be(:project) { build(:project) }
 
         subject do
           helper.super_sidebar_context(user, group: nil, project: project, panel: panel, panel_type: panel_type)
@@ -513,104 +505,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
     end
 
-    describe 'Context switcher persistent links' do
-      shared_examples 'context switcher with persistent links' do
-        let(:public_link) do
-          { title: s_('Navigation|Explore'), link: explore_root_path, icon: 'compass' }
-        end
-
-        let(:public_links_for_user) do
-          your_work_link = root_path
-
-          [
-            { title: s_('Navigation|Your work'), link: your_work_link, icon: 'work' },
-            public_link,
-            { title: s_('Navigation|Profile'), link: user_settings_profile_path, icon: 'profile' },
-            { title: s_('Navigation|Preferences'), link: profile_preferences_path, icon: 'preferences' }
-          ]
-        end
-
-        let(:admin_area_link) do
-          { title: s_('Navigation|Admin area'), link: admin_root_path, icon: 'admin' }
-        end
-
-        subject do
-          helper.super_sidebar_context(user, group: nil, project: nil, panel: panel, panel_type: panel_type)
-        end
-
-        context 'when user is not logged in' do
-          let(:user) { nil }
-
-          it 'returns only the public links for an anonymous user' do
-            expect(subject[:context_switcher_links]).to eq([public_link])
-          end
-        end
-
-        context 'when user is not an admin' do
-          it 'returns only the public links for a user' do
-            expect(subject[:context_switcher_links]).to eq(public_links_for_user)
-          end
-        end
-
-        context 'when user is an admin' do
-          before do
-            allow(user).to receive(:admin?).and_return(true)
-          end
-
-          context 'when application setting :admin_mode is enabled' do
-            before do
-              stub_application_setting(admin_mode: true)
-            end
-
-            context 'when admin mode is on' do
-              before do
-                current_user_mode.request_admin_mode!
-                current_user_mode.enable_admin_mode!(password: user.password)
-              end
-
-              it 'returns public links, admin area and leave admin mode links',
-                quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9432' do
-                expect(subject[:context_switcher_links]).to eq([
-                  *public_links_for_user,
-                  admin_area_link
-                ])
-              end
-            end
-
-            context 'when admin mode is off' do
-              it 'returns public links and enter admin mode link' do
-                expect(subject[:context_switcher_links]).to eq([
-                  *public_links_for_user
-                ])
-              end
-            end
-          end
-
-          context 'when application setting :admin_mode is disabled' do
-            before do
-              stub_application_setting(admin_mode: false)
-            end
-
-            it 'returns public links and admin area link' do
-              expect(subject[:context_switcher_links]).to eq([
-                *public_links_for_user,
-                admin_area_link
-              ])
-            end
-          end
-        end
-      end
-
-      include_examples 'context switcher with persistent links'
-    end
-
     describe 'impersonation data' do
       it 'sets is_impersonating to `false` when not impersonating' do
         expect(subject[:is_impersonating]).to be(false)
-      end
-
-      it 'passes the stop_impersonation_path property' do
-        expect(subject[:stop_impersonation_path]).to eq(admin_impersonation_path)
       end
 
       describe 'when impersonating' do
@@ -858,6 +755,54 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
     it 'sets ref_type to nil when not provided' do
       expect(helper.send(:project_sidebar_context_data, project, nil, nil)[:ref_type]).to be_nil
+    end
+  end
+
+  describe '#super_sidebar_default_pins' do
+    let(:user) { build_stubbed(:user) }
+
+    context 'when feature_library_modal is disabled' do
+      before do
+        stub_feature_flags(feature_library_modal: false)
+      end
+
+      it 'returns old project defaults' do
+        expect(helper.send(:super_sidebar_default_pins, 'project', user)).to eq(
+          %w[project_issue_list project_merge_request_list]
+        )
+      end
+
+      it 'returns old group defaults', unless: Gitlab.ee? do
+        expect(helper.send(:super_sidebar_default_pins, 'group', user)).to eq(
+          %w[group_issue_list group_merge_request_list]
+        )
+      end
+
+      it 'returns empty array for other panel types' do
+        expect(helper.send(:super_sidebar_default_pins, 'explore', user)).to eq([])
+      end
+    end
+
+    context 'when feature_library_modal is enabled' do
+      before do
+        stub_feature_flags(feature_library_modal: true)
+      end
+
+      it 'returns enriched project defaults' do
+        expect(helper.send(:super_sidebar_default_pins, 'project', user)).to eq(
+          %w[project_overview members project_issue_list branches project_merge_request_list pipelines]
+        )
+      end
+
+      it 'returns enriched group defaults', unless: Gitlab.ee? do
+        expect(helper.send(:super_sidebar_default_pins, 'group', user)).to eq(
+          %w[group_overview members group_issue_list issue_boards group_merge_request_list]
+        )
+      end
+
+      it 'returns empty array for other panel types' do
+        expect(helper.send(:super_sidebar_default_pins, 'explore', user)).to eq([])
+      end
     end
   end
 end

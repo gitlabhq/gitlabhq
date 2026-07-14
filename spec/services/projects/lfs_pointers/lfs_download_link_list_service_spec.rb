@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService, feature_category: :source_code_management do
@@ -242,14 +243,116 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService, feature_catego
 
   describe '#download_links_for' do
     context 'if request fails' do
+      let(:failed_response) do
+        response = custom_response(Net::HTTPRequestTimeout.new('', '408', 'Request Timeout'), '{"message":"boom"}')
+        allow(response).to receive(:code).and_return(408)
+        response
+      end
+
       before do
-        request_timeout_net_response = Net::HTTPRequestTimeout.new('', '', '')
-        response = custom_response(request_timeout_net_response)
-        allow(Gitlab::HTTP).to receive(:post).and_return(response)
+        allow(Gitlab::HTTP).to receive(:post).and_return(failed_response)
       end
 
       it 'raises an error' do
         expect { subject.send(:download_links_for, new_oids) }.to raise_error(described_class::DownloadLinksError)
+      end
+
+      it 'logs the sanitized endpoint and response details for troubleshooting', :aggregate_failures do
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            Labkit::Fields::GL_PROJECT_ID => project.id,
+            Labkit::Fields::LOG_MESSAGE => 'LFS batch API returned an unsuccessful response',
+            Labkit::Fields::HTTP_URL => lfs_endpoint,
+            Labkit::Fields::HTTP_STATUS_CODE => 408,
+            response_body: '{"message":"boom"}'
+          )
+        )
+
+        expect { subject.send(:download_links_for, new_oids) }.to raise_error(described_class::DownloadLinksError)
+      end
+    end
+
+    context 'when the request is unauthorized' do
+      let(:unauthorized_response) do
+        response = custom_response(Net::HTTPUnauthorized.new('', '401', 'Unauthorized'), '{"message":"SSO required"}')
+        allow(response).to receive(:code).and_return(401)
+        response
+      end
+
+      before do
+        allow(Gitlab::HTTP).to receive(:post).and_return(unauthorized_response)
+      end
+
+      it 'raises a DownloadLinksRequestUnauthorizedError' do
+        expect { subject.send(:download_links_for, new_oids) }
+          .to raise_error(described_class::DownloadLinksRequestUnauthorizedError)
+      end
+
+      it 'is a kind of DownloadLinksError so existing rescues still catch it' do
+        expect { subject.send(:download_links_for, new_oids) }
+          .to raise_error(described_class::DownloadLinksError)
+      end
+
+      it 'logs the sanitized endpoint and response details for troubleshooting', :aggregate_failures do
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            Labkit::Fields::GL_PROJECT_ID => project.id,
+            Labkit::Fields::LOG_MESSAGE => 'LFS batch API returned an unsuccessful response',
+            Labkit::Fields::HTTP_URL => lfs_endpoint,
+            Labkit::Fields::HTTP_STATUS_CODE => 401,
+            response_body: '{"message":"SSO required"}'
+          )
+        )
+
+        expect { subject.send(:download_links_for, new_oids) }
+          .to raise_error(described_class::DownloadLinksRequestUnauthorizedError)
+      end
+
+      it 'sanitizes credentials embedded in the endpoint before logging', :aggregate_failures do
+        credentialed_uri = URI.parse("http://user:token@www.gitlab.com/demo/repo.git/info/lfs/objects/batch")
+        service = described_class.new(project, remote_uri: credentialed_uri)
+
+        expect(Gitlab::AppLogger).to receive(:error) do |payload|
+          expect(payload[Labkit::Fields::HTTP_URL]).to eq('http://www.gitlab.com/demo/repo.git/info/lfs/objects/batch')
+          expect(payload[Labkit::Fields::HTTP_URL]).not_to include('token')
+        end
+
+        expect { service.send(:download_links_for, new_oids) }
+          .to raise_error(described_class::DownloadLinksRequestUnauthorizedError)
+      end
+
+      it 'sanitizes credentials embedded in the response body before logging', :aggregate_failures do
+        body = '{"message":"failed for http://user:token@www.gitlab.com/demo/repo.git"}'
+        response = custom_response(Net::HTTPUnauthorized.new('', '401', 'Unauthorized'), body)
+        allow(response).to receive(:code).and_return(401)
+        allow(Gitlab::HTTP).to receive(:post).and_return(response)
+
+        expect(Gitlab::AppLogger).to receive(:error) do |payload|
+          expect(payload[:response_body]).not_to include('token')
+          expect(payload[:response_body]).to include('http://*****:*****@www.gitlab.com/demo/repo.git')
+        end
+
+        expect { subject.send(:download_links_for, new_oids) }
+          .to raise_error(described_class::DownloadLinksRequestUnauthorizedError)
+      end
+
+      it 'does not raise when the response body is not valid UTF-8', :aggregate_failures do
+        body = (+"error \xC3\x28 invalid").force_encoding('UTF-8')
+        response = custom_response(Net::HTTPUnauthorized.new('', '401', 'Unauthorized'), body)
+        allow(response).to receive(:code).and_return(401)
+        allow(Gitlab::HTTP).to receive(:post).and_return(response)
+
+        expect(Gitlab::AppLogger).to receive(:error).with(hash_including(:response_body))
+
+        expect { subject.send(:download_links_for, new_oids) }
+          .to raise_error(described_class::DownloadLinksRequestUnauthorizedError)
+      end
+
+      it 'still raises the caller error if logging itself fails', :aggregate_failures do
+        allow(Gitlab::AppLogger).to receive(:error).and_raise(StandardError, 'logging boom')
+
+        expect { subject.send(:download_links_for, new_oids) }
+          .to raise_error(described_class::DownloadLinksRequestUnauthorizedError)
       end
     end
 

@@ -3,24 +3,28 @@
 require 'spec_helper'
 
 RSpec.describe Projects::TemplatesController do
-  let(:project) { create(:project, :repository, :private) }
-  let(:user) { create(:user) }
-  let(:issue_template_path_1) { '.gitlab/issue_templates/issue_template_1.md' }
-  let(:issue_template_path_2) { '.gitlab/issue_templates/issue_template_2.md' }
-  let(:merge_request_template_path_1) { '.gitlab/merge_request_templates/merge_request_template_1.md' }
-  let(:merge_request_template_path_2) { '.gitlab/merge_request_templates/merge_request_template_2.md' }
-  let!(:issue_template_file_1) { project.repository.create_file(user, issue_template_path_1, 'issue content 1', message: 'message 1', branch_name: 'master') }
-  let!(:issue_template_file_2) { project.repository.create_file(user, issue_template_path_2, 'issue content 2', message: 'message 2', branch_name: 'master') }
-  let!(:merge_request_template_file_1) { project.repository.create_file(user, merge_request_template_path_1, 'merge request content 1', message: 'message 1', branch_name: 'master') }
-  let!(:merge_request_template_file_2) { project.repository.create_file(user, merge_request_template_path_2, 'merge request content 2', message: 'message 2', branch_name: 'master') }
+  let_it_be(:project) { create(:project, :repository, :private) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:issue_template_path_1) { '.gitlab/issue_templates/issue_template_1.md' }
+  let_it_be(:issue_template_path_2) { '.gitlab/issue_templates/issue_template_2.md' }
+  let_it_be(:merge_request_template_path_1) { '.gitlab/merge_request_templates/merge_request_template_1.md' }
+  let_it_be(:merge_request_template_path_2) { '.gitlab/merge_request_templates/merge_request_template_2.md' }
+  let_it_be(:issue_template_file_1) { project.repository.create_file(user, issue_template_path_1, 'issue content 1', message: 'message 1', branch_name: 'master') }
+  let_it_be(:issue_template_file_2) { project.repository.create_file(user, issue_template_path_2, 'issue content 2', message: 'message 2', branch_name: 'master') }
+  let_it_be(:merge_request_template_file_1) { project.repository.create_file(user, merge_request_template_path_1, 'merge request content 1', message: 'message 1', branch_name: 'master') }
+  let_it_be(:merge_request_template_file_2) { project.repository.create_file(user, merge_request_template_path_2, 'merge request content 2', message: 'message 2', branch_name: 'master') }
+  let_it_be(:other_user) { create(:user) }
   let(:expected_issue_template_1) { { 'key' => 'issue_template_1', 'name' => 'issue_template_1', 'content' => 'issue content 1' } }
   let(:expected_issue_template_2) { { 'key' => 'issue_template_2', 'name' => 'issue_template_2', 'content' => 'issue content 2' } }
   let(:expected_merge_request_template_1) { { 'key' => 'merge_request_template_1', 'name' => 'merge_request_template_1', 'content' => 'merge request content 1' } }
   let(:expected_merge_request_template_2) { { 'key' => 'merge_request_template_2', 'name' => 'merge_request_template_2', 'content' => 'merge request content 2' } }
 
   describe '#index' do
-    before do
+    before_all do
       project.add_developer(user)
+    end
+
+    before do
       sign_in(user)
     end
 
@@ -33,7 +37,6 @@ RSpec.describe Projects::TemplatesController do
       end
 
       it 'fails for user with no access' do
-        other_user = create(:user)
         sign_in(other_user)
 
         get(:index, params: { namespace_id: project.namespace, template_type: template_type, project_id: project }, format: :json)
@@ -128,8 +131,11 @@ RSpec.describe Projects::TemplatesController do
     end
 
     context 'when user is a member of the project' do
-      before do
+      before_all do
         project.add_developer(user)
+      end
+
+      before do
         sign_in(user)
       end
 
@@ -143,8 +149,11 @@ RSpec.describe Projects::TemplatesController do
     end
 
     context 'when user is a guest of the project' do
-      before do
+      before_all do
         project.add_guest(user)
+      end
+
+      before do
         sign_in(user)
       end
 
@@ -154,8 +163,11 @@ RSpec.describe Projects::TemplatesController do
   end
 
   describe '#names' do
-    before do
+    before_all do
       project.add_developer(user)
+    end
+
+    before do
       sign_in(user)
     end
 
@@ -169,7 +181,6 @@ RSpec.describe Projects::TemplatesController do
       end
 
       it 'fails for user with no access' do
-        other_user = create(:user)
         sign_in(other_user)
 
         get(:names, params: { namespace_id: project.namespace, template_type: template_type, project_id: project }, format: :json)

@@ -16,6 +16,18 @@ RSpec.describe MailScheduler::NotificationServiceWorker, feature_category: :team
     ActiveJob::Arguments.deserialize(args)
   end
 
+  describe 'feature category attribution' do
+    it 'defaults to team_planning without a calling context' do
+      expect(described_class.get_feature_category).to eq(:team_planning)
+    end
+
+    it 'attributes to the calling context feature category when present' do
+      Gitlab::ApplicationContext.with_context(feature_category: 'code_review_workflow') do
+        expect(described_class.get_feature_category).to eq('code_review_workflow')
+      end
+    end
+  end
+
   describe '#perform' do
     it 'deserializes arguments from global IDs' do
       expect(worker.notification_service).to receive(method).with(key)

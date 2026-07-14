@@ -22,6 +22,11 @@ inherit_from:
   <% Dir.glob('jh/rubocop/**/*.yml').each do |jh_rubocop_yaml| %>
   - '<%= jh_rubocop_yaml %>'
   <% end %>
+  <%# Optional local override, applied only when the file exists. Keep it out of %>
+  <%# version control (see .gitignore). See doc/development/rubocop_development_guide.md. %>
+  <% if File.exist?('.rubocop.local.yml') %>
+  - ./.rubocop.local.yml
+  <% end %>
 
 inherit_mode:
   merge:
@@ -494,6 +499,15 @@ Gitlab/EventStoreSubscriber:
   Exclude:
     - 'spec/**/*'
     - 'ee/spec/**/*'
+
+Gitlab/EventStoreCloudEventInheritance:
+  Enabled: true
+  Include:
+    - 'app/events/**/*.rb'
+    - 'ee/app/events/**/*.rb'
+    - 'lib/gitlab/event_store/**/*.rb'
+  Exclude:
+    - 'lib/gitlab/event_store/cloud_event.rb'
 
 Gitlab/EventStoreDocRequired:
   Enabled: true
@@ -970,6 +984,12 @@ API/ClassLevelAllowAccessWithScope:
     - 'lib/**/api/**/*.rb'
     - 'ee/lib/**/api/**/*.rb'
 
+API/DeprecatedHttpCodes:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
 API/DeprecatedInDescription:
   Enabled: true
   Include:
@@ -989,6 +1009,12 @@ API/LifecycleInDescription:
     - 'ee/lib/**/api/**/*.rb'
 
 API/DescriptionSuccessResponse:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
+API/DescriptionFailureResponse:
   Enabled: true
   Include:
     - 'lib/**/api/**/*.rb'
@@ -1283,7 +1309,13 @@ Cop/PutGroupRoutesUnderScope:
 Mcp/UseApiService:
   Enabled: true
   Include:
-    - 'app/services/mcp/tools/*'
+    - 'app/services/mcp/tools/**/*'
+
+Mcp/UseGraphqlQueryFile:
+  Enabled: true
+  Include:
+    - 'app/services/mcp/tools/**/*'
+    - 'ee/app/services/ee/mcp/tools/**/*'
 
 Migration/ComplexIndexesRequireName:
   Exclude:
@@ -1717,6 +1749,9 @@ Database/AvoidScopeTo:
   Enabled: true
   Include:
     - 'lib/gitlab/background_migration/**/*.rb'
+
+Database/NoOnDemandCellLocalBackgroundOperation:
+  Enabled: true
 
 RSpec/RedundantMetatagType:
   Include:

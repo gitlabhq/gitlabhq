@@ -748,7 +748,7 @@ describe('WorkItemActions component', () => {
       createComponent();
 
       expect(findSubmitAsSpamItem().props('item')).toEqual({
-        href: 'gitlab-org/gitlab-test/-/issues/1/mark_as_spam',
+        href: '/gitlab-org/gitlab-test/-/issues/1/mark_as_spam',
         text: 'Submit as spam',
       });
     });

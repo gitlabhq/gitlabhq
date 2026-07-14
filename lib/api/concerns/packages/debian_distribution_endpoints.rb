@@ -23,6 +23,8 @@ module API
           end
 
           namespace 'debian_distributions' do
+            boundary_type = resource_type
+
             helpers do
               params :optional_distribution_params do
                 optional :suite, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Suite', documentation: { example: 'unstable' }
@@ -63,8 +65,8 @@ module API
             format :json
 
             # POST {projects|groups}/:id/debian_distributions
-            desc 'Create a Debian Distribution' do
-              detail 'This feature was introduced in 14.0'
+            desc "Create a Debian #{boundary_type} distribution" do
+              detail "Creates a Debian #{boundary_type} distribution for a specified #{boundary_type}."
               success code: 201, model: ::API::Entities::Packages::Debian::Distribution
               failure [
                 { code: 400, message: 'Bad Request' },
@@ -72,7 +74,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_debian]
             end
 
             params do
@@ -95,15 +97,15 @@ module API
             end
 
             # GET {projects|groups}/:id/debian_distributions
-            desc 'Get a list of Debian Distributions' do
-              detail 'This feature was introduced in 14.0'
+            desc "List all Debian #{boundary_type} distributions" do
+              detail "Lists all Debian distributions for a specified #{boundary_type}."
               success code: 200, model: ::API::Entities::Packages::Debian::Distribution
               failure [
                 { code: 401, message: 'Unauthorized' },
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_debian]
             end
 
             params do
@@ -122,15 +124,15 @@ module API
             end
 
             # GET {projects|groups}/:id/debian_distributions/:codename
-            desc 'Get a Debian Distribution' do
-              detail 'This feature was introduced in 14.0'
+            desc "Retrieve a Debian #{boundary_type} distribution" do
+              detail "Retrieves a specified Debian #{boundary_type} distribution for a #{boundary_type}."
               success code: 200, model: ::API::Entities::Packages::Debian::Distribution
               failure [
                 { code: 401, message: 'Unauthorized' },
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_debian]
             end
 
             params do
@@ -144,15 +146,15 @@ module API
             end
 
             # GET {projects|groups}/:id/debian_distributions/:codename/key
-            desc 'Get a Debian Distribution Key' do
-              detail 'This feature was introduced in 14.4'
+            desc "Retrieve a Debian #{boundary_type} distribution key" do
+              detail "Retrieves a specified Debian #{boundary_type} distribution key for a #{boundary_type}."
               success code: 200, model: ::API::Entities::Packages::Debian::Distribution
               failure [
                 { code: 401, message: 'Unauthorized' },
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_debian]
             end
 
             params do
@@ -170,8 +172,8 @@ module API
             end
 
             # PUT {projects|groups}/:id/debian_distributions/:codename
-            desc 'Update a Debian Distribution' do
-              detail 'This feature was introduced in 14.0'
+            desc "Update a Debian #{boundary_type} distribution" do
+              detail "Updates a specified Debian #{boundary_type} distribution for a #{boundary_type}."
               success code: 200, model: ::API::Entities::Packages::Debian::Distribution
               failure [
                 { code: 400, message: 'Bad Request' },
@@ -179,7 +181,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_debian]
             end
 
             params do
@@ -202,8 +204,8 @@ module API
             end
 
             # DELETE {projects|groups}/:id/debian_distributions/:codename
-            desc 'Delete a Debian Distribution' do
-              detail 'This feature was introduced in 14.0'
+            desc "Delete a Debian #{boundary_type} distribution" do
+              detail "Deletes a specified Debian #{boundary_type} distribution for a #{boundary_type}."
               success code: 202
               failure [
                 { code: 400, message: 'Bad Request' },
@@ -211,7 +213,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_debian]
             end
 
             params do

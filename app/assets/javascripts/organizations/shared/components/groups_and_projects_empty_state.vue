@@ -4,6 +4,7 @@ import emptySearchSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empt
 import { __ } from '~/locale';
 
 export default {
+  name: 'GroupsAndProjectsEmptyState',
   i18n: {
     title: __('No results found'),
     description: __('Edit your criteria and try again.'),

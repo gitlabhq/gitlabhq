@@ -1,10 +1,10 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import iconSpriteInfo from '@gitlab/svgs/dist/icons.json';
 import { GlIcon, GlLink } from '@gitlab/ui';
 import { ISSUABLE_EPIC } from '../../constants';
 
 export default {
+  name: 'DisclosureHierarchyItem',
   components: {
     GlIcon,
     GlLink,

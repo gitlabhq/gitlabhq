@@ -5,6 +5,9 @@ module Mutations
     class RequestChanges < Base
       graphql_name 'MergeRequestRequestChanges'
 
+      authorize_granular_token permissions: :update_merge_request, boundary_argument: :project_path,
+        boundary_type: :project
+
       def resolve(project_path:, iid:)
         merge_request = authorized_find!(project_path: project_path, iid: iid)
 

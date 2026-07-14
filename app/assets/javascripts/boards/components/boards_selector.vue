@@ -67,6 +67,7 @@ export default {
       default: '',
     },
   },
+  emits: ['showBoardModal', 'switchBoard', 'updateBoard'],
   data() {
     return {
       boards: [],

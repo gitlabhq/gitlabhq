@@ -39,7 +39,9 @@ module Sidebars
             link: group_packages_path(context.group),
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: 'groups/packages' },
-            item_id: :packages_registry
+            item_id: :packages_registry,
+            description: _('Publish and share packages across your organization'),
+            library_icon: 'package'
           )
         end
 
@@ -53,7 +55,9 @@ module Sidebars
             link: group_container_registries_path(context.group),
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: 'groups/registry/repositories' },
-            item_id: :container_registry
+            item_id: :container_registry,
+            description: _('Store and deploy container images'),
+            library_icon: 'container-image'
           )
         end
 
@@ -65,7 +69,9 @@ module Sidebars
             link: group_infrastructure_registry_index_path(context.group),
             super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: :infrastructure_registry },
-            item_id: :infrastructure_registry
+            item_id: :infrastructure_registry,
+            description: _('Share and reuse infrastructure code'),
+            library_icon: 'infrastructure-registry'
           )
         end
 
@@ -80,7 +86,9 @@ module Sidebars
             link: group_harbor_repositories_path(context.group),
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: 'groups/harbor/repositories' },
-            item_id: :harbor_registry
+            item_id: :harbor_registry,
+            description: _('Manage Harbor container registry'),
+            library_icon: 'connected'
           )
         end
 
@@ -96,7 +104,9 @@ module Sidebars
             link: group_dependency_proxy_path(context.group),
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: 'groups/dependency_proxies' },
-            item_id: :dependency_proxy
+            item_id: :dependency_proxy,
+            description: _('Speed up builds by caching external dependencies locally'),
+            library_icon: 'dependency-proxy'
           )
         end
 

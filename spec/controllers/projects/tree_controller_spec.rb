@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::TreeController, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, maintainer_of: project) }
 
   context 'user unauthenticated' do
     let_it_be(:project) { create(:project, :repository, :public) }
@@ -61,7 +61,6 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
     before do
       sign_in(user)
 
-      project.add_maintainer(user)
       controller.instance_variable_set(:@project, project)
     end
 

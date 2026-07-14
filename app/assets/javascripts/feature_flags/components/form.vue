@@ -14,6 +14,7 @@ import {
 import Strategy from './strategy.vue';
 
 export default {
+  name: 'FeatureFlagsForm',
   i18n: {
     removeLabel: s__('FeatureFlags|Remove'),
     statusLabel: s__('FeatureFlags|Status'),
@@ -60,6 +61,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['handle-submit'],
   translations: {
     allEnvironmentsText: s__('FeatureFlags|* (All Environments)'),
 

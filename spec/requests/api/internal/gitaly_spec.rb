@@ -6,7 +6,7 @@ RSpec.describe API::Internal::Gitaly, feature_category: :gitaly do
   include GitlabShellHelpers
 
   describe 'GET /internal/gitaly/object_pool_members' do
-    let_it_be(:pool, freeze: false) { create(:pool_repository, :ready) }
+    let_it_be_with_reload(:pool) { create(:pool_repository, :ready) }
     let_it_be(:source_project) { pool.source_project }
 
     subject(:request) do

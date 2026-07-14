@@ -14,7 +14,7 @@ RSpec.describe 'Admin mode login', :with_current_organization, feature_category:
     end
 
     def expect_main_sign_in_success(otp)
-      expect(page).to have_content(_('Enter verification code'))
+      expect(page).to have_button(_('Verify code'))
       enter_code(otp)
       expect(page).to have_current_path root_path, ignore_query: true
     end
@@ -31,77 +31,81 @@ RSpec.describe 'Admin mode login', :with_current_organization, feature_category:
     context 'with valid username/password' do
       let(:user) { create(:admin, :two_factor) }
 
-      context 'using one-time code' do
-        before do
-          submit_sign_in_form_for(user, remember: true) # This test checks that even when the user is remembered for sign-in, the user still needs to sign in for Admin mode.
-          expect_main_sign_in_success(user.current_otp)
-          enter_admin_mode(user, with_2fa: true)
-        end
-
-        it 'blocks login if we reuse the same code immediately', :freeze_time do
-          repeated_otp = user.current_otp # the OTP is the same because of the :freeze_time
-          enter_code(repeated_otp)
-          expect_admin_sign_in_fail
-        end
-
-        context 'not re-using codes' do
-          it 'allows login with valid code' do
-            # TOTP has already been used for GitLab sign-in, wait 30 seconds for a new one
-            travel_to(30.seconds.from_now) do
-              enter_code(user.current_otp)
-              expect_admin_sign_in_success
-            end
+      # TOTP and backup codes run with two_factor_vue on (Vue) and off (HAML); the admin
+      # is not a WebAuthn user, so the flag routes them to the Vue screens when enabled.
+      with_and_without_ff(:two_factor_vue) do
+        context 'using one-time code' do
+          before do
+            submit_sign_in_form_for(user, remember: true) # This test checks that even when the user is remembered for sign-in, the user still needs to sign in for Admin mode.
+            expect_main_sign_in_success(user.current_otp)
+            enter_admin_mode(user, with_2fa: true)
           end
 
-          it 'fails with invalid code' do
-            enter_code('foo')
+          it 'blocks login if we reuse the same code immediately', :freeze_time do
+            repeated_otp = user.current_otp # the OTP is the same because of the :freeze_time
+            enter_code(repeated_otp)
             expect_admin_sign_in_fail
           end
 
-          it 'fails with invalid code, then succeeds with valid code' do
-            enter_code('foo')
-            expect_admin_sign_in_fail
-
-            # TOTP has already been used for GitLab sign-in, wait 30 seconds for a new one
-            travel_to(30.seconds.from_now) do
-              enter_code(user.current_otp)
-              expect_admin_sign_in_success
-            end
-          end
-
-          context 'using backup code' do
-            let(:codes) { user.generate_otp_backup_codes! }
-
-            before do
-              expect(codes.size).to eq 10
-
-              # Ensure the generated codes get saved
-              user.save!
-            end
-
-            context 'with valid code' do
-              it 'allows login' do
-                enter_code(codes.first)
+          context 'not re-using codes' do
+            it 'allows login with valid code' do
+              # TOTP has already been used for GitLab sign-in, wait 30 seconds for a new one
+              travel_to(30.seconds.from_now) do
+                enter_code(user.current_otp)
                 expect_admin_sign_in_success
               end
+            end
 
-              it 'invalidates the used code' do
-                enter_code(codes.first)
+            it 'fails with invalid code' do
+              enter_code('foo')
+              expect_admin_sign_in_fail
+            end
+
+            it 'fails with invalid code, then succeeds with valid code' do
+              enter_code('foo')
+              expect_admin_sign_in_fail
+
+              # TOTP has already been used for GitLab sign-in, wait 30 seconds for a new one
+              travel_to(30.seconds.from_now) do
+                enter_code(user.current_otp)
                 expect_admin_sign_in_success
-                expect(user.reload.otp_backup_codes.size).to eq(codes.size - 1)
               end
             end
 
-            context 'with invalid code' do
-              it 'blocks login' do
-                code = codes.first
-                expect(user.invalidate_otp_backup_code!(code)).to eq true
+            context 'using backup code' do
+              let(:codes) { user.generate_otp_backup_codes! }
 
+              before do
+                expect(codes.size).to eq 10
+
+                # Ensure the generated codes get saved
                 user.save!
-                expect(user.reload.otp_backup_codes.size).to eq 9
+              end
 
-                enter_code(code)
-                expect_admin_sign_in_fail
+              context 'with valid code' do
+                it 'allows login' do
+                  enter_code(codes.first)
+                  expect_admin_sign_in_success
+                end
+
+                it 'invalidates the used code' do
+                  enter_code(codes.first)
+                  expect_admin_sign_in_success
+                  expect(user.reload.otp_backup_codes.size).to eq(codes.size - 1)
+                end
+              end
+
+              context 'with invalid code' do
+                it 'blocks login' do
+                  code = codes.first
+                  expect(user.invalidate_otp_backup_code!(code)).to eq true
+
+                  user.save!
+                  expect(user.reload.otp_backup_codes.size).to eq 9
+
+                  enter_code(code)
+                  expect_admin_sign_in_fail
+                end
               end
             end
           end
@@ -129,12 +133,12 @@ RSpec.describe 'Admin mode login', :with_current_organization, feature_category:
 
           before do
             sign_in_using_saml!
-            expect(page).to have_no_content(_('Enter verification code'))
+            expect(page).to have_no_button(_('Verify code'))
             enter_admin_mode_via('saml', user, 'my-uid', saml_response: mock_saml_response)
           end
 
           it 'signs user in without prompting for second factor' do
-            expect(page).to have_no_content(_('Enter verification code'))
+            expect(page).to have_no_button(_('Verify code'))
             expect_admin_sign_in_success
           end
         end
@@ -161,7 +165,7 @@ RSpec.describe 'Admin mode login', :with_current_organization, feature_category:
 
         def expect_admin_sign_in_waiting_for_code_saml!(user)
           enter_admin_mode_via('saml', user, 'my-uid', saml_response: mock_saml_response)
-          expect(page).to have_content(_('Enter verification code'))
+          expect(page).to have_button(_('Verify code'))
         end
       end
 
@@ -234,7 +238,7 @@ RSpec.describe 'Admin mode login', :with_current_organization, feature_category:
           fill_in 'username', with: user.username
           fill_in 'password', with: user.password
           click_button 'Enter admin mode'
-          expect(page).to have_content(_('Enter verification code'))
+          expect(page).to have_button(_('Verify code'))
         end
       end
     end

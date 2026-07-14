@@ -13,9 +13,9 @@ title: 組織API
 
 {{< /details >}}
 
-このAPIを使用して、GitLabの組織と連携します。詳細については、[organization](../user/organization/_index.md)を参照してください。
+このAPIを使用して、GitLabの組織と連携します。詳細については、[組織](../user/organization/_index.md)を参照してください。
 
-## organizationを作成する {#create-an-organization}
+## 組織を作成する {#create-an-organization}
 
 {{< history >}}
 
@@ -60,6 +60,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 ```json
 {
   "id": 42,
+  "uuid": "0192f8c2-1a2b-7cde-89ab-0123456789ab",
   "name": "New Organization",
   "path": "new-org",
   "description": "A new organization",
@@ -69,3 +70,35 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   "avatar_url": "https://gitlab.example.com/uploads/-/system/organizations/organization_detail/avatar/42/avatar.png"
 }
 ```
+
+## 組織を論理削除する {#soft-delete-an-organization}
+
+{{< history >}}
+
+- [GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/599345) 19.2で導入されました。これは[実験的機能](../policy/development_stages_support.md)です。
+
+{{< /history >}}
+
+組織を論理削除します。組織は空（グループやプロジェクトがない）であり、デフォルト組織であってはなりません。組織のオーナーと管理者のみが組織を論理削除できます。
+
+このエンドポイントは[実験的機能](../policy/development_stages_support.md)であり、予告なく変更または削除される可能性があります。
+
+```plaintext
+DELETE /organizations/:id
+```
+
+パラメータは以下のとおりです:
+
+| 属性 | 型    | 必須 | 説明                   |
+|-----------|---------|----------|-------------------------------|
+| `id`      | 整数 | はい      | 組織のID    |
+
+リクエスト例: 
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/organizations/42"
+```
+
+成功した場合、`202 Accepted`を返します。

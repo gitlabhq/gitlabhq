@@ -1,4 +1,5 @@
 const tailwindDefaults = require('@gitlab/ui/tailwind.defaults');
+const { tailwindCQsMQsPlugin } = require('@gitlab/ui/tailwind_cqs_mqs_plugin');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -22,6 +23,7 @@ module.exports = {
   corePlugins: {
     container: false,
   },
+  plugins: [tailwindCQsMQsPlugin(true)],
   theme: {
     extend: {
       containers: {

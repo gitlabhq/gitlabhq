@@ -15,7 +15,7 @@ title: Go proxy for GitLab (deprecated)
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27376) in GitLab 13.1 [with a flag](../../../administration/feature_flags/_index.md) named `go_proxy`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27376) in GitLab 13.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `go_proxy`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/592132) in GitLab 19.1.
 
 {{< /history >}}

@@ -3,6 +3,7 @@
 import { GlTableLite } from '@gitlab/ui';
 
 export default {
+  name: 'MetadataTable',
   components: {
     GlTableLite,
   },

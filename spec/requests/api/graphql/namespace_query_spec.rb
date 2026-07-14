@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Query', feature_category: :groups_and_projects do
   include GraphqlHelpers
 
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:other_user) { create(:user) }
 
   let_it_be(:group_namespace) { create(:group, :private) }

@@ -361,6 +361,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(json_response['cache']).to match(expected_cache)
             expect(json_response['variables']).to include(*expected_variables)
             expect(json_response['features']).to match(a_hash_including(expected_features))
+            expect(json_response['runner_info']).to include({ 'uuid' => runner.uuid })
           end
 
           it 'creates persistent ref' do
@@ -848,10 +849,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
 
           context 'when job has no tags' do
-            before do
-              job.update!(tags: [])
-            end
-
             context 'when runner is allowed to pick untagged jobs' do
               before do
                 runner.update_column(:run_untagged, true)

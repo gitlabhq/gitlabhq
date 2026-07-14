@@ -44,7 +44,6 @@ export default {
       default: {},
     },
     formEl: 'formEl',
-    profilePreferencesPath: 'profilePreferencesPath',
     bodyClasses: 'bodyClasses',
   },
   integrationViewConfigs: INTEGRATION_VIEW_CONFIGS,

@@ -13,7 +13,7 @@ RSpec.describe Groups::UpdateSharedRunnersService, '#execute', :sidekiq_inline, 
   context 'when current_user is not the group owner' do
     let_it_be(:user) { create(:user) }
 
-    let(:group) { create(:group, maintainers: user) }
+    let_it_be_with_reload(:group) { create(:group, maintainers: user) }
     let(:params) { { shared_runners_setting: 'enabled' } }
 
     it 'returns error' do
@@ -35,9 +35,9 @@ RSpec.describe Groups::UpdateSharedRunnersService, '#execute', :sidekiq_inline, 
       let(:params) { { shared_runners_setting: 'enabled' } }
 
       context 'when ancestor disable shared runners' do
-        let(:parent) { create(:group, :shared_runners_disabled) }
-        let(:group) { create(:group, :shared_runners_disabled, parent: parent) }
-        let!(:project) { create(:project, shared_runners_enabled: false, group: group) }
+        let_it_be_with_reload(:parent) { create(:group, :shared_runners_disabled) }
+        let_it_be_with_reload(:group) { create(:group, :shared_runners_disabled, parent: parent) }
+        let_it_be_with_reload(:project) { create(:project, shared_runners_enabled: false, group: group) }
 
         it 'returns an error and does not enable shared runners' do
           expect do
@@ -122,11 +122,11 @@ RSpec.describe Groups::UpdateSharedRunnersService, '#execute', :sidekiq_inline, 
     end
 
     context 'disable shared Runners' do
-      let!(:group) { create(:group) }
-      let!(:sub_group) { create(:group, :shared_runners_disabled_and_overridable, parent: group) }
-      let!(:sub_group2) { create(:group, parent: group) }
-      let!(:project) { create(:project, group: group, shared_runners_enabled: true) }
-      let!(:project2) { create(:project, group: sub_group2, shared_runners_enabled: true) }
+      let_it_be_with_reload(:group) { create(:group) }
+      let_it_be_with_reload(:sub_group) { create(:group, :shared_runners_disabled_and_overridable, parent: group) }
+      let_it_be_with_reload(:sub_group2) { create(:group, parent: group) }
+      let_it_be_with_reload(:project) { create(:project, group: group, shared_runners_enabled: true) }
+      let_it_be_with_reload(:project2) { create(:project, group: sub_group2, shared_runners_enabled: true) }
 
       let(:params) { { shared_runners_setting: Namespace::SR_DISABLED_AND_UNOVERRIDABLE } }
 
@@ -160,8 +160,13 @@ RSpec.describe Groups::UpdateSharedRunnersService, '#execute', :sidekiq_inline, 
       end
 
       context 'when group has pending builds', :aggregate_failures do
-        let!(:pending_build_1) { create(:ci_pending_build, project: project, instance_runners_enabled: true) }
-        let!(:pending_build_2) { create(:ci_pending_build, project: project, instance_runners_enabled: true) }
+        let_it_be_with_reload(:pending_build_1) do
+          create(:ci_pending_build, project: project, instance_runners_enabled: true)
+        end
+
+        let_it_be_with_reload(:pending_build_2) do
+          create(:ci_pending_build, project: project, instance_runners_enabled: true)
+        end
 
         it 'updates pending builds for the group and descendants' do
           expect(::Ci::PendingBuilds::UpdateGroupWorker).to receive(:perform_async)
@@ -178,9 +183,9 @@ RSpec.describe Groups::UpdateSharedRunnersService, '#execute', :sidekiq_inline, 
 
     shared_examples 'allow descendants to override' do
       context 'top level group' do
-        let!(:group) { create(:group, :shared_runners_disabled) }
-        let!(:sub_group) { create(:group, :shared_runners_disabled, parent: group) }
-        let!(:project) { create(:project, shared_runners_enabled: false, group: sub_group) }
+        let_it_be_with_reload(:group) { create(:group, :shared_runners_disabled) }
+        let_it_be_with_reload(:sub_group) { create(:group, :shared_runners_disabled, parent: group) }
+        let_it_be_with_reload(:project) { create(:project, shared_runners_enabled: false, group: sub_group) }
 
         it 'enables allow descendants to override only for itself' do
           expect do
@@ -196,9 +201,9 @@ RSpec.describe Groups::UpdateSharedRunnersService, '#execute', :sidekiq_inline, 
       end
 
       context 'when ancestor disables shared Runners but allows to override' do
-        let!(:parent) { create(:group, :shared_runners_disabled_and_overridable) }
-        let!(:group) { create(:group, :shared_runners_disabled, parent: parent) }
-        let!(:project) { create(:project, shared_runners_enabled: false, group: group) }
+        let_it_be_with_reload(:parent) { create(:group, :shared_runners_disabled_and_overridable) }
+        let_it_be_with_reload(:group) { create(:group, :shared_runners_disabled, parent: parent) }
+        let_it_be_with_reload(:project) { create(:project, shared_runners_enabled: false, group: group) }
 
         it 'enables allow descendants to override' do
           expect do
@@ -215,9 +220,9 @@ RSpec.describe Groups::UpdateSharedRunnersService, '#execute', :sidekiq_inline, 
       end
 
       context 'when ancestor disables shared runners' do
-        let(:parent) { create(:group, :shared_runners_disabled) }
-        let(:group) { create(:group, :shared_runners_disabled, parent: parent) }
-        let!(:project) { create(:project, shared_runners_enabled: false, group: group) }
+        let_it_be_with_reload(:parent) { create(:group, :shared_runners_disabled) }
+        let_it_be_with_reload(:group) { create(:group, :shared_runners_disabled, parent: parent) }
+        let_it_be_with_reload(:project) { create(:project, shared_runners_enabled: false, group: group) }
 
         it 'returns an error and does not enable shared runners' do
           expect do
@@ -235,9 +240,9 @@ RSpec.describe Groups::UpdateSharedRunnersService, '#execute', :sidekiq_inline, 
       end
 
       context 'top level group that has shared Runners enabled' do
-        let!(:group) { create(:group, shared_runners_enabled: true) }
-        let!(:sub_group) { create(:group, shared_runners_enabled: true, parent: group) }
-        let!(:project) { create(:project, shared_runners_enabled: true, group: sub_group) }
+        let_it_be_with_reload(:group) { create(:group, shared_runners_enabled: true) }
+        let_it_be_with_reload(:sub_group) { create(:group, shared_runners_enabled: true, parent: group) }
+        let_it_be_with_reload(:project) { create(:project, shared_runners_enabled: true, group: sub_group) }
 
         it 'enables allow descendants to override & disables shared runners everywhere' do
           expect do

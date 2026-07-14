@@ -66,6 +66,13 @@ export default {
       default: true,
     },
   },
+  emits: [
+    'collapseAllFiles',
+    'expandAllFiles',
+    'toggleFileByFile',
+    'toggleWhitespace',
+    'updateDiffViewType',
+  ],
   computed: {
     expandButtonInfo() {
       const keys = keysFor(MR_EXPAND_ALL_FILES);

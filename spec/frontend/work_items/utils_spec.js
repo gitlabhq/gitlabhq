@@ -9,11 +9,21 @@ import {
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_CRM_CONTACTS,
+  WIDGET_TYPE_CURRENT_USER_TODOS,
+  WIDGET_TYPE_CUSTOM_FIELDS,
   WIDGET_TYPE_DEVELOPMENT,
+  WIDGET_TYPE_DESIGNS,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_LINKED_RESOURCES,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_LINKED_ITEMS,
+  WIDGET_TYPE_HEALTH_STATUS,
+  WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_ITERATION,
+  WIDGET_TYPE_COLOR,
+  WIDGET_TYPE_PARTICIPANTS,
+  WIDGET_TYPE_PROGRESS,
+  WIDGET_TYPE_STATUS,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
@@ -35,6 +45,7 @@ import {
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_TIME_TRACKING,
+  WIDGET_TYPE_VULNERABILITIES,
 } from '~/work_items/constants';
 import {
   autocompleteDataSources,
@@ -42,6 +53,7 @@ import {
   findAssigneesWidget,
   findAwardEmojiWidget,
   findBlockerLinkedItems,
+  findDesignsWidget,
   findDevelopmentWidget,
   findErrorTrackingWidget,
   findHierarchyWidget,
@@ -50,10 +62,22 @@ import {
   findNotesWidget,
   findOpenChildItemsCountsByType,
   findCrmContactsWidget,
+  findCurrentUserTodosWidget,
+  findCustomFieldsWidget,
+  findColorWidget,
+  findHealthStatusWidget,
+  findIterationWidget,
   findLabelsWidget,
+  findParticipantsWidget,
+  findProgressWidget,
+  findWeightWidget,
+  findStatusWidget,
+  findLinkedItemsWidget,
   findLinkedResourcesWidget,
   findStartAndDueDateWidget,
   findTimeTrackingWidget,
+  findVulnerabilitiesWidget,
+  getMetadataWidgetsFromWorkItem,
   formatLabelForListbox,
   formatUserForListbox,
   newWorkItemPath,
@@ -80,7 +104,6 @@ import {
   combineWorkItemLists,
   isCurrentViewWorkItem,
   getSortValue,
-  isWorkplanTemplate,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -1031,6 +1054,60 @@ describe('findAssigneesWidget', () => {
   });
 });
 
+describe('getMetadataWidgetsFromWorkItem', () => {
+  const labelsWidget = { type: WIDGET_TYPE_LABELS, labels: { nodes: [{ id: 'widgets-label' }] } };
+  const weightWidget = { type: WIDGET_TYPE_WEIGHT, weight: 1 };
+  const milestoneWidget = { type: WIDGET_TYPE_MILESTONE, milestone: { id: 'milestone-1' } };
+
+  describe('when a widget is only available on `widgets`', () => {
+    it('builds the map from `widgets`', () => {
+      const workItem = { widgets: [labelsWidget, milestoneWidget] };
+
+      expect(getMetadataWidgetsFromWorkItem(workItem)).toEqual({
+        [WIDGET_TYPE_LABELS]: labelsWidget,
+        [WIDGET_TYPE_MILESTONE]: milestoneWidget,
+      });
+    });
+  });
+
+  describe('when a widget is available on `features`', () => {
+    it('reads the widget from `features` instead of `widgets`', () => {
+      const featuresLabels = { labels: { nodes: [{ id: 'features-label' }] } };
+      const featuresWeight = { weight: 5 };
+      const workItem = {
+        widgets: [labelsWidget, weightWidget, milestoneWidget],
+        features: { labels: featuresLabels, weight: featuresWeight },
+      };
+
+      expect(getMetadataWidgetsFromWorkItem(workItem)).toEqual({
+        [WIDGET_TYPE_LABELS]: { type: WIDGET_TYPE_LABELS, ...featuresLabels },
+        [WIDGET_TYPE_WEIGHT]: { type: WIDGET_TYPE_WEIGHT, ...featuresWeight },
+        [WIDGET_TYPE_MILESTONE]: milestoneWidget,
+      });
+    });
+
+    it('ignores feature values that are absent or empty', () => {
+      const workItem = {
+        widgets: [weightWidget, labelsWidget],
+        features: { weight: null, healthStatus: undefined, labels: {} },
+      };
+
+      expect(getMetadataWidgetsFromWorkItem(workItem)).toEqual({
+        [WIDGET_TYPE_WEIGHT]: weightWidget,
+        // an empty `features.labels` must not clobber the widgets value
+        [WIDGET_TYPE_LABELS]: labelsWidget,
+      });
+    });
+  });
+
+  describe('when the work item has no widgets or features', () => {
+    it('returns an empty map', () => {
+      expect(getMetadataWidgetsFromWorkItem(undefined)).toEqual({});
+      expect(getMetadataWidgetsFromWorkItem({})).toEqual({});
+    });
+  });
+});
+
 describe('getSortValue', () => {
   const mockItem = {
     createdAt: '2024-01-15T10:00:00Z',
@@ -1240,6 +1317,49 @@ describe('findNotesWidget', () => {
   });
 });
 
+describe('findParticipantsWidget', () => {
+  const participantsWidget = {
+    type: WIDGET_TYPE_PARTICIPANTS,
+    participants: { count: 1, nodes: [{ id: 'gid://gitlab/User/1' }] },
+  };
+  const featuresParticipants = {
+    participants: { count: 2, nodes: [{ id: 'gid://gitlab/User/2' }] },
+  };
+
+  describe('when features.participants is present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = {
+        features: { participants: featuresParticipants },
+        widgets: [participantsWidget],
+      };
+    });
+
+    it('returns features.participants', () => {
+      expect(findParticipantsWidget(workItem)).toBe(featuresParticipants);
+    });
+  });
+
+  describe('when features is not present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = { widgets: [participantsWidget] };
+    });
+
+    it('falls back to the widgets array', () => {
+      expect(findParticipantsWidget(workItem)).toBe(participantsWidget);
+    });
+  });
+
+  describe('when neither features nor widget is present', () => {
+    it('returns undefined', () => {
+      expect(findParticipantsWidget({ widgets: [] })).toBeUndefined();
+    });
+  });
+});
+
 describe('findErrorTrackingWidget', () => {
   const errorTrackingWidget = {
     type: WIDGET_TYPE_ERROR_TRACKING,
@@ -1293,6 +1413,49 @@ describe('findCrmContactsWidget', () => {
   });
 });
 
+describe('findCurrentUserTodosWidget', () => {
+  const currentUserTodosWidget = {
+    type: WIDGET_TYPE_CURRENT_USER_TODOS,
+    currentUserTodos: { nodes: [{ id: 'gid://gitlab/Todo/1', state: 'pending' }] },
+  };
+  const featuresCurrentUserTodos = {
+    currentUserTodos: { nodes: [{ id: 'gid://gitlab/Todo/2', state: 'pending' }] },
+  };
+
+  describe('when features.currentUserTodos is present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = {
+        features: { currentUserTodos: featuresCurrentUserTodos },
+        widgets: [currentUserTodosWidget],
+      };
+    });
+
+    it('returns features.currentUserTodos', () => {
+      expect(findCurrentUserTodosWidget(workItem)).toBe(featuresCurrentUserTodos);
+    });
+  });
+
+  describe('when features is not present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = { widgets: [currentUserTodosWidget] };
+    });
+
+    it('falls back to the widgets array', () => {
+      expect(findCurrentUserTodosWidget(workItem)).toBe(currentUserTodosWidget);
+    });
+  });
+
+  describe('when neither features nor widget is present', () => {
+    it('returns undefined', () => {
+      expect(findCurrentUserTodosWidget({ widgets: [] })).toBeUndefined();
+    });
+  });
+});
+
 describe('findLinkedResourcesWidget', () => {
   const linkedResourcesWidget = {
     type: WIDGET_TYPE_LINKED_RESOURCES,
@@ -1317,6 +1480,35 @@ describe('findLinkedResourcesWidget', () => {
 
   it('returns undefined when neither exists', () => {
     expect(findLinkedResourcesWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findLinkedItemsWidget', () => {
+  const linkedItemsWidget = {
+    type: WIDGET_TYPE_LINKED_ITEMS,
+    linkedItems: { nodes: [{ linkId: 'gid://gitlab/IssueLink/1', linkType: 'relates_to' }] },
+  };
+  const featuresLinkedItems = {
+    linkedItems: { nodes: [{ linkId: 'gid://gitlab/IssueLink/2', linkType: 'relates_to' }] },
+  };
+
+  it('returns features.linkedItems when present', () => {
+    const workItem = {
+      features: { linkedItems: featuresLinkedItems },
+      widgets: [linkedItemsWidget],
+    };
+
+    expect(findLinkedItemsWidget(workItem)).toBe(featuresLinkedItems);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [linkedItemsWidget] };
+
+    expect(findLinkedItemsWidget(workItem)).toBe(linkedItemsWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findLinkedItemsWidget({ widgets: [] })).toBeUndefined();
   });
 });
 
@@ -1376,6 +1568,279 @@ describe('findLabelsWidget', () => {
 
   it('returns undefined when neither exists', () => {
     expect(findLabelsWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findHealthStatusWidget', () => {
+  const healthStatusWidget = {
+    type: WIDGET_TYPE_HEALTH_STATUS,
+    healthStatus: 'onTrack',
+    rolledUpHealthStatus: [],
+  };
+  const featuresHealthStatus = {
+    healthStatus: 'atRisk',
+    rolledUpHealthStatus: [],
+  };
+
+  it('returns features.healthStatus when present', () => {
+    const workItem = {
+      features: { healthStatus: featuresHealthStatus },
+      widgets: [healthStatusWidget],
+    };
+
+    expect(findHealthStatusWidget(workItem)).toBe(featuresHealthStatus);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [healthStatusWidget] };
+
+    expect(findHealthStatusWidget(workItem)).toBe(healthStatusWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findHealthStatusWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findWeightWidget', () => {
+  const weightWidget = {
+    type: WIDGET_TYPE_WEIGHT,
+    weight: 3,
+    rolledUpWeight: 5,
+    rolledUpCompletedWeight: 2,
+  };
+  const featuresWeight = {
+    weight: 8,
+    rolledUpWeight: 10,
+    rolledUpCompletedWeight: 4,
+  };
+
+  it('returns features.weight when present', () => {
+    const workItem = {
+      features: { weight: featuresWeight },
+      widgets: [weightWidget],
+    };
+
+    expect(findWeightWidget(workItem)).toBe(featuresWeight);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [weightWidget] };
+
+    expect(findWeightWidget(workItem)).toBe(weightWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findWeightWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findStatusWidget', () => {
+  const statusWidget = {
+    type: WIDGET_TYPE_STATUS,
+    status: { id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1', name: 'To do' },
+  };
+  const featuresStatus = {
+    status: {
+      id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/2',
+      name: 'In progress',
+    },
+  };
+
+  describe('when features.status is present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = {
+        features: { status: featuresStatus },
+        widgets: [statusWidget],
+      };
+    });
+
+    it('returns features.status', () => {
+      expect(findStatusWidget(workItem)).toBe(featuresStatus);
+    });
+  });
+
+  describe('when features is not present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = { widgets: [statusWidget] };
+    });
+
+    it('falls back to the widgets array', () => {
+      expect(findStatusWidget(workItem)).toBe(statusWidget);
+    });
+  });
+
+  describe('when neither features nor widget is present', () => {
+    it('returns undefined', () => {
+      expect(findStatusWidget({ widgets: [] })).toBeUndefined();
+    });
+  });
+});
+
+describe('findCustomFieldsWidget', () => {
+  const customFieldsWidget = {
+    type: WIDGET_TYPE_CUSTOM_FIELDS,
+    customFieldValues: [{ customField: { id: '1-text' }, value: 'Sample text' }],
+  };
+  const featuresCustomFields = {
+    customFieldValues: [{ customField: { id: '1-number' }, value: 5 }],
+  };
+
+  describe('when features.customFields is present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = {
+        features: { customFields: featuresCustomFields },
+        widgets: [customFieldsWidget],
+      };
+    });
+
+    it('returns features.customFields', () => {
+      expect(findCustomFieldsWidget(workItem)).toBe(featuresCustomFields);
+    });
+  });
+
+  describe('when features is not present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = { widgets: [customFieldsWidget] };
+    });
+
+    it('falls back to the widgets array', () => {
+      expect(findCustomFieldsWidget(workItem)).toBe(customFieldsWidget);
+    });
+  });
+
+  describe('when neither features nor widget is present', () => {
+    it('returns undefined', () => {
+      expect(findCustomFieldsWidget({ widgets: [] })).toBeUndefined();
+    });
+  });
+});
+
+describe('findIterationWidget', () => {
+  const iterationWidget = {
+    type: WIDGET_TYPE_ITERATION,
+    iteration: { id: 'gid://gitlab/Iteration/1' },
+  };
+  const featuresIteration = {
+    iteration: { id: 'gid://gitlab/Iteration/2' },
+  };
+
+  it('returns features.iteration when present', () => {
+    const workItem = {
+      features: { iteration: featuresIteration },
+      widgets: [iterationWidget],
+    };
+
+    expect(findIterationWidget(workItem)).toBe(featuresIteration);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [iterationWidget] };
+
+    expect(findIterationWidget(workItem)).toBe(iterationWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findIterationWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findColorWidget', () => {
+  const colorWidget = {
+    type: WIDGET_TYPE_COLOR,
+    color: '#1068bf',
+    textColor: '#FFFFFF',
+  };
+  const featuresColor = {
+    color: '#e24329',
+    textColor: '#FFFFFF',
+  };
+
+  it('returns features.color when present', () => {
+    const workItem = {
+      features: { color: featuresColor },
+      widgets: [colorWidget],
+    };
+
+    expect(findColorWidget(workItem)).toBe(featuresColor);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [colorWidget] };
+
+    expect(findColorWidget(workItem)).toBe(colorWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findColorWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findProgressWidget', () => {
+  const progressWidget = {
+    type: WIDGET_TYPE_PROGRESS,
+    progress: 30,
+    updatedAt: '2024-01-01T00:00:00Z',
+  };
+  const featuresProgress = {
+    progress: 70,
+    updatedAt: '2024-02-01T00:00:00Z',
+  };
+
+  it('returns features.progress when present', () => {
+    const workItem = {
+      features: { progress: featuresProgress },
+      widgets: [progressWidget],
+    };
+
+    expect(findProgressWidget(workItem)).toBe(featuresProgress);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [progressWidget] };
+
+    expect(findProgressWidget(workItem)).toBe(progressWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findProgressWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findDesignsWidget', () => {
+  const designsWidget = {
+    type: WIDGET_TYPE_DESIGNS,
+    designCollection: { copyState: 'READY' },
+  };
+  const featuresDesigns = {
+    designCollection: { copyState: 'IN_PROGRESS' },
+  };
+
+  it('returns features.designs when present', () => {
+    const workItem = {
+      features: { designs: featuresDesigns },
+      widgets: [designsWidget],
+    };
+
+    expect(findDesignsWidget(workItem)).toBe(featuresDesigns);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [designsWidget] };
+
+    expect(findDesignsWidget(workItem)).toBe(designsWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findDesignsWidget({ widgets: [] })).toBeUndefined();
   });
 });
 
@@ -1445,6 +1910,35 @@ describe('findTimeTrackingWidget', () => {
   });
 });
 
+describe('findVulnerabilitiesWidget', () => {
+  const vulnerabilitiesWidget = {
+    type: WIDGET_TYPE_VULNERABILITIES,
+    relatedVulnerabilities: { nodes: [], count: 0 },
+  };
+  const featuresVulnerabilities = {
+    relatedVulnerabilities: { nodes: [], count: 3 },
+  };
+
+  it('returns features.vulnerabilities when present', () => {
+    const workItem = {
+      features: { vulnerabilities: featuresVulnerabilities },
+      widgets: [vulnerabilitiesWidget],
+    };
+
+    expect(findVulnerabilitiesWidget(workItem)).toBe(featuresVulnerabilities);
+  });
+
+  it('falls back to widgets when features not present', () => {
+    const workItem = { widgets: [vulnerabilitiesWidget] };
+
+    expect(findVulnerabilitiesWidget(workItem)).toBe(vulnerabilitiesWidget);
+  });
+
+  it('returns undefined when neither exists', () => {
+    expect(findVulnerabilitiesWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
 describe('findBlockerLinkedItems', () => {
   const widgetNodes = [{ linkId: 'gid://gitlab/IssueLink/1', linkType: 'is_blocked_by' }];
   const featuresNodes = [{ linkId: 'gid://gitlab/IssueLink/2', linkType: 'is_blocked_by' }];
@@ -1502,19 +1996,5 @@ describe('findOpenChildItemsCountsByType', () => {
 
   it('returns undefined when neither exists', () => {
     expect(findOpenChildItemsCountsByType({ widgets: [] })).toBeUndefined();
-  });
-});
-
-describe('isWorkplanTemplate', () => {
-  it.each([
-    ['feature.plan', true],
-    ['something.plan', true],
-    ['Bug', false],
-    ['plan', false],
-    ['', false],
-    [undefined, false],
-    [null, false],
-  ])('returns %p for "%s"', (input, expected) => {
-    expect(isWorkplanTemplate(input)).toBe(expected);
   });
 });

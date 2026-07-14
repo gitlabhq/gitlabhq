@@ -5,6 +5,7 @@ import { GlDisclosureDropdownGroup, GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { searchAutocompletePath, searchSettingsPath } from '~/lib/utils/path_helpers/routes';
 import Tracking, { InternalEvents } from '~/tracking';
 import { logError } from '~/lib/logger';
 import { getFormattedItem } from '../utils';
@@ -41,8 +42,6 @@ export default {
   inject: [
     'commandPaletteCommands',
     'commandPaletteLinks',
-    'autocompletePath',
-    'settingsPath',
     'searchContext',
     'projectFilesPath',
     'projectBlobPath',
@@ -170,9 +169,9 @@ export default {
       const groupId = this.searchContext.group?.id;
 
       if (projectId) {
-        settingsUrl = `${this.settingsPath}?project_id=${projectId}`;
+        settingsUrl = searchSettingsPath({ project_id: projectId });
       } else if (groupId) {
-        settingsUrl = `${this.settingsPath}?group_id=${groupId}`;
+        settingsUrl = searchSettingsPath({ group_id: groupId });
       } else {
         this.settings = [];
         return;
@@ -247,7 +246,7 @@ export default {
       try {
         const response = await axios.get(
           autocompleteQuery({
-            path: this.autocompletePath,
+            path: searchAutocompletePath(),
             searchTerm: this.searchTerm,
             handle: this.handle,
             projectId: this.searchContext.project?.id,

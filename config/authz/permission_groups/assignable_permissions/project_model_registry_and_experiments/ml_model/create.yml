@@ -1,0 +1,9 @@
+---
+name: create_ml_model
+description: Grants the ability to create ML models
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_ml_model

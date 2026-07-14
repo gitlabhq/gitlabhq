@@ -10,7 +10,8 @@ module API
     end
 
     resource :service_accounts do
-      desc 'Create a service account user. Available only for instance admins.' do
+      desc 'Create an instance service account' do
+        detail 'Creates an instance service account.'
         tags ['service_accounts']
         success Entities::ServiceAccount
         failure [
@@ -43,9 +44,10 @@ module API
         end
       end
 
-      desc 'Get list of service account users. Available only for instance admins' do
+      desc 'List all instance service accounts' do
         tags ['service_accounts']
-        detail 'Get list of service account users'
+        detail 'Lists all instance service accounts. Use the `page` and `per_page` pagination parameters to filter ' \
+          'the results.'
         success Entities::ServiceAccount
         failure [
           { code: 400, message: '400 Bad request' },
@@ -74,9 +76,9 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Update a service account user. Available only for instance admins.' do
+      desc 'Update an instance service account' do
         tags ['service_accounts']
-        detail 'Update a service account user'
+        detail 'Updates a specified instance service account.'
         success Entities::ServiceAccount
         failure [
           { code: 400, message: '400 Bad request' },

@@ -11,10 +11,8 @@ module Banzai
           Epic
         end
 
-        private
-
         def group
-          context[:group] || context[:project]&.group
+          super || project&.group
         end
       end
     end

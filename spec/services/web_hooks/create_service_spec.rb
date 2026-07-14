@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe WebHooks::CreateService, feature_category: :webhooks do
-  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
 
   describe '#execute' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:relation, freeze: false) { ProjectHook.none }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:relation) { ProjectHook.none }
     let(:hook_params) { { url: 'https://example.com/hook', project_id: project.id } }
 
     subject(:webhook_created) { described_class.new(current_user) }
@@ -19,12 +19,12 @@ RSpec.describe WebHooks::CreateService, feature_category: :webhooks do
 
           expect(response).to be_success
           expect(response[:hook].organization_id).to be_nil
-          expect(response[:async]).to eq(false)
+          expect(response[:async]).to be(false)
         end.to change { ProjectHook.count }.by(1)
       end
 
       context 'when creating a new system hook' do
-        let_it_be(:system_hook_relation, freeze: false) { SystemHook }
+        let_it_be(:system_hook_relation) { SystemHook }
         let(:hook_params) { { url: 'https://example.com/hook' } }
         let(:organization) { create(:organization) }
 
@@ -34,7 +34,7 @@ RSpec.describe WebHooks::CreateService, feature_category: :webhooks do
 
             expect(response).to be_success
             expect(response[:hook].organization_id).to eq(organization.id)
-            expect(response[:async]).to eq(false)
+            expect(response[:async]).to be(false)
           end.to change { SystemHook.count }.by(1)
         end
       end

@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Workflow Catalog
+stage: Agent Foundations
+group: AI Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Custom flows
 ---
@@ -21,27 +21,25 @@ title: Custom flows
 
 {{< history >}}
 
-- Introduced as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.4 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_flows`. Disabled by default.
+- Introduced as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_flows`. Disabled by default.
 - Changed to [beta](../../../policy/development_stages_support.md) in GitLab 18.7.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/569060) in GitLab 18.7.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/569060) in GitLab 18.8.
 - Feature flag `ai_catalog_flows` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216969) in GitLab 18.8.
 - Pipeline events trigger [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212797) in GitLab 18.9 as an [experiment](../../../policy/development_stages_support.md) with a [flag](../../../administration/feature_flags/_index.md) named `ai_flow_trigger_pipeline_hooks`. Disabled by default.
-- Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
+- Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 - Feature flag `ai_catalog_project_level_enablement` removed in GitLab 18.11.
 - **Merge request ready** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592454) in GitLab 19.0 with a [flag](../../../administration/feature_flags/_index.md) named `merge_request_ready_flow_trigger`. Disabled by default.
 - **Merge request code conflict** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592455) in GitLab 19.1.
-- **Merge request approved** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592456) in GitLab 19.1.
+- **Merge request** trigger event type with the **Approved** action [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237081) in GitLab 19.1.
 - Feature flag `ai_flow_trigger_pipeline_hooks` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/587272) in GitLab 19.1.
 - **Work item created** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599985) in GitLab 19.1.
 - **Merge request ready** trigger event type [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/598421) in GitLab 19.1. Feature flag `merge_request_ready_flow_trigger` removed.
+- **Work item status changed** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599983) in GitLab 19.2.
+- Feature flag `ai_catalog_flows` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239459) in GitLab 19.2.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Custom flows are AI-powered workflows you create and configure to
 automate complex, multi-step tasks across your GitLab projects.
@@ -49,6 +47,7 @@ automate complex, multi-step tasks across your GitLab projects.
 ## Prerequisites
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
+- Have [beta and experimental features turned on](../turn_on_off.md#turn-on-beta-and-experimental-features).
 - Have [custom flows turned on](#turn-custom-flows-on-or-off).
 
 ## Flow visibility
@@ -150,6 +149,16 @@ The flow appears in the AI Catalog.
 
 ## Enable a flow
 
+{{< history >}}
+
+- Enabling a public flow for multiple projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/600526) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_bulk_item_consumer_create`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
 Enable a flow to trigger it from an issue, merge request, or discussion.
 
 When you enable a flow in a project:
@@ -174,19 +183,9 @@ To enable a flow:
 1. Select the **Managed** tab, then select the flow you want to enable.
 1. In the upper-right corner, select **Enable**.
 1. Under **Project**, select the project you want to enable the flow in.
-1. For **Add triggers**, select which events trigger the flow:
-   - **Mention**: When the service account user is mentioned
-     in a comment on an issue or merge request.
-   - **Assign**: When the service account user is assigned
-     to an issue or merge request.
-   - **Assign reviewer**: When the service account user is assigned
-     as a reviewer to a merge request.
-   - **Pipeline events**: When a pipeline changes state.
-     The possible states are `created`, `started`, `succeeded`, and `failed`.
-   - **Merge request ready**: When a draft merge request is marked as ready for review.
-   - **Merge request code conflict**: When a merge request can no longer be merged due to a code conflict.
-   - **Merge request approved**: When a merge request receives all required approvals.
-   - **Work item created**: When a work item is created in the project.
+1. For **Add triggers**, select:
+   - The [event types that trigger the flow](../triggers/_index.md#trigger-event-types).
+   - If needed for the trigger event type, a trigger event action.
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -200,17 +199,13 @@ To enable a flow:
 1. Select the flow you want to enable.
 1. In the upper-right corner, select **Enable**.
 1. Under **Project**, select the project you want to enable the flow in.
-1. For **Add triggers**, select which events trigger the flow:
-   - **Mention**: When the service account user is mentioned
-     in a comment on an issue or merge request.
-   - **Assign**: When the service account user is assigned
-     to an issue or merge request.
-   - **Assign reviewer**: When the service account user is assigned
-     as a reviewer to a merge request.
-   - **Merge request ready**: When a draft merge request is marked as ready for review.
-   - **Merge request code conflict**: When a merge request can no longer be merged due to a code conflict.
-   - **Merge request approved**: When a merge request receives all required approvals.
-   - **Work item created**: When a work item is created in the project.
+
+   To enable a public flow for multiple projects, from the **Project** dropdown list,
+   select the relevant projects. You can select up to 100 projects.
+
+1. For **Add triggers**, select:
+   - The [event types that trigger the flow](../triggers/_index.md#trigger-event-types).
+   - If needed for the trigger event type, a trigger event action.
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -238,17 +233,9 @@ To enable a flow in a project:
 1. In the left sidebar, select **AI** > **Flows**.
 1. In the upper-right corner, select **Enable flow from group**.
 1. From the dropdown list, select the flow you want to enable.
-1. For **Add triggers**, select which events trigger the flow:
-   - **Mention**: When the service account user is mentioned
-     in a comment on an issue or merge request.
-   - **Assign**: When the service account user is assigned
-     to an issue or merge request.
-   - **Assign reviewer**: When the service account user is assigned
-     as a reviewer to a merge request.
-   - **Merge request ready**: When a draft merge request is marked as ready for review.
-   - **Merge request code conflict**: When a merge request can no longer be merged due to a code conflict.
-   - **Merge request approved**: When a merge request receives all required approvals.
-   - **Work item created**: When a work item is created in the project.
+1. For **Add triggers**, select:
+   - The [event types that trigger the flow](../triggers/_index.md#trigger-event-types).
+   - If needed for the trigger event type, a trigger event action.
 1. Select **Enable**.
 
 The flow appears in the project's **AI** > **Flows** list.

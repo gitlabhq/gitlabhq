@@ -128,6 +128,10 @@ you can help us migrate the rest of them! To migrate routes:
 
 To get started, see an [example merge request](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28435).
 
+## Updating JavaScript path helpers
+
+All Rails routes have a [JavaScript path helper](urls_in_gitlab.md#javascript-path-helpers) counterpart that makes generating URLs on the frontend easier. When updating a Rails route, you must regenerate JavaScript path helpers. A Lefthook check and a CI check make sure these stay in sync with Rails routes. To regenerate JavaScript path helpers, run `bin/rake gitlab:js:routes` and commit the changes.
+
 ## Useful links
 
 - [Routing improvements main plan](https://gitlab.com/gitlab-org/gitlab/-/issues/215362)

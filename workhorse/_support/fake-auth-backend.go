@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-
-	"gitlab.com/gitlab-org/labkit/log"
 )
 
 func main() {
@@ -18,5 +16,8 @@ func main() {
 		fmt.Fprintf(w, `{"RepoPath":"%s","ArchivePath":"%s"}`, os.Args[1], r.URL.Path)
 	})
 
-	log.Fatal(http.ListenAndServe("localhost:8080", nil))
+	if err := http.ListenAndServe("localhost:8080", nil); err != nil {
+		fmt.Fprintf(os.Stderr, "fake auth backend server failed: %v", err)
+		os.Exit(1)
+	}
 }

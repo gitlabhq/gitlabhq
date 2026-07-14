@@ -143,8 +143,13 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#find_project!' do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:request)
+        .and_return(instance_double(Rack::Request, request_method: 'GET', get?: true))
+    end
 
     shared_examples 'private project without access' do
       before do
@@ -327,7 +332,7 @@ RSpec.describe API::Helpers, feature_category: :api do
           end
 
           context 'when the project feature is publicly accessible' do
-            let_it_be(:project, freeze: false) { create(:project, :public, :builds_enabled) }
+            let_it_be_with_reload(:project) { create(:project, :public, :builds_enabled) }
 
             before do
               allow(helper).to receive(:route_setting).with(:authorization).and_return(allow_public_access_for_enabled_project_features: :builds)
@@ -379,7 +384,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'support for IDs and paths as argument' do
-      let_it_be(:project, freeze: false) { create(:project) }
+      let_it_be_with_reload(:project) { create(:project) }
 
       let(:user) { project.first_owner }
 
@@ -478,7 +483,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#find_pipeline!' do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:user) { create(:user) }
 
@@ -548,7 +553,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'support for IDs and paths as argument' do
-      let_it_be(:project, freeze: false) { create(:project) }
+      let_it_be_with_reload(:project) { create(:project) }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
       let(:user) { project.first_owner }
@@ -658,8 +663,13 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#find_group!' do
-    let_it_be(:group, freeze: false) { create(:group, :public) }
+    let_it_be_with_reload(:group) { create(:group, :public) }
     let_it_be(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:request)
+        .and_return(instance_double(Rack::Request, request_method: 'GET', get?: true))
+    end
 
     shared_examples 'private group without access' do
       before do
@@ -709,7 +719,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'with support for IDs and paths as arguments' do
-      let_it_be(:group, freeze: false) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group) }
 
       let(:user) { group.first_owner }
 
@@ -757,13 +767,15 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   context 'with support for organization as an argument' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
     let_it_be(:organization) { create(:organization) }
 
     before do
       allow(helper).to receive(:current_user).and_return(group.first_owner)
       allow(helper).to receive(:job_token_authentication?).and_return(false)
       allow(helper).to receive(:authenticate_non_public?).and_return(false)
+      allow(helper).to receive(:request)
+        .and_return(instance_double(Rack::Request, request_method: 'GET', get?: true))
     end
 
     subject { helper.find_group!(group.id, organization: organization) }
@@ -785,7 +797,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#find_group_by_full_path!' do
-    let_it_be(:group, freeze: false) { create(:group, :public) }
+    let_it_be_with_reload(:group) { create(:group, :public) }
     let_it_be(:user) { create(:user) }
 
     shared_examples 'private group without access' do
@@ -817,9 +829,12 @@ RSpec.describe API::Helpers, feature_category: :api do
         it_behaves_like 'private group without access'
 
         context 'with access' do
+          before_all do
+            group.add_developer(user)
+          end
+
           before do
             group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
-            group.add_developer(user)
           end
 
           it 'returns requested group with access' do
@@ -886,7 +901,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'when namespace is a project namespace' do
-      let_it_be(:project, freeze: false) { create(:project) }
+      let_it_be_with_reload(:project) { create(:project) }
 
       it 'returns nil by id by default' do
         expect(helper.find_namespace(project.project_namespace.id)).to be_nil
@@ -917,7 +932,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
   describe '#find_namespace_by_path' do
     context 'when project namespaces are allowed' do
-      let_it_be(:project, freeze: false) { create(:project, :private) }
+      let_it_be_with_reload(:project) { create(:project, :private) }
 
       it 'falls back to the project namespace when not found via namespace lookup' do
         expect(::Namespace).to receive(:find_by_full_path).with(project.full_path).and_return(nil)
@@ -995,7 +1010,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     it_behaves_like 'user namespace finder'
 
     context 'when namespace is a project namespace' do
-      let_it_be(:project, freeze: false) { create(:project, :private) }
+      let_it_be_with_reload(:project) { create(:project, :private) }
       let(:current_user) { project.first_owner }
 
       before do
@@ -1014,8 +1029,8 @@ RSpec.describe API::Helpers, feature_category: :api do
           let_it_be(:developer_user) { create(:user) }
           let(:current_user) { developer_user }
 
-          before do
-            project.add_developer(current_user)
+          before_all do
+            project.add_developer(developer_user)
           end
 
           it 'returns the project namespace' do
@@ -1056,7 +1071,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
   describe '#find_namespace_by_path!' do
     context 'when namespace is a project namespace' do
-      let_it_be(:project, freeze: false) { create(:project, :private) }
+      let_it_be_with_reload(:project) { create(:project, :private) }
       let(:current_user) { project.first_owner }
 
       before do
@@ -1075,8 +1090,8 @@ RSpec.describe API::Helpers, feature_category: :api do
           let_it_be(:developer_user) { create(:user) }
           let(:current_user) { developer_user }
 
-          before do
-            project.add_developer(current_user)
+          before_all do
+            project.add_developer(developer_user)
           end
 
           it 'returns the project namespace' do
@@ -1116,7 +1131,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#authorized_project_scope?' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
     let_it_be(:other_project) { create(:project) }
     let_it_be(:job) { create(:ci_build) }
 
@@ -1270,7 +1285,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   describe '#track_event' do
     let_it_be(:user) { create(:user) }
     let_it_be(:namespace) { create(:namespace) }
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
     let(:event_name) { 'i_compliance_dashboard' }
     let(:unknown_event) { 'unknown' }
 
@@ -1527,7 +1542,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#present_disk_file!' do
-    let_it_be(:dummy_class, freeze: false) do
+    let_it_be(:dummy_class) do
       Class.new do
         attr_reader :headers
         alias_method :header, :headers
@@ -1949,6 +1964,45 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
   end
 
+  describe '#render_api_error!' do
+    before do
+      allow(helper).to receive(:env).and_return({})
+      allow(helper).to receive(:header).and_return({})
+      allow(helper).to receive(:error!)
+    end
+
+    it 'passes a String message through unchanged' do
+      expect(helper).to receive(:error!).with({ 'message' => 'a message' }, 400, {})
+
+      helper.render_api_error!('a message', 400)
+    end
+
+    it 'passes a Hash message through unchanged' do
+      message = { 'base' => ['is invalid'] }
+
+      expect(helper).to receive(:error!).with({ 'message' => message }, 400, {})
+
+      helper.render_api_error!(message, 400)
+    end
+
+    it 'passes an Array message through unchanged' do
+      message = ['is invalid']
+
+      expect(helper).to receive(:error!).with({ 'message' => message }, 400, {})
+
+      helper.render_api_error!(message, 400)
+    end
+
+    it 'coerces a non-String/non-Hash message that responds to #to_hash into a Hash' do
+      errors = ActiveModel::Errors.new(Project.new)
+      errors.add(:unsafe_import_url, 'is blocked')
+
+      expect(helper).to receive(:error!).with({ 'message' => { unsafe_import_url: ['is blocked'] } }, 400, {})
+
+      helper.render_api_error!(errors, 400)
+    end
+  end
+
   describe '#render_api_error_with_reason!' do
     before do
       allow(helper).to receive(:env).and_return({})
@@ -2150,8 +2204,8 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#boundaries_for_endpoint' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be_with_reload(:group) { create(:group) }
     let(:access_token) { instance_double(PersonalAccessToken, granular?: true) }
 
     before do
@@ -2347,7 +2401,7 @@ RSpec.describe API::Helpers, feature_category: :api do
         end
 
         it 'returns true' do
-          expect(helper.send(:authorize_granular_token?)).to be(true)
+          expect(helper.send(:authorize_granular_token?, token)).to be(true)
         end
 
         it 'authorizes granular tokens' do
@@ -2365,7 +2419,7 @@ RSpec.describe API::Helpers, feature_category: :api do
         it 'returns false' do
           allow(helper).to receive(:authorization_settings).and_return({})
 
-          expect(helper.send(:authorize_granular_token?)).to be(false)
+          expect(helper.send(:authorize_granular_token?, token)).to be(false)
         end
 
         it 'does not authorize granular tokens' do
@@ -2387,7 +2441,7 @@ RSpec.describe API::Helpers, feature_category: :api do
         end
 
         it 'returns true' do
-          expect(helper.send(:authorize_granular_token?)).to be(true)
+          expect(helper.send(:authorize_granular_token?, token)).to be(true)
         end
 
         it 'authorizes granular tokens' do
@@ -2403,7 +2457,7 @@ RSpec.describe API::Helpers, feature_category: :api do
         end
 
         it 'returns true' do
-          expect(helper.send(:authorize_granular_token?)).to be(true)
+          expect(helper.send(:authorize_granular_token?, token)).to be(true)
         end
 
         it 'authorizes granular tokens' do
@@ -2419,7 +2473,7 @@ RSpec.describe API::Helpers, feature_category: :api do
         end
 
         it 'returns false' do
-          expect(helper.send(:authorize_granular_token?)).to be(false)
+          expect(helper.send(:authorize_granular_token?, token)).to be(false)
         end
 
         it 'does not authorize granular tokens' do
@@ -2436,7 +2490,7 @@ RSpec.describe API::Helpers, feature_category: :api do
         end
 
         it 'returns false' do
-          expect(helper.send(:authorize_granular_token?)).to be(false)
+          expect(helper.send(:authorize_granular_token?, token)).to be(false)
         end
 
         it 'does not authorize granular tokens' do
@@ -2447,15 +2501,11 @@ RSpec.describe API::Helpers, feature_category: :api do
       end
     end
 
-    context 'when access token is nil' do
-      before do
-        allow(helper).to receive(:access_token).and_return(nil)
-      end
-
+    context 'when the token is nil' do
       it 'returns falsey' do
         allow(helper).to receive(:authorization_settings).and_return({})
 
-        expect(helper.send(:authorize_granular_token?)).to be_falsey
+        expect(helper.send(:authorize_granular_token?, nil)).to be_falsey
       end
     end
   end

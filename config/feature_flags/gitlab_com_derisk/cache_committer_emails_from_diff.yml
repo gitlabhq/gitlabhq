@@ -1,0 +1,10 @@
+---
+name: cache_committer_emails_from_diff
+description: Caches committer emails derived from a merge request diff, keyed by the immutable merge_request_diff id, to reduce the call rate of the approval committer-filter query.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590452
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243855
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/605624
+milestone: '19.2'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

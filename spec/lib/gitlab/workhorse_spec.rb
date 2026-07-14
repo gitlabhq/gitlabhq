@@ -144,7 +144,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
       end
 
       it "raises an error" do
-        expect { subject }.to raise_error(RuntimeError)
+        expect { subject }.to raise_error(Gitlab::Workhorse::ArchiveNotFoundError)
       end
     end
 
@@ -1069,6 +1069,27 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
 
       it 'still includes feature flags in call_metadata' do
         expect(result[:call_metadata]).to include('gitaly-feature-enforce-requests-limits' => 'true')
+      end
+    end
+
+    context 'when a user is present in the application context' do
+      let(:user) { build_stubbed(:user) }
+
+      it 'forwards the user and remote_ip in call_metadata' do
+        Gitlab::ApplicationContext.with_context(user: user, remote_ip: '1.2.3.4') do
+          expect(result[:call_metadata]).to include(
+            'username' => user.username,
+            Labkit::Fields::GL_USER_ID => user.id.to_s,
+            'remote_ip' => '1.2.3.4'
+          )
+        end
+      end
+    end
+
+    context 'when no user is present in the application context' do
+      it 'does not include user identity in call_metadata', :aggregate_failures do
+        expect(result[:call_metadata]).not_to have_key('username')
+        expect(result[:call_metadata]).not_to have_key(Labkit::Fields::GL_USER_ID)
       end
     end
   end

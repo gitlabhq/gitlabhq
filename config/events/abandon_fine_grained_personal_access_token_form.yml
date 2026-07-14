@@ -1,0 +1,16 @@
+---
+description: User attempts to leave the fine-grained personal access token creation page before successfully creating a token
+internal_events: true
+status: active
+action: abandon_fine_grained_personal_access_token_form
+identifiers:
+- user
+product_group: authorization
+product_categories:
+- permissions
+milestone: '19.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242402
+tiers:
+- free
+- premium
+- ultimate

@@ -1,8 +1,8 @@
 ---
 stage: Fulfillment
 group: Seat Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: SCIM 
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: SCIM API
 ---
 
 {{< details >}}
@@ -14,57 +14,58 @@ title: SCIM
 
 {{< history >}}
 
-- GitLab 15.5で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354)。
+- GitLab 15.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354)されました。
 
 {{< /history >}}
 
-このを使用して、グループ内のSCIM IDを管理します。
+このAPIを使用して、グループ内のSCIM IDを管理します。
 
-前提要件: 
+前提条件: 
 
-- [グループ](../user/group/saml_sso/_index.md)を有効にする必要があります。
-- [グループのSCIM](../user/group/saml_sso/scim_setup.md)を有効にする必要があります。
+- [Group SSO](../user/group/saml_sso/_index.md)を有効にする必要があります。
+- [Group SSO用のSCIM](../user/group/saml_sso/scim_setup.md)を有効にする必要があります。
 - 正しいスコープを持つ[パーソナルアクセストークン](../user/profile/personal_access_tokens.md)または[グループアクセストークン](../user/group/settings/group_access_tokens.md)で認証する必要があります。
 
-このは、SCIMトークンを必要とする[内部グループSCIM](../development/internal_api/_index.md#group-scim-api)および[内部インスタンスSCIM](../development/internal_api/_index.md#instance-scim-api)とは異なります。
+このAPIは、SCIMトークンを必要とする[内部グループSCIM API](../development/internal_api/_index.md#group-scim-api)および[内部インスタンスSCIM API](../development/internal_api/_index.md#instance-scim-api)とは異なります。
 
-- この:
+- このAPI:
   - [RFC7644プロトコル](https://www.rfc-editor.org/rfc/rfc7644)を実装していません。
-  - グループ内のSCIM IDを取得、チェック、更新、削除します。
-
-- 内部グループおよびインスタンスSCIM :
-  - SCIMプロバイダーインテグレーションのシステム用です。
+  - グループ内のSCIM IDを取得、チェック、更新、および削除します。
+- 内部グループおよびインスタンスSCIM API:
+  - SCIMプロバイダーインテグレーションのためのシステム利用です。
   - [RFC7644プロトコル](https://www.rfc-editor.org/rfc/rfc7644)を実装します。
-  - グループまたはインスタンス用にSCIMプロビジョニングされたユーザーのリストを取得します。
-  - グループまたはインスタンス用にSCIMプロビジョニングされたユーザーを作成、削除、更新します。
+  - グループまたはインスタンスのSCIMプロビジョニング済みユーザーのリストを取得します。
+  - グループまたはインスタンスのSCIMプロビジョニング済みユーザーを作成、削除、および更新します。
 
-## グループのSCIM IDを取得 {#get-scim-identities-for-a-group}
+## グループのSCIM IDを取得する {#retrieve-scim-identities-for-a-group}
 
 {{< history >}}
 
-- GitLab 15.5で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/227841)。
+- GitLab 15.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/227841)されました。
 
 {{< /history >}}
+
+グループのSCIM IDを取得する。
 
 ```plaintext
 GET /groups/:id/scim/identities
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性         | 型    | 必須 | 説明           |
 |:------------------|:--------|:---------|:----------------------|
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 
-成功した場合、[`200`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性    | 型    | 説明               |
 | ------------ | ------- | ------------------------- |
-| `extern_uid` | 文字列  | ユーザーの外部 |
-| `user_id`    | 整数 | ユーザーの           |
+| `extern_uid` | 文字列  | ユーザーの外部固有識別子 |
+| `user_id`    | 整数 | ユーザーのID           |
 | `active`     | ブール値 | IDのステータス    |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -76,7 +77,7 @@ GET /groups/:id/scim/identities
 ]
 ```
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --location --request GET \
@@ -84,7 +85,7 @@ curl --location --request GET \
   --header "PRIVATE-TOKEN: <PRIVATE-TOKEN>"
 ```
 
-## 単一のSCIM IDを取得 {#get-a-single-scim-identity}
+## 単一のSCIM IDを取得する {#retrieve-a-single-scim-identity}
 
 {{< history >}}
 
@@ -92,18 +93,20 @@ curl --location --request GET \
 
 {{< /history >}}
 
+単一のSCIM IDを取得する。
+
 ```plaintext
 GET /groups/:id/scim/:uid
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須 | 説明               |
 | --------- | ------- | -------- | ------------------------- |
 | `id`      | 整数 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `uid`     | 文字列  | はい      | ユーザーの外部。 |
+| `uid`     | 文字列  | はい      | ユーザーの外部固有識別子。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --location --request GET \
@@ -111,7 +114,7 @@ curl --location --request GET \
   --header "PRIVATE-TOKEN: <PRIVATE TOKEN>"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -125,13 +128,15 @@ curl --location --request GET \
 
 {{< history >}}
 
-- GitLab 15.5で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/227841)。
+- GitLab 15.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/227841)されました。
 
 {{< /history >}}
 
+SCIM IDの`extern_uid`フィールドを更新します。
+
 更新できるフィールドは次のとおりです:
 
-| SCIM/IdPフィールド  | フィールド |
+| SCIM/IdPフィールド  | GitLabフィールド |
 | --------------- | ------------ |
 | `id/externalId` | `extern_uid` |
 
@@ -139,14 +144,14 @@ curl --location --request GET \
 PATCH /groups/:groups_id/scim/:uid
 ```
 
-パラメータ:
+パラメータは以下のとおりです:
 
 | 属性 | 型   | 必須 | 説明               |
 | --------- | ------ | -------- | ------------------------- |
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `uid`     | 文字列 | はい      | ユーザーの外部。 |
+| `uid`     | 文字列 | はい      | ユーザーの外部固有識別子。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --location --request PATCH \
@@ -155,7 +160,7 @@ curl --location --request PATCH \
   --form "extern_uid=yrnZW46BrtBFqM7xDzE7dddd"
 ```
 
-## 単一のSCIM IDを削除 {#delete-a-single-scim-identity}
+## 単一のSCIM IDを削除する {#delete-a-single-scim-identity}
 
 {{< history >}}
 
@@ -163,18 +168,20 @@ curl --location --request PATCH \
 
 {{< /history >}}
 
+単一のSCIM IDを削除します。
+
 ```plaintext
 DELETE /groups/:id/scim/:uid
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須 | 説明               |
 | --------- | ------- | -------- | ------------------------- |
 | `id`      | 整数 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `uid`     | 文字列  | はい      | ユーザーの外部。 |
+| `uid`     | 文字列  | はい      | ユーザーの外部固有識別子。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --location --request DELETE \
@@ -182,7 +189,7 @@ curl --location --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

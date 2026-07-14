@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlIcon } from '@gitlab/ui';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { FORM_STEPPER_TAB_COLOR, FORM_STEPPER_TAB_BORDER_COLOR } from '../constants';
 
 export default {
@@ -83,14 +84,27 @@ export default {
 
         if (!isValid) {
           this.$emit('validation-failed', this.currentStepIndex);
+          this.scrollToCurrentStep();
           return;
         }
       } finally {
         this.isValidating = false;
       }
 
+      const previousTabIndex = this.currentStepIndex;
       this.currentStepIndex += 1;
-      this.$emit('stepped-forward');
+      this.$emit('stepped-forward', { previousTabIndex });
+    },
+
+    // Each step renders its own validation error at the top of its content,
+    scrollToCurrentStep() {
+      const stepContent = this.$el.querySelector(
+        `[data-testid="step-content-${this.currentStepIndex}"]`,
+      );
+
+      if (stepContent) {
+        scrollToElement(stepContent);
+      }
     },
 
     goToPreviousStep() {
@@ -108,6 +122,7 @@ export default {
 
         if (!isValid) {
           this.$emit('validation-failed', this.currentStepIndex);
+          this.scrollToCurrentStep();
           return;
         }
       } finally {

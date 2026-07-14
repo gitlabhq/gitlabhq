@@ -96,6 +96,14 @@ export default {
       default: false,
     },
   },
+  emits: [
+    'cannot-find-active-item',
+    'drag-start',
+    'dragStop',
+    'focus-adjacent',
+    'setFilters',
+    'toggleNewForm',
+  ],
   data() {
     return {
       showCount: false,
@@ -417,7 +425,7 @@ export default {
         return;
       }
       const draggedItem = this.boardListItems.find((item) => item.id === itemId);
-      this.$emit('dragStart', { itemId: draggedItem?.workItemType?.id || null });
+      this.$emit('drag-start', { itemId: draggedItem?.workItemType?.id || null });
 
       // Reset dragCancelled flag
       this.dragCancelled = false;

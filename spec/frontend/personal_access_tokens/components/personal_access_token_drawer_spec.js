@@ -3,6 +3,7 @@ import { MountingPortal } from 'portal-vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DynamicPanel from '~/vue_shared/components/dynamic_panel.vue';
 import DetailLayout from '~/vue_shared/components/detail_layout.vue';
+import BaseLayout from '~/vue_shared/components/base_layout.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
@@ -37,6 +38,7 @@ describe('PersonalAccessTokenDrawer', () => {
       stubs: {
         DynamicPanel,
         DetailLayout,
+        BaseLayout,
         PageHeading,
         MountingPortal: stubComponent(MountingPortal, { name: 'MountingPortal' }),
       },
@@ -50,6 +52,7 @@ describe('PersonalAccessTokenDrawer', () => {
   const findRevokeButton = () => wrapper.findByTestId('revoke-token');
   const findDuplicateButton = () => wrapper.findByTestId('duplicate-token');
   const findStatusBadge = () => wrapper.findComponent(PersonalAccessTokenStatusBadge);
+  const findSudoBadge = () => wrapper.findByTestId('token-sudo-badge');
   const findPageTitle = () => wrapper.findByTestId('page-heading');
 
   const findTokenExpiry = () => wrapper.findByTestId('token-expiry');
@@ -109,6 +112,18 @@ describe('PersonalAccessTokenDrawer', () => {
         { icon: 'history', type: 'lastUsedAt', label: 'Last used', text: '' },
         { icon: 'earth', type: 'ipUsage', label: 'IP Usage', text: '' },
       ]);
+    });
+
+    it('does not render the sudo badge when the token has no sudo capability', () => {
+      expect(findSudoBadge().exists()).toBe(false);
+    });
+
+    it('renders a neutral sudo badge when the token has the sudo capability', () => {
+      createComponent({ mountFn: mountExtended, token: { ...mockToken, sudo: true } });
+
+      expect(findSudoBadge().exists()).toBe(true);
+      expect(findSudoBadge().props('variant')).toBe('neutral');
+      expect(findSudoBadge().text()).toBe('Sudo');
     });
 
     it('renders placeholder when description is missing', () => {

@@ -67,9 +67,10 @@ RSpec.describe 'event store matchers', feature_category: :shared do
           .to publish_event(FakeEventType2).with('id' => 1)
       end
 
+      published_data = { 'id' => 1 }
       expect(&invalid_event_type).to raise_error <<~MESSAGE
-        expected FakeEventType2 with {"id"=>1} to be published, but only the following events were published:
-         - FakeEventType1 with {"id"=>1}
+        expected FakeEventType2 with #{published_data} to be published, but only the following events were published:
+         - FakeEventType1 with #{published_data}
       MESSAGE
     end
 
@@ -79,9 +80,11 @@ RSpec.describe 'event store matchers', feature_category: :shared do
           .to publish_event(FakeEventType1).with({ 'id' => 2 })
       end
 
+      expected_data = { 'id' => 2 }
+      published_data = { 'id' => 1 }
       expect(&different_data).to raise_error <<~MESSAGE
-        expected FakeEventType1 with {"id"=>2} to be published, but only the following events were published:
-         - FakeEventType1 with {"id"=>1}
+        expected FakeEventType1 with #{expected_data} to be published, but only the following events were published:
+         - FakeEventType1 with #{published_data}
       MESSAGE
     end
 

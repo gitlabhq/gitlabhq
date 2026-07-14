@@ -52,6 +52,22 @@ RSpec.describe Import::PlaceholderUserCleanupWorker, feature_category: :importer
         perform
       end
 
+      it 'schedules the delete worker within the placeholder user organization context' do
+        scheduled_organization_ids = {}
+
+        allow(Import::DeletePlaceholderUserWorker).to receive(:perform_in) do |_delay, placeholder_user_id|
+          scheduled_organization_ids[placeholder_user_id] =
+            Gitlab::ApplicationContext.current_context_attribute('organization_id')
+        end
+
+        perform
+
+        expect(scheduled_organization_ids[eligible_detail_one.placeholder_user_id])
+          .to eq(eligible_detail_one.organization_id)
+        expect(scheduled_organization_ids[eligible_detail_two.placeholder_user_id])
+          .to eq(eligible_detail_two.organization_id)
+      end
+
       it 'increments the deletion_attempts counter for each processed detail', :freeze_time do
         perform
 

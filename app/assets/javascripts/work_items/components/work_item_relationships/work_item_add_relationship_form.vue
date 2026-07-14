@@ -2,6 +2,7 @@
 import { produce } from 'immer';
 import { GlFormGroup, GlForm, GlFormRadioGroup, GlButton, GlAlert } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import addLinkedItemsMutation from '../../graphql/add_linked_items.mutation.graphql';
 import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
@@ -9,6 +10,7 @@ import { findLinkedItemsWidget } from '../../utils';
 import { LINKED_ITEM_TYPE_VALUE, MAX_WORK_ITEMS } from '../../constants';
 
 export default {
+  name: 'WorkItemAddRelationshipForm',
   components: {
     GlForm,
     GlButton,
@@ -17,6 +19,7 @@ export default {
     GlAlert,
     WorkItemTokenInput,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     isGroup: {
       type: Boolean,
@@ -49,6 +52,7 @@ export default {
       default: false,
     },
   },
+  emits: ['cancel', 'submitted'],
   data() {
     return {
       linkedItemType: LINKED_ITEM_TYPE_VALUE.RELATED,
@@ -103,6 +107,7 @@ export default {
               linkType: this.linkedItemType,
               workItemsIds: this.workItemsToAdd.map((wi) => wi.id),
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
           update: (
             cache,
@@ -114,7 +119,11 @@ export default {
           ) => {
             const queryArgs = {
               query: workItemLinkedItemsQuery,
-              variables: { fullPath: this.workItemFullPath, iid: this.workItemIid },
+              variables: {
+                fullPath: this.workItemFullPath,
+                iid: this.workItemIid,
+                useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
+              },
             };
             const sourceData = cache.readQuery(queryArgs);
 

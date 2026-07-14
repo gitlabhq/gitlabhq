@@ -1,0 +1,9 @@
+---
+name: read_cd_application_link
+description: Grants the ability to read continuous deployment application links
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_cd_application_link

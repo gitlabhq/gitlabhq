@@ -47,6 +47,28 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer, feature_cat
       expect(RequestStore.store[:graphql_logs]).to match([request])
     end
 
+    context 'when variables contain pipeline schedule inputs' do
+      let(:query) do
+        GraphQL::Query.new(
+          GitlabSchema,
+          document: document,
+          context: {},
+          variables: { input: { inputs: [{ 'name' => 'deploy_strategy', 'value' => 'top-secret' }] } },
+          operation_name: 'updatePipelineSchedule'
+        )
+      end
+
+      it 'redacts the value field inside inputs arrays, preserving name', :aggregate_failures do
+        GraphQL::Analysis::AST.analyze_query(query, [described_class], multiplex_analyzers: [])
+
+        logged_variables = RequestStore.store[:graphql_logs].first[:variables]
+
+        expect(logged_variables).not_to include('top-secret')
+        expect(logged_variables).to include('[FILTERED]')
+        expect(logged_variables).to include('deploy_strategy')
+      end
+    end
+
     it 'does not crash when #analyze_query returns []' do
       stub_const('Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer::ALL_ANALYZERS', [])
       results = GraphQL::Analysis::AST.analyze_query(query, [described_class], multiplex_analyzers: [])

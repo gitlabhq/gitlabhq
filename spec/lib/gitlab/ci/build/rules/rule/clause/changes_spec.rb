@@ -12,14 +12,14 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
       using RSpec::Parameterized::TableSyntax
 
       let(:pipeline) { build(:ci_pipeline) }
-      let(:context) { nil }
+      let(:context) { instance_double(Gitlab::Ci::Build::Context::Base) }
       let(:changed_files) { files.keys.map { |path| instance_double(Gitlab::Git::ChangedPath, path: path) } }
 
       before do
         allow(pipeline).to receive(:changed_paths).and_return(changed_files)
       end
 
-      # rubocop:disable Layout/LineLength
+      # rubocop:disable Layout/LineLength -- table-driven test data requires long lines for alignment
       where(:case_name, :globs, :files, :satisfied) do
         'exact top-level match'      | { paths: ['Dockerfile'] }               | { 'Dockerfile' => '', 'Gemfile' => '' }            | true
         'exact top-level no match'   | { paths: ['Dockerfile'] }               | { 'Gemfile' => '' }                                | false
@@ -40,9 +40,91 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
       end
     end
 
+    context 'a regexp matching rule' do
+      let(:pipeline) { build_stubbed(:ci_pipeline) }
+      let(:context) { instance_double(Gitlab::Ci::Build::Context::Base) }
+      let(:changed_files) { files.map { |path| instance_double(Gitlab::Git::ChangedPath, path: path) } }
+      let(:globs) { { regexp: '^src/.*' } }
+      let(:files) { ['src/main.rb', 'README.md'] }
+
+      before do
+        allow(pipeline).to receive(:changed_paths).and_return(changed_files)
+      end
+
+      context 'when a changed path matches the pattern' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when no changed path matches the pattern' do
+        let(:files) { ['README.md', 'docs/guide.md'] }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when regexp is combined with compare_to' do
+        let(:globs) { { regexp: '^src/.*', compare_to: 'main' } }
+        let(:changed_files) { [instance_double(Gitlab::Git::ChangedPath, path: 'src/main.rb')] }
+        let(:project) { build_stubbed(:project) }
+
+        before do
+          allow(pipeline).to receive(:project).and_return(project)
+          allow(project).to receive(:commit).with('main').and_return(build_stubbed(:commit, sha: 'abc123'))
+          allow(pipeline).to receive(:modified_paths_since).with('abc123').and_return(['src/main.rb'])
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when the pattern contains a CI/CD variable' do
+        let(:context) { instance_double(Gitlab::Ci::Build::Context::Base) }
+
+        before do
+          allow(context).to receive(:variables_hash_expanded).and_return({ 'DOCS_DIR' => 'docs' })
+        end
+
+        context 'when the expanded pattern matches a changed file' do
+          let(:globs) { { regexp: '^$DOCS_DIR/.*' } }
+          let(:changed_files) { [instance_double(Gitlab::Git::ChangedPath, path: 'docs/guide.md')] }
+
+          it 'expands the variable before matching' do
+            is_expected.to be_truthy
+          end
+        end
+
+        context 'when the expanded lookahead excludes the changed file' do
+          let(:globs) { { regexp: '\A(?!$DOCS_DIR/)' } }
+          let(:changed_files) { [instance_double(Gitlab::Git::ChangedPath, path: 'docs/guide.md')] }
+
+          it 'expands the variable before matching' do
+            is_expected.to be_falsey
+          end
+        end
+      end
+
+      context 'when a changed path contains a newline' do
+        let(:changed_files) { [instance_double(Gitlab::Git::ChangedPath, path: "docs/\nsrc.rb")] }
+
+        context 'with a \A-anchored lookahead' do
+          let(:globs) { { regexp: '\A(?!docs/)' } }
+
+          it 'does not match a path whose first segment is under the excluded prefix' do
+            is_expected.to be_falsey
+          end
+        end
+
+        context 'with a ^-anchored lookahead' do
+          let(:globs) { { regexp: '^(?!docs/)' } }
+
+          it 'matches at the newline boundary, illustrating why \A is recommended' do
+            is_expected.to be_truthy
+          end
+        end
+      end
+    end
+
     context 'when pipeline is nil' do
       let(:pipeline) { nil }
-      let(:context) { nil }
+      let(:context) { instance_double(Gitlab::Ci::Build::Context::Base) }
       let(:globs) { { paths: [] } }
 
       it { is_expected.to be_truthy }
@@ -232,12 +314,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
       before do
         allow(pipeline).to receive(:changed_paths).and_return(changed_paths)
         allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
-      end
-
-      context 'when context is nil' do
-        let(:context) { nil }
-
-        it { is_expected.to be_falsey }
       end
 
       context 'when changed paths are nil' do

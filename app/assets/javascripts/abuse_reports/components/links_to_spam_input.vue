@@ -12,6 +12,7 @@ export default {
   i18n: {
     label: s__('ReportAbuse|Link to spam'),
     addAnotherText: s__('ReportAbuse|Add another link'),
+    removeLinkText: s__('ReportAbuse|Remove link'),
   },
   props: {
     previousLinks: {
@@ -29,6 +30,9 @@ export default {
     addAnotherInput() {
       this.links.push('');
     },
+    removeInput(index) {
+      this.links.splice(index, 1);
+    },
   },
 };
 </script>
@@ -38,13 +42,22 @@ export default {
       <div :key="index" class="row">
         <div class="gl-col-lg-8">
           <gl-form-group :label="$options.i18n.label" :label-for="`spam-link-${index}`">
-            <gl-form-input
-              :id="`spam-link-${index}`"
-              v-model.trim="links[index]"
-              type="url"
-              name="abuse_report[links_to_spam][]"
-              autocomplete="off"
-            />
+            <div class="gl-flex gl-items-start gl-gap-3">
+              <gl-form-input
+                :id="`spam-link-${index}`"
+                v-model.trim="links[index]"
+                type="url"
+                name="abuse_report[links_to_spam][]"
+                autocomplete="off"
+                class="gl-grow"
+              />
+              <gl-button
+                v-if="index > 0"
+                icon="remove"
+                :aria-label="$options.i18n.removeLinkText"
+                @click="removeInput(index)"
+              />
+            </div>
           </gl-form-group>
         </div>
       </div>

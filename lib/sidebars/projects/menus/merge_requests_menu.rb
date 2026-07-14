@@ -65,7 +65,9 @@ module Sidebars
             pill_count_field: pill_count_field,
             has_pill: has_pill?,
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
-            item_id: :project_merge_request_list
+            item_id: :project_merge_request_list,
+            description: _('Collaborate on code changes with built-in review tools'),
+            library_icon: 'merge-request'
           })
         end
       end

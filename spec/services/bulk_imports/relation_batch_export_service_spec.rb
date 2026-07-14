@@ -27,7 +27,7 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
       service.execute
       batch.reload
 
-      expect(batch.finished?).to eq(true)
+      expect(batch.finished?).to be(true)
       expect(batch.objects_count).to eq(1)
       expect(batch.error).to be_nil
       expect(export.upload.export_file).to be_present
@@ -51,13 +51,15 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
         allow(Gitlab::Cache::Import::Caching).to receive(:values_from_set).with(cache_key).and_return([])
 
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-          instance_of(BulkImports::Error)
+          instance_of(BulkImports::Error),
+          offline_export_id: nil,
+          importer: Import::SOURCE_DIRECT_TRANSFER
         )
 
         expect { service.execute }.not_to raise_error
         batch.reload
 
-        expect(batch.failed?).to eq(true)
+        expect(batch.failed?).to be(true)
         expect(batch.error).to eq("Batched relation export cache key missing or expired.")
       end
     end
@@ -72,6 +74,8 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
             configuration: create(:import_offline_configuration, :s3_compatible)
           )
         )
+
+        batch.reload
       end
 
       it 'uploads the file directly to the configured storage location' do
@@ -80,6 +84,24 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
         end
 
         expect { service.execute }.not_to change { ::Upload.count }
+      end
+
+      context 'when the cache key is missing or expired' do
+        it 'does not proceed with exporting and marks the batch as failed' do
+          allow(Gitlab::Cache::Import::Caching).to receive(:values_from_set).with(cache_key).and_return([])
+
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(BulkImports::Error),
+            offline_export_id: export.offline_export_id,
+            importer: Import::SOURCE_OFFLINE_TRANSFER
+          )
+
+          expect { service.execute }.not_to raise_error
+          batch.reload
+
+          expect(batch.failed?).to be(true)
+          expect(batch.error).to eq("Batched relation export cache key missing or expired.")
+        end
       end
     end
   end

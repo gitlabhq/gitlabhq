@@ -39,13 +39,13 @@ RSpec.describe Approvable, feature_category: :code_review_workflow do
       end
 
       it 'returns true' do
-        expect(merge_request.approved?).to eq(true)
+        expect(merge_request.approved?).to be(true)
       end
     end
 
     context 'when a merge request is not approved' do
       it 'returns false' do
-        expect(merge_request.approved?).to eq(false)
+        expect(merge_request.approved?).to be(false)
       end
     end
   end
@@ -58,14 +58,14 @@ RSpec.describe Approvable, feature_category: :code_review_workflow do
     end
 
     it 'returns true' do
-      is_expected.to eq(true)
+      is_expected.to be(true)
     end
 
     context 'when a user has approved' do
       let!(:approval) { create(:approval, merge_request: merge_request, user: user) }
 
       it 'returns false' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe Approvable, feature_category: :code_review_workflow do
       let(:user) { nil }
 
       it 'returns false' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
   end

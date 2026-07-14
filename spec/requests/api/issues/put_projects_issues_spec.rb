@@ -179,6 +179,32 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
   end
 
+  describe 'PUT /projects/:id/issues/:issue_iid to update severity' do
+    let(:incident) { create(:incident, project: project, author: user) }
+    let(:incident_path) { "/projects/#{project.id}/issues/#{incident.iid}" }
+
+    it 'updates the severity of an incident', :aggregate_failures do
+      put api(incident_path, user), params: { severity: 'critical' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(incident.reload.severity).to eq('critical')
+    end
+
+    it 'rejects an invalid severity value' do
+      put api(incident_path, user), params: { severity: 'invalid' }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    it 'ignores severity on a non-incident issue', :aggregate_failures do
+      put api_for_user, params: { severity: 'high', title: updated_title }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(issue).not_to be_supports_severity
+      expect(issue.reload.severity).to eq(IssuableSeverity::DEFAULT)
+    end
+  end
+
   describe 'PUT /projects/:id/issues/:issue_iid with spam filtering' do
     include_context 'includes Spam constants'
 

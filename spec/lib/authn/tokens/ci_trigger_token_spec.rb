@@ -29,10 +29,11 @@ RSpec.describe Authn::Tokens::CiTriggerToken, :aggregate_failures, feature_categ
           stub_feature_flags(token_api_expire_pipeline_triggers: false)
         end
 
-        it 'does not support revocation yet' do
-          expect do
-            token.revoke!(user)
-          end.to raise_error(::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported token type')
+        it 'does not support revocation yet', :aggregate_failures do
+          response = token.revoke!(user)
+
+          expect(response).to be_error
+          expect(response.message).to eq('Unsupported token type')
         end
       end
     end

@@ -382,6 +382,57 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
           .and change { ci_db_unregistered_model_b.count }.from(5).to(0)
       end
     end
+
+    # Reproduces the ai_conversation_messages -> ai_agent_versions case: a registered table
+    # (still in the schema docs) holds an FK to the schema-deleted table. The schema-deleted
+    # table is therefore referenced by a registered table that is truncated in a later batch,
+    # so it cannot be truncated on its own in an earlier batch.
+    context 'with a registered table referencing the unregistered table' do
+      # _test_gitlab_main_pointing references _test_gitlab_main_references so that
+      # _test_gitlab_main_references is not a topological source and lands in a later batch
+      # than the schema-deleted table.
+      let(:ci_db_pointing_model) { table("_test_gitlab_main_pointing", database: "ci") }
+
+      before do
+        allow(Gitlab::Database::GitlabSchema).to receive(:tables_to_schema).and_return(
+          Gitlab::Database::GitlabSchema.tables_to_schema.merge(
+            "_test_gitlab_main_pointing" => :gitlab_main
+          )
+        )
+
+        ci_connection.execute(<<~SQL)
+          ALTER TABLE _test_gitlab_main_references
+            ADD COLUMN unregistered_ref_id BIGINT,
+            ADD CONSTRAINT fk_test_registered_to_unregistered
+              FOREIGN KEY(unregistered_ref_id) REFERENCES _test_unregistered_ref(id);
+
+          CREATE TABLE _test_gitlab_main_pointing (
+            id serial NOT NULL PRIMARY KEY,
+            ref_id BIGINT NOT NULL,
+            CONSTRAINT fk_test_pointing FOREIGN KEY(ref_id) REFERENCES _test_gitlab_main_references(id)
+          );
+        SQL
+
+        5.times { ci_db_pointing_model.create!(ref_id: ci_db_main_reference_model.first.id) }
+
+        Gitlab::Database::LockWritesManager.new(
+          table_name: ci_db_pointing_model.table_name,
+          connection: ci_connection,
+          database_name: 'ci',
+          with_retries: false
+        ).lock_writes
+      end
+
+      it 'does not raise a FK constraint error' do
+        expect { truncate_legacy_tables }.not_to raise_error
+      end
+
+      it 'truncates the unregistered table and the registered referencing table' do
+        expect { truncate_legacy_tables }
+          .to change { ci_db_unregistered_model.count }.from(5).to(0)
+          .and change { ci_db_pointing_model.count }.from(5).to(0)
+      end
+    end
   end
 
   context 'when running with multiple shared databases' do

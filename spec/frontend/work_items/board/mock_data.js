@@ -1,12 +1,12 @@
 export const mockGroupId = 'gid://gitlab/Group/1';
 
-export const buildStatus = (id, name = `Status ${id}`) => ({
+export const buildStatus = (id, name = `Status ${id}`, category = 'to_do') => ({
   __typename: 'WorkItemStatusCustom',
   id: `gid://gitlab/WorkItems::Statuses::Custom::Status/${id}`,
   name,
   iconName: 'status-waiting',
   color: '#737278',
-  category: 'TO_DO',
+  category,
 });
 
 export const mockStatus = buildStatus(1, 'To do');
@@ -69,6 +69,93 @@ export const buildStatusWidget = (status = mockStatus) => ({
   status,
 });
 
+export const mockMilestone = {
+  __typename: 'Milestone',
+  id: 'gid://gitlab/Milestone/1',
+  title: 'v1.0',
+  startDate: '2026-01-01',
+  dueDate: '2026-03-01',
+  webPath: '/group/project/-/milestones/1',
+};
+
+export const buildMilestoneWidget = (milestone = mockMilestone) => ({
+  __typename: 'WorkItemWidgetMilestone',
+  type: 'MILESTONE',
+  milestone,
+});
+
+export const buildStartAndDueDateWidget = ({ dueDate = '2026-03-01', startDate = null } = {}) => ({
+  __typename: 'WorkItemWidgetStartAndDueDate',
+  type: 'START_AND_DUE_DATE',
+  dueDate,
+  startDate,
+});
+
+export const buildWeightWidget = (weight = 3) => ({
+  __typename: 'WorkItemWidgetWeight',
+  type: 'WEIGHT',
+  weight,
+});
+
+export const mockIteration = {
+  __typename: 'Iteration',
+  id: 'gid://gitlab/Iteration/1',
+  title: 'Sprint 1',
+  startDate: '2026-01-01',
+  dueDate: '2026-01-14',
+  webUrl: '/group/-/cadences/1/iterations/1',
+  iterationCadence: {
+    __typename: 'IterationCadence',
+    id: 'gid://gitlab/Iterations::Cadence/1',
+    title: 'Cadence 1',
+  },
+};
+
+export const buildIterationWidget = (iteration = mockIteration) => ({
+  __typename: 'WorkItemWidgetIteration',
+  type: 'ITERATION',
+  iteration,
+});
+
+export const buildHealthStatusWidget = (healthStatus = 'onTrack') => ({
+  __typename: 'WorkItemWidgetHealthStatus',
+  type: 'HEALTH_STATUS',
+  healthStatus,
+});
+
+export const buildLinkedItemsWidget = ({ blockingCount = 0, blockedByCount = 0 } = {}) => ({
+  __typename: 'WorkItemWidgetLinkedItems',
+  type: 'LINKED_ITEMS',
+  blockingCount,
+  blockedByCount,
+});
+
+export const mockParent = {
+  __typename: 'WorkItem',
+  id: 'gid://gitlab/WorkItem/100',
+  iid: '100',
+  title: 'Parent epic',
+  webUrl: 'http://gdk.test/group/-/epics/100',
+  confidential: false,
+  namespace: {
+    __typename: 'Group',
+    id: mockGroupId,
+    fullPath: 'group',
+  },
+  workItemType: {
+    __typename: 'WorkItemType',
+    id: 'gid://gitlab/WorkItems::Type/2',
+    name: 'Epic',
+    iconName: 'issue-type-epic',
+  },
+};
+
+export const buildHierarchyWidget = (parent = mockParent) => ({
+  __typename: 'WorkItemWidgetHierarchy',
+  type: 'HIERARCHY',
+  parent,
+});
+
 export const buildWorkItemNode = (id, overrides = {}) => ({
   __typename: 'WorkItem',
   id: `gid://gitlab/WorkItem/${id}`,
@@ -123,6 +210,38 @@ export const buildBoardWorkItemsResponse = (nodes = [], pageInfo = {}) => ({
           ...pageInfo,
         },
         nodes,
+      },
+    },
+  },
+});
+
+export const buildBoardWorkItemsCountResponse = (count = 0) => ({
+  data: {
+    namespace: {
+      __typename: 'Group',
+      id: mockGroupId,
+      name: 'Test',
+      workItems: {
+        __typename: 'WorkItemConnection',
+        count,
+      },
+    },
+  },
+});
+
+export const buildWorkItemTypesResponse = (types = []) => ({
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: mockGroupId,
+      webUrl: '/group',
+      userPermissions: {
+        __typename: 'NamespacePermissions',
+        setNewWorkItemMetadata: true,
+      },
+      workItemTypes: {
+        __typename: 'WorkItemTypeConnection',
+        nodes: types,
       },
     },
   },

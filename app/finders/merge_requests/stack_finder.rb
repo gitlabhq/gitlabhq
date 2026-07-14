@@ -13,8 +13,11 @@ module MergeRequests
   # [merge_request_1, merge_request_2, merge_request_3] ordered from top
   # (closest to the default branch) to bottom.
   #
-  # Only open merge requests are traversed. The input merge request is always
-  # included. Authorization is the caller's responsibility.
+  # Only open merge requests are traversed, and only those sharing the input
+  # merge request's author - a merge request authored by someone else stops the
+  # chain, so the result is the contiguous run of same-author merge requests
+  # reachable from the input. The input merge request is always included.
+  # Authorization is the caller's responsibility.
   #
   # Branch chaining is a tree, not a line: if two MRs share the same
   # target_branch, both could be considered part of a stack. This finder
@@ -37,25 +40,38 @@ module MergeRequests
     #
     # The upward chain stops when it reaches the default branch - without this, common
     # branch names cause false matches that chain through unrelated merge requests.
+    #
+    # The chain only follows merge requests sharing the seed's author, carried in the
+    # worktable from the seed row.
+    #
+    # The down_chain hop predicate uses `author_id + 0` (not the bare column) on purpose.
+    # There is no composite (target_project_id, target_branch) index, so with the bare
+    # column Postgres seeks on the (author_id, target_project_id) index and walks every
+    # one of the author's merge requests in the project (all states) before filtering by
+    # branch - measured at ~5,600 rows / ~200ms for a high-volume author, versus ~11ms
+    # with `+ 0`, which disqualifies the author index and keeps a project-selective index
+    # as the anchor. Do not remove it. up_chain does not need this: the composite
+    # (target_project_id, source_branch) index already anchors it in both forms.
     STACK_CTE_SQL = <<~SQL
       WITH RECURSIVE
-      up_chain(id, source_branch, target_branch, visited) AS (
-        SELECT id, source_branch, target_branch, ARRAY[id]
+      up_chain(id, source_branch, target_branch, author_id, visited) AS (
+        SELECT id, source_branch, target_branch, author_id, ARRAY[id]
         FROM merge_requests
         WHERE id = :merge_request_id
           AND state_id = 1
 
         UNION ALL
 
-        SELECT p.id, p.source_branch, p.target_branch, up_chain.visited || p.id
+        SELECT p.id, p.source_branch, p.target_branch, p.author_id, up_chain.visited || p.id
         FROM up_chain
         CROSS JOIN LATERAL (
           -- oldest id wins when multiple MRs share the same source branch
-          SELECT id, source_branch, target_branch
+          SELECT id, source_branch, target_branch, author_id
           FROM merge_requests
           WHERE target_project_id = :project_id
             AND state_id = 1
             AND source_branch = up_chain.target_branch
+            AND merge_requests.author_id = up_chain.author_id
             AND NOT (id = ANY(up_chain.visited))
           ORDER BY id
           LIMIT 1
@@ -63,23 +79,24 @@ module MergeRequests
         WHERE array_length(up_chain.visited, 1) < :max_size
           AND up_chain.target_branch != :default_branch
       ),
-      down_chain(id, source_branch, target_branch, visited) AS (
-        SELECT id, source_branch, target_branch, ARRAY[id]
+      down_chain(id, source_branch, target_branch, author_id, visited) AS (
+        SELECT id, source_branch, target_branch, author_id, ARRAY[id]
         FROM merge_requests
         WHERE id = :merge_request_id
           AND state_id = 1
 
         UNION ALL
 
-        SELECT c.id, c.source_branch, c.target_branch, down_chain.visited || c.id
+        SELECT c.id, c.source_branch, c.target_branch, c.author_id, down_chain.visited || c.id
         FROM down_chain
         CROSS JOIN LATERAL (
           -- oldest id wins when multiple MRs target the same branch
-          SELECT id, source_branch, target_branch
+          SELECT id, source_branch, target_branch, author_id
           FROM merge_requests
           WHERE target_project_id = :project_id
             AND state_id = 1
             AND target_branch = down_chain.source_branch
+            AND merge_requests.author_id + 0 = down_chain.author_id
             AND NOT (id = ANY(down_chain.visited))
           ORDER BY id
           LIMIT 1

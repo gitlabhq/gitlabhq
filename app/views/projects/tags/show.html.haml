@@ -22,7 +22,7 @@
       - if user
         = link_to user_path(user) do
           %div
-            = user_avatar_without_link(user: user, size: 32, css_class: "mt-1 mb-1")
+            = user_avatar_without_link(user: user, size: 32, css_class: "!gl-mt-2 !gl-mb-2")
 
           %div
             %strong= user.name
@@ -31,7 +31,7 @@
       - elsif user_email
         = mail_to user_email do
           %div
-            = user_avatar_without_link(user_email: user_email, size: 32, css_class: "mt-1 mb-1")
+            = user_avatar_without_link(user_email: user_email, size: 32, css_class: "!gl-mt-2 !gl-mb-2")
 
           %div{ :class => "!gl-clearfix" }
             %strong= user_email

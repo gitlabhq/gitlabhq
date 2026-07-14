@@ -19,6 +19,10 @@ RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", featu
   let_it_be(:job_artifact_ids) { build.job_artifacts.map(&:id) }
 
   describe '#execute' do
+    before_all do
+      project.add_maintainer(current_user)
+    end
+
     context 'when number of artifacts exceeds limits to delete' do
       let_it_be_with_reload(:second_build) do
         create(:ci_build, :artifacts, :trace_artifact, user: current_user, project: project)
@@ -27,7 +31,6 @@ RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", featu
       let_it_be(:job_artifact_ids) { ::Ci::JobArtifact.all.map(&:id) }
 
       before do
-        project.add_maintainer(current_user)
         stub_const("#{described_class}::JOB_ARTIFACTS_COUNT_LIMIT", 1)
       end
 
@@ -48,7 +51,6 @@ RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", featu
       let_it_be(:job_artifact_ids) { ::Ci::JobArtifact.all.map(&:id) }
 
       before do
-        project.add_maintainer(current_user)
         deleted_job_artifacts.each(&:destroy!)
       end
 
@@ -65,11 +67,7 @@ RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", featu
       end
     end
 
-    context 'when maintainer has access to the project' do
-      before do
-        project.add_maintainer(current_user)
-      end
-
+    context 'when all artifacts are valid' do
       it 'is successful' do
         result = execute
 
@@ -109,7 +107,7 @@ RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", featu
 
         let_it_be(:different_project) { different_build.project }
 
-        before do
+        before_all do
           different_project.add_maintainer(current_user)
         end
 

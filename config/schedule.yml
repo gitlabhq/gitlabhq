@@ -155,6 +155,10 @@ ci_schedule_old_pipelines_removal_cron_worker:
   class: Ci::ScheduleOldPipelinesRemovalCronWorker
   cron: "*/11 * * * *"
 
+ci_stuck_pipelines_process_worker:
+  class: Ci::StuckPipelines::ProcessWorker
+  cron: "*/15 * * * *"
+
 ci_schedule_unlock_pipelines_in_queue_worker:
   class: Ci::ScheduleUnlockPipelinesInQueueCronWorker
   cron: "*/1 * * * *"

@@ -49,7 +49,7 @@ const resolver = createResolver({
 function discoverEntries() {
   const { generateEntries } = cjsRequire(path.join(ROOT_PATH, 'config/webpack.helpers'));
   const defaultEntries = ['./main'];
-  const generated = generateEntries({ defaultEntries });
+  const { entries: generated } = generateEntries(defaultEntries);
 
   const manual = {
     sentry: ['./sentry/index.js'],

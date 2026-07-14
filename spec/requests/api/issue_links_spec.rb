@@ -102,7 +102,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
 
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response['message'])
-            .to eq("Couldn't link issues. You must have at least the Guest role in both projects.")
+            .to eq("Could not link issues. You must be a member of the project or group of both issues.")
         end
       end
 

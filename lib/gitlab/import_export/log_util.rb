@@ -9,6 +9,7 @@ module Gitlab
         return {} unless %w[project group].include?(attribute_base_name)
 
         {}.tap do |log|
+          log[Labkit::Fields::GL_ORGANIZATION_ID] = exportable.organization_id
           log[:"#{attribute_base_name}_id"] = exportable.id
           log[:"#{attribute_base_name}_name"] = exportable.name
           log[:"#{attribute_base_name}_path"] = exportable.full_path

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Security
   class ReportSchemaVersionMatcher
     def initialize(report_declared_version:, supported_versions:)

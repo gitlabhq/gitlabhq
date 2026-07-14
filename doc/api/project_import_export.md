@@ -246,10 +246,6 @@ requests.post(url, headers=headers, data=data, files=files)
 
 {{< /history >}}
 
-> [!flag]
-> On GitLab Self-Managed, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags/_index.md) named `import_project_from_remote_file`.
-> On GitLab.com and GitLab Dedicated, this feature is available.
-
 Imports a project from a remote archive.
 
 ```plaintext
@@ -494,7 +490,7 @@ GitHub and how many were already imported:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) as a [beta](../policy/development_stages_support.md#beta) in GitLab 16.11 [with a flag](../administration/feature_flags/_index.md) named `single_relation_import`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) as a [beta](../policy/development_stages_support.md#beta) in GitLab 16.11 [with a feature flag](../administration/feature_flags/_index.md) named `single_relation_import`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/455889) in GitLab 17.1. Feature flag `single_relation_import` removed.
 
 {{< /history >}}

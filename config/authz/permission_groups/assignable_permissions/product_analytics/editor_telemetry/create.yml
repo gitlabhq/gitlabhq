@@ -1,0 +1,9 @@
+---
+name: create_editor_telemetry
+description: Grants the ability to forward editor extension telemetry events
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - create_editor_telemetry

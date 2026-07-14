@@ -190,6 +190,22 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
       end
     end
 
+    context 'when skip_branch_pipelines_for_mrs is updated' do
+      let(:variables) do
+        {
+          full_path: project.full_path,
+          skip_branch_pipelines_for_mrs: true
+        }
+      end
+
+      it 'updates the setting' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(project.reload.ci_cd_settings.skip_branch_pipelines_for_mrs).to be(true)
+      end
+    end
+
     context 'when job_token_scope_enabled: true' do
       let(:variables) do
         {
@@ -438,7 +454,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
     end
 
     describe 'resource_group_default_process_mode' do
-      let_it_be(:variables, freeze: false) do
+      let(:variables) do
         {
           full_path: project.full_path,
           resource_group_default_process_mode: 'OLDEST_FIRST'

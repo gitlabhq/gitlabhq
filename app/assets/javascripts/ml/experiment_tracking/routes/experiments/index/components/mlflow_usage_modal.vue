@@ -5,6 +5,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { CREATE_EXPERIMENT_HELP_PATH, MLFLOW_USAGE_MODAL_ID } from '../constants';
 
 export default {
+  name: 'MlflowUsageModal',
   components: {
     GlModal,
     GlSprintf,

@@ -11,7 +11,7 @@ RSpec.describe 'user_settings/ssh_keys/_key.html.haml', feature_category: :syste
   end
 
   context 'when the key partial is used' do
-    let_it_be(:key, freeze: false) do
+    let(:key) do
       build_stubbed(
         :personal_key,
         user: user,
@@ -38,7 +38,7 @@ RSpec.describe 'user_settings/ssh_keys/_key.html.haml', feature_category: :syste
     end
 
     context 'when the key has not been used' do
-      let_it_be(:key, freeze: false) do
+      let(:key) do
         build_stubbed(:personal_key, user: user, last_used_at: nil)
       end
 
@@ -78,9 +78,7 @@ RSpec.describe 'user_settings/ssh_keys/_key.html.haml', feature_category: :syste
     end
 
     context 'when the key does not have an expiration date' do
-      let_it_be(:key, freeze: false) do
-        build_stubbed(:personal_key, user: user, expires_at: nil)
-      end
+      let(:key) { build_stubbed(:personal_key, user: user, expires_at: nil) }
 
       it 'renders "Never" for expires' do
         render
@@ -90,7 +88,7 @@ RSpec.describe 'user_settings/ssh_keys/_key.html.haml', feature_category: :syste
     end
 
     context 'when the key has expired' do
-      let_it_be(:key, freeze: false) { build_stubbed(:personal_key, :expired, user: user) }
+      let(:key) { build_stubbed(:personal_key, :expired, user: user) }
 
       it 'renders "Expired" as the expiration date label' do
         render
@@ -123,9 +121,7 @@ RSpec.describe 'user_settings/ssh_keys/_key.html.haml', feature_category: :syste
       end
 
       with_them do
-        let_it_be(:key, freeze: false) do
-          build_stubbed(:personal_key, user: user)
-        end
+        let(:key) { build_stubbed(:personal_key, user: user) }
 
         it 'renders the correct icon', :aggregate_failures do
           stub_application_setting(rsa_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE) unless valid

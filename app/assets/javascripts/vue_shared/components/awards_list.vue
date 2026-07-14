@@ -54,6 +54,7 @@ export default {
       default: 'selected',
     },
   },
+  emits: ['award'],
   data() {
     return {
       isMenuOpen: false,

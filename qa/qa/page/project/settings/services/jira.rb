@@ -55,7 +55,9 @@ module QA
             def click_save_changes_and_wait
               click_save_changes_button
               wait_until(reload: false) do
-                has_element?('save-changes-button', wait: 1) ? !find_element('save-changes-button').disabled? : true
+                next true unless has_element?('save-changes-button', wait: 1)
+
+                !element_disabled?('save-changes-button')
               end
             end
 

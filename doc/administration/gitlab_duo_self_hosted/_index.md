@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Host your own AI Gateway and language models.
 title: Self-hosted models
@@ -15,7 +15,7 @@ title: Self-hosted models
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a feature flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Feature flag `ai_custom_model` removed in GitLab 17.8.
@@ -85,6 +85,29 @@ or GitLab Duo Pro when GitLab hosts and connects to those models through the clo
 | [GitLab Duo and SDLC trends Dashboard](../../user/analytics/duo_and_sdlc_trends.md)                                                    | GitLab 17.9 and later   | Beta                |
 | [Code Review Summary](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                              | GitLab 18.1.2 and later | Experiment          |
 
+## Internet connectivity requirements for the Agent Platform
+
+Requirements for internet connectivity depend on whether your subscription has an online or offline license.
+
+If your subscription has an online license, usage billing requires outbound internet connectivity. If your firewall or network policy blocks any of the following components, usage billing fails and you cannot use GitLab Duo Agent Platform features.
+
+If your subscription has an offline license, your instance does not connect to the following components. You are billed based on your Enterprise License Agreement instead of usage billing.
+For more information, see [offline deployment](offline_deployment.md).
+
+| Component | Endpoint | Port | Purpose |
+|-----------|----------|------|---------|
+| CustomersDot | `customers.gitlab.com` | `443` | Keep license and subscription information in sync. |
+| Cloud AI Gateway | `cloud.gitlab.com` | `443` | Perform usage quota checks for Agent Platform features. |
+| Cloud GitLab Duo Workflow Service <sup>1</sup> | `duo-workflow-svc.runway.gitlab.net` | `443` | Send usage billing metadata for GitLab Duo Agent Platform features. |
+
+**Footnotes**:
+
+1. Requires HTTP/2
+
+Only billing metadata is sent to these components. Prompts, code inputs, and model responses
+do not leave your network.
+For more information about the type of data that is transmitted, see [Data transmission](#data-transmission).
+
 ## Data transmission
 
 The following billing metadata is sent to GitLab for usage billing in a JSON object:
@@ -104,6 +127,9 @@ For example:
   "Timestamp": "2026-05-04 18:04:30.969000000"
 }
 ```
+
+> [!note]
+> `GlobalUserId` is a deterministic but de-identified identifier. The `GlobalUserId` is generated from the instance ID and user ID in the GitLab code with SHA-256. It is possible for customers to map it back to a specific user if the customer builds the lookup.
 
 Inference data, including code inputs, model prompts, and model responses, does not leave the customer network.
 
@@ -202,7 +228,7 @@ offering a ready-to-use AI solution without the need for on-premise infrastructu
 
 For more information, see the [GitLab.com AI Gateway configuration diagram](configuration_types.md#gitlabcom-ai-gateway).
 
-To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../gitlab_duo/configure/gitlab_self_managed.md).
+To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../gitlab_duo/configure/_index.md).
 
 ## Set up private infrastructure
 

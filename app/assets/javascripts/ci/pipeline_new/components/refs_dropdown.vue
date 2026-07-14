@@ -42,6 +42,7 @@ export default {
       default: null,
     },
   },
+  emits: ['input'],
   computed: {
     refShortName() {
       return this.value.shortName;

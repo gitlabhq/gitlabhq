@@ -1,0 +1,10 @@
+---
+name: ci_optimize_artifact_parsing
+description: Optimize CI artifact parsing by downloading remote artifacts once, reusing the local copy for both decompressed-size validation and parsing, and capping the output of the decompressed-size check at the size limit
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/605350
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244619
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/605502
+milestone: "19.2"
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

@@ -42,13 +42,13 @@ Only Google Cloud is supported. See [epic 11577](https://gitlab.com/groups/gitla
 
 Prerequisites:
 
-- Review the [service accounts overview](https://cloud.google.com/iam/docs/service-account-overview) to authenticate with a service account.
+- Review the [service accounts overview](https://docs.cloud.google.com/iam/docs/service-account-overview) to authenticate with a service account.
 - This document assumes you are setting up and using a dedicated Google Cloud service account for managing backups.
 - If no other credentials are provided, and you are running inside Google Cloud, then the tool attempts to use the access of the infrastructure it is running on. For [security reasons](#security-considerations), you should run the tool with separate credentials, and restrict access to the created backups from the application.
 
 To create a backup:
 
-1. [Create a role](https://cloud.google.com/iam/docs/creating-custom-roles):
+1. [Create a role](https://docs.cloud.google.com/iam/docs/creating-custom-roles):
    1. Create a file `role.yaml` with the following definition:
 
    ```yaml
@@ -81,7 +81,7 @@ To create a backup:
    gcloud projects add-iam-policy-binding <YOUR_PROJECT_ID> --member="serviceAccount:<SERVICE_ACCOUNT_EMAIL>" --role="roles/<ROLE_NAME>"
    ```
 
-1. To authenticate with a service account, see [service account credentials](https://cloud.google.com/iam/docs/service-account-overview#credentials). The credentials can be saved to a file, or stored in a predefined environment variable.
+1. To authenticate with a service account, see [service account credentials](https://docs.cloud.google.com/iam/docs/service-account-overview#credentials). The credentials can be saved to a file, or stored in a predefined environment variable.
 1. Create a destination bucket to backup to in [Google Cloud Storage](https://cloud.google.com/storage/). The options here are highly dependent on your requirements.
 1. Run the backup:
 

@@ -36,6 +36,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'SnippetHeader',
   components: {
     CloneCodeDropdown,
     GlIcon,

@@ -5,6 +5,8 @@ module Mutations
     class ResolveMany < BaseMany
       graphql_name 'TodoResolveMany'
 
+      authorize_granular_token permissions: :update_todo, boundary: :user, boundary_type: :user
+
       field :todos, [::Types::TodoType],
         null: false,
         description: 'Resolved to-do items.'

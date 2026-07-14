@@ -4,7 +4,6 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
-import NavItemLink from '~/super_sidebar/components/nav_item_link.vue';
 import {
   PINNED_NAV_STORAGE_KEY,
   SIDEBAR_PINS_EXPANDED_COOKIE,
@@ -143,7 +142,7 @@ describe('PinnedSection component', () => {
 
     it('stores pinned nav usage in sessionStorage', () => {
       expect(window.sessionStorage.getItem(PINNED_NAV_STORAGE_KEY)).toBe(null);
-      wrapper.findComponent(NavItemLink).vm.$emit('nav-link-click');
+      wrapper.findComponent(NavItem).vm.$emit('nav-link-click');
       expect(window.sessionStorage.getItem(PINNED_NAV_STORAGE_KEY)).toBe('true');
     });
   });

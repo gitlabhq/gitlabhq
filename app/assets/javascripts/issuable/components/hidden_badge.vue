@@ -2,6 +2,7 @@
 import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
+  name: 'HiddenBadge',
   components: {
     GlBadge,
   },

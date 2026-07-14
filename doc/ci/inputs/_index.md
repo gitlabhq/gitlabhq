@@ -283,7 +283,7 @@ The pipeline fails to start if any value in the array input does not match a lis
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587657) in GitLab 18.10 [with a flag](../../administration/feature_flags/_index.md) named `ci_inputs_array_index_operator`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587657) in GitLab 18.10 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_inputs_array_index_operator`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/587657) in GitLab 18.11. Feature flag `ci_inputs_array_index_operator` removed.
 
 {{< /history >}}
@@ -667,7 +667,7 @@ trigger-job:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_file_inputs`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) in GitLab 18.6 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_file_inputs`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/579240) in GitLab 18.9. Feature flag `ci_file_inputs` removed.
 
 {{< /history >}}
@@ -782,6 +782,14 @@ Only variables you can [use with the `include` keyword](../yaml/includes.md#use-
 not [masked](../variables/_index.md#mask-a-cicd-variable) can be expanded.
 [Nested variable expansion](../variables/where_variables_can_be_used.md#nested-variable-expansion) is not supported.
 
+> [!note]
+> Environment-scoped project and group variables are not available to `expand_vars`,
+> because input interpolation happens during pipeline creation, before jobs can be
+> assigned to environments. If `expand_vars` cannot find a matching variable, it leaves
+> the literal string (for example, `$MY_VAR`) in the configuration unchanged, which the
+> shell might still expand at runtime. If both an environment-scoped variable and a
+> non-scoped variable exist with the same name, `expand_vars` uses the non-scoped value.
+
 Example:
 
 ```yaml
@@ -877,6 +885,47 @@ For example:
 test-job:
   script: echo $[[ inputs.test | expand_vars | posix_escape ]]
 ```
+
+#### `split`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19368) in GitLab 19.2
+  [with a feature flag](../../administration/feature_flags/_index.md) named `ci_interpolation_split_function`.
+  Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Use `split` to divide a string input into an array of substrings on a separator. For example:
+
+- `split('<separator>')`
+
+| Name        | Type   | Description |
+| ----------- | ------ | ----------- |
+| `separator` | String | Character or string to split on. |
+
+`split` strips leading and trailing whitespace from each element and removes empty elements.
+
+Example:
+
+```yaml
+spec:
+  inputs:
+    runner_tags:
+      default: 'docker,linux'
+---
+
+deploy:
+  tags: $[[ inputs.runner_tags | split(',') ]]
+  script: echo "Deploying..."
+```
+
+In this example, `inputs.runner_tags` with `'docker,linux'` produces `['docker', 'linux']`,
+which is assigned to `tags` as an array.
 
 ## Troubleshooting
 

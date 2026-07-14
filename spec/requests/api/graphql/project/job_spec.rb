@@ -23,7 +23,7 @@ RSpec.describe 'Query.project.job', feature_category: :continuous_integration do
   end
 
   context 'when the user can read jobs on the project' do
-    before do
+    before_all do
       project.add_developer(user)
     end
 

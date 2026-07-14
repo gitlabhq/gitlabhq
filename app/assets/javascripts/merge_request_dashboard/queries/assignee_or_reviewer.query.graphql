@@ -6,6 +6,7 @@ query assigneeOrReviewer(
   $assignedReviewStates: [MergeRequestReviewState!]
   $reviewerReviewStates: [MergeRequestReviewState!]
   $mergedAfter: Time
+  $updatedAt: Boolean = false
   $not: MergeRequestsResolverNegatedParams
   $perPage: Int!
   $afterCursor: String

@@ -60,6 +60,7 @@ export default {
         ...(project.namespace?.id && { [GROUP_DATA.queryParam]: project.namespace.id }),
         [PROJECT_DATA.queryParam]: project.id,
         nav_source: null,
+        page: null,
         scope: this.currentScope,
         [INCLUDE_ARCHIVED_FILTER_PARAM]: null,
       };

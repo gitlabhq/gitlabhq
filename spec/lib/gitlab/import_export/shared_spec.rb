@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'fileutils'
 
-RSpec.describe Gitlab::ImportExport::Shared do
+RSpec.describe Gitlab::ImportExport::Shared, feature_category: :importers do
   let(:project) { build(:project) }
 
   subject { project.import_export_shared }
@@ -75,6 +75,7 @@ RSpec.describe Gitlab::ImportExport::Shared do
         .to receive(:track_exception)
         .with(error, hash_including(
           importer: 'Import/Export',
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
           project_id: project.id,
           project_name: project.name,
           project_path: project.full_path,

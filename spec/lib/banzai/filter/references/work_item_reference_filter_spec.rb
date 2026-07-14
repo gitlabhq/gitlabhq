@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_category: :markdown do
   include FilterSpecHelper
 
-  let_it_be(:group, freeze: false)           { create(:group) }
-  let_it_be(:namespace, freeze: false)       { create(:namespace, name: 'main-namespace') }
-  let_it_be(:project, freeze: false)         { create(:project, :public, namespace: namespace, path: 'main-project') }
-  let_it_be(:cross_namespace, freeze: false) { create(:namespace, name: 'cross-namespace') }
-  let_it_be(:cross_project, freeze: false)   do
+  let_it_be(:group)           { create(:group) }
+  let_it_be(:namespace)       { create(:namespace, name: 'main-namespace') }
+  let_it_be(:project)         { create(:project, :public, namespace: namespace, path: 'main-project') }
+  let_it_be(:cross_namespace) { create(:namespace, name: 'cross-namespace') }
+  let_it_be(:cross_project)   do
     create(:project, :public, namespace: cross_namespace, path: 'cross-project')
   end
 
@@ -144,43 +144,43 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
 
   context 'when group level work item URL reference' do
     let_it_be_with_reload(:work_item) { create(:work_item, :group_level, namespace: group) }
-    let_it_be(:work_item_link_reference, freeze: false)  { item_url(work_item) }
-    let_it_be(:work_item_url, freeze: false)             { work_item_link_reference }
-    let_it_be(:reference, freeze: false)                 { work_item_url }
-    let_it_be(:written_reference, freeze: false)         { reference }
-    let_it_be(:inner_text, freeze: false)                { written_reference }
+    let_it_be(:work_item_link_reference)  { item_url(work_item) }
+    let_it_be(:work_item_url)             { work_item_link_reference }
+    let_it_be(:reference)                 { work_item_url }
+    let_it_be(:written_reference)         { reference }
+    let_it_be(:inner_text)                { written_reference }
 
     it_behaves_like 'a work item reference'
   end
 
   context 'when group level work item full reference' do
     let_it_be_with_reload(:work_item) { create(:work_item, :group_level, namespace: group) }
-    let_it_be(:work_item_link_reference, freeze: false)  { item_url(work_item) }
-    let_it_be(:work_item_url, freeze: false)             { work_item_link_reference }
-    let_it_be(:reference, freeze: false)                 { work_item.to_reference(full: true) }
-    let_it_be(:written_reference, freeze: false)         { reference }
-    let_it_be(:inner_text, freeze: false)                { written_reference }
+    let_it_be(:work_item_link_reference)  { item_url(work_item) }
+    let_it_be(:work_item_url)             { work_item_link_reference }
+    let_it_be(:reference)                 { work_item.to_reference(full: true) }
+    let_it_be(:written_reference)         { reference }
+    let_it_be(:inner_text)                { written_reference }
 
     it_behaves_like 'a work item reference'
   end
 
   context 'on [work_item:XXX] reference' do
-    let_it_be(:written_reference, freeze: false)         { "[work_item:#{work_item.iid}]" }
-    let_it_be(:reference, freeze: false)                 { written_reference }
-    let_it_be(:inner_text, freeze: false)                { written_reference }
-    let_it_be(:work_item_link_reference, freeze: false)  { item_url(work_item) }
-    let_it_be(:work_item_url, freeze: false)             { work_item_link_reference }
+    let_it_be(:written_reference)         { "[work_item:#{work_item.iid}]" }
+    let_it_be(:reference)                 { written_reference }
+    let_it_be(:inner_text)                { written_reference }
+    let_it_be(:work_item_link_reference)  { item_url(work_item) }
+    let_it_be(:work_item_url)             { work_item_link_reference }
 
     it_behaves_like 'a work item reference'
   end
 
   context 'on cross project [work_item:project/path/XXX] reference' do
     let_it_be_with_reload(:work_item) { create(:work_item, project: cross_project) }
-    let_it_be(:work_item_link_reference, freeze: false)  { item_url(work_item) }
-    let_it_be(:work_item_url, freeze: false)             { work_item_link_reference }
-    let_it_be(:written_reference, freeze: false)         { "[work_item:#{cross_project.full_path}/#{work_item.iid}]" }
-    let_it_be(:reference, freeze: false)                 { written_reference }
-    let_it_be(:inner_text, freeze: false)                { written_reference }
+    let_it_be(:work_item_link_reference)  { item_url(work_item) }
+    let_it_be(:work_item_url)             { work_item_link_reference }
+    let_it_be(:written_reference)         { "[work_item:#{cross_project.full_path}/#{work_item.iid}]" }
+    let_it_be(:reference)                 { written_reference }
+    let_it_be(:inner_text)                { written_reference }
 
     it_behaves_like 'a work item reference'
   end
@@ -189,11 +189,11 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
   #   "See http://localhost/cross-namespace/cross-project/-/work_items/1"
   context 'when cross-project URL reference' do
     let_it_be_with_reload(:work_item) { create(:work_item, project: cross_project) }
-    let_it_be(:work_item_link_reference, freeze: false)  { item_url(work_item) }
-    let_it_be(:work_item_url, freeze: false)             { work_item_link_reference }
-    let_it_be(:reference, freeze: false)                 { work_item_url }
-    let_it_be(:written_reference, freeze: false)         { reference }
-    let_it_be(:inner_text, freeze: false)                { written_reference }
+    let_it_be(:work_item_link_reference)  { item_url(work_item) }
+    let_it_be(:work_item_url)             { work_item_link_reference }
+    let_it_be(:reference)                 { work_item_url }
+    let_it_be(:written_reference)         { reference }
+    let_it_be(:inner_text)                { written_reference }
 
     it_behaves_like 'a work item reference'
 
@@ -218,9 +218,9 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
   # Example:
   #   "See http://localhost/cross-namespace/cross-project/-/work_items/1#note_123"
   context 'when cross-project URL reference with comment anchor' do
-    let_it_be(:work_item, freeze: false)     { create(:work_item, project: cross_project) }
-    let_it_be(:work_item_url, freeze: false) { item_url(work_item) }
-    let_it_be(:reference, freeze: false)     { "#{work_item_url}#note_123" }
+    let_it_be(:work_item)     { create(:work_item, project: cross_project) }
+    let_it_be(:work_item_url) { item_url(work_item) }
+    let_it_be(:reference)     { "#{work_item_url}#note_123" }
 
     it_behaves_like 'a reference containing an element node'
 
@@ -250,12 +250,12 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
   #   'See <a href=\"http://localhost/cross-namespace/cross-project/-/work_items/1\">Reference</a>''
   context 'when cross-project URL in link href' do
     let_it_be_with_reload(:work_item) { create(:work_item, project: cross_project) }
-    let_it_be(:work_item_link_reference, freeze: false)  { item_url(work_item) }
-    let_it_be(:work_item_url, freeze: false)             { work_item_link_reference }
-    let_it_be(:reference, freeze: false)                 { work_item_url }
-    let_it_be(:reference_link, freeze: false)            { %(<a href="#{reference}">Reference</a>) }
-    let_it_be(:written_reference, freeze: false)         { reference_link }
-    let_it_be(:inner_text, freeze: false)                { 'Reference' }
+    let_it_be(:work_item_link_reference)  { item_url(work_item) }
+    let_it_be(:work_item_url)             { work_item_link_reference }
+    let_it_be(:reference)                 { work_item_url }
+    let_it_be(:reference_link)            { %(<a href="#{reference}">Reference</a>) }
+    let_it_be(:written_reference)         { reference_link }
+    let_it_be(:inner_text)                { 'Reference' }
 
     it_behaves_like 'a work item reference'
 
@@ -278,11 +278,11 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
   end
 
   context 'for group context' do
-    let_it_be(:context, freeze: false) { { project: nil, group: group } }
+    let_it_be(:context) { { project: nil, group: group } }
     let(:work_item_url) { item_url(work_item) }
 
     context 'when work item exists at the group level' do
-      let_it_be(:work_item, freeze: false) { create(:work_item, :group_level, namespace: group) }
+      let_it_be(:work_item) { create(:work_item, :group_level, namespace: group) }
 
       it 'includes data attributes for issuable popover' do
         doc = reference_filter("See #{work_item_url}", context)

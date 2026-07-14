@@ -20,6 +20,7 @@ RSpec.describe 'Mailer previews', :with_trial_types, feature_category: :shared d
   let_it_be(:key) { create(:key, user: user) }
   let_it_be(:gpg_key) { create(:gpg_key, user: user) }
   let_it_be(:bulk_import) { create(:bulk_import, :finished, :with_configuration) }
+  let_it_be(:offline_bulk_import) { create(:bulk_import, :finished, :with_offline_configuration) }
   let_it_be(:offline_export) { create(:offline_export, :finished, :with_configuration) }
   let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
   let_it_be(:source_user) do

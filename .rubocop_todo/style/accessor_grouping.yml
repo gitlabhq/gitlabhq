@@ -52,6 +52,5 @@ Style/AccessorGrouping:
     - 'lib/gitlab/usage/service_ping/instrumented_payload.rb'
     - 'lib/json_web_token/token.rb'
     - 'lib/object_storage/direct_upload.rb'
-    - 'lib/safe_zip/entry.rb'
     - 'lib/system_check/simple_executor.rb'
     - 'qa/qa/ee/resource/geo/node.rb'

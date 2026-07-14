@@ -416,7 +416,7 @@ To enable receptive agents:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/642) in GitLab 18.3 [with a flag](../feature_flags/_index.md) named `kas_k8s_api_proxy_response_header_allowlist`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/642) in GitLab 18.3 [with a feature flag](../feature_flags/_index.md) named `kas_k8s_api_proxy_response_header_allowlist`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/642) in GitLab 18.7. Feature flag `kas_k8s_api_proxy_response_header_allowlist` removed.
 
 {{< /history >}}

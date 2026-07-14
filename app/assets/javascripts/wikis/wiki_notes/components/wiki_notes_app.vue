@@ -32,7 +32,7 @@ export default {
     SkeletonNote,
     PlaceholderNote,
   },
-  inject: ['containerId', 'noteCount', 'queryVariables'],
+  inject: ['noteCount', 'queryVariables'],
   apollo: {
     wikiDiscussionSortOrder,
     wikiPage: {

@@ -21,6 +21,7 @@ export default {
       required: true,
     },
   },
+  emits: ['success'],
   data() {
     return {
       updateInProgress: false,

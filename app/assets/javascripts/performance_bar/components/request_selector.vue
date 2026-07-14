@@ -2,6 +2,7 @@
 import { GlFormSelect } from '@gitlab/ui';
 
 export default {
+  name: 'RequestSelector',
   components: {
     GlFormSelect,
   },
@@ -15,6 +16,7 @@ export default {
       required: true,
     },
   },
+  emits: ['change-current-request'],
   data() {
     return {
       currentRequestId: this.currentRequest.id,

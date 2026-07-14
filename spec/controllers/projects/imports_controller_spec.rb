@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Projects::ImportsController, feature_category: :importers do
   let_it_be(:user) { create(:user) }
-  let(:project) { create(:project) }
 
   before do
     sign_in(user) if user
@@ -13,7 +12,7 @@ RSpec.describe Projects::ImportsController, feature_category: :importers do
   describe 'GET #show' do
     context 'when user is not authenticated and the project is public' do
       let(:user) { nil }
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:project, :public, organization: current_organization) }
 
       it 'returns 404 response' do
         get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
@@ -23,8 +22,12 @@ RSpec.describe Projects::ImportsController, feature_category: :importers do
     end
 
     context 'when the developer user has project creation rights' do
-      let_it_be(:group) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
-      let_it_be(:project, freeze: false) { create(:project_empty_repo, :import_started, group: group) }
+      let_it_be(:group) do
+        create(:group, organization: current_organization,
+          project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS)
+      end
+
+      let_it_be_with_reload(:project) { create(:project_empty_repo, :import_started, group: group) }
 
       before_all do
         group.add_developer(user)
@@ -50,11 +53,13 @@ RSpec.describe Projects::ImportsController, feature_category: :importers do
     end
 
     context 'when the user has maintainer rights' do
-      before do
-        project.add_maintainer(user)
-      end
-
       context 'when repository does not exist' do
+        let_it_be(:project) { create(:project, organization: current_organization) }
+
+        before_all do
+          project.add_maintainer(user)
+        end
+
         it 'renders template' do
           get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
 
@@ -69,8 +74,12 @@ RSpec.describe Projects::ImportsController, feature_category: :importers do
       end
 
       context 'when repository exists' do
-        let(:project) { create(:project_empty_repo, import_url: 'https://github.com/vim/vim.git') }
+        let(:project) { create(:project_empty_repo, import_url: 'https://github.com/vim/vim.git', organization: current_organization) }
         let(:import_state) { project.import_state }
+
+        before do
+          project.add_maintainer(user)
+        end
 
         context 'when import is in progress' do
           before do
@@ -164,21 +173,49 @@ RSpec.describe Projects::ImportsController, feature_category: :importers do
         end
       end
     end
+
+    context 'when the project belongs to another organization' do
+      let(:project) { create(:project, organization: create(:organization)) }
+
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'returns a 404 response' do
+        get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'POST #create' do
     let(:params) { { import_url: 'https://github.com/vim/vim.git', import_url_user: 'user', import_url_password: 'password' } }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, organization: current_organization) }
+
+    subject(:post_create) do
+      post :create, params: { project: params, namespace_id: project.namespace.to_param, project_id: project }
+    end
 
     before do
       project.add_maintainer(user)
       allow(RepositoryImportWorker).to receive(:perform_async)
-
-      post :create, params: { project: params, namespace_id: project.namespace.to_param, project_id: project }
     end
 
     it 'sets unsafe_import_url to the project' do
+      post_create
+
       expect(project.reload.unsafe_import_url).to eq('https://user:password@github.com/vim/vim.git')
+    end
+
+    context 'when the project belongs to another organization' do
+      let(:project) { create(:project, organization: create(:organization)) }
+
+      it 'returns a 404 response' do
+        post_create
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
   end
 end

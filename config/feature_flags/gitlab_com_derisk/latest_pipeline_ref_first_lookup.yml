@@ -1,0 +1,12 @@
+---
+name: latest_pipeline_ref_first_lookup
+description: Use a (project_id, ref, id DESC) index lookup for Project#latest_pipeline
+  instead of filtering on a non-selective HEAD sha, which can time out on projects
+  with many pipelines on one commit. See gitlab-org/gitlab#600131.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/600131
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243652
+rollout_issue_url:
+milestone: '19.2'
+group: group::security insights
+type: gitlab_com_derisk
+default_enabled: false

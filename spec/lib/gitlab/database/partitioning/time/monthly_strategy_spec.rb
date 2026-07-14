@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Database::Partitioning::Time::MonthlyStrategy, feature_ca
       Class.new(Gitlab::Database::SharedModel) do
         include PartitionedTable
         self.table_name = '_test_partitioned_shared_model'
-        partitioned_by :created_at, strategy: :monthly
+        partitioned_by :created_at, strategy: :monthly, retain_for: :ever
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Database::Partitioning::Time::MonthlyStrategy, feature_ca
     described_class.new(model, partitioning_key, retain_for: retention_period, retain_non_empty_partitions: retain_data)
   end
 
-  let(:retention_period) { nil }
+  let(:retention_period) { :ever }
   let(:retain_data) { false }
   let(:partitioning_key) { :created_at }
   let(:table_name) { model.table_name }
@@ -263,7 +263,7 @@ RSpec.describe Gitlab::Database::Partitioning::Time::MonthlyStrategy, feature_ca
         SQL
       end
 
-      context 'without a time retention policy' do
+      context 'with :ever retention' do
         it 'has no extra partitions to prune' do
           expect(extra_partitions).to be_empty
         end

@@ -5,6 +5,8 @@ module Mutations
     class SnoozeMany < BaseMany
       graphql_name 'TodoSnoozeMany'
 
+      authorize_granular_token permissions: :update_todo, boundary: :user, boundary_type: :user
+
       argument :snooze_until,
         ::Types::TimeType,
         required: true,

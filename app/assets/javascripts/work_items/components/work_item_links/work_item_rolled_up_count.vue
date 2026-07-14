@@ -5,6 +5,7 @@ import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemRolledUpCountInfo from './work_item_rolled_up_count_info.vue';
 
 export default {
+  name: 'WorkItemRolledUpCount',
   i18n: {
     countPermissionText: __('Roll up totals may reflect child items you don’t have access to.'),
     noChildItemsText: __('No child items are currently assigned.'),

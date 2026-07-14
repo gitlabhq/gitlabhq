@@ -4,16 +4,16 @@ import DEFAULT_PROJECT_TEMPLATES from 'any_else_ce/projects/default_project_temp
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { validateImportUrlPath } from '~/lib/utils/path_helpers/import';
 import Tracking from '~/tracking';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '../lib/utils/constants';
-import { ENTER_KEY } from '../lib/utils/keys';
-import axios from '../lib/utils/axios_utils';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { ENTER_KEY } from '~/lib/utils/keys';
 import {
   convertToTitleCase,
+  convertUnicodeToAscii,
   humanize,
   slugify,
-  convertUnicodeToAscii,
-} from '../lib/utils/text_utility';
-import { checkRules } from './project_name_rules';
+} from '~/lib/utils/text_utility';
+import axios from '../lib/utils/axios_utils';
+import { validateProjectName } from './project_name_validation';
 
 let hasUserDefinedProjectPath = false;
 let hasUserDefinedProjectName = false;
@@ -94,28 +94,17 @@ const validateGroupNamespaceDropdown = (e) => {
   }
 };
 
-const checkProjectName = (projectNameInput) => {
-  const msg = checkRules(projectNameInput.value);
+const checkProjectName = (projectNameInput, description) => {
   const projectNameError = document.querySelector('#js-project-name-error');
-  const projectNameDescription = document.getElementById('js-project-name-description');
-  if (!projectNameError) return;
-  if (msg) {
-    projectNameError.innerText = msg;
-    projectNameError.classList.remove('gl-hidden');
-    projectNameDescription.classList.add('gl-hidden');
-    projectNameInput.setAttribute('aria-describedby', projectNameError.id);
-  } else {
-    projectNameError.classList.add('gl-hidden');
-    projectNameDescription.classList.remove('gl-hidden');
-    projectNameInput.setAttribute('aria-describedby', projectNameDescription.id);
-  }
-  projectNameInput.setAttribute('aria-invalid', Boolean(msg));
+
+  return validateProjectName(projectNameInput, projectNameError, description);
 };
 
 const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
   const specialRepo = document.querySelector('.js-user-readme-repo');
+  const projectNameDescription = document.querySelector('#js-project-name-description');
   const projectNameInputListener = () => {
-    checkProjectName($projectNameInput);
+    checkProjectName($projectNameInput, projectNameDescription);
     hasUserDefinedProjectName = $projectNameInput.value.trim().length > 0;
 
     if (hasUserDefinedProjectPath) return;
@@ -171,6 +160,9 @@ const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
   $projectPathInput.addEventListener('change', projectPathInputListener);
 
   document.querySelector('.js-create-project-button').addEventListener('click', (e) => {
+    const hasNameError = checkProjectName($projectNameInput);
+    if (hasNameError) e.preventDefault();
+
     validateGroupNamespaceDropdown(e);
   });
 };

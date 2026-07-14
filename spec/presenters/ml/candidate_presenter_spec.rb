@@ -4,13 +4,23 @@ require 'spec_helper'
 
 RSpec.describe Ml::CandidatePresenter, feature_category: :mlops do
   let_it_be(:project) { build_stubbed(:project) }
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:regular_candidate, freeze: false) do
     build_stubbed(:ml_candidates, :with_artifact, internal_id: 1, project: project)
   end
 
   let_it_be(:model_version) { build_stubbed(:ml_model_versions, :with_package, project: project) }
   let_it_be(:model_version_candidate) { model_version.candidate }
-  let_it_be(:user) { project.owner }
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
+  let_it_be(:user, freeze: false) { project.owner }
   let_it_be(:pipeline, freeze: false) { build_stubbed(:ci_pipeline, project: project, user: user) }
   let_it_be(:build, freeze: false) do
     regular_candidate.ci_build = build_stubbed(:ci_build, pipeline: pipeline, user: user)

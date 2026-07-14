@@ -152,7 +152,7 @@ end
 
 RSpec.shared_examples 'work item supports type change via quick actions' do
   let_it_be(:assignee, freeze: false) { create(:user) }
-  let_it_be(:task_type, freeze: false) { build(:work_item_system_defined_type, :task) }
+  let_it_be(:task_type) { build(:work_item_system_defined_type, :task) }
 
   let(:body) { "Updating type.\n/type issue" }
 

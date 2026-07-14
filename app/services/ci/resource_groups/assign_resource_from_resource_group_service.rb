@@ -21,7 +21,19 @@ module Ci
 
       # rubocop: disable CodeReuse/ActiveRecord
       def enqueue_upcoming_processables(free_resources, resource_group)
-        resource_group.upcoming_processables.take(free_resources).each do |upcoming|
+        upcoming_processables = resource_group.upcoming_processables
+        preload_enabled = resource_group_assignment_preloads_enabled?(resource_group)
+
+        if preload_enabled
+          upcoming_processables = upcoming_processables
+            .preload(:user, :job_environment, :job_definition, deployment: :environment, project: :ci_cd_settings)
+        end
+
+        upcoming_processables = upcoming_processables.take(free_resources)
+
+        preload_environment_last_deployments(upcoming_processables) if preload_enabled
+
+        upcoming_processables.each do |upcoming|
           enqueued = enqueue_upcoming(upcoming)
 
           next unless enqueued
@@ -40,6 +52,20 @@ module Ci
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      def resource_group_assignment_preloads_enabled?(resource_group)
+        Feature.enabled?(:resource_group_assignment_preloads, ::Project.actor_from_id(resource_group.project_id))
+      end
+
+      # has_outdated_deployment? reaches deployment.environment.last_deployment,
+      # which requires a additional preload logic
+      def preload_environment_last_deployments(upcoming_processables)
+        return if upcoming_processables.empty?
+
+        environments = upcoming_processables.filter_map { |processable| processable.deployment&.environment }.uniq
+
+        ::Preloaders::Environments::DeploymentPreloader.new(environments).execute_with_union(:last_deployment, {})
+      end
+
       def enqueue_upcoming(upcoming)
         enqueued = false
 
@@ -55,7 +81,7 @@ module Ci
       end
 
       def release_resource_from_stale_jobs(resource_group)
-        resource_group.resources.stale_processables.find_each do |processable|
+        resource_group.stale_processables.find_each do |processable|
           resource_group.release_resource_from(processable)
         end
       end

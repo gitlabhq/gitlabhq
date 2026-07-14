@@ -1,0 +1,8 @@
+---
+event: Cd::ArtifactPublishedEvent
+description: Published when a new artifact version is available for a GitLab CD artifact
+  source, so subscribers can create the corresponding cd_versions. Source-agnostic
+  by design - today it is bridged from container registry pushes, but external artifact
+  sources can publish the same event later.
+feature_category: continuous_delivery
+ee_only: true

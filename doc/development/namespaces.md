@@ -161,6 +161,9 @@ namespace_object.ancestors
 
 We could not name the scope method `.ancestors` because we would override the `Module` method of the same name.
 
+To read the effective state of a namespace, GitLab propagates state to descendants instead of traversing ancestors at read time.
+For more information, see [Namespace state inheritance propagation](namespaces_state_propagation.md).
+
 It can be more efficient to return the ancestor ids instead of the whole record:
 
 ```ruby

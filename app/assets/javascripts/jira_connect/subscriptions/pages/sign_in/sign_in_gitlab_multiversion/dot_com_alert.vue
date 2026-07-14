@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import { JIRA_USER_REQUIREMENTS_DOC_LINK } from '~/jira_connect/subscriptions/constants';
 
 export default {
+  name: 'DotComAlert',
   components: {
     GlAlert,
     GlLink,

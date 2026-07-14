@@ -21,6 +21,8 @@ module Gitlab
           return true unless modified_paths
           return false if modified_paths.empty?
 
+          return regexp_match?(modified_paths, pipeline, context, compare_to_sha) if @globs.key?(:regexp)
+
           expanded_globs = expand_globs(context).uniq
           return false if expanded_globs.empty?
 
@@ -69,11 +71,36 @@ module Gitlab
         end
 
         def expand_globs(context)
-          return paths unless context
-
           paths.map do |glob|
             expand_value_nested(glob, context)
           end
+        end
+
+        def regexp_match?(paths, pipeline, context, compare_to_sha)
+          matcher = regexp_matcher(context, pipeline.project_id)
+
+          matcher.validate_pattern_length!
+
+          Gitlab::SafeRequestStore.fetch(regexp_comparison_key(pipeline, compare_to_sha, matcher.expanded_pattern)) do
+            matcher.match?(paths)
+          end
+        end
+
+        def regexp_matcher(context, project_id)
+          expanded = expand_value_nested(@globs[:regexp], context)
+
+          Rules::Rule::Clause::RegexpMatcher.new(
+            raw_pattern: @globs[:regexp],
+            expanded_pattern: expanded,
+            max_comparisons: CHANGES_MAX_PATTERN_COMPARISONS,
+            log_scope: 'rules:changes',
+            project_id: project_id
+          )
+        end
+
+        def regexp_comparison_key(pipeline, compare_to_sha, expanded_regexp)
+          # Key on the expanded pattern so the same raw pattern with different variable values does not collide.
+          [self.class.to_s, '#regexp_match?', pipeline.project_id, pipeline.sha, compare_to_sha, expanded_regexp]
         end
 
         def paths

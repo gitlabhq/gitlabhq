@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'ModelSidebarItem',
   props: {
     title: {
       type: String,

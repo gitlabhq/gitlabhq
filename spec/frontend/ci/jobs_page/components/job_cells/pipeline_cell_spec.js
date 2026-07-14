@@ -2,6 +2,7 @@ import { set } from 'lodash-es';
 import { GlAvatar } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PipelineCell from '~/ci/jobs_page/components/job_cells/pipeline_cell.vue';
 import LinkCell from '~/ci/runner/components/cells/link_cell.vue';
@@ -20,6 +21,7 @@ const mockJobWithUser = {
     id: 'gid://gitlab/Ci::Pipeline/460',
     path: '/root/ci-project/-/pipelines/460',
     user: {
+      name: 'Administrator',
       avatarUrl:
         'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
       webPath: '/root',
@@ -39,6 +41,9 @@ describe('Pipeline Cell', () => {
       shallowMount(PipelineCell, {
         propsData: {
           job: props,
+        },
+        directives: {
+          GlTooltip: createMockDirective('gl-tooltip'),
         },
       }),
     );
@@ -78,6 +83,11 @@ describe('Pipeline Cell', () => {
 
       expect(findPipelineUserLink().exists()).toBe(true);
       expect(findPipelineUserLink().attributes('href')).toBe(mockJobWithUser.pipeline.user.webPath);
+      expect(findPipelineUserLink().attributes('title')).toBe(mockJobWithUser.pipeline.user.name);
+      expect(findPipelineUserLink().attributes('aria-label')).toBe(
+        mockJobWithUser.pipeline.user.name,
+      );
+      expect(getBinding(findPipelineUserLink().element, 'gl-tooltip')).toBeDefined();
       expect(findUserAvatar().attributes('src')).toBe(mockJobWithUser.pipeline.user.avatarUrl);
       expect(wrapper.text()).not.toContain(apiWrapperText);
     });

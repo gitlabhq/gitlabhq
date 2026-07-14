@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_category: :mcp_server do
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:group, freeze: false) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :public, group: group) }
 
   let(:params) { { group_id: group.id.to_s, filters: {}, sort: nil } }
   let(:tool) { described_class.new(current_user: user, params: params) }
@@ -212,7 +212,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
     end
 
     context 'with fullPath filter' do
-      let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
 
       let(:params) do
         {
@@ -415,7 +415,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
   end
 
   describe 'integration', :aggregate_failures do
-    let_it_be(:work_item, freeze: false) { create(:work_item, :issue, project: project) }
+    let_it_be(:work_item) { create(:work_item, :issue, project: project) }
 
     context 'when GraphQL returns errors' do
       before do
@@ -480,15 +480,25 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
       )
     end
 
-    it 'returns work items data with proper formatting' do
+    it 'returns work items data with the full node shape the tool promises' do
       result = tool.execute
 
       expect(result[:isError]).to be(false)
       expect(result[:content]).to be_an(Array)
       expect(result[:content].first[:type]).to eq('text')
       expect(result[:structuredContent]).to be_a(Hash)
-      expect(result[:structuredContent]).to have_key('pageInfo')
-      expect(result[:structuredContent]).to have_key('nodes')
+      expect(result[:structuredContent].keys).to match_array(%w[pageInfo nodes])
+
+      node = result[:structuredContent]['nodes'].find { |n| n['iid'] == work_item.iid.to_s }
+      expect(node.keys).to match_array(
+        %w[id iid title state confidential createdAt updatedAt closedAt webUrl reference author namespace
+          workItemType widgets]
+      )
+      expect(node['author'].keys).to match_array(%w[id name username webUrl])
+      expect(node['namespace'].keys).to match_array(%w[id fullPath])
+      expect(node['workItemType'].keys).to match_array(%w[id name iconName])
+      expect(node['widgets']).to be_an(Array)
+      expect(node['widgets']).to all(include('type'))
     end
 
     it 'returns work items in the namespace' do
@@ -499,8 +509,8 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
     end
 
     context 'with filters applied' do
-      let_it_be(:label, freeze: false) { create(:group_label, group: group, title: 'bug') }
-      let_it_be(:labeled_item, freeze: false) do
+      let_it_be(:label) { create(:group_label, group: group, title: 'bug') }
+      let_it_be(:labeled_item) do
         create(:work_item, :issue, project: project).tap do |wi|
           create(:label_link, label: label, target: wi)
         end

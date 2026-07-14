@@ -3,23 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Todos::Destroy::GroupPrivateService, feature_category: :team_planning do
-  let(:group)         { create(:group, :public) }
-  let(:project)       { create(:project, group: group) }
-  let(:user)          { create(:user) }
-  let(:group_member)  { create(:user) }
-  let(:project_member)  { create(:user) }
+  let_it_be(:user)             { create(:user) }
+  let_it_be(:group_member)     { create(:user) }
+  let_it_be(:project_member)   { create(:user) }
+  let_it_be_with_reload(:group) { create(:group, :public, developers: group_member) }
+  let_it_be(:project) { create(:project, group: group, developers: project_member) }
 
-  let!(:todo_non_member)         { create(:todo, user: user, group: group) }
-  let!(:todo_another_non_member) { create(:todo, user: user, group: group) }
-  let!(:todo_group_member)       { create(:todo, user: group_member, group: group) }
-  let!(:todo_project_member)     { create(:todo, user: project_member, group: group) }
+  let_it_be(:todo_non_member)         { create(:todo, user: user, group: group) }
+  let_it_be(:todo_another_non_member) { create(:todo, user: user, group: group) }
+  let_it_be(:todo_group_member)       { create(:todo, user: group_member, group: group) }
+  let_it_be(:todo_project_member)     { create(:todo, user: project_member, group: group) }
 
   describe '#execute', :aggregate_failures do
-    before do
-      group.add_developer(group_member)
-      project.add_developer(project_member)
-    end
-
     subject { described_class.new(group.id).execute }
 
     context 'when a group set to private' do
@@ -66,10 +61,10 @@ RSpec.describe Todos::Destroy::GroupPrivateService, feature_category: :team_plan
       end
 
       context 'with member via group share' do
-        let(:invited_group) { create(:group) }
-        let(:invited_group_member) { create(:user, guest_of: invited_group) }
+        let_it_be(:invited_group) { create(:group) }
+        let_it_be(:invited_group_member) { create(:user, guest_of: invited_group) }
 
-        let!(:todo_invited_group_member) { create(:todo, user: invited_group_member, group: group) }
+        let_it_be(:todo_invited_group_member) { create(:todo, user: invited_group_member, group: group) }
 
         it 'does not remove todos for users invited to the group' do
           create(:group_group_link, shared_group: group, shared_with_group: invited_group)

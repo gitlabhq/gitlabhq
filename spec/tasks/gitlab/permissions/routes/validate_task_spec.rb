@@ -48,25 +48,12 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       allow(API::API).to receive(:endpoints).and_return(
         [instance_double(Grape::Endpoint, routes: mock_routes, source: source_proc)]
       )
-      allow(described_class::TODO_FILE).to receive_messages(exist?: true, readlines: [])
 
       # Skip test coverage validation by default -- tested separately below
       allow(task).to receive(:register_test_coverage).with(any_args)
       mock_scanner = instance_double(Tasks::Gitlab::Permissions::Routes::SpecPermissionScanner,
         insufficient_test_coverage: [])
       allow(task).to receive(:spec_permission_scanner).and_return(mock_scanner)
-    end
-
-    context 'when routes have no authorization settings but are listed in the TODO file' do
-      let(:route_settings) { {} }
-
-      before do
-        allow(described_class::TODO_FILE).to receive(:readlines).and_return(["GET /projects/:id/test\n"])
-      end
-
-      it 'completes successfully' do
-        expect { run }.to output(/REST permissions are valid/).to_stdout
-      end
     end
 
     context 'when routes have valid permissions' do
@@ -430,12 +417,8 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
     end
 
-    context 'when a route has no authorization and is not in the TODO file' do
+    context 'when a route has no authorization' do
       let(:route_settings) { {} }
-
-      before do
-        allow(described_class::TODO_FILE).to receive(:readlines).and_return([])
-      end
 
       it 'returns an error' do
         expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
@@ -452,7 +435,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
     end
 
-    context 'when multiple routes have no authorization and only some are in the TODO file' do
+    context 'when multiple routes have no authorization' do
       let(:mock_route_1) do
         instance_double(
           Grape::Router::Route,
@@ -473,12 +456,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
       let(:mock_routes) { [mock_route_1, mock_route_2] }
 
-      before do
-        allow(described_class::TODO_FILE).to receive(:readlines)
-          .and_return(["GET /projects/:id/first\n"])
-      end
-
-      it 'returns an error only for the unlisted route' do
+      it 'returns an error for every unauthorized route' do
         expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
           #######################################################################
           #
@@ -486,6 +464,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
           #  Add authorization metadata to the endpoint.
           #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/rest_api_implementation_guide
           #
+          #    - GET /projects/:id/first (lib/api/test.rb:42)
           #    - POST /projects/:id/second (lib/api/test.rb:42)
           #
           #######################################################################
@@ -543,45 +522,6 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
     end
 
-    context 'when the TODO file does not exist' do
-      let(:route_settings) { {} }
-
-      before do
-        allow(described_class::TODO_FILE).to receive(:exist?).and_return(false)
-      end
-
-      it 'treats all untagged routes as violations' do
-        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
-          #######################################################################
-          #
-          #  The following API routes are missing route_setting :authorization metadata.
-          #  Add authorization metadata to the endpoint.
-          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/rest_api_implementation_guide
-          #
-          #    - GET /projects/:id/test (lib/api/test.rb:42)
-          #
-          #######################################################################
-        OUTPUT
-      end
-    end
-
-    context 'when the TODO file has comments and blank lines' do
-      let(:route_settings) { {} }
-
-      before do
-        allow(described_class::TODO_FILE).to receive(:readlines).and_return([
-          "# This is a comment\n",
-          "\n",
-          "GET /projects/:id/test\n",
-          "  \n"
-        ])
-      end
-
-      it 'ignores comments and blank lines and completes successfully' do
-        expect { run }.to output(/REST permissions are valid/).to_stdout
-      end
-    end
-
     context 'when a route permission has insufficient test coverage' do
       let(:route_settings) { { authorization: { permissions: :read_project, boundary_type: :project } } }
       let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
@@ -591,9 +531,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
           Tasks::Gitlab::Permissions::Routes::SpecPermissionScanner,
           insufficient_test_coverage: [{
             permission: 'read_project',
-            route_count: 1,
+            endpoint_count: 1,
             test_count: 0,
-            routes: [{
+            endpoints: [{
               method: 'GET', path: '/projects/:id/test',
               source: 'lib/api/test.rb:42', permission: :read_project,
               spec_file: 'spec/requests/api/test_spec.rb'
@@ -606,7 +546,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       before do
         allow(task).to receive(:register_test_coverage).and_call_original
         allow(task).to receive(:spec_permission_scanner).and_return(mock_scanner)
-        allow(mock_scanner).to receive(:add_route)
+        allow(mock_scanner).to receive(:add_endpoint)
         allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
         allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
@@ -616,12 +556,12 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
         expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
           #######################################################################
           #
-          #  The following permissions have fewer tests than routes using them.
-          #  Each route should have its own `it_behaves_like 'authorizing granular token permissions'` test.
-          #  Add test coverage.
-          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/rest_api_implementation_guide/#step-6-add-request-specs-for-the-endpoint
+          #  The following permissions have fewer tests than endpoints using them.
+          #  Each endpoint declaration should have its own `it_behaves_like 'authorizing granular token permissions'`
+          #  test per boundary type. Add test coverage.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/rest_api_implementation_guide/#step-6-add-authorization-tests
           #
-          #    - read_project: 1 routes, 0 tests
+          #    - read_project: 1 endpoints, 0 tests
           #        GET /projects/:id/test (lib/api/test.rb:42)
           #          Suggested spec: spec/requests/api/test_spec.rb
           #
@@ -645,7 +585,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       before do
         allow(task).to receive(:register_test_coverage).and_call_original
         allow(task).to receive(:spec_permission_scanner).and_return(mock_scanner)
-        allow(mock_scanner).to receive(:add_route)
+        allow(mock_scanner).to receive(:add_endpoint)
         allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
         allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
           .with(:read_project).and_return([mock_assignable])
@@ -654,131 +594,6 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       it 'completes successfully' do
         expect { run }.to output(/REST permissions are valid/).to_stdout
       end
-    end
-  end
-
-  describe '#current_todo_entries' do
-    let(:route_settings) { {} }
-    let(:mock_route) do
-      instance_double(
-        Grape::Router::Route,
-        settings: route_settings,
-        request_method: 'GET',
-        origin: '/api/:version/projects/:id/test'
-      )
-    end
-
-    let(:mock_routes) { [mock_route] }
-
-    before do
-      allow(API::API).to receive(:endpoints).and_return(
-        [instance_double(Grape::Endpoint, routes: mock_routes,
-          source: instance_double(Proc, source_location: [Rails.root.join('lib/api/test.rb').to_s, 42]))]
-      )
-    end
-
-    context 'when the route has no authorization settings' do
-      let(:route_settings) { {} }
-
-      it 'includes the route id in the returned set' do
-        expect(task.send(:current_todo_entries)).to include('GET /projects/:id/test')
-      end
-    end
-
-    context 'when the route has authorization with permissions' do
-      let(:route_settings) { { authorization: { permissions: :read_project, boundary_type: :project } } }
-
-      it 'does not include the route id in the returned set' do
-        expect(task.send(:current_todo_entries)).not_to include('GET /projects/:id/test')
-      end
-    end
-
-    context 'when the route has skip_granular_token_authorization' do
-      let(:route_settings) { { authorization: { skip_granular_token_authorization: :job_token_auth } } }
-
-      it 'does not include the route id in the returned set' do
-        expect(task.send(:current_todo_entries)).not_to include('GET /projects/:id/test')
-      end
-    end
-  end
-
-  describe '#sync_todo' do
-    let(:route_settings) { {} }
-    let(:mock_route) do
-      instance_double(
-        Grape::Router::Route,
-        settings: route_settings,
-        request_method: 'GET',
-        origin: '/api/:version/projects/:id/test'
-      )
-    end
-
-    let(:mock_routes) { [mock_route] }
-
-    before do
-      allow(API::API).to receive(:endpoints).and_return(
-        [instance_double(Grape::Endpoint, routes: mock_routes,
-          source: instance_double(Proc, source_location: [Rails.root.join('lib/api/test.rb').to_s, 42]))]
-      )
-      allow(described_class::TODO_FILE).to receive_messages(exist?: true, readlines: [])
-    end
-
-    context 'when the file entries exactly match current_todo_entries' do
-      let(:route_settings) { {} }
-
-      before do
-        allow(described_class::TODO_FILE).to receive(:readlines).and_return(["GET /projects/:id/test\n"])
-      end
-
-      it 'returns without output' do
-        expect { task.sync_todo }.not_to output.to_stdout
-      end
-    end
-
-    context 'when the file has a stale entry' do
-      let(:route_settings) { { authorization: { permissions: :read_project, boundary_type: :project } } }
-
-      before do
-        allow(described_class::TODO_FILE).to receive(:readlines).and_return(["GET /projects/:id/test\n"])
-        allow(described_class::TODO_FILE).to receive(:write)
-      end
-
-      it 'auto-updates the file and aborts with a commit reminder' do
-        expect { task.sync_todo }
-          .to raise_error(SystemExit)
-          .and output(/had stale entries and has been updated.*Please commit/m).to_stdout
-      end
-    end
-  end
-
-  describe '#update_todo' do
-    let(:route_settings) { {} }
-    let(:mock_route) do
-      instance_double(
-        Grape::Router::Route,
-        settings: route_settings,
-        request_method: 'GET',
-        origin: '/api/:version/projects/:id/test'
-      )
-    end
-
-    let(:mock_routes) { [mock_route] }
-
-    before do
-      allow(API::API).to receive(:endpoints).and_return(
-        [instance_double(Grape::Endpoint, routes: mock_routes,
-          source: instance_double(Proc, source_location: [Rails.root.join('lib/api/test.rb').to_s, 42]))]
-      )
-      allow(described_class::TODO_FILE).to receive_messages(
-        exist?: true,
-        readlines: ["# Routes header\n"]
-      )
-      allow(described_class::TODO_FILE).to receive(:write)
-    end
-
-    it 'writes the header followed by the current todo entries and prints a success message' do
-      expect { task.update_todo }.to output(/updated/).to_stdout
-      expect(described_class::TODO_FILE).to have_received(:write).with("# Routes header\nGET /projects/:id/test\n")
     end
   end
 end

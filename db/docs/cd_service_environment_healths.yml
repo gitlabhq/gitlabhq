@@ -1,0 +1,14 @@
+---
+table_name: cd_service_environment_healths
+classes:
+- Cd::ServiceEnvironmentHealth
+feature_categories:
+- continuous_delivery
+description: Latest observed health signal per service and environment (last-write-wins cache)
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240649
+milestone: '19.2'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: todo
+table_size: small

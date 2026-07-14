@@ -53,7 +53,7 @@ describe('RelatedIssuesRoot', () => {
   };
 
   describe('events', () => {
-    describe('when "relatedIssueRemoveRequest" event is emitted', () => {
+    describe('when "related-issue-remove-request" event is emitted', () => {
       describe('when emitted value is a numerical issue', () => {
         beforeEach(async () => {
           mock.onGet(defaultProps.endpoint).reply(HTTP_STATUS_OK, [issuable1]);
@@ -63,7 +63,7 @@ describe('RelatedIssuesRoot', () => {
         it('removes related issue on API success', async () => {
           mock.onDelete(issuable1.referencePath).reply(HTTP_STATUS_OK, { issues: [] });
 
-          findRelatedIssuesBlock().vm.$emit('relatedIssueRemoveRequest', issuable1.id);
+          findRelatedIssuesBlock().vm.$emit('related-issue-remove-request', issuable1.id);
           await axios.waitForAll();
 
           expect(findRelatedIssuesBlock().props('relatedIssues')).toEqual([]);
@@ -72,7 +72,7 @@ describe('RelatedIssuesRoot', () => {
         it('does not remove related issue on API error', async () => {
           mock.onDelete(issuable1.referencePath).reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, {});
 
-          findRelatedIssuesBlock().vm.$emit('relatedIssueRemoveRequest', issuable1.id);
+          findRelatedIssuesBlock().vm.$emit('related-issue-remove-request', issuable1.id);
           await axios.waitForAll();
 
           expect(findRelatedIssuesBlock().props('relatedIssues')).toEqual([
@@ -86,7 +86,7 @@ describe('RelatedIssuesRoot', () => {
           const workItem = `gid://gitlab/WorkItem/${issuable1.id}`;
           createComponent({ data: { state: { relatedIssues: [issuable1] } } });
 
-          await findRelatedIssuesBlock().vm.$emit('relatedIssueRemoveRequest', workItem);
+          await findRelatedIssuesBlock().vm.$emit('related-issue-remove-request', workItem);
 
           expect(findRelatedIssuesBlock().props('relatedIssues')).toEqual([]);
         });
@@ -111,10 +111,10 @@ describe('RelatedIssuesRoot', () => {
       });
     });
 
-    describe('when "pendingIssuableRemoveRequest" event is emitted', () => {
+    describe('when "pending-issuable-remove-request" event is emitted', () => {
       beforeEach(async () => {
         createComponent();
-        findRelatedIssuesBlock().vm.$emit('addIssuableFormInput', {
+        findRelatedIssuesBlock().vm.$emit('add-issuable-form-input', {
           untouchedRawReferences: [issuable1.reference],
           touchedReference: '',
         });
@@ -125,14 +125,14 @@ describe('RelatedIssuesRoot', () => {
       it('removes pending related issue', async () => {
         expect(findRelatedIssuesBlock().props('pendingReferences')).toHaveLength(1);
 
-        await findRelatedIssuesBlock().vm.$emit('pendingIssuableRemoveRequest', 0);
+        await findRelatedIssuesBlock().vm.$emit('pending-issuable-remove-request', 0);
         await waitForPromises();
 
         expect(findRelatedIssuesBlock().props('pendingReferences')).toHaveLength(0);
       });
     });
 
-    describe('when "addIssuableFormSubmit" event is emitted', () => {
+    describe('when "add-issuable-form-submit" event is emitted', () => {
       beforeEach(async () => {
         await createComponent();
         createAlert.mockClear();
@@ -145,12 +145,12 @@ describe('RelatedIssuesRoot', () => {
           pendingReferences: input,
           linkedIssueType,
         };
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormSubmit', emitObj);
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-submit', emitObj);
         expect(findRelatedIssuesBlock().props('pendingReferences')).toEqual([input]);
       });
 
       it('submits zero pending issues as related issue', async () => {
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormSubmit', {});
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-submit', {});
         await waitForPromises();
 
         expect(findRelatedIssuesBlock().props('pendingReferences')).toHaveLength(0);
@@ -165,11 +165,11 @@ describe('RelatedIssuesRoot', () => {
             status: 'success',
           },
         });
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormInput', {
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-input', {
           untouchedRawReferences: [issuable1],
           touchedReference: '',
         });
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormSubmit', {});
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-submit', {});
         await waitForPromises();
 
         expect(findRelatedIssuesBlock().props('pendingReferences')).toHaveLength(0);
@@ -186,11 +186,11 @@ describe('RelatedIssuesRoot', () => {
             status: 'success',
           },
         });
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormInput', {
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-input', {
           untouchedRawReferences: [issuable1.reference, issuable2.reference],
           touchedReference: '',
         });
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormSubmit', {});
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-submit', {});
         await waitForPromises();
 
         expect(findRelatedIssuesBlock().props('pendingReferences')).toHaveLength(0);
@@ -204,7 +204,7 @@ describe('RelatedIssuesRoot', () => {
         const input = '#123';
         const message = 'error';
         mock.onPost(defaultProps.endpoint).reply(HTTP_STATUS_CONFLICT, { message });
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormInput', {
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-input', {
           untouchedRawReferences: [issuable1.reference, issuable2.reference],
           touchedReference: '',
         });
@@ -212,7 +212,7 @@ describe('RelatedIssuesRoot', () => {
         expect(findRelatedIssuesBlock().props('hasError')).toBe(false);
         expect(findRelatedIssuesBlock().props('itemAddFailureMessage')).toBe(null);
 
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormSubmit', input);
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-submit', input);
         await waitForPromises();
 
         expect(findRelatedIssuesBlock().props('hasError')).toBe(true);
@@ -220,11 +220,11 @@ describe('RelatedIssuesRoot', () => {
       });
     });
 
-    describe('when "addIssuableFormCancel" event is emitted', () => {
+    describe('when "add-issuable-form-cancel" event is emitted', () => {
       beforeEach(() => createComponent({ data: { isFormVisible: true, inputValue: 'foo' } }));
 
       it('hides form and resets input', async () => {
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormCancel');
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-cancel');
 
         expect(findRelatedIssuesBlock().props('isFormVisible')).toBe(false);
         expect(findRelatedIssuesBlock().props('inputValue')).toBe('');
@@ -232,12 +232,12 @@ describe('RelatedIssuesRoot', () => {
       });
     });
 
-    describe('when "addIssuableFormInput" event is emitted', () => {
+    describe('when "add-issuable-form-input" event is emitted', () => {
       it('updates pending references with issue reference', async () => {
         const input = '#123 ';
         createComponent();
 
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormInput', {
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-input', {
           untouchedRawReferences: [input.trim()],
           touchedReference: input,
         });
@@ -249,7 +249,7 @@ describe('RelatedIssuesRoot', () => {
         const input = 'asdf/qwer#444 ';
         createComponent();
 
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormInput', {
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-input', {
           untouchedRawReferences: [input.trim()],
           touchedReference: input,
         });
@@ -262,7 +262,7 @@ describe('RelatedIssuesRoot', () => {
         const input = `${link} `;
         createComponent();
 
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormInput', {
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-input', {
           untouchedRawReferences: [input.trim()],
           touchedReference: input,
         });
@@ -274,7 +274,7 @@ describe('RelatedIssuesRoot', () => {
         const input = 'asdf/qwer#444 #12 ';
         createComponent();
 
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormInput', {
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-input', {
           untouchedRawReferences: input.trim().split(/\s/),
           touchedReference: '2',
         });
@@ -289,7 +289,7 @@ describe('RelatedIssuesRoot', () => {
         const input = 'something random ';
         createComponent();
 
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormInput', {
+        await findRelatedIssuesBlock().vm.$emit('add-issuable-form-input', {
           untouchedRawReferences: input.trim().split(/\s/),
           touchedReference: '2',
         });
@@ -306,7 +306,7 @@ describe('RelatedIssuesRoot', () => {
           const input = '23';
           createComponent({ props: { pathIdSeparator } });
 
-          await findRelatedIssuesBlock().vm.$emit('addIssuableFormInput', {
+          await findRelatedIssuesBlock().vm.$emit('add-issuable-form-input', {
             untouchedRawReferences: input.trim().split(/\s/),
             touchedReference: input,
           });
@@ -316,7 +316,7 @@ describe('RelatedIssuesRoot', () => {
       );
     });
 
-    describe('when "addIssuableFormBlur" event is emitted', () => {
+    describe('when "add-issuable-form-blur" event is emitted', () => {
       beforeEach(() => {
         createComponent();
       });
@@ -324,7 +324,7 @@ describe('RelatedIssuesRoot', () => {
       it('adds any references to pending when blurring', async () => {
         const input = '#123';
         expect(findRelatedIssuesBlock().props('pendingReferences')).toEqual([]);
-        findRelatedIssuesBlock().vm.$emit('addIssuableFormBlur', input);
+        findRelatedIssuesBlock().vm.$emit('add-issuable-form-blur', input);
         await waitForPromises();
         expect(findRelatedIssuesBlock().props('pendingReferences')).toEqual([input]);
       });

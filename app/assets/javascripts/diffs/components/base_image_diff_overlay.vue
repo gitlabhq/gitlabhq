@@ -132,6 +132,7 @@ export default {
       :label="showCommentIcon ? null : toggleText(discussion, index)"
       :position="getPosition(discussion)"
       :aria-label="__('Show comments')"
+      data-testid="image-comment-badge"
       class="js-image-badge"
       :class="badgeClass"
       :is-draft="discussion.isDraft"

@@ -289,7 +289,7 @@ RSpec.describe Types::BaseObject, feature_category: :api do
     end
 
     describe '.authorize' do
-      let_it_be(:read_only_type, freeze: false) do
+      let_it_be(:read_only_type) do
         Class.new(described_class) do
           authorize :read_only
         end
@@ -305,6 +305,137 @@ RSpec.describe Types::BaseObject, feature_category: :api do
 
       it 'can not redefine the authorize value' do
         expect { read_only_type.authorize(:write_only) }.to raise_error('Cannot redefine authorize')
+      end
+    end
+  end
+
+  describe '#authorized?', feature_category: :permissions do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:current_user) { create(:user, developer_of: project) }
+
+    let_it_be(:granular_token) do
+      create(:granular_pat, user: current_user, boundary: ::Authz::Boundary.for(project), permissions: [:read_wiki])
+    end
+
+    let_it_be(:insufficient_granular_token) do
+      create(:granular_pat, user: current_user, boundary: ::Authz::Boundary.for(project),
+        permissions: [:create_work_item])
+    end
+
+    let_it_be(:legacy_token) { create(:personal_access_token, user: current_user) }
+
+    let(:object) { project }
+
+    subject(:authorized) { type.authorized?(object, context) }
+
+    context 'with an `authorize` directive' do
+      let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator, valid_for?: true) }
+      let(:context) { { current_user: current_user, scope_validator: scope_validator } }
+
+      let_it_be(:type) do
+        Class.new(described_class) { authorize :read_resource }
+      end
+
+      before do
+        allow(Ability).to receive(:allowed?).with(current_user, :read_resource, object).and_return(true)
+      end
+
+      context 'when the user has the ability and the token scope is sufficient' do
+        it 'is authorized' do
+          is_expected.to be(true)
+        end
+      end
+
+      context 'when the user lacks the ability' do
+        before do
+          allow(Ability).to receive(:allowed?).with(current_user, :read_resource, object).and_return(false)
+        end
+
+        it 'is not authorized' do
+          is_expected.to be(false)
+        end
+      end
+
+      context 'when the token scope is insufficient' do
+        before do
+          allow(scope_validator).to receive(:valid_for?).and_return(false)
+        end
+
+        it 'is not authorized, before any ability is checked' do
+          is_expected.to be(false)
+        end
+      end
+
+      context 'when the ability is named in skip_type_authorization' do
+        before do
+          context[:skip_type_authorization] = :read_resource
+        end
+
+        it 'skips the ability check' do
+          is_expected.to be(true)
+        end
+      end
+    end
+
+    context 'with an `authorize_granular_token` directive' do
+      let_it_be(:type) do
+        Class.new(described_class) do
+          authorize_granular_token(permissions: :read_wiki, boundary: :itself, boundary_type: :project)
+        end
+      end
+
+      let(:context) { { current_user: current_user, access_token: access_token } }
+
+      context 'with a granular token' do
+        context 'when the token authorizes the boundary' do
+          let(:access_token) { granular_token }
+
+          it 'grants access' do
+            is_expected.to be(true)
+          end
+        end
+
+        context 'when the token does not authorize the boundary' do
+          let(:access_token) { insufficient_granular_token }
+
+          it 'denies access' do
+            is_expected.to be(false)
+          end
+        end
+
+        context 'when the `granular_personal_access_tokens` feature flag is disabled' do
+          let(:access_token) { granular_token }
+
+          before do
+            stub_feature_flags(granular_personal_access_tokens: false)
+          end
+
+          it 'denies access' do
+            is_expected.to be(false)
+          end
+        end
+      end
+
+      context 'with a legacy token' do
+        let(:access_token) { legacy_token }
+
+        it 'grants access' do
+          is_expected.to be(true)
+        end
+      end
+    end
+
+    context 'without an `authorize_granular_token` directive' do
+      let_it_be(:type) { Class.new(described_class) }
+
+      let(:context) { { current_user: current_user, access_token: access_token } }
+
+      context 'with a granular token' do
+        let(:access_token) { granular_token }
+
+        it 'denies access' do
+          is_expected.to be(false)
+        end
       end
     end
   end

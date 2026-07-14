@@ -68,7 +68,7 @@ contribution history, do one of the following:
 
 - [Migrate by using direct transfer](../../group/import/_index.md).
 - Consider engaging Professional Services. For more information, see the
-  [Professional Services catalog](https://about.gitlab.com/services/catalog/).
+  [Professional Services catalog](https://about.gitlab.com/professional-services/catalog/).
 
 #### When migrating to GitLab Self-Managed
 
@@ -157,7 +157,7 @@ To enable file exports as an import source for the destination instance:
 
 ### Between CE and EE
 
-You can export projects from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/)
+You can export projects from the Community Edition to the Enterprise Edition
 and vice versa, assuming [compatibility](#compatibility) is met.
 
 If you're exporting a project from the Enterprise Edition to the Community Edition, you may lose
@@ -394,7 +394,7 @@ Professional Services team.
   be imported into the desired group structure.
 - Imported groups are given a `private` visibility level, unless imported into a parent group.
 - If imported into a parent group, a subgroup inherits the same level of visibility unless otherwise restricted.
-- You can export groups from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/)
+- You can export groups from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/)
   and vice versa. The Enterprise Edition retains some group data that isn't part of the Community Edition. If you're
   exporting a group from the Enterprise Edition to the Community Edition, you may lose this data. For more information,
   see [reverting from EE to CE](../../../update/convert_to_ee/revert.md).

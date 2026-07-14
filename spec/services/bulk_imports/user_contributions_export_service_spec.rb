@@ -34,7 +34,7 @@ RSpec.describe BulkImports::UserContributionsExportService, :clean_gitlab_redis_
         service.execute
 
         user_contributions_export = portable.bulk_import_exports.find_by(relation: 'user_contributions')
-        expect(user_contributions_export.batched).to eq(false)
+        expect(user_contributions_export.batched).to be(false)
       end
 
       it 'has a clear user id cache after export finishes' do

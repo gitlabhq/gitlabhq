@@ -3,6 +3,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 
 export default {
+  name: 'NewProjectButton',
   i18n: {
     newProjectButtonDisabledTooltip: s__(
       'Organization|Projects are hosted/created in groups. Before creating a project, you must create a group.',

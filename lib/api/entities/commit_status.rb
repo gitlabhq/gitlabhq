@@ -3,7 +3,7 @@
 module API
   module Entities
     class CommitStatus < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 93 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 93 }
       expose :sha, documentation: { type: 'String', example: '18f3e63d05582537db6d183d9d557be09e1f90c8' }
       expose :ref, documentation: { type: 'String', example: 'develop' }
       expose :status, documentation: { type: 'String', example: 'success' }
@@ -18,7 +18,7 @@ module API
       expose :finished_at, documentation: { type: 'DateTime', example: '2016-01-21T08:40:25.832Z' }
       expose :allow_failure, documentation: { type: 'Boolean', example: false }
       expose :coverage, documentation: { type: 'Float', format: 'float', example: 98.29 }
-      expose :pipeline_id, documentation: { type: 'Integer', example: 101 }
+      expose :pipeline_id, documentation: { type: 'Integer', format: 'int64', example: 101 }
 
       expose :author, using: ::API::Entities::UserBasic, documentation: { type: '::API::Entities::UserBasic' }
     end

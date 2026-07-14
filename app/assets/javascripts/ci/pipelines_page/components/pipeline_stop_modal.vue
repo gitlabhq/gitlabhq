@@ -28,6 +28,7 @@ export default {
       required: true,
     },
   },
+  emits: ['close-modal', 'submit'],
   computed: {
     hasRef() {
       return !isEmpty(this.pipeline.ref);

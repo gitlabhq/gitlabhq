@@ -413,10 +413,17 @@ curl --globoff \
 
 ## パイプライン別にすべてのトリガージョブをリスト {#list-all-trigger-jobs-by-pipeline}
 
+{{< history >}}
+
+- `trigger_jobs`ルートはGitLab 19.2で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241496)。
+- `bridges`ルートはGitLab 19.2で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241496)になりました。代わりに`trigger_jobs`を使用してください。
+
+{{< /history >}}
+
 指定されたパイプラインのすべてのトリガージョブをリストします。
 
 ```plaintext
-GET /projects/:id/pipelines/:pipeline_id/bridges
+GET /projects/:id/pipelines/:pipeline_id/trigger_jobs
 ```
 
 | 属性     | 型                           | 必須 | 説明 |
@@ -428,7 +435,7 @@ GET /projects/:id/pipelines/:pipeline_id/bridges
 ```shell
 curl --globoff \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/6/bridges?scope[]=pending&scope[]=running"
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/6/trigger_jobs?scope[]=pending&scope[]=running"
 ```
 
 レスポンス例:
@@ -599,7 +606,7 @@ curl --url "${CI_API_V4_URL}/job?job_token=$CI_JOB_TOKEN"
 GET /job/allowed_agents
 ```
 
-サポートされている属性は以下のとおりです: 
+サポートされている属性:
 
 | 属性      | 型   | 必須 | 説明 |
 |----------------|--------|----------|-------------|

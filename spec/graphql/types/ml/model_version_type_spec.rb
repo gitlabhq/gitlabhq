@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
-  let_it_be(:model_version, freeze: false) { create(:ml_model_versions, :with_package, description: 'A description') }
+  let_it_be_with_reload(:model_version) { create(:ml_model_versions, :with_package, description: 'A description') }
   let_it_be(:model_version_markdown) { create(:ml_model_versions, :with_package, description: 'A **description**') }
   let_it_be(:project) { model_version.project }
   let_it_be(:project_markdown) { model_version_markdown.project }

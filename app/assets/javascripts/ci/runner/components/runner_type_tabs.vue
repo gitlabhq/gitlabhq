@@ -49,6 +49,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input'],
   computed: {
     tabs() {
       const tabs = this.runnerTypes.map((runnerType) => ({

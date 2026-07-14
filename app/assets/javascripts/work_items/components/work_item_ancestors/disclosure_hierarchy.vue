@@ -5,6 +5,7 @@ import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import DisclosureHierarchyItem from './disclosure_hierarchy_item.vue';
 
 export default {
+  name: 'DisclosureHierarchy',
   components: {
     GlDisclosureDropdown,
     GlIcon,

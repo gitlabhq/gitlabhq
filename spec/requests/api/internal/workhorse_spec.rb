@@ -6,7 +6,7 @@ RSpec.describe API::Internal::Workhorse, :allow_forgery_protection, feature_cate
   include WorkhorseHelpers
 
   context '/authorize_upload' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     let(:headers) { {} }
 

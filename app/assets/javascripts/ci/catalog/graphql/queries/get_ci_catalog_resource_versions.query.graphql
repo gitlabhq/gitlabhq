@@ -8,7 +8,7 @@ query getCiCatalogResourceVersions($fullPath: ID!, $search: String) {
       nodes {
         id
         name
-        createdAt
+        releasedAt
       }
     }
   }

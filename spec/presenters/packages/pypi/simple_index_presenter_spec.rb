@@ -8,8 +8,8 @@ RSpec.describe ::Packages::Pypi::SimpleIndexPresenter, :aggregate_failures, feat
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:package_name) { 'sample-project' }
-  let_it_be(:package1, freeze: false) { create(:pypi_package, project: project, name: package_name, version: '1.0.0') }
-  let_it_be(:package2, freeze: false) { create(:pypi_package, project: project, name: package_name, version: '2.0.0') }
+  let_it_be_with_reload(:package1) { create(:pypi_package, project: project, name: package_name, version: '1.0.0') }
+  let_it_be_with_reload(:package2) { create(:pypi_package, project: project, name: package_name, version: '2.0.0') }
 
   let(:packages) { Packages::Pypi::Package.for_projects(project) }
 

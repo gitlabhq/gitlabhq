@@ -6,7 +6,7 @@ RSpec.describe API::Validations::Validators::Absence do
   include ApiValidatorsHelpers
 
   subject do
-    described_class.new(['test'], {}, false, scope.new)
+    described_class.new(['test'], {}, false, scope.new, {})
   end
 
   context 'empty param' do

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe DesignManagement::MoveDesignsService, feature_category: :design_management do

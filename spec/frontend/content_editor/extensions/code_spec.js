@@ -170,5 +170,14 @@ describe('content_editor/extensions/code', () => {
 
       expect(tiptapEditor.getJSON()).toEqual(doc(p('`code`')).toJSON());
     });
+
+    it('does not erase character before opening backtick when closing code span', () => {
+      tiptapEditor.commands.setContent('a`code');
+      tiptapEditor.commands.setTextSelection(tiptapEditor.state.doc.content.size);
+
+      triggerNodeInputRule({ tiptapEditor, inputRuleText: '`' });
+
+      expect(tiptapEditor.getJSON()).toEqual(doc(p('a', code('code'))).toJSON());
+    });
   });
 });

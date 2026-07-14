@@ -13,6 +13,7 @@ import { portalState } from '../state';
  * avoid ordering issues and cluttering the sidebar.
  */
 export default {
+  name: 'SidebarPortal',
   components: {
     MountingPortal,
   },

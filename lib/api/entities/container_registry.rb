@@ -12,10 +12,10 @@ module API
       class Repository < Grape::Entity
         include ::API::Helpers::RelatedResourcesHelpers
 
-        expose :id, documentation: { type: 'Integer', example: 1 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
         expose :name, documentation: { type: 'String', example: 'releases' }
         expose :path, documentation: { type: 'String', example: 'group/project/releases' }
-        expose :project_id, documentation: { type: 'Integer', example: 9 }
+        expose :project_id, documentation: { type: 'Integer', format: 'int64', example: 9 }
         expose :location, documentation: { type: 'String', example: 'gitlab.example.com/group/project/releases' }
         expose :created_at, documentation: { type: 'DateTime', example: '2019-01-10T13:39:08.229Z' }
         expose :expiration_policy_started_at, as: :cleanup_policy_started_at, documentation: { type: 'DateTime', example: '2020-08-17T03:12:35.489Z' }

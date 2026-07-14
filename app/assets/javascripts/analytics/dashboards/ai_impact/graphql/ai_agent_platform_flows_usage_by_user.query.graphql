@@ -1,0 +1,25 @@
+# @feature_category: product_analytics
+#import "./ai_agent_platform_flows_usage_by_user_item.fragment.graphql"
+
+query aiAgentPlatformFlowsUsageByUserQuery(
+  $fullPath: ID!
+  $startDate: Date!
+  $endDate: Date!
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+) {
+  project(fullPath: $fullPath) {
+    id
+    aiMetrics(startDate: $startDate, endDate: $endDate) {
+      ...AiAgentPlatformFlowsUsageByUserItem
+    }
+  }
+  group(fullPath: $fullPath) {
+    id
+    aiMetrics(startDate: $startDate, endDate: $endDate) {
+      ...AiAgentPlatformFlowsUsageByUserItem
+    }
+  }
+}

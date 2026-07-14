@@ -1,4 +1,5 @@
 import { GlFriendlyWrap, GlLink, GlPagination, GlEmptyState } from '@gitlab/ui';
+import ARTIFACTS_EXPIRED_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -82,6 +83,7 @@ describe('Test reports suite table', () => {
 
     expect(emptyState.exists()).toBe(true);
     expect(emptyState.props('title')).toBe(i18n.expiredArtifactsTitle);
+    expect(emptyState.props('svgPath')).toBe(ARTIFACTS_EXPIRED_SVG);
   });
 
   describe('when a test suite is supplied', () => {

@@ -87,6 +87,11 @@ func (m *Multipart) ETag() string {
 	return m.etag
 }
 
+// Strategy returns the name identifying the upload backend, used for logging.
+func (m *Multipart) Strategy() string {
+	return "multipart"
+}
+
 // Abort aborts the multipart upload by sending a DELETE request to the AbortURL.
 func (m *Multipart) Abort() {
 	deleteURL(m.AbortURL)

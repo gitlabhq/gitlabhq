@@ -44,6 +44,7 @@ export default {
       default: false,
     },
   },
+  emits: ['remove-node-pool', 'update-node-pool'],
   data() {
     return {
       imageType: this.nodePool?.imageType || null,

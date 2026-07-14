@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe PartitionedTable, feature_category: :database do
-  subject { my_class.partitioned_by(key, strategy: :monthly) }
+  subject { my_class.partitioned_by(key, strategy: :monthly, retain_for: 3.months) }
 
   let(:key) { :foo }
 

@@ -434,7 +434,7 @@ module QA
         def merge_blocked?
           has_css?('.mr-widget-section', text: 'Merge blocked') ||
             has_no_element?('merge-button') ||
-            find_element('merge-button').disabled? == true
+            element_disabled?('merge-button')
         end
 
         def merged?
@@ -455,7 +455,7 @@ module QA
           match_when_negated do |page|
             has_css?('.mr-widget-section', text: 'Merge blocked') || # Merge widget indicates merge is blocked
               page.has_no_element?('merge-button') ||                # No merge button
-              page.find_element('merge-button').disabled? == true    # There is a merge button, but it is disabled
+              page.element_disabled?('merge-button') # There is a merge button, but it is disabled
           end
         end
 
@@ -479,7 +479,7 @@ module QA
             # If the widget shows "Merge blocked: new changes were just added" we can refresh the page and check again
             next false if merge_blocked_by_new_changes?
 
-            break true unless find_element('merge-button').disabled?
+            break true unless element_disabled?('merge-button')
 
             QA::Runtime::Logger.debug("MR widget text: \"#{mr_widget_text}\"")
 
@@ -500,7 +500,7 @@ module QA
 
           # The rebase button is enabled via JS
           wait_until(reload: false) do
-            !find_element('standard-rebase-button').disabled?
+            !element_disabled?('standard-rebase-button')
           end
 
           click_element('standard-rebase-button')

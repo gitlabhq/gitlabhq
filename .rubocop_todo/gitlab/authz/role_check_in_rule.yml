@@ -5,5 +5,4 @@ Gitlab/Authz/RoleCheckInRule:
     - 'app/policies/namespaces/user_namespace_policy.rb'
     - 'app/policies/project_policy.rb'
     - 'ee/app/policies/ai/conversation/thread_policy.rb'
-    - 'ee/app/policies/ee/group_policy.rb'
     - 'ee/app/policies/ee/namespaces/user_namespace_policy.rb'

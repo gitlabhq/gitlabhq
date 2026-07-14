@@ -6,6 +6,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
+  name: 'IntegrationsTable',
   i18n: {
     addIntegrationTitle: s__('Integrations|Add integration'),
     addIntegrationAriaLabel: (title) =>

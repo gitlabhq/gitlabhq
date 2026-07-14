@@ -67,6 +67,7 @@ export default {
       default: false,
     },
   },
+  emits: ['next', 'prev', 'role-change'],
   data() {
     return {
       userDetailsDrawerActiveUser: null,

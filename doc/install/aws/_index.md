@@ -16,27 +16,20 @@ title: Installing a GitLab POC on Amazon Web Services (AWS)
 This page offers a walkthrough of a common configuration for GitLab on AWS using the official Linux package. You should customize it to accommodate your needs.
 
 > [!note]
-> For organizations with 1,000 users or less, the recommended AWS installation method is to launch an EC2 single box [Linux package installation](https://about.gitlab.com/install/) and implement a snapshot strategy for backing up the data. See the [20 RPS or 1,000 user reference architecture](../../administration/reference_architectures/1k_users.md) for more information.
+> For organizations with 1,000 users or fewer, the recommended AWS installation method is to launch
+> an EC2 single-box [Linux package installation](https://about.gitlab.com/install/) and implement
+> a snapshot strategy for backing up the data.
 
 ## Getting started for production-grade GitLab
 
 > [!note]
-> This document is an installation guide for a proof of concept instance. It is not a reference architecture, and it does not result in a highly available configuration.
-> It's highly recommended to use the [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) instead.
+> This document is a proof-of-concept walkthrough. It does not result in a highly available
+> configuration.
 
-Following this guide exactly results in a proof of concept instance that roughly equates to a **scaled down** version of a **two availability zone implementation** of the **Non-HA** [40 RPS or 2,000 User Reference Architecture](../../administration/reference_architectures/2k_users.md). The 2K reference architecture is not HA because it is primarily intended to provide some scaling while keeping costs and complexity low. The [60 RPS or 3,000 User Reference Architecture](../../administration/reference_architectures/3k_users.md) is the smallest size that is GitLab HA. It has additional service roles to achieve HA, most notably it uses Gitaly Cluster (Praefect) to achieve HA for Git repository storage and specifies triple redundancy.
-
-GitLab maintains and tests two main types of Reference Architectures. The **Linux package architectures** are implemented on instance compute while **Cloud Native Hybrid architectures** maximize the use of a Kubernetes cluster. Cloud Native Hybrid reference architecture specifications are addendum sections to the Reference Architecture size pages that start by describing the Linux package architecture. For example, the 60 RPS or 3,000 User Cloud Native Reference Architecture is in the subsection titled [Cloud Native Hybrid reference architecture with Helm Charts (alternative)](../../administration/reference_architectures/3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) in the 60 RPS or 3,000 User Reference Architecture page.
-
-### Getting started for production-grade Linux package installations
-
-The Infrastructure as Code tooling [GitLab Environment Tool (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/tree/main) is the best place to start for building using the Linux package on AWS and most especially if you are targeting an HA setup. While it does not automate everything, it does complete complex setups like Gitaly Cluster (Praefect) for you. GET is open source so anyone can build on top of it and contribute improvements to it.
-
-### Getting started for production-grade Cloud Native Hybrid GitLab
-
-The [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/README.md) is a set of opinionated Terraform and Ansible scripts. These scripts help with the deployment of Linux package or Cloud Native Hybrid environments on selected cloud providers and are used by GitLab developers for [GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md) (for example).
-
-You can use the GitLab Environment Toolkit to deploy a Cloud Native Hybrid environment on AWS. However, it's not required and may not support every valid permutation. That said, the scripts are presented as-is and you can adapt them accordingly.
+Following this guide exactly results in a non-HA instance. For production-grade deployments on AWS,
+use the [reference architectures](../../administration/reference_architectures/_index.md) to
+determine the right configuration for your scale. Reference architectures cover both Linux package
+(VM-based) and cloud-native (Kubernetes) deployment types.
 
 ## Introduction
 
@@ -679,7 +672,7 @@ persistence and is used to store session data, temporary cache information, and 
 1. Under **Cluster info** give the cluster a name (`gitlab-redis`) and a description.
 1. Under **Location** select **AWS Cloud** and enable **Multi-AZ** option.
 1. In the Cluster settings section:
-   1. For the Engine version, select the Redis version as defined for your GitLab version in our [Redis requirements](../requirements.md#redis).
+   1. For the Engine version, select the Redis version as defined for your GitLab version in our [Redis requirements](../requirements.md#redis-or-valkey).
    1. Leave the port as `6379` because this is what we previously used in our Redis security group.
    1. Select the node type (at least `cache.t3.medium`, but adjust to your needs) and the number of replicas.
 1. In the Connectivity settings section:

@@ -1,0 +1,9 @@
+---
+name: update_elasticsearch_indexed_namespace
+description: Grants the ability to roll out or roll back Elasticsearch indexed namespaces
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_elasticsearch_indexed_namespace

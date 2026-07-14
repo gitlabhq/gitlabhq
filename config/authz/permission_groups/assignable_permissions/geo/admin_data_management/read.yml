@@ -1,0 +1,9 @@
+---
+name: read_admin_data_management
+description: Grants the ability to read data management records
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_admin_data_management

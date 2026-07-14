@@ -95,7 +95,7 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
 - Mapping shared and inherited shared members as direct members [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
 - Mapping shared and inherited shared members as direct members [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11 for existing members of the imported group or project.
 - Mapping inherited members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458834) in GitLab 17.1.
-- Mapping user memberships initially to placeholder users [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12378) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `bulk_import_importer_user_mapping`. Disabled by default.
+- Mapping user memberships initially to placeholder users [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12378) in GitLab 17.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `bulk_import_importer_user_mapping`. Disabled by default.
 - Mapping user memberships initially to placeholder users [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/478054) in GitLab 17.5.
 - Mapping user memberships initially to placeholder users [enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/478054) in GitLab 17.7.
 - Mapping user memberships initially to placeholder users [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508945) in GitLab 18.4. Feature flag `bulk_import_importer_user_mapping` removed.
@@ -182,7 +182,7 @@ If you do not want to import all user memberships from the source instance, ensu
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a flag](../../../administration/feature_flags/list.md) named `bulk_import_details_page`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a feature flag](../../../administration/feature_flags/list.md) named `bulk_import_details_page`. Enabled by default.
 - Feature flag `bulk_import_details_page` removed in GitLab 16.8.
 - Details for partially completed and completed imports [added](https://gitlab.com/gitlab-org/gitlab/-/issues/437874) in GitLab 16.9.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443492) in GitLab 17.0, an **Imported** badge to indicate that designs, epics, issues, merge requests, notes (system notes and comments), snippets, and user profile activity were imported.

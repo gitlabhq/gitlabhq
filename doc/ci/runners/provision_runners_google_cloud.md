@@ -14,7 +14,7 @@ title: Provision runners in Google Cloud Compute Engine
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438316) in GitLab 16.10 [with a flag](../../administration/feature_flags/_index.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438316) in GitLab 16.10 [with a feature flag](../../administration/feature_flags/_index.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../policy/development_stages_support.md).
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 
 {{< /history >}}
@@ -37,7 +37,7 @@ Prerequisites:
 - For your Google Cloud Platform project: [Owner](https://cloud.google.com/iam/docs/understanding-roles#owner) IAM role.
 - [Billing enabled](https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#confirm_billing_is_enabled_on_a_project)
   for your Google Cloud Platform project.
-- A working [`gcloud` CLI tool](https://cloud.google.com/sdk/docs/install) authenticated with the
+- A working [`gcloud` CLI tool](https://docs.cloud.google.com/sdk/docs/install-sdk) authenticated with the
   IAM role on the Google Cloud project.
 - [Terraform v1.5 or later](https://releases.hashicorp.com/terraform/1.5.7/) and [Terraform CLI tool](https://developer.hashicorp.com/terraform/install).
 - A terminal with Bash installed.

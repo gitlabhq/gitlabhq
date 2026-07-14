@@ -4,6 +4,7 @@ import GoogleCloudMenu from '../components/google_cloud_menu.vue';
 import ServiceTable from './service_table.vue';
 
 export default {
+  name: 'DeploymentsPanel',
   components: {
     ServiceTable,
     GoogleCloudMenu,

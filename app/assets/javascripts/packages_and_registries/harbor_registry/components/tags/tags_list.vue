@@ -33,6 +33,7 @@ export default {
       required: false,
     },
   },
+  emits: ['next-page', 'prev-page'],
   computed: {
     hasNoTags() {
       return this.tags.length === 0;

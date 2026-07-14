@@ -260,18 +260,23 @@ module Gitlab
 
         def schedule_detached_partition_cleanup(partition)
           identifier = identifier(partition)
+          retention = detached_partition_retention_period
 
           if above_threshold?(identifier)
             Postgresql::DetachedPartition.create!(
               table_name: partition.partition_name,
-              drop_after: RETAIN_DETACHED_PARTITIONS_FOR.from_now.next_occurring(:saturday)
+              drop_after: retention.from_now.next_occurring(:saturday)
             )
           else
             Postgresql::DetachedPartition.create!(
               table_name: partition.partition_name,
-              drop_after: RETAIN_DETACHED_PARTITIONS_FOR.from_now
+              drop_after: retention.from_now
             )
           end
+        end
+
+        def detached_partition_retention_period
+          model.partitioning_strategy.try(:retain_detached_partitions_for) || RETAIN_DETACHED_PARTITIONS_FOR
         end
 
         def above_threshold?(identifier)

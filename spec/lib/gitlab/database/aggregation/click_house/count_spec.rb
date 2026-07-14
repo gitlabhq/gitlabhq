@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Count, :click_house, f
 
       metrics do
         count
-        count :finished, if: -> { Arel.sql('anyIfMerge(finished_event_at) IS NOT NULL') }
+        count :finished, if: ->(_params) { Arel.sql('anyIfMerge(finished_event_at) IS NOT NULL') }
         count :users, :integer, -> { Arel.sql('user_id') }, distinct: true
       end
     end

@@ -9,6 +9,9 @@ module Gitlab
       FILES_PATH_REGEX = %r{^/api/v\d+/projects/[^/]+/repository/files/.+}
       GROUP_PATH_REGEX = %r{^/api/v\d+/groups/[^/]+/?$}
       RUNNER_JOBS_PATH_REGEX = %r{^/api/v\d+/jobs/}
+      API_INTERNAL_PATH_REGEX = %r{^/api/v\d+/internal/}
+      HEALTH_CHECK_PATH_REGEX = %r{^/-/(health|liveness|readiness|metrics)}
+      CONTAINER_REGISTRY_EVENT_PATH_REGEX = %r{^/api/v\d+/container_registry_event/}
 
       def unauthenticated?
         !(authenticated_identifier([:api, :rss, :ics]) || authenticated_runner_id)
@@ -46,15 +49,15 @@ module Gitlab
       end
 
       def api_internal_request?
-        matches?(%r{^/api/v\d+/internal/})
+        matches?(API_INTERNAL_PATH_REGEX)
       end
 
       def health_check_request?
-        matches?(%r{^/-/(health|liveness|readiness|metrics)})
+        matches?(HEALTH_CHECK_PATH_REGEX)
       end
 
       def container_registry_event?
-        matches?(%r{^/api/v\d+/container_registry_event/})
+        matches?(CONTAINER_REGISTRY_EVENT_PATH_REGEX)
       end
 
       def product_analytics_collector_request?

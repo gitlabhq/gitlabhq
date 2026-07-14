@@ -13,7 +13,7 @@ title: GitLab for Jira Cloud app
 {{< /details >}}
 
 > [!note]
-> This page contains user documentation for the GitLab for Jira Cloud app. For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md).
+> For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md).
 
 With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud) app, you can connect GitLab and Jira Cloud to sync development information in real time. You can view this information in the [Jira development panel](development_panel.md).
 
@@ -147,7 +147,7 @@ After you link to a GitLab group:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460663) in GitLab 17.2 [with a flag](../../administration/feature_flags/_index.md) named `enable_jira_connect_configuration`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460663) in GitLab 17.2 [with a feature flag](../../administration/feature_flags/_index.md) named `enable_jira_connect_configuration`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467117) in GitLab 17.4. Feature flag `enable_jira_connect_configuration` removed.
 
 {{< /history >}}
@@ -319,11 +319,23 @@ If you installed the GitLab for Jira Cloud app from the
 - You do not have to change your GitLab configuration.
 
 If you previously installed the GitLab for Jira Cloud app manually with the Connect-based
-**App descriptor URL** workflow, you must reinstall the app using the Forge-based method.
+**App descriptor URL** workflow, you must migrate to the Forge-based method.
 Atlassian [disabled Connect-based private installs on 2026-03-31](https://www.atlassian.com/blog/developer/announcing-connect-end-of-support-timeline-and-next-steps),
-so the previous workflow no longer works. To reinstall, follow the
-[Forge-based manual install instructions](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually),
-which publish a private copy of the
+so the previous workflow no longer works.
+
+To migrate and preserve your existing data:
+
+1. [Convert your Connect app descriptor to a Forge manifest](https://developer.atlassian.com/platform/adopting-forge-from-connect/how-to-adopt/#part-2--convert-your-descriptor-to-a-manifest).
+1. [Register the new Forge app](https://developer.atlassian.com/platform/adopting-forge-from-connect/how-to-adopt/#part-3--register-and-deploy-your-app-to-your-forge-development-site)
+   using the converted manifest.
+
+These steps ensure the new Forge app retains the original `connect.app.key`.
+Jira uses this key, together with the new Forge app ID, to recognize both
+installations as linked, so your previously synced development data remains intact.
+
+After conversion, follow the
+[Forge-based manual install instructions](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually)
+to publish a private copy of the
 [GitLab for Jira Cloud Forge app](https://gitlab.com/gitlab-org/gitlab-jira-forge) under your own
 Atlassian developer account.
 

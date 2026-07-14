@@ -22,7 +22,7 @@ class UsersController < ApplicationController
     calendar_activities: true
 
   skip_before_action :authenticate_user!
-  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
+  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss, permission: :read_user_activity) }
   before_action :user, except: [:exists]
   before_action :set_legacy_data
   before_action :authorize_read_user_profile!, only: [
@@ -30,19 +30,6 @@ class UsersController < ApplicationController
   ]
   before_action only: [:exists] do
     check_rate_limit!(:username_exists, scope: request.ip)
-  end
-  before_action only: [
-    :show,
-    :activity,
-    :groups,
-    :projects,
-    :contributed,
-    :starred,
-    :snippets,
-    :followers,
-    :following
-  ] do
-    push_frontend_feature_flag(:profile_tabs_vue, current_user)
   end
 
   feature_category :user_profile, [:show, :activity, :groups, :projects, :contributed, :starred,
@@ -91,7 +78,7 @@ class UsersController < ApplicationController
         @is_personal_homepage = params[:is_personal_homepage].present? && Feature.enabled?(:personal_homepage,
           current_user)
 
-        if params[:type] == 'raw' || (Feature.enabled?(:profile_tabs_vue, current_user) && !@is_personal_homepage)
+        if params[:type] == 'raw'
           @events = if user.include_private_contributions?
                       @events.reject(&:target_deleted?)
                     else

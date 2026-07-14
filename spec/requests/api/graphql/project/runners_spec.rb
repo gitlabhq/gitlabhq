@@ -59,4 +59,23 @@ RSpec.describe 'Project.runners', feature_category: :runner_core do
       ))
     end
   end
+
+  context 'with a runner outside the project' do
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:other_org_group) { create(:group, organization: other_organization) }
+    let_it_be(:other_org_project) { create(:project, group: other_org_group) }
+    let_it_be(:other_org_runner) { create(:ci_runner, :project, projects: [other_org_project]) }
+
+    before do
+      project.add_maintainer(user)
+    end
+
+    it 'does not return runners outside the project', :aggregate_failures do
+      request
+
+      returned_ids = graphql_data_at(:project, :runners, :nodes).pluck('id')
+      expect(returned_ids).to include(project_runner.to_global_id.to_s)
+      expect(returned_ids).not_to include(other_org_runner.to_global_id.to_s)
+    end
+  end
 end

@@ -1,5 +1,5 @@
 .file-header-content
-  - if Gitlab::MarkupHelper.gitlab_markdown?(blob.path)
+  - if Gitlab::MarkupHelper.markup?(blob.path)
     .js-table-contents
   = blob_icon blob.mode, blob.name
 

@@ -15,6 +15,7 @@ export default {
       type: Object,
     },
   },
+  emits: ['change'],
   ingressOptions: Array(100 / 5 + 1)
     .fill(0)
     .map((_, i) => {

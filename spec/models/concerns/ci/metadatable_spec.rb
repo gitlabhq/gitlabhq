@@ -5,23 +5,10 @@ require 'spec_helper'
 RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
   let_it_be_with_refind(:processable) { create(:ci_processable, options: { script: 'echo' }) }
 
-  before_all do
-    Ci::ApplicationRecord.connection.execute(<<~SQL)
-      CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_100"
-        PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (100);
-      CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_101"
-        PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (101);
-      CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_102"
-        PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (102);
-    SQL
-  end
-
   describe '#options' do
     let(:job) { build(:ci_build, :without_job_definition) }
-    let(:legacy_job_options) { { script: 'legacy job' } }
     let(:job_definition_options) { { script: 'job_definition' } }
     let(:temp_job_definition_options) { { script: 'temp_job_definition' } }
-    let(:metadata_options) { { script: 'metadata' } }
 
     subject(:options) { job.options }
 
@@ -29,46 +16,28 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       is_expected.to eq({})
     end
 
-    context 'when metadata options are present' do
+    context 'when temp job definition options are present' do
       before do
-        create(:ci_build_metadata, build: job, config_options: metadata_options)
+        temp_job_definition = build(:ci_job_definition, config: { options: temp_job_definition_options })
+        job.write_attribute(:temp_job_definition, temp_job_definition)
       end
 
-      it { is_expected.to eq(metadata_options) }
+      it { is_expected.to eq(temp_job_definition_options) }
 
-      context 'when temp job definition options are present' do
+      context 'when job definition options are present' do
         before do
-          temp_job_definition = build(:ci_job_definition, config: { options: temp_job_definition_options })
-          job.write_attribute(:temp_job_definition, temp_job_definition)
+          job.build_job_definition.write_attribute(:config, { options: job_definition_options })
         end
 
-        it { is_expected.to eq(temp_job_definition_options) }
-
-        context 'when job definition options are present' do
-          before do
-            job.build_job_definition.write_attribute(:config, { options: job_definition_options })
-          end
-
-          it { is_expected.to eq(job_definition_options) }
-
-          context 'when legacy job options are present' do
-            before do
-              job.write_attribute(:options, legacy_job_options)
-            end
-
-            it { is_expected.to eq(legacy_job_options) }
-          end
-        end
+        it { is_expected.to eq(job_definition_options) }
       end
     end
   end
 
   describe '#yaml_variables' do
     let(:job) { build(:ci_build, :without_job_definition) }
-    let(:legacy_job_variables) { [{ key: 'VAR', value: 'legacy job' }] }
     let(:job_definition_variables) { [{ key: 'VAR', value: 'job_definition' }] }
     let(:temp_job_definition_variables) { [{ key: 'VAR', value: 'temp_job_definition' }] }
-    let(:metadata_variables) { [{ key: 'VAR', value: 'metadata' }] }
 
     subject(:yaml_variables) { job.yaml_variables }
 
@@ -76,36 +45,20 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       is_expected.to eq([])
     end
 
-    context 'when metadata variables are present' do
+    context 'when temp job definition variables are present' do
       before do
-        create(:ci_build_metadata, build: job, config_variables: metadata_variables)
+        temp_job_definition = build(:ci_job_definition, config: { yaml_variables: temp_job_definition_variables })
+        job.write_attribute(:temp_job_definition, temp_job_definition)
       end
 
-      it { is_expected.to eq(metadata_variables) }
+      it { is_expected.to eq(temp_job_definition_variables) }
 
-      context 'when temp job definition variables are present' do
+      context 'when job definition variables are present' do
         before do
-          temp_job_definition = build(:ci_job_definition, config: { yaml_variables: temp_job_definition_variables })
-          job.write_attribute(:temp_job_definition, temp_job_definition)
+          job.build_job_definition.write_attribute(:config, { yaml_variables: job_definition_variables })
         end
 
-        it { is_expected.to eq(temp_job_definition_variables) }
-
-        context 'when job definition variables are present' do
-          before do
-            job.build_job_definition.write_attribute(:config, { yaml_variables: job_definition_variables })
-          end
-
-          it { is_expected.to eq(job_definition_variables) }
-
-          context 'when legacy job variables are present' do
-            before do
-              job.write_attribute(:yaml_variables, legacy_job_variables)
-            end
-
-            it { is_expected.to eq(legacy_job_variables) }
-          end
-        end
+        it { is_expected.to eq(job_definition_variables) }
       end
     end
   end
@@ -117,20 +70,12 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
     it { is_expected.to be_nil }
 
-    context 'when metadata timeout is present' do
+    context 'when job timeout is present' do
       before do
-        create(:ci_build_metadata, build: job, timeout: 60)
+        job.write_attribute(:timeout, 120)
       end
 
-      it { is_expected.to eq('1m') }
-
-      context 'when job timeout is present' do
-        before do
-          job.write_attribute(:timeout, 120)
-        end
-
-        it { is_expected.to eq('2m') }
-      end
+      it { is_expected.to eq('2m') }
     end
   end
 
@@ -139,20 +84,12 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
     it { is_expected.to be_nil }
 
-    context 'when metadata timeout is present' do
+    context 'when job timeout is present' do
       before do
-        create(:ci_build_metadata, build: processable, timeout: 60)
+        processable.write_attribute(:timeout, 120)
       end
 
-      it { is_expected.to eq(60) }
-
-      context 'when job timeout is present' do
-        before do
-          processable.write_attribute(:timeout, 120)
-        end
-
-        it { is_expected.to eq(120) }
-      end
+      it { is_expected.to eq(120) }
     end
   end
 
@@ -209,17 +146,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
     subject(:timeout_source_value) { job.timeout_source_value }
 
-    context 'when metadata exists' do
-      before do
-        create(:ci_build_metadata, build: job)
-      end
-
-      it { is_expected.to eq('unknown_timeout_source') }
-    end
-
-    context 'when metadata does not exist' do
-      it { is_expected.to eq('unknown_timeout_source') }
-    end
+    it { is_expected.to eq('unknown_timeout_source') }
 
     context 'when job timeout_source is present' do
       before do
@@ -241,7 +168,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       it { is_expected.to eq(['job message error']) }
     end
 
-    context 'when only metadata downstream errors are present' do
+    context 'when only job definition downstream errors are present' do
       before do
         stub_ci_job_definition(processable, options: { downstream_errors: ['options error'] })
       end
@@ -274,30 +201,10 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
     subject(:debug_trace_enabled?) { processable.debug_trace_enabled? }
 
     shared_examples 'when job debug_trace_enabled is nil' do
-      context 'when metadata.debug_trace_enabled is true' do
-        before do
-          create(:ci_build_metadata, build: processable, debug_trace_enabled: true)
+      context 'when job is not degenerated' do
+        it 'defaults to false' do
+          is_expected.to be(false)
         end
-
-        it { is_expected.to be(true) }
-      end
-
-      context 'when metadata.debug_trace_enabled is false' do
-        before do
-          create(:ci_build_metadata, build: processable, debug_trace_enabled: false)
-        end
-
-        it { is_expected.to be(false) }
-      end
-
-      context 'when metadata does not exist but job is not degenerated' do
-        before do
-          # Very old jobs populated this column instead of metadata
-          processable.update_column(:options, '{}')
-          processable.reload
-        end
-
-        it { is_expected.to be(false) }
       end
 
       context 'when job is degenerated' do
@@ -330,7 +237,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
   end
 
   describe '#id_tokens' do
-    let(:metadata_id_tokens) { { 'TEST_ID_TOKEN' => { 'aud' => 'https://metadata' } } }
     let(:job_definition_id_tokens) { { 'TEST_ID_TOKEN' => { 'aud' => 'https://job.definition' } } }
     let(:temp_job_definition_id_tokens) { { 'TEST_ID_TOKEN' => { 'aud' => 'https://temp.job.definition' } } }
 
@@ -341,34 +247,26 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       expect(processable.id_tokens?).to be(false)
     end
 
-    context 'when metadata id_tokens are present' do
+    context 'when temp job definition id_tokens are present' do
       before do
-        create(:ci_build_metadata, build: processable, id_tokens: metadata_id_tokens)
+        temp_job_definition = build(:ci_job_definition, config: { id_tokens: temp_job_definition_id_tokens })
+        processable.write_attribute(:temp_job_definition, temp_job_definition)
       end
 
-      it 'returns metadata id_tokens' do
-        expect(id_tokens).to eq(metadata_id_tokens)
+      it 'returns temp job definition id_tokens' do
+        expect(id_tokens).to eq(temp_job_definition_id_tokens)
         expect(processable.id_tokens?).to be(true)
       end
 
-      context 'when temp job definition id_tokens are present' do
+      context 'when job definition id_tokens are present' do
         before do
-          temp_job_definition = build(:ci_job_definition, config: { id_tokens: temp_job_definition_id_tokens })
-          processable.write_attribute(:temp_job_definition, temp_job_definition)
+          updated_config = processable.job_definition.config.merge(id_tokens: job_definition_id_tokens)
+          processable.job_definition.write_attribute(:config, updated_config)
         end
 
-        it { is_expected.to eq(temp_job_definition_id_tokens) }
-
-        context 'when job definition id_tokens are present' do
-          before do
-            updated_config = processable.job_definition.config.merge(id_tokens: job_definition_id_tokens)
-            processable.job_definition.write_attribute(:config, updated_config)
-          end
-
-          it 'returns job definition id_tokens' do
-            expect(id_tokens).to eq(job_definition_id_tokens)
-            expect(processable.id_tokens?).to be(true)
-          end
+        it 'returns job definition id_tokens' do
+          expect(id_tokens).to eq(job_definition_id_tokens)
+          expect(processable.id_tokens?).to be(true)
         end
       end
     end
@@ -379,20 +277,12 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
     it { is_expected.to be_nil }
 
-    context 'when metadata exit_code is present' do
+    context 'when job exit_code is present' do
       before do
-        create(:ci_build_metadata, build: processable, exit_code: 1)
+        processable.write_attribute(:exit_code, 2)
       end
 
-      it { is_expected.to eq(1) }
-
-      context 'when job exit_code is present' do
-        before do
-          processable.write_attribute(:exit_code, 2)
-        end
-
-        it { is_expected.to eq(2) }
-      end
+      it { is_expected.to eq(2) }
     end
   end
 
@@ -404,13 +294,11 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
     before do
       processable.write_attribute(:exit_code, existing_exit_code)
-      create(:ci_build_metadata, build: processable, exit_code: existing_exit_code)
     end
 
-    it 'does not change job exit_code nor metadata exit_code value' do
+    it 'does not change job exit_code' do
       expect { set_exit_code }
         .to not_change { processable.read_attribute(:exit_code) }
-        .and not_change { processable.metadata.exit_code }
     end
 
     context 'when the new exit_code is not nil' do
@@ -430,11 +318,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
             .to change { processable.read_attribute(:exit_code) }
             .from(existing_exit_code).to(expected_exit_code)
         end
-
-        it 'does not change metadata exit_code value' do
-          expect { set_exit_code }
-            .to not_change { processable.metadata.exit_code }
-        end
       end
     end
   end
@@ -442,23 +325,22 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
   describe '#interruptible' do
     subject(:interruptible) { processable.interruptible }
 
-    context 'when metadata interruptible is present' do
+    context 'when neither job definition nor temp job definition is present' do
       before do
         processable.job_definition = nil
         processable.temp_job_definition = nil
-
-        create(:ci_build_metadata, build: processable, interruptible: true)
       end
 
-      it 'returns metadata interruptible' do
-        expect(interruptible).to be(true)
+      it 'defaults to false' do
+        expect(interruptible).to be(false)
       end
     end
 
     context 'when temp job definition interruptible is present' do
       before do
+        processable.job_definition = nil
         temp_job_definition = Ci::JobDefinition.fabricate(
-          config: { interruptible: false },
+          config: { interruptible: true },
           partition_id: processable.partition_id,
           project_id: processable.project_id
         )
@@ -466,38 +348,18 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       end
 
       it 'returns temp job definition interruptible' do
-        expect(interruptible).to be(false)
+        expect(interruptible).to be(true)
       end
 
       context 'when job definition interruptible is present' do
         before do
-          processable.build_job_definition.write_attribute(:interruptible, true)
+          processable.build_job_definition.write_attribute(:interruptible, false)
         end
 
         it 'returns job definition interruptible' do
-          expect(interruptible).to be(true)
+          expect(interruptible).to be(false)
         end
       end
-    end
-  end
-
-  describe '#options=' do
-    it 'raises an error when overriding data' do
-      expect { processable.options = { a: :b } }.to raise_error ActiveRecord::ReadonlyAttributeError
-    end
-
-    it 'allows nullifying data' do
-      expect { processable.options = nil }.not_to raise_error
-    end
-  end
-
-  describe '#yaml_variables=' do
-    it 'raises an error when overriding data' do
-      expect { processable.yaml_variables = { a: :b } }.to raise_error ActiveRecord::ReadonlyAttributeError
-    end
-
-    it 'allows nullifying data' do
-      expect { processable.yaml_variables = nil }.not_to raise_error
     end
   end
 

@@ -1,0 +1,38 @@
+# @feature_category: mcp_server
+query getWorkItemNotes($id: WorkItemID!, $after: String, $before: String, $first: Int, $last: Int) {
+  workItem(id: $id) {
+    id
+    widgets {
+      ... on WorkItemWidgetNotes {
+        notes(after: $after, before: $before, first: $first, last: $last) {
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
+          nodes {
+            id
+            body
+            internal
+            createdAt
+            updatedAt
+            system
+            systemNoteIconName
+            author {
+              id
+              name
+              username
+              avatarUrl
+              webUrl
+            }
+            discussion {
+              id
+            }
+          }
+          count
+        }
+      }
+    }
+  }
+}

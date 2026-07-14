@@ -363,7 +363,6 @@ The following features require direct server access and cannot be configured:
 
 | Feature                                                       | Description                                                        | Impact                                                                                                                    |
 | ------------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| [Mattermost](../../integration/mattermost/_index.md)          | Integrated team chat and collaboration platform.                   | Use external chat solutions.                                                                                              |
 | [Server-side Git hooks](../../administration/server_hooks.md) | Custom scripts that run on Git events (pre-receive, post-receive). | Use [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md). |
 
 > [!note]

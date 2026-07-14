@@ -12,7 +12,7 @@ module API
         project.repository.disk_path
       end
 
-      expose :id, as: :project_id, documentation: { type: 'Integer', example: 1 }
+      expose :id, as: :project_id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :repository_storage, documentation: { type: 'String', example: 'default' }
       expose :created_at, documentation: { type: 'DateTime', example: '2012-10-12T17:04:47Z' }
     end

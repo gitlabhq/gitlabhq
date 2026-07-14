@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Pipelines::ClearPersistentRefService, :use_clean_rails_memory_store_caching, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let!(:pipeline) { create(:ci_pipeline, :success, project: project) }
 
   subject(:service) { described_class.new(pipeline) }

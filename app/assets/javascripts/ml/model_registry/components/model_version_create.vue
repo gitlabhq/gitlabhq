@@ -21,7 +21,7 @@ export default {
     MarkdownEditor,
     ImportArtifactZone: () => import('./import_artifact_zone.vue'),
   },
-  inject: ['maxAllowedFileSize', 'latestVersion', 'modelGid'],
+  inject: ['latestVersion', 'modelGid'],
   props: {
     disableAttachments: {
       type: Boolean,

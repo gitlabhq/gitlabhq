@@ -33,6 +33,7 @@ export default {
       default: () => uniqueId('checklist_'),
     },
   },
+  emits: ['update:valid'],
   computed: {
     checklistItems() {
       return this.items.map((rawItem) => {

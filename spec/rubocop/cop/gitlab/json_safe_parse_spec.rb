@@ -6,72 +6,72 @@ require_relative '../../../../rubocop/cop/gitlab/json_safe_parse'
 RSpec.describe RuboCop::Cop::Gitlab::JsonSafeParse, feature_category: :tooling do
   describe 'autocorrection' do
     context 'when using Gitlab::Json.parse' do
-      it 'corrects to Gitlab::Json.safe_parse' do
+      it 'corrects to Gitlab::Json::SafeParser.parse' do
         expect_offense(<<~RUBY)
           Gitlab::Json.parse(user_input)
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ [...]
         RUBY
 
         expect_correction(<<~RUBY)
-          Gitlab::Json.safe_parse(user_input)
+          Gitlab::Json::SafeParser.parse(user_input)
         RUBY
       end
     end
 
     context 'when using ::Gitlab::Json.parse' do
-      it 'corrects to Gitlab::Json.safe_parse' do
+      it 'corrects to Gitlab::Json::SafeParser.parse' do
         expect_offense(<<~RUBY)
           ::Gitlab::Json.parse(data)
           ^^^^^^^^^^^^^^^^^^^^^^^^^^ [...]
         RUBY
 
         expect_correction(<<~RUBY)
-          Gitlab::Json.safe_parse(data)
+          Gitlab::Json::SafeParser.parse(data)
         RUBY
       end
     end
 
     context 'when using Gitlab::Json.parse!' do
-      it 'corrects to Gitlab::Json.safe_parse' do
+      it 'corrects to Gitlab::Json::SafeParser.parse' do
         expect_offense(<<~RUBY)
           Gitlab::Json.parse!(input)
           ^^^^^^^^^^^^^^^^^^^^^^^^^^ [...]
         RUBY
 
         expect_correction(<<~RUBY)
-          Gitlab::Json.safe_parse(input)
+          Gitlab::Json::SafeParser.parse(input)
         RUBY
       end
     end
 
     context 'when using Gitlab::Json.load' do
-      it 'corrects to Gitlab::Json.safe_parse' do
+      it 'corrects to Gitlab::Json::SafeParser.parse' do
         expect_offense(<<~RUBY)
           Gitlab::Json.load(string)
           ^^^^^^^^^^^^^^^^^^^^^^^^^ [...]
         RUBY
 
         expect_correction(<<~RUBY)
-          Gitlab::Json.safe_parse(string)
+          Gitlab::Json::SafeParser.parse(string)
         RUBY
       end
     end
 
     context 'when using Gitlab::Json.decode' do
-      it 'corrects to Gitlab::Json.safe_parse' do
+      it 'corrects to Gitlab::Json::SafeParser.parse' do
         expect_offense(<<~RUBY)
           Gitlab::Json.decode(json_string)
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ [...]
         RUBY
 
         expect_correction(<<~RUBY)
-          Gitlab::Json.safe_parse(json_string)
+          Gitlab::Json::SafeParser.parse(json_string)
         RUBY
       end
     end
 
     context 'when using parse with multiple arguments' do
-      it 'preserves all arguments' do
+      it 'corrects to Gitlab::Json.safe_parse and preserves all arguments' do
         expect_offense(<<~RUBY)
           Gitlab::Json.parse(data, symbolize_names: true)
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ [...]
@@ -79,6 +79,71 @@ RSpec.describe RuboCop::Cop::Gitlab::JsonSafeParse, feature_category: :tooling d
 
         expect_correction(<<~RUBY)
           Gitlab::Json.safe_parse(data, symbolize_names: true)
+        RUBY
+      end
+    end
+
+    context 'when using parse with a positional options hash' do
+      it 'corrects to Gitlab::Json.safe_parse' do
+        expect_offense(<<~RUBY)
+          Gitlab::Json.parse(data, { symbolize_names: true })
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ [...]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Gitlab::Json.safe_parse(data, { symbolize_names: true })
+        RUBY
+      end
+    end
+
+    context 'when using parse with legacy_mode option' do
+      it 'corrects to Gitlab::Json.safe_parse' do
+        expect_offense(<<~RUBY)
+          Gitlab::Json.parse(user_input, legacy_mode: true)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ [...]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Gitlab::Json.safe_parse(user_input, legacy_mode: true)
+        RUBY
+      end
+    end
+
+    context 'when using parse! with extra arguments' do
+      it 'corrects to Gitlab::Json.safe_parse' do
+        expect_offense(<<~RUBY)
+          Gitlab::Json.parse!(input, symbolize_names: true)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ [...]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Gitlab::Json.safe_parse(input, symbolize_names: true)
+        RUBY
+      end
+    end
+
+    context 'when using load with extra arguments' do
+      it 'corrects to Gitlab::Json.safe_parse' do
+        expect_offense(<<~RUBY)
+          Gitlab::Json.load(string, symbolize_names: true)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ [...]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Gitlab::Json.safe_parse(string, symbolize_names: true)
+        RUBY
+      end
+    end
+
+    context 'when using decode with extra arguments' do
+      it 'corrects to Gitlab::Json.safe_parse' do
+        expect_offense(<<~RUBY)
+          Gitlab::Json.decode(json_string, symbolize_names: true)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ [...]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Gitlab::Json.safe_parse(json_string, symbolize_names: true)
         RUBY
       end
     end
@@ -97,7 +162,28 @@ RSpec.describe RuboCop::Cop::Gitlab::JsonSafeParse, feature_category: :tooling d
         expect_correction(<<~RUBY)
           class Foo
             def bar
-              ::Gitlab::Json.safe_parse(data)
+              ::Gitlab::Json::SafeParser.parse(data)
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'when in an EE file with extra arguments' do
+      it 'uses :: prefix with safe_parse' do
+        expect_offense(<<~RUBY, '/path/to/ee/foo.rb')
+          class Foo
+            def bar
+              Gitlab::Json.parse(data, symbolize_names: true)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ [...]
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            def bar
+              ::Gitlab::Json.safe_parse(data, symbolize_names: true)
             end
           end
         RUBY
@@ -109,6 +195,12 @@ RSpec.describe RuboCop::Cop::Gitlab::JsonSafeParse, feature_category: :tooling d
     it 'does not flag Gitlab::Json.safe_parse' do
       expect_no_offenses(<<~RUBY)
         Gitlab::Json.safe_parse(user_input)
+      RUBY
+    end
+
+    it 'does not flag Gitlab::Json::SafeParser.parse' do
+      expect_no_offenses(<<~RUBY)
+        Gitlab::Json::SafeParser.parse(user_input)
       RUBY
     end
 

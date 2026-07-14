@@ -53,7 +53,7 @@ RSpec.shared_examples 'handling nuget metadata requests with package name' do |e
 
   subject { get api(url) }
 
-  before do
+  before_all do
     packages.each { |pkg| create_dependencies_for(pkg) }
   end
 
@@ -119,7 +119,7 @@ RSpec.shared_examples 'handling nuget metadata requests with package name and pa
 
   subject { get api(url) }
 
-  before do
+  before_all do
     create_dependencies_for(package)
   end
 

@@ -136,6 +136,42 @@ RSpec.describe AuthHelper, feature_category: :system_access do
         expect(helper.enabled_button_based_providers).not_to include('github')
       end
     end
+
+    context 'when chatgpt provider is configured' do
+      before do
+        allow(helper).to receive(:auth_providers) { [:twitter, :github, :chatgpt] }
+      end
+
+      context 'when chatgpt_oauth_sign_in feature flag is disabled' do
+        before do
+          stub_feature_flags(chatgpt_oauth_sign_in: false)
+        end
+
+        it 'excludes chatgpt from providers' do
+          expect(helper.enabled_button_based_providers).not_to include('chatgpt')
+        end
+
+        context 'when enable_chatgpt query param is present' do
+          before do
+            allow(helper).to receive(:params).and_return({ enable_chatgpt: 'true' })
+          end
+
+          it 'includes chatgpt in providers' do
+            expect(helper.enabled_button_based_providers).to include('chatgpt')
+          end
+        end
+      end
+
+      context 'when chatgpt_oauth_sign_in feature flag is enabled' do
+        before do
+          stub_feature_flags(chatgpt_oauth_sign_in: true)
+        end
+
+        it 'includes chatgpt in providers' do
+          expect(helper.enabled_button_based_providers).to include('chatgpt')
+        end
+      end
+    end
   end
 
   describe 'popular_enabled_button_based_providers' do

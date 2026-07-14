@@ -36,7 +36,7 @@ export function waitForCaptchaToBeSolved(captchaSiteKey) {
               captchaModalElement = null;
               captchaModalVueInstance = null;
             },
-            receivedCaptchaResponse: (captchaResponse) => {
+            'received-captcha-response': (captchaResponse) => {
               if (captchaResponse) {
                 resolve(captchaResponse);
               } else {

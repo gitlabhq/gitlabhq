@@ -7,6 +7,7 @@ import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
+  name: 'NoteHeader',
   components: {
     ImportedBadge,
     TimeAgoTooltip,

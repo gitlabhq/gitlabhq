@@ -23,6 +23,7 @@ import workItemTimeTrackingQuery from '../graphql/work_item_time_tracking.query.
 import { findTimeTrackingWidget } from '../utils';
 
 export default {
+  name: 'WorkItemTimeTracking',
   i18n: {
     addTimeTrackingMessage: s__(
       'TimeTracking|Add an %{estimateStart}estimate%{estimateEnd} or %{timeSpentStart}time spent%{timeSpentEnd}.',

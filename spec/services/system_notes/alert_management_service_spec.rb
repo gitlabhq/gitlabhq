@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe ::SystemNotes::AlertManagementService, feature_category: :groups_and_projects do
   let_it_be(:author)   { create(:user) }
-  let_it_be(:project)  { create(:project, :repository) }
-  let_it_be(:noteable, freeze: false) do
+  let_it_be(:project)  { create(:project) }
+  let_it_be_with_reload(:noteable) do
     create(:alert_management_alert, :with_incident, :acknowledged, project: project)
   end
 

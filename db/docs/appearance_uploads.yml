@@ -2,6 +2,7 @@
 table_name: appearance_uploads
 classes:
 - Appearance
+- Geo::AppearanceUpload
 - Upload
 feature_categories:
 - navigation

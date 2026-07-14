@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe ProtectedBranchesFinder, feature_category: :source_code_management do
-  let_it_be(:group, freeze: false) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, namespace: group) }
+  let_it_be_with_reload(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, namespace: group) }
 
-  let!(:project_protected_branch) { create(:protected_branch, project: project) }
-  let!(:another_project_protected_branch) { create(:protected_branch, project: project) }
-  let!(:group_protected_branch) { create(:protected_branch, project: nil, group: group) }
-  let!(:another_group_protected_branch) { create(:protected_branch, project: nil, group: group) }
-  let!(:other_protected_branch) { create(:protected_branch) }
+  let_it_be(:project_protected_branch) { create(:protected_branch, project: project) }
+  let_it_be(:another_project_protected_branch) { create(:protected_branch, project: project) }
+  let_it_be(:group_protected_branch) { create(:protected_branch, project: nil, group: group) }
+  let_it_be(:another_group_protected_branch) { create(:protected_branch, project: nil, group: group) }
+  let_it_be(:other_protected_branch) { create(:protected_branch) }
 
   let(:params) { {} }
 

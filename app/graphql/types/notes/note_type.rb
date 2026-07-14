@@ -9,6 +9,12 @@ module Types
 
       authorize :read_note
 
+      authorize_granular_token permissions: :read_note,
+        boundaries: [
+          { boundary: :resource_parent, boundary_type: :project },
+          { boundary: :resource_parent, boundary_type: :group }
+        ]
+
       expose_permissions Types::PermissionTypes::Note
 
       implements Types::Notes::BaseNoteInterface
@@ -64,6 +70,9 @@ module Types
       field :position, Types::Notes::DiffPositionType,
         null: true,
         description: 'Position of the note on a diff.'
+      field :suggestions, Types::Notes::SuggestionType.connection_type,
+        null: true,
+        description: 'Suggested changes contained in the note.'
 
       field :author_is_contributor, GraphQL::Types::Boolean,
         null: true,

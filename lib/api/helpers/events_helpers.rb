@@ -24,7 +24,14 @@ module API
       end
 
       def find_events(source)
-        EventsFinder.new(params.merge(source: source, current_user: current_user, with_associations: true)).execute
+        EventsFinder.new(
+          params.merge(
+            source: source,
+            current_user: current_user,
+            with_associations: true,
+            organization: ::Current.organization
+          )
+        ).execute
       end
     end
   end

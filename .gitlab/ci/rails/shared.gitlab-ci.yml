@@ -93,7 +93,7 @@ include:
     GEO_SECONDARY_PROXY: 0
     SUCCESSFULLY_RETRIED_TEST_EXIT_CODE: 137
     EVENT_PROF: "sql.active_record"
-    RSPEC_TAGS: "--tag ~level:background_migration --tag ~click_house --tag ~duo_workflow_service"
+    RSPEC_TAGS: "--tag ~level:background_migration --tag ~click_house --tag ~duo_workflow_service --tag ~partition_tz"
   needs:
     - !reference [.rspec-base-needs, needs]
     - job: "detect-tests"
@@ -159,6 +159,15 @@ include:
     - .rspec-base
     - .use-pg17-valkey
 
+.rspec-base-pg17-redis70:
+  needs:
+    - !reference [.rspec-base, needs]
+    - job: "db:setup pg17"
+      optional: true
+  extends:
+    - .rspec-base
+    - .use-pg17-redis70
+
 .rspec-base-pg17-clickhouse25:
   extends:
     - .rspec-base
@@ -174,6 +183,17 @@ include:
   script:
     - !reference [.clickhouse-setup, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag click_house"
+
+# Runs ONLY the `:partition_tz`-tagged partition export/import UTC guard specs,
+# with the extra non-UTC `postgres-tz` service (via .use-pg17-tz, which also
+# sets POSTGRES_TZ_HOST so the spec helpers can reach the non-UTC database).
+.rspec-base-pg17-tz:
+  extends:
+    - .rspec-base
+    - .use-pg17-tz
+  script:
+    - !reference [.base-script, script]
+    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag partition_tz"
 
 .rspec-base-pg16:
   extends:

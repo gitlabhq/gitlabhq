@@ -81,6 +81,7 @@ export default {
       required: true,
     },
   },
+  emits: ['closeDropdown', 'setLabels'],
   data() {
     return {
       showDropdownContentsCreateView: false,

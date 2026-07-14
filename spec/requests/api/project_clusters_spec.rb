@@ -364,11 +364,11 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
   end
 
   describe 'PUT /projects/:id/clusters/:cluster_id' do
+    let_it_be(:management_project) { create(:project, namespace: project.namespace) }
+
     let(:api_url) { 'https://kubernetes.example.com' }
     let(:namespace) { 'new-namespace' }
     let(:platform_kubernetes_attributes) { { namespace: namespace } }
-    let_it_be(:management_project) { create(:project, namespace: project.namespace) }
-
     let(:management_project_id) { management_project.id }
 
     let(:update_params) do
@@ -402,9 +402,11 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
     end
 
     context 'authorized user' do
-      before do
+      before_all do
         management_project.add_maintainer(maintainer_user)
+      end
 
+      before do
         put api("/projects/#{project.id}/clusters/#{cluster.id}", maintainer_user), params: update_params
 
         cluster.reload

@@ -419,7 +419,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
       it 'does not update the group to public' do
         result = described_class.new(private_group, user, visibility_level: Gitlab::VisibilityLevel::PUBLIC).execute
 
-        expect(result).to eq(false)
+        expect(result).to be(false)
         expect(private_group.errors.count).to eq(1)
         expect(private_group).to be_private
       end
@@ -427,7 +427,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
       it 'does not update the group to public with tricky value' do
         result = described_class.new(private_group, user, visibility_level: Gitlab::VisibilityLevel::PUBLIC.to_s + 'r').execute
 
-        expect(result).to eq(false)
+        expect(result).to be(false)
         expect(private_group.errors.count).to eq(1)
         expect(private_group).to be_private
       end
@@ -441,7 +441,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
       it 'does not update the group to private' do
         result = described_class.new(public_group, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE).execute
 
-        expect(result).to eq(false)
+        expect(result).to be(false)
         expect(public_group.errors.count).to eq(1)
         expect(public_group).to be_public
       end
@@ -449,7 +449,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
       it 'does not update the group to private with invalid string value' do
         result = described_class.new(public_group, user, visibility_level: 'invalid').execute
 
-        expect(result).to eq(false)
+        expect(result).to be(false)
         expect(public_group.errors.count).to eq(1)
         expect(public_group).to be_public
       end
@@ -457,7 +457,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
       it 'does not update the group to private with valid string value' do
         result = described_class.new(public_group, user, visibility_level: 'private').execute
 
-        expect(result).to eq(false)
+        expect(result).to be(false)
         expect(public_group.errors.count).to eq(1)
         expect(public_group).to be_public
       end
@@ -466,7 +466,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
       it 'does not update the group to private because of Active Record typecasting' do
         result = described_class.new(public_group, user, visibility_level: 'public').execute
 
-        expect(result).to eq(true)
+        expect(result).to be(true)
         expect(public_group.errors.count).to eq(0)
         expect(public_group).to be_public
       end
@@ -572,12 +572,44 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
   end
 
+  context 'when updating #require_sha_for_merge' do
+    let(:service) { described_class.new(internal_group, user, require_sha_for_merge: true) }
+
+    it 'updates attribute' do
+      internal_group.add_member(user, Gitlab::Access::OWNER)
+
+      expect { service.execute }.to change { internal_group.require_sha_for_merge }.to(true)
+    end
+
+    it 'does not update when not group owner' do
+      internal_group.add_member(user, Gitlab::Access::MAINTAINER)
+
+      expect { service.execute }.not_to change { internal_group.require_sha_for_merge }
+    end
+  end
+
+  context 'when updating #lock_require_sha_for_merge' do
+    let(:service) { described_class.new(internal_group, user, lock_require_sha_for_merge: true) }
+
+    it 'updates attribute' do
+      internal_group.add_member(user, Gitlab::Access::OWNER)
+
+      expect { service.execute }.to change { internal_group.lock_require_sha_for_merge }.to(true)
+    end
+
+    it 'does not update when not group owner' do
+      internal_group.add_member(user, Gitlab::Access::MAINTAINER)
+
+      expect { service.execute }.not_to change { internal_group.lock_require_sha_for_merge }
+    end
+  end
+
   describe 'when updating namespace setting #step_up_auth_required_oauth_provider' do
     let_it_be_with_reload(:group) { create(:group, :private) }
     let_it_be(:user) { create(:user, owner_of: group) }
 
     let(:ommiauth_provider_config_oidc) do
-      GitlabSettings::Options.new(
+      Gitlab::Configs.build_options(
         name: 'openid_connect',
         step_up_auth: {
           namespace: {
@@ -592,7 +624,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
 
     let(:ommiauth_provider_config_oidc_aad) do
-      GitlabSettings::Options.new(
+      Gitlab::Configs.build_options(
         name: 'openid_connect_aad',
         step_up_auth: {
           namespace: {
@@ -765,7 +797,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
 
     it 'returns true' do
-      expect(service.execute).to eq(true)
+      expect(service.execute).to be(true)
     end
 
     context 'for GroupPathChangedEvent' do
@@ -850,7 +882,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     it 'changes settings' do
       subject
 
-      expect(group.namespace_settings.reload.allow_mfa_for_subgroups).to eq(false)
+      expect(group.namespace_settings.reload.allow_mfa_for_subgroups).to be(false)
     end
 
     it 'enqueues update subgroups and its members' do

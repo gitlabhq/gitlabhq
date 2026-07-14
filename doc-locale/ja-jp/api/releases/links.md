@@ -1,7 +1,7 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: リリースリンクAPI
 ---
 
@@ -14,27 +14,24 @@ title: リリースリンクAPI
 
 {{< history >}}
 
-- [追加](https://gitlab.com/gitlab-org/gitlab/-/issues/250819) [GitLab CI/CDジョブトークン](../../ci/jobs/ci_job_token.md)で認証をGitLab 15.1で追加しました。
+- GitLab 15.1で[追加](https://gitlab.com/gitlab-org/gitlab/-/issues/250819)された、[CI/CDジョブトークン](../../ci/jobs/ci_job_token.md)による認証。
 
 {{< /history >}}
 
-このAPIを使用して、[releases](../../user/project/releases/_index.md)へのリンクを操作します。
+このAPIを使用して、[リリース](../../user/project/releases/_index.md)へのリンクを操作します。
 
-GitLabは、次のプロトコルでアセットリンクをサポートします:
+GitLabは、次のプロトコルを持つアセットリンクをサポートしています:
 
 - `http`
 - `https`
 - `ftp`
 
-{{< alert type="note" >}}
+> [!note]
+> プロジェクトリリースを直接操作するには、[プロジェクトリリースAPI](_index.md)を参照してください。
 
-プロジェクトリリースを直接操作するには、[project release API](_index.md)を参照してください。
+## すべてのリリースリンクを一覧表示 {#list-all-release-links}
 
-{{< /alert >}}
-
-## リリースのリンクを一覧表示 {#list-links-of-a-release}
-
-リリースからアセットをリンクとして取得します。
+リリースからすべての資産をリンクとして一覧表示します。
 
 ```plaintext
 GET /projects/:id/releases/:tag_name/assets/links
@@ -43,15 +40,15 @@ GET /projects/:id/releases/:tag_name/assets/links
 | 属性     | 型           | 必須 | 説明                             |
 | ------------- | -------------- | -------- | --------------------------------------- |
 | `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
-| `tag_name`    | 文字列         | はい      | リリースに関連付けられているタグ。 |
+| `tag_name`    | 文字列         | はい      | リリースに関連付けられたタグ。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -70,9 +67,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## リリースリンクを取得 {#get-a-release-link}
+## リリースリンクを取得する {#retrieve-a-release-link}
 
-リリースからアセットをリンクとして取得します。
+指定された資産をリリースからリンクとして取得します。
 
 ```plaintext
 GET /projects/:id/releases/:tag_name/assets/links/:link_id
@@ -81,16 +78,16 @@ GET /projects/:id/releases/:tag_name/assets/links/:link_id
 | 属性     | 型           | 必須 | 説明                             |
 | ------------- | -------------- | -------- | --------------------------------------- |
 | `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
-| `tag_name`    | 文字列         | はい      | リリースに関連付けられているタグ。 |
+| `tag_name`    | 文字列         | はい      | リリースに関連付けられたタグ。 |
 | `link_id`    | 整数         | はい      | リンクのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -103,7 +100,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## リリースリンクを作成 {#create-a-release-link}
 
-リリースからアセットをリンクとして作成します。
+指定されたリリースのアセットリンクを作成します。
 
 ```plaintext
 POST /projects/:id/releases/:tag_name/assets/links
@@ -112,13 +109,13 @@ POST /projects/:id/releases/:tag_name/assets/links
 | 属性            | 型           | 必須 | 説明                                                                                                               |
 |----------------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------------|
 | `id`                 | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。                                        |
-| `tag_name`           | 文字列         | はい      | リリースに関連付けられているタグ。                                                                                      |
-| `name`               | 文字列         | はい      | リンクの名前。リンク名は、リリース内で一意である必要があります。                                                           |
-| `url`                | 文字列         | はい      | リンクのURL。リンクURLは、リリース内で一意である必要があります。                                                             |
+| `tag_name`           | 文字列         | はい      | リリースに関連付けられたタグ。                                                                                      |
+| `name`               | 文字列         | はい      | リンクの名前。リンク名はリリース内で一意である必要があります。                                                           |
+| `url`                | 文字列         | はい      | リンクのURL。リンクURLはリリース内で一意である必要があります。                                                             |
 | `direct_asset_path`  | 文字列         | いいえ       | [ダイレクトアセットリンク](../../user/project/releases/release_fields.md#permanent-links-to-release-assets)のオプションのパス。 |
 | `link_type`          | 文字列         | いいえ       | リンクの種類: `other`、`runbook`、`image`、`package`。`other`がデフォルトです。                                        |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -129,7 +126,7 @@ curl --request POST \
     "https://gitlab.example.com/api/v4/projects/20/releases/v1.7.0/assets/links"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -143,7 +140,7 @@ curl --request POST \
 
 ## リリースリンクを更新 {#update-a-release-link}
 
-リリースからアセットをリンクとして更新します。
+指定されたリリースのアセットリンクを更新します。
 
 ```plaintext
 PUT /projects/:id/releases/:tag_name/assets/links/:link_id
@@ -152,20 +149,17 @@ PUT /projects/:id/releases/:tag_name/assets/links/:link_id
 | 属性            | 型           | 必須 | 説明                                                                                                               |
 | -------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `id`                 | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
-| `tag_name`           | 文字列         | はい      | リリースに関連付けられているタグ。 |
+| `tag_name`           | 文字列         | はい      | リリースに関連付けられたタグ。 |
 | `link_id`            | 整数        | はい      | リンクのID。 |
 | `name`               | 文字列         | いいえ       | リンクの名前。 |
 | `url`                | 文字列         | いいえ       | リンクのURL。 |
 | `direct_asset_path`  | 文字列         | いいえ       | [ダイレクトアセットリンク](../../user/project/releases/release_fields.md#permanent-links-to-release-assets)のオプションのパス。 |
 | `link_type`          | 文字列         | いいえ       | リンクの種類: `other`、`runbook`、`image`、`package`。`other`がデフォルトです。 |
 
-{{< alert type="note" >}}
+> [!note]
+> `name`または`url`のいずれかを少なくとも1つ指定する必要があります。
 
-`name`または`url`の少なくとも1つを指定する必要があります
-
-{{< /alert >}}
-
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PUT --data name="new name" --data link_type="runbook" \
@@ -173,7 +167,7 @@ curl --request PUT --data name="new name" --data link_type="runbook" \
      "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -186,7 +180,7 @@ curl --request PUT --data name="new name" --data link_type="runbook" \
 
 ## リリースリンクを削除 {#delete-a-release-link}
 
-リリースからアセットをリンクとして削除します。
+指定されたリリースのアセットリンクを削除します。
 
 ```plaintext
 DELETE /projects/:id/releases/:tag_name/assets/links/:link_id
@@ -195,16 +189,16 @@ DELETE /projects/:id/releases/:tag_name/assets/links/:link_id
 | 属性     | 型           | 必須 | 説明                             |
 | ------------- | -------------- | -------- | --------------------------------------- |
 | `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
-| `tag_name`    | 文字列         | はい      | リリースに関連付けられているタグ。 |
+| `tag_name`    | 文字列         | はい      | リリースに関連付けられたタグ。 |
 | `link_id`    | 整数         | はい      | リンクのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

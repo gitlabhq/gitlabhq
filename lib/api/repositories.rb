@@ -228,7 +228,9 @@ module API
         else
           send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], ref_type: params[:ref_type], include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths]
         end
-      rescue StandardError
+      rescue Gitlab::Git::CommandError
+        service_unavailable!
+      rescue Gitlab::Workhorse::ArchiveNotFoundError
         not_found!('File')
       end
 

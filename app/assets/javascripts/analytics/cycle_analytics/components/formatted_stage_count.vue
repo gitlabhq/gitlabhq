@@ -2,6 +2,7 @@
 import { s__, n__, sprintf, formatNumber } from '~/locale';
 
 export default {
+  name: 'FormattedStageCount',
   props: {
     stageCount: {
       type: Number,

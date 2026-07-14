@@ -7,6 +7,7 @@ const MIN_SCALE = 1;
 const ZOOM_LEVELS = 5;
 
 export default {
+  name: 'DesignScaler',
   components: {
     GlButtonGroup,
     GlButton,

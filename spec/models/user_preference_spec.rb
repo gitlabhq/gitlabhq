@@ -222,13 +222,13 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     it 'is set to true by default' do
       pref = described_class.new
 
-      expect(pref.project_shortcut_buttons).to eq(true)
+      expect(pref.project_shortcut_buttons).to be(true)
     end
 
     it 'returns assigned value' do
       pref = described_class.new(project_shortcut_buttons: false)
 
-      expect(pref.project_shortcut_buttons).to eq(false)
+      expect(pref.project_shortcut_buttons).to be(false)
     end
   end
 
@@ -236,13 +236,13 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     it 'is set to true by default' do
       pref = described_class.new
 
-      expect(pref.keyboard_shortcuts_enabled).to eq(true)
+      expect(pref.keyboard_shortcuts_enabled).to be(true)
     end
 
     it 'returns assigned value' do
       pref = described_class.new(keyboard_shortcuts_enabled: false)
 
-      expect(pref.keyboard_shortcuts_enabled).to eq(false)
+      expect(pref.keyboard_shortcuts_enabled).to be(false)
     end
   end
 
@@ -271,7 +271,7 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       let(:args) { {} }
 
       it 'is set to false by default' do
-        expect(pref.dpop_enabled).to eq(false)
+        expect(pref.dpop_enabled).to be(false)
       end
     end
 
@@ -279,7 +279,7 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       let(:args) { { dpop_enabled: nil } }
 
       it 'returns default value' do
-        expect(pref.dpop_enabled).to eq(false)
+        expect(pref.dpop_enabled).to be(false)
       end
     end
 
@@ -287,7 +287,7 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       let(:args) { { dpop_enabled: true } }
 
       it 'returns assigned value' do
-        expect(pref.dpop_enabled).to eq(true)
+        expect(pref.dpop_enabled).to be(true)
       end
     end
   end

@@ -2,9 +2,9 @@ import { GlLink, GlModal } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue from 'vue';
 import { merge } from 'lodash-es';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
-import createStore from '~/vue_shared/components/metric_images/store';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
+import { useMetricImages } from '~/vue_shared/components/metric_images/store';
 import MetricsImageTable from '~/vue_shared/components/metric_images/metric_images_table.vue';
 import MetricImageDetailsModal from '~/vue_shared/components/metric_images/metric_image_details_modal.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -17,20 +17,22 @@ const defaultProps = {
 
 const mockEvent = { preventDefault: jest.fn() };
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('Metrics upload item', () => {
   let wrapper;
   let store;
+  let pinia;
 
   const mountComponent = (options = {}, mountMethod = mount) => {
-    store = createStore();
+    pinia = createTestingPinia();
+    store = useMetricImages();
 
     wrapper = mountMethod(
       MetricsImageTable,
       merge(
         {
-          store,
+          pinia,
           propsData: {
             ...defaultProps,
           },
@@ -134,13 +136,13 @@ describe('Metrics upload item', () => {
       });
 
       it('should delete the image when selected', async () => {
-        const dispatchSpy = jest.spyOn(store, 'dispatch').mockImplementation(jest.fn());
+        store.deleteImage.mockResolvedValue();
 
         submitModal();
 
         await waitForPromises();
 
-        expect(dispatchSpy).toHaveBeenCalledWith('deleteImage', defaultProps.id);
+        expect(store.deleteImage).toHaveBeenCalledWith(defaultProps.id);
       });
     });
 

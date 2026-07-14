@@ -549,13 +549,21 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
             stub_rename_base_repository_in_registry(dry_run: true, result: :bad_request)
           end
 
-          it_behaves_like 'renaming the project fails with message', /container registry path rename validation failed/
+          it_behaves_like 'renaming the project fails with message', /container registry path rename validation failed: Bad Request/
 
           it 'logs the error' do
             expect_any_instance_of(described_class).to receive(:log_error).with("Dry run failed for renaming project with tags: #{project.full_path}, error: bad_request")
 
             update_project(project, admin, path: new_name)
           end
+        end
+
+        context 'when the dry run reports the registry does not support renaming' do
+          before do
+            stub_rename_base_repository_in_registry(dry_run: true, result: :rename_not_supported)
+          end
+
+          it_behaves_like 'renaming the project fails with message', /Cannot rename or delete project because it contains container registry tags. Delete all container registry tags first/
         end
 
         context 'when the dry run succeeds' do
@@ -1242,7 +1250,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
 
         it 'updates the setting' do
           service_action
-          expect(project.reload.ci_inbound_job_token_scope_enabled).to eq(true)
+          expect(project.reload.ci_inbound_job_token_scope_enabled).to be(true)
         end
 
         it_behaves_like 'internal event tracking' do
@@ -1261,7 +1269,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
 
         it 'updates the setting' do
           service_action
-          expect(project.reload.ci_inbound_job_token_scope_enabled).to eq(false)
+          expect(project.reload.ci_inbound_job_token_scope_enabled).to be(false)
         end
 
         it_behaves_like 'internal event tracking' do
@@ -1321,11 +1329,11 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         allow(project).to receive(:has_ci_config_file?).and_return(true)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when auto devops is nil' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when auto devops is explicitly enabled' do
@@ -1333,7 +1341,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         project.create_auto_devops!(enabled: true)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when auto devops is explicitly disabled' do
@@ -1341,7 +1349,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         project.create_auto_devops!(enabled: false)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when auto devops is set to instance setting' do
@@ -1357,7 +1365,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
           stub_application_setting(auto_devops_enabled: true)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when auto devops is disabled system-wide' do
@@ -1365,7 +1373,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
           stub_application_setting(auto_devops_enabled: false)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end

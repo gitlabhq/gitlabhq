@@ -17,8 +17,8 @@ module API
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Purge the dependency proxy for a group' do
-        detail 'Schedules for deletion the cached manifests and blobs for a group.'\
-          'This endpoint requires the Owner role for the group.'
+        detail 'Purges the dependency proxy for a specified group and schedules the cached manifests and blobs ' \
+          'for deletion. This endpoint requires the Owner role for the group.'
         success code: 202
         failure [
           { code: 401, message: 'Unauthorized' }

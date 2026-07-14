@@ -76,16 +76,7 @@ describe('Commit references component', () => {
     expect(containingBranchesQueryHandler).toHaveBeenCalledTimes(1);
   });
 
-  describe('with relative url', () => {
-    beforeEach(async () => {
-      gon.relative_url_root = '/gitlab';
-      await createComponent();
-    });
-
-    it('passes correct urlPart prop to refList', () => {
-      expect(branchesList().props('urlPart')).toBe(
-        `${gon.relative_url_root}${refsListPropsMock.urlPart}`,
-      );
-    });
+  it('passes the project full path to refs list', () => {
+    expect(branchesList().props('fullPath')).toBe('some/project');
   });
 });

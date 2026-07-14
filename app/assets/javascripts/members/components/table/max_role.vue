@@ -16,6 +16,7 @@ import { s__ } from '~/locale';
 import { logError } from '~/lib/logger';
 
 export default {
+  name: 'MaxRole',
   components: {
     GlCollapsibleListbox,
     GlBadge,

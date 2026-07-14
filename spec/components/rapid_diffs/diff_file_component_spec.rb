@@ -8,7 +8,7 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
   include_context "with diff file component tests"
 
   describe 'header slot' do
-    let_it_be(:diff_file, freeze: false) { build(:diff_file) }
+    let_it_be_with_reload(:diff_file) { build(:diff_file) }
 
     it 'renders the default header when no custom header is provided' do
       allow_next_instance_of(
@@ -35,8 +35,8 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
     end
 
     context 'with environment' do
-      let_it_be(:project, freeze: false) { build_stubbed(:project, :repository) }
-      let_it_be(:environment, freeze: false) { build_stubbed(:environment, project: project) }
+      let_it_be(:project) { build_stubbed(:project, :repository) }
+      let_it_be(:environment) { build_stubbed(:environment, project: project) }
 
       it 'renders the default header with environment when no custom header is provided' do
         allow_next_instance_of(
@@ -55,7 +55,7 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
   end
 
   describe 'before_body slot' do
-    let_it_be(:diff_file, freeze: false) { build(:diff_file) }
+    let_it_be_with_reload(:diff_file) { build(:diff_file) }
 
     it 'renders before_body before the diff file body' do
       custom_content = '<div data-testid="before-body">Before Body</div>'.html_safe
@@ -73,7 +73,7 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
   end
 
   describe 'extra_file_data' do
-    let_it_be(:diff_file, freeze: false) { build(:diff_file) }
+    let_it_be_with_reload(:diff_file) { build(:diff_file) }
 
     it 'merges extra_file_data into file_data' do
       extra_data = { custom_field: 'custom_value', another_field: 123 }
@@ -89,7 +89,7 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
   end
 
   describe 'extra_options' do
-    let_it_be(:diff_file, freeze: false) { build(:diff_file) }
+    let_it_be_with_reload(:diff_file) { build(:diff_file) }
 
     it 'merges extra classes with base classes' do
       extra_options = { class: 'custom-class another-class' }

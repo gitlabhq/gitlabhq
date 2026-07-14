@@ -11,6 +11,8 @@ module Issuables
     end
 
     def includes_user?(user)
+      return current_user.present? && user == current_user if filter_by_current_user_assignee?
+
       has_assignee_param?(params) && assignee_ids(params).include?(user.id)
     end
 
@@ -21,6 +23,8 @@ module Issuables
         issuables.unassigned
       elsif filter_by_any_assignee?
         issuables.assigned
+      elsif filter_by_current_user_assignee?
+        current_user ? issuables.assigned_to(current_user) : issuables.none
       elsif has_assignee_param?(params)
         filter_by_assignees(issuables)
       else
@@ -46,6 +50,10 @@ module Issuables
 
     def filter_by_any_assignee?
       params[:assignee_id].to_s.downcase == FILTER_ANY
+    end
+
+    def filter_by_current_user_assignee?
+      params[:assignee_id].to_s.downcase == FILTER_ME
     end
 
     def filter_by_assignees(issuables)

@@ -14,21 +14,21 @@ title: SAML API
 
 {{< history >}}
 
-- GitLab 15.5で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/227841)。
+- GitLab 15.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/227841)されました。
 
 {{< /history >}}
 
-このAPIを使用してSAML機能を操作します。
+このAPIを使ってSAML機能を操作します。
 
 ## GitLab.comエンドポイント {#gitlabcom-endpoints}
 
-### グループのすべてのSAMLIDをリストする {#list-all-saml-identities-for-a-group}
+### グループのすべてのSAMLアイデンティティを一覧表示 {#list-all-saml-identities-for-a-group}
 
 ```plaintext
 GET /groups/:id/saml/identities
 ```
 
-グループのすべてのSAMLIDをリストします。
+グループのすべてのSAMLアイデンティティを一覧表示します。
 
 サポートされている属性は以下のとおりです: 
 
@@ -40,7 +40,7 @@ GET /groups/:id/saml/identities
 
 | 属性    | 型   | 説明               |
 | ------------ | ------ | ------------------------- |
-| `extern_uid` | 文字列 | ユーザーの外部UID |
+| `extern_uid` | 文字列 | ユーザーの外部固有識別子 |
 | `user_id`    | 文字列 | ユーザーのID           |
 
 リクエスト例: 
@@ -62,7 +62,7 @@ curl --location --request GET \
 ]
 ```
 
-### 単一のSAMLIDを取得する {#retrieve-a-single-saml-identity}
+### 単一のSAMLアイデンティティを取得する {#retrieve-a-single-saml-identity}
 
 {{< history >}}
 
@@ -70,7 +70,7 @@ curl --location --request GET \
 
 {{< /history >}}
 
-単一のSAMLIDを取得します。
+単一のSAMLアイデンティティを取得します。
 
 ```plaintext
 GET /groups/:id/saml/:uid
@@ -81,7 +81,7 @@ GET /groups/:id/saml/:uid
 | 属性 | 型           | 必須 | 説明               |
 | --------- | -------------- | -------- | ------------------------- |
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `uid`     | 文字列         | はい      | ユーザーの外部UID。 |
+| `uid`     | 文字列         | はい      | ユーザーの外部固有識別子。 |
 
 リクエスト例: 
 
@@ -100,9 +100,9 @@ curl --location --request GET \
 }
 ```
 
-### SAMLIDの`extern_uid`フィールドを更新する {#update-extern_uid-field-for-a-saml-identity}
+### SAMLアイデンティティの`extern_uid`フィールドを更新 {#update-extern_uid-field-for-a-saml-identity}
 
-SAMLIDの`extern_uid`フィールドを更新します:
+SAMLアイデンティティの`extern_uid`フィールドを更新します:
 
 | SAML IdP属性 | GitLabフィールド |
 | ------------------ | ------------ |
@@ -117,7 +117,14 @@ PATCH /groups/:id/saml/:uid
 | 属性 | 型   | 必須 | 説明               |
 | --------- | ------ | -------- | ------------------------- |
 | `id`      | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `uid`     | 文字列 | はい      | ユーザーの外部UID。 |
+| `uid`     | 文字列 | はい      | ユーザーの外部固有識別子。 |
+
+`extern_uid`が更新されると、GitLabは次のようになります:
+
+- SAMLIDを信頼できないものとしてマークします。影響を受けるユーザーは、IDを再リンクするまでSAMLでサインインできません。
+- 影響を受けるユーザーにメール通知を送信します。
+
+SAMLIDを再リンクするには、ユーザーはGitLabの認証情報でサインインし、そのグループのSAMLリンクフローを完了する必要があります。
 
 リクエスト例: 
 
@@ -129,7 +136,7 @@ curl --request PATCH \
   --form "extern_uid=be20d8dcc028677c931e04f387"
 ```
 
-### 単一のSAMLIDを削除する {#delete-a-single-saml-identity}
+### 単一のSAMLアイデンティティを削除 {#delete-a-single-saml-identity}
 
 {{< history >}}
 
@@ -146,7 +153,7 @@ DELETE /groups/:id/saml/:uid
 | 属性 | 型    | 必須 | 説明               |
 | --------- | ------- | -------- | ------------------------- |
 | `id`      | 整数 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `uid`     | 文字列  | はい      | ユーザーの外部UID。 |
+| `uid`     | 文字列  | はい      | ユーザーの外部固有識別子。 |
 
 リクエスト例: 
 
@@ -166,35 +173,35 @@ curl --request DELETE \
 
 ## GitLab Self-Managedエンドポイント {#gitlab-self-managed-endpoints}
 
-### 単一のSAMLIDを取得する {#retrieve-a-single-saml-identity-1}
+### 単一のSAMLアイデンティティを取得する {#retrieve-a-single-saml-identity-1}
 
-Users APIを使用して、[単一のSAMLIDを取得します](users.md#as-an-administrator)。
+ユーザーAPIを使用して、[単一のSAMLアイデンティティを取得します](users.md#as-an-administrator)。
 
-### SAMLIDの`extern_uid`フィールドを更新する {#update-extern_uid-field-for-a-saml-identity-1}
+### SAMLアイデンティティの`extern_uid`フィールドを更新 {#update-extern_uid-field-for-a-saml-identity-1}
 
-Users APIを使用して、[ユーザーの`extern_uid`フィールドを更新します](users.md#modify-a-user)。
+ユーザーAPIを使用して、[ユーザーの`extern_uid`フィールドを更新します](users.md#modify-a-user)。
 
-### 単一のSAMLIDを削除する {#delete-a-single-saml-identity-1}
+### 単一のSAMLアイデンティティを削除 {#delete-a-single-saml-identity-1}
 
-Users APIを使用して、[ユーザーの単一のIDを削除します](users.md#delete-authentication-identity-from-a-user)。
+ユーザーAPIを使用して、[ユーザーの単一のアイデンティティを削除します](users.md#delete-authentication-identity-from-a-user)。
 
 ## SAMLグループリンク {#saml-group-links}
 
 {{< history >}}
 
 - GitLab 15.3.0で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/290367)。
-- GitLab 15.3.3で、`access_level`タイプが`string`から`integer`に[変更されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607)。
-- GitLab 16.7で、`member_role_id`タイプが`custom_roles_for_saml_group_links`という名前の[フラグとともに](../administration/feature_flags/_index.md)[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/417201)。デフォルトでは無効になっています。
+- GitLab 15.3.3で`access_level`タイプが`string`から`integer`に[変更されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607)。
+- GitLab 16.7で`member_role_id`タイプが`custom_roles_for_saml_group_links`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/417201)されました。デフォルトでは無効になっています。
 - GitLab 16.8で`member_role_id`タイプが[一般提供されました](https://gitlab.com/gitlab-org/gitlab/-/issues/417201)。機能フラグ`custom_roles_for_saml_group_links`は削除されました。
 - GitLab 18.2で`provider`パラメータが[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/548725)。
 
 {{< /history >}}
 
-REST APIを使用して、[SAMLグループリンク](../user/group/saml_sso/group_sync.md#configure-saml-group-links)をリスト、取得、追加、削除します。
+REST APIを使用して、[SAMLグループリンク](../user/group/saml_sso/group_sync.md#configure-saml-group-links)を一覧表示、取得、追加、削除します。
 
-### すべてのSAMLグループリンクをリストする {#list-all-saml-group-links}
+### すべてのSAMLグループリンクを一覧表示 {#list-all-saml-group-links}
 
-グループのすべてのSAMLグループリンクをリストします。
+グループのすべてのSAMLグループリンクを一覧表示します。
 
 ```plaintext
 GET /groups/:id/saml_group_links
@@ -210,10 +217,10 @@ GET /groups/:id/saml_group_links
 
 | 属性           | 型    | 説明 |
 |:--------------------|:--------|:------------|
-| `[].name`           | 文字列  | SAMLグループ名。 |
-| `[].access_level`   | 整数 | SAMLグループのメンバーのデフォルトのアクセスレベル。使用可能な値: `0`（アクセス権なし）、`5`（最小アクセス）、`10`（ゲスト）、`15`（プランナー）、`20`（レポーター）、`30`（デベロッパー）、`40`（メンテナー）、`50`（オーナー）。 |
-| `[].member_role_id` | 整数 | SAMLグループのメンバーの[メンバーロールID (`member_role_id`)](member_roles.md)。 |
-| `[].provider`       | 文字列  | このグループリンクを適用するために一致する必要がある一意の[プロバイダー名](../integration/saml.md#configure-saml-support-in-gitlab)。 |
+| `[].name`           | 文字列  | SAMLグループの名前。 |
+| `[].access_level`   | 整数 | SAMLグループのメンバーに対するデフォルトのアクセスレベル。使用可能な値: `0` (アクセスなし)、`5` (最小アクセス)、`10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`25` (セキュリティマネージャー)、`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー)。 |
+| `[].member_role_id` | 整数 | SAMLグループのメンバーに対する[メンバーロールID (`member_role_id`)](member_roles.md)。 |
+| `[].provider`       | 文字列  | このグループリンクが適用されるために一致する必要がある、一意の[プロバイダー名](../integration/saml.md#configure-saml-support-in-gitlab)。 |
 
 リクエスト例: 
 
@@ -255,19 +262,19 @@ GET /groups/:id/saml_group_links/:saml_group_name
 | 属性         | 型           | 必須 | 説明 |
 |:------------------|:---------------|:---------|:------------|
 | `id`              | 整数または文字列 | はい      | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
-| `saml_group_name` | 文字列         | はい      | SAMLグループ名。 |
-| `provider`        | 文字列         | いいえ       | 同じ名前の複数のリンクが存在する場合に区別するための、一意の[プロバイダー名](../integration/saml.md#configure-saml-support-in-gitlab)。同じ`saml_group_name`を持つ複数のリンクが存在する場合に必須。 |
+| `saml_group_name` | 文字列         | はい      | SAMLグループの名前。 |
+| `provider`        | 文字列         | いいえ       | 同じ名前のリンクが複数存在する場合に曖昧さを解消するための、一意の[プロバイダー名](../integration/saml.md#configure-saml-support-in-gitlab)。同じ`saml_group_name`を持つリンクが複数存在する場合に必要です。 |
 
 成功した場合、[`200`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性        | 型    | 説明 |
 |:-----------------|:--------|:------------|
-| `name`           | 文字列  | SAMLグループ名。 |
-| `access_level`   | 整数 | SAMLグループのメンバーのデフォルトのアクセスレベル。使用可能な値: `0`（アクセス権なし）、`5`（最小アクセス）、`10`（ゲスト）、`15`（プランナー）、`20`（レポーター）、`30`（デベロッパー）、`40`（メンテナー）、`50`（オーナー）。 |
-| `member_role_id` | 整数 | SAMLグループのメンバーの[メンバーロールID (`member_role_id`)](member_roles.md)。 |
-| `provider`       | 文字列  | このグループリンクを適用するために一致する必要がある一意の[プロバイダー名](../integration/saml.md#configure-saml-support-in-gitlab)。 |
+| `name`           | 文字列  | SAMLグループの名前。 |
+| `access_level`   | 整数 | SAMLグループのメンバーに対するデフォルトのアクセスレベル。使用可能な値: `0` (アクセスなし)、`5` (最小アクセス)、`10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`25` (セキュリティマネージャー)、`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー)。 |
+| `member_role_id` | 整数 | SAMLグループのメンバーに対する[メンバーロールID (`member_role_id`)](member_roles.md)。 |
+| `provider`       | 文字列  | このグループリンクが適用されるために一致する必要がある、一意の[プロバイダー名](../integration/saml.md#configure-saml-support-in-gitlab)。 |
 
-同じ名前で異なるプロバイダーを持つ複数のSAMLグループリンクが存在し、`provider`パラメータが指定されていない場合、`provider`パラメータが区別に必要であることを示すエラーメッセージとともに[`422`](rest/troubleshooting.md#status-codes)を返します。
+同じ名前でプロバイダーが異なる複数のSAMLグループリンクが存在し、`provider`パラメータが指定されていない場合、曖昧さを解消するために`provider`パラメータが必要であることを示すエラーメッセージとともに、[`422`](rest/troubleshooting.md#status-codes)が返されます。
 
 リクエスト例: 
 
@@ -296,9 +303,9 @@ curl \
 }
 ```
 
-### SAMLグループリンクを追加する {#add-a-saml-group-link}
+### SAMLグループリンクを追加 {#add-a-saml-group-link}
 
-グループにSAMLグループリンクを追加します。
+グループのSAMLグループリンクを追加します。
 
 ```plaintext
 POST /groups/:id/saml_group_links
@@ -309,19 +316,19 @@ POST /groups/:id/saml_group_links
 | 属性         | 型              | 必須 | 説明 |
 |:------------------|:------------------|:---------|:------------|
 | `id`              | 整数または文字列 | はい      | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
-| `saml_group_name` | 文字列            | はい      | SAMLグループ名。 |
-| `access_level`    | 整数           | はい      | SAMLグループのメンバーのデフォルトのアクセスレベル。使用可能な値: `0`（アクセス権なし）、`5`（最小アクセス）、`10`（ゲスト）、`15`（プランナー）、`20`（レポーター）、`30`（デベロッパー）、`40`（メンテナー）、`50`（オーナー）。 |
-| `member_role_id`  | 整数           | いいえ       | SAMLグループのメンバーの[メンバーロールID (`member_role_id`)](member_roles.md)。 |
-| `provider`        | 文字列            | いいえ       | このグループリンクを適用するために一致する必要がある一意の[プロバイダー名](../integration/saml.md#configure-saml-support-in-gitlab)。 |
+| `saml_group_name` | 文字列            | はい      | SAMLグループの名前。 |
+| `access_level`    | 整数           | はい      | SAMLグループのメンバーに対するデフォルトのアクセスレベル。使用可能な値: `0` (アクセスなし)、`5` (最小アクセス)、`10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`25` (セキュリティマネージャー)、`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー)。 |
+| `member_role_id`  | 整数           | いいえ       | SAMLグループのメンバーに対する[メンバーロールID (`member_role_id`)](member_roles.md)。 |
+| `provider`        | 文字列            | いいえ       | このグループリンクが適用されるために一致する必要がある、一意の[プロバイダー名](../integration/saml.md#configure-saml-support-in-gitlab)。 |
 
 成功した場合、[`201`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性        | 型    | 説明 |
 |:-----------------|:--------|:------------|
-| `name`           | 文字列  | SAMLグループ名。 |
-| `access_level`   | 整数 | SAMLグループのメンバーのデフォルトのアクセスレベル。使用可能な値: `0`（アクセス権なし）、`5`（最小アクセス）、`10`（ゲスト）、`15`（プランナー）、`20`（レポーター）、`30`（デベロッパー）、`40`（メンテナー）、`50`（オーナー）。 |
-| `member_role_id` | 整数 | SAMLグループのメンバーの[メンバーロールID (`member_role_id`)](member_roles.md)。 |
-| `provider`       | 文字列  | このグループリンクを適用するために一致する必要がある一意の[プロバイダー名](../integration/saml.md#configure-saml-support-in-gitlab)。 |
+| `name`           | 文字列  | SAMLグループの名前。 |
+| `access_level`   | 整数 | SAMLグループのメンバーに対するデフォルトのアクセスレベル。使用可能な値: `0` (アクセスなし)、`5` (最小アクセス)、`10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`25` (セキュリティマネージャー)、`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー)。 |
+| `member_role_id` | 整数 | SAMLグループのメンバーに対する[メンバーロールID (`member_role_id`)](member_roles.md)。 |
+| `provider`       | 文字列  | このグループリンクが適用されるために一致する必要がある、一意の[プロバイダー名](../integration/saml.md#configure-saml-support-in-gitlab)。 |
 
 リクエスト例: 
 
@@ -340,7 +347,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Cont
 }
 ```
 
-### SAMLグループリンクを削除する {#delete-a-saml-group-link}
+### SAMLグループリンクを削除 {#delete-a-saml-group-link}
 
 グループのSAMLグループリンクを削除します。
 
@@ -353,8 +360,8 @@ DELETE /groups/:id/saml_group_links/:saml_group_name
 | 属性         | 型           | 必須 | 説明 |
 |:------------------|:---------------|:---------|:------------|
 | `id`              | 整数または文字列 | はい      | IDまたは[URLエンコードされた](rest/_index.md#namespaced-paths)パス。 |
-| `saml_group_name` | 文字列         | はい      | SAMLグループ名。 |
-| `provider`        | 文字列         | いいえ       | 同じ名前の複数のリンクが存在する場合に区別するための、一意の[プロバイダー名](../integration/saml.md#configure-saml-support-in-gitlab)。同じ`saml_group_name`を持つ複数のリンクが存在する場合に必須。 |
+| `saml_group_name` | 文字列         | はい      | SAMLグループの名前。 |
+| `provider`        | 文字列         | いいえ       | 同じ名前のリンクが複数存在する場合に曖昧さを解消するための、一意の[プロバイダー名](../integration/saml.md#configure-saml-support-in-gitlab)。同じ`saml_group_name`を持つリンクが複数存在する場合に必要です。 |
 
 リクエスト例: 
 
@@ -372,6 +379,6 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1?provider=saml_provider_1"
 ```
 
-成功した場合、レスポンスボディなしで[`204`](rest/troubleshooting.md#status-codes)ステータスコードを返します。
+成功すると、レスポンスボディなしで[`204`](rest/troubleshooting.md#status-codes)ステータスコードが返されます。
 
-同じ名前で異なるプロバイダーを持つ複数のSAMLグループリンクが存在し、`provider`パラメータが指定されていない場合、`provider`パラメータが区別に必要であることを示すエラーメッセージとともに[`422`](rest/troubleshooting.md#status-codes)を返します。
+同じ名前でプロバイダーが異なる複数のSAMLグループリンクが存在し、`provider`パラメータが指定されていない場合、曖昧さを解消するために`provider`パラメータが必要であることを示すエラーメッセージとともに、[`422`](rest/troubleshooting.md#status-codes)が返されます。

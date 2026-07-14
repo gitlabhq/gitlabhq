@@ -3,9 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge Request Creations diffs stream', feature_category: :code_review_workflow do
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
   let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
+  # `freeze: false` is kept here because this `let_it_be` subject is not an
+  # ActiveRecord record, so freezing gives no cross-example isolation benefit
+  # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+  # gitlab-org/gitlab#602925).
   let_it_be(:source_branch, freeze: false) { 'fix' }
+  # `freeze: false` is kept here because this `let_it_be` subject is not an
+  # ActiveRecord record, so freezing gives no cross-example isolation benefit
+  # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+  # gitlab-org/gitlab#602925).
   let_it_be(:target_branch, freeze: false) { 'master' }
 
   let_it_be(:compare, freeze: false) do
@@ -18,6 +31,10 @@ RSpec.describe 'Merge Request Creations diffs stream', feature_category: :code_r
     )
   end
 
+  # `freeze: false` is kept here because this `let_it_be` subject is not an
+  # ActiveRecord record, so freezing gives no cross-example isolation benefit
+  # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+  # gitlab-org/gitlab#602925).
   let_it_be(:offset, freeze: false) { 0 }
   let_it_be(:diff_files, freeze: false) { compare.diffs.diff_files }
 

@@ -6,6 +6,10 @@ RSpec.describe Gitlab::Database::BulkUpdate, feature_category: :database do
   describe 'error states' do
     let(:columns) { %i[title] }
 
+    # `freeze: false` is kept here because this `let_it_be` subject is not an
+    # ActiveRecord record (it's a plain Hash/String/Array/Struct), so freezing
+    # gives no cross-example isolation benefit and `let_it_be_with_reload`/
+    # `refind` are no-ops on it. Keep as-is (see gitlab-org/gitlab#602925).
     let_it_be(:mapping, freeze: false) do
       create_default(:user)
       create_default(:project)

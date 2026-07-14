@@ -8,6 +8,7 @@ import {
   COMPARE_OPTIONS,
   COMPARE_OPTIONS_INPUT_NAME,
 } from '~/projects/compare/constants';
+import BaseLayout from '~/vue_shared/components/base_layout.vue';
 import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import RevisionCard from '~/projects/compare/components/revision_card.vue';
@@ -36,6 +37,7 @@ describe('CompareApp component', () => {
       stubs: {
         GlSprintf,
         GlFormRadioGroup,
+        BaseLayout,
         IndexLayout,
         PageHeading,
       },

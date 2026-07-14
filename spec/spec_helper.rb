@@ -114,8 +114,11 @@ RSpec.configure do |config|
     metadata[:ci_config_validation] = true
   end
 
-  # Auto-include organization URL helpers for spec types that need organization-scoped paths
-  [:feature, :request, :controller].each do |spec_type|
+  # Auto-include organization URL helpers for spec types that need organization-scoped paths.
+  # Feature specs are excluded: they drive the app through Capybara rather than the get/post helpers
+  # this context relies on, so the request-capture stub can never resolve an organization there.
+  # Instead they use 'with unscoped Organization paths for feature specs' (see current_organization_context).
+  [:request, :controller].each do |spec_type|
     config.define_derived_metadata(type: spec_type) do |metadata|
       metadata[:with_organization_url_helpers] = true
     end
@@ -296,10 +299,6 @@ RSpec.configure do |config|
       # we need the `cleanup_data_source_work_item_data` disabled by default to prevent deletion of some data
       stub_feature_flags(cleanup_data_source_work_item_data: false)
 
-      # Since we are very early in development of this feature, it might cause unexpected behaviors when the flag is enabled
-      # Please see https://gitlab.com/groups/gitlab-org/-/epics/17781 for tracking the progress.
-      stub_feature_flags(repository_file_tree_browser: false)
-
       # New approval rules cause tests to fail
       # Default false while we make them compatible
       stub_feature_flags(v2_approval_rules: false)
@@ -309,9 +308,6 @@ RSpec.configure do |config|
 
       # Handle dynamic partitions creation
       stub_feature_flags(disallow_database_ddl_feature_flags: false)
-
-      # Opting out of Organizations is the exception.
-      stub_feature_flags(opt_out_organizations: false)
 
       # Enabled only when debugging
       stub_feature_flags(track_struct_event_logger: false)
@@ -352,19 +348,16 @@ RSpec.configure do |config|
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/591414
       stub_feature_flags(stop_legacy_audit_event_writes: false)
 
-      # Work items list REST API is still in development and not compatible with
-      # all filters yet.
-      # Please see https://gitlab.com/gitlab-org/gitlab/-/work_items/594636 for tracking progress.
-      stub_feature_flags(work_item_rest_api_frontend_users: false)
+      # accessible_disabled_button switches GlButton from the native `disabled` attribute
+      # to `aria-disabled`, which breaks Capybara `disabled:` button matchers suite-wide.
+      # Default off in tests during rollout; see
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/600158
+      stub_feature_flags(accessible_disabled_button: false)
 
       # This middleware fires use_pat for every PAT-authenticated request
       # enabling it by default breaks existing specs that use strict receive(:track_event) expectations
       stub_feature_flags(track_api_request_from_personal_access_token: false)
 
-      # The user preferences and sort options are being merged in a drawer
-      # and it will be a WIP feature that will be enabled in a future milestone.
-      # https://gitlab.com/gitlab-org/gitlab/-/work_items/597602
-      stub_feature_flags(work_item_list_display_settings_drawer: false)
     else
       unstub_all_feature_flags
     end

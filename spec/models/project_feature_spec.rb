@@ -6,7 +6,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:project) { create(:project) }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   it { is_expected.to belong_to(:project) }
 
@@ -119,7 +119,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
 
       project_feature = described_class.new(pages_access_level: described_class::PRIVATE)
 
-      expect(project_feature.public_pages?).to eq(true)
+      expect(project_feature.public_pages?).to be(true)
     end
 
     context 'when Pages access control is enabled' do
@@ -151,7 +151,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
         it 'returns false if access_control is forced on the admin level' do
           stub_application_setting(force_pages_access_control: true)
 
-          expect(project_feature.public_pages?).to eq(false)
+          expect(project_feature.public_pages?).to be(false)
         end
       end
     end
@@ -163,13 +163,13 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
     it 'returns false if public_pages? is true' do
       expect(project_feature).to receive(:public_pages?).and_return(true)
 
-      expect(project_feature.private_pages?).to eq(false)
+      expect(project_feature.private_pages?).to be(false)
     end
 
     it 'returns true if public_pages? is false' do
       expect(project_feature).to receive(:public_pages?).and_return(false)
 
-      expect(project_feature.private_pages?).to eq(true)
+      expect(project_feature.private_pages?).to be(true)
     end
   end
 
@@ -320,7 +320,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
     context 'with packages config enabled' do
       context 'when project is private' do
         it 'returns false' do
-          expect(project.project_feature.public_packages?).to eq(false)
+          expect(project.project_feature.public_packages?).to be(false)
         end
 
         context 'with package_registry_access_level set to public' do
@@ -329,14 +329,14 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
           end
 
           it 'returns true' do
-            expect(project.project_feature.public_packages?).to eq(true)
+            expect(project.project_feature.public_packages?).to be(true)
           end
         end
       end
 
       context 'when project is public' do
         it 'returns true' do
-          expect(public_project.project_feature.public_packages?).to eq(true)
+          expect(public_project.project_feature.public_packages?).to be(true)
         end
       end
     end
@@ -344,7 +344,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
     it 'returns false if packages config is not enabled' do
       stub_config(packages: { enabled: false })
 
-      expect(public_project.project_feature.public_packages?).to eq(false)
+      expect(public_project.project_feature.public_packages?).to be(false)
     end
   end
 
@@ -357,7 +357,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
         update_all_project_features(project, features, ProjectFeature::DISABLED)
 
         features.each do |feature|
-          expect(project.feature_available?(feature.to_sym, user)).to eq(false), "#{feature} failed"
+          expect(project.feature_available?(feature.to_sym, user)).to be(false), "#{feature} failed"
         end
       end
     end
@@ -367,7 +367,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
         update_all_project_features(project, features, ProjectFeature::PRIVATE)
 
         features.each do |feature|
-          expect(project.feature_available?(feature.to_sym, user)).to eq(false), "#{feature} failed"
+          expect(project.feature_available?(feature.to_sym, user)).to be(false), "#{feature} failed"
         end
       end
 
@@ -377,7 +377,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
         update_all_project_features(project, features, ProjectFeature::PRIVATE)
 
         features.each do |feature|
-          expect(project.feature_available?(feature.to_sym, user)).to eq(true)
+          expect(project.feature_available?(feature.to_sym, user)).to be(true)
         end
       end
 
@@ -389,7 +389,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
         update_all_project_features(project, features, ProjectFeature::PRIVATE)
 
         features.each do |feature|
-          expect(project.feature_available?(feature.to_sym, user)).to eq(true)
+          expect(project.feature_available?(feature.to_sym, user)).to be(true)
         end
       end
 
@@ -400,7 +400,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
           update_all_project_features(project, features, ProjectFeature::PRIVATE)
 
           features.each do |feature|
-            expect(project.feature_available?(feature.to_sym, user)).to eq(true)
+            expect(project.feature_available?(feature.to_sym, user)).to be(true)
           end
         end
       end
@@ -412,7 +412,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
           update_all_project_features(project, features, ProjectFeature::PRIVATE)
 
           features.each do |feature|
-            expect(project.feature_available?(feature.to_sym, user)).to eq(false), "#{feature} failed"
+            expect(project.feature_available?(feature.to_sym, user)).to be(false), "#{feature} failed"
           end
         end
       end
@@ -420,7 +420,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
 
     context 'when feature is enabled for everyone' do
       it 'returns true' do
-        expect(project.feature_available?(:issues, user)).to eq(true)
+        expect(project.feature_available?(:issues, user)).to be(true)
       end
     end
 
@@ -428,7 +428,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
       it 'returns true' do
         project.project_feature.update_attribute(:issues_access_level, 200)
 
-        expect(project.feature_available?(:issues)).to eq(true)
+        expect(project.feature_available?(:issues)).to be(true)
       end
     end
 

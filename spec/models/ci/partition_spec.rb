@@ -67,6 +67,41 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
       end
     end
 
+    describe '.recent_ids' do
+      subject(:recent_ids) { described_class.recent_ids }
+
+      it 'scopes the query to the current and active statuses (status IN (2, 3))' do
+        expect(described_class.with_status(:current, :active).to_sql)
+          .to include('"status" IN (2, 3)')
+      end
+
+      context 'when no current or active partitions exist' do
+        it 'falls back to the initial partition value' do
+          expect(recent_ids).to eq([described_class::INITIAL_PARTITION_VALUE])
+        end
+      end
+
+      context 'when current and active partitions exist' do
+        let_it_be(:active_one) { create(:ci_partition, :active) }
+        let_it_be(:active_two) { create(:ci_partition, :active) }
+        let_it_be(:active_three) { create(:ci_partition, :active) }
+        let_it_be(:current_partition) { create(:ci_partition, :current) }
+        let_it_be(:archived_partition) { create(:ci_partition, :archived) }
+
+        it 'returns the most recent current and active partition ids, newest first' do
+          expect(recent_ids).to match_array([current_partition, active_three, active_two].map(&:id))
+        end
+
+        it 'returns at most RECENT_PARTITIONS_COUNT ids' do
+          expect(recent_ids.size).to eq(described_class::RECENT_PARTITIONS_COUNT)
+        end
+
+        it 'excludes archived partitions' do
+          expect(recent_ids).not_to include(archived_partition.id)
+        end
+      end
+    end
+
     describe '.id_before' do
       let_it_be(:ci_next_partition) { create(:ci_partition) }
 

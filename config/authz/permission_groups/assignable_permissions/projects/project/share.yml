@@ -3,6 +3,7 @@ name: share_project
 description: Grants the ability to share projects with groups and manage group links
 boundaries:
   - project
+  - group
 available_for:
   - granular_access_token
 permissions:

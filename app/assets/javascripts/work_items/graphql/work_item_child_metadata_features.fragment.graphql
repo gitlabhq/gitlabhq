@@ -1,0 +1,5 @@
+#import "./base_work_item_child_metadata_features.fragment.graphql"
+
+fragment WorkItemChildMetadataFeatures on WorkItemFeatures {
+  ...BaseWorkItemChildMetadataFeatures
+}

@@ -9,7 +9,7 @@
 %body
   .gl-mt-6{ class: (params[:lookbook][:display][:layout] == "fluid" ? "container-fluid" : "container") }
     - if params[:lookbook][:display][:bg_dark]
-      %div{ class: "bg-dark rounded shadow !gl-p-6" }
+      %div{ class: "!gl-bg-strong !gl-rounded-base !gl-shadow-md !gl-p-6" }
         = yield
     - else
       = yield

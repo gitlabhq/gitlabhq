@@ -12,7 +12,10 @@ RSpec.describe API::Helpers::OpenApi do
       end
 
       it 'calls the add_swagger_documentation method' do
-        expect(klass).to receive(:add_swagger_documentation).with({ key: 'value' })
+        expect(klass).to receive(:add_swagger_documentation).with({
+          key: 'value',
+          swagger_endpoint_guard: 'route_setting :authorization, skip_granular_token_authorization: :internal_testing'
+        })
 
         klass.add_open_api_documentation!
       end

@@ -432,6 +432,7 @@ module Gitlab
 
           ::Import::Framework::Logger.info(
             message: "Placeholder references finished loading to database after #{time_waited} seconds.",
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             import_source: project.import_type,
             import_uid: project.import_state.id
           )

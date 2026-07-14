@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BranchRules::BaseService, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:protected_branch) { create(:protected_branch) }
 

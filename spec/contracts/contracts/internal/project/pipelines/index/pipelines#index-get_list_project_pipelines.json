@@ -1,0 +1,466 @@
+{
+  "consumer": {
+    "name": "Pipelines#index"
+  },
+  "provider": {
+    "name": "GET list project pipelines"
+  },
+  "interactions": [
+    {
+      "description": "a request for a list of project pipelines",
+      "providerState": "a few pipelines for a project exists",
+      "request": {
+        "method": "GET",
+        "path": "/gitlab-org/gitlab-qa/-/pipelines.json",
+        "query": "scope=all&page=1",
+        "headers": {
+          "Accept": "*/*"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": {
+          "pipelines": [
+            {
+              "id": 564173401,
+              "iid": 8197225,
+              "user": {
+                "id": 1781152,
+                "username": "gitlab-bot",
+                "name": "🤖 GitLab Bot 🤖",
+                "state": "active",
+                "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/1516152/avatar.png",
+                "web_url": "https://gitlab.com/gitlab-bot",
+                "show_status": false,
+                "path": "/gitlab-bot"
+              },
+              "active": true,
+              "source": "schedule",
+              "created_at": "2022-06-11T00:05:21.558Z",
+              "updated_at": "2022-06-11T00:05:34.258Z",
+              "path": "/gitlab-org/gitlab/-/pipelines/561224401",
+              "flags": {
+                "stuck": false,
+                "auto_devops": false,
+                "merge_request": false,
+                "yaml_errors": false,
+                "retryable": false,
+                "cancelable": false,
+                "failure_reason": false,
+                "detached_merge_request_pipeline": false,
+                "merge_request_pipeline": false,
+                "merge_train_pipeline": false,
+                "latest": true
+              },
+              "details": {
+                "status": {
+                  "icon": "status_running",
+                  "text": "running",
+                  "label": "running",
+                  "group": "running",
+                  "tooltip": "passed",
+                  "has_details": true,
+                  "details_path": "/gitlab-org/gitlab/-/pipelines/566374401",
+                  "illustration": null,
+                  "favicon": "/assets/ci_favicons/favicon_status_running.png"
+                },
+                "stages": [
+                  {
+                    "name": "sync",
+                    "title": "sync: passed",
+                    "status": {
+                      "icon": "status_success",
+                      "text": "passed",
+                      "label": "passed",
+                      "group": "success",
+                      "tooltip": "passed",
+                      "has_details": true,
+                      "details_path": "/gitlab-org/gitlab/-/pipelines/561174401#sync",
+                      "illustration": null,
+                      "favicon": "/assets/ci_favicons/favicon_status_success.png"
+                    },
+                    "path": "/gitlab-org/gitlab/-/pipelines/561124401#sync",
+                    "dropdown_path": "/gitlab-org/gitlab/-/pipelines/561174401/stage.json?stage=sync"
+                  }
+                ],
+                "duration": 25,
+                "finished_at": "2022-06-11T00:55:21.558Z",
+                "name": "Pipeline",
+                "manual_actions": [
+                  {
+                    "name": "review-docs-deploy",
+                    "playable": true,
+                    "scheduled": false
+                  }
+                ],
+                "scheduled_actions": [
+                  {
+                    "name": "review-docs-schedule",
+                    "playable": true,
+                    "scheduled": false
+                  }
+                ]
+              },
+              "ref": {
+                "name": "master",
+                "path": "/gitlab-org/gitlab/-/commits/master",
+                "tag": false,
+                "branch": true,
+                "merge_request": false
+              },
+              "commit": {
+                "id": "e6d797385144b955c6d4ecfa00e9656dc33efd2b",
+                "short_id": "e6d79738",
+                "created_at": "2022-06-10T22:02:10.000+00:00",
+                "parent_ids": [
+                  "3b0e053a24958174eaa7e3b183c7263432890d1c"
+                ],
+                "title": "Merge branch 'ee-test' into 'master'",
+                "message": "Merge branch 'ee-test' into 'master'\nThis is a test.",
+                "author_name": "John Doe",
+                "author_email": "jdoe@gitlab.com",
+                "authored_date": "2022-06-10T22:02:10.000+00:00",
+                "committer_name": "John Doe",
+                "committer_email": "jdoe@gitlab.com",
+                "committed_date": "2022-06-10T22:02:10.000+00:00",
+                "trailers": {},
+                "web_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/f559253c514d9ab707c66e",
+                "author": null,
+                "author_gravatar_url": "https://secure.gravatar.com/avatar/d85e45af29611ac2c1395e3c3d6ec5d6?s=80&d=identicon",
+                "commit_url": "https://gitlab.com/gitlab-org/gitlab/-/commit/dc7522f559253c514d9ab707c66e7a1026abca5a",
+                "commit_path": "/gitlab-org/gitlab/-/commit/dc7522f559253c514d9ab707c66e7a1026abca5a"
+              },
+              "project": {
+                "id": 253964,
+                "name": "GitLab",
+                "full_path": "/gitlab-org/gitlab",
+                "full_name": "GitLab.org / GitLab"
+              },
+              "triggered_by": null,
+              "triggered": []
+            }
+          ],
+          "count": {
+            "all": "1,000+"
+          }
+        },
+        "matchingRules": {
+          "$.body.pipelines": {
+            "min": 1
+          },
+          "$.body.pipelines[*].*": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].id": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].iid": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].user.id": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].user.username": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].user.name": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].user.state": {
+            "match": "regex",
+            "regex": "^(active|blocked)$"
+          },
+          "$.body.pipelines[*].user.avatar_url": {
+            "match": "regex",
+            "regex": "^(http|https):\\/\\/[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$"
+          },
+          "$.body.pipelines[*].user.web_url": {
+            "match": "regex",
+            "regex": "^(http|https):\\/\\/[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$"
+          },
+          "$.body.pipelines[*].user.show_status": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].user.path": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.pipelines[*].active": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].source": {
+            "match": "regex",
+            "regex": "^(push|web|trigger|schedule|api|external|pipeline|chat|webide|merge_request_event|external_pull_request_event|parent_pipeline|ondemand_dast_scan|ondemand_dast_validation)$"
+          },
+          "$.body.pipelines[*].created_at": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
+          },
+          "$.body.pipelines[*].updated_at": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
+          },
+          "$.body.pipelines[*].path": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.pipelines[*].flags.stuck": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].flags.auto_devops": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].flags.merge_request": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].flags.yaml_errors": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].flags.retryable": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].flags.cancelable": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].flags.failure_reason": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].flags.detached_merge_request_pipeline": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].flags.merge_request_pipeline": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].flags.merge_train_pipeline": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].flags.latest": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.status.icon": {
+            "match": "regex",
+            "regex": "^status_(canceled|created|failed|manual|pending|preparing|running|scheduled|skipped|success|warning)$"
+          },
+          "$.body.pipelines[*].details.status.text": {
+            "match": "regex",
+            "regex": "^(canceled|created|delayed|failed|manual|passed|pending|preparing|running|skipped|waiting)$"
+          },
+          "$.body.pipelines[*].details.status.label": {
+            "match": "regex",
+            "regex": "^(canceled|created|delayed|failed|manual action|passed|pending|preparing|running|skipped|passed with warnings|waiting for resource)$"
+          },
+          "$.body.pipelines[*].details.status.group": {
+            "match": "regex",
+            "regex": "^(canceled|created|failed|manual|pending|preparing|running|scheduled|skipped|success|success_warning|waiting-for-resource)$"
+          },
+          "$.body.pipelines[*].details.status.tooltip": {
+            "match": "regex",
+            "regex": "^(canceled|created|delayed|failed|manual action|passed|pending|preparing|running|skipped|passed with warnings|waiting for resource)$"
+          },
+          "$.body.pipelines[*].details.status.has_details": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.status.details_path": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.pipelines[*].details.status.favicon": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.pipelines[*].details.stages": {
+            "min": 1
+          },
+          "$.body.pipelines[*].details.stages[*].*": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.stages[*].name": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.stages[*].title": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.stages[*].status.icon": {
+            "match": "regex",
+            "regex": "^status_(canceled|created|failed|manual|pending|preparing|running|scheduled|skipped|success|warning)$"
+          },
+          "$.body.pipelines[*].details.stages[*].status.text": {
+            "match": "regex",
+            "regex": "^(canceled|created|delayed|failed|manual|passed|pending|preparing|running|skipped|waiting)$"
+          },
+          "$.body.pipelines[*].details.stages[*].status.label": {
+            "match": "regex",
+            "regex": "^(canceled|created|delayed|failed|manual action|passed|pending|preparing|running|skipped|passed with warnings|waiting for resource)$"
+          },
+          "$.body.pipelines[*].details.stages[*].status.group": {
+            "match": "regex",
+            "regex": "^(canceled|created|failed|manual|pending|preparing|running|scheduled|skipped|success|success_warning|waiting-for-resource)$"
+          },
+          "$.body.pipelines[*].details.stages[*].status.tooltip": {
+            "match": "regex",
+            "regex": "^(canceled|created|delayed|failed|manual action|passed|pending|preparing|running|skipped|passed with warnings|waiting for resource)$"
+          },
+          "$.body.pipelines[*].details.stages[*].status.has_details": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.stages[*].status.details_path": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.pipelines[*].details.stages[*].status.favicon": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.pipelines[*].details.stages[*].path": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.pipelines[*].details.stages[*].dropdown_path": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.pipelines[*].details.duration": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.finished_at": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
+          },
+          "$.body.pipelines[*].details.manual_actions": {
+            "min": 1
+          },
+          "$.body.pipelines[*].details.manual_actions[*].*": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.manual_actions[*].name": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.manual_actions[*].playable": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.manual_actions[*].scheduled": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.scheduled_actions": {
+            "min": 1
+          },
+          "$.body.pipelines[*].details.scheduled_actions[*].*": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.scheduled_actions[*].name": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.scheduled_actions[*].playable": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.scheduled_actions[*].scheduled": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].ref.name": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].ref.path": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.pipelines[*].ref.tag": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].ref.branch": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].ref.merge_request": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].commit.id": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].commit.short_id": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].commit.created_at": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
+          },
+          "$.body.pipelines[*].commit.parent_ids": {
+            "min": 1
+          },
+          "$.body.pipelines[*].commit.parent_ids[*].*": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].commit.parent_ids[*]": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].commit.title": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].commit.message": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].commit.author_name": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].commit.author_email": {
+            "match": "regex",
+            "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$"
+          },
+          "$.body.pipelines[*].commit.authored_date": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
+          },
+          "$.body.pipelines[*].commit.committer_name": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].commit.committer_email": {
+            "match": "regex",
+            "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$"
+          },
+          "$.body.pipelines[*].commit.committed_date": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
+          },
+          "$.body.pipelines[*].commit.web_url": {
+            "match": "regex",
+            "regex": "^(http|https):\\/\\/[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$"
+          },
+          "$.body.pipelines[*].commit.author_gravatar_url": {
+            "match": "regex",
+            "regex": "^(http|https):\\/\\/[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$"
+          },
+          "$.body.pipelines[*].commit.commit_url": {
+            "match": "regex",
+            "regex": "^(http|https):\\/\\/[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$"
+          },
+          "$.body.pipelines[*].commit.commit_path": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.pipelines[*].project.id": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].project.name": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].project.full_path": {
+            "match": "regex",
+            "regex": "^\\/[a-zA-Z0-9#-=?_]+$"
+          },
+          "$.body.pipelines[*].project.full_name": {
+            "match": "type"
+          },
+          "$.body.count.all": {
+            "match": "type"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

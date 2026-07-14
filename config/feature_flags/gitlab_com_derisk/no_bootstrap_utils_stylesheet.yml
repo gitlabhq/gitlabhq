@@ -1,0 +1,9 @@
+---
+name: no_bootstrap_utils_stylesheet
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/15271
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242104
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605014
+milestone: '19.2'
+group: group::engagement
+type: gitlab_com_derisk
+default_enabled: false

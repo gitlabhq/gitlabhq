@@ -21,9 +21,12 @@ RSpec.describe Gitlab::GitalyClient::HealthCheckService do
     end
 
     it 'receives an unsuccessful health check request' do
+      health_response = double(status: false)
+      operation = instance_double(GRPC::ActiveCall::Operation,
+        execute: health_response, trailing_metadata: {})
+
       expect_any_instance_of(Grpc::Health::V1::Health::Stub)
-        .to receive(:check)
-        .and_return(double(status: false))
+        .to receive(:check).and_return(operation)
 
       expect(subject.check).to eq({ success: false })
     end

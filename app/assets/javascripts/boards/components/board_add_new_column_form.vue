@@ -3,6 +3,7 @@ import { GlButton, GlFormGroup } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'BoardAddNewColumnForm',
   i18n: {
     add: __('Add to board'),
     cancel: __('Cancel'),
@@ -26,6 +27,7 @@ export default {
       required: true,
     },
   },
+  emits: ['add-list', 'setAddColumnFormVisibility'],
   methods: {
     onSubmit() {
       this.$emit('add-list');

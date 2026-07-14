@@ -70,6 +70,70 @@ module API
                 present_entity(batched_background_operation)
               end
             end
+
+            desc 'Stop a batched background operation' do
+              detail 'This feature was introduced in GitLab 19.2.'
+              success ::API::Entities::BatchedBackgroundOperation
+              failure [
+                { code: 401, message: '401 Unauthorized' },
+                { code: 403, message: '403 Forbidden' },
+                { code: 404, message: '404 Not found' },
+                { code: 422, message: 'You can stop only `queued`, `active` or `paused` operations.' }
+              ]
+              tags %w[batched_background_operations]
+            end
+            params do
+              optional :database,
+                type: String,
+                values: Gitlab::Database.all_database_names,
+                desc: 'The name of the database',
+                default: 'main'
+            end
+            route_setting :authorization, permissions: :stop_batched_background_operation, boundary_type: :instance
+            put 'stop' do
+              Gitlab::Database::SharedModel.using_connection(base_model.connection) do
+                not_found!('Batched background operation') unless batched_background_operation
+
+                unless batched_background_operation.stop
+                  msg = 'You can stop only `queued`, `active` or `paused` operations.'
+                  render_api_error!(msg, 422)
+                end
+
+                present_entity(batched_background_operation)
+              end
+            end
+
+            desc 'Restart a batched background operation' do
+              detail 'This feature was introduced in GitLab 19.2.'
+              success ::API::Entities::BatchedBackgroundOperation
+              failure [
+                { code: 401, message: '401 Unauthorized' },
+                { code: 403, message: '403 Forbidden' },
+                { code: 404, message: '404 Not found' },
+                { code: 422, message: 'You can restart only `stopped` operations.' }
+              ]
+              tags %w[batched_background_operations]
+            end
+            params do
+              optional :database,
+                type: String,
+                values: Gitlab::Database.all_database_names,
+                desc: 'The name of the database',
+                default: 'main'
+            end
+            route_setting :authorization, permissions: :restart_batched_background_operation, boundary_type: :instance
+            put 'restart' do
+              Gitlab::Database::SharedModel.using_connection(base_model.connection) do
+                not_found!('Batched background operation') unless batched_background_operation
+
+                unless batched_background_operation.restart
+                  msg = 'You can restart only `stopped` operations.'
+                  render_api_error!(msg, 422)
+                end
+
+                present_entity(batched_background_operation)
+              end
+            end
           end
         end
       end

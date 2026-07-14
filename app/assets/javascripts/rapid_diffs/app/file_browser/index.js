@@ -7,6 +7,7 @@ import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { useApp } from '~/rapid_diffs/stores/app';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { withLinkedFileUrlParams } from '~/rapid_diffs/utils/linked_file';
 import FileBrowser from './file_browser.vue';
 import FileBrowserDrawer from './file_browser_drawer.vue';
@@ -77,6 +78,17 @@ const initBrowserComponent = async (el, shouldSort) => {
         },
         on: {
           clickFile(file) {
+            const diffsView = useDiffsView(pinia);
+
+            if (diffsView.singleFileMode) {
+              const index = useFileBrowser(pinia).flatBlobsList.findIndex(
+                (entry) => entry.fileHash === file.fileHash,
+              );
+
+              if (index >= 0) diffsView.goToFile(index);
+              return;
+            }
+
             DiffFile.findByFileHash(file.fileHash).selectFile();
           },
         },

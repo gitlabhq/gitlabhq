@@ -1,0 +1,14 @@
+---
+table_name: cd_rollout_environments
+classes:
+- Cd::RolloutEnvironment
+feature_categories:
+- continuous_delivery
+description: A version set landing in one environment within a rollout, for multi-environment promotion
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240649
+milestone: '19.2'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: todo
+table_size: small

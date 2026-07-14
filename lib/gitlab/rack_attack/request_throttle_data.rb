@@ -65,6 +65,47 @@ module Gitlab
         )
       end
 
+      # Creates a RequestThrottleData instance from a Labkit::RateLimit::Result.
+      #
+      # Used by Gitlab::Middleware::LabkitRackRateLimit when a promoted (enforced)
+      # throttle blocks. The headers it produces are byte-identical to the
+      # legacy Rack::Attack 429 because both paths feed the same
+      # RequestThrottleData math: only labkit's resolved limit/period and
+      # observed count are read here, and reset/retry-after are recomputed from
+      # the epoch-aligned period rather than labkit's TTL-based reset_at, so a
+      # promoted throttle's response matches what Rack::Attack would have sent.
+      #
+      # @param name [String, Symbol] The name of the throttle (e.g. 'throttle_authenticated_api')
+      # @param result [Labkit::RateLimit::Result] The decision returned by Limiter#check
+      # @return [RequestThrottleData, nil] A new instance, or nil if required data is missing
+      def self.from_labkit_result(name:, result:)
+        unless name
+          Gitlab::AppLogger.warn(
+            class: self.name.to_s,
+            message: '.from_labkit_result called with nil throttle name'
+          )
+          return
+        end
+
+        info = result&.info
+
+        unless info
+          Gitlab::AppLogger.warn(
+            class: self.name.to_s,
+            message: ".from_labkit_result called without result info for throttle #{name}"
+          )
+          return
+        end
+
+        new(
+          name: name.to_s,
+          observed: info.count.to_i,
+          now: Time.current.to_i,
+          period: info.resolved_period.to_i,
+          limit: info.resolved_limit.to_i
+        )
+      end
+
       # Initialize a new RequestThrottleData instance
       #
       # @param name [String] The name of the throttle (e.g. 'throttle_unauthenticated_api')

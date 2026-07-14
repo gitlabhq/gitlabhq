@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 import { IDENTITY_VERIFICATION_REQUIRED_ERROR } from '../constants';
 
 export default {
+  name: 'InstanceRunnersToggle',
   components: {
     GlAlert,
     GlLink,

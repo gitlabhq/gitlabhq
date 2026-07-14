@@ -6,6 +6,7 @@ module Mutations
       graphql_name 'TodoMarkDone'
 
       authorize :update_todo
+      authorize_granular_token permissions: :update_todo, boundary: :user, boundary_type: :user
 
       argument :id,
         ::Types::GlobalIDType[::Todo],

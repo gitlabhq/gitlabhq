@@ -19,15 +19,3 @@ export const buildIframeUrl = (path, baseUrl, extraParams = null) => {
     return baseUrl;
   }
 };
-
-export const extractTargetPath = (path, baseUrl) => {
-  if (!path) {
-    return null;
-  }
-  try {
-    const url = new URL(path, baseUrl);
-    return url.pathname;
-  } catch (error) {
-    return path;
-  }
-};

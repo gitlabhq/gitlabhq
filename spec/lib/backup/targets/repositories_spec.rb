@@ -75,7 +75,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
         repositories.dump(destination, backup_id)
       end
 
-      create_list(:project, 2, :repository)
+      create_list(:project, 2, :small_repo)
       create_list(:personal_snippet, 2, :repository)
 
       # Number of expected queries are 2 more than control.count
@@ -124,7 +124,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
         let(:paths) { [project.full_path] }
 
         it 'calls enqueue for all repositories on the specified project', :aggregate_failures do
-          excluded_project = create(:project, :repository)
+          excluded_project = create(:project, :small_repo)
           excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
           excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
 
@@ -146,7 +146,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
         let(:paths) { [project.namespace.full_path] }
 
         it 'calls enqueue for all repositories on all descendant projects', :aggregate_failures do
-          excluded_project = create(:project, :repository)
+          excluded_project = create(:project, :small_repo)
           excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
           excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
 
@@ -167,7 +167,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
 
     describe 'skip_paths' do
       let_it_be(:project) { create(:project_with_design, :repository) }
-      let_it_be(:excluded_project) { create(:project, :repository) }
+      let_it_be(:excluded_project) { create(:project, :small_repo) }
 
       context 'with a project path' do
         let(:skip_paths) { [excluded_project.full_path] }
@@ -296,7 +296,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
       end
 
       it 'calls enqueue for all repositories on the specified storage', :aggregate_failures do
-        excluded_project = create(:project, :repository, repository_storage: 'test_second_storage')
+        excluded_project = create(:project, :small_repo, repository_storage: 'test_second_storage')
         excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
         excluded_project_snippet.track_snippet_repository('test_second_storage')
         excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
@@ -322,7 +322,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
         let(:paths) { [project.full_path] }
 
         it 'calls enqueue for all repositories on the specified project', :aggregate_failures do
-          excluded_project = create(:project, :repository)
+          excluded_project = create(:project, :small_repo)
           excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
           excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
 
@@ -345,7 +345,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
         let(:paths) { [project.namespace.full_path] }
 
         it 'calls enqueue for all repositories on all descendant projects', :aggregate_failures do
-          excluded_project = create(:project, :repository)
+          excluded_project = create(:project, :small_repo)
           excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
           excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
 
@@ -366,7 +366,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
     end
 
     context 'for skip_paths' do
-      let_it_be(:excluded_project) { create(:project, :repository) }
+      let_it_be(:excluded_project) { create(:project, :small_repo) }
 
       context 'with a project path' do
         let(:skip_paths) { [excluded_project.full_path] }

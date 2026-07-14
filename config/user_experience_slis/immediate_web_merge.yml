@@ -1,4 +1,4 @@
 # yaml-language-server: $schema=https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/raw/master/config/user_experience_slis/schema.json
 description: "Time from accepting an immediate merge in the web UI until the merge completes"
 feature_category: "code_review_workflow"
-urgency: "async_fast"
+urgency: "sync_slow"

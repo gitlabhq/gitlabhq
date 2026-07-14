@@ -2,6 +2,7 @@
 import PageTitle from '../components/page_title.vue';
 
 export default {
+  name: 'KubernetesDashboardApp',
   components: { PageTitle },
 };
 </script>

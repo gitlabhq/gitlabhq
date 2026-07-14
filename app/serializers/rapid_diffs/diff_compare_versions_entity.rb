@@ -48,9 +48,7 @@ module RapidDiffs
     end
 
     expose :commit, if: ->(_, opts) { opts[:commit_id].present? } do |merge_request|
-      next unless merge_request.commit_exists?(options[:commit_id])
-
-      commit = merge_request.project.commit(options[:commit_id])
+      commit = ::Gitlab::MergeRequests::CommitResolver.new(merge_request, options[:commit_id]).resolve
       next unless commit
 
       next_commit_id, prev_commit_id = *commit_neighbors(merge_request, commit.id)

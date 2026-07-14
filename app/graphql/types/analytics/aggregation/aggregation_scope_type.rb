@@ -16,6 +16,8 @@ module Types
               description "Aggregation scope for `#{types_prefix}`. " \
                 "Apply ordering and pagination on the aggregation."
 
+              authorize_granular_token skip_reason: :parent_authorizes if graphql_context[:granular_authorization_opts]
+
               field :aggregated,
                 resolver: inner_resolver,
                 description: 'Aggregated data.'

@@ -14,6 +14,7 @@ import { initProjectSelects } from '~/vue_shared/components/entity_select/init_p
 import initPruneObjectsButton from '~/projects/prune_objects_button';
 import initArchiveSettings from '~/groups_projects/archive';
 import initUnarchiveSettings from '~/groups_projects/unarchive';
+import { initProjectNameValidation } from '~/projects/project_name_validation';
 import { initProjectPermissionsSettings } from '../shared/permissions/init_project_permissions_settings';
 import initGitlabDuoSettings from '../shared/permissions/gitlab_duo_settings';
 import initProjectLoadingSpinner from '../shared/save_project_loader';
@@ -40,3 +41,5 @@ initArchiveSettings();
 initUnarchiveSettings();
 initTopicsTokenSelector();
 initProjectSelects();
+
+initProjectNameValidation();

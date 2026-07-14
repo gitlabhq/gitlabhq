@@ -8,6 +8,7 @@ import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
 const trackingMixin = Tracking.mixin({ label: 'delete_issue' });
 
 export default {
+  name: 'EditActions',
   components: {
     GlButton,
   },

@@ -89,5 +89,5 @@ Bot access has these limits:
 - The bot project must be in the allowed group hierarchy. If no group is configured, GitLab uses
   the root ancestor group.
 
-To set up Security Policy Bot access, see
-[scheduled pipeline execution policies](../user/application_security/policies/scheduled_pipeline_execution_policies.md#option-2-allow-security-policy-bot-access-to-private-or-internal-projects).
+To set up access for the Security Policy Bot, see
+[scheduled pipeline execution policies](../user/application_security/policies/scheduled_pipeline_execution_policies.md#option-2-allow-access-to-private-or-internal-projects).

@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Instrumentation::RedisClientMiddleware, :request_store, f
   using RSpec::Parameterized::TableSyntax
   include RedisHelpers
 
-  let_it_be(:redis_store_class, freeze: false) { define_helper_redis_store_class }
+  let_it_be(:redis_store_class) { define_helper_redis_store_class }
 
   before do
     redis_store_class.with(&:flushdb)

@@ -200,7 +200,7 @@ When working with regular expressions in Python, use `re2` when possible or alwa
 
 ## JSON Parsing
 
-**Use `Gitlab::Json.safe_parse` instead of `Gitlab::Json.parse` when handling untrusted input.** When in doubt, prefer `safe_parse`.
+**Use `Gitlab::Json::SafeParser` instead of `Gitlab::Json.parse` when handling untrusted input.** When in doubt, prefer `Gitlab::Json::SafeParser`.
 
 ### Description
 
@@ -226,7 +226,7 @@ When parsing JSON from any untrusted source, including:
 
 ### Mitigation
 
-Use `Gitlab::Json.safe_parse` instead of `Gitlab::Json.parse` when handling untrusted input. The `safe_parse` method enforces limits on:
+Use `Gitlab::Json::SafeParser.parse` instead of `Gitlab::Json.parse` when handling untrusted input. `Gitlab::Json::SafeParser` enforces limits on:
 
 | Limit | Default | Description |
 |-------|---------|-------------|
@@ -236,6 +236,8 @@ Use `Gitlab::Json.safe_parse` instead of `Gitlab::Json.parse` when handling untr
 | `max_total_elements` | 100,000 | Maximum total elements across all arrays and hashes |
 | `max_json_size_bytes` | 20 MB | Maximum size of the JSON input |
 
+`Gitlab::Json::SafeParser` uses `Oj::Parser.safe`, which differs from the `Oj.load` parser used by `Gitlab::Json.parse` and the deprecated `Gitlab::Json.safe_parse`. Behavior may differ for supported options, edge-case values, and error messages. Test representative payloads when migrating. For details, see [JSON development guidelines](../json.md#gitlabjsonsafeparser).
+
 #### Examples
 
 ```ruby
@@ -243,22 +245,29 @@ Use `Gitlab::Json.safe_parse` instead of `Gitlab::Json.parse` when handling untr
 data = Gitlab::Json.parse(request.body.read)
 
 # Good - enforces default safety limits
-data = Gitlab::Json.safe_parse(request.body.read)
+data = Gitlab::Json::SafeParser.parse(request.body.read)
 
 # Good - with custom limits for specific use cases
-data = Gitlab::Json.safe_parse(
+data = Gitlab::Json::SafeParser.parse(
   request.body.read,
-  parse_limits: { max_depth: 10, max_json_size_bytes: 1.megabyte }
+  max_depth: 10,
+  max_json_size_bytes: 1.megabyte
 )
 ```
 
+Almost all call sites should use `Gitlab::Json::SafeParser.parse`.
+`Gitlab::Json::SafeParser.new` exists for advanced, single-threaded
+workflows and is easy to misuse. The caller is fully responsible for
+thread affinity. For details and caveats, see
+[JSON development guidelines](../json.md#advanced-dedicated-parser-instance).
+
 #### Handling parse errors
 
-`safe_parse` raises `JSON::ParserError` for both malformed JSON and limit violations. The error messages are user-safe and do not expose internal details. An internal facing error (`Gitlab::Json::StreamValidator::LimitExceededError`) will be logged for inspection.
+`Gitlab::Json::SafeParser.parse` raises `JSON::ParserError` for malformed JSON, payload-size violations, and limit violations. The error messages are user-safe and do not expose internal details. The internal-facing error classes are `Oj::Parser::ValidationError` and `Gitlab::Json::SafeParser::PayloadSizeError`.
 
 ```ruby
 begin
-  data = Gitlab::Json.safe_parse(user_input)
+  data = Gitlab::Json::SafeParser.parse(user_input)
 rescue JSON::ParserError => e
   # Error messages are safe to display:
   # - "Parameters nested too deeply"
@@ -272,47 +281,27 @@ end
 
 ### When to use `Gitlab::Json.parse`
 
-Use the standard `parse` method only when you have full control over the input source and trust its contents, such as:
+Use `Gitlab::Json.parse` only when you have full control over the input source and trust its contents, such as:
 
 - Reading from internal configuration files
 - Parsing data from trusted internal services with established contracts
 - Processing data that has already been validated
 
-### Evaluating performance impact
+When in doubt, prefer `Gitlab::Json::SafeParser`. Use `Gitlab::Json.parse` only when the data source is trusted.
 
-`safe_parse` adds overhead compared to `parse` because it validates the JSON structure during parsing. The overhead scales roughly with payload size, but also depends on the shape of the data (nesting depth, number of keys, value types).
+### Deprecated: `Gitlab::Json.safe_parse`
 
-If you're converting a hot code path from `parse` to `safe_parse` and are concerned about performance impact, you can use [`benchmark-ips`](../performance.md#benchmarks) to get a rough sense of the relative overhead for your specific payload shapes:
+The `Gitlab::Json.safe_parse` class method is deprecated. Migrate call sites to `Gitlab::Json::SafeParser`:
 
 ```ruby
-require "benchmark/ips"
+# Deprecated
+Gitlab::Json.safe_parse(payload, parse_limits: { max_depth: 10 })
 
-json_string = "<your_actual_json_payload>"
-
-Benchmark.ips do |x|
-  x.report("parse:") do
-    Gitlab::Json.parse(json_string)
-  end
-
-  x.report("safe_parse:") do
-    Gitlab::Json.safe_parse(json_string)
-  end
-
-  x.compare!
-end
+# Preferred
+Gitlab::Json::SafeParser.parse(payload, max_depth: 10)
 ```
 
-The benchmark output shows total seconds for all iterations. Divide by the iteration count to get per-call time.
-
-When evaluating results, consider:
-
-- Payload characteristics: Overhead varies with payload size, nesting depth, and structure. Parsing structures with deeper nesting or more keys carries higher overhead.
-- Benchmark with representative data from your actual use case.
-- Call frequency: A few milliseconds overhead may be negligible for a one-time operation, but significant in a tight loop or frequently-hit cache.
-- Absolute vs. relative cost: A 5x slowdown sounds dramatic, but if the absolute time is microseconds, it may not matter in practice.
-- Production measurement: If performance is critical, plan how you'll [monitor in production](../performance.md#tooling) rather than relying solely on benchmarks.
-
-When in doubt, prefer `safe_parse` for security. Only use `parse` when you've confirmed the data source is trusted and profiling shows `safe_parse` overhead is unacceptable for your use case.
+Migrating from `Gitlab::Json.safe_parse` to `Gitlab::Json::SafeParser` also switches the underlying Oj parser from `Oj.load` to `Oj::Parser.safe`. Behavior is not guaranteed to be identical. Test representative payloads and review assertions that depend on error strings or edge-case values.
 
 ### Resources
 
@@ -912,7 +901,7 @@ The prefix pattern should be:
 1. lowercase letters abbreviating the token class name
 1. a hyphen (`-`)
 
-Token prefixes must **not** be configurable. These are static prefixes meant for
+Token prefixes must not be configurable. These are static prefixes meant for
 standard identification, and detection. The ability to configure the
 [PAT prefix](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)
 contravenes the above guidance, but is allowed as pre-existing behavior.

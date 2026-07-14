@@ -9,8 +9,6 @@ categories: [ AI Governance ]
 level: primary
 ---
 
-<!-- categories: AI Governance -->
-
 Administrators can now configure tool-level approval policies for GitLab Duo agents, gating sensitive actions with human approval at the moment of execution.
 
 Previously, after an AI agent was approved for a project, it could invoke any of its tools without further review, including write and destructive operations.

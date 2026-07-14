@@ -186,7 +186,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
 
   describe 'custom emoji' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
     let_it_be(:subgroup) { create(:group, parent: group) }
     let_it_be(:custom_emoji) { create(:custom_emoji, group: group) }
     let_it_be(:custom_emoji_subgroup) { create(:custom_emoji, group: subgroup) }
@@ -228,7 +228,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
   end
 
   describe 'emailsDisabled' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
 
     let(:query) do
       %(
@@ -267,7 +267,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
   end
 
   describe 'emailsEnabled' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
 
     let(:query) do
       %(
@@ -323,7 +323,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
     subject(:organization_edit_path) { response.dig('data', 'group', 'organizationEditPath') }
 
     context 'when group has an organization associated with it' do
-      let_it_be(:group, freeze: false) { create(:group, :public, organization: organization) }
+      let_it_be_with_reload(:group) { create(:group, :public, organization: organization) }
 
       it 'returns edit path scoped to organization' do
         expect(organization_edit_path).to eq(
@@ -335,7 +335,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
 
   describe 'group adjourned deletion fields' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group, developers: user) }
+    let_it_be_with_reload(:group) { create(:group, developers: user) }
     let_it_be(:marked_for_deletion_on) { Time.new(2025, 5, 25) }
     let_it_be(:pending_delete_group) do
       create(:group_with_deletion_schedule, :deletion_scheduled, deletion_scheduled_at: marked_for_deletion_on,
@@ -477,7 +477,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
 
   describe 'group deletion in progress field' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group, developers: user) }
+    let_it_be_with_reload(:group) { create(:group, developers: user) }
     let_it_be(:group_being_deleted) { create(:group, state: :deletion_in_progress, developers: user) }
 
     let(:group_full_path) { group_being_deleted.full_path }
@@ -515,7 +515,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
 
   describe 'web_path' do
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group, :public) }
+    let_it_be_with_reload(:group) { create(:group, :public) }
 
     let(:query) do
       %(
@@ -541,7 +541,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
 
   describe 'edit_path' do
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group, :public) }
+    let_it_be_with_reload(:group) { create(:group, :public) }
 
     let(:query) do
       %(
@@ -566,7 +566,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
   end
 
   describe 'admin_show_path' do
-    let_it_be(:group, freeze: false) { create(:group, :public) }
+    let_it_be_with_reload(:group) { create(:group, :public) }
 
     let(:query) do
       %(
@@ -603,7 +603,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
   end
 
   describe 'admin_edit_path' do
-    let_it_be(:group, freeze: false) { create(:group, :public) }
+    let_it_be_with_reload(:group) { create(:group, :public) }
 
     let(:query) do
       %(

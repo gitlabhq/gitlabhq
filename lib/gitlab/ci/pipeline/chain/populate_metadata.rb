@@ -26,12 +26,24 @@ module Gitlab
           def set_pipeline_name
             return if @command.yaml_processor_result.workflow_name.blank?
 
+            variables = global_context.variables_sorted_and_expanded
+
             name = @command.yaml_processor_result.workflow_name
-            name = ExpandVariables.expand(name, -> { global_context.variables_sorted_and_expanded })
+            name = ExpandVariables.expand(name, -> { variables })
 
             return if name.blank?
 
+            name = mask_variables(name, variables)
+
             assign_to_metadata(name: name.strip)
+          end
+
+          def mask_variables(name, variables)
+            variables.reduce(name.dup) do |masked_name, variable|
+              next masked_name unless variable.masked?
+
+              Gitlab::Ci::MaskSecret.mask!(masked_name, variable.value)
+            end
           end
 
           def set_auto_cancel

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module API
   class MavenPackages < ::API::Base
     MAVEN_ENDPOINT_REQUIREMENTS = {

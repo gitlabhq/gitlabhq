@@ -42,8 +42,11 @@ RSpec.describe 'query Jira projects', feature_category: :integrations do
   end
 
   context 'when user can access project services' do
-    before do
+    before_all do
       project.add_maintainer(current_user)
+    end
+
+    before do
       post_graphql(query, current_user: current_user)
     end
 

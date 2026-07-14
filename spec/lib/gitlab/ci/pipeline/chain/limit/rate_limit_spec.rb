@@ -250,4 +250,48 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
       exceed_rate_limit
     end
   end
+
+  context 'when the request is a lint request (command.linting? is true)' do
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        project: project,
+        current_user: user,
+        save_incompleted: save_incompleted,
+        origin_ref: project.default_branch_or_main,
+        linting: true
+      )
+    end
+
+    context 'when ci_enforce_ci_lint_rate_limit is enabled' do
+      context 'when pipelines_created_per_user would otherwise be exceeded' do
+        before do
+          stub_application_setting(pipeline_limit_per_user: 1)
+          stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: false)
+        end
+
+        it_behaves_like 'excluded from rate limits'
+      end
+
+      context 'when pipelines_create would otherwise be exceeded' do
+        before do
+          stub_application_setting(pipeline_limit_per_project_user_sha: 1)
+          stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: false)
+        end
+
+        it_behaves_like 'excluded from rate limits'
+      end
+    end
+
+    context 'when ci_enforce_ci_lint_rate_limit is disabled (log-only mode)' do
+      before do
+        stub_feature_flags(ci_enforce_ci_lint_rate_limit: false)
+        stub_application_setting(pipeline_limit_per_user: 1)
+        stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: false)
+      end
+
+      # The dedicated :ci_lint limiter isn't enforcing yet, so lint pipelines must keep
+      # their previous pipeline-creation rate-limit protection instead of being excluded.
+      it_behaves_like 'not excluded from rate limits'
+    end
+  end
 end

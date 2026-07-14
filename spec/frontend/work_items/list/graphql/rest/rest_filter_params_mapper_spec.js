@@ -25,11 +25,13 @@ describe('convertGraphQLVarsToRestParams', () => {
       ['TITLE_DESC', 'title', 'desc'],
       ['PRIORITY_ASC', 'priority', 'asc'],
       ['PRIORITY_DESC', 'priority', 'desc'],
-      ['POPULARITY_ASC', 'upvotes', 'asc'],
-      ['POPULARITY_DESC', 'upvotes', 'desc'],
+      ['POPULARITY_ASC', 'popularity', 'asc'],
+      ['POPULARITY_DESC', 'popularity', 'desc'],
       ['CLOSED_AT_ASC', 'closed_at', 'asc'],
       ['CLOSED_AT_DESC', 'closed_at', 'desc'],
       ['RELATIVE_POSITION_ASC', 'relative_position', 'asc'],
+      ['LABEL_PRIORITY_ASC', 'label_priority', 'asc'],
+      ['LABEL_PRIORITY_DESC', 'label_priority', 'desc'],
     ])('maps %s to order_by=%s sort=%s', (input, orderBy, sort) => {
       const params = convertGraphQLVarsToRestParams({ sort: input });
 
@@ -52,51 +54,84 @@ describe('convertGraphQLVarsToRestParams', () => {
   });
 
   describe('pagination', () => {
-    it('maps after/first to cursor/per_page', () => {
-      const params = convertGraphQLVarsToRestParams({ after: 'abc123', first: 25 });
+    describe('keyset pagination (cursor-based)', () => {
+      it('maps after/first to cursor/per_page', () => {
+        const params = convertGraphQLVarsToRestParams({ after: 'abc123', first: 25 });
 
-      expect(params.get('cursor')).toBe('abc123');
-      expect(params.get('per_page')).toBe('25');
-    });
-
-    it('uses afterCursor as fallback for cursor', () => {
-      const params = convertGraphQLVarsToRestParams({ afterCursor: 'cursor1' });
-
-      expect(params.get('cursor')).toBe('cursor1');
-    });
-
-    it('uses firstPageSize as fallback for per_page', () => {
-      const params = convertGraphQLVarsToRestParams({ firstPageSize: 20 });
-
-      expect(params.get('per_page')).toBe('20');
-    });
-
-    it('maps before/last to cursor/per_page for previous page', () => {
-      const params = convertGraphQLVarsToRestParams({ before: 'prev123', last: 10 });
-
-      expect(params.get('cursor')).toBe('prev123');
-      expect(params.get('per_page')).toBe('10');
-    });
-
-    it('uses beforeCursor as fallback for cursor', () => {
-      const params = convertGraphQLVarsToRestParams({ beforeCursor: 'cursor2' });
-
-      expect(params.get('cursor')).toBe('cursor2');
-    });
-
-    it('uses lastPageSize as fallback for per_page', () => {
-      const params = convertGraphQLVarsToRestParams({ lastPageSize: 15 });
-
-      expect(params.get('per_page')).toBe('15');
-    });
-
-    it('prefers afterCursor over beforeCursor when both present', () => {
-      const params = convertGraphQLVarsToRestParams({
-        afterCursor: 'next1',
-        beforeCursor: 'prev1',
+        expect(params.get('cursor')).toBe('abc123');
+        expect(params.get('per_page')).toBe('25');
       });
 
-      expect(params.get('cursor')).toBe('next1');
+      it('uses afterCursor as fallback for cursor', () => {
+        const params = convertGraphQLVarsToRestParams({ afterCursor: 'cursor1' });
+
+        expect(params.get('cursor')).toBe('cursor1');
+      });
+
+      it('uses firstPageSize as fallback for per_page', () => {
+        const params = convertGraphQLVarsToRestParams({ firstPageSize: 20 });
+
+        expect(params.get('per_page')).toBe('20');
+      });
+
+      it('maps before/last to cursor/per_page for previous page', () => {
+        const params = convertGraphQLVarsToRestParams({ before: 'prev123', last: 10 });
+
+        expect(params.get('cursor')).toBe('prev123');
+        expect(params.get('per_page')).toBe('10');
+      });
+
+      it('uses beforeCursor as fallback for cursor', () => {
+        const params = convertGraphQLVarsToRestParams({ beforeCursor: 'cursor2' });
+
+        expect(params.get('cursor')).toBe('cursor2');
+      });
+
+      it('uses lastPageSize as fallback for per_page', () => {
+        const params = convertGraphQLVarsToRestParams({ lastPageSize: 15 });
+
+        expect(params.get('per_page')).toBe('15');
+      });
+
+      it('prefers afterCursor over beforeCursor when both present', () => {
+        const params = convertGraphQLVarsToRestParams({
+          afterCursor: 'next1',
+          beforeCursor: 'prev1',
+        });
+
+        expect(params.get('cursor')).toBe('next1');
+      });
+
+      it('uses cursor parameter for alphanumeric cursor values', () => {
+        const params = convertGraphQLVarsToRestParams({ after: 'abc123def' });
+
+        expect(params.get('cursor')).toBe('abc123def');
+        expect(params.get('page')).toBeNull();
+      });
+    });
+
+    describe('offset pagination (page-based)', () => {
+      it('maps numeric cursor value to page parameter', () => {
+        const params = convertGraphQLVarsToRestParams({ after: '2', first: 20 });
+
+        expect(params.get('page')).toBe('2');
+        expect(params.get('cursor')).toBeNull();
+        expect(params.get('per_page')).toBe('20');
+      });
+
+      it('maps numeric afterCursor to page parameter', () => {
+        const params = convertGraphQLVarsToRestParams({ afterCursor: '3' });
+
+        expect(params.get('page')).toBe('3');
+        expect(params.get('cursor')).toBeNull();
+      });
+
+      it('maps numeric beforeCursor to page parameter', () => {
+        const params = convertGraphQLVarsToRestParams({ beforeCursor: '1' });
+
+        expect(params.get('page')).toBe('1');
+        expect(params.get('cursor')).toBeNull();
+      });
     });
 
     it('omits cursor/per_page when not provided', () => {
@@ -166,6 +201,12 @@ describe('convertGraphQLVarsToRestParams', () => {
           restKey: 'assignee_wildcard_id',
           input: 'NONE',
           expected: 'None',
+        },
+        {
+          jsKey: 'assigneeWildcardId',
+          restKey: 'assignee_wildcard_id',
+          input: 'ME',
+          expected: 'Me',
         },
         {
           jsKey: 'milestoneWildcardId',
@@ -244,16 +285,34 @@ describe('convertGraphQLVarsToRestParams', () => {
       expect(params.getAll('milestone_title[]')).toEqual(['v1.0']);
     });
 
-    it('maps types as lowercase repeated params with [] suffix', () => {
-      const params = convertGraphQLVarsToRestParams({ types: ['ISSUE', 'TASK'] });
+    it('maps workItemTypeIds as work_item_type_ids[] with numeric IDs extracted from GIDs', () => {
+      const params = convertGraphQLVarsToRestParams({
+        workItemTypeIds: ['gid://gitlab/WorkItems::Type/1', 'gid://gitlab/WorkItems::Type/2'],
+      });
 
-      expect(params.getAll('types[]')).toEqual(['issue', 'task']);
+      expect(params.getAll('work_item_type_ids[]')).toEqual(['1', '2']);
     });
 
-    it('maps types when provided as a string scalar instead of array', () => {
-      const params = convertGraphQLVarsToRestParams({ types: 'ISSUE' });
+    it('maps workItemTypeIds when provided as a single GID instead of array', () => {
+      const params = convertGraphQLVarsToRestParams({
+        workItemTypeIds: 'gid://gitlab/WorkItems::Type/1',
+      });
 
-      expect(params.getAll('types[]')).toEqual(['issue']);
+      expect(params.getAll('work_item_type_ids[]')).toEqual(['1']);
+    });
+
+    it('omits work_item_type_ids[] when workItemTypeIds is not provided', () => {
+      const params = convertGraphQLVarsToRestParams({});
+
+      expect(params.getAll('work_item_type_ids[]')).toEqual([]);
+    });
+
+    it('maps not.workItemTypeIds as not[work_item_type_ids][] with numeric IDs', () => {
+      const params = convertGraphQLVarsToRestParams({
+        not: { workItemTypeIds: ['gid://gitlab/WorkItems::Type/1'] },
+      });
+
+      expect(params.getAll('not[work_item_type_ids][]')).toEqual(['1']);
     });
 
     it('maps releaseTag as repeated params with [] suffix', () => {
@@ -281,10 +340,36 @@ describe('convertGraphQLVarsToRestParams', () => {
   });
 
   describe('hierarchy filters', () => {
-    it('maps hierarchyFilters.parentId to parent_ids[]', () => {
-      const params = convertGraphQLVarsToRestParams({ hierarchyFilters: { parentId: '123' } });
+    it('maps hierarchyFilters.parentIds to parent_ids[] with numeric IDs', () => {
+      const params = convertGraphQLVarsToRestParams({
+        hierarchyFilters: { parentIds: ['gid://gitlab/WorkItem/123'] },
+      });
 
       expect(params.getAll('parent_ids[]')).toEqual(['123']);
+    });
+
+    it('maps hierarchyFilters.parentWildcardId to parent_wildcard_id', () => {
+      const params = convertGraphQLVarsToRestParams({
+        hierarchyFilters: { parentWildcardId: 'ANY' },
+      });
+
+      expect(params.get('parent_wildcard_id')).toBe('Any');
+    });
+
+    it('maps hierarchyFilters.parentWildcardId NONE', () => {
+      const params = convertGraphQLVarsToRestParams({
+        hierarchyFilters: { parentWildcardId: 'NONE' },
+      });
+
+      expect(params.get('parent_wildcard_id')).toBe('None');
+    });
+
+    it('maps hierarchyFilters.includeDescendantWorkItems', () => {
+      const params = convertGraphQLVarsToRestParams({
+        hierarchyFilters: { includeDescendantWorkItems: true },
+      });
+
+      expect(params.get('include_descendant_work_items')).toBe('true');
     });
 
     it('maps includeDescendants', () => {
@@ -297,6 +382,8 @@ describe('convertGraphQLVarsToRestParams', () => {
       const params = convertGraphQLVarsToRestParams({});
 
       expect(params.getAll('parent_ids[]')).toEqual([]);
+      expect(params.get('parent_wildcard_id')).toBeNull();
+      expect(params.get('include_descendant_work_items')).toBeNull();
       expect(params.get('include_descendants')).toBeNull();
     });
   });
@@ -325,6 +412,30 @@ describe('convertGraphQLVarsToRestParams', () => {
       const keys = [...params.keys()];
 
       expect(keys.some((k) => k.startsWith('not['))).toBe(false);
+    });
+
+    it('maps not[parentIds] with numeric IDs extracted from GIDs', () => {
+      const params = convertGraphQLVarsToRestParams({
+        not: { parentIds: ['gid://gitlab/WorkItem/456'] },
+      });
+
+      expect(params.getAll('not[parent_ids][]')).toEqual(['456']);
+    });
+
+    it('maps not[milestoneWildcardId] to capitalized format', () => {
+      const params = convertGraphQLVarsToRestParams({
+        not: { milestoneWildcardId: 'UPCOMING' },
+      });
+
+      expect(params.get('not[milestone_wildcard_id]')).toBe('Upcoming');
+    });
+
+    it('maps not[milestoneWildcardId] STARTED to capitalized format', () => {
+      const params = convertGraphQLVarsToRestParams({
+        not: { milestoneWildcardId: 'STARTED' },
+      });
+
+      expect(params.get('not[milestone_wildcard_id]')).toBe('Started');
     });
   });
 

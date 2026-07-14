@@ -8,7 +8,7 @@ module Gitlab
           operation :count
 
           IMPORT_TYPES = %w[gitlab_project github bitbucket bitbucket_server gitea git manifest
-            gitlab_project_migration fogbugz].freeze
+            gitlab_project_migration offline_transfer fogbugz].freeze
 
           relation { Project.imported_from(IMPORT_TYPES) }
         end

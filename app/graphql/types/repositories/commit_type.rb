@@ -95,12 +95,38 @@ module Types
         description: 'Pipelines of the commit ordered latest first.',
         resolver: Resolvers::CommitPipelinesResolver
 
+      field :latest_pipeline,
+        type: Types::Ci::PipelineType,
+        null: true,
+        description: 'Latest pipeline that determines the commit CI status. ' \
+          'Excludes dangling pipelines, such as security policy scans, that do ' \
+          'not affect the commit CI status.'
+
       markdown_field :title_html, null: true, description: "HTML rendering of `title`"
       markdown_field :full_title_html, null: true, description: "HTML rendering of `full_title`"
       markdown_field :description_html, null: true
 
       def diffs
         object.diffs.diffs
+      end
+
+      # Mirrors Ci::CommitWithPipeline#lazy_latest_pipeline, but resolves lazily
+      # through GraphQL so statuses for a page of commits are batch loaded. Uses
+      # `ci_pipelines` (the `ci_sources` scope) so dangling pipelines such as
+      # `security_orchestration_policy` scans do not influence the commit CI
+      # status, keeping it consistent with the commit page, `Commit#status`, and
+      # `Ci::Ref#update_status_by!`.
+      def latest_pipeline
+        commit_project = object.project
+        return unless commit_project
+
+        BatchLoader::GraphQL.for(object.sha).batch(key: commit_project.id) do |shas, loader|
+          # rubocop:disable Database/AvoidUnpartitionedCiRelations -- `in_current_partition: true` scopes the lookup to the current partition first and only falls back to a cross-partition scan for the SHAs whose latest pipeline predates it.
+          pipelines = commit_project.ci_pipelines.latest_pipeline_per_commit(shas.compact, in_current_partition: true)
+          # rubocop:enable Database/AvoidUnpartitionedCiRelations
+
+          shas.each { |sha| loader.call(sha, pipelines[sha]) }
+        end
       end
 
       def author_gravatar

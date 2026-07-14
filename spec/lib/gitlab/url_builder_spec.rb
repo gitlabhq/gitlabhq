@@ -151,7 +151,7 @@ RSpec.describe Gitlab::UrlBuilder do
     context 'when passing a compare' do
       # NOTE: The Compare requires an actual repository, which isn't available
       # with the `build_stubbed` strategy used by the table tests above
-      let_it_be(:compare, freeze: false) { create(:compare) }
+      let_it_be_with_reload(:compare) { create(:compare) }
       let_it_be(:project) { compare.project }
 
       it 'returns the full URL with three dots' do

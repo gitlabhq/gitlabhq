@@ -57,6 +57,7 @@ module API
 
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
+        env['api.format'] = :json
 
         params = { has_length: has_length, use_final_store_path: use_final_store_path }
         params[:maximum_size] = maximum_size unless has_length

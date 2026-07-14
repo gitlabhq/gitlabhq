@@ -15,8 +15,20 @@ RSpec.describe Import::BitbucketImport::ClientFactory, feature_category: :import
   describe '.for' do
     subject(:client) { described_class.for(project) }
 
+    before do
+      provider = Struct.new(:app_id, :app_secret).new('app-id', 'app-secret')
+      allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for).with('bitbucket').and_return(provider)
+    end
+
     it 'returns a Bitbucket::Client' do
       expect(client).to be_a(Bitbucket::Client)
+    end
+
+    it 'passes the provider OAuth credentials to the client' do
+      expect(Bitbucket::Client).to receive(:new)
+        .with(hash_including(app_id: 'app-id', app_secret: 'app-secret'), any_args)
+
+      client
     end
 
     it 'delegates refresh! to a TokenRefreshStrategy bound to the project' do

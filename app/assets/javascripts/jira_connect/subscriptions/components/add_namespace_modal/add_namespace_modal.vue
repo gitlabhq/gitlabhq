@@ -5,6 +5,7 @@ import { ADD_NAMESPACE_MODAL_ID } from '../../constants';
 import GroupsList from './groups_list.vue';
 
 export default {
+  name: 'AddNamespaceModal',
   components: { GlModal, GroupsList },
   modal: {
     id: ADD_NAMESPACE_MODAL_ID,

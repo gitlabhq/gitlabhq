@@ -73,7 +73,7 @@ When using the **default** group and project paths (`gitlab-duo/test`), the seed
 to all seeded records (group, project, epic, issue, merge request, and so on). This guarantees deterministic IDs that
 the evaluation datasets depend on.
 
-When you provide **custom** paths through the environment variables above, fixed IDs are **not** applied and
+When you provide **custom** paths through the environment variables above, fixed IDs are not applied and
 PostgreSQL assigns IDs automatically.
 
 > [!note]

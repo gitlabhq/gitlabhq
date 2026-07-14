@@ -1,0 +1,410 @@
+# frozen_string_literal: true
+
+RSpec.describe Bitbucket::Client do
+  let(:base_uri) { 'https://api.bitbucket.org/' }
+  let(:api_version) { '2.0' }
+  let(:root_url) { "#{base_uri}#{api_version}" }
+  let(:workspace) { 'my-workspace' }
+  let(:repo) { 'my-workspace/my-repo' }
+  let(:options) do
+    { token: 'someToken', base_uri: base_uri, api_version: api_version, app_id: 'app-id', app_secret: 'app-secret' }
+  end
+
+  let(:headers) { { "Content-Type" => "application/json" } }
+  let(:pull_request_values) { Bitbucket::Client::PULL_REQUEST_VALUES.join(',') }
+
+  subject(:client) { described_class.new(options, http_client: class_double(HTTParty)) }
+
+  describe '#refresh_if_expired!' do
+    it 'delegates to the connection' do
+      connection = instance_double(Bitbucket::Connection)
+      allow(Bitbucket::Connection).to receive(:new).and_return(connection)
+      expect(connection).to receive(:refresh_if_expired!)
+
+      client.refresh_if_expired!
+    end
+  end
+
+  describe '#each_page' do
+    shared_examples 'fetching bitbucket data' do |params|
+      let(:item1) { { 'username' => 'Ben' } }
+      let(:item2) { { 'username' => 'Affleck' } }
+      let(:item3) { { 'username' => 'Jane' } }
+
+      let(:response1) { { 'values' => [item1], 'next' => 'https://example.com/next' } }
+      let(:response2) { { 'values' => [item2], 'next' => 'https://example.com/next2' } }
+      let(:response3) { { 'values' => [item3], 'next' => nil } }
+
+      before do
+        allow(client)
+          .to receive(params[:fetch_type])
+          .with('repo')
+          .and_return(response1)
+
+        allow(client)
+          .to receive(params[:fetch_type])
+          .with('repo', { next_url: 'https://example.com/next' })
+          .and_return(response2)
+
+        allow(client)
+          .to receive(params[:fetch_type])
+          .with('repo', { next_url: 'https://example.com/next2' })
+          .and_return(response3)
+      end
+
+      it 'yields every retrieved page to the supplied block' do
+        pages = []
+
+        client.each_page(params[:fetch_type], params[:representation_type], 'repo') { |page| pages << page }
+
+        expect(pages[0]).to be_an_instance_of(Bitbucket::Page)
+
+        expect(pages[0].items.count).to eq(1)
+        expect(pages[0].items.first.raw).to eq(item1)
+        expect(pages[0].attrs[:next]).to eq('https://example.com/next')
+
+        expect(pages[1].items.count).to eq(1)
+        expect(pages[1].items.first.raw).to eq(item2)
+        expect(pages[1].attrs[:next]).to eq('https://example.com/next2')
+
+        expect(pages[2].items.count).to eq(1)
+        expect(pages[2].items.first.raw).to eq(item3)
+        expect(pages[2].attrs[:next]).to be_nil
+      end
+    end
+
+    it_behaves_like 'fetching bitbucket data', { fetch_type: :pull_requests, representation_type: :pull_request }
+
+    it_behaves_like 'fetching bitbucket data', { fetch_type: :issues, representation_type: :issue }
+
+    context 'when fetch_data not defined' do
+      it 'raises argument error' do
+        expect { client.each_page(:foo, :pull_request, 'repo') }
+          .to raise_error(ArgumentError, 'Unknown data method foo')
+      end
+    end
+  end
+
+  describe '#issues_available?' do
+    let(:url) { "#{root_url}/repositories/#{repo}/issues?pagelen=1" }
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:http_status, :expected) do
+      200 | true
+      401 | true
+      404 | false
+      410 | false
+    end
+
+    with_them do
+      it 'returns expected availability' do
+        stub_request(:get, url).to_return(status: http_status, headers: headers, body: '{}')
+
+        expect(client.issues_available?(repo)).to eq(expected)
+      end
+    end
+  end
+
+  describe '#last_issue' do
+    let(:url) { "#{root_url}/repositories/#{repo}/issues?pagelen=1&sort=-created_on&state=ALL" }
+
+    it 'requests one issue and returns a representation' do
+      stub_request(:get, url).to_return(
+        status: 200,
+        headers: headers,
+        body: { 'values' => [{ 'kind' => 'bug', 'id' => 7 }] }.to_json
+      )
+
+      result = client.last_issue(repo)
+
+      expect(WebMock).to have_requested(:get, url)
+      expect(result).to be_a(Bitbucket::Representation::Issue)
+    end
+
+    it 'returns nil when there are no issues' do
+      stub_request(:get, url).to_return(
+        status: 200,
+        headers: headers,
+        body: { 'values' => [] }.to_json
+      )
+
+      expect(client.last_issue(repo)).to be_nil
+    end
+
+    it 'returns nil when the values key is missing' do
+      stub_request(:get, url).to_return(
+        status: 200,
+        headers: headers,
+        body: {}.to_json
+      )
+
+      expect(client.last_issue(repo)).to be_nil
+    end
+  end
+
+  describe '#last_pull_request' do
+    let(:url) { "#{root_url}/repositories/#{repo}/pullrequests?pagelen=1&sort=-created_on&state=ALL" }
+
+    it 'requests one pull request and returns a representation' do
+      stub_request(:get, url).to_return(
+        status: 200,
+        headers: headers,
+        body: { 'values' => [{ 'id' => 42, 'title' => 'Last PR' }] }.to_json
+      )
+
+      result = client.last_pull_request(repo)
+
+      expect(WebMock).to have_requested(:get, url)
+      expect(result).to be_a(Bitbucket::Representation::PullRequest)
+      expect(result.iid).to eq(42)
+      expect(result.title).to eq('Last PR')
+    end
+
+    it 'returns nil when there are no pull requests' do
+      stub_request(:get, url).to_return(
+        status: 200,
+        headers: headers,
+        body: { 'values' => [] }.to_json
+      )
+
+      expect(client.last_pull_request(repo)).to be_nil
+    end
+
+    it 'returns nil when the values key is missing' do
+      stub_request(:get, url).to_return(
+        status: 200,
+        headers: headers,
+        body: {}.to_json
+      )
+
+      expect(client.last_pull_request(repo)).to be_nil
+    end
+  end
+
+  describe '#issues' do
+    let(:path) { "/repositories/#{repo}/issues?sort=created_on" }
+
+    it 'requests a collection' do
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :issue, page_number: nil, limit: nil, after_cursor: nil
+      )
+
+      client.issues(repo)
+    end
+
+    context 'with options raw' do
+      let(:url) { "#{root_url}#{path}" }
+
+      it 'returns raw result' do
+        stub_request(:get, url).to_return(status: 200, headers: headers, body: '{}')
+
+        client.issues(repo, raw: true)
+
+        expect(WebMock).to have_requested(:get, url)
+      end
+    end
+  end
+
+  describe '#issue_comments' do
+    let(:issue_id) { 3 }
+    let(:path) { "/repositories/#{repo}/issues/#{issue_id}/comments?sort=created_on" }
+
+    it 'requests a collection' do
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :comment, page_number: nil, limit: nil, after_cursor: nil
+      )
+
+      client.issue_comments(repo, issue_id)
+    end
+  end
+
+  describe '#pull_requests' do
+    let(:path) { "/repositories/#{repo}/pullrequests?state=ALL&sort=created_on&fields=#{pull_request_values}" }
+
+    it 'requests a collection' do
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :pull_request, page_number: nil, limit: nil, after_cursor: nil
+      )
+
+      client.pull_requests(repo)
+    end
+
+    context 'with options raw' do
+      let(:url) { "#{root_url}#{path}" }
+
+      it 'returns raw result' do
+        stub_request(:get, url).to_return(status: 200, headers: headers, body: '{}')
+
+        client.pull_requests(repo, raw: true)
+
+        expect(WebMock).to have_requested(:get, url)
+      end
+    end
+  end
+
+  describe '#pull_request_comments' do
+    let(:pull_request_id) { 5 }
+    let(:path) { "/repositories/#{repo}/pullrequests/#{pull_request_id}/comments?sort=created_on" }
+
+    it 'requests a collection' do
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :pull_request_comment, page_number: nil, limit: nil, after_cursor: nil
+      )
+
+      client.pull_request_comments(repo, pull_request_id)
+    end
+  end
+
+  describe '#pull_request_diff' do
+    let(:pull_request_id) { 5 }
+    let(:url) { "#{root_url}/repositories/#{repo}/pullrequests/#{pull_request_id}/diff" }
+
+    it 'requests the diff on a pull request' do
+      stub_request(:get, url).to_return(status: 200, headers: headers, body: '{}')
+
+      client.pull_request_diff(repo, pull_request_id)
+
+      expect(WebMock).to have_requested(:get, url)
+    end
+  end
+
+  describe '#repo' do
+    let(:url) { "#{root_url}/repositories/#{repo}" }
+
+    it 'requests a specific repository' do
+      stub_request(:get, url).to_return(status: 200, headers: headers, body: '{}')
+
+      client.repo(repo)
+
+      expect(WebMock).to have_requested(:get, url)
+    end
+  end
+
+  describe '#repos' do
+    let(:path) { "/repositories?role=member&sort=created_on" }
+    let(:repo_name_filter) { 'my' }
+
+    it 'requests a collection without a filter' do
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :repo, page_number: nil, limit: nil, after_cursor: nil
+      )
+
+      client.repos
+    end
+
+    it 'requests a collection with a filter' do
+      path_with_filter = "#{path}&q=name~\"#{repo_name_filter}\""
+
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path_with_filter, :repo, page_number: nil, limit: nil, after_cursor: nil
+      )
+
+      client.repos(filter: repo_name_filter)
+    end
+
+    it 'requests a collection with after_cursor' do
+      after_cursor = '2025-12-10T12:13:37.393445+00:00'
+
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :repo, page_number: nil, limit: nil, after_cursor: after_cursor
+      )
+
+      client.repos(after_cursor: after_cursor)
+    end
+  end
+
+  describe '#multi_workspace_repos' do
+    let(:workspaces) do
+      [
+        instance_double(Bitbucket::Representation::Workspace, slug: 'workspace-1'),
+        instance_double(Bitbucket::Representation::Workspace, slug: 'workspace-2')
+      ]
+    end
+
+    before do
+      allow(client).to receive(:all_workspaces).and_return(workspaces)
+    end
+
+    it 'fetches all workspaces when no page infos provided' do
+      expect(Bitbucket::MultiWorkspaceCollection).to receive(:new) do |configs, _, _|
+        expect(configs.length).to eq(2)
+        expect(configs.pluck(:workspace)).to eq(%w[workspace-1 workspace-2])
+      end
+
+      client.multi_workspace_repos
+    end
+
+    it 'fetches only specified workspaces when page infos provided' do
+      workspace_paging_info = [
+        { workspace: 'workspace-1', page_info: { next_page: 2, has_next_page: true } }
+      ]
+
+      expect(Bitbucket::MultiWorkspaceCollection).to receive(:new) do |configs, _, _|
+        expect(configs.length).to eq(1)
+        expect(configs[0][:workspace]).to eq('workspace-1')
+        expect(configs[0][:page_number]).to eq(2)
+      end
+
+      client.multi_workspace_repos(workspace_paging_info: workspace_paging_info)
+    end
+
+    it 'includes filter in repository path when provided' do
+      filter = 'my-repo'
+
+      expect(Bitbucket::MultiWorkspaceCollection).to receive(:new) do |configs, _, _|
+        expect(configs.length).to eq(2)
+        expect(configs[0][:path]).to include('q=name~"my-repo"')
+        expect(configs[1][:path]).to include('q=name~"my-repo"')
+      end
+
+      client.multi_workspace_repos(filter: filter)
+    end
+
+    it 'does not include filter in path when not provided' do
+      expect(Bitbucket::MultiWorkspaceCollection).to receive(:new) do |configs, _, _|
+        expect(configs.length).to eq(2)
+        expect(configs[0][:path]).not_to include('q=name')
+        expect(configs[1][:path]).not_to include('q=name')
+      end
+
+      client.multi_workspace_repos
+    end
+  end
+
+  describe '#user' do
+    let(:url) { "#{root_url}/user" }
+
+    it 'requests the current user once per instance' do
+      stub_request(:get, url).to_return(status: 200, headers: headers, body: '{}')
+
+      client.user
+      client.user
+
+      expect(WebMock).to have_requested(:get, url).once
+    end
+  end
+
+  describe '#users' do
+    let(:path) { "/workspaces/#{workspace}/members" }
+
+    it 'requests a collection' do
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :user, page_number: nil, limit: nil, after_cursor: nil
+      )
+
+      client.users(workspace)
+    end
+
+    it 'requests a collection with page offset and limit' do
+      page = 10
+      limit = 100
+
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :user, page_number: page, limit: limit, after_cursor: nil
+      )
+
+      client.users(workspace, page_number: page, limit: limit)
+    end
+  end
+end

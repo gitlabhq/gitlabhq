@@ -84,7 +84,7 @@ RSpec.describe RuboCop::TodoDir, feature_category: :tooling do
         todo_dir.write(cop_name, 'a')
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
 
       it 'moves YAML file to .inspect' do
         subject
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::TodoDir, feature_category: :tooling do
     end
 
     context 'with missing YAML file' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

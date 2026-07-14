@@ -84,13 +84,13 @@ RSpec.describe RuboCop::MigrationHelpers, feature_category: :database do
         ]
       end
 
-      it { expect(fake_cop.array_column?(node)).to eq(true) }
+      it { expect(fake_cop.array_column?(node)).to be(true) }
     end
 
     context 'when it matches a variable => 100' do
       let(:child_nodes) { [RuboCop::AST::Node.new(:lvar, [:variable]), RuboCop::AST::IntNode.new(:int, [100])] }
 
-      it { expect(fake_cop.array_column?(node)).to eq(false) }
+      it { expect(fake_cop.array_column?(node)).to be(false) }
     end
   end
 end

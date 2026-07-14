@@ -14,7 +14,7 @@ title: Identity verification
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95722) in GitLab 15.4 [with a flag](../administration/feature_flags/_index.md) named `identity_verification`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95722) in GitLab 15.4 [with a feature flag](../administration/feature_flags/_index.md) named `identity_verification`. Disabled by default.
 - Enabled on GitLab.com in GitLab 16.0.
 - Generally available in GitLab 16.11. Feature flag `identity_verification` removed.
 

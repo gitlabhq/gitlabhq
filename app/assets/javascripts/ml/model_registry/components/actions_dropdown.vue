@@ -5,6 +5,7 @@ import { MLFLOW_USAGE_MODAL_ID } from '../constants';
 import MlflowUsageModal from './mlflow_usage_modal.vue';
 
 export default {
+  name: 'ActionsDropdown',
   components: {
     GlDisclosureDropdownItem,
     GlDisclosureDropdown,

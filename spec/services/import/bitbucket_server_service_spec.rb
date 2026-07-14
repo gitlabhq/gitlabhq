@@ -14,7 +14,7 @@ RSpec.describe Import::BitbucketServerService, feature_category: :importers do
     {
       name: 'vim',
       description: 'test',
-      visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+      public?: true,
       browse_url: 'http://repo.com/repo/repo',
       clone_url: 'http://repo.com/repo/repo.git'
     }

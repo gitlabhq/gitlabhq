@@ -7,12 +7,6 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
   using RSpec::Parameterized::TableSyntax
 
-  it_behaves_like 'cells claimable model',
-    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
-    subject_key: :member_namespace_id,
-    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_MEMBERS,
-    claiming_attributes: [:invite_email]
-
   describe 'default values' do
     subject(:member) { build(:project_member) }
 

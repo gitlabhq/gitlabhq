@@ -60,7 +60,7 @@ module MergeRequests
       args = {
         'mentionable_type' => 'MergeRequest',
         'mentionable_id' => merge_request.id,
-        'hook_data' => merge_data,
+        'hook_data' => merge_data.as_json, # ensure sidekiq-compatible (native JSON) hash argument
         'is_confidential' => false
       }
 
@@ -229,7 +229,7 @@ module MergeRequests
       approval_users = merge_request.approvals_for_user_ids(new_reviewers.map(&:id))
 
       merge_request.merge_request_reviewers_with(approval_users.select(:user_id))
-        .update_all(state: :approved)
+        .update_all_state(:approved)
     end
 
     def merge_request_metrics_service(merge_request)

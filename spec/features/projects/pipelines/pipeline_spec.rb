@@ -375,7 +375,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
             context 'when cancel button clicked', :sidekiq_inline do
               before do
-                find('button[aria-label="Cancel downstream pipeline"]').click
+                click_button 'Cancel downstream pipeline'
               end
 
               it 'shows the pipeline as canceling with the retry action' do
@@ -394,7 +394,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
             context 'when retrying' do
               before do
-                find('button[aria-label="Retry downstream pipeline"]').click
+                click_button 'Retry downstream pipeline'
                 wait_for_requests
               end
 
@@ -414,7 +414,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
             context 'when retrying' do
               before do
-                find('button[aria-label="Retry downstream pipeline"]').click
+                click_button 'Retry downstream pipeline'
                 wait_for_requests
               end
 
@@ -475,7 +475,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       end
 
       it 'shows counter in Jobs tab' do
-        expect(find_by_testid('builds-counter').text).to eq(pipeline.total_size.to_s)
+        expect(page).to have_testid('builds-counter', text: pipeline.total_size.to_s, exact_text: true)
       end
 
       context 'without permission to access builds' do
@@ -498,11 +498,13 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
       context 'with test reports' do
         it 'shows badge counter in Tests tab' do
-          expect(find_by_testid('tests-counter').text).to eq(pipeline.test_report_summary.total[:count].to_s)
+          test_count = pipeline.test_report_summary.total[:count].to_s
+
+          expect(page).to have_testid('tests-counter', text: test_count, exact_text: true)
         end
 
         it 'calls summary.json endpoint' do
-          find('.gl-tab-nav-item', text: 'Tests').click
+          click_on 'Tests'
 
           expect(page).to have_content('Jobs')
           expect(page).to have_selector('[data-testid="tests-detail"]', visible: :all)
@@ -513,7 +515,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
         let(:pipeline) { create(:ci_pipeline, project: project) }
 
         it 'shows zero' do
-          expect(find_by_testid('tests-counter', visible: :all).text).to eq("0")
+          expect(page).to have_testid('tests-counter', text: '0', exact_text: true, visible: :all)
         end
       end
     end
@@ -527,12 +529,15 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
       context 'when retrying' do
         before do
-          find_by_testid('retry-pipeline').click
-          wait_for_requests
+          within_testid('pipeline-header') do
+            click_button 'Retry'
+          end
         end
 
         it 'does not show a "Retry" button', :sidekiq_might_not_need_inline do
-          expect(page).not_to have_content('Retry')
+          within_testid('pipeline-header') do
+            expect(page).not_to have_content('Retry')
+          end
         end
 
         it 'shows running status in pipeline header', :sidekiq_might_not_need_inline do
@@ -808,11 +813,9 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
     end
 
     describe 'GET /:project/-/pipelines/:id' do
-      before do
-        visit project_pipeline_path(project, pipeline)
-      end
-
       it 'shows the pipeline with a bridge job' do
+        visit project_pipeline_path(project, pipeline)
+
         expect(page).to have_selector('.js-pipeline-graph')
         expect(page).to have_content('cross-build')
       end
@@ -837,7 +840,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'displays the PipelineSchedule in an inactive state' do
           visit project_pipeline_schedules_path(project)
-          page.click_link('Inactive')
+          click_link('Inactive')
 
           expect(page).to have_selector('[data-testid="pipeline-schedule-description"]', text: 'blocked user schedule')
         end
@@ -1041,7 +1044,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       end
 
       it 'shows counter in Jobs tab' do
-        expect(find_by_testid('builds-counter').text).to eq(pipeline.total_size.to_s)
+        expect(page).to have_testid('builds-counter', text: pipeline.total_size.to_s, exact_text: true)
       end
     end
 

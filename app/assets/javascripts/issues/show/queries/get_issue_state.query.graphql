@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 query issueState {
   issueState @client
 }

@@ -480,7 +480,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
       it 'correctly marks branch as protected' do
         execute_service
 
-        expect(ProtectedBranch.protected?(project, branch)).to eq(true)
+        expect(ProtectedBranch.protected?(project, branch)).to be(true)
       end
     end
 
@@ -935,6 +935,74 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
 
           service.execute
         end
+      end
+    end
+  end
+
+  describe '#create_pipeline?' do
+    let(:branch) { 'feature' }
+    let(:ref) { 'refs/heads/feature' }
+
+    context 'when skip_branch_pipelines_for_mrs is enabled' do
+      before do
+        allow(project).to receive(:ci_skip_branch_pipelines_for_mrs?).and_return(true)
+      end
+
+      context 'when ref is a merge request source branch' do
+        let(:service) do
+          described_class.new(project, user,
+            change: { oldrev: oldrev, newrev: newrev, ref: ref },
+            merge_request_source_branches: %w[feature])
+        end
+
+        it 'does not create a pipeline' do
+          expect(Ci::CreatePipelineService).not_to receive(:new)
+
+          service.execute
+        end
+      end
+
+      context 'when ref is not a merge request source branch' do
+        let(:service) do
+          described_class.new(project, user,
+            change: { oldrev: oldrev, newrev: newrev, ref: ref },
+            merge_request_source_branches: %w[other-branch])
+        end
+
+        it 'creates a pipeline' do
+          expect(Ci::CreatePipelineService).to receive(:new).and_return(instance_double(Ci::CreatePipelineService,
+            execute_async: true))
+
+          service.execute
+        end
+      end
+
+      context 'when merge_request_source_branches is nil' do
+        it 'creates a pipeline' do
+          expect(Ci::CreatePipelineService).to receive(:new).and_return(instance_double(Ci::CreatePipelineService,
+            execute_async: true))
+
+          service.execute
+        end
+      end
+    end
+
+    context 'when skip_branch_pipelines_for_mrs is disabled' do
+      let(:service) do
+        described_class.new(project, user,
+          change: { oldrev: oldrev, newrev: newrev, ref: ref },
+          merge_request_source_branches: %w[feature])
+      end
+
+      before do
+        allow(project).to receive(:ci_skip_branch_pipelines_for_mrs?).and_return(false)
+      end
+
+      it 'creates a pipeline' do
+        expect(Ci::CreatePipelineService).to receive(:new).and_return(instance_double(Ci::CreatePipelineService,
+          execute_async: true))
+
+        service.execute
       end
     end
   end

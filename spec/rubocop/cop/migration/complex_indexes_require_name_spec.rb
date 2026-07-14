@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-#
+
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/complex_indexes_require_name'
 

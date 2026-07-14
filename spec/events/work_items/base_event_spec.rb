@@ -72,11 +72,6 @@ RSpec.describe WorkItems::BaseEvent, feature_category: :code_suggestions do
           .to raise_error(Gitlab::EventStore::InvalidEvent, /does not match/)
       end
 
-      it 'rejects missing project_id' do
-        expect { subclass.new(data: cloud_event_data.merge(data: valid_data.except(:project_id))) }
-          .to raise_error(Gitlab::EventStore::InvalidEvent, /does not match/)
-      end
-
       it 'rejects missing work_item_type' do
         expect { subclass.new(data: cloud_event_data.merge(data: valid_data.except(:work_item_type))) }
           .to raise_error(Gitlab::EventStore::InvalidEvent, /does not match/)

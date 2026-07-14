@@ -1,0 +1,3 @@
+---
+name: upload_rpm_package
+description: Grants the ability to upload RPM packages

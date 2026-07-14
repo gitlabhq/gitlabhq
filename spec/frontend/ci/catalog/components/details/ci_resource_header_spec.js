@@ -16,12 +16,12 @@ describe('CiResourceHeader', () => {
     {
       value: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
       text: '1.1.0',
-      createdAt: '2025-01-01',
+      releasedAt: '2025-01-01',
     },
     {
       value: 'gid://gitlab/Ci::Catalog::Resources::Version/1',
       text: '1.0.0',
-      createdAt: '2023-01-01',
+      releasedAt: '2023-01-01',
     },
   ];
   const initialVersionId = 'gid://gitlab/Ci::Catalog::Resources::Version/1';
@@ -328,7 +328,7 @@ describe('CiResourceHeader', () => {
           {
             value: 'gid://gitlab/Ci::Catalog::Resources::Version/3',
             text: '2.0.0',
-            createdAt: '2026-01-01',
+            releasedAt: '2026-01-01',
           },
         ];
 
@@ -353,7 +353,7 @@ describe('CiResourceHeader', () => {
               id: versionId,
               name: versionName,
               path: '/path',
-              createdAt: isLatest ? '2025-01-01' : '2023-01-01',
+              releasedAt: isLatest ? '2025-01-01' : '2023-01-01',
               author: { id: 1, name: 'author', state: 'active', webPath: '/user/1' },
             },
           ],

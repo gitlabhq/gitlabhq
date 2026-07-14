@@ -83,7 +83,6 @@ export default {
           initialReadArticles: this.sidebarData.whats_new_read_articles,
           markAsReadPath: this.sidebarData.whats_new_mark_as_read_path,
           mostRecentReleaseItemsCount: this.sidebarData.whats_new_most_recent_release_items_count,
-          showTranscendPromo: this.sidebarData.whats_new_show_transcend_promo,
           placement: this.placement,
         },
         (count) => {

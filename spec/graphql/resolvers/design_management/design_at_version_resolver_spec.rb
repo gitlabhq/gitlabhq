@@ -8,7 +8,7 @@ RSpec.describe Resolvers::DesignManagement::DesignAtVersionResolver do
 
   let_it_be(:issue) { create(:issue) }
   let_it_be(:project) { issue.project }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: project) }
   let_it_be(:design_a) { create(:design, issue: issue) }
   let_it_be(:version_a) { create(:design_version, issue: issue, created_designs: [design_a]) }
 
@@ -22,7 +22,6 @@ RSpec.describe Resolvers::DesignManagement::DesignAtVersionResolver do
 
   before do
     enable_design_management
-    project.add_developer(user)
   end
 
   describe '#resolve' do

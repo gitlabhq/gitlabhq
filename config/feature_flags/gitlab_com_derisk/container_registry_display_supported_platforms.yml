@@ -1,9 +1,0 @@
----
-name: container_registry_display_supported_platforms
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/369852
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228384
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600202
-milestone: '19.1'
-group: group::container registry
-type: gitlab_com_derisk
-default_enabled: false

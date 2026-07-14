@@ -75,7 +75,7 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
   end
 
   describe '#execute' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
 
     let(:user) { build_stubbed(:user) }
     let(:webhook_url) { 'https://example.gitlab.com/' }
@@ -146,10 +146,10 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
     end
 
     context 'when the data object has a label' do
-      let_it_be(:label, freeze: false) { build(:label, project: project, name: 'Bug') }
-      let_it_be(:label_2, freeze: false) { build(:label, project: project, name: 'Community contribution') }
-      let_it_be(:label_3, freeze: false) { build(:label, project: project, name: 'Backend') }
-      let_it_be(:issue, freeze: false) { create(:labeled_issue, project: project, labels: [label, label_2, label_3]) }
+      let_it_be_with_reload(:label) { build(:label, project: project, name: 'Bug') }
+      let_it_be_with_reload(:label_2) { build(:label, project: project, name: 'Community contribution') }
+      let_it_be_with_reload(:label_3) { build(:label, project: project, name: 'Backend') }
+      let_it_be_with_reload(:issue) { create(:labeled_issue, project: project, labels: [label, label_2, label_3]) }
       let_it_be(:work_item) { create(:work_item, project: project, labels: [label, label_2, label_3]) }
       let_it_be(:incident) { create(:work_item, :incident, project: project, labels: [label, label_2, label_3]) }
       let_it_be(:note) { create(:note, noteable: issue, project: project) }

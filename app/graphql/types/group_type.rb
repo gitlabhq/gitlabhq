@@ -307,10 +307,7 @@ module Types
     field :runners, Types::Ci::RunnerType.connection_type,
       null: true,
       resolver: Resolvers::Ci::GroupRunnersResolver,
-      description: "Find runners visible to the current user.",
-      directives: granular_scope_directive(
-        permissions: :read_runner, boundary: :itself, boundary_type: :group
-      )
+      description: "Find runners visible to the current user."
 
     field :organizations, Types::CustomerRelations::OrganizationType.connection_type,
       null: true,

@@ -17,6 +17,7 @@ import IssuableTabs from './issuable_tabs.vue';
 const VueDraggable = () => import('~/lib/utils/vue3compat/draggable_compat.vue');
 
 export default {
+  name: 'IssuableListRoot',
   vueDraggableAttributes: {
     animation: 200,
     forceFallback: false,

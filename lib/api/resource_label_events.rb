@@ -26,15 +26,16 @@ module API
       eventable_str = eventable_type.to_s.underscore
       eventables_str = eventable_type.to_s.underscore.pluralize
       human_eventable_str = eventable_type.to_s.underscore.humanize.downcase
+      eventable_article = human_eventable_str.match?(/\A[aeiou]/i) ? 'an' : 'a'
       feature_category = details[:feature_category]
 
       params do
         requires :id, type: String, desc: "The ID of a #{parent_type}"
       end
       resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc "Get a list of #{human_eventable_str} resource label events" do
+        desc "List all #{parent_type} #{human_eventable_str} label events" do
           success Entities::ResourceLabelEvent
-          detail 'This feature was introduced in 11.3'
+          detail "Lists all label events for a specified #{human_eventable_str}."
           tags ['resource_events']
         end
         params do
@@ -51,9 +52,9 @@ module API
           present_resource_label_event_collection(eventable, events, eventable_type)
         end
 
-        desc "Get a single #{human_eventable_str} resource label event" do
+        desc "Retrieve #{eventable_article} #{human_eventable_str} label event" do
           success Entities::ResourceLabelEvent
-          detail 'This feature was introduced in 11.3'
+          detail "Retrieves a label event for a specified #{parent_type} #{human_eventable_str}."
           tags ['resource_events']
         end
         params do

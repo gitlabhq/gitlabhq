@@ -61,7 +61,11 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
         YAML
       end
       example.run
-      test_yaml_path.unlink
+    ensure
+      test_yaml_path.unlink if test_yaml_path&.exist?
+      # Reset the memoized dictionary so the temporary p_foo_table entry does not
+      # leak into other specs (e.g. sharding_key_spec) sharing the same process.
+      described_class.instance_variable_set(:@entries, nil)
     end
 
     it 'returns a hash with the parent table and detachable partition info' do

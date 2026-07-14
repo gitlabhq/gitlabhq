@@ -10,7 +10,6 @@ import {
   mergeById,
   isSidebarDirty,
   formatSearchResultCount,
-  getAggregationsUrl,
   prepareSearchAggregations,
   addCountOverLimit,
   injectRegexSearch,
@@ -272,23 +271,6 @@ describe('Global Search Store Utils', () => {
     });
     it('returns 23K string for "23,000+" string', () => {
       expect(formatSearchResultCount('23,000+')).toStrictEqual('23K');
-    });
-  });
-
-  describe('getAggregationsUrl', () => {
-    useMockLocationHelper();
-
-    it('returns the aggregations URL without a relative URL root', () => {
-      const testURL = window.location.href;
-      expect(getAggregationsUrl()).toStrictEqual(`${testURL}search/aggregations`);
-    });
-
-    it('returns the aggregations URL with a relative URL root', () => {
-      gon.relative_url_root = '/glab';
-      const currentUrl = new URL(window.location.href);
-      currentUrl.pathname = '/glab/search/aggregations';
-      expect(getAggregationsUrl()).toStrictEqual(currentUrl.toString());
-      delete gon.relative_url_root;
     });
   });
 

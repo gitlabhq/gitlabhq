@@ -5,6 +5,7 @@ module Banzai
     class MarkupPipeline < BasePipeline
       def self.filters
         @filters ||= FilterArray[
+          Filter::MarkupHeadingAnchorFilter,
           Filter::SanitizationFilter,
           Filter::SanitizeLinkFilter,
           Filter::CodeLanguageFilter,
@@ -14,6 +15,7 @@ module Banzai
           Filter::KrokiFilter,
           Filter::MathFilter,
           Filter::MermaidFilter,
+          Filter::HeadingLocalizationFilter,
           Filter::SyntaxHighlightFilter # this filter should remain at the end
         ]
       end

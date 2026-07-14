@@ -1,5 +1,6 @@
 #import "./board_list.fragment.graphql"
 
+# @feature_category: portfolio_management
 mutation UpdateBoardList($listId: ListID!, $position: Int, $collapsed: Boolean) {
   updateBoardList(input: { listId: $listId, position: $position, collapsed: $collapsed }) {
     list {

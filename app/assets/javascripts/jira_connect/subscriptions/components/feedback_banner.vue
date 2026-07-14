@@ -5,6 +5,7 @@ import { s__, __ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 export default {
+  name: 'FeedbackBanner',
   components: {
     GlBanner,
     LocalStorageSync,

@@ -24,6 +24,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['hidden', 'show'],
   data() {
     return {
       menuVisible: false,

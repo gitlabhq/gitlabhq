@@ -1,5 +1,7 @@
 <script>
-export default {};
+export default {
+  name: 'EpicCountables',
+};
 </script>
 <template>
   <!-- This is intentionally left blank -->

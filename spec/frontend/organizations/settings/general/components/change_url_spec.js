@@ -119,7 +119,7 @@ describe('ChangeUrl', () => {
           },
         });
         expect(visitUrlWithAlerts).toHaveBeenCalledWith(
-          `${organizationUpdateResponse.data.organizationUpdate.organization.webUrl}/-/settings/general`,
+          `/o/${organizationUpdateResponse.data.organizationUpdate.organization.path}/-/settings/general`,
           [
             {
               id: 'organization-url-successfully-changed',

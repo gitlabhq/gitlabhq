@@ -1,0 +1,10 @@
+---
+name: read_secrets_manager
+description: Grants the ability to read information about a secrets manager
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_secrets_manager

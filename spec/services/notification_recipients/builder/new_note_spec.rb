@@ -8,7 +8,6 @@ RSpec.describe NotificationRecipients::Builder::NewNote, feature_category: :team
     let_it_be(:project) { create(:project, :public, group: group) }
     let_it_be(:issue) { create(:issue, project: project) }
 
-    let_it_be(:other_user)              { create(:user) }
     let_it_be(:participant)             { create(:user) }
     let_it_be(:non_member_participant)  { create(:user) }
     let_it_be(:group_watcher)           { create(:user) }
@@ -31,13 +30,15 @@ RSpec.describe NotificationRecipients::Builder::NewNote, feature_category: :team
 
     subject { described_class.new(note) }
 
-    before do
+    before_all do
       project.add_developer(participant)
       project.add_developer(project_watcher)
       project.add_guest(guest_project_watcher)
       project.add_developer(subscriber)
       group.add_developer(group_watcher)
+    end
 
+    before do
       expect(issue).to receive(:participants).and_return([participant, non_member_participant])
     end
 

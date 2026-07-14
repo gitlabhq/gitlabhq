@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JwtController, feature_category: :system_access do
+RSpec.describe JwtController, :aggregate_failures, feature_category: :system_access do
   include_context 'parsed logs'
 
   let(:service) { double(execute: {}) }
@@ -338,6 +338,14 @@ RSpec.describe JwtController, feature_category: :system_access do
 
         it_behaves_like 'rejecting a blocked user'
 
+        context 'when internal auth is disabled' do
+          before do
+            stub_application_setting(password_authentication_enabled_for_git: false)
+          end
+
+          it_behaves_like 'with invalid credentials'
+        end
+
         context 'when passing a flat array of scopes' do
           # We use this trick to make rails to generate a query_string:
           # scope=scope1&scope=scope2
@@ -404,27 +412,30 @@ RSpec.describe JwtController, feature_category: :system_access do
         context 'when user is enrolled in email-based OTP' do
           let(:user) { create(:user, email_otp_required_after: 1.second.ago) }
 
-          context 'without personal token' do
-            it_behaves_like 'with invalid credentials'
+          it 'accepts the authorization attempt' do
+            request_jwt_auth
+
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
-          context 'with personal token' do
-            let(:access_token) { create(:personal_access_token, user: user) }
-            let(:headers) { { authorization: credentials(user.username, access_token.token) } }
-
-            it 'accepts the authorization attempt' do
-              request_jwt_auth
-
-              expect(response).to have_gitlab_http_status(:ok)
+          context 'when email_otp_enabled application setting is enabled' do
+            before do
+              stub_application_setting(email_otp_enabled: true)
             end
-          end
 
-          context 'when :email_based_mfa feature flag disabled' do
-            it 'accepts the authorization attempt' do
-              stub_feature_flags(email_based_mfa: false)
-              request_jwt_auth
+            context 'without personal token' do
+              it_behaves_like 'with invalid credentials'
+            end
 
-              expect(response).to have_gitlab_http_status(:ok)
+            context 'with personal token' do
+              let(:access_token) { create(:personal_access_token, user: user) }
+              let(:headers) { { authorization: credentials(user.username, access_token.token) } }
+
+              it 'accepts the authorization attempt' do
+                request_jwt_auth
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
             end
           end
         end
@@ -443,28 +454,28 @@ RSpec.describe JwtController, feature_category: :system_access do
             end
 
             context 'when username and password are provided' do
-              it_behaves_like 'with invalid credentials'
-
-              it 'calls set_email_otp_required_after_based_on_restrictions' do
-                allow_next_instance_of(User) do |instance|
-                  expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
-                    .with(save: true).and_call_original
-                end
-
+              it 'accepts the authorization attempt' do
                 request_jwt_auth
 
-                expect(response).to have_gitlab_http_status(:unauthorized)
+                expect(response).to have_gitlab_http_status(:ok)
               end
 
-              context 'when :email_based_mfa feature flag disabled' do
+              context 'when email_otp_enabled application setting is enabled' do
                 before do
-                  stub_feature_flags(email_based_mfa: false)
+                  stub_application_setting(email_otp_enabled: true)
                 end
 
-                it 'accepts the authorization attempt' do
+                it_behaves_like 'with invalid credentials'
+
+                it 'calls set_email_otp_required_after_based_on_restrictions' do
+                  allow_next_instance_of(User) do |instance|
+                    expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
+                      .with(save: true).and_call_original
+                  end
+
                   request_jwt_auth
 
-                  expect(response).to have_gitlab_http_status(:ok)
+                  expect(response).to have_gitlab_http_status(:unauthorized)
                 end
               end
             end
@@ -555,16 +566,147 @@ RSpec.describe JwtController, feature_category: :system_access do
       end
 
       it 'allows read access' do
-        expect(service).to receive(:execute).with(authentication_abilities: Gitlab::Auth.read_only_authentication_abilities)
+        expect(service).to receive(:execute).with(
+          authentication_abilities: Gitlab::Auth.read_only_authentication_abilities,
+          personal_access_token: nil
+        )
 
         get '/jwt/auth', params: parameters
+      end
+    end
+
+    context 'when authenticating with a granular (fine-grained) personal access token' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:granular_pat) do
+        create(:granular_pat,
+          user: user,
+          boundary: ::Authz::Boundary.for(project),
+          permissions: [:read_container_repository])
+      end
+
+      let(:headers) { { authorization: credentials('personal_access_token', granular_pat.token) } }
+
+      it 'passes the granular personal access token to the registry service' do
+        expect(service).to receive(:execute).with(
+          authentication_abilities: [],
+          personal_access_token: granular_pat
+        )
+
+        get '/jwt/auth', params: parameters, headers: headers
       end
     end
 
     context 'unknown service' do
       subject! { get '/jwt/auth', params: { service: 'unknown' } }
 
-      it { expect(response).to have_gitlab_http_status(:not_found) }
+      it 'responds with a Docker v2 JSON error envelope instead of an empty body' do
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response.media_type).to eq('application/json')
+        expect(json_response).to eq(
+          'errors' => [{
+            'code' => 'UNSUPPORTED',
+            'message' => 'The requested authentication service is not supported. Verify the registry token ' \
+              'service is configured correctly.'
+          }]
+        )
+      end
+    end
+
+    context 'when the request is rejected by abuse protections' do
+      let(:login) { 'user' }
+      let(:password) { 'pass' }
+      let(:headers) { { authorization: credentials(login, password) } }
+
+      subject(:request_jwt_auth) { get '/jwt/auth', params: parameters, headers: headers }
+
+      shared_examples 'a Docker v2 JSON error envelope' do |status:, code:, message:|
+        it 'responds with a Docker v2 JSON error envelope' do
+          request_jwt_auth
+
+          expect(response).to have_gitlab_http_status(status)
+          expect(response.media_type).to eq('application/json')
+          expect(json_response).to eq('errors' => [{ 'code' => code, 'message' => message }])
+        end
+      end
+
+      context 'when the IP is blocklisted' do
+        before do
+          allow(Gitlab::Auth).to receive(:find_for_git_client).and_raise(Gitlab::Auth::IpBlocked)
+        end
+
+        it_behaves_like 'a Docker v2 JSON error envelope',
+          status: :forbidden,
+          code: 'DENIED',
+          message: 'Access denied: too many failed authentication attempts from this network. ' \
+            'Try again later or from a different network. ' \
+            'See http://www.example.com/help/user/packages/container_registry/authenticate_with_container_registry.md#error-docker-login-fails-with-an-authentication-error'
+
+        it 'logs the Rack_Attack event with the documented fields and no PII' do
+          expect(Gitlab::AuthLogger).to receive(:error) do |payload|
+            expect(payload.keys).to contain_exactly(:message, :env, :remote_ip, :request_method, :path)
+            expect(payload).to include(message: 'Rack_Attack', env: :blocklist)
+          end
+
+          request_jwt_auth
+        end
+      end
+
+      context 'when IpRateLimiter#banned? raises IpBlocked' do
+        let(:ip_rate_limiter) { instance_double(Gitlab::Auth::IpRateLimiter, banned?: true) }
+
+        before do
+          allow(Gitlab::Auth::IpRateLimiter).to receive(:new).and_return(ip_rate_limiter)
+        end
+
+        it 'responds with a Docker v2 JSON error envelope' do
+          request_jwt_auth
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response.media_type).to eq('application/json')
+          expect(json_response.dig('errors', 0, 'code')).to eq('DENIED')
+        end
+
+        it 'logs the Rack_Attack event' do
+          expect(Gitlab::AuthLogger).to receive(:error).with(
+            hash_including(message: 'Rack_Attack', env: :blocklist)
+          )
+
+          request_jwt_auth
+        end
+      end
+
+      context 'when too many distinct IPs are used for the account' do
+        let(:user_id) { 1 }
+        let(:source_ip) { '1.2.3.4' }
+        let(:unique_ips_count) { 100 }
+        let(:too_many_ips_error) { Gitlab::Auth::TooManyIps.new(user_id, source_ip, unique_ips_count) }
+
+        before do
+          allow(Gitlab::Auth).to receive(:find_for_git_client).and_raise(too_many_ips_error)
+        end
+
+        it_behaves_like 'a Docker v2 JSON error envelope',
+          status: :forbidden,
+          code: 'DENIED',
+          message: 'Access denied: too many distinct sources for this account. Try again later. ' \
+            'See http://www.example.com/help/user/packages/container_registry/authenticate_with_container_registry.md#error-docker-login-fails-with-an-authentication-error'
+
+        it 'sets the Retry-After header' do
+          request_jwt_auth
+
+          expect(response.headers['Retry-After']).to eq(
+            Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window.to_s
+          )
+        end
+
+        it 'does not emit an additional AuthLogger entry (UniqueIpsLimiter already logs the raise event)' do
+          expect(Gitlab::AuthLogger).not_to receive(:warn)
+          expect(Gitlab::AuthLogger).not_to receive(:error)
+
+          request_jwt_auth
+        end
+      end
     end
 
     def credentials(login, password)
@@ -582,8 +724,8 @@ RSpec.describe JwtController, feature_category: :system_access do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :private, group: group) }
     let_it_be(:bot_user) { create(:user, :project_bot) }
-    let_it_be(:group_access_token, freeze: false) { create(:personal_access_token, :dependency_proxy_scopes, user: bot_user) }
-    let_it_be(:group_deploy_token, freeze: false) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+    let_it_be_with_reload(:group_access_token) { create(:personal_access_token, :dependency_proxy_scopes, user: bot_user) }
+    let_it_be_with_reload(:group_deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
     let_it_be(:gdeploy_token) { create(:group_deploy_token, deploy_token: group_deploy_token, group: group) }
     let_it_be(:project_deploy_token) { create(:deploy_token, :project, :dependency_proxy_scopes) }
     let_it_be(:pdeploy_token) { create(:project_deploy_token, deploy_token: project_deploy_token, project: project) }
@@ -626,6 +768,14 @@ RSpec.describe JwtController, feature_category: :system_access do
       let(:credential_password) { user.password }
 
       it_behaves_like 'with valid credentials'
+
+      context 'when internal auth is disabled' do
+        before do
+          stub_application_setting(password_authentication_enabled_for_git: false)
+        end
+
+        it_behaves_like 'with invalid credentials'
+      end
     end
 
     context 'with group access token' do

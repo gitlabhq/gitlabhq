@@ -1,6 +1,6 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 export default {
+  name: 'PageIndex',
   props: {
     page: {
       type: Object,
@@ -11,6 +11,7 @@ export default {
       required: true,
     },
   },
+  emits: ['pdflaberror'],
   data() {
     return {
       scale: 2,

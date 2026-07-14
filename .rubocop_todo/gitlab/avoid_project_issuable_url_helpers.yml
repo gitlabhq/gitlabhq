@@ -11,7 +11,6 @@ Gitlab/AvoidProjectIssuableUrlHelpers:
     - 'app/serializers/issue_board_entity.rb'
     - 'app/services/error_tracking/issue_details_service.rb'
     - 'app/views/issues/_issue.atom.builder'
-    - 'app/views/work_items/_work_items_calendar.ics.ruby'
     - 'ee/lib/gitlab/data_builder/vulnerability.rb'
     - 'ee/lib/gitlab/duo/developments/swe_bench_seeder.rb'
     - 'ee/lib/gitlab/duo/developments/swe_bench_seeder/issue_manager.rb'

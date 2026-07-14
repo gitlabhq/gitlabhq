@@ -1,0 +1,3 @@
+---
+name: revoke_runner_controller_token
+description: Grants the ability to revoke runner controller tokens

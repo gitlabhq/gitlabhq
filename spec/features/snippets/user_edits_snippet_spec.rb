@@ -6,9 +6,9 @@ RSpec.describe 'User edits snippet', :js, feature_category: :source_code_managem
   include DropzoneHelper
   include Features::SnippetSpecHelpers
 
-  let_it_be(:file_name, freeze: false) { 'test.rb' }
-  let_it_be(:content, freeze: false) { 'puts "test"' }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:file_name) { 'test.rb' }
+  let_it_be(:content) { 'puts "test"' }
+  let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:snippet) do
     create(
       :personal_snippet,
@@ -63,8 +63,8 @@ RSpec.describe 'User edits snippet', :js, feature_category: :source_code_managem
     click_button 'Save changes'
     wait_for_requests
 
-    expect(page).to have_no_selector('[data-testid="lock-icon"]')
     expect(page).to have_selector('[data-testid="shield-icon"]')
+    expect(page).to have_no_selector('[data-testid="lock-icon"]')
   end
 
   it 'updates the snippet to make it public' do
@@ -73,8 +73,8 @@ RSpec.describe 'User edits snippet', :js, feature_category: :source_code_managem
     click_button 'Save changes'
     wait_for_requests
 
-    expect(page).to have_no_selector('[data-testid="lock-icon"]')
     expect(page).to have_selector('[data-testid="earth-icon"]')
+    expect(page).to have_no_selector('[data-testid="lock-icon"]')
   end
 
   context 'when the git operation fails' do

@@ -49,7 +49,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: :feature_flags },
             container_html_options: { class: 'shortcuts-feature-flags' },
-            item_id: :feature_flags
+            item_id: :feature_flags,
+            description: _('Manage feature flags and toggles'),
+            library_icon: 'flag'
           )
         end
 
@@ -64,7 +66,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: :environments },
             container_html_options: { class: 'shortcuts-environments' },
-            item_id: :environments
+            item_id: :environments,
+            description: _('Manage your staging and production deployments'),
+            library_icon: 'environment'
           )
         end
 
@@ -80,7 +84,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::DeployMenu,
             item_id: :releases,
             active_routes: { controller: :releases },
-            container_html_options: { class: 'shortcuts-deployments-releases' }
+            container_html_options: { class: 'shortcuts-deployments-releases' },
+            description: _('Create and manage project releases'),
+            library_icon: 'release'
           )
         end
 
@@ -94,7 +100,9 @@ module Sidebars
             link: project_pages_path(context.project),
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
             active_routes: { path: %w[pages#new pages#show] },
-            item_id: :pages
+            item_id: :pages,
+            description: _('Publish a static website from your repository.'),
+            library_icon: 'documents'
           )
         end
       end

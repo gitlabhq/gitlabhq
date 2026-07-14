@@ -84,6 +84,12 @@ module Gitlab
         else
           signature.verify(@signed_text)
         end
+      rescue ArgumentError
+        # A malformed signature blob (e.g. a truncated ed25519 signature that
+        # is not exactly 64 bytes) parses as valid PEM but raises ArgumentError
+        # from the ed25519 gem at verification time. Treat it as unverified
+        # rather than surfacing a 500.
+        false
       end
 
       def security_key_signature?

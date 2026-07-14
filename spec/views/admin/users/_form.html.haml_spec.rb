@@ -43,6 +43,10 @@ RSpec.describe 'admin/users/_form.html.haml', feature_category: :user_management
     end
 
     describe 'email one-time password required after setting' do
+      before do
+        stub_application_setting(email_otp_enabled: true)
+      end
+
       it 'renders the datetime field' do
         render
 

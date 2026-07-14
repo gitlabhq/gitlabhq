@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import TransferProjectForm from './components/transfer_project_form.vue';
 
 export default () => {
@@ -19,6 +20,7 @@ export default () => {
     phrase: confirmationPhrase = '',
     confirmDangerMessage = '',
     additionalInformation = '',
+    showUserTransferLocations,
   } = el.dataset;
 
   return new Vue({
@@ -38,6 +40,7 @@ export default () => {
         props: {
           confirmButtonText,
           confirmationPhrase,
+          showUserTransferLocations: parseBoolean(showUserTransferLocations),
         },
         on: {
           selectTransferLocation: (id) => {

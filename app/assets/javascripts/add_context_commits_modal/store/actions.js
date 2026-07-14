@@ -4,8 +4,8 @@ import Api from '~/api';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { ACTIVE_AND_BLOCKED_USER_STATES } from '~/users_select/constants';
+import { autocompleteUsersPath } from '~/lib/utils/path_helpers/autocomplete';
 import * as types from './mutation_types';
 
 export const setBaseConfig = ({ commit }, options) => {
@@ -137,7 +137,7 @@ export const setSelectedCommits = ({ commit }, selected) => {
 export const fetchAuthors = ({ dispatch, state }, author = null) => {
   const { projectId } = state;
   return axios
-    .get(joinPaths(gon.relative_url_root || '', '/-/autocomplete/users.json'), {
+    .get(autocompleteUsersPath({ format: 'json' }), {
       params: {
         project_id: projectId,
         states: ACTIVE_AND_BLOCKED_USER_STATES,

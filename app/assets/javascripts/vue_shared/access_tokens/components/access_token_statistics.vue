@@ -6,6 +6,7 @@ import { useAccessTokens } from '../stores/access_tokens';
 import { slugify } from '../../../lib/utils/text_utility';
 
 export default {
+  name: 'AccessTokenStatistics',
   components: {
     GlButton,
     GlCard,

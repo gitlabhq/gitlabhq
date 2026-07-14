@@ -184,22 +184,6 @@ RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
         end
       end
 
-      context 'with Created date' do
-        before do
-          select_sort_option('Created date')
-        end
-
-        it 'lists resources from newest to oldest by default', :aggregate_failures do
-          expect(listed_resource_names).to eq(public_projects_with_components.reverse.map(&:name))
-        end
-
-        it 'lists resources from oldest to newest when direction is toggled', :aggregate_failures do
-          toggle_sort_direction
-
-          expect(listed_resource_names).to eq(public_projects_with_components.map(&:name))
-        end
-      end
-
       context 'with Released date' do
         before do
           select_sort_option('Released date')

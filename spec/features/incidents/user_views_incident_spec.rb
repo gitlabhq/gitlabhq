@@ -34,7 +34,9 @@ RSpec.describe "User views incident", feature_category: :incident_management do
         add_related_issue: incident.iid
       )
 
-      click_button 'Incident actions'
+      within_testid('issue-header') do
+        find_by_testid('desktop-dropdown').click
+      end
 
       expect(page).to have_link('New related item', href: expected_href)
       expect(page).to have_button('Create merge request')
@@ -46,7 +48,11 @@ RSpec.describe "User views incident", feature_category: :incident_management do
 
       context 'and not author' do
         it 'shows incident actions', :js do
-          click_button 'Incident actions'
+          expect(page).to have_header_with_correct_id_and_link(1, 'Description header', 'description-header')
+
+          within_testid('issue-header') do
+            find_by_testid('desktop-dropdown').click
+          end
 
           expect(page).to have_button 'Report abuse'
         end

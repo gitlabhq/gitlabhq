@@ -11,24 +11,8 @@ module Gitlab
       class CreateIssueHandler < BaseHandler
         include ReplyProcessing
 
-        HANDLER_REGEX        = /\A#{HANDLER_ACTION_BASE_REGEX}-(?<incoming_email_token>.+)-issue\z/
-        HANDLER_REGEX_LEGACY = /\A(?<project_path>[^\+]*)\+(?<incoming_email_token>.*)\z/
-
-        def initialize(mail, mail_key)
-          super(mail, mail_key)
-
-          if !mail_key&.include?('/') && (matched = HANDLER_REGEX.match(mail_key.to_s))
-            @project_slug         = matched[:project_slug]
-            @project_id           = matched[:project_id]&.to_i
-            @incoming_email_token = matched[:incoming_email_token]
-          elsif matched = HANDLER_REGEX_LEGACY.match(mail_key.to_s)
-            @project_path         = matched[:project_path]
-            @incoming_email_token = matched[:incoming_email_token]
-          end
-        end
-
-        def can_handle?
-          incoming_email_token && (project_id || can_handle_legacy_format?)
+        def self.gem_handler
+          :create_issue
         end
 
         def execute
@@ -79,10 +63,6 @@ module Gitlab
             },
             perform_spam_check: false
           ).execute
-        end
-
-        def can_handle_legacy_format?
-          project_path && incoming_email_token.exclude?('+') && mail_key.exclude?(Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX_LEGACY)
         end
       end
     end

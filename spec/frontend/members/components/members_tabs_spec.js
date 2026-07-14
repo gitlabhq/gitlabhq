@@ -4,6 +4,7 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { visitUrl } from '~/lib/utils/url_utility';
 import MembersApp from '~/members/components/app.vue';
 import MembersTabs from '~/members/components/members_tabs.vue';
 import {
@@ -38,6 +39,19 @@ describe('MembersTabs', () => {
             },
             filteredSearchBar: {
               searchParam: 'search',
+            },
+          },
+        },
+        [MEMBERS_TAB_TYPES.directMembers]: {
+          namespaced: true,
+          state: {
+            pagination: {
+              ...pagination,
+              totalItems,
+              paramName: 'direct_members_page',
+            },
+            filteredSearchBar: {
+              searchParam: 'search_direct_members',
             },
           },
         },
@@ -128,9 +142,10 @@ describe('MembersTabs', () => {
       const tabs = findTabs();
 
       expect(tabs[0].text()).toBe('Members  10');
-      expect(tabs[1].text()).toBe('Groups  10');
-      expect(tabs[2].text()).toBe('Pending invitations  10');
-      expect(tabs[3].text()).toBe('Access requests  10');
+      expect(tabs[1].text()).toBe('Direct members  10');
+      expect(tabs[2].text()).toBe('Groups  10');
+      expect(tabs[3].text()).toBe('Pending invitations  10');
+      expect(tabs[4].text()).toBe('Access requests  10');
       expect(findActiveTab().text()).toContain('Members');
     });
 
@@ -155,6 +170,7 @@ describe('MembersTabs', () => {
       await createComponent({ totalItems: 0 });
 
       expect(findTabByText('Members')).not.toBeUndefined();
+      expect(findTabByText('Direct members')).toBeUndefined();
       expect(findTabByText('Groups')).toBeUndefined();
       expect(findTabByText('Pending invitations')).toBeUndefined();
       expect(findTabByText('Access requests')).toBeUndefined();
@@ -192,6 +208,7 @@ describe('MembersTabs', () => {
       });
 
       expect(findTabByText('Members')).not.toBeUndefined();
+      expect(findTabByText('Direct members')).not.toBeUndefined();
       expect(findTabByText('Groups')).not.toBeUndefined();
       expect(findTabByText('Pending invitations')).toBeUndefined();
       expect(findTabByText('Access requests')).toBeUndefined();
@@ -217,6 +234,7 @@ describe('MembersTabs', () => {
   it.each`
     tab                 | testId                       | href
     ${'Members'}        | ${'user-tab-title'}          | ${'https://localhost/'}
+    ${'Direct members'} | ${'directMembers-tab-title'} | ${'https://localhost/?tab=direct_members&direct_members_page=1'}
     ${'Groups'}         | ${'group-tab-title'}         | ${'https://localhost/?tab=groups'}
     ${'Invite'}         | ${'invite-tab-title'}        | ${'https://localhost/?tab=invited'}
     ${'Access Request'} | ${'accessRequest-tab-title'} | ${'https://localhost/?tab=access_requests'}
@@ -228,9 +246,32 @@ describe('MembersTabs', () => {
     expect(tabTitleContainer.href).toBe(href);
   });
 
+  describe('when a search/filter param from another tab is present in the URL', () => {
+    beforeEach(() => {
+      setWindowLocation('?search=luba&search_groups=foo');
+    });
+
+    it.each`
+      tab                 | testId                       | href
+      ${'Members'}        | ${'user-tab-title'}          | ${'https://localhost/'}
+      ${'Direct members'} | ${'directMembers-tab-title'} | ${'https://localhost/?tab=direct_members&direct_members_page=1'}
+      ${'Groups'}         | ${'group-tab-title'}         | ${'https://localhost/?tab=groups'}
+    `(
+      'clears all tabs search/token params when switching to $tab tab',
+      async ({ testId, href }) => {
+        await createComponent();
+
+        const tabTitleContainer = wrapper.findByTestId(testId).element.parentElement;
+
+        expect(tabTitleContainer.href).toBe(href);
+      },
+    );
+  });
+
   describe.each`
     tab                 | testId
     ${'Members'}        | ${'user-tab-title'}
+    ${'Direct members'} | ${'directMembers-tab-title'}
     ${'Groups'}         | ${'group-tab-title'}
     ${'Invite'}         | ${'invite-tab-title'}
     ${'Access Request'} | ${'accessRequest-tab-title'}
@@ -249,6 +290,42 @@ describe('MembersTabs', () => {
     // This ensures we bypass the click listeners added by `GlTab` and that we trigger the redirect via the anchor tag directly.
     it('stops event propagation', () => {
       expect(mockEvent.stopPropagation).toHaveBeenCalled();
+    });
+  });
+
+  describe('Direct members tab page param', () => {
+    it('reloads with `direct_members_page=1` when landing on the tab without the page param', async () => {
+      setWindowLocation('?tab=direct_members');
+
+      await createComponent();
+
+      expect(visitUrl).toHaveBeenCalledWith(
+        'https://localhost/?tab=direct_members&direct_members_page=1',
+      );
+    });
+
+    it('does not reload when the page param is already present', async () => {
+      setWindowLocation('?tab=direct_members&direct_members_page=2');
+
+      await createComponent();
+
+      expect(visitUrl).not.toHaveBeenCalled();
+    });
+
+    it('does not reload when another tab is active', async () => {
+      setWindowLocation('?tab=groups');
+
+      await createComponent();
+
+      expect(visitUrl).not.toHaveBeenCalled();
+    });
+
+    it('does not reload on the default (Members) tab', async () => {
+      setWindowLocation('https://localhost/');
+
+      await createComponent();
+
+      expect(visitUrl).not.toHaveBeenCalled();
     });
   });
 });

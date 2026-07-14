@@ -9,6 +9,7 @@ import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.
 const trackingMixin = InternalEvents.mixin();
 
 export default {
+  name: 'WorkloadDetailsDrawer',
   components: {
     WorkloadDetails,
     GlDrawer,
@@ -21,6 +22,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['delete-pod', 'flux-reconcile', 'flux-resume', 'flux-suspend'],
   data() {
     return {
       selectedItem: {},

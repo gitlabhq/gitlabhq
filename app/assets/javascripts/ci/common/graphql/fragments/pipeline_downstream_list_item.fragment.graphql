@@ -1,0 +1,30 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+
+fragment PipelineDownstreamListItem on Pipeline {
+  id
+  downstream(first: 3) {
+    count
+    nodes {
+      id
+      iid
+      name
+      path
+      detailedStatus {
+        ...CiIcon
+        name
+        tooltip
+        label
+      }
+      project {
+        id
+        fullPath
+        name
+      }
+      sourceJob {
+        id
+        name
+        retried
+      }
+    }
+  }
+}

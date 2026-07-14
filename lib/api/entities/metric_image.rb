@@ -3,7 +3,7 @@
 module API
   module Entities
     class MetricImage < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 23 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 23 }
       expose :created_at, documentation: { type: 'DateTime', example: '2020-11-13T00:06:18.084Z' }
       expose :filename, documentation: { type: 'String', example: 'file.png' }
       expose :file_path, documentation: { type: 'String',

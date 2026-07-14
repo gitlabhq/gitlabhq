@@ -15,10 +15,15 @@ RSpec.describe Issues::ReferencedMergeRequestsService, feature_category: :team_p
     end
   end
 
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
-  let_it_be(:other_project, freeze: false) { create(:project, :public, :repository) }
-  let_it_be(:issue, freeze: false) { create(:issue, author: user, project: project) }
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
+  let_it_be_with_reload(:other_project) { create(:project, :public) }
+  let_it_be_with_reload(:issue) { create(:issue, author: user, project: project) }
 
   let_it_be(:closing_mr, freeze: false) { create_closing_mr(source_project: project) }
   let_it_be(:closing_mr_other_project, freeze: false) { create_closing_mr(source_project: other_project) }

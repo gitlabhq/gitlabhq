@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"path"
 	"strings"
@@ -22,7 +23,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitaly/v18/client"
 	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
-	"gitlab.com/gitlab-org/labkit/log"
+	"gitlab.com/gitlab-org/labkit/v2/log"
 )
 
 // GitalyTestServer is a test server implementation used for testing Gitaly-related functionality.
@@ -73,10 +74,12 @@ var (
 func init() {
 	var err error
 	if GitalyReceivePackResponseMock, err = os.ReadFile(path.Join(RootDir(), "testdata/receive-pack-fixture.txt")); err != nil {
-		log.WithError(err).Fatal("Unable to read pack response")
+		slog.Error("Unable to read pack response", log.Error(err))
+		os.Exit(1)
 	}
 	if GitalyUploadPackResponseMock, err = os.ReadFile(path.Join(RootDir(), "testdata/upload-pack-fixture.txt")); err != nil {
-		log.WithError(err).Fatal("Unable to read pack response")
+		slog.Error("Unable to read pack response", log.Error(err))
+		os.Exit(1)
 	}
 }
 

@@ -18,7 +18,7 @@ description: Configure granular permissions with specific abilities for fine-gra
 
 {{< history >}}
 
-- Custom admin roles [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `custom_admin_roles`. Disabled by default.
+- Custom admin roles [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346) in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `custom_admin_roles`. Disabled by default.
 - Custom admin roles [generally available](https://gitlab.com/groups/gitlab-org/-/epics/15957) in GitLab 18.3. Feature flag `custom_admin_roles` enabled by default.
 - Feature flag `custom_admin_roles` removed in GitLab 19.0.
 
@@ -53,6 +53,7 @@ You can create a [custom role](_index.md) by adding one or more custom permissio
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
 | Manage and assign compliance frameworks | Create, read, update, and delete compliance frameworks. Users with this permission can also assign a compliance framework label to a project, and set the default framework of a group. | [`admin_compliance_framework`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144183) | Group,<br> Project | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/411502) |
+| Read agent artifacts | Read GitLab Duo Agent Platform artifacts, including audit events and session metadata, that are exposed through the agent artifacts dashboard. | [`read_agent_artifacts`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237989) | Group,<br> Project | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/issues/601058) |
 | Read compliance dashboard | Read compliance capabilities including adherence, violations, and frameworks for groups and projects. | [`read_compliance_dashboard`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175066) | Group,<br> Project | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/465324) |
 
 ## Continuous delivery
@@ -89,6 +90,12 @@ You can create a [custom role](_index.md) by adding one or more custom permissio
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
 | Manage integrations | Create, read, update, and delete integrations with external applications. | [`admin_integrations`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154601) | Group,<br> Project | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/460522) |
+
+## Package registry
+
+| Permission | Description | API Attribute | Scope | Introduced |
+|:-----------|:------------|:--------------|:------|:-----------|
+| Delete packages | Delete packages and package files in the package registry. | [`destroy_package`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240943) | Group,<br> Project | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/592019) |
 
 ## Runner
 

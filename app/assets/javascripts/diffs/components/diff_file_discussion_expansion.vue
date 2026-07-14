@@ -19,6 +19,7 @@ export default {
       required: true,
     },
   },
+  emits: ['toggle'],
   computed: {
     avatars() {
       return this.discussions.reduce((acc, discussion) => {

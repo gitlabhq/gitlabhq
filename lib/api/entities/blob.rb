@@ -14,11 +14,10 @@ module API
       expose :id, documentation: { type: 'String', example: '2695effb5807a22ff3d138d593fd856244e155e7' }
       expose :ref, documentation: { type: 'String', example: 'main' }
       expose :startline, documentation: { type: 'Integer', example: 1 }
-      expose :project_id, documentation: { type: 'Integer', example: 1 }
+      expose :project_id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :group_id,
-        documentation: { type: 'Integer', example: 1 },
+        documentation: { type: 'Integer', format: 'int64', example: 1 },
         if: ->(object) { object.is_a?(Gitlab::Search::FoundWikiPage) }
-
       private
 
       def group_id

@@ -269,8 +269,8 @@ RSpec.describe Subscribable, 'Subscribable' do
       end
 
       it 'matches existing subscription type' do
-        expect(issue.subscribed?(user, project)).to eq(true)
-        expect(work_item.subscribed?(user, project)).to eq(true)
+        expect(issue.subscribed?(user, project)).to be(true)
+        expect(work_item.subscribed?(user, project)).to be(true)
       end
     end
   end

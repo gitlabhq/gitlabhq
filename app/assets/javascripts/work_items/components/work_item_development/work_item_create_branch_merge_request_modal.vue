@@ -6,6 +6,7 @@ import { createAlert } from '~/alert';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 
 import { visitUrl } from '~/lib/utils/url_utility';
+import { newProjectForkPath } from '~/lib/utils/path_helpers/project';
 import { createBranchMRApiPathHelper } from '~/work_items/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
@@ -20,6 +21,7 @@ import confidentialMergeRequestState from '~/confidential_merge_request/state';
 import ProjectFormGroup from '~/confidential_merge_request/components/project_form_group.vue';
 
 export default {
+  name: 'WorkItemCreateBranchMergeRequestModal',
   components: {
     GlForm,
     GlFormInputGroup,
@@ -78,6 +80,7 @@ export default {
       default: false,
     },
   },
+  emits: ['error', 'fetchedPermissions', 'hideModal'],
   data() {
     return {
       isLoading: false,
@@ -174,7 +177,7 @@ export default {
       };
     },
     newForkPath() {
-      return `/${this.workItemFullPath}/-/forks/new`;
+      return newProjectForkPath(this.workItemFullPath);
     },
   },
   watch: {

@@ -24,6 +24,13 @@ RSpec.describe Mutations::Pages::SetPagesUseUniqueDomain, feature_category: :pag
   describe 'granular token authorization' do
     let(:current_user) { owner }
 
+    before do
+      stub_pages_setting(enabled: true)
+      project.reload.project_setting.update!(
+        pages_unique_domain_enabled: false, pages_unique_domain: 'test-domain'
+      )
+    end
+
     it_behaves_like 'authorizing granular token permissions for GraphQL', :update_page do
       let(:user) { current_user }
       let(:boundary_object) { project }

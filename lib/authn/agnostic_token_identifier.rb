@@ -3,7 +3,6 @@
 module Authn
   class AgnosticTokenIdentifier
     NotFoundError = Class.new(StandardError)
-    UnsupportedTokenError = Class.new(StandardError)
     TOKEN_TYPES = [
       ::Authn::Tokens::DeployToken,
       ::Authn::Tokens::FeedToken,

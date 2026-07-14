@@ -10,6 +10,8 @@ module Types
         graphql_name 'WorkItemWidgetAwardEmoji'
         description 'Represents the emoji reactions widget'
 
+        authorize_granular_token skip_reason: :parent_authorizes
+
         implements ::Types::WorkItems::WidgetInterface
 
         field :award_emoji,

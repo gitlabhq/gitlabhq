@@ -98,3 +98,25 @@ Here are two examples of custom language implementations:
 
 1. [Svelte](https://gitlab.com/gitlab-org/gitlab/-/commit/0680b3a27b3973287ae6a973703faf9472535c47)
 1. [CODEOWNERS](https://gitlab.com/gitlab-org/gitlab/-/commit/825fd1e97df582b9f2654fc248c15e073d78d82b)
+
+## Color scheme preview thumbnails
+
+Each syntax highlighting color scheme in user preferences has a preview thumbnail in
+`app/assets/images/<scheme>-scheme-preview.png`. A single HTML template renders every thumbnail with
+GitLab Mono, so the thumbnails stay consistent across schemes and match each scheme's palette.
+
+After you add a scheme or change a theme's colors, regenerate the thumbnails:
+
+```shell
+bundle exec rake gitlab:color_schemes:preview_images
+```
+
+The task tokenizes a sample snippet with the Rouge lexer. It colors each token with the value that
+the token's class has in the scheme stylesheet
+(`app/assets/stylesheets/highlight/themes/<scheme>.scss`), so a new theme gets a matching preview
+from its color map. The task renders at 2x and downscales the result so the text edges stay smooth,
+then runs `pngquant` to keep each thumbnail small.
+
+The task needs a headless Chrome or Chromium binary. Set `CHROME_BIN` when the binary is not on
+`PATH`. Install `pngquant` to optimize the output. The task skips optimization with a warning when
+`pngquant` is missing.

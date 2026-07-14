@@ -95,7 +95,7 @@ module Integrations
         return unless url
 
         presenter = ::Gitlab::SlashCommands::Presenters::Access.new(url)
-        slack_api.post_ephemeral(channel: channel_id, user: slack_user_id, text: presenter.authorize[:text])
+        slack_api.post_ephemeral(channel: channel_id, user: slack_user_id, text: presenter.authorize_for_mention[:text])
       rescue *Gitlab::HTTP::HTTP_ERRORS => e
         Gitlab::ErrorTracking.track_exception(e, slack_workspace_id: slack_workspace_id)
       end

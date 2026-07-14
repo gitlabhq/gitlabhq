@@ -20,7 +20,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
   end
 
   before do
-    stub_feature_flags(profile_tabs_vue: false)
+    stub_feature_flags(vue_profile_activity_calendar: false)
     sign_in user
   end
 

@@ -7,7 +7,7 @@ module API
       expose :slug, documentation: { type: 'String', example: 'deploy' }
       expose :title, documentation: { type: 'String', example: 'deploy' }
 
-      expose :wiki_page_meta_id, documentation: { type: 'Integer', example: 123 } do |wiki_page|
+      expose :wiki_page_meta_id, documentation: { type: 'Integer', format: 'int64', example: 123 } do |wiki_page|
         wiki_page.find_or_create_meta.id
       end
     end

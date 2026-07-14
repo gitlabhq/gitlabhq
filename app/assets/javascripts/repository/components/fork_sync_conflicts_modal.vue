@@ -42,11 +42,6 @@ export default {
       required: false,
       default: '',
     },
-    sourceName: {
-      type: String,
-      required: false,
-      default: '',
-    },
     sourcePath: {
       type: String,
       required: false,
@@ -68,6 +63,7 @@ export default {
     },
   },
   methods: {
+    // eslint-disable-next-line vue/no-unused-properties -- invoked externally via this.$refs.modal.show() in fork_info.vue
     show() {
       this.$refs.modal.show();
     },

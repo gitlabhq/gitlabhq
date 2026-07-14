@@ -14,6 +14,7 @@ import {
 } from './constants';
 
 export default {
+  name: 'BlobHeaderDefaultActions',
   i18n: {
     BTN_DOWNLOAD_AS_MARKDOWN_TITLE,
     BTN_DOWNLOAD_AS_PDF_TITLE,

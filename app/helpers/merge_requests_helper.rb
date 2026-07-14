@@ -474,6 +474,7 @@ module MergeRequestsHelper
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   reviewStates: %w[UNREVIEWED REVIEW_STARTED UNAPPROVED],
+                  updatedAt: true,
                   perPage: 10
                 }
               },
@@ -561,7 +562,8 @@ module MergeRequestsHelper
                 helpContent: _('These merge requests need a review from you.'),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
-                  reviewStates: %w[UNAPPROVED UNREVIEWED REVIEW_STARTED]
+                  reviewStates: %w[UNAPPROVED UNREVIEWED REVIEW_STARTED],
+                  updatedAt: true
                 }
               },
               {

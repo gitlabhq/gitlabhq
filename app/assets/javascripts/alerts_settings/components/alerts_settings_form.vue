@@ -94,6 +94,14 @@ export default {
       default: tabIndices.configureDetails,
     },
   },
+  emits: [
+    'test-alert-payload',
+    'save-and-test-alert-payload',
+    'update-integration',
+    'create-new-integration',
+    'clear-current-integration',
+    'reset-token',
+  ],
   apollo: {
     currentIntegration: {
       query: getCurrentIntegrationQuery,

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Environments::UpdateService, feature_category: :environment_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be_with_reload(:environment) { create(:environment, project: project) }

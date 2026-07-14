@@ -6,19 +6,23 @@ module RuboCop
       # Checks that MCP tool services inherit from ApiService
       # instead of directly from BaseService.
       #
+      # The framework base classes live under Mcp::Tools::Base, so direct
+      # inheritance is written as `Base::BaseService` (or the fully-qualified
+      # `::Mcp::Tools::Base::BaseService`). Both forms are flagged.
+      #
       # @example
       #
       #   # bad
       #   module Mcp
       #     module Tools
-      #       class CustomTool < BaseService
+      #       class CustomTool < Base::BaseService
       #       end
       #     end
       #   end
       #
       #   module Mcp
       #     module Tools
-      #       class CustomTool < ::Mcp::Tools::BaseService
+      #       class CustomTool < ::Mcp::Tools::Base::BaseService
       #       end
       #     end
       #   end
@@ -26,14 +30,14 @@ module RuboCop
       #   # good
       #   module Mcp
       #     module Tools
-      #       class CustomTool < ApiService
+      #       class CustomTool < Base::ApiService
       #       end
       #     end
       #   end
       #
       #   module Mcp
       #     module Tools
-      #       class CustomTool < ::Mcp::Tools::ApiService
+      #       class CustomTool < ::Mcp::Tools::Base::ApiService
       #       end
       #     end
       #   end
@@ -44,14 +48,18 @@ module RuboCop
 
         ALLOWED_SUBCLASS = 'ApiService'
 
+        # Matches BaseService referenced by any constant path: bare `BaseService`,
+        # `Base::BaseService`, or `::Mcp::Tools::Base::BaseService`. The cop is
+        # scoped to app/services/mcp/tools/**/* via Include, so matching the leaf
+        # name is unambiguous.
         # @!method base_service(node)
-        def_node_matcher :base_service, '(const (const (const {nil? (cbase)} :Mcp) :Tools) :BaseService)'
+        def_node_matcher :base_service, '(const _ :BaseService)'
 
         # @!method base_service_definition(node)
         def_node_matcher :base_service_definition, <<~PATTERN
           (class
             (const _ $...)
-            {#base_service (const {nil? (cbase)} :BaseService)}
+            #base_service
             ...
           )
         PATTERN

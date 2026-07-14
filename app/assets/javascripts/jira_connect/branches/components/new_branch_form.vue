@@ -41,6 +41,7 @@ export default {
       default: '',
     },
   },
+  emits: ['success'],
   data() {
     return {
       selectedProject: null,

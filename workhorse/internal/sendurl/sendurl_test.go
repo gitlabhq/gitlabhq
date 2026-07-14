@@ -373,3 +373,110 @@ func TestRestrictForwardedResponseHeaders(t *testing.T) {
 
 	require.Equal(t, expectedHeaders, response.Header())
 }
+
+func TestSendURLWithJSONTransform(t *testing.T) {
+	const (
+		npmTarball    = "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
+		gitlabTarball = "https://gitlab.example.com/api/v4/projects/7/packages/npm/lodash/-/lodash-4.17.21.tgz"
+	)
+	transformConfig := map[string]interface{}{
+		"Key":  "tarball",
+		"From": "https://registry.npmjs.org/",
+		"To":   "https://gitlab.example.com/api/v4/projects/7/packages/npm/",
+	}
+	body := `{"dist":{"tarball":"` + npmTarball + `"}}`
+
+	tests := []struct {
+		name            string
+		status          int
+		transform       map[string]interface{}
+		wantContains    string
+		wantNotContains string
+	}{
+		{
+			name:            "rewrites the tarball on a 2xx JSON response",
+			status:          http.StatusOK,
+			transform:       transformConfig,
+			wantContains:    gitlabTarball,
+			wantNotContains: npmTarball,
+		},
+		{
+			name:         "does not transform a non-2xx response",
+			status:       http.StatusNotFound,
+			transform:    transformConfig,
+			wantContains: npmTarball,
+		},
+		{
+			name:         "passes the body through unchanged without a transform config",
+			status:       http.StatusOK,
+			transform:    nil,
+			wantContains: npmTarball,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.status)
+				_, _ = io.WriteString(w, body)
+			}))
+			defer upstream.Close()
+
+			sendData := map[string]interface{}{"URL": upstream.URL}
+			if tt.transform != nil {
+				sendData["TransformConfig"] = tt.transform
+			}
+			jsonParams, err := json.Marshal(sendData)
+			require.NoError(t, err)
+			data := base64.URLEncoding.EncodeToString(jsonParams)
+
+			response := httptest.NewRecorder()
+			request := httptest.NewRequest("GET", "/target", nil)
+			request = testhelper.RequestWithMetrics(t, request)
+
+			SendURL.Inject(response, request, data)
+			testhelper.AssertMetrics(t, request)
+
+			require.Equal(t, tt.status, response.Code)
+			assert.Contains(t, response.Body.String(), tt.wantContains)
+			if tt.wantNotContains != "" {
+				assert.NotContains(t, response.Body.String(), tt.wantNotContains)
+			}
+		})
+	}
+}
+
+func TestSendURLTransformMalformedUpstreamBody(t *testing.T) {
+	transformConfig := map[string]interface{}{
+		"Key":  "tarball",
+		"From": "https://registry.npmjs.org/",
+		"To":   "https://gdk.test:3443/api/v4/projects/7/packages/npm/",
+	}
+
+	// A 2xx upstream body that is not valid JSON. The 200 status is written
+	// before streaming begins, so the transform's mid-stream parse error can't
+	// be turned into an error status: the client receives 200 with a truncated
+	// body, and the failure is logged server-side.
+	upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = io.WriteString(w, `{"dist":{"tarball":`)
+	}))
+	defer upstream.Close()
+
+	sendData := map[string]interface{}{"URL": upstream.URL, "TransformConfig": transformConfig}
+	jsonParams, err := json.Marshal(sendData)
+	require.NoError(t, err)
+	data := base64.URLEncoding.EncodeToString(jsonParams)
+
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", "/target", nil)
+	request = testhelper.RequestWithMetrics(t, request)
+
+	SendURL.Inject(response, request, data)
+	testhelper.AssertMetrics(t, request)
+
+	require.Equal(t, http.StatusOK, response.Code)
+	assert.NotContains(t, response.Body.String(), "gdk.test")
+}

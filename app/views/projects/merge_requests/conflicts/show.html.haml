@@ -10,7 +10,10 @@
 .merge-request-details.issuable-details
   = render "projects/merge_requests/mr_box"
 
-#conflicts{ data: { conflicts_path: conflicts_project_merge_request_path(@merge_request.project, @merge_request, format: :json),
-    resolve_conflicts_path: resolve_conflicts_project_merge_request_path(@merge_request.project, @merge_request),
-    source_branch_path: project_tree_path(@merge_request.project, @merge_request.source_branch),
-    merge_request_path: project_merge_request_path(@merge_request.project, @merge_request) } }
+- if @gitaly_unavailable
+  = render 'shared/errors/gitaly_unavailable', reason: s_('MergeConflicts|Unable to load merge conflicts')
+- else
+  #conflicts{ data: { conflicts_path: conflicts_project_merge_request_path(@merge_request.project, @merge_request, format: :json),
+      resolve_conflicts_path: resolve_conflicts_project_merge_request_path(@merge_request.project, @merge_request),
+      source_branch_path: project_tree_path(@merge_request.project, @merge_request.source_branch),
+      merge_request_path: project_merge_request_path(@merge_request.project, @merge_request) } }

@@ -25,6 +25,7 @@ export default {
       required: false,
     },
   },
+  emits: ['deleted', 'toggledPaused'],
   data() {
     return {
       isDeleting: false,

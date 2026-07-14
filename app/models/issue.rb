@@ -233,6 +233,7 @@ class Issue < ApplicationRecord
   scope :preload_namespace, -> { preload(:namespace) }
   scope :preload_routables, -> { preload(project: [:route, { namespace: :route }]) }
   scope :preload_namespace_routables, -> { preload(namespace: [:route, { parent: :route }]) }
+  scope :preload_dates_source, -> { preload(:dates_source) }
   scope :preload_for_rss, -> { preload(:author, :assignees, :labels, :milestone, :project, { project: :namespace }) }
 
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }

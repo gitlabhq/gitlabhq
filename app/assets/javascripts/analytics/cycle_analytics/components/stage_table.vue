@@ -159,6 +159,7 @@ export default {
   },
   methods: {
     isMrLink(url = '') {
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Acceptable because we are checking the URL, not constructing a URL
       return url.includes('/merge_request');
     },
     itemId({ iid, projectPath, namespaceFullPath = '' }, separator = '#') {

@@ -3,6 +3,7 @@ import { GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'TodoItemTitleHiddenBySaml',
   components: {
     GlBadge,
   },

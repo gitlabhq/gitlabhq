@@ -4,6 +4,7 @@ module MergeRequests
   class CreatePipelineWorker
     include ApplicationWorker
     include PipelineQueue
+    include MergeRequests::PublishesPipelineCreationCompletedEvent
 
     PipelineCreationRetryError = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
 
@@ -68,6 +69,12 @@ module MergeRequests
 
       complete_pipeline_creation_request(result, pipeline_creation_request, merge_request) if defer_request_completion
 
+      publish_pipeline_creation_completed_event(
+        project: project,
+        merge_request_id: merge_request.id,
+        pipeline_id: result.payload&.id
+      )
+
       after_perform(merge_request)
     end
 
@@ -84,26 +91,7 @@ module MergeRequests
       GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request)
     end
 
-    def after_perform(merge_request)
-      publish_pipeline_creation_completed_event(merge_request)
-    end
-
-    # Publish AFTER `update_head_pipeline` has run in `perform`, so
-    # `merge_request.diff_head_pipeline` reflects whether a pipeline was
-    # persisted for the current diff head. Subscribers (e.g.
-    # ProcessAutoMergeFromEventWorker) use the `pipeline_id` field to
-    # distinguish "no pipeline created" from "pipeline created".
-    def publish_pipeline_creation_completed_event(merge_request)
-      return unless ::Feature.enabled?(:trigger_auto_merge_after_pipeline_creation, merge_request.project)
-
-      ::Gitlab::EventStore.publish(
-        ::MergeRequests::PipelineCreationCompletedEvent.new(data: {
-          merge_request_id: merge_request.id,
-          project_id: merge_request.project_id,
-          pipeline_id: merge_request.diff_head_pipeline&.id
-        }.compact)
-      )
-    end
+    def after_perform(merge_request); end
   end
 end
 

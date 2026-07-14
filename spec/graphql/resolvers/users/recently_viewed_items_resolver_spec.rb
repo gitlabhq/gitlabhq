@@ -19,7 +19,6 @@ RSpec.describe Resolvers::Users::RecentlyViewedItemsResolver, feature_category: 
     let(:wiki_service) { instance_double(Gitlab::Search::RecentWikiPages) }
 
     before do
-      stub_feature_flags(work_items_autocomplete: true)
       allow(Gitlab::Search::RecentWorkItems).to receive(:new).with(user: user).and_return(work_item_service)
       allow(Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user).and_return(mr_service)
       allow(Gitlab::Search::RecentWikiPages).to receive(:new).with(user: user).and_return(wiki_service)
@@ -162,27 +161,6 @@ RSpec.describe Resolvers::Users::RecentlyViewedItemsResolver, feature_category: 
 
       # Unknown item type should be filtered out (returns false in else clause)
       expect(results).to be_empty
-    end
-
-    context 'when work_items_autocomplete is disabled' do
-      let(:issue_service) { instance_double(Gitlab::Search::RecentIssues) }
-
-      before do
-        stub_feature_flags(work_items_autocomplete: false)
-        allow(Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(issue_service)
-        allow(Ability).to receive(:allowed?).with(user, :read_issue, anything).and_return(true)
-        allow(Ability).to receive(:allowed?).with(user, :read_merge_request, anything).and_return(true)
-        allow(Ability).to receive(:allowed?).with(user, :read_wiki, anything).and_return(true)
-        allow(issue_service).to receive(:latest_with_timestamps).and_return({})
-        allow(mr_service).to receive(:latest_with_timestamps).and_return({})
-        allow(wiki_service).to receive(:latest_with_timestamps).and_return({})
-      end
-
-      it 'uses RecentIssues instead of RecentWorkItems', :aggregate_failures do
-        expect(Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(issue_service)
-        expect(Gitlab::Search::RecentWorkItems).not_to receive(:new)
-        resolve_recent_items(current_user: user)
-      end
     end
   end
 

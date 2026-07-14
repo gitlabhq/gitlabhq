@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
   let(:gitaly_version) { "7aa06a578d76bdc294ee8e9acb4f063e7d9f1d5f" }
   let(:kas_version) { "7aa06a578d76bdc294ee8e9acb4f063e7d9f1d5f" }
   let(:shell_version) { "14.0.5" }
+  let(:openbao_version) { "v2.5.5-gitlab2" }
   let(:image_tags) { {} }
 
   let(:env) do
@@ -28,7 +29,8 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
       :@workhorse_version,
       :@gitlab_shell_version,
       :@sidekiq_version,
-      :@registry_version
+      :@registry_version,
+      :@openbao_version
     ]
   end
 
@@ -38,6 +40,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
     allow(File).to receive(:read).with(File.join(ci_project_dir, "GITALY_SERVER_VERSION")).and_return(gitaly_version)
     allow(File).to receive(:read).with(File.join(ci_project_dir, "GITLAB_SHELL_VERSION")).and_return(shell_version)
     allow(File).to receive(:read).with(File.join(ci_project_dir, "GITLAB_KAS_VERSION")).and_return(kas_version)
+    allow(File).to receive(:read).with(File.join(ci_project_dir, "GITLAB_OPENBAO_VERSION")).and_return(openbao_version)
   end
 
   around do |example|
@@ -99,7 +102,8 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
       "gitlab.kas.image.repository" => "#{image_repository}/gitlab-kas",
       "gitlab.kas.image.tag" => kas_version,
       "gitlab.registry.image.repository" => "#{image_repository}/gitlab-container-registry",
-      "gitlab.registry.image.tag" => ci_commit_sha
+      "gitlab.registry.image.tag" => ci_commit_sha,
+      "openbao.image.tag" => openbao_version
     })
   end
 

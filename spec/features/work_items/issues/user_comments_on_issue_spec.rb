@@ -94,8 +94,8 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
 
         click_button("Save comment")
 
-        expect(page).not_to have_css('.md-preview-holder')
         expect(page).to have_text('+1 Awesome!')
+        expect(page).not_to have_css('.md-preview-holder')
       end
     end
   end

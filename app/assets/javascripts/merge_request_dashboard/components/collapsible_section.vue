@@ -70,6 +70,7 @@ export default {
       default: false,
     },
   },
+  emits: ['clear-new'],
   data() {
     return {
       open: true,

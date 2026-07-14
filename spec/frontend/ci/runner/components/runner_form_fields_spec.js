@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlFormGroup, GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
 import {
@@ -7,6 +7,7 @@ import {
   ACCESS_LEVEL_REF_PROTECTED,
   PROJECT_TYPE,
 } from '~/ci/runner/constants';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 const mockDescription = 'My description';
 const mockNewDescription = 'My new description';
@@ -18,6 +19,10 @@ describe('RunnerFormFields', () => {
 
   const findInputByLabel = (label) => wrapper.findByLabelText(label);
   const findInput = (name) => wrapper.find(`input[name="${name}"]`);
+  const findMaxTimeoutFormGroup = () =>
+    wrapper
+      .findAllComponents(GlFormGroup)
+      .wrappers.find((group) => group.find('#runner-max-timeout').exists());
 
   const expectRendersFields = () => {
     expect(wrapper.text()).toContain('Tags');
@@ -168,5 +173,20 @@ describe('RunnerFormFields', () => {
         runUntagged: false,
       },
     ]);
+  });
+
+  describe('maximum job timeout field', () => {
+    it('links to the job timeout documentation in a new tab', () => {
+      createComponent();
+
+      const link = findMaxTimeoutFormGroup().findComponent(GlLink);
+
+      expect(link.attributes('href')).toBe(
+        helpPagePath('ci/pipelines/settings', {
+          anchor: 'set-a-limit-for-how-long-jobs-can-run',
+        }),
+      );
+      expect(link.attributes('target')).toBe('_blank');
+    });
   });
 });

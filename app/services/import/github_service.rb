@@ -60,7 +60,7 @@ module Import
     end
 
     def target_namespace
-      @target_namespace ||= Namespace.find_by_full_path(target_namespace_path)
+      @target_namespace ||= target_namespaces.find_by_full_path(target_namespace_path)
     end
 
     def extra_project_attrs
@@ -87,6 +87,12 @@ module Import
     end
 
     private
+
+    def target_namespaces
+      return Namespace unless params[:organization_id].present?
+
+      Namespace.in_organization(params[:organization_id])
+    end
 
     def validate_access_token
       begin

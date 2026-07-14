@@ -80,6 +80,7 @@ module ActiveContext
 
     def log_indexing_start(set_key, refs_count, first_score, last_score)
       logger.info(
+        'class_name' => self.class.name,
         'queue' => queue,
         'message' => 'bulk_indexing_start',
         'meta.indexing.redis_set' => set_key,
@@ -91,7 +92,7 @@ module ActiveContext
 
     def log_indexer_flushed(duration_s)
       logger.info(
-        'class' => self.class.name,
+        'class_name' => self.class.name,
         'message' => 'bulk_indexer_flushed',
         'meta.indexing.flushing_duration_s' => duration_s
       )
@@ -99,7 +100,7 @@ module ActiveContext
 
     def log_indexing_end(set_key, count, first_score, last_score, failures_count, retryable_count, start_time)
       logger.info(
-        'class' => self.class.name,
+        'class_name' => self.class.name,
         'message' => 'bulk_indexing_end',
         'meta.indexing.redis_set' => set_key,
         'meta.indexing.refs_count' => count,

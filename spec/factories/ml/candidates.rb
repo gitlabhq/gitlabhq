@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryBot.define do
   factory :ml_candidates, class: '::Ml::Candidate' do
     project { association :project }

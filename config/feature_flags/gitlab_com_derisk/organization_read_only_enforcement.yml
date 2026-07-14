@@ -1,0 +1,10 @@
+---
+name: organization_read_only_enforcement
+description: Gates write-blocking enforcement for organizations in read-only mode (controllers, REST API, GraphQL mutations, git push)
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/603366
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241161
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/603377
+milestone: '19.2'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

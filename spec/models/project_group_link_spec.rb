@@ -67,13 +67,13 @@ RSpec.describe ProjectGroupLink, feature_category: :groups_and_projects do
     it 'returns true for links with OWNER access' do
       link = create(:project_group_link, :owner)
 
-      expect(link.owner_access?).to eq(true)
+      expect(link.owner_access?).to be(true)
     end
 
     it 'returns false for links without OWNER access' do
       link = create(:project_group_link, :guest)
 
-      expect(link.owner_access?).to eq(false)
+      expect(link.owner_access?).to be(false)
     end
   end
 

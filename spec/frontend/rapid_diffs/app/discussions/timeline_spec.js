@@ -33,7 +33,6 @@ describe('CommitTimeline', () => {
 
   const defaultProvide = {
     userPermissions: { can_create_note: true },
-    endpoints: { discussions: '/api/discussions' },
   };
 
   const findDiffDiscussions = () => wrapper.findComponent(DiffDiscussions);

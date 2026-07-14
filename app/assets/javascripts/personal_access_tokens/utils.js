@@ -10,9 +10,23 @@ import {
   OPERATORS_IS,
   FILTERED_SEARCH_TERM,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import { SEARCH, FILTER_OPTIONS, SORT_OPTIONS, DEFAULT_FILTER, DEFAULT_SORT } from './constants';
+import {
+  SEARCH,
+  FILTER_OPTIONS,
+  SORT_OPTIONS,
+  DEFAULT_FILTER,
+  DEFAULT_SORT,
+  ACCESS_SCOPE_KEYS,
+} from './constants';
 
 const emptyDateField = __('Never');
+
+/**
+ * Builds an empty permissions object keyed by access scope (namespace, user, instance),
+ * with each scope initialized to an empty array.
+ * @returns {Object} e.g. { namespace: [], user: [], instance: [] }
+ */
+export const emptyByScope = () => Object.fromEntries(ACCESS_SCOPE_KEYS.map((key) => [key, []]));
 
 /**
  * Formats a timestamp as a localized date string

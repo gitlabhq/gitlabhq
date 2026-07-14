@@ -1,8 +1,10 @@
 import { GlModal, GlForm, GlFormCheckbox, GlSprintf } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
 import { createWrapper } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
@@ -11,13 +13,16 @@ import BranchesDropdown from '~/projects/commit/components/branches_dropdown.vue
 import CommitFormModal from '~/projects/commit/components/form_modal.vue';
 import ProjectsDropdown from '~/projects/commit/components/projects_dropdown.vue';
 import eventHub from '~/projects/commit/event_hub';
-import createStore from '~/projects/commit/store';
+import { useCherryPickCommit } from '~/projects/commit/store/cherry_pick_commit';
 import mockData from '../mock_data';
 
 jest.mock('~/api');
 
+Vue.use(PiniaVuePlugin);
+
 describe('CommitFormModal', () => {
   let wrapper;
+  let pinia;
   let store;
   let axiosMock;
 
@@ -27,13 +32,17 @@ describe('CommitFormModal', () => {
     provide = {},
     propsData = {},
   } = {}) => {
-    store = createStore({ ...mockData.mockModal, ...state });
+    pinia = createTestingPinia({ stubActions: false });
+    store = useCherryPickCommit();
+    store.$patch({ ...mockData.mockModal, ...state });
+
     wrapper = method(CommitFormModal, {
       provide: {
+        modalStore: store,
         ...provide,
       },
       propsData: { ...mockData.modalPropsData, ...propsData },
-      store,
+      pinia,
       attrs: {
         static: true,
         visible: true,
@@ -84,13 +93,11 @@ describe('CommitFormModal', () => {
 
     it('Clears the modal state once modal is hidden', () => {
       createComponent();
-      jest.spyOn(store, 'dispatch').mockImplementation();
       findCheckBox().vm.$emit('input', false);
 
       findModal().vm.$emit('hidden');
 
-      expect(store.dispatch).toHaveBeenCalledWith('clearModal');
-      expect(store.dispatch).toHaveBeenCalledWith('setSelectedBranch', '');
+      expect(store.clearModal).toHaveBeenCalled();
       expect(findCheckBox().attributes('checked')).toBe('true');
     });
 

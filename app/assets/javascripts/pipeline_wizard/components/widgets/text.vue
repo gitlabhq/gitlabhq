@@ -66,6 +66,7 @@ export default {
       default: false,
     },
   },
+  emits: ['input', 'update:valid'],
   data() {
     return {
       touched: false,

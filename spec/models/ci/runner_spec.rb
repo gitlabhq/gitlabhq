@@ -32,6 +32,131 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
     it { is_expected.to have_many(:tags).class_name('Ci::Tag') }
   end
 
+  describe 'partition pruning' do
+    # `ci_runners` and `ci_runner_machines` are LIST-partitioned by `runner_type`.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/594861.
+
+    let_it_be(:pp_group) { create(:group) }
+    let_it_be(:pp_project) { create(:project, group: pp_group) }
+    let_it_be(:pp_group_runner) { create(:ci_runner, :group, groups: [pp_group]) }
+    let_it_be(:pp_project_runner) { create(:ci_runner, :project, projects: [pp_project]) }
+
+    # Strips quoting so join-correlation assertions don't couple to ActiveRecord's
+    # exact quoting, which has changed across Rails upgrades.
+    def unquoted_sql(relation)
+      relation.to_sql.delete('"')
+    end
+
+    describe '.belonging_to_project' do
+      subject(:relation) { described_class.belonging_to_project(pp_project.id) }
+
+      context 'when the feature flag is enabled' do
+        before do
+          stub_feature_flags(ci_runner_partition_pruning: true)
+        end
+
+        it 'filters by the project runner_type so Postgres can prune partitions' do
+          expect(relation.where_values_hash).to include('runner_type' => described_class.runner_types[:project_type])
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_runner_partition_pruning: false)
+        end
+
+        it 'does not filter by runner_type' do
+          expect(relation.where_values_hash).not_to have_key('runner_type')
+        end
+      end
+    end
+
+    describe '.belonging_to_group' do
+      subject(:relation) { described_class.belonging_to_group(pp_group.id) }
+
+      context 'when the feature flag is enabled' do
+        before do
+          stub_feature_flags(ci_runner_partition_pruning: true)
+        end
+
+        it 'filters by the group runner_type so Postgres can prune partitions' do
+          expect(relation.where_values_hash).to include('runner_type' => described_class.runner_types[:group_type])
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_runner_partition_pruning: false)
+        end
+
+        it 'does not filter by runner_type' do
+          expect(relation.where_values_hash).not_to have_key('runner_type')
+        end
+      end
+    end
+
+    # The runner_type filter is logically a no-op: ci_runner_projects only ever
+    # references project runners and ci_runner_namespaces only group runners.
+    # Enabling the flag must therefore not change which runners are returned.
+    describe 'result-set equivalence with and without the flag' do
+      let_it_be(:other_project) { create(:project, group: pp_group) }
+      let_it_be(:other_project_runner) { create(:ci_runner, :project, projects: [other_project]) }
+      let_it_be(:other_group_runner) { create(:ci_runner, :group, groups: [pp_group]) }
+
+      shared_examples 'returns the same runners regardless of the flag' do
+        it 'returns the same runners with the flag enabled and disabled' do
+          stub_feature_flags(ci_runner_partition_pruning: false)
+          without_flag = relation.pluck(:id)
+
+          stub_feature_flags(ci_runner_partition_pruning: true)
+          with_flag = relation.pluck(:id)
+
+          expect(with_flag).to match_array(without_flag)
+        end
+      end
+
+      context 'for .belonging_to_project' do
+        let(:relation) { described_class.belonging_to_project(pp_project.id) }
+
+        it_behaves_like 'returns the same runners regardless of the flag'
+      end
+
+      context 'for .belonging_to_group' do
+        let(:relation) { described_class.belonging_to_group(pp_group.id) }
+
+        it_behaves_like 'returns the same runners regardless of the flag'
+      end
+    end
+
+    # `has_many :runner_managers` declares a composite foreign key
+    # (runner_id, runner_type). This correlates the bare association reads and
+    # joins(:runner_managers) on runner_type, so the join target
+    # (ci_runner_machines, also partitioned by runner_type) can be pruned.
+    describe 'runner_managers composite foreign key' do
+      let(:join_correlation) do
+        'INNER JOIN ci_runner_machines ON ci_runner_machines.runner_id = ci_runners.id ' \
+          'AND ci_runner_machines.runner_type = ci_runners.runner_type'
+      end
+
+      it 'correlates joins(:runner_managers) on runner_id and runner_type' do
+        expect(unquoted_sql(described_class.joins(:runner_managers))).to include(join_correlation)
+      end
+
+      it 'filters the runner_managers association by runner_type' do
+        expect(pp_project_runner.runner_managers.where_values_hash)
+          .to include('runner_type' => pp_project_runner.runner_type)
+      end
+
+      it 'correlates the .with_version_prefix join on runner_type' do
+        expect(unquoted_sql(described_class.with_version_prefix('15.'))).to include(join_correlation)
+      end
+
+      it 'correlates the .with_upgrade_status join on runner_type' do
+        expect(unquoted_sql(described_class.send(:with_upgrade_status, :available))).to include(join_correlation)
+      end
+    end
+  end
+
   it_behaves_like 'having unique enum values'
 
   describe 'loose foreign keys' do
@@ -1510,37 +1635,52 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
     describe '.belonging_to_group_or_project_descendants' do
       subject(:relation) { described_class.belonging_to_group_or_project_descendants(scope.id) }
 
-      context 'with scope set to top_level_group' do
-        let(:scope) { top_level_group }
+      shared_examples 'returns descendants runners' do
+        context 'with scope set to top_level_group' do
+          let(:scope) { top_level_group }
 
-        it 'returns the expected group and project runners without duplicates', :aggregate_failures do
-          expect(relation).to contain_exactly(
-            top_level_group_runner,
-            top_level_group_project_runner,
-            child_group_runner,
-            child_group_project_runner,
-            child_group2_runner,
-            shared_top_level_group_project_runner
-          )
+          it 'returns the expected group and project runners without duplicates', :aggregate_failures do
+            expect(relation).to contain_exactly(
+              top_level_group_runner,
+              top_level_group_project_runner,
+              child_group_runner,
+              child_group_project_runner,
+              child_group2_runner,
+              shared_top_level_group_project_runner
+            )
 
-          # Ensure no duplicates are returned
-          expect(relation.distinct).to match_array(relation)
+            # Ensure no duplicates are returned
+            expect(relation.distinct).to match_array(relation)
+          end
+        end
+
+        context 'with scope set to child_group' do
+          let(:scope) { child_group }
+
+          it 'returns the expected group and project runners without duplicates', :aggregate_failures do
+            expect(relation).to contain_exactly(
+              child_group_runner,
+              child_group_project_runner,
+              shared_top_level_group_project_runner
+            )
+
+            # Ensure no duplicates are returned
+            expect(relation.distinct).to match_array(relation)
+          end
         end
       end
 
-      context 'with scope set to child_group' do
-        let(:scope) { child_group }
+      context 'when the ci_runners_count_traversal_ids_index feature flag is enabled' do
+        # enabled by default in the test environment
+        it_behaves_like 'returns descendants runners'
+      end
 
-        it 'returns the expected group and project runners without duplicates', :aggregate_failures do
-          expect(relation).to contain_exactly(
-            child_group_runner,
-            child_group_project_runner,
-            shared_top_level_group_project_runner
-          )
-
-          # Ensure no duplicates are returned
-          expect(relation.distinct).to match_array(relation)
+      context 'when the ci_runners_count_traversal_ids_index feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_runners_count_traversal_ids_index: false)
         end
+
+        it_behaves_like 'returns descendants runners'
       end
     end
 
@@ -2084,6 +2224,47 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
           .from([]).to([runner.organization_id])
       end
     end
+
+    # `ci_runner_machines` is LIST-partitioned by `runner_type`. Adding
+    # `runner_type` to the find conditions lets PostgreSQL prune partitions and
+    # use the unique (runner_id, runner_type, system_xid) index on this hot path.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/594861.
+    context 'with partition pruning' do
+      let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      it 'includes runner_type in the find query' do
+        recorder = ActiveRecord::QueryRecorder.new { ensure_manager }
+
+        select = recorder.log.find { |q| q.match?(/SELECT.+FROM "ci_runner_machines"/) }
+        expect(select).not_to be_nil, 'expected a SELECT query against ci_runner_machines to be recorded'
+        expect(select).to include('"ci_runner_machines"."runner_type"')
+      end
+
+      it 'creates exactly one runner manager for the system_xid' do
+        expect { ensure_manager }
+          .to change { runner.runner_managers.with_system_xid(system_xid).count }.from(0).to(1)
+      end
+
+      it 'is idempotent' do
+        runner.ensure_manager(system_xid)
+
+        expect { ensure_manager }.not_to change { runner.runner_managers.with_system_xid(system_xid).count }
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_runner_partition_pruning: false)
+        end
+
+        it 'does not include runner_type in the find query' do
+          recorder = ActiveRecord::QueryRecorder.new { ensure_manager }
+
+          select = recorder.log.find { |q| q.match?(/SELECT.+FROM "ci_runner_machines"/) }
+          expect(select).not_to be_nil, 'expected a SELECT query against ci_runner_machines to be recorded'
+          expect(select).not_to include('runner_type')
+        end
+      end
+    end
   end
 
   describe '#ensure_token' do
@@ -2128,6 +2309,72 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
         it 'does not change the existing token' do
           expect { runner.ensure_token }.not_to change { runner.token }.from(token)
         end
+      end
+    end
+  end
+
+  describe '#ensure_uuid' do
+    context 'when runner has no uuid' do
+      let(:runner) { build(:ci_runner) }
+
+      it 'generates a uuid' do
+        expect { runner.ensure_uuid }.to change { runner.read_attribute(:uuid) }.from(nil)
+      end
+    end
+
+    context 'when runner already has a uuid' do
+      let(:existing_uuid) { '01966aa0-f383-7a6b-b694-cd4f2f96cca1' }
+      let(:runner) { build(:ci_runner, uuid: existing_uuid) }
+
+      it 'does not change the existing uuid' do
+        expect { runner.ensure_uuid }.not_to change { runner.read_attribute(:uuid) }.from(existing_uuid)
+      end
+    end
+
+    context 'when runner is saved' do
+      it 'persists a uuid automatically' do
+        expect(create(:ci_runner).read_attribute(:uuid)).to be_present
+      end
+    end
+  end
+
+  describe '#uuid' do
+    context 'when runner has no uuid' do
+      let(:runner) { create(:ci_runner).tap { |r| r.update_column(:uuid, nil) } }
+
+      it 'generates and persists a uuid on read' do
+        uuid = runner.uuid
+
+        expect(uuid).to be_present
+        expect(runner.reload.read_attribute(:uuid)).to eq(uuid)
+      end
+    end
+
+    context 'when runner already has a uuid' do
+      let(:existing_uuid) { '01966aa0-f383-7a6b-b694-cd4f2f96cca1' }
+      let(:runner) { create(:ci_runner, uuid: existing_uuid) }
+
+      it 'returns the existing uuid without changing it' do
+        expect(runner.uuid).to eq(existing_uuid)
+      end
+    end
+
+    context 'when uuid is populated concurrently' do
+      let(:bbm_uuid) { '01966aa0-f383-7a6b-b694-cd4f2f96cca1' }
+
+      it 'adopts the persisted uuid instead of overwriting it' do
+        runner = create(:ci_runner)
+        runner.update_column(:uuid, nil)
+
+        # Simulate BBM writing the uuid between the in-memory nil check
+        # and the conditional UPDATE issued by ensure_uuid!.
+        allow(Gitlab::Utils).to receive(:uuid_v7).and_wrap_original do |original|
+          described_class.where(id: runner.id).update_all(uuid: bbm_uuid)
+          original.call
+        end
+
+        expect(runner.uuid).to eq(bbm_uuid)
+        expect(runner.reload.uuid).to eq(bbm_uuid)
       end
     end
   end

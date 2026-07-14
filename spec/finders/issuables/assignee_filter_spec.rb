@@ -32,6 +32,22 @@ RSpec.describe Issuables::AssigneeFilter, feature_category: :team_planning do
       end
     end
 
+    context 'when assignee_id is "ME"' do
+      let(:params) { { assignee_id: 'ME' } }
+
+      it 'returns issues assigned to the current user' do
+        expect(filter.filter(issues)).to contain_exactly(issue_assigned_to_user)
+      end
+
+      context 'when current_user is nil' do
+        subject(:filter) { described_class.new(params: params, current_user: nil) }
+
+        it 'returns no issues' do
+          expect(filter.filter(issues)).to be_empty
+        end
+      end
+    end
+
     # Group handle scenarios: assignee_username=@group triggers OR-semantics expansion
     context 'with a group handle assignee_username' do
       let_it_be(:group, freeze: false) { create(:group, :private) }
@@ -82,6 +98,18 @@ RSpec.describe Issuables::AssigneeFilter, feature_category: :team_planning do
 
       it 'returns true' do
         expect(filter.includes_user?(user)).to be(true)
+      end
+    end
+
+    context 'when filtering via FILTER_ME' do
+      let(:params) { { assignee_id: Issuables::BaseFilter::FILTER_ME } }
+
+      it 'returns true for the current user' do
+        expect(filter.includes_user?(user)).to be true
+      end
+
+      it 'returns false for a different user' do
+        expect(filter.includes_user?(other_user)).to be false
       end
     end
 

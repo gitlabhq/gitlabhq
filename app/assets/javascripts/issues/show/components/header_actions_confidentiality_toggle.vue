@@ -8,6 +8,7 @@ import { confidentialityQueries } from '~/sidebar/queries/constants';
 import { issuableTypeText } from '~/issues/constants';
 
 export default {
+  name: 'HeaderActionsConfidentialityToggle',
   i18n: {
     enableConfidentiality: s__('WorkItem|Turn on confidentiality'),
     confidentialityEnabled: s__('WorkItem|Confidentiality turned on.'),
@@ -18,6 +19,7 @@ export default {
     GlDisclosureDropdownItem,
   },
   inject: ['iid', 'issueType', 'projectPath', 'fullPath'],
+  emits: ['closeActionsDropdown'],
   data() {
     return {
       confidential: false,

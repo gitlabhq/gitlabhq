@@ -30,6 +30,7 @@ export default {
       default: DEFAULT_PLATFORM,
     },
   },
+  emits: ['close'],
   data() {
     return {
       selectedArchitecture: null,

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
@@ -131,6 +132,19 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
 
       let(:url) { "/groups/#{container.id}/-/packages/debian/pool/#{package.distribution.codename}/#{project.id}/#{letter}/#{package.name}/#{package.version}/#{file_name}" }
       let(:file_name) { params[:file_name] }
+
+      it_behaves_like 'authorizing granular token permissions', :download_debian_package do
+        let(:container) { private_container }
+        let(:boundary_object) { private_container }
+        let(:visibility_level) { :private }
+        let(:file_name) { 'libsample0_1.2.3~alpha2_amd64.deb' }
+        let(:headers) { basic_auth_header(user.username, pat.token) }
+        let(:request) { get api(url), headers: headers, params: api_params }
+
+        before do
+          private_container.add_developer(user)
+        end
+      end
 
       where(:file_name, :success_body) do
         'sample_1.2.3~alpha2.tar.xz'          | /^.7zXZ/

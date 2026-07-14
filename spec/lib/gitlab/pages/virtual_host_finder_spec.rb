@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
-  let_it_be(:group, freeze: false) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, namespace: group) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, namespace: group) }
 
   before do
     stub_pages_setting(host: 'example.com')
@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
   end
 
   context 'when host is a pages custom domain host' do
-    let_it_be(:pages_domain, freeze: false) { create(:pages_domain, project: project) }
+    let_it_be(:pages_domain) { create(:pages_domain, project: project) }
 
     subject(:virtual_domain) { described_class.new(pages_domain.domain).execute }
 
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
       end
 
       context 'when the domain is disabled' do
-        let_it_be(:pages_domain, freeze: false) { create(:pages_domain, :disabled, project: project) }
+        let_it_be(:pages_domain) { create(:pages_domain, :disabled, project: project) }
 
         it 'does not return the virtual domain' do
           expect(virtual_domain).to be_nil

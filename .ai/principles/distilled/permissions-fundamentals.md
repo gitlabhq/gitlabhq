@@ -1,6 +1,6 @@
 ---
-source_checksum: 397e954034ef7a8e
-distilled_at_sha: 38eec71eeabc7ee15c3c39204fae8e675609f903
+source_checksum: a9ee8fe00bd4e2b4
+distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -22,6 +22,7 @@ distilled_at_sha: 38eec71eeabc7ee15c3c39204fae8e675609f903
 ### Permission Naming Conventions
 
 - Introduce a new permission only when no existing permission covers the same subject and action; reuse existing permissions wherever possible.
+- Ensure every new permission enables the principle of least privilege: grant only the access required for a single, well-defined action on a single resource; split permissions that would bundle more than one action or unrelated capabilities. If you cannot scope the permission this narrowly, reconsider the design before introducing it.
 - Follow the naming pattern `action_resource(_subresource)` for all permissions (both assignable and raw).
 - Use only the preferred actions — `create`, `read`, `update`, `delete` — unless a documented exception applies; obtain Authorization team approval for any action outside this set.
 - DO NOT introduce disallowed actions: `admin`, `change`, `configure`, `destroy`, `edit`, `list`, `manage`, `modify`, `set`, `view`, or `write`.
@@ -39,6 +40,7 @@ distilled_at_sha: 38eec71eeabc7ee15c3c39204fae8e675609f903
 - Create a definition file for every private permission under `config/authz/permissions/<resource>/_<action>_<qualifier>.yml`.
 - Use qualifiers that correspond to a real attribute or relationship on the resource (e.g., `confidential`, `authored`, `assigned`); DO NOT use qualifiers that describe the actor.
 - Prefer past-participle or adjective forms for qualifiers that read naturally as a description of the resource; introduce qualifiers only when the same action on the same resource requires different access levels depending on the resource's state.
+- Declare a `conditionally_enables` field in every private permission YAML, listing the broader public permission(s) that imply it; use `null` when no public permission supersedes the private one (the validation task fails if this field is omitted).
 
 ### Role Definition YAML Files
 
@@ -79,6 +81,7 @@ distilled_at_sha: 38eec71eeabc7ee15c3c39204fae8e675609f903
 - Use `where` table syntax to test each role explicitly, and include every role in the table — DO NOT omit roles expected to be disallowed.
 - Define the subject explicitly inside each `describe` block using `let_it_be`; DO NOT rely on a subject defined at a higher scope.
 - Use descriptively named fixtures that reflect the visibility or state under test (e.g., `private_project`, `archived_project`) rather than a generic `project`.
+- Test both admin mode enabled (`:enable_admin_mode`) and admin mode disabled contexts for permissions that apply to admins.
 - Test both feature flag disabled and licensed feature disabled contexts for every permission that is gated by either.
 
 ## Authoritative sources

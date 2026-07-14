@@ -1,0 +1,9 @@
+---
+name: read_cd_rollout
+description: Grants the ability to read continuous deployment rollouts
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_cd_rollout

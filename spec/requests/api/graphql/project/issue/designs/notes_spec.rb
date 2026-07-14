@@ -28,7 +28,7 @@ RSpec.describe 'Getting designs related to an issue', feature_category: :design_
     let(:discussion_factory) { :diff_note_on_design }
     let(:path_to_noteable) { [:issue, :design_collection, :designs, :nodes, 0] }
 
-    before do
+    before_all do
       project.add_developer(current_user)
     end
 

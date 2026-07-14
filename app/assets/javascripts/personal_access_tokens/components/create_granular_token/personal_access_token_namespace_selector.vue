@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlCollapsibleListbox, GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlCollapsibleListbox, GlIcon } from '@gitlab/ui';
 import { keyBy } from 'lodash-es';
 import { createAlert } from '~/alert';
 import {
@@ -21,7 +21,6 @@ export default {
     GlCollapsibleListbox,
     CrudComponent,
     GlIcon,
-    GlSprintf,
   },
   props: {
     value: {
@@ -162,6 +161,19 @@ export default {
 
       return sprintf(label, { name: item.name });
     },
+    subGroupCount({ descendantGroupsCount }) {
+      return sprintf(n__('%{count} subgroup', '%{count} subgroups', descendantGroupsCount), {
+        count: descendantGroupsCount,
+      });
+    },
+    projectCount({ projectsCount }) {
+      return sprintf(n__('%{count} project', '%{count} projects', projectsCount), {
+        count: projectsCount,
+      });
+    },
+    hasDescendantsCount({ descendantGroupsCount, projectsCount }) {
+      return descendantGroupsCount != null && projectsCount != null;
+    },
   },
   i18n: {
     title: s__('AccessTokens|Group or project'),
@@ -172,8 +184,6 @@ export default {
     noNamespaces: s__('AccessTokens|No groups or projects added.'),
     searchPlaceholder: __('Search groups or projects'),
     addButton: s__('AccessTokens|Add group or project'),
-    subGroupCount: n__('%{count} subgroup', '%{count} subgroups'),
-    projectCount: n__('%{count} project', '%{count} projects'),
     removeGroup: s__('AccessTokens|Remove group %{name}'),
     removeProject: s__('AccessTokens|Remove project %{name}'),
     fetchError: s__('AccessTokens|Error loading groups and projects. Please refresh page.'),
@@ -204,29 +214,27 @@ export default {
         class="gl-mb-2 gl-flex gl-list-none gl-flex-col gl-gap-3 gl-pl-2"
         data-testid="selected-namespaces"
       >
-        <li v-for="item in selectedItems" :key="item.id" class="gl-mt-2 gl-flex gl-items-center">
-          <gl-icon :name="namespaceIcon(item)" />
-          <div class="gl-ml-3">
-            {{ item.fullPath }}
-
-            <div v-if="isGroup(item)" class="gl-mt-2 gl-text-sm gl-text-subtle">
-              <gl-sprintf :message="$options.i18n.subGroupCount">
-                <template #count>{{ item.descendantGroupsCount }}</template> </gl-sprintf
-              >,
-
-              <gl-sprintf :message="$options.i18n.projectCount">
-                <template #count>{{ item.projectsCount }}</template>
-              </gl-sprintf>
-            </div>
+        <li v-for="item in selectedItems" :key="item.id" class="gl-mt-2">
+          <div class="gl-flex gl-items-center">
+            <gl-icon :name="namespaceIcon(item)" />
+            <span class="gl-ml-3">{{ item.fullPath }}</span>
+            <gl-button
+              icon="close"
+              category="tertiary"
+              class="gl-ml-auto"
+              data-testid="remove-namespace"
+              :aria-label="removeNamespaceAriaLabel(item)"
+              @click="removeNamespace(item.id)"
+            />
           </div>
-          <gl-button
-            icon="close"
-            category="tertiary"
-            class="gl-ml-auto"
-            data-testid="remove-namespace"
-            :aria-label="removeNamespaceAriaLabel(item)"
-            @click="removeNamespace(item.id)"
-          />
+
+          <div
+            v-if="hasDescendantsCount(item)"
+            class="gl-ml-6 gl-text-sm gl-text-subtle"
+            data-testid="descendant-counts"
+          >
+            {{ subGroupCount(item) }}, {{ projectCount(item) }}
+          </div>
         </li>
       </ul>
       <div v-else class="gl-text-center">

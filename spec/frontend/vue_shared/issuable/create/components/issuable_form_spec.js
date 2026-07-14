@@ -84,7 +84,7 @@ describe('IssuableForm', () => {
         markdownDocsPath: wrapper.vm.descriptionHelpPath,
         value: '',
         formFieldProps: {
-          ariaLabel: 'Description',
+          'aria-label': 'Description',
           class: 'rspec-issuable-form-description',
           placeholder: 'Write a comment or drag your files here…',
           dataTestid: 'issuable-form-description-field',

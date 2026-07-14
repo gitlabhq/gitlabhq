@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mattermost::Session, type: :request do
+RSpec.describe Mattermost::Session, type: :request, feature_category: :integrations do
   include ExclusiveLeaseHelpers
   include StubRequests
 

@@ -71,7 +71,7 @@ module API
 
       def find_user_from_sources
         strong_memoize(:find_user_from_sources) do
-          if try(:namespace_inheritable, :authentication)
+          if try(:inheritable_setting)&.namespace_inheritable&.[](:authentication)
             user_from_namespace_inheritable ||
               user_from_warden
           else

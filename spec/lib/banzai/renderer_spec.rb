@@ -11,6 +11,7 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
     allow(object).to receive(:respond_to?).with(:cached_markdown_fields).and_return(true)
     allow(object).to receive(:cached_html_up_to_date?).with(:field).and_return(fresh)
     allow(object).to receive(:cached_html_for).with(:field).and_return('field_html')
+    allow(object).to receive(:refresh_markdown_cache!)
 
     object
   end

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'BranchRuleCreate', feature_category: :source_code_management do
   include GraphqlHelpers
-  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
   let_it_be_with_reload(:current_user) { create(:user) }
 
   let(:params) do

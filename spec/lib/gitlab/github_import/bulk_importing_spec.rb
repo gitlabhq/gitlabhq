@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers do
-  let_it_be(:project, freeze: false) { create(:project, :with_import_url) }
+  let_it_be_with_reload(:project) { create(:project, :with_import_url) }
   let(:importer) { MyImporter.new(project, double) }
   let(:importer_class) do
     Class.new do

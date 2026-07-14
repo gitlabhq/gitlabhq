@@ -78,7 +78,7 @@ To bring the former primary site up to date:
       Cursor stalls and all sync types remain at 0%.
 
       In those cases, on a Rails or Sidekiq node of the secondary site:
-      
+
       1. [Run the tracking database migrations manually](../setup/external_database.md#set-up-the-database-schema).
       1. Restart the Geo Log Cursor so it picks up the new schema:
 
@@ -155,7 +155,7 @@ Use-cases:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352530) in GitLab 16.8 [with a flag](../../feature_flags/_index.md) named `geo_skip_download_if_exists`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352530) in GitLab 16.8 [with a feature flag](../../feature_flags/_index.md) named `geo_skip_download_if_exists`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435788) in GitLab 16.9. Feature flag `geo_skip_download_if_exists` removed.
 
 {{< /history >}}

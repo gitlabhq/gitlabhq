@@ -101,31 +101,41 @@ module Gitlab
     end
 
     def self.configure_throttles(rack_attack)
-      # Each of these settings follows the same pattern of specifying separate
-      # authenticated and unauthenticated rates via settings
-      Gitlab::Throttle::REGULAR_THROTTLES.each do |throttle|
-        unauthenticated_options = Gitlab::Throttle.options(throttle, authenticated: false)
-        throttle_or_track(rack_attack, "throttle_unauthenticated_#{throttle}", unauthenticated_options) do |req|
-          if req.throttle?(throttle, authenticated: false)
-            req.ip
-          end
-        end
-
-        authenticated_options = Gitlab::Throttle.options(throttle, authenticated: true)
-        throttle_or_track(rack_attack, "throttle_authenticated_#{throttle}", authenticated_options) do |req|
-          if req.throttle?(throttle, authenticated: true)
-            req.throttled_identifer([:api])
-          end
-        end
-      end
-
-      throttle_definitions.each do |name, definition|
+      all_throttle_definitions.each do |name, definition|
         throttle_or_track(rack_attack, name, definition.options, &definition.request_identifier)
       end
 
       rack_attack.safelist('throttle_bypass_header') do |req|
         Gitlab::Throttle.bypass_header.present? &&
           req.get_header(Gitlab::Throttle.bypass_header) == '1'
+      end
+    end
+
+    # The complete set of CE throttle definitions: the REGULAR_THROTTLES
+    # expansion followed by the explicitly-listed throttle_definitions. Both
+    # Rack::Attack registration (configure_throttles) and the Labkit shadow
+    # middleware read this single source so their limits and discriminators
+    # stay in lock-step.
+    def self.all_throttle_definitions
+      regular_throttle_definitions.merge(throttle_definitions)
+    end
+
+    # The unauthenticated/authenticated pair generated for each
+    # Gitlab::Throttle::REGULAR_THROTTLES entry. Each follows the same pattern
+    # of specifying separate authenticated and unauthenticated rates via
+    # settings. Extracted from configure_throttles so the same lambdas and
+    # options back both the Rack::Attack registration and the Labkit shadow.
+    def self.regular_throttle_definitions
+      Gitlab::Throttle::REGULAR_THROTTLES.each_with_object({}) do |throttle, definitions|
+        definitions["throttle_unauthenticated_#{throttle}"] = ThrottleDefinition.new(
+          Gitlab::Throttle.options(throttle, authenticated: false),
+          ->(req) { req.ip if req.throttle?(throttle, authenticated: false) }
+        )
+
+        definitions["throttle_authenticated_#{throttle}"] = ThrottleDefinition.new(
+          Gitlab::Throttle.options(throttle, authenticated: true),
+          ->(req) { req.throttled_identifer([:api]) if req.throttle?(throttle, authenticated: true) }
+        )
       end
     end
 

@@ -1,0 +1,9 @@
+---
+name: update_ai_tool_rule
+description: Grants the ability to create and update AI tool rules
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - update_ai_tool_rule

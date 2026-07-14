@@ -7,7 +7,7 @@ title: プランナーエージェント
 
 {{< details >}}
 
-- プラン: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom)、Premium、Ultimate
+- プラン: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier)、Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
@@ -18,12 +18,16 @@ title: プランナーエージェント
 - GitLab 18.7で作成および編集機能が導入されました。
 - GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273)になりました。
 - GitLab 18.10では、GitLab.comのFreeティアでGitLabクレジットとともに利用できます。
+- GitLab 19.0でTo-Do管理が導入されました。
+- [Orbit](https://docs.gitlab.com/orbit/)のグラフベースクエリ用インテグレーションがGitLab 19.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/598775)されました。
 
 {{< /history >}}
 
 プランナーエージェントは、GitLabのプロダクト管理および計画ワークフローを支援する特化型AIエージェントです。作業をより効率的に作成、優先順位付け、追跡するのに役立ちます。
 
 The Planner Agentは、作業アイテムの階層（エピック、イシュー、タスク）、マイルストーン、ラベル、ウェイトといったGitLabの計画コンセプトを理解しています。これは、作業アイテムを分析し、優先順位付け戦略を提案し、計画を構成して伝えるのに役立ちます。
+
+トップレベルグループおよびユーザー設定で[Orbit](https://docs.gitlab.com/orbit/)を有効にすると、プランナーエージェントは知識グラフを使用して、関係性、依存関係、およびクロスプロジェクト間の履歴コンテキストに関する質問にも回答できます。
 
 プランナーエージェントは、次のような場合に役立ちます:
 
@@ -32,10 +36,12 @@ The Planner Agentは、作業アイテムの階層（エピック、イシュー
 - コンテンツの作成: メモ、要件、その他の計画アーティファクトのドラフト作成、または、要求されたときにエピック、イシュー、タスクを直接作成します。
 - 依存関係分析: ブロックされている作業を特定し、アイテム間の関係性を把握する。
 - コンテンツの編集: 要求されたとき、またはアクションを実行する確認を求めた後に、作業アイテム、ラベル、マイルストーン、その他の属性を更新します。
+- To-Do管理: 作業アイテムにTo-Doを追加し、完了としてマークします。
 - 計画セッション: スプリント、マイルストーン、四半期計画を整理する。
 - ステータスレポート: 進捗状況、リスク、ブロッカーの要約を生成する。
 - バックログ管理: 古くなったイシュー、重複しているアイテム、精査が必要なアイテムを特定する。
 - 見積もり: 作業アイテムに対する相対的な規模や労力の見積もりを提案する。
+- グラフベースのコンテキスト: 類似する過去の作業、クロスプロジェクト間の依存関係、関連する経験を持つコントリビューターを検索します。[Orbit](https://docs.gitlab.com/orbit/)が必要です。
 
 [イシュー583008](https://gitlab.com/gitlab-org/gitlab/-/work_items/583008)でフィードバックを残すことができます。
 
@@ -59,6 +65,7 @@ GitLab UI、VS Code、JetBrains IDEでPlanner Agentを使用できます。
 前提条件: 
 
 - [基本エージェントをオンにします](_index.md#turn-foundational-agents-on-or-off)。
+- オプション。グラフベースのコンテキストを使用するには、トップレベルグループおよびユーザー設定で[Orbitを有効にします](https://docs.gitlab.com/orbit/remote/getting-started/)。
 
 GitLab UIでPlanner Agentを使用するには:
 
@@ -76,6 +83,7 @@ GitLab UIでPlanner Agentを使用するには:
 - [基本エージェントをオンにします](_index.md#turn-foundational-agents-on-or-off)。
 - [GitLab for VS Code](../../../../editor_extensions/visual_studio_code/setup.md)バージョン6.57.3以降をインストールして設定します。
 - [デフォルトのGitLab Duoネームスペース](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定します。
+- オプション。グラフベースのコンテキストを使用するには、トップレベルグループおよびユーザー設定で[Orbitを有効にします](https://docs.gitlab.com/orbit/remote/getting-started/)。
 
 VS CodeでPlanner Agentを使用するには:
 
@@ -91,6 +99,7 @@ VS CodeでPlanner Agentを使用するには:
 - [基本エージェントをオンにします](_index.md#turn-foundational-agents-on-or-off)。
 - [JetBrains IDE用のGitLab Duoプラグイン](../../../../editor_extensions/jetbrains_ide/setup.md)バージョン3.11.1以降をインストールして設定します。
 - [デフォルトのGitLab Duoネームスペース](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace)を設定します。
+- オプション。グラフベースのコンテキストを使用するには、トップレベルグループおよびユーザー設定で[Orbitを有効にします](https://docs.gitlab.com/orbit/remote/getting-started/)。
 
 まず、GitLab Duo Agent Platformを有効にします:
 
@@ -142,6 +151,15 @@ VS CodeでPlanner Agentを使用するには:
   - 「私に割り当てられている作業アイテムを表示してください。」
 - コンテンツの編集:
   - 「この作業アイテムを完了としてクローズし、何がうまくいったか、何を改善する必要があるかをドキュメント化する新しいレトロスペクティブ作業アイテムを作成します: `<URL>`」
+- To-Do管理: 
+  - 「作業アイテムにTo-Doを追加: `<URL>`」
+  - 「この作業アイテムのすべてのTo-Doを完了としてマーク: `<URL>`」
+- グラフベースのコンテキスト（[Orbit](https://docs.gitlab.com/orbit/)が必要）:
+  - 「既にリリースされた、これと類似するエピックを検索: `<URL>`」
+  - 「この作業アイテムについて、過去に類似するイニシアティブはどのように分解されましたか: `<URL>`」
+  - 「このアイデアに関連する作業をすでに誰かが追跡していますか？」
+  - 「このエピックに関連する分野で作業したコントリビューターは誰ですか？ `<URL>`」
+  - 「この作業アイテムが依存する可能性のある他のクロスプロジェクト間の作業アイテムは何ですか？ `<URL>`」
 
 ## 既知の問題 {#known-issues}
 

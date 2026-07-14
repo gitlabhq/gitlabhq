@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Reenqueuer, feature_category: :sidekiq do
   include ExclusiveLeaseHelpers
 
-  let_it_be(:worker_class, freeze: false) do
+  let_it_be(:worker_class) do
     Class.new do
       def self.name
         'Gitlab::Foo::Bar::DummyWorker'

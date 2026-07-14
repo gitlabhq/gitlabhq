@@ -275,6 +275,14 @@ describe('Pipeline New Form', () => {
       expect(findSubmitButton().props('disabled')).toBe(true);
     });
 
+    it('shows a loading state on the submit button while submitting', async () => {
+      await createComponentWithApollo();
+      expect(findSubmitButton().props('loading')).toBe(false);
+      await findForm().vm.$emit('submit', dummySubmitEvent);
+
+      expect(findSubmitButton().props('loading')).toBe(true);
+    });
+
     it('fires the mutation when the submit button is clicked', async () => {
       await createComponentWithApollo();
       await submitForm();
@@ -347,6 +355,10 @@ describe('Pipeline New Form', () => {
 
       it('re-enables the submit button', () => {
         expect(findSubmitButton().props('disabled')).toBe(false);
+      });
+
+      it('stops the submit button loading state', () => {
+        expect(findSubmitButton().props('loading')).toBe(false);
       });
 
       it('shows pipeline configuration button for user who can view', () => {

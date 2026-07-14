@@ -13,7 +13,6 @@ import {
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
-  WIDGET_TYPE_VULNERABILITIES,
   WIDGET_TYPE_STATUS,
 } from '~/work_items/constants';
 
@@ -227,6 +226,19 @@ export const config = {
           // kills any possibility to handle it on the widget level without hardcoding a string.
           relatedVulnerabilities: {
             keyArgs: false,
+            // we want to concat next page of related vulnerabilities to the existing ones
+            // handled here so it applies to both `widgets[].relatedVulnerabilities` and
+            // `features.vulnerabilities.relatedVulnerabilities` by writing to the same
+            // WorkItemWidgetVulnerabilities type.
+            merge(existing, incoming, { variables }) {
+              if (existing && incoming && variables.after) {
+                return {
+                  ...incoming,
+                  nodes: [...existing.nodes, ...incoming.nodes],
+                };
+              }
+              return incoming;
+            },
           },
         },
       },
@@ -311,25 +323,6 @@ export const config = {
                       nodes: [
                         ...existingWidget.discussions.nodes,
                         ...incomingWidget.discussions.nodes,
-                      ],
-                    },
-                  };
-                }
-
-                // we want to concat next page of vulnerabilities work items within Vulnerabilities widget to the existing ones
-                if (
-                  incomingWidget?.type === WIDGET_TYPE_VULNERABILITIES &&
-                  context.variables.after &&
-                  incomingWidget.relatedVulnerabilities?.nodes
-                ) {
-                  // concatPagination won't work because we were placing new widget here so we have to do this manually
-                  return {
-                    ...incomingWidget,
-                    relatedVulnerabilities: {
-                      ...incomingWidget.relatedVulnerabilities,
-                      nodes: [
-                        ...existingWidget.relatedVulnerabilities.nodes,
-                        ...incomingWidget.relatedVulnerabilities.nodes,
                       ],
                     },
                   };
@@ -569,11 +562,9 @@ export const config = {
   },
 };
 
-const namespaceResolvers =
-  window.gon?.features?.workItemRestApiFrontendUsers &&
-  (window.gon?.features?.workItemRestApiIndex || window.gon?.features?.workItemRestApi)
-    ? { Namespace: { workItems: workItemsRestResolver } }
-    : {};
+const namespaceResolvers = window.gon?.features?.workItemRestApiFrontendUsers
+  ? { Namespace: { workItems: workItemsRestResolver } }
+  : {};
 
 export const resolvers = {
   ...namespaceResolvers,

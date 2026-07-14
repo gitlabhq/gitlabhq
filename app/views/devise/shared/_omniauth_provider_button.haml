@@ -1,7 +1,11 @@
 - button_options = { class: local_assigns[:classes], data: data, form: { class: 'js-omniauth-form' } }
+- full_label = local_assigns.fetch(:full_label, false)
 
 = render Pajamas::ButtonComponent.new(href: href, method: :post, form: true, block: true, button_options: button_options) do
   - if provider_has_icon?(provider)
     = provider_image_tag(provider)
   %span.gl-button-text
-    = label_for_provider(provider)
+    - if full_label
+      = format(_('Continue with %{provider}'), provider: label_for_provider(provider))
+    - else
+      = label_for_provider(provider)

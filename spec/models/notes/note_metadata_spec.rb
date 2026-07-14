@@ -79,7 +79,7 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
           end
 
           context 'when note does not have a noteable' do
-            let_it_be(:note, freeze: false) { build(:note, noteable: nil, namespace_id: nil, noteable_type: 'Issue') }
+            let_it_be(:note) { build(:note, noteable: nil, namespace_id: nil, noteable_type: 'Issue') }
 
             it_behaves_like 'does not set namespace_id'
           end
@@ -97,7 +97,7 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
           end
 
           context 'when note does not have a project' do
-            let_it_be(:note, freeze: false) { build(:note, noteable: noteable, project: nil, namespace_id: nil) }
+            let_it_be(:note) { build(:note, noteable: noteable, project: nil, namespace_id: nil) }
 
             it_behaves_like 'does not set namespace_id'
           end
@@ -105,7 +105,7 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
 
         context "when noteable doesn't have a namespace" do
           let_it_be(:noteable) { create(:personal_snippet) }
-          let_it_be(:note, freeze: false) { build(:note, noteable: noteable, namespace_id: nil) }
+          let_it_be(:note) { build(:note, noteable: noteable, namespace_id: nil) }
 
           it_behaves_like 'does not set namespace_id'
         end

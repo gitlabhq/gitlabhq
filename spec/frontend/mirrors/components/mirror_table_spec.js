@@ -43,6 +43,10 @@ describe('MirrorTable', () => {
   const findSyncButtons = () => wrapper.findAllByTestId('update-now-button');
   const findDisableButtons = () => wrapper.findAllByTestId('disable-mirror-button');
   const findEnableButtons = () => wrapper.findAllByTestId('enable-mirror-button');
+  const findRowContainers = () => wrapper.findAllByTestId('mirrored-repository-row-container');
+  const findUrlContent = () => wrapper.findByTestId('mirror-repository-url-content');
+  const findLastUpdateAtContent = () => wrapper.findByTestId('mirror-last-update-at-content');
+  const findErrorBadge = () => wrapper.findByTestId('mirror-error-badge-content');
 
   describe('rendering', () => {
     it('renders GlTable with correct items', () => {
@@ -69,6 +73,47 @@ describe('MirrorTable', () => {
       createComponent();
 
       expect(findAlert().exists()).toBe(false);
+    });
+  });
+
+  describe('QA element testids', () => {
+    it('exposes a row container testid for each rendered row', () => {
+      createComponent();
+
+      expect(findRowContainers()).toHaveLength(2);
+    });
+
+    it('exposes the URL content with the mirror url as its first text line', () => {
+      createComponent({ mirrors: [createMirror()] });
+
+      expect(findUrlContent().exists()).toBe(true);
+      expect(findUrlContent().text().split('\n')[0]).toBe('https://example.com/mirror.git');
+    });
+
+    it('exposes the last update at content with the timestamp', () => {
+      createComponent({ mirrors: [createMirror()] });
+
+      expect(findLastUpdateAtContent().exists()).toBe(true);
+      expect(findLastUpdateAtContent().findComponent(TimeAgoTooltip).exists()).toBe(true);
+    });
+
+    it('exposes the last update at content as "Never" when there is no update', () => {
+      createComponent({ mirrors: [createMirror({ lastUpdateAt: null })] });
+
+      expect(findLastUpdateAtContent().text()).toBe('Never');
+    });
+
+    it('exposes the error badge testid when lastError is present', () => {
+      createComponent({ mirrors: [createMirror({ lastError: 'Connection refused' })] });
+
+      expect(findErrorBadge().exists()).toBe(true);
+      expect(findErrorBadge().text()).toBe('Error');
+    });
+
+    it('does not expose the error badge testid when there is no error', () => {
+      createComponent({ mirrors: [createMirror()] });
+
+      expect(findErrorBadge().exists()).toBe(false);
     });
   });
 

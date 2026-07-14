@@ -12,7 +12,7 @@ RSpec.describe DiffNotePosition, type: :model, feature_category: :code_review_wo
   end
 
   it_behaves_like 'model with associated note' do
-    let_it_be(:note, freeze: false) { create(:diff_note_on_merge_request) }
+    let_it_be_with_reload(:note) { create(:diff_note_on_merge_request) }
     let(:record_attrs) do
       { diff_type: :head, line_code: line_code, position: diff_position, note_id: note.id }
     end

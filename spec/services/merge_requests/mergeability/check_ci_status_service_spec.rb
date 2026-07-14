@@ -200,49 +200,4 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
       expect(check_ci_status.cacheable?).to be false
     end
   end
-
-  describe 'diagnostic logging', :clean_gitlab_redis_shared_state do
-    let(:auto_merge_enabled) { true }
-    let(:auto_merge_strategy) { ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS }
-    let(:pipeline) { create(:ci_empty_pipeline, sha: '1982309812309812') }
-
-    before do
-      allow(merge_request).to receive(:has_ci_enabled?).and_return(true)
-      merge_request.update_attribute(:head_pipeline_id, pipeline.id)
-      pipeline.update_attribute(:status, :running)
-      allow(Gitlab::AppJsonLogger).to receive(:info)
-    end
-
-    context 'when the auto_merge_diagnostic_logging flag is enabled' do
-      it 'logs the CI and pipeline-creation state for the auto-merge MR' do
-        expect(Gitlab::AppJsonLogger).to receive(:info).with(
-          hash_including(
-            message: 'auto_merge_ci_diagnostic',
-            merge_request_id: merge_request.id,
-            ci_check_status: 'checking',
-            pipeline_creating: false,
-            head_pipeline_id: pipeline.id,
-            diff_head_pipeline_id: pipeline.id,
-            head_pipeline_status: 'running'
-          )
-        )
-
-        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::CHECKING_STATUS
-      end
-    end
-
-    context 'when the auto_merge_diagnostic_logging flag is disabled' do
-      before do
-        stub_feature_flags(auto_merge_diagnostic_logging: false)
-      end
-
-      it 'does not log' do
-        expect(Gitlab::AppJsonLogger).not_to receive(:info).with(
-          hash_including(message: 'auto_merge_ci_diagnostic')
-        )
-
-        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::CHECKING_STATUS
-      end
-    end
-  end
 end

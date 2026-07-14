@@ -80,9 +80,7 @@ export default {
           validators: [formValidators.required(s__('ProjectsNewEdit|Project name is required.'))],
           groupAttrs: {
             class: 'gl-w-full',
-            description: s__(
-              'ProjectsNewEdit|Must start with a letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.',
-            ),
+            description: s__('ProjectsNewEdit|Start with a letter, digit, emoji, or underscore.'),
           },
           inputAttrs: {
             class: 'gl-md-form-input-lg',

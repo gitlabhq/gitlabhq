@@ -85,7 +85,8 @@ RSpec.describe Gitlab::Git::RepositoryCleaner, feature_category: :source_code_ma
             gitaly_request_with_params(blobs: blobs),
             gitaly_request_with_params(redactions: redactions)
           ), kind_of(Hash))
-          .and_return(Gitaly::RewriteHistoryResponse.new)
+          .and_return(instance_double(GRPC::ActiveCall::Operation,
+            execute: Gitaly::RewriteHistoryResponse.new, trailing_metadata: {}))
       end
 
       expect(rewrite_history).to eq(Gitaly::RewriteHistoryResponse.new)

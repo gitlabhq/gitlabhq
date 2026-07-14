@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :work_item, traits: [:has_internal_id] do
     title { generate(:title) }
     project
+    namespace { project&.project_namespace }
     author { project.creator }
     updated_by { author }
     relative_position { RelativePositioning::START_POSITION }
@@ -86,9 +87,11 @@ FactoryBot.define do
     # rubocop:enable Gitlab/AvoidDirectWorkItemTypeUsage
 
     before(:create, :build) do |work_item, evaluator|
-      if evaluator.namespace.present?
+      case evaluator.namespace
+      when Group, Namespaces::UserNamespace
         work_item.project = nil
-        work_item.namespace = evaluator.namespace
+      when Namespaces::ProjectNamespace
+        work_item.project = evaluator.namespace.project
       end
     end
 

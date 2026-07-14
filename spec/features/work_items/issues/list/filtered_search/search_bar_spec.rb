@@ -75,7 +75,7 @@ RSpec.describe 'Search bar', :js, feature_category: :team_planning do
 
       click_button 'Clear'
 
-      expect_suggestion_count(original_size)
+      expect(page).to have_css('.gl-filtered-search-suggestion', minimum: original_size)
     end
   end
 end

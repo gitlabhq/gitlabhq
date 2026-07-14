@@ -1183,4 +1183,58 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
     end
   end
+
+  describe 'ROLLOUT_ISSUE_URL_REGEX' do
+    let(:project_path) { 'gitlab-org/gitlab' }
+    let(:issue_iid) { '123' }
+
+    it 'matches /-/issues/ URLs and captures the project path and IID', :aggregate_failures do
+      matches = described_class::ROLLOUT_ISSUE_URL_REGEX.match(
+        "https://gitlab.com/#{project_path}/-/issues/#{issue_iid}"
+      )
+
+      expect(matches).not_to be_nil
+      expect(matches[:project_path]).to eq(project_path)
+      expect(matches[:issue_iid]).to eq(issue_iid)
+    end
+
+    it 'matches /-/work_items/ URLs and captures the same project path and IID', :aggregate_failures do
+      matches = described_class::ROLLOUT_ISSUE_URL_REGEX.match(
+        "https://gitlab.com/#{project_path}/-/work_items/#{issue_iid}"
+      )
+
+      expect(matches).not_to be_nil
+      expect(matches[:project_path]).to eq(project_path)
+      expect(matches[:issue_iid]).to eq(issue_iid)
+    end
+
+    it 'does not match unrelated URLs' do
+      [
+        'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123',
+        'https://example.com/gitlab-org/gitlab/-/issues/123'
+      ].each do |url|
+        expect(described_class::ROLLOUT_ISSUE_URL_REGEX.match(url)).to be_nil
+      end
+    end
+  end
+
+  describe '#all_feature_flag_files' do
+    before do
+      allow(keep).to receive(:all_feature_flag_files).and_call_original
+    end
+
+    it 'globs all expected feature flag type directories including experiment' do
+      glob_args = nil
+      allow(Dir).to receive(:glob).and_wrap_original do |original, pattern|
+        glob_args = pattern
+        original.call(pattern)
+      end
+
+      keep.send(:all_feature_flag_files)
+
+      %w[development gitlab_com_derisk beta wip experiment].each do |type|
+        expect(glob_args).to include(type)
+      end
+    end
+  end
 end

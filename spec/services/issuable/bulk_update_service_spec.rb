@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Issuable::BulkUpdateService, feature_category: :team_planning do
-  let_it_be(:user, freeze: false)    { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :repository, namespace: user.namespace) }
+  let_it_be_with_reload(:user)    { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
 
   def bulk_update(issuables, extra_params = {})
     bulk_update_params = extra_params
@@ -311,7 +311,7 @@ RSpec.describe Issuable::BulkUpdateService, feature_category: :team_planning do
 
     describe 'updating milestones' do
       let(:issuables) { [create(:issue, project: project)] }
-      let(:milestone) { create(:milestone, project: project) }
+      let_it_be(:milestone) { create(:milestone, project: project) }
 
       it_behaves_like 'updates milestones'
 
@@ -331,9 +331,9 @@ RSpec.describe Issuable::BulkUpdateService, feature_category: :team_planning do
     end
 
     describe 'updating labels' do
-      let(:bug) { create(:label, project: project) }
-      let(:regression) { create(:label, project: project) }
-      let(:merge_requests) { create(:label, project: project) }
+      let_it_be(:bug) { create(:label, project: project) }
+      let_it_be(:regression) { create(:label, project: project) }
+      let_it_be(:merge_requests) { create(:label, project: project) }
 
       it_behaves_like 'updating labels'
     end
@@ -380,11 +380,11 @@ RSpec.describe Issuable::BulkUpdateService, feature_category: :team_planning do
   end
 
   context 'with issuables at a group level' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
 
     let(:parent) { group }
 
-    before do
+    before_all do
       group.add_reporter(user)
     end
 
@@ -393,10 +393,10 @@ RSpec.describe Issuable::BulkUpdateService, feature_category: :team_planning do
     end
 
     describe 'updating milestones' do
-      let(:milestone) { create(:milestone, group: group) }
-      let(:project)   { create(:project, :repository, group: group) }
+      let_it_be(:milestone) { create(:milestone, group: group) }
+      let_it_be(:project) { create(:project, group: group) }
 
-      before do
+      before_all do
         group.add_maintainer(user)
       end
 
@@ -418,9 +418,9 @@ RSpec.describe Issuable::BulkUpdateService, feature_category: :team_planning do
     end
 
     describe 'updating confidentiality' do
-      let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
+      let_it_be_with_reload(:project) { create(:project, group: group) }
 
-      before do
+      before_all do
         group.add_maintainer(user)
       end
 
@@ -442,10 +442,10 @@ RSpec.describe Issuable::BulkUpdateService, feature_category: :team_planning do
     end
 
     describe 'updating labels' do
-      let(:project)        { create(:project, :repository, group: group) }
-      let(:bug)            { create(:group_label, group: group) }
-      let(:regression)     { create(:group_label, group: group) }
-      let(:merge_requests) { create(:group_label, group: group) }
+      let_it_be(:project)        { create(:project, group: group) }
+      let_it_be(:bug)            { create(:group_label, group: group) }
+      let_it_be(:regression)     { create(:group_label, group: group) }
+      let_it_be(:merge_requests) { create(:group_label, group: group) }
 
       it_behaves_like 'updating labels'
     end

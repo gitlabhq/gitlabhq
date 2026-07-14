@@ -16,23 +16,32 @@ module Import
           extractor ::BulkImports::Common::Extractors::JsonExtractor, relation: relation
 
           transformer ::BulkImports::Common::Transformers::ProhibitedAttributesTransformer
-          transformer ::BulkImports::Projects::Transformers::ProjectAttributesTransformer
+          transformer Import::Offline::Projects::Transformers::ProjectAttributesTransformer
 
           def load(context, data)
             project = ::Projects::CreateService.new(context.current_user, data).execute
 
-            if project.persisted?
-              context.entity.update!(project: project, organization: nil)
+            raise(::BulkImports::Error, project_import_error_message(project)) unless project.persisted?
 
-              project
-            else
-              raise(::BulkImports::Error,
-                "Unable to import project #{project.full_path}. #{project.errors.full_messages}.")
-            end
+            context.entity.update!(project: project, organization: nil)
+
+            project.importing = true
+            project.default_branch = data['default_branch'] if data['default_branch']
+            project.reconcile_shared_runners_setting!
+
+            project.save!
+
+            project
           end
 
           def after_run(_context)
             extractor.remove_tmpdir
+          end
+
+          private
+
+          def project_import_error_message(project)
+            "Unable to import project #{project.full_path}. #{project.errors.full_messages}."
           end
         end
       end

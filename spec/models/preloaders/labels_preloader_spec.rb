@@ -17,7 +17,7 @@ RSpec.describe Preloaders::LabelsPreloader do
   end
 
   context 'project labels' do
-    let_it_be(:projects) { create_list(:project, 3, :public, :repository) }
+    let_it_be(:projects) { create_list(:project, 3, :public) }
     let_it_be(:labels) { projects.map { |p| create(:label, project: p) } }
 
     it_behaves_like 'an efficient database query'

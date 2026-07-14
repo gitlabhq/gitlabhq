@@ -6,7 +6,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
   include Ci::PipelineVariableHelpers
 
   let_it_be(:user) { create(:user, :public_email) }
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
 
   let_it_be_with_reload(:pipeline) do
     create(:ci_pipeline,
@@ -246,6 +246,86 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
       end
     end
 
+    describe 'ci_pipeline_otlp_trace_correlation feature flag' do
+      context 'when the flag is enabled' do
+        before do
+          stub_feature_flags(ci_pipeline_otlp_trace_correlation: true)
+        end
+
+        it 'includes root_pipeline_id in object_attributes' do
+          expect(attributes[:root_pipeline_id]).to eq(pipeline.root_ancestor.id)
+        end
+
+        it 'sets root_pipeline_id to the pipeline itself for a top-level pipeline' do
+          expect(attributes[:root_pipeline_id]).to eq(pipeline.id)
+        end
+
+        it 'includes the bridges collection' do
+          expect(data).to have_key(:bridges)
+        end
+
+        context 'with a bridge job' do
+          let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline, user: user) }
+
+          it 'serializes the bridge into the bridges collection' do
+            bridge_data = data[:bridges].find { |b| b[:id] == bridge.id }
+
+            expect(bridge_data).to include(
+              id: bridge.id,
+              name: bridge.name,
+              status: bridge.status,
+              bridge: true
+            )
+          end
+
+          it 'does not include artifacts_file for bridges' do
+            bridge_data = data[:bridges].find { |b| b[:id] == bridge.id }
+
+            expect(bridge_data).not_to have_key(:artifacts_file)
+          end
+        end
+
+        context 'when the pipeline is a child pipeline' do
+          let_it_be(:root_pipeline) { create(:ci_pipeline, project: project, user: user) }
+          let_it_be(:pipeline) { create(:ci_pipeline, child_of: root_pipeline) }
+
+          it 'sets root_pipeline_id to the root ancestor' do
+            expect(data[:object_attributes][:root_pipeline_id]).to eq(root_pipeline.id)
+          end
+        end
+
+        context 'when the pipeline has an upstream' do
+          let_it_be(:upstream_pipeline) { create(:ci_pipeline, upstream_of: pipeline, project: project) }
+
+          it 'includes the source bridge_id in source_pipeline attributes' do
+            expect(data[:source_pipeline][:bridge_id]).to eq(pipeline.source_bridge.id)
+          end
+        end
+      end
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(ci_pipeline_otlp_trace_correlation: false)
+        end
+
+        it 'does not include root_pipeline_id in object_attributes' do
+          expect(attributes).not_to have_key(:root_pipeline_id)
+        end
+
+        it 'does not include the bridges collection' do
+          expect(data).not_to have_key(:bridges)
+        end
+
+        context 'when the pipeline has an upstream' do
+          let_it_be(:upstream_pipeline) { create(:ci_pipeline, upstream_of: pipeline, project: project) }
+
+          it 'does not include bridge_id in source_pipeline attributes' do
+            expect(data[:source_pipeline]).not_to have_key(:bridge_id)
+          end
+        end
+      end
+    end
+
     context 'avoids N+1 database queries' do
       it "with multiple builds" do
         # Preparing the pipeline with the minimal builds
@@ -321,6 +401,29 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
           environment: dev_env.name)
 
         expect { described_class.build(pipeline.reload).to_json }.not_to exceed_query_limit(control)
+      end
+
+      context 'when ci_pipeline_otlp_trace_correlation is enabled' do
+        before do
+          stub_feature_flags(ci_pipeline_otlp_trace_correlation: true)
+        end
+
+        # Ensures the bridges serialization does not introduce an N+1: the query
+        # count must not scale with the number of bridges in the pipeline.
+        it 'with multiple bridges' do
+          pipeline = create(:ci_pipeline, user: user, project: project)
+          create(:ci_bridge, user: user, pipeline: pipeline)
+
+          # We need `.to_json` as the bridge hook data is wrapped within `Gitlab::Lazy`
+          control = ActiveRecord::QueryRecorder.new { described_class.build(pipeline.reload).to_json }
+
+          create_list(:ci_bridge, 3, user: user, pipeline: pipeline)
+
+          expect { described_class.build(pipeline.reload).to_json }.not_to exceed_query_limit(control)
+
+          # Guards against a false positive where no bridges are actually serialized
+          expect(described_class.build(pipeline.reload)[:bridges].size).to eq(4)
+        end
       end
     end
   end

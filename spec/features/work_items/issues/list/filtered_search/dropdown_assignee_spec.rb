@@ -21,15 +21,15 @@ RSpec.describe 'Dropdown assignee', :js, feature_category: :team_planning do
     it 'loads all the assignees when opened' do
       select_tokens 'Assignee', '='
 
-      # Expect None, Any, administrator, John Doe2
-      expect_suggestion_count 4
+      # Expect None, Any, Me, administrator, John Doe2
+      expect_suggestion_count 5
     end
 
     it 'shows current user at top of dropdown' do
       select_tokens 'Assignee', '='
 
-      # List items 1 to 3 are None, Any, divider
-      expect(page).to have_css('.gl-filtered-search-suggestion:nth-child(5)', text: user.name)
+      # List items 1 to 5 are top anchor, None, Any, Me, divider
+      expect(page).to have_css('.gl-filtered-search-suggestion:nth-child(6)', text: user.name)
     end
   end
 

@@ -51,7 +51,7 @@ On GitLab Self-Managed and GitLab Dedicated, administrators can
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188723) in GitLab 18.0 [with a flag](../../administration/feature_flags/_index.md) named `notify_compromised_passwords`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188723) in GitLab 18.0 [with a feature flag](../../administration/feature_flags/_index.md) named `notify_compromised_passwords`. Disabled by default.
 - Enabled on GitLab.com in GitLab 18.1. Feature flag `notify_compromised_passwords` removed.
 
 {{< /history >}}

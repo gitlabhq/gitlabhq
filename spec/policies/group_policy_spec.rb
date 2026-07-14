@@ -216,20 +216,14 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   describe 'private nested group use the highest access level from the group and inherited permissions' do
     let_it_be(:nested_group) do
-      create(:group, :private, :owner_subgroup_creation_only, parent: group)
+      create(:group, :private, :owner_subgroup_creation_only, parent: group,
+        guests: [guest, reporter, security_manager, developer, maintainer], owners: owner)
     end
 
     before_all do
-      nested_group.add_guest(guest)
-      nested_group.add_guest(reporter)
-      nested_group.add_guest(security_manager)
-      nested_group.add_guest(developer)
-      nested_group.add_guest(maintainer)
-
       group.owners.destroy_all # rubocop: disable Cop/DestroyAll
 
       group.add_guest(owner)
-      nested_group.add_owner(owner)
     end
 
     subject { described_class.new(current_user, nested_group) }
@@ -918,7 +912,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'update_max_artifacts_size' do
-    let(:group) { create(:group, :public) }
+    let_it_be(:group) { create(:group, :public) }
 
     context 'when no user' do
       let(:current_user) { nil }
@@ -948,7 +942,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'custom_attribute permissions' do
-    let(:group) { create(:group, :public) }
+    let_it_be(:group) { create(:group, :public) }
 
     context 'when no user' do
       let(:current_user) { nil }
@@ -1838,7 +1832,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   context 'when crm_enabled is false' do
     let(:current_user) { owner }
 
-    before do
+    before_all do
       create(:crm_settings, group: group, enabled: false)
     end
 

@@ -32,8 +32,8 @@ const links = LINKS.reduce(linksReducer, []);
 describe('CommandPaletteItems', () => {
   let wrapper;
   let mockAxios;
-  const autocompletePath = '/autocomplete';
-  const settingsPath = '/settings';
+  const autocompletePath = '/search/autocomplete';
+  const settingsPath = '/search/settings';
   const searchContext = { project: { id: 1 }, group: { id: 2 } };
   const projectFilesPath = 'project/files/path';
   const projectBlobPath = '/blob/main';
@@ -53,8 +53,6 @@ describe('CommandPaletteItems', () => {
       provide: {
         commandPaletteCommands: COMMANDS,
         commandPaletteLinks: LINKS,
-        autocompletePath,
-        settingsPath,
         searchContext,
         projectFilesPath,
         projectBlobPath,
@@ -70,8 +68,8 @@ describe('CommandPaletteItems', () => {
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
-    mockAxios.onGet('/settings?project_id=1').reply(HTTP_STATUS_OK, SETTINGS);
-    mockAxios.onGet('/settings?group_id=2').reply(HTTP_STATUS_OK, SETTINGS);
+    mockAxios.onGet(`${settingsPath}?project_id=1`).reply(HTTP_STATUS_OK, SETTINGS);
+    mockAxios.onGet(`${settingsPath}?group_id=2`).reply(HTTP_STATUS_OK, SETTINGS);
   });
 
   describe('Commands and links', () => {
@@ -252,7 +250,7 @@ describe('CommandPaletteItems', () => {
         await waitForPromises();
 
         expect(axios.get).toHaveBeenCalledTimes(1);
-        expect(axios.get).toHaveBeenCalledWith('/settings?project_id=1');
+        expect(axios.get).toHaveBeenCalledWith(`${settingsPath}?project_id=1`);
       });
 
       it('returns settings in group when search changes', async () => {
@@ -291,7 +289,7 @@ describe('CommandPaletteItems', () => {
         await waitForPromises();
 
         expect(axios.get).toHaveBeenCalledTimes(1);
-        expect(axios.get).toHaveBeenCalledWith('/settings?group_id=2');
+        expect(axios.get).toHaveBeenCalledWith(`${settingsPath}?group_id=2`);
       });
     });
 

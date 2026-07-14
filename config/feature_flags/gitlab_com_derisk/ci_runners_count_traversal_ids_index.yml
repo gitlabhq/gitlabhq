@@ -1,0 +1,12 @@
+---
+name: ci_runners_count_traversal_ids_index
+description: Resolve group descendants in Ci::Runner.belonging_to_group_or_project_descendants
+  using the ci_namespace_mirrors traversal_ids unnest covering index instead of the
+  GIN traversal_ids @> operator.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/601877
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242978
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/604470
+milestone: '19.2'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

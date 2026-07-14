@@ -18,11 +18,8 @@ RSpec.describe Profiles::EmailsController do
   shared_examples_for 'respects the rate limit' do
     context 'after the rate limit is exceeded' do
       before do
-        allowed_threshold = Gitlab::ApplicationRateLimiter.rate_limits[action][:threshold]
-
-        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-          allow(strategy).to receive(:increment).and_return(allowed_threshold + 1)
-        end
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+          .with(action, scope: anything).and_return(true)
       end
 
       it 'does not send any email' do

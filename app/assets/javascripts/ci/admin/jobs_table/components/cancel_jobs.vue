@@ -19,6 +19,7 @@ export default {
       required: true,
     },
   },
+  emits: ['confirm'],
   modalId: CANCEL_JOBS_MODAL_ID,
   buttonText: CANCEL_JOBS_BUTTON_TEXT,
   buttonTooltip: CANCEL_BUTTON_TOOLTIP,

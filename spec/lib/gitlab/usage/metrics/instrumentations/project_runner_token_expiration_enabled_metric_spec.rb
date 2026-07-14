@@ -6,8 +6,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::ProjectRunnerTokenExpir
   using RSpec::Parameterized::TableSyntax
 
   context 'for project runner authentication token expiration option' do
-    let_it_be(:namespace_settings, freeze: false) { create(:namespace_settings) }
-    let_it_be(:group, freeze: false) { create(:group, namespace_settings: namespace_settings) }
+    let_it_be_with_reload(:namespace_settings) { create(:namespace_settings) }
+    let_it_be_with_reload(:group) { create(:group, namespace_settings: namespace_settings) }
     let_it_be(:project) { create(:project, group: group) }
 
     where(:application_setting, :namespace_setting, :expected_value) do

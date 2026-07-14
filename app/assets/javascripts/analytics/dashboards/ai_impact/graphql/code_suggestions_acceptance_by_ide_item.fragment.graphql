@@ -1,0 +1,14 @@
+fragment CodeSuggestionsAcceptanceByIdeItem on Analytics {
+  duoCodeSuggestions(timestampFrom: $startDate, timestampTo: $endDate) {
+    aggregated(orderBy: [{ identifier: "acceptedCount", direction: ASC }]) {
+      nodes {
+        dimensions {
+          ideName
+        }
+        acceptedCount
+        shownCount
+        acceptanceRate
+      }
+    }
+  }
+}

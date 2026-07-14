@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { getDraft, updateDraft, getLockVersion, clearDraft } from '~/lib/utils/autosave';
@@ -12,6 +11,7 @@ import IssuableTypeField from './fields/type.vue';
 import LockedWarning from './locked_warning.vue';
 
 export default {
+  name: 'ShowForm',
   components: {
     DescriptionField,
     DescriptionTemplateField,
@@ -66,6 +66,7 @@ export default {
       default: '',
     },
   },
+  emits: ['updateForm'],
   data() {
     const autosaveKey = [document.location.pathname, document.location.search];
     const descriptionAutosaveKey = [...autosaveKey, 'description'];

@@ -11,7 +11,6 @@ module Ci
     include Ci::HasRef
     include Ci::TrackEnvironmentUsage
     include EachBatch
-    include Ci::Taggable
     include ChronicDurationAttribute
 
     extend ::Gitlab::Utils::Override
@@ -28,13 +27,6 @@ module Ci
       partition_foreign_key: :partition_id,
       inverse_of: :builds
     belongs_to :project_mirror, primary_key: :project_id, foreign_key: :project_id, inverse_of: :builds
-
-    belongs_to :execution_config,
-      ->(build) { in_partition(build) },
-      class_name: 'Ci::BuildExecutionConfig',
-      foreign_key: :execution_config_id,
-      partition_foreign_key: :partition_id,
-      inverse_of: :builds
 
     RUNNER_FEATURES = {
       upload_multiple_artifacts: ->(build) { build.publishes_artifacts_reports? },
@@ -105,17 +97,6 @@ module Ci
 
     has_many :pages_deployments, foreign_key: :ci_build_id, inverse_of: :ci_build
 
-    has_many :taggings, ->(build) { in_partition(build) },
-      class_name: 'Ci::BuildTag',
-      foreign_key: :build_id,
-      partition_foreign_key: :partition_id,
-      inverse_of: :build
-
-    has_many :tags,
-      class_name: 'Ci::Tag',
-      through: :taggings,
-      source: :tag
-
     Ci::JobArtifact.file_types.each_key do |key|
       has_one :"job_artifacts_#{key}", ->(build) { in_partition(build).with_file_types([key]) },
         class_name: 'Ci::JobArtifact',
@@ -132,6 +113,10 @@ module Ci
       partition_foreign_key: :partition_id,
       autosave: true
     has_one :runner_manager, foreign_key: :runner_machine_id, through: :runner_manager_build, class_name: 'Ci::RunnerManager'
+    has_one :build_runtime_environment,
+      class_name: 'Ci::BuildRuntimeEnvironment',
+      foreign_key: [:build_id, :partition_id],
+      inverse_of: :build
 
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, foreign_key: :build_id, inverse_of: :build
     has_one :trace_metadata, class_name: 'Ci::BuildTraceMetadata', foreign_key: :build_id, inverse_of: :build
@@ -147,9 +132,6 @@ module Ci
     delegate :service_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
     delegate :ensure_persistent_ref, to: :pipeline
-
-    serialize :options # rubocop:disable Cop/ActiveRecordSerialize
-    serialize :yaml_variables, coder: Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
     chronic_duration_attr_reader :timeout_human_readable, :timeout
 
@@ -175,11 +157,11 @@ module Ci
     scope :with_artifacts, ->(artifact_scope) { with_existing_job_artifacts(artifact_scope).eager_load_job_artifacts }
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
-    scope :eager_load_tags, -> { includes(:job_definition, :tags) }
+    scope :eager_load_tags, -> { includes(:job_definition) }
     scope :eager_load_for_archiving_trace, -> { preload(:project, :pending_state) }
     scope :eager_load_for_api, -> do
       preload(
-        :job_artifacts_archive, :ci_stage, :job_artifacts, :runner, :tags, :runner_manager, :metadata,
+        :job_artifacts_archive, :ci_stage, :job_artifacts, :runner, :runner_manager,
         :job_definition,
         pipeline: :project,
         user: [:user_preference, :user_detail, :followees, :followers]
@@ -215,11 +197,6 @@ module Ci
         .where("#{Ci::RunningBuild.table_name}.created_at + INTERVAL \'1 second\' * #{table_name}.timeout > ?",
           Time.current)
         .where(arel_table[:partition_id].eq(Ci::RunningBuild.arel_table[:partition_id]))
-    end
-
-    # TODO: remove this scope with `ci_builds_metadata`
-    scope :with_secure_reports_from_metadata_config_options, ->(job_types) do
-      joins(:metadata).where("#{Ci::BuildMetadata.quoted_table_name}.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
     end
 
     scope :with_coverage, -> { where.not(coverage: nil) }
@@ -268,12 +245,6 @@ module Ci
       run_after_commit { build.execute_hooks }
     end
 
-    # Builds no longer use the p_ci_build_tags table for tag storage.
-    # Tags are stored in ci_job_definitions and accessed via job_definition.tag_list.
-    # Tag records in the `tags` table are created by Ci::PendingBuild.build_tags_ids.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/580301
-    skip_callback :save, :after, :save_tags
-
     class << self
       # This is needed for url_for to work,
       # as the controller is JobsController
@@ -282,15 +253,15 @@ module Ci
       end
 
       def with_preloads
-        preload(:job_artifacts_archive, :job_artifacts, :tags, project: [:namespace])
+        preload(:job_artifacts_archive, :job_artifacts, :job_definition, project: [:namespace])
       end
 
       def clone_accessors
         %i[pipeline project ref tag name allow_failure stage_idx when
-          environment coverage_regex description tag_list protected
+          environment coverage_regex description protected
           needs_attributes job_variables_attributes resource_group
           scheduling_type timeout timeout_source debug_trace_enabled
-          ci_stage partition_id execution_config_id inputs_attributes].freeze
+          ci_stage partition_id inputs_attributes].freeze
       end
 
       def supported_keyset_orderings
@@ -456,25 +427,11 @@ module Ci
         end
       end
 
-      before_transition running: [:failed] do |build|
-        if build.server_timeout_running? && !build.anchor_finished_at_to_pending_state?
-          # If job was stuck or timed-out, only bill the set timeout.
-          build.finished_at = build.started_at + build.timeout.seconds
-        end
-      end
-
       before_transition canceling: [:canceled] do |build, transition|
         reason_enum = ::Gitlab::Ci::Build::Status::Reason
                            .fabricate(build, transition.args.first)
 
-        if reason_enum.failure_reason == :server_timeout_canceling
-          build.failure_reason = reason_enum.failure_reason
-
-          unless build.anchor_finished_at_to_pending_state?
-            # If job was stuck or timed-out, only bill the set timeout.
-            build.finished_at = build.started_at + build.timeout.seconds
-          end
-        end
+        build.failure_reason = reason_enum.failure_reason if reason_enum.failure_reason == :server_timeout_canceling
       end
 
       after_transition any => any do |build|
@@ -532,18 +489,9 @@ module Ci
       in_merge_request(merge_request_id).pluck(:id)
     end
 
-    def self.taggings_join_model
-      ::Ci::BuildTag
-    end
-
     def self.keep_artifacts!
       update_all(artifacts_expire_at: nil)
       Ci::JobArtifact.where(job: self.select(:id)).update_all(expire_at: nil)
-    end
-
-    # TODO: remove this method with `ci_builds_metadata`
-    def self.has_any_job_definition?
-      left_joins(:job_definition_instance).limit(1).pick(:job_id).present?
     end
 
     def self.any_stuck?(pending_builds)
@@ -609,8 +557,6 @@ module Ci
     # reports completion.
     override :set_finished_at
     def set_finished_at(transition = nil)
-      return super unless anchor_finished_at_to_pending_state?
-
       time = server_timeout_finished_at_for_transition(transition) || Time.current
 
       self.finished_at = [pending_state&.created_at, time].compact.min
@@ -625,10 +571,6 @@ module Ci
           project: project
         })
       end
-    end
-
-    def anchor_finished_at_to_pending_state?
-      Feature.enabled?(:ci_anchor_finished_at_to_pending_state, ::Project.actor_from_id(project_id))
     end
 
     def server_timeout_finished_at_for_transition(transition)
@@ -688,13 +630,7 @@ module Ci
     end
 
     def degenerated?
-      super && execution_config_id.nil? && run_steps.blank?
-    end
-
-    def degenerate!
-      super do
-        execution_config&.destroy
-      end
+      super && run_steps.blank?
     end
 
     def playable?
@@ -965,17 +901,14 @@ module Ci
       tag_list.any?
     end
 
-    override :tag_list
     def tag_list
-      return super if job_definition.nil?
-
-      job_definition.tag_list
+      Gitlab::Ci::Tags::Parser.new(read_job_definition_attribute(:tag_list, [])).parse
     end
     strong_memoize_attr :tag_list
 
     override :run_steps
     def run_steps
-      read_job_definition_attribute(:run_steps) || execution_config&.run_steps || []
+      read_job_definition_attribute(:run_steps) || []
     end
 
     def any_runners_online?
@@ -1303,7 +1236,7 @@ module Ci
 
     attr_reader :pending_build_args
 
-    # Override save to pre-compute pending build args outside the database
+    # Override save to pre-compute callback inputs outside the database
     # transaction. The state_machines-activerecord gem wraps ALL callbacks
     # (before_transition, after_transition) inside a transaction, so there
     # is no callback that runs outside it. However, the gem sets
@@ -1313,12 +1246,18 @@ module Ci
     # checks, plan lookups) before `super` enters the transaction. The
     # args are then read by UpdateBuildQueueService#push inside the
     # transaction via `build.pending_build_args`.
+    # The stick-build flag is also checked before `super` so the after_save
+    # callback does not perform feature flag IO inside the transaction.
     def save(...)
-      with_pending_build_args { super }
+      with_stick_build_flag_preloaded do
+        with_pending_build_args { super }
+      end
     end
 
     def save!(...)
-      with_pending_build_args { super }
+      with_stick_build_flag_preloaded do
+        with_pending_build_args { super }
+      end
     end
 
     def create_queuing_entry!
@@ -1436,6 +1375,16 @@ module Ci
 
     private
 
+    attr_accessor :stick_build_after_commit
+
+    def with_stick_build_flag_preloaded
+      prepare_stick_build_after_commit
+
+      yield
+    ensure
+      self.stick_build_after_commit = nil
+    end
+
     def with_pending_build_args
       prepare_pending_build_args
       yield
@@ -1448,6 +1397,15 @@ module Ci
       return unless status_event_transition&.to == 'pending'
 
       @pending_build_args = ::Ci::PendingBuild.args_from_build(self)
+    end
+
+    def prepare_stick_build_after_commit
+      self.stick_build_after_commit = false
+
+      return unless will_save_change_to_status?
+      return unless running?
+
+      self.stick_build_after_commit = Feature.enabled?(:ci_stick_build_after_commit, Project.actor_from_id(project_id))
     end
 
     def apply_jobs_cache_index(cache)
@@ -1503,7 +1461,11 @@ module Ci
       return unless saved_change_to_status?
       return unless running?
 
-      self.class.sticking.stick(:build, id)
+      if stick_build_after_commit
+        run_after_commit { self.class.sticking.stick(:build, id) }
+      else
+        self.class.sticking.stick(:build, id)
+      end
     end
 
     def status_commit_hooks
@@ -1606,17 +1568,6 @@ module Ci
         .index_by(&:type_new)
     end
     strong_memoize_attr :project_integrations
-
-    def read_job_definition_attribute(key, default_value = nil)
-      result =
-        if key.in?(::Ci::JobDefinition::NORMALIZED_DATA_COLUMNS)
-          [job_definition&.read_attribute(key), temp_job_definition&.read_attribute(key)].find { |v| !v.nil? }
-        else
-          [job_definition&.config&.dig(key), temp_job_definition&.config&.dig(key)].find { |v| !v.nil? }
-        end
-
-      [result, default_value].find { |v| !v.nil? }
-    end
   end
 end
 

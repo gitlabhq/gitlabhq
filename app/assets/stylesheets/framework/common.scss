@@ -346,6 +346,13 @@ li.note {
   cursor: text;
 }
 
+// Temporarily restore the browser-default bottom margin that @gitlab/ui@135
+// removed from GlPagination, until all usages are audited individually.
+// See https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/merge_requests/5437
+.gl-pagination ul {
+  margin-bottom: 1rem;
+}
+
 // --- moved from labels.scss when moving to page_bundles ---
 // Fix scoped label padding in cases where old markdown uses the old label structure */
 .gl-label-text + .gl-label-text {

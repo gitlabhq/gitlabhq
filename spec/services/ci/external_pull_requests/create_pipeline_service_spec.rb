@@ -5,12 +5,8 @@ require 'spec_helper'
 RSpec.describe Ci::ExternalPullRequests::CreatePipelineService, feature_category: :continuous_integration do
   describe '#execute' do
     let_it_be(:project) { create(:project, :auto_devops, :repository) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, maintainer_of: project) }
     let_it_be_with_reload(:pull_request) { create(:external_pull_request, project: project) }
-
-    before do
-      project.add_maintainer(user)
-    end
 
     subject(:execute) { described_class.new(project, user).execute(pull_request) }
 

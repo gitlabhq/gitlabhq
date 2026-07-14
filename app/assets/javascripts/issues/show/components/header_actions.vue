@@ -46,6 +46,7 @@ import HeaderActionsConfidentialityToggle from './header_actions_confidentiality
 const trackingMixin = Tracking.mixin({ label: 'delete_issue' });
 
 export default {
+  name: 'HeaderActions',
   actionCancel: {
     text: __('Cancel'),
   },

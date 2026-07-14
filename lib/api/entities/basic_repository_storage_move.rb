@@ -3,7 +3,7 @@
 module API
   module Entities
     class BasicRepositoryStorageMove < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :created_at, documentation: { type: 'DateTime', example: '2020-05-07T04:27:17.234Z' }
       expose :human_state_name, as: :state, documentation: { type: 'String', example: 'scheduled' }
       expose :source_storage_name, documentation: { type: 'String', example: 'default' }

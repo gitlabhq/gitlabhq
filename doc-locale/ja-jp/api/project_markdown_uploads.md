@@ -42,8 +42,10 @@ POST /projects/:id/uploads
 リクエスト例: 
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "file=@dk.png" "https://gitlab.example.com/api/v4/projects/5/uploads"
+curl --request POST \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --form "file=@dk.png" \
+    --url "https://gitlab.example.com/api/v4/projects/5/uploads"
 ```
 
 レスポンス例: 
@@ -90,7 +92,8 @@ GET /projects/:id/uploads
 リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/5/uploads"
 ```
 
 レスポンス例: 
@@ -148,7 +151,8 @@ GET /projects/:id/uploads/:upload_id
 リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/5/uploads/1"
 ```
 
 ## シークレットとファイル名でアップロードされたファイルをダウンロードする {#download-an-uploaded-file-by-secret-and-filename}
@@ -182,7 +186,8 @@ GET /projects/:id/uploads/:secret/:filename
 リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads/648d97c6eef5fc5df8d1004565b3ee5a/sample.jpg"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/5/uploads/648d97c6eef5fc5df8d1004565b3ee5a/sample.jpg"
 ```
 
 ## IDでアップロードされたファイルを削除する {#delete-an-uploaded-file-by-id}
@@ -215,7 +220,9 @@ DELETE /projects/:id/uploads/:upload_id
 リクエスト例: 
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads/1"
+curl --request DELETE \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/5/uploads/1"
 ```
 
 ## シークレットとファイル名でアップロードされたファイルを削除する {#delete-an-uploaded-file-by-secret-and-filename}
@@ -249,5 +256,7 @@ DELETE /projects/:id/uploads/:secret/:filename
 リクエスト例: 
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads/648d97c6eef5fc5df8d1004565b3ee5a/sample.jpg"
+curl --request DELETE \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/5/uploads/648d97c6eef5fc5df8d1004565b3ee5a/sample.jpg"
 ```

@@ -6,7 +6,7 @@ RSpec.describe API::Validations::Validators::EmailOrEmailList do
   include ApiValidatorsHelpers
 
   subject do
-    described_class.new(['email'], {}, false, scope.new)
+    described_class.new(['email'], {}, false, scope.new, {})
   end
 
   context 'with valid email addresses' do

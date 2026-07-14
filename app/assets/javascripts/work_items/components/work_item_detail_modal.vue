@@ -5,6 +5,7 @@ import { removeHierarchyChild } from '../graphql/cache_utils';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 
 export default {
+  name: 'WorkItemDetailModal',
   WORK_ITEM_DETAIL_MODAL_ID: 'work-item-detail-modal',
   i18n: {
     errorMessage: s__('WorkItem|Something went wrong when deleting the task. Please try again.'),
@@ -40,7 +41,7 @@ export default {
       default: '',
     },
   },
-  emits: ['work-item-deleted', 'close', 'update-modal'],
+  emits: ['close', 'openReportAbuse', 'update-modal', 'work-item-deleted'],
   data() {
     return {
       error: undefined,

@@ -61,6 +61,7 @@ export default {
       default: null,
     },
   },
+  emits: ['runnerRegistered', 'selectPlatform'],
   data() {
     return {
       runner: null,

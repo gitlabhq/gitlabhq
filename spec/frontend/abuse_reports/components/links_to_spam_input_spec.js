@@ -21,7 +21,11 @@ describe('LinksToSpamInput', () => {
 
   const findAllFormGroups = () => wrapper.findAllComponents(GlFormGroup);
   const findLinkInput = () => wrapper.findComponent(GlFormInput);
-  const findAddAnotherButton = () => wrapper.findComponent(GlButton);
+  const findAllLinkInputs = () => wrapper.findAllComponents(GlFormInput);
+  const findAddAnotherButton = () =>
+    wrapper.findAllComponents(GlButton).wrappers.find((b) => b.props('icon') === 'plus');
+  const findRemoveButtons = () =>
+    wrapper.findAllComponents(GlButton).wrappers.filter((b) => b.props('icon') === 'remove');
 
   describe('Form Input', () => {
     it('renders only one input field initially', () => {
@@ -36,13 +40,46 @@ describe('LinksToSpamInput', () => {
       });
     });
 
+    it('does not render a remove button on the first input', () => {
+      expect(findRemoveButtons()).toHaveLength(0);
+    });
+
     describe('when add another link button is clicked', () => {
-      it('adds another input', async () => {
+      beforeEach(async () => {
         findAddAnotherButton().vm.$emit('click');
-
         await nextTick();
+      });
 
+      it('adds another input', () => {
         expect(findAllFormGroups()).toHaveLength(2);
+      });
+
+      it('renders a remove button only on the added input', () => {
+        const removeButtons = findRemoveButtons();
+        expect(removeButtons).toHaveLength(1);
+        expect(removeButtons[0].attributes('aria-label')).toBe('Remove link');
+      });
+
+      describe('when the remove button is clicked', () => {
+        it('removes that input and leaves only the first', async () => {
+          findRemoveButtons()[0].vm.$emit('click');
+          await nextTick();
+
+          expect(findAllFormGroups()).toHaveLength(1);
+          expect(findRemoveButtons()).toHaveLength(0);
+        });
+
+        it('removes the correct entry from the submitted payload', async () => {
+          createComponent({
+            previousLinks: ['https://a.test', 'https://b.test', 'https://c.test'],
+          });
+
+          findRemoveButtons()[0].vm.$emit('click');
+          await nextTick();
+
+          const values = findAllLinkInputs().wrappers.map((w) => w.attributes('value'));
+          expect(values).toEqual(['https://a.test', 'https://c.test']);
+        });
       });
     });
 

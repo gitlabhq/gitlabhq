@@ -1,9 +1,0 @@
-- if viewer.valid?(project: @project, sha: @commit.sha, user: @current_user)
-  = sprite_icon('check')
-  = s_('Pipelines|This GitLab CI configuration is valid.')
-- else
-  = sprite_icon('warning-solid')
-  = s_('Pipelines|This GitLab CI configuration is invalid:')
-  = viewer.validation_message(project: @project, sha: @commit.sha, user: @current_user)
-
-= link_to _('Learn more'), help_page_path('ci/yaml/_index.md')

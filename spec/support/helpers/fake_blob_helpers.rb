@@ -42,7 +42,7 @@ module FakeBlobHelpers
   end
 
   def fake_blob(**kwargs)
-    container = kwargs.delete(:container) || project
+    container = kwargs.has_key?(:container) ? kwargs.delete(:container) : project
 
     Blob.decorate(FakeBlob.new(**kwargs), container)
   end

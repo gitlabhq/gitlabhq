@@ -228,3 +228,21 @@ You can receive this message and have a disabled **Run** button when trying to r
   and your account is not included in the **Allowed to deploy** list.
 - The setting to [prevent outdated deployment jobs](../environments/deployment_safety.md#prevent-outdated-deployment-jobs)
   is enabled and running the job would overwrite the latest deployment.
+
+## Job dropped after being stuck or exceeding its timeout
+
+If a job doesn't progress for an extended period, GitLab automatically drops it and
+records a specific `failure_reason`. The threshold depends on the job's state:
+
+| Job state  | Threshold                            | Failure reason                        |
+|------------|----------------------------------------|-----------------------------------------|
+| Pending    | 24 hours                               | `stuck_pending_with_matching_runners`  |
+| Pending    | 1 hour                                 | `stuck_pending_no_matching_runners`    |
+| Running    | 30 minutes with no updates             | `no_updates_running`                   |
+| Canceling  | 30 minutes with no updates             | `no_updates_canceling`                 |
+| Running    | Configured `timeout` plus 15 minutes   | `server_timeout_running`               |
+| Canceling  | Configured `timeout` plus 15 minutes   | `server_timeout_canceling`             |
+
+If your job failed immediately instead of waiting, this isn't the cause. To automatically
+retry jobs, or to see the full list of failure reasons, see
+[`retry:when`](../yaml/_index.md#retrywhen).

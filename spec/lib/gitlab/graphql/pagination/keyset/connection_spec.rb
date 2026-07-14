@@ -5,17 +5,31 @@ require 'spec_helper'
 RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
   include GraphqlHelpers
 
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/334973
-  # The spec will be merged with connection_spec.rb in the future.
   let(:nodes) { Project.all.order(id: :asc) }
   let(:arguments) { {} }
   let(:context) { GraphQL::Query::Context.new(query: query_double, values: nil) }
 
-  let_it_be(:column_order_id, freeze: false) { Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(attribute_name: 'id', order_expression: Project.arel_table[:id].asc) }
-  let_it_be(:column_order_id_desc, freeze: false) { Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(attribute_name: 'id', order_expression: Project.arel_table[:id].desc) }
-  let_it_be(:column_order_updated_at, freeze: false) { Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(attribute_name: 'updated_at', order_expression: Project.arel_table[:updated_at].asc) }
-  let_it_be(:column_order_created_at, freeze: false) { Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(attribute_name: 'created_at', order_expression: Project.arel_table[:created_at].asc) }
-  let_it_be(:column_order_last_repo, freeze: false) do
+  let(:column_order_id) do
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'id', order_expression: Project.arel_table[:id].asc)
+  end
+
+  let(:column_order_id_desc) do
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'id', order_expression: Project.arel_table[:id].desc)
+  end
+
+  let(:column_order_updated_at) do
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'updated_at', order_expression: Project.arel_table[:updated_at].asc)
+  end
+
+  let(:column_order_created_at) do
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'created_at', order_expression: Project.arel_table[:created_at].asc)
+  end
+
+  let(:column_order_last_repo) do
     Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
       attribute_name: 'last_repository_check_at',
       column_expression: Project.arel_table[:last_repository_check_at],
@@ -25,7 +39,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       nullable: :nulls_last)
   end
 
-  let_it_be(:column_order_last_repo_desc, freeze: false) do
+  let(:column_order_last_repo_desc) do
     Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
       attribute_name: 'last_repository_check_at',
       column_expression: Project.arel_table[:last_repository_check_at],
@@ -35,6 +49,8 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       nullable: :nulls_last)
   end
 
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/334973
+  # The spec will be merged with connection_spec.rb in the future.
   subject(:connection) do
     described_class.new(nodes, **{ context: context, max_page_size: 3 }.merge(arguments))
   end
@@ -78,6 +94,11 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
     it_behaves_like 'a connection with collection methods'
 
     it_behaves_like 'a redactable connection' do
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:projects, freeze: false) { create_list(:project, 2) }
       let(:unwanted) { projects.second }
     end
@@ -224,6 +245,11 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       end
 
       context 'when multiple orders with nil values are defined' do
+        # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+        # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+        # subject, or an in-memory mutation that survives reload/refind). Do not
+        # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+        # (see gitlab-org/gitlab#602925).
         let_it_be(:project1, freeze: false) { create(:project, last_repository_check_at: 10.days.ago) }    # Asc: project5  Desc: project3
         let_it_be(:project2, freeze: false) { create(:project, last_repository_check_at: nil) }            # Asc: project1  Desc: project1
         let_it_be(:project3, freeze: false) { create(:project, last_repository_check_at: 5.days.ago) }     # Asc: project3  Desc: project5
@@ -231,9 +257,9 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
         let_it_be(:project5, freeze: false) { create(:project, last_repository_check_at: 20.days.ago) }    # Asc: project4  Desc: project4
 
         context 'when ascending' do
-          let_it_be(:order, freeze: false) { Gitlab::Pagination::Keyset::Order.build([column_order_last_repo, column_order_id]) }
-          let_it_be(:nodes, freeze: false) { Project.order(order) }
-          let_it_be(:ascending_nodes, freeze: false) { [project5, project1, project3, project2, project4] }
+          let(:order) { Gitlab::Pagination::Keyset::Order.build([column_order_last_repo, column_order_id]) }
+          let(:nodes) { Project.order(order) }
+          let(:ascending_nodes) { [project5, project1, project3, project2, project4] }
 
           it_behaves_like 'nodes are in ascending order'
 
@@ -255,9 +281,9 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
         end
 
         context 'when descending' do
-          let_it_be(:order, freeze: false) { Gitlab::Pagination::Keyset::Order.build([column_order_last_repo_desc, column_order_id]) }
-          let_it_be(:nodes, freeze: false) { Project.order(order) }
-          let_it_be(:descending_nodes, freeze: false) { [project3, project1, project5, project2, project4] }
+          let(:order) { Gitlab::Pagination::Keyset::Order.build([column_order_last_repo_desc, column_order_id]) }
+          let(:nodes) { Project.order(order) }
+          let(:descending_nodes) { [project3, project1, project5, project2, project4] }
 
           it_behaves_like 'nodes are in descending order'
 
@@ -286,12 +312,12 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
         let_it_be(:project4, freeze: false) { create(:project, name: 'testing stuff') }
         let_it_be(:project5, freeze: false) { create(:project, name: 'test') }
 
-        let_it_be(:nodes, freeze: false) do
+        let(:nodes) do
           # Note: sorted_by_similarity_desc scope internally supports the generic keyset order.
           Project.sorted_by_similarity_desc('test')
         end
 
-        let_it_be(:descending_nodes, freeze: false) { nodes.to_a }
+        let(:descending_nodes) { nodes.to_a }
 
         it_behaves_like 'nodes are in descending order'
       end
@@ -306,6 +332,11 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
     end
 
     describe '#nodes' do
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:all_nodes, freeze: false) { create_list(:project, 5) }
 
       let(:paged_nodes) { subject.nodes }
@@ -360,8 +391,14 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
 
     describe '#has_previous_page and #has_next_page' do
       # using a list of 5 items with a max_page of 3
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:project_list, freeze: false) { create_list(:project, 5) }
-      let_it_be(:nodes, freeze: false) { Project.order(Gitlab::Pagination::Keyset::Order.build([column_order_id])) }
+
+      let(:nodes) { Project.order(Gitlab::Pagination::Keyset::Order.build([column_order_id])) }
 
       context 'when default query' do
         let(:arguments) { {} }
@@ -438,6 +475,126 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
             expect(subject.has_next_page).to be_falsey
           end
         end
+      end
+    end
+  end
+
+  describe 'pagination with redaction' do
+    let_it_be(:project_list) { create_list(:project, 5) }
+    let(:nodes) { Project.where(id: project_list.map(&:id)).order(id: :asc) }
+    let(:redact) { [] }
+
+    before do
+      subject.redactor = Class.new do
+        attr_accessor :remove_ids
+
+        def initialize(remove_ids)
+          @remove_ids = remove_ids
+        end
+
+        def redact(items)
+          items.reject { |item| remove_ids.include?(item.id) }
+        end
+      end.new(redact)
+    end
+
+    shared_examples "a pagination response with further results" do
+      it "has_next_page is true" do
+        expect(subject.has_next_page).to be_truthy
+      end
+
+      it "has a matching end_cursor" do
+        expect(subject.end_cursor).to eq end_cursor
+      end
+    end
+
+    shared_examples "a pagination response with no further results" do
+      it "has_next_page is false" do
+        expect(subject.has_next_page).to be_falsey
+      end
+
+      it "has a matching end_cursor" do
+        expect(subject.end_cursor).to eq end_cursor
+      end
+    end
+
+    context 'when redaction removes all nodes' do
+      let(:arguments) { { first: 5, max_page_size: 5 } }
+      let(:redact) { project_list.map(&:id) }
+      let(:end_cursor) { subject.cursor_for(project_list.last) }
+
+      it_behaves_like "a pagination response with no further results"
+
+      it "returns no nodes" do
+        expect(subject.nodes.map(&:id)).to be_empty
+      end
+    end
+
+    context 'when redaction removes some nodes but not all' do
+      let(:arguments) { { first: 2 } }
+      let(:redact) { [project_list[0].id] }
+      let(:end_cursor) { subject.cursor_for(project_list[1]) }
+
+      it_behaves_like "a pagination response with further results"
+
+      it "returns expected nodes" do
+        expect(subject.nodes.map(&:id)).to eq([project_list[1].id])
+      end
+    end
+
+    context 'when redaction removes all nodes but more records exist in the db' do
+      let(:arguments) { { first: 2 } }
+      let(:redact) { [project_list[0].id, project_list[1].id] }
+      let(:end_cursor) { subject.cursor_for(project_list[1]) }
+
+      it_behaves_like "a pagination response with further results"
+
+      it "returns no nodes" do
+        expect(subject.nodes.map(&:id)).to be_empty
+      end
+    end
+
+    context 'when first and after are provided' do
+      let(:arguments) { { first: 2, after: encoded_cursor(project_list[1]) } }
+
+      context 'and redactor removes the node that should be used for the end_cursor' do
+        let(:redact) { [project_list[3].id] }
+        let(:end_cursor) { subject.cursor_for(project_list[3]) }
+
+        it_behaves_like "a pagination response with further results"
+
+        it "returns expected nodes" do
+          expect(subject.nodes.map(&:id)).to eq([project_list[2].id])
+        end
+      end
+
+      context 'and redactor removes entire next page after the cursor' do
+        let(:redact) { [project_list[2].id, project_list[3].id] }
+        let(:end_cursor) { subject.cursor_for(project_list[3]) }
+
+        it_behaves_like "a pagination response with further results"
+      end
+    end
+
+    context 'when last and before are provided' do
+      let(:arguments) { { last: 2, before: encoded_cursor(project_list[4]) } }
+
+      context 'and redactor removes the node that should be used for the end_cursor' do
+        let(:redact) { [project_list[3].id] }
+        let(:end_cursor) { subject.cursor_for(project_list[3]) }
+
+        it_behaves_like "a pagination response with further results"
+
+        it "returns expected nodes" do
+          expect(subject.nodes.map(&:id)).to eq([project_list[2].id])
+        end
+      end
+
+      context 'and redactor removes entire next page after the cursor' do
+        let(:redact) { [project_list[2].id, project_list[3].id] }
+        let(:end_cursor) { subject.cursor_for(project_list[3]) }
+
+        it_behaves_like "a pagination response with further results"
       end
     end
   end

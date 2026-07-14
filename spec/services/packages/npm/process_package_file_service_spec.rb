@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::Npm::ProcessPackageFileService, feature_category: :package_registry do
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:package, freeze: false) { build(:npm_package, :processing, id: 1) }
   let_it_be(:package_file, freeze: false) do
     build(:package_file, :npm, file_fixture: expand_fixture_path('packages/npm/package-1.3.7.tgz'), package: package)

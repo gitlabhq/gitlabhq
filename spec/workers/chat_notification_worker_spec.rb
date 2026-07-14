@@ -9,7 +9,7 @@ RSpec.describe ChatNotificationWorker, feature_category: :integrations do
   end
 
   it 'instructs sidekiq not to retry on failure' do
-    expect(described_class.get_sidekiq_options['retry']).to eq(false)
+    expect(described_class.get_sidekiq_options['retry']).to be(false)
   end
 
   describe '#perform' do

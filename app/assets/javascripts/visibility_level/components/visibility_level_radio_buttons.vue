@@ -1,9 +1,11 @@
 <script>
 import { GlIcon, GlFormRadio, GlFormRadioGroup } from '@gitlab/ui';
+import { isNumber } from 'lodash-es';
 import {
   VISIBILITY_LEVEL_LABELS,
   VISIBILITY_TYPE_ICON,
   VISIBILITY_LEVELS_INTEGER_TO_STRING,
+  VISIBILITY_LEVEL_PRIVATE_INTEGER,
 } from '~/visibility_level/constants';
 
 export default {
@@ -29,6 +31,11 @@ export default {
       type: Object,
       required: true,
     },
+    minVisibilityLevel: {
+      type: Number,
+      required: false,
+      default: VISIBILITY_LEVEL_PRIVATE_INTEGER,
+    },
   },
   emits: ['input'],
   computed: {
@@ -41,8 +48,14 @@ export default {
           description: this.visibilityLevelDescriptions[stringValue],
           icon: VISIBILITY_TYPE_ICON[stringValue],
           value: visibilityLevel,
+          disabled: isNumber(this.minVisibilityLevel)
+            ? visibilityLevel < this.minVisibilityLevel
+            : false,
         };
       });
+    },
+    hasDisabledVisibilityLevels() {
+      return this.visibilityLevelsOptions.some((visibilityLevel) => visibilityLevel.disabled);
     },
   },
 };
@@ -51,9 +64,10 @@ export default {
 <template>
   <gl-form-radio-group :checked="checked" @input="$emit('input', $event)">
     <gl-form-radio
-      v-for="{ label, description, icon, value } in visibilityLevelsOptions"
+      v-for="{ label, description, icon, value, disabled } in visibilityLevelsOptions"
       :key="value"
       :value="value"
+      :disabled="disabled"
     >
       <div>
         <gl-icon :name="icon" />
@@ -61,5 +75,6 @@ export default {
       </div>
       <template #help>{{ description }}</template>
     </gl-form-radio>
+    <slot v-if="hasDisabledVisibilityLevels" name="disabled-message"></slot>
   </gl-form-radio-group>
 </template>

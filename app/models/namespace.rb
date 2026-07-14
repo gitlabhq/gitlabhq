@@ -122,6 +122,7 @@ class Namespace < ApplicationRecord
   has_many :timelog_categories, class_name: 'TimeTracking::TimelogCategory'
   has_many :achievements, class_name: 'Achievements::Achievement'
   has_many :namespace_commit_emails, class_name: 'Users::NamespaceCommitEmail'
+  has_many :namespace_consents, class_name: 'Namespaces::Consent', inverse_of: :namespace
   has_many :cycle_analytics_stages, class_name: 'Analytics::CycleAnalytics::Stage', foreign_key: :group_id, inverse_of: :namespace
   has_many :value_streams, class_name: 'Analytics::CycleAnalytics::ValueStream', foreign_key: :group_id, inverse_of: :namespace
 
@@ -221,9 +222,12 @@ class Namespace < ApplicationRecord
       delegate :default_branch_protection_defaults
       delegate :archived, :archived=
       delegate :math_rendering_limits_enabled, :lock_math_rendering_limits_enabled
+      delegate :resource_access_token_notify_inherited, :lock_resource_access_token_notify_inherited
       delegate :emails_enabled, :emails_enabled=
       delegate :web_based_commit_signing_enabled?, :lock_web_based_commit_signing_enabled?
       delegate :web_based_commit_signing_enabled, :lock_web_based_commit_signing_enabled
+      delegate :require_sha_for_merge?, :lock_require_sha_for_merge?
+      delegate :require_sha_for_merge, :lock_require_sha_for_merge
       delegate :granular_tokens_enforced?
     end
   end
@@ -948,6 +952,10 @@ class Namespace < ApplicationRecord
     allowed_work_item_types.present?
   end
   strong_memoize_attr :supports_work_items?
+
+  def consented_to?(feature_name)
+    namespace_consents.exists?(feature_name: feature_name)
+  end
 
   private
 

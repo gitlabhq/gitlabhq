@@ -16,11 +16,11 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
 
   context "issuable common quick actions" do
     let(:new_url_opts) { {} }
-    let(:maintainer) { create(:user) }
-    let_it_be(:project) { create(:project, :public) }
-    let!(:label_bug) { create(:label, project: project, title: 'bug') }
-    let!(:label_feature) { create(:label, project: project, title: 'feature') }
-    let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
+    let_it_be(:maintainer, freeze: false) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be(:label_bug, freeze: false) { create(:label, project: project, title: 'bug') }
+    let_it_be(:label_feature, freeze: false) { create(:label, project: project, title: 'feature') }
+    let_it_be(:milestone, freeze: false) { create(:milestone, project: project, title: 'ASAP') }
     let(:issuable) { create(:issue, project: project) }
     let(:source_issuable) { create(:issue, project: project, milestone: milestone, labels: [label_bug, label_feature]) }
 
@@ -29,12 +29,15 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
   end
 
   describe 'issue-only commands' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :public, :repository) }
+    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
     let(:issue) { create(:issue, project: project, due_date: Date.new(2016, 8, 28)) }
 
-    before do
+    before_all do
       project.add_maintainer(user)
+    end
+
+    before do
       sign_in(user)
       stub_feature_flags(page_breadcrumbs_in_top_bar: false)
       visit project_issue_path(project, issue)
@@ -42,19 +45,7 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
 
     it_behaves_like 'create_merge_request quick action'
 
-    context 'with quarantine', quarantine: {
-      issue: [
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/454317',
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/452140',
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/451758',
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/451477',
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/450856',
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/450804',
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/450229'
-      ]
-    } do
-      it_behaves_like 'move quick action'
-    end
+    it_behaves_like 'move quick action'
 
     it_behaves_like 'zoom quick actions'
     it_behaves_like 'clone quick action'

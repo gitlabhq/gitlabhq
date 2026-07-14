@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::HookData::UserBuilder, feature_category: :webhooks do
-  let_it_be(:user, freeze: false) { create(:user, name: 'John Doe', username: 'johndoe', email: 'john@example.com') }
+  let_it_be_with_reload(:user) { create(:user, name: 'John Doe', username: 'johndoe', email: 'john@example.com') }
 
   describe '#build' do
     let(:data) { described_class.new(user).build(event) }

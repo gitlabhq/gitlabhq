@@ -7,6 +7,7 @@ import { stripQuotes } from '~/lib/utils/text_utility';
 import { OPTIONS_NONE_ANY } from '../constants';
 
 export default {
+  name: 'EmojiToken',
   components: {
     BaseToken,
     GlFilteredSearchSuggestion,

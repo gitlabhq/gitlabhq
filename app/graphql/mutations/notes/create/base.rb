@@ -8,6 +8,12 @@ module Mutations
       class Base < Mutations::Notes::Base
         authorize :create_note
 
+        authorize_granular_token permissions: :create_note,
+          boundaries: [
+            { boundary_argument: :noteable_id, boundary: :resource_parent, boundary_type: :project },
+            { boundary_argument: :noteable_id, boundary: :resource_parent, boundary_type: :group }
+          ]
+
         argument :noteable_id,
           ::Types::GlobalIDType[::Noteable],
           required: true,

@@ -1,12 +1,10 @@
 import { nextTick } from 'vue';
-import { GlButton, GlAvatar } from '@gitlab/ui';
+import { GlButton, GlAvatar, GlNavItem } from '@gitlab/ui';
 import { RouterLinkStub } from '@vue/test-utils';
-import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
-import NavItemLink from '~/super_sidebar/components/nav_item_link.vue';
 import {
-  NAV_ITEM_LINK_ACTIVE_CLASS,
   CLICK_MENU_ITEM_ACTION,
   TRACKING_UNKNOWN_ID,
   TRACKING_UNKNOWN_PANEL,
@@ -18,8 +16,9 @@ describe('NavItem component', () => {
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findLink = () => wrapper.findByTestId('nav-item-link');
   const findPill = () => wrapper.findByTestId('pill-badge');
+  const findBadge = () => wrapper.findByTestId('nav-item-feature-announcement-badge');
   const findPinButton = () => wrapper.findComponent(GlButton);
-  const findNavItemLink = () => extendedWrapper(wrapper.findComponent(NavItemLink));
+  const findNavItem = () => wrapper.findComponent(GlNavItem);
 
   const createWrapper = ({
     item,
@@ -171,6 +170,21 @@ describe('NavItem component', () => {
     });
   });
 
+  describe('feature announcement badge', () => {
+    it('renders the badge with its label when `item.badge` is present', () => {
+      createWrapper({ item: { title: 'Foo', badge: { label: 'New' } } });
+
+      expect(findBadge().exists()).toBe(true);
+      expect(findBadge().text()).toBe('New');
+    });
+
+    it('does not render the badge when `item.badge` is absent', () => {
+      createWrapper({ item: { title: 'Foo' } });
+
+      expect(findBadge().exists()).toBe(false);
+    });
+  });
+
   describe('pins', () => {
     describe('when pins are not supported', () => {
       it('does not render pin button', () => {
@@ -290,18 +304,18 @@ describe('NavItem component', () => {
 
   describe('when `item` prop has `link` attribute', () => {
     describe('when `item` has `is_active` set to `false`', () => {
-      it('renders `NavItemLink` with no active class', () => {
+      it('renders `GlNavItem` with no selected prop', () => {
         createWrapper({ item: { title: 'Foo', link: '/foo', is_active: false } });
 
-        expect(findNavItemLink().classes()).not.toContain(NAV_ITEM_LINK_ACTIVE_CLASS);
+        expect(findNavItem().props('selected')).toBe(false);
       });
     });
 
     describe('when `item` has `is_active` set to `true`', () => {
-      it('renders `NavItemLink` with active class', () => {
+      it('renders `GlNavItem` with selected prop', () => {
         createWrapper({ item: { title: 'Foo', link: '/foo', is_active: true } });
 
-        expect(findNavItemLink().classes()).toContain(NAV_ITEM_LINK_ACTIVE_CLASS);
+        expect(findNavItem().props('selected')).toBe(true);
       });
     });
   });

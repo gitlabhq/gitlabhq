@@ -34,6 +34,7 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 | `gitlab_internal` | All internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`) | |
 | `gitlab_pm` | All tables that store `package_metadata`| It is an alias for `gitlab_main`, to be replaced with `gitlab_sec` |
 | `gitlab_sec` | All Security and Vulnerability feature tables to be stored in the `sec:` database | [Decomposition in progress](https://gitlab.com/groups/gitlab-org/-/epics/13043) |
+| `gitlab_sec_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | Cell-local, non-customer reference data on the `sec:` database that has no sharding key (for example, malware advisories) |
 | `gitlab_shared` | Deprecated, refer `gitlab_shared_cell_local` or `gitlab_shared_org` | |
 | `gitlab_shared_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_shared_org` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |

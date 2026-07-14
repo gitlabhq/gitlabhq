@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import createStore from '~/vue_shared/components/metric_images/store';
+import { pinia } from '~/pinia/instance';
 import service from './service';
 import AlertDetails from './components/alert_details.vue';
 import { PAGE_CONFIG } from './constants';
@@ -49,15 +49,13 @@ export default (selector) => {
     iid,
     statuses: PAGE_CONFIG[page].STATUSES,
     canUpdate: parseBoolean(canUpdate),
+    metricImagesService: service,
   };
-
-  const opsProperties = {};
 
   const { TRACK_ALERTS_DETAILS_VIEWS_OPTIONS, TRACK_ALERT_STATUS_UPDATE_OPTIONS } =
     PAGE_CONFIG[page];
   provide.trackAlertsDetailsViewsOptions = TRACK_ALERTS_DETAILS_VIEWS_OPTIONS;
   provide.trackAlertStatusUpdateOptions = TRACK_ALERT_STATUS_UPDATE_OPTIONS;
-  opsProperties.store = createStore({}, service);
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -66,7 +64,7 @@ export default (selector) => {
     components: {
       AlertDetails,
     },
-    ...opsProperties,
+    pinia,
     provide,
     apolloProvider,
     router,

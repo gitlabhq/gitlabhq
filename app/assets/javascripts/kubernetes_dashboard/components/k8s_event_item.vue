@@ -9,6 +9,7 @@ import {
 import { s__ } from '~/locale';
 
 export default {
+  name: 'K8sEventItem',
   i18n: {
     source: s__('KubernetesDashboard|Source: %{source}'),
     justNow: s__('Timeago|just now'),

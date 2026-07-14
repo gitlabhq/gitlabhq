@@ -6,23 +6,15 @@ import { databaseInformationResults } from '../mock_data';
 describe('DbSchemasSection component', () => {
   let wrapper;
 
-  const {
-    current_user: currentUser,
-    search_path: searchPath,
-    schemas,
-  } = databaseInformationResults.databases.main;
+  const { schemas } = databaseInformationResults.databases.main;
 
-  const defaultProps = { currentUser, searchPath, schemas };
-
-  const findCurrentUser = () => wrapper.findByTestId('current-user');
-  const findSearchPath = () => wrapper.findByTestId('search-path');
   const findTable = () => wrapper.findComponent(GlTableLite);
   const findBadges = () => wrapper.findAllComponents(GlBadge);
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = mountExtended(DbSchemasSection, {
       propsData: {
-        ...defaultProps,
+        schemas,
         ...props,
       },
     });
@@ -30,16 +22,6 @@ describe('DbSchemasSection component', () => {
 
   beforeEach(() => {
     createComponent();
-  });
-
-  it('renders the current user', () => {
-    expect(findCurrentUser().text()).toContain('Current user:');
-    expect(findCurrentUser().text()).toContain(currentUser);
-  });
-
-  it('renders the search path', () => {
-    expect(findSearchPath().text()).toContain('Search path:');
-    expect(findSearchPath().text()).toContain(searchPath);
   });
 
   it('renders a table of schemas', () => {

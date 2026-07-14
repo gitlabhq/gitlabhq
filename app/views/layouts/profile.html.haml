@@ -3,7 +3,7 @@
 - sidebar       "dashboard"
 - nav           "profile"
 
-- enable_search_settings locals: { container_class: 'gl-my-5' }
+- enable_search_settings
 
 - content_for :flash_message do
   = dispensable_render_if_exists "profiles/storage_enforcement_alert", context: current_user.namespace

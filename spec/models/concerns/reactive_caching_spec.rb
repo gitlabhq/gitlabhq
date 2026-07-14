@@ -210,7 +210,7 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
       end
 
       it 'returns the data' do
-        expect(go!).to eq(true)
+        expect(go!).to be(true)
       end
     end
   end

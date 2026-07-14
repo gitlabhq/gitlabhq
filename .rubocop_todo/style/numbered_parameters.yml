@@ -13,7 +13,6 @@ Style/NumberedParameters:
     - 'ee/app/models/security/finding.rb'
     - 'ee/app/models/vulnerabilities/feedback.rb'
     - 'ee/lib/ee/gitlab/quick_actions/users_extractor.rb'
-    - 'ee/spec/lib/gitlab/quick_actions/users_extractor_spec.rb'
     - 'ee/spec/models/vulnerabilities/statistic_spec.rb'
     - 'ee/spec/services/quick_actions/interpret_service_spec.rb'
     - 'ee/spec/services/security/ingestion/tasks/ingest_remediations_spec.rb'

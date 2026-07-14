@@ -8,6 +8,7 @@ import ColorPicker from '~/vue_shared/components/color_picker/color_picker.vue';
 import DiffsColorsPreview from './diffs_colors_preview.vue';
 
 export default {
+  name: 'DiffsColors',
   components: {
     ColorPicker,
     DiffsColorsPreview,

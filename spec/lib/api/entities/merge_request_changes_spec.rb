@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::API::Entities::MergeRequestChanges do
+RSpec.describe ::API::Entities::MergeRequestChanges, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
   let_it_be(:merge_request) { create(:merge_request) }
 

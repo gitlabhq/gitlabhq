@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module SidekiqLogArguments
   def self.enabled?
     Gitlab::Utils.to_boolean(ENV['SIDEKIQ_LOG_ARGUMENTS'], default: true)

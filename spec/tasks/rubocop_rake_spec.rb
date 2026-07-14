@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop:disable RSpec/VerifiedDoubles
 
 require 'fast_spec_helper'
@@ -47,7 +48,7 @@ RSpec.describe 'rubocop rake tasks', :silence_stdout, feature_category: :tooling
 
         run_task
 
-        expect(ENV.key?('REVEAL_RUBOCOP_TODO')).to eq(false)
+        expect(ENV.key?('REVEAL_RUBOCOP_TODO')).to be(false)
       end
     end
 

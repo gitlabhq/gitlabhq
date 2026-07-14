@@ -121,7 +121,7 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328074) in GitLab 16.9.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/514025) `reverse_issuer_and_subject` and `reverse_issuer_and_serial_number` formats in GitLab 17.11.
-- `issuer_and_subject`, `reverse_issuer_and_subject`, and `subject` formats [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208209) in GitLab 18.6 [with a flag](../feature_flags/_index.md) named `smartcard_ad_formats_v2`. Enabled by default. Disable this flag to revert these formats to the previous versions.
+- `issuer_and_subject`, `reverse_issuer_and_subject`, and `subject` formats [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208209) in GitLab 18.6 [with a feature flag](../feature_flags/_index.md) named `smartcard_ad_formats_v2`. Enabled by default. Disable this flag to revert these formats to the previous versions.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/577375) in GitLab 18.9. Feature flag `smartcard_ad_formats_v2` removed.
 
 {{< /history >}}
@@ -165,7 +165,7 @@ Active Directory servers store certificates in this format.
 
 {{< /history >}}
 
-[Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/fundamentals/whatis), formerly known as Azure Active Directory, provides a cloud-based directory for companies and organizations. [Entra Domain Services](https://learn.microsoft.com/en-us/entra/identity/domain-services/overview) provides a secure read-only LDAP interface to the directory, but only exposes a limited subset of the fields Entra ID has.
+[Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/fundamentals/what-is-entra), formerly known as Azure Active Directory, provides a cloud-based directory for companies and organizations. [Entra Domain Services](https://learn.microsoft.com/en-us/entra/identity/domain-services/overview) provides a secure read-only LDAP interface to the directory, but only exposes a limited subset of the fields Entra ID has.
 
 Entra ID uses the `CertificateUserIds` field to manage client certificates for users, but this field is not exposed in LDAP / Entra ID Domain Services. With a cloud-only setup, it is not possible for GitLab to authenticate users' smart cards using LDAP.
 

@@ -4,8 +4,6 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
   include PartitionedTable
   include ShaAttribute
 
-  ignore_column :trailers, remove_with: '18.7', remove_after: '2025-11-20'
-
   # Need this to be set as calling `id` will return [id, project_id] since
   # this table is partitioned by `project_id`.
   self.primary_key = :id
@@ -142,6 +140,9 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
     return [] if shas.empty?
 
     metadata_results = oldest_merge_requests_commits_from_metadata(project_id, shas).to_a
+
+    return metadata_results if Feature.enabled?(:mr_diff_commits_read_new_table, Project.actor_from_id(project_id))
+
     found_shas = metadata_results.map(&:sha)
     missing_shas = shas - found_shas
 
@@ -157,7 +158,7 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
   end
 
   def self.oldest_merge_requests_commits_from_metadata(project_id, shas)
-    select('sha', 'MIN(merge_requests.id) AS merge_request_id')
+    relation = select('sha', 'MIN(merge_requests.id) AS merge_request_id')
       .where(project_id: project_id, sha: shas)
       .joins(:merge_request_diff_commits)
       .joins(
@@ -169,5 +170,11 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
         state_id: MergeRequest.available_states[:merged]
       })
       .group(:sha)
+
+    if MergeRequestDiffCommit.project_id_pruning_enabled?(project_id)
+      relation = relation.where(merge_request_diff_commits: { project_id: project_id })
+    end
+
+    relation
   end
 end

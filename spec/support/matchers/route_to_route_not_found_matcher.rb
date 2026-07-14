@@ -2,11 +2,16 @@
 
 RSpec::Matchers.define :route_to_route_not_found do
   match do |actual|
-    expect(actual).to route_to(controller: 'application', action: 'route_not_found')
-  rescue RSpec::Expectations::ExpectationNotMetError => e
-    # `route_to` matcher requires providing all params for exact match. As we use it in shared examples and we provide different paths,
-    # this matcher checks if provided route matches controller and action, without checking params.
-    expect(e.message).to include("-{\"controller\"=>\"application\", \"action\"=>\"route_not_found\"}\n+{\"controller\"=>\"application\", \"action\"=>\"route_not_found\",")
+    # The `route_to` matcher requires providing all params for an exact match.
+    # As we use this in shared examples with different paths, we recognize the
+    # path ourselves and only assert on the controller and action, ignoring the
+    # remaining params (such as the wildcard `unmatched_route`).
+    method, path = actual.first
+    params = Rails.application.routes.recognize_path(path, method: method)
+
+    params[:controller] == 'application' && params[:action] == 'route_not_found'
+  rescue ActionController::RoutingError
+    false
   end
 
   failure_message do |_|

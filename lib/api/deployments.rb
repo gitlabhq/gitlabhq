@@ -229,6 +229,8 @@ module API
       route_setting :authorization, permissions: :delete_deployment, boundary_type: :project,
         job_token_policies: :admin_deployments
       delete ':id/deployments/:deployment_id' do
+        check_rate_limit!(:deployment_delete, scope: current_user)
+
         deployment = user_project.deployments.find(params[:deployment_id])
 
         authorize!(:destroy_deployment, deployment)

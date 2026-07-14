@@ -15,6 +15,7 @@ import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mi
 import { setError } from '../graphql/cache_updates';
 
 export default {
+  name: 'BoardSettingsSidebar',
   listSettingsText: __('List settings'),
   i18n: {
     modalAction: __('Remove list'),
@@ -53,6 +54,7 @@ export default {
       required: true,
     },
   },
+  emits: ['unsetActiveId'],
   data() {
     return {
       ListType,

@@ -42,6 +42,16 @@
     },
     "confirmed_by_user_id": {
       "type": "number"
+    },
+    "read_only_reason": {
+      "type": "string",
+      "enum": [
+        "migration",
+        "isolation",
+        "incident",
+        "billing",
+        "legal"
+      ]
     }
   },
   "additionalProperties": false

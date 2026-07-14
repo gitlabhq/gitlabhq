@@ -24,8 +24,9 @@ module API
       ISSUABLE_TYPES.each do |type, finder|
         type_id_str = :"#{type.singularize}_iid"
 
-        desc 'Create a to-do item' do
-          detail 'Creates a to-do item.'
+        desc 'Create a to-do item for an issuable' do
+          detail 'Creates a to-do item for the current user on a specified issuable. If a to-do item already ' \
+            'exists for the user on that issuable, returns a `304` status code.'
           success Entities::Todo
           tags %w[to-dos]
         end
@@ -98,7 +99,9 @@ module API
         end
       end
 
-      desc 'Get a list of to-do items' do
+      desc 'List all to-do items' do
+        detail 'Lists all to-do items. When no filter is applied, it returns all pending to-do items for the current ' \
+          'user. Different filters allow the user to refine the request.'
         success Entities::Todo
         tags %w[to-dos]
       end
@@ -119,6 +122,7 @@ module API
       end
 
       desc 'Mark a to-do item as done' do
+        detail 'Marks a to-do item for the current user as done.'
         success Entities::Todo
         tags %w[to-dos]
       end
@@ -135,6 +139,8 @@ module API
       end
 
       desc 'Mark all to-do items as done' do
+        detail 'Marks all pending to-do items for the current user as done. It returns the HTTP status code `204` ' \
+          'with an empty response.'
         tags %w[to-dos]
       end
       route_setting :authorization, permissions: :update_todo, boundary_type: :user

@@ -1,15 +1,19 @@
-import { shallowMount } from '@vue/test-utils';
+import { GlCollapsibleListbox, GlDisclosureDropdown } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST, TYPE_TEST_CASE } from '~/issues/constants';
-import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import DropdownContents from '~/sidebar/components/labels/labels_select_widget/dropdown_contents.vue';
+import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
+import EditToggleButton from '~/sidebar/components/labels/labels_select_widget/edit_toggle_button.vue';
 import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
 import EmbeddedLabelsList from '~/sidebar/components/labels/labels_select_widget/embedded_labels_list.vue';
+import DropdownContents from '~/sidebar/components/labels/labels_select_widget/dropdown_contents.vue';
 import issueLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/issue_labels.query.graphql';
+import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import updateMergeRequestLabelsMutation from '~/sidebar/queries/update_merge_request_labels.mutation.graphql';
 import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labels.subscription.graphql';
@@ -21,6 +25,7 @@ import {
   issuableLabelsQueryResponse,
   updateLabelsMutationResponse,
   issuableLabelsSubscriptionResponse,
+  workspaceLabelsQueryResponse,
   mockLabels,
   mockRegularLabel,
 } from './mock_data';
@@ -29,7 +34,23 @@ jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
+// Stub that renders toggle and footer slots so their buttons are accessible in tests.
+const GlCollapsibleListboxStub = stubComponent(GlCollapsibleListbox, {
+  template: `
+    <div>
+      <slot name="toggle" :accessibility-attributes="{}" />
+      <slot name="footer" />
+    </div>
+  `,
+});
+
+// Stub that renders toggle and default slots so buttons inside are accessible in tests.
+const GlDisclosureDropdownStub = stubComponent(GlDisclosureDropdown, {
+  template: `<div><slot name="toggle" :toggle-props="{}" /><slot /></div>`,
+});
+
 const successfulQueryHandler = jest.fn().mockResolvedValue(issuableLabelsQueryResponse);
+const successfulLabelsQueryHandler = jest.fn().mockResolvedValue(workspaceLabelsQueryResponse);
 const successfulMutationHandler = jest.fn().mockResolvedValue(updateLabelsMutationResponse);
 const subscriptionHandler = jest.fn().mockResolvedValue(issuableLabelsSubscriptionResponse);
 const errorQueryHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
@@ -44,25 +65,31 @@ const updateLabelsMutation = {
 describe('LabelsSelectRoot', () => {
   let wrapper;
 
-  const findSidebarEditableItem = () => wrapper.findComponent(SidebarEditableItem);
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListboxStub);
+  const findCreateFormDropdown = () => wrapper.findComponent(GlDisclosureDropdownStub);
+  const findEditButton = () => wrapper.findComponent(EditToggleButton);
   const findDropdownValue = () => wrapper.findComponent(DropdownValue);
-  const findDropdownContents = () => wrapper.findComponent(DropdownContents);
   const findEmbeddedLabelsList = () => wrapper.findComponent(EmbeddedLabelsList);
+  const findDropdownContents = () => wrapper.findComponent(DropdownContents);
+  const findCreateView = () => wrapper.findComponent(DropdownContentsCreateView);
+  const findCreateLabelButton = () => wrapper.findByTestId('create-label');
 
   const createComponent = ({
     config = mockConfig,
     slots = {},
     issuableType = TYPE_ISSUE,
     queryHandler = successfulQueryHandler,
+    labelsQueryHandler = successfulLabelsQueryHandler,
     mutationHandler = successfulMutationHandler,
   } = {}) => {
     const mockApollo = createMockApollo([
       [issueLabelsQuery, queryHandler],
+      [projectLabelsQuery, labelsQueryHandler],
       [updateLabelsMutation[issuableType], mutationHandler],
       [issuableLabelsSubscription, subscriptionHandler],
     ]);
 
-    wrapper = shallowMount(LabelsSelectRoot, {
+    wrapper = shallowMountExtended(LabelsSelectRoot, {
       slots,
       apolloProvider: mockApollo,
       propsData: {
@@ -72,13 +99,15 @@ describe('LabelsSelectRoot', () => {
         workspaceType: 'project',
       },
       stubs: {
-        SidebarEditableItem,
+        GlCollapsibleListbox: GlCollapsibleListboxStub,
+        GlDisclosureDropdown: GlDisclosureDropdownStub,
       },
       provide: {
         canUpdate: true,
         allowLabelEdit: true,
         allowLabelCreate: true,
-        labelsManagePath: 'test',
+        allowScopedLabels: false,
+        labelsManagePath: 'test/manage',
       },
     });
   };
@@ -105,14 +134,10 @@ describe('LabelsSelectRoot', () => {
   );
 
   describe('if dropdown variant is `sidebar`', () => {
-    it('renders sidebar editable item', () => {
+    it('renders the listbox and the edit toggle button', () => {
       createComponent();
-      expect(findSidebarEditableItem().exists()).toBe(true);
-    });
-
-    it('passes true `loading` prop to sidebar editable item when loading labels', () => {
-      createComponent();
-      expect(findSidebarEditableItem().props('loading')).toBe(true);
+      expect(findListbox().exists()).toBe(true);
+      expect(findEditButton().exists()).toBe(true);
     });
 
     describe('when labels are fetched successfully', () => {
@@ -121,11 +146,7 @@ describe('LabelsSelectRoot', () => {
         await waitForPromises();
       });
 
-      it('passes true `loading` prop to sidebar editable item', () => {
-        expect(findSidebarEditableItem().props('loading')).toBe(false);
-      });
-
-      it('renders dropdown value component when query labels is resolved', () => {
+      it('renders dropdown value component with the fetched labels', () => {
         expect(findDropdownValue().exists()).toBe(true);
         expect(findDropdownValue().props('selectedLabels')).toEqual([
           {
@@ -150,6 +171,96 @@ describe('LabelsSelectRoot', () => {
       createComponent({ queryHandler: errorQueryHandler });
       await waitForPromises();
       expect(createAlert).toHaveBeenCalledWith({ message: 'Error fetching labels.' });
+    });
+
+    describe('listbox interaction', () => {
+      it('reflects the toggled selection on the listbox', async () => {
+        createComponent();
+        const ids = ['gid://gitlab/ProjectLabel/1', 'gid://gitlab/ProjectLabel/2'];
+        findListbox().vm.$emit('select', ids);
+        await nextTick();
+        expect(findListbox().props('selected')).toEqual(ids);
+      });
+
+      it('does not submit a mutation when the listbox closes with no changes', async () => {
+        createComponent();
+        await waitForPromises();
+        findListbox().vm.$emit('hidden');
+        await waitForPromises();
+        expect(successfulMutationHandler).not.toHaveBeenCalled();
+      });
+
+      it('submits a mutation when the listbox closes with changed selection', async () => {
+        createComponent();
+        await waitForPromises();
+        findListbox().vm.$emit('select', ['gid://gitlab/ProjectLabel/2']);
+        findListbox().vm.$emit('hidden');
+        await waitForPromises();
+        expect(successfulMutationHandler).toHaveBeenCalled();
+      });
+
+      it('clears the search when a selection is made', async () => {
+        createComponent();
+        findListbox().vm.$emit('shown');
+        await waitForPromises();
+
+        findListbox().vm.$emit('search', 'Label');
+        await nextTick();
+        // While searching, the listbox shows the flat search results (not the grouped list)
+        expect(findListbox().props('items')).not.toContainEqual(
+          expect.objectContaining({ text: 'Selected' }),
+        );
+
+        findListbox().vm.$emit('select', ['gid://gitlab/ProjectLabel/1']);
+        await nextTick();
+        // After selecting, the search is cleared and the grouped Selected/All list returns
+        expect(findListbox().props('items')[0]).toMatchObject({ text: 'Selected' });
+      });
+    });
+
+    describe('create label form', () => {
+      const openCreateForm = async () => {
+        findCreateLabelButton().vm.$emit('click', new Event('click'));
+        await nextTick();
+      };
+
+      it('shows the create form dropdown and hides the listbox when the create button is clicked', async () => {
+        createComponent();
+        expect(findCreateFormDropdown().exists()).toBe(false);
+        expect(findCreateView().exists()).toBe(false);
+        await openCreateForm();
+        expect(findListbox().exists()).toBe(false);
+        expect(findCreateFormDropdown().exists()).toBe(true);
+        expect(findCreateView().exists()).toBe(true);
+      });
+
+      it('restores the listbox when hideCreateView is emitted', async () => {
+        createComponent();
+        await openCreateForm();
+        findCreateView().vm.$emit('hideCreateView');
+        await nextTick();
+        expect(findCreateFormDropdown().exists()).toBe(false);
+        expect(findListbox().exists()).toBe(true);
+      });
+
+      it('restores the listbox when the disclosure dropdown is dismissed', async () => {
+        createComponent();
+        await openCreateForm();
+        findCreateFormDropdown().vm.$emit('hidden');
+        await nextTick();
+        expect(findCreateFormDropdown().exists()).toBe(false);
+        expect(findListbox().exists()).toBe(true);
+      });
+
+      it('auto-selects the created label and hides the form', async () => {
+        createComponent();
+        await openCreateForm();
+        const newLabel = { id: 'gid://gitlab/ProjectLabel/99', title: 'New', color: '#FF0000' };
+        findCreateView().vm.$emit('labelCreated', newLabel);
+        await nextTick();
+        expect(findCreateFormDropdown().exists()).toBe(false);
+        expect(findListbox().props('selected')).toContain(newLabel.id);
+      });
     });
   });
 
@@ -199,12 +310,15 @@ describe('LabelsSelectRoot', () => {
     });
   });
 
-  it('emits `updateSelectedLabels` event on dropdown contents `setLabels` event if iid is not set', () => {
-    const label = { id: 'gid://gitlab/ProjectLabel/1' };
+  it('emits `updateSelectedLabels` when the listbox closes with a selection and iid is not set', async () => {
     createComponent({ config: { ...mockConfig, iid: undefined } });
 
-    findDropdownContents().vm.$emit('setLabels', [label]);
-    expect(wrapper.emitted('updateSelectedLabels')).toEqual([[{ labels: [label] }]]);
+    const id = 'gid://gitlab/ProjectLabel/1';
+    findListbox().vm.$emit('select', [id]);
+    findListbox().vm.$emit('hidden');
+    await nextTick();
+
+    expect(wrapper.emitted('updateSelectedLabels')).toEqual([[{ labels: [{ id }] }]]);
   });
 
   describe.each`
@@ -214,22 +328,23 @@ describe('LabelsSelectRoot', () => {
     ${TYPE_EPIC}
     ${TYPE_TEST_CASE}
   `('when updating labels for $issuableType', ({ issuableType }) => {
-    const label = { id: 'gid://gitlab/ProjectLabel/2' };
+    const labelId = 'gid://gitlab/ProjectLabel/2';
 
-    it('sets the loading state', async () => {
+    it('sets the loading state on the edit button while mutation is in progress', async () => {
       createComponent({ issuableType });
       await nextTick();
-      findDropdownContents().vm.$emit('setLabels', [label]);
+      findListbox().vm.$emit('select', [labelId]);
+      findListbox().vm.$emit('hidden');
       await nextTick();
 
-      expect(findSidebarEditableItem().props('loading')).toBe(true);
+      expect(findEditButton().props('loading')).toBe(true);
     });
 
     it('updates labels correctly after successful mutation', async () => {
       createComponent({ issuableType });
-
       await nextTick();
-      findDropdownContents().vm.$emit('setLabels', [label]);
+      findListbox().vm.$emit('select', [labelId]);
+      findListbox().vm.$emit('hidden');
       await waitForPromises();
 
       expect(findDropdownValue().props('selectedLabels')).toEqual(
@@ -237,10 +352,11 @@ describe('LabelsSelectRoot', () => {
       );
     });
 
-    it('displays an error if mutation was rejected', async () => {
+    it('displays an error if the mutation was rejected', async () => {
       createComponent({ issuableType, mutationHandler: errorQueryHandler });
       await nextTick();
-      findDropdownContents().vm.$emit('setLabels', [label]);
+      findListbox().vm.$emit('select', [labelId]);
+      findListbox().vm.$emit('hidden');
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({

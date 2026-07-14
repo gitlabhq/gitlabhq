@@ -141,7 +141,6 @@ admin_wiki
 admin_work_item
 admin_work_item_lifecycle
 admin_work_item_link
-apply_suggestion
 assign_default_duo_group
 audit_event_definitions
 award_achievement
@@ -177,7 +176,6 @@ create_bot_pipeline
 create_build
 create_build_service_proxy
 create_build_terminal
-create_commit_status
 create_container_image
 create_container_registry_protection_immutable_tag_rule
 create_coverage_fuzzing_corpus
@@ -199,7 +197,6 @@ create_merge_request_approval_rules
 create_merge_request_from
 create_merge_request_in
 create_non_backlog_issues
-create_note
 create_objective
 create_observability_access_request
 create_on_demand_dast_scan
@@ -220,7 +217,6 @@ create_task
 create_test_case
 create_timelog
 create_virtual_registry
-create_vulnerability_archive_export
 create_vulnerability_feedback
 create_vulnerability_state_transition
 create_web_ide_terminal
@@ -291,7 +287,6 @@ destroy_vulnerability_feedback
 destroy_wiki
 destroy_work_item
 disable_two_factor
-download_wiki_code
 duo_generate_direct_access_token
 duo_workflow
 edit_approval_rule
@@ -386,7 +381,6 @@ read_all_workspaces
 read_analytics
 read_application_statistics
 read_approvers
-read_attestation
 read_billing
 read_blob
 read_build
@@ -399,7 +393,6 @@ read_ci_minutes_limited_summary
 read_ci_pipeline_schedules_plan_limit
 read_cloud_connector_status
 read_cluster_environments
-read_code_review_analytics
 read_commit_committer_check
 read_commit_committer_name_check
 read_compliance_adherence_report
@@ -420,10 +413,7 @@ read_cross_project
 read_custom_emoji
 read_custom_field
 read_customizable_dashboards
-read_cycle_analytics
 read_dedicated_hosted_runner_usage
-read_dependency_list_export
-read_dependency_proxy
 read_deploy_board
 read_design
 read_design_activity
@@ -436,7 +426,6 @@ read_ephemeral_token
 read_epic_iid
 read_epic_link_relation
 read_epic_relation
-read_event
 read_external_emails
 read_external_status_check_response
 read_finding_token_status
@@ -462,11 +451,11 @@ read_group_release_stats
 read_group_repository_analytics
 read_group_saml_identity
 read_group_scim_identity
+read_group_secrets_manager_status
 read_group_security_dashboard
 read_group_stage
 read_harbor_registry
 read_import_error
-read_incident_management_escalation_policy
 read_incident_management_oncall_schedule
 read_incident_management_timeline_event
 read_incident_management_timeline_event_tag
@@ -474,7 +463,6 @@ read_insights
 read_instance_security_dashboard
 read_internal_note
 read_issuable
-read_issuable_metric_image
 read_issuable_participables
 read_issuable_resource_link
 read_issue_analytics
@@ -491,7 +479,6 @@ read_model_experiments
 read_model_registry
 read_namespace_cluster_agent_mapping
 read_namespace_via_membership
-read_note
 read_observability
 read_observability_portal
 read_on_demand_dast_scan
@@ -570,11 +557,9 @@ read_user_organizations
 read_user_profile
 read_users_list
 read_virtual_registry
-read_vulnerability_archive_export
 read_vulnerability_feedback
 read_vulnerability_merge_request_link
 read_vulnerability_representation_information
-read_vulnerability_scanner
 read_vulnerability_statistics
 read_web_hook
 read_web_ide_terminal
@@ -644,7 +629,6 @@ update_default_branch_protection
 update_deploy_key_title
 update_deploy_keys_project
 update_design
-update_duo_workflow
 update_escalation_status
 update_feature_flags_client
 update_git_access_protocol
@@ -653,12 +637,10 @@ update_group_deploy_key_for_group
 update_group_link
 update_group_member
 update_group_stage
-update_issuable_metric_image
 update_issue_link
 update_max_artifacts_size
 update_max_pages_size
 update_name
-update_note
 update_o11y_settings
 update_owned_user_achievement
 update_package

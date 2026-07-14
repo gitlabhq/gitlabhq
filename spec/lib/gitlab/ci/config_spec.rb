@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
     end
 
     context 'when pipeline ref is provided' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :small_repo) }
       let(:ref) { 'master' }
 
       let(:yml) do
@@ -437,8 +437,8 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
   context "when using 'include' directive" do
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, :repository, group: group) }
-    let_it_be(:main_project) { create(:project, :repository, :public, group: group) }
+    let_it_be(:project) { create(:project, :small_repo, group: group) }
+    let_it_be(:main_project) { create(:project, :small_repo, :public, group: group) }
 
     let(:project_sha) { project.commit.id }
     let(:main_project_sha) { main_project.commit.id }

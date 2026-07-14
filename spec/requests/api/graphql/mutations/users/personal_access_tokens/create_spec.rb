@@ -214,6 +214,17 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
     let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
   end
 
+  context 'when authenticated with an OAuth token' do
+    let_it_be(:oauth_token) { create(:oauth_access_token, user: current_user, scopes: [:api]) }
+
+    it 'creates the token successfully' do
+      expect { post_graphql_mutation(mutation, token: { oauth_access_token: oauth_token }) }
+        .to change { current_user.personal_access_tokens.count }.by(1)
+
+      expect(graphql_errors).to be_nil
+    end
+  end
+
   context 'when authenticated with a granular token' do
     let(:user_boundary) { ::Authz::Boundary.for(:user) }
 
@@ -253,124 +264,6 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
       end
     end
 
-    context 'when the new token requests a strict subset of the calling token permissions' do
-      let!(:calling_token) do
-        create(:granular_pat, user: current_user,
-          boundary: user_boundary,
-          permissions: [:create_personal_access_token, :read_personal_access_token])
-      end
-
-      let(:granular_scope_input) { [{ 'access' => 'USER', 'permissions' => ['create_personal_access_token'] }] }
-
-      it 'creates the token successfully' do
-        expect { post_graphql_mutation(mutation, token: { personal_access_token: calling_token }) }
-          .to change { current_user.personal_access_tokens.count }.by(1)
-
-        expect(graphql_errors).to be_nil
-      end
-    end
-
-    context 'when the new token requests a broader access type than the calling token' do
-      let(:calling_token) do
-        create(:granular_pat, user: current_user,
-          boundary: user_boundary,
-          permissions: [:create_personal_access_token])
-      end
-
-      let(:granular_scope_input) do
-        [{ 'access' => 'SELECTED_MEMBERSHIPS', 'permissions' => ['read_job'],
-           'resource_ids' => [group_global_id] }]
-      end
-
-      it 'returns a resource not available error' do
-        post_graphql_mutation(mutation, token: { personal_access_token: calling_token })
-
-        expect_graphql_errors_to_include(
-          'A granular token can only create tokens with equal or lesser permissions.'
-        )
-        expect(graphql_data_at(:personalAccessTokenCreate, :token)).to be_nil
-      end
-    end
-
-    context 'when the calling token has ALL_MEMBERSHIPS access for the requested permission' do
-      let(:all_memberships_boundary) { ::Authz::Boundary.for(:all_memberships) }
-      let!(:calling_token) do
-        token = create(:granular_pat, user: current_user,
-          boundary: user_boundary,
-          permissions: [:create_personal_access_token])
-        all_memberships_scope = create(:granular_scope,
-          boundary: all_memberships_boundary,
-          permissions: [:read_job],
-          organization: token.organization)
-        create(:personal_access_token_granular_scope,
-          personal_access_token: token,
-          granular_scope: all_memberships_scope,
-          organization: token.organization)
-        token
-      end
-
-      context 'when the new token requests a strictly narrower SELECTED_MEMBERSHIPS scope' do
-        let(:granular_scope_input) do
-          [{ 'access' => 'SELECTED_MEMBERSHIPS', 'permissions' => ['read_job'],
-             'resource_ids' => [group_global_id] }]
-        end
-
-        it 'creates the token successfully' do
-          expect { post_graphql_mutation(mutation, token: { personal_access_token: calling_token }) }
-            .to change { current_user.personal_access_tokens.count }.by(1)
-
-          expect(graphql_errors).to be_nil
-        end
-      end
-
-      context 'when the new token requests a strictly narrower PERSONAL_PROJECTS scope' do
-        let(:granular_scope_input) do
-          [{ 'access' => 'PERSONAL_PROJECTS', 'permissions' => ['read_job'] }]
-        end
-
-        it 'creates the token successfully' do
-          expect { post_graphql_mutation(mutation, token: { personal_access_token: calling_token }) }
-            .to change { current_user.personal_access_tokens.count }.by(1)
-
-          expect(graphql_errors).to be_nil
-        end
-      end
-    end
-
-    context 'when the calling token has SELECTED_MEMBERSHIPS access on a parent group' do
-      let_it_be(:parent_group) { create(:group) }
-      let_it_be(:subgroup) { create(:group, parent: parent_group, developers: current_user) }
-      let_it_be(:subgroup_global_id) { subgroup.to_global_id.to_s }
-
-      let(:parent_boundary) { ::Authz::Boundary.for(parent_group) }
-      let!(:calling_token) do
-        token = create(:granular_pat, user: current_user,
-          boundary: user_boundary,
-          permissions: [:create_personal_access_token])
-        parent_scope = create(:granular_scope,
-          boundary: parent_boundary,
-          permissions: [:read_job],
-          organization: token.organization)
-        create(:personal_access_token_granular_scope,
-          personal_access_token: token,
-          granular_scope: parent_scope,
-          organization: token.organization)
-        token
-      end
-
-      let(:granular_scope_input) do
-        [{ 'access' => 'SELECTED_MEMBERSHIPS', 'permissions' => ['read_job'],
-           'resource_ids' => [subgroup_global_id] }]
-      end
-
-      it 'creates the token successfully for a SELECTED_MEMBERSHIPS scope on a descendant group' do
-        expect { post_graphql_mutation(mutation, token: { personal_access_token: calling_token }) }
-          .to change { current_user.personal_access_tokens.count }.by(1)
-
-        expect(graphql_errors).to be_nil
-      end
-    end
-
     context 'when the new scope contains only unknown permission names' do
       let!(:calling_token) do
         create(:granular_pat, user: current_user,
@@ -383,6 +276,58 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
       it 'does not create a personal access token' do
         expect { post_graphql_mutation(mutation, token: { personal_access_token: calling_token }) }
           .not_to change { current_user.personal_access_tokens.count }
+      end
+    end
+  end
+
+  context 'with the sudo capability' do
+    let(:input) do
+      {
+        'name' => 'Sudo token',
+        'expiresAt' => (Time.zone.today + 30).to_s,
+        'sudo' => true,
+        'granularScopes' => [{ 'access' => 'USER', 'permissions' => ['create_personal_access_token'] }]
+      }
+    end
+
+    context 'when the token owner is not an administrator' do
+      it 'does not create a token' do
+        expect { mutation_request }.not_to change { current_user.personal_access_tokens.count }
+
+        expect(graphql_data_at(:personalAccessTokenCreate, :errors))
+          .to include(a_string_matching(/can only be enabled for administrators/))
+      end
+    end
+
+    context 'when the token owner is an administrator', :enable_admin_mode do
+      let_it_be(:admin) { create(:admin, :with_namespace) }
+      let_it_be(:admin_token) do
+        { personal_access_token: create(:personal_access_token, user: admin, scopes: %w[api]) }
+      end
+
+      it 'creates a token with sudo enabled', :aggregate_failures do
+        expect { post_graphql_mutation(mutation, current_user: admin, token: admin_token) }
+          .to change { admin.personal_access_tokens.where(sudo: true).count }.by(1)
+
+        expect(graphql_errors).to be_nil
+      end
+    end
+
+    context 'when authenticated with a granular token that does not have sudo' do
+      let_it_be(:admin) { create(:admin, :with_namespace) }
+      let!(:calling_token) do
+        create(:granular_pat, user: admin,
+          boundary: ::Authz::Boundary.for(:user),
+          permissions: [:create_personal_access_token])
+      end
+
+      it 'cannot escalate by minting a token with sudo' do
+        expect { post_graphql_mutation(mutation, token: { personal_access_token: calling_token }) }
+          .not_to change { admin.personal_access_tokens.count }
+
+        expect_graphql_errors_to_include(
+          'A granular token without sudo cannot create a token with sudo.'
+        )
       end
     end
   end

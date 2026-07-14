@@ -2,10 +2,12 @@
 import { GlAvatar } from '@gitlab/ui';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { autocompleteUsersPath } from '~/lib/utils/path_helpers/autocomplete';
 import { getUser } from '~/rest_api';
 import AsyncToken from './async_token.vue';
 
 export default {
+  name: 'AuthorToken',
   i18n: {
     suggestionsFetchError: __('There was a problem fetching authors.'),
   },
@@ -22,7 +24,7 @@ export default {
   methods: {
     fetchUsers(search = '') {
       return axios
-        .get('/-/autocomplete/users.json', {
+        .get(autocompleteUsersPath({ format: 'json' }), {
           params: {
             search,
             active: true,

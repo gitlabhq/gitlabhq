@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 query getWorkItemsByReferences($contextNamespacePath: ID!, $refs: [String!]!) {
   workItemsByReference(contextNamespacePath: $contextNamespacePath, refs: $refs) {
     nodes {

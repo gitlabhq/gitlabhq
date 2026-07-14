@@ -70,7 +70,7 @@ RSpec.describe BaseCountService, :use_clean_rails_memory_store_caching, feature_
 
   describe '#raw?' do
     it 'returns false' do
-      expect(service.raw?).to eq(false)
+      expect(service.raw?).to be(false)
     end
   end
 

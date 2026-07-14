@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::Ci::PartitioningRoutingAnalyzer
     it 'does not analyze the query' do
       expect(analyzer).not_to receive(:analyze)
 
-      process_sql(Ci::BuildMetadata, "SELECT 1 FROM ci_builds_metadata")
+      process_sql(Ci::ApplicationRecord, "SELECT 1 FROM ci_builds_metadata")
     end
   end
 
@@ -39,14 +39,14 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::Ci::PartitioningRoutingAnalyzer
 
       context 'when updating a record' do
         it 'raises RoutingTableNotUsedError' do
-          expect { process_sql(Ci::BuildMetadata, "UPDATE ci_builds_metadata SET id = 1") }
+          expect { process_sql(Ci::ApplicationRecord, "UPDATE ci_builds_metadata SET id = 1") }
             .to raise_error(described_class::RoutingTableNotUsedError)
         end
       end
 
       context 'when inserting a record' do
         it 'raises RoutingTableNotUsedError' do
-          expect { process_sql(Ci::BuildMetadata, "INSERT INTO ci_builds_metadata (id) VALUES(1)") }
+          expect { process_sql(Ci::ApplicationRecord, "INSERT INTO ci_builds_metadata (id) VALUES(1)") }
             .to raise_error(described_class::RoutingTableNotUsedError)
         end
       end
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::Ci::PartitioningRoutingAnalyzer
 
     context 'when analyzing non targeted table' do
       it 'does not raise error' do
-        expect { process_sql(Ci::BuildMetadata, "SELECT 1 FROM projects") }.not_to raise_error
+        expect { process_sql(Ci::ApplicationRecord, "SELECT 1 FROM projects") }.not_to raise_error
       end
     end
   end

@@ -6,6 +6,7 @@ import { sanitize } from '~/lib/dompurify';
 import UserEmailSetting from './user_email_setting.vue';
 
 export default {
+  name: 'UserMainSettings',
   components: {
     GlLink,
     GlFormGroup,
@@ -52,7 +53,10 @@ export default {
       'Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information.',
     ),
     achievements: s__('Profiles|Achievements'),
-    achievementsLabel: s__('Profiles|Display achievements on your profile'),
+    achievementsLabel: s__('Profiles|Notify me when I am awarded an achievement'),
+    achievementsDescription: s__(
+      'Profiles|Achievements you are awarded stay hidden until you accept them. Uncheck to stop receiving award notification emails.',
+    ),
   },
   props: {
     userSettings: {
@@ -187,6 +191,7 @@ export default {
       >
         <gl-form-checkbox v-model="form.achievementsEnabled">
           {{ $options.i18n.achievementsLabel }}
+          <template #help>{{ $options.i18n.achievementsDescription }}</template>
         </gl-form-checkbox>
       </gl-form-group>
     </div>

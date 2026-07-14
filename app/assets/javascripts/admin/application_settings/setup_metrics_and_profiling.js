@@ -4,6 +4,7 @@ import initSetHelperText, {
 } from '~/pages/admin/application_settings/metrics_and_profiling/usage_statistics';
 import PayloadPreviewer from '~/pages/admin/application_settings/payload_previewer';
 import initProductUsageData from '~/pages/admin/application_settings/metrics_and_profiling/product_usage_data';
+import { initLoggingFieldSettings } from '~/admin/application_settings/logging_field_settings';
 
 export default () => {
   Array.from(document.querySelectorAll('.js-payload-preview-trigger')).forEach((trigger) => {
@@ -15,3 +16,4 @@ initSetHelperText();
 initOptionMetricsState();
 initUsagePingGenerationState();
 initProductUsageData();
+initLoggingFieldSettings();

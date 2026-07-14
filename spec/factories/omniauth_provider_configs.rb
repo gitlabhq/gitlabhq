@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :omniauth_provider_config, class: 'GitlabSettings::Options' do
+  factory :omniauth_provider_config, class: 'Gitlab::Configs::Options' do
     skip_create
 
     transient do
@@ -39,7 +39,7 @@ FactoryBot.define do
           :step_up_auth_params,
           :step_up_auth_scope
         )
-      GitlabSettings::Options.new(config_hash.deep_merge(remaining_attributes))
+      Gitlab::Configs.build_options(config_hash.deep_merge(remaining_attributes))
     end
 
     trait :with_namespace_scope do

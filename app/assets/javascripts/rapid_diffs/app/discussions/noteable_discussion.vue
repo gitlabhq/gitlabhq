@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlButtonGroup, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -19,6 +19,7 @@ import DiscussionNotes from './discussion_notes.vue';
 export default {
   name: 'NoteableDiscussion',
   components: {
+    GlButtonGroup,
     DiscussionReplyPlaceholder,
     ResolveDiscussionButton,
     NoteSignedOutWidget,
@@ -70,9 +71,9 @@ export default {
     },
   },
   emits: [
-    'cancelEditing',
+    'cancel-editing',
     'noteEdited',
-    'startEditing',
+    'start-editing',
     'startReplying',
     'stopReplying',
     'toggleDiscussionReplies',
@@ -255,8 +256,8 @@ export default {
       @toggleDiscussionReplies="$emit('toggleDiscussionReplies')"
       @startReplying="showReplyForm"
       @noteEdited="$emit('noteEdited', $event)"
-      @startEditing="$emit('startEditing', $event)"
-      @cancelEditing="$emit('cancelEditing', $event)"
+      @start-editing="$emit('start-editing', $event)"
+      @cancel-editing="$emit('cancel-editing', $event)"
     >
       <template #avatar-badge>
         <slot name="avatar-badge"></slot>
@@ -290,7 +291,7 @@ export default {
               class="gl-min-w-0 gl-flex-[9999] gl-basis-15"
               @focus="showReplyForm"
             />
-            <div class="btn-group !gl-w-auto !gl-min-w-0 gl-flex-1 gl-basis-auto">
+            <gl-button-group class="!gl-w-auto !gl-min-w-0 gl-flex-1 gl-basis-auto">
               <resolve-discussion-button
                 v-if="toggleResolveNote && resolvable && canResolve"
                 class="!gl-m-0"
@@ -324,7 +325,7 @@ export default {
                 :url="resolveWithIssuePath"
                 class="!gl-w-auto"
               />
-            </div>
+            </gl-button-group>
           </div>
         </div>
       </template>

@@ -100,11 +100,33 @@ module Observability
       if response.code.to_i != 200
         return :provisioning if response.code.to_i == 500 && new_settings?
 
+        if response.code.to_i >= 500
+          Gitlab::AppLogger.warn(
+            message: "O11y authentication failed: observability instance unavailable",
+            class: self.class.name,
+            response_code: response.code
+          )
+        else
+          Gitlab::AppLogger.warn(
+            message: "O11y authentication failed: invalid credentials or login rejected",
+            class: self.class.name,
+            response_code: response.code
+          )
+        end
+
         return
       end
 
       data = Gitlab::Json.safe_parse(response.body)
       data.dig('data', 'orgs', 0, 'id')
+    rescue *Gitlab::HTTP::HTTP_ERRORS => e
+      Gitlab::AppLogger.warn(
+        message: "O11y authentication failed: connection error",
+        class: self.class.name,
+        error_class: e.class.name,
+        error_message: e.message
+      )
+      nil
     end
 
     def context_payload

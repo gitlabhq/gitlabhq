@@ -23,6 +23,7 @@ eslint-report.html
 /.ruby-gemset
 /.ruby-version
 /.tool-versions
+mise.local.toml
 /.rvmrc
 /.secret
 .sass-cache/
@@ -141,13 +142,11 @@ config/helpers/tailwind/css_in_js.js
 .yalc
 yalc.lock
 
-# Ignore automatically generated js-routes files.
-/app/assets/javascripts/lib/utils/path_helpers
-/ee/app/assets/javascripts/lib/utils/path_helpers
-
 # AI agent instruction files (https://gitlab.com/gitlab-org/gitlab/-/work_items/594821)
 # Non-rooted patterns apply at all directory levels. Committed .ai/ modules use git add --force.
 AGENTS.local.md
 CLAUDE.local.md
-/OpenCode.md
 .ai/*
+
+# Optional local RuboCop override (see .rubocop.yml inherit_from)
+/.rubocop.local.yml

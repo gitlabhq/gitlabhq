@@ -39,6 +39,11 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
             namespace {
               id
             }
+            group {
+              id
+              projectsCount
+              descendantGroupsCount
+            }
             project {
               id
             }
@@ -101,6 +106,7 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
           'scopes' => [{
             'access' => 'SELECTED_MEMBERSHIPS',
             'namespace' => { 'id' => group.to_gid.to_s },
+            'group' => { 'id' => group.to_gid.to_s, 'projectsCount' => 0, 'descendantGroupsCount' => 0 },
             'project' => nil,
             'permissions' => [{ 'name' => 'read_member_role' }]
           }],

@@ -52,6 +52,7 @@ module Projects
     def extra_attributes_for_measurement
       {
         current_user: current_user&.name,
+        Labkit::Fields::GL_ORGANIZATION_ID => project&.organization_id,
         project_full_path: project&.full_path,
         import_type: project&.import_type,
         file_path: project&.import_source

@@ -2,6 +2,7 @@
 
 module Authn
   class OauthApplication < Doorkeeper::Application
+    include EachBatch
     include Doorkeeper::Concerns::TokenFallback
     include FeatureGate
 
@@ -22,6 +23,10 @@ module Authn
     # Hashes raw token
     def self.encode(raw_token_value)
       ::Gitlab::DoorkeeperSecretStoring::Sha512Hash.transform_secret(raw_token_value)
+    end
+
+    def self.uid_for(application_id)
+      where(id: application_id).pick(:uid)
     end
 
     # Check whether the given plain text secret matches our stored secret

@@ -42,8 +42,8 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
     end
 
     context 'with update only variables' do
-      let!(:var_a) { create(:ci_instance_variable) }
-      let!(:var_b) { create(:ci_instance_variable, protected: false) }
+      let_it_be_with_reload(:var_a) { create(:ci_instance_variable) }
+      let_it_be_with_reload(:var_b) { create(:ci_instance_variable, protected: false) }
 
       let(:variables_attributes) do
         [
@@ -80,7 +80,7 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
     end
 
     context 'with insert and update variables' do
-      let!(:var_a) { create(:ci_instance_variable) }
+      let_it_be_with_reload(:var_a) { create(:ci_instance_variable) }
 
       let(:variables_attributes) do
         [
@@ -115,8 +115,8 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
     end
 
     context 'with insert, update, and destroy variables' do
-      let!(:var_a) { create(:ci_instance_variable) }
-      let!(:var_b) { create(:ci_instance_variable) }
+      let_it_be_with_reload(:var_a) { create(:ci_instance_variable) }
+      let_it_be_with_reload(:var_b) { create(:ci_instance_variable) }
 
       let(:variables_attributes) do
         [
@@ -154,7 +154,7 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
     end
 
     context 'with invalid variables' do
-      let!(:var_a) { create(:ci_instance_variable, value: 'dummy_value_for_a') }
+      let_it_be_with_reload(:var_a) { create(:ci_instance_variable, value: 'dummy_value_for_a') }
 
       let(:variables_attributes) do
         [

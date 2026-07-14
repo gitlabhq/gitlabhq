@@ -6,6 +6,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { TITLE_LENGTH_MAX } from '../../issues/constants';
 
 export default {
+  name: 'WorkItemTitle',
   components: {
     GlFormGroup,
     GlFormInput,
@@ -44,6 +45,7 @@ export default {
       default: true,
     },
   },
+  emits: ['updateDraft', 'updateWorkItem'],
   data() {
     return {
       inputId: uniqueId('work-item-title-'),

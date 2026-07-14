@@ -17,10 +17,7 @@ You can get a trial license for the GitLab Ultimate tier.
 
 During the trial period, you have access to nearly all Ultimate features.
 
-A trial license for Ultimate is valid for:
-
-- 30 days if you're on the Free tier.
-- 60 days if you're on the Premium tier.
+A trial license for Ultimate is valid for 30 days.
 
 The trial starts when you receive the confirmation email including the activation code, not when you activate it.
 

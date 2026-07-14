@@ -4,31 +4,9 @@ module Mcp
   module Tools
     module WorkItems
       class GetWorkItemTypesTool < BaseTool
-        class << self
-          def build_query
-            <<~GRAPHQL
-              query GetNamespaceWorkItemTypes($fullPath: ID!) {
-                namespace(fullPath: $fullPath) {
-                  id
-                  workItemTypes {
-                    nodes {
-                      id
-                      name
-                      iconName
-                      widgetDefinitions {
-                        type
-                      }
-                    }
-                  }
-                }
-              }
-            GRAPHQL
-          end
-        end
-
         register_version VERSIONS[:v0_1_0], {
           operation_name: 'namespace',
-          graphql_operation: build_query
+          graphql_operation: load_graphql('work_items/get_work_item_types.query.graphql')
         }
 
         def build_variables

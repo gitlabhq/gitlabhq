@@ -7,7 +7,9 @@
 
   .gl-col-lg-9
     %h5= s_("ProtectedBranch|Matching Branches")
-    - if @matching_refs.present?
+    - if @gitaly_unavailable
+      = render 'shared/errors/gitaly_unavailable', reason: s_('ProtectedBranch|Unable to load matching branches')
+    - elsif @matching_refs.present?
       .table-responsive
         %table.table.protected-branches-list
           %colgroup

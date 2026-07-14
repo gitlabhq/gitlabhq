@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 import DeleteModal from './delete_modal.vue';
 
 export default {
+  name: 'DeleteButton',
   components: {
     GlButton,
     GlForm,

@@ -5,7 +5,7 @@ require "spec_helper"
 RSpec.describe MergeRequests::GetUrlsService, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
-  let(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let(:service) { described_class.new(project: project) }
   let(:source_branch) { "merge-test" }
   let(:new_merge_request_url) { "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=#{source_branch}" }

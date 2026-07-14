@@ -35,6 +35,7 @@ const CURSOR_GRAB = 'gl-cursor-grab';
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
 export default {
+  name: 'WorkItemDescriptionRendered',
   CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
   directives: {
     SafeHtml,
@@ -88,6 +89,7 @@ export default {
       default: false,
     },
   },
+  emits: ['descriptionUpdated'],
   data() {
     return {
       childDescription: '',

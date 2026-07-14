@@ -129,13 +129,21 @@ The only mutation that is allowed is the `GeoRegistriesUpdate` which is used to 
 
 ### Continuous Integration
 
-- No new jobs or pipelines start, scheduled or otherwise.
+- Runners cannot pick up new jobs, so no new jobs or pipelines execute.
+- Pipelines cannot be started, retried, or canceled through the UI or API.
+  No new jobs can be created through external actions either.
 - Jobs that were already running continue to have a `running` status in the GitLab UI,
   even if they finish running on the GitLab Runner.
 - Jobs in the `running` state for longer than the project's time limit do not time out.
-- Pipelines cannot be started, retried or canceled. No new jobs can be created either.
 - The status of the runners in `/admin/runners` isn't updated.
 - `gitlab-runner verify` returns the error `ERROR: Verifying runner... is removed`.
+
+> [!warning]
+> The pipeline scheduler is a Sidekiq cron job and is not automatically disabled by Maintenance Mode.
+> Scheduled pipelines can still be created internally during maintenance.
+> Runners pick up the pipelines as soon as Maintenance Mode is disabled, which can cause a burst of queued jobs.
+> To prevent this, disable cron jobs manually before you enable Maintenance Mode.
+> For more information, see [Background jobs](#background-jobs).
 
 After Maintenance Mode is disabled, new jobs are picked up again. Jobs that were
 in the `running` state before enabling Maintenance Mode resume and their logs start

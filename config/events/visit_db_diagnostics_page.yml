@@ -1,0 +1,16 @@
+---
+description: "A user visits DB diagnostics page"
+internal_events: true
+status: active
+action: visit_db_diagnostics_page
+identifiers:
+- user
+product_group: database_health
+product_categories:
+- database
+milestone: '19.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240326
+tiers:
+- free
+- premium
+- ultimate

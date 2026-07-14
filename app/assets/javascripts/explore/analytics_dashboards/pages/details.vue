@@ -101,6 +101,7 @@ export default {
         <template #panel="{ panel }">
           <analytics-dashboard-panel
             :title="panel.title"
+            :title-icon="panel.titleIcon || ''"
             :tooltip="panel.tooltip"
             :visualization="panel.visualization"
             :query-overrides="panel.queryOverrides"

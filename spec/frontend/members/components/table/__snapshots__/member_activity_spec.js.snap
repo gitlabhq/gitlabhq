@@ -15,7 +15,7 @@ exports[`MemberActivity with a member that does not have all of the fields rende
       title="Access granted"
     >
       <use
-        href="file-mock#check"
+        href="file-mock-icons.svg#check"
       />
     </svg>
     <span
@@ -42,7 +42,7 @@ exports[`MemberActivity with a member that has all fields renders \`User created
       title="User created"
     >
       <use
-        href="file-mock#assignee"
+        href="file-mock-icons.svg#assignee"
       />
     </svg>
     <span>
@@ -60,7 +60,7 @@ exports[`MemberActivity with a member that has all fields renders \`User created
       title="Access granted"
     >
       <use
-        href="file-mock#check"
+        href="file-mock-icons.svg#check"
       />
     </svg>
     <span
@@ -80,7 +80,7 @@ exports[`MemberActivity with a member that has all fields renders \`User created
       title="Last activity"
     >
       <use
-        href="file-mock#hourglass"
+        href="file-mock-icons.svg#hourglass"
       />
     </svg>
     <span>

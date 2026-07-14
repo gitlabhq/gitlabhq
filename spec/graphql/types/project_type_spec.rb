@@ -183,7 +183,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'sast_ci_configuration' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
 
     let(:query) do
@@ -343,7 +343,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     end
 
     context 'with empty repository' do
-      let_it_be(:project, freeze: false) { create(:project_empty_repo) }
+      let_it_be(:project) { create(:project_empty_repo) }
 
       it 'raises an error' do
         expect(subject['errors'][0]['message']).to eq(
@@ -443,7 +443,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   describe 'grafana_integration field' do
     subject { described_class.fields['grafanaIntegration'] }
 
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     it { is_expected.to have_graphql_type(Types::GrafanaIntegrationType) }
     it { is_expected.to have_graphql_resolver(nil) }
@@ -591,7 +591,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   describe 'jira_imports' do
     subject { resolve_field(:jira_imports, project) }
 
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public) }
 
     context 'when project has Jira imports' do
       let_it_be(:jira_import1) do
@@ -660,7 +660,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'agent_configurations' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
     let_it_be(:query) do
       %(
@@ -695,7 +695,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'cluster_agents' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
     let_it_be(:cluster_agent) { create(:cluster_agent, project: project, name: 'agent-name') }
     let_it_be(:query) do
@@ -745,7 +745,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'cluster_agent' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
     let_it_be(:cluster_agent) { create(:cluster_agent, project: project, name: 'agent-name') }
     let_it_be(:agent_token) { create(:cluster_agent_token, agent: cluster_agent) }
@@ -834,7 +834,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'project features access level' do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public) }
 
     where(project_feature: %w[forkingAccessLevel issuesAccessLevel mergeRequestsAccessLevel])
 
@@ -945,7 +945,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:project) { create(:project, :public) }
     let_it_be(:name) { 'feat/*' }
-    let_it_be(:protected_branch, freeze: false) do
+    let_it_be(:protected_branch) do
       create(:protected_branch, project: project, name: name)
     end
 
@@ -1006,7 +1006,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
   describe 'timeline_event_tags' do
     let_it_be(:user) { create(:user, :with_namespace) }
-    let_it_be(:project, freeze: false) do
+    let_it_be(:project) do
       create(
         :project,
         :private,
@@ -1066,7 +1066,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
   describe 'languages' do
     let_it_be(:user) { create(:user, :with_namespace) }
-    let_it_be(:project, freeze: false) do
+    let_it_be(:project) do
       create(
         :project,
         :private,
@@ -1123,12 +1123,12 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
   describe 'visible_forks' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public) }
     let_it_be(:fork_reporter) { fork_project(project, nil, { repository: true }) }
     let_it_be(:fork_developer) { fork_project(project, nil, { repository: true }) }
     let_it_be(:fork_group_developer) { fork_project(project, nil, { repository: true }) }
     let_it_be(:fork_public) { fork_project(project, nil, { repository: true }) }
-    let_it_be(:fork_private, freeze: false) { fork_project(project, nil, { repository: true }) }
+    let_it_be_with_reload(:fork_private) { fork_project(project, nil, { repository: true }) }
 
     let(:minimum_access_level) { '' }
     let(:query) do
@@ -1275,7 +1275,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
 
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
+    let_it_be_with_refind(:project) { create(:project, :empty_repo) }
 
     let(:query) do
       %(
@@ -1384,7 +1384,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       )
     end
 
-    let_it_be(:project, freeze: false) { create :project }
+    let_it_be(:project) { create :project }
     let_it_be(:deploy_key) { create(:deploy_keys_project, :write_access, project: project).deploy_key }
     let_it_be(:maintainer) { create(:user) }
     let(:available_deploy_keys) { subject.dig('data', 'project', 'availableDeployKeys', 'nodes') }
@@ -1422,7 +1422,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
   describe 'web_path' do
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public) }
 
     let(:query) do
       %(
@@ -1448,7 +1448,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
   describe 'edit_path' do
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public) }
 
     let(:query) do
       %(
@@ -1473,7 +1473,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'admin_show_path' do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public) }
 
     let(:query) do
       %(
@@ -1510,7 +1510,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'admin_edit_path' do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public) }
 
     let(:query) do
       %(
@@ -1564,7 +1564,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     subject(:organization_edit_path) { response.dig('data', 'project', 'organizationEditPath') }
 
     context 'when project has an organization associated with it' do
-      let_it_be(:project, freeze: false) { create(:project, :public, organization: organization) }
+      let_it_be(:project) { create(:project, :public, organization: organization) }
 
       it 'returns edit path scoped to organization' do
         expect(organization_edit_path).to eq(
@@ -1591,7 +1591,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     subject(:explore_catalog_path) { response.dig('data', 'project', 'exploreCatalogPath') }
 
     context 'when project is not a catalog resource' do
-      let_it_be(:project, freeze: false) { create(:project, :public) }
+      let_it_be(:project) { create(:project, :public) }
 
       it 'returns nil for explore_catalog_path' do
         expect(explore_catalog_path).to be_nil
@@ -1599,7 +1599,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     end
 
     context 'when project is a catalog resource' do
-      let_it_be(:project, freeze: false) do
+      let_it_be(:project) do
         create(:project, :public, :catalog_resource_with_components, create_tag: '1.0.0')
       end
 
@@ -1629,20 +1629,20 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     subject(:is_published) { response.dig('data', 'project', 'isPublished') }
 
     context 'when project is not a catalog resource' do
-      let_it_be(:project, freeze: false) { create(:project, :public) }
+      let_it_be(:project) { create(:project, :public) }
 
       it { is_expected.to be_nil }
     end
 
     context 'when project is a catalog resource and is not published' do
-      let_it_be(:project, freeze: false) { create(:project, :public) }
+      let_it_be(:project) { create(:project, :public) }
       let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project) }
 
       it { is_expected.to eq(false) }
     end
 
     context 'when project is a catalog resource and is published' do
-      let_it_be(:project, freeze: false) do
+      let_it_be(:project) do
         create(:project, :public, :catalog_resource_with_components, create_tag: '1.0.0')
       end
 
@@ -1654,7 +1654,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
   describe 'pages_force_https' do
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
     let(:query) do
       %(
         query {
@@ -1730,7 +1730,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
   describe 'project adjourned deletion fields', time_travel_to: '2025-06-01', feature_category: :groups_and_projects do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:marked_for_deletion_at) { Time.new(2025, 5, 25) }
     let_it_be(:pending_delete_group) do
       create(:group_with_deletion_schedule, marked_for_deletion_on: marked_for_deletion_at, developers: user)
@@ -1842,7 +1842,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'container_protection_tag_rules', unless: Gitlab.ee? do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
 
     let(:query) do
@@ -1908,7 +1908,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'ci_config_variables field' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user) { create(:user, developer_of: project) }
     let(:ref) { project.default_branch }
     let(:fail_on_cache_miss) { nil }
@@ -2014,7 +2014,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   describe 'ci_pipeline_creation_inputs field' do
     include ReactiveCachingHelpers
 
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user) { create(:user, developer_of: project) }
     let(:ref) { project.default_branch }
     let(:fail_on_cache_miss) { nil }

@@ -71,12 +71,19 @@ module Projects
       data = {}
 
       override_params.reverse_merge!(name: params[:name]) if params[:name].present?
-      data[:override_params] = override_params
 
       if overwrite_project?
         data[:original_path] = params[:path]
         params[:path] += "-#{tmp_filename}"
+
+        # Use a unique temporary name to avoid a uniqueness collision during tree
+        # restore, where the archive's original name would otherwise clash with the
+        # still-existing project. OverwriteProjectService restores the final name
+        # from the source project record after the swap, so this value is throwaway.
+        override_params[:name] = SecureRandom.uuid
       end
+
+      data[:override_params] = override_params
 
       data[:sample_data] = params.delete(:sample_data) if template_file && params.key?(:sample_data)
 

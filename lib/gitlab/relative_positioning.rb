@@ -28,5 +28,16 @@ module Gitlab
         raise IllegalRange, 'One of rhs or lhs must be provided' unless lhs && rhs
       end
     end
+
+    # Builds the `move_between_ids` pair expected by the update service from a
+    # pair of raw before/after IDs. Non-positive IDs are normalized to `nil`,
+    # and the whole pair collapses to `nil` when neither ID is usable.
+    def self.parse_move_between_ids(before_id, after_id)
+      ids = [before_id, after_id]
+        .map(&:to_i)
+        .map { |id| id > 0 ? id : nil }
+
+      ids if ids.any?
+    end
   end
 end

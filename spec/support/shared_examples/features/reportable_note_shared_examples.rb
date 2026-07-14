@@ -29,11 +29,11 @@ RSpec.shared_examples 'reportable note' do |type|
       click_button 'More actions'
       click_button('Report abuse')
     end
-    choose "They're posting spam."
+    choose "They're posting spam or unsolicited content."
     click_button "Next"
 
     expect(find('#user_name')['value']).to match(note.author.username)
     expect(find('#abuse_report_reported_from_url')['value']).to match(noteable_note_url(note))
-    expect(find('#abuse_report_category', visible: false)['value']).to match('spam')
+    expect(find('#abuse_report_category', visible: false)['value']).to match(/spam/i)
   end
 end

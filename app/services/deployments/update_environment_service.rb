@@ -62,16 +62,27 @@ module Deployments
       options&.dig(:environment) || {}
     end
 
+    def expanded_variables
+      variables.sort_and_expand_all
+    end
+    strong_memoize_attr :expanded_variables
+
     def expanded_environment_url
       return unless environment_url
 
-      ExpandVariables.expand(environment_url, -> { variables.sort_and_expand_all })
+      ExpandVariables.expand(environment_url, -> { expanded_variables })
     end
 
     def expanded_cluster_agent_path
       return unless cluster_agent_path
 
-      ExpandVariables.expand(cluster_agent_path, -> { variables.sort_and_expand_all })
+      ExpandVariables.expand(cluster_agent_path, -> { expanded_variables })
+    end
+
+    def expanded_flux_resource_path
+      return unless flux_resource_path
+
+      ExpandVariables.expand(flux_resource_path, -> { expanded_variables })
     end
 
     def environment_url
@@ -139,7 +150,7 @@ module Deployments
     def renew_flux_resource_path
       return unless requested_agent_authorized? && kubernetes_namespace
 
-      environment.flux_resource_path = flux_resource_path if flux_resource_path
+      environment.flux_resource_path = expanded_flux_resource_path if flux_resource_path
     end
 
     def requested_agent_authorized?

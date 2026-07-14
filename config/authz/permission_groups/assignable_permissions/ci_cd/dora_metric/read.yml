@@ -1,0 +1,10 @@
+---
+name: read_dora_metric
+description: Grants the ability to read DORA metrics
+boundaries:
+  - project
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - read_dora_metric

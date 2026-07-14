@@ -1,8 +1,9 @@
 ---
 stage: Software Supply Chain Security
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab CI/CDジョブトークン
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: CI/CDジョブトークンを使用して、GitLabの機能でCI/CDジョブを認証する。
+title: CI/CDジョブトークン
 ---
 
 {{< details >}}
@@ -14,7 +15,7 @@ title: GitLab CI/CDジョブトークン
 
 CI/CDパイプラインジョブの実行が近づくと、GitLabは一意のトークンを生成し、[`CI_JOB_TOKEN`定義済み変数](../variables/predefined_variables.md)としてジョブで利用できるようにします。このトークンは、ジョブの実行中にのみ有効です。ジョブが完了すると、トークンアクセスは失効し、このトークンは使用できなくなります。
 
-CI/CDジョブトークンを使用して、実行中のジョブから特定のGitLab機能に対して認証を行います。トークンは、パイプラインをトリガーしたユーザーと同じアクセスレベルを付与されますが、アクセスできる[リソース](#job-token-access)はパーソナルアクセストークンよりも少なくなります。ユーザーは、コミットのプッシュ、手動ジョブのトリガー、スケジュールされたパイプラインのオーナーになるなどのアクションによってジョブを実行できます。このユーザーには、リソースにアクセスするために必要な[権限を持つロール](../../user/permissions.md#cicd)が付与されている必要があります。
+CI/CDジョブトークンを使用して、実行中のジョブから特定のGitLab機能に対して認証を行います。トークンは、パイプラインをトリガーしたユーザーと同じアクセスレベルを付与されますが、アクセスできる[リソース](#job-token-access)はパーソナルアクセストークンよりも少なくなります。ユーザーは、コミットをプッシュするか、手動ジョブを実行するか、またはスケジュールされたパイプラインのオーナーであることによって、ジョブをトリガーすることができます。このユーザーには、リソースにアクセスするために必要な[権限を持つロール](../../user/permissions.md#project-cicd)が付与されている必要があります。
 
 ジョブトークンを使用してGitLabに対して認証し、別のグループやプロジェクトのリソース（ターゲットプロジェクト）にアクセスできます。デフォルトでは、ジョブトークンのグループまたはプロジェクトは、[ターゲットプロジェクトの許可リストに追加](#add-a-group-or-project-to-the-job-token-allowlist)する必要があります。
 
@@ -22,22 +23,30 @@ CI/CDジョブトークンを使用して、実行中のジョブから特定の
 
 ## ジョブトークンアクセス {#job-token-access}
 
-CI/CDジョブトークンは、次のリソースにアクセスできます:
+{{< history >}}
+
+- 単一のタグを取得する権限は、GitLab 18.8で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216463)。
+- バッジAPIにアクセスする権限は、GitLab 19.1で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/work_items/326910)。
+
+{{< /history >}}
+
+CI/CDジョブトークンは、次のリソースにアクセスできます。
 
 | リソース                                                                                              | 備考 |
 | ----------------------------------------------------------------------------------------------------- | ----- |
+| [Badges API](../../api/project_badges.md)                                                             | このAPIのすべてのエンドポイントにアクセスできます。 |
 | [ブランチAPI](../../api/branches.md)                                                                 | `GET /projects/:id/repository/branches`エンドポイントにアクセスできます。 |
 | [コミットAPI](../../api/commits.md)                                                                   | `GET /projects/:id/repository/commits/:sha`および`GET /projects/:id/repository/commits/:sha/merge_requests`エンドポイントにアクセスできます。 |
 | [コンテナレジストリ](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd) | ジョブのプロジェクトに関連付けられたコンテナレジストリに対して認証するために、`$CI_REGISTRY_PASSWORD`[定義済み変数](../variables/predefined_variables.md)として使用します。 |
 | [パッケージレジストリ](../../user/packages/package_registry/_index.md#to-build-packages)                  | レジストリに対する認証に使用します。 |
 | [Terraformモジュールレジストリ](../../user/packages/terraform_module_registry/_index.md)                  | レジストリに対する認証に使用します。 |
-| [セキュアファイル](../secure_files/_index.md#use-secure-files-in-cicd-jobs)                               | ジョブでセキュアファイルを使用するために、[`glab securefile`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/securefile)コマンドで使用されます。 |
+| [セキュアファイル](../secure_files/_index.md#use-secure-files-in-cicd-jobs)                               | [`glab securefile`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/securefile)コマンドによって、ジョブでセキュアファイルを使用します。 |
 | [コンテナレジストリAPI](../../api/container_registry.md)                                             | ジョブのプロジェクトに関連付けられたコンテナレジストリに対してのみ認証できます。 |
 | [デプロイAPI](../../api/deployments.md)                                                           | このAPIのすべてのエンドポイントにアクセスできます。 |
 | [環境API](../../api/environments.md)                                                         | このAPIのすべてのエンドポイントにアクセスできます。 |
 | [ファイルAPI](../../api/repository_files.md)                                                            | `GET /projects/:id/repository/files/:file_path/raw`エンドポイントにアクセスできます。 |
-| [ジョブAPI](../../api/jobs.md#get-job-tokens-job)                                                      | `GET /job`エンドポイントのみにアクセスできます。 |
-| [ジョブアーティファクトAPI](../../api/job_artifacts.md)                                                       | ダウンロードエンドポイントのみにアクセスできます。 |
+| [ジョブAPI](../../api/jobs.md#retrieve-a-job-by-job-token)                                             | `GET /job`エンドポイントのみにアクセスできます。 |
+| [ジョブアーティファクトAPI](../../api/job_artifacts.md)                                                       | ダウンロードエンドポイントのみアクセスできます。 |
 | [マージリクエストAPI](../../api/merge_requests.md)                                                     | `GET /projects/:id/merge_requests`および`GET /projects/:id/merge_requests/:merge_request_iid`エンドポイントにアクセスできます。 |
 | [ノートAPI](../../api/notes.md)                                                                       | `GET /projects/:id/merge_requests/:merge_request_iid/notes`および`GET /projects/:id/merge_requests/:merge_request_iid/notes/:note_id`エンドポイントにアクセスできます。 |
 | [パッケージAPI](../../api/packages.md)                                                                 | このAPIのすべてのエンドポイントにアクセスできます。 |
@@ -45,22 +54,22 @@ CI/CDジョブトークンは、次のリソースにアクセスできます:
 | [パイプラインAPI](../../api/pipelines.md#update-pipeline-metadata)                                      | `PUT /projects/:id/pipelines/:pipeline_id/metadata`エンドポイントのみにアクセスできます。 |
 | [リリースリンクAPI](../../api/releases/links.md)                                                      | このAPIのすべてのエンドポイントにアクセスできます。 |
 | [リリースAPI](../../api/releases/_index.md)                                                          | このAPIのすべてのエンドポイントにアクセスできます。 |
-| [リポジトリAPI](../../api/repositories.md#generate-changelog-data)                                 | パブリックリポジトリの`GET /projects/:id/repository/changelog`エンドポイントのみにアクセスできます。 |
-| [タグAPI](../../api/tags.md)                                                                         | `GET /projects/:id/repository/tags`エンドポイントにアクセスできます。 |
+| [リポジトリAPI](../../api/repositories.md#generate-changelog-data)                                 | 公開リポジトリの`GET /projects/:id/repository/changelog`エンドポイントのみアクセスできます。 |
+| [タグAPI](../../api/tags.md)                                                                         | `GET /projects/:id/repository/tags`および`GET /projects/:id/repository/tags/:tag_name`エンドポイントにアクセスできます。 |
 
 権限をより細かく制御できるようにするための公開[提案](https://gitlab.com/groups/gitlab-org/-/epics/3559)が存在します。
 
 ## GitLab CI/CDジョブトークンのセキュリティ {#gitlab-cicd-job-token-security}
 
-ジョブトークンが漏洩した場合、CI/CDジョブをトリガーしたユーザーがアクセスできる非公開データへのアクセスに利用される可能性があります。このようなトークンの漏洩や不正利用を防ぐために、GitLabは以下を行います:
+CI/CDジョブトークンが漏洩した場合、CI/CDジョブを実行したユーザーがアクセスできるプライベートデータにアクセスするために使用される可能性があります。このようなトークンの漏洩や不正利用を防ぐために、GitLabは以下を行います。
 
 - ジョブログでジョブトークンをマスクする。
 - ジョブの実行中にのみジョブトークンに権限を付与する。
 
-さらに、[Runner](../runners/_index.md)を設定する際には、セキュリティを確保するために次の点に注意してください:
+さらに、[Runner](../runners/_index.md)を設定する際には、セキュリティを確保するために次の点に注意してください。
 
 - マシンが再利用される場合は、Dockerの`privileged`モードを使用しない。
-- 複数のジョブが同じマシンで実行される場合は、[`shell` executor](https://docs.gitlab.com/runner/executors/shell.html)を使用しない。
+- 複数のジョブが同じマシンで実行される場合は、[`shell` executor](https://docs.gitlab.com/runner/executors/shell/)を使用しない。
 
 脆弱なGitLab Runner設定は、他のジョブからトークンを盗まれるリスクを増大させます。
 
@@ -68,7 +77,7 @@ CI/CDジョブトークンは、次のリソースにアクセスできます:
 
 どのグループまたはプロジェクトがジョブトークンで認証し、プロジェクトのリソースの一部にアクセスできるかを制御できます。
 
-デフォルトでは、ジョブトークンでのアクセスは、そのユーザーのプロジェクト内のパイプラインで実行されるCI/CDジョブのみに制限されています。別のグループまたはプロジェクトが、他のプロジェクトのパイプラインからのジョブトークンで認証できるようにするには、次の条件を満たす必要があります:
+デフォルトでは、ジョブトークンでのアクセスは、そのユーザーのプロジェクト内のパイプラインで実行されるCI/CDジョブのみに制限されています。別のグループまたはプロジェクトが、他のプロジェクトのパイプラインからのジョブトークンで認証できるようにするには、次の条件を満たす必要があります。
 
 - [ジョブトークンの許可リストにグループまたはプロジェクトを追加](#add-a-group-or-project-to-the-job-token-allowlist)する必要があります。
 - ジョブをトリガーするユーザーが、アクセス対象のプロジェクトのメンバーである必要があります。
@@ -82,11 +91,9 @@ GitLab Self-Managedの管理者は、[この設定をオーバーライドして
 
 {{< history >}}
 
-- GitLab 15.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/)されました。[`:inbound_ci_scoped_job_token`機能フラグの背後にデプロイ](../../administration/feature_flags/_index.md)され、デフォルトで有効になっています。
-- GitLab 15.10で[機能フラグは削除](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/)されました。
-- GitLab 16.3で、**Allow access to this project with a CI_JOB_TOKEN**（CI_JOB_TOKENでこのプロジェクトへのアクセスを許可する）設定の[名称が**Limit access to this project**（このプロジェクトへのアクセスを制限）に変更](https://gitlab.com/gitlab-org/gitlab/-/issues/411406)されました。
 - GitLab 17.0で、ジョブトークン許可リストへのグループの追加が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/415519)されました。
-- GitLab 17.2で、**Token Access**（トークンアクセス）セクションの名称が**ジョブトークンの権限**に変更され、[**Limit access to this project**（このプロジェクトへのアクセスを制限）設定の名称が**認証されたグループとプロジェクト**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519)に変更されました。
+- GitLab 17.2で、**トークンアクセス**セクションの名称が**ジョブトークンの権限**に変更され、[**このプロジェクトへのアクセスを制限**設定の名称が**認証されたグループとプロジェクト**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519)に変更されました。
+- GitLab 17.3で、[**認証されたグループとプロジェクト**設定が**CI/CDジョブトークン許可リスト**に名前変更されました。](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160078)
 - GitLab 17.6で、**プロジェクトを追加**オプションの[名称が**追加**に変更](https://gitlab.com/gitlab-org/gitlab/-/issues/470880/)されました。
 
 {{< /history >}}
@@ -95,151 +102,33 @@ GitLab Self-Managedの管理者は、[この設定をオーバーライドして
 
 許可リストにプロジェクトを追加しても、許可リストに登録されたプロジェクトのメンバーに追加の[権限](../../user/permissions.md)が付与されるわけではありません。許可リストに登録されたプロジェクトのジョブトークンを使用してプロジェクトにアクセスするには、プロジェクト内のリソースにアクセスする権限がそのユーザーにすでに付与されている必要があります。
 
-たとえば、プロジェクトAの許可リストにプロジェクトBを追加するとします。これにより、プロジェクトB（許可されたプロジェクト）のCI/CDジョブは、CI/CDジョブトークンを使用してAPIコールを認証し、プロジェクトAにアクセスできるようになります。
+たとえば、プロジェクトAの許可リストにプロジェクトBを追加するとします。これにより、プロジェクトB（「許可されたプロジェクト」）のCI/CDジョブは、CI/CDジョブトークンを使用してAPIコールを認証し、プロジェクトAにアクセスできるようになります。
 
-前提要件:
+前提条件: 
 
-- 現在のプロジェクトでメンテナー以上のロールを持っている必要があります。許可されたプロジェクトが内部または非公開の場合、そのプロジェクトではゲスト以上のロールが必要です。
+- 現在のプロジェクトでメンテナーまたはオーナーロールが必要です。許可されたプロジェクトが内部またはプライベートの場合、そのプロジェクトでゲスト、プランナー、レポーター、デベロッパー、メンテナー、またはオーナーロールが必要です。
 - 許可リストに追加できるグループとプロジェクトの数は最大で200です。
 
-グループまたはプロジェクトを許可リストに追加するには、次のようにします:
+グループまたはプロジェクトを許可リストに追加するには、次のようにします。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
-1. **設定** > **CI/CD**を選択します。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 左サイドバーで、**設定** > **CI/CD**を選択します。
 1. **ジョブトークンの権限**を展開します。
-1. **Add group or project**（グループまたはプロジェクトを追加）を選択します。
+1. **CI/CDジョブトークン許可リスト**の右側にある**追加**を選択します。
+1. **グループまたはプロジェクト**を選択します。
 1. 許可リストに追加するグループまたはプロジェクトへのパスを入力して、**追加**をクリックします。
 
 [APIを使用](../../api/graphql/reference/_index.md#mutationcijobtokenscopeaddgrouporproject)してグループまたはプロジェクトを許可リストに追加することもできます。
-
-### プロジェクトの許可リストに自動で入力する {#auto-populate-a-projects-allowlist}
-
-{{< history >}}
-
-- GitLab 17.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/478540)されました。
-
-{{< /history >}}
-
-[ジョブトークン認証ログ](#job-token-authentication-log)のデータを使用して、UIまたはRakeタスクでプロジェクトの許可リストを入力できます。
-
-いずれの場合でも、GitLabは認証ログを使用して、許可リストに追加するプロジェクトまたはグループを判断し、それらのエントリを追加します。
-
-このプロセスにより、プロジェクトの許可リストに最大200件のエントリが作成されます。認証ログに200件を超えるエントリが存在する場合、200件の制限以下に収まるように[許可リストのコンパクション](#allowlist-compaction)を行います。
-
-#### UIを使用する場合 {#with-the-ui}
-
-{{< history >}}
-
-- [GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/498125)で導入されました。
-
-{{< /history >}}
-
-UIから許可リストを自動入力するには、次のようにします:
-
-1. 左側のサイドバーで、**Search or go**（検索または移動先）を選択して、プロジェクトを見つけます。
-1. **設定** > **CI/CD**を選択します。
-1. **ジョブトークンの権限**を展開します。
-1. **追加**を選択し、ドロップダウンリストから**認証ログのすべてのプロジェクト**を選択します。
-1. アクションの確認を求めるダイアログが表示されたら、**エントリーを追加**を選択します。
-
-このプロセスが完了すると、許可リストに認証ログのエントリが含まれるようになります。まだ設定されていない場合は、**認証されたグループとプロジェクト**が、**このプロジェクトと許可リスト内のグループとプロジェクトのみ**に設定されます。
-
-#### Rakeタスクを使用する場合 {#with-a-rake-task}
-
-[Railsコンソールへのアクセス権](../../administration/operations/rails_console.md)が付与されているGitLab管理者は、Rakeタスクを実行して、インスタンス上のすべてのプロジェクトまたは一部のプロジェクトの許可リストを自動的に入力できます。このタスクにより、**認証されたグループとプロジェクト**設定も、**このプロジェクトと許可リスト内のグループとプロジェクトのみ**に指定されます。
-
-`ci:job_tokens:allowlist:autopopulate_and_enforce` Rakeタスクには、次の設定オプションがあります:
-
-- `PREVIEW`: ドライランを実行し、実行予定のステップを出力します。データは変更しません。
-- `ONLY_PROJECT_IDS`: 指定されたプロジェクトID（最大1000個のID）のみの移行を実行します。
-- `EXCLUDE_PROJECT_IDS`: 指定されたプロジェクトID（最大1000個のID）以外の、インスタンス上のすべてのプロジェクトの移行を実行します。
-
-`ONLY_PROJECT_IDS`と`EXCLUDE_PROJECT_IDS`を同時に使用することはできません。
-
-次に例を示します:
-
-- `ci:job_tokens:allowlist:autopopulate_and_enforce PREVIEW=true`
-- `ci:job_tokens:allowlist:autopopulate_and_enforce PREVIEW=true ONLY_PROJECT_IDS=2,3`
-- `ci:job_tokens:allowlist:autopopulate_and_enforce PREVIEW=true EXCLUDE_PROJECT_IDS=2,3`
-- `ci:job_tokens:allowlist:autopopulate_and_enforce`
-- `ci:job_tokens:allowlist:autopopulate_and_enforce ONLY_PROJECT_IDS=2,3`
-- `ci:job_tokens:allowlist:autopopulate_and_enforce EXCLUDE_PROJECT_IDS=2,3`
-
-Rakeタスクを実行するには、次のようにします:
-
-{{< tabs >}}
-
-{{< tab title="Linuxパッケージ（Omnibus）" >}}
-
-```shell
-sudo gitlab-rake ci:job_tokens:allowlist:autopopulate_and_enforce
-```
-
-{{< /tab >}}
-
-{{< tab title="自己コンパイル（ソース）" >}}
-
-```shell
-sudo -u git -H bundle exec rake ci:job_tokens:allowlist:autopopulate_and_enforce
-```
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-#### 許可リストのコンパクション {#allowlist-compaction}
-
-許可リストのコンパクションアルゴリズム:
-
-1. 認証ログをスキャンして、複数のプロジェクトで最も近い共通グループを特定します。
-1. 複数のプロジェクトレベルのエントリを、単一のグループレベルのエントリに統合します。
-1. このように統合されたエントリを使用して、許可リストを更新します。
-
-たとえば、次のような許可リストがあるとします:
-
-```plaintext
-group1/group2/group3/project1
-group1/group2/group3/project2
-group1/group2/group4/project3
-group1/group2/group4/project4
-group1/group5/group6/project5
-```
-
-コンパクションアルゴリズム:
-
-1. 次のようにリストをコンパクションします:
-
-   ```plaintext
-   group1/group2/group3
-   group1/group2/group4
-   group1/group5/group6
-   ```
-
-1. 許可リストが200件の上限を超えている場合、アルゴリズムは再度コンパクションします:
-
-   ```plaintext
-   group1/group2
-   group1/group5
-   ```
-
-1. それでも許可リストが200件の上限を超えている場合、アルゴリズムはさらにコンパクションを続けます:
-
-   ```plaintext
-   group1
-   ```
-
-このプロセスは、許可リストのエントリ数が200件以下になるまで実行されます。
 
 ### 公開プロジェクトまたは内部プロジェクトのジョブトークンのスコープを制限する {#limit-job-token-scope-for-public-or-internal-projects}
 
 {{< history >}}
 
-- GitLab 16.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/405369)されました。
-- リポジトリへのアクセスはGitLab 17.0で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/439158)。
+- リポジトリへのアクセスは、GitLab 17.0で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/439158)。
 
 {{< /history >}}
 
-許可リストに含まれていないプロジェクトでも、ジョブトークンを使用して公開または内部プロジェクトに対して認証し、次の操作を行えます:
+許可リストに含まれていないプロジェクトでも、ジョブトークンを使用して公開または内部プロジェクトに対して認証し、次の操作を行えます。
 
 - アーティファクトのフェッチ。
 - コンテナレジストリへのアクセス。
@@ -249,16 +138,16 @@ group1/group5/group6/project5
 
 各機能をプロジェクトメンバーのみに表示されるよう設定することで、これらのアクションへのアクセスを、許可リストに含まれるプロジェクトのみに制限できます。
 
-前提要件:
+前提条件: 
 
 - プロジェクトのメンテナーロールを持っている必要があります。
 
-機能をプロジェクトメンバーのみが表示できるように設定するには、次のようにします:
+機能をプロジェクトメンバーのみが表示できるように設定するには、次のようにします。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
-1. **設定** > **一般**を選択します。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 左側のサイドバーで、**設定** > **一般**を選択します。
 1. **可視性、プロジェクトの機能、権限**を展開します。
-1. アクセスを制限する機能の表示レベルを**Only project members**（プロジェクトメンバーのみ）に設定します。
+1. アクセスを制限する機能の表示レベルを**プロジェクトメンバーのみ**に設定します。
    - アーティファクトをフェッチする機能は、CI/CDの表示レベルの設定によって制御されます。
 1. **変更を保存**を選択します。
 
@@ -272,77 +161,117 @@ group1/group5/group6/project5
 
 {{< history >}}
 
-- GitLab 16.3で、**Allow access to this project with a CI_JOB_TOKEN**（CI_JOB_TOKENでこのプロジェクトへのアクセスを許可する）設定の[名称が**Limit access to this project**（このプロジェクトへのアクセスを制限）に変更](https://gitlab.com/gitlab-org/gitlab/-/issues/411406)されました。
-- GitLab 17.2で、**Token Access**（トークンアクセス）セクションの名称が**ジョブトークンの権限**に変更され、[**Limit access to this project**（このプロジェクトへのアクセスを制限）設定の名称が**認証されたグループとプロジェクト**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519)に変更されました。
+- GitLab 17.2で、**トークンアクセス**セクションの名称が**ジョブトークンの権限**に変更され、[**このプロジェクトへのアクセスを制限**設定の名称が**認証されたグループとプロジェクト**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519)に変更されました。
+- GitLab 17.3で、[**認証されたグループとプロジェクト**設定が**CI/CDジョブトークン許可リスト**に名前変更されました。](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160078)
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-トークンのアクセス制限と許可リストを無効にすると、セキュリティリスクにつながります。悪意のあるユーザーが、許可されていないプロジェクトで作成済みのパイプラインを侵害しようとする可能性があります。パイプラインがいずれかのメンテナーによって作成された場合、プロジェクトへのアクセスを試みるためにジョブトークンが悪用される可能性があります。
-
-{{< /alert >}}
+> [!warning]
+> トークンアクセス制限と許可リストを無効にすると、セキュリティリスクになります。悪意のあるユーザーが、許可されていないプロジェクトで作成済みのパイプラインを侵害しようとする可能性があります。パイプラインがいずれかのメンテナーによって作成された場合、プロジェクトへのアクセスを試みるためにジョブトークンが悪用される可能性があります。
 
 CI/CDジョブトークン許可リストを無効にすると、どのプロジェクトのジョブからでも、ジョブトークンを使用してプロジェクトにアクセスできるようになります。パイプラインをトリガーするユーザーには、プロジェクトにアクセスする権限が必要です。この設定を無効にするのはテストや同様の目的に限定し、可能な限り速やかに再度有効にする必要があります。
 
-このオプションを利用できるのは、[**Enable and enforce job token allowlist for all projects**（全プロジェクトでジョブトークン許可リストを有効にして適用する）設定](../../administration/settings/continuous_integration.md#enforce-job-token-allowlist)が無効になっているGitLab Self-ManagedまたはGitLab Dedicatedインスタンスのみです。
+このオプションを利用できるのは、[**全プロジェクトでジョブトークン許可リストを有効にして適用する**設定](../../administration/settings/continuous_integration.md#enforce-job-token-allowlist)が無効になっているGitLab Self-ManagedまたはGitLab Dedicatedインスタンスのみです。
 
-前提要件:
+前提条件: 
 
-- プロジェクトのメンテナー以上のロールを持っている必要があります。
+- プロジェクトのメンテナーまたはオーナーロールが必要です。
 
-ジョブトークン許可リストを無効にするには、次のようにします:
+ジョブトークン許可リストを無効にするには、次のようにします。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
-1. **設定** > **CI/CD**を選択します。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 左サイドバーで、**設定** > **CI/CD**を選択します。
 1. **ジョブトークンの権限**を展開します。
-1. **認証されたグループとプロジェクト**で、**全グループとプロジェクト**を選択します。
-1. （推奨）テストが完了したら、**This project and any groups and projects in the allowlist**（このプロジェクトと許可リスト内のグループとプロジェクトのみ）を選択して、ジョブトークン許可リストを再度有効にします。
+1. **全グループとプロジェクト**を選択します。
+1. 推奨。テストが完了したら、**このプロジェクトと許可リスト内のグループとプロジェクトのみ**を選択して、ジョブトークン許可リストを再度有効にします。
 
-この設定は、[GraphQL](../../api/graphql/reference/_index.md#mutationprojectcicdsettingsupdate)（`inboundJobTokenScopeEnabled`）または[REST](../../api/project_job_token_scopes.md#patch-a-projects-cicd-job-token-access-settings) APIでも変更できます。
+この設定は、[GraphQL](../../api/graphql/reference/_index.md#mutationprojectcicdsettingsupdate)（`inboundJobTokenScopeEnabled`）または[REST](../../api/project_job_token_scopes.md#update-the-cicd-job-token-access-settings-for-a-project) APIでも変更できます。
 
 ### プロジェクトリポジトリへのGitプッシュリクエストを許可する {#allow-git-push-requests-to-your-project-repository}
 
 {{< history >}}
 
 - GitLab 17.2で`allow_push_repository_for_job_token`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/389060)されました。デフォルトでは無効になっています。
-- GitLab 17.2で、**Token Access**（トークンアクセス）セクションの名称が**ジョブトークンの権限**に変更され、[**Limit access to this project**（このプロジェクトへのアクセスを制限）設定の名称が**認証されたグループとプロジェクト**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519)に変更されました。
-
+- GitLab 17.2で、**トークンアクセス**セクションの名称が**ジョブトークンの権限**に変更され、[**このプロジェクトへのアクセスを制限**設定の名称が**認証されたグループとプロジェクト**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519)に変更されました。
+- GitLab 17.3で、[**認証されたグループとプロジェクト**設定が**CI/CDジョブトークン許可リスト**に名前変更されました。](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160078)
 - GitLab 18.3で[GitLab.comで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/468320)になりました。
 - GitLab 18.4で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/468320)になりました。機能フラグ`allow_push_repository_for_job_token`は削除されました。
 
 {{< /history >}}
 
-CI/CDジョブトークンで認証されたGitプッシュリクエストを許可するようにプロジェクトを構成できます。この設定はデフォルトでオフになっています。
+CI/CDジョブトークンで認証するGitプッシュリクエストを許可するようにプロジェクトを設定できます。この設定はデフォルトでオフになっています。
 
-この設定をオンにすると、プロジェクトパイプラインで実行されるCI/CDジョブによって生成されたトークンのみが、プロジェクトにプッシュできます。[許可リスト内の他のプロジェクトまたはグループ](#add-a-group-or-project-to-the-job-token-allowlist)からのジョブトークンを使用しても、プロジェクトにプッシュすることはできません。
+この設定をオンにすると、プロジェクトのパイプラインで実行されるCI/CDジョブによって生成されたCI/CDジョブトークンのみを、プロジェクトにプッシュできます。
 
-ジョブトークンを使用してプロジェクトにプッシュすると、CIパイプラインはトリガーされません。ジョブトークンには、ジョブを開始したユーザーと同じアクセス権が付与されます。
+CI/CDジョブトークンを使用してプロジェクトにプッシュする場合、CI/CDパイプラインはトリガーされることはありません。CI/CDジョブトークンには、ジョブを開始したユーザーと同じアクセス権限があります。
 
-semantic-releaseツールを使用している場合、**リポジトリへのGitプッシュリクエストを許可する**設定が有効になっていると、トークンは、構成されている場合は、GitLabパーソナルアクセストークンよりも優先されます。このエッジケースの解決を追跡する[未解決のイシュー](https://github.com/semantic-release/gitlab/issues/891)があります。
+`semantic-release`ツールを使用する場合、[この設定によりパイプラインの作成が妨げられる](#the-semantic-release-tool-and-job-tokens)可能性があります。
 
-前提要件:
+> [!warning]
+> [プルミラー](../../user/project/repository/mirror/pull.md)として設定されたプロジェクトでは、この設定を有効にしないでください。[ミラー](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates)の更新のためにパイプラインが実行される場合は特にそうです。アップストリームリポジトリのオーナーは、`CI_JOB_TOKEN`を使用してコミットをミラーされたプロジェクトにプッシュする可能性があります。
 
-- プロジェクトのメンテナー以上のロールを持っている必要があります。
+前提条件: 
 
-プロジェクトで生成されたジョブトークンにプロジェクトのリポジトリにプッシュする権限を付与するには、次のようにします:
+- プロジェクトのメンテナーまたはオーナーロールが必要です。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
-1. **設定** > **CI/CD**を選択します。
+プロジェクトで生成されたジョブトークンにプロジェクトのリポジトリにプッシュする権限を付与するには、次のようにします。
+
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 左サイドバーで、**設定** > **CI/CD**を選択します。
 1. **ジョブトークンの権限**を展開します。
 1. **権限**セクションで、**リポジトリへのGitプッシュリクエストを許可する**を選択します。
 
-この設定は、[API（REST API）](../../api/projects.md#edit-a-project)の`ci_push_repository_for_job_token_allowed`パラメータ (`ci_push_repository_for_job_token_allowed`) を使用して制御することもできます。
+設定は、[projects API](../../api/projects.md#update-a-project)の`ci_push_repository_for_job_token_allowed`パラメータでも制御できます。
+
+### 許可リストにあるプロジェクトからの、プロジェクトをまたぐGitプッシュリクエストを許可する {#allow-cross-project-git-push-requests-from-allowlisted-projects}
+
+{{< history >}}
+
+- GitLab 19.0で`allow_push_to_allowlisted_projects`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/479907)されました。デフォルトでは無効になっています。
+- GitLab 19.1で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/597258)になりました。機能フラグ`allow_push_to_allowlisted_projects`は削除されました。
+
+{{< /history >}}
+
+許可リストにあるプロジェクトからのCI/CDジョブトークンが、プロジェクトのリポジトリにプッシュすることを許可できます。これは、GitOpsワークフロー、サブモジュールのタグ付け、および長期間有効なアクセストークンを使用しないクロスプロジェクトCI/CDパイプラインに役立ちます。
+
+CI/CDジョブトークンのプッシュが成功した場合、ターゲットプロジェクトでCI/CDパイプラインはトリガーされることはありません。
+
+> [!warning]
+> [プルミラー](../../user/project/repository/mirror/pull.md)として設定されたプロジェクトでは、この設定を有効にしないでください。[パイプラインがミラーの更新のためにトリガーされる](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates)場合は特にそうです。許可リストにあるソースプロジェクトのオーナーが、CI/CDジョブトークンを使用して、コミットをミラーされたプロジェクトにプッシュする可能性があります。
+
+クロスプロジェクトプッシュが機能するためには、次のすべてが真である必要があります:
+
+- ターゲットプロジェクトで**リポジトリへのGitプッシュリクエストを許可する**が有効になっていること。
+- ターゲットプロジェクトで**許可リストにあるプロジェクトからの、プロジェクトをまたぐGitプッシュリクエストを許可する**が有効になっていること。
+- ターゲットプロジェクトで[CI/CDジョブトークン許可リスト](#add-a-group-or-project-to-the-job-token-allowlist)が有効になっていること。
+- ソースプロジェクトが`admin_repositories` [詳細な権限](fine_grained_permissions.md)を持つターゲットプロジェクトの許可リストにあるか、またはデフォルトの権限（詳細な制限が設定されていない）を持っていること。ソースプロジェクトを含む許可リスト上のグループエントリも、この要件を満たします。
+- パイプラインを開始したユーザーが、ターゲットプロジェクトで少なくともデベロッパーロールを持っていること。
+
+前提条件: 
+
+- プロジェクトのメンテナーまたはオーナーロールが必要です。
+
+クロスプロジェクトプッシュリクエストを許可するには:
+
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **設定** > **CI/CD**を選択します。
+1. **ジョブトークンの権限**を展開します。
+1. **権限**セクションで、**リポジトリへのGitプッシュリクエストを許可する**を選択します。
+1. **許可リストにあるプロジェクトからの、プロジェクトをまたぐGitプッシュリクエストを許可する**を選択します。
+1. **変更を保存**を選択します。
+1. [ソースプロジェクトまたはそのグループを許可リストに追加する](#add-a-group-or-project-to-the-job-token-allowlist)ときは、`ADMIN_REPOSITORIES`詳細な権限を付与するか、デフォルトの権限を有効のままにしてください。
 
 ## ジョブトークンの詳細なアクセス許可設定 {#fine-grained-permissions-for-job-tokens}
 
-詳細なアクセス許可を使用して、制限された一連のREST APIエンドポイントへのアクセスを明示的に許可できます。詳細については、[CI/CDジョブトークンの詳細なアクセス許可設定](fine_grained_permissions.md)を参照してください。この[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/519575)に関するフィードバックをお寄せください。
+詳細な権限を使用して、限られたREST APIエンドポイントへのアクセスを明示的に許可できます。
 
-## ジョブトークンを使用する {#use-a-job-token}
+詳細については、[CI/CDジョブトークンの詳細なアクセス許可設定](fine_grained_permissions.md)を参照してください。
 
-### 非公開プロジェクトのリポジトリを`git clone`する {#to-git-clone-a-private-projects-repository}
+## Gitリポジトリのクローン {#git-repository-cloning}
 
-ジョブトークンを使用すると、CI/CDジョブで認証を行い、非公開プロジェクトからリポジトリのクローンを作成できます。`gitlab-ci-token`をユーザーとして使用し、ジョブトークンの値をパスワードとして使用します。次に例を示します:
+ジョブトークンを使用すると、CI/CDジョブで認証を行い、非公開プロジェクトからリポジトリのクローンを作成できます。`gitlab-ci-token`をユーザーとして使用し、ジョブトークンの値をパスワードとして使用します。
+
+例: 
 
 ```shell
 git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/<namespace>/<project>
@@ -350,26 +279,24 @@ git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/<namespace>
 
 HTTPSプロトコルが[グループ、プロジェクト、またはインスタンスの設定によって無効になっている](../../administration/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols)場合でも、このジョブトークンを使用してリポジトリのクローンを作成できます。
 
-### REST APIリクエストを認証する {#to-authenticate-a-rest-api-request}
+## REST API認証 {#rest-api-authentication}
 
-ジョブトークンを使用して、許可されたREST APIエンドポイントに対するリクエストを認証できます。次に例を示します:
+CI/CDジョブトークンを使用して、次の方法で特定のREST APIエンドポイントに対するリクエストを認証することができます:
+
+- ヘッダー: `--header "JOB-TOKEN: $CI_JOB_TOKEN"` （推奨）
+- フォーム: `--form "token=$CI_JOB_TOKEN"`
+- データ: `--data "job_token=$CI_JOB_TOKEN"`
+- URL内のクエリ文字列: `?job_token=$CI_JOB_TOKEN` （非推奨）
+
+例えば、推奨されるヘッダー方式を使用する場合:
 
 ```shell
-curl --verbose --request POST --form "token=$CI_JOB_TOKEN" --form ref=master "https://gitlab.com/api/v4/projects/1234/trigger/pipeline"
+curl --verbose --request POST --header "JOB-TOKEN: $CI_JOB_TOKEN" --form ref=master "https://gitlab.com/api/v4/projects/1234/trigger/pipeline"
 ```
 
-さらに、リクエストでジョブトークンを渡す有効な方法はいくつかあります:
+トークンのセキュリティに関するガイダンスについては、[セキュリティに関する考慮事項](../../security/tokens/_index.md#security-considerations)を参照してください。
 
-- フォーム: `--form "token=$CI_JOB_TOKEN"`
-- ヘッダー: `--header "JOB-TOKEN: $CI_JOB_TOKEN"`
-- データ: `--data "job_token=$CI_JOB_TOKEN"`
-- URLのクエリ文字列: `?job_token=$CI_JOB_TOKEN`
-
-{{< alert type="note" >}}
-
-ジョブトークンを使用して、GraphQLエンドポイントへのリクエストを認証することはできません。
-
-{{< /alert >}}
+CI/CDジョブトークンを使用してGraphQLリクエストを認証することはできません。
 
 ## ジョブトークン認証ログ {#job-token-authentication-log}
 
@@ -379,10 +306,10 @@ curl --verbose --request POST --form "token=$CI_JOB_TOKEN" --form ref=master "ht
 
 {{< /history >}}
 
-他のどのプロジェクトがCI/CDジョブトークンを使用して自分のプロジェクトに対して認証しているかは、認証ログで追跡できます。ログを確認するには、以下を実行します:
+他のどのプロジェクトがCI/CDジョブトークンを使用して自分のプロジェクトに対して認証しているかは、認証ログで追跡できます。ログを確認するには、以下を実行します。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
-1. **設定** > **CI/CD**を選択します。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 左サイドバーで、**設定** > **CI/CD**を選択します。
 1. **ジョブトークンの権限**を展開します。**認証ログ**セクションには、ジョブトークンで認証してプロジェクトにアクセスした他のプロジェクトのリストが表示されます。
 1. オプション。認証ログ全体をCSV形式でダウンロードするには、**CSVをダウンロード**をクリックします。
 
@@ -400,10 +327,10 @@ curl --verbose --request POST --form "token=$CI_JOB_TOKEN" --form ref=master "ht
 
 GitLab 19.0以降、CI/CDジョブトークンはデフォルトでJWT（JSON Webトークン）標準を使用しています。プロジェクトのトップレベルグループを設定すると、プロジェクトでレガシー形式を引き続き使用できます。この設定が利用できるのは、GitLab 20.0リリースまでです。
 
-CI/CDトークンのレガシー形式を使用するには、次のようにします:
+CI/CDトークンのレガシー形式を使用するには、次のようにします。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。[新しいナビゲーションをオンにしている](../../user/interface_redesign.md#turn-new-navigation-on-or-off)場合、このフィールドは上部のバーにあります。
-1. **設定** > **CI/CD**を選択します。
+1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
+1. 左サイドバーで、**設定** > **CI/CD**を選択します。
 1. **一般パイプライン**を展開します。
 1. **CI/CDジョブトークンのJWTフォーマットを有効にする**をオフにします。
 
@@ -411,7 +338,7 @@ CI/CDトークンのレガシー形式を使用するには、次のようにし
 
 ## トラブルシューティング {#troubleshooting}
 
-CIジョブトークンの失敗は以下のとおり、通常、`404 Not Found`などの応答として表示されます:
+CIジョブトークンの失敗は以下のとおり、通常、`404 Not Found`などの応答として表示されます。
 
 - 許可されていないGitクローン:
 
@@ -446,14 +373,23 @@ CIジョブトークンの失敗は以下のとおり、通常、`404 Not Found`
   < content-type: application/json
   ```
 
-CI/CDジョブトークン認証の問題を解決する際は、以下の点に注意する必要があります:
+CI/CDジョブトークン認証の問題を解決する際は、以下の点に注意する必要があります。
 
 - プロジェクトごとにスコープ設定を切り替えるには、[GraphQLミューテーションサンプル](../../api/graphql/getting_started.md#update-project-settings)を利用できます。
-- [このコメント](https://gitlab.com/gitlab-org/gitlab/-/issues/351740#note_1335673157)は、BashとcURLでGraphQLを使用して、以下を行う方法を説明しています:
+- [このコメント](https://gitlab.com/gitlab-org/gitlab/-/issues/351740#note_1335673157)は、BashとcURLでGraphQLを使用して、以下を行う方法を説明しています。
   - 受信トークンのアクセススコープを有効にする。
   - プロジェクトAからプロジェクトBへのアクセス権を付与する、またはBをAの許可リストに追加する。
   - プロジェクトのアクセス権を削除する。
 - ジョブがもはや実行されていない場合、消去された場合、またはプロジェクトが削除処理中の場合、CIジョブトークンは無効になります。
+
+### `semantic-release`ツールとCI/CDジョブトークン {#the-semantic-release-tool-and-job-tokens}
+
+[**リポジトリへのGitプッシュリクエストを許可する**設定](#allow-git-push-requests-to-your-project-repository)で`semantic-release`ツールを使用する場合、既知のイシューがあります。有効にすると:
+
+- ツールがパーソナルアクセストークンを使用するように設定されていても、ツールはCI/CDジョブトークンで認証する。
+- CI/CDジョブトークンは新しいパイプラインをトリガーしないため、リリースパイプラインが実行されない可能性があります。
+
+詳細については、[イシュー891](https://github.com/semantic-release/gitlab/issues/891)を参照してください。
 
 ### JWT形式のジョブトークンのエラー {#jwt-format-job-token-errors}
 
@@ -461,7 +397,7 @@ CI/CDジョブトークンのJWT形式には、既知の問題がいくつかあ
 
 #### EC2 Fargate Runnerカスタムexecutorの`Error when persisting the task ARN.`エラー {#error-when-persisting-the-task-arn-error-with-ec2-fargate-runner-custom-executor}
 
-EC2 Fargateカスタムexecutorの`0.5.0`以前のバージョンには[バグ](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/fargate/-/issues/86)があります。この問題により、以下のエラーが発生します:
+EC2 Fargateカスタムexecutorの`0.5.0`以前のバージョンには[バグ](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/fargate/-/issues/86)があります。この問題により、以下のエラーが発生します。
 
 - `Error when persisting the task ARN. Will stop the task for cleanup`
 
@@ -474,3 +410,20 @@ EC2 Fargateカスタムexecutorの`0.5.0`以前のバージョンには[バグ](
 これは、`base64`コマンドのデフォルトの動作では、79文字を超える文字列は折り返されるためです。ジョブ実行中に、たとえば`echo $CI_JOB_TOKEN | base64`を使用してJWT形式のジョブトークンを`base64`でエンコードすると、そのトークンは無効になります。
 
 この問題を修正するには、`base64 -w0`を使用してトークンの自動折り返しを無効にします。
+
+#### エラー: 実行時間の長いジョブでの`403 Forbidden` {#error-403-forbidden-in-long-running-jobs}
+
+GitLab 18.8以前でJWT形式のCI/CDジョブトークンを使用すると、ジョブが`403 Forbidden`エラーで失敗する可能性があります。これは次の状況で発生する可能性があります:
+
+- [`needs`](../yaml/_index.md#needs)を使用するジョブ。
+- [子パイプライン](../pipelines/downstream_pipelines.md#parent-child-pipelines)内のジョブ。
+- コンソール出力を生成せずに約6分以上実行されるジョブ。
+
+エラーは通常、Runnerログに次のように表示されます:
+
+```plaintext
+WARNING: Submitting job to coordinator... job failed
+  code=403 job=<job_id> status=PUT https://gitlab.com/api/v4/jobs/<job_id>: 403 Forbidden
+```
+
+このイシューを回避するには、GitLab 18.9にアップデートしてください。

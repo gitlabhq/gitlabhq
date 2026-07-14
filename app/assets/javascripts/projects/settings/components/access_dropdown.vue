@@ -12,12 +12,18 @@ import { debounce, intersectionWith, groupBy, differenceBy, intersectionBy } fro
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { createAlert } from '~/alert';
 import { __, s__, n__ } from '~/locale';
-import { getUsers, getGroups, getDeployKeys } from '../api/access_dropdown_api';
+import {
+  getMemberRoles,
+  getUsers,
+  getGroups,
+  getDeployKeys,
+} from 'ee_else_ce/projects/settings/api/access_dropdown_api';
 import { LEVEL_TYPES, ACCESS_LEVELS, ACCESS_LEVEL_NONE } from '../constants';
 
 export const i18n = {
   defaultLabel: s__('AccessDropdown|Select'),
   rolesSectionHeader: s__('AccessDropdown|Roles'),
+  customRolesSectionHeader: s__('AccessDropdown|Custom roles'),
   groupsSectionHeader: s__('AccessDropdown|Groups'),
   usersSectionHeader: s__('AccessDropdown|Users'),
   noRole: s__('AccessDropdown|No role'),
@@ -26,6 +32,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'AccessDropdown',
   i18n,
   components: {
     GlDropdown,
@@ -96,6 +103,11 @@ export default {
       required: false,
       default: true,
     },
+    showCustomRoles: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     groupsWithProjectAccess: {
       type: Boolean,
       required: false,
@@ -116,11 +128,13 @@ export default {
       users: [],
       groups: [],
       roles: [],
+      customRoles: [],
       deployKeys: [],
       selected: {
         [LEVEL_TYPES.GROUP]: [],
         [LEVEL_TYPES.USER]: [],
         [LEVEL_TYPES.ROLE]: [],
+        [LEVEL_TYPES.MEMBER_ROLE]: [],
         [LEVEL_TYPES.DEPLOY_KEY]: [],
       },
     };
@@ -134,6 +148,16 @@ export default {
         (this.accessLevel === ACCESS_LEVELS.PUSH || this.accessLevel === ACCESS_LEVELS.CREATE) &&
         this.deployKeys.length
       );
+    },
+    customRolesEnabled() {
+      return (
+        this.showCustomRoles &&
+        this.hasLicense &&
+        (this.accessLevel === ACCESS_LEVELS.MERGE || this.accessLevel === ACCESS_LEVELS.PUSH)
+      );
+    },
+    showCustomRolesSection() {
+      return this.customRolesEnabled && this.customRoles.length > 0;
     },
     isAccessesLevelNoneSelected() {
       return this.selected.role[0].id === ACCESS_LEVEL_NONE;
@@ -235,6 +259,7 @@ export default {
           [LEVEL_TYPES.GROUP]: [],
           [LEVEL_TYPES.USER]: [],
           [LEVEL_TYPES.ROLE]: [],
+          [LEVEL_TYPES.MEMBER_ROLE]: [],
           [LEVEL_TYPES.DEPLOY_KEY]: [],
         },
       );
@@ -247,19 +272,36 @@ export default {
         ? Promise.resolve({ data: this.groups })
         : getGroups({ withProjectAccess: this.groupsWithProjectAccess });
     },
+    getCustomRoles() {
+      // TODO: Replace the mocked getMemberRoles with the real API integration
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/600529
+      if (!this.customRolesEnabled) {
+        return Promise.resolve({ data: [] });
+      }
+
+      return this.customRoles.length
+        ? Promise.resolve({ data: this.customRoles })
+        : getMemberRoles(gon.current_group_id);
+    },
     getData({ initial = false } = {}) {
       this.initialLoading = initial;
       this.loading = true;
 
       if (this.hasLicense) {
         if (this.canAdminContainer) {
-          Promise.all([getDeployKeys(this.query), getUsers(this.query), this.getGroups()])
-            .then(([deployKeysResponse, usersResponse, groupsResponse]) => {
-              this.consolidateData(
-                deployKeysResponse.data,
-                usersResponse.data,
-                groupsResponse.data,
-              );
+          Promise.all([
+            getDeployKeys(this.query),
+            getUsers(this.query),
+            this.getGroups(),
+            this.getCustomRoles(),
+          ])
+            .then(([deployKeysResponse, usersResponse, groupsResponse, customRolesResponse]) => {
+              this.consolidateData({
+                deployKeysResponse: deployKeysResponse.data,
+                usersResponse: usersResponse.data,
+                groupsResponse: groupsResponse.data,
+                customRolesResponse: customRolesResponse.data,
+              });
               this.setSelected({ initial });
             })
             .catch(() =>
@@ -273,9 +315,14 @@ export default {
           this.glAbilities.adminProtectedBranch ||
           this.glAbilities.adminProtectedEnvironments
         ) {
-          Promise.all([getUsers(this.query), this.getGroups()])
-            .then(([usersResponse, groupsResponse]) => {
-              this.consolidateData(null, usersResponse.data, groupsResponse.data);
+          Promise.all([getUsers(this.query), this.getGroups(), this.getCustomRoles()])
+            .then(([usersResponse, groupsResponse, customRolesResponse]) => {
+              this.consolidateData({
+                deployKeysResponse: null,
+                usersResponse: usersResponse.data,
+                groupsResponse: groupsResponse.data,
+                customRolesResponse: customRolesResponse.data,
+              });
               this.setSelected({ initial });
             })
             .catch(() => createAlert({ message: __('Failed to load groups and users.') }))
@@ -287,7 +334,7 @@ export default {
       } else {
         getDeployKeys(this.query)
           .then((deployKeysResponse) => {
-            this.consolidateData(deployKeysResponse.data);
+            this.consolidateData({ deployKeysResponse: deployKeysResponse.data });
             this.setSelected({ initial });
           })
           .catch(() => createAlert({ message: __('Failed to load deploy keys.') }))
@@ -297,11 +344,24 @@ export default {
           });
       }
     },
-    consolidateData(deployKeysResponse, usersResponse = [], groupsResponse = []) {
+    consolidateData(options) {
+      const {
+        deployKeysResponse,
+        usersResponse = [],
+        groupsResponse = [],
+        customRolesResponse = [],
+      } = options;
       // This re-assignment is intentional as level.type property is being used for comparison,
       // and accessLevelsData is provided by gon.create_access_levels which doesn't have `type` included.
       // See this discussion https://gitlab.com/gitlab-org/gitlab/merge_requests/1629#note_31285823
       this.roles = this.accessLevelsData.map((role) => ({ ...role, type: LEVEL_TYPES.ROLE }));
+
+      if (this.customRolesEnabled) {
+        this.customRoles = customRolesResponse.map((role) => ({
+          ...role,
+          type: LEVEL_TYPES.MEMBER_ROLE,
+        }));
+      }
 
       if (this.hasLicense) {
         this.groups = groupsResponse.map((group) => ({ ...group, type: LEVEL_TYPES.GROUP }));
@@ -506,6 +566,25 @@ export default {
         @click.capture.native.stop="onItemClick(role)"
       >
         {{ role.text }}
+      </gl-dropdown-item>
+      <gl-dropdown-divider
+        v-if="showCustomRolesSection || groups.length || users.length || showDeployKeys"
+      />
+    </template>
+
+    <template v-if="showCustomRolesSection">
+      <gl-dropdown-section-header>{{
+        $options.i18n.customRolesSectionHeader
+      }}</gl-dropdown-section-header>
+      <gl-dropdown-item
+        v-for="role in customRoles"
+        :key="`member-role-${role.id}`"
+        data-testid="member-role-dropdown-item"
+        is-check-item
+        :is-checked="isSelected(role)"
+        @click.capture.native.stop="onItemClick(role)"
+      >
+        {{ role.name }}
       </gl-dropdown-item>
       <gl-dropdown-divider v-if="groups.length || users.length || showDeployKeys" />
     </template>

@@ -8,7 +8,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
   let_it_be(:user3, freeze: false) { create(:user) }
   let_it_be(:guest, freeze: false) { create(:user) }
   let_it_be(:group, freeze: false) { create(:group, :public, maintainers: user, developers: [user2, user3], guests: guest) }
-  let_it_be_with_reload(:project) { create(:project, :repository, group: group) }
+  let_it_be_with_reload(:project) { create(:project, group: group) }
   let_it_be(:label, freeze: false) { create(:label, title: 'a', project: project) }
   let_it_be(:label2, freeze: false) { create(:label, title: 'b', project: project) }
   let_it_be(:label3, freeze: false) { create(:label, title: 'c', project: project) }
@@ -199,7 +199,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
           it 'does not assign the sentry error' do
             update_issue(opts)
 
-            expect(issue.sentry_issue).to eq(nil)
+            expect(issue.sentry_issue).to be_nil
           end
         end
       end
@@ -309,7 +309,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
 
             note = find_note('changed type to **Incident**')
 
-            expect(note).not_to eq(nil)
+            expect(note).not_to be_nil
           end
 
           it 'creates an escalation status' do
@@ -532,7 +532,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
       end
 
       context 'when moving issue between issues from different projects' do
-        let(:group) { create(:group) }
+        let(:group) { create(:group, developers: user) }
         let(:subgroup) { create(:group, parent: group) }
 
         let(:project_1) { create(:project, namespace: group) }
@@ -542,10 +542,6 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
         let(:issue_1) { create(:issue, project: project_1) }
         let(:issue_2) { create(:issue, project: project_2) }
         let(:issue_3) { create(:issue, project: project_3) }
-
-        before do
-          group.add_developer(user)
-        end
 
         it 'sorts issues as specified by parameters' do
           # Moving all issues to end here like the last example won't work since
@@ -770,7 +766,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
         end
 
         it 'marks pending todos as done' do
-          expect(todo.reload.done?).to eq true
+          expect(todo.reload.done?).to be true
         end
 
         it 'does not create any new todos' do
@@ -784,7 +780,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
         end
 
         it 'marks todos as done' do
-          expect(todo.reload.done?).to eq true
+          expect(todo.reload.done?).to be true
         end
 
         it 'creates only 1 new todo' do
@@ -798,7 +794,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
         end
 
         it 'marks previous assignee todos as done' do
-          expect(todo.reload.done?).to eq true
+          expect(todo.reload.done?).to be true
         end
 
         it 'creates a todo for new assignee' do
@@ -906,7 +902,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
         it 'marks todos as done' do
           update_issue(milestone_id: create(:milestone, project: project).id)
 
-          expect(todo.reload.done?).to eq true
+          expect(todo.reload.done?).to be true
         end
 
         it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
@@ -972,7 +968,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
         end
 
         it 'marks todos as done' do
-          expect(todo.reload.done?).to eq true
+          expect(todo.reload.done?).to be true
         end
 
         it 'updates updated_at' do
@@ -1036,7 +1032,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
         update_issue(description: "- [ ] Task 1\n- [ ] Task 2")
       end
 
-      it { expect(issue.tasks?).to eq(true) }
+      it { expect(issue.tasks?).to be(true) }
 
       it_behaves_like 'updating a single task'
 

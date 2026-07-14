@@ -15,6 +15,7 @@ module Gitlab
         # @param per_page [Integer, nil] Number of results per page for pagination
         # @param page_token [String, nil] Token for pagination to get next page of results
         # @param ref_names [Array<String>] List of specific ref names to find (exact match, overrides search)
+        # @param max_per_page [Integer, nil] Maximum allowed results per page for pagination
         # @param ignore_case [Boolean] When true, makes pattern matching and sorting case-insensitive
         #
         # @example Basic search
@@ -25,9 +26,10 @@ module Gitlab
         #
         # @example With pagination and sorting
         #   RefsFinder.new(repo, ref_type: :tags, sort_by: "name_desc", per_page: 10)
+        # rubocop:disable Metrics/ParameterLists -- explicit keywords keep the finder initializer contract clear
         def initialize(
-          repository, ref_type:, search: nil, sort_by: nil, per_page: nil, page_token: nil, ref_names: [],
-          ignore_case: false)
+          repository, ref_type:, search: nil, sort_by: nil, per_page: nil, page_token: nil,
+          ref_names: [], max_per_page: nil, ignore_case: false)
           @repository = repository
           @search = search
           @ref_type = ref_type
@@ -35,10 +37,12 @@ module Gitlab
           @per_page = per_page
           @page_token = page_token
           @ref_names = Array(ref_names)
+          @max_per_page = max_per_page
           @ignore_case = ignore_case
 
           validate_sort_by!
         end
+        # rubocop:enable Metrics/ParameterLists
 
         attr_reader :next_cursor
 
@@ -60,7 +64,7 @@ module Gitlab
 
         private
 
-        attr_reader :repository, :search, :ref_type, :sort_by, :page_token, :ref_names, :ignore_case
+        attr_reader :repository, :search, :ref_type, :sort_by, :page_token, :ref_names, :max_per_page, :ignore_case
 
         def validate_sort_by!
           return if sort_by.blank?
@@ -98,8 +102,10 @@ module Gitlab
         end
 
         def per_page
+          options = { max_per_page: max_per_page }.compact
+
           Gitlab::PaginationDelegate.new(
-            per_page: @per_page.presence, page: nil, count: nil
+            per_page: @per_page.presence, page: nil, count: nil, options: options
           ).limit_value
         end
 

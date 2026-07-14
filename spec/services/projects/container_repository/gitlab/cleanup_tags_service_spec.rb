@@ -8,15 +8,13 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
   include_context 'for a cleanup tags service'
 
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :private) }
+  let_it_be_with_reload(:project) { create(:project, :private, maintainers: user) }
 
   let(:repository) { create(:container_repository, :root, project: project) }
   let(:service) { described_class.new(container_repository: repository, current_user: user, params: params) }
   let(:tags) { %w[latest A Ba Bb C D 17-8-stable] }
 
   before do
-    project.add_maintainer(user) if user
-
     stub_container_registry_config(enabled: true)
 
     stub_const("#{described_class}::TAGS_PAGE_SIZE", tags_page_size)

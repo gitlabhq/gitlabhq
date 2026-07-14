@@ -119,7 +119,7 @@ rewrite the URL.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/936) in GitLab 16.8 [with a flag](../../../administration/feature_flags/_index.md) named `FF_ENABLE_DOMAIN_REDIRECT`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/936) in GitLab 16.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `FF_ENABLE_DOMAIN_REDIRECT`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/merge_requests/3395) in GitLab 16.9.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1087) in GitLab 16.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1097) in GitLab 17.4. Feature flag `FF_ENABLE_DOMAIN_REDIRECT` removed.
@@ -184,6 +184,16 @@ In this example, the rule redirects `/old/a/b/c/file` to `/new/a/b/c/file`.
 
 Splats also match empty strings, so the previous rule redirects
 `/old/file` to `/new/file`.
+
+### Match a file extension with a splat
+
+A splat can directly precede a file extension in the `from` path. For example, this rule matches any `.html` request and redirects it to the same path with a trailing slash and no extension:
+
+```plaintext
+/*.html /:splat/ 301
+```
+
+In this example, a request to `/page.html` redirects to `/page/`, and a request to `/docs/page.html` redirects to `/docs/page/`.
 
 ### Rewrite all requests to a root `index.html`
 

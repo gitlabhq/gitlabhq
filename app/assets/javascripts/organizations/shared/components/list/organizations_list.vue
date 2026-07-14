@@ -14,6 +14,7 @@ export default {
       required: true,
     },
   },
+  emits: ['next', 'prev'],
   computed: {
     nodes() {
       return this.organizations.nodes || [];

@@ -128,6 +128,16 @@ export default {
       default: () => ({}),
     },
   },
+  emits: [
+    'error',
+    'resolve',
+    'start-replying',
+    'start-editing',
+    'notify-copy-done',
+    'assign-user',
+    'report-abuse',
+    'delete-note',
+  ],
   computed: {
     assignUserActionText() {
       return this.isAuthorAnAssignee

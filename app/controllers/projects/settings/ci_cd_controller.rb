@@ -171,7 +171,8 @@ module Projects
       end
 
       def permitted_project_ci_cd_settings_params
-        [:default_git_depth, :forward_deployment_enabled, :forward_deployment_rollback_allowed].tap do |list|
+        [:default_git_depth, :forward_deployment_enabled, :forward_deployment_rollback_allowed,
+          :skip_branch_pipelines_for_mrs].tap do |list|
           list << :delete_pipelines_in_human_readable if can?(current_user, :destroy_pipeline, project)
         end
       end

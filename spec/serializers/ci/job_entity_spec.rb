@@ -186,7 +186,7 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   end
 
   context 'when job is running' do
-    let_it_be(:job, freeze: false) { create(:ci_build, :running) }
+    let_it_be(:job) { create(:ci_build, :running) }
 
     it 'contains started_at' do
       expect(subject[:started]).to be_truthy

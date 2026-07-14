@@ -249,7 +249,7 @@ Package metadata is stored in the following Google Cloud Provider (GCP) buckets 
 
 ### Using the gsutil tool to download the package metadata exports
 
-1. Install the [`gsutil`](https://cloud.google.com/storage/docs/gsutil_install) tool.
+1. Install the [`gsutil`](https://docs.cloud.google.com/storage/docs/gsutil_install) tool.
 1. Find the root of the GitLab Rails directory.
 
    ```shell

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/issues/_related_issues.html.haml', feature_category: :team_planning do
-  let_it_be(:project, freeze: false) { build_stubbed(:project) }
-  let_it_be(:issue, freeze: false) { build_stubbed(:issue, project: project) }
+  let_it_be(:project) { build_stubbed(:project) }
+  let_it_be(:issue) { build_stubbed(:issue, project: project) }
 
   context 'when current user cannot read issue link for the project' do
     before do

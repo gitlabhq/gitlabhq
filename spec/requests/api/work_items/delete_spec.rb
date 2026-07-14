@@ -81,6 +81,15 @@ RSpec.describe API::WorkItems::Delete, feature_category: :portfolio_management d
 
     it_behaves_like 'work item delete endpoint'
 
+    it_behaves_like 'authorizing granular token permissions', :delete_work_item,
+      expected_success_status: :no_content do
+      let(:boundary_object) { project }
+      let(:user) { owner }
+      let(:request) do
+        delete api(api_request_path, personal_access_token: pat)
+      end
+    end
+
     context 'when the namespace is a user namespace' do
       it 'returns 404' do
         delete api("/namespaces/#{CGI.escape(owner.username)}/-/work_items/1", owner)
@@ -105,6 +114,15 @@ RSpec.describe API::WorkItems::Delete, feature_category: :portfolio_management d
     let(:api_request_path) { "#{base_path}/#{work_item.iid}" }
 
     it_behaves_like 'work item delete endpoint'
+
+    it_behaves_like 'authorizing granular token permissions', :delete_work_item,
+      expected_success_status: :no_content do
+      let(:boundary_object) { project }
+      let(:user) { owner }
+      let(:request) do
+        delete api(api_request_path, personal_access_token: pat)
+      end
+    end
   end
 
   describe 'DELETE /groups/:id/-/work_items/:work_item_iid' do

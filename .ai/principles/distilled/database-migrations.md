@@ -1,6 +1,6 @@
 ---
-source_checksum: 0e95d16f0c7383e6
-distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
+source_checksum: e0fc1e17498d3165
+distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -18,6 +18,7 @@ distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
 - DO NOT use post-deployment migrations for `create_table` or `add_column` operations — these must be regular schema migrations
 - Add a feature flag and use a post-deployment migration when a regular migration would be unacceptably slow
 - Specify the correct `milestone` on every new migration (required since GitLab 16.6)
+- Before adding new columns or indexes to tables exceeding size thresholds, review the [large tables limitations](https://docs.gitlab.com/development/database/large_tables_limitations/)
 
 ### Migration Class and Helpers
 
@@ -128,6 +129,7 @@ distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
 - Use `with_lock_retries` for any DDL on [high-traffic tables](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml)
 - Create triggers on high-traffic tables in post-deployment migrations using `with_lock_retries` with idempotent `replace: true` / `if_exists: true` guards
 - DO NOT add analytics-only columns to high-traffic tables that provide no direct feature value to self-managed instances
+- Include the full table name in the post-deployment migration class name so the PDM pipeline can detect and pause for autovacuum wraparound protection on that table; omit the table name only when the migration has no conflicting locks
 
 ### Batched Background Migrations
 
@@ -136,12 +138,17 @@ distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
 - Define all BBM classes under the `Gitlab::BackgroundMigration` namespace in `lib/gitlab/background_migration/`
 - Use cursor-based iteration (the `cursor` DSL) as the default strategy for new BBMs; omit `cursor` only when the legacy primary-key strategy is explicitly required
 - Use `job_arguments` helper to declare job arguments; `queue_batched_background_migration` raises an error if the count does not match
+- Set `restrict_gitlab_migration gitlab_schema:` in the scheduling post-deployment migration to match the database where the actual changes are made
+- Declare `DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS` in any migration that depends on a prior BBM being finished; the `Migration::UnfinishedDependencies` cop enforces this
 - Ensure BBM jobs are idempotent — they run in Sidekiq and may be retried
+- DO NOT silently rescue exceptions inside BBM job classes — log and re-raise so jobs are not incorrectly marked successful
 - DO NOT use application models (`app/models`) in BBMs; define inline models inheriting from the correct `ApplicationRecord` subclass (`::ApplicationRecord` for `main`, `::Ci::ApplicationRecord` for `ci`); DO NOT use `ActiveRecord::Base`
 - DO NOT use `ActiveRecord::Base.connection` in BBMs; use the model's connection or `ApplicationRecord.connection` instead
 - When iterating over non-distinct columns, use `LooseIndexScanBatchingStrategy` and `distinct_each_batch` instead of the default primary-key strategy
 - Use `scope_to` only when the scoped condition is covered by an index with an index-only scan; disable the `Database/AvoidScopeTo` cop with a comment citing the supporting index
 - Use `tables_to_check_for_vacuum` when the BBM iterates over one table but writes to different tables, to avoid unnecessary autovacuum pauses on the iteration table
+- Update sub-batches in a single query using a materialized CTE with a limit guard rather than updating each row individually
+- For EE-only BBMs, create an empty class in GitLab FOSS and extend it in EE; define `job_arguments` in the FOSS class to prevent validation failures
 - Finalize a BBM only after it has completed on GitLab.com and was enqueued at or before the last required stop; use `ensure_batched_background_migration_is_finished` in a post-deployment migration
 - Match job arguments and `gitlab_schema` exactly in `ensure_batched_background_migration_is_finished` — even if the schema label changed since enqueueing
 - Update `finalized_by` in the corresponding `db/docs/batched_background_migrations/<name>.yml` when adding the finalization migration

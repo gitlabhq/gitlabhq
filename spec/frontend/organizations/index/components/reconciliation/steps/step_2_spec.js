@@ -86,6 +86,15 @@ describe('ReconciliationStep2', () => {
       const card = findCardAt(organizationWithGroupsIndex);
       expect(findAllGroupCards(card).at(0).props('group')).toEqual(groups[0]);
     });
+
+    it('passes organization visibility to organization group card', () => {
+      createComponent();
+
+      const card = findCardAt(organizationWithGroupsIndex);
+      expect(findAllGroupCards(card).at(0).props('organizationVisibility')).toBe(
+        organizationWithGroups.visibility,
+      );
+    });
   });
 
   describe('drag and drop', () => {

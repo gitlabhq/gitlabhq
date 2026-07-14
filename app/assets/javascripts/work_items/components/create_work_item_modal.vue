@@ -16,6 +16,7 @@ import CreateWorkItem from './create_work_item.vue';
 import CreateWorkItemCancelConfirmationModal from './create_work_item_cancel_confirmation_modal.vue';
 
 export default {
+  name: 'CreateWorkItemModal',
   components: {
     CreateWorkItem,
     CreateWorkItemCancelConfirmationModal,

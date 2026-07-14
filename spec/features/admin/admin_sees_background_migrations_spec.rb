@@ -95,14 +95,14 @@ RSpec.describe "Admin > Admin sees background migrations", feature_category: :da
       expect(page).to have_content('Active')
 
       click_on('Pause')
-      expect(page).not_to have_content('Active')
       expect(page).to have_content('Paused')
       expect(page).to have_link(href: resume_admin_background_migration_path(active_migration))
+      expect(page).not_to have_content('Active')
 
       click_on('Resume')
-      expect(page).not_to have_content('Paused')
       expect(page).to have_content('Active')
       expect(page).to have_link(href: pause_admin_background_migration_path(active_migration))
+      expect(page).not_to have_content('Paused')
     end
   end
 

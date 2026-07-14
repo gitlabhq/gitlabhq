@@ -3,12 +3,14 @@ import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'AutoDevOpsAlert',
   components: {
     GlSprintf,
     GlAlert,
     GlLink,
   },
   inject: ['autoDevopsHelpPagePath', 'autoDevopsPath'],
+  emits: ['dismiss'],
   i18n: {
     primaryButtonText: s__('SecurityConfiguration|Enable Auto DevOps'),
     body: s__(

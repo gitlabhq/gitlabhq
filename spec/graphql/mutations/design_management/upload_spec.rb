@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Mutations::DesignManagement::Upload, feature_category: :api do

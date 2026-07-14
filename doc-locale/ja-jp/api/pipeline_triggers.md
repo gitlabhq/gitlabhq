@@ -27,7 +27,8 @@ GET /projects/:id/triggers
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/triggers"
 ```
 
@@ -61,7 +62,8 @@ GET /projects/:id/triggers/:trigger_id
 | `trigger_id` | 整数        | はい      | トリガーID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/triggers/5"
 ```
 

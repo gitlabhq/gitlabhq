@@ -1,0 +1,21 @@
+---
+description: GLQL panel rendered in an analytics dashboard
+internal_events: true
+status: active
+action: render_analytics_dashboard_glql_panel
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: SHA256 of the GLQL query content
+product_group: optimize
+product_categories:
+- custom_dashboards_foundation
+milestone: '19.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240482
+tiers:
+- free
+- premium
+- ultimate

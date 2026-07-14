@@ -10,6 +10,7 @@ import bulkSnoozeTodosMutation from './mutations/bulk_snooze_todos.mutation.grap
 import SnoozeTimePicker from './todo_snooze_until_picker.vue';
 
 export default {
+  name: 'TodosBulkBar',
   components: {
     GlButton,
     GlSprintf,

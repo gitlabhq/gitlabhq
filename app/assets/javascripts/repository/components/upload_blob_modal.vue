@@ -90,6 +90,7 @@ export default {
     },
   },
   methods: {
+    // eslint-disable-next-line vue/no-unused-properties -- invoked externally via this.$refs[...].show() in blob_button_group.vue
     show() {
       this.$refs[this.modalId].show();
     },

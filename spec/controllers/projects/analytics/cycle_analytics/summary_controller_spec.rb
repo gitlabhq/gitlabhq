@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   let(:params) { { namespace_id: project.namespace.to_param, project_id: project.to_param, created_after: '2010-01-01', created_before: '2010-02-01' } }
 
@@ -50,7 +50,7 @@ RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do
       let_it_be(:issue_with_other_author) { create(:issue, project: project, author: user, created_at: Date.new(2010, 1, 15)) }
       let_it_be(:issue_with_milestone) { create(:issue, project: project, milestone: milestone, created_at: Date.new(2010, 1, 15)) }
 
-      before do
+      before_all do
         project.add_reporter(user)
       end
 

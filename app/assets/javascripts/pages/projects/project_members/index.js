@@ -40,6 +40,25 @@ initMembersApp(document.querySelector('.js-project-members-list-app'), CONTEXT_T
       recentSearchesStorageKey: 'project_members',
     },
   },
+  [MEMBERS_TAB_TYPES.directMembers]: {
+    tableFields: SHARED_FIELDS.concat(['source', 'activity']),
+    tableSortableFields: [
+      'account',
+      'granted',
+      'maxRole',
+      'lastSignIn',
+      'userCreatedAt',
+      'lastActivityOn',
+    ],
+    requestFormatter: projectMemberRequestFormatter,
+    filteredSearchBar: {
+      show: true,
+      tokens: ['max_role'],
+      searchParam: 'search_direct_members',
+      placeholder: s__('Members|Filter members'),
+      recentSearchesStorageKey: 'project_direct_members',
+    },
+  },
   [MEMBERS_TAB_TYPES.group]: {
     tableFields: SHARED_FIELDS.concat(['source', 'granted']),
     requestFormatter: groupLinkRequestFormatter,

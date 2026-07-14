@@ -36,6 +36,32 @@ RSpec.describe Authn::PersonalAccessTokens::CreateGranularService, feature_categ
       expect(token.granular_scopes.map(&:id)).to match_array(granular_scopes.map(&:id))
     end
 
+    it 'defaults the token owner to current_user' do
+      expect(token.user).to eq(current_user)
+    end
+
+    context 'when a target_user is provided', :enable_admin_mode do
+      let_it_be(:admin) { create(:admin) }
+      let_it_be(:target_user) { create(:user) }
+
+      let(:params) do
+        { name: 'Test token', expires_at: Time.zone.today + 1.month, description: 'Test Description',
+          impersonation: true }
+      end
+
+      let(:service) do
+        described_class.new(current_user: admin, target_user: target_user, organization: organization,
+          params: params, granular_scopes: granular_scopes)
+      end
+
+      it 'creates the granular token for the target user', :aggregate_failures do
+        expect(token.user).to eq(target_user)
+        expect(token).to be_granular
+        expect(token.impersonation).to be(true)
+        expect(token.granular_scopes.map(&:id)).to match_array(granular_scopes.map(&:id))
+      end
+    end
+
     describe 'internal event tracking' do
       let(:common_attrs) { { organization: organization } }
       let(:group) { create(:group, **common_attrs, guests: [current_user]) }

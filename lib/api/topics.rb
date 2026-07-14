@@ -20,8 +20,8 @@ module API
       end
     end
 
-    desc 'Get topics' do
-      detail 'This feature was introduced in GitLab 14.5.'
+    desc 'List all topics' do
+      detail 'Lists all project topics sorted by the number of associated projects.'
       success Entities::Projects::Topic
       tags ['project_topics']
     end
@@ -46,8 +46,8 @@ module API
       present paginate(topics), with: Entities::Projects::Topic
     end
 
-    desc 'Get topic' do
-      detail 'This feature was introduced in GitLab 14.5.'
+    desc 'Retrieve a topic' do
+      detail 'Retrieves a specified project topic.'
       success Entities::Projects::Topic
       tags ['project_topics']
     end
@@ -61,8 +61,8 @@ module API
       present topic, with: Entities::Projects::Topic
     end
 
-    desc 'Create a topic' do
-      detail 'This feature was introduced in GitLab 14.5.'
+    desc 'Create a project topic' do
+      detail 'Creates a project topic. Administrators only.'
       success Entities::Projects::Topic
       tags ['project_topics']
     end
@@ -89,8 +89,8 @@ module API
       end
     end
 
-    desc 'Update a topic' do
-      detail 'This feature was introduced in GitLab 14.5.'
+    desc 'Update a project topic' do
+      detail 'Updates a specified project topic. Administrators only.'
       success Entities::Projects::Topic
       tags ['project_topics']
     end
@@ -117,8 +117,8 @@ module API
       end
     end
 
-    desc 'Delete a topic' do
-      detail 'This feature was introduced in GitLab 14.9.'
+    desc 'Delete a project topic' do
+      detail 'Deletes a specified project topic. Administrators only.'
       success code: 204, message: 'Resource deleted'
       tags ['project_topics']
     end
@@ -135,7 +135,8 @@ module API
     end
 
     desc 'Merge topics' do
-      detail 'This feature was introduced in GitLab 15.4.'
+      detail 'Merges a source topic into a target topic. This action deletes the source topic and moves all ' \
+        'assigned projects to the target topic. Administrators only.'
       success Entities::Projects::Topic
       tags ['project_topics']
     end

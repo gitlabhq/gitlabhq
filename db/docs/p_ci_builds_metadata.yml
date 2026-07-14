@@ -1,7 +1,6 @@
 ---
 table_name: p_ci_builds_metadata
-classes:
-- Ci::BuildMetadata
+classes: []
 feature_categories:
 - continuous_integration
 description: Routing table that holds information for job execution
@@ -11,12 +10,3 @@ gitlab_schema: gitlab_ci
 sharding_key:
   project_id: projects
 table_size: small
-partition_detach_info:
-- partition_name: ci_builds_metadata
-  bounds_clause: "FOR VALUES IN ('100')"
-  required_constraint: "(partition_id = ANY (ARRAY[100]))"
-  parent_schema: public
-- partition_name: ci_builds_metadata_102
-  bounds_clause: "FOR VALUES IN ('102')"
-  required_constraint: "(partition_id = ANY (ARRAY[102]))"
-  parent_schema: public

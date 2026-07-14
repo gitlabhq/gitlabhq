@@ -1,12 +1,16 @@
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import SidebarConfidentialityForm from '~/sidebar/components/confidential/sidebar_confidentiality_form.vue';
 import { confidentialityQueries } from '~/sidebar/queries/constants';
 
 jest.mock('~/alert');
+
+Vue.use(VueApollo);
 
 describe('Sidebar Confidentiality Form', () => {
   let wrapper;
@@ -15,10 +19,24 @@ describe('Sidebar Confidentiality Form', () => {
   const findConfidentialToggle = () => wrapper.find(`[data-testid="confidential-toggle"]`);
   const findCancelButton = () => wrapper.find(`[data-testid="confidential-cancel"]`);
 
+  let mutationHandler;
+
   const createComponent = ({
     props = {},
-    mutate = jest.fn().mockResolvedValue('Success'),
+    mutate = jest.fn().mockResolvedValue({
+      data: {
+        issuableSetConfidential: {
+          issuable: { id: 'gid://gitlab/Issue/1', confidential: true },
+          errors: [],
+        },
+      },
+    }),
   } = {}) => {
+    mutationHandler = mutate;
+    const issuableType = props.issuableType || 'issue';
+    const apolloProvider = createMockApollo([
+      [confidentialityQueries[issuableType].mutation, mutationHandler],
+    ]);
     wrapper = shallowMount(SidebarConfidentialityForm, {
       propsData: {
         fullPath: 'group/project',
@@ -27,28 +45,11 @@ describe('Sidebar Confidentiality Form', () => {
         issuableType: 'issue',
         ...props,
       },
-      mocks: {
-        $apollo: {
-          mutate,
-        },
-      },
+      apolloProvider,
       stubs: {
         GlSprintf,
       },
     });
-  };
-
-  const confidentialityMutation = (confidential, workspacePath) => {
-    return {
-      mutation: confidentialityQueries[wrapper.vm.issuableType].mutation,
-      variables: {
-        input: {
-          confidential,
-          iid: '1',
-          ...workspacePath,
-        },
-      },
-    };
   };
 
   const clickConfidentialToggle = () => {
@@ -66,7 +67,7 @@ describe('Sidebar Confidentiality Form', () => {
     createComponent();
     findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
 
-    expect(wrapper.vm.$apollo.mutate).toHaveBeenCalled();
+    expect(mutationHandler).toHaveBeenCalled();
     await nextTick();
     expect(findConfidentialToggle().props('loading')).toBe(true);
   });
@@ -84,7 +85,12 @@ describe('Sidebar Confidentiality Form', () => {
   it('creates an alert if mutation contains errors', async () => {
     createComponent({
       mutate: jest.fn().mockResolvedValue({
-        data: { issuableSetConfidential: { errors: ['Houston, we have a problem!'] } },
+        data: {
+          issuableSetConfidential: {
+            issuable: { id: 'gid://gitlab/Issue/1', confidential: false },
+            errors: ['Houston, we have a problem!'],
+          },
+        },
       }),
     });
     findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
@@ -112,9 +118,13 @@ describe('Sidebar Confidentiality Form', () => {
 
     it('calls a mutation to set confidential to true on button click', () => {
       clickConfidentialToggle();
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith(
-        confidentialityMutation(true, { projectPath: 'group/project' }),
-      );
+      expect(mutationHandler).toHaveBeenCalledWith({
+        input: {
+          confidential: true,
+          iid: '1',
+          projectPath: 'group/project',
+        },
+      });
     });
   });
 
@@ -135,14 +145,11 @@ describe('Sidebar Confidentiality Form', () => {
 
     it('calls a mutation to set confidential to false on button click', () => {
       findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: confidentialityQueries[wrapper.vm.issuableType].mutation,
-        variables: {
-          input: {
-            confidential: false,
-            iid: '1',
-            projectPath: 'group/project',
-          },
+      expect(mutationHandler).toHaveBeenCalledWith({
+        input: {
+          confidential: false,
+          iid: '1',
+          projectPath: 'group/project',
         },
       });
     });
@@ -161,9 +168,13 @@ describe('Sidebar Confidentiality Form', () => {
 
     it('calls a mutation to set epic confidentiality with correct parameters', () => {
       clickConfidentialToggle();
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith(
-        confidentialityMutation(false, { groupPath: 'group/project' }),
-      );
+      expect(mutationHandler).toHaveBeenCalledWith({
+        input: {
+          confidential: false,
+          iid: '1',
+          groupPath: 'group/project',
+        },
+      });
     });
   });
 
@@ -181,9 +192,13 @@ describe('Sidebar Confidentiality Form', () => {
 
       it('calls a mutation to set confidential to false on button click', () => {
         clickConfidentialToggle();
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith(
-          confidentialityMutation(false, { projectPath: 'group/project' }),
-        );
+        expect(mutationHandler).toHaveBeenCalledWith({
+          input: {
+            confidential: false,
+            iid: '1',
+            projectPath: 'group/project',
+          },
+        });
       });
     });
 
@@ -200,9 +215,13 @@ describe('Sidebar Confidentiality Form', () => {
 
       it('calls a mutation to set confidential to true on button click', () => {
         clickConfidentialToggle();
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith(
-          confidentialityMutation(true, { projectPath: 'group/project' }),
-        );
+        expect(mutationHandler).toHaveBeenCalledWith({
+          input: {
+            confidential: true,
+            iid: '1',
+            projectPath: 'group/project',
+          },
+        });
       });
     });
   });

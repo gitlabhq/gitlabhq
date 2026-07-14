@@ -1,6 +1,7 @@
 <script>
 import {
   GlButton,
+  GlButtonGroup,
   GlCard,
   GlIcon,
   GlLink,
@@ -8,9 +9,9 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { mapActions } from 'pinia';
 import { __, s__ } from '~/locale';
+import { useMetricImages } from '~/vue_shared/components/metric_images/store';
 import MetricImageDetailsModal from './metric_image_details_modal.vue';
 
 export default {
@@ -26,6 +27,7 @@ export default {
   },
   components: {
     GlButton,
+    GlButtonGroup,
     GlCard,
     GlIcon,
     GlLink,
@@ -86,7 +88,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['deleteImage']),
+    ...mapActions(useMetricImages, ['deleteImage']),
     toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed;
     },
@@ -159,7 +161,7 @@ export default {
           <span v-else data-testid="metric-image-label-span">{{
             urlText == null || urlText == '' ? filename : urlText
           }}</span>
-          <div class="btn-group gl-ml-auto">
+          <gl-button-group class="gl-ml-auto">
             <gl-button
               v-if="canUpdate"
               v-gl-tooltip.bottom
@@ -178,7 +180,7 @@ export default {
               data-testid="delete-button"
               @click="modalVisible = true"
             />
-          </div>
+          </gl-button-group>
         </div>
       </div>
     </template>

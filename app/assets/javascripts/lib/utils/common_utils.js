@@ -464,6 +464,30 @@ export const spriteIcon = (icon, className = '', color = '') => {
 };
 
 /**
+ * Builds a sprite icon as a DOM node, the equivalent of `spriteIcon` without
+ * going through `innerHTML`. Prefer this when inserting an icon into an element
+ * imperatively (e.g. `element.appendChild(spriteIconElement('close'))`).
+ *
+ * The icon is marked `aria-hidden` because a `<use>` reference is not
+ * meaningful to assistive technology; give the surrounding element a label.
+ *
+ * @param {String} icon Icon name in the sprite sheet
+ * @param {String} className Classes applied to the `<svg>` element
+ * @returns {SVGElement}
+ */
+export const spriteIconElement = (icon, className = '') => {
+  const svgNamespace = 'http://www.w3.org/2000/svg';
+  const xlinkNamespace = 'http://www.w3.org/1999/xlink';
+  const svg = document.createElementNS(svgNamespace, 'svg');
+  if (className) svg.setAttribute('class', className);
+  svg.setAttribute('aria-hidden', 'true');
+  const use = document.createElementNS(svgNamespace, 'use');
+  use.setAttributeNS(xlinkNamespace, 'xlink:href', `${gon.sprite_icons}#${icon}`);
+  svg.appendChild(use);
+  return svg;
+};
+
+/**
  * @callback ConversionFunction
  * @param {string} prop
  */

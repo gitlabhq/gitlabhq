@@ -21,6 +21,8 @@ class UpdateComBackfillSyncCursors < ClickHouse::Migration
   private
 
   def last_id(table)
+    return unless ApplicationRecord.connection.table_exists?(table)
+
     ApplicationRecord.connection.execute("SELECT MAX(id) as max_id FROM #{table}").first&.fetch('max_id', nil)
   end
 end

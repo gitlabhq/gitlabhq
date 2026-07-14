@@ -51,7 +51,7 @@ Code Suggestions is built with privacy as a critical foundation. Private, non-pu
 
 In the general release, we’ve made [Code Suggestions available across several IDEs](../../user/project/repository/code_suggestions/_index.md). Code Suggestions is also now more intuitive and responsive.
 
-GitLab Duo Code Suggestions is [free to try](../../user/project/repository/code_suggestions/_index.md) subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/) until February 15, 2024. Starting today, you can buy Code Suggestions as an add-on to GitLab subscriptions for an introductory price of $9 USD per user/per month. Please [contact us](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/) to get started with Code Suggestions.
+GitLab Duo Code Suggestions is [free to try](../../user/project/repository/code_suggestions/_index.md) subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/) until February 15, 2024. Starting today, you can buy Code Suggestions as an add-on to GitLab subscriptions for an introductory price of $9 USD per user/per month. Please [contact us](https://about.gitlab.com/sales/) to get started with Code Suggestions.
 
 ### Use GitLab pages without a wildcard DNS
 

@@ -45,8 +45,8 @@ module API
       expose :assignees, using: ::API::Entities::UserBasic
       expose :assignee, using: ::API::Entities::UserBasic
       expose :reviewers, using: ::API::Entities::UserBasic
-      expose :source_project_id, documentation: { type: 'Integer' }
-      expose :target_project_id, documentation: { type: 'Integer' }
+      expose :source_project_id, documentation: { type: 'Integer', format: 'int64' }
+      expose :target_project_id, documentation: { type: 'Integer', format: 'int64' }
       expose :labels, documentation: { type: 'String', is_array: true } do |merge_request, options|
         if options[:with_labels_details]
           ::API::Entities::LabelBasic.represent(merge_request.labels.sort_by(&:title))

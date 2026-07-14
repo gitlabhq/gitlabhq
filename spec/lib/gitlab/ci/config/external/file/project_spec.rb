@@ -6,8 +6,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
   include RepoHelpers
 
   let_it_be(:context_project) { create(:project) }
-  let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, developers: user) }
 
   let(:context_user) { user }
   let(:parent_pipeline) { double(:parent_pipeline) }
@@ -27,11 +27,13 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
   end
 
   before do
-    project.add_developer(user)
-
     allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
       allow(instance).to receive(:check_execution_time!)
     end
+
+    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
+      .with(:ci_interpolation_split_function)
+      .and_return(false)
   end
 
   describe '#matching?' do
@@ -126,7 +128,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
     end
 
     context 'when a valid different case path is used' do
-      let_it_be(:project) { create(:project, :repository, path: 'mY-teSt-proJect', name: 'My Test Project') }
+      let_it_be(:project) { create(:project, :repository, path: 'mY-teSt-proJect', name: 'My Test Project', developers: user) }
 
       let(:params) do
         { project: "#{project.namespace.full_path}/my-test-projecT", file: '/file.yml' }
@@ -274,7 +276,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
     end
 
     context 'when project name and ref include masked variables' do
-      let_it_be(:project) { create(:project, :repository, path: 'my_project_path') }
+      let_it_be(:project) { create(:project, :repository, path: 'my_project_path', developers: user) }
 
       let(:branch_name) { 'merge-commit-analyze-after' }
       let(:namespace_path) { project.namespace.full_path }

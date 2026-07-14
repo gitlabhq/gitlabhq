@@ -501,6 +501,9 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
     let(:all_but_host) { Banzai::Filter::PlaceholdersPostFilter::ALLOWED_URI_CONTEXT_ALL_BUT_HOST }
 
     let(:replacement) { '# hello/world #' }
+    # `replacer.generate` evaluates the block in the context of the filter,
+    # so we can't refer to "replacement" here.
+    let(:replacement_block) { -> { '# hello/world #' } }
     let(:replacement_uri_encoded) { '%23%20hello%2Fworld%20%23' }
 
     it 'denies combination of ALLOWED_URI_CONTEXT_ALL with uri_encode: false' do
@@ -516,7 +519,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
     end
 
     context 'when permitted in all URI contexts' do
-      subject(:replacer) { described_class.new(all) { replacement } }
+      subject(:replacer) { described_class.new(all, &replacement_block) }
 
       it 'replaces outside a URI' do
         expect(replacer.generate(nil, in_uri_component: false)).to eq(replacement)
@@ -528,7 +531,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
     end
 
     context 'when permitted in all URI contexts except host' do
-      subject(:replacer) { described_class.new(all_but_host) { replacement } }
+      subject(:replacer) { described_class.new(all_but_host, &replacement_block) }
 
       it 'replaces outside a URI' do
         expect(replacer.generate(nil, in_uri_component: false)).to eq(replacement)
@@ -544,7 +547,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
     end
 
     context 'when permitted in all URI contexts except host, with URI encoding disabled' do
-      subject(:replacer) { described_class.new(all_but_host, uri_encode: false) { replacement } }
+      subject(:replacer) { described_class.new(all_but_host, uri_encode: false, &replacement_block) }
 
       it 'replaces outside a URI' do
         expect(replacer.generate(nil, in_uri_component: false)).to eq(replacement)

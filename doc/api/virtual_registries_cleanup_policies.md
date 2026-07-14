@@ -15,7 +15,7 @@ title: Virtual registries cleanup policies API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 
 {{< /history >}}
 
@@ -38,7 +38,7 @@ Use the following endpoints to create and manage virtual registries cleanup poli
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 
 {{< /history >}}
 
@@ -93,7 +93,7 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 
 {{< /history >}}
 
@@ -149,7 +149,7 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 
 {{< /history >}}
 
@@ -212,7 +212,7 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 
 {{< /history >}}
 

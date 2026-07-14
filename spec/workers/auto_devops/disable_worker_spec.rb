@@ -19,7 +19,7 @@ RSpec.describe AutoDevops::DisableWorker, '#perform', feature_category: :auto_de
   it 'disables auto devops for project' do
     subject.perform(pipeline.id)
 
-    expect(auto_devops.reload.enabled).to eq(false)
+    expect(auto_devops.reload.enabled).to be(false)
   end
 
   context 'when project owner is a user' do

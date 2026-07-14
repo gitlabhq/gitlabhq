@@ -48,6 +48,7 @@ const FILTER_OPTIONS = [
 ];
 
 export default {
+  name: 'ActivityWidget',
   components: {
     GlSkeletonLoader,
     GlCollapsibleListbox,

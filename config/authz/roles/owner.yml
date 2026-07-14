@@ -22,6 +22,7 @@ project:
   - clone_project_configuration
   - create_container_registry_protection_immutable_tag_rule
   - create_group_link
+  - create_observability_access_request
   - delete_group_link
   - destroy_issue
   - destroy_merge_request
@@ -32,6 +33,7 @@ project:
   - manage_owners
   - mark_issue_for_publication
   - modify_security_policy
+  - read_agent_artifacts
   - read_ai_tool_rule
   - read_compliance_adherence_report
   - read_compliance_dashboard
@@ -55,6 +57,7 @@ project:
 group:
   permissions: []
   raw_permissions:
+  - _bypass_ip_enforcement
   - activate_group_member
   - admin_add_on_purchase
   - admin_ci_minutes
@@ -125,6 +128,7 @@ group:
   - override_group_member
   - provision_secrets_manager
   - read_add_on_purchase
+  - read_agent_artifacts
   - read_ai_domain_settings
   - read_ai_tool_rule
   - read_any_audit_event

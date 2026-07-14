@@ -22,7 +22,9 @@ module Gitlab
             "Token not available"
           end
 
-        super(id: -1, name: name)
+        # Shares the unauthenticated sentinel because NullAuthor.for routes this
+        # author by target_type before any id check, so the id is never used for dispatch.
+        super(id: UNAUTHENTICATED_AUTHOR_ID, name: name)
 
         @entity_type = entity_type
         @entity_path = entity_path

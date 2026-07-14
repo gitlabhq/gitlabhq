@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'package details', feature_category: :package_registry do
@@ -73,7 +74,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
         end
 
         it '`public_package` returns true' do
-          expect(graphql_data_at(:package, :public_package)).to eq(true)
+          expect(graphql_data_at(:package, :public_package)).to be(true)
         end
       end
     end
@@ -99,7 +100,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
     end
 
     it '`public_package` returns true' do
-      expect(graphql_data_at(:package, :public_package)).to eq(true)
+      expect(graphql_data_at(:package, :public_package)).to be(true)
     end
   end
 
@@ -346,7 +347,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
 
     context 'public_package' do
       context 'when project is private' do
-        let_it_be(:private_project, freeze: false) { create(:project, :private, group: group) }
+        let_it_be_with_reload(:private_project) { create(:project, :private, group: group) }
         let_it_be(:composer_package) { create(:composer_package_sti, project: private_project) }
         let(:package_global_id) { global_id_of(composer_package) }
 
@@ -357,7 +358,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
         it 'returns false' do
           subject
 
-          expect(graphql_data_at(:package, :public_package)).to eq(false)
+          expect(graphql_data_at(:package, :public_package)).to be(false)
         end
 
         context 'with access to package registry for everyone' do
@@ -367,7 +368,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
           end
 
           it 'returns true' do
-            expect(graphql_data_at(:package, :public_package)).to eq(true)
+            expect(graphql_data_at(:package, :public_package)).to be(true)
           end
         end
       end
@@ -382,7 +383,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
         end
 
         it 'returns true' do
-          expect(graphql_data_at(:package, :public_package)).to eq(true)
+          expect(graphql_data_at(:package, :public_package)).to be(true)
         end
       end
     end

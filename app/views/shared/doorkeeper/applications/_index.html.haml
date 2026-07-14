@@ -67,10 +67,10 @@
     - if oauth_authorized_applications_enabled
       = render ::Layouts::CrudComponent.new(_('Authorized applications'),
         icon: 'applications',
-        count: @authorized_tokens.size,
+        count: @authorized_records.size,
         options: { class: 'gl-mt-5', data: { testid: 'oauth-authorized-applications' } }) do |c|
         - c.with_body do
-          - if @authorized_tokens.any?
+          - if @authorized_records.any?
             .table-holder
               %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.-gl-mb-2
                 %thead.gl-hidden{ class: "@md/panel:gl-table-header-group" }
@@ -80,24 +80,24 @@
                     %th= _('Scope')
                     %th
                 %tbody
-                  - @authorized_tokens.each do |token|
-                    %tr{ id: ("application_#{token.application.id}" if token.application) }
+                  - @authorized_records.each do |record|
+                    %tr{ id: ("application_#{record.application.id}" if record.application) }
                       %td{ data: { label: _('Name') } }
-                        - if token.application
-                          = token.application.name
+                        - if record.application
+                          = record.application.name
                         - else
                           = _('Anonymous')
                           .form-text.gl-text-subtle
                             %em= _("Authorization was granted by entering your username and password in the application.")
                       %td{ data: { label: _('Authorized At') } }
-                        = token.created_at
+                        = record.created_at
                       %td{ data: { label: _('Scope') } }
-                        = token.scopes
+                        = authorized_record_scopes(record)
                       %td.gl-items-center{ class: '!gl-flex @sm/panel:!gl-table-cell !gl-py-4', data: { label: _('Actions') } }
                         %div{ class: '!gl-flex !gl-pl-0 @sm/panel:gl-justify-end' }
-                          - if token.application
-                            = render 'doorkeeper/authorized_applications/delete_form', application: token.application
+                          - if record.application
+                            = render 'doorkeeper/authorized_applications/delete_form', application: record.application
                           - else
-                            = render 'doorkeeper/authorized_applications/delete_form', token: token
+                            = render 'doorkeeper/authorized_applications/delete_form', token: record
           - else
             .gl-text-subtle= _("You don't have any authorized applications.")

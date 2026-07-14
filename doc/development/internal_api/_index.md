@@ -1528,7 +1528,13 @@ Example response:
       ],
       "id": "86e7d437-1a55-4731-b3a3-2867fb4d2a94",
       "displayName": "Developers",
-      "members": [],
+      "members": [
+        {
+          "value": "2435223452",
+          "display": "Sidney Jones",
+          "type": "User"
+        }
+      ],
       "meta": {
         "resourceType": "Group"
       }
@@ -1565,12 +1571,26 @@ Example response:
   ],
   "id": "86e7d437-1a55-4731-b3a3-2867fb4d2a94",
   "displayName": "Developers",
-  "members": [],
+  "members": [
+    {
+      "value": "2435223452",
+      "display": "Sidney Jones",
+      "type": "User"
+    }
+  ],
   "meta": {
     "resourceType": "Group"
   }
 }
 ```
+
+Each entry in `members` describes a user that belongs to the SCIM group:
+
+| Attribute | Type   | Description |
+|:----------|:-------|:------------|
+| `value`   | string | SCIM ID of the user, matching the `id` returned by the `Users` endpoints. |
+| `display` | string | Human-readable name of the user. |
+| `type`    | string | Type of the member. Always `User`. |
 
 #### Create a SCIM group
 

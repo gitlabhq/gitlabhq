@@ -289,6 +289,24 @@ RSpec.shared_examples 'wiki model' do
         end
       end
 
+      context 'when paging through with offset and limit' do
+        # Guards the invariant documented on Wiki#list_page_paths: Gitaly applies
+        # limit/offset in path order, matching `sort_pages!`. Successive pages must
+        # therefore tile the full ordered result with no gaps or duplicates. If
+        # Gitaly's order ever diverged from path order, this would fail.
+        it 'tiles the full ordered result with no gaps or duplicates' do
+          all_paths = subject.list_pages.map(&:path)
+
+          [1, 2, 4].each do |page_size|
+            paged_paths = (0..all_paths.size).step(page_size).flat_map do |offset|
+              subject.list_pages(limit: page_size, offset: offset).map(&:path)
+            end
+
+            expect(paged_paths).to eq(all_paths)
+          end
+        end
+      end
+
       context 'with sorting options' do
         it 'returns pages sorted by title by default' do
           pages = ["index 1.md", "index 2.md", "index-1.md", "index-2.md", "index1.md", "index2.md"]

@@ -33,11 +33,11 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
 
       within_testid('selected-namespaces') do
         expect(page).to have_text(group.full_path)
-        expect(page).to have_text('0 subgroups, 1 projects')
+        expect(page).to have_text('0 subgroups, 1 project')
         expect(page).to have_text(project.full_path)
       end
 
-      page.within('.tab-pane.active') do
+      within_testid('resource-tree') do
         click_button 'Toggle Groups category'
         check 'Avatar'
 
@@ -99,7 +99,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
 
       expect(page).not_to have_button 'Add group or project'
 
-      page.within('.tab-pane.active') do
+      within_testid('resource-tree') do
         click_button 'Toggle Groups category'
         check 'Avatar'
       end
@@ -124,7 +124,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
 
       expect(page).not_to have_button 'Add group or project'
 
-      page.within('.tab-pane.active') do
+      within_testid('resource-tree') do
         click_button 'Toggle Groups category'
         check 'Avatar'
       end
@@ -146,7 +146,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
 
     choose 'All groups and projects that I\'m a member of'
 
-    page.within('.tab-pane.active') do
+    within_testid('resource-tree') do
       click_button 'Toggle Groups category'
       check 'Avatar'
     end
@@ -156,11 +156,11 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
       select_listbox_item 'Read'
     end
 
-    page.within('.gl-tabs-nav') do
-      click_on 'User'
+    within_testid('access-selector') do
+      click_button 'User'
     end
 
-    page.within('.tab-pane.active') do
+    within_testid('resource-tree') do
       click_button 'Toggle System Access category'
       check 'User'
     end
@@ -170,11 +170,11 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
       select_listbox_item 'Read'
     end
 
-    page.within('.gl-tabs-nav') do
-      click_on 'Global'
+    within_testid('access-selector') do
+      click_button 'Global'
     end
 
-    page.within('.tab-pane.active') do
+    within_testid('resource-tree') do
       click_button 'CI/CD'
       check 'Cluster'
     end
@@ -220,7 +220,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
 
       uncheck 'Groups'
 
-      expect(page).to have_text('No resources added')
+      expect(page).not_to have_css('[data-testid="selected-resource"]')
     end
   end
 
@@ -323,7 +323,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
   end
 
   def select_avatar_read_permission
-    page.within('.tab-pane.active') do
+    within_testid('resource-tree') do
       click_button 'Toggle Groups category'
       check 'Avatar'
     end

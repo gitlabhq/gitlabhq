@@ -78,6 +78,7 @@ export default {
       type: String,
     },
   },
+  emits: ['cluster-error', 'delete-pod', 'select-item', 'update-cluster-state'],
   data() {
     return {
       error: '',

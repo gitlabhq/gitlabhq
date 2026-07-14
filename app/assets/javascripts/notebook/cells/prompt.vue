@@ -1,6 +1,6 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 export default {
+  name: 'NotebookPrompt',
   props: {
     type: {
       type: String,

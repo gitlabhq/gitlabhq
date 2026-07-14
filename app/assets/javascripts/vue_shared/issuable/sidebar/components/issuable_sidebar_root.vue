@@ -7,6 +7,7 @@ import { __ } from '~/locale';
 import { USER_COLLAPSED_GUTTER_COOKIE } from '../constants';
 
 export default {
+  name: 'IssuableSidebarRoot',
   components: {
     GlButton,
   },

@@ -121,8 +121,8 @@ RSpec.describe MergeRequestPresenter do
 
   context 'issues links' do
     let_it_be(:project) { create(:project, :private, :repository, creator: user, namespace: user.namespace) }
-    let_it_be(:issue_a, freeze: false) { create(:issue, project: project, iid: 1) }
-    let_it_be(:issue_b, freeze: false) { create(:issue, project: project, iid: 3) }
+    let_it_be_with_reload(:issue_a) { create(:issue, project: project, iid: 1) }
+    let_it_be_with_reload(:issue_b) { create(:issue, project: project, iid: 3) }
 
     let_it_be(:resource) do
       create(

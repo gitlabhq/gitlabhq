@@ -8,7 +8,7 @@ module API
       class_methods do
         def authenticate_with(&block)
           strategies = ::Gitlab::APIAuthentication::Builder.new.build(&block)
-          namespace_inheritable :authentication, strategies
+          inheritable_setting.namespace_inheritable[:authentication] = strategies
         end
       end
 
@@ -18,7 +18,7 @@ module API
         helpers do
           def token_from_namespace_inheritable
             strong_memoize(:token_from_namespace_inheritable) do
-              strategies = namespace_inheritable(:authentication)
+              strategies = inheritable_setting.namespace_inheritable[:authentication]
               next unless strategies&.any?
 
               # Extract credentials from the request

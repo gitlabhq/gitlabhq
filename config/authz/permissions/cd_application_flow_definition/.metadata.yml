@@ -1,0 +1,4 @@
+---
+name: Continuous Deployment Application Flow Definition
+description: A versioned pipeline flow definition for a continuous deployment application
+feature_category: continuous_delivery

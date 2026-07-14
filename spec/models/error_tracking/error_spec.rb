@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe ErrorTracking::Error, type: :model do
-  let_it_be(:error, freeze: false) { create(:error_tracking_error) }
+RSpec.describe ErrorTracking::Error, type: :model, feature_category: :observability do
+  let_it_be_with_reload(:error) { create(:error_tracking_error) }
 
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
@@ -85,7 +85,7 @@ RSpec.describe ErrorTracking::Error, type: :model do
   end
 
   describe '#to_sentry_detailed_error' do
-    let_it_be(:event, freeze: false) { create(:error_tracking_error_event, error: error) }
+    let_it_be_with_reload(:event) { create(:error_tracking_error_event, error: error) }
 
     subject { error.to_sentry_detailed_error }
 

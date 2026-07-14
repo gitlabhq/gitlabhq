@@ -24,6 +24,7 @@ import {
 import {
   removeLinkedWorkItemResponse,
   workItemLinkedItemsResponse,
+  workItemLinkedItemsFeaturesResponse,
   workItemEmptyLinkedItemsResponse,
   workItemSingleLinkedItemResponse,
   mockLinkedItems,
@@ -53,6 +54,7 @@ describe('WorkItemRelationships', () => {
     removeLinkedWorkItemMutationHandler = removeLinkedWorkItemSuccessMutationHandler,
     canAdminWorkItemLink = true,
     hasBlockedWorkItemsFeature = true,
+    glFeatures = {},
   } = {}) => {
     const mockApollo = createMockApollo([
       [workItemLinkedItemsQuery, workItemLinkedItemsHandler],
@@ -61,6 +63,9 @@ describe('WorkItemRelationships', () => {
 
     wrapper = shallowMountExtended(WorkItemRelationships, {
       apolloProvider: mockApollo,
+      provide: {
+        glFeatures,
+      },
       propsData: {
         workItemId: 'gid://gitlab/WorkItem/1',
         workItemIid: '1',
@@ -102,6 +107,39 @@ describe('WorkItemRelationships', () => {
     createComponent();
 
     expect(workItemLinkedItemsSuccessHandler).toHaveBeenCalled();
+  });
+
+  it.each`
+    workItemFeaturesField | useWorkItemFeatures
+    ${true}               | ${true}
+    ${false}              | ${false}
+  `(
+    'requests query with useWorkItemFeatures=$useWorkItemFeatures when workItemFeaturesField flag is $workItemFeaturesField',
+    async ({ workItemFeaturesField, useWorkItemFeatures }) => {
+      await createComponent({ glFeatures: { workItemFeaturesField } });
+
+      expect(workItemLinkedItemsSuccessHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab-test',
+        iid: '1',
+        useWorkItemFeatures,
+      });
+    },
+  );
+
+  describe('when workItemFeaturesField flag is enabled', () => {
+    beforeEach(async () => {
+      await createComponent({
+        workItemLinkedItemsHandler: jest
+          .fn()
+          .mockResolvedValue(workItemLinkedItemsFeaturesResponse),
+        glFeatures: { workItemFeaturesField: true },
+      });
+    });
+
+    it('renders linked items list from features.linkedItems data', () => {
+      expect(findAllWorkItemRelationshipListComponents()).toHaveLength(3);
+      expect(findLinkedItemsCountBadge().text()).toBe('3');
+    });
   });
 
   it('shows loader when query is not processed', () => {

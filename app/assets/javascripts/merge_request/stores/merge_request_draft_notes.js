@@ -2,6 +2,7 @@ import { computed } from 'vue';
 import { defineStore } from 'pinia';
 import { useBatchComments } from '~/batch_comments/store';
 import {
+  findApplicablePosition,
   isFileDiscussion,
   isImageDiscussion,
   isLineDiscussion,
@@ -9,13 +10,13 @@ import {
   positionMatchesLine,
 } from '~/rapid_diffs/utils/discussion_position';
 
-function draftAsDiscussion(draft) {
+function draftAsDiscussion(draft, position = draft.position) {
   return {
     id: `draft_${draft.id}`,
     isDraft: true,
     draft,
     diff_discussion: true,
-    position: draft.position,
+    position,
     notes: [draft],
     resolvable: false,
     resolved: false,
@@ -23,6 +24,15 @@ function draftAsDiscussion(draft) {
     isReplying: false,
     repliesExpanded: true,
   };
+}
+
+function applicableDraftPosition(draft, diffRefs, isLatestVersion) {
+  if (diffRefs) {
+    const matched = findApplicablePosition(draft, diffRefs);
+    if (matched) return matched;
+    if (!isLatestVersion) return undefined;
+  }
+  return draft.original_position ?? draft.position;
 }
 
 export const useMergeRequestDraftNotes = defineStore('mergeRequestDraftNotes', () => {
@@ -41,86 +51,73 @@ export const useMergeRequestDraftNotes = defineStore('mergeRequestDraftNotes', (
     return drafts.value.filter((draft) => draft.discussion_id === discussionId);
   }
 
-  function draftMatchesSourceVersion(draft, { sourceHeadSha, isLatestVersion } = {}) {
-    if (isLatestVersion) return true;
-    if (!sourceHeadSha) return true;
-    const draftHeadSha = draft.original_position?.head_sha ?? draft.position?.head_sha;
-    return draftHeadSha === sourceHeadSha;
-  }
-
   function findDraftsForPosition({
     oldPath,
     newPath,
     oldLine,
     newLine,
-    sourceHeadSha,
+    diffRefs,
     isLatestVersion,
   }) {
     return newDrafts.value
-      .filter(
-        (draft) =>
-          positionMatchesLine(draft.position, { oldPath, newPath, oldLine, newLine }) &&
-          draftMatchesSourceVersion(draft, { sourceHeadSha, isLatestVersion }),
-      )
-      .map(draftAsDiscussion);
+      .filter((draft) => {
+        const position = applicableDraftPosition(draft, diffRefs, isLatestVersion);
+        return position && positionMatchesLine(position, { oldPath, newPath, oldLine, newLine });
+      })
+      .map((draft) =>
+        draftAsDiscussion(draft, applicableDraftPosition(draft, diffRefs, isLatestVersion)),
+      );
   }
 
-  function findDraftsAsDiscussionsForFile({ oldPath, newPath, sourceHeadSha, isLatestVersion }) {
+  function findDraftsAsDiscussionsForFile({ oldPath, newPath, diffRefs, isLatestVersion }) {
     return newDrafts.value
       .filter(
         (draft) =>
           positionMatchesFilePath(draft.position, { oldPath, newPath }) &&
-          draftMatchesSourceVersion(draft, { sourceHeadSha, isLatestVersion }),
+          applicableDraftPosition(draft, diffRefs, isLatestVersion),
       )
-      .map(draftAsDiscussion);
+      .map((draft) =>
+        draftAsDiscussion(draft, applicableDraftPosition(draft, diffRefs, isLatestVersion)),
+      );
   }
 
-  function findDraftsAsLineDiscussionsForFile({
-    oldPath,
-    newPath,
-    sourceHeadSha,
-    isLatestVersion,
-  }) {
+  function findDraftsAsLineDiscussionsForFile({ oldPath, newPath, diffRefs, isLatestVersion }) {
     return newDrafts.value
       .filter(
         (draft) =>
           isLineDiscussion(draft) &&
           positionMatchesFilePath(draft.position, { oldPath, newPath }) &&
-          draftMatchesSourceVersion(draft, { sourceHeadSha, isLatestVersion }),
+          applicableDraftPosition(draft, diffRefs, isLatestVersion),
       )
-      .map(draftAsDiscussion);
+      .map((draft) =>
+        draftAsDiscussion(draft, applicableDraftPosition(draft, diffRefs, isLatestVersion)),
+      );
   }
 
-  function findDraftsAsFileDiscussionsForFile({
-    oldPath,
-    newPath,
-    sourceHeadSha,
-    isLatestVersion,
-  }) {
+  function findDraftsAsFileDiscussionsForFile({ oldPath, newPath, diffRefs, isLatestVersion }) {
     return newDrafts.value
       .filter(
         (draft) =>
           isFileDiscussion(draft) &&
           positionMatchesFilePath(draft.position, { oldPath, newPath }) &&
-          draftMatchesSourceVersion(draft, { sourceHeadSha, isLatestVersion }),
+          applicableDraftPosition(draft, diffRefs, isLatestVersion),
       )
-      .map(draftAsDiscussion);
+      .map((draft) =>
+        draftAsDiscussion(draft, applicableDraftPosition(draft, diffRefs, isLatestVersion)),
+      );
   }
 
-  function findDraftsAsImageDiscussionsForFile({
-    oldPath,
-    newPath,
-    sourceHeadSha,
-    isLatestVersion,
-  }) {
+  function findDraftsAsImageDiscussionsForFile({ oldPath, newPath, diffRefs, isLatestVersion }) {
     return newDrafts.value
       .filter(
         (draft) =>
           isImageDiscussion(draft) &&
           positionMatchesFilePath(draft.position, { oldPath, newPath }) &&
-          draftMatchesSourceVersion(draft, { sourceHeadSha, isLatestVersion }),
+          applicableDraftPosition(draft, diffRefs, isLatestVersion),
       )
-      .map(draftAsDiscussion);
+      .map((draft) =>
+        draftAsDiscussion(draft, applicableDraftPosition(draft, diffRefs, isLatestVersion)),
+      );
   }
 
   async function fetchDrafts() {

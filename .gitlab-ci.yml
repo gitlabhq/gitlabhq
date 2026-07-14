@@ -110,6 +110,20 @@ workflow:
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         DOCKER_AUTH_CONFIG: "${DOCKER_AUTH_CONFIG_OVERRIDE}"
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (triggered by a project token)'
+    # The AI principles distiller opens its MRs as a dedicated service account
+    # (not a `project_*_bot`), whose identity cannot authenticate to the
+    # Dependency Proxy. Without this override the setup jobs (clone-gitlab-repo,
+    # set-pipeline-name, ...) fail their proxied image pulls with an empty-body
+    # HTTP 404, so the first MR pipeline always fails until a human retries.
+    # Same fix as the project-token workaround above: bypass the proxy and
+    # authenticate to Docker Hub directly. See
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/332411.
+    - if: '$CI_MERGE_REQUEST_IID && $GITLAB_USER_LOGIN == "service-modelops-agent-principles-distiller"'
+      variables:
+        <<: [*next-ruby-variables, *default-merge-request-variables]
+        GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
+        DOCKER_AUTH_CONFIG: "${DOCKER_AUTH_CONFIG_OVERRIDE}"
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (triggered by the principles distiller)'
     - <<: *if-merge-request-security-canonical-sync
       variables:
         <<: [*next-ruby-variables, *default-merge-request-variables]

@@ -152,7 +152,6 @@ Style/SuperArguments:
     - 'lib/gitlab/safe_device_detector.rb'
     - 'lib/gitlab/sidekiq_sharding/validator.rb'
     - 'lib/gitlab/webpack/dev_server_middleware.rb'
-    - 'lib/gitlab_settings/options.rb'
     - 'qa/qa/ee/resource/work_item_epic.rb'
     - 'qa/qa/resource/merge_request.rb'
     - 'qa/qa/service/cluster_provider/gcloud.rb'

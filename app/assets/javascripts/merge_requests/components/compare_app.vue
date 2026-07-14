@@ -49,6 +49,7 @@ export default {
       default: false,
     },
   },
+  emits: ['select-branch'],
   data() {
     return {
       selectedProject: this.currentProject,

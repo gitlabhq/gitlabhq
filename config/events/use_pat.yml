@@ -11,6 +11,10 @@ additional_properties:
     description: Type of Personal Access Token used ("legacy" or "granular")
   response_code:
     description: HTTP response status code after PAT usage
+  denied_permissions:
+    description: >-
+      Comma-separated list of raw granular permission identifiers the token lacked when a granular
+      authorization was denied during the request. Absent when no granular denial occurred.
 product_group: authorization
 product_categories:
   - permissions

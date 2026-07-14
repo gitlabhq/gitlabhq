@@ -210,6 +210,24 @@ RSpec.describe Banzai::Filter::ExternalLinkFilter, feature_category: :markdown d
     end
   end
 
+  context 'for fragment-only links' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:href) do
+      [
+        '#heading',
+        '#日本語の見出し'
+      ]
+    end
+
+    with_them do
+      it 'does not add rel or target attributes' do
+        html = %(<a href="#{href}" class="anchor">Link</a>)
+        expect(filter(html).to_html).to eq html
+      end
+    end
+  end
+
   it_behaves_like 'does not use pipeline timing check'
 
   it_behaves_like 'a filter timeout' do

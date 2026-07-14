@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::UsersMapper, feature_category: :importers do
   let_it_be(:user) { create(:user) }
-  let_it_be(:import, freeze: false) { create(:bulk_import, user: user) }
-  let_it_be(:entity, freeze: false) { create(:bulk_import_entity, bulk_import: import) }
+  let_it_be_with_reload(:import) { create(:bulk_import, user: user) }
+  let_it_be_with_reload(:entity) { create(:bulk_import_entity, bulk_import: import) }
 
   let(:context) do
     instance_double(

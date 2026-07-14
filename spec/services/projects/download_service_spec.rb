@@ -15,7 +15,7 @@ RSpec.describe Projects::DownloadService, feature_category: :groups_and_projects
         @link_to_file = download_file(@project, url)
       end
 
-      it { expect(@link_to_file).to eq(nil) }
+      it { expect(@link_to_file).to be_nil }
     end
 
     context 'for URLs that are on the allowlist' do

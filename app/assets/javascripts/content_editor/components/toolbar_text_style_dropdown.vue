@@ -21,6 +21,7 @@ export default {
     GlTooltip,
   },
   inject: ['tiptapEditor'],
+  emits: ['execute'],
   data() {
     return {
       activeItem: null,

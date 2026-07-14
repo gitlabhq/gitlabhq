@@ -152,7 +152,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, feature_category: :jo
     end
 
     context 'with a second artifact and batch size of 1' do
-      let(:second_job) { create(:ci_build, :success, pipeline: pipeline) }
+      let_it_be(:second_job) { create(:ci_build, :success, pipeline: pipeline) }
       let!(:second_artifact) do
         create(:ci_job_artifact, :archive, expire_at: 1.day.ago, job: second_job, locked: job.pipeline.locked)
       end
@@ -313,7 +313,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, feature_category: :jo
         stub_const("#{described_class}::BATCH_SIZE", 1)
       end
 
-      let(:second_job) { create(:ci_build, :success, pipeline: pipeline) }
+      let_it_be(:second_job) { create(:ci_build, :success, pipeline: pipeline) }
       let!(:artifact) { create(:ci_job_artifact, :expired, job: job, locked: job.pipeline.locked) }
       let!(:second_artifact) do
         create(:ci_job_artifact, :expired, job: second_job, locked: second_job.pipeline.locked)

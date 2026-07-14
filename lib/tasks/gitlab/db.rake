@@ -193,8 +193,16 @@ namespace :gitlab do
 
       return unless databases_loaded.present? && databases_loaded.all?
 
-      alter_cell_sequences_range
-      # Re-enable and execute skipped tasks
+      # Fetch sequence ranges from the Topology Service eagerly, before
+      # running any further tasks. This ensures that any error (CellNotFoundError,
+      # missing ranges, etc.) aborts the configure task before partitions are
+      # re-enabled or the database is seeded.
+      sequence_ranges = fetch_cell_sequence_ranges
+
+      # Re-enable and execute skipped partition tasks only after the sequence
+      # range has been applied.
+      alter_cell_sequences_range(sequence_ranges)
+
       skipped_partition_tasks.each do |task_name|
         Rake::Task[task_name].reenable
         Rake::Task[task_name].invoke
@@ -245,7 +253,17 @@ namespace :gitlab do
       puts 'Topology Service is HEALTHY.'
     end
 
-    def alter_cell_sequences_range
+    def fetch_cell_sequence_ranges
+      return unless Gitlab.config.cell.enabled
+      return if Gitlab.config.cell.database.skip_sequence_alteration
+
+      ranges = Gitlab::TopologyServiceClient::CellService.new.cell_sequence_ranges
+      raise 'No sequence ranges provided from Topology Service' unless ranges.present?
+
+      ranges
+    end
+
+    def alter_cell_sequences_range(sequence_ranges)
       unless Gitlab.config.cell.enabled
         return puts 'Skipping altering cell sequences range due to the cell being disabled'
       end
@@ -253,10 +271,6 @@ namespace :gitlab do
       if Gitlab.config.cell.database.skip_sequence_alteration
         return puts "Skipping altering cell sequences range due to cell sequences alteration being disabled"
       end
-
-      sequence_ranges = Gitlab::TopologyServiceClient::CellService.new.cell_sequence_ranges
-
-      return unless sequence_ranges.present?
 
       # The first range is chosen because others are additionally provided ranges,
       # which will be used to bump the range for saturating sequences.
@@ -620,33 +634,69 @@ namespace :gitlab do
       end
     end
 
+    # Exit-code contract (consumed by omnibus-gitlab's pre-upgrade schema gate):
+    #   0 - schema consistent with db/structure.sql
+    #   1 - inconsistencies detected (details on stdout)
+    #   2 - operational error (DB unreachable, boot failure, etc.)
+    desc 'GitLab | DB | Validate the database schema against db/structure.sql'
+    task validate_schema: :environment do
+      Rake::Task['gitlab:db:schema_checker:run'].invoke(:stable)
+    rescue SystemExit
+      raise # propagate exit(1) from schema_checker:run (inconsistencies) as-is
+    rescue StandardError => e
+      Gitlab::ErrorTracking.track_exception(e)
+
+      warn("Schema validation failed: #{e.message}")
+      exit(2) # operational error
+    end
+
     namespace :schema_checker do
       # TODO: Remove `test_replication` after PG 14 upgrade is finished
       # https://gitlab.com/gitlab-com/gl-infra/db-migration/-/merge_requests/406#note_1369214728
       IGNORED_TABLES = %w[test_replication].freeze
       IGNORED_TRIGGERS = ['gitlab_schema_write_trigger_for_'].freeze
 
+      STABLE_VALIDATORS = [
+        Gitlab::Schema::Validation::Validators::MissingTables,
+        Gitlab::Schema::Validation::Validators::MissingIndexes,
+        Gitlab::Schema::Validation::Validators::MissingForeignKeys,
+        Gitlab::Schema::Validation::Validators::MissingSequences,
+        Gitlab::Schema::Validation::Validators::DifferentSequenceOwners
+      ].freeze
+
       desc 'Checks schema inconsistencies'
-      task run: :environment do
+      task :run, [:mode] => :environment do |_, args|
+        mode = args.fetch(:mode, :all).to_sym
+        unless %i[all stable].include?(mode)
+          raise "Invalid mode: '#{mode}'. Should be one of 'stable', 'all' (default)."
+        end
+
+        validators = mode == :stable ? STABLE_VALIDATORS : Gitlab::Schema::Validation::Validators::Base.all_validators
+
         logger = Logger.new($stdout)
 
         database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
         database = Gitlab::Schema::Validation::Sources::Database.new(database_model.connection)
 
-        stucture_sql_path = Rails.root.join('db/structure.sql')
-        structure_sql = Gitlab::Schema::Validation::Sources::StructureSql.new(stucture_sql_path)
+        structure_sql_path = Rails.root.join('db/structure.sql')
+        structure_sql = Gitlab::Schema::Validation::Sources::StructureSql.new(structure_sql_path)
 
         filter = Gitlab::Database::SchemaValidation::InconsistencyFilter.new(IGNORED_TABLES, IGNORED_TRIGGERS)
 
-        validators = Gitlab::Schema::Validation::Validators::Base.all_validators
-
         inconsistencies =
-          Gitlab::Schema::Validation::Runner.new(structure_sql, database, validators: validators).execute.filter_map(&filter)
+          Gitlab::Schema::Validation::Runner.new(structure_sql, database, validators: validators)
+            .execute
+            .filter_map(&filter)
 
         inconsistencies.each do |inconsistency|
           puts inconsistency.display
         end
-        logger.info "This task is a diagnostic tool to be used under the guidance of GitLab Support. You should not use the task for routine checks as database inconsistencies might be expected."
+
+        if mode == :all
+          logger.info "This task is a diagnostic tool to be used under the guidance of GitLab Support. You should not use the task for routine checks as database inconsistencies might be expected."
+        end
+
+        exit(1) if mode == :stable && inconsistencies.any?
       end
     end
 

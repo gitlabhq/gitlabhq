@@ -18,8 +18,25 @@ You should tune PostgreSQL when:
 - The performance of your GitLab environment is impaired.
 - GitLab uses an [external PostgreSQL service](external.md).
 
-Use this information in combination with the
-[required PostgreSQL settings](../../install/requirements.md#postgresql-settings) for GitLab.
+## Required settings for external instances
+
+The following settings are required for externally managed PostgreSQL instances.
+
+| Tunable setting        | Required value | More information |
+|:-----------------------|:---------------|:-----------------|
+| `work_mem`             | minimum `8 MB`  | This value is the Linux package default. In large deployments, if queries create temporary files, you should increase this setting. |
+| `maintenance_work_mem` | minimum `64 MB` | You require [more for larger database servers](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8377#note_1728173087). |
+| `max_connections`      | minimum `400`   | Calculate based on your GitLab components. See [Plan your database connections](#plan-your-database-connections) for detailed guidance. |
+| `shared_buffers`       | minimum `2 GB`  | You require more for larger database servers. The Linux package default is set to 25% of server RAM. |
+| `statement_timeout`    | 15000 to 60000 | A statement timeout prevents runaway issues with locks and the database rejecting new clients. You should use values between 15 and 60 seconds (15000 to 60000 milliseconds), where one minute matches the Puma rack timeout setting. |
+| `hot_standby_feedback` | `on` | For configurations with multiple nodes and [database load balancing](database_load_balancing.md#configure-database-load-balancing) configured, ensure that all replica nodes have `hot_standby_feedback` enabled to prevent lag buildup. |
+
+You can configure some PostgreSQL settings for the specific database, rather than for all databases on the server.
+
+- You might limit configuration to specific databases when hosting multiple databases on the same server.
+- For guidance on where to apply configuration, consult your database administrator or vendor.
+- For GCP Cloud SQL, you can set `statement_timeout` on a specific database or user, but not [as a database flag](https://cloud.google.com/sql/docs/postgres/flags#list-flags-postgres).
+  For example: `ALTER DATABASE gitlab SET statement_timeout = '60s';`
 
 ## Plan your database connections
 

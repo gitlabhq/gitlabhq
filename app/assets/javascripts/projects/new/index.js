@@ -24,6 +24,7 @@ export function initNewProjectCreation() {
     projectsUrl,
     rootPath,
     canImportProjects,
+    showBuiltInProjectTemplates,
   } = el.dataset;
 
   const props = {
@@ -35,6 +36,7 @@ export function initNewProjectCreation() {
     projectsUrl,
     rootPath,
     canImportProjects: parseBoolean(canImportProjects),
+    showBuiltInProjectTemplates: parseBoolean(showBuiltInProjectTemplates),
   };
 
   const provide = {

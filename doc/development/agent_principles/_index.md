@@ -42,6 +42,8 @@ The script that drives the sync is the
 [`gitlab-ai-principles-distiller`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-ai-principles-distiller)
 gem.
 
+For a diagram of the full flow, see [AI principles distillation flow](distillation_flow.md).
+
 ## Add a principle group
 
 Use this procedure when your team owns documentation under `doc/development/`
@@ -81,8 +83,12 @@ For example, the Database group contains `database-fundamentals`,
    CODEOWNERS rule routes the review to the AI-tooling maintainers.
 1. After the merge request merges, the next scheduled sync run generates
    the first distilled file for each new principle at
-   `.ai/principles/distilled/<slug>.md`. To trigger an earlier run, ask
-   an AI-tooling maintainer to start the schedule manually.
+   `.ai/principles/distilled/<slug>.md`. To trigger an earlier run,
+   select **Run** on the "AI principles distillation" schedule at
+   [pipeline schedules](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules).
+   The run fires only the sync job and opens a merge request with the
+   generated files. For details, see
+   [Run the distillation manually](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.ai/principles/README.md#run-the-distillation-manually).
 1. Review the generated files. Check that the distilled rules faithfully
    reflect your documentation and that the agent has not introduced rules
    that are not in the source.
@@ -115,6 +121,11 @@ content verbatim into the generated principle file, alongside the rules
 distilled from source documentation.
 
 ### When to add a baseline rule
+
+> [!warning]
+> Adding baseline rules risks creating dual sources of truth, undermining the goal of distilling
+> principles from a single source of truth.
+> Treat them as temporary exceptions, not as the primary way to add instructions to agents.
 
 Add a baseline rule when:
 
@@ -176,7 +187,7 @@ agent consumes:
 A minimal baseline file for a hypothetical `database-migrations`
 principle:
 
-````markdown
+```markdown
 ### Schema migrations
 
 - Files in `db/schema_migrations/` are auto-generated and do not require
@@ -192,7 +203,7 @@ YAML must include:
 - `feature_category: <category symbol>`
 - `milestone: '<X.Y>'`
 - `gitlab_schema: <gitlab_main | gitlab_ci | gitlab_main_user | gitlab_main_org>`
-````
+```
 
 ## Review auto-generated merge requests
 

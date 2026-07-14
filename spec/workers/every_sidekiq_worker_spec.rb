@@ -126,6 +126,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
       {
         'AdjournedProjectDeletionWorker' => 3,
         'AdminEmailsWorker' => 3,
+        'Ai::DuoWorkflows::CodeReview::PublishCommentsWorker' => 3,
         'Analytics::CodeReviewMetricsWorker' => 3,
         'Analytics::DevopsAdoption::CreateSnapshotWorker' => 3,
         'Analytics::UsageTrends::CounterJobWorker' => 3,
@@ -196,7 +197,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'Clusters::Cleanup::ServiceAccountWorker' => 3,
         'ContainerExpirationPolicies::CleanupContainerRepositoryWorker' => 0,
         'ContainerRegistry::DeleteContainerRepositoryWorker' => 0,
-        'ContainerRegistry::RecordDataRepairDetailWorker' => 0,
         'CreateCommitSignatureWorker' => 3,
         'CreateGithubWebhookWorker' => 3,
         'CreateNoteDiffFileWorker' => 3,

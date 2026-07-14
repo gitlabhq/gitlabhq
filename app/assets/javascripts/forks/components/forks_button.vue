@@ -3,6 +3,7 @@ import { GlButtonGroup, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'ForksButton',
   components: {
     GlButtonGroup,
     GlButton,
@@ -13,9 +14,6 @@ export default {
   inject: {
     forksCount: {
       default: 0,
-    },
-    projectFullPath: {
-      default: '',
     },
     projectForksUrl: {
       default: '',

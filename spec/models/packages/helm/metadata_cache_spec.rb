@@ -13,7 +13,7 @@ RSpec.describe Packages::Helm::MetadataCache, feature_category: :package_registr
 
   describe 'loose foreign keys' do
     it_behaves_like 'update by a loose foreign key' do
-      let_it_be(:model, freeze: false) { create(:helm_metadata_cache, status: :default) }
+      let_it_be_with_reload(:model) { create(:helm_metadata_cache, status: :default) }
 
       let!(:parent) { model.project }
     end
@@ -72,7 +72,7 @@ RSpec.describe Packages::Helm::MetadataCache, feature_category: :package_registr
     end
 
     it_behaves_like 'object_storage_key readonly attributes' do
-      let_it_be(:model, freeze: false) { create(:helm_metadata_cache, project: project, channel: channel) }
+      let_it_be_with_reload(:model) { create(:helm_metadata_cache, project: project, channel: channel) }
     end
   end
 

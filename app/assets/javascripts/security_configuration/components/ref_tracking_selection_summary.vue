@@ -19,6 +19,7 @@ export default {
       required: true,
     },
   },
+  emits: ['remove'],
   computed: {
     selectedRefsCount() {
       return this.selectedRefs.length;

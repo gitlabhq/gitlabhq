@@ -61,7 +61,7 @@ module Types
     def commit
       return if release.sha.nil?
 
-      release.project.commit_by(oid: release.sha)
+      BatchLoader::GraphQL.wrap(Commit.lazy(release.project, release.sha))
     end
   end
 end

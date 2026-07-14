@@ -671,7 +671,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
             #
             #  The following assignable permissions declare `available_for: granular_access_token` but none of their raw permissions are referenced by any REST authorization or GraphQL granular scope directive.
             #  Either remove `granular_access_token` from `available_for`, or reference one of the raw permissions in a route/directive.
-            #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#available-for-consumers
+            #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#assignable-permission-file-fields
             #
             #    - update_wiki (config/authz/permission_groups/assignable_permissions/wiki_category/wiki/update.yml)
             #

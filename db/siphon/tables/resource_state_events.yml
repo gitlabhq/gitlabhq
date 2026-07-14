@@ -1,0 +1,13 @@
+---
+table: resource_state_events
+database: main
+replication_targets:
+- name: clickhouse_main
+  target: siphon_resource_state_events
+  dedup_by:
+  - id
+  dedup_by_columns_lookup_table: siphon_resource_state_events_pg_pkey_ordered
+  reconcile:
+    column: traversal_path
+    expression_key_columns:
+    - namespace_id

@@ -336,7 +336,12 @@ export default {
 
     <template v-else-if="groupedCommits.length">
       <ol class="gl-my-5 gl-list-none gl-p-0">
-        <li v-for="group in groupedCommits" :key="group.day" data-testid="daily-commits">
+        <li
+          v-for="group in groupedCommits"
+          :key="group.day"
+          class="daily-commit"
+          data-testid="daily-commits"
+        >
           <h2 class="gl-mb-5 gl-flex gl-items-center gl-gap-3 gl-text-base @md/panel:gl-gap-5">
             <gl-icon name="commit" />
             <time class="gl-font-bold" :datetime="group.day">

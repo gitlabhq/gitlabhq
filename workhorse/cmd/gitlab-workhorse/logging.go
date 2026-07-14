@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	goLog "log"
@@ -12,11 +13,47 @@ import (
 	logv2 "gitlab.com/gitlab-org/labkit/v2/log"
 )
 
+// multiCloser closes several io.Closers, joining any errors.
+type multiCloser []io.Closer
+
+func (m multiCloser) Close() error {
+	var errs []error
+	for _, c := range m {
+		if err := c.Close(); err != nil {
+			errs = append(errs, err)
+		}
+	}
+	return errors.Join(errs...)
+}
+
+// setupLogging configures both the labkit v1 (logrus) and v2 (slog) loggers,
+// installs the v2 logger as the default slog logger, and returns a closer that
+// closes both log files.
+func setupLogging(file, format string) (io.Closer, error) {
+	// Set global labkit v1 logrus logger.
+	// NOTE: To be removed after all log call sites are modified to use the
+	// labkit v2 logger.
+	v1Closer, err := configureLoggingV1(file, format)
+	if err != nil {
+		return nil, err
+	}
+
+	v2Logger, v2Closer, err := configureLoggingV2(file, format)
+	if err != nil {
+		_ = v1Closer.Close()
+		return nil, err
+	}
+	slog.SetDefault(v2Logger)
+
+	return multiCloser{v1Closer, v2Closer}, nil
+}
+
 const (
 	jsonLogFormat    = "json"
 	textLogFormat    = "text"
 	structuredFormat = "structured"
 	noneLogType      = "none"
+	stderrOutput     = "stderr"
 )
 
 // Configure global Labkit v2 slog instance.
@@ -51,7 +88,7 @@ func configureLoggingV2(file string, format string) (*slog.Logger, io.Closer, er
 	)
 
 	switch file {
-	case "", "stderr":
+	case "", stderrOutput:
 		// Labkit v2 writes to stderr by default
 		logger = logv2.NewWithConfig(&cfg)
 		closer = io.NopCloser(nil)
@@ -77,7 +114,7 @@ func configureLoggingV1(file string, format string) (io.Closer, error) {
 	goLog.SetOutput(os.Stderr)
 
 	if file == "" {
-		file = "stderr"
+		file = stderrOutput
 	}
 
 	switch format {
@@ -91,7 +128,7 @@ func configureLoggingV1(file string, format string) (io.Closer, error) {
 	case textLogFormat:
 		// In this mode, default (non-access) logs will always go to stderr
 		return logkit.Initialize(
-			logkit.WithOutputName("stderr"),
+			logkit.WithOutputName(stderrOutput),
 			logkit.WithFormatter("text"),
 		)
 	case structuredFormat:
@@ -111,7 +148,7 @@ func getAccessLogger(file string, format string) (*log.Logger, io.Closer, error)
 	}
 
 	if file == "" {
-		file = "stderr"
+		file = stderrOutput
 	}
 
 	accessLogger := log.New()

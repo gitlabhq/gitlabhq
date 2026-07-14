@@ -82,7 +82,7 @@ RSpec.describe RuboCop::CopTodo, feature_category: :tooling do
     subject { cop_todo.generate? }
 
     context 'when empty todo' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when in grace period' do
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::CopTodo, feature_category: :tooling do
         cop_todo.grace_period = true
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'with offenses recorded' do
@@ -98,7 +98,7 @@ RSpec.describe RuboCop::CopTodo, feature_category: :tooling do
         cop_todo.record('a.rb', 1)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

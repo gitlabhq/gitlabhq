@@ -80,7 +80,7 @@ takes over the task of securely deleting the virtual machine and associated data
 
 For more information about the security of hosted runners for GitLab.com, see:
 
-- [Google Cloud Infrastructure Security Design Overview whitepaper](https://cloud.google.com/docs/security/infrastructure/design/resources/google_infrastructure_whitepaper_fa.pdf)
+- [Google Cloud Infrastructure Security Design Overview whitepaper](https://docs.cloud.google.com/docs/security/infrastructure/design/resources/google_infrastructure_whitepaper_fa.pdf)
 - [GitLab Trust Center](https://about.gitlab.com/security/)
 - GitLab Security Compliance Controls
 
@@ -88,7 +88,7 @@ For more information about the security of hosted runners for GitLab.com, see:
 
 The hosted runners share a [distributed cache](https://docs.gitlab.com/runner/configuration/autoscale/#distributed-runners-caching)
 stored in a Google Cloud Storage (GCS) bucket. Cache contents not updated in the last 14 days are automatically
-removed, based on the [object lifecycle management policy](https://cloud.google.com/storage/docs/lifecycle).
+removed, based on the [object lifecycle management policy](https://docs.cloud.google.com/storage/docs/lifecycle).
 The maximum size of an uploaded cache artifact can be 5 GB after the cache becomes a compressed archive.
 
 For more information about how caching works, see [Architecture diagram of hosted runners for GitLab.com](#architecture-diagram-of-hosted-runners-for-gitlabcom), and [Caching in GitLab CI/CD](../../caching/_index.md).

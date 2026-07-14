@@ -30,6 +30,23 @@ RSpec.describe Gitlab::DatabaseImporters::DefaultOrganizationImporter, feature_c
         expect(default_org.organization_detail.confirmed_by_user_id).to be_nil
         expect(default_org.organization_detail.confirmed_at).to be_nil
       end
+
+      context 'when the organization env vars are set' do
+        before do
+          stub_env('GITLAB_ROOT_ORG_NAME' => 'Acme')
+          stub_env('GITLAB_ROOT_ORG_PATH' => 'acme')
+        end
+
+        it 'uses them for the name and path while remaining the default organization', :aggregate_failures do
+          subject
+
+          default_org = Organizations::Organization.find(default_id)
+
+          expect(default_org.name).to eq('Acme')
+          expect(default_org.path).to eq('acme')
+          expect(default_org).to be_default
+        end
+      end
     end
 
     context 'when default organization exists' do

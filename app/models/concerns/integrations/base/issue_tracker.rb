@@ -72,7 +72,7 @@ module Integrations
       end
 
       def issue_url(iid)
-        issues_url.gsub(':id', iid.to_s)
+        issues_url&.gsub(':id', iid.to_s)
       end
 
       def issue_tracker_path

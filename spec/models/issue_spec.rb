@@ -1382,7 +1382,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#allow_possible_spam?' do
-    let_it_be(:issue, freeze: false) { build(:issue) }
+    let_it_be(:issue) { build(:issue) }
 
     subject { issue.allow_possible_spam?(issue.author) }
 
@@ -1902,17 +1902,16 @@ RSpec.describe Issue, feature_category: :team_planning do
     let!(:issue_b) { create(:issue, project: reusable_project, closed_at: 5.days.ago) }
     let!(:issue_c_nil) { create(:issue, project: reusable_project, closed_at: nil) }
     let!(:issue_d) { create(:issue, project: reusable_project, closed_at: 3.days.ago) }
-    let!(:issue_e_nil) { create(:issue, project: reusable_project, closed_at: nil) }
 
     describe '.order_closed_at_asc' do
       it 'orders on closed at' do
-        expect(described_class.order_closed_at_asc.to_a).to eq([issue_b, issue_d, issue_a, issue_c_nil, issue_e_nil])
+        expect(described_class.order_closed_at_asc.to_a).to eq([issue_b, issue_d, issue_a, issue_c_nil])
       end
     end
 
     describe '.order_closed_at_desc' do
       it 'orders on closed at' do
-        expect(described_class.order_closed_at_desc.to_a).to eq([issue_a, issue_d, issue_b, issue_c_nil, issue_e_nil])
+        expect(described_class.order_closed_at_desc.to_a).to eq([issue_a, issue_d, issue_b, issue_c_nil])
       end
     end
   end

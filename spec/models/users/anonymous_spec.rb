@@ -10,13 +10,13 @@ RSpec.describe Users::Anonymous, feature_category: :system_access do
   describe '.can_pull?' do
     context 'when project is private' do
       it 'does not allow to pull the repo' do
-        expect(described_class.can?(:download_code, private_project)).to eq(false)
+        expect(described_class.can?(:download_code, private_project)).to be(false)
       end
     end
 
     context 'when project is internal' do
       it 'does not allow to pull the repo' do
-        expect(described_class.can?(:download_code, internal_project)).to eq(false)
+        expect(described_class.can?(:download_code, internal_project)).to be(false)
       end
     end
 
@@ -25,7 +25,7 @@ RSpec.describe Users::Anonymous, feature_category: :system_access do
         it 'does not allow to pull the repo' do
           public_project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
 
-          expect(described_class.can?(:download_code, public_project)).to eq(false)
+          expect(described_class.can?(:download_code, public_project)).to be(false)
         end
       end
 
@@ -33,13 +33,13 @@ RSpec.describe Users::Anonymous, feature_category: :system_access do
         it 'does not allow to pull the repo' do
           public_project.project_feature.update_attribute(:repository_access_level, ProjectFeature::PRIVATE)
 
-          expect(described_class.can?(:download_code, public_project)).to eq(false)
+          expect(described_class.can?(:download_code, public_project)).to be(false)
         end
       end
 
       context 'when repository is enabled' do
         it 'allows to pull the repo' do
-          expect(described_class.can?(:download_code, public_project)).to eq(true)
+          expect(described_class.can?(:download_code, public_project)).to be(true)
         end
       end
     end

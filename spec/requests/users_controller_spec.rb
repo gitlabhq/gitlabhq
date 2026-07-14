@@ -103,8 +103,6 @@ RSpec.describe UsersController, feature_category: :user_management do
       end
 
       before do
-        stub_feature_flags(profile_tabs_vue: false)
-
         user_project.repository.update_file(
           user,
           'README.md',
@@ -203,13 +201,12 @@ RSpec.describe UsersController, feature_category: :user_management do
     end
 
     context 'requested in json format' do
-      context 'when profile_tabs_vue feature flag is turned OFF' do
+      context 'with the default events pager response' do
         let(:project) { create(:project) }
 
         before do
           project.add_developer(user)
           Gitlab::DataBuilder::Push.build_sample(project, user)
-          stub_feature_flags(profile_tabs_vue: false)
           sign_in(user)
         end
 
@@ -250,18 +247,17 @@ RSpec.describe UsersController, feature_category: :user_management do
         end
       end
 
-      context 'when profile_tabs_vue feature flag is turned ON' do
+      context 'with the raw serializer response' do
         let(:project) { create(:project) }
 
         before do
           project.add_developer(user)
           Gitlab::DataBuilder::Push.build_sample(project, user)
-          stub_feature_flags(profile_tabs_vue: true)
           sign_in(user)
         end
 
         it 'loads events' do
-          get user_activity_url user.username, format: :json
+          get user_activity_url user.username, format: :json, type: 'raw'
 
           expect(response.media_type).to eq('application/json')
           expect(Gitlab::Json.parse(response.body).count).to eq(1)
@@ -271,7 +267,7 @@ RSpec.describe UsersController, feature_category: :user_management do
           allow(Ability).to receive(:allowed?).and_call_original
           expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
 
-          get user_activity_url user.username, format: :json
+          get user_activity_url user.username, format: :json, type: 'raw'
 
           expect(response.media_type).to eq('application/json')
           expect(Gitlab::Json.parse(response.body).count).to eq(0)
@@ -280,19 +276,19 @@ RSpec.describe UsersController, feature_category: :user_management do
         it 'hides events if the user has a private profile' do
           Gitlab::DataBuilder::Push.build_sample(project, private_user)
 
-          get user_activity_url private_user.username, format: :json
+          get user_activity_url private_user.username, format: :json, type: 'raw'
 
           expect(response.media_type).to eq('application/json')
           expect(Gitlab::Json.parse(response.body).count).to eq(0)
         end
 
-        it 'hides events if the user has a private profile' do
+        it 'shows private contributions for users with a private profile', :aggregate_failures do
           project = create(:project, :private)
           private_event_user = create(:user, include_private_contributions: true)
           push_data = Gitlab::DataBuilder::Push.build_sample(project, private_event_user)
           EventCreateService.new.push(project, private_event_user, push_data)
 
-          get user_activity_url private_event_user.username, format: :json
+          get user_activity_url private_event_user.username, format: :json, type: 'raw'
 
           response_body = Gitlab::Json.parse(response.body)
           event = response_body.first
@@ -307,7 +303,7 @@ RSpec.describe UsersController, feature_category: :user_management do
           user = create(:user, include_private_contributions: true)
           create(:event, :for_issue, author: user, target: nil, target_id: non_existing_record_id)
 
-          get user_activity_url user.username, format: :json
+          get user_activity_url user.username, format: :json, type: 'raw'
 
           expect(response.media_type).to eq('application/json')
           expect(Gitlab::Json.parse(response.body).count).to eq(0)

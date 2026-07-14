@@ -1,5 +1,4 @@
 import {
-  BASE_ROUTE,
   ROOT_ROUTE_NAME,
   DASHBOARD_ROUTE_NAME,
   PROJECTS_DASHBOARD_ROUTE_NAME,
@@ -21,12 +20,12 @@ export default [
   },
   {
     name: PROJECTS_DASHBOARD_ROUTE_NAME,
-    path: BASE_ROUTE,
+    path: '/dashboard/projects',
     component: YourWorkProjectsApp,
   },
   ...PROJECT_DASHBOARD_TABS.map(({ value }) => ({
     name: value,
-    path: `${BASE_ROUTE}/${value}`,
+    path: `/dashboard/projects/${value}`,
     component: YourWorkProjectsApp,
   })),
 ];

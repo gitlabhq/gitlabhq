@@ -17,6 +17,7 @@ module BulkImports
       @export_path = export_path
       @relation = export.relation
       @user = user # not used anywhere in this class at the moment
+      @offline_export_id = export.offline_export_id
     end
 
     def execute(options = {})
@@ -44,12 +45,12 @@ module BulkImports
 
     private
 
-    attr_reader :export_path, :portable, :relation
+    attr_reader :export_path, :portable, :relation, :offline_export_id
 
     def export_service
       @export_service ||= case relation
                           when FileTransfer::BaseConfig::UPLOADS_RELATION
-                            UploadsExportService.new(portable, export_path)
+                            UploadsExportService.new(portable, export_path, offline_export_id)
                           when FileTransfer::ProjectConfig::LFS_OBJECTS_RELATION
                             LfsObjectsExportService.new(portable, export_path)
                           when FileTransfer::ProjectConfig::REPOSITORY_BUNDLE_RELATION

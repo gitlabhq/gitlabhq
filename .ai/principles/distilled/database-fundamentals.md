@@ -1,8 +1,8 @@
 ---
-source_checksum: e786b4cacd62e727
-distilled_at_sha: 9ab16c7588f7d32fdb6d509a70bae72309346826
+source_checksum: 3a4442a1b08d98ca
+distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 ---
-<!-- Auto-generated from docs.gitlab.com by scripts/ai/sync_principles.rb — do not edit manually -->
+<!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
 # Database Principles
 
@@ -39,7 +39,6 @@ distilled_at_sha: 9ab16c7588f7d32fdb6d509a70bae72309346826
 
 - Verify indexes and columns are not added to pre-existing tables over the [size threshold](https://docs.gitlab.com/development/database/large_tables_limitations/).
 - When adding an index to a large table, require execution via `CREATE INDEX CONCURRENTLY` tested in Database Lab with execution time noted in the MR description.
-- If Database Lab execution time exceeds 10 minutes, require the index to be moved to a post-deployment migration and added [asynchronously](https://docs.gitlab.com/development/database/adding_database_indexes/#create-indexes-asynchronously).
 - After merging an MR with an elevated-execution-time index, notify Release Managers on `#f_upcoming_release`.
 
 ### Table and Column Design
@@ -80,8 +79,10 @@ distilled_at_sha: 9ab16c7588f7d32fdb6d509a70bae72309346826
 - DO NOT open transactions that modify tables across multiple databases (cross-database transactions); use asynchronous jobs or remove the transaction block instead.
 - DO NOT use `dependent: :nullify` or `dependent: :destroy` across databases; use `dependent: :restrict_with_error` or [loose foreign keys](https://docs.gitlab.com/development/database/loose_foreign_keys/) instead.
 - Ensure each model uses the correct base class for its `gitlab_schema` (`ApplicationRecord` for `gitlab_main_org`, `Ci::ApplicationRecord` for `gitlab_ci`, `Geo::TrackingBase` for `gitlab_geo`, etc.).
+- For `gitlab_shared` tables (data shared across all decomposed databases), traverse all databases sequentially via `Gitlab::Database::EachDatabase.each_model_connection`; DO NOT query a `gitlab_shared` model on a single connection.
 - For cross-database foreign keys, add an allowlist entry in `no_cross_db_foreign_keys_spec.rb` and plan conversion to a loose foreign key.
 - Use `skip_if_shared_database`, `skip_if_database_exists`, `skip_if_multiple_databases_are_setup`, or `skip_if_multiple_databases_not_setup` helpers in specs that must run only in specific database modes.
+- Validate cross-join removal in specs using `with_cross_joins_prevented { ... }` when the cross-join allowlist in `spec/support/database/cross-join-allowlist.yml` is disabled for that query.
 
 ### Verify Before Flagging
 

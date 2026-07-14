@@ -3,8 +3,11 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import CompareDropdown from '~/merge_requests/components/compare_dropdown.vue';
+
+jest.mock('~/alert');
 
 let wrapper;
 let mock;
@@ -81,6 +84,38 @@ describe('Merge requests compare dropdown component', () => {
     await waitForPromises();
 
     expect(mock.history.get[1].params).toEqual({ search: 'test' });
+  });
+
+  it('aborts the previous request when a new fetch starts', async () => {
+    const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+
+    factory();
+
+    wrapper.find('[data-testid="base-dropdown-toggle"]').trigger('click');
+
+    await waitForPromises();
+
+    findDropdown().vm.$emit('search', 'test');
+
+    jest.advanceTimersByTime(500);
+    await waitForPromises();
+
+    expect(abortSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not call `createAlert` when request is aborted', async () => {
+    factory();
+
+    wrapper.find('[data-testid="base-dropdown-toggle"]').trigger('click');
+
+    await waitForPromises();
+
+    findDropdown().vm.$emit('search', 'test');
+
+    jest.advanceTimersByTime(500);
+    await waitForPromises();
+
+    expect(createAlert).not.toHaveBeenCalled();
   });
 
   it('renders static data', async () => {

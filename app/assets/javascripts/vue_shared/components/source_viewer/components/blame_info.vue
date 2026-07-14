@@ -1,11 +1,18 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
+import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import AccessorUtilities from '~/lib/utils/accessor';
+import AccessiblePanelResizer from '~/vue_shared/components/accessible_panel_resizer.vue';
 import { calculateBlameOffset } from '../utils';
 import BlameCommitInfo from './blame_commit_info.vue';
 
 export default {
   name: 'BlameInfo',
+  i18n: {
+    resizeLabel: __('Resize blame column'),
+  },
   BLAME_AGE_COLORS: {
     'blame-commit-age-0': 'var(--gl-color-data-blue-900)',
     'blame-commit-age-1': 'var(--gl-color-data-blue-800)',
@@ -20,10 +27,17 @@ export default {
   },
   components: {
     BlameCommitInfo,
+    AccessiblePanelResizer,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
+  },
+  resizer: {
+    blameInfoColumnDefaultWidth: 400,
+    blameInfoColumnMaxWidth: 600,
+    blameInfoColumnMinWidth: 250,
+    blameInfoWidthStorageKey: 'blame-column-width',
   },
   props: {
     blameInfo: {
@@ -38,7 +52,9 @@ export default {
   },
   data() {
     return {
+      isDesktop: PanelBreakpointInstance.isDesktop(),
       containerHeight: 0,
+      containerWidth: this.$options.resizer.blameInfoColumnDefaultWidth,
     };
   },
   computed: {
@@ -71,9 +87,38 @@ export default {
     },
   },
   mounted() {
+    PanelBreakpointInstance.addResizeListener(this.handlePanelResize);
+
     this.updateContainerHeight();
+    this.restoreBlameColumnWidth();
+  },
+  beforeDestroy() {
+    PanelBreakpointInstance.removeResizeListener(this.handlePanelResize);
   },
   methods: {
+    handlePanelResize() {
+      this.isDesktop = PanelBreakpointInstance.isDesktop();
+      this.restoreBlameColumnWidth();
+    },
+    restoreBlameColumnWidth() {
+      if (!this.isDesktop) {
+        this.containerWidth = this.$options.resizer.blameInfoColumnMinWidth;
+        return;
+      }
+
+      if (!AccessorUtilities.canUseLocalStorage()) return;
+
+      const userPreference = localStorage.getItem(this.$options.resizer.blameInfoWidthStorageKey);
+      this.containerWidth =
+        parseInt(userPreference, 10) || this.$options.resizer.blameInfoColumnDefaultWidth;
+    },
+    onResize(value) {
+      this.containerWidth = value ?? this.$options.resizer.blameInfoColumnDefaultWidth;
+    },
+    onResizeEnd(value) {
+      if (!AccessorUtilities.canUseLocalStorage()) return;
+      localStorage.setItem(this.$options.resizer.blameInfoWidthStorageKey, value);
+    },
     calculateCommitHeight(commitInfo, nextCommitInfo) {
       const currentOffset = parseInt(commitInfo.blameOffset, 10) || 0;
       const { lineno, span } = commitInfo;
@@ -100,7 +145,19 @@ export default {
 };
 </script>
 <template>
-  <div class="blame gl-border-r gl-bg-subtle">
+  <div class="blame gl-border-r gl-bg-subtle" :style="{ width: `${containerWidth}px` }">
+    <accessible-panel-resizer
+      v-if="isDesktop"
+      side="right"
+      :aria-label="$options.i18n.resizeLabel"
+      :value="containerWidth"
+      :default-size="$options.resizer.blameInfoColumnDefaultWidth"
+      :min-size="$options.resizer.blameInfoColumnMinWidth"
+      :max-size="$options.resizer.blameInfoColumnMaxWidth"
+      @input="onResize"
+      @resize-end="onResizeEnd"
+    />
+
     <div class="blame-commit !gl-border-none">
       <template v-if="blameInfo.length">
         <span

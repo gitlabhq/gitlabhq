@@ -29,7 +29,7 @@ export const MOCK_MR_PATH = '/dashboard/merge_requests';
 
 export const MOCK_ALL_PATH = '/';
 
-export const MOCK_AUTOCOMPLETE_PATH = '/autocomplete';
+export const MOCK_AUTOCOMPLETE_PATH = '/search/autocomplete';
 
 export const MOCK_PROJECT = {
   id: 123,

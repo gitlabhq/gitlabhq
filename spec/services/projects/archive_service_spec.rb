@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_refind(:project) { create(:project, namespace: group) }
 
   subject(:service) { described_class.new(project: project, current_user: user) }

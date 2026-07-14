@@ -46,6 +46,7 @@ export default {
       default: '',
     },
   },
+  emits: ['selected'],
   computed: {
     totalCountText() {
       return this.totalCount > 999 ? s__('TotalMilestonesIndicator|1000+') : `${this.totalCount}`;

@@ -6,11 +6,11 @@ RSpec.describe 'Query.project.pipelineSchedules', feature_category: :continuous_
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, freeze: false) do
+  let_it_be_with_reload(:project) do
     create(:project, :repository, :public, creator: user, namespace: user.namespace)
   end
 
-  let_it_be(:pipeline_schedule, freeze: false) { create(:ci_pipeline_schedule, project: project, owner: user) }
+  let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
 
   let(:pipeline_schedule_graphql_data) { graphql_data_at(:project, :pipeline_schedules, :nodes, 0) }
 
@@ -50,7 +50,7 @@ RSpec.describe 'Query.project.pipelineSchedules', feature_category: :continuous_
     )
   end
 
-  it_behaves_like 'authorizing granular token permissions for GraphQL', :read_pipeline_schedule do
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_pipeline_schedule] do
     let(:boundary_object) { project }
     let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
   end

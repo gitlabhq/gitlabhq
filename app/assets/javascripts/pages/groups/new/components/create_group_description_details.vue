@@ -19,6 +19,7 @@ const DESCRIPTION_DETAILS = {
 };
 
 export default {
+  name: 'CreateGroupDescriptionDetails',
   components: {
     GlLink,
     GlSprintf,

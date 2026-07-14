@@ -141,11 +141,11 @@ RSpec.describe Tooling::Danger::FeatureFlag, feature_category: :tooling do
       context 'when name is nil' do
         let(:name) { nil }
 
-        it { expect(found.valid?).to eq(false) }
+        it { expect(found.valid?).to be(false) }
       end
 
       context 'when name is not nil' do
-        it { expect(found.valid?).to eq(true) }
+        it { expect(found.valid?).to be(true) }
       end
     end
 
@@ -153,11 +153,11 @@ RSpec.describe Tooling::Danger::FeatureFlag, feature_category: :tooling do
       context 'when group is nil' do
         let(:group) { nil }
 
-        it { expect(found.missing_group?).to eq(true) }
+        it { expect(found.missing_group?).to be(true) }
       end
 
       context 'when group is not nil' do
-        it { expect(found.missing_group?).to eq(false) }
+        it { expect(found.missing_group?).to be(false) }
       end
     end
 
@@ -165,11 +165,11 @@ RSpec.describe Tooling::Danger::FeatureFlag, feature_category: :tooling do
       context 'when feature_issue_url is nil' do
         let(:feature_issue_url) { nil }
 
-        it { expect(found.missing_feature_issue_url?).to eq(true) }
+        it { expect(found.missing_feature_issue_url?).to be(true) }
       end
 
       context 'when feature_issue_url is not nil' do
-        it { expect(found.missing_feature_issue_url?).to eq(false) }
+        it { expect(found.missing_feature_issue_url?).to be(false) }
       end
     end
 
@@ -177,11 +177,11 @@ RSpec.describe Tooling::Danger::FeatureFlag, feature_category: :tooling do
       context 'when introduced_by_url is nil' do
         let(:introduced_by_url) { nil }
 
-        it { expect(found.missing_introduced_by_url?).to eq(true) }
+        it { expect(found.missing_introduced_by_url?).to be(true) }
       end
 
       context 'when introduced_by_url is not nil' do
-        it { expect(found.missing_introduced_by_url?).to eq(false) }
+        it { expect(found.missing_introduced_by_url?).to be(false) }
       end
     end
 
@@ -189,11 +189,11 @@ RSpec.describe Tooling::Danger::FeatureFlag, feature_category: :tooling do
       context 'when rollout_issue_url is nil' do
         let(:rollout_issue_url) { nil }
 
-        it { expect(found.missing_rollout_issue_url?).to eq(true) }
+        it { expect(found.missing_rollout_issue_url?).to be(true) }
       end
 
       context 'when rollout_issue_url is not nil' do
-        it { expect(found.missing_rollout_issue_url?).to eq(false) }
+        it { expect(found.missing_rollout_issue_url?).to be(false) }
       end
     end
 
@@ -201,11 +201,11 @@ RSpec.describe Tooling::Danger::FeatureFlag, feature_category: :tooling do
       context 'when milestone is nil' do
         let(:milestone) { nil }
 
-        it { expect(found.missing_milestone?).to eq(true) }
+        it { expect(found.missing_milestone?).to be(true) }
       end
 
       context 'when milestone is not nil' do
-        it { expect(found.missing_milestone?).to eq(false) }
+        it { expect(found.missing_milestone?).to be(false) }
       end
     end
 
@@ -213,19 +213,19 @@ RSpec.describe Tooling::Danger::FeatureFlag, feature_category: :tooling do
       context 'when default_enabled is nil' do
         let(:default_enabled) { nil }
 
-        it { expect(found.default_enabled?).to eq(false) }
+        it { expect(found.default_enabled?).to be(false) }
       end
 
       context 'when default_enabled is false' do
         let(:default_enabled) { false }
 
-        it { expect(found.default_enabled?).to eq(false) }
+        it { expect(found.default_enabled?).to be(false) }
       end
 
       context 'when default_enabled is true' do
         let(:default_enabled) { true }
 
-        it { expect(found.default_enabled?).to eq(true) }
+        it { expect(found.default_enabled?).to be(true) }
       end
     end
 
@@ -234,15 +234,15 @@ RSpec.describe Tooling::Danger::FeatureFlag, feature_category: :tooling do
         let(:group) { nil }
 
         it 'is true only if MR has no group label' do
-          expect(found.group_match_mr_label?(nil)).to eq true
-          expect(found.group_match_mr_label?('group::source code')).to eq false
+          expect(found.group_match_mr_label?(nil)).to be true
+          expect(found.group_match_mr_label?('group::source code')).to be false
         end
       end
 
       context 'when group is not nil' do
         it 'is true only if MR has the same group label' do
-          expect(found.group_match_mr_label?(group)).to eq true
-          expect(found.group_match_mr_label?('group::authentication')).to eq false
+          expect(found.group_match_mr_label?(group)).to be true
+          expect(found.group_match_mr_label?('group::authentication')).to be false
         end
       end
     end

@@ -11,6 +11,7 @@ const dateFormat = createDateTimeFormat({
 });
 
 export default {
+  name: 'MetadataModal',
   components: {
     GlModal,
     GlSprintf,

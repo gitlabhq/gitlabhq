@@ -6,6 +6,7 @@ import PapaParseAlert from '../components/papa_parse_alert.vue';
 import { MAX_ROWS_TO_RENDER } from './constants';
 
 export default {
+  name: 'CsvViewer',
   components: {
     PapaParseAlert,
     GlTable,

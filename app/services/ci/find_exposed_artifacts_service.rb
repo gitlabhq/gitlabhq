@@ -16,7 +16,7 @@ module Ci
       results = []
 
       pipeline.builds.latest.each_batch do |job_batch|
-        job_batch.select_with_exposed_artifacts.each do |job|
+        job_batch.order_id_asc.select_with_exposed_artifacts.each do |job|
           exposed_artifacts = for_job(job)
           results << exposed_artifacts if exposed_artifacts
 

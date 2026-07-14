@@ -9,13 +9,13 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
   let(:user_params) { { username: user.username } }
   let(:user_fields) { 'contributedProjects { nodes { id } }' }
 
-  let_it_be(:user, freeze: false) { create(:user, :with_namespace) }
-  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user, :with_namespace) }
+  let_it_be(:current_user) { create(:user) }
 
-  let_it_be(:public_project, freeze: false) { create(:project, :public, name: 'foo') }
-  let_it_be(:private_project, freeze: false) { create(:project, :private, name: 'bar') }
-  let_it_be(:internal_project, freeze: false) { create(:project, :internal, name: 'baz') }
-  let_it_be(:personal_project, freeze: false) { create(:project, namespace: user.namespace, name: 'biz') }
+  let_it_be_with_reload(:public_project) { create(:project, :public, name: 'foo') }
+  let_it_be_with_reload(:private_project) { create(:project, :private, name: 'bar') }
+  let_it_be_with_reload(:internal_project) { create(:project, :internal, name: 'baz') }
+  let_it_be(:personal_project) { create(:project, namespace: user.namespace, name: 'biz') }
 
   let(:path) { %i[user contributed_projects nodes] }
 
@@ -320,7 +320,7 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
   end
 
   describe 'min_access_level' do
-    let_it_be(:project_with_owner_access, freeze: false) { create(:project, :private) }
+    let_it_be(:project_with_owner_access) { create(:project, :private) }
 
     let(:user_fields_with_min_access_level) do
       "contributedProjects(minAccessLevel: #{min_access_level}) { nodes { id } }"
@@ -361,8 +361,8 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
   end
 
   describe 'programming_language_name' do
-    let_it_be(:ruby, freeze: false) { create(:programming_language, name: 'Ruby') }
-    let_it_be(:repository_language, freeze: false) do
+    let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
+    let_it_be(:repository_language) do
       create(:repository_language, project: internal_project, programming_language: ruby, share: 1)
     end
 
@@ -396,8 +396,8 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
   end
 
   describe 'active' do
-    let_it_be(:archived_project, freeze: false) { create(:project, :archived, :public, name: 'archived') }
-    let_it_be(:pending_delete_project, freeze: false) do
+    let_it_be(:archived_project) { create(:project, :archived, :public, name: 'archived') }
+    let_it_be(:pending_delete_project) do
       create(:project, :public, name: 'pending_delete', pending_delete: true)
     end
 
@@ -470,7 +470,7 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
       end
 
       context 'when a logged in user with no visibility to the private project' do
-        let_it_be(:current_user_2, freeze: false) { create(:user) }
+        let_it_be(:current_user_2) { create(:user) }
 
         it 'returns contributed projects with visibility to the logged in user' do
           post_graphql(query, current_user: current_user_2)
@@ -493,7 +493,7 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
 
     context 'when user profile is private' do
       let(:user_params) { { username: private_user.username } }
-      let_it_be(:private_user, freeze: false) { create(:user, :private_profile) }
+      let_it_be(:private_user) { create(:user, :private_profile) }
 
       before_all do
         private_project.add_developer(private_user)

@@ -28,7 +28,7 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
 
   context 'signed in' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     before_all do
       project.add_maintainer(user)
@@ -132,7 +132,7 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
           get :search_merge_requests, params: { author_id: user.id }
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(assigns(:search_timeout_occurred)).to eq(true)
+          expect(assigns(:search_timeout_occurred)).to be(true)
         end
 
         context 'rendering views' do
@@ -164,7 +164,7 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
           get :search_merge_requests, params: { author_id: user.id }
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(assigns(:search_timeout_occurred)).to eq(nil)
+          expect(assigns(:search_timeout_occurred)).to be_nil
         end
 
         context 'rendering views' do
@@ -186,7 +186,7 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
     render_views
 
     let_it_be(:user) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
+    let_it_be_with_reload(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
     let_it_be(:other_project) { create(:project, :public) }
 
     before do
@@ -287,7 +287,7 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
   end
 
   describe "#check_filters_presence!" do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     before do
       sign_in(user)
@@ -299,7 +299,7 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
 
       shared_examples_for 'no filters are set' do
         it 'sets @no_filters_set to true' do
-          expect(assigns[:no_filters_set]).to eq(true)
+          expect(assigns[:no_filters_set]).to be(true)
         end
       end
 
@@ -320,7 +320,7 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
 
     shared_examples_for 'filters are set' do
       it 'sets @no_filters_set to false' do
-        expect(assigns[:no_filters_set]).to eq(false)
+        expect(assigns[:no_filters_set]).to be(false)
       end
     end
 

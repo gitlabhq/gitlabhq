@@ -91,7 +91,6 @@ In your project:
      SBOM_FORMAT: "cyclonedx"
      OUTPUT_TYPE: "json"
      GROUP_PATH: ${CI_PROJECT_NAMESPACE}
-     AUTH_HEADER: "${GROUP_DEPLOY_TOKEN:+Deploy-Token: $GROUP_DEPLOY_TOKEN}"
 
    before_script:
      - apk add --no-cache curl jq ca-certificates
@@ -125,7 +124,7 @@ prepare_environment:
     mkdir -p ${SBOM_OUTPUT_DIR}
     apk add --no-cache python3 py3-pip py3-virtualenv
     python3 -m venv venv
-    source venv/bin/activate
+    . venv/bin/activate
     pip3 install cyclonedx-bom
   artifacts:
     paths:
@@ -153,34 +152,50 @@ In your `.gitlab-ci.yml` file, add the following configuration:
 collect_group_packages:
   stage: collect
   script: |
+    mkdir -p "${SBOM_OUTPUT_DIR}"
     echo "[]" > "${SBOM_OUTPUT_DIR}/packages.json"
+
+    # Resolve the auth header at runtime: use the group deploy token if set,
+    # otherwise fall back to the CI job token.
+    if [ -n "${GROUP_DEPLOY_TOKEN:-}" ]; then
+      AUTH="Deploy-Token: ${GROUP_DEPLOY_TOKEN}"
+    else
+      AUTH="JOB-TOKEN: ${CI_JOB_TOKEN}"
+    fi
 
     GROUP_PATH_ENCODED=$(echo "${GROUP_PATH}" | sed 's|/|%2F|g')
     PACKAGES_URL="${CI_API_V4_URL}/groups/${GROUP_PATH_ENCODED}/packages"
 
     # Optional exclusion list - you can add package types you want to exclude
-    # EXCLUDE_TYPES="terraform"
+    # EXCLUDE_TYPES="terraform npm"
 
     page=1
     while true; do
       # Fetch all packages without specifying type, with pagination
-      response=$(curl --silent --header "${AUTH_HEADER:-"JOB-TOKEN: $CI_JOB_TOKEN"}" \
-                    "${PACKAGES_URL}?per_page=100&page=${page}")
+      http_status=$(curl --silent \
+                      --output /tmp/api_response.json \
+                      --write-out "%{http_code}" \
+                      --header "$AUTH" \
+                      "${PACKAGES_URL}?per_page=100&page=${page}")
+      response=$(cat /tmp/api_response.json)
 
-      if ! echo "$response" | jq 'type == "array"' > /dev/null 2>&1; then
-        echo "Error in API response for page $page"
-        break
+      if [ "$http_status" -lt 200 ] || [ "$http_status" -ge 300 ]; then
+        echo "ERROR: HTTP ${http_status}"; echo "$response" | jq . 2>/dev/null || echo "$response"; exit 1
+      fi
+
+      response_type=$(echo "$response" | jq -r 'type' 2>/dev/null || echo "invalid")
+      if [ "$response_type" != "array" ]; then
+        echo "ERROR: Expected array, got ${response_type}"; echo "$response" | jq . 2>/dev/null || echo "$response"; exit 1
       fi
 
       count=$(echo "$response" | jq '. | length')
-      if [ "$count" -eq 0 ]; then
-        break
-      fi
+      [ "$count" -eq 0 ] && break
 
-      # Filter packages if EXCLUDE_TYPES is set
+      # Filter packages if EXCLUDE_TYPES is set, using exact type matching
       if [ -n "${EXCLUDE_TYPES:-}" ]; then
-        filtered_response=$(echo "$response" | jq --arg types "$EXCLUDE_TYPES" '[.[] | select(.package_type | inside($types | split(" ")) | not)]')
-        response="$filtered_response"
+        response=$(echo "$response" | jq --argjson types \
+          "$(echo "${EXCLUDE_TYPES}" | tr ' ' '\n' | jq -R . | jq -s .)" \
+          '[.[] | select(.package_type as $t | $types | any(. == $t) | not)]')
         count=$(echo "$response" | jq '. | length')
       fi
 
@@ -189,10 +204,7 @@ collect_group_packages:
       mv "${SBOM_OUTPUT_DIR}/packages.tmp.json" "${SBOM_OUTPUT_DIR}/packages.json"
 
       # Move to next page if we got a full page of results
-      if [ "$count" -lt 100 ]; then
-        break
-      fi
-
+      [ "$count" -lt 100 ] && break
       page=$((page + 1))
     done
   artifacts:
@@ -205,11 +217,12 @@ collect_group_packages:
 
 This stage:
 
+- Resolves the authentication header at runtime by using a group deploy token if available, or the CI/CD job token otherwise
 - Makes a single API call to fetch all package types at once (instead of separate calls per type)
-- Supports an optional exclusion list for filtering out unwanted package types
+- Supports an optional exclusion list that filters out package types by exact match
 - Implements pagination to handle groups with many packages (100 per page)
 - URL-encodes the group path to handle subgroups correctly
-- Handles API errors gracefully by skipping invalid responses
+- Checks the HTTP status code and response type, and stops the job on an error
 
 ### Configure the `aggregate` stage
 
@@ -222,15 +235,31 @@ In your `.gitlab-ci.yml` file, add the following configuration:
 aggregate_sboms:
   stage: aggregate
   before_script:
-    - apk add --no-cache python3 py3-pip py3-virtualenv
-    - python3 -m venv venv
-    - source venv/bin/activate
-    - pip3 install --no-cache-dir cyclonedx-bom
+    - apk add --no-cache python3 py3-virtualenv
+    - . venv/bin/activate
   script: |
     cat > process_sbom.py << 'EOL'
     import json
     import os
     from datetime import datetime
+    from urllib.parse import quote
+
+    # Map GitLab package types to valid PURL types. Defaults to "generic".
+    PURL_TYPE_MAP = {
+        "pypi": "pypi", "npm": "npm", "maven": "maven", "nuget": "nuget",
+        "composer": "composer", "conan": "conan", "conda": "conda",
+        "golang": "golang", "helm": "helm", "rubygems": "gem",
+        "generic": "generic", "debian": "deb", "rpm": "rpm", "terraform": "terraform",
+    }
+
+    def make_purl(package_type, name, version):
+        """Build a spec-compliant PURL with percent-encoded name and version."""
+        purl_type = PURL_TYPE_MAP.get(package_type, "generic")
+        # Maven names use a "/" namespace separator that the PURL spec requires,
+        # so keep it unencoded for that type.
+        safe_name = quote(name, safe='/') if purl_type == "maven" else quote(name, safe='')
+        safe_version = quote(version, safe='')
+        return f"pkg:{purl_type}/{safe_name}@{safe_version}"
 
     def analyze_version_history(packages_file):
         """Process version information by aggregating packages with same name and type"""
@@ -293,11 +322,12 @@ aggregate_sboms:
                     pkg_type = package.get('package_type', 'unknown')
                     package_stats['package_types'][pkg_type] = package_stats['package_types'].get(pkg_type, 0) + 1
 
+                    version = package.get('version', 'unknown')
                     component = {
                         'type': 'library',
                         'name': package['name'],
-                        'version': package.get('version', 'unknown'),
-                        'purl': f"pkg:gitlab/{package['name']}@{package.get('version', 'unknown')}",
+                        'version': version,
+                        'purl': make_purl(pkg_type, package['name'], version),
                         'package_type': pkg_type,
                         'properties': [{
                             'name': 'registry_url',
@@ -353,6 +383,7 @@ aggregate_sboms:
       - ${SBOM_OUTPUT_DIR}/
     expire_in: 1 week
   dependencies:
+    - prepare_environment
     - collect_group_packages
 ```
 
@@ -365,7 +396,8 @@ This stage:
   - Total number of packages by type
   - Version history for each package
   - First-published and last-updated dates
-- Generates Package URLs (`purl`) for each component
+- Reuses the virtual environment artifact from the `prepare` stage instead of creating a new one
+- Generates spec-compliant Package URLs (`purl`) for each component, with the package type mapped to a valid PURL type and the name and version percent-encoded
 - Handles missing or invalid data gracefully with proper exception handling
 - Creates both the SBOM and a separate statistics file
 
@@ -380,27 +412,21 @@ In your `.gitlab-ci.yml` file, add the following configuration:
 publish_sbom:
   stage: publish
   script: |
-    STATS=$(cat "${SBOM_OUTPUT_DIR}/package_stats.json")
+    # Resolve the auth header at runtime, as in the collect stage.
+    if [ -n "${GROUP_DEPLOY_TOKEN:-}" ]; then
+      AUTH="Deploy-Token: ${GROUP_DEPLOY_TOKEN}"
+    else
+      AUTH="JOB-TOKEN: ${CI_JOB_TOKEN}"
+    fi
 
     # Upload generated files
-    curl --header "${AUTH_HEADER:-"JOB-TOKEN: $CI_JOB_TOKEN"}" \
+    curl --header "$AUTH" \
          --upload-file "${SBOM_OUTPUT_DIR}/merged_sbom.${OUTPUT_TYPE}" \
          "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/sbom/${CI_COMMIT_SHA}/merged_sbom.${OUTPUT_TYPE}"
 
-    curl --header "${AUTH_HEADER:-"JOB-TOKEN: $CI_JOB_TOKEN"}" \
+    curl --header "$AUTH" \
          --upload-file "${SBOM_OUTPUT_DIR}/package_stats.json" \
          "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/sbom/${CI_COMMIT_SHA}/package_stats.json"
-
-    # Add package description
-    curl --header "${AUTH_HEADER:-"JOB-TOKEN: $CI_JOB_TOKEN"}" \
-         --header "Content-Type: application/json" \
-         --request PUT \
-         --data @- \
-         "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/sbom/${CI_COMMIT_SHA}" << EOF
-    {
-      "description": "Group Package Registry SBOM generated on $(date -u)\nStats: ${STATS}"
-    }
-    EOF
   dependencies:
     - aggregate_sboms
 ```
@@ -410,7 +436,8 @@ This stage:
 - Publishes the SBOM and statistics files to your project's package registry
 - Uses the generic package type for storage
 - Uses the commit SHA as the package version for traceability
-- Adds a generation timestamp and statistics to the package description
+
+The SBOM file already records the generation timestamp in `metadata.timestamp`, and the pipeline saves the package statistics in `package_stats.json`.
 
 ## Access the generated files
 

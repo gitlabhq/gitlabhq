@@ -37,6 +37,13 @@ RSpec.describe 'Restoring Todos', feature_category: :team_planning do
     graphql_mutation_response(:todo_restore)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_todo do
+    let(:user) { current_user }
+    let(:boundary_object) { :user }
+    let(:mutation) { graphql_mutation(:todo_restore, input, 'errors') }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'restores a single todo' do
     post_graphql_mutation(mutation, current_user: current_user)
 

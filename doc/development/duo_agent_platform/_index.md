@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Agent Foundations
+stage: AI Platform
+group: AI Core Infra
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Development of GitLab Duo Agent Platform
 ---
@@ -41,7 +41,7 @@ This setup can be used as-is with the [publicly available version of the VS Code
 To test Agentic GitLab Duo Chat in the Web UI of your local GitLab instance, follow these additional setup steps:
 
 1. [Enable NGINX for your GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/nginx.md).
-   A loopback interface and HTTPS are **not** required, only the basic NGINX configuration.
+   A loopback interface and HTTPS are not required, only the basic NGINX configuration.
 1. Access your GDK at `http://gdk.test:8080`. Your GDK is still available
    at port 3000 but accessing it at port 8080 accesses the application through
    NGINX, which is required for Agentic GitLab Duo Chat to work on the web. If you access
@@ -71,6 +71,65 @@ Enable the GitLab Duo Agent Platform as a sidepanel instead of fullview. This is
 Allow users to get access to tools that require approval such as running terminal commands.
 
 `"gitlab.duo.workflow.toolApproval": true`
+
+## Trace API requests to a workflow session
+
+Requests that originate from a GitLab Duo workflow carry the `X-Gitlab-Duo-Workflow-Id`
+header. The Rails middleware `Gitlab::Middleware::DuoWorkflowId` reads the header into
+`Gitlab::ApplicationContext`. The workflow ID is then available in application code and
+in structured request logs for the duration of the request.
+
+Two paths set the header automatically:
+
+- Tool API calls. When an agent calls a tool that hits the GitLab API, Workhorse
+  proxies the call and attaches the header.
+- `glab` calls from a runner running an agent. The runner exports
+  `DUO_WORKFLOW_WORKFLOW_ID`, and the `glab` CLI sets the header on every API call it
+  makes.
+
+Read the value from application code:
+
+```ruby
+Gitlab::ApplicationContext.current_context_attribute(:duo_workflow_id)
+```
+
+In structured logs, Grape exposes the value as `meta.duo_workflow_id` (in
+`api_json.log` and `graphql_json.log`) and Lograge exposes it at the top level as
+`duo_workflow_id` (in `development_json.log` and `production_json.log`).
+
+### Filter logs by workflow ID
+
+Filter API and GraphQL logs by `meta.duo_workflow_id`, or Lograge logs by
+`duo_workflow_id`, to see every request a session produced. Use this approach when
+debugging a misbehaving session. For example:
+
+```shell
+jq 'select(."meta.duo_workflow_id" == "<workflow_id>")' log/api_json.log
+```
+
+### Link resources to the session that produced them
+
+Read the workflow ID inside a service that creates or modifies a resource, and persist
+it alongside the resource. The resource can then be traced back to the session that
+produced it.
+
+```ruby
+class CreateService
+  def execute
+    issue = Issue.create!(params)
+
+    if workflow_id = Gitlab::ApplicationContext.current_context_attribute(:duo_workflow_id)
+      # Persist workflow_id alongside the issue.
+    end
+
+    issue
+  end
+end
+```
+
+The value is request-scoped and not propagated to Sidekiq jobs. `:duo_workflow_id`
+belongs to `Gitlab::ApplicationContext::WEB_ONLY_KEYS`, so background jobs do not
+inherit it. To use the value in a job, pass it as an explicit argument.
 
 ## Evaluate flow
 

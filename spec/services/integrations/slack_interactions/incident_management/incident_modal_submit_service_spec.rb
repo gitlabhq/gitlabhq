@@ -8,8 +8,8 @@ RSpec.describe Integrations::SlackInteractions::IncidentManagement::IncidentModa
 
   describe '#execute' do
     let_it_be(:slack_installation) { create(:slack_integration) }
-    let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:api_url) { 'https://api.slack.com/id/1234' }
 
     let_it_be(:chat_name) do
@@ -132,8 +132,11 @@ RSpec.describe Integrations::SlackInteractions::IncidentManagement::IncidentModa
     context 'when user has permissions to create incidents' do
       let(:api_response) { '{"ok":true}' }
 
-      before do
+      before_all do
         project.add_developer(user)
+      end
+
+      before do
         stub_request(:post, api_url)
           .to_return(body: api_response, headers: { 'Content-Type' => 'application/json' })
       end

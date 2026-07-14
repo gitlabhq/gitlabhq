@@ -18,6 +18,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['select'],
   computed: {
     selectedProjectValue() {
       return this.selectedProject?.id && String(this.selectedProject.id);

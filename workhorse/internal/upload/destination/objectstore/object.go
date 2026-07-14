@@ -95,6 +95,11 @@ func (o *Object) ETag() string {
 	return o.etag
 }
 
+// Strategy returns the name identifying the upload backend, used for logging.
+func (o *Object) Strategy() string {
+	return "presigned_put"
+}
+
 // Abort aborts the operation on the object.
 func (o *Object) Abort() {
 	o.Delete()

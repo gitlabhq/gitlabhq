@@ -278,8 +278,8 @@ module Gitlab
             stub_full_request('https://example.com/sample.yml').to_return(body: included_yml)
           end
 
-          it 'returns expanded yaml config' do
-            expanded_config = YAML.safe_load(config_metadata[:merged_yaml], permitted_classes: [Symbol])
+          it 'returns a lazy merged_yaml that expands the config when called' do
+            expanded_config = YAML.safe_load(config_metadata[:merged_yaml].call, permitted_classes: [Symbol])
             included_config = YAML.safe_load(included_yml, permitted_classes: [Symbol])
 
             expect(expanded_config).to include(*included_config.keys)

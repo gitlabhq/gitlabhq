@@ -1,6 +1,6 @@
 ---
-source_checksum: 259347344c386550
-distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
+source_checksum: fb591c74b686c305
+distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -13,7 +13,7 @@ distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
 ### Attribute Selection
 
 - Claim attributes that are used for routing (URL, REST API, GraphQL API) or for logging in, as these must be globally unique across the cluster.
-- Ensure every `cells_claims_attribute` specifies both a `type` (bucket type) and a `feature_flag` (model-specific control flag).
+- Ensure every `cells_claims_attribute` specifies a `type` (bucket type); a `feature_flag` (model-specific control flag) is added for deployment safety during initial rollout but is not a permanent requirement and can be removed once the attribute is validated and stable in production.
 - Define `cells_claims_metadata` with `subject_type` and `subject_key` on every claimable model; `source_type` and source value are inferred automatically.
 
 ### Adding a New Claimable Model
@@ -38,6 +38,7 @@ distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
 
 - Follow the two-phase rollout: Phase 1 enables live request claiming via `Cells::Claimable` callbacks; Phase 2 enables the verification worker for backfilling and ongoing consistency.
 - Ensure the feature-owning team (not the Cells Infrastructure team) owns the rollout of both phases, including creating flags, enabling them, and monitoring correctness.
+- After enabling the model-specific flag globally in production, validate the full attribute lifecycle (create claims a record, delete releases it, rename releases the old and creates the new); once claiming has run without issue for at least a week, remove the per-attribute `feature_flag:` parameter and delete its YAML file (after removal, only `Gitlab.config.cell.enabled` controls claiming).
 
 ### Conditional Claiming (`if:` and `cells_claims_scope`)
 

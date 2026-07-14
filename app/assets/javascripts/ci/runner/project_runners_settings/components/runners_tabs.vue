@@ -31,9 +31,6 @@ export default {
     canUnassignRunners: {
       default: false,
     },
-    canCreateRunnerForGroup: {
-      default: false,
-    },
     canToggleGroupRunners: {
       default: false,
     },
@@ -42,9 +39,6 @@ export default {
     },
     isGroupRunnersEnabled: {
       default: false,
-    },
-    groupRunnersPath: {
-      default: null,
     },
   },
   props: {

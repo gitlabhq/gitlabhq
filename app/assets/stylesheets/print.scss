@@ -131,31 +131,85 @@
   }
   /* stylelint-enable gitlab/no-js-class */
 
-  // Hide the file browser sidebar and reset its flex container so #tree-holder fills the page
+  // Hide the file browser sidebar and the last-commit panel so only the
+  // rendered markdown prints. We target these elements directly instead of
+  // structurally isolating #tree-holder, because after a soft navigation
+  // (Vue Router) the blob renders inside the tree page's scaffold, where
+  // #tree-holder is wrapped in an extra container and holds the router app
+  // rather than #blob-content-holder. The old structural rules then hid the
+  // content, producing a blank page on the first print attempt. See
+  // https://gitlab.com/gitlab-org/gitlab/-/issues/602773.
   .navigation-root {
     display: block !important;
   }
 
-  .navigation-root > *:not(#tree-holder) {
+  // `.file-tree-browser` is the rendered file browser sidebar. We target it
+  // (and the SSR placeholder #js-file-browser, before Vue replaces it on
+  // mount) rather than relying on #tree-holder structure, so it is hidden on
+  // both the blob and the soft-navigated tree-page scaffolds.
+  /* stylelint-disable gitlab/no-js-class */
+  #js-file-browser,
+  .file-tree-browser,
+  .info-well {
     display: none !important;
   }
-
-  #tree-holder > *:not(#blob-content-holder) {
-    display: none !important;
-  }
+  /* stylelint-enable gitlab/no-js-class */
 
   #tree-holder {
     width: 100% !important;
     padding: 0 !important;
   }
 
-  .blob-content-holder .file-actions,
-  .blob-content-holder .file-blame-legend {
+  // The repository header area (breadcrumbs, ref selector, file heading) is
+  // mounted by Vue, which replaces its #js-repository-blob-header-app mount
+  // node, so we hide its rendered children by their stable hooks. This is page
+  // chrome, not document content, and must not appear in the printed PDF.
+  /* stylelint-disable gitlab/no-js-class */
+  .tree-ref-container,
+  .js-repo-breadcrumbs,
+  [data-testid="repository-heading"] {
+    display: none !important;
+  }
+  /* stylelint-enable gitlab/no-js-class */
+
+  .file-actions,
+  .file-blame-legend {
     display: none !important;
   }
 
-  .blob-content-holder .file-holder {
+  // Drop the file holder's card border/shadow so the markdown prints flush.
+  // Unscoped from .blob-content-holder because after a soft navigation the
+  // file holder is rendered outside that container.
+  .file-holder {
     border: 0 !important;
     box-shadow: none !important;
+  }
+
+  // For users who explicitly select dark mode, the dark stylesheet is loaded
+  // unconditionally (not behind a prefers-color-scheme media query), so its
+  // dark text tokens leak into the print output and render the markdown text
+  // gray on white paper. Reset the text colors to their light-theme values so
+  // printed markdown is always legible regardless of the active color mode.
+  // The raw neutral palette is identical across themes, so referencing it here
+  // is theme-safe. See https://gitlab.com/gitlab-org/gitlab/-/issues/602773.
+  // stylelint-disable-next-line gitlab/no-gl-class
+  :root.gl-dark {
+    --gl-text-color-default: var(--gl-color-neutral-800);
+    --gl-text-color-subtle: var(--gl-color-neutral-600);
+    --gl-text-color-strong: var(--gl-color-neutral-950);
+    --gl-text-color-heading: var(--gl-color-neutral-950);
+
+    // Reset the background tokens too, so the page itself prints on light paper.
+    --gl-background-color-default: var(--gl-color-neutral-0);
+    --gl-background-color-subtle: var(--gl-color-neutral-10);
+    --gl-background-color-strong: var(--gl-color-neutral-50);
+    --gl-background-color-section: var(--gl-color-neutral-0);
+    --gl-background-color-overlap: var(--gl-color-neutral-0);
+
+    // Inline code uses a dark surface in dark mode; reset it to a light one so
+    // the now-dark code text stays readable when printed.
+    .md :not(pre.code) > code {
+      background-color: var(--gl-color-neutral-100);
+    }
   }
 }

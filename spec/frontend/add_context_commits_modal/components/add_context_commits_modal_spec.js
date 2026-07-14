@@ -50,6 +50,10 @@ describe('AddContextCommitsModal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findSearch = () => wrapper.findComponent(GlFilteredSearch);
+  const findAuthorToken = () =>
+    findSearch()
+      .props('availableTokens')
+      .find((token) => token.type === 'author');
 
   beforeEach(() => {
     createWrapper();
@@ -66,6 +70,12 @@ describe('AddContextCommitsModal', () => {
   describe('when in first tab, renders a modal with', () => {
     it('renders the search box component', () => {
       expect(findSearch().exists()).toBe(true);
+    });
+
+    it('wires the author token to the fetchAuthors action via the `fetchUsers` config key', () => {
+      const authorToken = findAuthorToken();
+
+      expect(authorToken.fetchUsers).toEqual(expect.any(Function));
     });
 
     it('when user submits after entering filters in search box, then it calls action "searchCommits"', () => {

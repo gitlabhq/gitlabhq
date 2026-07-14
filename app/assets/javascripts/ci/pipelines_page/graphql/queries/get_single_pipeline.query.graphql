@@ -1,11 +1,11 @@
 # @feature_category: continuous_integration
-#import "~/ci/pipelines_page/graphql/fragments/pipeline_details.fragment.graphql"
+#import "../fragments/pipeline_list_item.fragment.graphql"
 
 query getSinglePipeline($fullPath: ID!, $id: CiPipelineID!) {
   project(fullPath: $fullPath) {
     id
     pipeline(id: $id) {
-      ...PipelineDetails
+      ...PipelineListItem
     }
   }
 }

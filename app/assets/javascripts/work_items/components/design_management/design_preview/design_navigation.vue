@@ -10,6 +10,7 @@ import { s__, sprintf } from '~/locale';
 import { ROUTES } from '../../../constants';
 
 export default {
+  name: 'DesignNavigation',
   i18n: {
     nextButton: s__('DesignManagement|Go to next design'),
     previousButton: s__('DesignManagement|Go to previous design'),

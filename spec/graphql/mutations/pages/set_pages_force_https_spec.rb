@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::Pages::SetPagesForceHttps, feature_category: :pages do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:owner) { create(:user, owner_of: project) }
 
@@ -66,7 +66,7 @@ RSpec.describe Mutations::Pages::SetPagesForceHttps, feature_category: :pages do
 
     context 'when the project does not exist' do
       let_it_be(:current_user) { owner }
-      let_it_be(:project, freeze: false) { create(:project) }
+      let_it_be_with_reload(:project) { create(:project) }
 
       it 'raises an error' do
         expect { resolve }.to raise_error(

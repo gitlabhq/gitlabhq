@@ -93,16 +93,17 @@ RSpec.describe Gitlab::ExceptionLogFormatter, feature_category: :observability d
     end
 
     context 'when exception is a gRPC bad status' do
+      let(:gitaly_error_metadata) do
+        {
+          storage: 'default',
+          address: 'unix://gitaly.socket',
+          service: :ref_service,
+          rpc: :find_local_branches
+        }
+      end
+
       let(:unavailable_error) do
-        ::GRPC::Unavailable.new(
-          "unavailable",
-          gitaly_error_metadata: {
-            storage: 'default',
-            address: 'unix://gitaly.socket',
-            service: :ref_service,
-            rpc: :find_local_branches
-          }
-        )
+        ::GRPC::Unavailable.new("unavailable", gitaly_error_metadata: gitaly_error_metadata)
       end
 
       context 'when the gRPC error is wrapped by ::Gitlab::Git::BaseError' do
@@ -111,7 +112,7 @@ RSpec.describe Gitlab::ExceptionLogFormatter, feature_category: :observability d
         it 'adds gitaly metadata to payload' do
           described_class.format!(exception, payload)
 
-          expect(payload['exception.gitaly']).to eq('{:storage=>"default", :address=>"unix://gitaly.socket", :service=>:ref_service, :rpc=>:find_local_branches}')
+          expect(payload['exception.gitaly']).to eq(gitaly_error_metadata.to_s)
         end
       end
 
@@ -124,7 +125,7 @@ RSpec.describe Gitlab::ExceptionLogFormatter, feature_category: :observability d
           described_class.format!(exception, payload)
 
           expect(payload['exception.cause_class']).to eq('GRPC::Unavailable')
-          expect(payload['exception.gitaly']).to eq('{:storage=>"default", :address=>"unix://gitaly.socket", :service=>:ref_service, :rpc=>:find_local_branches}')
+          expect(payload['exception.gitaly']).to eq(gitaly_error_metadata.to_s)
         end
       end
 
@@ -135,7 +136,7 @@ RSpec.describe Gitlab::ExceptionLogFormatter, feature_category: :observability d
           described_class.format!(exception, payload)
 
           expect(payload['exception.cause_class']).to be_nil
-          expect(payload['exception.gitaly']).to eq('{:storage=>"default", :address=>"unix://gitaly.socket", :service=>:ref_service, :rpc=>:find_local_branches}')
+          expect(payload['exception.gitaly']).to eq(gitaly_error_metadata.to_s)
         end
       end
     end

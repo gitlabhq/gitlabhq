@@ -27,6 +27,7 @@ if Gitlab::Metrics.prometheus_metrics_enabled? && Gitlab::Runtime.application?
       Gitlab::EtagCaching::Middleware
 
     config.middleware.use(Gitlab::Metrics::ElasticsearchRackMiddleware)
+    config.middleware.use(Gitlab::Metrics::ZoektRackMiddleware)
   end
 
   Gitlab::Metrics.initialize_slis!

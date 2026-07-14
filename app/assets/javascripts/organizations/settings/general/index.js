@@ -13,10 +13,8 @@ export const initOrganizationsSettingsGeneral = () => {
   const {
     dataset: { appData },
   } = el;
-  const { organization, organizationsUrl, previewMarkdownPath } = convertObjectPropsToCamelCase(
-    JSON.parse(appData),
-    { deep: true },
-  );
+  const { organization, maxGroupVisibilityLevel, organizationsUrl, previewMarkdownPath } =
+    convertObjectPropsToCamelCase(JSON.parse(appData), { deep: true });
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -30,6 +28,7 @@ export const initOrganizationsSettingsGeneral = () => {
       organization,
       organizationsUrl,
       previewMarkdownPath,
+      maxGroupVisibilityLevel,
     },
     render(createElement) {
       return createElement(App);

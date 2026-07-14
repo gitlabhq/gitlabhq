@@ -20,10 +20,10 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
     end
 
     context 'without wiki and design repository' do
-      let!(:shard_source) { create(:shard, name: storage_source) }
-      let!(:shard_destination) { create(:shard, name: storage_destination) }
+      let_it_be(:shard_source) { create(:shard, name: 'default') }
+      let_it_be(:shard_destination) { create(:shard, name: 'test_second_storage') }
 
-      let(:project) { create(:project, :repository, wiki_enabled: false) }
+      let(:project) { create(:project, :small_repo, wiki_enabled: false) }
       let!(:checksum) { project.repository.checksum }
 
       let(:pool_repository) { create(:pool_repository, source_project: project) }
@@ -293,7 +293,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
           end
 
           context 'when project belongs to repository pool, but not as a root project' do
-            let!(:project) { create(:project, :repository) }
+            let!(:project) { create(:project, :small_repo) }
 
             before do
               project.update!(pool_repository: pool_repository)
@@ -331,7 +331,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
               expect(new_pool_repository).not_to eq(pool_repository)
               expect(new_pool_repository.shard).to eq(shard_destination)
               expect(new_pool_repository.state).to eq('ready')
-              expect(new_pool_repository.source_project).to eq(nil)
+              expect(new_pool_repository.source_project).to be_nil
               expect(new_pool_repository.disk_path).to eq(pool_repository.disk_path)
               expect(new_pool_repository.organization).to eq(pool_repository.organization)
             end
@@ -430,7 +430,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
 
     context 'with wiki repository' do
       include_examples 'moves repository to another storage', 'wiki' do
-        let(:project) { create(:project, :repository, wiki_enabled: true) }
+        let(:project) { create(:project, :small_repo, wiki_enabled: true) }
         let(:repository) { project.wiki.repository }
         let(:destination) { storage_destination }
         let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, container: project, destination_storage_name: destination) }
@@ -443,7 +443,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
 
     context 'with design repository' do
       include_examples 'moves repository to another storage', 'design' do
-        let(:project) { create(:project, :repository) }
+        let(:project) { create(:project, :small_repo) }
         let(:repository) { project.design_repository }
         let(:destination) { storage_destination }
         let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, container: project, destination_storage_name: destination) }

@@ -21,8 +21,8 @@ module Mutations
       authorize :admin_label
       authorize_granular_token permissions: :update_label,
         boundaries: [
-          { boundary_argument: :id, boundary_type: :project },
-          { boundary_argument: :id, boundary_type: :group }
+          { boundary_argument: :id, boundary: :project, boundary_type: :project },
+          { boundary_argument: :id, boundary: :group, boundary_type: :group }
         ]
 
       def resolve(id:, **args)

@@ -1258,7 +1258,7 @@ spec:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_file_inputs`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) in GitLab 18.6 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_file_inputs`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/579240) in GitLab 18.9. Feature flag `ci_file_inputs` removed.
 
 {{< /history >}}
@@ -1325,7 +1325,7 @@ deploy:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 as a [beta](../../policy/development_stages_support.md#beta) [with a flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 as a [beta](../../policy/development_stages_support.md#beta) [with a feature flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/571986) in GitLab 18.7. Feature flag `ci_component_context_interpolation` removed.
 
 {{< /history >}}
@@ -3174,7 +3174,7 @@ job1:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9 [with a flag](../../administration/feature_flags/_index.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9 [with a feature flag](../../administration/feature_flags/_index.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../policy/development_stages_support.md).
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 
 {{< /history >}}
@@ -3200,7 +3200,7 @@ job_with_workload_identity:
 
 **Related topics**:
 
-- [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation).
+- [Workload Identity Federation](https://docs.cloud.google.com/iam/docs/workload-identity-federation).
 - [Google Cloud IAM integration](../../integration/google_cloud_iam.md).
 
 ---
@@ -4434,7 +4434,7 @@ The publish path specified must be relative to the build root.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../policy/development_stages_support.md) [with a flag](../../administration/feature_flags/_index.md) named `pages_multiple_versions_setting`, disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../policy/development_stages_support.md) [with a feature flag](../../administration/feature_flags/_index.md) named `pages_multiple_versions_setting`, disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/422145) in GitLab 17.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/507423) to allow periods in GitLab 17.8.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/487161) in GitLab 17.9. Feature flag `pages_multiple_versions_setting` removed.
@@ -5051,7 +5051,7 @@ test:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.10 [with a flag](../../administration/feature_flags/_index.md) named `ci_retry_on_exit_codes`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.10 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_retry_on_exit_codes`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/452412) in GitLab 17.5. Feature flag `ci_retry_on_exit_codes` removed.
 
@@ -5369,6 +5369,64 @@ relative to `refs/heads/branch1` and the pipeline source is a merge request even
 
 ---
 
+##### `rules:changes:regexp`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236982) in GitLab 19.2.
+
+{{< /history >}}
+
+Use `rules:changes:regexp` to match changed file paths using a Ruby regular expression
+instead of glob patterns.
+
+`regexp:` and `paths:` are mutually exclusive. Use exactly one per `rules:changes` block.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Supported values**:
+
+- A Ruby regular expression string. Maximum length is 255 characters.
+  The pattern is matched against each changed file path.
+  The rule is satisfied if at least one path matches.
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+Variables in the pattern are expanded before the pattern is matched. The 255-character limit
+also applies to the expanded pattern.
+
+**Example of `rules:changes:regexp`**:
+
+```yaml
+backend-tests:
+  script: rspec
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        regexp: '\A(?!docs/).*'
+```
+
+In this example, `backend-tests` runs when at least one changed file is outside the `docs/` directory.
+
+**Additional details**:
+
+- The pattern matches any part of the path unless you anchor it. To match the full path,
+  anchor the pattern with `\A` and `\z`.
+- Anchor patterns with `\A` and `\z` instead of `^` and `$`. Git allows newlines in file paths,
+  and `^` and `$` match at newline boundaries. A pattern like `^(?!docs/)` can match a crafted
+  path that contains a newline, such as a file under `docs/` followed by a newline and another path.
+- Unlike `rules:if`, which uses RE2, `rules:changes:regexp` uses [Ruby's native regular expression engine](https://docs.ruby-lang.org/en/3.3/Regexp.html).
+- Lookahead and lookbehind are supported.
+- To prevent ReDoS attacks, the pattern is bounded by two timeouts. Each single-path match
+  has a 50 ms timeout, and evaluation across all paths has a 2-second total budget.
+  If either timeout is exceeded, the pipeline fails with a configuration error.
+- If the expanded pattern is longer than 255 characters, the pipeline fails with a
+  configuration error.
+- For performance reasons, if more than 50,000 files changed, the rule evaluates to `true`
+  without running the pattern.
+- You can combine `regexp:` with `compare_to:` to control which ref to compare against.
+
+---
+
 #### `rules:exists`
 
 {{< history >}}
@@ -5442,7 +5500,7 @@ In this example:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `ci_support_rules_exists_paths_and_project`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 16.11 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_support_rules_exists_paths_and_project`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 17.0. Feature flag `ci_support_rules_exists_paths_and_project` removed.
 
 {{< /history >}}
@@ -5483,7 +5541,7 @@ In this example, both jobs have the same behavior.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `ci_support_rules_exists_paths_and_project`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 16.11 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_support_rules_exists_paths_and_project`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 17.0. Feature flag `ci_support_rules_exists_paths_and_project` removed.
 
 {{< /history >}}
@@ -5513,6 +5571,63 @@ docker build:
 
 In this example, the `docker build` job is only included when the `Dockerfile` exists in
 the project `my-group/my-project` on the commit tagged with `v1.0.0`.
+
+---
+
+##### `rules:exists:regexp`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236982) in GitLab 19.2.
+
+{{< /history >}}
+
+Use `rules:exists:regexp` to match file paths in the repository using a Ruby regular expression
+instead of glob patterns.
+
+`regexp:` and `paths:` are mutually exclusive. Use exactly one per `rules:exists` block.
+
+**Keyword type**: Job keyword. You can use it as part of a job or an [`include`](#include).
+
+**Supported values**:
+
+- A Ruby regular expression string. Maximum length is 255 characters.
+  The pattern is matched against every file path in the repository.
+  The rule is satisfied if at least one path matches.
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+Variables in the pattern are expanded before the pattern is matched. The 255-character limit
+also applies to the expanded pattern.
+
+**Example of `rules:exists:regexp`**:
+
+```yaml
+run-if-go-files-exist:
+  script: go test ./...
+  rules:
+    - exists:
+        regexp: '\.go$'
+```
+
+In this example, the job runs if any `.go` file exists anywhere in the repository.
+
+**Additional details**:
+
+- The pattern matches any part of the path unless you anchor it. To match the full path,
+  anchor the pattern with `\A` and `\z`.
+- Anchor patterns with `\A` and `\z` instead of `^` and `$`. Git allows newlines in file paths,
+  and `^` and `$` match at newline boundaries. A pattern like `^(?!docs/)` can match a crafted
+  path that contains a newline, such as a file under `docs/` followed by a newline and another path.
+- Unlike `rules:if`, which uses RE2, `rules:exists:regexp` uses [Ruby's native regular expression engine](https://docs.ruby-lang.org/en/3.3/Regexp.html).
+- Lookahead and lookbehind are supported.
+- To prevent ReDoS attacks, the pattern is bounded by two timeouts. Each single-path match
+  has a 50 ms timeout, and evaluation across all paths has a 2-second total budget.
+  If either timeout is exceeded, the pipeline fails with a configuration error.
+- If the expanded pattern is longer than 255 characters, the pipeline fails with a
+  configuration error.
+- For performance reasons, if the repository contains more than 50,000 files, the rule
+  evaluates to `true` without running the pattern.
+- You can combine `regexp:` with `project:` and `ref:` to search in a different project.
 
 ---
 
@@ -5724,7 +5839,7 @@ job:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440487) in GitLab 17.3 [with a flag](../../administration/feature_flags/_index.md) named `pipeline_run_keyword`. Disabled by default. Requires GitLab Runner 17.1.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440487) in GitLab 17.3 [with a feature flag](../../administration/feature_flags/_index.md) named `pipeline_run_keyword`. Disabled by default. Requires GitLab Runner 17.1.
 - Feature flag `pipeline_run_keyword` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471925) in GitLab 17.5.
 
 {{< /history >}}
@@ -6050,7 +6165,7 @@ the job configuration takes precedence and the default configuration is not used
 > [!warning]
 > To enable inter-service networking, set `FF_NETWORK_PER_BUILD` to `true`.
 > Without this flag, services may not work properly. For more information, see
-> [feature flags](https://docs.gitlab.com/runner/configuration/feature-flags)
+> [feature flags](https://docs.gitlab.com/runner/configuration/feature-flags/)
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).

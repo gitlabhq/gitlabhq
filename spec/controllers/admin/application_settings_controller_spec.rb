@@ -150,7 +150,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       put :update, params: { application_setting: { password_authentication_enabled_for_git: "0" } }
 
       expect(response).to redirect_to(general_admin_application_settings_path)
-      expect(ApplicationSetting.current.password_authentication_enabled_for_git).to eq(false)
+      expect(ApplicationSetting.current.password_authentication_enabled_for_git).to be(false)
     end
 
     it 'updates the default_project_visibility for string value' do
@@ -213,7 +213,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       put :update, params: { application_setting: { kroki_formats_excalidraw: '1' } }
 
       expect(response).to redirect_to(general_admin_application_settings_path)
-      expect(ApplicationSetting.current.kroki_formats_excalidraw).to eq(true)
+      expect(ApplicationSetting.current.kroki_formats_excalidraw).to be(true)
     end
 
     it "updates default_branch_name setting" do
@@ -286,7 +286,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       put :update, params: { application_setting: { email_otp_enabled: '1' } }
 
       expect(response).to redirect_to(general_admin_application_settings_path)
-      expect(ApplicationSetting.current.email_otp_enabled).to eq(true)
+      expect(ApplicationSetting.current.email_otp_enabled).to be(true)
     end
 
     context "personal access token prefix settings" do
@@ -472,7 +472,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
         put :update, params: { application_setting: { invitation_flow_enforcement: true } }
 
         expect(response).to redirect_to(general_admin_application_settings_path)
-        expect(application_settings.reload.invitation_flow_enforcement).to eq(true)
+        expect(application_settings.reload.invitation_flow_enforcement).to be(true)
       end
     end
 

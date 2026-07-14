@@ -6,7 +6,7 @@ import { setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, n__, sprintf, formatNumber } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
-import { reportToSentry } from '~/ci/utils';
+import { buildFixPipelineContext, reportToSentry } from '~/ci/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -318,21 +318,11 @@ export default {
       return this.isFailed && this.pipelinePath && this.sourceBranch;
     },
     getAdditionalContext() {
-      return [
-        {
-          Category: 'pipeline',
-          Content: JSON.stringify({
-            source_branch: this.sourceBranch,
-            source: this.pipeline?.source || '',
-          }),
-        },
-        {
-          Category: 'merge_request',
-          Content: JSON.stringify({
-            url: this.paths.mergeRequestPath,
-          }),
-        },
-      ];
+      return buildFixPipelineContext({
+        source: this.pipeline?.source,
+        sourceBranch: this.sourceBranch,
+        mergeRequestPath: this.paths.mergeRequestPath,
+      });
     },
   },
   beforeDestroy() {

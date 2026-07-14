@@ -6,7 +6,7 @@ RSpec.describe Types::Namespaces::LinkPaths::ProjectNamespaceLinksType, feature_
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:user, freeze: false) { create(:user, :notification_email) }
+  let_it_be_with_reload(:user) { create(:user, :notification_email) }
 
   subject(:type) { described_class.resolve_type(namespace, {}) }
 

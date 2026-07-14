@@ -1178,7 +1178,7 @@ Configure the `cat-file` cache in the Gitaly configuration file.
 
 {{< history >}}
 
-- Displaying **Verified** badge for signed GitLab UI commits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218) in GitLab 16.3 [with a flag](../feature_flags/_index.md) named `gitaly_gpg_signing`. Disabled by default.
+- Displaying **Verified** badge for signed GitLab UI commits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218) in GitLab 16.3 [with a feature flag](../feature_flags/_index.md) named `gitaly_gpg_signing`. Disabled by default.
 - Verifying the signatures using multiple keys specified in `rotated_signing_keys` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6163) in GitLab 16.3.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6876) on GitLab Self-Managed and GitLab Dedicated in GitLab 17.0.
 
@@ -1516,11 +1516,11 @@ go_cloud_url = "azblob://<bucket>"
 
 Google Cloud storage (GCP) authenticates using Application Default Credentials. Set up Application Default Credentials on each Gitaly server using either:
 
-- The [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) command.
+- The [`gcloud auth application-default login`](https://docs.cloud.google.com/sdk/gcloud/reference/auth/application-default/login) command.
 - The `GOOGLE_APPLICATION_CREDENTIALS` environment variable. For self-compiled installations, set the environment
   variable outside of GitLab.
 
-For more information, see [Application Default Credentials](https://cloud.google.com/docs/authentication/provide-credentials-adc).
+For more information, see [Application Default Credentials](https://docs.cloud.google.com/docs/authentication/provide-credentials-adc).
 
 The destination bucket is configured using the `go_cloud_url` option.
 

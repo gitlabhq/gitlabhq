@@ -4,6 +4,7 @@ import { toNounSeriesText } from '~/lib/utils/grammar';
 import { s__, sprintf } from '~/locale';
 
 export default {
+  name: 'EmailParticipantsWarning',
   components: {
     GlSprintf,
     GlButton,

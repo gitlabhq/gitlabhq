@@ -4,6 +4,7 @@ import { settingsTabTitle, overridesTabTitle } from '~/integrations/constants';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 export default {
+  name: 'IntegrationTabs',
   components: {
     GlBadge,
     GlTabs,

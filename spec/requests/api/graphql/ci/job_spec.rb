@@ -17,7 +17,7 @@ RSpec.describe 'Query.project(fullPath).pipelines.job(id)', feature_category: :c
   let_it_be(:test_stage) { create(:ci_stage, pipeline: pipeline, project: project, name: 'test') }
 
   let_it_be(:job_1) { create(:ci_build, pipeline: pipeline, stage: 'prepare', name: 'Job 1') }
-  let_it_be(:job_2, freeze: false) { create(:ci_build, pipeline: pipeline, stage: 'test', name: 'Job 2') }
+  let_it_be_with_reload(:job_2) { create(:ci_build, pipeline: pipeline, stage: 'test', name: 'Job 2') }
   let_it_be(:job_3) { create(:ci_build, pipeline: pipeline, stage: 'test', name: 'Job 3') }
 
   let(:path_to_job) do

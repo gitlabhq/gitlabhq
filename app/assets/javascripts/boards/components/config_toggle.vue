@@ -5,6 +5,7 @@ import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 
 export default {
+  name: 'ConfigToggle',
   components: {
     GlButton,
   },
@@ -14,6 +15,7 @@ export default {
   },
   mixins: [Tracking.mixin()],
   inject: ['canAdminList'],
+  emits: ['showBoardModal'],
   computed: {
     buttonText() {
       return this.canAdminList ? s__('Boards|Configure board') : s__('Boards|Board configuration');

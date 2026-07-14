@@ -5,6 +5,7 @@ import { s__ } from '~/locale';
 import notesEventHub from '../event_hub';
 
 export default {
+  name: 'DiscussionFilterNote',
   i18n: {
     information: s__(
       "Notes|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options.",

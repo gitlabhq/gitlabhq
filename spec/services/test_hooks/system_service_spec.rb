@@ -6,7 +6,7 @@ RSpec.describe TestHooks::SystemService, feature_category: :code_testing do
   include AfterNextHelpers
 
   describe '#execute' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
 
     let(:hook)    { create(:system_hook) }
     let(:service) { described_class.new(hook, project.first_owner, trigger) }

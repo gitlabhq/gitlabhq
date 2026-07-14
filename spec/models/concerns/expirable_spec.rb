@@ -38,20 +38,20 @@ RSpec.describe Expirable do
   end
 
   describe '#expired?' do
-    it { expect(no_expire.expired?).to eq(false) }
-    it { expect(expire_later.expired?).to eq(false) }
-    it { expect(expired.expired?).to eq(true) }
+    it { expect(no_expire.expired?).to be(false) }
+    it { expect(expire_later.expired?).to be(false) }
+    it { expect(expired.expired?).to be(true) }
   end
 
   describe '#expires?' do
-    it { expect(no_expire.expires?).to eq(false) }
-    it { expect(expire_later.expires?).to eq(true) }
-    it { expect(expired.expires?).to eq(true) }
+    it { expect(no_expire.expires?).to be(false) }
+    it { expect(expire_later.expires?).to be(true) }
+    it { expect(expired.expires?).to be(true) }
   end
 
   describe '#expires_soon?' do
-    it { expect(no_expire.expires_soon?).to eq(false) }
-    it { expect(expire_later.expires_soon?).to eq(true) }
-    it { expect(expired.expires_soon?).to eq(true) }
+    it { expect(no_expire.expires_soon?).to be(false) }
+    it { expect(expire_later.expires_soon?).to be(true) }
+    it { expect(expired.expires_soon?).to be(true) }
   end
 end

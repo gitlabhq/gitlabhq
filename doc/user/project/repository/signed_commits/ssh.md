@@ -108,7 +108,7 @@ To sign a commit:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384473) in GitLab 18.3 [with a flag](../../../../administration/feature_flags/_index.md) named `render_ssh_signed_tags_verification_status`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384473) in GitLab 18.3 [with a feature flag](../../../../administration/feature_flags/_index.md) named `render_ssh_signed_tags_verification_status`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/561452) in GitLab 18.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/596049) in GitLab 19.1. Feature flag `render_ssh_signed_tags_verification_status` removed.
 

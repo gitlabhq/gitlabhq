@@ -32,8 +32,13 @@ module Gitlab
 
           # Applies the GranularScope directives to a type or mutation class.
           def authorize_granular_token(
-            permissions:, boundary_type: nil, boundary: nil, boundary_argument: nil,
-            boundaries: nil, traversal: nil)
+            permissions: nil, boundary_type: nil, boundary: nil, boundary_argument: nil,
+            boundaries: nil, traversal: nil, skip_reason: nil)
+            other_args = { permissions:, boundary_type:, boundary:, boundary_argument:, boundaries:, traversal: }
+            return apply_skip_directive(skip_reason, other_args) if skip_reason
+
+            raise ArgumentError, 'missing keyword: :permissions' if permissions.nil?
+
             validate_no_traversal!(traversal)
             validate_boundaries!(boundaries) if boundaries
 
@@ -51,6 +56,21 @@ module Gitlab
           end
 
           private
+
+          def apply_skip_directive(reason, other_args)
+            validate_skip_authorization!(other_args)
+
+            directive Directives::Authz::GranularScope, skip_reason: reason.to_s
+          end
+
+          def validate_skip_authorization!(other_args)
+            provided = other_args.select { |_, value| value }.keys
+            return if provided.empty?
+
+            raise ArgumentError,
+              "`skip_reason:` cannot be combined with: #{provided.map { |k| "#{k}:" }.join(', ')}. " \
+                "A type is either authorized directly or intentionally skipped."
+          end
 
           def validate_no_traversal!(traversal)
             return unless traversal

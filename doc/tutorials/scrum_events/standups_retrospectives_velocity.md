@@ -229,7 +229,7 @@ The first example is a team with high volatility over the last nine sprints:
 
 Assuming the team has 200 points left in their backlog, we can use their current velocity and volatility to predict the worst, expected, and best-case scenarios for how many more sprints until they complete the backlog.
 
-![high volatility chart](img/high_volatility_v17_3.png)
+![High volatility forecast chart showing wide gap between best and worst case scenarios](img/high_volatility_v17_3.png)
 
 The team will deliver the backlog:
 
@@ -261,7 +261,7 @@ Like the previous team, this one had the same ending velocity but a much lower v
 With the same backlog size of 200 story points, this team has much more confidence in communicating
 a more realistic and predictable timeline for completing the backlog:
 
-![low volatility chart](img/low_volatility_v17_3.png)
+![Low volatility forecast chart showing narrow gap between scenarios](img/low_volatility_v17_3.png)
 
 Both teams completed the same number of story points.
 However, the team with the lower volatility can communicate a delivery window of 28 to 32 sprints

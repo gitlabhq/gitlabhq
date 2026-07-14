@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
   let_it_be(:bulk_import) { build_stubbed(:bulk_import, :with_configuration) }
-  let_it_be(:entity, freeze: false) { build_stubbed(:bulk_import_entity, :with_portable, bulk_import: bulk_import) }
-  let_it_be(:context, freeze: false) do
+  let_it_be(:entity) { build_stubbed(:bulk_import_entity, :with_portable, bulk_import: bulk_import) }
+  let_it_be_with_reload(:context) do
     BulkImports::Pipeline::Context.new(
       build_stubbed(:bulk_import_tracker, entity: entity),
       batch_number: 1
@@ -51,8 +51,8 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
     end
 
     context 'when the import is offline' do
-      let_it_be(:offline_bulk_import, freeze: false) { create(:bulk_import, source_type: :offline_export) }
-      let_it_be(:entity, freeze: false) { create(:bulk_import_entity, bulk_import: offline_bulk_import) }
+      let_it_be_with_reload(:offline_bulk_import) { create(:bulk_import, source_type: :offline_export) }
+      let_it_be_with_reload(:entity) { create(:bulk_import_entity, bulk_import: offline_bulk_import) }
       let_it_be(:entity_prefix) { 'group_123' }
       let_it_be(:offline_configuration) do
         create(
@@ -62,7 +62,7 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
         )
       end
 
-      let_it_be(:context, freeze: false) do
+      let_it_be_with_reload(:context) do
         BulkImports::Pipeline::Context.new(
           create(:bulk_import_tracker, entity: entity),
           batch_number: 1

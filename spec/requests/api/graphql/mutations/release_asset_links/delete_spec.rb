@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Deletes a release asset link', feature_category: :release_orchestration do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
-  let_it_be(:release, freeze: false) { create(:release, project: project) }
+  let_it_be_with_reload(:project) { create(:project, :private, :repository) }
+  let_it_be_with_reload(:release) { create(:release, project: project) }
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
   let_it_be(:release_link) { create(:release_link, release: release) }
 

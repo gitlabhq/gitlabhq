@@ -5,10 +5,9 @@ require 'spec_helper'
 RSpec.describe Groups::DependencyProxiesController, feature_category: :virtual_registry do
   let_it_be(:group) { create(:group) }
   let_it_be_with_reload(:dependency_proxy_group_setting) { create(:dependency_proxy_group_setting, group: group) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, owner_of: group) }
 
   before do
-    group.add_owner(user)
     sign_in(user)
   end
 

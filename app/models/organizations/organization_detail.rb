@@ -33,7 +33,8 @@ module Organizations
       hard_deletion_error: :string,
       soft_deletion_scheduled_by_user_id: :integer,
       confirmed_at: :datetime,
-      confirmed_by_user_id: :integer
+      confirmed_by_user_id: :integer,
+      read_only_reason: :string
 
     def uploads_sharding_key
       { organization_id: organization_id }

@@ -4,6 +4,7 @@ import { parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
 import { sprintf, __ } from '~/locale';
 
 export default {
+  name: 'IssueTimeEstimate',
   i18n: {
     timeEstimate: __('Time estimate'),
   },

@@ -1,23 +1,19 @@
 <script>
-import { GlSprintf } from '@gitlab/ui';
-import {
-  getStartLineNumber,
-  getEndLineNumber,
-  getLineClasses,
-} from '~/notes/components/multiline_comment_utils';
+import { getStartLineNumber, getEndLineNumber } from '~/notes/components/multiline_comment_utils';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import DraftNote from './draft_note.vue';
 import SystemNote from './system_note.vue';
 import NoteableNote from './noteable_note.vue';
+import LineRangeHeadline from './line_range_headline.vue';
 
 export default {
   name: 'DiscussionNotes',
   components: {
-    GlSprintf,
     DraftNote,
     SystemNote,
     NoteableNote,
     ToggleRepliesWidget,
+    LineRangeHeadline,
   },
   inject: {
     userPermissions: {
@@ -66,10 +62,10 @@ export default {
     },
   },
   emits: [
-    'cancelEditing',
+    'cancel-editing',
     'noteEdited',
     'resolve',
-    'startEditing',
+    'start-editing',
     'startReplying',
     'toggleDiscussionReplies',
   ],
@@ -89,20 +85,12 @@ export default {
     lineRange() {
       return this.firstNote.position?.line_range;
     },
-    startLineNumber() {
-      return getStartLineNumber(this.lineRange);
-    },
-    endLineNumber() {
-      return getEndLineNumber(this.lineRange);
-    },
     showMultiLineComment() {
-      if (!this.startLineNumber || !this.endLineNumber) return false;
+      const startLine = getStartLineNumber(this.lineRange);
+      const endLine = getEndLineNumber(this.lineRange);
 
-      return this.startLineNumber !== this.endLineNumber;
+      return Boolean(startLine && endLine && startLine !== endLine);
     },
-  },
-  methods: {
-    getLineClasses,
   },
 };
 </script>
@@ -116,24 +104,18 @@ export default {
       :timeline-layout="timelineLayout"
       :show-reply-button="userPermissions.can_create_note && !individual"
       :is-last-discussion="isLastDiscussion"
+      is-first-note
       :can-resolve="canResolve"
       :is-resolved="isResolved"
       :is-resolving="isResolving"
       @resolve="$emit('resolve')"
       @noteEdited="$emit('noteEdited', { note: firstNote, value: $event })"
       @startReplying="$emit('startReplying')"
-      @startEditing="$emit('startEditing', firstNote)"
-      @cancelEditing="$emit('cancelEditing', firstNote)"
+      @start-editing="$emit('start-editing', firstNote)"
+      @cancel-editing="$emit('cancel-editing', firstNote)"
     >
       <template v-if="showMultiLineComment" #headline>
-        <gl-sprintf :message="__('Comment on lines %{startLine} to %{endLine}')">
-          <template #startLine>
-            <span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>
-          </template>
-          <template #endLine>
-            <span :class="getLineClasses(endLineNumber)">{{ endLineNumber }}</span>
-          </template>
-        </gl-sprintf>
+        <line-range-headline :line-range="lineRange" />
       </template>
       <template #avatar-badge>
         <slot name="avatar-badge"></slot>
@@ -167,8 +149,8 @@ export default {
                   :note="note"
                   :is-last-discussion="isLastDiscussion"
                   @noteEdited="$emit('noteEdited', { note, value: $event })"
-                  @startEditing="$emit('startEditing', note)"
-                  @cancelEditing="$emit('cancelEditing', note)"
+                  @start-editing="$emit('start-editing', note)"
+                  @cancel-editing="$emit('cancel-editing', note)"
                 />
               </template>
               <slot name="footer" :has-replies="hasReplies"></slot>

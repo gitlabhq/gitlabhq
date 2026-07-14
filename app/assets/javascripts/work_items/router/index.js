@@ -9,6 +9,7 @@ Vue.use(VueRouter);
 
 export function createRouter({ fullPath, defaultBranch, routerPath }) {
   if (defaultBranch) {
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- not ideal but acceptable in this case as there is no JavaScript path helper available
     window.gl.webIDEPath = webIDEUrl(joinPaths('/', fullPath, 'edit/', defaultBranch, '/-/'));
   }
 

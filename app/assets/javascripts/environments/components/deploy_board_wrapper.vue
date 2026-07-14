@@ -79,7 +79,7 @@ export default {
         :is-empty="isEmpty"
         :environment="environment"
         class="!gl-bg-inherit"
-        @changeCanaryWeight="changeCanaryWeight"
+        @change-canary-weight="changeCanaryWeight"
       />
     </gl-collapse>
   </div>

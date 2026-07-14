@@ -14,7 +14,9 @@ import {
   EVENT_TYPE_COMMENTED,
   EVENT_TYPE_UPDATED,
   EVENT_TYPE_DESTROYED,
+  VARIANT_DEFAULT,
 } from '../constants';
+import { isValidVariant } from '../utils';
 import ContributionEventApproved from './contribution_event/contribution_event_approved.vue';
 import ContributionEventExpired from './contribution_event/contribution_event_expired.vue';
 import ContributionEventJoined from './contribution_event/contribution_event_joined.vue';
@@ -118,6 +120,12 @@ export default {
       type: Array,
       required: true,
     },
+    variant: {
+      type: String,
+      required: false,
+      default: VARIANT_DEFAULT,
+      validator: isValidVariant,
+    },
   },
   methods: {
     eventComponent(action) {
@@ -170,12 +178,13 @@ export default {
 </script>
 
 <template>
-  <ul class="gl-list-none gl-p-0">
+  <ul class="contribution-events gl-flex gl-list-none gl-flex-col gl-p-0">
     <component
       :is="eventComponent(event.action)"
       v-for="(event, index) in events"
       :key="index"
       :event="event"
+      :variant="variant"
     />
   </ul>
 </template>

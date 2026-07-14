@@ -64,6 +64,41 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
       it_behaves_like 'fails to transfer work item', 'Unable to clone. Cloning \'Task\' is not supported.'
     end
 
+    context 'with target_work_item_type_id parameter' do
+      let(:incident_type) { build(:work_item_system_defined_type, :incident) }
+      let(:service) do
+        described_class.new(
+          work_item: original_work_item,
+          target_namespace: target_namespace,
+          current_user: current_user,
+          params: { target_work_item_type_id: target_work_item_type_id }
+        )
+      end
+
+      context 'when the type id resolves in the target namespace' do
+        let(:target_work_item_type_id) { incident_type.id }
+
+        it 'clones the work item using the target type', :aggregate_failures do
+          response = service.execute
+          new_work_item = response[:work_item]
+
+          expect(response).to be_success
+          expect(new_work_item.work_item_type_id).to eq(incident_type.id)
+        end
+      end
+
+      context 'when the type id does not resolve in the target namespace' do
+        let(:target_work_item_type_id) { non_existing_record_id }
+
+        it_behaves_like 'fails to transfer work item',
+          'Unable to clone. The selected work item type is not available in the target namespace.'
+
+        it 'does not create a new work item' do
+          expect { service.execute }.not_to change { WorkItem.count }
+        end
+      end
+    end
+
     context 'when cloning work item raises an error' do
       let(:error_message) { 'Something went wrong' }
 

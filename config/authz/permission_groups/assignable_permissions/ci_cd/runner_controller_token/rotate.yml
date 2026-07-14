@@ -1,0 +1,9 @@
+---
+name: rotate_runner_controller_token
+description: Grants the ability to rotate runner controller tokens
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - rotate_runner_controller_token

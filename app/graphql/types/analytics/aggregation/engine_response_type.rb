@@ -15,6 +15,8 @@ module Types
               description "Response for `#{types_prefix}` aggregation engine"
               connection_type_class Types::Analytics::Aggregation::EngineResponseConnectionType
 
+              authorize_granular_token skip_reason: :parent_authorizes if graphql_context[:granular_authorization_opts]
+
               field :dimensions,
                 Types::Analytics::Aggregation::EngineResponseDimensionsType.build(engine, **graphql_context),
                 resolver_method: :object,

@@ -50,7 +50,7 @@ RSpec.describe 'Querying for import source users', feature_category: :importers 
       end
 
       it 'does not return import source users' do
-        expect(graphql_data.dig('namespace', 'importSourceUsers')).to eq(nil)
+        expect(graphql_data.dig('namespace', 'importSourceUsers')).to be_nil
       end
     end
   end
@@ -76,7 +76,7 @@ RSpec.describe 'Querying for import source users', feature_category: :importers 
       let(:current_user) { create(:user) }
 
       it 'does not return import source users' do
-        expect(graphql_data['namespace']).to eq(nil)
+        expect(graphql_data['namespace']).to be_nil
       end
     end
   end

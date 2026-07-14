@@ -217,7 +217,7 @@ describe('Resolver', () => {
             transformError: errorUtil === 'transform',
           });
 
-          findPagination().vm.$emit('loadMore');
+          findPagination().vm.$emit('load-more');
           return waitForPromises();
         });
 
@@ -250,7 +250,7 @@ describe('Resolver', () => {
           ...MOCK_ISSUES_PAGE_2,
         });
 
-        findPagination().vm.$emit('loadMore');
+        findPagination().vm.$emit('load-more');
         return waitForPromises();
       });
 
@@ -355,7 +355,7 @@ describe('Resolver', () => {
         );
       });
 
-      it('preserves an explicit limit across loadMore calls', async () => {
+      it('preserves an explicit limit across load-more calls', async () => {
         await setup({ display, limit: 5 });
         execute.mockClear();
         execute.mockResolvedValue({
@@ -363,7 +363,7 @@ describe('Resolver', () => {
           ...MOCK_ISSUES_PAGE_2,
         });
 
-        findPagination().vm.$emit('loadMore');
+        findPagination().vm.$emit('load-more');
         await waitForPromises();
 
         expect(execute).toHaveBeenCalledWith(

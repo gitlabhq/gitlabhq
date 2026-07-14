@@ -5,20 +5,10 @@
 # If it turns out that a method you are attempting to remove is in fact in use,
 #   remove it from this file and add it to `excluded_methods.yml`.
 #
-ee/app/models/cloud_connector/keys.rb:
-  - create_new_key!
-  - trim!
-  - truncated_pem
-ee/app/models/concerns/geo/verifiable_replicator.rb:
-  - secondary_checksum
-ee/app/models/concerns/product_analytics_helpers.rb:
-  - product_analytics_funnels
 ee/app/models/concerns/security/pipeline_execution_schedule_policy.rb:
   - active_pipeline_execution_schedule_policies
 ee/app/models/concerns/security/scan_result_policy.rb:
   - applicable_scan_result_policies_with_real_index
-ee/app/models/dast_site_profile.rb:
-  - scan_file_path_or_dast_site_url
 ee/app/models/ee/ci/build.rb:
   - has_artifact?
   - collect_license_scanning_reports!
@@ -37,8 +27,6 @@ ee/app/models/ee/group.rb:
   - human_ldap_access
   - seat_overage?
   - count_within_namespaces
-ee/app/models/ee/group_member.rb:
-  - provisioned_by_this_group?
 ee/app/models/ee/namespace.rb:
   - old_path_with_namespace_for
   - default_plan?
@@ -50,8 +38,6 @@ ee/app/models/ee/project.rb:
   - search_by_visibility
   - group_ldap_synced?
   - upstream_projects_count
-ee/app/models/ee/project_member.rb:
-  - provisioned_by_this_group?
 ee/app/models/ee/user.rb:
   - ci_namespace_mirrors_permitted_to
 ee/app/models/ee/user_preference.rb:
@@ -85,13 +71,11 @@ ee/app/models/security/orchestration_policy_configuration.rb:
   - compliance_framework_ids_with_policy_index
   - experiment_configuration
 app/helpers/integrations_helper.rb:
-  - integration_issue_type
   - integration_todo_target_type
 app/helpers/routing/groups/members_helper.rb:
   - approve_access_request_group_member_path
   - resend_invite_group_member_path
 app/helpers/routing/pipeline_schedules_helper.rb:
-  - edit_pipeline_schedule_path
   - play_pipeline_schedule_path
 app/helpers/routing/projects/members_helper.rb:
   - request_access_project_members_path
@@ -108,7 +92,6 @@ app/models/ci/job_token/allowlist.rb:
   - group_link_traversal_ids
   - bulk_add_groups!
 app/models/ci/pipeline.rb:
-  - has_archive_artifacts?
   - has_erasable_artifacts?
 app/models/ci/runner.rb:
   - belongs_to_one_project?
@@ -122,10 +105,8 @@ app/models/clusters/concerns/application_status.rb:
   - updateable?
 app/models/clusters/concerns/application_version.rb:
   - update_available?
-app/models/commit.rb:
-  - touch_later
-app/models/concerns/awardable.rb:
-  - user_authored?
+app/models/concerns/ci/metadatable.rb:
+  - degenerate!
 app/models/concerns/counter_attribute.rb:
   - update_counters_with_lease
 app/models/concerns/forced_email_confirmation.rb:
@@ -137,7 +118,6 @@ app/models/concerns/integrations/base/harbor.rb:
 app/models/concerns/integrations/base/integration.rb:
   - instance_exists_for?
 app/models/concerns/mentionable.rb:
-  - referenced_projects
   - referenced_group_users
 app/models/concerns/milestoneish.rb:
   - total_merge_requests_count
@@ -176,8 +156,6 @@ app/models/import/source_user_placeholder_reference.rb:
 app/models/issue.rb:
   - previous_updated_at
   - email_participants_emails
-app/models/jira_import_state.rb:
-  - non_initial?
 app/models/namespace.rb:
   - any_project_with_pages_deployed?
   - saved_change_to_parent?
@@ -188,12 +166,8 @@ app/models/project.rb:
   - issue_exists?
   - enable_ci
   - valid_runners_token?
-app/models/user.rb:
-  - legacy_otp_secret
 ee/app/models/ai/duo_code_review.rb:
   - classic?
 ee/app/models/concerns/ai/user_authorizable.rb:
   - any_group_with_ai_available?
-ee/app/helpers/ee/projects_helper.rb:
-  - paid_duo_tier_for_project
 

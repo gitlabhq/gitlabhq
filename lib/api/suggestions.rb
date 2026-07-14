@@ -17,8 +17,10 @@ module API
         requires :id, type: Integer, desc: 'The ID of the suggestion'
         optional :commit_message, type: String, desc: "A custom commit message to use instead of the default generated message or the project's default message"
       end
+      route_setting :authorization, permissions: :apply_suggestion,
+        boundary: -> { find_suggestion&.note&.project }, boundary_type: :project
       put ':id/apply', urgency: :low do
-        suggestion = Suggestion.find_by_id(params[:id])
+        suggestion = find_suggestion
 
         if suggestion
           apply_suggestions(suggestion, current_user, params[:commit_message])
@@ -37,10 +39,12 @@ module API
         requires :ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: "An array of the suggestion IDs"
         optional :commit_message, type: String, desc: "A custom commit message to use instead of the default generated message or the project's default message"
       end
+      route_setting :authorization, permissions: :apply_suggestion,
+        boundary: -> { find_suggestions.first&.note&.project }, boundary_type: :project
       put 'batch_apply', urgency: :low do
         ids = params[:ids]
 
-        suggestions = Suggestion.id_in(ids)
+        suggestions = find_suggestions
 
         if suggestions.size == ids.length
           apply_suggestions(suggestions, current_user, params[:commit_message])
@@ -51,6 +55,14 @@ module API
     end
 
     helpers do
+      def find_suggestion
+        @suggestion ||= Suggestion.find_by_id(params[:id])
+      end
+
+      def find_suggestions
+        @suggestions ||= Suggestion.id_in(params[:ids]).to_a
+      end
+
       def apply_suggestions(suggestions, current_user, message)
         authorize_suggestions(*suggestions)
 

@@ -51,6 +51,7 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findSelectedNamespaces = () => wrapper.findByTestId('selected-namespaces');
   const findRemoveButtons = () => wrapper.findAllByTestId('remove-namespace');
+  const findDescendantCounts = () => wrapper.findByTestId('descendant-counts');
 
   const waitForQuery = async () => {
     jest.advanceTimersByTime(DEBOUNCE_DELAY);
@@ -224,6 +225,18 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
 
       expect(findSelectedNamespaces().exists()).toBe(true);
       expect(findSelectedNamespaces().text()).toContain('test-group-1');
+    });
+
+    it('does not render descendant counts when they are unavailable', () => {
+      createComponent({ props: { value } });
+
+      expect(findDescendantCounts().exists()).toBe(false);
+    });
+
+    it('renders descendant counts when the pre-filled group provides them', () => {
+      createComponent({ props: { value: [mockGroups[0]] } });
+
+      expect(findDescendantCounts().text()).toBe('2 subgroups, 5 projects');
     });
   });
 

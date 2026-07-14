@@ -5,6 +5,7 @@ import LogLine from './log_line.vue';
 import LogsTopBar from './logs_top_bar.vue';
 
 export default {
+  name: 'LogsViewer',
   components: {
     LogLine,
     LogsTopBar,

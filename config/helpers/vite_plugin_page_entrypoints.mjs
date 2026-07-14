@@ -21,7 +21,7 @@ const actualDirRoot = path.resolve(__dirname, '../../app/assets/javascripts/');
  */
 export function PageEntrypointsPlugin() {
   const comment = '/* this is a virtual module used by Vite, it exists only in dev mode */\n';
-  const entrypoints = Object.entries(generateEntries()).reduce((acc, [entryName, imports]) => {
+  const entrypoints = Object.entries(generateEntries().entries).reduce((acc, [entryName, imports]) => {
     const modulePath = imports[imports.length - 1];
     const importPath = modulePath.startsWith('./') ? `~/${modulePath.substring(2)}` : modulePath;
     acc[`${entryName}.js`] = {

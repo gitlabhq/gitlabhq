@@ -23,6 +23,67 @@ RSpec.describe BulkImports::Logger, feature_category: :importers do
     end
   end
 
+  describe 'importer tag' do
+    subject(:importer) do
+      output = logger.format_message('INFO', Time.zone.now, 'test', 'Hello world')
+      Gitlab::Json.parse(output)['importer']
+    end
+
+    context 'without an entity' do
+      let(:logger) { described_class.new('/dev/null') }
+
+      it 'defaults to gitlab_migration' do
+        expect(importer).to eq('gitlab_migration')
+      end
+    end
+
+    context 'with a direct transfer entity' do
+      let(:logger) { described_class.new('/dev/null').with_entity(entity) }
+      let(:entity) { build(:bulk_import_entity, bulk_import: build(:bulk_import)) }
+
+      it 'tags the entry as gitlab_migration' do
+        expect(importer).to eq('gitlab_migration')
+      end
+    end
+
+    context 'with an offline transfer entity' do
+      let(:logger) { described_class.new('/dev/null').with_entity(entity) }
+      let(:entity) { build(:bulk_import_entity, bulk_import: build(:bulk_import, :offline)) }
+
+      it 'tags the entry as offline_transfer' do
+        expect(importer).to eq('offline_transfer')
+      end
+    end
+
+    context 'with a direct transfer bulk import' do
+      let(:logger) { described_class.new('/dev/null').with_bulk_import(bulk_import) }
+      let(:bulk_import) { build(:bulk_import) }
+
+      it 'tags the entry as gitlab_migration' do
+        expect(importer).to eq('gitlab_migration')
+      end
+    end
+
+    context 'with an offline transfer bulk import' do
+      let(:logger) { described_class.new('/dev/null').with_bulk_import(bulk_import) }
+      let(:bulk_import) { build(:bulk_import, :offline) }
+
+      it 'tags the entry as offline_transfer' do
+        expect(importer).to eq('offline_transfer')
+      end
+    end
+
+    context 'with both an entity and a bulk import' do
+      let(:logger) { described_class.new('/dev/null').with_entity(entity).with_bulk_import(bulk_import) }
+      let(:entity) { build(:bulk_import_entity, bulk_import: build(:bulk_import, :offline)) }
+      let(:bulk_import) { build(:bulk_import) }
+
+      it "prefers the entity's bulk import over the one set via with_bulk_import" do
+        expect(importer).to eq('offline_transfer')
+      end
+    end
+  end
+
   describe '#with_tracker' do
     subject(:logger) { described_class.new('/dev/null').with_tracker(tracker) }
 

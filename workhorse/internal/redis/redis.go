@@ -285,6 +285,9 @@ func configureRedis(cfg *config.RedisConfig) (*redis.Client, error) {
 	}
 
 	opt.DB = getOrDefault(cfg.DB, 0)
+	if cfg.Username != "" {
+		opt.Username = cfg.Username
+	}
 	if cfg.Password != "" {
 		opt.Password = cfg.Password
 	}
@@ -333,6 +336,7 @@ func configureSentinel(cfg *config.Config) (*redis.Client, error) {
 	client := redis.NewFailoverClient(&redis.FailoverOptions{
 		MasterName:       redisCfg.SentinelMaster,
 		SentinelAddrs:    options.Sentinels,
+		Username:         redisCfg.Username,
 		Password:         redisCfg.Password,
 		SentinelUsername: options.SentinelUsername,
 		SentinelPassword: options.SentinelPassword,

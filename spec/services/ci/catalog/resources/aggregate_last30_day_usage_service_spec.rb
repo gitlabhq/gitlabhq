@@ -44,18 +44,39 @@ RSpec.describe Ci::Catalog::Resources::AggregateLast30DayUsageService,
         service.execute
       end
 
-      it 'updates resource usage counts' do
-        # Should count 3 component usages:
-        # - project1 + component_a = 1
-        # - project1 + component_b = 1
-        # - project2 + component_a = 1
-        # Total = 3
-        expect(resource.reload.last_30_day_usage_count).to eq(3)
+      it 'updates resource usage counts with distinct projects' do
+        # Should count 2 distinct projects:
+        # - project1 uses component_a and component_b (counted once)
+        # - project2 uses component_a
+        # Total = 2
+        expect(resource.reload.last_30_day_usage_count).to eq(2)
       end
 
-      it 'updates component usage counts' do
+      it 'updates component usage counts', :aggregate_failures do
         expect(component_a.reload.last_30_day_usage_count).to eq(2)  # used by project1 and project2 in last 30 days
         expect(component_b.reload.last_30_day_usage_count).to eq(1)  # used by project1 only in last 30 days
+      end
+    end
+
+    context 'when a project uses multiple components of the same resource' do
+      before do
+        # project1 uses both component_a and component_b of the same resource.
+        create(:catalog_resource_component_last_usage,
+          component: component_a,
+          used_by_project_id: project1.id,
+          last_used_date: 10.days.ago.to_date
+        )
+        create(:catalog_resource_component_last_usage,
+          component: component_b,
+          used_by_project_id: project1.id,
+          last_used_date: 5.days.ago.to_date
+        )
+
+        service.execute
+      end
+
+      it 'counts the project only once for the resource' do
+        expect(resource.reload.last_30_day_usage_count).to eq(1)
       end
     end
 

@@ -101,7 +101,7 @@ describe('TodosEmptyState', () => {
     });
 
     it('uses the correct illustration', () => {
-      expect(wrapper.findComponent(GlEmptyState).props('svgPath')).toBe(emptyTodosSvg);
+      expect(wrapper.findComponent(GlEmptyState).props('svgPath')).toBe(emptyTodosAllDoneSvg);
     });
   });
 

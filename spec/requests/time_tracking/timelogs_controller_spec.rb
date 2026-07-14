@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe TimeTracking::TimelogsController, feature_category: :team_planning do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   describe 'GET #index' do
     subject { get timelogs_path }

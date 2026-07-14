@@ -62,6 +62,20 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
     merge_request.update!(assignees: [])
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_merge_request do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(
+        :merge_request_set_assignees,
+        { project_path: project.full_path, iid: merge_request.iid.to_s }.merge(input),
+        'errors'
+      )
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'returns an error if the user is not allowed to update the merge request' do
     post_graphql_mutation(mutation, current_user: create(:user))
 
@@ -70,7 +84,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
 
   context 'when the current user does not have permission to add assignees' do
     let(:current_user) { create(:user) }
-    let(:db_query_limit) { 33 }
+    let(:db_query_limit) { 37 }
 
     it 'does not change the assignees' do
       project.add_guest(current_user)

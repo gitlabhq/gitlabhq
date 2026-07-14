@@ -3,7 +3,7 @@
 module API
   module Entities
     class ClusterGroup < Entities::Cluster
-      expose :group, using: Entities::BasicGroupDetails
+      expose :group, using: ::API::Entities::BasicGroupDetails
     end
   end
 end

@@ -2,10 +2,11 @@ import '~/webpack';
 
 import setConfigs from '@gitlab/ui/src/config';
 import Vue from 'vue';
+import { pinia } from '~/pinia/instance';
 import Translate from '~/vue_shared/translate';
 
 import JiraConnectApp from './components/app.vue';
-import createStore from './store';
+import { useJiraConnectSubscriptions } from './store';
 import { sizeToParent } from './utils';
 
 export function initJiraConnect() {
@@ -27,12 +28,12 @@ export function initJiraConnect() {
   } = el.dataset;
   sizeToParent();
 
-  const store = createStore({ subscriptions: JSON.parse(subscriptions) });
+  useJiraConnectSubscriptions(pinia).$patch({ subscriptions: JSON.parse(subscriptions) });
 
   return new Vue({
     el,
     name: 'JiraConnectAppRoot',
-    store,
+    pinia,
     provide: {
       groupsPath,
       subscriptionsPath,

@@ -1,12 +1,8 @@
-- artifacts_endpoint_placeholder = ':pipeline_artifacts_id'
-
 = javascript_tag do
   :plain
     window.gl = window.gl || {};
     window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget', issues_links: true)}
 
-    window.gl.mrWidgetData.artifacts_endpoint = '#{downloadable_artifacts_project_pipeline_path(@project, artifacts_endpoint_placeholder, format: :json)}';
-    window.gl.mrWidgetData.artifacts_endpoint_placeholder = '#{artifacts_endpoint_placeholder}';
     window.gl.mrWidgetData.pipeline_etag = '#{graphql_etag_pipeline_sha_path(@merge_request.diff_head_sha)}';
     window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge.md")}';
     window.gl.mrWidgetData.ci_troubleshooting_docs_path = '#{help_page_path('ci/debugging.md')}';

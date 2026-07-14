@@ -18,19 +18,19 @@ RSpec.describe 'Projects > Files > User browses LFS files', feature_category: :s
     end
 
     it 'is possible to see raw content of LFS pointer' do
-      click_link 'files'
+      within_testid('file-tree-table') { click_link 'files' }
 
       page.within('.repo-breadcrumb') do
         expect(page).to have_link('files')
       end
 
-      click_link 'lfs'
+      within_testid('file-tree-table') { click_link 'lfs' }
 
       page.within('.repo-breadcrumb') do
         expect(page).to have_link('lfs')
       end
 
-      click_link 'lfs_object.iso'
+      within_testid('file-tree-table') { click_link 'lfs_object.iso' }
 
       expect(page).to have_content 'version https://git-lfs.github.com/spec/v1'
       expect(page).to have_content 'oid sha256:91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897'
@@ -47,14 +47,14 @@ RSpec.describe 'Projects > Files > User browses LFS files', feature_category: :s
     end
 
     it 'shows an LFS object' do
-      click_link('files')
+      within_testid('file-tree-table') { click_link('files') }
 
       page.within('.repo-breadcrumb') do
         expect(page).to have_link('files')
       end
 
-      click_link('lfs')
-      click_link('lfs_object.iso')
+      within_testid('file-tree-table') { click_link('lfs') }
+      within_testid('file-tree-table') { click_link('lfs_object.iso') }
 
       expect(page).to have_content('Download (1.50 MiB)')
       expect(page).not_to have_content('version https://git-lfs.github.com/spec/v1')

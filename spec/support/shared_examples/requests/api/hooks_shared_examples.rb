@@ -1092,6 +1092,35 @@ RSpec.shared_examples 'resend web-hook event endpoint' do
     end
   end
 
+  context 'when the web hook log is older than 7 days' do
+    let_it_be(:log) do
+      create(:web_hook_log, web_hook: hook, response_status: '404', created_at: 8.days.ago)
+    end
+
+    it 'logs the stale access' do
+      expect_next_instance_of(Gitlab::WebHooks::Logger) do |logger|
+        expect(logger).to receive(:info).with(
+          hash_including(
+            class: Gitlab::WebHooks::Logger.name,
+            event: Gitlab::WebHooks::Logger::STALE_LOG_ACCESS_EVENT,
+            message: Gitlab::WebHooks::Logger::STALE_LOG_ACCESS_MESSAGE,
+            hook_id: hook.id, web_hook_log_id: log.id, action: 'retry', interface: 'api', user_id: user.id
+          )
+        )
+      end
+
+      post api("#{hook_uri}/events/#{log.id}/resend", user, admin_mode: user.admin?), params: {}
+    end
+  end
+
+  context 'when the web hook log is within the last 7 days' do
+    it 'does not log' do
+      expect(Gitlab::WebHooks::Logger).not_to receive(:build)
+
+      post api("#{hook_uri}/events/#{log.id}/resend", user, admin_mode: user.admin?), params: {}
+    end
+  end
+
   it_behaves_like 'authorizing granular token permissions', :resend_webhook_event do
     let(:boundary_object) { resource }
     let(:request) { post api("#{hook_uri}/events/#{log.id}/resend", personal_access_token: pat) }

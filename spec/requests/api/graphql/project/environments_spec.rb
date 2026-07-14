@@ -32,7 +32,7 @@ RSpec.describe 'Project Environments query', feature_category: :continuous_deliv
 
   subject { post_graphql(query, current_user: user) }
 
-  it_behaves_like 'authorizing granular token permissions for GraphQL', :read_environment do
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_environment] do
     let(:boundary_object) { project }
     let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
   end
@@ -50,7 +50,7 @@ RSpec.describe 'Project Environments query', feature_category: :continuous_deliv
       )
     end
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_environment do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_environment] do
       let(:boundary_object) { project }
       let(:request) { post_graphql(environments_query, token: { personal_access_token: pat }) }
     end
@@ -140,9 +140,9 @@ RSpec.describe 'Project Environments query', feature_category: :continuous_deliv
       subject
 
       permission_data = graphql_data.dig('project', 'environment', 'userPermissions')
-      expect(permission_data['updateEnvironment']).to eq(true)
-      expect(permission_data['destroyEnvironment']).to eq(false)
-      expect(permission_data['stopEnvironment']).to eq(true)
+      expect(permission_data['updateEnvironment']).to be(true)
+      expect(permission_data['destroyEnvironment']).to be(false)
+      expect(permission_data['stopEnvironment']).to be(true)
     end
 
     context 'when fetching user permissions for multiple environments' do
@@ -224,7 +224,8 @@ RSpec.describe 'Project Environments query', feature_category: :continuous_deliv
       end
     end
 
-    it 'executes the same number of queries in single environment and multiple environments' do
+    it 'executes the same number of queries in single environment and multiple environments', :request_store,
+      :use_sql_query_cache do
       single_environment_query =
         %(
           query {
@@ -245,12 +246,12 @@ RSpec.describe 'Project Environments query', feature_category: :continuous_deliv
           }
         )
 
-      baseline = ActiveRecord::QueryRecorder.new do
-        run_with_clean_state(single_environment_query, context: { current_user: user })
+      baseline = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(single_environment_query, current_user: user)
       end
 
-      multi = ActiveRecord::QueryRecorder.new do
-        run_with_clean_state(query, context: { current_user: user })
+      multi = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: user)
       end
 
       expect(multi).not_to exceed_query_limit(baseline)

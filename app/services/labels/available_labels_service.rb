@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Labels
   class AvailableLabelsService
     attr_reader :current_user, :parent, :params

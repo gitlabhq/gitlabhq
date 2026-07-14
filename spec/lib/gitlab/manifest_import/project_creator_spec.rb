@@ -34,5 +34,11 @@ RSpec.describe Gitlab::ManifestImport::ProjectCreator, feature_category: :import
       expect(project.unsafe_import_url).to eq('https://android-review.googlesource.com/device/common')
       expect(project.import_source).to eq('https://android-review.googlesource.com/device/common')
     end
+
+    it 'creates the project within the group organization' do
+      project = subject.execute
+
+      expect(project.organization_id).to eq(group.organization_id)
+    end
   end
 end

@@ -255,7 +255,8 @@ module API
       end
       route_setting :authorization, permissions: :delete_job_token_scope_allowlist, boundary_type: :project
       delete ':id/job_token_scope/allowlist/:target_project_id' do
-        target_project = find_project!(params[:target_project_id])
+        target_project = Project.find_by_id(params[:target_project_id])
+        not_found!('Project') unless target_project
 
         result = ::Ci::JobTokenScope::RemoveProjectService
           .new(user_project, current_user)

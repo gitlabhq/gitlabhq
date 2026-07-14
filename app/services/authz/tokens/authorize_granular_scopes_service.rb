@@ -68,14 +68,13 @@ module Authz
         return false unless feature_enabled?
         return false unless token.legacy?
 
-        root_namespaces.any?(&:granular_tokens_enforced?)
+        root_namespaces_enforce_granular_tokens?
       end
 
-      def root_namespaces
-        root_namespace_ids = boundaries.filter_map { |b| b.namespace&.traversal_ids&.first }.uniq
-        return [] if root_namespace_ids.empty?
+      def root_namespaces_enforce_granular_tokens?
+        root_namespace_ids = boundaries.filter_map(&:root_namespace_id).uniq
 
-        Namespace.id_in(root_namespace_ids).with_namespace_settings.to_a
+        EnforcementCache.new.any_enforced?(root_namespace_ids)
       end
 
       def boundaries_by_priority
@@ -131,8 +130,11 @@ module Authz
           assignable = Authz::PermissionGroups::Assignable.for_permission(permission).first
           "#{assignable.resource_name}: #{assignable.action.titleize}"
         end.uniq.sort.join(', ')
-        error "Access denied: This operation requires a fine-grained #{token_type} " \
-          "with the following #{boundary.type_label} permissions: [#{perms}]."
+        ::ServiceResponse.error(
+          message: "Access denied: This operation requires a fine-grained #{token_type} " \
+            "with the following #{boundary.type_label} permissions: [#{perms}].",
+          payload: { denied_permissions: eval[:missing] }
+        )
       end
 
       def resource_not_found_error

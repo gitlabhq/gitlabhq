@@ -4,6 +4,7 @@ import { GlButton, GlEmptyState, GlTable } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'GcpRegionsList',
   components: { GlButton, GlEmptyState, GlTable },
   props: {
     list: {

@@ -51,6 +51,7 @@ export default {
       default: false,
     },
   },
+  emits: ['click-avatar', 'hover-stat', 'hover-visibility', 'load-children', 'refetch'],
   data() {
     return {
       isExpanded: this.expandedOverride && this.item.children?.length,

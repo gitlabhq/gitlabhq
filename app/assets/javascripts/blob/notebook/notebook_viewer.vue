@@ -5,6 +5,7 @@ import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import NotebookLab from '~/notebook/index.vue';
 
 export default {
+  name: 'NotebookViewer',
   components: {
     NotebookLab,
     GlLoadingIcon,

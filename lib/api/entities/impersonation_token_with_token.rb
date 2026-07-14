@@ -2,8 +2,8 @@
 
 module API
   module Entities
-    class ImpersonationTokenWithToken < Entities::PersonalAccessTokenWithToken
-      expose :impersonation
+    class ImpersonationTokenWithToken < Entities::ImpersonationToken
+      expose :token
     end
   end
 end

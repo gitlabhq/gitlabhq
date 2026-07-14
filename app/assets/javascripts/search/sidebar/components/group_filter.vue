@@ -56,6 +56,7 @@ export default {
           [GROUP_DATA.queryParam]: group.id,
           [PROJECT_DATA.queryParam]: null,
           nav_source: null,
+          page: null,
           scope: this.currentScope,
         }),
       );

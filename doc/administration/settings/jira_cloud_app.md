@@ -13,7 +13,7 @@ title: GitLab for Jira Cloud app administration
 {{< /details >}}
 
 > [!note]
-> This page contains administrator documentation for the GitLab for Jira Cloud app. For user documentation, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md).
+> For user documentation, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md).
 
 With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud) app, you can connect GitLab and Jira Cloud to sync development information in real time. You can view this information in the [Jira development panel](../../integration/jira/development_panel.md).
 
@@ -27,8 +27,8 @@ For an overview, see:
 
 - [Installing the GitLab for Jira Cloud app from the Atlassian Marketplace for a GitLab Self-Managed instance](https://youtu.be/RnDw4PzmdW8?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)
   <!-- Video published on 2024-10-30 -->
-- [Installing the GitLab for Jira Cloud app manually for a GitLab Self-Managed instance](https://youtu.be/fs02xS8BElA?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)
-  <!-- Video published on 2024-10-30 -->
+- [Installing the GitLab for Jira Cloud app manually for a GitLab Self-Managed instance (Forge app)](https://youtu.be/hSfiowZSmZA?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)
+  <!-- Video published on 2026-06-17 -->
 
 The videos above show the older [Universal Plugin Manager interface](https://community.atlassian.com/forums/Community-Announcements-articles/Cloud-admins-we-re-making-app-management-easier/ba-p/2806285) which might be unavailable on newer Jira Cloud instances.
 The following instructions cover both old and new app management interfaces.
@@ -192,7 +192,7 @@ to check if Jira Cloud is linked to:
 > The previous manual install method relied on Atlassian Connect development mode. Atlassian
 > [disabled Connect-based private installs on 2026-03-31](https://www.atlassian.com/blog/developer/announcing-connect-end-of-support-timeline-and-next-steps).
 > If you previously installed the app manually with the **App descriptor URL** workflow,
-> migrate to the Forge-based install described in this section.
+> migrate to the Forge-based install described in [this section](../../integration/jira/connect-app.md#migration-from-atlassian-connect-to-forge).
 
 Install the GitLab for Jira Cloud app manually if you cannot
 [use the official Atlassian Marketplace listing](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace).
@@ -274,6 +274,14 @@ To publish a private copy of the GitLab for Jira Cloud Forge app and install it 
 For step-by-step instructions, manual `forge` commands, troubleshooting, and the upgrade workflow, see the
 [Self-managed install guide](https://gitlab.com/gitlab-org/gitlab-jira-forge/-/blob/main/docs/self-managed-install.md)
 in the `gitlab-jira-forge` repository.
+
+After the app is registered, set its Forge app ID in GitLab so that inbound Forge tokens are verified:
+
+1. Copy the `APP_ID` value (an `ari:cloud:ecosystem::app/<uuid>` ARI) from `.env.self-managed`.
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **GitLab for Jira App**.
+1. In **Forge app ID**, paste the ARI, then select **Save changes**.
 
 After the app is installed, [configure the GitLab for Jira Cloud app](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app)
 in Jira to link your GitLab namespaces.

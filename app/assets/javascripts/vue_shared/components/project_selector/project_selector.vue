@@ -50,6 +50,7 @@ export default {
       default: 0,
     },
   },
+  emits: ['bottomReached', 'projectClicked', 'searched'],
   data() {
     return {
       searchQuery: '',

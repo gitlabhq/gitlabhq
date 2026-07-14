@@ -114,13 +114,13 @@ RSpec.describe Terraform::StateUploader, feature_category: :deployment_managemen
 
   describe '.direct_upload_enabled?' do
     it 'returns false' do
-      expect(described_class.direct_upload_enabled?).to eq(false)
+      expect(described_class.direct_upload_enabled?).to be(false)
     end
   end
 
   describe '.proxy_download_enabled?' do
     it 'returns true' do
-      expect(described_class.proxy_download_enabled?).to eq(true)
+      expect(described_class.proxy_download_enabled?).to be(true)
     end
   end
 

@@ -23,6 +23,7 @@ export default {
       default: false,
     },
   },
+  emits: ['package:delete', 'page:changed'],
   data() {
     return {
       itemToBeDeleted: null,

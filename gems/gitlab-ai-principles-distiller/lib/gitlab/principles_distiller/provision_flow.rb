@@ -28,6 +28,12 @@ module Gitlab
       PROMPT_PATH = '.ai/principles/distillation_prompt.md'
       DRY_RUN_FLOW_GID = 'dry-run-flow-gid'
 
+      # Substring of the GraphQL error GitLab returns when the caller lacks
+      # `admin_ai_catalog_item` (a Maintainer+ ability). Matched to turn an
+      # opaque authorization failure into actionable operator guidance rather
+      # than silently escalating the service account's role.
+      PERMISSION_DENIED_FRAGMENT = "you don't have permission"
+
       # Read-only allowlist; names match
       # ee/lib/ai/catalog/built_in_tool_definitions.rb. We curate here
       # rather than rely on agent-side guardrails.
@@ -161,10 +167,46 @@ module Gitlab
 
       # One-shot provisioner: any error here is unrecoverable, so abort
       # cleanly rather than retry (contrast Workflow#graphql).
-      def graphql(query, variables = {})
+      #
+      # `action` names the mutation being attempted (e.g. "release a new
+      # flow version"). When the failure is an authorization error, we abort
+      # with operator guidance instead of the raw GraphQL message: the
+      # scheduled run uses a Developer-role service account, which can read
+      # the catalog but cannot create/update flows or consumers (those need
+      # the Maintainer+ `admin_ai_catalog_item` ability). Rather than
+      # escalate the account, we fail loudly and tell a maintainer how to
+      # provision manually.
+      def graphql(query, variables = {}, action: nil)
         graphql_client.query(query, variables)
       rescue GraphqlClient::Error => e
+        abort permission_denied_guidance(action) if action && permission_denied?(e)
+
         abort Rainbow(e.message).red
+      end
+
+      def permission_denied?(error)
+        error.message.include?(PERMISSION_DENIED_FRAGMENT)
+      end
+
+      def permission_denied_guidance(action)
+        <<~MSG.chomp
+          #{Rainbow("ERROR: not authorized to #{action}.").red}
+
+          The AI Catalog flow #{@flow_name.inspect} in #{@project_path} needs to be
+          (re)provisioned, but #{Env::GITLAB_TOKEN}'s account lacks the Maintainer-level
+          #{Rainbow('admin_ai_catalog_item').yellow} ability required to create or update catalog flows.
+
+          This scheduled job intentionally runs as a Developer-role service account, so
+          catalog changes are a manual, maintainer-driven step. To reconcile the flow, a
+          project Maintainer should run the provisioner locally with their own token:
+
+            #{Rainbow('export GITLAB_TOKEN=<maintainer-personal-access-token-with-api-scope>').cyan}
+            #{Rainbow("export #{Env::CATALOG_PROJECT}=#{@project_path}").cyan}
+            #{Rainbow('bundle exec bin/gitlab-ai-principles-distiller-provision-flow \\').cyan}
+            #{Rainbow('  --workspace "$(git rev-parse --show-toplevel)"').cyan}
+
+          Re-run this pipeline once the flow is in sync.
+        MSG
       end
 
       def find_project_gid!(full_path)
@@ -223,7 +265,7 @@ module Gitlab
             definition: yaml_definition
           }
         }
-        data = graphql(<<~GQL, variables)
+        data = graphql(<<~GQL, variables, action: 'create the catalog flow')
       mutation CreateFlow($input: AiCatalogFlowCreateInput!) {
         aiCatalogFlowCreate(input: $input) {
           item { id name latestVersion { id } }
@@ -266,7 +308,7 @@ module Gitlab
             release: true
           }
         }
-        data = graphql(<<~GQL, variables)
+        data = graphql(<<~GQL, variables, action: 'release a new flow version')
       mutation UpdateFlow($input: AiCatalogFlowUpdateInput!) {
         aiCatalogFlowUpdate(input: $input) {
           item { id latestVersion { id } }
@@ -312,7 +354,7 @@ module Gitlab
         puts 'Creating ItemConsumer...'
 
         create_vars = { input: { itemId: flow['id'], target: { projectId: project_gid } } }
-        data = graphql(<<~GQL, create_vars)
+        data = graphql(<<~GQL, create_vars, action: 'create the flow ItemConsumer binding')
       mutation CreateConsumer($input: AiCatalogItemConsumerCreateInput!) {
         aiCatalogItemConsumerCreate(input: $input) {
           itemConsumer { id }

@@ -9,8 +9,8 @@ import {
   GlTabs,
   GlSprintf,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
+import Api from '~/api';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import TerraformTitle from '~/packages_and_registries/infrastructure_registry/details/components/details_title.vue';
@@ -19,11 +19,15 @@ import Tracking from '~/tracking';
 import PackageListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import {
+  DELETE_PACKAGE_ERROR_MESSAGE,
+  DELETE_PACKAGE_FILE_ERROR_MESSAGE,
+  DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
   TRACKING_ACTIONS,
   SHOW_DELETE_SUCCESS_ALERT,
 } from '~/packages_and_registries/shared/constants';
 import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
 import Markdown from '~/vue_shared/components/markdown/markdown_content.vue';
+import { FETCH_PACKAGE_VERSIONS_ERROR } from '../constants';
 import PackageFiles from './package_files.vue';
 import PackageHistory from './package_history.vue';
 
@@ -51,13 +55,25 @@ export default {
   mixins: [Tracking.mixin()],
   trackingActions: { ...TRACKING_ACTIONS },
   inject: ['projectName', 'canDelete', 'svgPath', 'projectListUrl'],
+  props: {
+    initialPackageEntity: {
+      type: Object,
+      required: true,
+    },
+    initialPackageFiles: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
     return {
       fileToDelete: null,
+      isLoading: false,
+      packageEntity: this.initialPackageEntity,
+      packageFiles: this.initialPackageFiles,
     };
   },
   computed: {
-    ...mapState(['packageEntity', 'packageFiles', 'isLoading']),
     isValidPackage() {
       return Boolean(this.packageEntity.name);
     },
@@ -73,9 +89,63 @@ export default {
     hasVersions() {
       return this.packageEntity.versions?.length > 0;
     },
+    packagePipeline() {
+      return this.packageEntity?.pipeline || null;
+    },
   },
   methods: {
-    ...mapActions(['deletePackage', 'fetchPackageVersions', 'deletePackageFile']),
+    async fetchPackageVersions() {
+      this.isLoading = true;
+
+      try {
+        const { project_id, id } = this.packageEntity;
+        const { data } = await Api.projectPackage(project_id, id);
+
+        if (data.versions) {
+          this.packageEntity = {
+            ...this.packageEntity,
+            versions: data.versions.reverse(),
+          };
+        }
+      } catch {
+        createAlert({
+          message: FETCH_PACKAGE_VERSIONS_ERROR,
+          variant: VARIANT_WARNING,
+        });
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async deletePackage() {
+      const { project_id, id } = this.packageEntity;
+
+      try {
+        return await Api.deleteProjectPackage(project_id, id);
+      } catch (error) {
+        createAlert({
+          message: error?.response?.data?.message || DELETE_PACKAGE_ERROR_MESSAGE,
+          variant: VARIANT_WARNING,
+        });
+        return undefined;
+      }
+    },
+    async deletePackageFile(fileId) {
+      const { project_id, id } = this.packageEntity;
+
+      try {
+        await Api.deleteProjectPackageFile(project_id, id, fileId);
+        this.packageFiles = this.packageFiles.filter((f) => f.id !== fileId);
+        createAlert({
+          message: DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
+          variant: VARIANT_SUCCESS,
+        });
+      } catch (error) {
+        createAlert({
+          message: error?.response?.data?.message || DELETE_PACKAGE_FILE_ERROR_MESSAGE,
+          variant: VARIANT_WARNING,
+        });
+      }
+    },
     getPackageVersions() {
       if (!this.packageEntity.versions) {
         this.fetchPackageVersions();
@@ -146,7 +216,11 @@ export default {
   />
 
   <div v-else class="packages-app">
-    <terraform-title>
+    <terraform-title
+      :package-entity="packageEntity"
+      :package-files="packageFiles"
+      :package-pipeline="packagePipeline"
+    >
       <template #delete-button>
         <gl-button
           v-if="canDelete"

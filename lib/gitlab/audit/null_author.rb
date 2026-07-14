@@ -3,6 +3,11 @@
 module Gitlab
   module Audit
     class NullAuthor
+      UNAUTHENTICATED_AUTHOR_ID = -1
+      DEPLOY_TOKEN_AUTHOR_ID = -2
+      DEPLOY_KEY_AUTHOR_ID = -3
+      ORBIT_INDEXER_AUTHOR_ID = -4
+
       attr_reader :id, :name
 
       # Creates an Author
@@ -23,12 +28,14 @@ module Gitlab
             entity_type: audit_event.entity_type, entity_path: audit_event.entity_path,
             **audit_event.details.slice(:runner_authentication_token, :runner_registration_token).symbolize_keys
           )
-        elsif id == -1
+        elsif id == UNAUTHENTICATED_AUTHOR_ID
           Gitlab::Audit::UnauthenticatedAuthor.new(name: name)
-        elsif id == -2
+        elsif id == DEPLOY_TOKEN_AUTHOR_ID
           Gitlab::Audit::DeployTokenAuthor.new(name: name)
-        elsif id == -3
+        elsif id == DEPLOY_KEY_AUTHOR_ID
           Gitlab::Audit::DeployKeyAuthor.new(name: name)
+        elsif id == ORBIT_INDEXER_AUTHOR_ID
+          Gitlab::Audit::OrbitIndexerAuthor.new(name: name)
         else
           Gitlab::Audit::DeletedAuthor.new(id: id, name: name)
         end

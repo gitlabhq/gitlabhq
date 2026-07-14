@@ -81,6 +81,7 @@ For EE-only changes, add `EE: true` on a separate line after the changelog entry
 - Test-only changes
 - Documentation-only changes
 - Development tooling changes
+- Changes for a feature that is behind a feature flag that is default-off
 
 ### Feature flag changelog
 

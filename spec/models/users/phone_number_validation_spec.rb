@@ -92,7 +92,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
           )
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'and the matching record has been verified' do
@@ -106,7 +106,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
           )
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -122,7 +122,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
         )
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when banned user does not have the same international dial code' do
@@ -136,7 +136,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
         )
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when banned user does not have the same phone number' do
@@ -150,7 +150,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
         )
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when not-banned user has the same international dial code and phone number' do
@@ -164,7 +164,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
         )
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -238,7 +238,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
   end
 
   describe '#validated?' do
-    let_it_be(:phone_number_record, freeze: false) { create(:phone_number_validation, user: user) }
+    let_it_be_with_reload(:phone_number_record) { create(:phone_number_validation, user: user) }
 
     context 'when phone number record is not validated' do
       it 'returns false' do
@@ -258,7 +258,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
   end
 
   describe '.by_reference_id' do
-    let_it_be(:phone_number_record, freeze: false) { create(:phone_number_validation) }
+    let_it_be_with_reload(:phone_number_record) { create(:phone_number_validation) }
 
     let(:ref_id) { phone_number_record.telesign_reference_xid }
 
@@ -274,7 +274,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
   end
 
   describe '.sms_send_allowed_after' do
-    let_it_be(:record, freeze: false) { create(:phone_number_validation, sms_send_count: 0) }
+    let_it_be_with_reload(:record) { create(:phone_number_validation, sms_send_count: 0) }
 
     subject(:result) { record.sms_send_allowed_after }
 

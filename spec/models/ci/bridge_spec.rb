@@ -57,7 +57,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#retryable?' do
-    let_it_be(:bridge, freeze: false) { create(:ci_bridge, :success) }
+    let_it_be_with_reload(:bridge) { create(:ci_bridge, :success) }
 
     it 'returns true' do
       expect(bridge.retryable?).to eq(true)
@@ -65,7 +65,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   context 'when there is a pipeline loop detected' do
-    let_it_be(:bridge, freeze: false) { create(:ci_bridge, :failed, failure_reason: :pipeline_loop_detected) }
+    let_it_be_with_reload(:bridge) { create(:ci_bridge, :failed, failure_reason: :pipeline_loop_detected) }
 
     it 'returns false' do
       expect(bridge.failure_reason).to eq('pipeline_loop_detected')
@@ -74,7 +74,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   context 'when the pipeline depth has reached the max descendents' do
-    let_it_be(:bridge, freeze: false) do
+    let_it_be_with_reload(:bridge) do
       create(:ci_bridge, :failed, failure_reason: :reached_max_descendant_pipelines_depth)
     end
 
@@ -220,7 +220,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
     context 'when bridge has dependency which has dotenv variable in the same project' do
       let_it_be(:test) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
-      let_it_be(:bridge, freeze: false) do
+      let_it_be_with_reload(:bridge) do
         create(:ci_bridge, pipeline: pipeline, stage_idx: 1, options: { dependencies: [test.name] })
       end
 
@@ -241,7 +241,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
     context 'when bridge has dependency which has dotenv variable in a different project' do
       let_it_be(:test) { create(:ci_build, pipeline: pipeline, project: public_project, stage_idx: 0) }
-      let_it_be(:bridge, freeze: false) do
+      let_it_be_with_reload(:bridge) do
         create(:ci_bridge, pipeline: pipeline, stage_idx: 1, options: { dependencies: [test.name] })
       end
 
@@ -849,210 +849,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         )
       end
     end
-
-    describe 'variables expansion' do
-      let(:options) do
-        {
-          trigger: {
-            project: 'my/project',
-            branch: 'master',
-            forward: { yaml_variables: true,
-                       pipeline_variables: true }.compact
-          }
-        }
-      end
-
-      let(:yaml_variables) do
-        [
-          {
-            key: 'EXPANDED_PROJECT_VAR6',
-            value: 'project value6 $PROJECT_PROTECTED_VAR'
-          },
-          {
-            key: 'EXPANDED_GROUP_VAR6',
-            value: 'group value6 $GROUP_PROTECTED_VAR'
-          },
-
-          {
-            key: 'VAR7',
-            value: 'value7 $VAR1',
-            raw: true
-          }
-        ]
-      end
-
-      let_it_be(:downstream_creator_user) { create(:user) }
-      let_it_be(:bridge_creator_user) { create(:user) }
-
-      let_it_be(:bridge_group) { create(:group) }
-      let_it_be(:downstream_group) { create(:group) }
-      let_it_be(:downstream_project) { create(:project, creator: downstream_creator_user, group: downstream_group) }
-      let_it_be(:project) do
-        create(:project, :repository, :in_group, creator: bridge_creator_user, group: bridge_group)
-      end
-
-      let(:ci_stage) { create(:ci_stage, pipeline: pipeline, project: pipeline.project) }
-      let(:bridge) do
-        build(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project, ci_stage: ci_stage)
-      end
-
-      let!(:pipeline) { create(:ci_pipeline, project: project) }
-
-      let!(:ci_variable) do
-        create(:ci_variable,
-          project: project,
-          key: 'PROJECT_PROTECTED_VAR',
-          value: 'this is a secret',
-          protected: is_variable_protected?)
-      end
-
-      let!(:ci_group_variable) do
-        create(:ci_group_variable,
-          group: bridge_group,
-          key: 'GROUP_PROTECTED_VAR',
-          value: 'this is a secret',
-          protected: is_variable_protected?)
-      end
-
-      before do
-        stub_ci_job_definition(bridge, yaml_variables: yaml_variables)
-        allow(bridge.project).to receive(:protected_for?).and_return(true)
-      end
-
-      shared_examples 'expands variables from a project downstream' do
-        it do
-          vars = bridge.downstream_variables
-          expect(vars).to include({ key: 'EXPANDED_PROJECT_VAR6', value: 'project value6 this is a secret' })
-        end
-      end
-
-      shared_examples 'expands variables from a group downstream' do
-        it do
-          vars = bridge.downstream_variables
-          expect(vars).to include({ key: 'EXPANDED_GROUP_VAR6', value: 'group value6 this is a secret' })
-        end
-      end
-
-      shared_examples 'expands project and group variables downstream' do
-        it_behaves_like 'expands variables from a project downstream'
-
-        it_behaves_like 'expands variables from a group downstream'
-      end
-
-      shared_examples 'does not expand variables from a project downstream' do
-        it do
-          vars = bridge.downstream_variables
-          expect(vars).not_to include({ key: 'EXPANDED_PROJECT_VAR6', value: 'project value6 this is a secret' })
-        end
-      end
-
-      shared_examples 'does not expand variables from a group downstream' do
-        it do
-          vars = bridge.downstream_variables
-          expect(vars).not_to include({ key: 'EXPANDED_GROUP_VAR6', value: 'group value6 this is a secret' })
-        end
-      end
-
-      shared_examples 'feature flag is disabled' do
-        before do
-          stub_feature_flags(exclude_protected_variables_from_multi_project_pipeline_triggers: false)
-        end
-
-        it_behaves_like 'expands project and group variables downstream'
-      end
-
-      shared_examples 'does not expand project and group variables downstream' do
-        it_behaves_like 'does not expand variables from a project downstream'
-
-        it_behaves_like 'does not expand variables from a group downstream'
-      end
-
-      context 'when they are protected' do
-        let!(:is_variable_protected?) { true }
-
-        context 'and downstream project group is different from bridge group' do
-          it_behaves_like 'does not expand project and group variables downstream'
-
-          it_behaves_like 'feature flag is disabled'
-        end
-
-        context 'and there is no downstream project' do
-          let(:downstream_project) { nil }
-
-          it_behaves_like 'expands project and group variables downstream'
-
-          it_behaves_like 'feature flag is disabled'
-        end
-
-        context 'and downstream project equals bridge project' do
-          let(:downstream_project) { project }
-
-          it_behaves_like 'expands project and group variables downstream'
-
-          it_behaves_like 'feature flag is disabled'
-        end
-
-        context 'and downstream project group is equal to bridge project group' do
-          let_it_be(:downstream_project) { create(:project, creator: downstream_creator_user, group: bridge_group) }
-
-          it_behaves_like 'expands variables from a group downstream'
-
-          it_behaves_like 'does not expand variables from a project downstream'
-
-          it_behaves_like 'feature flag is disabled'
-        end
-
-        context 'and downstream project has no group' do
-          let_it_be(:downstream_project) { create(:project, creator: downstream_creator_user) }
-
-          it_behaves_like 'does not expand project and group variables downstream'
-
-          it_behaves_like 'feature flag is disabled'
-        end
-      end
-
-      context 'when they are not protected' do
-        let!(:is_variable_protected?) { false }
-
-        context 'and downstream project group is different from bridge group' do
-          it_behaves_like 'expands project and group variables downstream'
-
-          it_behaves_like 'feature flag is disabled'
-        end
-
-        context 'and there is no downstream project' do
-          let(:downstream_project) { nil }
-
-          it_behaves_like 'expands project and group variables downstream'
-
-          it_behaves_like 'feature flag is disabled'
-        end
-
-        context 'and downstream project equals bridge project' do
-          let(:downstream_project) { project }
-
-          it_behaves_like 'expands project and group variables downstream'
-
-          it_behaves_like 'feature flag is disabled'
-        end
-
-        context 'and downstream project group is equal to bridge project group' do
-          let_it_be(:downstream_project) { create(:project, creator: downstream_creator_user, group: bridge_group) }
-
-          it_behaves_like 'expands project and group variables downstream'
-
-          it_behaves_like 'feature flag is disabled'
-        end
-
-        context 'and downstream project has no group' do
-          let_it_be(:downstream_project) { create(:project, creator: downstream_creator_user) }
-
-          it_behaves_like 'expands project and group variables downstream'
-
-          it_behaves_like 'feature flag is disabled'
-        end
-      end
-    end
   end
 
   describe '#variables' do
@@ -1238,7 +1034,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   describe '#play' do
     let_it_be(:downstream_project) { create(:project) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:bridge, freeze: false) do
+    let_it_be_with_reload(:bridge) do
       create(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project)
     end
 
@@ -1295,7 +1091,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
     context 'when downloading from previous stages from the same project' do
       let_it_be(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
-      let_it_be(:bridge, freeze: false) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
+      let_it_be_with_reload(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
 
       let_it_be(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
       let_it_be(:job_variable_2) { create(:ci_job_variable, job: prepare1) }
@@ -1318,7 +1114,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         create(:ci_build, name: 'prepare1', pipeline: pipeline, project: public_project, stage_idx: 0)
       end
 
-      let_it_be(:bridge, freeze: false) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
+      let_it_be_with_reload(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
 
       let_it_be(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
       let_it_be(:job_variable_2) { create(:ci_job_variable, job: prepare1) }
@@ -1340,7 +1136,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       let_it_be(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
       let_it_be(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
       let_it_be(:prepare3) { create(:ci_build, name: 'prepare3', pipeline: pipeline, stage_idx: 0) }
-      let_it_be(:bridge, freeze: false) do
+      let_it_be_with_reload(:bridge) do
         create(
           :ci_bridge,
           pipeline: pipeline,
@@ -1374,7 +1170,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
       let_it_be(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
       let_it_be(:prepare3) { create(:ci_build, name: 'prepare3', pipeline: pipeline, stage_idx: 0) }
-      let_it_be(:bridge, freeze: false) do
+      let_it_be_with_reload(:bridge) do
         create(
           :ci_bridge,
           pipeline: pipeline,

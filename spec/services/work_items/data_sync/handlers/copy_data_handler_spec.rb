@@ -95,4 +95,37 @@ RSpec.describe WorkItems::DataSync::Handlers::CopyDataHandler, feature_category:
       end
     end
   end
+
+  describe '#create_params' do
+    it 'sets work_item_type_id from the target type and does not pass :work_item_type', :aggregate_failures do
+      type = build(:work_item_system_defined_type, :incident)
+
+      handler = described_class.new(
+        work_item: work_item,
+        target_namespace: target_namespace,
+        target_work_item_type: type,
+        current_user: current_user,
+        params: { operation: :move },
+        overwritten_params: {}
+      )
+
+      expect(handler.create_params).to include(work_item_type_id: type.persistable_id)
+      expect(handler.create_params).not_to have_key(:work_item_type)
+    end
+
+    context 'when target_work_item_type is nil' do
+      it 'sets work_item_type_id to nil so validate_work_item_type_id can handle defaulting' do
+        handler = described_class.new(
+          work_item: work_item,
+          target_namespace: target_namespace,
+          target_work_item_type: nil,
+          current_user: current_user,
+          params: { operation: :move },
+          overwritten_params: {}
+        )
+
+        expect(handler.create_params).to include(work_item_type_id: nil)
+      end
+    end
+  end
 end

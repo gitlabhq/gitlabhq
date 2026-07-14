@@ -3,7 +3,7 @@
 module API
   module Entities
     class PullMirror < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 101486 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 101486 }
       expose :status, as: :update_status, documentation: { type: 'String', example: 'finished' }
       expose :url,
         documentation: { type: 'String',

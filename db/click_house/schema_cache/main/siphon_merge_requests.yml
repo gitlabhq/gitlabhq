@@ -112,7 +112,7 @@ columns:
 - name: traversal_path
   type: String
   default_kind: DEFAULT
-  default_expression: multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
+  default_expression: multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict',
     'traversal_path', target_project_id, '0/'), '0/')
 - name: _siphon_replicated_at
   type: DateTime64(6, 'UTC')

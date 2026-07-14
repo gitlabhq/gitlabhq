@@ -1,0 +1,9 @@
+---
+name: read_code_review_analytics
+description: Grants the ability to read code review analytics
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_code_review_analytics

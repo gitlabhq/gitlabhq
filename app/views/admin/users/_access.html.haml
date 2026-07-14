@@ -45,7 +45,7 @@
       %row.hidden#warning_external_automatically_set
         = gl_badge_tag s_('AdminUsers|Automatically marked as default internal user'), variant: :warning
 
-  - if @user.email_otp_available?
+  - if Gitlab::CurrentSettings.email_otp_enabled?
     .form-group.gl-form-group{ role: 'group' }
       = f.label :email_otp_required_after, s_('AdminUsers|Email OTP required after'), class: 'gl-block col-form-label'
       = f.datetime_field :email_otp_required_after,

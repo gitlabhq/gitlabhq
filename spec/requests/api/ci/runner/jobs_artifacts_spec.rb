@@ -199,7 +199,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 expect(json_response['RemoteObject']).to have_key('StoreURL')
                 expect(json_response['RemoteObject']).to have_key('DeleteURL')
                 expect(json_response['RemoteObject']).to have_key('MultipartUpload')
-                expect(json_response['RemoteObject']['SkipDelete']).to eq(true)
+                expect(json_response['RemoteObject']['SkipDelete']).to be(true)
                 expect(json_response['MaximumSize']).not_to be_nil
               end
             end

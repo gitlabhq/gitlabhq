@@ -101,7 +101,7 @@ for the group's projects to meet your group's needs.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15019) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `archive_group`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15019) in GitLab 18.3 [with a feature flag](../../administration/feature_flags/_index.md) named `archive_group`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/526771) in GitLab 18.9. Feature flag `archive_group` removed.
 
 {{< /history >}}
@@ -268,7 +268,7 @@ To disable email notifications:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with a flag](../../administration/feature_flags/_index.md) named `diff_preview_in_email`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with a feature flag](../../administration/feature_flags/_index.md) named `diff_preview_in_email`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/382055) in GitLab 17.1. Feature flag `diff_preview_in_email` removed.
 
 {{< /history >}}
@@ -295,7 +295,7 @@ To disable diff previews for all projects in a group:
 
 {{< history >}}
 
-- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a feature flag](../../administration/feature_flags/_index.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
 - Feature flag `pat_expiry_inherited_members_notification` [enabled by default in GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/393772).
 - Feature flag `pat_expiry_inherited_members_notification` removed in GitLab `17.11`
 
@@ -328,7 +328,7 @@ For more information, see:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499732) 60- and 30-day triggers to project and group access token webhooks in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `extended_expiry_webhook_execution_setting`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499732) 60- and 30-day triggers to project and group access token webhooks in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `extended_expiry_webhook_execution_setting`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513684) in GitLab 17.10. Feature flag `extended_expiry_webhook_execution_setting` removed.
 
 {{< /history >}}
@@ -374,7 +374,7 @@ To disable group mentions:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `allow_personal_snippets_setting`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575) in GitLab 18.5 [with a feature flag](../../administration/feature_flags/_index.md) named `allow_personal_snippets_setting`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/583564) in GitLab 18.9. Feature flag `allow_personal_snippets_setting` removed.
 
 {{< /history >}}
@@ -533,14 +533,10 @@ To approve members that are pending because they've exceeded the user cap:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230790) in GitLab 19.0 [with a flag](../../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230790) in GitLab 19.0 [with a feature flag](../../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623) in GitLab 19.2. Feature flag `use_built_in_project_templates_enabled` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 [Built-in project templates](../project/_index.md#create-a-project-from-a-built-in-template)
 populate new projects with starter files.
@@ -629,7 +625,7 @@ To enable group file templates:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags/_index.md) name `support_group_level_merge_checks_setting`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a feature flag](../../administration/feature_flags/_index.md) name `support_group_level_merge_checks_setting`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142708) in GitLab 16.9. Feature flag `support_group_level_merge_checks_setting` removed.
 
 {{< /history >}}
@@ -760,7 +756,7 @@ To view the activity feed in Atom format, select the
 
 - Namespace setting to allow the display of user data
   [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215371) in GitLab 18.7
-  [with a flag](../../administration/feature_flags/_index.md) named `usage_billing_dev`. [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215714).
+  [with a feature flag](../../administration/feature_flags/_index.md) named `usage_billing_dev`. [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215714).
 - Feature flag `usage_billing_dev` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/566581) in GitLab 18.10.
 
 {{< /history >}}

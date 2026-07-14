@@ -125,8 +125,6 @@ module Ci
         # variable expansion per request.
         if job_environment&.expanded_environment_name.present?
           job_environment.expanded_environment_name
-        elsif metadata&.expanded_environment_name.present?
-          metadata.expanded_environment_name
         else
           ExpandVariables.expand(environment, -> { simple_variables.sort_and_expand_all })
         end

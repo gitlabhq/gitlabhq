@@ -6,6 +6,7 @@ import { REQUIRED_ICON, NOT_REQUIRED_ICON } from './constants';
 import DisabledByPolicyPopover from './disabled_by_policy_popover.vue';
 
 export default {
+  name: 'ProtectionToggle',
   components: {
     GlToggle,
     GlIcon,

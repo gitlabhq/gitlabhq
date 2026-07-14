@@ -3,6 +3,7 @@ import BlamePreferences from '~/blame/preferences/blame_preferences.vue';
 import BlameLegend from '~/blame/blame_legend.vue';
 
 export default {
+  name: 'BlameHeader',
   components: { BlamePreferences, BlameLegend },
   inject: ['hasRevsFile'],
   data() {

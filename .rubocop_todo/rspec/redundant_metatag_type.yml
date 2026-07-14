@@ -249,7 +249,6 @@ RSpec/RedundantMetatagType:
     - 'spec/models/bulk_imports/export_upload_spec.rb'
     - 'spec/models/bulk_imports/failure_spec.rb'
     - 'spec/models/bulk_imports/tracker_spec.rb'
-    - 'spec/models/ci/build_execution_config_spec.rb'
     - 'spec/models/ci/catalog/resources/component_spec.rb'
     - 'spec/models/ci/catalog/resources/components/last_usage_spec.rb'
     - 'spec/models/ci/catalog/resources/sync_event_spec.rb'

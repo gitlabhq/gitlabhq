@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportLfsObjectsWorker, feature_category: :importers do
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   subject(:worker) { described_class.new }
 

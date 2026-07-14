@@ -1,18 +1,23 @@
 import { __ } from '~/locale';
 
+export const REQUIRED_RULE = {
+  reg: /\S/,
+  msg: __('Project name is required.'),
+};
+
 export const START_RULE = {
-  reg: /^[a-zA-Z0-9\u{00A9}-\u{1f9ff}_]/u,
-  msg: __('Project name must start with a letter, digit, emoji, or underscore.'),
+  reg: /^[\p{L}\p{N}\u{00A9}-\u{1f9ff}_]/u,
+  msg: __('Project name must start with a letter, digit, basic emoji, or underscore.'),
 };
 
 export const CONTAINS_RULE = {
-  reg: /^[a-zA-Z0-9\p{Pd}\u{002B}\u{00A9}-\u{1f9ff}_. ]+$/u,
+  reg: /^[\p{L}\p{N}\p{Pd}\u{002B}\u{00A9}-\u{1f9ff}_. ]+$/u,
   msg: __(
-    'Project name can contain only lowercase or uppercase letters, digits, emoji, spaces, dots, underscores, dashes, or pluses.',
+    'Project name can contain only lowercase or uppercase letters, digits, basic emoji, spaces, dots, underscores, dashes, or pluses.',
   ),
 };
 
-const rulesReg = [START_RULE, CONTAINS_RULE];
+const rulesReg = [REQUIRED_RULE, START_RULE, CONTAINS_RULE];
 
 /**
  *

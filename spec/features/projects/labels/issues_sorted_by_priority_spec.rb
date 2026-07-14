@@ -40,6 +40,7 @@ RSpec.describe 'Issue prioritization', feature_category: :team_planning do
       wait_for_requests
 
       # Ensure we are indicating that issues are sorted by priority
+      click_button 'Display'
       expect(page).to have_button 'Label priority'
 
       issue_titles = all('.issues-list .issue-title-text').map(&:text)
@@ -78,6 +79,7 @@ RSpec.describe 'Issue prioritization', feature_category: :team_planning do
 
       wait_for_requests
 
+      click_button 'Display'
       expect(page).to have_button 'Label priority'
 
       issue_titles = all('.issues-list .issue-title-text').map(&:text)

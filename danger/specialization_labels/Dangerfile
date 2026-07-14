@@ -25,4 +25,9 @@ labels_to_add = helper.changes_by_category.each_with_object([]) do |(category, _
   memo << label
 end
 
+# qa/ is categorized as :backend for reviewer roulette, but still warrants the ~QA label.
+qa_label = SPECIALIZATIONS[:qa]
+has_qa_changes = helper.changed_files(%r{\A((ee|jh)/)?qa/}).any?
+labels_to_add << qa_label if has_qa_changes && !helper.mr_labels.include?(qa_label)
+
 helper.labels_to_add.concat(labels_to_add) if labels_to_add.any?

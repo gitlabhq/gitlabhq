@@ -259,5 +259,16 @@ RSpec.shared_examples 'work item listing sorting' do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.headers['Link']).not_to include('cursor=')
     end
+
+    it 'skips the total-count query on the offset fallback while keeping next/prev page headers' do
+      get api(api_request_path, user), params: { order_by: 'severity', sort: 'desc', per_page: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      # `without_count` drops the exact-total headers (the expensive COUNT) ...
+      expect(response.headers['X-Total']).to be_nil
+      expect(response.headers['X-Total-Pages']).to be_nil
+      # ... but next-page navigation must still work for the second item.
+      expect(response.headers['X-Next-Page']).to eq('2')
+    end
   end
 end

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ReleasePresenter, feature_category: :release_orchestration do
   include Gitlab::Routing.url_helpers
 
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
 
   let(:developer) { create(:user) }
   let(:guest) { create(:user) }

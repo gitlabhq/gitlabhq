@@ -6,6 +6,7 @@ import RevokeOauth from '../components/revoke_oauth.vue';
 import ServiceAccountsList from '../service_accounts/list.vue';
 
 export default {
+  name: 'ConfigurationPanel',
   components: {
     GcpRegionsList,
     GoogleCloudMenu,

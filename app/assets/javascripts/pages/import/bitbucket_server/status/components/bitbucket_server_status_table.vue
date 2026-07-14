@@ -3,6 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import BitbucketStatusTable from '~/import_entities/import_projects/components/bitbucket_status_table.vue';
 
 export default {
+  name: 'BitbucketServerStatusTable',
   components: {
     BitbucketStatusTable,
     GlButton,

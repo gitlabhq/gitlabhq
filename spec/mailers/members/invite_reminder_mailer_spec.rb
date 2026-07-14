@@ -6,7 +6,9 @@ RSpec.describe Members::InviteReminderMailer, feature_category: :groups_and_proj
   include EmailSpec::Matchers
 
   describe '#email' do
-    let(:group) { build(:group, id: non_existing_record_id) }
+    # Organization scoping is covered separately below; force unscoped paths here.
+    let(:unscoped_organization) { build(:organization) }
+    let(:group) { build(:group, id: non_existing_record_id, organization: unscoped_organization) }
     let(:inviter) { build(:user) }
     let(:group_member) { invite_to_group(group, inviter: inviter) }
     let(:reminder_index) { 0 }
@@ -15,6 +17,10 @@ RSpec.describe Members::InviteReminderMailer, feature_category: :groups_and_proj
     let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
 
     subject(:email) { described_class.email(group_member, group_member.invite_token, reminder_index) }
+
+    before do
+      allow(unscoped_organization).to receive(:scoped_paths?).and_return(false)
+    end
 
     context 'for first reminder email' do
       it_behaves_like 'an email sent from GitLab'
@@ -59,6 +65,17 @@ RSpec.describe Members::InviteReminderMailer, feature_category: :groups_and_proj
         is_expected.to have_body_text group_member.human_access.downcase
         is_expected.to have_body_text invite_url(group_member.invite_token)
         is_expected.to have_body_text decline_invite_url(group_member.invite_token)
+      end
+    end
+
+    context 'for organization-scoped invite links' do
+      context 'when the inviting organization uses scoped paths' do
+        let(:group) { build(:group, organization: build(:organization, path: 'scoped-org')) }
+
+        it 'renders organization-scoped invite links', :aggregate_failures do
+          is_expected.to have_body_text("/o/scoped-org/-/invites/#{group_member.invite_token}")
+          is_expected.to have_body_text("/o/scoped-org/-/invites/#{group_member.invite_token}/decline")
+        end
       end
     end
 

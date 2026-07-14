@@ -70,7 +70,10 @@ module Gitlab
           Logger.warn(
             log_attributes(
               project.id,
-              extra.compact.merge(message: "Failed to fetch last #{resource_type} IID for pre-allocation")
+              extra.compact.merge(
+                message: "Failed to fetch last #{resource_type} IID for pre-allocation",
+                Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+              )
             )
           )
         end

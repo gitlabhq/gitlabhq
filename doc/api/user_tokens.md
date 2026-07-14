@@ -42,7 +42,7 @@ Supported attributes:
 | `name`       | string  | yes      | Name of personal access token. |
 | `description`| string  | no       | Description of personal access token. Maximum: 255 characters. |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
-| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes). |
+| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [access token scopes](../security/tokens/access_token_scopes.md). |
 
 Example request:
 
@@ -83,7 +83,7 @@ Example response:
 
 Creates a personal access token for your account. For security purposes, the token:
 
-- Is limited to the [`k8s_proxy` and `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
+- Is limited to the [`k8s_proxy` and `self_rotate` scope](../security/tokens/access_token_scopes.md).
 
 Token values are included with the response, but cannot be retrieved later.
 
@@ -266,7 +266,7 @@ Supported attributes:
 | `name`       | string  | yes      | Name of impersonation token |
 | `description`| string  | no       | Description of impersonation token |
 | `expires_at` | date    | yes      | Expiration date of the impersonation token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
-| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes).  |
+| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [access token scopes](../security/tokens/access_token_scopes.md).  |
 
 Example request:
 

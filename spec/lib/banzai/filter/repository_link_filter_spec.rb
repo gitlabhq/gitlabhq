@@ -383,7 +383,7 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :markdown
   context 'when private project repo with a valid commit' do
     let_it_be(:project) { create(:project, :repository, :private) }
 
-    before do
+    before_all do
       # user must have `read_code` ability
       project.add_developer(user)
     end

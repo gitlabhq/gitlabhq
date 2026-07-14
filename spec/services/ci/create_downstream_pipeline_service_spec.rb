@@ -597,7 +597,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
 
             new_pipeline = trigger_project_bridge.downstream_pipeline
 
-            expect(new_pipeline.child?).to eq(false)
+            expect(new_pipeline.child?).to be(false)
             expect(new_pipeline.triggered_by_pipeline).to eq child_pipeline
             expect(trigger_project_bridge.reload).not_to be_failed
           end
@@ -703,24 +703,30 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         stub_ci_pipeline_yaml_file(YAML.dump(invalid: { yaml: 'error' }))
       end
 
-      it 'creates only one new pipeline' do
-        expect { subject }
-          .to change { Ci::Pipeline.count }.by(1)
-        expect(subject).to be_error
-        expect(subject.message)
-          .to match_array(["jobs invalid config should implement the script:, run:, or trigger: keyword"])
+      shared_examples 'drops the bridge with error messages' do
+        it 'creates only one new pipeline' do
+          expect { subject }
+            .to change { Ci::Pipeline.count }.by(1)
+          expect(subject).to be_error
+          expect(subject.message)
+            .to match_array(["jobs invalid config should implement the script:, run:, or trigger: keyword"])
+        end
+
+        it 'creates a new pipeline in the downstream project' do
+          expect(pipeline.user).to eq bridge.user
+          expect(pipeline.project).to eq downstream_project
+        end
+
+        it 'drops the bridge and stores the error messages', :aggregate_failures do
+          expect(pipeline.reload).to be_failed
+          expect(bridge.reload).to be_failed
+          expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
+          expect(bridge.downstream_errors)
+            .to match_array(["jobs invalid config should implement the script:, run:, or trigger: keyword"])
+        end
       end
 
-      it 'creates a new pipeline in the downstream project' do
-        expect(pipeline.user).to eq bridge.user
-        expect(pipeline.project).to eq downstream_project
-      end
-
-      it 'drops the bridge' do
-        expect(pipeline.reload).to be_failed
-        expect(bridge.reload).to be_failed
-        expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
-      end
+      it_behaves_like 'drops the bridge with error messages'
     end
 
     context 'when bridge job status update raises state machine errors' do

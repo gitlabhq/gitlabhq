@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['PackagesCleanupPolicy'] do
+RSpec.describe GitlabSchema.types['PackagesCleanupPolicy'], feature_category: :package_registry do
   specify { expect(described_class.graphql_name).to eq('PackagesCleanupPolicy') }
 
   specify do

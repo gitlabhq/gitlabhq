@@ -3,7 +3,7 @@
 module API
   module Entities
     class LabelBasic < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :name, documentation: { type: 'String', example: 'bug' }
       expose :description, documentation: { type: 'String', example: 'Bug reported by user' }
       expose :text_color, documentation: { type: 'String', example: '#FFFFFF' }

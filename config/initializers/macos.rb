@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 if RUBY_PLATFORM.include?('darwin')
-  require 'fiddle'
   require 'ffi'
   require 'ethon'
 
@@ -18,7 +17,14 @@ if RUBY_PLATFORM.include?('darwin')
   # the Objective-C runtime before any forking happens in webserver
   #
   # From https://bugs.ruby-lang.org/issues/14009
-  Fiddle.dlopen '/System/Library/Frameworks/Foundation.framework/Foundation'
+  #
+  # fiddle is not a default gem in Ruby 4.0, so use FFI to load the library.
+  # FFI::DynamicLibrary.open with RTLD_LAZY | RTLD_GLOBAL mirrors the default
+  # flags that Fiddle.dlopen used.
+  FFI::DynamicLibrary.open(
+    '/System/Library/Frameworks/Foundation.framework/Foundation',
+    FFI::DynamicLibrary::RTLD_LAZY | FFI::DynamicLibrary::RTLD_GLOBAL
+  )
 
   # grpc uses abseil-cpp to retrieve the local time zone via macOS APIs:
   # https://github.com/abseil/abseil-cpp/blob/20230125.rc3/absl/time/internal/cctz/src/time_zone_lookup.cc#L139

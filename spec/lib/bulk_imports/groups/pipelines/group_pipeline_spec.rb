@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline, feature_category: :importers do
   describe '#run', :clean_gitlab_redis_shared_state do
     let_it_be(:user) { create(:user) }
-    let_it_be(:parent) { create(:group) }
+    let_it_be(:parent) { create(:group, owners: [user]) }
     let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
     let_it_be(:destination_slug) { 'my-destination-group' }
 
@@ -44,8 +44,6 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline, feature_category: 
       end
 
       allow(subject).to receive(:set_source_objects_counter)
-
-      parent.add_owner(user)
     end
 
     it 'imports new group into destination group' do

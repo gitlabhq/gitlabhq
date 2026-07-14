@@ -6,7 +6,7 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Create, feature_cat
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: current_user) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:timeline_event_tag) do
     create(:incident_management_timeline_event_tag, project: project, name: 'Test tag 1')
@@ -32,10 +32,6 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Create, feature_cat
           promoted_from_note: nil,
           editable: true
         )
-      end
-
-      before do
-        project.add_developer(current_user)
       end
 
       it_behaves_like 'creating an incident timeline event'

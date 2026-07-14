@@ -1,0 +1,3 @@
+---
+name: lock_namespace_duo_feature
+description: Grants the ability to lock Duo features availability at the namespace level

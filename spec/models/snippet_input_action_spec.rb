@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SnippetInputAction do
+RSpec.describe SnippetInputAction, feature_category: :source_code_management do
   describe 'validations' do
     using RSpec::Parameterized::TableSyntax
 

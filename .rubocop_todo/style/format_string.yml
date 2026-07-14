@@ -39,7 +39,6 @@ Style/FormatString:
     - 'app/services/concerns/validates_classification_label.rb'
     - 'app/services/gravatar_service.rb'
     - 'app/services/groups/transfer_service.rb'
-    - 'app/services/import/bitbucket_server_service.rb'
     - 'app/services/import/fogbugz_service.rb'
     - 'app/services/issuable_links/create_service.rb'
     - 'app/services/issues/close_service.rb'

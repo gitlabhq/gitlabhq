@@ -5,16 +5,16 @@ require 'spec_helper'
 RSpec.describe TodoService, feature_category: :notifications do
   include AfterNextHelpers
 
-  let_it_be(:group, freeze: false) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
-  let_it_be(:author, freeze: false) { create(:user, developer_of: project) }
-  let_it_be(:assignee, freeze: false) { create(:user, developer_of: project) }
-  let_it_be(:non_member, freeze: false) { create(:user) }
-  let_it_be(:member, freeze: false) { create(:user, developer_of: project) }
-  let_it_be(:guest, freeze: false) { create(:user, guest_of: project) }
-  let_it_be(:admin, freeze: false) { create(:admin) }
-  let_it_be(:john_doe, freeze: false) { create(:user, developer_of: project) }
-  let_it_be(:skipped, freeze: false) { create(:user, developer_of: project) }
+  let_it_be_with_reload(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:author) { create(:user, developer_of: project) }
+  let_it_be_with_reload(:assignee) { create(:user, developer_of: project) }
+  let_it_be_with_reload(:non_member) { create(:user) }
+  let_it_be_with_reload(:member) { create(:user, developer_of: project) }
+  let_it_be_with_reload(:guest) { create(:user, guest_of: project) }
+  let_it_be_with_reload(:admin) { create(:admin) }
+  let_it_be_with_reload(:john_doe) { create(:user, developer_of: project) }
+  let_it_be_with_reload(:skipped) { create(:user, developer_of: project) }
 
   let(:skip_users) { [skipped] }
   let_it_be(:mentions) { 'FYI: ' + [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
@@ -525,7 +525,7 @@ RSpec.describe TodoService, feature_category: :notifications do
         end
 
         context 'leaving a note on a commit in a public project with private code' do
-          let_it_be(:project, freeze: false) { create(:project, :repository, :public, :repository_private, guests: guest, developers: [author, assignee, member, john_doe, skipped]) }
+          let_it_be_with_reload(:project) { create(:project, :repository, :public, :repository_private, guests: guest, developers: [author, assignee, member, john_doe, skipped]) }
 
           it 'creates a todo for each valid mentioned user' do
             expected_todo = base_commit_todo_attrs.merge(
@@ -561,7 +561,7 @@ RSpec.describe TodoService, feature_category: :notifications do
         end
 
         context 'leaving a note on a commit in a private project' do
-          let_it_be(:project, freeze: false) { create(:project, :repository, :private, guests: guest, developers: [author, assignee, member, john_doe, skipped]) }
+          let_it_be_with_reload(:project) { create(:project, :repository, :private, guests: guest, developers: [author, assignee, member, john_doe, skipped]) }
 
           it 'creates a todo for each valid mentioned user' do
             expected_todo = base_commit_todo_attrs.merge(
@@ -1077,7 +1077,7 @@ RSpec.describe TodoService, feature_category: :notifications do
     end
 
     describe '#ssh_key_expiring_soon' do
-      let_it_be(:ssh_key, freeze: false) { create(:key, user: author) }
+      let_it_be_with_reload(:ssh_key) { create(:key, user: author) }
 
       context 'when given a single key' do
         it 'creates a pending todo for the user' do
@@ -1088,8 +1088,8 @@ RSpec.describe TodoService, feature_category: :notifications do
       end
 
       context 'when given an array of keys' do
-        let_it_be(:ssh_key_of_member, freeze: false) { create(:key, user: member) }
-        let_it_be(:ssh_key_of_guest, freeze: false) { create(:key, user: guest) }
+        let_it_be_with_reload(:ssh_key_of_member) { create(:key, user: member) }
+        let_it_be_with_reload(:ssh_key_of_guest) { create(:key, user: guest) }
 
         it 'creates a pending todo for each key with the correct user' do
           service.ssh_key_expiring_soon([ssh_key, ssh_key_of_member, ssh_key_of_guest])
@@ -1102,7 +1102,7 @@ RSpec.describe TodoService, feature_category: :notifications do
     end
 
     describe '#ssh_key_expired' do
-      let_it_be(:ssh_key, freeze: false) { create(:key, user: author) }
+      let_it_be_with_reload(:ssh_key) { create(:key, user: author) }
 
       context 'when given a single key' do
         it 'creates a pending todo for the user' do
@@ -1113,8 +1113,8 @@ RSpec.describe TodoService, feature_category: :notifications do
       end
 
       context 'when given an array of keys' do
-        let_it_be(:ssh_key_of_member, freeze: false) { create(:key, user: member) }
-        let_it_be(:ssh_key_of_guest, freeze: false) { create(:key, user: guest) }
+        let_it_be_with_reload(:ssh_key_of_member) { create(:key, user: member) }
+        let_it_be_with_reload(:ssh_key_of_guest) { create(:key, user: guest) }
 
         it 'creates a pending todo for each key with the correct user' do
           service.ssh_key_expired([ssh_key, ssh_key_of_member, ssh_key_of_guest])
@@ -1126,9 +1126,9 @@ RSpec.describe TodoService, feature_category: :notifications do
       end
 
       describe 'auto-resolve behavior' do
-        let_it_be(:ssh_key_2, freeze: false) { create(:key, user: author) }
-        let_it_be(:todo_for_expiring_key_1, freeze: false) { create(:todo, target: ssh_key, action: Todo::SSH_KEY_EXPIRING_SOON, user: author) }
-        let_it_be(:todo_for_expiring_key_2, freeze: false) { create(:todo, target: ssh_key_2, action: Todo::SSH_KEY_EXPIRING_SOON, user: author) }
+        let_it_be_with_reload(:ssh_key_2) { create(:key, user: author) }
+        let_it_be_with_reload(:todo_for_expiring_key_1) { create(:todo, target: ssh_key, action: Todo::SSH_KEY_EXPIRING_SOON, user: author) }
+        let_it_be_with_reload(:todo_for_expiring_key_2) { create(:todo, target: ssh_key_2, action: Todo::SSH_KEY_EXPIRING_SOON, user: author) }
 
         it 'resolves the "expiring soon" todo for the same key' do
           service.ssh_key_expired(ssh_key)
@@ -1199,7 +1199,7 @@ RSpec.describe TodoService, feature_category: :notifications do
     end
 
     describe '#new_note' do
-      let_it_be(:project, freeze: false) { create(:project, :repository, guests: guest, developers: [author, assignee, member, john_doe, skipped]) }
+      let_it_be_with_reload(:project) { create(:project, :repository, guests: guest, developers: [author, assignee, member, john_doe, skipped]) }
       let(:mention) { john_doe.to_reference }
       let(:diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: unassigned_mr, author: author, note: "Hey #{mention}") }
       let(:addressed_diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: unassigned_mr, author: author, note: "#{mention}, hey!") }
@@ -1286,11 +1286,13 @@ RSpec.describe TodoService, feature_category: :notifications do
       )
     end
 
-    before do
-      enable_design_management
-
+    before_all do
       project.add_guest(author)
       project.add_developer(john_doe)
+    end
+
+    before do
+      enable_design_management
     end
 
     it 'creates a todo for mentioned user on new diff note' do
@@ -1306,7 +1308,7 @@ RSpec.describe TodoService, feature_category: :notifications do
   end
 
   describe '#update_note' do
-    let_it_be(:noteable, freeze: false) { create(:issue, project: project) }
+    let_it_be_with_reload(:noteable) { create(:issue, project: project) }
 
     let(:note) { create(:note, project: project, note: mentions, noteable: noteable) }
     let(:addressed_note) { create(:note, project: project, note: directly_addressed.to_s, noteable: noteable) }
@@ -1464,16 +1466,16 @@ RSpec.describe TodoService, feature_category: :notifications do
   end
 
   describe '#resolve_access_request_todos' do
-    let_it_be(:group, freeze: false) { create(:group, :public) }
-    let_it_be(:group_requester, freeze: false) { create(:group_member, :access_request, group: group, user: assignee) }
-    let_it_be(:project_requester, freeze: false) { create(:project_member, :access_request, project: project, user: non_member) }
-    let_it_be(:another_pending_todo, freeze: false) { create(:todo, state: :pending, user: john_doe) }
+    let_it_be_with_reload(:group) { create(:group, :public) }
+    let_it_be_with_reload(:group_requester) { create(:group_member, :access_request, group: group, user: assignee) }
+    let_it_be_with_reload(:project_requester) { create(:project_member, :access_request, project: project, user: non_member) }
+    let_it_be_with_reload(:another_pending_todo) { create(:todo, state: :pending, user: john_doe) }
     # access request by another user
-    let_it_be(:another_group_todo, freeze: false) do
+    let_it_be_with_reload(:another_group_todo) do
       create(:todo, state: :pending, target: group, action: Todo::MEMBER_ACCESS_REQUESTED)
     end
 
-    let_it_be(:another_project_todo, freeze: false) do
+    let_it_be_with_reload(:another_project_todo) do
       create(:todo, state: :pending, target: project, action: Todo::MEMBER_ACCESS_REQUESTED)
     end
 
@@ -1565,8 +1567,8 @@ RSpec.describe TodoService, feature_category: :notifications do
   end
 
   describe '#create_member_access_request_todos' do
-    let_it_be(:group, freeze: false) { create(:group, :public) }
-    let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
+    let_it_be_with_reload(:group) { create(:group, :public) }
+    let_it_be_with_reload(:project) { create(:project, :public, group: group) }
 
     shared_examples 'member access request is raised' do
       context 'when the source has more than 10 owners' do
@@ -1632,25 +1634,25 @@ RSpec.describe TodoService, feature_category: :notifications do
 
     context 'when request is raised for group' do
       it_behaves_like 'member access request is raised' do
-        let_it_be(:source, freeze: false) { create(:group, :public) }
-        let_it_be(:requester1, freeze: false) { create(:group_member, :access_request, group: source, user: assignee) }
-        let_it_be(:requester2, freeze: false) { create(:group_member, :access_request, group: source, user: non_member) }
+        let_it_be_with_reload(:source) { create(:group, :public) }
+        let_it_be_with_reload(:requester1) { create(:group_member, :access_request, group: source, user: assignee) }
+        let_it_be_with_reload(:requester2) { create(:group_member, :access_request, group: source, user: non_member) }
       end
     end
 
     context 'when request is raised for project' do
       it_behaves_like 'member access request is raised' do
-        let_it_be(:source, freeze: false) { create(:project, :public) }
-        let_it_be(:requester1, freeze: false) { create(:project_member, :access_request, project: source, user: assignee) }
-        let_it_be(:requester2, freeze: false) { create(:project_member, :access_request, project: source, user: non_member) }
+        let_it_be_with_reload(:source) { create(:project, :public) }
+        let_it_be_with_reload(:requester1) { create(:project_member, :access_request, project: source, user: assignee) }
+        let_it_be_with_reload(:requester2) { create(:project_member, :access_request, project: source, user: non_member) }
       end
     end
   end
 
   describe 'composite identity attribution', :request_store do
-    let_it_be(:service_account, freeze: false) { create(:user, :service_account, composite_identity_enforced: true, developer_of: project) }
-    let_it_be(:human, freeze: false) { create(:user, developer_of: project) }
-    let_it_be(:assignee_user, freeze: false) { create(:user, developer_of: project) }
+    let_it_be_with_reload(:service_account) { create(:user, :service_account, composite_identity_enforced: true, developer_of: project) }
+    let_it_be_with_reload(:human) { create(:user, developer_of: project) }
+    let_it_be_with_reload(:assignee_user) { create(:user, developer_of: project) }
     let_it_be_with_reload(:issue) { create(:issue, project: project, author: author, assignees: []) }
 
     context 'when service account acts via OAuth token (authentication context)' do

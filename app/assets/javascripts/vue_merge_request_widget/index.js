@@ -38,8 +38,6 @@ export default () => {
   const vm = new Vue({
     el: '#js-vue-mr-widget',
     provide: {
-      artifactsEndpoint: gl.mrWidgetData.artifacts_endpoint,
-      artifactsEndpointPlaceholder: gl.mrWidgetData.artifacts_endpoint_placeholder,
       falsePositiveDocUrl: gl.mrWidgetData.false_positive_doc_url,
       canViewFalsePositive: parseBoolean(gl.mrWidgetData.can_view_false_positive),
       canCreatePipelineInTargetProject: parseBoolean(

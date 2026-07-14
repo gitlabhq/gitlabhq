@@ -3,9 +3,13 @@ package objectstore
 import (
 	"context"
 	"io"
+	"log/slog"
 	"time"
 
-	"gitlab.com/gitlab-org/labkit/log"
+	"github.com/sirupsen/logrus"
+	logv1 "gitlab.com/gitlab-org/labkit/log"
+	"gitlab.com/gitlab-org/labkit/v2/fields"
+	logv2 "gitlab.com/gitlab-org/labkit/v2/log"
 	"gocloud.dev/blob"
 	"gocloud.dev/gcerrors"
 )
@@ -48,6 +52,13 @@ func NewGoCloudObject(p *GoCloudObjectParams) (*GoCloudObject, error) {
 // ChunkSize defines the size of each chunk for multipart upload in bytes.
 const ChunkSize = 5 * 1024 * 1024
 
+func phaseLog(ctx context.Context, phase string, start time.Time) *logrus.Entry {
+	return logv1.WithContextFields(ctx, logv1.Fields{
+		"phase":          phase,
+		fields.DurationS: time.Since(start).Seconds(),
+	})
+}
+
 // Upload uploads the content of the object to the object store.
 func (o *GoCloudObject) Upload(ctx context.Context, r io.Reader) error {
 	defer func() { _ = o.bucket.Close() }()
@@ -56,25 +67,32 @@ func (o *GoCloudObject) Upload(ctx context.Context, r io.Reader) error {
 		BufferSize:                  ChunkSize,
 		DisableContentTypeDetection: true,
 	}
+
+	start := time.Now()
 	writer, err := o.bucket.NewWriter(ctx, o.objectName, writerOptions)
 	if err != nil {
-		log.ContextLogger(ctx).WithError(err).Error("error creating GoCloud bucket")
+		phaseLog(ctx, "new_writer", start).WithError(err).Error("error creating GoCloud bucket")
 		return err
 	}
+	phaseLog(ctx, "new_writer", start).Debug("GoCloud writer created")
 
+	start = time.Now()
 	if _, err = io.Copy(writer, r); err != nil {
-		log.ContextLogger(ctx).WithError(err).Error("error writing to GoCloud bucket")
+		phaseLog(ctx, "copy", start).WithError(err).Error("error writing to GoCloud bucket")
+		closeStart := time.Now()
 		if writerErr := writer.Close(); writerErr != nil {
-			log.ContextLogger(ctx).WithError(writerErr).Error("error closing GoCloud bucket")
-			return err
+			phaseLog(ctx, "close", closeStart).WithError(writerErr).Error("error closing GoCloud bucket")
 		}
 		return err
 	}
+	phaseLog(ctx, "copy", start).Debug("GoCloud copy completed")
 
+	start = time.Now()
 	if err := writer.Close(); err != nil {
-		log.ContextLogger(ctx).WithError(err).Error("error closing GoCloud bucket")
+		phaseLog(ctx, "close", start).WithError(err).Error("error closing GoCloud bucket")
 		return err
 	}
+	phaseLog(ctx, "close", start).Debug("GoCloud writer closed (GCS finalization)")
 
 	return nil
 }
@@ -82,6 +100,11 @@ func (o *GoCloudObject) Upload(ctx context.Context, r io.Reader) error {
 // ETag returns the entity tag of the object.
 func (o *GoCloudObject) ETag() string {
 	return ""
+}
+
+// Strategy returns the name identifying the upload backend, used for logging.
+func (o *GoCloudObject) Strategy() string {
+	return "gocloud"
 }
 
 // Abort aborts the multipart upload.
@@ -104,13 +127,13 @@ func (o *GoCloudObject) Delete() {
 
 	bucket, err := o.mux.OpenBucket(deleteCtx, o.bucketURL)
 	if err != nil {
-		log.WithError(err).Error("error opening bucket for delete")
+		slog.Error("error opening bucket for delete", logv2.Error(err))
 		return
 	}
 
 	if err := bucket.Delete(deleteCtx, o.objectName); err != nil {
 		if gcerrors.Code(err) != gcerrors.NotFound {
-			log.WithError(err).Error("error deleting object")
+			slog.Error("error deleting object", logv2.Error(err))
 		}
 	}
 }

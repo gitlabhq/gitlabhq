@@ -20,6 +20,9 @@ module API
       expose(:archived, documentation: { type: 'Boolean' }) { |group, _options| group.self_or_ancestors_archived? }
       expose :math_rendering_limits_enabled, documentation: { type: 'Boolean' }
       expose :lock_math_rendering_limits_enabled, documentation: { type: 'Boolean' }
+      expose(:crm_enabled, documentation: { type: 'Boolean' }) { |group, _options| group.crm_enabled? }
+      expose :resource_access_token_notify_inherited, documentation: { type: 'Boolean' }
+      expose :lock_resource_access_token_notify_inherited, documentation: { type: 'Boolean' }
       expose :default_branch_name, as: :default_branch
       expose :default_branch_protection, documentation: { type: 'Integer' }
       expose :default_branch_protection_settings, as: :default_branch_protection_defaults
@@ -30,7 +33,7 @@ module API
       expose :full_name, :full_path
       expose :created_at
       expose :parent_id
-      expose :organization_id, documentation: { type: 'Integer' }
+      expose :organization_id, documentation: { type: 'Integer', format: 'int64' }
       expose :shared_runners_setting
       expose :max_artifacts_size, documentation: { type: 'Integer' }
 

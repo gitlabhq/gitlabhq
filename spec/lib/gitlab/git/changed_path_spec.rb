@@ -94,4 +94,54 @@ RSpec.describe Gitlab::Git::ChangedPath, feature_category: :source_code_manageme
       it { is_expected.to eq true }
     end
   end
+
+  describe '.from_diff' do
+    let(:new_file) { false }
+    let(:deleted_file) { false }
+    let(:renamed_file) { false }
+    let(:old_path) { 'old_foo.rb' }
+
+    let(:diff) do
+      instance_double(
+        Gitlab::Git::Diff,
+        new_file?: new_file, deleted_file?: deleted_file, renamed_file?: renamed_file,
+        new_path: 'foo.rb', old_path: old_path, a_mode: '100644', b_mode: '100755'
+      )
+    end
+
+    subject(:from_diff) { described_class.from_diff(diff) }
+
+    it 'maps the diff metadata onto a changed path' do
+      expect(from_diff).to have_attributes(
+        path: 'foo.rb',
+        old_path: 'old_foo.rb',
+        old_mode: '100644',
+        new_mode: '100755',
+        status: :MODIFIED
+      )
+    end
+
+    context 'when the diff is a new file' do
+      let(:new_file) { true }
+      let(:old_path) { '' }
+
+      it { is_expected.to be_new_file }
+
+      it 'falls back to the new path when the diff has a blank old path' do
+        expect(from_diff.old_path).to eq('foo.rb')
+      end
+    end
+
+    context 'when the diff is a deleted file' do
+      let(:deleted_file) { true }
+
+      it { is_expected.to be_deleted_file }
+    end
+
+    context 'when the diff is a renamed file' do
+      let(:renamed_file) { true }
+
+      it { is_expected.to be_renamed_file }
+    end
+  end
 end

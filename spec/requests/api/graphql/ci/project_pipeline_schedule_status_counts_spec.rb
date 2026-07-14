@@ -6,7 +6,7 @@ RSpec.describe 'Query.project.pipelineScheduleStatusCounts',
   feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
+  let_it_be_with_reload(:project) { create(:project, :repository, :public) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:stranger) { create(:user) }
 

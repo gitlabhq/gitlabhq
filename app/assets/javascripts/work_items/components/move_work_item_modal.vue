@@ -2,6 +2,8 @@
 import {
   GlModal,
   GlCollapsibleListbox,
+  GlFormGroup,
+  GlFormSelect,
   GlTooltipDirective as GlTooltip,
   GlAlert,
 } from '@gitlab/ui';
@@ -12,11 +14,13 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { findHierarchyWidget } from '~/work_items/utils';
 import moveIssueMutation from '~/sidebar/queries/move_issue.mutation.graphql';
 import searchUserProjectsToMove from '~/work_items/graphql/search_user_projects_to_move.query.graphql';
+import workItemMoveTargetsQuery from '~/work_items/graphql/work_item_move_targets.query.graphql';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import { DEFAULT_PAGE_SIZE_CHILD_ITEMS } from '~/work_items/constants';
 
 export default {
-  components: { GlModal, GlCollapsibleListbox, GlAlert },
+  name: 'MoveWorkItemModal',
+  components: { GlModal, GlCollapsibleListbox, GlFormGroup, GlFormSelect, GlAlert },
   directives: {
     GlTooltip,
   },
@@ -43,6 +47,11 @@ export default {
       type: String,
       required: true,
     },
+    workItemTypeId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   emits: ['hideModal'],
   actionCancel: {
@@ -53,13 +62,16 @@ export default {
       isModalVisible: false,
       shouldFetch: false,
       projects: [],
+      moveTarget: null,
       selectedProjectId: null,
+      selectedTargetTypeId: null,
       noResultsText: '',
       searchTerm: '',
       moveInProgress: false,
       hasChildren: false,
       errorFetchingChildren: false,
       showErrorMessage: false,
+      errorMessage: '',
     };
   },
   apollo: {
@@ -88,6 +100,25 @@ export default {
         this.noResultsText = __('Failed to load projects');
       },
     },
+    moveTarget: {
+      query: workItemMoveTargetsQuery,
+      variables() {
+        return {
+          targetFullPath: this.selectedProjectFullPath,
+          sourceFullPath: this.fullPath,
+          sourceTypeIds: [this.workItemTypeId],
+        };
+      },
+      skip() {
+        return !this.selectedProjectFullPath || !this.fullPath || !this.workItemTypeId;
+      },
+      update(data) {
+        return data?.namespace?.workItemMoveTargets?.[0] ?? null;
+      },
+      result() {
+        this.selectedTargetTypeId = this.moveTarget?.suggestedTargetType?.id ?? null;
+      },
+    },
     hasChildren: {
       query: getWorkItemTreeQuery,
       variables() {
@@ -114,6 +145,9 @@ export default {
     isLoadingProjects() {
       return this.$apollo.queries.projects.loading;
     },
+    isLoadingMoveTargets() {
+      return this.$apollo.queries.moveTarget.loading;
+    },
     listboxItems() {
       // Remove current project from the list as issue already belongs to it
       return this.projects
@@ -127,11 +161,28 @@ export default {
     selectedProjectNamespace() {
       return this.projects?.find((project) => project?.id === this.selectedProjectId);
     },
+    selectedProjectFullPath() {
+      return this.selectedProjectNamespace?.fullPath;
+    },
     namespaceNameText() {
       return this.selectedProjectNamespace?.nameWithNamespace || s__('WorkItem|Select project');
     },
     namespaceFullPathText() {
-      return this.selectedProjectNamespace?.fullPath;
+      return this.selectedProjectFullPath;
+    },
+    validTargetTypes() {
+      return this.moveTarget?.validTargetTypes ?? [];
+    },
+    targetTypeSelectOptions() {
+      return this.validTargetTypes.map((type) => ({ value: type.id, text: type.name }));
+    },
+    showTypeSelector() {
+      return Boolean(this.selectedProjectId && this.workItemTypeId);
+    },
+    noValidTargetTypes() {
+      return (
+        this.showTypeSelector && !this.isLoadingMoveTargets && this.validTargetTypes.length === 0
+      );
     },
     actionPrimary() {
       return {
@@ -154,10 +205,25 @@ export default {
         this.isModalVisible = visible;
       },
     },
+    selectedProjectId() {
+      // Clear stale data so the dropdown doesn't briefly show the previous
+      // project's options while the new query is in flight. Both will be
+      // reapplied once the moveTargets query resolves.
+      this.moveTarget = null;
+      this.selectedTargetTypeId = null;
+      this.showErrorMessage = false;
+    },
+    selectedTargetTypeId(value) {
+      // Clear the "select a type" validation error once the user picks one.
+      if (value) {
+        this.showErrorMessage = false;
+      }
+    },
   },
   methods: {
     hideModal() {
       this.selectedProjectId = null;
+      this.selectedTargetTypeId = null;
       this.$emit('hideModal');
       this.isModalVisible = false;
       this.showErrorMessage = false;
@@ -173,6 +239,12 @@ export default {
     async moveIssue(event) {
       event.preventDefault();
 
+      if (this.showTypeSelector && !this.selectedTargetTypeId) {
+        this.errorMessage = s__('WorkItem|Select a type before moving this item.');
+        this.showErrorMessage = true;
+        return;
+      }
+
       this.moveInProgress = true;
 
       const targetProjectPath = this.listboxItems?.find(
@@ -187,6 +259,9 @@ export default {
               projectPath: this.fullPath,
               iid: this.workItemIid,
               targetProjectPath,
+              ...(this.selectedTargetTypeId
+                ? { targetWorkItemTypeId: this.selectedTargetTypeId }
+                : {}),
             },
           },
         });
@@ -194,6 +269,7 @@ export default {
         const { errors } = data.issueMove;
 
         if (!data.issueMove || errors?.length) {
+          this.errorMessage = __('Could not be moved. Select another project or try again.');
           this.showErrorMessage = true;
           if (errors) {
             Sentry.captureException(errors[0].message);
@@ -203,6 +279,7 @@ export default {
           visitUrl(data.issueMove?.issue?.webUrl);
         }
       } catch (error) {
+        this.errorMessage = __('Could not be moved. Select another project or try again.');
         this.showErrorMessage = true;
         Sentry.captureException(error);
       } finally {
@@ -231,7 +308,7 @@ export default {
       variant="danger"
       @dismiss="showErrorMessage = false"
     >
-      {{ __('Could not be moved. Select another project or try again.') }}
+      {{ errorMessage }}
     </gl-alert>
 
     <p class="gl-mb-2 gl-font-bold">{{ __('Project') }}</p>
@@ -260,6 +337,35 @@ export default {
     >
       {{ namespaceFullPathText }}
     </p>
+
+    <gl-form-group
+      v-if="showTypeSelector"
+      class="gl-mb-0 gl-mt-4"
+      :label="s__('WorkItem|Type')"
+      label-for="move-work-item-type-select"
+    >
+      <gl-form-select
+        id="move-work-item-type-select"
+        v-model="selectedTargetTypeId"
+        data-testid="move-work-item-type-select"
+        :options="targetTypeSelectOptions"
+        :disabled="isLoadingMoveTargets || noValidTargetTypes || moveInProgress"
+      />
+    </gl-form-group>
+
+    <gl-alert
+      v-if="noValidTargetTypes"
+      class="gl-mt-3"
+      variant="warning"
+      :dismissible="false"
+      data-testid="no-valid-target-types-alert"
+    >
+      {{
+        s__(
+          'WorkItem|The selected project does not support this work item type. Choose another project.',
+        )
+      }}
+    </gl-alert>
 
     <p v-if="showChildrenWarning" data-testid="child-items-warning">
       {{ __('All child items will also be moved to the selected location.') }}

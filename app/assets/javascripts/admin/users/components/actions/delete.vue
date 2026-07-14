@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlDisclosureDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
@@ -7,6 +6,7 @@ import { SOLO_OWNED_ORGANIZATIONS_EMPTY } from '~/admin/users/constants';
 import eventHub, { EVENT_OPEN_DELETE_USER_MODAL } from '../modals/delete_user_modal_event_hub';
 
 export default {
+  name: 'UsersDelete',
   i18n: {
     loading: __('Loading'),
   },

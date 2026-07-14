@@ -46,6 +46,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_snippet, boundary_type: :project
       get ":id/snippets", urgency: :low do
         authenticate!
 
@@ -62,6 +63,7 @@ module API
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
+      route_setting :authorization, permissions: :read_snippet, boundary_type: :project
       get ":id/snippets/:snippet_id" do
         snippet = snippets_for_current_user.find(params[:snippet_id])
 
@@ -87,6 +89,7 @@ module API
           desc: 'The visibility of the snippet'
         use :create_file_params
       end
+      route_setting :authorization, permissions: :create_snippet, boundary_type: :project
       post ":id/snippets" do
         authenticate!
 
@@ -129,6 +132,7 @@ module API
         use :minimum_update_params
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :update_snippet, boundary_type: :project
       put ":id/snippets/:snippet_id" do
         authenticate!
 
@@ -166,6 +170,7 @@ module API
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :delete_snippet, boundary_type: :project
       delete ":id/snippets/:snippet_id" do
         authenticate!
 
@@ -197,6 +202,7 @@ module API
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_snippet, boundary_type: :project
       get ":id/snippets/:snippet_id/raw" do
         snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
         not_found!('Snippet') unless snippet
@@ -212,8 +218,11 @@ module API
         tags %w[snippets]
       end
       params do
+        requires :ref, type: String, desc: 'The name of branch, tag or commit'
+        requires :file_path, type: String, file_path: true, desc: 'The URL-encoded path to the file, like lib%2Fclass%2Erb'
         use :raw_file_params
       end
+      route_setting :authorization, permissions: :read_snippet, boundary_type: :project
       get ":id/snippets/:snippet_id/files/:ref/:file_path/raw", requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
         snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
         not_found!('Snippet') unless snippet&.repo_exists?
@@ -233,6 +242,7 @@ module API
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_snippet_user_agent_detail, boundary_type: :instance
       get ":id/snippets/:snippet_id/user_agent_detail" do
         authenticated_as_admin!
 

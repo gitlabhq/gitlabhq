@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlBadge, GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlButton, GlButtonGroup, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { head, tail } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { s__, sprintf } from '~/locale';
@@ -17,6 +17,7 @@ export default {
     ActionBtn,
     GlBadge,
     GlButton,
+    GlButtonGroup,
     GlIcon,
   },
   directives: {
@@ -191,7 +192,8 @@ export default {
       </div>
       <div class="table-mobile-content key-created-at gl-text-subtle">
         <span v-gl-tooltip :title="tooltipTitle(deployKey.createdAt)">
-          <gl-icon name="calendar" /> <span>{{ timeFormatted(deployKey.createdAt) }}</span>
+          <gl-icon name="calendar" />
+          <time :datetime="deployKey.createdAt">{{ timeFormatted(deployKey.createdAt) }}</time>
         </span>
       </div>
     </div>
@@ -206,7 +208,8 @@ export default {
           :title="tooltipTitle(deployKey.expiresAt)"
           data-testid="expires-at-tooltip"
         >
-          <gl-icon name="calendar" /> <span>{{ timeFormatted(deployKey.expiresAt) }}</span>
+          <gl-icon name="calendar" />
+          <time :datetime="deployKey.expiresAt">{{ timeFormatted(deployKey.expiresAt) }}</time>
         </span>
         <span v-else>
           <span data-testid="expires-never">{{ __('Never') }}</span>
@@ -214,7 +217,7 @@ export default {
       </div>
     </div>
     <div class="table-section section-10 table-button-footer deploy-key-actions">
-      <div class="btn-group table-action-buttons">
+      <gl-button-group class="table-action-buttons">
         <action-btn
           v-if="!isEnabled"
           :deploy-key="deployKey"
@@ -258,7 +261,7 @@ export default {
           category="secondary"
           variant="danger"
         />
-      </div>
+      </gl-button-group>
     </div>
   </div>
 </template>

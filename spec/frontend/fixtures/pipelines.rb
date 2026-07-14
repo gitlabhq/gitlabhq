@@ -9,54 +9,37 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
 
   let_it_be(:namespace, freeze: false) { create(:namespace, name: 'frontend-fixtures') }
   let_it_be(:project, freeze: false) { create(:project, :repository, namespace: namespace, path: 'pipelines-project') }
-  let_it_be(:commit_without_author, freeze: false) { RepoHelpers.another_sample_commit }
-
-  let!(:pipeline_without_author) { create(:ci_pipeline, project: project, sha: commit_without_author.id) }
-  let!(:test_stage_no_author) { create(:ci_stage, name: 'test', pipeline: pipeline_without_author, project: project) }
-  let!(:build_pipeline_without_author) do
-    create(:ci_build, pipeline: pipeline_without_author, ci_stage: test_stage_no_author)
-  end
-
-  let_it_be(:pipeline_without_commit, freeze: false) do
-    create(:ci_pipeline, status: :success, project: project, sha: '0000')
-  end
-
-  let!(:test_stage_no_commit) do
-    create(:ci_stage, name: 'test', pipeline: pipeline_without_commit, project: pipeline_without_commit.project)
-  end
-
-  let!(:build_pipeline_without_commit) do
-    create(:ci_build, pipeline: pipeline_without_commit, ci_stage: test_stage_no_commit)
-  end
 
   let(:commit) { create(:commit, project: project) }
   let(:user) { create(:user, developer_of: project, email: commit.author_email) }
-  let!(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project, sha: commit.id, user: user) }
-
-  let!(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline, project: pipeline.project) }
-  let!(:deploy_stage) { create(:ci_stage, name: 'deploy', pipeline: pipeline, project: pipeline.project) }
-  let!(:test_stage) { pipeline.stage('test') }
-
-  let!(:build_success) { create(:ci_build, pipeline: pipeline, ci_stage: build_stage) }
-  let!(:build_test) { create(:ci_build, pipeline: pipeline, ci_stage: test_stage) }
-  let!(:build_deploy_failed) { create(:ci_build, status: :failed, pipeline: pipeline, ci_stage: deploy_stage) }
-
-  let(:bridge) { create(:ci_bridge, pipeline: pipeline) }
-  let(:retried_bridge) { create(:ci_bridge, :retried, pipeline: pipeline) }
-
-  let(:downstream_pipeline) { create(:ci_pipeline, :with_job) }
-  let(:retried_downstream_pipeline) { create(:ci_pipeline, :with_job) }
-  let!(:ci_sources_pipeline) { create(:ci_sources_pipeline, pipeline: downstream_pipeline, source_job: bridge) }
-  let!(:retried_ci_sources_pipeline) do
-    create(:ci_sources_pipeline, pipeline: retried_downstream_pipeline, source_job: retried_bridge)
-  end
 
   before do
     sign_in(user)
-    project.add_developer(user)
   end
 
   it 'pipelines/pipelines.json' do
+    # A pipeline whose sha resolves to no commit.
+    no_commit_pipeline = create(:ci_pipeline, status: :success, project: project, sha: '0000')
+    no_commit_stage = create(:ci_stage, name: 'test', pipeline: no_commit_pipeline, project: project)
+    create(:ci_build, pipeline: no_commit_pipeline, ci_stage: no_commit_stage)
+
+    # A pipeline whose commit has no author.
+    no_author_pipeline = create(:ci_pipeline, project: project, sha: RepoHelpers.another_sample_commit.id)
+    no_author_stage = create(:ci_stage, name: 'test', pipeline: no_author_pipeline, project: project)
+    create(:ci_build, pipeline: no_author_pipeline, ci_stage: no_author_stage)
+
+    # The latest pipeline: full commit + author, three stages, and two downstream pipelines.
+    pipeline = create(:ci_pipeline, :with_test_reports, project: project, sha: commit.id, user: user)
+    build_stage = create(:ci_stage, name: 'build', pipeline: pipeline, project: project)
+    deploy_stage = create(:ci_stage, name: 'deploy', pipeline: pipeline, project: project)
+    create(:ci_build, pipeline: pipeline, ci_stage: build_stage)
+    create(:ci_build, pipeline: pipeline, ci_stage: pipeline.stage('test'))
+    create(:ci_build, status: :failed, pipeline: pipeline, ci_stage: deploy_stage)
+    create(:ci_sources_pipeline,
+      pipeline: create(:ci_pipeline, :with_job), source_job: create(:ci_bridge, pipeline: pipeline))
+    create(:ci_sources_pipeline,
+      pipeline: create(:ci_pipeline, :with_job), source_job: create(:ci_bridge, :retried, pipeline: pipeline))
+
     get :index, params: {
       namespace_id: namespace,
       project_id: project
@@ -66,6 +49,8 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
   end
 
   it "pipelines/test_report.json" do
+    pipeline = create(:ci_pipeline, :with_test_reports, project: project, sha: commit.id, user: user)
+
     get :test_report, params: {
       namespace_id: namespace,
       project_id: project,
@@ -77,7 +62,6 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
 
   describe GraphQL::Query, type: :request do
     fixtures_path = 'graphql/pipelines/'
-    let(:base_pipeline) { create(:ci_pipeline, project: project, sha: '0000') }
 
     def queries
       {
@@ -92,45 +76,56 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
         ),
         summary: get_graphql_query_as_string(
           "ci/common/pipeline_summary/graphql/queries/get_pipeline_summary.query.graphql"
+        ),
+        pipelines: get_graphql_query_as_string(
+          "ci/pipelines_page/graphql/queries/get_pipelines.query.graphql"
+        ),
+        single_pipeline: get_graphql_query_as_string(
+          "ci/pipelines_page/graphql/queries/get_single_pipeline.query.graphql"
+        ),
+        commit_pipelines: get_graphql_query_as_string(
+          "ci/commit/graphql/queries/get_commit_pipelines.query.graphql"
         )
       }
     end
 
     it "#{fixtures_path}get_pipeline_actions.query.graphql.json" do
-      stages = {
-        build: create(:ci_stage, name: 'build', pipeline: base_pipeline, project: base_pipeline.project),
-        test: create(:ci_stage, name: 'test', pipeline: base_pipeline, project: base_pipeline.project)
-      }
+      pipeline = create(:ci_pipeline, project: project, sha: '0000')
+      build_stage = create(:ci_stage, name: 'build', pipeline: pipeline, project: pipeline.project)
+      test_stage = create(:ci_stage, name: 'test', pipeline: pipeline, project: pipeline.project)
 
-      create(:ci_build, :scheduled, pipeline: base_pipeline, ci_stage: stages[:test])
-      create(:ci_build, :manual, pipeline: base_pipeline, ci_stage: stages[:build])
-      create(:ci_build, :manual, :skipped, pipeline: base_pipeline, ci_stage: stages[:build])
+      create(:ci_build, :scheduled, pipeline: pipeline, ci_stage: test_stage)
+      create(:ci_build, :manual, pipeline: pipeline, ci_stage: build_stage)
+      create(:ci_build, :manual, :skipped, pipeline: pipeline, ci_stage: build_stage)
 
       post_graphql(
         queries[:actions],
         current_user: user,
-        variables: { fullPath: project.full_path, iid: base_pipeline.iid }
+        variables: { fullPath: project.full_path, iid: pipeline.iid }
       )
 
       expect_graphql_errors_to_be_empty
     end
 
     it "#{fixtures_path}get_downstream_pipeline_jobs.query.graphql.json" do
-      stage = create(:ci_stage, name: 'test', pipeline: base_pipeline, project: base_pipeline.project)
-      create(:ci_build, pipeline: base_pipeline, ci_stage: stage, name: 'test_job')
-      create(:ci_build, :retried, pipeline: base_pipeline, ci_stage: stage, name: 'test_job')
-      create(:ci_build, pipeline: base_pipeline, ci_stage: stage, name: 'another_test_job')
+      pipeline = create(:ci_pipeline, project: project, sha: '0000')
+      stage = create(:ci_stage, name: 'test', pipeline: pipeline, project: pipeline.project)
+      create(:ci_build, pipeline: pipeline, ci_stage: stage, name: 'test_job')
+      create(:ci_build, :retried, pipeline: pipeline, ci_stage: stage, name: 'test_job')
+      create(:ci_build, pipeline: pipeline, ci_stage: stage, name: 'another_test_job')
 
       post_graphql(
         queries[:downstream_jobs],
         current_user: user,
-        variables: { fullPath: project.full_path, iid: base_pipeline.iid, retried: false }
+        variables: { fullPath: project.full_path, iid: pipeline.iid, retried: false }
       )
 
       expect_graphql_errors_to_be_empty
     end
 
     it "#{fixtures_path}get_pipeline_iid.query.graphql.json" do
+      create(:ci_pipeline, project: project, sha: commit.id)
+
       post_graphql(
         queries[:iid],
         current_user: user,
@@ -141,13 +136,74 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
     end
 
     it "#{fixtures_path}get_pipeline_summary.query.graphql.json" do
-      commit = create(:commit, project: project)
-      base_pipeline.update!(sha: commit.id, user: user, finished_at: 1.hour.ago)
+      pipeline = create(:ci_pipeline, project: project, sha: '0000')
+      summary_commit = create(:commit, project: project)
+      pipeline.update!(sha: summary_commit.id, user: user, finished_at: 1.hour.ago)
 
       post_graphql(
         queries[:summary],
         current_user: user,
-        variables: { fullPath: project.full_path, iid: base_pipeline.iid, includeCommitInfo: true }
+        variables: { fullPath: project.full_path, iid: pipeline.iid, includeCommitInfo: true }
+      )
+
+      expect_graphql_errors_to_be_empty
+    end
+
+    it "#{fixtures_path}get_pipelines.query.graphql.json" do
+      # An older pipeline so `first: 2` leaves a second page (exercises pagination)
+      create(:ci_pipeline, :with_job, project: project)
+
+      # One pipeline triggers another so the two returned rows exercise both mini-graph links:
+      # the parent gets a downstream, the child an upstream.
+      parent_pipeline = create(:ci_pipeline, :with_job, project: project)
+      parent_bridge = create(:ci_bridge, pipeline: parent_pipeline)
+      child_pipeline = create(:ci_pipeline, :with_job, project: project)
+      create(:ci_sources_pipeline, pipeline: child_pipeline, source_job: parent_bridge)
+
+      post_graphql(
+        queries[:pipelines],
+        current_user: user,
+        variables: { fullPath: project.full_path, first: 2 }
+      )
+
+      expect_graphql_errors_to_be_empty
+    end
+
+    it "#{fixtures_path}get_single_pipeline.query.graphql.json" do
+      pipeline = create(:ci_pipeline, :with_test_reports, project: project, sha: commit.id, user: user)
+      build_stage = create(:ci_stage, name: 'build', pipeline: pipeline, project: project)
+      deploy_stage = create(:ci_stage, name: 'deploy', pipeline: pipeline, project: project)
+      create(:ci_build, pipeline: pipeline, ci_stage: build_stage)
+      create(:ci_build, pipeline: pipeline, ci_stage: pipeline.stage('test'))
+      create(:ci_build, status: :failed, pipeline: pipeline, ci_stage: deploy_stage)
+
+      post_graphql(
+        queries[:single_pipeline],
+        current_user: user,
+        variables: { fullPath: project.full_path, id: pipeline.to_global_id.to_s }
+      )
+
+      expect_graphql_errors_to_be_empty
+    end
+
+    it "#{fixtures_path}get_commit_pipelines.query.graphql.json" do
+      # The latest pipeline for the commit: full commit + author, stages with builds, and a
+      # downstream pipeline created in the same project so its nested nodes are readable.
+      pipeline = create(:ci_pipeline, :with_test_reports, project: project, sha: commit.id, user: user)
+      build_stage = create(:ci_stage, name: 'build', pipeline: pipeline, project: project)
+      create(:ci_build, pipeline: pipeline, ci_stage: build_stage)
+      create(:ci_build, pipeline: pipeline, ci_stage: pipeline.stage('test'))
+      create(:ci_sources_pipeline,
+        pipeline: create(:ci_pipeline, :with_job, project: project),
+        source_job: create(:ci_bridge, pipeline: pipeline))
+
+      # An older pipeline for the same commit so the connection returns two rows.
+      create(:ci_pipeline, :with_job, project: project, sha: commit.id, user: user)
+
+      post_graphql(
+        queries[:commit_pipelines],
+        current_user: user,
+        variables: { fullPath: project.full_path, sha: commit.sha, first: 20 }
       )
 
       expect_graphql_errors_to_be_empty

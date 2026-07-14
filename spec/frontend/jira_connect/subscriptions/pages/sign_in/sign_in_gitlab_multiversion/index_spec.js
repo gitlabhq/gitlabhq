@@ -1,4 +1,6 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -14,8 +16,9 @@ import {
   I18N_UPDATE_INSTALLATION_ERROR_MESSAGE,
   FAILED_TO_UPDATE_DOC_LINK,
 } from '~/jira_connect/subscriptions/constants';
-import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
-import createStore from '~/jira_connect/subscriptions/store';
+import { useJiraConnectSubscriptions } from '~/jira_connect/subscriptions/store';
+
+Vue.use(PiniaVuePlugin);
 
 jest.mock('~/jira_connect/subscriptions/api', () => {
   return {
@@ -37,9 +40,9 @@ describe('SignInGitlabMultiversion', () => {
   const findSubtitle = () => wrapper.findByTestId('subtitle');
 
   const createComponent = () => {
-    store = createStore();
-    jest.spyOn(store, 'commit');
-    wrapper = shallowMountExtended(SignInGitlabMultiversion, { store });
+    const pinia = createTestingPinia();
+    store = useJiraConnectSubscriptions();
+    wrapper = shallowMountExtended(SignInGitlabMultiversion, { pinia });
   };
 
   describe('when version is not selected', () => {
@@ -70,7 +73,7 @@ describe('SignInGitlabMultiversion', () => {
             ${'with a server `errors` field'}  | ${{ response: { data: { errors: 'Bad instance URL' } } }} | ${'Bad instance URL'}
             ${'with a server `message` field'} | ${{ response: { data: { message: 'Unreachable' } } }}     | ${'Unreachable'}
             ${'with no response body'}         | ${new Error('network')}                                   | ${I18N_UPDATE_INSTALLATION_ERROR_MESSAGE}
-          `('commits SET_ALERT $scenario', async ({ rejectedValue, expectedMessage }) => {
+          `('sets an alert $scenario', async ({ rejectedValue, expectedMessage }) => {
             updateInstallation.mockRejectedValue(rejectedValue);
 
             createComponent();
@@ -78,7 +81,7 @@ describe('SignInGitlabMultiversion', () => {
             findVersionSelectForm().vm.$emit('submit', mockBasePath);
             await waitForPromises();
 
-            expect(store.commit).toHaveBeenCalledWith(SET_ALERT, {
+            expect(store.setAlert).toHaveBeenCalledWith({
               message: expectedMessage,
               linkUrl: FAILED_TO_UPDATE_DOC_LINK,
               variant: 'danger',

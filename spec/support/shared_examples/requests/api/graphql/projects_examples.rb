@@ -130,7 +130,7 @@ RSpec.shared_examples 'getting a collection of projects' do
       end
     end
 
-    it 'avoids N+1 queries', :use_sql_query_cache, :clean_gitlab_redis_cache do
+    it 'avoids N+1 queries', :use_sql_query_cache, :clean_gitlab_redis_cache, :request_store do
       post_graphql(single_project_query, current_user: current_user)
 
       control = ActiveRecord::QueryRecorder.new(skip_cached: false, query_recorder_debug: true) do
@@ -183,24 +183,15 @@ RSpec.shared_examples 'getting a collection of projects' do
   end
 
   context 'when providing the trending argument' do
-    let_it_be(:trending_project1, freeze: false) { create(:project, :public, group: group) }
-    let_it_be(:trending_project2, freeze: false) { create(:project, :public, group: group) }
     let_it_be(:test_project, freeze: false) { create(:project, :public, group: group) }
 
     let(:filters) { { trending: true } }
-
-    before do
-      create(:trending_project, project: trending_project1)
-      create(:trending_project, project: trending_project2)
-    end
 
     it 'ignores argument' do
       post_graphql(query, current_user: current_user)
 
       expect(graphql_data_at(field, :nodes))
         .to include(
-          a_graphql_entity_for(trending_project1),
-          a_graphql_entity_for(trending_project2),
           a_graphql_entity_for(archived_project),
           a_graphql_entity_for(test_project),
           a_graphql_entity_for(other_project)

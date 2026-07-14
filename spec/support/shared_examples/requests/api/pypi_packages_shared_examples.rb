@@ -303,6 +303,7 @@ RSpec.shared_examples 'pypi simple API endpoint' do
       end
 
       before do
+        stub_feature_flags(dependency_firewall_phase1: false)
         allow_fetch_cascade_application_setting(attribute: "pypi_package_requests_forwarding", return_value: forward)
       end
 

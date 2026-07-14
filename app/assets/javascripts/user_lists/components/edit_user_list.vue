@@ -7,6 +7,7 @@ import { useEditUserList } from '../store/edit';
 import UserListForm from './user_list_form.vue';
 
 export default {
+  name: 'EditUserList',
   components: {
     GlAlert,
     GlLoadingIcon,

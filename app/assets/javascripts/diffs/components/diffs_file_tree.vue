@@ -50,6 +50,7 @@ export default {
       default: null,
     },
   },
+  emits: ['clickFile', 'toggleFolder'],
   data() {
     return {
       treeWidth: INITIAL_TREE_WIDTH,

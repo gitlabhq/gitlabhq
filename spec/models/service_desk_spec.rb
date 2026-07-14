@@ -10,7 +10,7 @@ RSpec.describe ServiceDesk, feature_category: :service_desk do
   end
 
   describe 'enabled?' do
-    let_it_be(:parameter, freeze: false) { create(:project) }
+    let_it_be_with_reload(:parameter) { create(:project) }
 
     subject { described_class.enabled?(parameter) }
 

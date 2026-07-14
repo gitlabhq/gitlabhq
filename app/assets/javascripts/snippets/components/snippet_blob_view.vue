@@ -12,6 +12,7 @@ import {
 } from '~/blob/components/constants';
 
 export default {
+  name: 'SnippetBlobView',
   components: {
     BlobHeader,
     BlobContent,

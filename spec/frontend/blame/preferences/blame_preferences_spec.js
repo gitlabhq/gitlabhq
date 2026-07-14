@@ -1,10 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
-import {
-  GlDisclosureDropdown,
-  GlDisclosureDropdownItem,
-  GlFormCheckbox,
-  GlToggle,
-} from '@gitlab/ui';
+import { GlDisclosureDropdown, GlToggle } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BlamePreferences from '~/blame/preferences/blame_preferences.vue';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -24,18 +19,16 @@ describe('BlamePreferences', () => {
   let wrapper;
 
   const createComponent = ({ hasRevsFile = true, showAgeIndicatorToggle = true } = {}) => {
-    wrapper = shallowMount(BlamePreferences, {
+    wrapper = shallowMountExtended(BlamePreferences, {
       propsData: { hasRevsFile, showAgeIndicatorToggle },
     });
   };
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findAgeIndicatorToggle = () => wrapper.findComponent(GlToggle);
-  const findIgnoreRevsCheckbox = () => wrapper.findComponent(GlFormCheckbox);
-  const findLearnToIgnoreItem = () => {
-    const items = wrapper.findAllComponents(GlDisclosureDropdownItem);
-    return items.at(items.length - 1);
-  };
+  const findIgnoreRevsCheckbox = () => wrapper.findByTestId('ignore-revs-checkbox');
+  const findIgnoreRevsItem = () => wrapper.findByTestId('ignore-revs-item');
+  const findLearnToIgnoreItem = () => wrapper.findByTestId('learn-to-ignore-item');
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
@@ -129,8 +122,13 @@ describe('BlamePreferences', () => {
   describe('when revs file exists', () => {
     beforeEach(() => createComponent());
 
-    it('shows ignore revs checkbox', () => {
+    it('shows ignore revs checkbox inside a dropdown item', () => {
+      expect(findIgnoreRevsItem().exists()).toBe(true);
       expect(findIgnoreRevsCheckbox().text()).toBe('Ignore specific revisions');
+    });
+
+    it('renders checkbox with pointer-events-none', () => {
+      expect(findIgnoreRevsCheckbox().classes()).toContain('gl-pointer-events-none');
     });
 
     it('shows learn more button', () => {
@@ -143,6 +141,10 @@ describe('BlamePreferences', () => {
 
     it('does not show ignore revs checkbox', () => {
       expect(findIgnoreRevsCheckbox().exists()).toBe(false);
+    });
+
+    it('does not show ignore revs dropdown item', () => {
+      expect(findIgnoreRevsItem().exists()).toBe(false);
     });
 
     it('shows learn to ignore button', () => {
@@ -158,11 +160,21 @@ describe('BlamePreferences', () => {
       createComponent();
     });
 
-    it('updates URL when checkbox is checked', async () => {
-      await findIgnoreRevsCheckbox().vm.$emit('input', true);
+    it('toggles isIgnoring and navigates when item action is triggered', async () => {
+      await findIgnoreRevsItem().vm.$emit('action');
 
+      expect(urlUtils.setUrlParams).toHaveBeenCalledWith({ ignore_revs: true });
       expect(urlUtils.visitUrl).toHaveBeenCalledWith(mockUrl);
       expect(findDropdown().props('loading')).toBe(true);
+    });
+
+    it('toggles isIgnoring from true to false', async () => {
+      urlUtils.getParameterByName.mockReturnValue('true');
+      createComponent();
+
+      await findIgnoreRevsItem().vm.$emit('action');
+
+      expect(urlUtils.setUrlParams).toHaveBeenCalledWith({ ignore_revs: false });
     });
 
     it('shows checked state when URL param is true', () => {
@@ -172,11 +184,11 @@ describe('BlamePreferences', () => {
       expect(findIgnoreRevsCheckbox().attributes('checked')).toBe('true');
     });
 
-    it('shows unchecked state when URL param is false', () => {
-      urlUtils.getParameterByName.mockReturnValue('false');
+    it('shows unchecked state when URL param is absent', () => {
+      urlUtils.getParameterByName.mockReturnValue(null);
       createComponent();
 
-      expect(findIgnoreRevsCheckbox().attributes('checked')).toBe('false');
+      expect(findIgnoreRevsCheckbox().attributes('checked')).toBeUndefined();
     });
   });
 

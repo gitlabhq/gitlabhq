@@ -20,7 +20,7 @@ RSpec.shared_context 'with claiming tools' do
     instance.class.cells_claims_attributes.filter_map do |attribute, config|
       value = only[attribute]
       next unless only.empty? || value
-      next unless instance.__send__(:cells_claims_attribute_claimable?, config)
+      next unless instance.__send__(:cells_claims_attribute_claimable?, attribute, config)
 
       claims_records_attribute_for(instance, attribute, config, value)
     end
@@ -30,7 +30,7 @@ RSpec.shared_context 'with claiming tools' do
     instance.class.cells_claims_attributes.filter_map do |attribute, config|
       value = only[attribute]
       next unless only.empty? || value
-      next unless instance.__send__(:cells_claims_attribute_claimable?, config)
+      next unless instance.__send__(:cells_claims_attribute_claimable?, attribute, config)
 
       claims_records_attribute_for(instance, attribute, config, value)
     end

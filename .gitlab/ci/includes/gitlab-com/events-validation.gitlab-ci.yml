@@ -1,10 +1,10 @@
 include:
-  - component: $CI_SERVER_FQDN/gitlab-org/analytics-section/analytics-instrumentation/ci-components/internal_events_validation@v1.1.1
+  - component: $CI_SERVER_FQDN/gitlab-org/analytics-section/analytics-instrumentation/ci-components/internal_events_validation@v1.1.2
     inputs:
       job_name: "internal-events-definitions-validation"
       stage: "lint"
       events_path: "config/events"
-  - component: $CI_SERVER_FQDN/gitlab-org/analytics-section/analytics-instrumentation/ci-components/internal_events_validation@v1.1.1
+  - component: $CI_SERVER_FQDN/gitlab-org/analytics-section/analytics-instrumentation/ci-components/internal_events_validation@v1.1.2
     inputs:
       job_name: "internal-events-definitions-validation-ee"
       stage: "lint"
@@ -12,6 +12,7 @@ include:
 
 internal-events-definitions-validation:
   rules:
+    - !reference ['.ai-principles-schedule:rules:skip', rules]
     - if: '$CI_MERGE_REQUEST_IID'
       changes:
         - config/events/**/*.yml
@@ -21,6 +22,7 @@ internal-events-definitions-validation:
 internal-events-definitions-validation-ee:
   rules:
     - !reference [".strict-ee-only-rules", rules]
+    - !reference ['.ai-principles-schedule:rules:skip', rules]
     - if: '$CI_MERGE_REQUEST_IID'
       changes:
         - ee/config/events/**/*.yml

@@ -20,8 +20,8 @@ module API
         requires :id, types: [String, Integer], desc: 'The ID of the repository'
       end
       resource :repositories, requirements: { id: /[0-9]*/ } do
-        desc 'Get a container repository' do
-          detail 'This feature was introduced in GitLab 13.6.'
+        desc 'Retrieve details of a container registry repository' do
+          detail 'Retrieves details of a specified container registry repository.'
           success Entities::ContainerRegistry::Repository
           failure [
             { code: 401, message: 'Unauthorized' },

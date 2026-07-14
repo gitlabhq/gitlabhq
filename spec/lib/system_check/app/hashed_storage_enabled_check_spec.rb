@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SystemCheck::App::HashedStorageEnabledCheck, :silence_stdout do
+RSpec.describe SystemCheck::App::HashedStorageEnabledCheck, :silence_stdout, feature_category: :source_code_management do
   describe '#check?' do
     it 'fails when hashed storage is disabled' do
       stub_application_setting(hashed_storage_enabled: false)

@@ -1,33 +1,27 @@
-import { GlEmptyState, GlButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
-
-const emptyStateIllustrationPath = 'illustrations/empty-state/empty-pipeline-md.svg';
+import PipelinesEmptyState from '~/ci/common/empty_state/pipelines_empty_state.vue';
 
 describe('ExternalConfigEmptyState', () => {
   let wrapper;
 
-  const createComponent = ({ provide = {}, propsData = {} } = {}) => {
+  const createComponent = ({ propsData = {} } = {}) => {
     wrapper = shallowMount(ExternalConfigEmptyState, {
       propsData,
-      provide: {
-        emptyStateIllustrationPath,
-        ...provide,
-      },
     });
   };
 
-  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findPipelinesEmptyState = () => wrapper.findComponent(PipelinesEmptyState);
   const findButton = () => wrapper.findComponent(GlButton);
 
-  it('renders the empty state with correct props', () => {
+  it('renders the empty state with the title and description', () => {
     createComponent();
 
-    expect(findEmptyState().props()).toMatchObject({
+    expect(findPipelinesEmptyState().props()).toMatchObject({
       title: "This project's pipeline configuration is located outside this repository",
       description:
         "To view or edit the pipeline configuration, check your project's CI/CD settings for the external file location, then navigate to that project or repository.",
-      svgPath: emptyStateIllustrationPath,
     });
   });
 
@@ -41,7 +35,7 @@ describe('ExternalConfigEmptyState', () => {
     const newPipelinePath = '/path-to-new-pipeline';
     createComponent({ propsData: { newPipelinePath } });
 
-    expect(findButton().attributes('href')).toBe(newPipelinePath);
+    expect(findButton().props('href')).toBe(newPipelinePath);
     expect(findButton().text()).toBe('New pipeline');
   });
 });

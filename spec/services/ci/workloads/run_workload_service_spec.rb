@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_integration do
-  let_it_be(:group, freeze: false) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
-  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be_with_reload(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo, group: group) }
+  let_it_be_with_reload(:user) { create(:user, maintainer_of: project) }
   let_it_be(:image, freeze: false) { 'test_docker_image' }
   let_it_be(:source, freeze: false) { :duo_workflow }
   let_it_be(:commands, freeze: false) { ['echo hello world'] }

@@ -18,6 +18,11 @@ module Types
           null: true,
           description: 'Namespace of the granular scope.'
 
+        field :group,
+          Types::GroupType,
+          null: true,
+          description: 'Group of the granular scope, when the scope targets a specific group.'
+
         field :project,
           Types::ProjectType,
           null: true,
@@ -27,6 +32,10 @@ module Types
           [Types::Authz::AccessTokens::PermissionType],
           null: true,
           description: 'List of permissions of a granular scope.'
+
+        def group
+          object.namespace if object.namespace.is_a?(::Group)
+        end
 
         def project
           return unless object.namespace.is_a?(::Namespaces::ProjectNamespace)

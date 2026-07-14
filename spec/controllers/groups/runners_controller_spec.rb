@@ -4,16 +4,16 @@ require 'spec_helper'
 
 RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
   let_it_be(:user) { create(:user) }
-  let_it_be(:namespace_settings, freeze: false) do
+  let_it_be_with_reload(:namespace_settings) do
     create(:namespace_settings, runner_registration_enabled: true, allow_runner_registration_token: true)
   end
 
-  let_it_be(:group, freeze: false) { create(:group, namespace_settings: namespace_settings) }
+  let_it_be_with_reload(:group) { create(:group, namespace_settings: namespace_settings) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
 
-  let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
-  let!(:instance_runner) { create(:ci_runner, :instance) }
+  let_it_be_with_reload(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+  let_it_be_with_reload(:instance_runner) { create(:ci_runner, :instance) }
   let(:runner_registration_enabled) { true }
 
   before do
@@ -339,7 +339,7 @@ RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
   end
 
   describe '#update' do
-    let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be_with_reload(:group_runner) { create(:ci_runner, :group, groups: [group]) }
 
     shared_examples 'updates the runner' do
       it 'updates the runner, ticks the queue, and redirects' do

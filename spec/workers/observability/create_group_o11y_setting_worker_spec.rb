@@ -40,7 +40,7 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
       perform
 
       expect(worker).to have_received(:log_extra_metadata_on_done).with(:status, status.to_s)
-      expect(worker).to have_received(:log_extra_metadata_on_done).with(:group_id, group.id)
+      expect(worker).to have_received(:log_extra_metadata_on_done).with(:namespace_id, group.id)
 
       expect(worker).to have_received(:log_extra_metadata_on_done).with(:error, error_message) if error_message
     end
@@ -52,12 +52,12 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
 
       perform
 
-      expected_group_id = defined?(group_id) ? group_id : group.id
+      expected_namespace_id = defined?(namespace_id) ? namespace_id : group.id
       expected_user_id = defined?(user_id) ? user_id : user.id
 
       expected_hash_args = {
         message: expected_message,
-        group_id: expected_group_id,
+        namespace_id: expected_namespace_id,
         user_id: expected_user_id
       }
       expected_hash_args[:error] = expected_error if expected_error
@@ -167,10 +167,6 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
           end
 
           include_examples 'creates observability setting'
-
-          it 'works correctly in production environment' do
-            expect { perform }.to change { group.reload.observability_group_o11y_setting }.from(nil)
-          end
         end
       end
 
@@ -181,10 +177,6 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
         end
 
         include_examples 'does not create observability setting'
-
-        it 'does not create an observability setting when API fails' do
-          expect { perform }.not_to change { group.reload.observability_group_o11y_setting }
-        end
 
         it 'does not schedule GroupExportWorker when API fails' do
           expect(Ci::Observability::GroupExportWorker).not_to receive(:perform_in)
@@ -202,7 +194,7 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
           expect(Gitlab::AppLogger).to have_received(:error).with(
             hash_including(
               message: be_a(String),
-              group_id: group.id,
+              namespace_id: group.id,
               user_id: user.id
             )
           )
@@ -226,10 +218,6 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
         end
 
         include_examples 'does not create observability setting'
-
-        it 'does not create setting when database save fails' do
-          expect { perform }.not_to change { group.reload.observability_group_o11y_setting }
-        end
 
         it 'does not schedule GroupExportWorker when database save fails' do
           expect(Ci::Observability::GroupExportWorker).not_to receive(:perform_in)
@@ -302,6 +290,65 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
           end
 
           include_examples 'does not log sensitive values'
+        end
+      end
+    end
+
+    context 'with personal namespace' do
+      let_it_be(:namespace_owner) { create(:user, :with_namespace) }
+      let_it_be(:user_namespace) { namespace_owner.namespace }
+      let_it_be(:personal_project) { create(:project, :empty_repo, namespace: user_namespace) }
+
+      describe '#perform with project_id' do
+        subject(:perform) { worker.perform(namespace_owner.id, user_namespace.id, personal_project.id) }
+
+        context 'when API call succeeds' do
+          it 'creates an observability setting for the namespace' do
+            expect { perform }.to change { user_namespace.reload.observability_group_o11y_setting }.from(nil)
+
+            setting = user_namespace.observability_group_o11y_setting
+            expect(setting).to be_present
+            expect(setting.o11y_service_name).to eq(user_namespace.id.to_s)
+          end
+
+          it 'creates CI variable on the project, not the namespace' do
+            expect { perform }.to change { personal_project.reload.variables.count }.by(1)
+
+            variable = personal_project.variables.find_by(key: 'GITLAB_OBSERVABILITY_EXPORT')
+            expect(variable).to be_present
+            expect(variable.value).to eq('traces,metrics,logs')
+          end
+
+          it 'does not schedule GroupExportWorker for personal namespaces' do
+            expect(Ci::Observability::GroupExportWorker).not_to receive(:perform_in)
+
+            perform
+          end
+        end
+
+        context 'when project_id does not match namespace' do
+          let_it_be(:other_project) { create(:project) }
+
+          subject(:perform) { worker.perform(namespace_owner.id, user_namespace.id, other_project.id) }
+
+          it 'creates the setting but does not create a CI variable' do
+            expect { perform }.to change { user_namespace.reload.observability_group_o11y_setting }.from(nil)
+            expect(other_project.reload.variables.count).to eq(0)
+          end
+        end
+
+        context 'when project_id is nil for personal namespace' do
+          subject(:perform) { worker.perform(namespace_owner.id, user_namespace.id, nil) }
+
+          it 'creates the setting but logs error for missing CI variable container' do
+            allow(Gitlab::AppLogger).to receive(:error).and_call_original
+
+            expect { perform }.to change { user_namespace.reload.observability_group_o11y_setting }.from(nil)
+
+            expect(Gitlab::AppLogger).to have_received(:error).with(
+              hash_including(message: 'No CI variable container available for observability export')
+            )
+          end
         end
       end
     end

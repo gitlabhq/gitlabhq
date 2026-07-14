@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
@@ -12,6 +11,7 @@ export const MAX_FILE_FINDER_RESULTS = 40;
 export const FILE_FINDER_ROW_HEIGHT = 55;
 
 export default {
+  name: 'FileFinderIndex',
   components: {
     GlIcon,
     GlLoadingIcon,
@@ -42,6 +42,7 @@ export default {
       default: true,
     },
   },
+  emits: ['click', 'toggle'],
   data() {
     return {
       focusedIndex: -1,

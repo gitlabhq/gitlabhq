@@ -8,7 +8,8 @@ module Mutations
         description "Deletes a Pages deployment."
 
         authorize :update_pages
-        authorize_granular_token permissions: :delete_page_deployment, boundary_argument: :id, boundary_type: :project
+        authorize_granular_token permissions: :delete_page_deployment, boundary_argument: :id, boundary: :project,
+          boundary_type: :project
 
         argument :id, ::Types::GlobalIDType[::PagesDeployment],
           required: true,

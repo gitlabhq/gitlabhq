@@ -16,6 +16,10 @@ All tables with the following [`gitlab_schema`](../../cells/_index.md#available-
 - `gitlab_ci`
 - `gitlab_sec`
 - `gitlab_main_user`
+- `gitlab_shared_org`
+
+All other tables are considered cell-local.
+Cell-local tables must not have a sharding key because their data is never migrated between cells.
 
 All newly created organization-level tables are required to have a `sharding_key`
 defined in the corresponding `db/docs/` file for that table.

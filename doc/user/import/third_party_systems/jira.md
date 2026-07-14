@@ -2,7 +2,7 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>.
-title: Jira migration options
+title: Migrate from Jira
 description: Options for migrating from Jira
 ---
 
@@ -13,31 +13,77 @@ description: Options for migrating from Jira
 
 {{< /details >}}
 
-You have several options to migrate your Jira projects to GitLab. Before you decide on a migration strategy,
-first decide if you even need to move your Jira issues to GitLab. In many cases, the Jira issue data is no longer
-relevant or actionable. By starting fresh in GitLab, you can focus on setting up your processes and workflows to
-maximize the advantages of using GitLab.
+If you use Jira, you can either:
 
-If you opt to migrate your Jira issues, you can choose from several migration options:
+- Start fresh in GitLab without migrating from Jira. You can then focus on setting up your processes and workflows to
+  maximize the advantages of using GitLab.
+- Migrate from Jira to GitLab by using one of several options.
 
-- Use GitLab Jira importer.
-- Import a CSV file.
-- Let GitLab Professional Services handle the migration for you.
-- Use a third-party service to build a one-way or two-way data synchronization process.
-- Use a third-party script.
-- Write your own script.
+| Migration option             | Description |
+|:-----------------------------|:------------|
+| GitLab Professional Services | Have [GitLab Professional Services](https://about.gitlab.com/services/) perform the migration for you. |
+| `Jira2Lab`                   | Use [`Jira2Lab`](https://about.gitlab.com/blog/seamlessly-migrate-from-jira-to-gitlab-with-jira2lab-at-scale/), the GitLab Professional Services fork of `jira2gitlab`. |
+| Third-party script           | For example, use [`jira2gitlab`](https://github.com/swingbit/jira2gitlab) for the migration. |
+| Jira importer                | [Use the Jira importer](#use-the-jira-importer) that is built into GitLab. |
+| CSV file import              | [Use a CSV file](#use-a-csv-file) to move data from Jira to GitLab. |
+| Your own script              | [Write your own script](#write-your-own-script) that uses the GitLab REST or GraphQL API. |
+| Third-party service          | Use a third-party service that keeps GitLab and Jira synchronized, such as those from [Unito](https://marketplace.atlassian.com/apps/1218054/gitlab-2-way-integration-for-jira) and [Getint](https://marketplace.atlassian.com/apps/1223999/gitlab-integration-for-jira-two-way-sync-forge). |
 
-## Use GitLab Jira importer
+## Use the Jira importer
 
-GitLab has a built-in tool to import your Jira issue data. To use the GitLab Jira importer:
+Using the Jira importer, you can import your Jira issues to GitLab. Issues from multiple Jira projects can be imported into
+a GitLab project. GitLab imports the issue's title, description, and labels directly. You can also map Jira users to
+GitLab project members when preparing for the import.
 
-1. [Configure the GitLab Jira issues integration in your target project](../../../integration/jira/configure.md#configure-the-integration).
-1. [Import your Jira project issues to GitLab](../../project/import/jira.md).
+Other Jira issue metadata that is not formally mapped to GitLab issue fields is
+imported into the GitLab issue's description as plain text.
 
-You can watch a complete demo of the process: <i class="fa-youtube-play" aria-hidden="true"></i> [Import Jira project issues to GitLab](https://www.youtube.com/watch?v=OTJdJWmODFA)
-<!-- Video published on 2023-07-27 -->
+Text in Jira issues is not parsed to GitLab Flavored Markdown, which can result in broken text formatting.
+For more information, see [issue 379104](https://gitlab.com/gitlab-org/gitlab/-/issues/379104).
 
-## Import a CSV file
+[Epic 2738](https://gitlab.com/groups/gitlab-org/-/epics/2738) proposes the addition of issue assignees,
+comments, and other improvements to the GitLab Jira importer.
+
+### Prerequisites
+
+- Read access on Jira issues and the Maintainer or Owner role for the GitLab project that you want to
+  import into.
+- Configure the GitLab [Jira issue integration](../../../integration/jira/_index.md).
+
+### Import Jira issues
+
+Importing Jira issues is done as an asynchronous background job, which can result in delays based on:
+
+- Import queues load.
+- System load.
+- Other factors.
+
+Importing large projects can take several minutes depending on the size of the import.
+
+To import Jira issues to a GitLab project:
+
+1. On the {{< icon name="work-items" >}} **Work items** page, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Import from Jira**.
+
+1. Select the **Import from** dropdown list and select the Jira project that you wish to import issues from.
+
+   In the **Jira-GitLab user mapping template** section, the table shows to which GitLab users your Jira
+   users are mapped.
+   When the form appears, the dropdown list defaults to the user conducting the import.
+
+1. To change any of the mappings, select the dropdown list in the **GitLab username** column and
+   select the user you want to map to each Jira user.
+
+   The dropdown list may not show all the users, so use the search bar to find a specific
+   user in this GitLab project.
+
+1. Select **Continue**. You're presented with a confirmation that the import has started.
+
+   While the import is running in the background, you can go
+   to the **Work items** page to see the new issues (work items of type Issue) appearing in the list.
+
+1. To check the status of your import, go to the Jira import page again.
+
+## Use a CSV file
 
 To import your Jira issue data from a CSV file into your GitLab project:
 
@@ -65,39 +111,6 @@ To import your Jira issue data from a CSV file into your GitLab project:
    1. Familiarize your team with the GitLab interface and any new workflows or processes introduced by the migration.
 1. When you're satisfied with the migration, you can decommission your Jira instance and fully transition to GitLab.
 
-## Let GitLab Professional Services handle the migration for you
-
-For a high-level overview, see the [Jira migration service](https://drive.google.com/file/d/1p0rv02OnjfSiNoeDT2u4MhviozS--Yan/view) data sheet.
-
-To get a personalized quote, visit the [GitLab Professional Services](https://about.gitlab.com/services/) page and select **Request Service**.
-
-## Establish a one-way or two-way data synchronization using a third-party service
-
-To establish a one-way or two-way data synchronization between Jira and GitLab, you can use the following third-party services:
-
-- **Unito.io**: [GitLab + Jira integration documentation](https://guide.unito.io/gitlab-jira-integration), [GitLab + Jira Two-Way Sync Marketplace Add-On](https://marketplace.atlassian.com/apps/1218054/gitlab-jira-two-way-sync?tab=overview&hosting=cloud)
-- **Getint**: [GitLab Jira sync Marketplace Add-on](https://marketplace.atlassian.com/apps/1223999/gitlab-jira-sync-integration-by-getint?tab=overview&hosting=cloud)
-
-## Use a third-party script
-
-You can use one of the available open-source migration scripts to help you migrate your Jira issues to GitLab.
-
-Many of our customers have had success using [`jira2gitlab`](https://github.com/swingbit/jira2gitlab).
-
-View a complete demo of the process: <i class="fa-youtube-play" aria-hidden="true"></i> [Migrating from Jira to GitLab with Jira2GitLab](https://www.youtube.com/watch?v=aJfnTZrS4t4)
-<!-- Video published on 2024-01-09 -->
-
-## Use a first-party script
-
-[GitLab Professional Services](https://about.gitlab.com/services/) has built their fork of the previously-mentioned `jira2gitlab` script, `Jira2Lab`:
-
-- Blog post: [Seamlessly migrate from Jira to GitLab with Jira2Lab at scale](https://about.gitlab.com/blog/seamlessly-migrate-from-jira-to-gitlab-with-jira2lab-at-scale/)
-- [Repository](https://gitlab.com/gitlab-org/professional-services-automation/tools/migration/jira2lab)
-
-As stated in the `Jira2Lab` README:
-
-> We encourage users to compare both tools to best meet their migration needs.
-
 ## Write your own script
 
 For full control over the migration process, you can write your own custom script that migrates
@@ -114,22 +127,21 @@ To get started, familiarize yourself with the following GitLab API endpoints:
 - [Labels](../../../api/labels.md)
 - [Milestones](../../../api/milestones.md)
 
-When writing your script, you need to map the Jira issue fields to their corresponding GitLab equivalents. Here are some tips:
+When writing your script, you need to map the Jira issue fields to their corresponding GitLab equivalents.
 
-- **Custom fields with a fixed number of options**: Create a [scoped label](../../project/labels.md#scoped-labels) set with the field name as the scoped label key and the field values as the scoped label set values (for example, `input name::value1`, `input name::value2`).
-- **Custom fields with text strings or integer values**: Inject the custom field name and value into a section in the issue's description.
-- **Status**: Create a [scoped label](../../project/labels.md#scoped-labels) with the status set as the scoped label key and the status values as the scoped label set values (for example, `status::in progress`).
-- **Priority**: Create a [scoped label](../../project/labels.md#scoped-labels) with the priority set as the scoped label key and the priority values as the scoped label set values (for example, `priority::1`).
-- **Story Point**: Map this value to the GitLab issue's **weight** value.
-- **Sprint**: Map this value to the GitLab issue's **iteration** value. This value is meaningful
-  only for issues that have not been completed or are scheduled for a future sprint. Before importing
-  the data, create the required [iterations](../../group/iterations/_index.md#iteration-cadences) in the
-  parent group of your project.
+| Jira issue field | Possible GitLab equivalent |
+|:----|:-------|
+| Custom fields with a fixed number of options | Create a [scoped label](../../project/labels.md#scoped-labels) set with the field name as the scoped label key and the field values as the scoped label set values. For example, `input name::value1`, `input name::value2`. |
+| Custom fields with text strings or integer values | Inject the custom field name and value into a section in the issue's description. |
+| Status | Use [statuses](../../work_items/status.md). |
+| Priority | Create a [scoped label](../../project/labels.md#scoped-labels) with the priority set as the scoped label key and the priority values as the scoped label set values. For example, `priority::1`. |
+| Story Point | Map this value to the GitLab issue's **weight** value. |
+| Sprint | Map this value to the GitLab issue's **iteration** value. This value is meaningful only for issues that have not been completed or are scheduled for a future sprint. Before importing the data, create the required [iterations](../../group/iterations/_index.md#iteration-cadences) in the parent group of your project. |
 
 You might also need to handle parsing the Atlassian Document Format and mapping it to GitLab Flavored Markdown.
 You can approach this in many different ways. For inspiration,
 [review an example commit](https://gitlab.com/gitlab-org/gitlab/-/commit/4292a286d3f4ab26466f8e89125a4dbd194a9f3e).
-This commit added a method to parse the Atlassian Document Format to GitLab Flavored Markdown for the GitLab Jira importer.
+This commit added a method to parse the Atlassian Document Format to GitLab Flavored Markdown for the Jira importer.
 
 If you run GitLab locally, you can also convert Atlassian Document Format to GitLab Flavored Markdown
 manually in the Rails console. To do so, execute:

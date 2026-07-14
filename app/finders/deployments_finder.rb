@@ -195,7 +195,6 @@ class DeploymentsFinder
       deployable: {
         job_artifacts: [],
         user: [],
-        metadata: [],
         job_definition: [],
         job_environment: [],
         pipeline: {

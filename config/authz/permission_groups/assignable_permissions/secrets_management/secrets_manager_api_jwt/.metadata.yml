@@ -1,0 +1,3 @@
+---
+name: Secrets Manager API JWT
+description: Grants the ability to <actions> a Secrets Manager API JWT for direct API access to secrets.

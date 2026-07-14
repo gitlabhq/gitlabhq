@@ -33,6 +33,7 @@ async function waitFor(getEl, interval = 10, timeout = 2000) {
 }
 
 export default {
+  name: 'MarkdownEditor',
   components: {
     GlAlert,
     MarkdownField,
@@ -169,6 +170,15 @@ export default {
       default: false,
     },
   },
+  emits: [
+    'blur',
+    'contentEditor',
+    'focus',
+    'handleSuggestDismissed',
+    'input',
+    'keydown',
+    'markdownField',
+  ],
   data() {
     let editingMode;
     switch (window.gon?.text_editor) {
@@ -500,6 +510,9 @@ export default {
         :supports-table-of-contents="supportsTableOfContents"
         :autofocus="contentEditorAutofocused"
         :placeholder="formFieldProps.placeholder"
+        :aria-label="formFieldProps['aria-label']"
+        :aria-labelled-by="formFieldProps['aria-labelledby']"
+        :aria-described-by="formFieldProps['aria-describedby']"
         :drawio-enabled="drawioEnabled"
         :enable-autocomplete="enableAutocomplete"
         :autocomplete-data-sources="autocompleteDataSources"

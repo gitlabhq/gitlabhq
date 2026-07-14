@@ -222,7 +222,7 @@ You might not want anyone to see the value of a variable after it is saved to pr
 
 GitLab 17.4 includes PostgreSQL 16 by default for fresh installations of GitLab.
 
-GitLab 17.7 will include OpenSSL V3. This will affect Omnibus instances with external integration setup’s that do not meet the minimum requirements of TLS 1.2 or above for outbound connections, along with at least 112-bit encryption for TLS certificates. Please review our [OpenSSL upgrade documentation](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html) for more information or if your are unsure if your instance will be affected.
+GitLab 17.7 will include OpenSSL V3. This will affect Omnibus instances with external integration setup’s that do not meet the minimum requirements of TLS 1.2 or above for outbound connections, along with at least 112-bit encryption for TLS certificates. Please review our [OpenSSL upgrade documentation](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3/) for more information or if your are unsure if your instance will be affected.
 
 ### List groups invited to a group or project using the Groups or Projects API
 

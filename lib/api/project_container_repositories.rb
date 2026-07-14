@@ -24,8 +24,9 @@ module API
     end
     route_setting :authentication, job_token_allowed: true, job_token_scope: :project
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'List container repositories within a project' do
-        detail 'This feature was introduced in GitLab 11.8.'
+      desc 'List all registry repositories for a project' do
+        detail 'Lists all registry repositories for a specified project. Responses are paginated and return 20 ' \
+          'results by default.'
         success Entities::ContainerRegistry::Repository
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -50,8 +51,9 @@ module API
         present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count]
       end
 
-      desc 'Delete repository' do
-        detail 'This feature was introduced in GitLab 11.8.'
+      desc 'Delete registry repository' do
+        detail 'Deletes a specified repository in the registry. This operation is executed asynchronously and might ' \
+          'take some time to execute.'
         success status: :accepted, message: 'Success'
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -86,8 +88,9 @@ module API
         status :accepted
       end
 
-      desc 'List tags of a repository' do
-        detail 'This feature was introduced in GitLab 11.8.'
+      desc 'List all registry repository tags for a project' do
+        detail 'Lists all tags for a specified registry repository. Responses are paginated and return 20 results by ' \
+          'default.'
         success Entities::ContainerRegistry::Tag
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -125,8 +128,8 @@ module API
         present paginated_tags, with: Entities::ContainerRegistry::Tag
       end
 
-      desc 'Delete repository tags (in bulk)' do
-        detail 'This feature was introduced in GitLab 11.8.'
+      desc 'Delete multiple registry repository tags' do
+        detail 'Deletes multiple registry repository tags based on the specified criteria.'
         success status: :accepted, message: 'Success'
         failure [
           { code: 400, message: 'Bad Request' },
@@ -162,8 +165,8 @@ module API
         status :accepted
       end
 
-      desc 'Get details about a repository tag' do
-        detail 'This feature was introduced in GitLab 11.8.'
+      desc 'Retrieve details of a registry repository tag' do
+        detail 'Retrieves details of a specified registry repository tag.'
         success Entities::ContainerRegistry::TagDetails
         failure [
           { code: 400, message: 'Bad Request' },
@@ -184,8 +187,8 @@ module API
         present tag, with: Entities::ContainerRegistry::TagDetails
       end
 
-      desc 'Delete repository tag' do
-        detail 'This feature was introduced in GitLab 11.8.'
+      desc 'Delete a registry repository tag' do
+        detail 'Deletes a specified container registry repository tag.'
         success status: :ok, message: 'Success'
         failure [
           { code: 400, message: 'Bad Request' },

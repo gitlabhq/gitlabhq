@@ -17,7 +17,7 @@ RSpec.describe 'Project active tab', :js, feature_category: :groups_and_projects
   end
 
   def click_tab(title)
-    within_testid('super-sidebar') do
+    within_testid('non-static-items-section') do
       click_link(title)
     end
   end

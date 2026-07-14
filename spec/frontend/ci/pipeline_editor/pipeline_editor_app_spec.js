@@ -61,10 +61,8 @@ jest.mock('~/lib/utils/scroll_utils');
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 const defaultProvide = {
-  ciCatalogPath: '/explore/catalog',
   ciConfigPath: mockCiConfigPath,
   defaultBranch: mockDefaultBranch,
-  emptyStateIllustrationPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
   newMergeRequestPath: mockNewMergeRequestPath,
   projectFullPath: mockProjectFullPath,
   usesExternalConfig: false,

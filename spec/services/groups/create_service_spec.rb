@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_projects do
   let_it_be_with_reload(:user) { create(:user) }
-  let_it_be(:organization, freeze: false) { create(:organization, users: [user]) }
+  let_it_be(:organization) { create(:organization, users: [user]) }
   let(:current_user) { user }
   let(:group_params) do
     { path: 'group_path', visibility_level: Gitlab::VisibilityLevel::PUBLIC,
@@ -55,7 +55,31 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     let(:extra_params) { { setup_for_company: true } }
 
     it 'has the specified setup_for_company' do
-      expect(created_group.setup_for_company).to eq(true)
+      expect(created_group.setup_for_company).to be(true)
+    end
+  end
+
+  describe 'owner authorized projects refresh' do
+    context 'when the skip_authorized_projects_refresh_for_new_group flag is enabled' do
+      it 'is not performed' do
+        expect(AuthorizedProjectsWorker).not_to receive(:new)
+
+        expect(response).to be_success
+      end
+    end
+
+    context 'when the skip_authorized_projects_refresh_for_new_group flag is disabled' do
+      before do
+        stub_feature_flags(skip_authorized_projects_refresh_for_new_group: false)
+      end
+
+      it 'is performed' do
+        expect_next_instance_of(AuthorizedProjectsWorker) do |worker|
+          expect(worker).to receive(:perform).with(current_user.id)
+        end
+
+        expect(response).to be_success
+      end
     end
   end
 
@@ -133,6 +157,22 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     it_behaves_like 'creating a group'
   end
 
+  context 'with `require_sha_for_merge` attribute' do
+    let(:extra_params) { { require_sha_for_merge: false } }
+
+    it_behaves_like 'creating a group'
+
+    it 'ignores the user-supplied value and applies the default' do
+      expect(created_group.namespace_settings.require_sha_for_merge).to be(true)
+    end
+  end
+
+  context 'with `lock_require_sha_for_merge` attribute' do
+    let(:extra_params) { { lock_require_sha_for_merge: false } }
+
+    it_behaves_like 'creating a group'
+  end
+
   context 'for a top level group' do
     context 'when user can create a group' do
       before do
@@ -148,7 +188,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
       describe 'handling of allow_runner_registration_token default' do
         context 'when on self-managed' do
           it 'does not disallow runner registration token' do
-            expect(created_group.allow_runner_registration_token?).to eq true
+            expect(created_group.allow_runner_registration_token?).to be true
           end
         end
       end
@@ -167,7 +207,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     let_it_be(:other_organization) { create(:organization, name: 'Other Organization') }
 
     context 'when organization is provided' do
-      let_it_be(:organization, freeze: false) { create(:organization) }
+      let_it_be(:organization) { create(:organization) }
       let(:extra_params) { { organization_id: organization.id } }
 
       context 'when user can create the group' do
@@ -420,8 +460,8 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
 
     context 'for root group' do
       it 'follows default config' do
-        expect(created_group.shared_runners_enabled).to eq(true)
-        expect(created_group.allow_descendants_override_disabled_shared_runners).to eq(false)
+        expect(created_group.shared_runners_enabled).to be(true)
+        expect(created_group.allow_descendants_override_disabled_shared_runners).to be(false)
       end
     end
   end
@@ -443,6 +483,60 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
 
       it 'does not enable JWT for CI/CD job tokens' do
         expect(created_group.namespace_settings.jwt_ci_cd_job_token_enabled).to be(false)
+      end
+    end
+  end
+
+  describe 'setting require_sha_for_merge for new groups' do
+    context 'when application level settings have require_sha_for_merge locked' do
+      before do
+        stub_application_setting(lock_require_sha_for_merge: true)
+        stub_application_setting(require_sha_for_merge: false)
+      end
+
+      it 'expects namespace setting to be defer to application level settings' do
+        expect(created_group.namespace_settings.require_sha_for_merge).to be(false)
+      end
+    end
+
+    context 'when application level settings have require_sha_for_merge unlocked' do
+      before do
+        stub_application_setting(lock_require_sha_for_merge: false)
+        stub_application_setting(require_sha_for_merge: false)
+      end
+
+      it 'expects namespace setting to be true by default' do
+        expect(created_group.namespace_settings.require_sha_for_merge).to be(true)
+      end
+    end
+
+    context 'when parent group has require_sha_for_merge locked' do
+      let_it_be_with_reload(:parent_group) do
+        create(:group, organization: organization).tap do |group|
+          group.add_owner(user)
+          group.namespace_settings.update!(require_sha_for_merge: false, lock_require_sha_for_merge: true)
+        end
+      end
+
+      let(:extra_params) { { parent_id: parent_group.id } }
+
+      it 'inherits the locked value from the parent group' do
+        expect(created_group.namespace_settings.require_sha_for_merge).to be(false)
+      end
+    end
+
+    context 'when parent group has require_sha_for_merge unlocked' do
+      let_it_be_with_reload(:parent_group) do
+        create(:group, organization: organization).tap do |group|
+          group.add_owner(user)
+          group.namespace_settings.update!(require_sha_for_merge: false, lock_require_sha_for_merge: false)
+        end
+      end
+
+      let(:extra_params) { { parent_id: parent_group.id } }
+
+      it 'expects namespace setting to be true by default' do
+        expect(created_group.namespace_settings.require_sha_for_merge).to be(true)
       end
     end
   end

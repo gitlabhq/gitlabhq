@@ -1,4 +1,5 @@
 :root {
+  --layout-sticky-header-height: 0px; // stylelint-disable-line length-zero-no-unit
   --container-padding-x: #{$gl-spacing-scale-4};
 }
 
@@ -15,7 +16,7 @@ html {
   }
 }
 
-.application-chrome {
+.page-with-panels {
   // Fix page height
   &, body {
     @apply gl-h-full;
@@ -55,18 +56,47 @@ html {
   @apply gl-pb-3;
 }
 
-.page-with-panels .layout-page {
-  @apply gl-flex;
-  @apply gl-flex-1;
-  @apply gl-flex-col;
-  @apply lg:gl-flex-row;
-  @apply gl-items-stretch;
-  @apply gl-justify-start;
-  @apply lg:gl-justify-center;
-  @apply gl-gap-0;
-  @apply lg:gl-gap-3;
-  @apply gl-min-h-0;
-  @apply sm:gl-px-3;
+.page-with-panels {
+  .layout-page:where(.page-with-super-sidebar) {
+    @apply gl-grid;
+    @apply gl-grid-cols-1;
+    @apply gl-grid-rows-[auto,1fr,auto];
+    @apply gl-gap-0;
+    @apply sm:gl-px-3;
+    @apply gl-min-h-0;
+    @apply gl-flex-1;
+
+    grid-template-areas:
+      "broadcast-message"
+      "panels"
+      "ai-panels";
+
+    @include media-breakpoint-up(lg) {
+      @apply gl-grid-cols-[auto,1fr];
+      grid-template-areas:
+        "super-sidebar-nav broadcast-message broadcast-message"
+        "super-sidebar-nav panels ai-panels";
+    }
+  }
+
+  .broadcast-wrapper {
+    grid-area: broadcast-message;
+
+    // stylelint-disable-next-line gitlab/no-has -- scoped to child element
+    &:has(> .gl-broadcast-message) {
+      @apply gl-mb-3;
+    }
+  }
+
+  .super-sidebar-wrapper {
+    @include media-breakpoint-up(lg) {
+      grid-area: super-sidebar-nav;
+    }
+  }
+
+  .panels-container {
+    grid-area: panels;
+  }
 }
 
 .panels-container {
@@ -76,6 +106,7 @@ html {
   @apply gl-pr-0;
   @apply gl-pb-0;
   @apply gl-min-h-0;
+
   // Inside the panels container, everything that calculates an offset from
   // the top needs to ignore application header height, system header height,
   // performance bar height, header height and top bar height, since these
@@ -113,13 +144,24 @@ html {
 }
 
 .ai-panels {
+  grid-area: ai-panels;
   overflow: inherit;
+  // Negative margins compensate for parent container padding/spacing
+  // to allow AI panels to extend to the edge of the viewport
+  @apply -gl-mb-3;      // Move below bottom edge on small viewport
+  @apply lg:gl-mb-0;    // Reset margin on larger viewport
+  @apply lg:-gl-mr-3;   // Extend panels to right edge on large viewport
+
   --ai-panel-width: clamp(25rem, 20vw, 35rem);
-  --ai-navigation-rail-size: #{$gl-button-small-size};
+  --ai-navigation-rail-size: 2.5rem;
 
   @include media-breakpoint-up(xl) {
     min-width: var(--ai-navigation-rail-size);
   }
+}
+
+.ai-panel {
+  @apply lg:gl-ml-3; // Margin between static/dynamic panel and ai-panel
 }
 
 .ai-navigation-rail {
@@ -128,12 +170,8 @@ html {
   @apply lg:gl-flex-col;
   @apply gl-items-center;
   @apply gl-gap-5;
-  @apply lg:gl-gap-4;
-  @apply gl-mt-3;
-  @apply gl-px-3;
-  @apply lg:gl-px-0;
-  @apply lg:gl-py-3;
-  @apply lg:gl-mt-0;
+  @apply lg:gl-gap-3;
+  @apply gl-p-3;
   @apply gl-h-[var(--ai-navigation-rail-size)];
   @apply lg:gl-h-full;
   @apply lg:gl-w-[var(--ai-navigation-rail-size)];
@@ -141,8 +179,17 @@ html {
 
 // When the AI panel is maximized
 .layout-page.ai-panel-maximized {
+  @include media-breakpoint-up(lg) {
+    @apply gl-grid-cols-[auto,2fr,3fr];
+  }
+
   .ai-panels {
-    flex-grow: 1;
+    grid-column-start: panels;
+    grid-column-end: ai-panels;
+  }
+
+  .ai-panel {
+    @apply gl-ml-0;
   }
 
   // Hiding all other panels when DAP is maximized
@@ -153,6 +200,7 @@ html {
   // Preserving other panels when DAP is maximized on bigger screens
   @media(min-width: #{$paneled-layout-ultra-wide-breakpoint}) {
     .ai-panels {
+      grid-column-start: ai-panels;
       width: auto;
     }
 
@@ -272,6 +320,15 @@ html {
     padding-left: 0;
     padding-right: 0;
   }
+}
+
+// Hides Chrome's iOS translation tooltip
+//
+// Chrome on iOS injects `#goog-gt-tt` into the `<body>` when translation is enabled.
+// The accompanying Google CSS, which would normally hide this element, is blocked
+// by GitLab's CSP. Without that stylesheet, the element becomes visibly rendered.
+#goog-gt-tt {
+  display: none;
 }
 
 /*

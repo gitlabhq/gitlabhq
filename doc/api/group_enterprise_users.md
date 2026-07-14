@@ -210,6 +210,7 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199248) in GitLab 18.6.
+- `projects_limit` and `can_create_group` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240990) in GitLab 19.2.
 
 {{< /history >}}
 
@@ -221,12 +222,14 @@ PATCH /groups/:id/enterprise_users/:user_id
 
 Supported attributes:
 
-| Attribute        | Type           | Required | Description |
-|:-----------------|:---------------|:---------|:------------|
-| `id`             | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
-| `user_id`        | integer        | yes      | ID of user account. |
-| `name`           | string         | no       | Name of the user account. |
-| `email`          | string         | no       | Email address of the user account. Must be from a verified [group domain](../user/enterprise_user/_index.md#manage-group-domains). |
+| Attribute          | Type           | Required | Description |
+|:-------------------|:---------------|:---------|:------------|
+| `id`               | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `user_id`          | integer        | yes      | ID of user account. |
+| `name`             | string         | no       | Name of the user account. |
+| `email`            | string         | no       | Email address of the user account. Must be from a verified [group domain](../user/enterprise_user/_index.md#manage-group-domains). |
+| `projects_limit`   | integer        | no       | The number of projects a user can create. |
+| `can_create_group` | boolean        | no       | Flag indicating the user can create groups. |
 
 Example request:
 

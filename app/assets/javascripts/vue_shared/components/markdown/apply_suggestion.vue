@@ -3,6 +3,7 @@ import { GlDisclosureDropdown, GlForm, GlFormTextarea, GlButton, GlAlert } from 
 import { __, n__ } from '~/locale';
 
 export default {
+  name: 'ApplySuggestion',
   components: { GlDisclosureDropdown, GlForm, GlFormTextarea, GlButton, GlAlert },
   props: {
     disabled: {
@@ -26,6 +27,7 @@ export default {
       default: null,
     },
   },
+  emits: ['apply'],
   data() {
     return {
       message: null,
@@ -60,6 +62,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
+    data-apply-suggestion-toggle
     data-testid="apply-suggestion-dropdown"
     fluid-width
     placement="bottom-end"

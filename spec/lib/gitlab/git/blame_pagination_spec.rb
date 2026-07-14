@@ -5,10 +5,15 @@ require 'spec_helper'
 RSpec.describe Gitlab::Git::BlamePagination, feature_category: :source_code_management do
   subject(:blame_pagination) { described_class.new(blob, blame_mode, params) }
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:project, freeze: false) { create(:project, :repository) }
-  let_it_be(:commit, freeze: false) { project.repository.commit }
   let_it_be(:blob, freeze: false) { project.repository.blob_at('HEAD', 'README.md') }
 
+  let(:commit) { project.repository.commit }
   let(:blame_mode) do
     instance_double(
       'Gitlab::Git::BlameMode',

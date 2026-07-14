@@ -1,6 +1,6 @@
 ---
 name: gitlab-coding-principles
-description: Load all relevant GitLab development principles before planning or implementing. Evaluates every principle group to ensure cross-domain coverage.
+description: "MUST USE before planning, implementing, refactoring, OR reviewing any GitLab code changes (including merge request reviews, code review feedback, new features, bug fixes). Evaluate every principle group to ensure cross-domain coverage. Triggers: review, reviewing, plan, planning, implement, implementing, refactor, refactoring, MR review, code review."
 ---
 
 # Load Project Principles
@@ -16,7 +16,7 @@ ALWAYS load Database principles regardless of which files you are editing.
 - **Database migration patterns and zero-downtime safety**: Read .ai/principles/distilled/database-migrations.md *(also load: .ai/principles/distilled/database-fundamentals.md)*
 - **Column types, constraints, indexes, naming conventions**: Read .ai/principles/distilled/database-schema.md *(also load: .ai/principles/distilled/database-fundamentals.md)*
 - **SQL performance, transactions, batching**: Read .ai/principles/distilled/database-queries.md *(also load: .ai/principles/distilled/database-fundamentals.md)*
-- **ClickHouse database concerns**: Read .ai/principles/distilled/clickhouse.md *(also load: .ai/principles/distilled/database-fundamentals.md)*
+- **ClickHouse and Siphon CDC concerns, including adding the matching column to the respective siphon_ ClickHouse table when adding a column to a Postgres table replicated by Siphon**: Read .ai/principles/distilled/clickhouse.md *(also load: .ai/principles/distilled/database-fundamentals.md)*
 
 **Cells:**
 - **Cells architecture sharding keys, organization data ownership, routable requests, and cell isolation when adding tables or customer-owned resources**: Read .ai/principles/distilled/cells-fundamentals.md *(load for any cells work)*
@@ -33,6 +33,7 @@ ALWAYS load Database principles regardless of which files you are editing.
 
 **Code Review:**
 - **General code review practices and acceptance checklist**: Read .ai/principles/distilled/code-review.md
+- **Reviewing AI instruction files under .ai/ (hand-authored modules, distilled principles, baselines, distillation config)**: Read .ai/principles/distilled/ai-instruction-files.md
 
 **Backend:**
 - **Ruby/Rails style, logging, common pitfalls**: Read .ai/principles/distilled/backend-ruby.md *(load for any backend work)*
@@ -56,14 +57,21 @@ ALWAYS load Database principles regardless of which files you are editing.
 - **Frontend accessibility patterns and requirements**: Read .ai/principles/distilled/frontend-a11y.md *(also load: .ai/principles/distilled/frontend-vue.md)*
 
 **Testing:**
-- **RSpec patterns, factories, shared examples**: Read .ai/principles/distilled/qa-rspec.md
-- **Jest, jsdom, Vue Test Utils patterns**: Read .ai/principles/distilled/qa-jest.md
+- **RSpec patterns, factories, shared examples**: Read .ai/principles/distilled/testing-rspec.md
+- **Jest, jsdom, Vue Test Utils patterns**: Read .ai/principles/distilled/testing-jest.md
+- **Rails migrations testing patterns**: Read .ai/principles/distilled/testing-migrations.md
+- **Frontend testing hierarchy — which test type to write (unit vs MSW integration vs Capybara vs QA), lazy-load discovery, and cross-layer anti-patterns**: Read .ai/principles/distilled/testing-frontend-testing-hierarchy.md
+- **How to write MSW integration tests correctly (setup, mounting, handlers, fixtures, request counting)**: Read .ai/principles/distilled/testing-msw.md
+- **End-to-end (QA) test patterns — resource readiness and explicit waits, reliable navigation, and avoiding timing-based flakiness in qa/ specs**: Read .ai/principles/distilled/testing-e2e.md
 
 **Performance:**
 - **Performance and scalability**: Read .ai/principles/distilled/performance.md
 
 **Documentation:**
 - **Documentation style and completeness**: Read .ai/principles/distilled/documentation.md
+- **Documentation authoring guidelines per topic type (for example, Concept, Task, Reference, Troubleshooting, Tutorial, etc.)**: Read .ai/principles/distilled/documentation-topics.md
+- **Documenting REST, GraphQL, and CLI APIs (endpoint reference structure, attributes tables, curl examples)**: Read .ai/principles/distilled/documentation-api.md
+- **Documenting feature state and lifecycle (feature flags, experiment/beta status, version history, release notes)**: Read .ai/principles/distilled/documentation-feature-lifecycle.md
 
 **Feature Flags:**
 - **Feature flag usage and lifecycle**: Read .ai/principles/distilled/feature-flags.md
@@ -71,6 +79,5 @@ ALWAYS load Database principles regardless of which files you are editing.
 **Analytics:**
 - **Analytics instrumentation and metrics**: Read .ai/principles/distilled/analytics.md
 
-- **Code style or linting**: Read .ai/code-style.md
 - **Git, commits, or branches**: Read .ai/git.md
 - **CI/CD pipelines or `.gitlab-ci.yml`**: Read .ai/ci-cd.md

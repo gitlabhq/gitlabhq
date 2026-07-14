@@ -3,6 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'EditorModeSwitcher',
   components: {
     GlButton,
   },
@@ -12,6 +13,7 @@ export default {
       required: true,
     },
   },
+  emits: ['switch'],
   computed: {
     markdownEditorSelected() {
       return this.value === 'markdown';

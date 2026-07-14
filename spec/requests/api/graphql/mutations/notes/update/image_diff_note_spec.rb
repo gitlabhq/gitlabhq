@@ -61,6 +61,57 @@ RSpec.describe 'Updating an image DiffNote', feature_category: :code_review_work
     graphql_mutation_response(:update_image_diff_note)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_note do
+    let(:user) { create(:user, developer_of: noteable.project) }
+    let(:diff_note) do
+      create(
+        :image_diff_note_on_merge_request,
+        noteable: noteable,
+        project: noteable.project,
+        author: user,
+        note: original_body,
+        position: original_position
+      )
+    end
+
+    let(:boundary_object) { noteable.project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_note do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :repository, group: group) }
+    let(:noteable) { create(:merge_request, source_project: project, target_project: project) }
+    let(:user) { create(:user, developer_of: group) }
+    let(:original_position) do
+      Gitlab::Diff::Position.new(
+        old_path: 'files/images/any_image.png',
+        new_path: 'files/images/any_image.png',
+        width: 10,
+        height: 20,
+        x: 1,
+        y: 2,
+        diff_refs: noteable.diff_refs,
+        position_type: 'image'
+      )
+    end
+
+    let(:diff_note) do
+      create(
+        :image_diff_note_on_merge_request,
+        noteable: noteable,
+        project: project,
+        author: user,
+        note: original_body,
+        position: original_position
+      )
+    end
+
+    let(:boundary_object) { group }
+    let(:error_boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when the user does not have permission' do
     let_it_be(:current_user, freeze: false) { create(:user) }
 

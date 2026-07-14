@@ -112,5 +112,38 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::Mounter, feature_category
 
       expect(field[:options]).to include(authorize: :read_project)
     end
+
+    it 'supports granular_authorization_opts option' do
+      granular_authorization_opts = {
+        permissions: :read_cycle_analytics,
+        boundaries: [
+          { boundary: :itself, boundary_type: :project },
+          { boundary: :itself, boundary_type: :group }
+        ]
+      }
+      block = proc {}
+      expect(Resolvers::Analytics::Aggregation::EngineResolver)
+        .to receive(:build).and_return('resolver mock')
+      expect(parent_field).to receive(:granular_scope_directive)
+        .with(**granular_authorization_opts).and_return('directives mock')
+
+      parent_field.mount_aggregation_engine(
+        engine_class, description: 'test_desc', granular_authorization_opts: granular_authorization_opts, &block
+      )
+
+      field = parent_field.fields.first
+      expect(field[:options][:directives]).to eq('directives mock')
+    end
+
+    it 'does not set directives when granular_authorization_opts is not provided' do
+      block = proc {}
+      expect(Resolvers::Analytics::Aggregation::EngineResolver)
+        .to receive(:build).and_return('resolver mock')
+
+      parent_field.mount_aggregation_engine(engine_class, description: 'test_desc', &block)
+
+      field = parent_field.fields.first
+      expect(field[:options]).not_to have_key(:directives)
+    end
   end
 end

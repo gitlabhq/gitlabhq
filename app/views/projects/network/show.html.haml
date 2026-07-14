@@ -18,5 +18,5 @@
         #js-ref-search-form{ data: { network_path: project_network_path(@project, @ref, ref_type: @ref_type)} }
 
       - if @commit
-        .network-graph.gl-overflow-scroll.gl-overflow-x-hidden{ tabindex: 0, role: 'figure', data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id, type: 'figure-branch-graph' } }
+        .network-graph.gl-overflow-scroll{ tabindex: 0, role: 'figure', data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id, type: 'figure-branch-graph' } }
           = gl_loading_icon(size: 'md', css_class: 'gl-mt-5')

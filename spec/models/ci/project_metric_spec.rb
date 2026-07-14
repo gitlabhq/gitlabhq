@@ -111,6 +111,56 @@ RSpec.describe Ci::ProjectMetric, feature_category: :pipeline_composition do
         expect(result).to be_nil
       end.not_to change { described_class.count }
     end
+
+    describe 'ci_config_first_generated_at' do
+      it 'sets ci_config_first_generated_at on insert' do
+        freeze_time do
+          described_class.track_ai_generated_config!(project.id, author_source: 'ci_expert_agent/v1')
+
+          metric = described_class.find_by(project_id: project.id)
+          expect(metric.ci_config_first_generated_at).to be_like_time(Time.current)
+        end
+      end
+
+      it 'preserves the original ci_config_first_generated_at when called again' do
+        first_generated_at = travel_to(2.days.ago) do
+          described_class.track_ai_generated_config!(project.id, author_source: 'ci_expert_agent/v1')
+          described_class.find_by(project_id: project.id).ci_config_first_generated_at
+        end
+
+        described_class.track_ai_generated_config!(project.id, author_source: 'ci_expert_agent/v1')
+
+        expect(described_class.find_by(project_id: project.id).ci_config_first_generated_at)
+          .to be_within(1.second).of(first_generated_at)
+      end
+
+      it 'backfills ci_config_first_generated_at on an existing row where it is nil', :aggregate_failures do
+        create(:ci_project_metric, project: project, ci_config_generated_by: nil, ci_config_first_generated_at: nil)
+
+        freeze_time do
+          described_class.track_ai_generated_config!(project.id, author_source: 'ci_expert_agent/v1')
+
+          metric = described_class.find_by(project_id: project.id)
+          expect(metric.ci_config_generated_by).to eq('ci_expert_agent/v1')
+          expect(metric.ci_config_first_generated_at).to be_like_time(Time.current)
+        end
+      end
+
+      it 'updates ci_config_generated_by to the latest agent, preserving the first timestamp', :aggregate_failures do
+        stub_const('Ci::ProjectMetric::KNOWN_AGENT_SOURCES', %w[ci_expert_agent/v1 ci_expert_agent/v2])
+
+        first_generated_at = travel_to(2.days.ago) do
+          described_class.track_ai_generated_config!(project.id, author_source: 'ci_expert_agent/v1')
+          described_class.find_by(project_id: project.id).ci_config_first_generated_at
+        end
+
+        described_class.track_ai_generated_config!(project.id, author_source: 'ci_expert_agent/v2')
+
+        metric = described_class.find_by(project_id: project.id)
+        expect(metric.ci_config_generated_by).to eq('ci_expert_agent/v2')
+        expect(metric.ci_config_first_generated_at).to be_within(1.second).of(first_generated_at)
+      end
+    end
   end
 
   describe 'factory' do
@@ -232,6 +282,75 @@ RSpec.describe Ci::ProjectMetric, feature_category: :pipeline_composition do
         expect(described_class.where(project_id: project.id).count).to eq(1)
         expect(described_class.find_by(project_id: project.id).first_pipeline_succeeded_at).to be_present
       end
+    end
+  end
+
+  describe '.mark_ai_pipeline_results_viewed' do
+    let_it_be(:project) { create(:project) }
+    let(:pipeline_created_at) { Time.current }
+
+    subject(:mark) { described_class.mark_ai_pipeline_results_viewed(project.id, pipeline_created_at) }
+
+    context 'when the project is eligible' do
+      let!(:metric) do
+        create(:ci_project_metric, :ai_generated, project: project, ci_config_first_generated_at: 1.hour.ago)
+      end
+
+      it 'updates the row and returns 1' do
+        freeze_time do
+          expect(mark).to eq(1)
+          expect(metric.reload.first_ai_pipeline_results_viewed_at).to eq(Time.current)
+        end
+      end
+    end
+
+    context 'when the config commit time equals the pipeline creation time (boundary)' do
+      before do
+        create(:ci_project_metric, :ai_generated, project: project, ci_config_first_generated_at: pipeline_created_at)
+      end
+
+      it { is_expected.to eq(1) }
+    end
+
+    context 'when the view was already recorded' do
+      let(:viewed_at) { 2.days.ago }
+      let!(:metric) do
+        create(:ci_project_metric, :ai_generated, project: project,
+          ci_config_first_generated_at: 1.hour.ago, first_ai_pipeline_results_viewed_at: viewed_at)
+      end
+
+      it 'returns 0 and preserves the original timestamp (first-wins)' do
+        expect(mark).to eq(0)
+        expect(metric.reload.first_ai_pipeline_results_viewed_at).to be_within(1.second).of(viewed_at)
+      end
+    end
+
+    context 'when no agent is on record' do
+      before do
+        create(:ci_project_metric, project: project, ci_config_first_generated_at: 1.hour.ago)
+      end
+
+      it { is_expected.to eq(0) }
+    end
+
+    context 'when the AI config commit time is not recorded' do
+      before do
+        create(:ci_project_metric, :ai_generated, project: project, ci_config_first_generated_at: nil)
+      end
+
+      it { is_expected.to eq(0) }
+    end
+
+    context 'when the pipeline predates the AI config commit' do
+      before do
+        create(:ci_project_metric, :ai_generated, project: project, ci_config_first_generated_at: 1.hour.from_now)
+      end
+
+      it { is_expected.to eq(0) }
+    end
+
+    context 'when no metric row exists' do
+      it { is_expected.to eq(0) }
     end
   end
 end

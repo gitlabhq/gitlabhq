@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -16,7 +17,7 @@ import (
 
 	jwt "github.com/golang-jwt/jwt/v5"
 
-	"gitlab.com/gitlab-org/labkit/log"
+	"gitlab.com/gitlab-org/labkit/v2/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
@@ -40,7 +41,8 @@ const (
 
 func TestMain(m *testing.M) {
 	if err := testhelper.BuildExecutables(); err != nil {
-		log.WithError(err).Fatal()
+		slog.Error("failed to build test executables", log.Error(err))
+		os.Exit(1)
 	}
 
 	testhelper.VerifyNoGoroutines(m)

@@ -21,7 +21,7 @@ RSpec.shared_context 'GroupProjectsFinder context' do
   let_it_be(:root_group_private_project, freeze: false) { create(:project, :private, path: '9', group: root_group, name: 'root-private-project') }
   let_it_be(:root_group_private_project_2, freeze: false) { create(:project, :private, path: '10', group: root_group, name: 'root-private-project-2') }
 
-  before do
+  before_all do
     shared_project_1.project_group_links.create!(group_access: Gitlab::Access::MAINTAINER, group: group)
     shared_project_2.project_group_links.create!(group_access: Gitlab::Access::MAINTAINER, group: group)
     shared_project_3.project_group_links.create!(group_access: Gitlab::Access::MAINTAINER, group: group)

@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Understand repository size calculation, limits, and methods to reduce Git repository storage.
+description: Understand how repository size is calculated and displayed, size limits, and methods to reduce Git repository storage.
 title: Repository size
 ---
 
@@ -18,12 +18,27 @@ It can differ slightly from one instance to another due to compression, housekee
 
 ## Size calculation
 
-The project overview page shows the size of all files in the repository, including repository files,
-artifacts, and LFS. This size is updated every 15 minutes.
-
-The size of a repository is determined by computing the accumulated size of all files in the repository.
+The repository size is the accumulated size of all files in the repository.
 This calculation is similar to executing `du --summarize --bytes` on your repository's
 [hashed storage path](../../../administration/repository_storage_paths.md).
+The size is recalculated when the repository changes, but no more than once every 15 minutes.
+
+The repository size is a subset of the project size. The project size, listed on the project overview page under **Project information**, includes the repository along with LFS objects, job artifacts, packages, and the wiki.
+
+### View repository size
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project, or the Owner role for the namespace.
+
+To view the repository size:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Settings** > **Usage quotas**.
+1. Select the **Storage** tab.
+1. In the usage breakdown, view the value in the **Repository** row.
+
+For more information about the storage a project uses, see [storage](../../storage_usage_quotas.md).
 
 ## Size and storage limits
 
@@ -168,7 +183,7 @@ To remove sensitive or confidential data from a repository, use one of these met
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) in GitLab 17.1 [with a flag](../../../administration/feature_flags/_index.md) named `rewrite_history_ui`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) in GitLab 17.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `rewrite_history_ui`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.2.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472018) in GitLab 17.9. Feature flag `rewrite_history_ui` removed.
@@ -268,7 +283,7 @@ To get a list of blobs at a given commit or branch sorted by size:
 
 {{< history >}}
 
-- Introduced in GitLab 17.1 [with a flag](../../../administration/feature_flags/_index.md) named `rewrite_history_ui`. Disabled by default. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/450701`.
+- Introduced in GitLab 17.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `rewrite_history_ui`. Disabled by default. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/450701`.
 - Enabled on GitLab.com in confidential issue `https://gitlab.com/gitlab-org/gitlab/-/issues/462999` in GitLab 17.2.
 - Enabled on GitLab Self-Managed and GitLab Dedicated in confidential issue `https://gitlab.com/gitlab-org/gitlab/-/issues/462999` in GitLab 17.3.
 - Generally available in confidential issue `https://gitlab.com/gitlab-org/gitlab/-/issues/472018` in GitLab 17.9. Feature flag `rewrite_history_ui` removed.

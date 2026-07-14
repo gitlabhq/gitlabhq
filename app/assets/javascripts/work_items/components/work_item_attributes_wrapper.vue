@@ -6,27 +6,24 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
 
-import {
-  WIDGET_TYPE_HEALTH_STATUS,
-  WIDGET_TYPE_ITERATION,
-  WIDGET_TYPE_MILESTONE,
-  WIDGET_TYPE_PARTICIPANTS,
-  WIDGET_TYPE_PROGRESS,
-  WIDGET_TYPE_WEIGHT,
-  WIDGET_TYPE_COLOR,
-  WORK_ITEM_TYPE_NAME_EPIC,
-  WIDGET_TYPE_CUSTOM_FIELDS,
-  WIDGET_TYPE_STATUS,
-  STATE_CLOSED,
-} from '../constants';
+import { WORK_ITEM_TYPE_NAME_EPIC, STATE_CLOSED } from '../constants';
 import {
   findAssigneesWidget,
+  findColorWidget,
   findCrmContactsWidget,
+  findCustomFieldsWidget,
+  findHealthStatusWidget,
   findHierarchyWidget,
   findHierarchyWidgetDefinition,
+  findIterationWidget,
   findLabelsWidget,
+  findMilestoneWidget,
+  findParticipantsWidget,
+  findProgressWidget,
   findStartAndDueDateWidget,
+  findStatusWidget,
   findTimeTrackingWidget,
+  findWeightWidget,
 } from '../utils';
 import workItemParticipantsQuery from '../graphql/work_item_participants.query.graphql';
 import workItemAllowedParentTypesQuery from '../graphql/work_item_allowed_parent_types.query.graphql';
@@ -38,6 +35,7 @@ import WorkItemTimeTracking from './work_item_time_tracking.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
 
 export default {
+  name: 'WorkItemAttributesWrapper',
   ListType,
   components: {
     Participants,
@@ -83,6 +81,7 @@ export default {
       required: true,
     },
   },
+  emits: ['attributesUpdated', 'error'],
   data() {
     return {
       workItemParticipants: {},
@@ -96,6 +95,7 @@ export default {
         return {
           fullPath: this.fullPath,
           iid: this.workItem.iid,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       skip() {
@@ -104,12 +104,7 @@ export default {
       update({ namespace }) {
         if (!namespace?.workItem) return {};
 
-        const workItemParticipantData = this.isWidgetPresent(
-          WIDGET_TYPE_PARTICIPANTS,
-          namespace.workItem,
-        );
-
-        return workItemParticipantData?.participants || {};
+        return findParticipantsWidget(namespace.workItem)?.participants || {};
       },
       error(e) {
         Sentry.captureException(e);
@@ -131,9 +126,6 @@ export default {
     },
   },
   computed: {
-    useWorkItemFeatures() {
-      return Boolean(this.glFeatures?.workItemFeaturesField);
-    },
     workItemType() {
       return this.workItem.workItemType?.name;
     },
@@ -159,7 +151,7 @@ export default {
       return findLabelsWidget(this.workItem);
     },
     workItemStatus() {
-      return this.isWidgetPresent(WIDGET_TYPE_STATUS);
+      return findStatusWidget(this.workItem);
     },
     workItemStartAndDueDate() {
       return findStartAndDueDateWidget(this.workItem);
@@ -168,24 +160,22 @@ export default {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     workItemWeight() {
-      return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+      return findWeightWidget(this.workItem);
     },
     workItemProgress() {
-      return this.isWidgetPresent(WIDGET_TYPE_PROGRESS);
+      return findProgressWidget(this.workItem);
     },
     workItemIteration() {
-      return this.isWidgetPresent(WIDGET_TYPE_ITERATION);
+      return findIterationWidget(this.workItem);
     },
     workItemHealthStatus() {
-      return this.isWidgetPresent(WIDGET_TYPE_HEALTH_STATUS);
+      return findHealthStatusWidget(this.workItem);
     },
     workItemHierarchy() {
       return findHierarchyWidget(this.workItem);
     },
     workItemMilestone() {
-      return this.useWorkItemFeatures
-        ? this.workItem?.features?.milestone || {}
-        : this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
+      return findMilestoneWidget(this.workItem);
     },
     isParentEnabled() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC ? this.hasSubepicsFeature : true;
@@ -200,7 +190,7 @@ export default {
       return findTimeTrackingWidget(this.workItem);
     },
     workItemColor() {
-      return this.isWidgetPresent(WIDGET_TYPE_COLOR);
+      return findColorWidget(this.workItem);
     },
     hasParent() {
       return this.workItemHierarchy?.hasParent;
@@ -213,12 +203,7 @@ export default {
       return crmContactsWidget && crmContactsWidget.contactsAvailable ? crmContactsWidget : null;
     },
     customFields() {
-      return this.isWidgetPresent(WIDGET_TYPE_CUSTOM_FIELDS)?.customFieldValues;
-    },
-  },
-  methods: {
-    isWidgetPresent(type, workItem = this.workItem) {
-      return workItem?.widgets?.find((widget) => widget.type === type);
+      return findCustomFieldsWidget(this.workItem)?.customFieldValues;
     },
   },
 };

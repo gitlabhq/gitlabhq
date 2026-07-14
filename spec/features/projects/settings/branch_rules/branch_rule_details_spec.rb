@@ -19,10 +19,6 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules > Branch rule de
 
   before do
     sign_in(user)
-    stub_licensed_features(
-      merge_request_approvers: true,
-      external_status_checks: true
-    )
   end
 
   context 'when viewed by developer' do
@@ -215,11 +211,8 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules > Branch rule de
     end
 
     describe 'Squash commits settings' do
-      it 'renders squash commits section for non-wildcard branch without edit button' do
-        within_testid('squash-setting-content') do
-          expect(page).to have_text 'Squash commits when merging'
-          expect(page).not_to have_button 'Edit'
-        end
+      it 'does not render squash commits section for non-wildcard branch' do
+        expect(page).to have_no_testid('squash-setting-content')
       end
 
       context 'with wildcard branch rule' do

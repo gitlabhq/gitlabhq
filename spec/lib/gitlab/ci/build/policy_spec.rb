@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::Policy do
+RSpec.describe Gitlab::Ci::Build::Policy, feature_category: :pipeline_composition do
   let(:policy) { spy('policy specification') }
 
   before do

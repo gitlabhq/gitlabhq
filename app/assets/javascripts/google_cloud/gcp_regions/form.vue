@@ -4,6 +4,7 @@ import { GlButton, GlFormGroup, GlFormSelect } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 
 export default {
+  name: 'GcpRegionsForm',
   components: { GlButton, GlFormGroup, GlFormSelect },
   props: {
     availableRegions: { required: true, type: Array },

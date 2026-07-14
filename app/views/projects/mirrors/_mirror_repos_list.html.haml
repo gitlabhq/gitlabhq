@@ -1,22 +1,29 @@
 - mirror_settings_enabled = can?(current_user, :admin_remote_mirror, @project)
 - display_pull_mirrors = params.fetch(:page, '1').to_s == '1'
 
-.table-responsive.gl-mb-0
-  - if !@project.mirror? && @project.remote_mirrors.count == 0
-    .gl-text-subtle= _('There are currently no mirrored repositories.')
-  - else
-    %table.table.b-table.gl-table.b-table-stacked-md
-      %thead.gl-hidden{ class: "@md/panel:gl-table-header-group" }
-        %tr
-          %th= _('Repository')
-          %th= _('Direction')
-          %th= _('Last update attempt')
-          %th= _('Last successful update')
-          %th
-          %th
-      %tbody.js-mirrors-table-body
-        = render_if_exists 'projects/mirrors/table_pull_row' if display_pull_mirrors
-        - @remote_mirrors.each do |remote_mirror|
-          = render 'projects/mirrors/remote_mirror', remote_mirror: remote_mirror, mirror_settings_enabled: mirror_settings_enabled
+- if Feature.enabled?(:vue_mirror_table, @project)
+  #js-mirror-table{ data: { mirrors: remote_mirrors_table_data(@remote_mirrors),
+                            project_id: @project.id,
+                            settings_enabled: mirror_settings_enabled.to_s,
+                            repository_mirrors_available: repository_mirrors_available?.to_s,
+                            pull_mirror: (display_pull_mirrors ? pull_mirror_table_data(@project).to_s : '') } }
+- else
+  .table-responsive.gl-mb-0
+    - if !@project.mirror? && @project.remote_mirrors.count == 0
+      .gl-text-subtle= _('There are currently no mirrored repositories.')
+    - else
+      %table.table.b-table.gl-table.b-table-stacked-md
+        %thead.gl-hidden{ class: "@md/panel:gl-table-header-group" }
+          %tr
+            %th= _('Repository')
+            %th= _('Direction')
+            %th= _('Last update attempt')
+            %th= _('Last successful update')
+            %th
+            %th
+        %tbody.js-mirrors-table-body
+          = render_if_exists 'projects/mirrors/table_pull_row' if display_pull_mirrors
+          - @remote_mirrors.each do |remote_mirror|
+            = render 'projects/mirrors/remote_mirror', remote_mirror: remote_mirror, mirror_settings_enabled: mirror_settings_enabled
 
-    = paginate @remote_mirrors, theme: 'gitlab', params: { anchor: 'js-push-remote-settings' }
+      = paginate @remote_mirrors, theme: 'gitlab', params: { anchor: 'js-push-remote-settings' }

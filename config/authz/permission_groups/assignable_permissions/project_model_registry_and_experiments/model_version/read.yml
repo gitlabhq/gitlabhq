@@ -1,0 +1,9 @@
+---
+name: read_model_version
+description: Grants the ability to read model versions
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_model_version

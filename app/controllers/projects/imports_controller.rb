@@ -5,6 +5,7 @@ class Projects::ImportsController < Projects::ApplicationController
   include ImportUrlParams
 
   # Authorize
+  before_action :ensure_project_in_current_organization!
   before_action :authorize_admin_project!, except: :show
   before_action :require_namespace_project_creation_permission, only: :show
   before_action :require_no_repo, except: :show
@@ -37,6 +38,10 @@ class Projects::ImportsController < Projects::ApplicationController
   end
 
   private
+
+  def ensure_project_in_current_organization!
+    render_404 unless @project&.organization_id == Current.organization.id
+  end
 
   def finished_notice
     if @project.forked?

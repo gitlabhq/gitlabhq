@@ -1,6 +1,6 @@
 ---
-source_checksum: 1d9f35bb1b585b6b
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: 11a9a25fd9781290
+distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -20,7 +20,6 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Analyze query plans using `EXPLAIN(analyze, buffers)` and document results in the MR description for sequential scans on large tables, nested loops with large datasets, missing or inefficient index usage, high-cost operations, unexpected sort operations
 - Verify query plans reflect the complete query as executed (including all chained scopes, pagination, ordering)
 - Verify queries return expected records (not zero rows)
-- Check maximum query execution time is under 100ms in query plan analysis
 - Consider async index creation if index creation in post-migrations exceeds 20 minutes
 
 ### SQL Query Guidelines

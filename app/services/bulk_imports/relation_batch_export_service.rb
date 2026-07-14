@@ -42,7 +42,13 @@ module BulkImports
       if cache_values.blank?
         error_message = "Batched relation export cache key missing or expired."
         batch.update!(status_event: 'fail_op', error: error_message)
-        Gitlab::ErrorTracking.track_exception(BulkImports::Error.new(error_message))
+
+        Gitlab::ErrorTracking.track_exception(
+          BulkImports::Error.new(error_message),
+          offline_export_id: export.offline_export_id,
+          importer: export.import_source
+        )
+
         return []
       end
 

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Legacy repository archive endpoint', feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :private, :repository) }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   let(:archive_project) { project }
   let(:format) { 'tar.gz' }

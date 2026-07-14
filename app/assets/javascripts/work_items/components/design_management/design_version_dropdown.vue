@@ -9,6 +9,7 @@ import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { findVersionId } from './utils';
 
 export default {
+  name: 'DesignVersionDropdown',
   components: {
     GlAvatar,
     GlCollapsibleListbox,

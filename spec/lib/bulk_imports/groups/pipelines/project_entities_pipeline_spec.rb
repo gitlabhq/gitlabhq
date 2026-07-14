@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_category: :importers do
   let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:destination_group, freeze: false) { create(:group) }
+  let_it_be(:destination_group, freeze: false) { create(:group, owners: [user]) }
 
   let_it_be(:entity, freeze: false) do
     create(
@@ -35,8 +35,6 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_
       end
 
       allow(subject).to receive(:set_source_objects_counter)
-
-      destination_group.add_owner(user)
     end
 
     it 'creates project entity' do

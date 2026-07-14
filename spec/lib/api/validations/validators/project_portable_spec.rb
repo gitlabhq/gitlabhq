@@ -9,7 +9,7 @@ RSpec.describe API::Validations::Validators::ProjectPortable do
   let(:not_portable) { 'project_members' }
 
   subject do
-    described_class.new(['test'], {}, false, scope.new)
+    described_class.new(['test'], {}, false, scope.new, {})
   end
 
   context 'valid portable' do

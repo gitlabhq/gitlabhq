@@ -3,9 +3,9 @@
 - breadcrumb_title s_('Terraform|Terraform states')
 - page_title s_('Terraform|Terraform states')
 
-= render ::Layouts::PageHeadingComponent.new(s_('Terraform|Terraform states'))
+= render ::Layouts::IndexLayout.new(heading: s_('Terraform|Terraform states')) do |c|
+  - if show_period_in_terraform_state_name_alert?(@project)
+    - c.with_alerts do
+      = render partial: 'period_in_terraform_state_name_alert'
 
-- if show_period_in_terraform_state_name_alert?(@project)
-  = render partial: 'period_in_terraform_state_name_alert'
-
-#js-terraform-list{ data: js_terraform_list_data(current_user, @project) }
+  #js-terraform-list{ data: js_terraform_list_data(current_user, @project) }

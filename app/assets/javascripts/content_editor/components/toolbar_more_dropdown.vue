@@ -10,6 +10,7 @@ export default {
     GlTooltip,
   },
   inject: ['tiptapEditor', 'contentEditor'],
+  emits: ['execute'],
   data() {
     return {
       isDropdownOpen: false,

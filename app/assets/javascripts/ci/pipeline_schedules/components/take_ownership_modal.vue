@@ -21,6 +21,7 @@ export default {
       required: true,
     },
   },
+  emits: ['hide-modal', 'take-ownership'],
   computed: {
     actionCancel() {
       return { text: this.$options.i18n.cancelLabel };
@@ -45,8 +46,8 @@ export default {
     :action-cancel="actionCancel"
     :title="$options.i18n.takeOwnership"
     size="sm"
-    @primary="$emit('takeOwnership')"
-    @hide="$emit('hideModal')"
+    @primary="$emit('take-ownership')"
+    @hide="$emit('hide-modal')"
   >
     <p>{{ $options.i18n.ownershipMessage }}</p>
   </gl-modal>

@@ -8,6 +8,7 @@
 
 const conf = {
   comments: {
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- False positive, not a URL
     lineComment: '//',
     blockComment: ['/*', '*/'],
   },

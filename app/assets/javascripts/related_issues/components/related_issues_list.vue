@@ -51,7 +51,7 @@ export default {
       default: () => [],
     },
   },
-  emits: ['relatedIssueRemoveRequest', 'saveReorder'],
+  emits: ['related-issue-remove-request', 'save-reorder'],
   mounted() {
     if (this.canReorder) {
       this.sortable = Sortable.create(this.$refs.list, {
@@ -76,7 +76,7 @@ export default {
       const { beforeId, afterId } = this.getBeforeAfterId(event.item);
       const { oldIndex, newIndex } = event;
 
-      this.$emit('saveReorder', {
+      this.$emit('save-reorder', {
         issueId: parseInt(event.item.dataset.key, 10),
         oldIndex,
         newIndex,
@@ -146,7 +146,7 @@ export default {
             :work-item-type="issue.type"
             event-namespace="relatedIssue"
             data-testid="related-issuable-content"
-            @relatedIssueRemoveRequest="$emit('relatedIssueRemoveRequest', $event)"
+            @related-issue-remove-request="$emit('related-issue-remove-request', $event)"
           />
         </li>
       </ul>

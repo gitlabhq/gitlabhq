@@ -15,7 +15,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:repository_exists)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(exists: true))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(exists: true), trailing_metadata: {}))
 
       client.exists?
     end
@@ -62,7 +62,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:prune_unreachable_objects)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(:prune_unreachable_objects))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(:prune_unreachable_objects), trailing_metadata: {}))
 
       client.prune_unreachable_objects
     end
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:repository_size)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(size: 0)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: { size: 0 }, trailing_metadata: {}))
 
       client.repository_size
     end
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:get_object_directory_size)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(size: 0)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: { size: 0 }, trailing_metadata: {}))
 
       client.get_object_directory_size
     end
@@ -112,6 +112,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
               .with(gitaly_request_with_params(
                 target_reference_backend: :REFERENCE_BACKEND_REFTABLE
               ), kind_of(Hash))
+              .and_return(instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}))
 
       client.migrate_reference_backend(to_reftable: true)
     end
@@ -122,6 +123,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
               .with(gitaly_request_with_params(
                 target_reference_backend: :REFERENCE_BACKEND_FILES
               ), kind_of(Hash))
+              .and_return(instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}))
 
       client.migrate_reference_backend(to_reftable: false)
     end
@@ -132,7 +134,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:get_info_attributes)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return([])
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.info_attributes
     end
@@ -143,7 +145,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:has_local_branches)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(value: true))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(value: true), trailing_metadata: {}))
 
       expect(client.has_local_branches?).to be(true)
     end
@@ -162,7 +164,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
         expect_any_instance_of(Gitaly::RepositoryService::Stub)
           .to receive(:create_fork)
           .with(expected_request, kind_of(Hash))
-          .and_return(double(value: true))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(value: true), trailing_metadata: {}))
 
         client.fork_repository(source_repository)
       end
@@ -180,7 +182,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
         expect_any_instance_of(Gitaly::RepositoryService::Stub)
           .to receive(:create_fork)
           .with(expected_request, kind_of(Hash))
-          .and_return(double(value: true))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(value: true), trailing_metadata: {}))
 
         client.fork_repository(source_repository, branch)
       end
@@ -199,7 +201,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:create_repository_from_url)
         .with(expected_request, kind_of(Hash))
-        .and_return(double(value: true))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(value: true), trailing_metadata: {}))
 
       client.import_repository(source)
     end
@@ -214,7 +216,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
         expect_any_instance_of(Gitaly::RepositoryService::Stub)
           .to receive(:create_repository_from_url)
           .with(expected_request, kind_of(Hash))
-          .and_return(double(value: true))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(value: true), trailing_metadata: {}))
 
         client.import_repository(source, resolved_address: '172.16.123.1')
       end
@@ -242,7 +244,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:fetch_remote)
         .with(expected_request, kind_of(Hash))
-        .and_return(double(value: true))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(value: true), trailing_metadata: {}))
 
       client.fetch_remote(url, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, timeout: 1)
     end
@@ -266,7 +268,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
         expect_any_instance_of(Gitaly::RepositoryService::Stub)
           .to receive(:fetch_remote)
           .with(expected_request, kind_of(Hash))
-          .and_return(double(value: true))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(value: true), trailing_metadata: {}))
 
         client.fetch_remote(url, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, timeout: 1, resolved_address: '172.16.123.1')
       end
@@ -312,7 +314,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
           expect_any_instance_of(Gitaly::RepositoryService::Stub)
             .to receive(:fetch_remote)
             .with(expected_request, kind_of(Hash))
-            .and_return(double(value: true))
+            .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(value: true), trailing_metadata: {}))
 
           client.fetch_remote(url, refmap: nil, ssh_auth: ssh_auth, forced: false, no_tags: false, timeout: 1)
         end
@@ -325,7 +327,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:calculate_checksum)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(checksum: 0))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(checksum: 0), trailing_metadata: {}))
 
       client.calculate_checksum
     end
@@ -337,7 +339,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
         .to receive(:create_repository)
         .with(gitaly_request_with_path(storage_name, relative_path)
         .and(gitaly_request_with_params(default_branch: '')), kind_of(Hash))
-        .and_return(double)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double, trailing_metadata: {}))
 
       client.create_repository
     end
@@ -347,7 +349,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
         .to receive(:create_repository)
         .with(gitaly_request_with_path(storage_name, relative_path)
         .and(gitaly_request_with_params(default_branch: 'default-branch-name')), kind_of(Hash))
-        .and_return(double)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double, trailing_metadata: {}))
 
       client.create_repository('default-branch-name')
     end
@@ -358,7 +360,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
         .with(gitaly_request_with_path(storage_name, relative_path)
         .and(gitaly_request_with_params(
           default_branch: Gitlab::EncodingHelper.encode_binary('feature/新機能'))), kind_of(Hash)
-        ).and_return(double)
+        ).and_return(instance_double(GRPC::ActiveCall::Operation, execute: double, trailing_metadata: {}))
 
       client.create_repository('feature/新機能')
     end
@@ -369,7 +371,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
           .to receive(:create_repository)
           .with(gitaly_request_with_path(storage_name, relative_path)
           .and(gitaly_request_with_params(default_branch: '', object_format: expected_format)), kind_of(Hash))
-          .and_return(double)
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double, trailing_metadata: {}))
       end
 
       context 'with SHA1 format' do
@@ -403,7 +405,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:get_raw_changes)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double, trailing_metadata: {}))
 
       client.raw_changes_between('deadbeef', 'deadpork')
     end
@@ -416,7 +418,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:search_files_by_name)
               .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-              .and_return([double(files: ['file1.txt']), double(files: ['file2.txt'])])
+              .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [double(files: ['file1.txt']), double(files: ['file2.txt'])], trailing_metadata: {}))
     end
 
     shared_examples 'a search for files by regexp' do
@@ -443,6 +445,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::ObjectPoolService::Stub)
         .to receive(:disconnect_git_alternates)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}))
 
       client.disconnect_alternates
     end
@@ -453,7 +456,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:remove_repository)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(value: true))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(value: true), trailing_metadata: {}))
 
       client.remove
     end
@@ -466,6 +469,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:replicate_repository)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}))
 
       client.replicate(source_repository)
     end
@@ -479,6 +483,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
           Gitlab::GitalyClient.fast_timeout.seconds.from_now.to_f,
           Gitlab::GitalyClient.medium_timeout.seconds.from_now.to_f
         )
+        instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {})
       end
 
       client.find_license
@@ -490,6 +495,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::ObjectPoolService::Stub)
         .to receive(:get_object_pool)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}))
 
       client.object_pool
     end
@@ -500,6 +506,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:object_format)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}))
 
       client.object_format
     end

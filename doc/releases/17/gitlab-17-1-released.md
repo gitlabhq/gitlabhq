@@ -114,9 +114,9 @@ Secret push protection is available on GitLab.com and for Dedicated customers as
 
 {{< /details >}}
 
-In earlier versions of GitLab, some customers needed an autoscaling solution for GitLab Runner on virtual machine instances on public cloud platforms. These customers had to rely on the legacy [Docker Machine executor](https://docs.gitlab.com/runner/configuration/autoscale.html) or custom solutions stitched together by using cloud provider technologies.
+In earlier versions of GitLab, some customers needed an autoscaling solution for GitLab Runner on virtual machine instances on public cloud platforms. These customers had to rely on the legacy [Docker Machine executor](https://docs.gitlab.com/runner/configuration/autoscale/) or custom solutions stitched together by using cloud provider technologies.
 
-Today, we’re pleased to announce the general availability of the GitLab Runner Autoscaler. The GitLab Runner Autoscaler is composed of GitLab-developed taskscaler and [fleeting](https://docs.gitlab.com/runner/fleet_scaling/fleeting.html) technologies and the cloud provider plugin for Google Compute Engine.
+Today, we’re pleased to announce the general availability of the GitLab Runner Autoscaler. The GitLab Runner Autoscaler is composed of GitLab-developed taskscaler and [fleeting](https://docs.gitlab.com/runner/fleet_scaling/fleeting/) technologies and the cloud provider plugin for Google Compute Engine.
 
 ### GitLab connector application now available on the Snowflake Marketplace
 

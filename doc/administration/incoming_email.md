@@ -836,7 +836,7 @@ to read/write mail in all mailboxes.
 
 To mitigate security concerns, we recommend configuring an application access
 policy which limits the mailbox access for all accounts, as described in
-[Microsoft documentation](https://learn.microsoft.com/en-us/graph/auth-limit-mailbox-access).
+[Microsoft documentation](https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac).
 
 This example for Linux package installations assumes you're using the following mailbox: `incoming@example.onmicrosoft.com`:
 

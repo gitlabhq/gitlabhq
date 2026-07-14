@@ -166,6 +166,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
             'exception.message': 'some error',
             import_type: project.import_type,
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             source: 'klass_name',
             external_identifiers: github_identifiers
           }
@@ -178,6 +179,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
           {
             import_type: project.import_type,
             project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
             source: 'klass_name',
             external_identifiers: github_identifiers
           }

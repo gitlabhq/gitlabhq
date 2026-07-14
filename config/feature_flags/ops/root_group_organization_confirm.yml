@@ -1,0 +1,10 @@
+---
+name: root_group_organization_confirm
+description: When enabled for an organization, automatically confirms the organization via the ConfirmService.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/603329
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242739
+rollout_issue_url:
+milestone: '19.2'
+group: group::organizations
+type: ops
+default_enabled: false

@@ -51,7 +51,7 @@ module Boards
 
       def set_work_item_type_ids
         work_item_type_ids = work_item_type_provider.filtered_types.filter_map do |type|
-          type.try(:converted_from_system_defined_type_identifier) || type.id if type.filterable_board_view?
+          type.persistable_id if type.filterable_board_view?
         end
         params[:work_item_type_ids] ||= work_item_type_ids
       end

@@ -198,11 +198,6 @@ graph LR
     end
 
     subgraph Integrated Services
-        %% Mattermost
-        Mattermost
-        Mattermost ---> GitLabWorkhorse
-        NGINX --> Mattermost
-
         %% Grafana
         Grafana
         NGINX --> Grafana
@@ -340,7 +335,6 @@ click NGINX "#nginx"
 click Runner "#gitlab-runner"
 click Registry "#registry"
 click ObjectStorage "#object-storage"
-click Mattermost "#mattermost"
 click Gitaly "#gitaly"
 click Jaeger "#jaeger"
 click GitLabWorkhorse "#gitlab-workhorse"
@@ -402,7 +396,6 @@ Component statuses are linked to configuration documentation for each component.
 | [Inbound email (SMTP)](#inbound-email)                | Receive messages to update issues                                    |       ⤓        |       ⤓        |      ⚙       |        ⤓         |     ✅      |   ⤓    |  ⤓  | CE & EE |
 | [Jaeger integration](#jaeger)                         | Distributed tracing for deployed apps                                |       ⤓        |       ⤓        |      ⤓       |        ⤓         |     ⤓      |   ⤓    |  ⚙  | EE Only |
 | [LDAP Authentication](#ldap-authentication)           | Authenticate users against centralized LDAP directory                |       ⤓        |       ⤓        |      ⤓       |        ⤓         |     ❌      |   ⤓    |  ⚙  | CE & EE |
-| [Mattermost](#mattermost)                             | Open-source Slack alternative                                        |       ⚙       |       ⚙        |      ⤓       |        ⤓         |     ⤓      |   ❌    |  ⚙  | CE & EE |
 | [Object storage](#object-storage)                     | S3-compatible object storage service                                 |       ⤓        |       ⤓        |      ✅       |        ✅         |     ✅      |   ❌    |  ⚙  | CE & EE |
 | [NGINX](#nginx)                                       | Routes requests to appropriate components, terminates SSL            |       ✅       |       ✅        |      ✅       |        ⚙         |     ✅      |   ⤓    |  ⚙  | CE & EE |
 | [Node Exporter](#node-exporter)                       | Prometheus endpoint with system metrics                              |       ✅       |       ✅        |     N/A      |       N/A        |     ✅      |   ❌    |  ❌  | CE & EE |
@@ -672,17 +665,6 @@ It can be used for monitoring microservices-based distributed systems.
 
 GitLab is comprised of a large number of services that all log. We bundle our own Logrotate
 to make sure we were logging responsibly. This is just a packaged version of the common open source offering.
-
-#### Mattermost
-
-- [Project page](https://github.com/mattermost/mattermost/blob/master/README.md)
-- Configuration:
-  - [Omnibus](../integration/mattermost/_index.md)
-  - [Charts](https://docs.mattermost.com/install/install-mmte-helm-gitlab-helm.html)
-- Layer: Core Service (Processor)
-- GitLab.com: [Mattermost](../user/project/integrations/mattermost.md)
-
-Mattermost is an open source, private cloud, Slack-alternative from <https://mattermost.com>.
 
 #### Object storage
 

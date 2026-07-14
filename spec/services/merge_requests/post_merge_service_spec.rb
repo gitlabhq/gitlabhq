@@ -12,7 +12,7 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
 
   subject { described_class.new(project: project, current_user: user, params: params).execute(merge_request) }
 
-  before do
+  before_all do
     project.add_maintainer(user)
   end
 

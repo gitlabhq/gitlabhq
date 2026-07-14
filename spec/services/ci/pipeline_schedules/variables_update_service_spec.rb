@@ -10,7 +10,7 @@ RSpec.describe Ci::PipelineSchedules::VariablesUpdateService, feature_category: 
     create(:project, :public, :repository, maintainers: user, developers: developer, reporters: reporter)
   end
 
-  let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
+  let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
   let(:pipeline_schedule_variable) { create(:ci_pipeline_schedule_variable, pipeline_schedule: pipeline_schedule) }
 
   subject(:service) { described_class.new(pipeline_schedule_variable, user, params) }

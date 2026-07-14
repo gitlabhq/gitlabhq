@@ -1,15 +1,13 @@
 <script>
-import { GlAlert, GlEmptyState, GlLoadingIcon, GlModal, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlModal, GlLink, GlSprintf } from '@gitlab/ui';
+import PipelinesEmptyState from '~/ci/common/empty_state/pipelines_empty_state.vue';
+import PipelinesErrorState from '~/ci/common/empty_state/pipelines_error_state.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import { PIPELINE_ID_KEY } from '~/ci/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import eventHub from '~/ci/event_hub';
-import PipelinesMixin from '~/ci/pipeline_details/mixins/pipelines_mixin';
-import PipelinesService from '~/ci/pipelines_page/services/pipelines_service';
-import PipelineStore from '~/ci/pipeline_details/stores/pipelines_store';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __ } from '~/locale';
@@ -18,19 +16,26 @@ import pipelineCreationRequestsUpdatedSubscription from '~/ci/merge_requests/gra
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
 import { createAlert } from '~/alert';
+import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
+import { CREATING_PIPELINE_TOAST_MESSAGE } from '~/ci/pipeline_details/constants';
 import retryPipelineMutation from '~/ci/pipelines_page/graphql/mutations/retry_pipeline.mutation.graphql';
 import cancelPipelineMutation from '~/ci/pipelines_page/graphql/mutations/cancel_pipeline.mutation.graphql';
 import { MR_PIPELINE_TYPE_DETACHED } from '~/ci/merge_requests/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import PipelineStore from './legacy_pipelines_store';
+import PipelinesService from './legacy_pipelines_service';
+import PipelinesMixin from './legacy_pipelines_mixin';
 
 export default {
+  name: 'LegacyPipelinesTableWrapper',
   components: {
     GlAlert,
-    GlEmptyState,
     GlLink,
     GlLoadingIcon,
     GlModal,
     GlSprintf,
+    PipelinesEmptyState,
+    PipelinesErrorState,
     PipelinesTable,
     TablePagination,
     RunPipelineButton,
@@ -42,33 +47,6 @@ export default {
       required: false,
       default: false,
     },
-    endpoint: {
-      type: String,
-      required: true,
-    },
-    errorStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    emptyStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    isMergeRequestTable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    mergeRequestId: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    projectId: {
-      type: String,
-      required: false,
-      default: '',
-    },
     sourceProjectFullPath: {
       type: String,
       required: false,
@@ -79,10 +57,24 @@ export default {
       required: false,
       default: '',
     },
-    viewType: {
+    projectId: {
       type: String,
       required: false,
-      default: 'root',
+      default: '',
+    },
+    mergeRequestId: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    endpoint: {
+      type: String,
+      required: true,
+    },
+    isMergeRequestTable: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   apollo: {
@@ -274,7 +266,7 @@ export default {
       const pipelines = resp.data.pipelines || resp.data;
 
       this.store.storePagination(resp.headers);
-      this.setCommonData(pipelines, this.isMergeRequestTable);
+      this.setCommonData(pipelines);
       if (!this.hasInProgressCreationRequests) {
         this.stopDebouncedPipelineLoader();
       }
@@ -291,18 +283,62 @@ export default {
       }
     },
     /**
-     * When the user clicks on the "Run pipeline" button
-     * we need to make a post request and
-     * to update the table content once the request is finished.
-     *
-     * We are emitting an event through the eventHub using the old pattern
-     * to make use of the code in mixins/pipelines.js that handles all the
-     * table events
-     *
+     * Runs a pipeline for the merge request when the "Run pipeline" button is
+     * clicked.
+     */
+    async runMergeRequestPipeline(options) {
+      if (this.state.isRunningMergeRequestPipeline) return; // Guards against duplicate submissions
+
+      this.store.toggleIsRunningMergeRequestPipeline(true);
+
+      try {
+        await this.service.runMRPipeline(options);
+
+        if (!options.isAsync) {
+          this.$toast.show(CREATING_PIPELINE_TOAST_MESSAGE);
+          this.updateTable();
+        }
+      } catch (e) {
+        const unauthorized = e.response?.status === HTTP_STATUS_UNAUTHORIZED;
+        let errorMessage = __(
+          'An error occurred while trying to run a new pipeline for this merge request.',
+        );
+
+        if (unauthorized) {
+          errorMessage = __('You do not have permission to run a pipeline on this branch.');
+        }
+
+        createAlert({
+          message: errorMessage,
+          primaryButton: {
+            text: __('Learn more'),
+            link: helpPagePath('ci/pipelines/merge_request_pipelines.md'),
+          },
+        });
+        Sentry.captureException(e);
+      } finally {
+        if (options.isAsync) {
+          // force pipeline creation requests to update before allowing
+          // users to create more pipelines by clicking repeatedly
+          try {
+            await this.$apollo.queries.pipelineCreationRequests.refetch();
+          } catch (e) {
+            Sentry.captureException(e);
+          } finally {
+            this.store.toggleIsRunningMergeRequestPipeline(false);
+          }
+        } else {
+          this.store.toggleIsRunningMergeRequestPipeline(false);
+        }
+      }
+    },
+    /**
+     * Triggers a pipeline run for the merge request and starts the debounced
+     * loader so the table shows a skeleton while the pipeline is created.
      */
     onClickRunPipeline() {
       this.startDebouncedPipelineLoader();
-      eventHub.$emit('runMergeRequestPipeline', {
+      this.runMergeRequestPipeline({
         projectId: this.projectId,
         mergeRequestId: this.mergeRequestId,
         isAsync: this.isMergeRequestTable,
@@ -404,7 +440,6 @@ export default {
     },
   },
   i18n: {
-    runPipelinePopoverTitle: s__('Pipeline|Run merge request pipeline'),
     runPipelinePopoverDescription: s__(
       `Pipeline|To run a merge request pipeline, the jobs in the CI/CD configuration file %{ciDocsLinkStart}must be configured%{ciDocsLinkEnd} to run in merge request pipelines
       and you must have %{permissionDocsLinkStart}sufficient permissions%{permissionDocsLinkEnd} in the source project.`,
@@ -441,56 +476,43 @@ export default {
       class="gl-mt-5"
     />
 
-    <gl-empty-state
-      v-else-if="shouldRenderErrorState"
-      :svg-path="errorStateSvgPath"
-      :title="
-        s__(`Pipelines|There was an error fetching the pipelines.
-        Try again in a few moments or contact your support team.`)
-      "
-      data-testid="pipeline-error-empty-state"
-    />
-    <template v-else-if="shouldRenderEmptyState">
-      <gl-empty-state
-        :svg-path="emptyStateSvgPath"
-        :svg-height="150"
-        :title="$options.i18n.emptyStateTitle"
-        data-testid="pipeline-empty-state"
-      >
-        <template #description>
-          <gl-sprintf :message="$options.i18n.runPipelinePopoverDescription">
-            <template #ciDocsLink="{ content }">
-              <gl-link
-                :href="$options.mrPipelinesDocsPath"
-                target="_blank"
-                data-testid="mr-pipelines-docs-link"
-                >{{ content }}</gl-link
-              >
-            </template>
-            <template #permissionDocsLink="{ content }">
-              <gl-link
-                :href="$options.userPermissionsDocsPath"
-                target="_blank"
-                data-testid="user-permissions-docs-link"
-                >{{ content }}</gl-link
-              >
-            </template>
-          </gl-sprintf>
-        </template>
+    <pipelines-error-state v-else-if="shouldRenderErrorState" />
+    <pipelines-empty-state
+      v-else-if="shouldRenderEmptyState"
+      :title="$options.i18n.emptyStateTitle"
+    >
+      <template #description>
+        <gl-sprintf :message="$options.i18n.runPipelinePopoverDescription">
+          <template #ciDocsLink="{ content }">
+            <gl-link
+              :href="$options.mrPipelinesDocsPath"
+              target="_blank"
+              data-testid="mr-pipelines-docs-link"
+              >{{ content }}</gl-link
+            >
+          </template>
+          <template #permissionDocsLink="{ content }">
+            <gl-link
+              :href="$options.userPermissionsDocsPath"
+              target="_blank"
+              data-testid="user-permissions-docs-link"
+              >{{ content }}</gl-link
+            >
+          </template>
+        </gl-sprintf>
+      </template>
 
-        <template #actions>
-          <div class="gl-align-middle">
-            <run-pipeline-button
-              variant="confirm"
-              data-testid="run_pipeline_button"
-              :is-loading="showRunPipelineButtonLoader"
-              :merge-request-id="mergeRequestId"
-              @run-pipeline="tryRunPipeline"
-            />
-          </div>
-        </template>
-      </gl-empty-state>
-    </template>
+      <template #actions>
+        <div class="gl-align-middle">
+          <run-pipeline-button
+            variant="confirm"
+            :is-loading="showRunPipelineButtonLoader"
+            :merge-request-id="mergeRequestId"
+            @run-pipeline="tryRunPipeline"
+          />
+        </div>
+      </template>
+    </pipelines-empty-state>
 
     <div v-else-if="shouldRenderTable">
       <div
@@ -507,18 +529,21 @@ export default {
 
       <pipelines-table
         :is-creating-pipeline="isCreatingPipeline"
-        :show-run-pipeline-button="canRenderPipelineButton"
-        :run-pipeline-button-loading="showRunPipelineButtonLoader"
-        :merge-request-id="mergeRequestId"
         :pipeline-id-type="$options.pipelineIdKey"
         :pipelines="state.pipelines"
-        :view-type="viewType"
         class="@lg/panel:-gl-mt-px"
         @cancel-pipeline="cancelPipeline"
-        @run-pipeline="tryRunPipeline"
         @job-action-executed="onRefreshPipelinesTable"
         @retry-pipeline="retryPipeline"
-      />
+      >
+        <template v-if="canRenderPipelineButton" #table-header-actions>
+          <run-pipeline-button
+            :is-loading="showRunPipelineButtonLoader"
+            :merge-request-id="mergeRequestId"
+            @run-pipeline="tryRunPipeline"
+          />
+        </template>
+      </pipelines-table>
     </div>
 
     <gl-modal

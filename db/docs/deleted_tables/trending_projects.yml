@@ -1,0 +1,15 @@
+---
+table_name: trending_projects
+classes:
+- TrendingProject
+feature_categories:
+- source_code_management
+description: Stores the list of trending projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6749
+milestone: '8.13'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/555343
+removed_in_milestone: '19.2'

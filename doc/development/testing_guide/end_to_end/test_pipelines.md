@@ -191,6 +191,7 @@ Jobs in `test` stage:
 - `cng-registry` runs tests in the registry scenario `Test::Integration::Registry` against CNG
 - `cng-relative-url` runs the smoke suite, `Test::Instance::Smoke`, but with a relative URL set for CNG
 - `cng-oauth` runs e2e spec for authentication between GitHub and GitLab with OmniAuth enabled.
+- `cng-secrets-manager` runs the Secrets Manager scenario `Test::Integration::SecretsManager` against CNG deployed with OpenBao enabled
 
 ##### report
 

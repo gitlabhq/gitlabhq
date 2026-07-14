@@ -21,6 +21,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['input'],
   computed: {
     availablePageSizes() {
       return this.excludePageSizes.length > 0

@@ -33,7 +33,7 @@ export default {
 </script>
 <template>
   <gl-link v-gl-tooltip :href="authorUrl" :title="showAuthorName ? null : author.name">
-    <gl-avatar :src="avatarUrl" :size="16" :alt="author.name" /><span
+    <gl-avatar :src="avatarUrl" :size="16" :alt="author.name" class="gl-align-top" /><span
       v-if="showAuthorName"
       class="author gl-ml-2"
       >{{ author.name }}</span

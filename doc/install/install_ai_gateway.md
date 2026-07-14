@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: AI Platform
+group: AI Core Infra
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Gateway between GitLab and large language models.
 title: Install the GitLab AI Gateway
@@ -11,6 +11,30 @@ is a combination of two services that give access to AI-native GitLab Duo featur
 
 - AI Gateway service
 - [GitLab Duo Agent Platform service](../user/duo_agent_platform/_index.md)
+
+## Authentication and JSON Web Tokens (JWT)
+
+To access GitLab Duo features, the AI Gateway uses JWT to confirm that requests come from authenticated users on your GitLab instance.
+When your GitLab instance requests a token, the service issues a short-lived signed token that authorizes the request.
+
+When you host your own AI Gateway, you must generate a signing key pair and pass the keys to the
+service as environment variables.
+
+Each service uses its own key pair:
+
+- The AI Gateway uses `AIGW_SELF_SIGNED_JWT__SIGNING_KEY` and
+  `AIGW_SELF_SIGNED_JWT__VALIDATION_KEY` for features like GitLab Duo Code Suggestions and GitLab Duo Chat.
+- The GitLab Duo Agent Platform service uses `DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY` and
+  `DUO_WORKFLOW_SELF_SIGNED_JWT__VALIDATION_KEY`.
+
+Each pair provides the following roles:
+
+- The signing key signs the tokens that the service issues.
+- The validation key validates tokens during key rotation so that tokens signed with a
+  previous key remain valid until they expire.
+
+Both keys in a pair must be RSA 2048-bit private keys in PEM format.
+If these keys are missing, the service cannot sign tokens and requests fail with a token creation error.
 
 ## Install by using Docker
 
@@ -211,6 +235,8 @@ Start by creating the following files in your working directory.
        # Forward all requests to the AI Gateway
        location / {
            proxy_pass http://gitlab-ai-gateway:5052;
+           # proxy_read_timeout is the longest allowed idle gap between response chunks,
+           # not the total response time. Reasoning models can pause for minutes before responding.
            proxy_read_timeout 300s;
            proxy_connect_timeout 75s;
            proxy_buffering off;
@@ -247,6 +273,8 @@ Start by creating the following files in your working directory.
        # Forward all requests to the AI Gateway
        location / {
            proxy_pass http://gitlab-ai-gateway:5052;
+           # proxy_read_timeout is the longest allowed idle gap between response chunks,
+           # not the total response time. Reasoning models can pause for minutes before responding.
            proxy_read_timeout 300s;
            proxy_connect_timeout 75s;
            proxy_buffering off;
@@ -566,6 +594,57 @@ To do this for a Helm chart deployment of the AI Gateway:
 
 For a Docker deployment, use the same method. The only difference is that, to mount the local file in the container, use `--volume /root/ca-certificates.crt:/tmp/ca-certificates.crt`.
 
+## Connect to a model endpoint that requires mutual TLS (mTLS)
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6084) in GitLab 19.3.
+
+{{< /history >}}
+
+If your model endpoint or a proxy in front of it requires callers to authenticate
+with a client certificate, configure the AI Gateway to present a certificate.
+This approach is equivalent to the `curl --cert` option.
+
+To connect to a model endpoint that requires mTLS,
+set the following environment variables on the AI Gateway:
+
+| Variable                  | Required | Description |
+|---------------------------|----------|-------------|
+| `AIGW_MTLS__ENABLED`      | Yes      | Set to `true` to present a client certificate to upstream model endpoints. |
+| `AIGW_MTLS__CERT_FILE`    | Yes      | Path to the client certificate PEM file. Can contain a combined certificate and private key or use `AIGW_MTLS__KEY_FILE` for a separate key. |
+| `AIGW_MTLS__KEY_FILE`     | No       | Path to the client private key if not bundled in `AIGW_MTLS__CERT_FILE`. |
+| `AIGW_MTLS__KEY_PASSWORD` | No       | Password for an encrypted private key. Requires `AIGW_MTLS__KEY_FILE`. |
+| `AIGW_MTLS__VERIFY`       | No       | Set to `false` to disable upstream server certificate verification. Defaults to `true`. |
+| `AIGW_MTLS__CA_BUNDLE`    | No       | Path to a CA bundle used to verify the upstream server certificate (for example, a corporate CA). When this variable is not set, the AI Gateway verifies against `SSL_CERT_FILE` (if set) or its built-in CA bundle. |
+
+For a GitLab Helm chart deployment, mount the client certificate and set the variables:
+
+```yaml
+volumes:
+  - name: mtls-client-cert
+    secret:
+      secretName: aigw-mtls-client-cert
+      optional: false
+
+volumeMounts:
+  - name: mtls-client-cert
+    mountPath: /certs
+    readOnly: true
+
+extraEnvironmentVariables:
+  - name: AIGW_MTLS__ENABLED
+    value: "true"
+  - name: AIGW_MTLS__CERT_FILE
+    value: /certs/client.pem
+```
+
+For a Docker deployment, use the same environment variables and mount the certificate with `--volume /path/to/client.pem:/certs/client.pem`.
+
+The AI Gateway presents the client certificate only when the upstream server
+requests a certificate during the TLS handshake.
+This configuration does not affect model endpoints that do not require a client certificate.
+
 ## Upgrade the AI Gateway Docker image
 
 To upgrade the AI Gateway, download the newest Docker image tag.
@@ -685,7 +764,7 @@ These tests are performed for offline environments:
 
 | Test | Description |
 |-----------------|-------------|
-| Network | Tests whether: <br>- The AI Gateway URL has been properly configured in the database through the `ai_settings` table.<br> - Your instance can connect to the configured URL.<br><br>If your instance cannot connect to the URL, ensure that your firewall or proxy server settings [allow connection](../administration/gitlab_duo/configure/gitlab_self_managed.md). Although the environment variable `AI_GATEWAY_URL` is still supported for legacy compatibility, configuring the URL through the database is recommended for better manageability. |
+| Network | Tests whether: <br>- The AI Gateway URL has been properly configured in the database through the `ai_settings` table.<br> - Your instance can connect to the configured URL.<br><br>If your instance cannot connect to the URL, ensure that your firewall or proxy server settings [allow connection](../administration/gitlab_duo/configure/_index.md). Although the environment variable `AI_GATEWAY_URL` is still supported for legacy compatibility, configuring the URL through the database is recommended for better manageability. |
 | License | Tests whether your license has the ability to access Code Suggestions feature. |
 | System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
 
@@ -983,14 +1062,6 @@ To resolve this issue:
    ```
 
 1. Restart the AI Gateway container.
-
-> [!note]
-> `AIGW_SELF_SIGNED_JWT__SIGNING_KEY` is used by the AI Gateway to sign user JWTs.
-> `AIGW_SELF_SIGNED_JWT__VALIDATION_KEY` is a secondary key used for token validation
-> during key rotation to ensure previously issued tokens remain valid.
-> Both keys must use RSA 2048-bit private keys in PEM format.
-> These keys are separate from `DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY`,
-> which is used by the GitLab Duo Agent Platform.
 
 ### SSL certificate errors when loading PEM files
 

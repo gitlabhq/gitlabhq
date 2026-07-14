@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Mutations::Issues::Update, feature_category: :team_planning do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project_label, freeze: false) { create(:label, project: project) }
-  let_it_be(:issue, freeze: false) { create(:issue, project: project, labels: [project_label]) }
+  let_it_be(:project_label) { create(:label, project: project) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project, labels: [project_label]) }
   let_it_be(:milestone) { create(:milestone, project: project) }
 
   let(:expected_attributes) do

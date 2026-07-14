@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Group show page', :with_current_organization, feature_category: :groups_and_projects do
   include Features::InviteMembersModalHelpers
 
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:group) { create(:group) }
 
   let(:path) { group_path(group) }
 
@@ -156,7 +156,7 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
   end
 
   context 'with subgroup support' do
-    let_it_be(:restricted_group, freeze: false) do
+    let_it_be_with_reload(:restricted_group) do
       create(:group, subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
     end
 
@@ -252,7 +252,7 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
   end
 
   context 'for structured schema markup' do
-    let_it_be(:group, freeze: false) { create(:group, :public, :with_avatar, description: 'foo') }
+    let_it_be_with_reload(:group) { create(:group, :public, :with_avatar, description: 'foo') }
     let_it_be(:subgroup) { create(:group, :public, :with_avatar, parent: group, description: 'bar') }
     let_it_be_with_reload(:project) { create(:project, :public, :with_avatar, namespace: group, description: 'foo') }
     let_it_be(:subproject) { create(:project, :public, :with_avatar, namespace: subgroup, description: 'bar') }

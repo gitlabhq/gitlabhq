@@ -34,7 +34,7 @@ module Tooling
       return unless node.parent&.send_type?
 
       method_name = node.parent.method_name
-      arguments = node.parent.arguments.select { |n| n.sym_type? || n.str_type? }.map(&:source)
+      arguments = node.parent.arguments.select { |n| n.type?(:sym, :str) }.map(&:source)
 
       print_abc("#{method_name}(#{arguments.join(', ')})", node)
     end

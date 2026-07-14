@@ -1,10 +1,10 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlTabs, GlTab, GlLink, GlBadge } from '@gitlab/ui';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import DocLine from './doc_line.vue';
 
 export default {
+  name: 'CodeNavigationPopover',
   components: {
     GlButton,
     GlTabs,

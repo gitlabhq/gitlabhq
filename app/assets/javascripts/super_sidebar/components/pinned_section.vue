@@ -134,8 +134,8 @@ export default {
         @nav-link-click="writePinnedClick"
       />
     </draggable>
-    <li v-else class="gl-ml-[2.25rem] gl-py-3 gl-text-sm gl-text-subtle">
+    <div v-else class="gl-ml-[2.25rem] gl-py-3 gl-text-sm gl-text-subtle">
       {{ $options.i18n.emptyHint }}
-    </li>
+    </div>
   </menu-section>
 </template>

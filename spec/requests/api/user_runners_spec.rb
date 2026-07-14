@@ -2,6 +2,10 @@
 
 require 'spec_helper'
 
+# NOTE: No cross-organization isolation test for the user-scoped path (`POST /user/runners` /
+# `User#ci_available_runners`). Organization filtering on this path was implemented in #591183
+# (MR !226892) but reverted in MR !229222 due to a cross-database query incident, so no organization
+# boundary is enforced in master today. A boundary test should be added once the filtering is reinstated.
 RSpec.describe API::UserRunners, :aggregate_failures, feature_category: :fleet_visibility do
   let_it_be(:admin) { create(:admin) }
   let_it_be_with_reload(:user) { create(:user, username: 'user.withdot') }

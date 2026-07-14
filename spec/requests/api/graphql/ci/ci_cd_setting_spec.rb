@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'Getting Ci Cd Setting', feature_category: :continuous_integration do

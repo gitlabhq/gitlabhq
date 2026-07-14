@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin::HookLogs', feature_category: :webhooks do
-  let_it_be(:system_hook) { create(:system_hook) }
+RSpec.describe 'Admin::HookLogs', :with_current_organization, feature_category: :webhooks do
+  let_it_be(:system_hook) { create(:system_hook, organization: current_organization) }
   let_it_be(:hook_log) { create(:web_hook_log, web_hook: system_hook, internal_error_message: 'some error') }
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin, organizations: [current_organization]) }
 
   before do
     sign_in(admin)

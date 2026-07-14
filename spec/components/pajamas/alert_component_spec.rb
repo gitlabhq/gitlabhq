@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "spec_helper"
 
 RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component, feature_category: :design_system do

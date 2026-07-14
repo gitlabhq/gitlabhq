@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Banzai::CrossNamespaceReference, feature_category: :markdown do
   let(:including_class) { Class.new.include(described_class).new }
-  let(:reference_cache) { Banzai::Filter::References::ReferenceCache.new(including_class, {}, {}) }
+  let(:reference_cache) { Banzai::Filter::References::ReferenceCache.new(including_class, {}) }
 
   before do
     allow(including_class).to receive(:parent_from_ref).and_call_original

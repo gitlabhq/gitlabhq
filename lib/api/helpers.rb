@@ -70,7 +70,7 @@ module API
     # Returns the job associated with the token provided for
     # authentication, if any
     def current_authenticated_job
-      if try(:namespace_inheritable, :authentication)
+      if try(:inheritable_setting)&.namespace_inheritable&.[](:authentication)
         ci_build_from_namespace_inheritable
       else
         @current_authenticated_job # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -91,21 +91,8 @@ module API
 
       sudo!
 
-      unless sudo?
-        token = validate_and_save_access_token!(scopes: scopes_registered_for_endpoint)
-
-        if token && authorize_granular_token?
-          result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
-            boundaries: boundaries_for_endpoint, permissions: permissions_for_endpoint, token: token
-          ).execute
-
-          if result.error?
-            not_found! if result.reason == :resource_not_found
-
-            raise Gitlab::Auth::GranularPermissionsError, result.message
-          end
-        end
-      end
+      token = sudo? ? access_token : validate_and_save_access_token!(scopes: scopes_registered_for_endpoint)
+      authorize_granular_token_scopes!(token)
 
       save_current_user_in_env(@current_user) if @current_user
 
@@ -119,11 +106,34 @@ module API
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def set_current_organization(user: current_user)
+      # When the feature flag is enabled the global before_validation hook in
+      # API::API resolves Current.organization for every non-opted-out Grape
+      # request, so the per-endpoint helper has nothing to do. Returning
+      # early lets us delete the explicit calls in a follow-up MR without
+      # changing behaviour while the flag is on.
+      #
+      # Endpoints that opt out of the global hook (skip_global_organization_setup!)
+      # still rely on the helper, so do not short-circuit for those.
+      return if global_hook_will_resolve_current_organization?
+
+      return if ::Current.organization_assigned
+
       ::Current.organization = Gitlab::Current::Organization.new(
         params: {},
         user: user,
         rack_env: request.env
       ).organization
+
+      check_organization_read_only!
+    end
+
+    def global_hook_will_resolve_current_organization?
+      return false unless Feature.enabled?(:set_current_organization_for_grape_api, Feature.current_request)
+
+      endpoint_class = request.env[Grape::Env::API_ENDPOINT]&.options&.dig(:for)
+      return true unless endpoint_class.respond_to?(:skip_global_organization_setup?)
+
+      !endpoint_class.skip_global_organization_setup?
     end
 
     def save_current_user_in_env(user)
@@ -200,6 +210,8 @@ module API
         return redirect!(url_with_project_id(project))
       end
 
+      check_organization_read_only_for!(project)
+
       project
     end
 
@@ -265,7 +277,11 @@ module API
       # it's possible a method such as bypass_session! might log
       # a message before @group is set.
       ::Gitlab::ApplicationContext.push(namespace: group) if group
-      check_group_access(group)
+      result = check_group_access(group)
+
+      check_organization_read_only_for!(result)
+
+      result
     end
 
     def find_group_by_full_path!(full_path)
@@ -623,6 +639,58 @@ module API
       render_api_error!(message || '503 Service Unavailable', 503)
     end
 
+    def check_organization_read_only!
+      return unless write_request?
+
+      organization = ::Current.organization
+      return unless organization_read_only_enforced?(organization)
+
+      render_organization_read_only_error!(organization)
+    end
+
+    # Guards the resource's own organization, which can differ from
+    # Current.organization (already checked in set_current_organization) when a
+    # request targets a project or group outside the caller's current
+    # organization. The extra organization load is intentional defense-in-depth.
+    def check_organization_read_only_for!(resource)
+      return unless write_request?
+      return unless resource.respond_to?(:organization)
+
+      organization = resource.organization
+      return unless organization_read_only_enforced?(organization)
+
+      render_organization_read_only_error!(organization)
+    end
+
+    def organization_read_only_enforced?(organization)
+      return false unless organization
+
+      organization.read_only_enforced?
+    end
+
+    # Time-bounded reasons are retryable (503 + Retry-After); indefinite reasons
+    # are not (403).
+    def render_organization_read_only_error!(organization)
+      if organization.read_only_time_bounded?
+        header 'Retry-After', '60'
+        service_unavailable!(read_only_organization_message(time_bounded: true))
+      else
+        forbidden!(read_only_organization_message(time_bounded: false))
+      end
+    end
+
+    def write_request?
+      %w[POST PATCH PUT DELETE].include?(request.request_method)
+    end
+
+    def read_only_organization_message(time_bounded:)
+      if time_bounded
+        _('This organization is currently in read-only mode. Write operations are temporarily disabled.')
+      else
+        _('This organization is currently in read-only mode. Write operations are disabled.')
+      end
+    end
+
     def conflict!(message = nil)
       render_api_error!(message || '409 Conflict', 409)
     end
@@ -678,6 +746,11 @@ module API
     end
 
     def render_api_error!(message, status)
+      # Coerce non-primitive messages (e.g. ActiveModel::Errors) into a Hash so they
+      # serialize to a structured body. Grape 2.4 binds Grape::Json to ::JSON, which
+      # serializes such objects via #to_s instead of #as_json (see issue 603720).
+      message = message.to_hash if message.respond_to?(:to_hash)
+
       render_structured_api_error!({ 'message' => message }, status)
     end
 
@@ -988,6 +1061,13 @@ module API
         forbidden!('Must be authenticated using an OAuth or personal access token to use sudo')
       end
 
+      # Granular tokens bypass the :sudo scope check in AccessTokenValidationService
+      # (scopes are only validated for non-granular tokens), so the `sudo` capability
+      # is the sole gate for them. Do not remove this in favour of the scope check below.
+      if access_token.try(:granular?) && !access_token.sudo?
+        forbidden!('Fine-grained token must have sudo enabled to use sudo')
+      end
+
       validate_and_save_access_token!(scopes: [:sudo])
 
       sudoed_user = find_user(sudo_identifier)
@@ -1195,8 +1275,23 @@ module API
       (respond_to?(:route_setting) && route_setting(:authorization)) || {}
     end
 
-    def authorize_granular_token?
-      access_token.respond_to?(:granular?) && !authorization_settings[:skip_granular_token_authorization]
+    def authorize_granular_token?(token)
+      token.respond_to?(:granular?) && !authorization_settings[:skip_granular_token_authorization]
+    end
+
+    def authorize_granular_token_scopes!(token)
+      return unless authorize_granular_token?(token)
+
+      result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
+        boundaries: boundaries_for_endpoint, permissions: permissions_for_endpoint, token: token
+      ).execute
+      return unless result.error?
+
+      not_found! if result.reason == :resource_not_found
+
+      Current.add_granular_denied_permissions(result.payload[:denied_permissions])
+
+      raise Gitlab::Auth::GranularPermissionsError, result.message
     end
 
     def permissions_for_endpoint

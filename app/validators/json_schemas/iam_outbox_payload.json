@@ -1,0 +1,5 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Payload for an IAM outbox event. A free-form JSON object whose shape is defined per entity type by the producer that writes the event. The drain worker reads the upstream-identifying field(s) it needs for the delete path (e.g. oauth_applications.uid); upserts re-read Rails and ignore the payload.",
+  "type": "object"
+}

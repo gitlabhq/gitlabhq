@@ -84,7 +84,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user added ssh key' do
-    let_it_be(:key, freeze: false) { create(:personal_key) }
+    let_it_be(:key) { create(:personal_key) }
 
     subject { Notify.new_ssh_key_email(key.id) }
 
@@ -114,7 +114,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user added gpg key' do
-    let_it_be(:gpg_key, freeze: false) { create(:gpg_key) }
+    let_it_be(:gpg_key) { create(:gpg_key) }
 
     subject { Notify.new_gpg_key_email(gpg_key.id) }
 
@@ -144,7 +144,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user personal access token has been created' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:token) { create(:personal_access_token, user: user) }
 
     context 'when valid' do
@@ -177,7 +177,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'personal access token is about to expire' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     subject { Notify.access_token_about_to_expire_email(user, ['example token']) }
 
@@ -195,7 +195,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'deploy token is about to expire' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be_with_refind(:project) { create(:project) }
 
     let(:token_name) { 'my-token' }
@@ -245,7 +245,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'resource access token is about to expire' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     shared_examples 'resource about to expire email' do
       it 'is sent to the owners' do
@@ -323,7 +323,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user personal access token has expired' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:pat) { create(:personal_access_token, user: user) }
 
     context 'when valid' do
@@ -375,7 +375,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user personal access token has been revoked' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:token) { create(:personal_access_token, user: user) }
 
     context 'when valid' do
@@ -436,7 +436,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user personal access token has been rotated' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:token) { create(:personal_access_token, user: user) }
 
     context 'when valid' do
@@ -587,7 +587,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user unknown sign in email' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let(:ip) { '169.0.0.1' }
     let(:current_time) { Time.current }
     let(:country) { 'Germany' }
@@ -657,7 +657,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user attempted sign in with wrong 2FA OTP email' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:ip) { '169.0.0.1' }
     let_it_be(:current_time) { Time.current }
     let_it_be(:email) { Notify.two_factor_otp_attempt_failed_email(user, ip, current_time) }
@@ -690,7 +690,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'enabled two-factor authentication emails' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     describe 'Passkey' do
       subject { Notify.enabled_two_factor_webauthn_email(user, 'MacBook Touch ID', :passkey) }
@@ -758,7 +758,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'disabled two-factor authentication emails' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     describe 'Two Factor' do
       subject { Notify.disabled_two_factor_email(user) }
@@ -850,7 +850,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'added a new email address' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:email) { create(:email, user: user) }
 
     subject { Notify.new_email_address_added_email(user, email) }
@@ -873,7 +873,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'SAML extern_uid changed' do
-    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let(:group_name) { 'My Group' }
 
     subject { Notify.saml_extern_uid_changed_email(user, group_name) }
@@ -901,7 +901,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
 
   describe 'awarded a new achievement' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:achievement) { create(:achievement, namespace: group) }
     let_it_be(:user_achievement) do
       create(:user_achievement, user: user, achievement: achievement, show_on_profile: false)

@@ -12,6 +12,16 @@ RSpec.describe Cells::Leases::ReconciliationService, feature_category: :cell do
     allow(Gitlab::TopologyServiceClient::ClaimService).to receive(:instance).and_return(mock_claim_service)
   end
 
+  # Windowed runs only reconcile leases created within LEASE_LIST_WINDOW, while orphan cleanup
+  # deletes local leases older than ORPHANED_LEASE_CLEANUP_THRESHOLD. If the window were shorter
+  # than the orphan threshold, a lease could become an orphan candidate while already dropping out
+  # of the windowed query, so it would never be reconciled before being cleaned up. Guard the
+  # invariant that keeps windowed reconciliation and orphan cleanup consistent.
+  it 'keeps LEASE_LIST_WINDOW at least ORPHANED_LEASE_CLEANUP_THRESHOLD' do
+    expect(described_class::LEASE_LIST_WINDOW)
+      .to be >= described_class::ORPHANED_LEASE_CLEANUP_THRESHOLD
+  end
+
   describe '#execute' do
     context 'when there are no outstanding leases' do
       before do
@@ -36,8 +46,7 @@ RSpec.describe Cells::Leases::ReconciliationService, feature_category: :cell do
       let(:active_lease) do
         Gitlab::Cells::TopologyService::Claims::V1::LeaseRecord.new(
           uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: lease_uuid),
-          created_at: Google::Protobuf::Timestamp.new(seconds: 2.minutes.ago.to_i),
-          updated_at: Google::Protobuf::Timestamp.new(seconds: 2.minutes.ago.to_i)
+          created_at: Google::Protobuf::Timestamp.new(seconds: 2.minutes.ago.to_i)
         )
       end
 
@@ -83,8 +92,7 @@ RSpec.describe Cells::Leases::ReconciliationService, feature_category: :cell do
       let(:stale_lease) do
         Gitlab::Cells::TopologyService::Claims::V1::LeaseRecord.new(
           uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: lease_uuid),
-          created_at: Google::Protobuf::Timestamp.new(seconds: 10.minutes.ago.to_i),
-          updated_at: Google::Protobuf::Timestamp.new(seconds: 10.minutes.ago.to_i)
+          created_at: Google::Protobuf::Timestamp.new(seconds: 10.minutes.ago.to_i)
         )
       end
 
@@ -94,7 +102,7 @@ RSpec.describe Cells::Leases::ReconciliationService, feature_category: :cell do
 
       context 'when lease exists locally' do
         before do
-          create(:cells_outstanding_lease, uuid: lease_uuid, created_at: 10.minutes.ago, updated_at: 10.minutes.ago)
+          create(:cells_outstanding_lease, uuid: lease_uuid, created_at: 10.minutes.ago)
         end
 
         it 'commits the lease, destroys the record, and returns correct counts' do
@@ -121,7 +129,7 @@ RSpec.describe Cells::Leases::ReconciliationService, feature_category: :cell do
               feature_category: :cell,
               message: 'Rolled back stale lost lease',
               lease_uuid: lease_uuid,
-              lease_updated_at: anything,
+              lease_created_at: anything,
               staleness_duration: anything
             )
           )
@@ -147,22 +155,20 @@ RSpec.describe Cells::Leases::ReconciliationService, feature_category: :cell do
       let(:page1_lease) do
         Gitlab::Cells::TopologyService::Claims::V1::LeaseRecord.new(
           uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: lease1_uuid),
-          created_at: Google::Protobuf::Timestamp.new(seconds: 10.minutes.ago.to_i),
-          updated_at: Google::Protobuf::Timestamp.new(seconds: 10.minutes.ago.to_i)
+          created_at: Google::Protobuf::Timestamp.new(seconds: 10.minutes.ago.to_i)
         )
       end
 
       let(:page2_lease) do
         Gitlab::Cells::TopologyService::Claims::V1::LeaseRecord.new(
           uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: lease2_uuid),
-          created_at: Google::Protobuf::Timestamp.new(seconds: 10.minutes.ago.to_i),
-          updated_at: Google::Protobuf::Timestamp.new(seconds: 10.minutes.ago.to_i)
+          created_at: Google::Protobuf::Timestamp.new(seconds: 10.minutes.ago.to_i)
         )
       end
 
       before do
-        Cells::OutstandingLease.create!(uuid: lease1_uuid, created_at: 10.minutes.ago, updated_at: 10.minutes.ago)
-        Cells::OutstandingLease.create!(uuid: lease2_uuid, created_at: 10.minutes.ago, updated_at: 10.minutes.ago)
+        Cells::OutstandingLease.create!(uuid: lease1_uuid, created_at: 10.minutes.ago)
+        Cells::OutstandingLease.create!(uuid: lease2_uuid, created_at: 10.minutes.ago)
         stub_list_leases([page1_lease], next_cursor: cursor, limit: 100)
         stub_list_leases([page2_lease], next_cursor: nil, cursor: cursor, limit: 100)
       end
@@ -187,13 +193,12 @@ RSpec.describe Cells::Leases::ReconciliationService, feature_category: :cell do
       let(:active_lease) do
         Gitlab::Cells::TopologyService::Claims::V1::LeaseRecord.new(
           uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: lease_uuid),
-          created_at: Google::Protobuf::Timestamp.new(seconds: 10.minutes.ago.to_i),
-          updated_at: Google::Protobuf::Timestamp.new(seconds: 10.minutes.ago.to_i)
+          created_at: Google::Protobuf::Timestamp.new(seconds: 10.minutes.ago.to_i)
         )
       end
 
       before do
-        create(:cells_outstanding_lease, uuid: lease_uuid, created_at: 10.minutes.ago, updated_at: 10.minutes.ago)
+        create(:cells_outstanding_lease, uuid: lease_uuid, created_at: 10.minutes.ago)
         stub_list_leases([active_lease])
         allow(mock_claim_service).to receive(:commit_update).and_raise(StandardError.new('Commit failed'))
       end
@@ -218,7 +223,7 @@ RSpec.describe Cells::Leases::ReconciliationService, feature_category: :cell do
     context 'for cleanup_orphaned_leases' do
       let(:old_lease_uuid) { SecureRandom.uuid }
       let!(:old_lease) do
-        create(:cells_outstanding_lease, uuid: old_lease_uuid, created_at: 61.minutes.ago, updated_at: 61.minutes.ago)
+        create(:cells_outstanding_lease, uuid: old_lease_uuid, created_at: 61.minutes.ago)
       end
 
       let(:recent_lease_uuid) { SecureRandom.uuid }
@@ -230,13 +235,13 @@ RSpec.describe Cells::Leases::ReconciliationService, feature_category: :cell do
       let(:active_lease) do
         Gitlab::Cells::TopologyService::Claims::V1::LeaseRecord.new(
           uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: remote_lease_uuid),
-          created_at: Google::Protobuf::Timestamp.new(seconds: 1.minute.ago.to_i),
-          updated_at: Google::Protobuf::Timestamp.new(seconds: 1.minute.ago.to_i)
+          created_at: Google::Protobuf::Timestamp.new(seconds: 1.minute.ago.to_i)
         )
       end
 
       before do
-        stub_list_leases([active_lease])
+        # Orphan cleanup only runs on a full scan, which lists every lease (created_after: nil).
+        stub_list_leases([active_lease], created_after: nil)
         allow(mock_claim_service).to receive(:commit_update)
       end
 
@@ -251,38 +256,64 @@ RSpec.describe Cells::Leases::ReconciliationService, feature_category: :cell do
             cutoff_time: anything)
         )
 
-        service.execute
+        service.execute(full_scan: true)
       end
 
       it 'destroys old orphaned leases' do
-        expect { service.execute }.to change { Cells::OutstandingLease.by_uuid(old_lease_uuid).count }.from(1).to(0)
+        expect { service.execute(full_scan: true) }
+          .to change { Cells::OutstandingLease.by_uuid(old_lease_uuid).count }.from(1).to(0)
       end
 
       it 'does not touch recent leases' do
-        expect { service.execute }.not_to change { Cells::OutstandingLease.by_uuid(recent_lease_uuid).count }
+        expect { service.execute(full_scan: true) }
+          .not_to change { Cells::OutstandingLease.by_uuid(recent_lease_uuid).count }
       end
 
       it 'does not touch remote leases' do
         allow(Cells::OutstandingLease).to receive(:delete).and_return(2)
 
-        expect { service.execute }.not_to change { Cells::OutstandingLease.by_uuid(remote_lease_uuid).count }
+        expect { service.execute(full_scan: true) }
+          .not_to change { Cells::OutstandingLease.by_uuid(remote_lease_uuid).count }
       end
 
       it 'does not call rollback_update for orphaned leases' do
         expect(mock_claim_service).not_to receive(:rollback_update)
 
-        service.execute
+        service.execute(full_scan: true)
+      end
+    end
+
+    context 'for windowing' do
+      it 'bounds the query to LEASE_LIST_WINDOW by default' do
+        freeze_time do
+          stub_list_leases([], created_after: described_class::LEASE_LIST_WINDOW.ago)
+
+          expect(service.execute).to include(processed: 0)
+        end
+      end
+
+      it 'lists all leases (no bound) on a full scan' do
+        stub_list_leases([], created_after: nil)
+
+        expect(service.execute(full_scan: true)).to include(processed: 0)
+      end
+
+      it 'does not clean up orphaned leases on a windowed run' do
+        create(:cells_outstanding_lease, created_at: 61.minutes.ago)
+        stub_list_leases([])
+
+        expect { service.execute }.not_to change { Cells::OutstandingLease.count }
       end
     end
   end
 
-  def stub_list_leases(leases, next_cursor: nil, cursor: nil, limit: 100)
+  def stub_list_leases(leases, next_cursor: nil, cursor: nil, limit: 100, created_after: anything)
     response = Gitlab::Cells::TopologyService::Claims::V1::ListLeasesResponse.new(
       leases: leases,
       next: next_cursor
     )
 
     expect(mock_claim_service).to receive(:list_leases).with(cursor: cursor, deadline: anything,
-      limit: limit).and_return(response)
+      limit: limit, created_after: created_after).and_return(response)
   end
 end

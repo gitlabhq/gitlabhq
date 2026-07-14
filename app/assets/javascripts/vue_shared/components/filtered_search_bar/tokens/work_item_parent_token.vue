@@ -37,7 +37,6 @@ export default {
       allowedParentTypes: [],
       workItems: this.config.initialWorkItems || [],
       loading: false,
-      allowedParentTypesPromise: null,
     };
   },
   apollo: {
@@ -80,7 +79,7 @@ export default {
         : this.config.fullPath;
     },
   },
-  created() {
+  beforeCreate() {
     // Gate searches until the allowedParentTypes query has settled, otherwise
     // workItemTypeIds would be sent as an empty array (causes flaky behavior).
     this.allowedParentTypesPromise = new Promise((resolve) => {

@@ -41,7 +41,7 @@ RSpec.describe Resolvers::DataTransfer::ProjectDataTransferResolver, feature_cat
   end
 
   context 'when user has permissions to see data transfer' do
-    before do
+    before_all do
       project.add_owner(current_user)
     end
 

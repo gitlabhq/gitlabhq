@@ -31,7 +31,7 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Update do
     end
 
     context 'when the user does not have permission to update a contact' do
-      before do
+      before_all do
         group.add_reporter(current_user)
       end
 

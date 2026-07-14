@@ -2,6 +2,12 @@
 
 module Import
   class PlaceholderReassignmentsUploader < AttachmentUploader
+    class << self
+      def workhorse_local_upload_path
+        File.join(options.storage_path, 'uploads', ObjectStorage::TMP_UPLOAD_PATH)
+      end
+    end
+
     def mounted_as
       super || 'placeholder_reassignment_csv'
     end

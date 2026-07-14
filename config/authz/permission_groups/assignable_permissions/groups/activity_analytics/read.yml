@@ -1,0 +1,9 @@
+---
+name: read_activity_analytics
+description: Grants the ability to read activity analytics
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - read_activity_analytics

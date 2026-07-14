@@ -12,8 +12,9 @@ module Subscriptions
     def initialize(object:, context:, field:)
       super
 
-      # Reset user so that we don't use a stale user for authorization
+      # Reset so long-lived subscriptions don't authorize against stale membership or token scope
       current_user.reset if current_user
+      access_token.reset if access_token.respond_to?(:reset)
     end
 
     # We override graphql-ruby's default `subscribe` since it returns
@@ -52,6 +53,10 @@ module Subscriptions
 
     def current_user
       context[:current_user]
+    end
+
+    def access_token
+      context[:access_token]
     end
   end
 end

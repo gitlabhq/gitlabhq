@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::DataTransfer, feature_category: :source_code_management do
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   it { expect(subject).to be_valid }
 

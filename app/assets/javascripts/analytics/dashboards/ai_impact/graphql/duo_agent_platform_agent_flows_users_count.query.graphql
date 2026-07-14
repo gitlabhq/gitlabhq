@@ -1,0 +1,21 @@
+# @feature_category: custom_dashboards_foundation
+#import "./duo_agent_platform_agent_flows_users_count_metric_item.fragment.graphql"
+
+query duoAgentPlatformAgentFlowsUsersCountQuery(
+  $fullPath: ID!
+  $startDate: Time!
+  $endDate: Time!
+) {
+  project(fullPath: $fullPath) {
+    id
+    analytics {
+      ...DuoAgentPlatformAgentFlowsUsersCountMetricItem
+    }
+  }
+  group(fullPath: $fullPath) {
+    id
+    analytics {
+      ...DuoAgentPlatformAgentFlowsUsersCountMetricItem
+    }
+  }
+}

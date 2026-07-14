@@ -5,6 +5,7 @@ import { PERCENT_ROLLOUT_GROUP_ID } from '../../constants';
 import ParameterFormGroup from './parameter_form_group.vue';
 
 export default {
+  name: 'FlexibleRollout',
   components: {
     GlFormInput,
     GlFormSelect,
@@ -16,6 +17,7 @@ export default {
       type: Object,
     },
   },
+  emits: ['change'],
   i18n: {
     percentageDescription: __('Enter an integer number between 0 and 100'),
     percentageInvalid: __('Percent rollout must be an integer number between 0 and 100'),

@@ -78,11 +78,12 @@ describe('GroupFilter', () => {
         });
       });
 
-      it('calls setUrlParams with group null, project id null, nav_source null, and then calls visitUrl', () => {
+      it('calls setUrlParams with group null, project id null, nav_source null, page null, and then calls visitUrl', () => {
         expect(setUrlParams).toHaveBeenCalledWith({
           group_id: null,
           project_id: null,
           nav_source: null,
+          page: null,
           scope: CURRENT_SCOPE,
         });
 
@@ -99,11 +100,12 @@ describe('GroupFilter', () => {
         findSearchableDropdown().vm.$emit('change', MOCK_GROUP);
       });
 
-      it('calls setUrlParams with group id, project id null, nav_source null, and then calls visitUrl', () => {
+      it('calls setUrlParams with group id, project id null, nav_source null, page null, and then calls visitUrl', () => {
         expect(setUrlParams).toHaveBeenCalledWith({
           group_id: MOCK_GROUP.id,
           project_id: null,
           nav_source: null,
+          page: null,
           scope: CURRENT_SCOPE,
         });
 

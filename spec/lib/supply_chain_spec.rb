@@ -16,68 +16,157 @@ RSpec.describe SupplyChain, feature_category: :artifact_security do
     let(:publish_container_provenance) { false }
     let(:publish_artifact_provenance) { false }
 
-    context 'with nil build' do
-      let(:build) { nil }
+    context "with SIGSTORE ATTEST_METHOD" do
+      let(:attest_method) { "SIGSTORE" }
 
-      it { is_expected.to be_falsy }
-    end
-
-    context 'when publish methods are true' do
-      let(:publish_container_provenance) { true }
-      let(:publish_artifact_provenance) { true }
-
-      it { is_expected.to be_truthy }
-
-      context 'without feature flag' do
-        before do
-          stub_feature_flags(slsa_provenance_statement: false)
-        end
+      context 'with nil build' do
+        let(:build) { nil }
 
         it { is_expected.to be_falsy }
       end
 
-      context 'with private project' do
-        let(:project) { create_default(:project, :private, :repository, group: group) }
-        let(:build) do
-          create(:ci_build, project: project)
-        end
-
-        it { is_expected.to be_falsy }
-      end
-
-      context 'without build artifacts' do
-        let(:build) do
-          create(:ci_build, :finished, project: project)
-        end
-
-        it { is_expected.to be_falsy }
-      end
-
-      context "without stage name 'build'" do
-        let(:build) do
-          create(:ci_build, :slsa_artifacts, :finished, runner_manager: runner_manager, pipeline: pipeline,
-            stage: "test")
-        end
-
-        it { is_expected.to be_falsy }
-      end
-    end
-
-    context 'when both publish methods are false' do
-      it { is_expected.to be_falsy }
-    end
-
-    context 'when at least one publish_method is true' do
-      context 'if publish_container_provenance is true' do
+      context 'when publish methods are true' do
         let(:publish_container_provenance) { true }
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'if publish_artifact_provenance is true' do
         let(:publish_artifact_provenance) { true }
 
         it { is_expected.to be_truthy }
+
+        context 'without feature flag' do
+          before do
+            stub_feature_flags(slsa_provenance_statement: false)
+          end
+
+          it { is_expected.to be_falsy }
+        end
+
+        context 'with private project' do
+          let(:project) { create_default(:project, :private, :repository, group: group) }
+          let(:build) do
+            create(:ci_build, project: project)
+          end
+
+          it { is_expected.to be_falsy }
+        end
+
+        context 'without build artifacts' do
+          let(:build) do
+            create(:ci_build, :finished, project: project)
+          end
+
+          it { is_expected.to be_falsy }
+        end
+
+        context "without stage name 'build'" do
+          let(:build) do
+            create(:ci_build, :slsa_artifacts, :finished, runner_manager: runner_manager, pipeline: pipeline,
+              stage: "test")
+          end
+
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'when both publish methods are false' do
+        it { is_expected.to be_falsy }
+      end
+
+      context 'when at least one publish_method is true' do
+        context 'if publish_container_provenance is true' do
+          let(:publish_container_provenance) { true }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'if publish_artifact_provenance is true' do
+          let(:publish_artifact_provenance) { true }
+
+          it { is_expected.to be_truthy }
+        end
+      end
+    end
+
+    context "with LOCAL_CA ATTEST_METHOD" do
+      let(:attest_method) { "LOCAL_CA" }
+
+      context 'when publish methods are true' do
+        let(:publish_container_provenance) { true }
+        let(:publish_artifact_provenance) { true }
+
+        it { is_expected.to be_truthy }
+
+        context 'with private project' do
+          let(:project) { create_default(:project, :private, :repository, group: group) }
+          let(:build) do
+            create(:ci_build, project: project, stage: "build")
+          end
+
+          it { is_expected.to be_truthy }
+        end
+      end
+    end
+  end
+
+  describe '.attest_method' do
+    include_context 'with build, pipeline and artifacts'
+
+    subject(:method) { described_class.send(:attest_method, build) }
+
+    context "when ATTEST_METHOD is LOCAL_CA" do
+      let(:attest_method) { "LOCAL_CA" }
+
+      it { is_expected.to eq("LOCAL_CA") }
+    end
+
+    context "when ATTEST_METHOD is SIGSTORE" do
+      let(:attest_method) { "SIGSTORE" }
+
+      it { is_expected.to eq("SIGSTORE") }
+    end
+
+    context "when ATTEST_METHOD is sigstore" do
+      let(:attest_method) { "sigstore" }
+
+      it { is_expected.to eq("SIGSTORE") }
+    end
+
+    context "when ATTEST_METHOD is Sigstore" do
+      let(:attest_method) { "Sigstore" }
+
+      it { is_expected.to eq("SIGSTORE") }
+    end
+
+    context "when ATTEST_METHOD has a surrounding spaces" do
+      let(:attest_method) { " Sigstore " }
+
+      it { is_expected.to eq("SIGSTORE") }
+    end
+
+    context "when ATTEST_METHOD is invalid" do
+      let(:attest_method) { "whatever" }
+
+      it { is_expected.to eq("LOCAL_CA") }
+    end
+
+    context "when ATTEST_METHOD is not set" do
+      context "and is running in GitLab.com" do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(true)
+        end
+
+        it { is_expected.to eq("SIGSTORE") }
+
+        context "with a private build" do
+          let(:project) { create_default(:project, :private, :repository, group: group) }
+          let(:build) do
+            create(:ci_build, project: project, stage: "build")
+          end
+
+          it { is_expected.to eq("LOCAL_CA") }
+        end
+      end
+
+      context "and is running in other environments" do
+        it { is_expected.to eq("LOCAL_CA") }
       end
     end
   end

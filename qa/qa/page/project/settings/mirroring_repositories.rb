@@ -17,20 +17,20 @@ module QA
             element 'add-new-mirror'
           end
 
-          view 'app/views/projects/mirrors/_remote_mirror.html.haml' do
+          view 'app/assets/javascripts/mirrors/components/mirror_table.vue' do
             element 'mirror-repository-url-content'
             element 'mirror-last-update-at-content'
             element 'mirror-error-badge-content'
             element 'mirrored-repository-row-container'
+          end
+
+          view 'app/assets/javascripts/mirrors/components/mirror_actions.vue' do
             element 'copy-public-key-button'
+            element 'update-now-button'
           end
 
           view 'app/views/projects/mirrors/_mirror_repos_form.html.haml' do
             element 'mirror-direction-field'
-          end
-
-          view 'app/views/shared/_remote_mirror_update_button.html.haml' do
-            element 'update-now-button'
           end
 
           view 'app/views/projects/mirrors/_ssh_host_keys.html.haml' do

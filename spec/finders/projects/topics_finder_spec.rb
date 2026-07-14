@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::TopicsFinder, :with_current_organization do
-  let_it_be(:namespace, freeze: false) { create(:namespace, organization: current_organization) }
-  let_it_be(:user, freeze: false) { create(:user, namespace: namespace) }
+  let_it_be_with_reload(:namespace) { create(:namespace, organization: current_organization) }
+  let_it_be_with_reload(:user) { create(:user, namespace: namespace) }
 
   let_it_be(:topic1) { create(:topic, name: 'topicB', organization: current_organization) }
   let_it_be(:topic2) { create(:topic, name: 'topicC', organization: current_organization) }

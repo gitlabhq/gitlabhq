@@ -101,6 +101,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           expect(note.diff).to be_an_instance_of(Gitlab::Git::Diff)
           expect(note.discussion_id).to eq(discussion_id)
           expect(note.line_code).to eq(note_representation.line_code)
+          expect(note.namespace_id).to be_nil
           expect(note.note).to eq('Hello')
           expect(note.noteable_id).to eq(merge_request.id)
           expect(note.noteable_type).to eq('MergeRequest')
@@ -366,6 +367,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           expect(note.diff).to be_an_instance_of(Gitlab::Git::Diff)
           expect(note.discussion_id).to eq(discussion_id)
           expect(note.line_code).to eq(note_representation.line_code)
+          expect(note.namespace_id).to be_nil
           expect(note.note).to eq('Hello')
           expect(note.noteable_id).to eq(merge_request.id)
           expect(note.noteable_type).to eq('MergeRequest')

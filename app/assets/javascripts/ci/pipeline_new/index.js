@@ -12,7 +12,6 @@ const mountPipelineNewForm = (el) => {
     pipelineEditorPath,
     pipelinesPath,
     projectPath,
-    projectRefsEndpoint,
     userRole,
     canSetPipelineVariables,
 
@@ -51,7 +50,6 @@ const mountPipelineNewForm = (el) => {
       pipelineEditorPath,
       pipelinesPath,
       projectPath,
-      projectRefsEndpoint,
       userRole,
     },
     render(createElement) {

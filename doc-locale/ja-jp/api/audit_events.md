@@ -49,8 +49,8 @@ GET /audit_events
 
 | 属性 | 型 | 必須 | 説明                                                                                                     |
 | --------- | ---- | -------- |-----------------------------------------------------------------------------------------------------------------|
-| `created_after` | 文字列 | いいえ | 指定された日時以降に作成された監査イベントを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）               |
-| `created_before` | 文字列 | いいえ | 指定された日時以前に作成された監査イベントを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）              |
+| `created_after` | 文字列 | いいえ | 指定された日時以降に作成された監査イベントを返します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）               |
+| `created_before` | 文字列 | いいえ | 指定された日時以前に作成された監査イベントを返します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）              |
 | `entity_type` | 文字列 | いいえ | 指定されたエンティティタイプの監査イベントを返します。有効な値は、`User`、`Group`、`Project`、または`Gitlab::Audit::InstanceScope`です。 |
 | `entity_id` | 整数 | いいえ | 指定されたエンティティIDの監査イベントを返します。`entity_type`属性が存在する必要があります。                    |
 
@@ -228,8 +228,8 @@ GET /groups/:id/audit_events
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `created_after` | 文字列 | いいえ | 指定された日時以降に作成されたグループ監査イベントを返します。形式は、ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ)`  |
-| `created_before` | 文字列 | いいえ | 指定された日時以前に作成されたグループ監査イベントを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`） |
+| `created_after` | 文字列 | いいえ | 指定された日時以降に作成されたグループ監査イベントを返します。形式: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ)`  |
+| `created_before` | 文字列 | いいえ | 指定された日時以前に作成されたグループ監査イベントを返します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`） |
 
 APIの結果はページネーションされるため、デフォルトでは、`GET`リクエストは一度に20件の結果を返します。
 
@@ -346,8 +346,8 @@ GET /projects/:id/audit_events
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `created_after` | 文字列 | いいえ | 指定された日時以降に作成されたプロジェクト監査イベントを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）  |
-| `created_before` | 文字列 | いいえ | 指定された日時以前に作成されたプロジェクト監査イベントを返します。形式は、ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`） |
+| `created_after` | 文字列 | いいえ | 指定された日時以降に作成されたプロジェクト監査イベントを返します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）  |
+| `created_before` | 文字列 | いいえ | 指定された日時以前に作成されたプロジェクト監査イベントを返します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`） |
 
 > [!warning]
 > オフセットベースのページネーションはGitLab 17.8で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186194)になり、19.0での削除が予定されています。代わりに[キーセットページネーション](rest/_index.md#keyset-based-pagination)を使用してください。これは破壊的な変更です。
@@ -409,7 +409,7 @@ curl --request GET \
 
 ### プロジェクト監査イベントを取得する {#retrieve-a-project-audit-event}
 
-指定されたプロジェクトの監査イベントを取得します。プロジェクトのメンテナーまたはオーナーロールを持つユーザーのみが利用できます。
+指定されたプロジェクトの監査イベントを取得します。プロジェクトのデベロッパーロール以上のユーザーのみが利用可能です。
 
 ```plaintext
 GET /projects/:id/audit_events/:audit_event_id

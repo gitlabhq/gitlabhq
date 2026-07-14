@@ -62,6 +62,7 @@ export default {
       default: 'labelId',
     },
   },
+  emits: ['change', 'first-open'],
   data() {
     return {
       searchText: '',
@@ -96,17 +97,13 @@ export default {
         ...this.uniqueItems(this.items, this.frequentItems),
       ]);
 
-      return [
-        {
-          text: '',
-          options: [
-            {
-              value: ANY_OPTION.name,
-              text: ANY_OPTION.name,
-              ...ANY_OPTION,
-            },
-          ],
-        },
+      const anyOption = {
+        value: ANY_OPTION.name,
+        text: ANY_OPTION.name,
+        ...ANY_OPTION,
+      };
+
+      const groups = [
         {
           text: this.$options.i18n.frequentlySearched,
           options: frequentItems,
@@ -115,9 +112,10 @@ export default {
           text: this.$options.i18n.availableGroups,
           options: nonFrequentItems,
         },
-      ].filter((group) => {
-        return group.options.length > 0;
-      });
+      ].filter((group) => group.options.length > 0);
+
+      // "Any" is a reset option, not a section: render it flat (no group header) above the groups.
+      return [anyOption, ...groups];
     },
     search(search) {
       this.searchText = search;
@@ -195,6 +193,7 @@ export default {
     <template #list-item="{ item }">
       <div class="gl-flex gl-items-center">
         <gl-avatar
+          v-if="item.id"
           :src="item.avatar_url"
           :entity-id="item.id"
           :entity-name="item.name"
@@ -207,7 +206,7 @@ export default {
           <span class="gl-whitespace-nowrap gl-font-bold" data-testid="item-title">{{
             item.name
           }}</span>
-          <span class="gl-text-sm gl-text-subtle" data-testid="item-namespace">
+          <span v-if="item.id" class="gl-text-sm gl-text-subtle" data-testid="item-namespace">
             {{ truncatedNamespace(item) }}</span
           >
         </div>

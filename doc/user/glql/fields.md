@@ -14,7 +14,7 @@ title: GLQL fields
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a flag](../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a feature flag](../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
 - Enabled on GitLab.com in GitLab 17.4 for a subset of groups and projects.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/476990) from experiment to [beta](../../policy/development_stages_support.md#beta) in GitLab 17.10.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/476990) in GitLab 17.10.
@@ -94,21 +94,3 @@ To resolve this issue, add filters to limit your search scope:
   query: type = Issue and project = "gitlab-org/gitlab" and state = opened and updated > -1m
   ```
   ````
-
-### Error: `Invalid username reference`
-
-You might get an error that states `Invalid username reference` when using the `@` symbol
-with a username that starts with a number in GLQL queries. For example:
-
-```plaintext
-An error occurred when trying to display this embedded view:
-* Error: Invalid username reference @123username
-```
-
-This issue occurs because the GLQL embedded view renderer does not support `@` mentions
-for usernames that start with a number, even though these are valid in GitLab.
-
-The workaround is to remove the `@` symbol and wrap the username in quotes.
-For example, use `assignee = "123username"` instead of `assignee = @123username`.
-
-For more information, see [issue 583119](https://gitlab.com/gitlab-org/gitlab/-/issues/583119).

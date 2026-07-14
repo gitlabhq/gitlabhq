@@ -64,6 +64,13 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
           )
         end
 
+        it 'creates the project within the target namespace organization', :aggregate_failures do
+          result = service.execute
+
+          expect(result).to include(status: :success)
+          expect(result[:project].organization_id).to eq(group.organization_id)
+        end
+
         context 'when new name is specified' do
           let(:new_name) { 'bar' }
 
@@ -205,7 +212,7 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
         result = service.execute
 
         expect(result).to include(
-          message: 'Import failed due to an error: Error!',
+          message: 'Import failed due to an error',
           status: :error,
           http_status: :bad_request
         )

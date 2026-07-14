@@ -33,6 +33,10 @@ module Users
       merge_request.approvals.any? { |app| app.user_id == user.id }
     end
 
+    def updated_at
+      reviewer&.updated_at
+    end
+
     private
 
     def reviewer

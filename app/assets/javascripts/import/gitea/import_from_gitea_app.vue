@@ -24,6 +24,7 @@ const initFormField = ({ value = null, required = true } = {}) => ({
 });
 
 export default {
+  name: 'ImportFromGiteaApp',
   components: {
     GlButton,
     GlFormGroup,

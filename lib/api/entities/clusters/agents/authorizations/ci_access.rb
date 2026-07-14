@@ -6,9 +6,9 @@ module API
       module Agents
         module Authorizations
           class CiAccess < Grape::Entity
-            expose :agent_id, as: :id
-            expose :config_project, with: Entities::ProjectIdentity
-            expose :config, as: :configuration
+            expose :agent_id, as: :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
+            expose :config_project, using: ::API::Entities::ProjectIdentity
+            expose :config, as: :configuration, documentation: { type: 'Hash' }
           end
         end
       end

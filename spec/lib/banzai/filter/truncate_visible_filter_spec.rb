@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::TruncateVisibleFilter, feature_category: :markdown do
   include FilterSpecHelper
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:project, freeze: false) { build(:project, :repository) }
   let_it_be(:max_chars) { 100 }
   let_it_be(:user, freeze: false) do
@@ -53,7 +58,7 @@ RSpec.describe Banzai::Filter::TruncateVisibleFilter, feature_category: :markdow
     let(:max_chars) { 150 }
     let(:markdown) { "```ruby\ndef test\n  'hello world'\nend\n```" }
     let(:expected) do
-      '<code><span id="LC1" class="line" lang="ruby">' \
+      '<code><span id="LC1" class="line" data-lang="ruby">' \
       '<span class="k">def</span> <span class="nf">test</span>...</span>'
     end
 

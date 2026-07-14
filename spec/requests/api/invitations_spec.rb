@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe API::Invitations, feature_category: :user_profile do
-  let_it_be(:maintainer, freeze: false) { create(:user, username: 'maintainer_user') }
+  let_it_be(:maintainer) { create(:user, username: 'maintainer_user') }
   let_it_be(:maintainer2) { create(:user, username: 'user-with-maintainer-role') }
-  let_it_be(:developer, freeze: false) { create(:user) }
-  let_it_be(:access_requester, freeze: false) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:access_requester) { create(:user) }
   let_it_be(:stranger) { create(:user) }
   let_it_be(:unconfirmed_stranger) { create(:user, :unconfirmed) }
   let(:email) { 'email1@example.com' }
@@ -832,6 +832,20 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
             expect(json_response['expires_at']).to eq(expires_at.to_s)
           end
         end
+      end
+    end
+  end
+
+  describe 'PUT /projects/:id/invitations' do
+    let(:source) { project }
+    let!(:invite) { invite_member_by_email(source, 'project', developer.email, maintainer) }
+
+    it_behaves_like 'authorizing granular token permissions', :update_invitation do
+      let(:user) { maintainer }
+      let(:boundary_object) { source }
+      let(:request) do
+        put api("/projects/#{source.id}/invitations/#{invite.invite_email}", personal_access_token: pat),
+          params: { access_level: Member::MAINTAINER }
       end
     end
   end

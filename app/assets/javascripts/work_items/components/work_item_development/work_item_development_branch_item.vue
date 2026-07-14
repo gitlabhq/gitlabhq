@@ -14,6 +14,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { createBranchMRApiPathHelper } from '~/work_items/utils';
 
 export default {
+  name: 'WorkItemDevelopmentBranchItem',
   components: {
     GlIcon,
     GlLink,

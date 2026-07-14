@@ -5,7 +5,7 @@ module API
     class GroupUpload < Grape::Entity
       include Gitlab::Routing
 
-      expose :id, documentation: { type: 'Integer', desc: 'The ID of the file' } do |uploader|
+      expose :id, documentation: { type: 'Integer', format: 'int64', desc: 'The ID of the file' } do |uploader|
         uploader.upload.id
       end
 

@@ -653,9 +653,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       end
 
       it 'assigns attributes to temp_job_definition instead of preserving in build' do
-        expect(seed_resource.metadata&.options).to be_nil
-        expect(seed_resource.metadata&.yaml_variables).to be_nil
-        expect(seed_resource.metadata&.interruptible).to be_nil
         expect(seed_resource.temp_job_definition.config[:options]).to eq(attributes[:options])
         expect(seed_resource.temp_job_definition.config[:yaml_variables]).to eq(attributes[:yaml_variables])
         expect(seed_resource.temp_job_definition.interruptible).to eq(attributes[:interruptible])

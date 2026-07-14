@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use these tools to interact with GitLab through the GitLab MCP server.
 title: GitLab MCP server tools
@@ -202,6 +202,58 @@ Example:
 
 ```plaintext
 Show me all pipelines for merge request 42 in project gitlab-org/gitlab
+```
+
+## `create_merge_request_note`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597494) in GitLab 19.2.
+
+{{< /history >}}
+
+Adds a comment or reply to a discussion on a GitLab merge request as the authenticated user.
+
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `url`               | string  | No       | URL of the GitLab merge request. Required if `project_id` and `merge_request_iid` are missing. |
+| `project_id`        | string  | No       | ID or URL-encoded path of the project. Required if `url` is missing. |
+| `merge_request_iid` | integer | No       | Internal ID of the merge request. Required if `url` is missing. |
+| `body`              | string  | Yes      | Content of the note. Lines cannot start with `/` to avoid triggering quick actions (for example, `/merge`). |
+| `discussion_id`     | string  | No       | Global ID of the discussion to reply to (in the format `gid://gitlab/Discussion/<id>`). If missing, creates a new top-level note. |
+
+Example:
+
+```plaintext
+Reply "Thanks, fixed in the latest push" to merge request 42 in project gitlab-org/gitlab
+```
+
+## `get_merge_request_notes`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597494) in GitLab 19.2.
+
+{{< /history >}}
+
+Retrieves the notes (comments and system notes) for a specific GitLab merge request.
+
+| Parameter           | Type    | Required | Description                                                                                    |
+|---------------------|---------|----------|------------------------------------------------------------------------------------------------|
+| `url`               | string  | No       | URL of the GitLab merge request. Required if `project_id` and `merge_request_iid` are missing. |
+| `project_id`        | string  | No       | ID or URL-encoded path of the project. Required if `url` is missing.                           |
+| `merge_request_iid` | integer | No       | Internal ID of the merge request. Required if `url` is missing.                                |
+| `after`             | string  | No       | Cursor for forward pagination.                                                                 |
+| `before`            | string  | No       | Cursor for backward pagination.                                                                |
+| `first`             | integer | No       | Number of notes to return for forward pagination.                                              |
+| `last`              | integer | No       | Number of notes to return for backward pagination.                                             |
+
+Each returned note includes its discussion ID, so related notes can be grouped into threads.
+
+Example:
+
+```plaintext
+Show me all comments on merge request 5 in project gitlab-org/gitlab
 ```
 
 ## `get_pipeline_jobs`
@@ -423,14 +475,27 @@ Show me all labels in project gitlab-org/gitlab
 
 ## `semantic_code_search`
 
+{{< details >}}
+
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569624) as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `code_snippet_search_graphqlapi`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569624) as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `code_snippet_search_graphqlapi`. Disabled by default.
 - Search by project path [added](https://gitlab.com/gitlab-org/gitlab/-/issues/575234) in GitLab 18.6.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/568359) from experiment to [beta](../../../policy/development_stages_support.md#beta) in GitLab 18.7. Feature flag `code_snippet_search_graphqlapi` removed.
-- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/581105) to the GitLab UI in GitLab 18.7 [with a flag](../../../administration/feature_flags/_index.md) named `mcp_client`. Disabled by default.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/581105) to the GitLab UI in GitLab 18.7 [with a feature flag](../../../administration/feature_flags/_index.md) named `mcp_client`. Disabled by default.
+- [Updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228569) to use the [REST API](../../../api/search.md#semantic-search) in GitLab 18.11 [with a feature flag](../../../administration/feature_flags/_index.md) named `mcp_semantic_code_search_use_rest_api`. Disabled by default.
+- Using the REST API [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239364) in GitLab 19.1. Feature flag `mcp_semantic_code_search_use_rest_api` removed.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Searches for relevant code snippets in a GitLab project.
 For more information, including setup and enablement,
@@ -451,4 +516,26 @@ Example:
 
 ```plaintext
 How are authorizations managed in this project?
+```
+
+## `attach_scan_profile`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240685) in GitLab 19.2.
+
+{{< /history >}}
+
+Attaches the given security scan profile to the specified projects, or to all projects under the specified groups.
+
+| Parameter                  | Type             | Required | Description |
+|----------------------------|------------------|----------|-------------|
+| `security_scan_profile_id` | string           | Yes      | Global ID of the security scan profile (for example, `gid://gitlab/Security::ScanProfile/1`). |
+| `project_ids`              | array of strings | No       | Array of global IDs of projects (for example, `[gid://gitlab/Project/1]`). This is required unless `group_ids` is provided. |
+| `group_ids`                | array of strings | No       | Array of global IDs of groups (for example, `[gid://gitlab/Group/1]`). This is required unless `project_ids` is provided. |
+
+Example:
+
+```plaintext
+Attach `gid://gitlab/Security::ScanProfile/1` to all projects under `gid://gitlab/Group/1`.
 ```

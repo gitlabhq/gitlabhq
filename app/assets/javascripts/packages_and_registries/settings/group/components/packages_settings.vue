@@ -64,6 +64,7 @@ export default {
       default: false,
     },
   },
+  emits: ['error', 'success'],
   data() {
     return {
       errors: {},

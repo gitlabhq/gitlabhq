@@ -28,11 +28,9 @@ export const initJobDetails = () => {
     deploymentHelpUrl,
     runnerSettingsUrl,
     retryOutdatedJobDocsUrl,
-    aiRootCauseAnalysisAvailable,
     testReportSummaryUrl,
     pipelineTestReportUrl,
     logViewerPath,
-    duoFeaturesEnabled,
     canSetPipelineVariables,
   } = el.dataset;
 
@@ -56,8 +54,6 @@ export const initJobDetails = () => {
       pagePath,
       projectPath,
       retryOutdatedJobDocsUrl,
-      aiRootCauseAnalysisAvailable: parseBoolean(aiRootCauseAnalysisAvailable),
-      duoFeaturesEnabled: parseBoolean(duoFeaturesEnabled),
       pipelineTestReportUrl,
       canSetPipelineVariables: parseBoolean(canSetPipelineVariables),
     },

@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI Coding
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Understand how to read the changes proposed in a merge request.
@@ -87,7 +87,7 @@ GitLab collapses files with many changes to improve performance, and displays th
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387246) in GitLab 16.9 [with a flag](../../../administration/feature_flags/_index.md) named `pinned_file`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387246) in GitLab 16.9 [with a feature flag](../../../administration/feature_flags/_index.md) named `pinned_file`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162503) in GitLab 17.4. Feature flag `pinned_file` removed.
 
 {{< /history >}}
@@ -115,7 +115,7 @@ first in the list of changed files. To copy a merge request link that shows your
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140180) in GitLab 16.8 [with a flag](../../../administration/feature_flags/_index.md) named `collapse_generated_diff_files`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140180) in GitLab 16.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `collapse_generated_diff_files`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145100) in GitLab 16.10.
 - `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
 
@@ -250,7 +250,7 @@ To change how a merge request shows changed lines:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590833) in GitLab 18.0 [with a flag](../../../administration/feature_flags/_index.md) named `rapid_diffs_on_mr_show`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590833) in GitLab 18.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `rapid_diffs_on_mr_show`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/539581) in GitLab 19.0.
 
 {{< /history >}}
@@ -514,7 +514,7 @@ https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123456/diffs.patch?diff_id
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123515) in GitLab 16.1 [with a flag](../../../administration/feature_flags/_index.md) named `comment_on_files`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123515) in GitLab 16.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `comment_on_files`. Enabled by default.
 - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125130) in GitLab 16.2.
 
 {{< /history >}}

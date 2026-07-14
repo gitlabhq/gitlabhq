@@ -114,7 +114,7 @@ Type one of the special characters:
 
 Code Suggestions now use Google Cloud’s customizable foundation models and open generative AI infrastructure, with generative AI support in Vertex AI.
 
-GitLab Code Suggestions are routed through Google Vertex AI Codey API’s [Data Governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance) and [Responsible AI](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai). As of July 22, Code Suggestions inferences against the currently opened file and has a context window of 2,048 tokens and 8,192 character limits. This limit includes content before and after the cursor, the file name, and the extension type. Learn more about Google Vertex AI [`code-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models).
+GitLab Code Suggestions are routed through Google Vertex AI Codey API’s [Data Governance](https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/zero-data-retention) and [Responsible AI](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/responsible-ai). As of July 22, Code Suggestions inferences against the currently opened file and has a context window of 2,048 tokens and 8,192 character limits. This limit includes content before and after the cursor, the file name, and the extension type.
 
 [The Google Vertex AI Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_coding_languages) directly support: C++, C#, Go, Google SQL, Java, JavaScript, Kotlin, PHP, Python, Ruby, Rust, Scala, Swift, TypeScript. And for infrastructure files, support: Google Cloud CLI, Kubernetes Resource Model (KRM), and Terraform.
 

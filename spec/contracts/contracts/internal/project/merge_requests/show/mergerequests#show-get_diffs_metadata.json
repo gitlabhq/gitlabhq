@@ -1,0 +1,223 @@
+{
+  "consumer": {
+    "name": "MergeRequests#show"
+  },
+  "provider": {
+    "name": "GET diffs metadata"
+  },
+  "interactions": [
+    {
+      "description": "a request for diffs metadata",
+      "providerState": "a merge request exists",
+      "request": {
+        "method": "GET",
+        "path": "/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_metadata.json",
+        "headers": {
+          "Accept": "*/*"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": {
+          "real_size": "1",
+          "size": 1,
+          "branch_name": "testing-branch-1",
+          "source_branch_exists": true,
+          "target_branch_name": "master",
+          "merge_request_diff": {
+            "created_at": "2022-02-17T11:47:08.804Z",
+            "commits_count": 1,
+            "latest": true,
+            "short_commit_sha": "aee1ffec",
+            "base_version_path": "/gitlab-qa-bot/contract-testing/-/merge_requests/1/diffs?diff_id=10581773",
+            "head_version_path": "/gitlab-qa-bot/contract-testing/-/merge_requests/1/diffs?diff_head=true",
+            "version_path": "/gitlab-qa-bot/contract-testing/-/merge_requests/1/diffs?diff_id=10581773",
+            "compare_path": "/gitlab-qa-bot/contract-testing/-/merge_requests/1/diffs?diff_id=10581773&start_sha=aee1ffec2299c0cfb17c8821e931339b73a3759f"
+          },
+          "latest_diff": true,
+          "latest_version_path": "/gitlab-qa-bot/contract-testing/-/merge_requests/1/diffs",
+          "added_lines": 1,
+          "removed_lines": 1,
+          "render_overflow_warning": false,
+          "email_patch_path": "/gitlab-qa-bot/contract-testing/-/merge_requests/1.patch",
+          "plain_diff_path": "/gitlab-qa-bot/contract-testing/-/merge_requests/1.diff",
+          "merge_request_diffs": [
+            {
+              "commits_count": 1,
+              "latest": true,
+              "short_commit_sha": "aee1ffec",
+              "base_version_path": "/gitlab-qa-bot/contract-testing/-/merge_requests/1/diffs?diff_id=10581773",
+              "head_version_path": "/gitlab-qa-bot/contract-testing/-/merge_requests/1/diffs?diff_head=true",
+              "version_path": "/gitlab-qa-bot/contract-testing/-/merge_requests/1/diffs?diff_id=10581773",
+              "compare_path": "/gitlab-qa-bot/contract-testing/-/merge_requests/1/diffs?diff_id=10581773&start_sha=aee1ffec2299c0cfb17c8821e931339b73a3759f"
+            }
+          ],
+          "definition_path_prefix": "/gitlab-qa-bot/contract-testing/-/blob/aee1ffec2299c0cfb17c8821e931339b73a3759f",
+          "diff_files": [
+            {
+              "added_lines": 1,
+              "removed_lines": 1,
+              "new_path": "Gemfile",
+              "old_path": "Gemfile",
+              "new_file": false,
+              "deleted_file": false,
+              "submodule": false,
+              "file_identifier_hash": "67d82b8716a5b6c52c7abf0b2cd99c7594ed3587",
+              "file_hash": "de3150c01c3a946a6168173c4116741379fe3579"
+            }
+          ],
+          "has_conflicts": false,
+          "can_merge": false,
+          "project_path": "gitlab-qa-bot/contract-testing",
+          "project_name": "contract-testing"
+        },
+        "matchingRules": {
+          "$.body.real_size": {
+            "match": "type"
+          },
+          "$.body.size": {
+            "match": "type"
+          },
+          "$.body.branch_name": {
+            "match": "type"
+          },
+          "$.body.source_branch_exists": {
+            "match": "type"
+          },
+          "$.body.target_branch_name": {
+            "match": "type"
+          },
+          "$.body.merge_request_diff.created_at": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
+          },
+          "$.body.merge_request_diff.commits_count": {
+            "match": "type"
+          },
+          "$.body.merge_request_diff.latest": {
+            "match": "type"
+          },
+          "$.body.merge_request_diff.short_commit_sha": {
+            "match": "type"
+          },
+          "$.body.merge_request_diff.base_version_path": {
+            "match": "type"
+          },
+          "$.body.merge_request_diff.head_version_path": {
+            "match": "type"
+          },
+          "$.body.merge_request_diff.version_path": {
+            "match": "type"
+          },
+          "$.body.merge_request_diff.compare_path": {
+            "match": "type"
+          },
+          "$.body.latest_diff": {
+            "match": "type"
+          },
+          "$.body.latest_version_path": {
+            "match": "type"
+          },
+          "$.body.added_lines": {
+            "match": "type"
+          },
+          "$.body.removed_lines": {
+            "match": "type"
+          },
+          "$.body.render_overflow_warning": {
+            "match": "type"
+          },
+          "$.body.email_patch_path": {
+            "match": "type"
+          },
+          "$.body.plain_diff_path": {
+            "match": "type"
+          },
+          "$.body.merge_request_diffs": {
+            "min": 1
+          },
+          "$.body.merge_request_diffs[*].*": {
+            "match": "type"
+          },
+          "$.body.merge_request_diffs[*].commits_count": {
+            "match": "type"
+          },
+          "$.body.merge_request_diffs[*].latest": {
+            "match": "type"
+          },
+          "$.body.merge_request_diffs[*].short_commit_sha": {
+            "match": "type"
+          },
+          "$.body.merge_request_diffs[*].base_version_path": {
+            "match": "type"
+          },
+          "$.body.merge_request_diffs[*].head_version_path": {
+            "match": "type"
+          },
+          "$.body.merge_request_diffs[*].version_path": {
+            "match": "type"
+          },
+          "$.body.merge_request_diffs[*].compare_path": {
+            "match": "type"
+          },
+          "$.body.definition_path_prefix": {
+            "match": "type"
+          },
+          "$.body.diff_files": {
+            "min": 1
+          },
+          "$.body.diff_files[*].*": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].added_lines": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].removed_lines": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].new_path": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].old_path": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].new_file": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].deleted_file": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].submodule": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].file_identifier_hash": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].file_hash": {
+            "match": "type"
+          },
+          "$.body.has_conflicts": {
+            "match": "type"
+          },
+          "$.body.can_merge": {
+            "match": "type"
+          },
+          "$.body.project_path": {
+            "match": "type"
+          },
+          "$.body.project_name": {
+            "match": "type"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

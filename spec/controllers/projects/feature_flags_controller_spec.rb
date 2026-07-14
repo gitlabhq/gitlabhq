@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::FeatureFlagsController do
+RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flags do
   include Gitlab::Routing
   include FeatureFlagHelpers
 
@@ -338,8 +338,8 @@ RSpec.describe Projects::FeatureFlagsController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('feature_flag')
-        expect(json_response['active']).to eq(true)
-        expect(Operations::FeatureFlag.last.active).to eq(true)
+        expect(json_response['active']).to be(true)
+        expect(Operations::FeatureFlag.last.active).to be(true)
       end
     end
 
@@ -396,7 +396,7 @@ RSpec.describe Projects::FeatureFlagsController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq('my_feature_flag')
-        expect(json_response['active']).to eq(true)
+        expect(json_response['active']).to be(true)
         expect(json_response['strategies'].count).to eq(1)
 
         strategy_json = json_response['strategies'].first

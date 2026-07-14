@@ -77,10 +77,6 @@ module Banzai
 
         node.set_attribute('data-canonical-src', html_attr.value)
       end
-
-      def group
-        context[:group]
-      end
     end
   end
 end

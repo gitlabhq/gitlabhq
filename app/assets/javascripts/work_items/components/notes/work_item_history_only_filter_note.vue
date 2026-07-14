@@ -21,6 +21,7 @@ export default {
     GlIcon,
     GlSprintf,
   },
+  emits: ['changeFilter'],
   methods: {
     selectFilter(value) {
       this.$emit('changeFilter', value);

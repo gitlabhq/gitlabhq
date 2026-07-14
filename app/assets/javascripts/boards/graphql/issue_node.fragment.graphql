@@ -19,7 +19,7 @@ fragment IssueNode on Issue {
   emailsDisabled
   confidential
   hidden
-  webUrl
+  webPath
   relativePosition
   type
   workItemType @gl_introduced(version: "18.10.0-pre") {

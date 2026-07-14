@@ -8,6 +8,8 @@ module Banzai
     # Expected to be run in its own post-processing pipeline.
     #
     class ReferenceRedactorFilter < HTML::Pipeline::Filter
+      include Concerns::ContextAccessors
+
       def call
         unless context[:skip_redaction]
           redactor_context = RenderContext.new(project, current_user)
@@ -16,16 +18,6 @@ module Banzai
         end
 
         doc
-      end
-
-      private
-
-      def current_user
-        context[:current_user]
-      end
-
-      def project
-        context[:project]
       end
     end
   end

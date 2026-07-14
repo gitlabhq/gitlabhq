@@ -6,14 +6,14 @@ module API
       class Attestation < Grape::Entity
         include ::API::Helpers::RelatedResourcesHelpers
 
-        expose :id, documentation: { type: 'Integer', example: 1 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
         expose :iid, documentation: { type: 'Integer', example: 14 }
         expose :created_at, documentation: { type: 'DateTime', example: '2025-09-17T02:26:10.898Z' }
         expose :updated_at, documentation: { type: 'DateTime', example: '2025-09-17T02:26:10.898Z' }
         expose :expire_at, documentation: { type: 'DateTime', example: '2025-09-17T02:26:10.898Z' }
 
-        expose :project_id, documentation: { type: 'Integer' }
-        expose :build_id, documentation: { type: 'Integer' }
+        expose :project_id, documentation: { type: 'Integer', format: 'int64' }
+        expose :build_id, documentation: { type: 'Integer', format: 'int64' }
         expose :status, documentation: { type: 'String', example: 'success' }
         expose :predicate_kind, documentation: { type: 'String', example: 'provenance' }
         expose :predicate_type, documentation: { type: 'String', example: 'https://slsa.dev/provenance/v1' }

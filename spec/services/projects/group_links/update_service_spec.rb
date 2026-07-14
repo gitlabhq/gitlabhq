@@ -31,7 +31,7 @@ RSpec.describe Projects::GroupLinks::UpdateService, '#execute', feature_category
 
   context 'when user has proper permissions to update a project group link' do
     context 'when the user is an OWNER in the project' do
-      before do
+      before_all do
         project.add_owner(user)
       end
 

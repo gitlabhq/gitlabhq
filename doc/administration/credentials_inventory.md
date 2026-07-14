@@ -140,7 +140,7 @@ To delete an SSH key:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Credentials**.
-1. Select the **SSH Keys** tab.
+1. Select the **SSH keys** tab.
 1. Next to the SSH key, select **Delete**.
 
 The SSH key is deleted and the user is notified.
@@ -152,7 +152,7 @@ The SSH key is deleted and the user is notified.
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Secure**.
 1. Select **Credentials**.
-1. Select the **SSH Keys** tab.
+1. Select the **SSH keys** tab.
 1. Next to the SSH key, select **Delete**.
 
 The SSH key is deleted and the user is notified.

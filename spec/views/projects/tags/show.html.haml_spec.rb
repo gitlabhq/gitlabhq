@@ -5,9 +5,14 @@ require 'spec_helper'
 RSpec.describe 'projects/tags/show.html.haml', feature_category: :source_code_management do
   include RenderedHtml
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:project, freeze: false) { create(:project, :repository) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- necessary to use create
-  let_it_be(:git_tag, freeze: false) { project.repository.tags.last }
 
+  let(:git_tag) { project.repository.tags.last }
   let(:user) { build(:user) }
 
   before do
@@ -56,7 +61,7 @@ RSpec.describe 'projects/tags/show.html.haml', feature_category: :source_code_ma
   end
 
   context 'for create/edit release button' do
-    let_it_be(:release, freeze: false) { build(:release, project: project, tag: 'v1.1.0') }
+    let_it_be(:release) { build(:release, project: project, tag: 'v1.1.0') }
 
     it 'edit release button is rendered when release is present and user has permission' do
       allow(view).to receive(:can?).with(user, :admin_tag, project).and_return(true)

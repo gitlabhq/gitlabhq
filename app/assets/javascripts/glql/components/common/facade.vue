@@ -7,6 +7,7 @@ import { renderMarkdown } from '~/notes/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { MODE_ANALYTICS, FULL_BLEED_DISPLAY_TYPES } from '../../constants';
 import { copyGLQLNodeAsGFM } from '../../utils/copy_as_gfm';
 import Counter from '../../utils/counter';
 import GlqlResolver from './resolver.vue';
@@ -61,13 +62,13 @@ export default {
       },
 
       loading: false,
-      itemsCount: null,
       retryCount: 0,
       showResolver: false,
 
       query: undefined,
       config: undefined,
       data: undefined,
+      mode: undefined,
 
       preClasses: 'code highlight code-syntax-highlight-theme',
 
@@ -79,15 +80,30 @@ export default {
       if (this.config?.title) return this.config.title;
       if (this.loading) return '';
 
-      return this.config?.display === 'table'
-        ? __('Embedded table view')
-        : __('Embedded list view');
+      return __('Embedded view');
     },
     description() {
       return this.config?.description;
     },
+    isAnalyticsMode() {
+      return this.mode === MODE_ANALYTICS;
+    },
+    itemsCount() {
+      // Analytics mode aggregates results into dimensions and metrics, so a row
+      // count is meaningless there. Only show the count for standard, per-item results.
+      return this.isAnalyticsMode ? null : this.data?.count;
+    },
+    showZeroCount() {
+      // A zero count is only meaningful for standard, per-item results.
+      return !this.loading && !this.isAnalyticsMode;
+    },
     showEmptyState() {
       return this.data?.nodes?.length === 0;
+    },
+    isInsetDisplay() {
+      // Full-bleed displays (list/table) render edge-to-edge; every other display
+      // gets its inset from the card here, so presenters can render flush.
+      return this.config?.display && !FULL_BLEED_DISPLAY_TYPES.has(this.config.display);
     },
     showCopyContentsAction() {
       return Boolean(this.data?.count) && !this.isCollapsed;
@@ -158,12 +174,12 @@ export default {
       }
     },
     renderMarkdown,
-    onResolverChange({ loading, query, config, data, error }) {
+    onResolverChange({ loading, query, config, data, mode, error }) {
       this.loading = loading;
       this.query = query;
       this.config = config;
       this.data = data;
-      this.itemsCount = data?.count;
+      this.mode = mode;
 
       if (error) {
         this.handleError(error);
@@ -203,6 +219,7 @@ export default {
 <template>
   <div data-testid="glql-facade" class="gl-min-w-0 gl-grow">
     <template v-if="hasError">
+      <!-- eslint-disable vue/v-on-event-hyphenation -- GlAlert emits the camelCase `primaryAction` event. -->
       <gl-alert
         :variant="error.variant"
         class="!gl-my-3"
@@ -215,6 +232,7 @@ export default {
           <li v-safe-html:[$options.safeHtmlConfig]="renderMarkdown(error.message)"></li>
         </ul>
       </gl-alert>
+      <!-- eslint-enable vue/v-on-event-hyphenation -->
     </template>
 
     <div v-if="hasError || showLoadBtn" class="markdown-code-block gl-relative">
@@ -233,10 +251,10 @@ export default {
         :count="itemsCount"
         is-collapsible
         :collapsed="isCollapsed"
-        :show-zero-count="!loading"
+        :show-zero-count="showZeroCount"
         class="!gl-mt-5"
         :body-class="{
-          '!gl-m-0 !gl-p-0': loading || (data && data.count),
+          '!gl-m-0 !gl-p-0': data && data.count,
           '!gl-overflow-hidden': true,
         }"
         @collapsed="isCollapsed = true"
@@ -252,21 +270,23 @@ export default {
           <glql-actions
             :show-copy-contents="showCopyContentsAction"
             :modal-title="title"
-            @viewSource="viewSource"
-            @copySource="copySource"
-            @copyAsGFM="copyAsGFM"
+            @view-source="viewSource"
+            @copy-source="copySource"
+            @copy-as-gfm="copyAsGFM"
             @reload="reload"
           />
         </template>
 
-        <glql-resolver
-          v-if="showResolver"
-          ref="resolver"
-          :key="retryCount"
-          :glql-query="queryYaml"
-          tracking-event-name="render_glql_block"
-          @change="onResolverChange"
-        />
+        <div :class="{ 'gl-px-5 gl-py-5': isInsetDisplay }" data-testid="glql-content">
+          <glql-resolver
+            v-if="showResolver"
+            ref="resolver"
+            :key="retryCount"
+            :glql-query="queryYaml"
+            tracking-event-name="render_glql_block"
+            @change="onResolverChange"
+          />
+        </div>
 
         <template v-if="showEmptyState" #empty>
           {{ __('No data found for this query.') }}

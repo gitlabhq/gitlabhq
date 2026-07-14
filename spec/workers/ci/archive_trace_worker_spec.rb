@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ArchiveTraceWorker, feature_category: :continuous_integration do
+  it_behaves_like 'an idempotent worker' do
+    let(:job) { create(:ci_build, :success, :trace_live) }
+    let(:job_args) { [job.id] }
+  end
+
   describe '#perform' do
     subject { described_class.new.perform(job&.id) }
 

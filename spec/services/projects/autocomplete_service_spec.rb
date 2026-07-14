@@ -9,22 +9,11 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
   let_it_be(:issue, freeze: false) { create(:issue, project: project, title: 'Issue 1') }
 
   describe '#issues' do
-    context 'with work_items_autocomplete feature flag' do
-      it 'calls work_items when feature flag is enabled' do
-        stub_feature_flags(work_items_autocomplete: true)
-        autocomplete = described_class.new(project, owner)
+    it 'calls work_items' do
+      autocomplete = described_class.new(project, owner)
 
-        expect(autocomplete).to receive(:work_items).and_call_original
-        autocomplete.issues
-      end
-
-      it 'uses IssuesFinder when feature flag is disabled' do
-        stub_feature_flags(work_items_autocomplete: false)
-        autocomplete = described_class.new(project, owner)
-
-        expect(autocomplete).not_to receive(:work_items)
-        expect(autocomplete.issues).to be_present
-      end
+      expect(autocomplete).to receive(:work_items).and_call_original
+      autocomplete.issues
     end
 
     describe 'confidential issues' do
@@ -466,9 +455,9 @@ RSpec.describe Projects::AutocompleteService, :with_current_organization, featur
         assigned_label_titles = issue.labels.map(&:title)
         results.each do |hash|
           if assigned_label_titles.include?(hash['title'])
-            expect(hash[:set]).to eq(true)
+            expect(hash[:set]).to be(true)
           else
-            expect(hash.key?(:set)).to eq(false)
+            expect(hash.key?(:set)).to be(false)
           end
         end
       end

@@ -23,6 +23,7 @@ const tableCell = (config) => ({
 });
 
 export default {
+  name: 'ImportHistoryApp',
   components: {
     GlButton,
     GlEmptyState,

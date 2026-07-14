@@ -39,6 +39,7 @@ import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
 
 export default {
+  name: 'WorkItemLinks',
   childrenType: {
     id: 'gid://gitlab/WorkItems::Type/5',
     name: 'Task', // eslint-disable-line @gitlab/require-i18n-strings

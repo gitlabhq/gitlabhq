@@ -28,11 +28,20 @@ RSpec.shared_examples Gitlab::BitbucketImport::StageMethods do
     end
 
     it 'does not execute the importer if the import state is no longer in progress' do
-      project.import_state.fail_op!
+      canceled_project = create(:project, :import_canceled)
 
       expect(worker).not_to receive(:import)
+      expect(Gitlab::BitbucketImport::Logger)
+        .to receive(:info)
+        .with(
+          hash_including(
+            message: 'starting stage',
+            project_id: canceled_project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => canceled_project.organization_id
+          )
+        )
 
-      worker.perform(project.id)
+      worker.perform(canceled_project.id)
     end
 
     it 'logs error when import fails with a StandardError' do
@@ -226,7 +235,8 @@ RSpec.shared_examples Gitlab::BitbucketImport::StageMethods do
           .with(
             hash_including(
               message: 'starting stage',
-              project_id: project.id
+              project_id: project.id,
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
             )
           )
         expect(import_logger_double)
@@ -234,7 +244,8 @@ RSpec.shared_examples Gitlab::BitbucketImport::StageMethods do
           .with(
             hash_including(
               message: 'stage finished',
-              project_id: project.id
+              project_id: project.id,
+              Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
             )
           )
 

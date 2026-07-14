@@ -27,6 +27,7 @@ export default {
       default: false,
     },
   },
+  emits: ['update-note'],
   watch: {
     'note.bodyHtml': {
       immediate: true,

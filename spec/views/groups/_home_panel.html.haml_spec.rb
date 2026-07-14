@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'groups/_home_panel' do
+RSpec.describe 'groups/_home_panel', feature_category: :groups_and_projects do
   let(:group) { create(:group) }
 
   before do

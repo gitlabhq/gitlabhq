@@ -14,9 +14,9 @@ description: "Reassign placeholder users in bulk with the REST API."
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513794) in GitLab 17.10 [with a flag](../administration/feature_flags/_index.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513794) in GitLab 17.10 [with a feature flag](../administration/feature_flags/_index.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/478022) in GitLab 18.0. Feature flag `importer_user_mapping_reassignment_csv` removed.
-- Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
+- Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a feature flag](../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
 - Reassigning contributions to a personal namespace owner when importing to a personal namespace [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211626) in GitLab 18.6. Feature flag `user_mapping_to_personal_namespace_owner` removed.
 
 {{< /history >}}

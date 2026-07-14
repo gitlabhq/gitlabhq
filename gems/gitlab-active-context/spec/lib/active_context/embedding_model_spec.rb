@@ -102,13 +102,13 @@ RSpec.describe ActiveContext::EmbeddingModel do
           message: "generate embeddings",
           model: 'gitlab__model-123',
           status: "start",
-          class: "ActiveContext::EmbeddingModel"
+          class_name: "ActiveContext::EmbeddingModel"
         )
         expect(::ActiveContext::Logger).to receive(:info).with(
           message: "generate embeddings",
           model: 'gitlab__model-123',
           status: "done",
-          class: "ActiveContext::EmbeddingModel"
+          class_name: "ActiveContext::EmbeddingModel"
         )
 
         generate_embeddings

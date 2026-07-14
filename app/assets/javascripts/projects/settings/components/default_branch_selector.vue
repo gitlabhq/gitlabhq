@@ -4,6 +4,7 @@ import { REF_TYPE_BRANCHES } from '~/ref/constants';
 import { __ } from '~/locale';
 
 export default {
+  name: 'DefaultBranchSelector',
   components: {
     RefSelector,
   },

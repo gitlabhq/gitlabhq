@@ -6,7 +6,6 @@ import {
   GlFormInput,
   GlFormGroup,
   GlCollapsibleListbox,
-  GlFormCheckbox,
   GlForm,
   GlModal,
 } from '@gitlab/ui';
@@ -43,13 +42,10 @@ describe('WikiForm', () => {
   const findForm = () => wrapper.find('form');
   const findTitle = () => wrapper.find('#wiki_title');
   const findPath = () => wrapper.find('#wiki_path');
-  const findGeneratePathCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findFormat = () => wrapper.find('#wiki_format');
   const findMessageFormInput = () => wrapper.find("input[name='wiki[message]']");
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findCancelButton = () => wrapper.findByTestId('wiki-cancel-button');
-
-  const findMarkdownHelpLink = () => wrapper.findByTestId('wiki-markdown-help-link');
   const findTemplatesDropdown = () => wrapper.findComponent(WikiTemplate);
   const findPathGenerationToggle = () => wrapper.findByTestId('path-generation-toggle');
 
@@ -157,7 +153,6 @@ describe('WikiForm', () => {
         csrfToken: '',
         pagePersisted: false,
         drawioUrl: null,
-        glFeatures: { wikiImmersiveEditor: true },
         ...provide,
       },
       stubs: {
@@ -1136,79 +1131,6 @@ describe('WikiForm', () => {
     });
   });
 
-  describe('classic mode', () => {
-    const provide = { glFeatures: { wikiImmersiveEditor: false } };
-
-    it.each`
-      title   | display
-      ${''}   | ${'empty string'}
-      ${' '}  | ${'whitespace only'}
-      ${null} | ${'null'}
-    `('shows an error on attempted submit if the title is $display', async ({ title }) => {
-      createWrapper({ persisted: true, mountFn: mountExtended, provide });
-
-      expect(findTitle().props('state')).toBe(null);
-
-      findTitle().setValue(title);
-      await findForm().trigger('submit');
-
-      expect(findTitle().props('state')).toBe(false);
-
-      findTitle().setValue('my page');
-      await findForm().trigger('submit');
-
-      expect(findTitle().props('state')).toBe(true);
-    });
-
-    it.each`
-      value         | text
-      ${'markdown'} | ${'[Link Title](page-slug)'}
-      ${'rdoc'}     | ${'{Link title}[link:page-slug]'}
-      ${'asciidoc'} | ${'link:page-slug[Link title]'}
-      ${'org'}      | ${'[[page-slug]]'}
-    `('updates the link help message when format=$value is selected', async ({ value, text }) => {
-      createWrapper({ mountFn: mountExtended, provide });
-
-      await setFormat(value);
-
-      expect(wrapper.text()).toContain(text);
-    });
-
-    it('shows correct link for wiki specific markdown docs', () => {
-      createWrapper({ mountFn: mountExtended, provide });
-
-      expect(findMarkdownHelpLink().attributes().href).toBe(
-        '/help/user/project/wiki/markdown#links',
-      );
-    });
-
-    describe('if generate path from title is checked', () => {
-      beforeEach(async () => {
-        createWrapper({
-          mountFn: mountExtended,
-          pageInfo: pageInfoWithFrontmatter(),
-          provide,
-        });
-        await findGeneratePathCheckbox().vm.$emit('input', true);
-      });
-
-      it("does not save page's title in frontmatter on submit", async () => {
-        await findTitle().setValue('new title');
-        await findForm().trigger('submit');
-
-        expect([...getFormData().entries()]).toEqual([
-          ['authenticity_token', ''],
-          ['_method', 'put'],
-          ['wiki[last_commit_sha]', 'abcdef123'],
-          ['wiki[title]', 'new-title'],
-          ['wiki[format]', 'markdown'],
-          ['wiki[content]', '---\nfoo: bar\n---\nfoo bar'],
-          ['wiki[message]', 'Update new title'],
-        ]);
-      });
-    });
-  });
-
   describe('submit button text', () => {
     it.each`
       scenario               | isTemplateUrl | persisted | originalPath       | expectedText
@@ -1233,85 +1155,6 @@ describe('WikiForm', () => {
         expect(wrapper.findByTestId('wiki-submit-button').text()).toBe(expectedText);
       },
     );
-  });
-
-  describe('convert to page button', () => {
-    const findConvertButton = () => wrapper.findByTestId('convert-to-page-button');
-
-    it('does not render when accessed via the templates URL', async () => {
-      jest.spyOn(wikiUtils, 'isTemplate').mockReturnValue(true);
-
-      createWrapper({
-        mountFn: shallowMountExtended,
-        pageInfo: { slug: 'templates/foo' },
-      });
-
-      await waitForPromises();
-
-      expect(findConvertButton().exists()).toBe(false);
-    });
-
-    it('does not render for regular pages', async () => {
-      jest.spyOn(wikiUtils, 'isTemplate').mockReturnValue(false);
-
-      createWrapper({
-        mountFn: shallowMountExtended,
-        pageInfo: { slug: 'foo' },
-      });
-
-      await waitForPromises();
-
-      expect(findConvertButton().exists()).toBe(false);
-    });
-
-    it('renders when the path starts with `templates/` but the URL is not a templates URL', async () => {
-      jest.spyOn(wikiUtils, 'isTemplate').mockReturnValue(false);
-
-      createWrapper({
-        mountFn: shallowMountExtended,
-        pageInfo: { slug: 'templates/foo' },
-      });
-
-      await waitForPromises();
-
-      expect(findConvertButton().exists()).toBe(true);
-    });
-
-    it('removes the `templates/` prefix from the path when clicked', async () => {
-      jest.spyOn(wikiUtils, 'isTemplate').mockReturnValue(false);
-
-      createWrapper({
-        mountFn: shallowMountExtended,
-        pageInfo: { slug: 'templates/foo' },
-      });
-
-      await waitForPromises();
-
-      await findConvertButton().vm.$emit('click');
-
-      expect(wrapper.findByTestId('wiki-path-textbox').props('value')).toBe('foo');
-      expect(findConvertButton().exists()).toBe(false);
-    });
-
-    it('restores the previous non-template path when the user added the prefix manually', async () => {
-      jest.spyOn(wikiUtils, 'isTemplate').mockReturnValue(false);
-
-      createWrapper({
-        mountFn: shallowMountExtended,
-        pageInfo: { slug: 'foo' },
-      });
-
-      await waitForPromises();
-
-      wrapper.findByTestId('wiki-path-textbox').vm.$emit('input', 'templates/bar');
-      await nextTick();
-
-      expect(findConvertButton().exists()).toBe(true);
-
-      await findConvertButton().vm.$emit('click');
-
-      expect(wrapper.findByTestId('wiki-path-textbox').props('value')).toBe('foo');
-    });
   });
 
   describe('keyboard shortcut form submission', () => {

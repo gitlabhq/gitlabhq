@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe JiraImport::UsersImporter, feature_category: :integrations do
   include JiraIntegrationHelpers
 
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:group, freeze: false) { create(:group) }
-  let_it_be_with_reload(:project) { create(:project, group: group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, group: group, maintainers: user) }
   let_it_be(:start_at) { 7 }
 
   let(:importer) { described_class.new(user, project, start_at) }
@@ -34,7 +34,6 @@ RSpec.describe JiraImport::UsersImporter, feature_category: :integrations do
 
     before do
       stub_jira_integration_test
-      project.add_maintainer(user)
     end
 
     context 'when Jira import is not configured properly' do
@@ -45,7 +44,7 @@ RSpec.describe JiraImport::UsersImporter, feature_category: :integrations do
 
     RSpec.shared_examples 'maps Jira users to GitLab users' do |users_mapper_service:|
       context 'when Jira import is configured correctly' do
-        let_it_be(:jira_integration, freeze: false) { create(:jira_integration, project: project, active: true, url: "http://jira.example.net") }
+        let_it_be_with_reload(:jira_integration) { create(:jira_integration, project: project, active: true, url: "http://jira.example.net") }
 
         context 'when users mapper service raises an error' do
           let(:error) { Timeout::Error.new }
@@ -74,9 +73,9 @@ RSpec.describe JiraImport::UsersImporter, feature_category: :integrations do
           end
 
           context 'when Jira client returns any users' do
-            let_it_be(:project_member, freeze: false) { create(:user, email: 'sample@jira.com') }
-            let_it_be(:group_member, freeze: false) { create(:user, name: 'user-name2') }
-            let_it_be(:other_user, freeze: false) { create(:user) }
+            let_it_be(:project_member) { create(:user, email: 'sample@jira.com') }
+            let_it_be(:group_member) { create(:user, name: 'user-name2') }
+            let_it_be(:other_user) { create(:user) }
 
             before do
               project.add_developer(project_member)

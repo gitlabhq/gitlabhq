@@ -152,6 +152,49 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
         expect(subject.export_service_for('max_iids')).to eq(Import::BulkImports::MaxIidsExportService)
       end
     end
+
+    context 'when relation is commit_notes and commit_notes_export_via_repo is enabled' do
+      it 'returns CommitNotesExportService' do
+        expect(subject.export_service_for('commit_notes')).to eq(Import::BulkImports::CommitNotesExportService)
+      end
+    end
+
+    context 'when relation is commit_notes and commit_notes_export_via_repo is disabled' do
+      before do
+        stub_feature_flags(commit_notes_export_via_repo: false)
+      end
+
+      it 'falls back to TreeExportService' do
+        expect(subject.export_service_for('commit_notes')).to eq(BulkImports::TreeExportService)
+      end
+    end
+  end
+
+  describe '#commit_notes_export_via_git?' do
+    context 'when relation is commit_notes and the feature flag is enabled' do
+      it { expect(subject.commit_notes_export_via_git?('commit_notes')).to eq(true) }
+    end
+
+    context 'when relation is not commit_notes' do
+      it { expect(subject.commit_notes_export_via_git?('issues')).to eq(false) }
+    end
+
+    context 'when the feature flag is disabled for the portable' do
+      before do
+        stub_feature_flags(commit_notes_export_via_repo: false)
+      end
+
+      it { expect(subject.commit_notes_export_via_git?('commit_notes')).to eq(false) }
+    end
+
+    it 'checks the feature flag against the portable root ancestor (not the project itself)' do
+      expect(Feature)
+        .to receive(:enabled?)
+        .with(:commit_notes_export_via_repo, exportable.root_ancestor)
+        .and_return(true)
+
+      expect(subject.commit_notes_export_via_git?('commit_notes')).to eq(true)
+    end
   end
 
   describe '#max_iids_relation?' do
@@ -180,6 +223,22 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
     context 'when relation is not listed as portable' do
       it 'returns false' do
         expect(subject.batchable_relation?('foo')).to eq(false)
+      end
+    end
+
+    context 'when relation is commit_notes and commit_notes_export_via_repo is enabled' do
+      it 'returns true (overrides the reflect_on_association check for the method-defined relation)' do
+        expect(subject.batchable_relation?('commit_notes')).to eq(true)
+      end
+    end
+
+    context 'when relation is commit_notes and commit_notes_export_via_repo is disabled' do
+      before do
+        stub_feature_flags(commit_notes_export_via_repo: false)
+      end
+
+      it 'returns false (falls back to the default reflect_on_association check)' do
+        expect(subject.batchable_relation?('commit_notes')).to eq(false)
       end
     end
   end

@@ -26,16 +26,16 @@ RSpec.describe 'gitlab:user_management tasks', :silence_stdout, feature_category
           run_rake
 
           expect(user_1.reload.projects_limit).to eq(0)
-          expect(user_1.can_create_group).to eq(false)
+          expect(user_1.can_create_group).to be(false)
           expect(user_2.reload.projects_limit).to eq(0)
-          expect(user_2.can_create_group).to eq(false)
+          expect(user_2.can_create_group).to be(false)
         end
 
         it 'does not update other users' do
           run_rake
 
           expect(user_other.reload.projects_limit).to eq(10)
-          expect(user_other.reload.can_create_group).to eq(true)
+          expect(user_other.reload.can_create_group).to be(true)
         end
       end
 

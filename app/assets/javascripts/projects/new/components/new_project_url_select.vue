@@ -10,6 +10,7 @@ import searchNamespacesWhereUserCanCreateProjectsQuery from '../queries/search_n
 import eventHub from '../event_hub';
 
 export default {
+  name: 'NewProjectUrlSelect',
   components: {
     GlButton,
     GlButtonGroup,
@@ -198,7 +199,7 @@ export default {
   },
   emptyNameSpace: {
     id: undefined,
-    fullPath: s__('ProjectsNew|Pick a group or namespace'),
+    fullPath: s__('ProjectsNew|Select a group or namespace'),
   },
 };
 </script>

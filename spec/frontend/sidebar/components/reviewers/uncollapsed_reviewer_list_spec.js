@@ -269,6 +269,44 @@ describe('UncollapsedReviewerList component', () => {
     );
   });
 
+  describe('when Duo Code Review bot is actively reviewing', () => {
+    it('hides the re-request button when reviewState is REVIEW_STARTED', () => {
+      createComponent({
+        users: [
+          {
+            ...userDataMock({ reviewState: 'REVIEW_STARTED', approved: false }),
+            type: 'DUO_CODE_REVIEW_BOT',
+          },
+        ],
+        canRerequest: true,
+      });
+      expect(findAllRerequestButtons().exists()).toBe(false);
+    });
+
+    it('shows the re-request button when reviewState is REVIEWED', () => {
+      createComponent({
+        users: [
+          {
+            ...userDataMock({ reviewState: 'REVIEWED', approved: false }),
+            type: 'DUO_CODE_REVIEW_BOT',
+          },
+        ],
+        canRerequest: true,
+      });
+      expect(findAllRerequestButtons().exists()).toBe(true);
+    });
+  });
+
+  describe('when a human reviewer has started a review', () => {
+    it('still shows the re-request button', () => {
+      createComponent({
+        users: [userDataMock({ reviewState: 'REVIEW_STARTED', approved: false })],
+        canRerequest: true,
+      });
+      expect(findAllRerequestButtons().exists()).toBe(true);
+    });
+  });
+
   describe('handling review request with error messages', () => {
     const user = userDataMock();
 

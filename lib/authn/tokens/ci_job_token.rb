@@ -23,7 +23,7 @@ module Authn
       def revoke!(_current_user)
         raise ::Authn::AgnosticTokenIdentifier::NotFoundError, 'Not Found' if revocable.blank?
 
-        raise ::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported token type'
+        ServiceResponse.error(message: 'Unsupported token type')
       end
     end
   end

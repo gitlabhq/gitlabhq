@@ -15,4 +15,12 @@ RSpec::Matchers.define :show_user_status do |status|
   match_when_negated do |page|
     capybara_node_from(page).has_no_selector?(selector)
   end
+
+  failure_message do
+    "expected to find user status with message '#{status.message}' containing emoji '#{status.emoji}'"
+  end
+
+  failure_message_when_negated do
+    "expected not to find user status with message '#{status.message}' containing emoji '#{status.emoji}'"
+  end
 end

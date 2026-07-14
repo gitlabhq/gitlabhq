@@ -394,6 +394,10 @@ RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_pl
 
   def enable_bulk_update
     visit project_work_items_path(project)
+
+    expect(page).to have_selector(issue_1_selector)
+    expect(page).to have_selector(issue_2_selector)
+
     click_button 'Bulk edit'
   end
 end

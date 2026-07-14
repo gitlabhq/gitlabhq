@@ -36,7 +36,11 @@ module BrowserConsoleHelpers
       'The following translations have not been given, so will fall back',
 
       # ProjectSelect initialization warning when element is not present on the page
-      'Attempted to initialize ProjectSelect'
+      'Attempted to initialize ProjectSelect',
+
+      # Browser security restriction: autofocus is blocked when the URL contains a fragment.
+      # This is expected behavior when navigating directly to a URL with a hash (e.g. #create-group-pane).
+      /Autofocus processing was blocked because a document's URL has a fragment/
     ]
   )
 

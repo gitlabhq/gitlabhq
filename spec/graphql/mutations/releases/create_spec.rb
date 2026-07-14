@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::Releases::Create do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let_it_be(:milestone_12_3) { create(:milestone, project: project, title: '12.3') }
   let_it_be(:milestone_12_4) { create(:milestone, project: project, title: '12.4') }
   let_it_be(:reporter) { create(:user, reporter_of: project) }

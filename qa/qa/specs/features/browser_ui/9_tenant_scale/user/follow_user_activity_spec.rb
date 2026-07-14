@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale', feature_category: :organization do
+  RSpec.describe 'Tenant Scale', feature_category: :organization, feature_flag: {
+    name: :vue_profile_activity_calendar
+  } do
     describe 'User', :requires_admin do
       let(:admin_api_client) { Runtime::User::Store.admin_api_client }
       let(:followed_user_api_client) { followed_user.api_client }
@@ -36,6 +38,10 @@ module QA
           issue: issue,
           body: 'This is a comment',
           api_client: followed_user_api_client)
+      end
+
+      before do
+        Runtime::Feature.disable(:vue_profile_activity_calendar)
       end
 
       it 'can be followed and their activity seen',

@@ -1,0 +1,17 @@
+-# Project-level endpoint configuration -- delegates to the shared partial
+-# with project-specific paths and variable lookup.
+- setting = local_assigns.fetch(:configuration_settings)
+- project = local_assigns.fetch(:project)
+- has_pipelines = local_assigns.fetch(:has_pipelines_since_setup, false)
+- resolved_export_variable = local_assigns.fetch(:export_variable, nil)
+- project_owner_label = s_("Observability|project's")
+- auto_wired = s_('Observability|Telemetry export is auto-wired for this project. Other projects in your personal namespace need the GITLAB_OBSERVABILITY_EXPORT variable set manually.')
+
+= render 'shared/observability/setup/endpoint_configuration',
+  configuration_settings: setting,
+  has_pipelines_since_setup: has_pipelines,
+  explore_data_path: project_observability_path(project, 'dashboard'),
+  ci_cd_settings_path: project_settings_ci_cd_path(project),
+  export_variable: resolved_export_variable,
+  ci_cd_owner_label: project_owner_label,
+  auto_wired_note: auto_wired

@@ -1,39 +1,55 @@
 <script>
-import { debounce } from 'lodash-es';
+import { GlButton, GlCollapsibleListbox, GlDisclosureDropdown, GlLoadingIcon } from '@gitlab/ui';
 import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labels.subscription.graphql';
 import { mutationOperationMode, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/alert';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST, TYPE_TEST_CASE } from '~/issues/constants';
-
+import {
+  NAMESPACE_GROUP,
+  TYPE_EPIC,
+  TYPE_ISSUE,
+  TYPE_MERGE_REQUEST,
+  TYPE_TEST_CASE,
+} from '~/issues/constants';
 import { __ } from '~/locale';
-import { keysFor, ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
-import { sanitize } from '~/lib/dompurify';
 import { issuableLabelsQueries } from '../../../queries/constants';
-import SidebarEditableItem from '../../sidebar_editable_item.vue';
-import { DEBOUNCE_DROPDOWN_DELAY, VARIANT_SIDEBAR } from './constants';
 import DropdownContents from './dropdown_contents.vue';
+import DropdownContentsCreateView from './dropdown_contents_create_view.vue';
 import DropdownValue from './dropdown_value.vue';
+import EditToggleButton from './edit_toggle_button.vue';
 import EmbeddedLabelsList from './embedded_labels_list.vue';
+import groupLabelsQuery from './graphql/group_labels.query.graphql';
+import projectLabelsQuery from './graphql/project_labels.query.graphql';
+import { VARIANT_SIDEBAR } from './constants';
 import {
   isDropdownVariantSidebar,
   isDropdownVariantStandalone,
   isDropdownVariantEmbedded,
 } from './utils';
 
+const toItem = (label) => ({ value: label.id, text: label.title, color: label.color });
+
 export default {
   name: 'LabelsSelectRootWidget',
   components: {
-    DropdownValue,
     DropdownContents,
+    DropdownContentsCreateView,
+    DropdownValue,
+    EditToggleButton,
     EmbeddedLabelsList,
-    SidebarEditableItem,
+    GlButton,
+    GlCollapsibleListbox,
+    GlDisclosureDropdown,
+    GlLoadingIcon,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     allowLabelEdit: {
       default: false,
+    },
+    allowLabelCreate: {
+      default: false,
+    },
+    labelsManagePath: {
+      default: '',
     },
   },
   props: {
@@ -128,17 +144,22 @@ export default {
       default: () => [],
     },
   },
+  emits: ['onLabelRemove', 'toggleCollapse', 'updateSelectedLabels'],
   data() {
     return {
       issuable: null,
       labelsSelectInProgress: false,
       oldIid: null,
-      sidebarExpandedOnClick: false,
+      searchTerm: '',
+      dropdownOpened: false,
+      searchLabels: [],
+      selectedLabelsIds: [],
+      showLabelForm: false,
     };
   },
   computed: {
     isLoading() {
-      return this.labelsSelectInProgress || this.$apollo.queries.issuable.loading;
+      return this.$apollo.queries.issuable.loading;
     },
     issuableLabelIds() {
       return this.issuableLabels.map((label) => label.id);
@@ -159,18 +180,21 @@ export default {
     isLockOnMergeSupported() {
       return this.issuableSupportsLockOnMerge || this.issuable?.supportsLockOnMerge;
     },
-    labelShortcutDescription() {
-      return shouldDisableShortcuts() ? null : ISSUABLE_CHANGE_LABEL.description;
-    },
-    labelShortcutKey() {
-      return shouldDisableShortcuts() ? null : keysFor(ISSUABLE_CHANGE_LABEL)[0];
-    },
-    labelTooltip() {
-      const description = this.labelShortcutDescription;
-      const key = this.labelShortcutKey;
-      return shouldDisableShortcuts()
-        ? null
-        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
+    listboxItems() {
+      if (this.searchTerm || !this.issuableLabels.length) {
+        return this.searchLabels;
+      }
+
+      return [
+        { text: __('Selected'), options: this.issuableLabels.map(toItem) },
+        {
+          text: __('All'),
+          textSrOnly: true,
+          options: this.searchLabels.filter(
+            (label) => !this.issuableLabelIds.includes(label.value),
+          ),
+        },
+      ];
     },
   },
   apollo: {
@@ -223,50 +247,81 @@ export default {
         },
       },
     },
+    searchLabels: {
+      query() {
+        return this.workspaceType === NAMESPACE_GROUP ? groupLabelsQuery : projectLabelsQuery;
+      },
+      variables() {
+        return {
+          fullPath: this.attrWorkspacePath,
+          searchTerm: this.searchTerm,
+        };
+      },
+      skip() {
+        return !this.dropdownOpened;
+      },
+      update(data) {
+        return (data.namespace?.labels?.nodes ?? []).map(toItem);
+      },
+      debounce: 250,
+    },
   },
   watch: {
     iid(_, oldVal) {
       this.oldIid = oldVal;
     },
+    issuableLabels: {
+      handler(newVal) {
+        this.selectedLabelsIds = newVal.map((l) => l.id);
+      },
+      immediate: true,
+    },
   },
   mounted() {
-    document.addEventListener('toggleSidebarRevealLabelsDropdown', this.handleCollapsedValueClick);
+    document.addEventListener('toggleSidebarRevealLabelsDropdown', this.onCollapsedValueClick);
   },
   beforeDestroy() {
-    document.removeEventListener(
-      'toggleSidebarRevealLabelsDropdown',
-      this.handleCollapsedValueClick,
-    );
+    document.removeEventListener('toggleSidebarRevealLabelsDropdown', this.onCollapsedValueClick);
   },
   methods: {
+    onShown() {
+      this.dropdownOpened = true;
+      this.searchTerm = '';
+      this.oldIid = null;
+    },
+    onCollapsedValueClick() {
+      this.$emit('toggleCollapse');
+      this.$nextTick(() => this.$refs.listbox?.open());
+    },
+    onSearch(value) {
+      this.searchTerm = value;
+    },
+    onSelect(selectedIds) {
+      this.selectedLabelsIds = selectedIds;
+      this.searchTerm = '';
+      this.$refs.listbox?.$refs.searchBox?.clearInput?.();
+    },
+    onHidden() {
+      const next = this.selectedLabelsIds;
+      const current = this.issuableLabelIds;
+      const unchanged = next.length === current.length && next.every((id) => current.includes(id));
+      if (unchanged) return;
+      this.handleDropdownClose(next.map((id) => ({ id })));
+    },
+    handleLabelCreated(label) {
+      this.showLabelForm = false;
+      this.selectedLabelsIds = [...this.selectedLabelsIds, label.id];
+      this.$nextTick(() => this.$refs.listbox?.open());
+    },
     handleDropdownClose(labels) {
       if (this.iid !== '') {
         this.updateSelectedLabels(this.getUpdateVariables(labels));
       } else {
         this.$emit('updateSelectedLabels', { labels });
       }
-
-      this.collapseEditableItem();
-    },
-    collapseEditableItem() {
-      this.$refs.editable?.collapse();
-      if (this.sidebarExpandedOnClick) {
-        this.sidebarExpandedOnClick = false;
-        this.$emit('toggleCollapse');
-      }
-    },
-    handleCollapsedValueClick() {
-      this.sidebarExpandedOnClick = true;
-      this.$emit('toggleCollapse');
-      debounce(() => {
-        this.$refs.editable.toggle();
-        this.$refs.dropdownContents.showDropdown();
-      }, DEBOUNCE_DROPDOWN_DELAY)();
     },
     getUpdateVariables(labels) {
-      let labelIds = [];
-
-      labelIds = labels.map(({ id }) => id);
+      const labelIds = labels.map(({ id }) => id);
       const currentIid = this.oldIid || this.iid;
 
       const updateVariables = {
@@ -379,65 +434,109 @@ export default {
     data-testid="sidebar-labels"
   >
     <template v-if="isDropdownVariantSidebar(variant)">
-      <sidebar-editable-item
-        ref="editable"
-        :title="__('Labels')"
-        :edit-tooltip="labelTooltip"
-        :edit-aria-label="labelShortcutDescription"
-        :edit-keyshortcuts="labelShortcutKey"
-        :loading="isLoading"
-        :can-edit="allowLabelEdit"
-        @open="oldIid = null"
-      >
-        <template #collapsed>
-          <dropdown-value
-            :disable-labels="labelsSelectInProgress"
-            :selected-labels="issuableLabels"
-            :allow-label-remove="allowLabelRemove"
-            :supports-lock-on-merge="isLockOnMergeSupported"
-            :labels-filter-base-path="labelsFilterBasePath"
-            :labels-filter-param="labelsFilterParam"
-            class="gl-pt-2"
-            @onLabelRemove="handleLabelRemove"
-            @onCollapsedValueClick="handleCollapsedValueClick"
+      <div class="hide-collapsed gl-flex gl-font-bold">
+        <span>{{ __('Labels') }}</span>
+        <gl-loading-icon v-if="isLoading" size="sm" inline class="gl-ml-2" />
+        <gl-collapsible-listbox
+          v-if="allowLabelEdit && !showLabelForm"
+          ref="listbox"
+          class="sidebar-dropdown-widget-listbox gl-ml-auto"
+          multiple
+          searchable
+          is-check-centered
+          placement="bottom-end"
+          :selected="selectedLabelsIds"
+          :header-text="labelsListTitle"
+          :items="listboxItems"
+          :searching="$apollo.queries.searchLabels.loading"
+          data-testid="labels-select-dropdown"
+          @shown="onShown"
+          @search="onSearch"
+          @select="onSelect"
+          @hidden="onHidden"
+        >
+          <template #toggle="{ accessibilityAttributes }">
+            <edit-toggle-button
+              :accessibility-attributes="accessibilityAttributes"
+              :loading="labelsSelectInProgress"
+            />
+          </template>
+          <template #list-item="{ item }">
+            <div class="gl-flex gl-items-center gl-gap-3 gl-break-anywhere">
+              <span
+                :style="{ background: item.color }"
+                class="gl-border gl-h-3 gl-w-5 gl-shrink-0 gl-rounded-base gl-border-white"
+              ></span>
+              {{ item.text }}
+            </div>
+          </template>
+          <template #footer>
+            <div class="gl-border-t-1 gl-border-t-dropdown gl-p-2 gl-border-t-solid">
+              <gl-button
+                v-if="allowLabelCreate"
+                block
+                category="tertiary"
+                data-testid="create-label"
+                class="!gl-justify-start"
+                @click.stop="showLabelForm = true"
+                >{{ footerCreateLabelTitle }}</gl-button
+              >
+              <gl-button
+                v-if="labelsManagePath"
+                class="!gl-mt-2 !gl-justify-start"
+                block
+                category="tertiary"
+                :href="labelsManagePath"
+                data-testid="manage-labels"
+                >{{ footerManageLabelTitle }}</gl-button
+              >
+            </div>
+          </template>
+        </gl-collapsible-listbox>
+        <gl-disclosure-dropdown
+          v-else-if="allowLabelEdit && showLabelForm"
+          class="sidebar-dropdown-widget-listbox gl-ml-auto"
+          block
+          start-opened
+          @hidden="showLabelForm = false"
+        >
+          <template #toggle="{ accessibilityAttributes }">
+            <edit-toggle-button
+              :accessibility-attributes="accessibilityAttributes"
+              :loading="labelsSelectInProgress"
+            />
+          </template>
+          <div
+            class="gl-border-b gl-mb-4 gl-pb-3 gl-pl-4 gl-pt-2 gl-text-sm gl-font-bold gl-leading-24"
           >
-            <slot></slot>
-          </dropdown-value>
-        </template>
-        <template #default="{ edit }">
-          <dropdown-value
-            :disable-labels="labelsSelectInProgress"
-            :selected-labels="issuableLabels"
-            :allow-label-remove="allowLabelRemove"
-            :supports-lock-on-merge="isLockOnMergeSupported"
-            :labels-filter-base-path="labelsFilterBasePath"
-            :labels-filter-param="labelsFilterParam"
+            {{ __('Create label') }}
+          </div>
+          <dropdown-contents-create-view
             class="gl-mb-2"
-            @onLabelRemove="handleLabelRemove"
-          >
-            <slot></slot>
-          </dropdown-value>
-          <dropdown-contents
-            ref="dropdownContents"
-            class="gl-mt-3 gl-w-full"
-            :dropdown-button-text="dropdownButtonText"
-            :allow-multiselect="allowMultiselect"
-            :labels-list-title="labelsListTitle"
-            :footer-create-label-title="footerCreateLabelTitle"
-            :footer-manage-label-title="footerManageLabelTitle"
-            :labels-create-title="labelsCreateTitle"
-            :selected-labels="issuableLabels"
-            :variant="variant"
-            :is-visible="edit"
-            :full-path="fullPath"
-            :workspace-type="workspaceType"
             :attr-workspace-path="attrWorkspacePath"
+            :full-path="fullPath"
             :label-create-type="labelCreateType"
-            @setLabels="handleDropdownClose"
-            @closeDropdown="collapseEditableItem"
+            :search-key="searchTerm"
+            :workspace-type="workspaceType"
+            @hideCreateView="showLabelForm = false"
+            @labelCreated="handleLabelCreated"
           />
-        </template>
-      </sidebar-editable-item>
+        </gl-disclosure-dropdown>
+      </div>
+
+      <dropdown-value
+        :disable-labels="labelsSelectInProgress"
+        :selected-labels="issuableLabels"
+        :allow-label-remove="allowLabelRemove"
+        :supports-lock-on-merge="isLockOnMergeSupported"
+        :labels-filter-base-path="labelsFilterBasePath"
+        :labels-filter-param="labelsFilterParam"
+        class="gl-pt-2"
+        @onCollapsedValueClick="onCollapsedValueClick"
+        @onLabelRemove="handleLabelRemove"
+      >
+        <slot></slot>
+      </dropdown-value>
     </template>
     <template v-else>
       <dropdown-contents

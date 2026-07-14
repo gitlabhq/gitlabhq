@@ -1,0 +1,12 @@
+- title: "Deprecate `previousStageJobs` from GraphQL"
+  removal_milestone: "20.0"
+  announcement_milestone: "19.2"
+  breaking_change: true
+  window: 3
+  reporter: oyakovenko-ext
+  stage: verify
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/603950
+  impact: low
+  scope: instance
+  body: |
+    The `previousStageJobs` field in the GraphQL `CiJob` type is deprecated and will be removed in GitLab 20.0. No server-side alternative is required because the GitLab UI no longer needs `previousStageJobs` to calculate dependencies.

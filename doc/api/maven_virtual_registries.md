@@ -15,7 +15,7 @@ title: Maven virtual registry API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615) in GitLab 17.4 [with a flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615) in GitLab 17.4 [with a feature flag](../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
 - Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1. Disabled by default. Feature flag `virtual_registry_maven` removed.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
@@ -208,7 +208,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538327) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538327) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 
 {{< /history >}}
 
@@ -240,7 +240,7 @@ Use the following endpoints to configure and manage upstream Maven registries.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550728) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550728) in GitLab 18.3 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 - `upstream_name` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/561675) in GitLab 18.4.
 
 {{< /history >}}
@@ -275,6 +275,7 @@ Example response:
   {
     "id": 1,
     "group_id": 5,
+    "upstream_type": "remote",
     "url": "https://repo.maven.apache.org/maven2",
     "name": "Maven Central",
     "description": "Maven Central repository",
@@ -283,6 +284,19 @@ Example response:
     "username": "user",
     "created_at": "2024-05-30T12:28:27.855Z",
     "updated_at": "2024-05-30T12:28:27.855Z"
+  },
+  {
+    "id": 3,
+    "group_id": 5,
+    "upstream_type": "local",
+    "name": "my-internal-group",
+    "description": null,
+    "local_group_id": 42,
+    "local_project_id": null,
+    "cache_validity_hours": 24,
+    "metadata_cache_validity_hours": 24,
+    "created_at": "2025-02-01T09:00:00.000Z",
+    "updated_at": "2025-02-01T09:00:00.000Z"
   }
 ]
 ```
@@ -291,7 +305,7 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/535637) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/535637) in GitLab 18.3 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 
 {{< /history >}}
 
@@ -372,6 +386,7 @@ Example response:
   {
     "id": 1,
     "group_id": 5,
+    "upstream_type": "remote",
     "url": "https://repo.maven.apache.org/maven2",
     "name": "Maven Central",
     "description": "Maven Central repository",
@@ -383,7 +398,27 @@ Example response:
     "registry_upstream": {
       "id": 1,
       "registry_id": 1,
-      "position": 1
+      "position": 1,
+      "local_upstream_id": null
+    }
+  },
+  {
+    "id": 3,
+    "group_id": 5,
+    "upstream_type": "local",
+    "name": "my-internal-group",
+    "description": null,
+    "local_group_id": 42,
+    "local_project_id": null,
+    "cache_validity_hours": 24,
+    "metadata_cache_validity_hours": 24,
+    "created_at": "2025-02-01T09:00:00.000Z",
+    "updated_at": "2025-02-01T09:00:00.000Z",
+    "registry_upstream": {
+      "id": 2,
+      "registry_id": 1,
+      "position": 2,
+      "local_upstream_id": 3
     }
   }
 ]
@@ -437,6 +472,7 @@ Example response:
 {
   "id": 1,
   "group_id": 5,
+  "upstream_type": "remote",
   "url": "https://repo.maven.apache.org/maven2",
   "name": "Maven Central",
   "description": "Maven Central repository",
@@ -448,10 +484,157 @@ Example response:
   "registry_upstream": {
     "id": 1,
     "registry_id": 1,
-    "position": 1
+    "position": 1,
+    "local_upstream_id": null
   }
 }
 ```
+
+### Create a local upstream registry
+
+Creates a local upstream registry for a specified Maven virtual registry. A local upstream targets a
+group or project on the same GitLab instance. Files are served directly from the package registry
+instead of being fetched and cached over HTTP.
+
+```plaintext
+POST /virtual_registries/packages/maven/registries/:id/local/upstreams
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | Yes | The ID of the Maven virtual registry. |
+| `name` | string | Yes | The name of the local upstream registry. |
+| `local_group_id` | integer | Conditional | The ID of the target group. Required if `local_project_id` is not set. |
+| `local_project_id` | integer | Conditional | The ID of the target project. Required if `local_group_id` is not set. |
+| `cache_validity_hours` | integer | No | The cache validity period. Defaults to 24 hours. |
+| `description` | string | No | The description of the local upstream registry. |
+| `metadata_cache_validity_hours` | integer | No | The metadata cache validity period. Defaults to 24 hours. |
+
+You must set exactly one of `local_group_id` or `local_project_id`. You must have permission to read
+packages in the target group or project.
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"name": "Internal group", "local_group_id": 42, "cache_validity_hours": 24}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/registries/1/local/upstreams"
+```
+
+Example response:
+
+```json
+{
+  "id": 3,
+  "group_id": 5,
+  "upstream_type": "local",
+  "name": "Internal group",
+  "description": null,
+  "local_group_id": 42,
+  "local_project_id": null,
+  "cache_validity_hours": 24,
+  "metadata_cache_validity_hours": 24,
+  "created_at": "2025-02-01T09:00:00.000Z",
+  "updated_at": "2025-02-01T09:00:00.000Z",
+  "registry_upstream": {
+    "id": 2,
+    "registry_id": 1,
+    "position": 1,
+    "local_upstream_id": 3
+  }
+}
+```
+
+### Retrieve a local upstream registry
+
+Retrieves a local upstream registry. Local upstreams use an ID space separate from remote upstreams.
+
+```plaintext
+GET /virtual_registries/packages/maven/local/upstreams/:id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | Yes | The ID of the Maven local upstream registry. |
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/local/upstreams/3"
+```
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute | Type | Description |
+| --------- | ---- | ----------- |
+| `cache_validity_hours` | integer | Number of hours the cached packages are considered valid. |
+| `created_at` | date/time | Date and time the upstream was created. |
+| `description` | string | Description of the upstream. |
+| `group_id` | integer | ID of the group the upstream belongs to. |
+| `id` | integer | ID of the upstream. |
+| `local_group_id` | integer | ID of the local group used as the upstream source. |
+| `local_project_id` | integer | ID of the local project used as the upstream source. |
+| `metadata_cache_validity_hours` | integer | Number of hours the cached metadata is considered valid. |
+| `name` | string | Name of the upstream. |
+| `registry_upstreams` | array of objects | List of virtual registry upstreams associated with this upstream. |
+| `registry_upstreams[].id` | integer | ID of the registry upstream. |
+| `registry_upstreams[].local_upstream_id` | integer | ID of the local upstream. |
+| `registry_upstreams[].position` | integer | Position of the upstream in the registry resolution order. |
+| `registry_upstreams[].registry_id` | integer | ID of the virtual registry. |
+| `updated_at` | date/time | Date and time the upstream was last updated. |
+| `upstream_type` | string | Type of the upstream. |
+
+### Update a local upstream registry
+
+Updates a local upstream registry.
+
+```plaintext
+PATCH /virtual_registries/packages/maven/local/upstreams/:id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | Yes | The ID of the Maven local upstream registry. |
+| `cache_validity_hours` | integer | No | The cache validity period. |
+| `description` | string | No | The description of the local upstream registry. |
+| `metadata_cache_validity_hours` | integer | No | The metadata cache validity period. |
+| `name` | string | No | The name of the local upstream registry. |
+
+You must set at least one optional attribute.
+
+Example request:
+
+```shell
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"name": "Renamed group", "cache_validity_hours": 48}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/local/upstreams/3"
+```
+
+If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status code.
+
+### Delete a local upstream registry
+
+Deletes a local upstream registry and removes its association with any virtual registries.
+
+```plaintext
+DELETE /virtual_registries/packages/maven/local/upstreams/:id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | Yes | The ID of the Maven local upstream registry. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/local/upstreams/3"
+```
+
+If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.
 
 ### Retrieve an upstream registry
 
@@ -481,6 +664,7 @@ Example response:
 {
   "id": 1,
   "group_id": 5,
+  "upstream_type": "remote",
   "url": "https://repo.maven.apache.org/maven2",
   "name": "Maven Central",
   "description": "Maven Central repository",
@@ -493,7 +677,8 @@ Example response:
     {
       "id": 1,
       "registry_id": 1,
-      "position": 1
+      "position": 1,
+      "local_upstream_id": null
     }
   ]
 }
@@ -590,7 +775,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) in GitLab 18.1 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
 
 {{< /history >}}
@@ -604,7 +789,10 @@ POST /virtual_registries/packages/maven/registry_upstreams
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `registry_id` | integer | yes | The ID of the Maven virtual registry. |
-| `upstream_id` | integer | yes | The ID of the Maven upstream registry. |
+| `upstream_id` | integer | yes | The ID of the Maven upstream registry. Required if `local_upstream_id` is not set. |
+| `local_upstream_id` | integer | yes | The ID of the Maven local upstream registry. Required if `upstream_id` is not set. |
+
+You must set exactly one of `upstream_id` or `local_upstream_id`.
 
 Example request:
 
@@ -632,7 +820,7 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) in GitLab 18.1 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
 
 {{< /history >}}
@@ -663,7 +851,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538327) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538327) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 
 {{< /history >}}
 
@@ -691,7 +879,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/535637) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/535637) in GitLab 18.3 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 
 {{< /history >}}
 
@@ -737,7 +925,7 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/565897) in GitLab 18.7 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/565897) in GitLab 18.7 [with a feature flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 
 {{< /history >}}
 

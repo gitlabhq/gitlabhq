@@ -11,6 +11,7 @@ import { findErrorTrackingWidget } from '../utils';
 const POLL_INTERVAL = 2000;
 
 export default {
+  name: 'WorkItemErrorTracking',
   components: {
     CrudComponent,
     GlAlert,

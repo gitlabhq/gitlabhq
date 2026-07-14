@@ -5,6 +5,7 @@ import eventHub from '~/notes/event_hub';
 import Popover from './popover.vue';
 
 export default {
+  name: 'CodeNavigationApp',
   components: {
     Popover,
   },

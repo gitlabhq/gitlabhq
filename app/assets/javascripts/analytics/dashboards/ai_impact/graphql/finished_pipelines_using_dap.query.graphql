@@ -1,0 +1,17 @@
+# @feature_category: value_stream_management
+#import "./finished_pipelines_dap_comparison_item.fragment.graphql"
+
+query finishedPipelinesUsingDapQuery($fullPath: ID!, $startDate: Time!, $endDate: Time!) {
+  group(fullPath: $fullPath) {
+    id
+    analytics {
+      ...FinishedPipelinesDapComparisonItem
+    }
+  }
+  project(fullPath: $fullPath) {
+    id
+    analytics {
+      ...FinishedPipelinesDapComparisonItem
+    }
+  }
+}

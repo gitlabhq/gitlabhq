@@ -5,6 +5,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, sprintf } from '~/locale';
 
 export default {
+  name: 'IssueMilestone',
   components: {
     WorkItemAttribute,
   },

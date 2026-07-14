@@ -141,9 +141,7 @@ export default {
             stageName: sanitize(this.name),
           }),
           modalHtmlMessage: `
-            <p>${sprintf(__('Custom confirmation message: %{message}'), {
-              message: sanitize(this.action.confirmationMessage),
-            })}</p>
+            <p>${sanitize(this.action.confirmationMessage)}</p>
             <p>${s__('PipelineGraph|Do you want to continue?')}</p>
           `,
           primaryBtnText: sprintf(__('Yes, run all manual')),

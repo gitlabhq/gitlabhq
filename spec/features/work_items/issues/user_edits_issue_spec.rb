@@ -5,15 +5,15 @@ require "spec_helper"
 RSpec.describe "Issues > User edits issue", :js, feature_category: :team_planning do
   include ListboxHelpers
 
-  let_it_be(:project, freeze: false) { create(:project_empty_repo, :public) }
-  let_it_be(:project_with_milestones, freeze: false) { create(:project_empty_repo, :public) }
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:label_assigned, freeze: false) { create(:label, project: project, title: 'verisimilitude') }
-  let_it_be(:label_unassigned, freeze: false) { create(:label, project: project, title: 'syzygy') }
-  let_it_be(:issue, freeze: false) { create(:issue, project: project, author: user, assignees: [user], labels: [label_assigned]) }
-  let_it_be(:issue_with_milestones, freeze: false) { create(:issue, project: project_with_milestones, author: user, assignees: [user]) }
-  let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
-  let_it_be(:milestones, freeze: false) { create_list(:milestone, 25, project: project_with_milestones) }
+  let_it_be_with_reload(:project) { create(:project_empty_repo, :public) }
+  let_it_be(:project_with_milestones) { create(:project_empty_repo, :public) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:label_assigned) { create(:label, project: project, title: 'verisimilitude') }
+  let_it_be(:label_unassigned) { create(:label, project: project, title: 'syzygy') }
+  let_it_be_with_reload(:issue) { create(:issue, project: project, author: user, assignees: [user], labels: [label_assigned]) }
+  let_it_be(:issue_with_milestones) { create(:issue, project: project_with_milestones, author: user, assignees: [user]) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be(:milestones) { create_list(:milestone, 25, project: project_with_milestones) }
 
   context 'with authorized user' do
     before do
@@ -87,8 +87,8 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
             click_button 'Remove label'
           end
 
-          expect(page).not_to have_link('verisimilitude')
           expect(page).to have_link('syzygy')
+          expect(page).not_to have_link('verisimilitude')
         end
 
         expect(page).to have_text('removed verisimilitude label')

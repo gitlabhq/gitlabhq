@@ -6,6 +6,7 @@ import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue'
 import createGroupDescriptionDetails from './create_group_description_details.vue';
 
 export default {
+  name: 'NewGroupApp',
   components: {
     NewNamespacePage,
   },

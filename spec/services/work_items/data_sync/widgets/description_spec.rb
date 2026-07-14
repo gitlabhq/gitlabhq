@@ -10,7 +10,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Description, feature_category: :tea
       last_edited_by: current_user)
   end
 
-  let_it_be(:target_work_item, freeze: false) { create(:work_item) }
+  let_it_be_with_reload(:target_work_item) { create(:work_item) }
 
   let(:params) { {} }
 

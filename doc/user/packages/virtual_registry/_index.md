@@ -16,7 +16,7 @@ description: Use the GitLab virtual registry to proxy, cache, and distribute pac
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14137) in GitLab 18.0 [with a flag](../../../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14137) in GitLab 18.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
 - Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1. Disabled by default. Feature flag `virtual_registry_maven` removed.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
@@ -39,7 +39,7 @@ With this approach, you can configure your applications to use one virtual regis
 To configure the virtual registry:
 
 - You need a top-level group with the Maintainer or Owner role.
-- Make sure you enable the virtual registries setting. It's enabled by default, but [administrators can turn it off](#turn-off-the-virtual-registry).
+- Make sure you enable the virtual registries setting. It's enabled by default, but [group Owners can turn it off](#turn-off-the-virtual-registry).
 - Make sure you enable the dependency proxy setting. It's enabled by default, but [administrators can turn it off](../../../administration/packages/dependency_proxy.md).
 - You must configure authentication for your supported [package format](#supported-package-formats).
 
@@ -49,7 +49,7 @@ The virtual registry is turned on by default.
 
 Prerequisites:
 
-- To turn off the virtual registry, you must be an administrator.
+- You must have the Owner role for the top-level group.
 
 To turn off the virtual registry:
 
@@ -276,9 +276,9 @@ Object storage usage counts towards the top-level group [object storage usage li
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `virtual_registry_cleanup_policies`. Disabled by default.
-- [UI for cleanup policies](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) introduced in GitLab 18.9 [with a flag](../../../administration/feature_flags/_index.md) named `ui_for_virtual_registry_cleanup_policy`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `virtual_registry_cleanup_policies`. Disabled by default.
+- [UI for cleanup policies](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) introduced in GitLab 18.9 [with a feature flag](../../../administration/feature_flags/_index.md) named `ui_for_virtual_registry_cleanup_policy`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/578060) in GitLab 18.10. Feature flags `virtual_registry_cleanup_policies` and `ui_for_virtual_registry_cleanup_policy` removed.
 
 {{< /history >}}

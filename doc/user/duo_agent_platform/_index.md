@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Agent Foundations
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Explore AI-powered agents and flows that automate tasks across the software development lifecycle.
 title: GitLab Duo Agent Platform
@@ -49,10 +49,12 @@ To use the Agent Platform:
 - Have [GitLab Duo turned on](turn_on_off.md#turn-gitlab-duo-on-or-off).
 - If you do not have GitLab Duo Pro or Enterprise,
   have [GitLab Duo Core turned on](turn_on_off.md#turn-gitlab-duo-core-on-or-off) for the top-level group or instance.
+- In GitLab 18.9 and earlier, you cannot use the Agent Platform with the GitLab Duo Enterprise add-on.
+  To use the Agent Platform with GitLab Duo Enterprise, upgrade to GitLab 18.10 or later.
 - Depending on your GitLab version:
   - In GitLab 18.8 and later, have the [Agent Platform turned on](turn_on_off.md#turn-gitlab-duo-agent-platform-on-or-off).
   - In GitLab 18.7 and earlier, have [beta and experimental features turned on](turn_on_off.md#turn-on-beta-and-experimental-features).
-- For GitLab Self-Managed, [configure your instance](../../administration/gitlab_duo/configure/gitlab_self_managed.md).
+- For GitLab Self-Managed, [configure your instance](../../administration/gitlab_duo/configure/_index.md).
 - For GitLab Duo Self-Hosted, [install the AI Gateway](../../install/install_ai_gateway.md) with the Agent Platform service.
 
 To use the Agent Platform in your local environment:
@@ -69,7 +71,7 @@ Features available on the Free tier require the purchase of [GitLab Credits](../
 
 | Feature | Free | Premium | Ultimate |
 |---------|---------|---------|---------|
-| [GitLab Duo Chat (agentic)](../gitlab_duo_chat/agentic_chat.md) <br /> Answer complex questions and autonomously create and edit files. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Agentic Chat](../gitlab_duo_chat/agentic_chat.md) <br /> Answer complex questions and autonomously create and edit files. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Code Suggestions](code_suggestions/_index.md) <br /> Get AI-powered suggestions as you write code. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Custom agents](agents/custom.md) <br /> Build team-specific agents for your unique development requirements. | {{< yes >}} |  {{< yes >}}  | {{< yes >}} |
 | [External agents](agents/external.md) <br /> Securely connect third-party integrations and tools to extend Agent Platform capabilities. | {{< no >}} |  {{< yes >}}  | {{< yes >}} |
@@ -110,5 +112,4 @@ but you require credits in your Monthly Commitment Pool to access them.
 | [MCP server](../gitlab_duo/model_context_protocol/mcp_server.md) <br /> Securely connect AI tools and applications to your GitLab instance. | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [CI Expert Agent](agents/foundational_agents/ci_expert_agent.md) <br /> Create, debug, and optimize GitLab CI/CD pipelines. | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [External MCP servers](../gitlab_duo/model_context_protocol/ai_catalog_mcp_servers.md) <br /> Connect custom agents to external data sources and third-party services using MCP servers. | {{< no >}} | {{< yes >}} | {{< yes >}} |
-| [Knowledge Graph](../project/repository/knowledge_graph/_index.md) <br /> Create structured, queryable representations of code repositories to power AI features. | {{< no >}} |{{< yes >}} | {{< yes >}} |
 | [Resolve merge conflicts](../project/merge_requests/conflicts.md#resolve-conflicts-with-gitlab-duo) <br /> Autonomously analyze merge conflicts, edit conflicting files, and push a resolution commit. | {{< no >}} | {{< yes >}} | {{< yes >}} |

@@ -10,6 +10,8 @@ module Types
         graphql_name 'WorkItemWidgetDescription'
         description 'Represents a description widget'
 
+        authorize_granular_token skip_reason: :parent_authorizes
+
         implements ::Types::WorkItems::WidgetInterface
 
         field :description, GraphQL::Types::String,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :importers do
+RSpec.describe Import::SourceUserPlaceholderReference, factory_default: :keep, feature_category: :importers do
   describe 'associations' do
     it { is_expected.to belong_to(:source_user).class_name('Import::SourceUser') }
   end
@@ -266,13 +266,15 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
   end
 
   describe 'model_record methods' do
+    let_it_be(:project) { create_default(:project) }
+
     let_it_be(:source_user_1) { create(:import_source_user) }
     let_it_be(:source_user_2) { create(:import_source_user) }
 
     # Issue
     let_it_be(:issue_author_id_1) { create(:issue, author_id: source_user_1.placeholder_user_id) }
     let_it_be(:issue_author_id_2) { create(:issue, author_id: source_user_2.placeholder_user_id) }
-    let_it_be(:issue_closed_by_id_1, freeze: false) { create(:issue, closed_by_id: source_user_1.placeholder_user_id) }
+    let_it_be_with_reload(:issue_closed_by_id_1) { create(:issue, closed_by_id: source_user_1.placeholder_user_id) }
     let_it_be(:issue_author_id_reference_1) do
       create(
         :import_source_user_placeholder_reference,

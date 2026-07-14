@@ -1,0 +1,12 @@
+---
+name: ci_job_token_auth_stale_read_retry
+description: Retry job token authentication on the primary database when the job is
+  read in a pre-execution status, which is only observable from a stale replica because
+  the token is distributed to the runner after the job transitions to running.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596961
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244601
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605475
+milestone: '19.2'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

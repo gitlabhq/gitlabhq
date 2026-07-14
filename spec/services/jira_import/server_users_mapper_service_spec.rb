@@ -17,8 +17,8 @@ RSpec.describe JiraImport::ServerUsersMapperService, feature_category: :integrat
   end
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:group)        { create(:group) }
-  let_it_be(:project)      { create(:project, group: group) }
+  let_it_be(:group)        { create(:group, developers: user_4, guests: user_8) }
+  let_it_be(:project)      { create(:project, group: group, developers: [current_user, user_1, user_2]) }
 
   let(:jira_users) do
     [
@@ -35,14 +35,6 @@ RSpec.describe JiraImport::ServerUsersMapperService, feature_category: :integrat
   end
 
   describe '#execute' do
-    before do
-      project.add_developer(current_user)
-      project.add_developer(user_1)
-      project.add_developer(user_2)
-      group.add_developer(user_4)
-      group.add_guest(user_8)
-    end
-
     it_behaves_like 'mapping jira users'
   end
 end

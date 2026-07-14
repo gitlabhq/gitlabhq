@@ -146,18 +146,11 @@ export const mergeRequestMenuGroup = [
   },
 ];
 
-export const contextSwitcherLinks = [
-  { title: 'Explore', link: '/explore', icon: 'compass', link_classes: 'persistent-link-class' },
-  { title: 'Admin area', link: '/admin', icon: 'admin' },
-  { title: 'Leave admin mode', link: '/admin/session/destroy', data_method: 'post' },
-];
-
 export const sidebarData = {
   is_logged_in: true,
   admin_mode: {
     user_is_admin: false,
   },
-  admin_url: '/admin',
   current_menu_items: [
     {
       id: 'homepage_menu',
@@ -178,8 +171,6 @@ export const sidebarData = {
     assigned_merge_requests: 3,
     review_requested_merge_requests: 1,
   },
-  issues_dashboard_path: 'path/to/issues',
-  todos_dashboard_path: 'path/to/todos',
   create_new_menu_groups: createNewMenuGroups,
   merge_request_menu: mergeRequestMenuGroup,
   projects_path: 'path/to/projects',
@@ -196,14 +187,9 @@ export const sidebarData = {
   gitlab_version: { major: 16, minor: 0 },
   gitlab_version_check: { severity: 'success' },
   gitlab_com_and_canary: false,
-  context_switcher_links: contextSwitcherLinks,
-  search: {
-    search_path: '/search',
-  },
+  search: {},
   pinned_items: [],
   panel_type: 'your_work',
-  update_pins_url: 'path/to/pins',
-  stop_impersonation_path: '/admin/impersonation',
   shortcut_links: [
     {
       title: 'Shortcut link',
@@ -211,14 +197,10 @@ export const sidebarData = {
       css_class: 'shortcut-link-class',
     },
   ],
-  track_visits_path: '/-/track_visits',
   sign_in_visible: true,
-  sign_in_path: '/sign_in',
   allow_signup: true,
-  new_user_registration_path: '/sign_up',
   trial_registration_path: '/trial_registrations/new',
   has_multiple_organizations: false,
-  explore_analytics_dashboards_path: '/explore/analytics/dashboards',
 };
 
 export const loggedOutSidebarData = {
@@ -233,9 +215,7 @@ export const loggedOutSidebarData = {
   show_version_check: false,
   gitlab_version: { major: 16, minor: 0 },
   gitlab_version_check: { severity: 'success' },
-  search: {
-    search_path: '/search',
-  },
+  search: {},
   panel_type: 'your_work',
 };
 
@@ -275,15 +255,11 @@ export const userMenuMockData = {
   },
   avatar_url: invalidUrl,
   has_link_to_profile: true,
-  link_to_profile: '/thefox',
   status: userMenuMockStatus,
-  settings: {
-    profile_path: invalidUrl,
-    profile_preferences_path: invalidUrl,
-  },
   pipeline_minutes: userMenuMockPipelineMinutes,
   can_sign_out: false,
-  sign_out_link: invalidUrl,
+  gitlab_com_but_not_canary: true,
+  canary_toggle_com_url: 'https://next.gitlab.com',
 };
 
 export const frecentGroupsMock = [

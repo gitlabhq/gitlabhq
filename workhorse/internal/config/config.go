@@ -132,6 +132,7 @@ type RedisConfig struct {
 	SentinelMaster   string
 	SentinelUsername string
 	SentinelPassword string
+	Username         string
 	Password         string
 	DB               *int
 	MaxIdle          *int
@@ -316,6 +317,8 @@ func LoadConfig(data string) (*Config, error) {
 
 	if cfg.ConfigCommand != "" {
 		cmd, args := splitCommand(cfg.ConfigCommand)
+		// #nosec G204 -- cmd and args come from the operator-controlled
+		// config_command setting, not from request or user input.
 		output, err := exec.Command(cmd, args...).Output()
 		if err != nil {
 			var exitErr *exec.ExitError
@@ -497,6 +500,7 @@ func (creds *GoogleCredentials) getURLOpener() (*gcsblob.URLOpener, error) {
 }
 
 func (creds *GoogleCredentials) getGCPCredentials(ctx context.Context) (*google.Credentials, error) {
+	// #nosec G101 -- this is a public Google OAuth scope URL, not a credential.
 	const gcpCredentialsScope = "https://www.googleapis.com/auth/devstorage.read_write"
 	if creds.ApplicationDefault {
 		return gcp.DefaultCredentials(ctx)
@@ -508,11 +512,13 @@ func (creds *GoogleCredentials) getGCPCredentials(ctx context.Context) (*google.
 			return nil, fmt.Errorf("error reading Google json key location: %w", err)
 		}
 
-		return google.CredentialsFromJSON(ctx, b, gcpCredentialsScope) //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/work_items/598339
+		//lint:ignore SA1019 migration tracked in https://gitlab.com/gitlab-org/gitlab/-/work_items/598339
+		return google.CredentialsFromJSON(ctx, b, gcpCredentialsScope) //nolint:staticcheck
 	}
 
 	b := []byte(creds.JSONKeyString)
-	return google.CredentialsFromJSON(ctx, b, gcpCredentialsScope) //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/work_items/598339
+	//lint:ignore SA1019 migration tracked in https://gitlab.com/gitlab-org/gitlab/-/work_items/598339
+	return google.CredentialsFromJSON(ctx, b, gcpCredentialsScope) //nolint:staticcheck
 }
 
 func splitCommand(cmd string) (string, []string) {

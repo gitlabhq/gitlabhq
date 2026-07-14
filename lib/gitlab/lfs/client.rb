@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Gitlab
   module Lfs
     # Gitlab::Lfs::Client implements a simple LFS client, designed to talk to

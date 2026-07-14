@@ -1,5 +1,5 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -7,8 +7,8 @@ import waitForPromises from 'helpers/wait_for_promises';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import BoardView from '~/work_items/board/board_view.vue';
 import ColumnGroup from '~/work_items/board/components/column_group.vue';
-import getBoardNamespaceStatusesQuery from 'ee_else_ce/work_items/board/graphql/get_namespace_statuses.query.graphql';
-import { mockGroupId } from './mock_data';
+import { groupingStrategyFor } from '~/work_items/board/grouping';
+import { buildNamespaceStatusesResponse, buildWorkItemTypesResponse } from './mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 
@@ -17,29 +17,21 @@ Vue.use(VueApollo);
 describe('BoardView', () => {
   let wrapper;
 
-  const statusesQueryHandler = jest.fn();
+  const groupByValuesHandler = jest.fn();
+  const gateDataHandler = jest.fn();
+  // The column-values and gate queries differ by edition (a placeholder in CE,
+  // the status queries in EE), so take them from the strategy the board actually uses.
+  const { valuesQuery: groupByValuesQuery, gateQuery } = groupingStrategyFor('status');
 
   const queryVariables = { state: 'opened', sort: 'CREATED_DESC' };
-
-  const ceNamespaceResponse = {
-    data: {
-      namespace: {
-        __typename: 'Group',
-        id: mockGroupId,
-        rootNamespace: {
-          __typename: 'Group',
-          id: mockGroupId,
-        },
-      },
-    },
-  };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findColumnGroups = () => wrapper.findAllComponents(ColumnGroup);
 
   const createComponent = ({ props = {} } = {}) => {
     const apolloProvider = createMockApollo([
-      [getBoardNamespaceStatusesQuery, statusesQueryHandler],
+      [groupByValuesQuery, groupByValuesHandler],
+      ...(gateQuery ? [[gateQuery, gateDataHandler]] : []),
     ]);
 
     wrapper = shallowMountExtended(BoardView, {
@@ -53,66 +45,50 @@ describe('BoardView', () => {
   };
 
   beforeEach(() => {
-    statusesQueryHandler.mockResolvedValue(ceNamespaceResponse);
+    groupByValuesHandler.mockResolvedValue(buildNamespaceStatusesResponse([]));
+    gateDataHandler.mockResolvedValue(buildWorkItemTypesResponse());
   });
 
-  describe('loading state', () => {
-    it('renders the loading icon while the query is loading', () => {
+  // Statuses are an EE-only field, so grouping by status produces no columns in
+  // CE (the placeholder strategy extracts none), and the board degrades
+  // gracefully.
+  describe('grouping by status', () => {
+    it('renders no column groups', async () => {
       createComponent();
+      await waitForPromises();
 
-      expect(findLoadingIcon().exists()).toBe(true);
       expect(findColumnGroups()).toHaveLength(0);
     });
 
-    it('hides the loading icon once the query resolves', async () => {
+    it('renders no loading icon once settled', async () => {
       createComponent();
       await waitForPromises();
 
       expect(findLoadingIcon().exists()).toBe(false);
     });
-  });
 
-  describe('statuses query', () => {
-    it('calls the statuses query with rootPageFullPath', async () => {
-      createComponent({ props: { rootPageFullPath: 'group/subgroup' } });
-      await nextTick();
-
-      expect(statusesQueryHandler).toHaveBeenCalledWith({ fullPath: 'group/subgroup' });
-    });
-
-    it('renders no ColumnGroups (statuses is an EE-only field)', async () => {
+    it('reports no error', async () => {
       createComponent();
       await waitForPromises();
 
-      expect(findColumnGroups()).toHaveLength(0);
+      expect(Sentry.captureException).not.toHaveBeenCalled();
+      expect(wrapper.emitted('set-error')).toBeUndefined();
     });
   });
 
-  describe('when the statuses query errors', () => {
-    const queryError = new Error('GraphQL failure');
-
-    beforeEach(async () => {
-      statusesQueryHandler.mockRejectedValue(queryError);
+  describe('visibleGroups prop', () => {
+    it('defaults to null (all groups visible)', () => {
       createComponent();
+
+      expect(wrapper.props('visibleGroups')).toBeNull();
+    });
+
+    it('accepts an array without error', async () => {
+      createComponent({ props: { visibleGroups: [] } });
       await waitForPromises();
-    });
 
-    it('captures the error in Sentry', () => {
-      expect(Sentry.captureException).toHaveBeenCalledWith(queryError);
-    });
-
-    it('emits set-error with a user-facing message', () => {
-      expect(wrapper.emitted('set-error')).toEqual([
-        ['Something went wrong when fetching the board columns. Please try again.'],
-      ]);
-    });
-
-    it('renders no ColumnGroups', () => {
+      expect(Sentry.captureException).not.toHaveBeenCalled();
       expect(findColumnGroups()).toHaveLength(0);
-    });
-
-    it('hides the loading icon', () => {
-      expect(findLoadingIcon().exists()).toBe(false);
     });
   });
 });

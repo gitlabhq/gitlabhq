@@ -11,7 +11,7 @@ require 'spec_helper'
 #             admin_user GET    /admin/users/:id(.:format)             admin/users#show
 #                        PUT    /admin/users/:id(.:format)             admin/users#update
 #                        DELETE /admin/users/:id(.:format)             admin/users#destroy
-RSpec.describe Admin::UsersController, "routing" do
+RSpec.describe Admin::UsersController, "routing", feature_category: :user_management do
   specify "to #block" do
     expect(put("/admin/users/1/block")).to route_to('admin/users#block', id: '1')
   end
@@ -58,7 +58,7 @@ end
 #             admin_project GET    /admin/projects/:id(.:format)             admin/projects#show {id: /[^\/]+/}
 #                           PUT    /admin/projects/:id(.:format)             admin/projects#update {id: /[^\/]+/}
 #                           DELETE /admin/projects/:id(.:format)             admin/projects#destroy {id: /[^\/]+/}
-RSpec.describe Admin::ProjectsController, "routing" do
+RSpec.describe Admin::ProjectsController, "routing", feature_category: :groups_and_projects do
   specify "to #index" do
     expect(get("/admin/projects")).to route_to('admin/projects#index')
   end
@@ -83,7 +83,7 @@ end
 #      admin_hook DELETE /admin/hooks/:id(.:format)           admin/hooks#destroy
 #                 PUT    /admin/hooks/:id(.:format)           admin/hooks#update
 # edit_admin_hook GET    /admin/hooks/:id(.:format)           admin/hooks#edit
-RSpec.describe Admin::HooksController, "routing" do
+RSpec.describe Admin::HooksController, "routing", feature_category: :webhooks do
   specify "to #test" do
     expect(post("/admin/hooks/1/test")).to route_to('admin/hooks#test', id: '1')
   end
@@ -111,7 +111,7 @@ end
 
 # admin_hook_hook_log_retry POST    /admin/hooks/:hook_id/hook_logs/:id/retry(.:format) admin/hook_logs#retry
 # admin_hook_hook_log       GET    /admin/hooks/:hook_id/hook_logs/:id(.:format)       admin/hook_logs#show
-RSpec.describe Admin::HookLogsController, 'routing' do
+RSpec.describe Admin::HookLogsController, 'routing', feature_category: :webhooks do
   specify 'to #retry' do
     expect(post('/admin/hooks/1/hook_logs/1/retry')).to route_to('admin/hook_logs#retry', hook_id: '1', id: '1')
   end
@@ -122,21 +122,21 @@ RSpec.describe Admin::HookLogsController, 'routing' do
 end
 
 # admin_background_jobs GET    /admin/background_jobs(.:format) admin/background_jobs#show
-RSpec.describe Admin::BackgroundJobsController, "routing" do
+RSpec.describe Admin::BackgroundJobsController, "routing", feature_category: :tooling do
   specify "to #show" do
     expect(get("/admin/background_jobs")).to route_to('admin/background_jobs#show')
   end
 end
 
 # admin_root        /admin(.:format) admin/dashboard#index
-RSpec.describe Admin::DashboardController, "routing" do
+RSpec.describe Admin::DashboardController, "routing", feature_category: :tooling do
   specify "to #index" do
     expect(get("/admin")).to route_to('admin/dashboard#index')
   end
 end
 
 # admin_health_check GET    /admin/health_check(.:format) admin/health_check#show
-RSpec.describe Admin::HealthCheckController, "routing" do
+RSpec.describe Admin::HealthCheckController, "routing", feature_category: :tooling do
   specify "to #show" do
     expect(get("/admin/health_check")).to route_to('admin/health_check#show')
   end
@@ -145,7 +145,7 @@ end
 # new_admin_initial_setup GET /admin/initial_setup/new(.:format) admin/initial_setup#new
 # admin_initial_setup PATCH /admin/initial_setup(.:format) admin/initial_setup#update
 #                     PUT /admin/initial_setup(.:format) admin/initial_setup#update
-RSpec.describe Admin::InitialSetupController, "routing" do
+RSpec.describe Admin::InitialSetupController, "routing", feature_category: :system_access do
   specify "GET #new" do
     expect(get("/admin/initial_setup/new")).to route_to('admin/initial_setup#new')
   end
@@ -160,7 +160,7 @@ RSpec.describe Admin::InitialSetupController, "routing" do
 end
 
 # admin_dev_ops_reports GET    /admin/dev_ops_reports(.:format) admin/dev_ops_report#show
-RSpec.describe Admin::DevOpsReportController, "routing" do
+RSpec.describe Admin::DevOpsReportController, "routing", feature_category: :devops_reports do
   specify "to #show" do
     expect(get("/admin/dev_ops_reports")).to route_to('admin/dev_ops_report#show')
   end
@@ -173,7 +173,7 @@ RSpec.describe Admin::DevOpsReportController, "routing" do
   end
 end
 
-RSpec.describe Admin::GroupsController, "routing" do
+RSpec.describe Admin::GroupsController, "routing", feature_category: :groups_and_projects do
   let(:name) { 'complex.group-namegit' }
 
   specify "to #index" do
@@ -198,7 +198,7 @@ RSpec.describe Admin::OrganizationsController, "routing", feature_category: :org
   end
 end
 
-RSpec.describe Admin::SessionsController, "routing" do
+RSpec.describe Admin::SessionsController, "routing", feature_category: :system_access do
   specify "to #new" do
     expect(get("/admin/session/new")).to route_to('admin/sessions#new')
   end
@@ -212,13 +212,13 @@ RSpec.describe Admin::SessionsController, "routing" do
   end
 end
 
-RSpec.describe Admin::PlanLimitsController, "routing" do
+RSpec.describe Admin::PlanLimitsController, "routing", feature_category: :subscription_management do
   specify "to #create" do
     expect(post("/admin/plan_limits")).to route_to('admin/plan_limits#create')
   end
 end
 
-RSpec.describe Admin::RunnersController, "routing" do
+RSpec.describe Admin::RunnersController, "routing", feature_category: :runner_core do
   specify "to #runner_setup_scripts" do
     expect(get("/admin/runners/runner_setup_scripts")).to route_to('admin/runners#runner_setup_scripts')
   end

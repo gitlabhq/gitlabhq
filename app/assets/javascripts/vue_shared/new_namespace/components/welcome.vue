@@ -1,9 +1,9 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import TopLevelGroupLimitAlert from 'ee_component/groups/components/top_level_group_limit_alert.vue';
 import Tracking from '~/tracking';
 
 export default {
+  name: 'NewNamespaceWelcome',
   components: {
     TopLevelGroupLimitAlert,
   },

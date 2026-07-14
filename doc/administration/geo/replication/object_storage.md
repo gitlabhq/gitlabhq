@@ -15,7 +15,7 @@ title: Geo with Object storage
 
 {{< history >}}
 
-- Verification of files stored in object storage was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8056) in GitLab 16.4 [with a flag](../../feature_flags/_index.md) named `geo_object_storage_verification`. Enabled by default.
+- Verification of files stored in object storage was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8056) in GitLab 16.4 [with a feature flag](../../feature_flags/_index.md) named `geo_object_storage_verification`. Enabled by default.
 
 {{< /history >}}
 
@@ -122,10 +122,10 @@ the bucket used by secondary sites.
 
 If you are using Google Cloud Storage, consider using
 [Multi-Regional Storage](https://cloud.google.com/storage/docs/storage-classes#multi-regional).
-Or you can use the [Storage Transfer Service](https://cloud.google.com/storage-transfer/docs/overview),
+Or you can use the [Storage Transfer Service](https://docs.cloud.google.com/storage-transfer/docs/overview),
 although this only supports daily synchronization.
 
 For manual synchronization, or scheduled by `cron`, see:
 
 - [`s3cmd sync`](https://s3tools.org/s3cmd-sync)
-- [`gsutil rsync`](https://cloud.google.com/storage/docs/gsutil/commands/rsync)
+- [`gsutil rsync`](https://docs.cloud.google.com/storage/docs/gsutil)

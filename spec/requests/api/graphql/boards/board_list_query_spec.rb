@@ -5,16 +5,16 @@ require 'spec_helper'
 RSpec.describe 'Querying a Board list', feature_category: :team_planning do
   include GraphqlHelpers
 
-  let_it_be(:current_user, freeze: false) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project) }
-  let_it_be(:board, freeze: false) { create(:board, resource_parent: project) }
-  let_it_be(:label, freeze: false) { create(:label, project: project, name: 'foo') }
-  let_it_be(:extra_label1, freeze: false) { create(:label, project: project) }
-  let_it_be(:extra_label2, freeze: false) { create(:label, project: project) }
-  let_it_be(:list, freeze: false) { create(:list, board: board, label: label) }
-  let_it_be(:issue1, freeze: false) { create(:issue, project: project, labels: [label, extra_label1]) }
-  let_it_be(:issue2, freeze: false) { create(:issue, project: project, labels: [label, extra_label2], assignees: [current_user]) }
-  let_it_be(:issue3, freeze: false) { create(:issue, project: project, labels: [label], confidential: true) }
+  let_it_be_with_reload(:current_user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be(:board) { create(:board, resource_parent: project) }
+  let_it_be_with_reload(:label) { create(:label, project: project, name: 'foo') }
+  let_it_be(:extra_label1) { create(:label, project: project) }
+  let_it_be_with_reload(:extra_label2) { create(:label, project: project) }
+  let_it_be(:list) { create(:list, board: board, label: label) }
+  let_it_be(:issue1) { create(:issue, project: project, labels: [label, extra_label1]) }
+  let_it_be_with_reload(:issue2) { create(:issue, project: project, labels: [label, extra_label2], assignees: [current_user]) }
+  let_it_be(:issue3) { create(:issue, project: project, labels: [label], confidential: true) }
 
   let(:filters) { {} }
   let(:query) do

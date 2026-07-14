@@ -27,6 +27,21 @@ RSpec.describe Gitlab::Kas::UserAccess, feature_category: :deployment_management
 
     it { expect(encrypted).not_to include data }
     it { expect(decrypted).to eq data }
+
+    context 'when the decrypted data contains malformed JSON' do
+      let(:malformed_data) { '{invalid json}' }
+      # encryptor is private, so we can use send(:encryptor) to access it
+      let(:encrypted_malformed) do
+        described_class.send(:encryptor).encrypt_and_sign(malformed_data,
+          purpose: described_class.send(:public_session_id_purpose))
+      end
+
+      let(:decrypted_malformed) { described_class.decrypt_public_session_id("cell1-#{encrypted_malformed}") }
+
+      it 'ignores the malformed JSON, does not crash, and returns nil' do
+        expect(decrypted_malformed).to be_nil
+      end
+    end
   end
 
   describe '.cookie_data' do

@@ -26,7 +26,7 @@ title: Install the Linux package on Debian
 - See the [installation requirements](../requirements.md) to learn about the
   minimum hardware requirements.
 - Before you begin, make sure you have correctly
-  [set up your DNS](https://docs.gitlab.com/omnibus/settings/dns).
+  [set up your DNS](https://docs.gitlab.com/omnibus/settings/dns/).
   Replace `https://gitlab.example.com` in the following commands with your
   preferred GitLab URL. GitLab is automatically configured and started at that address.
 - For `https://` URLs, GitLab automatically

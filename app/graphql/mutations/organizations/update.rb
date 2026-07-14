@@ -21,6 +21,10 @@ module Mutations
         required: false,
         description: 'Path for the organization.'
 
+      argument :visibility, Types::Organizations::VisibilityEnum,
+        required: false,
+        description: 'Visibility for the organization.'
+
       def resolve(id:, **args)
         organization = authorized_find!(id: id)
 

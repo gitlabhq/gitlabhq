@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketImport::Importers::RepositoryImporter, feature_category: :importers do
-  let_it_be(:project, freeze: false) { create(:project, import_url: 'https://bitbucket.org/vim/vim.git') }
+  let_it_be_with_reload(:project) { create(:project, import_url: 'https://bitbucket.org/vim/vim.git') }
 
   subject(:importer) { described_class.new(project) }
 

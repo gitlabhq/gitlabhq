@@ -6,7 +6,7 @@ RSpec.describe Oauth::TokensController, feature_category: :user_management do
   let(:user) { create(:user) }
 
   it 'includes Two-factor enforcement concern' do
-    expect(described_class.included_modules.include?(EnforcesTwoFactorAuthentication)).to eq(true)
+    expect(described_class.included_modules.include?(EnforcesTwoFactorAuthentication)).to be(true)
   end
 
   describe '#append_info_to_payload' do

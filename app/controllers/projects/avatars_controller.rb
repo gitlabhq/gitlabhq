@@ -2,6 +2,7 @@
 
 class Projects::AvatarsController < Projects::ApplicationController
   include SendsBlob
+  include HandlesGitalyErrors
 
   before_action :authorize_admin_project!, only: [:destroy]
 
@@ -20,5 +21,16 @@ class Projects::AvatarsController < Projects::ApplicationController
     @project.save
 
     redirect_to edit_project_path(@project, anchor: 'js-general-project-settings'), status: :found
+  end
+
+  private
+
+  # Override to render plain text instead of HTML template
+  # since AvatarsController serves binary content, not HTML pages.
+  #
+  def handle_gitaly_error(exception)
+    Gitlab::ErrorTracking.track_exception(exception)
+
+    render plain: gitaly_unavailable_message, status: :service_unavailable
   end
 end

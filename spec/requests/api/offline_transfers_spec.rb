@@ -53,7 +53,23 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :create_offline_export do
+      let(:boundary_object) { :user }
+
+      before do
+        service_response = instance_double(ServiceResponse, success?: true, payload: export_1)
+        allow(Import::Offline::Exports::CreateService).to receive(:new)
+          .and_return(instance_double(Import::Offline::Exports::CreateService, execute: service_response))
+      end
+
+      let(:request) do
+        post api('/offline_exports', personal_access_token: pat),
+          params: { bucket: bucket, aws_s3_configuration: aws_s3_credentials, entities: entity_params }
+      end
+    end
+
     shared_examples 'starting a new export' do |provider|
+      let(:path_style_default) { nil }
       let(:service_response) { instance_double(ServiceResponse, success?: true, payload: export_1) }
       let(:service_double) { instance_double(Import::Offline::Exports::CreateService, execute: service_response) }
       let(:params) do
@@ -68,13 +84,19 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       end
 
       it "starts a new offline export using #{provider} object storage default params" do
+        expected_credentials = if path_style_default.nil?
+                                 credentials
+                               else
+                                 credentials.merge('path_style' => path_style_default)
+                               end
+
         expect(Import::Offline::Exports::CreateService).to receive(:new).with(
           user,
           entity_params,
           {
             bucket: bucket,
             provider: provider,
-            credentials: credentials.merge('path_style' => path_style_default)
+            credentials: expected_credentials
           },
           current_organization.id
         )
@@ -83,6 +105,21 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['id']).to eq(export_1.id)
+      end
+    end
+
+    shared_examples 'configuring path_style' do |provider|
+      let(:service_response) { instance_double(ServiceResponse, success?: true, payload: export_1) }
+      let(:service_double) { instance_double(Import::Offline::Exports::CreateService, execute: service_response) }
+      let(:params) do
+        {
+          bucket: bucket,
+          entities: entity_params
+        }.merge(configuration_key => credentials)
+      end
+
+      before do
+        allow(Import::Offline::Exports::CreateService).to receive(:new).and_return(service_double)
       end
 
       context 'when path_style is true' do
@@ -130,16 +167,55 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       end
     end
 
-    it_behaves_like 'starting a new export', :aws do
+    context 'when using AWS S3 object storage' do
       let(:configuration_key) { :aws_s3_configuration }
       let(:credentials) { aws_s3_credentials }
-      let(:path_style_default) { false }
+
+      it_behaves_like 'starting a new export', :aws do
+        let(:path_style_default) { false }
+      end
+
+      it_behaves_like 'configuring path_style', :aws
     end
 
-    it_behaves_like 'starting a new export', :s3_compatible do
+    context 'when using S3-compatible object storage' do
       let(:configuration_key) { :s3_compatible_configuration }
       let(:credentials) { s3_compatible_credentials }
-      let(:path_style_default) { true }
+
+      it_behaves_like 'starting a new export', :s3_compatible do
+        let(:path_style_default) { true }
+      end
+
+      it_behaves_like 'configuring path_style', :s3_compatible
+    end
+
+    context 'when using GCS object storage' do
+      it_behaves_like 'starting a new export', :gcs do
+        let(:configuration_key) { :gcs_configuration }
+        let(:credentials) do
+          {
+            'google_project' => 'gitlab-project',
+            'google_json_key_string' => '{"type":"service_account"}'
+          }
+        end
+      end
+    end
+
+    context 'when using GCS object storage with HMAC keys' do
+      let(:configuration_key) { :gcs_hmac_configuration }
+      let(:credentials) do
+        {
+          'google_storage_access_key_id' => 'GOOG1EXAMPLEACCESSKEY123',
+          'google_storage_secret_access_key' => 'AbCd+EfGh/IjKlMnOpQrStUvWxYz0123456789K=', # gitleaks:allow
+          'region' => 'us-east1'
+        }
+      end
+
+      it_behaves_like 'starting a new export', :gcs_hmac do
+        let(:path_style_default) { true }
+      end
+
+      it_behaves_like 'configuring path_style', :gcs_hmac
     end
 
     context 'when no configuration params are provided' do
@@ -209,6 +285,11 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
   describe 'GET /offline_exports' do
     let(:request) { get api('/offline_exports', user), params: params }
     let(:params) { {} }
+
+    it_behaves_like 'authorizing granular token permissions', :read_offline_export do
+      let(:boundary_object) { :user }
+      let(:request) { get api('/offline_exports', personal_access_token: pat) }
+    end
 
     it 'returns offline exports authored by the user ordered by created_at descending' do
       request
@@ -298,6 +379,11 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
   describe 'GET /offline_exports/:id' do
     let(:request) { get api("/offline_exports/#{export_1.id}", user) }
 
+    it_behaves_like 'authorizing granular token permissions', :read_offline_export do
+      let(:boundary_object) { :user }
+      let(:request) { get api("/offline_exports/#{export_1.id}", personal_access_token: pat) }
+    end
+
     it 'returns specified offline export' do
       request
 
@@ -386,6 +472,7 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     end
 
     shared_examples 'starting a new import' do |provider|
+      let(:path_style_default) { nil }
       let(:service_response) { instance_double(ServiceResponse, success?: true, payload: bulk_import) }
       let(:service_double) { instance_double(Import::Offline::Imports::CreateService, execute: service_response) }
       let(:params) do
@@ -401,11 +488,17 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       end
 
       it "starts a new offline import using #{provider} object storage with default params" do
+        expected_credentials = if path_style_default.nil?
+                                 credentials
+                               else
+                                 credentials.merge('path_style' => path_style_default)
+                               end
+
         expect(Import::Offline::Imports::CreateService).to receive(:new).with(
           {
             bucket: bucket,
             export_prefix: export_prefix,
-            object_storage_credentials: credentials.merge('path_style' => path_style_default),
+            object_storage_credentials: expected_credentials,
             provider: provider
           },
           { entities: entity_params },
@@ -447,6 +540,33 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       let(:configuration_key) { :s3_compatible_configuration }
       let(:credentials) { s3_compatible_credentials }
       let(:path_style_default) { true }
+    end
+
+    context 'when using GCS object storage' do
+      it_behaves_like 'starting a new import', :gcs do
+        let(:configuration_key) { :gcs_configuration }
+        let(:credentials) do
+          {
+            'google_project' => 'gitlab-project',
+            'google_json_key_string' => '{"type":"service_account"}'
+          }
+        end
+      end
+    end
+
+    context 'when using GCS object storage with HMAC keys' do
+      it_behaves_like 'starting a new import', :gcs_hmac do
+        let(:configuration_key) { :gcs_hmac_configuration }
+        let(:credentials) do
+          {
+            'google_storage_access_key_id' => 'GOOG1EXAMPLEACCESSKEY123',
+            'google_storage_secret_access_key' => 'AbCd+EfGh/IjKlMnOpQrStUvWxYz0123456789K=', # gitleaks:allow
+            'region' => 'us-east1'
+          }
+        end
+
+        let(:path_style_default) { true }
+      end
     end
 
     context 'when no configuration params are provided' do

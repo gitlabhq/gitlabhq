@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe RedirectRoute, feature_category: :groups_and_projects do
-  let(:group) { create(:group) }
-  let!(:redirect_route) { group.redirect_routes.create!(path: 'gitlabb') }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:redirect_route) { group.redirect_routes.create!(path: 'gitlabb') }
 
   it_behaves_like 'cells claimable model',
     subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
@@ -52,7 +52,7 @@ RSpec.describe RedirectRoute, feature_category: :groups_and_projects do
   describe '.by_paths' do
     subject { described_class.by_paths(paths) }
 
-    let!(:redirect2) { group.redirect_routes.create!(path: 'gitlabb/test') }
+    let_it_be(:redirect2) { group.redirect_routes.create!(path: 'gitlabb/test') }
 
     context 'when no matches' do
       let(:paths) { ['unknown'] }
@@ -74,10 +74,10 @@ RSpec.describe RedirectRoute, feature_category: :groups_and_projects do
   end
 
   describe '.matching_path_and_descendants' do
-    let!(:redirect2) { group.redirect_routes.create!(path: 'gitlabb/test') }
-    let!(:redirect3) { group.redirect_routes.create!(path: 'gitlabb/test/foo') }
-    let!(:redirect4) { group.redirect_routes.create!(path: 'gitlabb/test/foo/bar') }
-    let!(:redirect5) { group.redirect_routes.create!(path: 'gitlabb/test/baz') }
+    let_it_be(:redirect2) { group.redirect_routes.create!(path: 'gitlabb/test') }
+    let_it_be(:redirect3) { group.redirect_routes.create!(path: 'gitlabb/test/foo') }
+    let_it_be(:redirect4) { group.redirect_routes.create!(path: 'gitlabb/test/foo/bar') }
+    let_it_be(:redirect5) { group.redirect_routes.create!(path: 'gitlabb/test/baz') }
 
     context 'when the redirect route matches with same casing' do
       it 'returns correct routes' do

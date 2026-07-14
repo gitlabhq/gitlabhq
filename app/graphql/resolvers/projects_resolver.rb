@@ -116,8 +116,7 @@ module Resolvers
         marked_for_deletion_on: args[:marked_for_deletion_on],
         visibility_level: args[:visibility_level],
         active: args[:active],
-        last_repository_check_failed: args[:last_repository_check_failed],
-        organization: ::Current.organization
+        last_repository_check_failed: args[:last_repository_check_failed]
       }
     end
 

@@ -1,3 +1,4 @@
+# @feature_category: portfolio_management
 query ProjectBoardMilestones($fullPath: ID!, $searchTerm: String, $state: MilestoneStateEnum) {
   namespace: project(fullPath: $fullPath) {
     id

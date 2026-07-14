@@ -34,6 +34,13 @@ RSpec.describe 'Snoozing a todo', feature_category: :notifications do
     graphql_mutation_response(:todo_snooze)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_todo do
+    let(:user) { current_user }
+    let(:boundary_object) { :user }
+    let(:mutation) { graphql_mutation(:todo_snooze, input, 'errors') }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'snoozes the todo until the specified time' do
     post_graphql_mutation(mutation, current_user: current_user)
 

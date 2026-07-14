@@ -54,6 +54,7 @@ export default {
     PersistedSearch,
   },
   inject: ['isGroupPage'],
+  emits: ['update'],
   data() {
     return {
       sorting: {

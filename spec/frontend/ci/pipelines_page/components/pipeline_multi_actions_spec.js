@@ -14,6 +14,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 import axios from '~/lib/utils/axios_utils';
+import { downloadableArtifactsProjectPipelinePath } from '~/lib/utils/path_helpers/pipelines';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PipelineMultiActions, {
   i18n,
@@ -48,18 +49,14 @@ describe('Pipeline Multi Actions Dropdown', () => {
       path: '/new/download/path-three',
     },
   ];
-  const artifactsEndpointPlaceholder = ':pipeline_artifacts_id';
-  const artifactsEndpoint = `endpoint/${artifactsEndpointPlaceholder}/artifacts.json`;
+  const fullPath = 'root/ci-project';
   const pipelineId = 108;
 
   const createComponent = () => {
     wrapper = extendedWrapper(
       shallowMount(PipelineMultiActions, {
-        provide: {
-          artifactsEndpoint,
-          artifactsEndpointPlaceholder,
-        },
         propsData: {
+          fullPath,
           pipelineId,
         },
         stubs: {
@@ -83,6 +80,8 @@ describe('Pipeline Multi Actions Dropdown', () => {
         name: text,
         path: href,
       }));
+  const findAllArtifactNames = () =>
+    wrapper.findAllComponents(GlDisclosureDropdownItem).wrappers.map((item) => item.text());
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findEmptyMessage = () => wrapper.findByTestId('artifacts-empty-message');
   const findWarning = () => wrapper.findByTestId('artifacts-fetch-warning');
@@ -103,7 +102,9 @@ describe('Pipeline Multi Actions Dropdown', () => {
   });
 
   describe('Artifacts', () => {
-    const endpoint = artifactsEndpoint.replace(artifactsEndpointPlaceholder, pipelineId);
+    const endpoint = downloadableArtifactsProjectPipelinePath(fullPath, pipelineId, {
+      format: 'json',
+    });
 
     describe('while loading artifacts', () => {
       beforeEach(() => {
@@ -183,6 +184,11 @@ describe('Pipeline Multi Actions Dropdown', () => {
           expect(findAllArtifactItemsData()).toEqual(artifacts);
         });
 
+        it('renders the loaded artifacts as dropdown items', () => {
+          // Preserve this test for Vue 3 compatibility
+          expect(findAllArtifactNames()).toEqual(artifacts.map(({ name }) => name));
+        });
+
         describe('when opened again with new artifacts', () => {
           describe('with a successful refetch', () => {
             beforeEach(async () => {
@@ -229,10 +235,9 @@ describe('Pipeline Multi Actions Dropdown', () => {
         });
 
         describe('pipeline id has changed', () => {
-          const newEndpoint = artifactsEndpoint.replace(
-            artifactsEndpointPlaceholder,
-            pipelineId + 1,
-          );
+          const newEndpoint = downloadableArtifactsProjectPipelinePath(fullPath, pipelineId + 1, {
+            format: 'json',
+          });
 
           beforeEach(() => {
             changePipelineId(pipelineId + 1);

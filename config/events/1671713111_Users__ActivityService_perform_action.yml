@@ -4,7 +4,9 @@ category: Users::ActivityService
 action: perform_action
 extra_properties:
 identifiers:
-product_group: organizations
+product_group: analytics_instrumentation
+product_categories:
+- application_instrumentation
 milestone: "15.8"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108108
 tiers:

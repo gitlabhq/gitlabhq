@@ -9,15 +9,6 @@ description: Separate table for CI pipeline artifacts containing Geo verificatio
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182266
 milestone: '18.5'
 gitlab_schema: gitlab_ci
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: pipeline_artifact_id
-        table: ci_pipeline_artifacts
-        sharding_key: project_id
-        belongs_to: pipeline_artifact
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/587555
+sharding_key:
+  project_id: projects
 table_size: small
-desired_sharding_key_migration_job_name: BackfillPCiPipelineArtifactStatesProjectId

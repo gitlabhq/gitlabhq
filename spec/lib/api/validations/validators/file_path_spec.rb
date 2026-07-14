@@ -6,7 +6,7 @@ RSpec.describe API::Validations::Validators::FilePath do
   include ApiValidatorsHelpers
 
   subject do
-    described_class.new(['test'], params, false, scope.new)
+    described_class.new(['test'], params, false, scope.new, {})
   end
 
   context 'when allowlist is not set' do

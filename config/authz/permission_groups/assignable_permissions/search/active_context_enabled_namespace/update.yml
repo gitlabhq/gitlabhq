@@ -1,0 +1,9 @@
+---
+name: update_active_context_enabled_namespace
+description: Grants the ability to update ActiveContext enabled namespaces
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_active_context_enabled_namespace

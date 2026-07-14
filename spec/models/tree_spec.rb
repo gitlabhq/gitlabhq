@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Tree, feature_category: :source_code_management do
   subject(:tree) { described_class.new(repository, '54fcc214') }
 
-  let_it_be(:repository, freeze: false) { create(:project, :repository).repository }
+  let_it_be_with_reload(:repository) { create(:project, :repository).repository }
 
   describe '#readme' do
     subject { tree.readme }

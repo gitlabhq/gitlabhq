@@ -7,6 +7,7 @@ import { FEATURE_DISABLED_TOOLTIP } from '~/security_configuration/constants';
 import FeatureCardBadge from './feature_card_badge.vue';
 
 export default {
+  name: 'FeatureCard',
   components: {
     GlButton,
     GlCard,
@@ -24,6 +25,7 @@ export default {
       required: true,
     },
   },
+  emits: ['error'],
   computed: {
     available() {
       return this.feature.available;

@@ -624,10 +624,20 @@ Repeat the steps for all affected resources and Geo data types.
 
 The error `"Error during verification","error":"File is not checksummable"` is caused by inconsistencies on the primary site. Since GitLab 18.9, the error message includes additional details about the cause:
 
-- `File is not checksummable - file does not exist at: <path>`: The file is missing from storage. The path shown helps identify the missing file.
-- `File is not checksummable - <ModelClass> <ID> is excluded from verification`: The record is excluded from the verification scope.
+- `File is not checksummable - file does not exist at: <path>`: The file is missing from storage.
+  The path shown helps identify the missing file.
+  To fix this error, follow the instructions in [The file is missing on the Geo primary site](#message-the-file-is-missing-on-the-geo-primary-site).
+- `File is not checksummable - <ModelClass> <ID> is excluded from verification`: The record no longer belongs to the replication scope, so Geo cannot verify it.
+  This behavior is expected when the primary site removes a record from the replication scope without deleting it.
+  For example, GitLab moves old `MergeRequestDiff` records to the `without_files` state during storage optimization.
+  The registry consistency worker removes these registry entries automatically over time.
 
-Follow the instructions provided in [The file is missing on the Geo primary site](#message-the-file-is-missing-on-the-geo-primary-site).
+To remove the affected `MergeRequestDiff` registry entries immediately, run the following command
+on the secondary site from the [Rails console](../../../operations/rails_console.md):
+
+```ruby
+Geo::MergeRequestDiffRegistry.where("verification_failure LIKE '%excluded from verification%'").find_each(&:destroy)
+```
 
 ### Failed verification of Uploads on the primary Geo site
 
@@ -1480,10 +1490,18 @@ To remove the affected package files:
    destroy_pipeline_artifacts_not_checksummable
    ```
 
-### LFS objects out of sync due to timeout
+### Blobs out of sync due to timeout
 
-LFS objects might fail to sync with `Sync timed out after 28800` when large files exceed the
-default 8-hour blob download timeout.
+Blobs (such as LFS objects, job artifacts, and package files) might fail to sync with
+`Sync timed out after 28800` when large files exceed the default 8-hour blob download timeout.
+
+To resolve this issue, use the supported options first, in this order:
+
+1. [Increase the blob download timeout](#increase-the-blob-download-timeout) and let Geo
+   retry, so the framework handles the download, verification, and sync status.
+1. If the blob still fails to sync, [identify and validate the affected blobs](#identify-and-validate-timed-out-blobs)
+   and [copy the files from the primary site](#copy-files-from-primary-to-secondary).
+1. As a last resort, [resync the blob from the Rails console](#resync-timed-out-blobs-automatically-from-the-rails-console).
 
 #### Increase the blob download timeout
 
@@ -1502,10 +1520,11 @@ curl --header "PRIVATE-TOKEN: <token>" \
 After you increase the timeout, wait for Geo to retry automatically, or
 [manually retry replication](#manually-retry-replication-or-verification).
 
-#### Identify and validate timed-out LFS objects
+#### Identify and validate timed-out blobs
 
-If LFS objects continue to fail after you increase the timeout, identify the affected objects
-and confirm the files exist on the primary site.
+If blobs continue to fail after you increase the timeout, identify the affected objects
+and confirm the files exist on the primary site. The following examples use LFS objects;
+for other blob types, use the matching [Geo Registry class](#geo-registry-classes) and model.
 
 1. Identify the affected objects on the secondary site:
 
@@ -1546,9 +1565,11 @@ previous step to locate the file:
 - For local storage: the path is relative to `/var/opt/gitlab/gitlab-rails/shared/lfs-objects/`
   on the primary site. Copy the file to the same relative path on the secondary site.
 
-#### Mark LFS objects as synced
+#### Mark blobs as synced
 
-After the files are present on the secondary site, mark them as synced and trigger verification:
+After the files are present on the secondary site, mark them as synced and trigger verification.
+The following example uses LFS objects; for other blob types, use the matching
+[Geo Registry class](#geo-registry-classes):
 
 ```ruby
 [lfs_object_id1, lfs_object_id2, lfs_object_id3].each do |lfs_object_id|
@@ -1576,6 +1597,153 @@ After the files are present on the secondary site, mark them as synced and trigg
   end
 end
 ```
+
+#### Resync timed-out blobs automatically from the Rails console
+
+Use this procedure only as a last resort, after the supported options
+([increase the blob download timeout](#increase-the-blob-download-timeout),
+the [API](../../../../api/geo_nodes.md), and the
+[Geo replication details in the Admin area](#from-the-ui)) have not resolved
+the failure. It runs the sync outside the Geo framework, so prefer the
+supported options whenever possible.
+
+The following helper streams the blob directly from the primary site with a
+long read timeout (this avoids the sync job's fixed timeout), verifies its size
+and content checksum against the primary, stores it through the framework's
+uploader, marks the registry as synced, and re-triggers verification.
+
+This approach works for any blob-type replicable: `Ci::JobArtifact`,
+`Ci::PipelineArtifact`, `Ci::SecureFile`, `LfsObject`, `Packages::PackageFile`,
+`PagesDeployment`, `Terraform::StateVersion`, and `Upload`. Git repositories and
+container repositories use different sync paths and are not covered.
+
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions.
+> Always run commands in a test environment first and have a backup instance ready to restore.
+
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
+   on the secondary site.
+
+1. Define the helper:
+
+   ```ruby
+   require 'net/http'
+   require 'digest'
+   require 'tempfile'
+
+   # Content-hash attribute for each blob model. Types that are not listed, or
+   # whose hash attribute is nil, fall back to size-only verification.
+   GEO_BLOB_VERIFICATION = {
+     'Ci::JobArtifact' => :file_sha256,
+     'Ci::PipelineArtifact' => :file_sha256,
+     'Packages::PackageFile' => :file_sha256,
+     'PagesDeployment' => :file_sha256,
+     'Upload' => :checksum,
+     'Ci::SecureFile' => :checksum,
+     'LfsObject' => :oid
+   }
+
+   # Streams an HTTP GET to the block, following redirects. The Geo
+   # authentication header is sent only on the first request. On a redirect to a
+   # pre-signed object storage URL (when proxy_download is disabled) it is
+   # dropped, because the pre-signed URL is already authenticated.
+   def geo_stream_get(uri, headers, limit = 5, &block)
+     raise 'too many redirects' if limit < 0
+
+     Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https',
+       open_timeout: 60, read_timeout: 86_400, write_timeout: 86_400) do |http|
+       request = Net::HTTP::Get.new(uri)
+       headers.each { |key, value| request[key] = value }
+
+       http.request(request) do |response|
+         case response.code.to_i
+         when 200
+           response.read_body { |chunk| yield chunk }
+         when 301, 302, 303, 307, 308
+           raise 'redirect with no Location' unless response['location']
+
+           return geo_stream_get(URI(response['location']), {}, limit - 1, &block)
+         else
+           raise "HTTP #{response.code}: #{response.message}"
+         end
+       end
+     end
+   end
+
+   def manual_geo_blob_sync(registry_class, registry_id)
+     registry = registry_class.find_by(id: registry_id)
+     return "no #{registry_class.name} ##{registry_id}" unless registry
+
+     replicator = registry.replicator
+     model = replicator.model_record
+     return 'missing model record (gone on primary?)' unless model
+
+     uploader = replicator.carrierwave_uploader
+     downloader = Gitlab::Geo::Replication::BlobDownloader.new(replicator: replicator)
+     uri = URI(downloader.resource_url)
+     # request_headers is a private BlobDownloader method, accessed here with
+     # send. It returns a short-lived Geo JWT. This relies on an internal API
+     # and might need updating after a GitLab upgrade.
+     auth = downloader.send(:request_headers)
+
+     sha_attr = GEO_BLOB_VERIFICATION[model.class.name]
+     want_size = model.respond_to?(:size) ? model.size : nil
+     want_sha = sha_attr && model.respond_to?(sha_attr) ? model.public_send(sha_attr) : nil
+
+     tmp = Tempfile.new(['geo-blob', '.bin'], '/tmp')
+     tmp.binmode
+
+     begin
+       geo_stream_get(uri, auth) { |chunk| tmp.write(chunk) }
+       tmp.flush
+
+       raise "size mismatch (#{tmp.size}/#{want_size})" if want_size && tmp.size != want_size
+
+       if want_sha && Digest::SHA256.file(tmp.path).hexdigest != want_sha
+         raise 'checksum mismatch - not marking as synced'
+       end
+
+       # Store the blob through the same uploader method the Geo framework
+       # uses (BlobDownloader#download_file), so local and object storage are
+       # both handled the same way.
+       uploader.replace_file_without_saving!(CarrierWave::SanitizedFile.new(tmp))
+
+       registry.update!(state: 2, last_synced_at: Time.current, retry_at: nil,
+         retry_count: 0, last_sync_failure: nil)
+       registry.update!(bytes: tmp.size) if registry.respond_to?(:bytes)
+
+       # The raw update! above bypasses the after_synced state-machine
+       # callback, so re-trigger verification explicitly to reconcile a
+       # previously verification_failed registry.
+       replicator.verify
+
+       "OK #{registry_class.name}##{registry_id} (#{tmp.size} bytes)"
+     ensure
+       tmp.close!
+     end
+   end
+   ```
+
+1. Run the helper for the affected registry record. Replace the registry class
+   with any of the [Geo Registry classes](#geo-registry-classes) and `123` with
+   the actual registry ID:
+
+   ```ruby
+   manual_geo_blob_sync(Geo::LfsObjectRegistry, 123)
+   ```
+
+1. Optional. To re-sync all blobs of one type that failed with this error:
+
+   ```ruby
+   Geo::LfsObjectRegistry
+     .where("last_sync_failure LIKE '%Sync timed out after%'")
+     .pluck(:id)
+     .each { |id| puts manual_geo_blob_sync(Geo::LfsObjectRegistry, id) }; nil
+   ```
+
+If the helper still times out or fails, the object might be missing or
+unreadable on the primary site. For more information, see
+[The file is missing on the Geo primary site](#message-the-file-is-missing-on-the-geo-primary-site).
 
 ### Error: `Projects - Error during verification: Repository does not exist`
 

@@ -15,13 +15,4 @@ RSpec.describe 'Claim for ServiceDeskSetting', feature_category: :cell do
   end
 
   it_behaves_like 'deleting existing claims'
-
-  context 'when claims feature is disabled' do
-    before do
-      stub_feature_flags(cells_claims_service_desk_settings: false)
-    end
-
-    it_behaves_like 'not creating claims'
-    it_behaves_like 'not deleting claims'
-  end
 end

@@ -24,8 +24,8 @@ module Types
             description: 'Inputs for the component.'
 
           field :last_30_day_usage_count, GraphQL::Types::Int, null: true,
-            description: 'Number of times the component has been used in the last 30 days ' \
-              'in a pipeline using `include`.'
+            description: 'Number of unique projects that used this version of the component ' \
+              'in a pipeline by using `include` in the last 30 days.'
 
           def description
             object.spec['description']

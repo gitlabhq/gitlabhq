@@ -38,6 +38,11 @@ RSpec.describe Gitlab::Lfs::Client do
   subject(:lfs_client) { described_class.new(base_url, credentials: credentials) }
 
   describe '#batch' do
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:objects, freeze: false) { create_list(:lfs_object, 3) }
 
     context 'server returns 200 OK' do
@@ -104,6 +109,11 @@ RSpec.describe Gitlab::Lfs::Client do
   end
 
   describe "#upload" do
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:object, freeze: false) { create(:lfs_object) }
 
     context 'server returns 200 OK to an authenticated request' do

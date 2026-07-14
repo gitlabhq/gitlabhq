@@ -8,8 +8,10 @@ import {
 import { __, s__ } from '~/locale';
 import { PROMO_URL } from '~/constants';
 import { exploreRootPath } from '~/lib/utils/path_helpers/explore';
+import { newUserRegistrationPath, newUserSessionPath } from '~/lib/utils/path_helpers/routes';
 
 export default {
+  name: 'PromoMenu',
   components: {
     GlButton,
     GlDisclosureDropdown,
@@ -78,6 +80,10 @@ export default {
     },
   },
   methods: {
+    newUserRegistrationPath,
+    signInPath() {
+      return newUserSessionPath({ redirect_to_referer: 'yes' });
+    },
     promoUrl(url) {
       return `${PROMO_URL}${url}`;
     },
@@ -107,7 +113,7 @@ export default {
             :href="
               isSaas && sidebarData.trial_registration_path
                 ? sidebarData.trial_registration_path
-                : sidebarData.new_user_registration_path
+                : newUserRegistrationPath()
             "
             variant="confirm"
             class="topbar-signup-button gl-basis-1/2"
@@ -117,7 +123,7 @@ export default {
           </gl-button>
           <gl-button
             v-if="signInVisible"
-            :href="sidebarData.sign_in_path"
+            :href="signInPath()"
             class="gl-basis-1/2"
             data-testid="topbar-signin-button"
           >

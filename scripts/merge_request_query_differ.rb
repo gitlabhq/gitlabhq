@@ -17,15 +17,20 @@ class MergeRequestQueryDiffer
   PACKAGE_NAME = 'auto-explain-logs'
   PACKAGE_FILE = 'query-fingerprints.tar.gz'
   NEW_QUERIES_PATH = 'new_sql_queries.md'
+  # Fingerprints of the new-versus-master queries, one per line.
+  # Downstream jobs (e.g. check_ci_partition_pruning) consume this.
+  NEW_FINGERPRINTS_PATH = 'new_query_fingerprints.txt'
   CONSOLIDATED_FINGERPRINTS_URL = ENV['CONSOLIDATED_FINGERPRINTS_URL'] ||
     "https://gitlab.com/api/v4/projects/#{PROJECT_ID}/packages/generic/#{PACKAGE_NAME}/master/#{PACKAGE_FILE}"
 
-  attr_reader :mr_auto_explain_path, :output_file, :logger, :sql_fingerprint_extractor, :report_generator
+  attr_reader :mr_auto_explain_path, :output_file, :fingerprints_file, :logger,
+    :sql_fingerprint_extractor, :report_generator
 
   def initialize(mr_auto_explain_path, logger = nil)
     @mr_auto_explain_path = mr_auto_explain_path
     output_dir = File.dirname(mr_auto_explain_path)
     @output_file = File.join(output_dir, NEW_QUERIES_PATH)
+    @fingerprints_file = File.join(output_dir, NEW_FINGERPRINTS_PATH)
     @logger = logger || Logger.new($stdout)
     @sql_fingerprint_extractor = SQLFingerprintExtractor.new(@logger)
     @report_generator = ReportGenerator.new(@logger)
@@ -33,6 +38,9 @@ class MergeRequestQueryDiffer
 
   def run
     logger.info "MR Query Diff: Analyzing new queries in MR compared to master"
+
+    # Always output this file; default empty
+    write_new_fingerprints([])
 
     # Step 1: Extract query fingerprints from MR
     mr_queries = sql_fingerprint_extractor.extract_queries_from_file(mr_auto_explain_path)
@@ -59,6 +67,7 @@ class MergeRequestQueryDiffer
 
     # Step 3: Compare and filter
     mr_queries = filter_new_queries(mr_queries, master_fingerprints)
+    write_new_fingerprints(mr_queries)
 
     # Step 4: Report generation
     logger.info "Final result: #{mr_queries.size} new queries compared to all master packages"
@@ -141,6 +150,14 @@ class MergeRequestQueryDiffer
     logger.info "Report saved to #{output_file}"
   rescue StandardError => e
     logger.error "Could not write report to file: #{e.message}"
+  end
+
+  def write_new_fingerprints(queries)
+    lines = queries.filter_map { |query| "#{query['fingerprint']}\n" if query['fingerprint'] }
+    File.write(fingerprints_file, lines.join)
+    logger.info "Wrote #{lines.size} new fingerprint(s) to #{fingerprints_file}"
+  rescue StandardError => e
+    logger.error "Could not write new fingerprints: #{e.message}"
   end
 
   def make_request(url, method: :get, parse_json: true, attempt: 1, max_attempts: 10)

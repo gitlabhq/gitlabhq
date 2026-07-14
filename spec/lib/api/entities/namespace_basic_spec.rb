@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::API::Entities::NamespaceBasic, feature_category: :groups_and_projects do
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:namespace, freeze: false) { create(:namespace) }
+  let_it_be_with_reload(:namespace) { create(:namespace) }
 
   let(:options) { { current_user: current_user } }
 
@@ -28,7 +28,7 @@ RSpec.describe ::API::Entities::NamespaceBasic, feature_category: :groups_and_pr
   include_examples 'returns a response'
 
   context 'for a user namespace' do
-    let_it_be(:namespace, freeze: false) { create(:user_namespace) }
+    let_it_be_with_reload(:namespace) { create(:user_namespace) }
 
     include_examples 'returns a response'
 

@@ -13,6 +13,7 @@
     "access_level",
     "scopes",
     "last_used_at",
+    "last_used_ips",
     "resource_type",
     "resource_id"
   ],
@@ -67,6 +68,12 @@
         "null"
       ],
       "format": "date-time"
+    },
+    "last_used_ips": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "resource_type": {
       "type": "string"

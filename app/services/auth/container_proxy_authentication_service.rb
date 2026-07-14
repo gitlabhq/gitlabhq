@@ -3,6 +3,8 @@
 # rubocop:disable Gitlab/BoundedContexts -- this is an existing class
 module Auth
   class ContainerProxyAuthenticationService < BaseService
+    include ::Gitlab::Utils::StrongMemoize
+
     AUDIENCE = 'dependency_proxy'
     HMAC_KEY = 'gitlab-dependency-proxy'
     DEFAULT_EXPIRE_TIME = 1.minute
@@ -13,9 +15,13 @@ module Auth
     SERVICE_TYPE_VIRTUAL_REGISTRY = 'virtual_registry'
     SERVICE_TYPE_DEPENDENCY_PROXY = 'dependency_proxy'
     VIRTUAL_REGISTRY_SCOPE_PATTERN = %r{virtual_registries/container/}
+    # A dependency proxy pull scope looks like:
+    #   repository:<group_full_path>/dependency_proxy/containers/<image>:<actions>
+    DEPENDENCY_PROXY_SCOPE_PATTERN = %r{\Arepository:(?<group_path>.+?)/dependency_proxy/containers/}
 
-    def execute(authentication_abilities:)
+    def execute(authentication_abilities:, personal_access_token: nil)
       @authentication_abilities = authentication_abilities
+      @personal_access_token = personal_access_token
 
       return error('dependency proxy not enabled', 404) unless ::Gitlab.config.dependency_proxy.enabled
       return error('access forbidden', 403) unless valid_user_actor?
@@ -45,14 +51,55 @@ module Auth
     attr_reader :authentication_abilities
 
     def valid_user_actor?
-      has_required_abilities? && (!deploy_token || deploy_token.valid_for_dependency_proxy?)
+      has_required_abilities? &&
+        pat_authorized? &&
+        (!deploy_token || deploy_token.valid_for_dependency_proxy?)
     end
 
     def has_required_abilities?
+      return true if granular_dependency_proxy_pull?
+
       [REQUIRED_CI_ABILITIES, REQUIRED_USER_ABILITIES, REQUIRED_USER_VR_ABILITIES].any? do |required_abilities|
         (required_abilities & authentication_abilities).size == required_abilities.size
       end
     end
+
+    def granular_dependency_proxy_pull?
+      granular_personal_access_token.present? && detect_service_type == SERVICE_TYPE_DEPENDENCY_PROXY
+    end
+
+    def granular_personal_access_token
+      return unless @personal_access_token&.granular?
+
+      @personal_access_token
+    end
+    strong_memoize_attr :granular_personal_access_token
+
+    def pat_authorized?
+      return true unless @personal_access_token
+      # A scopeless request (for example `docker login`) has no group to
+      # authorize; enforcement for these tokens happens at consumption.
+      return true unless dependency_proxy_scope
+      return false unless requested_group
+
+      strong_memoize_with(:pat_authorized, requested_group.id) do
+        ::DependencyProxy::GranularAuthorization.pull_authorized?(@personal_access_token, requested_group)
+      end
+    end
+
+    def dependency_proxy_scope
+      scopes.find { |scope| scope.match?(DEPENDENCY_PROXY_SCOPE_PATTERN) }
+    end
+    strong_memoize_attr :dependency_proxy_scope
+
+    def requested_group
+      return unless dependency_proxy_scope
+
+      group_path = dependency_proxy_scope.match(DEPENDENCY_PROXY_SCOPE_PATTERN)[:group_path]
+      # follow_redirects matches the consuming controller so both stages resolve a renamed group the same way.
+      Group.find_by_full_path(group_path, follow_redirects: true)
+    end
+    strong_memoize_attr :requested_group
 
     def group_access_token
       PersonalAccessTokensFinder.new(state: 'active').find_by_token(raw_token.to_s)

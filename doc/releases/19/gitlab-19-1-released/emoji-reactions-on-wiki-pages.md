@@ -10,8 +10,6 @@ level: secondary
 weight: 50
 ---
 
-<!-- categories: Wiki -->
-
 You can now add emoji reactions directly to wiki pages in both project and group wikis.
 
 Use the GitLab emoji picker to react to page content. Each page shows reaction counts and

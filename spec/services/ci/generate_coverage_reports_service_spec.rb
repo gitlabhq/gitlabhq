@@ -11,7 +11,7 @@ RSpec.describe Ci::GenerateCoverageReportsService, feature_category: :code_testi
     subject { service.execute(base_pipeline, head_pipeline) }
 
     context 'when head pipeline has coverage reports' do
-      let!(:merge_request) { create(:merge_request, :with_coverage_reports, source_project: project) }
+      let_it_be(:merge_request) { create(:merge_request, :with_coverage_reports, source_project: project) }
       let!(:service) { described_class.new(project, nil, id: merge_request.id) }
       let!(:head_pipeline) { merge_request.head_pipeline }
       let!(:base_pipeline) { nil }
@@ -77,8 +77,8 @@ RSpec.describe Ci::GenerateCoverageReportsService, feature_category: :code_testi
     subject { service.latest?(base_pipeline, head_pipeline, data) }
 
     let!(:base_pipeline) { nil }
-    let!(:head_pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project) }
-    let!(:child_pipeline) { create(:ci_pipeline, child_of: head_pipeline) }
+    let_it_be_with_reload(:head_pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project) }
+    let_it_be_with_reload(:child_pipeline) { create(:ci_pipeline, child_of: head_pipeline) }
     let!(:key) { service.send(:key, base_pipeline, head_pipeline) }
 
     let(:data) { { key: key } }

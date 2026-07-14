@@ -61,24 +61,24 @@ RSpec.describe Observability::ObservabilityPresenter, :use_clean_rails_memory_st
 
   describe '#title' do
     it 'returns the default title for an unknown path' do
-      expect(described_class.new(group, 'invalid-path').title).to eq('Observability')
+      expect(described_class.new(group, 'invalid-path').title).to eq(_('Observability'))
     end
 
     it 'inherits the top-level title for a sub-path' do
-      expect(described_class.new(group, 'alerts/edit').title).to eq('Observability|Alerts')
+      expect(described_class.new(group, 'alerts/edit').title).to eq(s_('Observability|Alerts'))
     end
 
     it 'returns the full-path title when it overrides the first-segment title' do
-      expect(described_class.new(group, 'settings/api-keys').title).to eq('Observability|API keys')
+      expect(described_class.new(group, 'settings/api-keys').title).to eq(s_('Observability|API keys'))
     end
 
     context 'with every defined PATHS entry' do
       described_class::PATHS.each do |path|
         expected_title = described_class::SEGMENT_TITLES.fetch(path) do
-          described_class::SEGMENT_TITLES.fetch(path.split('/').first, 'Observability')
+          described_class::SEGMENT_TITLES.fetch(path.split('/').first) { -> { _('Observability') } }
         end
-        it "returns '#{expected_title}' for path '#{path}'" do
-          expect(described_class.new(group, path).title).to eq(expected_title)
+        it "returns the title for path '#{path}'" do
+          expect(described_class.new(group, path).title).to eq(expected_title.call)
         end
       end
     end
@@ -366,7 +366,7 @@ RSpec.describe Observability::ObservabilityPresenter, :use_clean_rails_memory_st
           o11y_url: 'https://observability.example.com',
           path: 'services',
           auth_tokens: cached_tokens,
-          title: 'Observability|Services',
+          title: s_('Observability|Services'),
           query_params: {}
         )
       end
@@ -378,7 +378,7 @@ RSpec.describe Observability::ObservabilityPresenter, :use_clean_rails_memory_st
           o11y_url: 'https://observability.example.com',
           path: 'services',
           auth_tokens: { 'status' => 'loading' },
-          title: 'Observability|Services',
+          title: s_('Observability|Services'),
           query_params: {}
         )
       end
@@ -400,7 +400,7 @@ RSpec.describe Observability::ObservabilityPresenter, :use_clean_rails_memory_st
           o11y_url: nil,
           path: 'services',
           auth_tokens: {},
-          title: 'Observability|Services'
+          title: s_('Observability|Services')
         )
       end
     end

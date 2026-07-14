@@ -13,6 +13,7 @@ import { fetchImportFailures } from '../api';
 const DEFAULT_PAGE_SIZE = 20;
 
 export default {
+  name: 'ImportDetailsTable',
   components: {
     GlEmptyState,
     GlIcon,

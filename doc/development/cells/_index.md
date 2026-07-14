@@ -95,6 +95,7 @@ Below are available schemas related to Cells and Organizations:
 | `gitlab_main_user` | Schema for all User-related tables, ex. `users`, `emails`, etc. Most user functionality is organizational level so should use `gitlab_main_org` instead (e.g. commenting on an issue). For user functionality that is not organizational level, use this schema. Tables on this schema must strictly belong to a user. |
 | `gitlab_shared_org` | Schema for tables with data across multiple databases and has `organization_id` for sharding. These tables inherit from `Gitlab::Database::SharedModel`. Tables in this schema are not allowed to use auto-incrementing integer schemas so that rows across the decomposed databases have unique primary keys. Use Composite, or UUID primary keys instead. |
 | `gitlab_shared_cell_local` | Schema for cell local shared tables that do not require sharding and exist across multiple databases. For example, `loose_foreign_keys_deleted_records`. These tables also inherit from `Gitlab::Database::SharedModel`. |
+| `gitlab_sec_cell_local` | For tables in the `sec:` database that hold cell-local, non-customer reference data with no sharding key, for example malware and package-metadata advisories. These rows do not belong to an organization, are the same for every organization in a cell, and are replicated per cell. Tables on this schema use `SecApplicationRecord`. |
 
 Most tables will require a [sharding key](../organization/sharding/_index.md#choosing-the-right-sharding-key) to be
 defined.

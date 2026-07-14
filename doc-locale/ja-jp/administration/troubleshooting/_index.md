@@ -1,8 +1,9 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLabインストールに関するトラブルシューティング
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: GitLabインストールのトラブルシューティング
+description: GitLabインストールのトラブルシューティング。
 ---
 
 {{< details >}}
@@ -12,41 +13,38 @@ title: GitLabインストールに関するトラブルシューティング
 
 {{< /details >}}
 
-このページでは、GitLabインストールに関するトラブルシューティングに役立つリソースを集めてまとめています。
+このページでは、GitLabインストールのトラブルシューティングを行うのに役立つリソース集をまとめています。
 
-このリストは必ずしも網羅的ではありません。このリストに必要な情報が見つからない場合は、ドキュメントを検索してください。
+このリストは必ずしも網羅的ではありません。このリストに必要なものが見つからない場合は、ドキュメントを検索してください。
 
 ## トラブルシューティングガイド {#troubleshooting-guides}
 
-- [SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html)
+- [SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting/)
 - [Geo](../geo/replication/troubleshooting/_index.md)
 - [SAML](../../user/group/saml_sso/troubleshooting.md)
-- [Kubernetesチートシート](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
+- [Kubernetesチートシート](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/)
 - [Linuxチートシート](linux_cheat_sheet.md)
-- [`jq`を使用したGitLabログの解析](../logs/log_parsing.md)
+- [`jq`を使ったGitLabログの解析](../logs/log_parsing.md)
 - [診断ツール](diagnostics_tools.md)
 
-一部の機能ドキュメントページには、機能固有のヘルプ（役立つRailsコマンドなど）を確認できるトラブルシューティングセクションが最後にあります。
+一部の機能ドキュメントページには、機能固有のヘルプ（役立つRailsコマンドを含む）を確認できるトラブルシューティングセクションも最後にあります。
 
-問題を解決するためのテスト環境が必要な場合は、[テスト環境用アプリ](test_environments.md)を参照してください。
+トラブルシューティングを行うためのテスト環境が必要な場合は、[テスト環境用のアプリ](test_environments.md)を参照してください。
 
 ## サポートチームのトラブルシューティング情報 {#support-team-troubleshooting-info}
 
-GitLabサポートチームは、GitLabのトラブルシューティングに関する多くの情報を収集しています。以下のドキュメントは、サポートチームまたはサポートチームのメンバーから直接指導を受けている顧客が使用しています。GitLabの管理者は、トラブルシューティングに役立つ情報を見つけることができます。ただし、GitLabインスタンスで問題が発生した場合は、これらのドキュメントを参照する前に、[サポートオプション](https://about.gitlab.com/support/)を確認する必要があります。
+GitLabサポートチームは、GitLabのトラブルシューティングに関する多くの情報を収集しています。次のドキュメントは、サポートチーム、またはサポートチームメンバーからの直接のガイダンスを受けた顧客によって使用されます。GitLab管理者は、この情報がトラブルシューティングに役立つと感じるかもしれません。ただし、GitLabインスタンスで問題が発生している場合は、これらのドキュメントを参照する前に、[support options](https://support.gitlab.com/)を確認してください。
 
-{{< alert type="warning" >}}
-
-以下のドキュメントのコマンドを実行すると、データが失われたり、GitLabインスタンスが破損する可能性があります。これらのコマンドは、リスクを認識している経験豊富な管理者のみが使用してください。
-
-{{< /alert >}}
+> [!warning]
+> 次のドキュメントのコマンドは、データ損失またはGitLabインスタンスへのその他の損害を引き起こす可能性があります。これらは、リスクを認識している経験豊富な管理者のみが使用する必要があります。
 
 - [診断ツール](diagnostics_tools.md)
-- [Linuxコマンド](linux_cheat_sheet.md)
-- [Kubernetesのトラブルシューティング](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
+- [Linux commands](linux_cheat_sheet.md)
+- [Kubernetesのトラブルシューティング](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/)
 - [PostgreSQLのトラブルシューティング](postgresql.md)
-- [テスト環境へのガイド](test_environments.md)（サポートエンジニア向け）
-- [SSLのトラブルシューティング](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html)
+- [Guide to test environments](test_environments.md) (サポートエンジニア向け)
+- [SSLのトラブルシューティング](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting/)
 - 関連リンク:
-  - [破損したGitリポジトリの修復と復元](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
-  - [OpenSSLを使用したテスト](https://www.feistyduck.com/library/openssl-cookbook/online/testing-with-openssl/index.html)
+  - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
+  - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/testing-with-openssl/index.html)
   - [`strace` zine](https://wizardzines.com/zines/strace/)

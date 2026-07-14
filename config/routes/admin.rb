@@ -253,7 +253,7 @@ namespace :admin do
 
   get '/dashboard/stats', to: 'dashboard#stats'
 
-  get 'organization', to: 'organizations/dashboard#index', as: :org_dashboard
+  get 'organization', to: 'organizations/dashboard#index', as: :organization_dashboard
 
   root to: 'dashboard#index'
 

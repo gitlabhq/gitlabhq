@@ -8,7 +8,7 @@ module API
 
         # NOTE: instance runners are exposed by default to any authenticated user,
         # remember to protect any sensitive fields
-        expose :id, documentation: { type: 'Integer', example: 8 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 8 }
         expose :description, documentation: { type: 'String', example: 'test-1-20150125' }
         # TODO: remove in v5 https://gitlab.com/gitlab-org/gitlab/-/issues/415159
         expose(:ip_address, documentation: { type: 'String', example: '127.0.0.1' }) { |_runner, _options| nil }

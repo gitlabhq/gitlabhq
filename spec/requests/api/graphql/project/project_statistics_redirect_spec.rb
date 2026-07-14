@@ -59,11 +59,7 @@ RSpec.describe 'rendering project storage type routes', feature_category: :share
   end
 
   context 'when project is private' do
-    let_it_be(:project) { create(:project, :private) }
-
-    before do
-      project.add_reporter(user)
-    end
+    let_it_be(:project) { create(:project, :private, reporters: user) }
 
     it_behaves_like 'valid routes for storage type'
 

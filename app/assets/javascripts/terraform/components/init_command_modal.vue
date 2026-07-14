@@ -4,6 +4,7 @@ import { __, s__ } from '~/locale';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 export default {
+  name: 'InitCommandModal',
   i18n: {
     title: s__('Terraform|Terraform init'),
     explanatoryText: s__(
@@ -87,7 +88,7 @@ terraform init \\
 
     <div class="gl-mb-3 gl-flex">
       <pre
-        class="code-block rounded gl-border gl-mb-0 gl-w-full gl-py-2"
+        class="code-block gl-border gl-mb-0 gl-w-full !gl-rounded-base gl-py-2"
         data-testid="glab-command"
         >{{ getModalInfoGlabCopyStr() }}</pre
       >

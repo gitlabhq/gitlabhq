@@ -83,7 +83,7 @@ module Cells
     def build_destroy_metadata_for_worker(attribute_name)
       config = self.class.cells_claims_attributes[attribute_name]
       return unless config
-      return unless cells_claims_attribute_claimable?(config)
+      return unless cells_claims_attribute_claimable?(attribute_name, config)
 
       {
         'bucket_type' => config[:type],
@@ -115,7 +115,7 @@ module Cells
     # Returns an array of metadata for all claim attributes
     def cells_claims_metadata
       self.class.cells_claims_attributes.filter_map do |attribute, config|
-        next unless cells_claims_attribute_claimable?(config)
+        next unless cells_claims_attribute_claimable?(attribute, config)
 
         cells_claims_metadata_for(config[:type], self[attribute])
       end
@@ -125,7 +125,7 @@ module Cells
     def cells_claims_metadata_for_attribute(attr_name)
       config = self.class.cells_claims_attributes[attr_name]
       return unless config
-      return unless cells_claims_attribute_claimable?(config)
+      return unless cells_claims_attribute_claimable?(attr_name, config)
 
       cells_claims_metadata_for(config[:type], self[attr_name])
     end
@@ -146,7 +146,8 @@ module Cells
       end
     end
 
-    def cells_claims_attribute_claimable?(config)
+    def cells_claims_attribute_claimable?(attribute, config)
+      return false if self[attribute].blank?
       return true unless config[:if]
 
       config[:if].call(self)
@@ -167,7 +168,7 @@ module Cells
             cells_claims_metadata_for(config[:type], was))
         end
 
-        if is.present? && cells_claims_attribute_claimable?(config)
+        if is.present? && cells_claims_attribute_claimable?(attribute, config)
           transaction_record.create_record(
             cells_claims_metadata_for(config[:type], public_send(attribute))) # rubocop:disable GitlabSecurity/PublicSend -- developer hard coded
         end
@@ -180,10 +181,9 @@ module Cells
 
       self.class.cells_claims_attributes.each do |attribute, config|
         next unless self.class.cells_claims_enabled_for_attribute?(attribute)
-        next unless cells_claims_attribute_claimable?(config)
+        next unless cells_claims_attribute_claimable?(attribute, config)
 
         value = public_send(attribute) # rubocop:disable GitlabSecurity/PublicSend -- developer hard coded
-        next if value.blank?
 
         transaction_record.destroy_record(
           cells_claims_metadata_for(config[:type], value))

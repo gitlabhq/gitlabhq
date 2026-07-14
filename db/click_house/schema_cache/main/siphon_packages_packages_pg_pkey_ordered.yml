@@ -1,0 +1,37 @@
+---
+name: siphon_packages_packages_pg_pkey_ordered
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
+  (id, package_type, traversal_path) ORDER BY (id, package_type, traversal_path) SETTINGS
+  index_granularity = 1024
+primary_key: id, package_type, traversal_path
+sorting_key: id, package_type, traversal_path
+settings:
+  index_granularity: '1024'
+columns:
+- name: id
+  type: Int64
+  compression_codec: CODEC(DoubleDelta, ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: "'0/'"
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: package_type
+  type: Int16
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: _siphon_replicated_at
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: _siphon_deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))

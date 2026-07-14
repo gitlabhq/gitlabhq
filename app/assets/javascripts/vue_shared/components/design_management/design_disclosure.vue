@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'DesignDisclosure',
   props: {
     open: {
       type: Boolean,

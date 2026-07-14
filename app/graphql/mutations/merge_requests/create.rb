@@ -45,6 +45,8 @@ module Mutations
         description: 'Merge request after mutation.'
 
       authorize :create_merge_request_from
+      authorize_granular_token permissions: :create_merge_request, boundary_argument: :project_path,
+        boundary_type: :project
 
       def resolve(project_path:, **attributes)
         project = authorized_find!(project_path)

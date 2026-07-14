@@ -11,9 +11,9 @@ RSpec.describe Ci::JobTokenScope::EditScopeValidations, feature_category: :conti
     end
   end
 
-  let_it_be(:source_project, freeze: false) { create(:project) }
-  let_it_be(:target_project, freeze: false) { create(:project) }
-  let_it_be(:target_group, freeze: false) { create(:group) }
+  let_it_be_with_reload(:source_project) { create(:project) }
+  let_it_be_with_reload(:target_project) { create(:project) }
+  let_it_be_with_reload(:target_group) { create(:group) }
   let_it_be(:current_user) { create(:user) }
 
   subject(:test_instance) { test_class.new(source_project, current_user) }

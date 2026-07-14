@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Admin Topics', :with_current_organization, feature_category: :groups_and_projects do
-  let_it_be(:topic, freeze: false) { create(:topic, organization: current_organization) }
-  let_it_be(:namespace, freeze: false) { create(:namespace, organization: current_organization) }
-  let_it_be(:admin, freeze: false) { create(:admin, namespace: namespace) }
+  let_it_be(:topic) { create(:topic, organization: current_organization) }
+  let_it_be_with_reload(:namespace) { create(:namespace, organization: current_organization) }
+  let_it_be_with_reload(:admin) { create(:admin, namespace: namespace) }
 
   before do
     sign_in(admin)

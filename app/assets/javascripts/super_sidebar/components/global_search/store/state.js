@@ -1,15 +1,4 @@
-const createState = ({
-  searchPath,
-  issuesPath,
-  mrPath,
-  autocompletePath,
-  searchContext,
-  search,
-}) => ({
-  searchPath,
-  issuesPath,
-  mrPath,
-  autocompletePath,
+const createState = ({ searchContext, search }) => ({
   searchContext,
   search,
   autocompleteOptions: [],

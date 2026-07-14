@@ -21,6 +21,19 @@ module API
         "#{route.request_method} #{route.origin}"
       end
 
+      # Opt out of the global Current.organization assignment performed in
+      # API::API's before_validation hook. Use this on classes whose endpoints
+      # set Current.organization from non-user request state (for example the
+      # runner's own organization) inside the endpoint body, where Grape's
+      # filter ordering would otherwise let the global fallback win.
+      def skip_global_organization_setup!
+        @skip_global_organization_setup = true
+      end
+
+      def skip_global_organization_setup?
+        @skip_global_organization_setup == true
+      end
+
       def route(methods, paths = ['/'], route_options = {}, &block)
         actions = Array(paths).map { |path| normalize_path(namespace, path) }
         if category = route_options.delete(:feature_category)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitAccessSnippet do
+RSpec.describe Gitlab::GitAccessSnippet, feature_category: :source_code_management do
   include ProjectHelpers
   include UserHelpers
   include TermsHelper
@@ -65,6 +65,124 @@ RSpec.describe Gitlab::GitAccessSnippet do
 
       it 'blocks access with "not found"' do
         expect { pull_access_check }.to raise_not_found(:no_repo)
+      end
+    end
+  end
+
+  describe '#check_granular_pat_permissions!' do
+    let(:access) do
+      described_class.new(actor, snippet, protocol,
+        authentication_abilities: authentication_abilities,
+        personal_access_token: personal_access_token)
+    end
+
+    let(:personal_access_token) do
+      create(:granular_pat, user: user, boundary: boundary, permissions: permissions)
+    end
+
+    context 'with a personal snippet' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:snippet) { create(:personal_snippet, :repository, :private, author: user) }
+
+      let(:boundary) { Authz::Boundary.for(Authz::GranularScope::Access::USER) }
+
+      context 'when the token has read_snippet permission' do
+        let(:permissions) { :read_snippet }
+
+        it 'allows git pull' do
+          expect { pull_access_check }.not_to raise_error
+        end
+
+        it 'denies git push' do
+          expect { push_access_check }.to raise_error(Gitlab::GitAccess::ForbiddenError,
+            'Access denied: This operation requires a fine-grained personal access token ' \
+              'with the following user permissions: [Snippet: Update].')
+        end
+      end
+
+      context 'when the token has update_snippet permission' do
+        let(:permissions) { :update_snippet }
+
+        it 'allows git push' do
+          expect { push_access_check }.not_to raise_error
+        end
+
+        it 'denies git pull' do
+          expect { pull_access_check }.to raise_error(Gitlab::GitAccess::ForbiddenError,
+            'Access denied: This operation requires a fine-grained personal access token ' \
+              'with the following user permissions: [Snippet: Read].')
+        end
+      end
+
+      context 'when the token has no snippet permissions' do
+        let(:permissions) { [] }
+
+        it 'denies git pull' do
+          expect { pull_access_check }.to raise_error(Gitlab::GitAccess::ForbiddenError,
+            'Access denied: This operation requires a fine-grained personal access token ' \
+              'with the following user permissions: [Snippet: Read].')
+        end
+
+        it 'denies git push' do
+          expect { push_access_check }.to raise_error(Gitlab::GitAccess::ForbiddenError,
+            'Access denied: This operation requires a fine-grained personal access token ' \
+              'with the following user permissions: [Snippet: Update].')
+        end
+      end
+    end
+
+    context 'with a project snippet' do
+      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:snippet) { create(:project_snippet, :private, :repository, project: project, author: user) }
+
+      let(:boundary) { Authz::Boundary.for(project) }
+
+      before_all do
+        project.add_developer(user)
+      end
+
+      context 'when the token has read_snippet permission' do
+        let(:permissions) { :read_snippet }
+
+        it 'allows git pull' do
+          expect { pull_access_check }.not_to raise_error
+        end
+
+        it 'denies git push' do
+          expect { push_access_check }.to raise_error(Gitlab::GitAccess::ForbiddenError,
+            'Access denied: This operation requires a fine-grained personal access token ' \
+              'with the following project permissions: [Snippet: Update].')
+        end
+      end
+
+      context 'when the token has update_snippet permission' do
+        let(:permissions) { :update_snippet }
+
+        it 'allows git push' do
+          expect { push_access_check }.not_to raise_error
+        end
+
+        it 'denies git pull' do
+          expect { pull_access_check }.to raise_error(Gitlab::GitAccess::ForbiddenError,
+            'Access denied: This operation requires a fine-grained personal access token ' \
+              'with the following project permissions: [Snippet: Read].')
+        end
+      end
+
+      context 'when the token has no snippet permissions' do
+        let(:permissions) { [] }
+
+        it 'denies git pull' do
+          expect { pull_access_check }.to raise_error(Gitlab::GitAccess::ForbiddenError,
+            'Access denied: This operation requires a fine-grained personal access token ' \
+              'with the following project permissions: [Snippet: Read].')
+        end
+
+        it 'denies git push' do
+          expect { push_access_check }.to raise_error(Gitlab::GitAccess::ForbiddenError,
+            'Access denied: This operation requires a fine-grained personal access token ' \
+              'with the following project permissions: [Snippet: Update].')
+        end
       end
     end
   end

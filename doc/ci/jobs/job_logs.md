@@ -59,19 +59,15 @@ that GitLab uses to delimit collapsible sections:
 - Section end marker: `\e[0Ksection_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
 
 You must add these codes to the script section of the CI configuration.
-For example, using `echo`:
+For example, using `printf`:
 
 ```yaml
 job1:
   script:
-    - echo -e "\e[0Ksection_start:`date +%s`:my_first_section\r\e[0KHeader of the 1st collapsible section"
+    - printf '\e[0Ksection_start:%d:%s\r\e[0K%s\n' "$(date +%s)" 'my_first_section' 'Header of the 1st collapsible section'
     - echo 'this line should be hidden when collapsed'
-    - echo -e "\e[0Ksection_end:`date +%s`:my_first_section\r\e[0K"
+    - printf '\e[0Ksection_end:%d:%s\r\e[0K\n' "$(date +%s)" 'my_first_section'
 ```
-
-The escape syntax may differ depending on the shell that your runner uses.
-For example if it is using Zsh, you may need to escape the special characters
-with `\\e` or `\\r`.
 
 In the example above:
 
@@ -99,25 +95,25 @@ Sample job console log:
 
 #### Improve section display with a script
 
-To remove the `echo` statements that create the section markers from the job output,
+To remove the `printf` statements that create the section markers from the job output,
 you can move the job contents to a script file and invoke it from the job:
 
 1. Create a script that can handle the section headers. For example:
 
    ```shell
-   # function for starting the section
-   function section_start () {
+   # Function for starting the section
+   section_start () {
      local section_title="${1}"
      local section_description="${2:-$section_title}"
 
-     echo -e "section_start:`date +%s`:${section_title}[collapsed=true]\r\e[0K${section_description}"
+     printf '\e[0Ksection_start:%d:%s[collapsed=true]\r\e[0K%s\n' "$(date +%s)" "$section_title" "$section_description"
    }
 
    # Function for ending the section
-   function section_end () {
+   section_end () {
      local section_title="${1}"
 
-     echo -e "section_end:`date +%s`:${section_title}\r\e[0K"
+     printf '\e[0Ksection_end:%d:%s\r\e[0K\n' "$(date +%s)" "$section_title"
    }
 
    # Create sections
@@ -147,14 +143,14 @@ to the section start marker, after the section name, and before the `\r`:
 - Section end marker (unchanged): `\e[0Ksection_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
 
 Add the updated section start text to the CI configuration. For example,
-using `echo`:
+using `printf`:
 
 ```yaml
 job1:
   script:
-    - echo -e "\e[0Ksection_start:`date +%s`:my_first_section[collapsed=true]\r\e[0KHeader of the 1st collapsible section"
+    - printf '\e[0Ksection_start:%d:%s[collapsed=true]\r\e[0K%s\n' "$(date +%s)" 'my_first_section' 'Header of the 1st collapsible section'
     - echo 'this line should be hidden automatically after loading the job log'
-    - echo -e "\e[0Ksection_end:`date +%s`:my_first_section\r\e[0K"
+    - printf '\e[0Ksection_end:%d:%s\r\e[0K\n' "$(date +%s)" 'my_first_section'
 ```
 
 ## Delete job logs
@@ -174,7 +170,7 @@ For more details, see [Delete job logs](../../user/storage_management_automation
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455582) in GitLab 17.1 [with a flag](../../administration/feature_flags/_index.md) named `parse_ci_job_timestamps`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455582) in GitLab 17.1 [with a feature flag](../../administration/feature_flags/_index.md) named `parse_ci_job_timestamps`. Disabled by default.
 - Feature flag `parse_ci_job_timestamps` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/464785) in GitLab 17.2.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/202293) in GitLab 18.9.
 

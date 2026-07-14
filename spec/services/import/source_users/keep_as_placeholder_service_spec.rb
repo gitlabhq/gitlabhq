@@ -30,9 +30,9 @@ RSpec.describe Import::SourceUsers::KeepAsPlaceholderService, feature_category: 
 
         expect(result).to be_success
         expect(result.payload.reload).to eq(import_source_user)
-        expect(result.payload.reassign_to_user).to eq(nil)
+        expect(result.payload.reassign_to_user).to be_nil
         expect(result.payload.reassigned_by_user).to eq(current_user)
-        expect(result.payload.keep_as_placeholder?).to eq(true)
+        expect(result.payload.keep_as_placeholder?).to be(true)
       end
     end
 

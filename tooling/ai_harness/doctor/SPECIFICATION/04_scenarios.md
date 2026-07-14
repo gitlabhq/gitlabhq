@@ -28,7 +28,7 @@ within this file use the heading text (e.g., "same Given as
 - `AGENTS.md` and `CLAUDE.md` at root with identical content
 - `AGENTS.md` references `.ai/git.md` and `.ai/testing.md`
 - `.ai/git.md` and `.ai/testing.md` exist
-- `.gitignore` contains `CLAUDE.local.md` and `.ai/*`
+- `.gitignore` contains `CLAUDE.local.md`, `AGENTS.local.md`, and `.ai/*`
 - No forbidden files staged or committed
 
 **When:** `scripts/ai_harness/doctor`
@@ -273,15 +273,26 @@ repo root.
 
 ### gitignore: missing CLAUDE.local.md entry
 
-**Given:** `.gitignore` has `.ai/*` but not `CLAUDE.local.md`
+**Given:** `.gitignore` has `AGENTS.local.md` and `.ai/*` but not
+`CLAUDE.local.md`
 
 **When:** `scripts/ai_harness/doctor`
 
 **Then:** Gitignore check shows `FAIL` with "CLAUDE.local.md", exit code 1
 
+### gitignore: missing AGENTS.local.md entry
+
+**Given:** `.gitignore` has `CLAUDE.local.md` and `.ai/*` but not
+`AGENTS.local.md`
+
+**When:** `scripts/ai_harness/doctor`
+
+**Then:** Gitignore check shows `FAIL` with "AGENTS.local.md", exit code 1
+
 ### gitignore: missing .ai/* entry
 
-**Given:** `.gitignore` has `CLAUDE.local.md` but not `.ai/*`
+**Given:** `.gitignore` has `CLAUDE.local.md` and `AGENTS.local.md` but not
+`.ai/*`
 
 **When:** `scripts/ai_harness/doctor`
 
@@ -312,7 +323,8 @@ be non-rooted to match at all directory levels.
 
 **When:** `scripts/ai_harness/doctor --fix`
 
-**Then:** Both entries appended, gitignore check shows `FIXED`
+**Then:** All required entries appended (`CLAUDE.local.md`,
+`AGENTS.local.md`, `.ai/*`), gitignore check shows `FIXED`
 
 ---
 
@@ -433,7 +445,7 @@ by git (gitignored or in `.git/info/exclude`)
 
 **Then:** Forbidden files check shows `OK`
 
-### forbidden: all remaining patterns are detected
+### forbidden: other .claude/ paths are detected
 
 **Given:** The following files are each tracked by git:
 
@@ -445,8 +457,8 @@ by git (gitignored or in `.git/info/exclude`)
 **When:** `scripts/ai_harness/doctor`
 
 **Then:** Forbidden files check shows `FAIL` listing all four file paths,
-exit code 1. (This supplements the per-pattern scenarios above, which cover
-the remaining forbidden patterns individually.)
+exit code 1. (This exercises the `.claude/**` glob beyond the specific
+subdirectories covered by the per-file scenarios above.)
 
 ### forbidden: --fix does NOT fix forbidden files
 

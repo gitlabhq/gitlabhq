@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Editor Extensions
+stage: AI Clients
+group: Developer Clients
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Connect and use GitLab Duo in JetBrains IDEs.
 title: Install and set up the GitLab Duo plugin for JetBrains IDEs

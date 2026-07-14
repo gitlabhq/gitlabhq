@@ -58,6 +58,26 @@ RSpec.describe 'Setting reviewers of a merge request', :assume_throttled, featur
     merge_request.update!(reviewers: [])
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_merge_request do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(
+        :merge_request_set_reviewers,
+        { project_path: project.full_path, iid: merge_request.iid.to_s }.merge(input),
+        'errors'
+      )
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
+  describe '.authorization' do
+    it 'allows ai_workflows scope token' do
+      expect(Mutations::MergeRequests::SetReviewers.authorization.permitted_scopes).to include(:ai_workflows)
+    end
+  end
+
   it 'returns an error if the user is not allowed to update the merge request' do
     post_graphql_mutation(mutation, current_user: create(:user))
 

@@ -1,7 +1,7 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
-import { __ } from '~/locale';
 import { dimensionsOf, metricsOf } from '../../utils/chart_data';
+import { dimensionMetricValidationError } from '../../utils/chart_validation';
 import SingleDimensionColumnChart from './column_chart/single_dimension_column_chart.vue';
 import TwoDimensionsColumnChart from './column_chart/two_dimensions_column_chart.vue';
 
@@ -44,19 +44,11 @@ export default {
     },
     validationError() {
       if (!this.fields.length) return null;
-      if (this.dimensions.length === 0) {
-        return __('columnChart requires at least one dimension');
-      }
-      if (this.dimensions.length > 2) {
-        return __('columnChart supports a maximum of 2 dimensions');
-      }
-      if (this.metrics.length === 0) {
-        return __('columnChart requires at least one metric');
-      }
-      if (this.dimensions.length === 2 && this.metrics.length > 1) {
-        return __('columnChart with 2 dimensions supports only a single metric');
-      }
-      return null;
+      return dimensionMetricValidationError({
+        displayType: 'columnChart',
+        dimensions: this.dimensions,
+        metrics: this.metrics,
+      });
     },
     stacked() {
       return this.displayConfig?.stacked === true;
@@ -74,7 +66,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-px-5 gl-py-5">
+  <div>
     <gl-skeleton-loader v-if="loading" />
     <template v-else-if="!validationError">
       <single-dimension-column-chart

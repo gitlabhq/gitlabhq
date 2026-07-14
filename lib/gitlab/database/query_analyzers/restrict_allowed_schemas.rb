@@ -25,7 +25,8 @@ module Gitlab
           gitlab_main_jh: :gitlab_main,
           gitlab_ci_cell_local: :gitlab_ci,
           gitlab_main_cell_setting: :gitlab_main,
-          gitlab_main_user: :gitlab_main
+          gitlab_main_user: :gitlab_main,
+          gitlab_sec_cell_local: :gitlab_sec
         }.freeze
 
         class << self

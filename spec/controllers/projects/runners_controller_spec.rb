@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:another_project) { create(:project) }
-  let_it_be(:runner, freeze: false) { create(:ci_runner, :project, projects: [project]) }
+  let_it_be_with_reload(:runner) { create(:ci_runner, :project, projects: [project]) }
 
   let(:params) do
     {
@@ -35,7 +35,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
       end
 
       context 'with an instance runner' do
-        let_it_be(:runner, freeze: false) { create(:ci_runner, :instance) }
+        let_it_be_with_reload(:runner) { create(:ci_runner, :instance) }
 
         it 'renders show with 200 status code' do
           perform_request
@@ -58,7 +58,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
       end
 
       context 'with an instance runner' do
-        let_it_be(:runner, freeze: false) { create(:ci_runner, :instance) }
+        let_it_be_with_reload(:runner) { create(:ci_runner, :instance) }
 
         it 'renders show with 200 status code' do
           perform_request
@@ -175,7 +175,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
       end
 
       context 'with an instance runner' do
-        let_it_be(:runner, freeze: false) { create(:ci_runner, :instance) }
+        let_it_be_with_reload(:runner) { create(:ci_runner, :instance) }
 
         it 'does not allow editing the runner' do
           perform_request
@@ -228,7 +228,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
       end
 
       context 'with an instance runner' do
-        let_it_be(:runner, freeze: false) { create(:ci_runner, :instance) }
+        let_it_be_with_reload(:runner) { create(:ci_runner, :instance) }
 
         it 'does not allow deleting the runner' do
           perform_request
@@ -304,7 +304,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
     end
 
     context 'with an instance runner' do
-      let_it_be(:runner, freeze: false) { create(:ci_runner, :instance) }
+      let_it_be_with_reload(:runner) { create(:ci_runner, :instance) }
 
       it 'does not allow pausing the runner' do
         post :pause, params: params
@@ -315,7 +315,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
     end
 
     context 'with a project runner the user does not manage' do
-      let_it_be(:runner, freeze: false) { create(:ci_runner, :project, projects: [another_project]) }
+      let_it_be_with_reload(:runner) { create(:ci_runner, :project, projects: [another_project]) }
 
       it 'does not allow pausing the runner' do
         post :pause, params: params

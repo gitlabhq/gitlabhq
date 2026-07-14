@@ -39,7 +39,9 @@ module Sidebars
             link: group_crm_contacts_path(context.group),
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::PlanMenu,
             active_routes: { controller: %w[groups/crm/contacts groups/crm/organizations] },
-            item_id: :crm_contacts
+            item_id: :crm_contacts,
+            description: _('Build stronger customer relationships by tracking interactions and organizations'),
+            library_icon: 'customer-relations'
           )
         end
 

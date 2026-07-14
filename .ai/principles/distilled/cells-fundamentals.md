@@ -1,6 +1,6 @@
 ---
-source_checksum: 3892981530d704dc
-distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
+source_checksum: 4179db268419765e
+distilled_at_sha: 73023e3b34aa63d1692e8a3066e870c10875ef55
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -44,7 +44,9 @@ distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
 - Use `gitlab_main_user` only for user functionality that is not organizational level; prefer `gitlab_main_org` for most user functionality (for example, commenting on an issue).
 - Use `gitlab_shared_org` for tables with data across multiple databases that have `organization_id` for sharding; DO NOT use auto-incrementing integer primary keys — use composite or UUID primary keys instead.
 - Use `gitlab_shared_cell_local` for cell-local shared tables that do not require sharding and exist across multiple databases (for example, `loose_foreign_keys_deleted_records`).
+- Use `gitlab_sec_cell_local` for tables in the `sec:` database that hold cell-local, non-customer reference data with no sharding key (for example, malware and package-metadata advisories); these rows are the same for every organization in a cell and are replicated per cell — use `SecApplicationRecord` for models on this schema.
 - DO NOT use the deprecated `gitlab_main` schema — use `gitlab_main_org` instead.
+- Fix pipeline failures caused by cross-database joins, cross-database transactions, or cross-database foreign keys after assigning a schema (see `doc/development/multiple_databases.md` for remediation guidance).
 
 ### Creating New Schemas
 

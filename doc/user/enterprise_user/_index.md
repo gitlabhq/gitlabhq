@@ -68,7 +68,7 @@ To add a custom domain for a group:
      - If you do not have or do not want to use an SSL/TLS certificate, select
        **Automatic certificate management using Let's Encrypt**.
      - If you want to provide your own SSL/TLS certificate, select
-       **Manually enter certificate information**. You can also add a certificate and key later.
+       **Manually enter certificate information**.
 
        > [!note]
        > A valid certificate is not required for domain verification. You can ignore self-signed certificate warnings
@@ -143,8 +143,8 @@ You can also [use the API](../../api/group_enterprise_users.md) to interact with
 Prerequisites:
 
 - The top-level group must [add and verify a group domain](#add-group-domains).
+- The user's primary email must match the verified domain.
 - The user account must meet at least one of the following conditions:
-  - The user account primary email must be from the verified domain.
   - The user account was created on or after February 1, 2021.
   - The user account has a SAML or SCIM identity tied to the organization's group.
   - The user account has a `provisioned_by_group_id` attribute that matches the group ID.
@@ -317,7 +317,7 @@ To hide email addresses for enterprise users:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.4 [with flags](../../administration/feature_flags/_index.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.4 [with feature flags](../../administration/feature_flags/_index.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
 - `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
 - `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
 - `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.

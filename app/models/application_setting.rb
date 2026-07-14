@@ -12,8 +12,6 @@ class ApplicationSetting < ApplicationRecord
 
   columns_changing_default :tool_approval_for_session_enabled
 
-  ignore_column :container_registry_data_repair_detail_worker_max_concurrency,
-    remove_with: '19.2', remove_after: '2026-06-22'
   ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
   ignore_column :lock_model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
 
@@ -55,16 +53,22 @@ class ApplicationSetting < ApplicationRecord
   DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN = 7200 # 2hrs
   MIN_OAUTH_ACCESS_TOKEN_EXPIRES_IN = 300 # 5 mins
 
+  LOGGING_FIELD_SCHEMA_VERSIONS = Labkit::Fields::VARIANT_VERSION.values.uniq.sort.freeze
+  LOGGING_FIELD_LATEST_VERSION  = LOGGING_FIELD_SCHEMA_VERSIONS.max
+
   enum :whats_new_variant, { all_tiers: 0, current_tier: 1, disabled: 2 }, prefix: true
   enum :email_confirmation_setting, { off: 0, soft: 1, hard: 2 }, prefix: true
 
-  # We won't add a prefix here as this token is deprecated and being
-  # disabled in 17.0
+  # disabled in 17.0. While still usable, we are not prefixing it
+  # to avoid breaking changes during the deprecation period.
   # https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html
-  add_authentication_token_field :runners_registration_token, encrypted: :required
-  add_authentication_token_field :health_check_access_token, insecure: true # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/376751
-  add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
-  add_authentication_token_field :error_tracking_access_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
+  add_authentication_token_field :runners_registration_token, encrypted: :required # rubocop:disable Gitlab/TokenWithoutPrefix -- Legacy token being disabled in 17.0
+
+  # These tokens are kept without prefixes for backward compatibility.
+  # We are tracking the prefixing/migration in the issues below.
+  add_authentication_token_field :health_check_access_token, insecure: true # rubocop:disable Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/376751
+  add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required # rubocop:disable Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
+  add_authentication_token_field :error_tracking_access_token, encrypted: :required # rubocop:disable Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
 
   belongs_to :push_rule
   belongs_to :web_ide_oauth_application, class_name: 'Authn::OauthApplication'
@@ -570,6 +574,7 @@ class ApplicationSetting < ApplicationRecord
   jsonb_accessor :ci_cd_settings, ci_cd_settings_definition
 
   chronic_duration_attr :ci_delete_pipelines_in_seconds_limit_human_readable, :ci_delete_pipelines_in_seconds_limit
+  chronic_duration_attr :ci_partitions_in_seconds_limit_human_readable, :ci_partitions_in_seconds_limit
 
   validate :validate_object_storage_for_live_trace_configuration, if: -> { ci_job_live_trace_enabled? }
   validates :ci_partitions_in_seconds_limit, presence: true,
@@ -612,12 +617,20 @@ class ApplicationSetting < ApplicationRecord
     public_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
 
   jsonb_accessor :integrations,
-    jira_connect_additional_audience_url: :string
+    jira_connect_additional_audience_url: :string,
+    jira_forge_app_id: :string
 
   validates :jira_connect_additional_audience_url,
     length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
     allow_blank: true,
     public_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
+
+  JIRA_FORGE_APP_ID_REGEX = %r{\Aari:cloud:ecosystem::app/[0-9a-fA-F-]{36}\z}
+
+  validates :jira_forge_app_id,
+    length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
+    format: { with: JIRA_FORGE_APP_ID_REGEX, message: N_('must be a valid Forge app ID (ARI)') },
+    allow_blank: true
 
   validates :integrations, json_schema: { filename: "application_setting_integrations" }
 
@@ -690,6 +703,7 @@ class ApplicationSetting < ApplicationRecord
 
   with_options(numericality: { only_integer: true, greater_than_or_equal_to: 0 }) do
     validates :bulk_import_max_download_file_size,
+      :ci_lint_limit_per_user,
       :ci_max_includes,
       :ci_max_total_yaml_size_bytes,
       :container_registry_cleanup_tags_service_max_list_size,
@@ -940,6 +954,15 @@ class ApplicationSetting < ApplicationRecord
   validates :whats_new_variant,
     inclusion: { in: ApplicationSetting.whats_new_variants.keys }
 
+  validates :logging_field_schema_version,
+    inclusion: { in: LOGGING_FIELD_SCHEMA_VERSIONS }
+
+  validates :logging_field_dual_emit_target,
+    inclusion: { in: ApplicationSetting::LOGGING_FIELD_SCHEMA_VERSIONS.reject(&:zero?) },
+    allow_nil: true
+
+  validate :schema_version_not_downgraded
+
   validates :floc_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
@@ -1062,6 +1085,12 @@ class ApplicationSetting < ApplicationRecord
 
   validates :database_settings, json_schema: { filename: "application_setting_database_settings" }
 
+  jsonb_accessor :logging_settings,
+    logging_field_schema_version: [:integer, { default: 0 }],
+    logging_field_dual_emit_target: [:integer, { default: nil }]
+
+  validates :logging_settings, json_schema: { filename: "application_setting_logging_settings" }
+
   attr_encrypted :external_auth_client_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :external_auth_client_key_pass, encryption_options_base_32_aes_256_gcm
   attr_encrypted :lets_encrypt_private_key, encryption_options_base_32_aes_256_gcm
@@ -1144,6 +1173,12 @@ class ApplicationSetting < ApplicationRecord
   validates :service_ping_settings, json_schema: { filename: 'application_setting_service_ping_settings' }
 
   validates :math_rendering_limits_enabled,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates :require_sha_for_merge,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates :lock_require_sha_for_merge,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :iframe_rendering_enabled,
@@ -1315,6 +1350,7 @@ class ApplicationSetting < ApplicationRecord
       concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }],
       concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],
       concurrent_relation_batch_export_limit: [:integer, { default: 8 }],
+      ci_lint_limit_per_user: [:integer, { default: 0 }],
       downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }],
       group_api_limit: [:integer, { default: 400 }],
       group_invited_groups_api_limit: [:integer, { default: 60 }],
@@ -1478,6 +1514,17 @@ class ApplicationSetting < ApplicationRecord
     errors.add(:logging_field_dual_emit_target,
       format(_('must be greater than logging_field_schema_version (%{schema_version})'),
         schema_version: logging_field_schema_version))
+  end
+
+  def schema_version_not_downgraded
+    # Note: This guard is only performed on ActiveRecords.
+    # For a database constraint, a trigger validation would be necessary.
+    return unless persisted?
+    return unless logging_field_schema_version_changed?
+    return if logging_field_schema_version >= logging_field_schema_version_was
+
+    errors.add(:logging_field_schema_version,
+      _('cannot be downgraded to an earlier version'))
   end
 end
 

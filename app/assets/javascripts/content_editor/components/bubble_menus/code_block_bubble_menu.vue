@@ -33,7 +33,7 @@ export default {
   directives: {
     GlTooltip,
   },
-  inject: ['tiptapEditor', 'contentEditor'],
+  inject: ['tiptapEditor'],
   data() {
     return {
       codeBlockType: undefined,

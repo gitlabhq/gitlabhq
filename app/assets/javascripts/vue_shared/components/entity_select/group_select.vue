@@ -14,6 +14,7 @@ import {
 import EntitySelect from './entity_select.vue';
 
 export default {
+  name: 'GroupSelect',
   components: {
     GlAlert,
     EntitySelect,

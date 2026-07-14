@@ -78,6 +78,7 @@ module Gitlab
           system: false, # Default value for webhook system flag
           target: merge_request.target_project.hook_attrs,
           target_branch: merge_request.target_branch,
+          target_branch_protected: target_branch_protected?,
           time_change: merge_request.time_change,
           total_time_spent: merge_request.total_time_spent,
           url: Gitlab::UrlBuilder.build(merge_request),
@@ -87,6 +88,10 @@ module Gitlab
 
       def detailed_merge_status
         ::MergeRequests::Mergeability::DetailedMergeStatusService.new(merge_request: merge_request).execute.to_s
+      end
+
+      def target_branch_protected?
+        ProtectedBranch.protected?(merge_request.target_project, merge_request.target_branch)
       end
     end
   end

@@ -14,6 +14,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__, __ } from '~/locale';
 
 export default {
+  name: 'OrganizationSwitcher',
   AVATAR_SHAPE_OPTION_RECT,
   ITEM_LOADING: {
     id: 'loading',

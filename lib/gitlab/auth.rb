@@ -156,13 +156,9 @@ module Gitlab
       # different mechanisms, as in `.find_for_git_client`. This may lead to
       # unwanted access locks when the value provided for `password` was actually
       # a PAT, deploy token, etc.
-      def find_with_user_password(login, password, increment_failed_attempts: false)
+      def find_with_user_password(login, password, activity:, increment_failed_attempts: false)
         # Avoid resource intensive checks if login credentials are not provided
         return unless login.present? && password.present?
-
-        # Nothing to do here if internal auth is disabled and LDAP is
-        # not configured
-        return unless authenticate_using_internal_or_ldap_password?
 
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.find_by_login(login)
@@ -171,9 +167,9 @@ module Gitlab
 
           # Avoid redundant bcrypt when Rack::Attack and the controller both
           # authenticate the same request (e.g. throttle_authenticated_git_http).
-          cache_key = "find_with_user_password:#{login}:#{Digest::SHA256.hexdigest(password)}"
+          cache_key = "find_with_user_password:#{login}:#{Digest::SHA256.hexdigest(password)}:#{activity}"
           authenticated_user = Gitlab::SafeRequestStore.fetch(cache_key) do
-            find_user_from_authenticators(user, login, password)
+            find_user_from_authenticators(user, login, password, activity: activity)
           end
 
           # Side effects must run on every call, not just cache misses
@@ -248,12 +244,10 @@ module Gitlab
         # Prevent LDAP and database authentication attempts when password is a token
         return if password.present? && Authn::AgnosticTokenIdentifier.token?(password)
 
-        user = find_with_user_password(login, password)
+        user = find_with_user_password(login, password, activity: :git)
         return unless user
 
-        if user.ldap_user? &&
-            Gitlab::CurrentSettings.password_authentication_enabled_for_git? &&
-            Gitlab::Auth::Ldap::Config.prevent_ldap_sign_in?
+        if user.ldap_user? && Gitlab::Auth::Ldap::Config.prevent_ldap_sign_in?
           track_internal_event(
             'authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled',
             user: user,
@@ -555,11 +549,17 @@ module Gitlab
         end
       end
 
-      def password_authenticators_for_user(user)
+      def database_password_authenticator_for_user(user, activity:)
+        return if activity == :git && !user.allow_password_authentication_for_git?
+
+        Gitlab::Auth::OAuth::Provider.authentication(user, 'database')
+      end
+
+      def password_authenticators_for_user(user, activity:)
         authenticators = []
 
         if user
-          authenticators << Gitlab::Auth::OAuth::Provider.authentication(user, 'database')
+          authenticators << database_password_authenticator_for_user(user, activity: activity)
 
           # Add authenticators for all identities if user is not nil
           user&.identities&.each do |identity|
@@ -574,8 +574,8 @@ module Gitlab
         authenticators.compact
       end
 
-      def find_user_from_authenticators(user, login, password)
-        authenticators = password_authenticators_for_user(user)
+      def find_user_from_authenticators(user, login, password, activity:)
+        authenticators = password_authenticators_for_user(user, activity: activity)
 
         # return found user that was authenticated first for given login credentials
         authenticators.find do |auth|

@@ -2,6 +2,7 @@
 import projectNew from '~/projects/project_new';
 
 export default {
+  name: 'LegacyContainer',
   inheritAttrs: false,
   props: {
     selector: {

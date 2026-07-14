@@ -36,6 +36,7 @@ export default {
       required: true,
     },
   },
+  emits: ['delete-modal-visible'],
   computed: {
     text() {
       if (this.issueCount === 0 && this.mergeRequestCount === 0) {

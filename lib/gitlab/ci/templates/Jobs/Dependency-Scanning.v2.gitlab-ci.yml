@@ -150,7 +150,7 @@ variables:
 # This job is mandatory and responsible for doing the complete dependency analysis
 
 .ds-supported-files: &ds_supported_files
-  - '**/{*.csproj,*.vbproj,build.gradle,build.gradle.kts,build.sbt,Cargo.lock,composer.lock,conan.lock,conda-lock.yml,dependencies-compile.dot,dependencies.lock,Gemfile.lock,gems.locked,go.graph,go.mod,gradle.lockfile,ivy-report.xml,maven.graph.json,npm-shrinkwrap.json,package-lock.json,Package.resolved,Pipfile,Pipfile.lock,pipenv.graph.json,pipdeptree.json,pnpm-lock.yaml,Podfile.lock,poetry.lock,pom.xml,pubspec.lock,requirements.pip,requirements.txt,requires.txt,setup.py,uv.lock,yarn.lock}'
+  - '**/{*.csproj,*.vbproj,build.gradle,build.gradle.kts,build.sbt,bun.lock,Cargo.lock,composer.lock,conan.lock,conda-lock.yml,dependencies-compile.dot,dependencies.lock,Gemfile.lock,gems.locked,go.graph,go.mod,gradle.lockfile,ivy-report.xml,maven.graph.json,npm-shrinkwrap.json,package-lock.json,Package.resolved,Pipfile,Pipfile.lock,pipenv.graph.json,pipdeptree.json,pnpm-lock.yaml,Podfile.lock,poetry.lock,pom.xml,pubspec.lock,requirements.pip,requirements.txt,requires.txt,setup.py,uv.lock,yarn.lock}'
 
 "$[[ inputs.job_name ]]":
   variables:

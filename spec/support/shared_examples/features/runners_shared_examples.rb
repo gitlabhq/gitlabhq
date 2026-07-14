@@ -29,7 +29,7 @@ RSpec.shared_examples 'shows and resets runner registration token' do
       click_button('Reset token', match: :first)
     end
 
-    expect(find('.gl-toast')).to have_content('New registration token generated!')
+    expect(page).to have_css('.gl-toast', text: 'New registration token generated!')
 
     # new registration token
     click_on dropdown_text
@@ -82,17 +82,13 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
 
   it 'pauses and resumes runner' do
     within_runner_row(runner.id) do
-      click_button "Pause"
+      expect(page).not_to have_text "Paused"
 
-      expect(page).to have_text s_('Runners|Paused')
-      expect(page).to have_button 'Resume'
-      expect(page).not_to have_button 'Pause'
+      click_button "Pause"
+      expect(page).to have_text "Paused"
 
       click_button "Resume"
-
-      expect(page).not_to have_text 'paused'
-      expect(page).not_to have_button 'Resume'
-      expect(page).to have_button 'Pause'
+      expect(page).not_to have_text "Paused"
     end
   end
 
@@ -107,7 +103,7 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
       click_on 'Permanently delete runner'
     end
 
-    expect(page.find('.gl-toast')).to have_text(/Runner .+ deleted/)
+    expect(page).to have_css('.gl-toast', text: /Runner .+ deleted/)
     expect(page).not_to have_content runner.description
   end
 end

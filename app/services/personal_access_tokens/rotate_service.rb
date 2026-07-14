@@ -136,6 +136,7 @@ module PersonalAccessTokens
         impersonation: token.impersonation,
         scopes: token.scopes,
         granular: token.granular,
+        sudo: token.sudo,
         expires_at: expires_at,
         organization: token.organization }
     end

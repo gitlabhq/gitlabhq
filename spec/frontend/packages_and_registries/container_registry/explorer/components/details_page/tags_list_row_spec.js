@@ -467,43 +467,30 @@ describe('tags list row', () => {
   });
 
   describe('supported platforms display', () => {
-    describe('when the feature flag is disabled', () => {
-      it('is not rendered for index tags', async () => {
-        mountComponent({ ...defaultProps, tag: tagWithListMediaType });
-        await nextTick();
+    it('is not rendered for non-index tags', async () => {
+      mountComponent(defaultProps);
+      await nextTick();
 
-        expect(findManifestPlatformsRow().exists()).toBe(false);
-      });
+      expect(findManifestPlatformsRow().exists()).toBe(false);
     });
 
-    describe('when the feature flag is enabled', () => {
-      const provide = { glFeatures: { containerRegistryDisplaySupportedPlatforms: true } };
-
-      it('is not rendered for non-index tags', async () => {
-        mountComponent(defaultProps, provide);
+    describe.each`
+      description                               | image
+      ${'with OCI index media type'}            | ${tagWithOCIMediaType}
+      ${'with Docker manifest list media type'} | ${tagWithListMediaType}
+    `('$description', ({ image }) => {
+      it('renders the supported platforms row', async () => {
+        mountComponent({ ...defaultProps, tag: image });
         await nextTick();
 
-        expect(findManifestPlatformsRow().exists()).toBe(false);
+        expect(findManifestPlatformsRow().exists()).toBe(true);
       });
 
-      describe.each`
-        description                               | image
-        ${'with OCI index media type'}            | ${tagWithOCIMediaType}
-        ${'with Docker manifest list media type'} | ${tagWithListMediaType}
-      `('$description', ({ image }) => {
-        it('renders the supported platforms row', async () => {
-          mountComponent({ ...defaultProps, tag: image }, provide);
-          await nextTick();
+      it('passes the tag prop to the supported platforms row', async () => {
+        mountComponent({ ...defaultProps, tag: image });
+        await nextTick();
 
-          expect(findManifestPlatformsRow().exists()).toBe(true);
-        });
-
-        it('passes the tag prop to the supported platforms row', async () => {
-          mountComponent({ ...defaultProps, tag: image }, provide);
-          await nextTick();
-
-          expect(findManifestPlatformsRow().props('tag')).toEqual(image);
-        });
+        expect(findManifestPlatformsRow().props('tag')).toEqual(image);
       });
     });
   });

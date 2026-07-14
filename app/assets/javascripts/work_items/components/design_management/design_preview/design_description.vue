@@ -18,6 +18,7 @@ import { UPDATE_DESCRIPTION_ERROR } from '../constants';
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
 export default {
+  name: 'DesignDescription',
   components: {
     MarkdownEditor,
     GlAlert,
@@ -61,6 +62,7 @@ export default {
       isSubmitting: false,
       errorMessage: '',
       isCancellingEdit: false,
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- autosave key identifier using entity type names, not a navigational URL
       autosaveKey: `WorkItem/${getIdFromGraphQLId(this.design.issue.id)}/Design/${getIdFromGraphQLId(
         this.design.id,
       )}`,

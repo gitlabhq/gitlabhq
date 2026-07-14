@@ -9,8 +9,6 @@ categories: [ Secret Detection ]
 level: primary
 ---
 
-<!-- categories: Secret Detection -->
-
 In GitLab versions earlier than 19.1, you couldn't trust a feature branch pipeline to
 surface every secret in your branch. A new branch scanned only the latest commit.
 An existing branch scanned only your most recent push. A credential leaked in an

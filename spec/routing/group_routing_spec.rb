@@ -65,6 +65,20 @@ RSpec.shared_examples 'groups routing' do
     expect(get('/groups/gitlabhq/-/boards')).to route_to('groups/boards#index', group_id: 'gitlabhq')
   end
 
+  it 'routes work items with a numeric iid to #show' do
+    expect(get("/groups/#{group_path}/-/work_items/1"))
+      .to route_to('groups/work_items#show', group_id: group_path, iid: '1')
+  end
+
+  it 'does not route a work item iid with a non-numeric suffix' do
+    expect(get("/groups/#{group_path}/-/work_items/1foo")).to route_to_route_not_found
+  end
+
+  it 'routes the work items new page to #show' do
+    expect(get("/groups/#{group_path}/-/work_items/new"))
+      .to route_to('groups/work_items#show', group_id: group_path, iid: 'new')
+  end
+
   it 'routes to the harbor repositories controller' do
     expect(get("groups/#{group_path}/-/harbor/repositories")).to route_to('groups/harbor/repositories#index', group_id: group_path)
   end

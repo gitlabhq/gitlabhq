@@ -122,6 +122,8 @@ module Groups
         end
       end
 
+      log_group_transfer_parent_changed
+
       # There is a risk that the request times out and the event would never get published, even though the
       # namespace got transferred. Publishing the event first to improve this consistency.
       publish_event(old_root_ancestor_id)
@@ -344,9 +346,36 @@ module Groups
     end
 
     def refresh_project_authorizations
-      project_ids = Groups::ProjectsRequiringAuthorizationsRefresh::OnTransferFinder.new(@group).execute
+      AuthorizedProjectUpdate::ProjectAccessChangedService.new(projects_requiring_authorization_refresh).execute
 
-      AuthorizedProjectUpdate::ProjectAccessChangedService.new(project_ids).execute
+      # If a step between the parent change committing
+      # (log_group_transfer_parent_changed) and this point
+      # (post_update_hooks) raises, this line never runs and the group
+      # is left permanently assigned to its new parent with no
+      # authorization refresh queued for the subtree
+      log_group_transfer_authz_refresh_enqueued(projects_requiring_authorization_refresh.size)
+    end
+
+    def projects_requiring_authorization_refresh
+      @projects_requiring_authorization_refresh ||=
+        Groups::ProjectsRequiringAuthorizationsRefresh::OnTransferFinder.new(@group).execute
+    end
+
+    def log_group_transfer_parent_changed
+      Gitlab::AppJsonLogger.info(
+        event: 'group_transfer_parent_changed',
+        group_id: @group.id,
+        new_parent_group_id: @new_parent_group&.id,
+        project_count: projects_requiring_authorization_refresh.size
+      )
+    end
+
+    def log_group_transfer_authz_refresh_enqueued(project_count)
+      Gitlab::AppJsonLogger.info(
+        event: 'group_transfer_authz_refresh_enqueued',
+        group_id: @group.id,
+        project_count: project_count
+      )
     end
 
     def raise_transfer_error(message)

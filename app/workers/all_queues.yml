@@ -314,16 +314,6 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :container_repository
-- :name: container_repository:container_registry_record_data_repair_detail
-  :worker_name: ContainerRegistry::RecordDataRepairDetailWorker
-  :feature_category: :container_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :container_repository
 - :name: container_repository_delete:container_registry_delete_container_repository
   :worker_name: ContainerRegistry::DeleteContainerRepositoryWorker
   :feature_category: :container_registry
@@ -646,6 +636,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:ci_stuck_pipelines_process
+  :worker_name: Ci::StuckPipelines::ProcessWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_timed_out_builds_drop_timed_out
   :worker_name: Ci::TimedOutBuilds::DropTimedOutWorker
   :feature_category: :continuous_integration
@@ -878,16 +878,6 @@
   :queue_namespace: :cronjob
 - :name: cronjob:deploy_tokens_expiring
   :worker_name: DeployTokens::ExpiringWorker
-  :feature_category: :continuous_delivery
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :cronjob
-- :name: cronjob:environments_auto_delete_cron
-  :worker_name: Environments::AutoDeleteCronWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies: false
   :urgency: :low
@@ -2560,7 +2550,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: false
+  :idempotent: true
   :tags: []
   :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_build_trace_chunk_flush
@@ -3810,6 +3800,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: ci_track_ai_pipeline_results_viewed
+  :worker_name: Ci::TrackAiPipelineResultsViewedWorker
+  :feature_category: :pipeline_composition
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: ci_track_first_pipeline_succeeded
   :worker_name: Ci::TrackFirstPipelineSucceededWorker
   :feature_category: :pipeline_composition
@@ -4764,6 +4764,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: merge_requests_write_diffs_cache
+  :worker_name: MergeRequests::WriteDiffsCacheWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: metrics_patched_files
   :worker_name: Metrics::PatchedFilesWorker
   :feature_category: :delivery
@@ -4874,8 +4884,28 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: organizations_activate
+  :worker_name: Organizations::ActivateWorker
+  :feature_category: :organization
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: organizations_check_organization_isolation_status
   :worker_name: Organizations::CheckOrganizationIsolationStatusWorker
+  :feature_category: :organization
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: organizations_confirm
+  :worker_name: Organizations::ConfirmWorker
   :feature_category: :organization
   :has_external_dependencies: false
   :urgency: :low
@@ -4896,6 +4926,16 @@
   :queue_namespace:
 - :name: organizations_hard_delete
   :worker_name: Organizations::HardDeleteWorker
+  :feature_category: :organization
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: organizations_root_group_organization_backfill
+  :worker_name: Organizations::RootGroupOrganizationBackfillWorker
   :feature_category: :organization
   :has_external_dependencies: false
   :urgency: :low

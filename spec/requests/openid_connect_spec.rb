@@ -156,8 +156,8 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
         expect(json_response['email']).to eq(user.public_email)
       end
 
-      it 'has false in email_verified claim' do
-        expect(json_response['email_verified']).to eq(true)
+      it 'has true in email_verified claim' do
+        expect(json_response['email_verified']).to be(true)
       end
     end
 
@@ -192,7 +192,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
       end
 
       it 'has true in email_verified claim' do
-        expect(@payload['email_verified']).to eq(true)
+        expect(@payload['email_verified']).to be(true)
       end
 
       it 'does not include any unknown properties' do
@@ -360,7 +360,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
       end
 
       it 'has true in email_verified claim' do
-        expect(json_response['email_verified']).to eq(true)
+        expect(json_response['email_verified']).to be(true)
       end
 
       context 'with a cross-origin request' do
@@ -407,7 +407,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
       end
 
       it 'has true in email_verified claim' do
-        expect(@payload['email_verified']).to eq(true)
+        expect(@payload['email_verified']).to be(true)
       end
 
       it 'does include groups' do

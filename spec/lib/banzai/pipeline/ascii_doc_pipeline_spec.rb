@@ -101,12 +101,15 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
         output = <<~HTML
           <div>
           <div>
-          <div class="gl-relative markdown-code-block js-markdown-code"><pre data-canonical-lang="mypre" class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code></code></pre><copy-code></copy-code><insert-code-snippet></insert-code-snippet></div>
+          <div class="gl-relative markdown-code-block js-markdown-code">
+          <pre data-lang="mypre&quot;&gt;&lt;script&gt;alert(3)&lt;/script&gt;" data-canonical-lang="mypre&quot;&gt;&lt;script&gt;alert(3)&lt;/script&gt;" class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code></code></pre>
+          <copy-code></copy-code><insert-code-snippet></insert-code-snippet>
+          </div>
           </div>
           </div>
         HTML
 
-        expect(render(input, context)).to include(output.strip)
+        expect(render(input, context)).to include_html(output, trim_text_nodes: true)
       end
 
       it 'does not allow locked attributes to be overridden' do
@@ -205,6 +208,23 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
         HTML
 
         expect(render(input, context)).to include(output.strip)
+      end
+    end
+
+    context 'with code block without language' do
+      it 'renders code block without data-lang attribute on pre tag' do
+        input = <<~ADOC
+          [source]
+          ----
+          puts "hello world"
+          ----
+        ADOC
+
+        result = render(input, context)
+
+        # Check that pre tag doesn't have data-lang attribute (this tests the HtmlPipelineAdapter falsy branch)
+        expect(result).to include('<pre class="code highlight js-syntax-highlight language-plaintext" v-pre="true">')
+        expect(result).not_to include('<pre data-lang=')
       end
     end
 
@@ -372,12 +392,15 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
         output = <<~HTML
           <div>
           <div>
-          <div class="gl-relative markdown-code-block js-markdown-code"><pre data-canonical-lang="js" class="code highlight js-syntax-highlight language-javascript" v-pre="true"><code><span id="LC1" class="line" lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre><copy-code></copy-code><insert-code-snippet></insert-code-snippet></div>
+          <div class="gl-relative markdown-code-block js-markdown-code">
+          <pre data-lang="js" data-canonical-lang="js" class="code highlight js-syntax-highlight language-javascript" v-pre="true"><code><span id="LC1" class="line" data-lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
+          <copy-code></copy-code><insert-code-snippet></insert-code-snippet>
+          </div>
           </div>
           </div>
         HTML
 
-        expect(render(input, context)).to include(output.strip)
+        expect(render(input, context)).to include_html(output, trim_text_nodes: true)
       end
     end
 
@@ -399,16 +422,16 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
           <div>
           <div>class.cpp</div>
           <div>
-          <div class="gl-relative markdown-code-block js-markdown-code"><pre data-canonical-lang="c++" class="code highlight js-syntax-highlight language-cpp" v-pre="true"><code><span id="LC1" class="line" lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span></span>
-          <span id="LC2" class="line" lang="cpp"></span>
-          <span id="LC3" class="line" lang="cpp"><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span></span>
-          <span id="LC4" class="line" lang="cpp">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"*"</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></span>
-          <span id="LC5" class="line" lang="cpp"><span class="p">}</span></span></code></pre><copy-code></copy-code><insert-code-snippet></insert-code-snippet></div>
+          <div class="gl-relative markdown-code-block js-markdown-code"><pre data-lang="c++" data-canonical-lang="c++" class="code highlight js-syntax-highlight language-cpp" v-pre="true"><code><span id="LC1" class="line" data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span></span>
+          <span id="LC2" class="line" data-lang="cpp"></span>
+          <span id="LC3" class="line" data-lang="cpp"><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span></span>
+          <span id="LC4" class="line" data-lang="cpp">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"*"</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></span>
+          <span id="LC5" class="line" data-lang="cpp"><span class="p">}</span></span></code></pre><copy-code></copy-code><insert-code-snippet></insert-code-snippet></div>
           </div>
           </div>
         HTML
 
-        expect(render(input, context)).to include(output.strip)
+        expect(render(input, context)).to include_html(output, trim_text_nodes: true)
       end
     end
 
@@ -455,12 +478,14 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
           stem:[2+2] is 4
         MD
 
-        expect(render(input, context))
-          .to include('<pre data-math-style="display" class="js-render-math" v-pre="true"><code>' \
-            '<span id="LC1" class="line" lang="plaintext">\beta_x \gamma</span></code></pre>' \
-            '<copy-code></copy-code><insert-code-snippet></insert-code-snippet>')
-        expect(render(input, context))
-          .to include('<p><code data-math-style="inline" class="js-render-math">2+2</code> is 4</p>')
+        result = render(input, context)
+
+        expect(result).to include(
+          '<pre data-math-style="display" class="js-render-math" v-pre="true"><code>' \
+            '<span id="LC1" class="line" data-lang="plaintext">\beta_x \gamma</span></code></pre>' \
+            '<copy-code></copy-code><insert-code-snippet></insert-code-snippet>'
+        )
+        expect(result).to include('<p><code data-math-style="inline" class="js-render-math">2+2</code> is 4</p>')
       end
     end
 

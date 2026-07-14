@@ -7,60 +7,91 @@ import TableContents from '~/blob/components/table_contents.vue';
 let wrapper;
 
 const MARKDOWN_FIXTURE = `
-  <div class="blob-viewer" data-type="rich" data-loaded="false">
-    <h1><a id="hello">$</a> Hello</h1>
-    <h2><a id="world">$</a> World</h2>
-    <h3><a id="hakuna">$</a> Hakuna</h3>
-    <h2><a id="matata">$</a> Matata</h2>
+  <div class="file-holder">
+    <div id="toc-mount-point"></div>
+    <div class="blob-viewer" data-type="rich" data-loaded="false">
+      <h1><a id="hello"  class="anchor">$</a> Hello</h1>
+      <h2><a id="world"  class="anchor">$</a> World</h2>
+      <h3><a id="hakuna" class="anchor">$</a> Hakuna</h3>
+      <h2><a id="matata" class="anchor">$</a> Matata</h2>
+    </div>
   </div>
 `;
 
 const MARKDOWN_FIXTURE_WITHOUT_ANCHORS = `
-  <div class="blob-viewer" data-type="rich" data-loaded="false">
-    <h1>Title Without Anchor</h1>
-    <h2><a id="world">$</a> World</h2>
-    <h3><a id="hakuna">$</a> Hakuna</h3>
-    <h2><a id="matata">$</a> Matata</h2>
+  <div class="file-holder">
+    <div id="toc-mount-point"></div>
+    <div class="blob-viewer" data-type="rich" data-loaded="false">
+      <h1>Title Without Anchor</h1>
+      <h2><a id="world"  class="anchor">$</a> World</h2>
+      <h3><a id="hakuna" class="anchor">$</a> Hakuna</h3>
+      <h2><a id="matata" class="anchor">$</a> Matata</h2>
+    </div>
   </div>
 `;
 
 const ASCIIDOC_FIXTURE = `
-  <div class="blob-viewer" data-type="rich" data-loaded="false">
-    <h1 id="user-content-introduction">
-      <a class="anchor" href="#user-content-introduction"></a>
-      Introduction
-    </h1>
-    <h2 id="user-content-first-section">
-      <a class="anchor" href="#user-content-first-section"></a>
-      First section
-    </h2>
-    <h3 id="user-content-subsection">
-      <a class="anchor" href="#user-content-subsection"></a>
-      Subsection
-    </h3>
-    <h2 id="user-content-second-section">
-      <a class="anchor" href="#user-content-second-section"></a>
-      Second section
-    </h2>
+  <div class="file-holder">
+    <div id="toc-mount-point"></div>
+    <div class="blob-viewer" data-type="rich" data-loaded="false">
+      <h1 id="user-content-introduction">
+        <a class="anchor" href="#user-content-introduction"></a>
+        Introduction
+      </h1>
+      <h2 id="user-content-first-section">
+        <a class="anchor" href="#user-content-first-section"></a>
+        First section
+      </h2>
+      <h3 id="user-content-subsection">
+        <a class="anchor" href="#user-content-subsection"></a>
+        Subsection
+      </h3>
+      <h2 id="user-content-second-section">
+        <a class="anchor" href="#user-content-second-section"></a>
+        Second section
+      </h2>
+    </div>
   </div>
 `;
 
 const ASCIIDOC_FIXTURE_WITHOUT_ANCHORS = `
-  <div class="blob-viewer" data-type="rich" data-loaded="false">
-    <h1 id="user-content-title">Title Without Anchor</h1>
-    <h2 id="user-content-first-section">
-      <a class="anchor" href="#user-content-first-section"></a>
-      First section
-    </h2>
-    <h3 id="user-content-subsection">
-      <a class="anchor" href="#user-content-subsection"></a>
-      Subsection
-    </h3>
+  <div class="file-holder">
+    <div id="toc-mount-point"></div>
+    <div class="blob-viewer" data-type="rich" data-loaded="false">
+      <h1 id="user-content-title">Title Without Anchor</h1>
+      <h2 id="user-content-first-section">
+        <a class="anchor" href="#user-content-first-section"></a>
+        First section
+      </h2>
+      <h3 id="user-content-subsection">
+        <a class="anchor" href="#user-content-subsection"></a>
+        Subsection
+      </h3>
+    </div>
+  </div>
+`;
+
+const MULTI_FILE_FIXTURE = `
+  <div class="file-holder">
+    <div id="toc-mount-point-1"></div>
+    <div class="blob-viewer" data-type="rich" data-loaded="false">
+      <h1><a id="alpha-h1" class="anchor">$</a> Alpha H1</h1>
+      <h2><a id="alpha-h2" class="anchor">$</a> Alpha H2</h2>
+    </div>
+  </div>
+  <div class="file-holder">
+    <div id="toc-mount-point-2"></div>
+    <div class="blob-viewer" data-type="rich" data-loaded="false">
+      <h1><a id="beta-h1" class="anchor">$</a> Beta H1</h1>
+      <h2><a id="beta-h2" class="anchor">$</a> Beta H2</h2>
+    </div>
   </div>
 `;
 
 function createComponent() {
-  wrapper = shallowMount(TableContents);
+  wrapper = shallowMount(TableContents, {
+    attachTo: '#toc-mount-point',
+  });
 }
 
 const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
@@ -159,6 +190,23 @@ describe('Markdown table of contents component', () => {
       expect(texts).not.toContain('Title Without Anchor');
     });
   });
+
+  describe('viewer switching from simple to rich', () => {
+    beforeEach(() => {
+      document.querySelector('.blob-viewer').dataset.type = 'simple';
+      document.querySelector('.blob-viewer').dataset.loaded = 'true';
+    });
+
+    it('shows TOC when data-type transitions to rich and data-loaded is true', async () => {
+      createComponent();
+
+      document.querySelector('.blob-viewer').dataset.type = 'rich';
+      await nextTick();
+
+      expect(findDropdown().exists()).toBe(true);
+      expect(findDropdownItems()).toHaveLength(4);
+    });
+  });
 });
 
 describe('AsciiDoc table of contents component', () => {
@@ -219,5 +267,35 @@ describe('AsciiDoc table of contents component', () => {
       expect(texts).toEqual(['First section', 'Subsection']);
       expect(texts).not.toContain('Title Without Anchor');
     });
+  });
+});
+
+describe('multi-file snippets', () => {
+  beforeEach(() => {
+    setHTMLFixture(MULTI_FILE_FIXTURE);
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
+  });
+
+  it('each TOC shows only its own file headings', async () => {
+    const wrappers = [1, 2].map((n) =>
+      shallowMount(TableContents, { attachTo: `#toc-mount-point-${n}` }),
+    );
+
+    document.querySelectorAll('.blob-viewer').forEach((el) => {
+      el.dataset.loaded = 'true';
+    });
+    await nextTick();
+
+    const items = wrappers.map((w) => w.findComponent(GlDisclosureDropdown).props('items'));
+
+    expect(items[0]).toHaveLength(2);
+    expect(items[1]).toHaveLength(2);
+    expect(items[0].map((i) => i.text)).toEqual(['$ Alpha H1', '$ Alpha H2']);
+    expect(items[1].map((i) => i.text)).toEqual(['$ Beta H1', '$ Beta H2']);
+
+    wrappers.forEach((w) => w.destroy());
   });
 });

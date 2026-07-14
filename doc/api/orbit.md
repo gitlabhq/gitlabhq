@@ -16,7 +16,7 @@ title: Orbit API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19744) in GitLab 18.10 [with a flag](../administration/feature_flags/_index.md) named `knowledge_graph`. This feature is an [experiment](../policy/development_stages_support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19744) in GitLab 18.10 [with a feature flag](../administration/feature_flags/_index.md) named `knowledge_graph`. This feature is an [experiment](../policy/development_stages_support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 {{< /history >}}
 
@@ -250,6 +250,124 @@ Example response:
 }
 ```
 
+## Execute a named query
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244436) in GitLab 19.2.
+
+{{< /history >}}
+
+Executes a server-defined named query. Prefer this endpoint over
+[create a query](#create-a-query) for programmatic consumers: the query
+structure lives on the server, so it cannot drift from the DSL grammar or
+ontology.
+
+```plaintext
+POST /api/v4/orbit/query/:name
+```
+
+Supported attributes:
+
+| Attribute         | Type   | Required | Description                                                |
+|-------------------|--------|----------|--------------------------------------------------------------|
+| `name`            | string | Yes      | The named query identifier, for example `recent_merges`.     |
+| `parameters`      | object | No       | Values for the placeholders the named query declares.        |
+| `response_format` | string | No       | One of `raw` or `llm`. Default is `raw`.                     |
+
+The request body must use `Content-Type: application/json`. Form encoding
+stringifies nested parameter values, which the per-query parameter schemas
+reject.
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) with the same response
+attributes as [create a query](#create-a-query).
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{"parameters": {}}' \
+  --url "https://gitlab.example.com/api/v4/orbit/query/my_neighbors"
+```
+
+## List query templates
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244701) in GitLab 19.2.
+
+{{< /history >}}
+
+Lists the server-defined named queries with their query DSL rendered for the
+authenticated user.
+
+For programmatic consumers, prefer [executing named queries directly](#execute-a-named-query)
+with parameters. Use the templates and their rendered `raw_query` from this
+endpoint only where displaying the query DSL text is the goal, such as
+populating a query editor or explorer with the text of a preset.
+
+The rendered query DSL is not the same for every user:
+
+- Identity values, like the ID of the authenticated user, are resolved
+  server-side from the request credentials. The same request returns different
+  `raw_query` values for different users. Do not cache or share templates
+  across users.
+- Placeholders for caller-supplied values, like the selected nodes in
+  `expand_neighbors`, are filled with server-declared example values. Replace
+  them with real values before you execute the query.
+
+```plaintext
+GET /api/v4/orbit/query/templates
+```
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and an array of
+template objects with the following attributes:
+
+| Attribute     | Type   | Description                                             |
+|---------------|--------|----------------------------------------------------------|
+| `name`        | string | The name of the named query.                             |
+| `description` | string | The description of the named query.                      |
+| `raw_query`   | object | The query DSL rendered for the authenticated user.       |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/orbit/query/templates"
+```
+
+Example response, where `43` is the ID of the authenticated user:
+
+```json
+[
+  {
+    "name": "my_neighbors",
+    "description": "Immediate graph neighborhood of the current user.",
+    "raw_query": {
+      "query_type": "neighbors",
+      "node": {"id": "me", "entity": "User", "node_ids": [43]},
+      "neighbors": {"node": "me", "direction": "both"},
+      "limit": 100
+    }
+  },
+  {
+    "name": "recent_merges",
+    "description": "Recently merged merge requests and the users who merged them.",
+    "raw_query": {
+      "query_type": "traversal",
+      "nodes": [
+        {"id": "u", "entity": "User", "columns": ["id", "username"]},
+        {"id": "mr", "entity": "MergeRequest", "filters": {"state": "merged"}, "columns": ["id", "title", "merged_at"]}
+      ],
+      "relationships": [{"type": "MERGED", "from": "u", "to": "mr"}],
+      "limit": 100
+    }
+  }
+]
+```
+
 ## Retrieve the schema
 
 Retrieves the Orbit schema.
@@ -300,10 +418,11 @@ Example response:
 }
 ```
 
-## Retrieve cluster health
+## Retrieve access and cluster health
 
-Retrieves cluster health and component status. This endpoint always returns `200 OK`,
-even when the service is unreachable. Check the `status` field to determine health.
+Returns whether the authenticated user can access the Knowledge Graph, along with the
+cluster health. Use this endpoint to decide whether to expose Orbit actions before you
+call them. It always returns `200 OK`, regardless of access or service health.
 
 ```plaintext
 GET /api/v4/orbit/status
@@ -318,12 +437,15 @@ Supported attributes:
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
-| Attribute    | Type         | Description                                                     |
-|--------------|--------------|-----------------------------------------------------------------|
-| `status`     | string       | The cluster health status, for example `healthy` or `unknown`.  |
-| `timestamp`  | string       | The timestamp of the health check.                              |
-| `version`    | string       | The service version.                                            |
-| `components` | object array | The individual component statuses.                              |
+| Attribute          | Type    | Description                                                         |
+|--------------------|---------|---------------------------------------------------------------------|
+| `user`             | object  | The requesting user's access.                                       |
+| `user.available`   | boolean | Whether the user can access the Knowledge Graph.                    |
+| `system`           | object  | The cluster health, or `null` when the user has no access.          |
+| `system.status`    | string  | The cluster health status, for example `healthy` or `unknown`.      |
+| `system.timestamp` | string  | The timestamp of the health check.                                  |
+| `system.version`   | string  | The service version.                                                |
+| `system.components`| array   | The individual component statuses.                                  |
 
 Example request:
 
@@ -336,14 +458,30 @@ Example response:
 
 ```json
 {
-  "status": "healthy",
-  "timestamp": "2026-03-05T15:08:35.885160548+00:00",
-  "version": "0.1.0",
-  "components": [
-    {"name": "gkg-indexer", "status": "healthy", "replicas": {"ready": 1, "desired": 1}, "metrics": {}},
-    {"name": "gkg-webserver", "status": "healthy", "replicas": {"ready": 1, "desired": 1}, "metrics": {}},
-    {"name": "clickhouse", "status": "healthy", "replicas": {"ready": 0, "desired": 0}, "metrics": {}}
-  ]
+  "user": {
+    "available": true
+  },
+  "system": {
+    "status": "healthy",
+    "timestamp": "2026-03-05T15:08:35.885160548+00:00",
+    "version": "0.1.0",
+    "components": [
+      {"name": "gkg-indexer", "status": "healthy", "replicas": {"ready": 1, "desired": 1}, "metrics": {}},
+      {"name": "gkg-webserver", "status": "healthy", "replicas": {"ready": 1, "desired": 1}, "metrics": {}},
+      {"name": "clickhouse", "status": "healthy", "replicas": {"ready": 0, "desired": 0}, "metrics": {}}
+    ]
+  }
+}
+```
+
+When the user has no access, `system` is `null`:
+
+```json
+{
+  "user": {
+    "available": false
+  },
+  "system": null
 }
 ```
 

@@ -11,6 +11,7 @@ import {
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
+  name: 'AdvancedSettings',
   components: {
     GlAccordion,
     GlAccordionItem,

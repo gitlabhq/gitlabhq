@@ -13,6 +13,7 @@ module Projects
       LFS_BATCH_API_ENDPOINT = '/info/lfs/objects/batch'
 
       LfsObjectDownloadListError = Class.new(StandardError)
+      LfsObjectDownloadListUnauthorizedError = Class.new(LfsObjectDownloadListError)
 
       def each_list_item(&block)
         return unless context_valid?
@@ -22,6 +23,9 @@ module Projects
         LfsDownloadLinkListService
           .new(project, remote_uri: current_endpoint_uri)
           .each_link(missing_lfs_files, &block)
+      rescue LfsDownloadLinkListService::DownloadLinksRequestUnauthorizedError => e
+        raise LfsObjectDownloadListUnauthorizedError,
+          "The LFS objects download list couldn't be imported. Error: #{e.message}"
       rescue LfsDownloadLinkListService::DownloadLinksError => e
         raise LfsObjectDownloadListError, "The LFS objects download list couldn't be imported. Error: #{e.message}"
       end

@@ -110,8 +110,7 @@ module API
           permissions: :download_job_artifact, boundary_type: :project
         get ':id/jobs/artifacts/:ref_name/raw/*artifact_path',
           urgency: :low,
-          format: false,
-          requirements: { ref_name: /.+/ } do
+          requirements: { ref_name: /.+/ }.merge(API::NO_FORMAT_SUFFIX_REQUIREMENT) do
           authorize_download_artifacts!
 
           if params[:search_recent_successful_pipelines]
@@ -229,7 +228,9 @@ module API
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,
           permissions: :download_job_artifact, boundary_type: :project
-        get ':id/jobs/:job_id/artifacts/*artifact_path', urgency: :low, format: false do
+        get ':id/jobs/:job_id/artifacts/*artifact_path',
+          urgency: :low,
+          requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
           authorize_download_artifacts!
 
           build = find_build!(params[:job_id])

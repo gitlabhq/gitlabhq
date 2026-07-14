@@ -99,8 +99,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_output, feature_categ
       it { expect(run).to be true }
 
       it 'prints success message' do
-        stdout, _stderr, _result = capture_output { run }
-        expect(stdout).to include('No newly added spec files found')
+        expect { run }.to output(include('No newly added spec files found')).to_stdout
       end
     end
 
@@ -114,8 +113,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_output, feature_categ
       it { expect(run).to be true }
 
       it 'prints warning message' do
-        _stdout, stderr, _result = capture_output { run }
-        expect(stderr).to include('Warning: git diff command failed')
+        expect { run }.to output(include('Warning: git diff command failed')).to_stderr
       end
     end
 
@@ -133,8 +131,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_output, feature_categ
       it { expect(run).to be true }
 
       it 'prints success message' do
-        stdout, _stderr, _result = capture_output { run }
-        expect(stdout).to include('No newly added spec files using spec_helper found')
+        expect { run }.to output(include('No newly added spec files using spec_helper found')).to_stdout
       end
     end
 
@@ -150,8 +147,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_output, feature_categ
       it { expect(run).to be true }
 
       it 'skips nonexistent files and prints success message' do
-        stdout, _stderr, _result = capture_output { run }
-        expect(stdout).to include('No newly added spec files using spec_helper found')
+        expect { run }.to output(include('No newly added spec files using spec_helper found')).to_stdout
       end
     end
 
@@ -174,8 +170,7 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_output, feature_categ
       it { expect(run).to be true }
 
       it 'prints success message' do
-        stdout, _stderr, _result = capture_output { run }
-        expect(stdout).to include('VALIDATION PASSED')
+        expect { run }.to output(include('VALIDATION PASSED')).to_stdout
       end
     end
 
@@ -198,11 +193,12 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_output, feature_categ
       it { expect(run).to be false }
 
       it 'prints failure message with file list' do
-        stdout, _stderr, _result = capture_output { run }
-        expect(stdout).to include('VALIDATION FAILED')
-        expect(stdout).to include(spec_file)
-        expect(stdout).to include('fast_spec_helper')
-        expect(stdout).to include('Action required')
+        expect { run }.to output(
+          include('VALIDATION FAILED')
+            .and(include(spec_file))
+            .and(include('fast_spec_helper'))
+            .and(include('Action required'))
+        ).to_stdout
       end
 
       it 'populates can_use_fast_helper array' do
@@ -241,13 +237,12 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_output, feature_categ
         expect(run).to be false
       end
 
-      it 'only lists files that can use fast_spec_helper in the failure list' do
-        stdout, _stderr, _result = capture_output { run }
+      it 'lists files that can use fast_spec_helper in the failure list' do
+        expect { run }.to output(include(spec_can_use_fast)).to_stdout
+      end
 
-        # Check that the file is listed in the "can use fast_spec_helper" section
-        failure_section = stdout.split('VALIDATION FAILED').last
-        expect(failure_section).to include(spec_can_use_fast)
-        expect(failure_section).not_to include(spec_already_fast)
+      it 'does not list files that already use fast_spec_helper' do
+        expect { run }.not_to output(include(spec_already_fast)).to_stdout
       end
 
       it 'populates can_use_fast_helper with only convertible files' do
@@ -277,15 +272,14 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_output, feature_categ
             .and_return(['1 example, 1 failure', '', instance_double(Process::Status, success?: false)])
         end
 
-        it 'is expected to equal true' do
-          stdout, _stderr, result = capture_output { run }
+        it 'is expected to equal true', :aggregate_failures do
+          result = nil
+          expect { result = run }.not_to output.to_stdout
           expect(result).to be true
-          expect(stdout).to be_empty
         end
 
         it 'produces no output' do
-          stdout, _stderr, _result = capture_output { run }
-          expect(stdout).to be_empty
+          expect { run }.not_to output.to_stdout
         end
       end
 
@@ -299,18 +293,20 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_output, feature_categ
 
         it { expect(run).to be false }
 
-        it 'shows failure message without verbose headers' do
-          stdout, _stderr, _result = capture_output { run }
+        it 'shows failure message' do
+          expect { run }.to output(
+            include('VALIDATION FAILED')
+              .and(include(spec_file))
+              .and(include('fast_spec_helper'))
+          ).to_stdout
+        end
 
-          # Should show the failure information
-          expect(stdout).to include('VALIDATION FAILED')
-          expect(stdout).to include(spec_file)
-          expect(stdout).to include('fast_spec_helper')
-
-          # Should NOT show verbose progress messages
-          expect(stdout).not_to include('Validating newly added specs')
-          expect(stdout).not_to include('Finding newly added spec files')
-          expect(stdout).not_to include('Testing')
+        it 'does not show verbose progress messages' do
+          expect { run }.not_to output(
+            include('Validating newly added specs')
+              .or(include('Finding newly added spec files'))
+              .or(include('Testing'))
+          ).to_stdout
         end
       end
 
@@ -322,14 +318,13 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_output, feature_categ
         end
 
         it 'is expected to equal true' do
-          stdout, _stderr, result = capture_output { run }
+          result = nil
+          expect { result = run }.not_to output.to_stdout
           expect(result).to be true
-          expect(stdout).to be_empty
         end
 
         it 'produces no output' do
-          stdout, _stderr, _result = capture_output { run }
-          expect(stdout).to be_empty
+          expect { run }.not_to output.to_stdout
         end
       end
 
@@ -345,30 +340,15 @@ RSpec.describe Lint::ValidateFastSpecHelperUsage, :silence_output, feature_categ
         end
 
         it 'is expected to equal true' do
-          stdout, _stderr, result = capture_output { run }
+          result = nil
+          expect { result = run }.not_to output.to_stdout
           expect(result).to be true
-          expect(stdout).to be_empty
         end
 
         it 'produces no output' do
-          stdout, _stderr, _result = capture_output { run }
-          expect(stdout).to be_empty
+          expect { run }.not_to output.to_stdout
         end
       end
     end
-  end
-
-  private
-
-  def capture_output
-    original_stdout = $stdout
-    original_stderr = $stderr
-    $stdout = StringIO.new
-    $stderr = StringIO.new
-    result = yield
-    [$stdout.string, $stderr.string, result]
-  ensure
-    $stdout = original_stdout
-    $stderr = original_stderr
   end
 end

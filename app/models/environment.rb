@@ -137,7 +137,6 @@ class Environment < ApplicationRecord
   scope :for_name, ->(name) { where(name: name) }
   scope :preload_project, -> { preload(:project) }
   scope :auto_stoppable, ->(limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
-  scope :auto_deletable, ->(limit) { stopped.where('auto_delete_at < ?', Time.zone.now).limit(limit) }
   scope :long_stopping,  -> { with_state(:stopping).where('updated_at < ?', LONG_STOP.ago) }
 
   scope :deployed_and_updated_before, ->(project_id, before) do

@@ -111,8 +111,8 @@ export default {
       return this.resource?.verificationLevel !== VERIFICATION_LEVEL_UNVERIFIED;
     },
     lastReleaseText() {
-      if (this.currentVersion?.createdAt) {
-        const date = formatDate(this.currentVersion.createdAt);
+      if (this.currentVersion?.releasedAt) {
+        const date = formatDate(this.currentVersion.releasedAt);
         return sprintf(this.$options.i18n.lastRelease, { date });
       }
 
@@ -255,16 +255,16 @@ export default {
               :loading="(isLoadingData && !selectedVersion.text) || isSearchingVersions"
             >
               <span>{{ toggleButtonText }}</span>
-              <span v-if="selectedVersion.createdAt" class="gl-text-sm gl-text-secondary"
-                >({{ selectedVersion.createdAt }})
+              <span v-if="selectedVersion.releasedAt" class="gl-text-sm gl-text-secondary"
+                >({{ selectedVersion.releasedAt }})
               </span>
               <gl-icon name="chevron-down" class="gl-ml-2" />
             </gl-button>
           </template>
           <template #list-item="{ item }">
             <span>{{ item.text }}</span>
-            <span v-if="item.createdAt" class="gl-text-sm gl-text-secondary"
-              >({{ item.createdAt }})</span
+            <span v-if="item.releasedAt" class="gl-text-sm gl-text-secondary"
+              >({{ item.releasedAt }})</span
             >
           </template>
         </gl-collapsible-listbox>

@@ -3,9 +3,14 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management do
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:project, freeze: false) { create(:project, :repository) }
-  let_it_be(:repository, freeze: false) { project.repository.raw }
 
+  let(:repository) { project.repository.raw }
   let(:compare) { described_class.new(repository, base, head, straight: false) }
   let(:compare_straight) { described_class.new(repository, base, head, straight: true) }
   let(:base) { SeedRepo::BigCommit::ID }
@@ -181,6 +186,14 @@ RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management d
           expect(repository).not_to receive(:detect_generated_files)
           expect(repository).not_to receive(:find_changed_paths)
           expect(generated_files).to eq Set.new
+        end
+      end
+
+      context 'when diffs are provided' do
+        it 'derives the changed paths from the diffs instead of calling find_changed_paths', :aggregate_failures do
+          expect(repository).not_to receive(:find_changed_paths)
+
+          expect(compare.generated_files(diffs: compare.diffs.to_a)).to eq Set.new(['file1.txt'])
         end
       end
     end

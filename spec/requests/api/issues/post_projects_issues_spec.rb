@@ -69,6 +69,13 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
   end
 
   describe 'POST /projects/:id/issues' do
+    describe 'mcp route setting' do
+      subject { post api("/projects/#{project.id}/issues", user), params: { title: 'new issue' } }
+
+      it_behaves_like 'an endpoint with mcp route setting', :create_issue,
+        expected_params: API::Helpers::IssuesHelpers.create_issue_mcp_params, status: :created
+    end
+
     it_behaves_like 'authorizing granular token permissions', :create_issue do
       let(:boundary_object) { project }
       let(:request) do
@@ -106,6 +113,37 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['title']).to eq('new issue')
         expect(json_response['assignees'].count).to eq(1)
+      end
+    end
+
+    context 'with severity' do
+      it 'sets the severity on a new incident', :aggregate_failures do
+        post api("/projects/#{project.id}/issues", user),
+          params: { title: 'new incident', issue_type: 'incident', severity: 'high' }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['issue_type']).to eq('incident')
+
+        incident = project.issues.find(json_response['id'])
+        expect(incident.severity).to eq('high')
+      end
+
+      it 'rejects an invalid severity value' do
+        post api("/projects/#{project.id}/issues", user),
+          params: { title: 'new incident', issue_type: 'incident', severity: 'invalid' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'ignores severity on a non-incident issue', :aggregate_failures do
+        post api("/projects/#{project.id}/issues", user),
+          params: { title: 'new issue', severity: 'high' }
+
+        expect(response).to have_gitlab_http_status(:created)
+
+        issue = project.issues.find(json_response['id'])
+        expect(issue).not_to be_supports_severity
+        expect(issue.severity).to eq(IssuableSeverity::DEFAULT)
       end
     end
 
@@ -787,6 +825,12 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
   end
 
   describe 'POST :id/issues/:issue_iid/subscribe' do
+    it_behaves_like 'authorizing granular token permissions', :subscribe_issue,
+      expected_success_status: :not_modified do
+      let(:boundary_object) { project }
+      let(:request) { post api("/projects/#{project.id}/issues/#{issue.iid}/subscribe", personal_access_token: pat) }
+    end
+
     it 'subscribes to an issue' do
       post api("/projects/#{project.id}/issues/#{issue.iid}/subscribe", user2)
 
@@ -820,6 +864,11 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
   end
 
   describe 'POST :id/issues/:issue_id/unsubscribe' do
+    it_behaves_like 'authorizing granular token permissions', :subscribe_issue do
+      let(:boundary_object) { project }
+      let(:request) { post api("/projects/#{project.id}/issues/#{issue.iid}/unsubscribe", personal_access_token: pat) }
+    end
+
     it 'unsubscribes from an issue' do
       post api("/projects/#{project.id}/issues/#{issue.iid}/unsubscribe", user)
 

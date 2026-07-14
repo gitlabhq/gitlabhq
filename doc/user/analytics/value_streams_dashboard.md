@@ -15,8 +15,8 @@ title: Value Streams Dashboard
 
 {{< history >}}
 
-- Introduced in GitLab 15.8 as a closed [beta](../../policy/development_stages_support.md#beta) feature [with a flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboards_page`. Disabled by default.
-- Released in GitLab 15.11 as an open [beta](../../policy/development_stages_support.md#beta) feature [with a flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboards_page`. Enabled by default.
+- Introduced in GitLab 15.8 as a closed [beta](../../policy/development_stages_support.md#beta) feature [with a feature flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboards_page`. Disabled by default.
+- Released in GitLab 15.11 as an open [beta](../../policy/development_stages_support.md#beta) feature [with a feature flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboards_page`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392734) in GitLab 16.0. Feature flag `group_analytics_dashboards_page` removed.
 - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195086) from GitLab Ultimate to GitLab Premium in 18.2.
 
@@ -59,23 +59,29 @@ The Value Streams Dashboard panels have a default configuration, but you can als
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439699) in GitLab 16.7 [with a flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439699) in GitLab 16.7 [with a feature flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/432185) in GitLab 17.0.
 - Feature flag `group_analytics_dashboard_dynamic_vsd` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/441206) in GitLab 17.0.
 
 {{< /history >}}
 
-The Overview panel provides a holistic view of the top-level namespace activity by visualizing key DevOps metrics.
-The panel displays metrics for:
+The Overview provides a holistic view of top-level namespace activity by visualizing key DevOps metrics:
 
-- Subgroups
-- Projects
-- Users
-- Issues
-- Merge requests
-- Pipelines
+- A namespace metadata panel that shows the namespace name, type, and visibility.
+- A row of single-stat panels that display usage counts.
 
-Data displayed in the Overview panel is collected by batch processing. GitLab stores record counts for each subgroup in the database, then aggregates the record counts to provide metrics for the top-level group.
+The following table displays the available usage counts for resources in group and project namespaces:
+
+| Usage count    | Visualization          | Group       | Project     |
+|----------------|------------------------|-------------|-------------|
+| Subgroups      | `groups_count`         | {{< yes >}} | {{< no >}}  |
+| Projects       | `projects_count`       | {{< yes >}} | {{< no >}}  |
+| Users          | `users_count`          | {{< yes >}} | {{< no >}}  |
+| Issues         | `issues_count`         | {{< yes >}} | {{< yes >}} |
+| Merge requests | `merge_requests_count` | {{< yes >}} | {{< yes >}} |
+| Pipelines      | `pipelines_count`      | {{< yes >}} | {{< yes >}} |
+
+Data displayed in the Overview is collected by batch processing. GitLab stores record counts for each subgroup in the database, then aggregates the record counts to provide metrics for the top-level group.
 Data is aggregated monthly, around the end of the month, on a best-effort basis depending on the load on GitLab systems.
 
 For more information, see [epic 10417](https://gitlab.com/groups/gitlab-org/-/epics/10417#iterations-path).
@@ -120,7 +126,7 @@ The sparkline color ranges from blue to green, where green indicates a positive 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.3 [with a flag](../../administration/feature_flags/_index.md) named `dora_performers_score_panel`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.3 [with a feature flag](../../administration/feature_flags/_index.md) named `dora_performers_score_panel`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439737) in GitLab 16.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/440694) in GitLab 16.11. Feature flag `dora_performers_score_panel` removed.
 
@@ -202,7 +208,7 @@ For further investigation, you can select a project name to drill down into that
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120610) in GitLab 16.1 [with a flag](../../administration/feature_flags/_index.md) named `value_stream_dashboard_on_off_setting`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120610) in GitLab 16.1 [with a feature flag](../../administration/feature_flags/_index.md) named `value_stream_dashboard_on_off_setting`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130704) in GitLab 16.4.
 - [Feature flag `value_stream_dashboard_on_off_setting` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134619) in GitLab 16.6.
 
@@ -244,7 +250,7 @@ To view the Value Streams Dashboard for a group:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137483) in GitLab 16.7 [with a flag](../../administration/feature_flags/_index.md) named `project_analytics_dashboard_dynamic_vsd`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137483) in GitLab 16.7 [with a feature flag](../../administration/feature_flags/_index.md) named `project_analytics_dashboard_dynamic_vsd`. Disabled by default.
 - Feature flag `project_analytics_dashboard_dynamic_vsd` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/441207) in GitLab 17.5.
 
 {{< /history >}}
@@ -303,7 +309,7 @@ After you have set up the project, set up the configuration file:
 | `queryOverrides` (formerly `data`)         | Overrides data query parameters specific to each visualization. |
 | `namespace` (subfield of `queryOverrides`) | Group or project path to use for the panel |
 | `filters` (subfield of `queryOverrides`)   | Filters the query for each supported visualization type. |
-| `visualization`                            | The type of visualization to be rendered. Supported options are `ai_impact_table`, `dora_performers_score`, and `usage_overview`. |
+| `visualization`                            | The type of visualization to be rendered. Supported options are `ai_impact_table`, `dora_performers_score`, `namespace_metadata`, and usage counts. |
 | `gridAttributes`                           | The size and positioning of the panel |
 | `xPos` (subfield of `gridAttributes`)      | Horizontal position of the panel |
 | `yPos` (subfield of `gridAttributes`)      | Vertical position of the panel |
@@ -328,18 +334,33 @@ description: 'Custom description'
 #   queryOverrides.filters.includeMetrics - Shows rows by metric ID in the table panel.
 panels:
   - title: 'Group usage overview'
-    visualization: usage_overview
-    queryOverrides:
-      namespace: group
-      filters:
-        include:
-          - groups
-          - projects
+    visualization: namespace_metadata
     gridAttributes:
-      yPos: 1
-      xPos: 1
-      height: 1
+      yPos: 0
+      xPos: 0
+      height: 4
       width: 12
+  - title: 'Groups'
+    visualization: groups_count
+    gridAttributes:
+      yPos: 4
+      xPos: 0
+      height: 4
+      width: 4
+  - title: 'Issues'
+    visualization: issues_count
+    gridAttributes:
+      yPos: 4
+      xPos: 4
+      height: 4
+      width: 4
+  - title: 'Merge requests'
+    visualization: merge_requests_count
+    gridAttributes:
+      yPos: 4
+      xPos: 8
+      height: 4
+      width: 4
   - title: 'Group dora and issue metrics'
     visualization: ai_impact_table
     queryOverrides:
@@ -349,8 +370,8 @@ panels:
           - deployment_frequency
           - deploys
     gridAttributes:
-      yPos: 2
-      xPos: 1
+      yPos: 8
+      xPos: 0
       height: 12
       width: 12
   - title: 'My dora performers scores'
@@ -362,8 +383,8 @@ panels:
           - ruby
           - javascript
     gridAttributes:
-      yPos: 26
-      xPos: 1
+      yPos: 20
+      xPos: 0
       height: 12
       width: 12
 ```
@@ -389,23 +410,9 @@ Filters for the `dora_performers_score` visualization.
 |-----------------|-------------------------------------------------------------------------------------------|------------------|
 | `projectTopics` | Filters the projects shown based on their assigned topics | Any available group topic |
 
-#### Usage overview panel filters
-
-Filters for the `usage_overview` visualization.
-
-##### Group and subgroup namespaces
-
-| Filter    | Description                                                    | Supported values |
-|-----------|----------------------------------------------------------------|------------------|
-| `include` | Limits the metrics returned, by default displays all available | `groups`, `projects`, `issues`, `merge_requests`, `pipelines`, `users` |
-
-##### Project namespaces
-
-| Filter    | Description                                                    | Supported values |
-|-----------|----------------------------------------------------------------|------------------|
-| `include` | Limits the metrics returned, by default displays all available | `issues`, `merge_requests`, `pipelines` |
-
 #### Additional panel filters (deprecated)
+
+##### DORA chart filters
 
 > [!warning]
 > The `dora_chart` visualization was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206417) in GitLab 18.5.
@@ -415,6 +422,25 @@ Filters for the `dora_chart` visualization.
 | Filter   | Description                                  | Supported values |
 |----------|----------------------------------------------|------------------|
 | `labels` | Filters data by labels                       | Any available group label. Label filtering is supported by the following metrics: `lead_time`, `cycle_time`, `issues`, `issues_completed`, `merge_request_throughput`, `median_time_to_merge`. |
+
+##### Usage overview filters
+
+> [!warning]
+> The `usage_overview` visualization was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/594892) in GitLab 19.2. Use the `namespace_metadata` visualization and usage count single stats instead.
+
+Filters for the `usage_overview` visualization.
+
+For group and subgroup namespaces:
+
+| Filter    | Description                                                    | Supported values |
+|-----------|----------------------------------------------------------------|------------------|
+| `include` | Limits the metrics returned, by default displays all available | `groups`, `projects`, `issues`, `merge_requests`, `pipelines`, `users` |
+
+For project namespaces:
+
+| Filter    | Description                                                    | Supported values |
+|-----------|----------------------------------------------------------------|------------------|
+| `include` | Limits the metrics returned, by default displays all available | `issues`, `merge_requests`, `pipelines` |
 
 ## Dashboard metrics and drill-down reports
 

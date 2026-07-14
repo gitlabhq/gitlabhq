@@ -3,18 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Groups::ReleasesController, feature_category: :release_evidence do
-  let(:group) { create(:group) }
-  let!(:project)         { create(:project, :repository, :public, namespace: group) }
-  let!(:private_project) { create(:project, :repository, :private, namespace: group) }
-  let(:guest) { create(:user) }
-  let!(:release_1)       { create(:release, project: project, tag: 'v1', released_at: Time.zone.parse('2020-02-15')) }
-  let!(:release_2)       { create(:release, project: project, tag: 'v2', released_at: Time.zone.parse('2020-02-20')) }
-  let!(:private_release_1)       { create(:release, project: private_project, tag: 'p1', released_at: Time.zone.parse('2020-03-01')) }
-  let!(:private_release_2)       { create(:release, project: private_project, tag: 'p2', released_at: Time.zone.parse('2020-03-05')) }
-
-  before do
-    group.add_guest(guest)
-  end
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:group) { create(:group, guests: guest) }
+  let_it_be_with_refind(:project)         { create(:project, :small_repo, :public, namespace: group) }
+  let_it_be_with_refind(:private_project) { create(:project, :small_repo, :private, namespace: group) }
+  let_it_be(:release_1)       { create(:release, project: project, tag: 'v1', released_at: Time.zone.parse('2020-02-15')) }
+  let_it_be(:release_2)       { create(:release, project: project, tag: 'v2', released_at: Time.zone.parse('2020-02-20')) }
+  let_it_be(:private_release_1) { create(:release, project: private_project, tag: 'p1', released_at: Time.zone.parse('2020-03-01')) }
+  let_it_be(:private_release_2) { create(:release, project: private_project, tag: 'p2', released_at: Time.zone.parse('2020-03-05')) }
 
   describe 'GET #index' do
     context 'as json' do

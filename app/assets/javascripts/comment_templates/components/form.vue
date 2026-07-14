@@ -40,6 +40,7 @@ export default {
       default: '',
     },
   },
+  emits: ['cancel', 'saved'],
   data() {
     return {
       errors: [],

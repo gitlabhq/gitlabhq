@@ -7,6 +7,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { TODO_EMPTY_TITLE_POOL, TABS_INDICES } from '../constants';
 
 export default {
+  name: 'TodosEmptyState',
   components: {
     GlEmptyState,
     GlLink,

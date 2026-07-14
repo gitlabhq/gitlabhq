@@ -10,7 +10,6 @@ describe('OrganizationShowApp', () => {
       name: 'GitLab',
       path: 'gitlab',
     },
-    canReadArtifactRegistry: true,
     canAdminOrganization: true,
   };
 
@@ -25,18 +24,7 @@ describe('OrganizationShowApp', () => {
       expect(findEmptyState().text()).toContain(description);
     });
   };
-  const itRendersLinkToArtifactRegistry = () => {
-    it('renders link to artifact registry', () => {
-      expect(
-        wrapper.findByRole('link', { name: 'Go to Artifact Registry' }).attributes('href'),
-      ).toBe('/o/gitlab/-/artifact_registry');
-    });
-  };
-  const itDoesNotRenderLinkToArtifactRegistry = () => {
-    it('does not render link to artifact registry', () => {
-      expect(wrapper.findByRole('link', { name: 'Go to Artifact Registry' }).exists()).toBe(false);
-    });
-  };
+
   const itRendersLearnMoreLink = () => {
     it('renders learn more link', () => {
       expect(wrapper.findByRole('link', { name: 'Learn more' }).attributes('href')).toBe(
@@ -45,45 +33,9 @@ describe('OrganizationShowApp', () => {
     });
   };
 
-  describe('when user can read artifact registry and admin organization', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    itRendersEmptyStateWithCorrectDescription(
-      `${defaultPropsData.organization.name} is your organization's home. Manage Artifact Registry and settings from the sidebar. Learn more.`,
-    );
-
-    itRendersLearnMoreLink();
-
-    itRendersLinkToArtifactRegistry();
-  });
-
-  describe('when user can read artifact registry', () => {
-    beforeEach(() => {
-      createComponent({
-        propsData: {
-          canAdminOrganization: false,
-        },
-      });
-    });
-
-    itRendersEmptyStateWithCorrectDescription(
-      `${defaultPropsData.organization.name} is your organization's home. Manage Artifact Registry from the sidebar. Learn more.`,
-    );
-
-    itRendersLearnMoreLink();
-
-    itRendersLinkToArtifactRegistry();
-  });
-
   describe('when user can admin organization', () => {
     beforeEach(() => {
-      createComponent({
-        propsData: {
-          canReadArtifactRegistry: false,
-        },
-      });
+      createComponent();
     });
 
     itRendersEmptyStateWithCorrectDescription(
@@ -91,15 +43,12 @@ describe('OrganizationShowApp', () => {
     );
 
     itRendersLearnMoreLink();
-
-    itDoesNotRenderLinkToArtifactRegistry();
   });
 
-  describe('when user cannot read artifact registry or admin organization', () => {
+  describe('when user cannot admin organization', () => {
     beforeEach(() => {
       createComponent({
         propsData: {
-          canReadArtifactRegistry: false,
           canAdminOrganization: false,
         },
       });
@@ -110,7 +59,5 @@ describe('OrganizationShowApp', () => {
     );
 
     itRendersLearnMoreLink();
-
-    itDoesNotRenderLinkToArtifactRegistry();
   });
 });

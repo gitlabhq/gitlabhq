@@ -23,6 +23,7 @@ const i18n = {
 };
 
 export default {
+  name: 'CreateInstanceForm',
   ALL_REFS: '*',
   components: {
     GlButton,

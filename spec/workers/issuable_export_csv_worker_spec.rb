@@ -9,6 +9,8 @@ RSpec.describe IssuableExportCsvWorker, feature_category: :team_planning do
 
   subject { described_class.new.perform(issuable_type, user.id, project.id, params) }
 
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
+
   context 'when issuable type is Issue' do
     let(:issuable_type) { :issue }
 

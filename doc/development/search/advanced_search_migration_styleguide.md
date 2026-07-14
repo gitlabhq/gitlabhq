@@ -162,7 +162,7 @@ marked as completed by default and can set to pending by sending `including: fal
 
 #### `es_helper`
 
-Provides an instance of `Gitlab::Elastic::Helper.default`
+Provides an instance of `Search::Elastic::Helper.default`
 
 #### `es_client`
 

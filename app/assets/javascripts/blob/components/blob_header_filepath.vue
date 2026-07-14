@@ -4,6 +4,7 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 
 export default {
+  name: 'BlobHeaderFilepath',
   components: {
     FileIcon,
     GlBadge,

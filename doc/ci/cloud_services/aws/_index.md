@@ -50,9 +50,26 @@ You can create a [custom trust policy](https://docs.aws.amazon.com/IAM/latest/Us
 for the role to limit authorization to a specific group, project, branch, or tag.
 For the full list of supported filtering types, see [Connect to cloud services](../_index.md#configure-a-conditional-role-with-oidc-claims).
 
-On GitLab.com, AWS supports additional condition keys for the `gitlab.com` OIDC identity provider, including `namespace_id` and `project_id`. Include conditions on these stable, unique identifiers in your role trust policies. Because these identifiers are independent of paths, trust policies that reference them are not affected by changes to paths, such as group or project renames.
+On GitLab.com, AWS supports [additional condition keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#condition-keys-wif) for the `gitlab.com` OIDC identity provider, including `namespace_id` and `project_id`. Include conditions on these stable, unique identifiers in your role trust policies. Because these identifiers are independent of paths, trust policies that reference them are not affected by changes to paths, such as group or project renames.
 
-These additional condition keys are available only for the `gitlab.com` OIDC identity provider. For GitLab Self-Managed and GitLab Dedicated, only the `sub` claim is currently supported as an AWS condition key. For those deployments, scope your trust policy using `sub` alone (for example, `gitlab.example.com:sub`).
+These additional condition keys are available only for the `gitlab.com` OIDC identity provider. For GitLab Self-Managed and GitLab Dedicated, only the `sub` and `aud` claims are currently supported as AWS condition keys. For those deployments, scope your trust policy using `sub` (for example, `gitlab.example.com:sub`), optionally combined with `aud`.
+
+AWS supports the following claims as condition keys:
+
+| Claim                | GitLab.com    | GitLab Self-Managed and GitLab Dedicated |
+|----------------------|---------------|------------------------------------------|
+| `sub`                | {{< yes >}}   | {{< yes >}}                              |
+| `aud`                | {{< yes >}}   | {{< yes >}}                              |
+| `namespace_id`       | {{< yes >}}   | {{< no >}}                               |
+| `project_id`         | {{< yes >}}   | {{< no >}}                               |
+| `user_id`            | {{< yes >}}   | {{< no >}}                               |
+| `user_login`         | {{< yes >}}   | {{< no >}}                               |
+| `user_email`         | {{< yes >}}   | {{< no >}}                               |
+| `user_access_level`  | {{< yes >}}   | {{< no >}}                               |
+| `ref_protected`      | {{< yes >}}   | {{< no >}}                               |
+| `pipeline_source`    | {{< yes >}}   | {{< no >}}                               |
+| `runner_environment` | {{< yes >}}   | {{< no >}}                               |
+| All other claims     | {{< no >}}    | {{< no >}}                               |
 
 `project_id` is globally unique and remains the same for the entire lifetime of the project, including across group renames, project renames, and project transfers. `namespace_id` is stable while the project remains in its current namespace. If the project is transferred to a different namespace, `namespace_id` changes, which intentionally invalidates a trust policy that pins to it.
 

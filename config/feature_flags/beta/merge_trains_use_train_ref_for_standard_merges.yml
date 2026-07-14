@@ -1,0 +1,9 @@
+---
+name: merge_trains_use_train_ref_for_standard_merges
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/207187
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225131'
+rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/603502'
+milestone: '19.2'
+group: group::pipeline execution
+type: beta
+default_enabled: false

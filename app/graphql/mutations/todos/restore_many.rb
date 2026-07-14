@@ -5,6 +5,8 @@ module Mutations
     class RestoreMany < BaseMany
       graphql_name 'TodoRestoreMany'
 
+      authorize_granular_token permissions: :update_todo, boundary: :user, boundary_type: :user
+
       field :todos, [::Types::TodoType],
         null: false,
         description: 'Restored to-do items.'

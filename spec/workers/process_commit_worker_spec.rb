@@ -875,7 +875,7 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
                   :project,
                   :with_jira_integration,
                   :public,
-                  :repository,
+                  :small_repo,
                   autoclose_referenced_issues: auto_close_issues
                 )
               end

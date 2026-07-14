@@ -21,6 +21,11 @@ module EventForward
       super(:editor_extension)
     end
 
+    # BaseActionController has no render_404, so respond with a forbidden status.
+    def deny_granular_token!
+      head :forbidden
+    end
+
     def process_events
       tracker = Gitlab::Tracking.tracker
       event_eligibility_checker = Gitlab::Tracking::EventEligibilityChecker.new

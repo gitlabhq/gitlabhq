@@ -12,6 +12,7 @@ import { sortOrders, sortOrderOptions } from '../constants';
 import RequestWarning from './request_warning.vue';
 
 export default {
+  name: 'DetailedMetric',
   components: {
     RequestWarning,
     GlButton,

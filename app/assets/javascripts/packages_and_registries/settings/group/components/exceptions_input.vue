@@ -40,6 +40,7 @@ export default {
       required: true,
     },
   },
+  emits: ['update'],
   computed: {
     isExceptionRegexValid() {
       return !this.duplicateExceptionRegexError;

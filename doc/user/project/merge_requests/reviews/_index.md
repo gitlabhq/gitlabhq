@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI Coding
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use merge request reviews to discuss and improve code before it merges into your project.
@@ -16,6 +16,9 @@ title: Merge request reviews
 The merge request review process ensures that subject matter experts review your proposed changes
 before they are merged. Reviewers add review comments to merge requests, and [suggest changes](suggestions.md)
 the author can apply directly from the GitLab UI.
+
+For information on how reviewers relate to assignees, see
+[assignees and reviewers](../_index.md#assignees-and-reviewers).
 
 Reviewers can use any of these tools to review a merge request:
 
@@ -75,7 +78,7 @@ To do this:
 
 {{< history >}}
 
-- **Assign reviewers** drawer [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12878) in GitLab 17.5 [with a flag](../../../../administration/feature_flags/_index.md) named `reviewer_assign_drawer`.
+- **Assign reviewers** drawer [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12878) in GitLab 17.5 [with a feature flag](../../../../administration/feature_flags/_index.md) named `reviewer_assign_drawer`.
 - Drawer [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/467205) on GitLab.com and GitLab Self-Managed in GitLab 17.5.
 - [Feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/467205) `reviewer_assign_drawer` removed in GitLab 17.8.
 
@@ -148,7 +151,7 @@ them a notification email.
 
 {{< history >}}
 
-- **Assign reviewers** drawer [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185795) in GitLab 17.11 [with a flag](../../../../administration/feature_flags/_index.md) named `improved_review_experience`. Disabled by default.
+- **Assign reviewers** drawer [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185795) in GitLab 17.11 [with a feature flag](../../../../administration/feature_flags/_index.md) named `improved_review_experience`. Disabled by default.
 - **Assign reviewers** drawer [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/535461) in GitLab 18.1.
 
 {{< /history >}}
@@ -258,7 +261,7 @@ To do this:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430728) in GitLab 16.11 [with a flag](../../../../administration/feature_flags/_index.md) named `mr_reviewer_requests_changes`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430728) in GitLab 16.11 [with a feature flag](../../../../administration/feature_flags/_index.md) named `mr_reviewer_requests_changes`. Disabled by default.
 - Enabled by default [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/451211) and [GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158226) in GitLab 17.2.
 - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/451211) in GitLab 17.3.
 

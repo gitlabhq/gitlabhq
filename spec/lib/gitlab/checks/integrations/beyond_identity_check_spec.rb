@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
   describe '#validate!' do
     shared_examples_for 'exclusion from the check' do
       context 'when the project is excluded from the check' do
-        let!(:integration_exclusion) do
+        let_it_be(:integration_exclusion) do
           create(:beyond_identity_integration, active: false, project: project, inherit_from_id: nil)
         end
 
@@ -81,9 +81,12 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
       let_it_be(:newrev) { 'f0a5ed60d24c98ec6d00ac010c1f3f01ee0a8373' }
       let!(:gpg_key) { create :gpg_key, externally_verified: true }
 
+      before_all do
+        project.repository.delete_branch('trailers')
+      end
+
       before do
         gpg_key.update_column(:fingerprint, 'A328467F793DBC6033FEA1B9EDD30D2BEB691AC9')
-        project.repository.delete_branch('trailers')
       end
 
       it_behaves_like 'exclusion from the check'

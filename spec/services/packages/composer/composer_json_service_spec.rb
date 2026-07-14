@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Composer::ComposerJsonService, feature_category: :package_registry do
@@ -29,7 +30,7 @@ RSpec.describe Packages::Composer::ComposerJsonService, feature_category: :packa
     end
 
     context 'without the composer.json file' do
-      let(:project) { create(:project, :repository) }
+      let(:project) { create(:project, :small_repo) }
 
       it 'raises an error' do
         expect { subject }.to raise_error(described_class::InvalidJson, /not found/)

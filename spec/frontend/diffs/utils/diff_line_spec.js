@@ -16,8 +16,10 @@ describe('diffs/utils/diff_line', () => {
       expect(diffLineToString({ rich_text: '<span>&lt;div&gt;</span>' })).toBe('<div>');
     });
 
-    it('replaces escaped newline sequences with %br', () => {
-      expect(diffLineToString({ rich_text: '<span>hello\\nworld</span>' })).toBe('hello%brworld');
+    it('replaces escaped newline sequences with \uE000', () => {
+      expect(diffLineToString({ rich_text: '<span>hello\\nworld</span>' })).toBe(
+        'hello\uE000world',
+      );
     });
 
     it('removes actual newline characters', () => {

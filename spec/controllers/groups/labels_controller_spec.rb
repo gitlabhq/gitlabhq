@@ -4,14 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Groups::LabelsController, feature_category: :team_planning do
   let_it_be(:root_group) { create(:group) }
-  let_it_be(:group) { create(:group, parent: root_group) }
   let_it_be(:user)  { create(:user) }
+  let_it_be(:group) { create(:group, parent: root_group, owners: user) }
   let_it_be(:another_user) { create(:user) }
   let_it_be(:project) { create(:project, namespace: group) }
 
   before do
-    group.add_owner(user)
-
     sign_in(user)
   end
 
@@ -27,12 +25,8 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
     end
 
     context 'with ancestor group' do
-      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:subgroup) { create(:group, parent: group, owners: user) }
       let_it_be(:subgroup_label_1) { create(:group_label, group: subgroup, title: 'subgroup_label_1') }
-
-      before do
-        subgroup.add_owner(user)
-      end
 
       it 'returns ancestor group labels' do
         params = { group_id: subgroup, only_group_labels: true }

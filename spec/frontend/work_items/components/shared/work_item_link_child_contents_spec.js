@@ -142,7 +142,9 @@ describe('WorkItemLinkChildContents', () => {
       childItem: {
         ...workItemTask,
         features: {
-          assignees: { assignees: { nodes: [firstAssignee] } },
+          assignees: {
+            assignees: { nodes: [firstAssignee] },
+          },
         },
       },
     });

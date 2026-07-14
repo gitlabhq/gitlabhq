@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { pinia } from '~/pinia/instance';
 import CommitFormModal from './components/form_modal.vue';
 import {
   I18N_MODAL,
@@ -8,7 +9,7 @@ import {
   OPEN_REVERT_MODAL,
   REVERT_MODAL_ID,
 } from './constants';
-import createStore from './store';
+import { useRevertCommit } from './store/revert_commit';
 
 export default function initInviteMembersModal(primaryActionEventName) {
   const el = document.querySelector('.js-revert-commit-modal');
@@ -26,7 +27,8 @@ export default function initInviteMembersModal(primaryActionEventName) {
     branchesEndpoint,
   } = el.dataset;
 
-  const store = createStore({
+  const modalStore = useRevertCommit(pinia);
+  modalStore.$patch({
     endpoint,
     branchesEndpoint,
     branch,
@@ -40,8 +42,9 @@ export default function initInviteMembersModal(primaryActionEventName) {
   return new Vue({
     el,
     name: 'CommitFormModalRoot',
-    store,
+    pinia,
     provide: {
+      modalStore,
       prependedText: PREPENDED_MODAL_TEXT,
     },
     render: (createElement) =>

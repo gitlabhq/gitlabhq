@@ -1,9 +1,11 @@
 ---
 description: Tracks when the security training link is loaded in the application.
 action: security_training_link_loaded
-product_group: organizations
+product_group: security_insights
+product_categories:
+- vulnerability_management
 milestone: '17.3'
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158282
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81367
 tiers:
   - free
   - premium

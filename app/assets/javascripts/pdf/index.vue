@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { markRaw } from 'vue';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -9,6 +8,7 @@ let getDocument;
 let GlobalWorkerOptions;
 
 export default {
+  name: 'PdfIndex',
   components: { Page },
   props: {
     pdf: {
@@ -16,6 +16,7 @@ export default {
       required: true,
     },
   },
+  emits: ['pdflaberror', 'pdflabload'],
   data() {
     return {
       pages: [],

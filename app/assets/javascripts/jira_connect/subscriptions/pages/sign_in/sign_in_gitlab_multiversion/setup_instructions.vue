@@ -9,11 +9,13 @@ import {
 } from '~/jira_connect/subscriptions/constants';
 
 export default {
+  name: 'SetupInstructions',
   components: {
     GlButton,
     GlFormCheckbox,
     GlLink,
   },
+  emits: ['back', 'next'],
   data() {
     return {
       requiredSteps: [

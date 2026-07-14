@@ -15,7 +15,7 @@ RSpec.describe LooseIndexScan, feature_category: :database do
   let_it_be(:user_2) { create(:user) }
   let_it_be(:user_3) { create(:user) }
 
-  let_it_be(:issue_1, freeze: false) { create(:issue, author: user_2) }
+  let_it_be_with_reload(:issue_1) { create(:issue, author: user_2) }
   let_it_be(:issue_2) { create(:issue, author: user_1) }
   let_it_be(:issue_3) { create(:issue, author: user_1) }
   let_it_be(:issue_4) { create(:issue, author: user_2) }

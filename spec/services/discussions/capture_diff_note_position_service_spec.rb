@@ -12,7 +12,7 @@ RSpec.describe Discussions::CaptureDiffNotePositionService, feature_category: :c
     it 'is note affected by the service' do
       expect(Gitlab::Diff::PositionTracer).not_to receive(:new)
 
-      expect(subject.execute(note.discussion)).to eq(nil)
+      expect(subject.execute(note.discussion)).to be_nil
       expect(note.diff_note_positions).to be_empty
     end
   end
@@ -24,7 +24,7 @@ RSpec.describe Discussions::CaptureDiffNotePositionService, feature_category: :c
     it 'does not calculate positons' do
       expect(Gitlab::Diff::PositionTracer).not_to receive(:new)
 
-      expect(subject.execute(note.discussion)).to eq(nil)
+      expect(subject.execute(note.discussion)).to be_nil
       expect(note.diff_note_positions).to be_empty
     end
   end
@@ -44,7 +44,7 @@ RSpec.describe Discussions::CaptureDiffNotePositionService, feature_category: :c
       let(:position) { nil }
 
       it 'does not create diff note position' do
-        expect(subject.execute(note.discussion)).to eq(nil)
+        expect(subject.execute(note.discussion)).to be_nil
         expect(note.diff_note_positions).to be_empty
       end
     end
@@ -53,7 +53,7 @@ RSpec.describe Discussions::CaptureDiffNotePositionService, feature_category: :c
       let(:position) { double(line_code: nil) }
 
       it 'does not create diff note position' do
-        expect(subject.execute(note.discussion)).to eq(nil)
+        expect(subject.execute(note.discussion)).to be_nil
         expect(note.diff_note_positions).to be_empty
       end
     end

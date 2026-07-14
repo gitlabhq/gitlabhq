@@ -5,15 +5,20 @@ require 'spec_helper'
 RSpec.describe 'PipelineTriggerUpdate', feature_category: :continuous_integration do
   include GraphqlHelpers
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:current_user, freeze: false) { build(:user) }
   let_it_be(:project, freeze: false) { build(:project) }
-
-  let(:mutation) { graphql_mutation(:pipeline_trigger_update, params) }
   let_it_be(:old_description) { "Boring old description." }
-  let(:new_description) { 'Awesome new description!' }
-  let_it_be(:trigger, freeze: false) do
+  let_it_be_with_reload(:trigger) do
     create(:ci_trigger, owner: current_user, project: project, description: old_description)
   end
+
+  let(:mutation) { graphql_mutation(:pipeline_trigger_update, params) }
+  let(:new_description) { 'Awesome new description!' }
 
   let(:params) do
     {

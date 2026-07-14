@@ -43,6 +43,7 @@ export default {
       default: true,
     },
   },
+  emits: ['cancel', 'submit'],
   data() {
     return {
       alertErrorMessages: [],

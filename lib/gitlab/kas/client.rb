@@ -11,7 +11,8 @@ module Gitlab
         configuration_project: Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub,
         notifications: Gitlab::Agent::Notifications::Rpc::Notifications::Stub,
         managed_resources: Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub,
-        events_platform: Gitlab::Agent::EventsPlatform::Rpc::EventsPlatform::Stub
+        events_platform: Gitlab::Agent::EventsPlatform::Rpc::EventsPlatform::Stub,
+        autoflow: Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub
       }.freeze
 
       # Default deadline for a single subscribe stream. Chosen to sit slightly below KAS's
@@ -19,6 +20,18 @@ module Gitlab
       # `defaultAPIListenMaxConnectionAge`), so the client closes the stream cleanly first rather
       # than depending on the server-side cutoff or any intermediary's idle timeout.
       DEFAULT_SUBSCRIBE_DEADLINE = 110.minutes
+
+      # Minimum wall-clock time a stream must run before a clean close is treated as "stable" and
+      # the backoff is reset. Guards against the failure mode where a stream opens, dies almost
+      # immediately, and we keep reconnecting with no backoff. Measured in seconds.
+      STABLE_PERIOD_SECONDS = 30
+
+      # How often the request (ack) enumerator wakes to re-check the stream deadline. Bounds how long
+      # the write side lingers after the read side ends, avoiding the bidi write/read deadlock.
+      ACK_POLL_INTERVAL_SECONDS = 1
+
+      # Sentinel telling the request enumerator to stop forwarding acks.
+      STREAM_CLOSED = :stream_closed
 
       ConfigurationError = Class.new(StandardError)
 
@@ -105,84 +118,112 @@ module Gitlab
       end
 
       # Subscribes to a topic on Relay's events_platform and yields each received CloudEvent to the
-      # given block. Acknowledges the broker after each successful block return; if the block raises,
-      # the in-flight event is NOT acknowledged and will be redelivered to another consumer in the
-      # group.
+      # block, reconnecting automatically (clean close: immediately; transient gRPC error: after
+      # backoff; permanent error: re-raises). Acks the broker after each successful block return; a
+      # raising block leaves the event unacked for redelivery.
       #
-      # The method loops until the server closes the stream (Relay shutdown, max connection age,
-      # deadline expiration, network error) or the block raises. It does NOT auto-reconnect; callers
-      # that need a long-lived subscription should wrap this method in a reconnect loop (see the
-      # planned `subscribe_events_resilient` wrapper).
-      #
-      # There is no custom stop API; long-running callers signal shutdown by raising a sentinel
-      # exception from inside the block.
+      # Reconnects indefinitely; stop a long-running loop by raising from the block, returning a
+      # truthy value from `stop_when:` (polled between attempts), or cancelling the channel
+      # (`GRPC::Cancelled`, returns cleanly).
       #
       # @param topic [String] the topic to subscribe to.
       # @param consumer_group [String] the consumer group name. Multiple subscribers sharing a
       #   consumer group share load.
       # @param event_types [Array<String>] optional server-side filter on CloudEvent type names.
-      # @param deadline [ActiveSupport::Duration, Numeric] maximum time to keep the stream open
-      #   before the client closes it. Defaults to {DEFAULT_SUBSCRIBE_DEADLINE} so the client
-      #   closes slightly before the server's `max_connection_age`. Callers managing their own
-      #   reconnect loop may tune this.
+      # @param deadline [ActiveSupport::Duration, Numeric] maximum time to keep a single stream open
+      #   before the client closes it and reconnects. Defaults to {DEFAULT_SUBSCRIBE_DEADLINE} so the
+      #   client closes slightly before the server's `max_connection_age`.
+      # @param stop_when [Proc, nil] optional predicate polled between attempts; when it returns
+      #   truthy the loop exits cleanly.
+      # @param backoff [#next, #reset] backoff strategy used between transient retries. Defaults to a
+      #   fresh {Gitlab::Kas::ExponentialBackoff}.
       # @yield [event] called for each received CloudEvent.
       # @yieldparam event [Gitlab::Agent::Event::CloudEvent]
-      # @return [void] returns when the stream closes cleanly.
-      def subscribe_events(topic:, consumer_group:, event_types: [], deadline: DEFAULT_SUBSCRIBE_DEADLINE)
-        raise ArgumentError, 'a block is required' unless block_given?
+      # @return [void]
+      def subscribe_events(
+        topic:,
+        consumer_group:,
+        event_types: [],
+        deadline: DEFAULT_SUBSCRIBE_DEADLINE,
+        stop_when: nil,
+        backoff: default_backoff,
+        &block)
+        raise ArgumentError, 'a block is required' unless block
 
         return unless Feature.enabled?(:subscribe_events_from_relay, :instance)
 
-        ack_queue = SizedQueue.new(1)
+        logger = Gitlab::EventsPlatform::Logger.build
+        consecutive_failures = 0
 
-        requests = Enumerator.new do |y|
-          # First message must be SubscribeConfig.
-          y << Gitlab::Agent::EventsPlatform::Rpc::SubscribeRequest.new(
-            config: Gitlab::Agent::EventsPlatform::Rpc::SubscribeConfig.new(
+        loop do
+          break if stop_when&.call
+
+          # Wall-clock Time.current (not CLOCK_MONOTONIC) so specs can simulate elapsed time for the
+          # stable-period check below via travel/travel_to without real sleeps.
+          started_at = Time.current
+
+          begin
+            subscribe_events_single_stream(
               topic: topic,
               consumer_group: consumer_group,
-              event_types: event_types
+              event_types: event_types,
+              deadline: deadline,
+              &block
             )
-          )
 
-          # Then forward acks as the response loop queues them. A nil sentinel
-          # terminates the request stream.
-          loop do
-            msg = ack_queue.pop
-            break if msg.nil?
+            if (Time.current - started_at) >= STABLE_PERIOD_SECONDS
+              # Stable run: reset backoff and reconnect immediately. Low volume in practice (~once per
+              # server max_connection_age per consumer), so logged at info as a liveness signal.
+              backoff.reset
+              consecutive_failures = 0
 
-            y << msg
+              logger.info(
+                message: 'subscribe_events stream closed cleanly; reconnecting',
+                topic: topic,
+                consumer_group: consumer_group)
+            else
+              # Clean but immediate close: throttle so a stream that opens and closes instantly does
+              # not hot-loop reconnects (and flood logs). Treated like a transient failure.
+              consecutive_failures += 1
+
+              logger.warn(
+                message: 'subscribe_events stream closed before stable period; backing off',
+                topic: topic,
+                consumer_group: consumer_group,
+                consecutive_failures: consecutive_failures)
+
+              sleep(backoff.next)
+            end
+          rescue GRPC::BadStatus => e
+            consecutive_failures += 1
+
+            case classify_grpc_error(e)
+            when :retry
+              logger.warn(
+                message: 'subscribe_events transient error; retrying',
+                topic: topic,
+                consumer_group: consumer_group,
+                grpc_code: e.code,
+                consecutive_failures: consecutive_failures)
+
+              sleep(backoff.next)
+            when :stop
+              logger.info(
+                message: 'subscribe_events explicitly cancelled; stopping',
+                topic: topic,
+                consumer_group: consumer_group)
+
+              return
+            when :raise
+              logger.error(
+                message: 'subscribe_events permanent error',
+                topic: topic,
+                consumer_group: consumer_group,
+                grpc_code: e.code)
+
+              raise
+            end
           end
-        end
-
-        # Pass an explicit deadline because the stub-level timeout would kill the streaming RPC.
-        responses = stub_for(:events_platform).subscribe(
-          requests,
-          deadline: Time.current + deadline,
-          metadata: metadata
-        )
-
-        begin
-          responses.each do |response|
-            yield response.event
-
-            # Ack only on successful block return so a raising block leaves
-            # the event unacknowledged for redelivery (at-least-once contract).
-            ack_queue.push(
-              Gitlab::Agent::EventsPlatform::Rpc::SubscribeRequest.new(
-                ack: Gitlab::Agent::EventsPlatform::Rpc::Ack.new(
-                  message_ids: [response.message_id]
-                )
-              )
-            )
-          end
-        ensure
-          # Close the request stream so the gRPC client thread can exit, whether
-          # we leave via block-raise, stream close, or normal completion. With
-          # SizedQueue(1), this push blocks briefly if a pending ack hasn't been
-          # drained yet - that is intentional, so the last ack is delivered before
-          # the stream closes.
-          ack_queue.push(nil)
         end
       end
 
@@ -253,7 +294,126 @@ module Gitlab
         ))
       end
 
+      # Starts an AutoFlow workflow on GitLab Relay.
+      #
+      # @param identity_key [String] caller-chosen idempotency key.
+      #   (e.g. "cd-rollout-42")
+      # @param workflow_definition [String] the workflow program bytes.
+      #   (e.g. "def main(w, *args, **kwargs):\n    pass\n")
+      # @param namespace_id [Integer] GitLab namespace or organization the workflow belongs to.
+      # @param args [Array] positional arguments bound to the workflow's main().
+      #   (e.g. ["production", 3])
+      # @param kwargs [Hash{String => Object}] named arguments bound to the workflow's main().
+      #   (e.g. { "environment" => { "id" => "42" }, "version_set" => { "services" => [...] } })
+      # @return [Gitlab::Agent::AutoFlow::Rpc::StartWorkflowResponse]
+      def start_workflow(identity_key:, workflow_definition:, namespace_id:, args: [], kwargs: {})
+        request = Gitlab::Agent::AutoFlow::Rpc::StartWorkflowRequest.new(
+          identity_key: identity_key,
+          workflow_definition: workflow_definition,
+          namespace_id: namespace_id,
+          args: Autoflow::ValueConverter.values(args),
+          kwargs: Autoflow::ValueConverter.named_values(kwargs)
+        )
+
+        stub_for(:autoflow).start_workflow(request, metadata: metadata)
+      end
+
       private
+
+      # Opens a single Subscribe stream and yields each received CloudEvent to the block, acking the
+      # broker after each successful block return. Returns when the stream closes cleanly; raises on
+      # gRPC errors or if the block raises. This is the non-resilient core that {#subscribe_events}
+      # wraps in a reconnect loop.
+      #
+      # @return [void]
+      def subscribe_events_single_stream(topic:, consumer_group:, event_types:, deadline:)
+        ack_queue = Queue.new
+        absolute_deadline = subscribe_deadline(deadline)
+
+        requests = Enumerator.new do |y|
+          # First message must be SubscribeConfig; the rest are acks queued by the response loop.
+          y << Gitlab::Agent::EventsPlatform::Rpc::SubscribeRequest.new(
+            config: Gitlab::Agent::EventsPlatform::Rpc::SubscribeConfig.new(
+              topic: topic,
+              consumer_group: consumer_group,
+              event_types: event_types
+            )
+          )
+
+          # gRPC runs this (write) loop in its own thread and joins it from inside the response
+          # iteration when the stream ends, so blocking forever on `ack_queue.pop` would deadlock the
+          # whole call. Self-terminate against the call deadline (read side is guaranteed done by
+          # then); STREAM_CLOSED short-circuits the clean-close and block-raise paths.
+          loop do
+            remaining = absolute_deadline - Process.clock_gettime(Process::CLOCK_REALTIME)
+            break if remaining <= 0
+
+            msg = ack_queue.pop(timeout: [remaining, ACK_POLL_INTERVAL_SECONDS].min)
+            break if msg == STREAM_CLOSED
+
+            next if msg.nil? # poll timeout
+
+            y << msg
+          end
+        end
+
+        # Pass an explicit deadline because the stub-level timeout would kill the streaming RPC.
+        responses = stub_for(:events_platform).subscribe(
+          requests,
+          deadline: absolute_deadline,
+          metadata: metadata
+        )
+
+        begin
+          responses.each do |response|
+            yield response.event
+
+            # Ack only after a successful block return, so a raising block leaves the event
+            # unacknowledged for redelivery (at-least-once contract).
+            ack_queue.push(
+              Gitlab::Agent::EventsPlatform::Rpc::SubscribeRequest.new(
+                ack: Gitlab::Agent::EventsPlatform::Rpc::Ack.new(
+                  message_ids: [response.message_id]
+                )
+              )
+            )
+          end
+        ensure
+          ack_queue.push(STREAM_CLOSED)
+        end
+      end
+
+      def default_backoff
+        Gitlab::Kas::ExponentialBackoff.new(min: 1, max: 30, jitter: true)
+      end
+
+      # Absolute deadline as seconds-from-epoch. gRPC rejects an `ActiveSupport::TimeWithZone` (from
+      # `Time.current`) with "bad input: (time)->c_timeval"; CLOCK_REALTIME also matches the clock the
+      # gRPC c-core reads and is immune to Timecop in specs.
+      def subscribe_deadline(deadline)
+        Process.clock_gettime(Process::CLOCK_REALTIME) + deadline.to_f
+      end
+
+      # Maps a gRPC error to a reconnect action. Unlisted statuses default to :retry so a transient
+      # blip never silently terminates a long-running consumer; the code is logged so a reviewer can
+      # reclassify if needed.
+      #
+      # @param error [GRPC::BadStatus]
+      # @return [Symbol] one of :retry, :stop, :raise
+      def classify_grpc_error(error)
+        case error
+        when GRPC::Unavailable, GRPC::DeadlineExceeded, GRPC::Aborted,
+          GRPC::Internal, GRPC::Unauthenticated
+          :retry
+        when GRPC::Cancelled
+          :stop
+        when GRPC::InvalidArgument, GRPC::NotFound, GRPC::PermissionDenied,
+          GRPC::FailedPrecondition
+          :raise
+        else
+          :retry # default: be optimistic, surface in logs
+        end
+      end
 
       def stub_for(service)
         @stubs ||= {}

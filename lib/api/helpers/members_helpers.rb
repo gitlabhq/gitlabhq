@@ -102,7 +102,9 @@ module API
         result = instance.execute
 
         # This currently can only be reached in EE if group membership is locked
-        not_allowed! if instance.membership_locked
+        if instance.membership_locked
+          not_allowed!('Members cannot be added because the group has locked project membership')
+        end
 
         if result[:status] == :error && result[:http_status] == :unauthorized
           raise Gitlab::Access::AccessDeniedError

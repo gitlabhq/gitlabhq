@@ -8,13 +8,21 @@ module API
     helpers ::API::Helpers::EventsHelpers
 
     allow_access_with_scope :read_user, if: ->(request) { request.get? || request.head? }
+    allow_access_with_scope :ai_workflows, if: ->(request) { request_current_user_events?(request) }
+
+    before { set_current_organization }
 
     feature_category :user_profile
     urgency :low
 
+    def self.request_current_user_events?(request)
+      (request.get? || request.head?) && request.path.match?(%r{/api/v\d+/events$})
+    end
+
     resource :events do
-      desc "List currently authenticated user's events" do
-        detail 'This feature was introduced in GitLab 9.3.'
+      desc 'List all events' do
+        detail 'Lists all events for the authenticated user. Does not return events associated with epics or merge ' \
+          'requests. Returns bulk push events with limited commit details.'
         success Entities::Event
         is_array true
         tags %w[events]
@@ -31,6 +39,7 @@ module API
         use :sort_params
       end
 
+      route_setting :authorization, permissions: :read_event, boundary_type: :user
       get do
         authenticate!
 
@@ -44,8 +53,9 @@ module API
       requires :id, type: String, desc: 'The ID or username of the user'
     end
     resource :users do
-      desc 'Get the contribution events of a specified user' do
-        detail 'This feature was introduced in GitLab 8.13.'
+      desc 'Retrieve contribution events for a user' do
+        detail 'Retrieves the contribution events for a specified user. Does not return events associated with epics ' \
+          'or merge requests. Returns bulk push events with limited commit details.'
         success Entities::Event
         tags %w[events]
         is_array true
@@ -59,6 +69,7 @@ module API
         use :sort_params
       end
 
+      route_setting :authorization, permissions: :read_event, boundary_type: :user
       get ':id/events' do
         user = find_user(params[:id])
         not_found!('User') unless user

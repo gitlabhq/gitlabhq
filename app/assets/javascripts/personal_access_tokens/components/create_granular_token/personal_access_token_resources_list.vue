@@ -10,6 +10,7 @@ import {
 } from '@gitlab/ui';
 import { xor, union, difference } from 'lodash-es';
 import { __, sprintf } from '~/locale';
+import { ACCESS_SCOPE_KEYS } from '~/personal_access_tokens/constants';
 import { groupPermissionsByResourceAndCategory } from '~/personal_access_tokens/utils';
 
 export default {
@@ -40,7 +41,7 @@ export default {
     scope: {
       type: String,
       required: true,
-      validator: (value) => ['namespace', 'user', 'instance'].includes(value),
+      validator: (value) => ACCESS_SCOPE_KEYS.includes(value),
     },
     isFiltering: {
       type: Boolean,
@@ -96,7 +97,7 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div data-testid="resource-tree">
     <div v-for="category in resourcesGroupedByCategory" :key="category.key" class="gl-mb-4">
       <div class="gl-flex gl-items-start">
         <gl-form-checkbox
@@ -106,14 +107,14 @@ export default {
           data-testid="category-select-all"
           @change="toggleCategory(category, $event)"
         >
-          <span data-testid="category-name">
+          <span data-testid="category-name" :title="category.name">
             {{ category.name }}
           </span>
         </gl-form-checkbox>
 
         <gl-button
           category="tertiary"
-          class="gl-ml-auto !gl-border-none"
+          class="gl-ml-auto gl-shrink-0 !gl-border-none"
           :class="{ 'gl-pointer-events-none': isFiltering }"
           :disabled="isFiltering"
           :aria-label="toggleCategoryLabel(category)"

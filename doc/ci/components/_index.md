@@ -15,7 +15,7 @@ description: Reusable, versioned CI/CD components for pipelines.
 
 {{< history >}}
 
-- Introduced as an [experimental feature](../../policy/development_stages_support.md#experiment) in GitLab 16.0, [with a flag](../../administration/feature_flags/_index.md) named `ci_namespace_catalog_experimental`. Disabled by default.
+- Introduced as an [experimental feature](../../policy/development_stages_support.md#experiment) in GitLab 16.0, [with a feature flag](../../administration/feature_flags/_index.md) named `ci_namespace_catalog_experimental`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
 - [Feature flag `ci_namespace_catalog_experimental` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/394772) in GitLab 16.3.
 - [Moved](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/130824) to [beta](../../policy/development_stages_support.md#beta) in GitLab 16.6.
@@ -99,6 +99,9 @@ The repository must contain:
     like `templates/secret-detection/template.yml`. Only the `template.yml` file is used by other projects
     using the component. Other files in these directories are not released with the component,
     but can be used for things like tests or building container images.
+
+Component filenames and subdirectory names can contain letters, numbers, underscores (`_`), hyphens (`-`), and periods (`.`).
+For example, `templates/secret-detection.enterprise.yml` and `templates/secret-detection.enterprise/template.yml` are valid component filenames.
 
 > [!note]
 > Optionally, each component can also have its own `README.md` file that provides more detailed information, and can be linked from the top-level `README.md` file. This helps to provide a better overview of your component project and how to use it.
@@ -252,7 +255,7 @@ a pre-release version, specify the full version, for example `1.0.1-rc`.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 as a [beta](../../policy/development_stages_support.md#beta) [with a flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 as a [beta](../../policy/development_stages_support.md#beta) [with a feature flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/571986) in GitLab 18.7. Feature flag `ci_component_context_interpolation` removed.
 
 {{< /history >}}
@@ -984,7 +987,7 @@ When using third-party CI/CD components, consider the following security best pr
   Avoid storing secrets and credentials in project settings if you can use an external secret management
   solution instead.
 - **Use ephemeral, isolated runner environments**: Run component jobs in temporary,
-  isolated environments when possible. Be aware of [security risks](https://docs.gitlab.com/runner/security)
+  isolated environments when possible. Be aware of [security risks](https://docs.gitlab.com/runner/security/)
   with self-managed runners.
 - **Securely handle cache and artifacts**: Do not pass cache or artifacts from other jobs
   in your pipeline to CI/CD component jobs unless absolutely necessary.

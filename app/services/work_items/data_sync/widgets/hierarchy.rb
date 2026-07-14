@@ -87,7 +87,8 @@ module WorkItems
             # https://gitlab.com/groups/gitlab-org/-/epics/15934
             ::WorkItems::DataSync::MoveService.new(
               work_item: link.work_item, target_namespace: target_work_item.namespace, current_user: current_user,
-              params: { parent_work_item_id: target_work_item.id, skip_work_item_type_check: true }
+              params: { parent_work_item_id: target_work_item.id },
+              skip_work_item_type_check: true
             ).execute
           end
         end

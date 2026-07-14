@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Gitlab OIDC Authorization Code Flow', feature_category: :system_access do
   let_it_be(:application) { create(:oauth_application, redirect_uri: 'https://example.com/oauth/callback', scopes: 'openid profile email api') }
-  let_it_be(:user, freeze: false) do
+  let_it_be(:user) do
     create(:user, :with_namespace, email: 'test@example.com', organizations: [create(:organization)])
   end
 

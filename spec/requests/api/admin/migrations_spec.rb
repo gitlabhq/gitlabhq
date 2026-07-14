@@ -15,6 +15,12 @@ RSpec.describe API::Admin::Migrations, feature_category: :database do
       get api(path, admin, admin_mode: true), params: params
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_database_migration do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api(path, personal_access_token: pat), params: params }
+    end
+
     context 'when there are pending migrations' do
       let(:pending_migrations) do
         [

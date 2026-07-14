@@ -14,6 +14,8 @@ module Types
               graphql_name "#{types_prefix}AggregationResponseDimensions"
               description "Response dimensions for `#{types_prefix}` aggregation engine"
 
+              authorize_granular_token skip_reason: :parent_authorizes if graphql_context[:granular_authorization_opts]
+
               def self.declare_association_field(dimension)
                 name = dimension.identifier.to_s.delete_suffix('_id')
                 model = dimension.association[:model] || name.camelize.constantize

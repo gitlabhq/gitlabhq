@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # A Namespace::TraversalHierarchy is the collection of namespaces that descend
 # from a root Namespace as defined by the Namespace#traversal_ids attributes.

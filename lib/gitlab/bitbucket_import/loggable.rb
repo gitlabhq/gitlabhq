@@ -36,6 +36,7 @@ module Gitlab
       def log_base_data
         {
           class: self.class.name,
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
           project_id: project.id,
           project_path: project.full_path
         }

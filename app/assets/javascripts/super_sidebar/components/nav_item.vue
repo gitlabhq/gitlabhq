@@ -1,5 +1,5 @@
 <script>
-import { GlAvatar, GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatar, GlBadge, GlButton, GlIcon, GlNavItem, GlTooltipDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import {
   CLICK_MENU_ITEM_ACTION,
@@ -7,8 +7,7 @@ import {
   TRACKING_UNKNOWN_ID,
   TRACKING_UNKNOWN_PANEL,
 } from '~/super_sidebar/constants';
-import NavItemLink from './nav_item_link.vue';
-import NavItemRouterLink from './nav_item_router_link.vue';
+import { ariaCurrent } from '../utils';
 
 export default {
   i18n: {
@@ -20,10 +19,10 @@ export default {
   name: 'NavItem',
   components: {
     GlAvatar,
+    GlBadge,
     GlButton,
     GlIcon,
-    NavItemLink,
-    NavItemRouterLink,
+    GlNavItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -136,7 +135,10 @@ export default {
       return {
         ...this.$attrs,
         ...this.trackingProps,
-        item: this.item,
+        'aria-current': ariaCurrent(this.isActive),
+        selected: this.isActive,
+        href: this.item.link,
+        to: this.item.to,
         'data-qa-submenu-item': this.qaSubMenuItem,
         'data-method': this.item.data_method ?? null,
       };
@@ -149,9 +151,6 @@ export default {
         [this.item.link_classes]: this.item.link_classes,
         ...this.linkClasses,
       };
-    },
-    navItemLinkComponent() {
-      return this.item.to ? NavItemRouterLink : NavItemLink;
     },
     hasAvatar() {
       return Boolean(this.item.entity_id);
@@ -172,9 +171,15 @@ export default {
         title: this.item.title,
       });
     },
+    isActive() {
+      return this.item.is_active;
+    },
+    hasBadge() {
+      return Boolean(this.item.badge);
+    },
   },
   mounted() {
-    if (this.item.is_active && !this.isFlyout) {
+    if (this.isActive && !this.isFlyout) {
       this.$el.scrollIntoView({
         behavior: 'instant',
         block: 'center',
@@ -210,66 +215,68 @@ export default {
     @mouseenter="isMouseIn = true"
     @mouseleave="isMouseIn = false"
   >
-    <component
-      :is="navItemLinkComponent"
+    <gl-nav-item
       v-bind="linkProps"
-      class="application-chrome-nav-item super-sidebar-nav-item show-on-focus-or-hover--control hide-on-focus-or-hover--control gl-relative gl-mb-1 gl-flex gl-items-center gl-gap-3 gl-py-1 !gl-no-underline focus:gl-focus-inset"
+      class="super-sidebar-nav-item show-on-focus-or-hover--control hide-on-focus-or-hover--control gl-mb-1"
       :class="computedLinkClasses"
       data-testid="nav-item-link"
       :aria-label="item.title"
-      @nav-link-click="$emit('nav-link-click')"
-      @nav-item-keydown-esc="$emit('nav-item-keydown-esc')"
+      :is-icon-only="!isFlyout ? isIconOnly : false"
+      @click="$emit('nav-link-click')"
+      @escape="$emit('nav-item-keydown-esc')"
     >
-      <div
-        v-if="!isFlyout"
-        class="gl-flex gl-h-6 gl-w-6 gl-shrink-0"
-        :class="{
-          'gl-w-6 gl-self-start': hasAvatar,
-          'gl-rounded-base gl-bg-default': hasAvatar && avatarShape === 'rect',
-          '-gl-mr-2': hasAvatar && isIconOnly,
-        }"
-      >
-        <slot name="icon">
-          <gl-icon
-            v-if="item.icon"
-            :name="item.icon"
-            class="super-sidebar-nav-item-icon gl-m-auto"
-          />
-          <gl-icon
-            v-else-if="isInPinnedSection"
-            name="grip"
-            class="js-draggable-icon show-on-focus-or-hover--target super-sidebar-mix-blend-mode gl-m-auto gl-cursor-grab"
-            variant="subtle"
-          />
-          <gl-avatar
-            v-else-if="hasAvatar"
-            :size="24"
-            :shape="avatarShape"
-            :entity-name="item.title"
-            :entity-id="item.entity_id"
-            :src="item.avatar"
-          />
-        </slot>
-      </div>
-      <div
+      <template v-if="!isFlyout" #icon>
+        <span
+          class="gl-flex gl-h-6 gl-w-6 gl-items-center gl-justify-center"
+          :class="{
+            'gl-self-start': hasAvatar,
+            'gl-rounded-base gl-bg-default': hasAvatar && avatarShape === 'rect',
+            '-gl-mr-2': hasAvatar && isIconOnly,
+          }"
+        >
+          <slot name="icon">
+            <gl-icon v-if="item.icon" :name="item.icon" />
+            <gl-icon
+              v-else-if="isInPinnedSection"
+              name="grip"
+              class="js-draggable-icon show-on-focus-or-hover--target super-sidebar-mix-blend-mode gl-cursor-grab"
+              variant="subtle"
+            />
+            <gl-avatar
+              v-else-if="hasAvatar"
+              :size="24"
+              :shape="avatarShape"
+              :entity-name="item.title"
+              :entity-id="item.entity_id"
+              :src="item.avatar"
+            />
+          </slot>
+        </span>
+      </template>
+      <span
         v-show="!isIconOnly"
         class="gl-grow gl-break-anywhere"
-        :class="{ 'gl-w-max': isFlyout, 'nav-item-link-label': !isFlyout }"
+        :class="{ 'nav-item-link-label': !isFlyout }"
         data-testid="nav-item-link-label"
       >
         {{ item.title }}
-        <div v-if="item.subtitle" class="gl-truncate-end gl-text-sm gl-text-subtle">
+        <gl-badge
+          v-if="hasBadge"
+          variant="info"
+          size="sm"
+          data-testid="nav-item-feature-announcement-badge"
+        >
+          {{ item.badge.label }}
+        </gl-badge>
+        <span v-if="item.subtitle" class="gl-truncate-end gl-text-sm gl-text-subtle">
           {{ item.subtitle }}
-        </div>
-      </div>
+        </span>
+      </span>
       <slot name="actions"></slot>
-      <span
-        v-if="hasEndSpace && !isIconOnly"
-        class="nav-item-link-badge gl-flex gl-min-w-6 gl-items-start gl-justify-end"
-      >
+      <template v-if="hasEndSpace && !isIconOnly" #end>
         <span
           v-if="hasPill"
-          class="gl-mr-3 gl-min-w-3 gl-text-center gl-text-sm"
+          class="nav-item-link-badge gl-mr-3 gl-text-sm"
           :class="{
             'hide-on-focus-or-hover--target transition-opacity-on-hover--target': isPinnable,
           }"
@@ -277,8 +284,8 @@ export default {
         >
           {{ pillData }}
         </span>
-      </span>
-    </component>
+      </template>
+    </gl-nav-item>
     <gl-button
       v-if="isPinnable"
       v-gl-tooltip.noninteractive.right.viewport="

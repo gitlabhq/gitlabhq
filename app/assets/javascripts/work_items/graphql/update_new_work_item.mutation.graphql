@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 mutation updateNewWorkItem($input: LocalUpdateNewWorkItemInput) {
   updateNewWorkItem(input: $input) @client
 }

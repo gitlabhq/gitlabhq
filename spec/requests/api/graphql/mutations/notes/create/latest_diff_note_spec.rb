@@ -31,6 +31,21 @@ RSpec.describe 'Adding a LatestDiffNote', feature_category: :code_review_workflo
 
   it_behaves_like 'a Note mutation when the user does not have permission'
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_note do
+    let(:user) { create(:user, developer_of: project) }
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_note do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :repository, group: group) }
+    let(:user) { create(:user, developer_of: group) }
+    let(:boundary_object) { group }
+    let(:error_boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when the user has permission' do
     before_all do
       project.add_developer(current_user)
@@ -109,7 +124,7 @@ RSpec.describe 'Adding a LatestDiffNote', feature_category: :code_review_workflo
     end
 
     context 'with /label quick action' do
-      let_it_be(:label, freeze: false) { create(:label, title: 'bug') }
+      let_it_be_with_reload(:label) { create(:label, title: 'bug') }
 
       let(:body) { "Body text\n/label ~bug" }
 

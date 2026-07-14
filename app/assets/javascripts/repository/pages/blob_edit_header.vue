@@ -7,7 +7,6 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import { getParameterByName, visitUrl } from '~/lib/utils/url_utility';
 import { buildApiUrl } from '~/api/api_utils';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getRefMixin from '../mixins/get_ref';
 import {
   prepareEditFormData,
@@ -31,7 +30,7 @@ export default {
     CommitChangesModal,
     GlButton,
   },
-  mixins: [getRefMixin, glFeatureFlagMixin()],
+  mixins: [getRefMixin],
   inject: [
     'action',
     'editor',
@@ -179,13 +178,6 @@ export default {
 
       return axios.post(url, data);
     },
-    editBlobWithController(originalFormData) {
-      return axios({
-        method: 'put',
-        url: this.updatePath,
-        data: originalFormData,
-      });
-    },
     async handleFormSubmit(formData) {
       this.error = null;
       this.isLoading = true;
@@ -202,15 +194,11 @@ export default {
         filePath: this.filePath,
         lastCommitSha: this.lastCommitSha,
         fromMergeRequestIid: this.fromMergeRequestIid,
-        ...(this.glFeatures.blobEditRefactor && {
-          forkBranchName: this.canPushToBranch ? undefined : this.nextForkBranchName,
-        }),
+        forkBranchName: this.canPushToBranch ? undefined : this.nextForkBranchName,
       });
 
       try {
-        const response = this.glFeatures.blobEditRefactor
-          ? await this.editBlob(originalFormData)
-          : await this.editBlobWithController(originalFormData);
+        const response = await this.editBlob(originalFormData);
         const { data: responseData } = response;
 
         if (responseData.error) {
@@ -218,11 +206,7 @@ export default {
           return;
         }
 
-        if (this.glFeatures.blobEditRefactor) {
-          this.handleEditBlobSuccess(responseData, originalFormData);
-        } else {
-          this.handleControllerSuccess(responseData);
-        }
+        this.handleEditBlobSuccess(responseData, originalFormData);
       } catch (error) {
         const errorMessage =
           error.response?.data?.message || error.response?.data?.error || this.errorMessage;

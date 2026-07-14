@@ -4,7 +4,7 @@ description: Allows Direct Transfer to handle files over the defined limit when 
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/519759
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193196
 rollout_issue_url:
-milestone: '18.2'
+milestone: '19.3'
 group: group::import
 type: ops
 default_enabled: false

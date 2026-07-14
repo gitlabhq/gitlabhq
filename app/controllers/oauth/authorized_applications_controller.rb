@@ -16,7 +16,10 @@ class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicatio
     if params[:token_id].present?
       current_resource_owner.oauth_authorized_tokens.find(params[:token_id].to_s).revoke
     else
-      Authn::OauthApplication.revoke_tokens_and_grants_for(params[:id].to_s, current_resource_owner)
+      Authn::OauthApplications::RevokeService.new(
+        current_user: current_resource_owner,
+        application_id: params[:id].to_s
+      ).execute
     end
 
     redirect_to user_settings_applications_url,

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Project Usage quotas', feature_category: :consumables_cost_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:role) { :maintainer }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     project.add_role(user, role)

@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Developing AI Features for GitLab Duo Self-Hosted
 ---

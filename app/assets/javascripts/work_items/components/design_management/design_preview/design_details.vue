@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
@@ -10,6 +9,8 @@ import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { projectPreviewMarkdownPath } from '~/lib/utils/path_helpers/project';
 import { ROUTES } from '../../../constants';
 import getDesignQuery from '../graphql/design_details.query.graphql';
 import getWorkItemDesignListQuery from '../graphql/design_collection.query.graphql';
@@ -46,6 +47,7 @@ const DEFAULT_SCALE = 1;
 const DEFAULT_MAX_SCALE = 2;
 
 export default {
+  name: 'DesignDetails',
   components: {
     DesignPresentation,
     DesignSidebar,
@@ -55,6 +57,7 @@ export default {
     GlAlert,
     MountingPortal,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['fullPath'],
   beforeRouteUpdate(to, from, next) {
     // reset scale when the active design changes
@@ -153,7 +156,8 @@ export default {
       return this.$apollo.queries.design.loading;
     },
     markdownPreviewPath() {
-      return `/${this.fullPath}/-/preview_markdown?target_type=Issue`;
+      // eslint-disable-next-line @gitlab/require-i18n-strings -- 'Issue' is an API parameter value, not a user-facing string
+      return projectPreviewMarkdownPath(this.fullPath, { target_type: 'Issue' });
     },
     designVariables() {
       const versionId = getIdFromGraphQLId(
@@ -205,7 +209,11 @@ export default {
     designCollectionQueryBody() {
       return {
         query: getWorkItemDesignListQuery,
-        variables: { id: this.workItemId, atVersion: null },
+        variables: {
+          id: this.workItemId,
+          atVersion: null,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
+        },
       };
     },
     latestVersionId() {
@@ -386,7 +394,7 @@ export default {
     <div
       ref="root"
       tabindex="-1"
-      class="design-detail js-design-detail fixed-top gl-flex gl-w-full gl-flex-col gl-justify-center gl-bg-subtle gl-@container/panel lg:gl-flex-row"
+      class="design-detail js-design-detail !gl-fixed !gl-left-0 !gl-right-0 gl-flex gl-w-full gl-flex-col gl-justify-center gl-bg-subtle gl-@container/panel lg:gl-flex-row"
     >
       <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden">
         <design-toolbar

@@ -1,0 +1,20 @@
+---
+description: A user viewed, for the first time, the pipeline results of a project whose CI config was AI-generated
+internal_events: true
+action: view_ai_pipeline_results
+identifiers:
+- project
+- user
+- namespace
+additional_properties:
+  author_source:
+    description: AI agent identifier that generated the project's CI config (ci_config_generated_by), e.g. ci_expert_agent/v1. Present whenever the event fires, since the event is gated to AI-config projects.
+product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
+milestone: '19.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241602
+tiers:
+- free
+- premium
+- ultimate

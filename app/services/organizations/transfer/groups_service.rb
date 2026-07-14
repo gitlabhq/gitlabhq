@@ -13,11 +13,10 @@ module Organizations
         @group = group
         @new_organization = new_organization
         @current_user = current_user
-        @old_organization = group.organization
       end
 
       def async_execute
-        return ServiceResponse.error(message: transfer_error) unless can_transfer?
+        return ServiceResponse.error(message: transfer_error, reason: transfer_error_reason) unless can_transfer?
 
         Organizations::Groups::TransferWorker.perform_async(
           {
@@ -33,12 +32,7 @@ module Organizations
       end
 
       def execute
-        return ServiceResponse.error(message: transfer_error) unless can_transfer?
-
-        # Find or create bot users before transaction to avoid exclusive lease errors.
-        # If the transaction is rolled back, new bots will still exist
-        # but this does not affect data integrity
-        user_transfer_service.prepare_bots
+        return ServiceResponse.error(message: transfer_error, reason: transfer_error_reason) unless can_transfer?
 
         Group.transaction do
           perform_transfer
@@ -53,11 +47,34 @@ module Organizations
 
       private
 
-      attr_reader :group, :new_organization, :current_user, :old_organization
+      attr_reader :group, :new_organization, :current_user
+
+      # The "old" organization is the source of the transfer. By default it is
+      # the group's current organization, but Organizations::ConfirmService
+      # moves the top-level group's organization_id ahead of the descendants;
+      # in that case the actual source is taken from the first descendant
+      # that has not yet been transferred so the runners transfer, the
+      # GroupTransferredEvent, and the EE subscription transfer all receive
+      # the real source organization.
+      def old_organization
+        return group.organization unless new_organization&.id == group.organization_id
+
+        Organizations::Organization.find_by_id(untransferred_descendant_organization_id) ||
+          group.organization
+      end
+      strong_memoize_attr :old_organization
+
+      def untransferred_descendant_organization_id
+        descendant_ids = group.self_and_descendant_ids(skope: Namespace)
+
+        Namespace.id_in(descendant_ids)
+          .where.not(organization_id: new_organization.id) # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
+          .limit(1)
+          .pick(:organization_id)
+      end
 
       def perform_transfer
         transfer_namespaces_and_projects
-        transfer_users
         schedule_ci_runners_transfer
         publish_event
       end
@@ -82,8 +99,18 @@ module Organizations
             organization_id: new_organization.id,
             visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
           )
+
+          transfer_oauth_applications(batch_ids)
         end
       end
+
+      # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
+      def transfer_oauth_applications(namespace_ids)
+        update_organization_id_for(Authn::OauthApplication) do |relation|
+          relation.where(owner_type: 'Namespace', owner_id: namespace_ids)
+        end
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
 
       # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
       def transfer_fork_networks(project_ids)
@@ -122,17 +149,6 @@ module Organizations
         end
       end
 
-      def transfer_users
-        user_transfer_service.execute
-      end
-
-      def user_transfer_service
-        @user_transfer_service ||= Organizations::Transfer::UsersService.new(
-          users: users,
-          new_organization: new_organization
-        )
-      end
-
       def schedule_ci_runners_transfer
         group_id = group.id
         old_org_id = old_organization.id
@@ -141,10 +157,6 @@ module Organizations
         group.run_after_commit_or_now do
           ::Ci::Runners::TransferOrganizationWorker.perform_async(group_id, old_org_id, new_org_id)
         end
-      end
-
-      def users
-        group.users_with_descendants
       end
 
       def log_transfer_success
@@ -175,7 +187,7 @@ module Organizations
       end
 
       def can_transfer?
-        return true if group_is_root? && !already_transferred? && has_permission? && can_transfer_users?
+        return true if group_is_root? && !already_transferred? && has_permission?
 
         false
       end
@@ -184,12 +196,18 @@ module Organizations
         error = localized_error_messages[:group_not_root] unless group_is_root?
         error ||= localized_error_messages[:already_transferred] if already_transferred?
         error ||= localized_error_messages[:permission] unless has_permission?
-        error ||= user_transfer_error unless can_transfer_users?
 
         format(
           s_("TransferOrganization|Group organization transfer failed: %{error_message}"),
           error_message: error
         )
+      end
+
+      def transfer_error_reason
+        return :group_not_root unless group_is_root?
+        return :already_transferred if already_transferred?
+
+        :missing_permission unless has_permission?
       end
 
       def group_is_root?
@@ -205,14 +223,6 @@ module Organizations
         return false unless Ability.allowed?(current_user, :update_organization, new_organization)
 
         true
-      end
-
-      def can_transfer_users?
-        user_transfer_service.can_transfer_users?
-      end
-
-      def user_transfer_error
-        user_transfer_service.transfer_error
       end
 
       def localized_error_messages

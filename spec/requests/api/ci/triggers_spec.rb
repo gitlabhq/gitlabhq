@@ -70,6 +70,15 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
         expect(json_response['message']).to eq('base' => ["Reference not found"])
       end
 
+      it 'masks input values when logging' do
+        expect(::API::API::LOGGER).to receive(:info).with(
+          include(params: include('inputs' => '[FILTERED]'))
+        )
+
+        post api("/projects/#{project.id}/trigger/pipeline"),
+          params: options.merge(ref: 'master', inputs: { 'SECRET_INPUT' => 'super-secret' })
+      end
+
       context 'Validates variables' do
         let(:variables) do
           { 'TRIGGER_KEY' => 'TRIGGER_VALUE' }

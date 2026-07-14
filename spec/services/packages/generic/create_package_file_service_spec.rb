@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :package_registry do
   let_it_be(:namespace) { create(:group) }
   let_it_be(:project) { create(:project, group: namespace) }
-  let_it_be(:package_settings, freeze: false) { create(:namespace_package_setting, namespace: namespace) }
+  let_it_be_with_reload(:package_settings) { create(:namespace_package_setting, namespace: namespace) }
   let_it_be(:user) { create(:user) }
   let_it_be(:pipeline) { create(:ci_pipeline, user: user) }
   let_it_be(:file_name) { 'myfile.tar.gz.1' }
@@ -107,7 +107,7 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
     end
 
     context 'with existing package' do
-      let_it_be(:duplicate_file, freeze: false) { create(:package_file, package: package, file_name: file_name) }
+      let_it_be_with_reload(:duplicate_file) { create(:package_file, package: package, file_name: file_name) }
 
       it { expect { response }.to change { ::Packages::PackageFile.for_projects(project).count }.by(1) }
 

@@ -3,6 +3,7 @@ import { GlButton, GlTooltipDirective, GlIcon, GlAnimatedLoaderIcon } from '@git
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import { userTypes } from '../assignees/constants';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
 const LOADING_STATE = 'loading';
@@ -155,9 +156,19 @@ export default {
         REVIEW_STATE_ICONS.UNREVIEWED
       );
     },
+    isDuoCodeReviewInProgress(user) {
+      return (
+        user.type === userTypes.duo_code_review_bot &&
+        user.mergeRequestInteraction.reviewState === 'REVIEW_STARTED'
+      );
+    },
     showRequestReviewButton(user) {
       if (this.canRerequest) {
         if (!user.mergeRequestInteraction.approved) {
+          if (this.isDuoCodeReviewInProgress(user)) {
+            return false;
+          }
+
           return !['UNREVIEWED'].includes(user.mergeRequestInteraction.reviewState);
         }
 
@@ -213,13 +224,7 @@ export default {
         :class="reviewStateIcon(user).class"
         data-testid="reviewer-state-icon-parent"
       >
-        <gl-animated-loader-icon
-          v-if="
-            user.type === 'DUO_CODE_REVIEW_BOT' &&
-            user.mergeRequestInteraction.reviewState === 'REVIEW_STARTED'
-          "
-          is-on
-        />
+        <gl-animated-loader-icon v-if="isDuoCodeReviewInProgress(user)" is-on />
         <gl-icon
           v-else
           :size="reviewStateIcon(user).size || 16"

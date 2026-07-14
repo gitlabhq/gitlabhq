@@ -53,7 +53,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
     stub_lfs_setting(enabled: lfs_enabled)
     allow(LfsObjectUploader)
       .to receive(:object_store_options)
-      .and_return(GitlabSettings::Options.build(lfs_config))
+      .and_return(Gitlab::Configs.build_options(lfs_config))
   end
 
   describe '.default_enabled' do

@@ -277,9 +277,18 @@ module MergeRequests
         MergeRequests::DraftStateChangeEvent.new(
           data: {
             current_user_id: current_user.id,
-            merge_request_id: merge_request.id,
-            new_draft_status: new_draft_status
+            merge_request_id: merge_request.id
           }
+        )
+      )
+
+      # Only publish the ReadyEvent when the MR transitions from draft to ready
+      return if new_draft_status
+
+      Gitlab::EventStore.publish(
+        MergeRequests::ReadyEvent.build(
+          merge_request: merge_request,
+          current_user: current_user
         )
       )
     end

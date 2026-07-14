@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import Tracking from '~/tracking';
 import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL, TRACKING_CATEGORIES } from '~/ci/constants';
@@ -16,6 +16,7 @@ export default {
   },
   components: {
     GlButton,
+    GlButtonGroup,
     PipelineMultiActions,
     PipelinesManualActions,
     PipelineStopModal,
@@ -27,6 +28,7 @@ export default {
       required: true,
     },
   },
+  emits: ['cancel-pipeline', 'job-action-executed', 'retry-pipeline'],
   data() {
     return {
       isCanceling: false,
@@ -115,7 +117,7 @@ export default {
       @close-modal="onCloseModal"
     />
 
-    <div class="btn-group">
+    <gl-button-group>
       <slot name="duo-workflow-action"></slot>
       <pipelines-manual-actions
         v-if="hasActions"
@@ -156,7 +158,7 @@ export default {
         @click="handleCancelClick"
       />
 
-      <pipeline-multi-actions :pipeline-id="pipelineId" />
-    </div>
+      <pipeline-multi-actions :pipeline-id="pipelineId" :full-path="fullPath" />
+    </gl-button-group>
   </div>
 </template>

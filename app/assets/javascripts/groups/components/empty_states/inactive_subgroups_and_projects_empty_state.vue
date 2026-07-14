@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import { SEARCH_MINIMUM_LENGTH } from '../../constants';
 
 export default {
+  name: 'InactiveSubgroupsAndProjectsEmptyState',
   components: { ResourceListsEmptyState },
   SEARCH_MINIMUM_LENGTH,
   i18n: {

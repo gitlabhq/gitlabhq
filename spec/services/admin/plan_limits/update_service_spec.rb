@@ -5,7 +5,16 @@ require 'spec_helper'
 RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :consumables_cost_management do
   let_it_be(:user) { create(:admin) }
   let_it_be(:plan) { create(:plan, name: 'free') }
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:limits, freeze: false) { plan.actual_limits }
+  # `freeze: false` is kept here because this `let_it_be` subject is not an
+  # ActiveRecord record, so freezing gives no cross-example isolation benefit
+  # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+  # gitlab-org/gitlab#602925).
   let_it_be(:params, freeze: false) do
     {
       ci_pipeline_size: 101,

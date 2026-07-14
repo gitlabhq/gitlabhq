@@ -61,7 +61,9 @@ module Sidebars
             link: charts_project_pipelines_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
             active_routes: { path: 'pipelines#charts' },
-            item_id: :ci_cd_analytics
+            item_id: :ci_cd_analytics,
+            description: _('Analyze CI/CD pipeline metrics and performance'),
+            library_icon: 'cicd-analytics'
           )
         end
 
@@ -76,7 +78,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
             container_html_options: { class: 'shortcuts-repository-charts' },
             active_routes: { path: 'graphs#charts' },
-            item_id: :repository_analytics
+            item_id: :repository_analytics,
+            description: _('Analyze repository coverage, statistics, and metrics'),
+            library_icon: 'repository-analytics'
           )
         end
 
@@ -92,7 +96,9 @@ module Sidebars
               super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
               container_html_options: { class: 'shortcuts-project-cycle-analytics' },
               active_routes: { path: ['cycle_analytics#show', 'value_streams#new', 'value_streams#edit'] },
-              item_id: :cycle_analytics
+              item_id: :cycle_analytics,
+              description: _('Analyze value stream and cycle time'),
+              library_icon: 'value-stream-analytics'
             )
           end
         end

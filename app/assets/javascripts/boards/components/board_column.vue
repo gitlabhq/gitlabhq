@@ -6,6 +6,7 @@ import BoardList from './board_list.vue';
 import BoardAddNewColumnBetween from './board_add_new_column_between.vue';
 
 export default {
+  name: 'BoardColumn',
   components: {
     BoardAddNewColumn,
     BoardAddNewColumnBetween,
@@ -66,6 +67,15 @@ export default {
       default: false,
     },
   },
+  emits: [
+    'cannot-find-active-item',
+    'drag-start',
+    'dragStop',
+    'focus-adjacent',
+    'highlight-list',
+    'setActiveList',
+    'setFilters',
+  ],
   data() {
     return {
       showNewForm: false,
@@ -144,7 +154,7 @@ export default {
           :dragged-item-id="draggedItemId"
           :focused="focused"
           @dragStop="$emit('dragStop')"
-          @dragStart="$emit('dragStart', $event)"
+          @drag-start="$emit('drag-start', $event)"
           @toggleNewForm="toggleNewForm"
           @setFilters="$emit('setFilters', $event)"
           @cannot-find-active-item="$emit('cannot-find-active-item')"

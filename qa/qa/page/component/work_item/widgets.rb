@@ -77,6 +77,8 @@ module QA
               find_element("listbox-item-gid://gitlab/Milestone/#{milestone.id}").click
             end
 
+            wait_for_requests
+
             wait_until(reload: false) do
               has_element?('work-item-milestone-link', text: milestone.title, wait: 0)
             end
@@ -89,6 +91,10 @@ module QA
           end
 
           def wait_milestone_block_finish_loading
+            wait_until(reload: false, max_duration: 30, sleep_interval: 1) do
+              has_element?('work-item-milestone', wait: 0)
+            end
+
             within_element('work-item-milestone') do
               wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
                 finished_loading_block?

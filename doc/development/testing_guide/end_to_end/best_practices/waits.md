@@ -26,3 +26,25 @@ end
 - `max`: Specifies the max amount of seconds to wait until the block given is satisfied
 - `time`: The interval/poll time to sleep *in seconds*. If this time reaches `max`, the wait returns `false`
 - `reload`: If the wait is not satiated, the test will sleep then reload the page if `:reload` is set to `true`
+
+## Wait for readiness explicitly
+
+A page action often returns before the backend finishes the work it triggered. When a test reads
+state in this gap, the result depends on timing, which makes the test flaky. To avoid this, wait for
+a signal that confirms the work is complete before you act on a resource or assert against it.
+
+The framework provides several helpers that poll for a condition instead of guessing how long to
+wait. For example, `Support::Retrier` and `Support::Waiter` retry an operation until it succeeds, and
+resources expose readiness checks such as `runner.wait_until_online`:
+
+```ruby
+# Wait until the runner reports itself online before the test depends on it.
+runner.wait_until_online
+```
+
+Choose a signal that reflects the work you are waiting for, such as a visible element, a resource
+state, or an API response. A fixed `sleep` is not a reliable signal because the work can take longer
+than the chosen duration, so avoid using one to wait for readiness.
+
+When a wait still times out, first confirm that it waits on the correct signal. Fixing the signal is
+more reliable than increasing the timeout, and both are preferable to quarantining the test.

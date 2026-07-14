@@ -44,7 +44,7 @@ RSpec.describe 'Removing an HTTP Integration', feature_category: :incident_manag
     expect(integration_response['active']).to eq(integration.active)
     expect(integration_response['token']).to eq(integration.token)
     expect(integration_response['url']).to eq(integration.url)
-    expect(integration_response['apiUrl']).to eq(nil)
+    expect(integration_response['apiUrl']).to be_nil
 
     expect { integration.reload }.to raise_error ActiveRecord::RecordNotFound
   end

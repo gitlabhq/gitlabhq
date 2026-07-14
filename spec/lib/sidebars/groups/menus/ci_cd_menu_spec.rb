@@ -29,4 +29,14 @@ RSpec.describe Sidebars::Groups::Menus::CiCdMenu, feature_category: :navigation 
       end
     end
   end
+
+  describe 'Feature Library metadata' do
+    it 'gives every item a description and a unique library_icon', :aggregate_failures do
+      serialized = described_class.new(context).renderable_items.map(&:serialize_for_super_sidebar)
+
+      expect(serialized).to all(include(:description, :library_icon))
+      icons = serialized.map { |item| item[:library_icon] }
+      expect(icons).to match_array(icons.uniq)
+    end
+  end
 end

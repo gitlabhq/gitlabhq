@@ -635,6 +635,21 @@
         background-color: var(--gl-control-indicator-color-disabled);
       }
     }
+
+    &[data-indeterminate]:disabled {
+      &::after {
+        content: '';
+        @apply gl-absolute;
+        @apply gl-z-2;
+        @apply gl-w-5;
+        @apply gl-h-5;
+        @apply gl-mt-[-1px];
+        @apply gl-ml-[-1px];
+        @apply gl-rounded-base;
+        mask: url("#{$gl-icon-indeterminate}") center center no-repeat;
+        background-color: var(--gl-control-indicator-color-disabled);
+      }
+    }
   }
 
   li.inapplicable {

@@ -1,9 +1,9 @@
 ---
 stage: Application Security Testing
 group: Composition Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: プロジェクトの依存関係について、CycloneDX形式のソフトウェア部品表()を生成およびエクスポートし、CI/CDアーティファクトとして保存する方法について説明します。
-title: 'チュートリアル: SBOM形式で依存関係リストをエクスポート'
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: プロジェクトの依存関係に関するソフトウェア部品表（SBOM）をCycloneDX形式で生成およびエクスポートし、それをCI/CDアーティファクトとして保存する方法を学びます。
+title: 'チュートリアル: SBOM形式での依存関係リストのエクスポート'
 ---
 
 {{< details >}}
@@ -13,18 +13,18 @@ title: 'チュートリアル: SBOM形式で依存関係リストをエクスポ
 
 {{< /details >}}
 
-依存関係スキャンの出力をCycloneDX JSON形式にエクスポートできます。
+依存関係スキャンの出力は、CycloneDX JSON形式にエクスポートできます。
 
-このチュートリアルでは、パイプラインのCycloneDX JSON SBOMを生成し、それをCIジョブアーティファクトとしてアップロードする方法を説明します。
+このチュートリアルでは、パイプライン用のCycloneDX JSON SBOMを生成し、それをCIジョブのアーティファクトとしてアップロードする方法を示します。
 
 ## はじめる前 {#before-you-begin}
 
-依存関係スキャンをセットアップします。詳細な手順については、[依存関係スキャンのチュートリアル](dependency_scanning.md)に従ってください。
+依存関係スキャンを設定します。詳細な手順については、[依存関係スキャンチュートリアル](dependency_scanning.md)を参照してください。
 
-## 設定ファイルを作成する {#create-configuration-files}
+## 設定ファイルを作成します {#create-configuration-files}
 
-1. `api`スコープと`Developer`ロールを持つプライベートアクセストークンを作成します。
-1. トークン値を`PRIVATE_TOKEN`という名前のCI/CD変数として追加します。
+1. プライベートアクセストークンを、`api`スコープと`Developer`ロールで作成します。
+1. トークンの値を、CI/CD変数`PRIVATE_TOKEN`として追加します。
 1. 次のコードで[スニペット](../api/snippets.md)を作成します。
 
    ファイル名: `export.sh`
@@ -78,13 +78,13 @@ title: 'チュートリアル: SBOM形式で依存関係リストをエクスポ
    export_sbom
    ```
 
-   この`export.sh`スクリプトは、次の手順で動作します:
+   この`export.sh`スクリプトは次の手順で動作します:
 
-   1. 現在のパイプラインのCycloneDX SBOMエクスポートを作成します。
-   1. そのエクスポートのステータスを確認し、準備ができたら停止します。
+   1. 現在のパイプラインのCycloneDX SBOMをエクスポートします。
+   1. そのエクスポートのステータスを確認し、準備が完了したら停止します。
    1. CycloneDX SBOMファイルをダウンロードします。
 
-1. 次のコードで`.gitlab-ci.yml`を更新します。
+1. `.gitlab-ci.yml`を次のコードで更新します。
 
    ```yaml
    export-merged-sbom:
@@ -104,4 +104,4 @@ title: 'チュートリアル: SBOM形式で依存関係リストをエクスポ
 
 1. **ビルド** > **パイプライン**に移動し、最新のパイプラインが正常に完了したことを確認します。
 
-ジョブアーティファクトでは、`gl-sbom-merged-<pipeline_id>.cdx.json`ファイルが存在する必要があります。
+ジョブのアーティファクトには、`gl-sbom-merged-<pipeline_id>.cdx.json`ファイルが存在しているはずです。

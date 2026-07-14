@@ -37,6 +37,7 @@ export default {
       required: false,
     },
   },
+  emits: ['next-page', 'prev-page'],
   data() {
     return {};
   },

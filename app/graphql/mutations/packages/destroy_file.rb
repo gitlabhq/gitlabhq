@@ -9,7 +9,7 @@ module Mutations
 
       authorize :destroy_package
       authorize_granular_token permissions: :delete_package,
-        boundary_argument: :id, boundary_type: :project
+        boundary_argument: :id, boundary: :project, boundary_type: :project
 
       argument :id,
         ::Types::GlobalIDType[::Packages::PackageFile],

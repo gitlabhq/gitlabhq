@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
   # group creation calls GroupFinder, so need to create the group
   # before so expect(GroupsFinder) check works
-  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, group: group) }
 
@@ -117,7 +117,7 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
     let(:query) { 'Test' }
 
     describe 'filtering' do
-      let_it_be(:group, freeze: false) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group) }
       let_it_be(:unarchived_result) { create(:project, :public, group: group, name: 'Test1') }
       let_it_be(:archived_result) { create(:project, :archived, :public, group: group, name: 'Test2') }
 

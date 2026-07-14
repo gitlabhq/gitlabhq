@@ -4,8 +4,6 @@ module Gitlab
   module Ci
     module Build
       class Rules::Rule::Clause::Exists < Rules::Rule::Clause
-        include Gitlab::Utils::StrongMemoize
-
         # The maximum number of patterned glob comparisons that will be
         # performed before the rule assumes that it has a match
         MAX_PATTERN_COMPARISONS = 50_000
@@ -14,11 +12,17 @@ module Gitlab
 
         def initialize(clause)
           @globs = Array(clause[:paths])
+          @regexp = clause[:regexp]
           @project_path = clause[:project]
           @ref = clause[:ref]
         end
 
         def satisfied_by?(_pipeline, context)
+          if @regexp
+            context = change_context(context) if @project_path
+            return regexp_match?(context)
+          end
+
           # Return early to avoid redundant Gitaly calls
           return false unless @globs.any?
 
@@ -36,6 +40,34 @@ module Gitlab
         end
 
         private
+
+        def regexp_match?(context)
+          matcher = regexp_matcher(context)
+
+          matcher.validate_pattern_length!
+
+          Gitlab::SafeRequestStore.fetch(regexp_comparison_key(context, matcher.expanded_pattern)) do
+            # Always fetch all paths: regexp patterns can match at any depth,
+            # so the top-level-only optimisation used for glob patterns is not applicable.
+            matcher.match?(worktree_paths(context, false))
+          end
+        end
+
+        def regexp_matcher(context)
+          Rules::Rule::Clause::RegexpMatcher.new(
+            raw_pattern: @regexp,
+            expanded_pattern: expand_value_nested(@regexp, context),
+            max_comparisons: MAX_PATTERN_COMPARISONS,
+            log_scope: 'rules:exists',
+            project_id: context.project&.id
+          )
+        end
+
+        def regexp_comparison_key(context, expanded_regexp)
+          # context must already reflect the target project/sha (i.e. change_context
+          # must have been called when @project_path is set) before this key is built.
+          [self.class.to_s, '#regexp_match?', context.project&.id, context.sha, expanded_regexp]
+        end
 
         def separate_globs(expanded_globs)
           grouped = expanded_globs.group_by { |glob| glob_type(glob) }

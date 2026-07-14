@@ -5,7 +5,8 @@ module Mcp
     module Concerns
       module UrlParser
         extend ActiveSupport::Concern
-        include Constants
+
+        WORK_ITEM_URL_PATTERN = %r{\A/?(?:groups/)?(?<path>\S*)/-/work_items/(?<id>\d+)\z}
 
         private
 
@@ -53,7 +54,7 @@ module Mcp
         #   https://gitlab.com/groups/namespace/group/-/work_items/42
         def parse_work_item_url(url)
           path = extract_path_from_url(url)
-          match = path.match(self.class::URL_PATTERNS[:work_item])
+          match = path.match(WORK_ITEM_URL_PATTERN)
 
           raise ArgumentError, "Invalid work item URL format. Expected: .../-/work_items/<iid>" unless match
 

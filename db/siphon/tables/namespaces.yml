@@ -15,3 +15,6 @@ replication_targets:
           - project_namespace_id
         source_keys:
           - id
+        filters:
+          - column: type
+            value: Project

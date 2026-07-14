@@ -5,11 +5,13 @@ import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { clearDraft } from '~/lib/utils/autosave';
 import { createAlert } from '~/alert';
 import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
+import LineRangeHeadline from './line_range_headline.vue';
 import NoteForm from './note_form.vue';
 
 export default {
   name: 'NewLineDiscussionForm',
   components: {
+    LineRangeHeadline,
     NoteForm,
   },
   inject: {
@@ -50,6 +52,18 @@ export default {
       const path = oldPath === newPath ? oldPath : [oldPath, newPath].join('-');
       const line = oldLine === newLine ? oldLine : [oldLine, newLine].join('-');
       return `${window.location.pathname}-${[path, line].join('-')}`;
+    },
+    lineRange() {
+      return this.discussion.position?.line_range;
+    },
+  },
+  watch: {
+    'discussion.shouldFocus': function focusOnRequest(shouldFocus) {
+      if (!shouldFocus) return;
+      this.$nextTick(() => {
+        this.$el.querySelector('textarea')?.focus();
+        this.store.setNewLineDiscussionFormAutofocus(this.discussion, false);
+      });
     },
   },
   mounted() {
@@ -118,6 +132,7 @@ export default {
     class="gl-rounded-[var(--content-border-radius)] gl-bg-subtle gl-px-4 gl-py-4"
     :data-discussion-id="discussion.id"
   >
+    <line-range-headline :line-range="lineRange" class="gl-mb-3 gl-text-sm gl-text-subtle" />
     <note-form
       :autosave-key="autosaveKey"
       :autofocus="discussion.shouldFocus"

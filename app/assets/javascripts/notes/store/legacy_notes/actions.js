@@ -29,6 +29,7 @@ import promoteTimelineEvent from '../../graphql/promote_timeline_event.mutation.
 import * as constants from '../../constants';
 import * as types from '../../stores/mutation_types';
 import * as utils from '../../stores/utils';
+import { findStartedNoteForReply } from '../../utils';
 
 export function updateLockedAttribute({ locked, fullPath }) {
   const { iid, targetType } = this.getNoteableData;
@@ -683,28 +684,9 @@ export function fetchUpdatedNotes() {
       }
 
       if (data.notes?.length) {
-        const botNote = data.notes?.find(
-          (note) => note.author.user_type === 'duo_code_review_bot' && !note.system,
-        );
-
-        if (botNote) {
-          let discussions = useDiscussions().discussions.filter(
-            (d) => d.id === botNote.discussion_id,
-          );
-
-          if (!discussions.length) {
-            discussions = useDiscussions().discussions;
-          }
-
-          for (const discussion of discussions) {
-            const systemNote = discussion.notes.find(
-              (note) => note.author.user_type === 'duo_code_review_bot' && note.system,
-            );
-            if (systemNote) {
-              this.removeNote(systemNote);
-              break;
-            }
-          }
+        const startedNote = findStartedNoteForReply(data.notes, useDiscussions().discussions);
+        if (startedNote) {
+          this.removeNote(startedNote);
         }
 
         await this.updateOrCreateNotes(data.notes);

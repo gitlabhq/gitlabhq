@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Agent Foundations
+stage: Agent Foundations
+group: AI Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: External agent configuration examples
 ---
@@ -14,7 +14,7 @@ title: External agent configuration examples
 
 {{< history >}}
 
-- Introduced in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `ai_flow_triggers`. Enabled by default.
+- Introduced in GitLab 18.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_flow_triggers`. Enabled by default.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218840) in GitLab 18.8.
 
 {{< /history >}}

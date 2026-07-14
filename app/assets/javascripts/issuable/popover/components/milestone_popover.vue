@@ -22,6 +22,7 @@ import {
 import query from '~/issuable/popover/queries/milestone.query.graphql';
 
 export default {
+  name: 'MilestonePopover',
   TYPE_MILESTONE,
   components: {
     GlIcon,

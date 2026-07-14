@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::HashedStorage::BaseAttachmentService, feature_category: :groups_and_projects do
-  let(:project) { create(:project, :repository, storage_version: 0, skip_disk_validation: true) }
+  let_it_be_with_reload(:project) { create(:project, storage_version: 0, skip_disk_validation: true) }
 
   subject(:service) { described_class.new(project: project, old_disk_path: project.full_path, logger: nil) }
 

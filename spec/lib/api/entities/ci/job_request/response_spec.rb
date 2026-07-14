@@ -42,13 +42,11 @@ RSpec.describe API::Entities::Ci::JobRequest::Response, feature_category: :conti
 
   describe '#run' do
     let(:job) do
-      build(:ci_build, runner: runner, job_definition: job_definition, execution_config: job_execution_config)
+      build(:ci_build, runner: runner, job_definition: job_definition)
     end
 
     let(:job_definition) { build(:ci_job_definition, config: { run_steps: job_definition_run_steps }) }
     let(:job_definition_run_steps) { [{ name: 'hello_steps' }, { name: 'bye_steps' }] }
-    let(:job_execution_config) { build(:ci_builds_execution_configs, run_steps: job_execution_config_run_steps) }
-    let(:job_execution_config_run_steps) { [{ 'name' => 'first execution' }, { 'name' => 'last execution' }] }
 
     it 'returns run_steps from job definition' do
       expect(runner_payload[:run]).to eq(job_definition_run_steps.to_json)

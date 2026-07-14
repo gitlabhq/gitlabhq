@@ -19,6 +19,7 @@ export default {
       default: '',
     },
   },
+  emits: ['saved'],
   data() {
     return {
       errors: [],

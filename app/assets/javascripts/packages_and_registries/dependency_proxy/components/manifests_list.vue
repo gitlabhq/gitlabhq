@@ -34,6 +34,7 @@ export default {
       required: false,
     },
   },
+  emits: ['next-page', 'prev-page'],
   i18n: {
     listTitle: s__('DependencyProxy|Image list'),
   },

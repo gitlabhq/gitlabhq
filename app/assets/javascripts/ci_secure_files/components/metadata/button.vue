@@ -4,6 +4,7 @@ import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'MetadataButton',
   components: {
     GlButton,
   },
@@ -25,13 +26,14 @@ export default {
       required: true,
     },
   },
+  emits: ['select-secure-file'],
   i18n: {
     metadataLabel: __('View File Metadata'),
   },
   metadataModalId: 'metadataModalId',
   methods: {
     selectSecureFile() {
-      this.$emit('selectSecureFile', this.secureFile);
+      this.$emit('select-secure-file', this.secureFile);
     },
     hasMetadata() {
       return this.secureFile.metadata !== null;

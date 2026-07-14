@@ -159,7 +159,7 @@ describe('init markdown', () => {
           text: textArea.value,
           tag: '```suggestion:-0+0\n{text}\n```',
           blockTag: true,
-          selected: '# Does not %br parse the %br currently.',
+          selected: '# Does not \uE000 parse the \uE000 currently.',
           wrap: false,
         });
 

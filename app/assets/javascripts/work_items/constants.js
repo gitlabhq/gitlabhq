@@ -54,6 +54,20 @@ export const WIDGET_TYPE_EMAIL_PARTICIPANTS = 'EMAIL_PARTICIPANTS';
 export const WIDGET_TYPE_CUSTOM_FIELDS = 'CUSTOM_FIELDS';
 export const WIDGET_TYPE_VULNERABILITIES = 'VULNERABILITIES';
 
+// Maps a `workItem.features` key to its widget `type`
+// for widgets shown as child/linked item metadata.
+export const WIDGET_TYPE_BY_FEATURE_KEY = {
+  assignees: WIDGET_TYPE_ASSIGNEES,
+  labels: WIDGET_TYPE_LABELS,
+  startAndDueDate: WIDGET_TYPE_START_AND_DUE_DATE,
+  milestone: WIDGET_TYPE_MILESTONE,
+  weight: WIDGET_TYPE_WEIGHT,
+  healthStatus: WIDGET_TYPE_HEALTH_STATUS,
+  progress: WIDGET_TYPE_PROGRESS,
+  iteration: WIDGET_TYPE_ITERATION,
+  status: WIDGET_TYPE_STATUS,
+};
+
 export const WORK_ITEM_TYPE_ENUM_EPIC = 'EPIC';
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
@@ -354,77 +368,90 @@ export const WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS = [
     label: __('Status'),
     icon: 'status',
     isPresentInGroup: true,
+    isAvailableInBoard: true,
   },
   {
     key: 'assignee',
     label: __('Assignee'),
     icon: 'profile',
     isPresentInGroup: true,
+    isAvailableInBoard: true,
   },
   {
     key: 'labels',
     label: __('Labels'),
     icon: 'labels',
     isPresentInGroup: true,
+    isAvailableInBoard: true,
   },
   {
     key: 'weight',
     label: __('Weight'),
     icon: 'weight',
     isPresentInGroup: false,
+    isAvailableInBoard: true,
   },
   {
     key: 'milestone',
     label: __('Milestone'),
     icon: 'milestone',
     isPresentInGroup: true,
+    isAvailableInBoard: true,
   },
   {
     key: 'iteration',
     label: __('Iteration'),
     icon: 'iteration',
     isPresentInGroup: false,
+    isAvailableInBoard: true,
   },
   {
     key: 'dates',
     label: __('Dates'),
     icon: 'calendar',
     isPresentInGroup: true,
+    isAvailableInBoard: true,
   },
   {
     key: 'health',
     label: __('Health'),
     icon: 'status-health',
     isPresentInGroup: true,
+    isAvailableInBoard: true,
   },
   {
     key: 'blocked',
     label: s__('WorkItems|Blocked/Blocking'),
     icon: 'entity-blocked',
     isPresentInGroup: true,
+    isAvailableInBoard: true,
   },
   {
     key: 'parent',
     label: __('Parent'),
     icon: 'work-item-parent',
     isPresentInGroup: true,
+    isAvailableInBoard: true,
   },
   {
     key: 'comments',
     label: __('Comments'),
     icon: 'comments',
     isPresentInGroup: true,
+    isAvailableInBoard: false,
   },
   {
     key: 'popularity',
     label: __('Popularity'),
     icon: 'thumb-up',
     isPresentInGroup: true,
+    isAvailableInBoard: false,
   },
 ];
 
-export const WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS_SORTED =
-  WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.toSorted((a, b) => a.label.localeCompare(b.label));
+export const WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS_SORTED = [
+  ...WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS,
+].sort((a, b) => a.label.localeCompare(b.label));
 
 export const WORK_ITEM_CREATE_SOURCES = {
   GLOBAL_NAV: 'global_nav',
@@ -446,3 +473,6 @@ export const VIEW_CONTEXT = {
   drawerWorkItem: 'drawer_work_item',
   drawerMergeRequest: 'drawer_merge_request',
 };
+
+export const VIEW_MODE_LIST = 'list';
+export const VIEW_MODE_BOARD = 'board';

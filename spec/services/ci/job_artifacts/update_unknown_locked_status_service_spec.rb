@@ -115,7 +115,7 @@ RSpec.describe Ci::JobArtifacts::UpdateUnknownLockedStatusService, :clean_gitlab
 
       it 'does not change the locked status' do
         expect { service.execute }.not_to change { unknown_unlocked_artifact.locked }
-        expect(Ci::JobArtifact.exists?(unknown_unlocked_artifact.id)).to eq(true)
+        expect(Ci::JobArtifact.exists?(unknown_unlocked_artifact.id)).to be(true)
       end
     end
 

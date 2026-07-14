@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_category: :package_registry do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
 
   let(:service) { described_class.new(project: project, current_user: current_user, params: params) }

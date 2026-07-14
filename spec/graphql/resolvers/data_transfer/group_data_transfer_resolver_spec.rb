@@ -36,7 +36,7 @@ RSpec.describe Resolvers::DataTransfer::GroupDataTransferResolver, feature_categ
   end
 
   context 'when user has permissions to see data transfer' do
-    before do
+    before_all do
       group.add_owner(current_user)
     end
 

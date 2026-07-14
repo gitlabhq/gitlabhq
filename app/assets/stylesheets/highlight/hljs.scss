@@ -5,7 +5,8 @@
 
 .code.highlight,
 .code.duo-message-pre-block {
-  .hljs-comment {
+  .hljs-comment,
+  .hljs-quote {
     color: var(--color-hljs-comment);
   }
 
@@ -69,7 +70,8 @@
 
   .hljs-string,
   .hljs-section,
-  .hljs-bullet {
+  .hljs-bullet,
+  .hljs-code {
     color: var(--color-hljs-string);
   }
 

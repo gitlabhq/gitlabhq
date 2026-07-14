@@ -62,7 +62,7 @@ RSpec.describe Issuable::Callbacks::TimeTracking, feature_category: :team_planni
           expect(issuable.timelogs.last.time_spent).to eq(3.hours.to_i)
         else
           expect(issuable.time_estimate).to eq(0)
-          expect(issuable.time_spent).to eq(nil)
+          expect(issuable.time_spent).to be_nil
           expect(issuable.timelogs).to be_empty
         end
       end

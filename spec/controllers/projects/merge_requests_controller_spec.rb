@@ -2227,6 +2227,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id, skip_ci)
     end
 
+    it 'starts the ui_button_rebase UX SLI' do
+      expect { post_rebase }.to start_user_experience(:ui_button_rebase)
+    end
+
     context 'successfully' do
       shared_examples 'successful rebase scheduler' do
         it 'enqueues a RebaseWorker' do
@@ -2268,6 +2272,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
         expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['merge_error']).to eq('Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.')
+      end
+
+      it 'completes the ui_button_rebase UX SLI with an error so it is not left in-flight' do
+        allow_any_instance_of(MergeRequest).to receive(:with_lock).with('FOR UPDATE NOWAIT').and_raise(ActiveRecord::LockWaitTimeout)
+
+        expect { post_rebase }.to complete_user_experience(:ui_button_rebase, error: true)
       end
     end
 

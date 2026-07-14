@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Database::Capture::Storage, feature_category: :database d
 
     allow(Settings).to(
       receive_message_chain(:database_traffic_capture, :config, :storage, :connector).and_return(
-        GitlabSettings::Options.build(configured_settings)
+        Gitlab::Configs.build_options(configured_settings)
       )
     )
   end

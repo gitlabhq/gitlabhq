@@ -1,0 +1,229 @@
+{
+  "consumer": {
+    "name": "MergeRequests#show"
+  },
+  "provider": {
+    "name": "GET diffs batch"
+  },
+  "interactions": [
+    {
+      "description": "a request for diff lines",
+      "providerState": "a merge request with diffs exists",
+      "request": {
+        "method": "GET",
+        "path": "/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_batch.json",
+        "query": "page=0",
+        "headers": {
+          "Accept": "*/*"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": {
+          "diff_files": [
+            {
+              "content_sha": "b0c94059db75b2473d616d4b1fde1a77533355a3",
+              "submodule": false,
+              "edit_path": "/gitlab-qa-bot/...",
+              "ide_edit_path": "/gitlab-qa-bot/...",
+              "old_path_html": "Gemfile",
+              "new_path_html": "Gemfile",
+              "blob": {
+                "id": "855071bb3928d140764885964f7be1bb3e582495",
+                "path": "Gemfile",
+                "name": "Gemfile",
+                "mode": "1234567",
+                "readable_text": true,
+                "icon": "doc-text"
+              },
+              "can_modify_blob": false,
+              "file_identifier_hash": "67d82b8716a5b6c52c7abf0b2cd99c7594ed3587",
+              "file_hash": "67d82b8716a5b6c52c7abf0b2cd99c7594ed3587",
+              "file_path": "Gemfile",
+              "old_path": "Gemfile",
+              "new_path": "Gemfile",
+              "new_file": false,
+              "renamed_file": false,
+              "deleted_file": false,
+              "diff_refs": {
+                "base_sha": "67d82b8716a5b6c52c7abf0b2cd99c7594ed3587",
+                "start_sha": "67d82b8716a5b6c52c7abf0b2cd99c7594ed3587",
+                "head_sha": "67d82b8716a5b6c52c7abf0b2cd99c7594ed3587"
+              },
+              "mode_changed": false,
+              "a_mode": "123456",
+              "b_mode": "123456",
+              "viewer": {
+                "name": "text",
+                "collapsed": false
+              },
+              "old_size": 2288,
+              "new_size": 2288,
+              "added_lines": 1,
+              "removed_lines": 1,
+              "load_collapsed_diff_url": "/gitlab-qa-bot/...",
+              "view_path": "/gitlab-qa-bot/...",
+              "context_lines_path": "/gitlab-qa-bot/...",
+              "highlighted_diff_lines": [
+                {
+                  "text": "source",
+                  "rich_text": "<span></span>",
+                  "can_receive_suggestion": true
+                }
+              ],
+              "is_fully_expanded": false
+            }
+          ],
+          "pagination": {
+            "total_pages": 1
+          }
+        },
+        "matchingRules": {
+          "$.body.diff_files": {
+            "min": 1
+          },
+          "$.body.diff_files[*].*": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].content_sha": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].submodule": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].edit_path": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].ide_edit_path": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].old_path_html": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].new_path_html": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].blob.id": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].blob.path": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].blob.name": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].blob.mode": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].blob.readable_text": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].blob.icon": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].can_modify_blob": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].file_identifier_hash": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].file_hash": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].file_path": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].old_path": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].new_path": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].new_file": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].renamed_file": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].deleted_file": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].diff_refs.base_sha": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].diff_refs.start_sha": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].diff_refs.head_sha": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].mode_changed": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].a_mode": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].b_mode": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].viewer.name": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].viewer.collapsed": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].old_size": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].new_size": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].added_lines": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].removed_lines": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].load_collapsed_diff_url": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].view_path": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].context_lines_path": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].highlighted_diff_lines": {
+            "min": 1
+          },
+          "$.body.diff_files[*].highlighted_diff_lines[*].*": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].highlighted_diff_lines[*].text": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].highlighted_diff_lines[*].rich_text": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].highlighted_diff_lines[*].can_receive_suggestion": {
+            "match": "type"
+          },
+          "$.body.diff_files[*].is_fully_expanded": {
+            "match": "type"
+          },
+          "$.body.pagination.total_pages": {
+            "match": "type"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

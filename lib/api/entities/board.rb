@@ -3,7 +3,7 @@
 module API
   module Entities
     class Board < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :name, documentation: { type: 'String', example: 'Development' }
       expose :hide_backlog_list, documentation: { type: 'Boolean', example: false }
       expose :hide_closed_list, documentation: { type: 'Boolean', example: false }

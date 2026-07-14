@@ -50,7 +50,7 @@ module Gitlab
       end
 
       def cron_jobs
-        CronJobs.config
+        CronJobs.config.jobs
       end
 
       def cron_workers

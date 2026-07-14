@@ -55,6 +55,8 @@ This gem provides several security protections for outbound HTTP requests:
 
 URLs are validated to prevent Server-Side Request Forgery (SSRF) attacks. Requests to internal networks, localhost, and other restricted addresses are blocked by default.
 
+When GitLab generates HTTP requests, it immediately resolves the hostname to the first IP address, for security reasons. So hostnames which resolve to multiple IPs will not try all IPs if the first one fails.
+
 ### Header Injection Protection
 
 HTTP headers are validated to prevent CRLF injection attacks. Headers containing control characters (`\r`, `\n`, `\0`) will raise a `HeaderInjectionError`. This prevents HTTP request smuggling/splitting attacks.

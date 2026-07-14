@@ -215,6 +215,24 @@ this:
 1. If the update returns a status code `204`, have the user attempt to sign in
    using SAML SSO.
 
+## Error: `User is pending deprovisioning`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228156) in GitLab 18.11 [with a feature flag](../../../administration/feature_flags/_index.md) named `group_scim_async_member_removal`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233454) in GitLab 19.0. Feature flag `group_scim_async_member_removal` removed.
+
+{{< /history >}}
+
+SCIM deprovisions are handled asynchronously. When a SCIM user is deprovisioned, subsequent `POST` or `PATCH` SCIM requests fail with HTTP status `409` and the following error message:
+
+```plaintext
+User is pending deprovisioning. Please wait for the user to be deprovisioned and try again later.
+```
+
+To resolve this error, wait for the system to complete processing the user's membership records.
+When the process is complete, you can try provisioning the user again.
+
 ## Azure Active Directory
 
 The following troubleshooting information is specifically for SCIM provisioned through Azure Active Directory.

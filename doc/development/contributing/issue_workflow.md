@@ -21,7 +21,7 @@ To submit a bug:
   [disclosure process on the GitLab.com website](https://about.gitlab.com/security/disclosure/).
 
 > [!warning]
-> Do **not** create publicly viewable issues for suspected security vulnerabilities.
+> Do not create publicly viewable issues for suspected security vulnerabilities.
 
 ### Feature proposals
 

@@ -161,7 +161,7 @@ To reassign contributions and memberships to administrators, see
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.10 [with a flag](../../../administration/feature_flags/_index.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/478022) in GitLab 18.0. Feature flag `importer_user_mapping_reassignment_csv` removed.
 
 {{< /history >}}

@@ -9,7 +9,8 @@ module UserSettings
     skip_before_action :active_user_check, only: [:new, :create]
 
     before_action :set_user
-    before_action :authorize_change_password!
+    before_action :authorize_change_password!, except: [:reset]
+    before_action :authorize_password_reset!, only: [:reset]
     before_action :set_hide_search_settings, only: [:edit, :update]
 
     layout :determine_layout
@@ -85,6 +86,10 @@ module UserSettings
 
     def authorize_change_password!
       render_404 unless @user.allow_password_authentication?
+    end
+
+    def authorize_password_reset!
+      render_404 unless @user.allow_password_authentication? || @user.password_automatically_set?
     end
 
     def handle_invalid_current_password_attempt!

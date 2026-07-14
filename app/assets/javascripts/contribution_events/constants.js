@@ -43,6 +43,11 @@ export const WORK_ITEM_ISSUE_TYPE_INCIDENT = 'incident';
 
 export const TYPE_FALLBACK = 'fallback';
 
+// Variants for the contribution event components
+// `avatar` shows the author avatar; `default` does not.
+export const VARIANT_AVATAR = 'avatar';
+export const VARIANT_DEFAULT = 'default';
+
 export const EVENT_CREATED_I18N = Object.freeze({
   [TARGET_TYPE_PROJECT]: s__('ContributionEvent|Created project %{resourceParentLink}.'),
   [TARGET_TYPE_MILESTONE]: s__(

@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Amazon Q integration for testing and evaluation
 ---
@@ -46,11 +46,17 @@ This guide describes how to set up Amazon Q in a GitLab Linux package running in
       ```
 
    1. Apply the config changes by `sudo gitlab-ctl reconfigure`
-1. Obtain and activate a self-managed ultimate license
-   1. Go to [staging customers portal](https://customers.staging.gitlab.com/), select "Signin with GitLab.com account".
-   1. Instead of clicking "Buy new subscription", go to the [product page](https://customers.staging.gitlab.com/subscriptions/new?plan_id=2c92a00c76f0c6c20176f2f9328b33c9) directly. For reason of this, see [Buy subscription](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/8aa922840091ad5c5d96ada43d0065a1b6198841/doc/flows/buy_subscription.md)
-   1. Purchase the subscription using [a test credit card](https://gitlab.com/gitlab-org/customers-gitlab-com/#testing-credit-card-information). An activation code will be given. Do not purchase a duo-pro add-on, because currently duo-pro and Q are mutually exclusive.
-   1. Go to the GitLab instance created earlier (`https://<vm-instance-external-ip>.nip.io`), log in with root account. Then in the left sidebar, go to **Admin** > **Subscription**, and enter the activation code
+1. Obtain and activate a **Self-Managed - Ultimate & Duo with Amazon Q** license
+
+   > [!note]
+   > Amazon Q requires a GitLab Duo with Amazon Q subscription. An Ultimate subscription is not
+   > sufficient, and GitLab Duo with Amazon Q is a distinct subscription type, not an add-on.
+
+   1. GitLab team members cannot create this license themselves. Request one in the
+      `#s_fulfillment_engineering` Slack channel.
+   1. After you receive an activation code (by email, or from the [Customers Portal](https://customers.gitlab.com/)), go to the GitLab instance created earlier
+      (`https://<vm-instance-external-ip>.nip.io`) and sign in with the root account. In the left sidebar,
+      go to **Admin** > **Subscription**, and enter the activation code.
 
 ## Create and configure an AWS sandbox
 
@@ -65,5 +71,5 @@ This guide describes how to set up Amazon Q in a GitLab Linux package running in
 
 ## Add Amazon Q to GitLab
 
-1. Follow [Enter the ARN in GitLab and enable Amazon Q](../../user/duo_amazon_q/setup.md#enter-the-arn-in-gitlab-and-enable-amazon-q) exactly
-1. Now Q should be working. We can test it like [this](https://gitlab.com/gitlab-com/ops-sub-department/aws-gitlab-ai-integration/integration-motion-planning/-/wikis/integration-docs#testing-q)
+1. Follow [Enter the ARN in GitLab and enable Amazon Q](../../user/duo_amazon_q/setup.md#enter-the-arn-in-gitlab-and-enable-amazon-q) exactly.
+1. Amazon Q is now configured. You can test it using any of the [documented capabilities](../../user/duo_amazon_q/_index.md).

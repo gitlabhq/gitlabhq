@@ -1,0 +1,40 @@
+/* stylelint-disable gitlab/no-gl-class */
+.gl-base-layout-sticky-header {
+  @apply gl-fixed;
+  @apply gl-top-0;
+  @apply gl-left-0;
+  @apply gl-w-full;
+  @apply gl-pb-3;
+  @apply gl-bg-default;
+  @apply gl-border-b;
+  @apply gl-invisible;
+  @apply gl-opacity-0;
+  z-index: $base-layout-sticky-header-z-index;
+  transform: translateY(-100%);
+  transition: visibility $gl-transition-duration-medium $gl-easing-out-cubic,
+              opacity $gl-transition-duration-medium $gl-easing-out-cubic,
+              transform $gl-transition-duration-medium $gl-easing-out-cubic;
+}
+
+.gl-base-layout-sticky-header-inner {
+  @apply gl-px-[--container-padding-x];
+}
+
+// Toggled from JS via an IntersectionObserver once page heading scrolls
+// out of view (see base_layout.vue).
+.gl-base-layout.gl-base-layout-header-is-stuck .gl-base-layout-sticky-header {
+  @apply gl-visible;
+  @apply gl-opacity-10;
+  @apply gl-translate-y-0;
+}
+
+.gl-base-layout-alerts {
+  @apply gl-flex;
+  @apply gl-flex-col;
+  @apply gl-gap-3;
+  @apply gl-mb-5;
+}
+
+.gl-base-layout-loading-icon {
+  @apply gl-m-5;
+}

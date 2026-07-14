@@ -1,0 +1,9 @@
+---
+name: duo_session_plan_section
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/603503
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241946
+rollout_issue_url:
+milestone: '19.2'
+type: wip
+group: group::agent execution
+default_enabled: false

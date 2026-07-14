@@ -576,6 +576,19 @@ module Integrations
         scope :inherit_from_id, ->(id) { where(inherit_from_id: id) }
         scope :with_default_settings, -> { where.not(inherit_from_id: nil) }
         scope :with_custom_settings, -> { where(inherit_from_id: nil) }
+        # Matches project integrations that deviate from the instance default:
+        # either explicitly customised (inherit_from_id IS NULL) or inheriting
+        # from a group integration (inherit_from_id != instance integration id).
+        scope :overriding_instance_default, ->(instance_integration) {
+          # Without a persisted instance integration there is no default to
+          # inherit from, so every active project integration deviates.
+          next all unless instance_integration&.id
+
+          where(
+            arel_table[:inherit_from_id].eq(nil)
+              .or(arel_table[:inherit_from_id].not_eq(instance_integration.id))
+          )
+        }
         scope :for_group, ->(group) {
           types = available_integration_types(include_project_specific: false)
           where(group_id: group, type: types)

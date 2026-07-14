@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 query namespaceGroupsForLinksWidget($fullPath: ID!, $groupSearch: String) {
   group(fullPath: $fullPath) {
     id

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Subscriptions::Ci::Pipelines::StatusesUpdated, feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  it { expect(described_class).to have_graphql_arguments(:project_id) }
+  it { expect(described_class).to have_graphql_arguments(:project_id, :sha) }
   it { expect(described_class.payload_type).to eq(Types::Ci::PipelineType) }
 
   describe '#resolve' do
@@ -49,6 +49,26 @@ RSpec.describe Subscriptions::Ci::Pipelines::StatusesUpdated, feature_category: 
 
       it 'returns the resolved pipeline' do
         expect(subscription).to eq(pipeline)
+      end
+
+      context 'with a sha filter' do
+        subject(:subscription) { resolver.resolve_with_support(project_id: project_id, sha: sha) }
+
+        context 'when the sha matches the pipeline' do
+          let(:sha) { pipeline.sha }
+
+          it 'returns the resolved pipeline' do
+            expect(subscription).to eq(pipeline)
+          end
+        end
+
+        context 'when the sha does not match the pipeline' do
+          let(:sha) { 'doesnotmatch' }
+
+          it 'filters out the update' do
+            expect(subscription).to be_an(GraphQL::Execution::Skip)
+          end
+        end
       end
 
       context 'when pipeline belongs to a different project' do

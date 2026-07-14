@@ -59,8 +59,8 @@ columns:
 - name: traversal_path
   type: String
   default_kind: DEFAULT
-  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
-    'traversal_path', project_id, '0/'), coalesce(group_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.namespace_traversal_paths_dict',
+  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict',
+    'traversal_path', project_id, '0/'), coalesce(group_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict',
     'traversal_path', group_id, '0/'), '0/')
   compression_codec: CODEC(ZSTD(3))
   is_in_sorting_key: true

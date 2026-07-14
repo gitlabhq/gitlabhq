@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::WorkItemsMenu, feature_category: :navigation do
-  let_it_be(:project, freeze: false) { create(:project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for authorization
+  let_it_be_with_reload(:project) { create(:project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for authorization
   let_it_be(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
 
@@ -20,7 +20,9 @@ RSpec.describe Sidebars::Projects::Menus::WorkItemsMenu, feature_category: :navi
         pill_count: menu.pill_count,
         pill_count_field: menu.pill_count_field,
         has_pill: true,
-        super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::PlanMenu
+        super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::PlanMenu,
+        description: 'Plan, track, and manage work in one place',
+        library_icon: 'work-items'
       }
     end
   end

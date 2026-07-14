@@ -134,6 +134,19 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
     end
   end
 
+  describe '#merge_train_enforcement' do
+    it 'defines an enum' do
+      described_class.merge_train_enforcements.each_key do |level|
+        setting = described_class.new(merge_train_enforcement: level)
+        expect(setting.merge_train_enforcement).to eq level
+      end
+    end
+
+    it 'defaults to allow_bypass' do
+      expect(described_class.new.merge_train_enforcement).to eq('allow_bypass')
+    end
+  end
+
   describe '#forward_deployment_enabled' do
     it 'is true by default' do
       expect(described_class.new.forward_deployment_enabled).to be_truthy
@@ -158,7 +171,7 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
 
   describe '#default_git_depth' do
     let(:default_value) { described_class::DEFAULT_GIT_DEPTH }
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     it 'sets default value for new records' do
       expect(project.ci_cd_settings.default_git_depth).to eq(default_value)
@@ -208,7 +221,7 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
   end
 
   describe '#display_pipeline_variables' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     it 'defaults to false' do
       expect(project.ci_cd_settings.display_pipeline_variables).to be(false)
@@ -218,6 +231,20 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
       project.ci_cd_settings.update!(display_pipeline_variables: true)
 
       expect(project.ci_cd_settings.display_pipeline_variables).to be(true)
+    end
+  end
+
+  describe '#skip_branch_pipelines_for_mrs' do
+    let_it_be(:project, freeze: false) { create(:project) }
+
+    it 'defaults to false' do
+      expect(project.ci_cd_settings.skip_branch_pipelines_for_mrs).to be(false)
+    end
+
+    it 'returns the value' do
+      project.ci_cd_settings.update!(skip_branch_pipelines_for_mrs: true)
+
+      expect(project.ci_cd_settings.skip_branch_pipelines_for_mrs).to be(true)
     end
   end
 
@@ -244,7 +271,7 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
   end
 
   describe '.configured_to_delete_old_pipelines' do
-    let_it_be(:project, freeze: false) { create(:project, ci_delete_pipelines_in_seconds: 2.weeks.to_i) }
+    let_it_be_with_reload(:project) { create(:project, ci_delete_pipelines_in_seconds: 2.weeks.to_i) }
     let_it_be(:other_project) { create(:project, group_runners_enabled: true) }
 
     it 'includes settings with values present' do
@@ -253,8 +280,8 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
   end
 
   describe '#resource_group_default_process_mode' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:setting, freeze: false) { project.ci_cd_settings }
+    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be_with_reload(:setting) { project.ci_cd_settings }
 
     it 'defines an enum with all process modes' do
       expect(described_class.resource_group_default_process_modes).to eq({

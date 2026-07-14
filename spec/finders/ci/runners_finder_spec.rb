@@ -9,6 +9,9 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
     described_class.new(current_user: current_user, params: params).execute
   end
 
+  # NOTE: No cross-organization isolation test for the admin path. `Ci::Runner.all` is
+  # cell-scoped by design (admins see every runner on the cell, across all organizations),
+  # so a second-organization runner is expected to be returned here, not filtered out.
   context 'admin' do
     let_it_be(:admin) { create(:user, :admin) }
 
@@ -693,6 +696,23 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
       end
     end
 
+    context 'with a runner in another organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_org_group) { create(:group, organization: other_organization) }
+      let_it_be(:other_org_runner) { create(:ci_runner, :group, groups: [other_org_group]) }
+
+      let(:target_group) { group }
+      let(:membership) { :direct }
+
+      before do
+        group.add_member(current_user, GroupMember::OWNER)
+      end
+
+      it 'returns only runners from the current organization' do
+        is_expected.to contain_exactly(runner_group)
+      end
+    end
+
     describe '#sort_key' do
       subject(:sort_key) do
         described_class.new(current_user: current_user, params: params.merge(group: group)).sort_key
@@ -857,8 +877,27 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
         expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
       end
     end
+
+    context 'with a runner in another organization' do
+      let_it_be(:user) { create(:user, maintainer_of: project) }
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_org_group) { create(:group, organization: other_organization) }
+      let_it_be(:other_org_project) { create(:project, group: other_org_group, organization: other_organization) }
+      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+      let_it_be(:other_org_runner) { create(:ci_runner, :project, projects: [other_org_project]) }
+
+      it 'returns only runners from the current organization' do
+        is_expected.to contain_exactly(project_runner)
+      end
+    end
   end
 
+  # NOTE: No cross-organization isolation test for the user-scoped path
+  # (`User#ci_available_runners`). Organization filtering on this path was implemented
+  # in #591183 (MR !226892) but reverted in MR !229222 due to a cross-database query
+  # incident (approved-mr-pipeline-incidents#17125), so no organization boundary is
+  # enforced in master today. A boundary test should be added here once the filtering
+  # is reinstated.
   context 'user' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }

@@ -164,7 +164,7 @@ export default {
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
       <gl-disclosure-dropdown-group bordered>
-        <registration-token-reset-dropdown-item :type="type" @tokenReset="onTokenReset" />
+        <registration-token-reset-dropdown-item :type="type" @token-reset="onTokenReset" />
       </gl-disclosure-dropdown-group>
     </template>
   </gl-disclosure-dropdown>

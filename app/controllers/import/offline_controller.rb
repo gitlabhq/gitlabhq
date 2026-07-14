@@ -3,6 +3,10 @@
 module Import
   class OfflineController < ApplicationController
     before_action :check_feature_flag
+    before_action do
+      push_frontend_feature_flag(:offline_transfer_exports, current_user)
+      push_frontend_feature_flag(:offline_transfer_imports, current_user)
+    end
 
     feature_category :importers
 

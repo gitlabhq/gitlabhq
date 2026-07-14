@@ -168,6 +168,67 @@ RSpec.describe Gitlab::RackAttack::RequestThrottleData, feature_category: :rate_
     end
   end
 
+  describe '.from_labkit_result' do
+    let(:info) do
+      instance_double(
+        Labkit::RateLimit::Result::Info,
+        resolved_limit: 3600,
+        resolved_period: 1.hour.to_i,
+        count: 3700,
+        remaining: 0,
+        reset_at: Time.current
+      )
+    end
+
+    let(:result) { instance_double(Labkit::RateLimit::Result, info: info) }
+
+    it 'creates ThrottleRequestData from a labkit result' do
+      data = described_class.from_labkit_result(name: 'throttle_authenticated_api', result: result)
+
+      expect(data.name).to eq('throttle_authenticated_api')
+      expect(data.period).to eq(3600)
+      expect(data.limit).to eq(3600)
+      expect(data.observed).to eq(3700)
+    end
+
+    it 'produces headers byte-identical to the Rack::Attack path for equivalent inputs' do
+      freeze_time do
+        now = Time.current.to_i
+        labkit = described_class.from_labkit_result(name: 'throttle_authenticated_api', result: result)
+        rack_attack = described_class.from_rack_attack(
+          'throttle_authenticated_api',
+          { count: 3700, period: 3600, limit: 3600, epoch_time: now }
+        )
+
+        expect(labkit.throttled_response_headers).to eq(rack_attack.throttled_response_headers)
+      end
+    end
+
+    context 'when name is nil' do
+      it 'returns nil and logs a warning' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          class: 'Gitlab::RackAttack::RequestThrottleData',
+          message: '.from_labkit_result called with nil throttle name'
+        )
+
+        expect(described_class.from_labkit_result(name: nil, result: result)).to be_nil
+      end
+    end
+
+    context 'when the result has no info' do
+      it 'returns nil and logs a warning' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          class: 'Gitlab::RackAttack::RequestThrottleData',
+          message: /\.from_labkit_result called without result info/
+        )
+
+        info_less = instance_double(Labkit::RateLimit::Result, info: nil)
+
+        expect(described_class.from_labkit_result(name: 'throttle_authenticated_api', result: info_less)).to be_nil
+      end
+    end
+  end
+
   describe '#common_response_headers' do
     it 'generates all common headers' do
       headers = throttle_data.common_response_headers

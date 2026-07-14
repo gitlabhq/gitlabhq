@@ -9,6 +9,7 @@ import { SNIPPET_BLOB_CONTENT_FETCH_ERROR } from '~/snippets/constants';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
 
 export default {
+  name: 'SnippetBlobEdit',
   components: {
     SnippetBlobEditHeader,
     GlLoadingIcon,

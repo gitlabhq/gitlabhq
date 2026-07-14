@@ -40,14 +40,12 @@ describe('OrganizationGroupsEditApp', () => {
     },
     basePath: 'https://gitlab.com',
     groupsAndProjectsOrganizationPath: '/o/carrot/-/groups_and_projects?display=groups',
-    groupsOrganizationPath: '/o/default/-/groups',
     availableVisibilityLevels: [
       VISIBILITY_LEVEL_PRIVATE_INTEGER,
       VISIBILITY_LEVEL_INTERNAL_INTEGER,
       VISIBILITY_LEVEL_PUBLIC_INTEGER,
     ],
     restrictedVisibilityLevels: [],
-    defaultVisibilityLevel: VISIBILITY_LEVEL_INTERNAL_INTEGER,
     pathMaxlength: 10,
     pathPattern: 'mockPattern',
   };

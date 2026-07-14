@@ -43,6 +43,12 @@ export default {
   data() {
     return {
       isCollapsed: true,
+      // Latched on the first expand and kept mounted afterwards, so the
+      // collapse animates over real content and re-expands don't re-fetch.
+      hasExpanded: false,
+      // Gate the open animation on this so the collapse expands straight to the
+      // loaded content's height instead of jumping when it resolves.
+      descriptionReady: false,
     };
   },
   computed: {
@@ -58,6 +64,12 @@ export default {
     hasParsableAuthoredDate() {
       return isValidDate(newDate(this.commit.authoredDate));
     },
+    isExpanded() {
+      return !this.isCollapsed && this.descriptionReady;
+    },
+    isLoadingDescription() {
+      return !this.isCollapsed && !this.descriptionReady;
+    },
   },
   destroyed() {
     this.isCollapsed = true;
@@ -69,9 +81,15 @@ export default {
   methods: {
     onClick() {
       this.isCollapsed = !this.isCollapsed;
+      if (!this.isCollapsed) {
+        this.hasExpanded = true;
+      }
       this.trackEvent('expand_collapse_commit_list_item', {
         label: this.isCollapsed ? 'collapse' : 'expand',
       });
+    },
+    onDescriptionLoaded() {
+      this.descriptionReady = true;
     },
     onRowClick(event) {
       // Ignore clicks originating from interactive controls (links, buttons).
@@ -169,6 +187,7 @@ export default {
           <badges :commit="commit" />
           <action-buttons
             :is-collapsed="isCollapsed"
+            :is-loading="isLoadingDescription"
             :commit="commit"
             :anchor-id="anchorId"
             @click="onClick"
@@ -184,6 +203,7 @@ export default {
       >
         <expand-collapse-button
           :is-collapsed="isCollapsed"
+          :loading="isLoadingDescription"
           :anchor-id="anchorId"
           :accessible-label="commit.titleHtml"
           size="medium"
@@ -197,13 +217,14 @@ export default {
       />
     </div>
 
-    <gl-collapse :visible="!isCollapsed">
+    <gl-collapse :visible="isExpanded">
       <div class="gl-border-t gl-bg-subtle gl-px-4 gl-py-3">
         <description
-          v-if="!isCollapsed"
+          v-if="hasExpanded"
           :id="anchorId"
           :commit-sha="commit.sha"
           class="gl-display gl-block"
+          @loaded="onDescriptionLoaded"
         />
       </div>
     </gl-collapse>

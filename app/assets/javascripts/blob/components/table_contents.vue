@@ -6,6 +6,7 @@ function getHeaderNumber(el) {
 }
 
 export default {
+  name: 'TableContents',
   components: {
     GlDisclosureDropdown,
   },
@@ -16,7 +17,8 @@ export default {
     };
   },
   mounted() {
-    this.blobViewer = document.querySelector('.blob-viewer[data-type="rich"]');
+    const fileHolder = this.$el.closest('.file-holder');
+    this.blobViewer = fileHolder?.querySelector('.blob-viewer');
     const blobViewerAttr = (attr) => this.blobViewer.getAttribute(attr);
 
     this.observer = new MutationObserver(() => {
@@ -52,16 +54,16 @@ export default {
       const firstHeader = getHeaderNumber(headers[0]);
 
       this.items = headers
-        .filter((el) => el.querySelector('a'))
+        .filter((el) => el.querySelector('a.anchor'))
         .map((el) => {
           let href;
-          const anchor = el.querySelector('a');
-          // Check if this is AsciiDoc (heading has id) or Markdown (anchor has id)
+          const anchor = el.querySelector('a.anchor');
+          // Check if this is AsciiDoc (heading has id) or Markdown / other markup (anchor has id)
           if (el.id) {
             // AsciiDoc: use anchor's href
             href = anchor.getAttribute('href');
           } else {
-            // Markdown: use anchor's id with #
+            // Markdown and other markup: use anchor's id with #
             href = `#${anchor.getAttribute('id')}`;
           }
 
@@ -81,12 +83,14 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown
-    v-if="!isHidden && items.length"
-    :toggle-text="__('Table of contents')"
-    text-sr-only
-    icon="list-bulleted"
-    class="!gl-pr-0"
-    :items="items"
-  />
+  <div class="gl-contents">
+    <gl-disclosure-dropdown
+      v-if="!isHidden && items.length"
+      :toggle-text="__('Table of contents')"
+      text-sr-only
+      icon="list-bulleted"
+      class="!gl-pr-0"
+      :items="items"
+    />
+  </div>
 </template>

@@ -199,6 +199,42 @@ RSpec.describe EventForward::EventForwardController, feature_category: :product_
         end
       end
 
+      context 'when authenticated with a granular personal access token' do
+        let(:user) { create(:user) }
+        let(:request) do
+          post event_forwarding_path, params: payload, as: :json,
+            headers: editor_telemetry_header.merge('Private-Token' => pat.token)
+        end
+
+        context 'with the editor telemetry permission' do
+          let(:pat) do
+            create(:granular_pat, user: user,
+              boundary: Authz::Boundary.for(::Authz::GranularScope::Access::USER),
+              permissions: :create_editor_telemetry)
+          end
+
+          it 'forwards the events and returns ok' do
+            expect(tracker).to receive(:emit_event_payload).at_least(:once)
+
+            request
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'without the editor telemetry permission' do
+          let(:pat) { create(:granular_pat, user: user) }
+
+          it 'responds with 403 forbidden and does not forward events' do
+            expect(tracker).not_to receive(:emit_event_payload)
+
+            request
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+      end
+
       context 'when authenticated with an OAuth token' do
         let(:user) { create(:user) }
         let(:oauth_token) { create(:oauth_access_token, resource_owner: user) }

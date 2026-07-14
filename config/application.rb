@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative 'boot'
 
 # Based on https://github.com/rails/rails/blob/v6.0.1/railties/lib/rails/all.rb
@@ -14,6 +15,7 @@ require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 
 require 'gitlab/utils/all'
+require 'gitlab/email_handler'
 
 require_relative 'freeze_gems'
 Bundler.require(*Rails.groups)
@@ -106,6 +108,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/path_depth_check')
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_attack_headers')
+    require_dependency Rails.root.join('lib/gitlab/middleware/labkit_rack_rate_limit')
     require_dependency Rails.root.join('lib/gitlab/middleware/secure_headers')
     require_dependency Rails.root.join('lib/gitlab/middleware/static_assets_authorization')
     require_dependency Rails.root.join('lib/gitlab/runtime')
@@ -306,8 +309,9 @@ module Gitlab
     config.assets.paths << "#{config.root}/vendor/assets/fonts"
 
     config.assets.precompile << "application_dark.css"
+    config.assets.precompile << "application_no_bootstrap_utils.css"
+    config.assets.precompile << "application_dark_no_bootstrap_utils.css"
     config.assets.precompile << "tailwind.css"
-    config.assets.precompile << "tailwind_cqs.css"
 
     config.assets.precompile << "print.css"
     config.assets.precompile << "mailers/highlighted_diff_email.css"
@@ -467,6 +471,11 @@ module Gitlab
     config.middleware.insert_after Rails::Rack::Logger, ::Gitlab::Middleware::BasicHealthCheck
 
     config.middleware.insert_after Warden::Manager, Rack::Attack
+
+    # Run the Labkit::RateLimit shadow directly above Rack::Attack so it observes
+    # every request (after Warden resolves auth) and can compare its decision
+    # against Rack::Attack's on the way back up. It never blocks in the shadow stage.
+    config.middleware.insert_before Rack::Attack, ::Gitlab::Middleware::LabkitRackRateLimit
 
     # Add rate limit headers to all responses from Rack::Attack
     config.middleware.insert_after Rack::Attack, ::Gitlab::Middleware::RackAttackHeaders

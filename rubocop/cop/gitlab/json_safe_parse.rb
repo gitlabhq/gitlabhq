@@ -3,33 +3,49 @@
 module RuboCop
   module Cop
     module Gitlab
-      # Encourages the use of `Gitlab::Json.safe_parse` over `Gitlab::Json.parse`
+      # Encourages the use of `Gitlab::Json::SafeParser.parse` over `Gitlab::Json.parse`
       # for parsing untrusted JSON input with built-in size and depth limits.
       #
-      # `safe_parse` provides protection against:
+      # `SafeParser` provides protection against:
       # - Deeply nested structures (DoS via stack exhaustion)
       # - Extremely large arrays or hashes (memory exhaustion)
       # - Oversized JSON payloads (memory exhaustion)
       #
       # @example
-      #   # bad
+      #   # bad - no arguments beyond payload -> corrected to SafeParser.parse
+      #
       #   Gitlab::Json.parse(user_input)
       #   Gitlab::Json.parse(request.body.read)
       #   ::Gitlab::Json.parse(params[:data])
       #
-      #   # good
-      #   Gitlab::Json.safe_parse(user_input)
-      #   Gitlab::Json.safe_parse(request.body.read)
-      #   ::Gitlab::Json.safe_parse(params[:data])
+      #   # good (autocorrected)
       #
-      #   # also good - with custom limits
+      #   Gitlab::Json::SafeParser.parse(user_input)
+      #   Gitlab::Json::SafeParser.parse(request.body.read)
+      #   ::Gitlab::Json::SafeParser.parse(params[:data])
+      #
+      #   # bad - extra arguments present -> corrected to Gitlab::Json.safe_parse
+      #   # (SafeParser.parse only accepts parse-limit keys and would raise
+      #   # UnknownConfigurationError for JSON options like `symbolize_names:`.)
+      #
+      #   Gitlab::Json.parse(data, symbolize_names: true)
+      #   Gitlab::Json.parse(data, legacy_mode: true)
+      #
+      #   # good (autocorrected)
+      #
+      #   Gitlab::Json.safe_parse(data, symbolize_names: true)
+      #   Gitlab::Json.safe_parse(data, legacy_mode: true)
+      #
+      #   # also good - already using `Gitlab::Json.safe_parse`
+      #
+      #   Gitlab::Json.safe_parse(data)
       #   Gitlab::Json.safe_parse(data, parse_limits: { max_depth: 10 })
       #
       class JsonSafeParse < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector
 
         MSG = <<~TEXT.chomp
-          Prefer `Gitlab::Json.safe_parse` over `Gitlab::Json.parse` when parsing untrusted input. \
+          Prefer `Gitlab::Json::SafeParser.parse` over `Gitlab::Json.parse` when parsing untrusted input. \
           See https://docs.gitlab.com/development/secure_coding_guidelines/#json-parsing
         TEXT
 
@@ -59,7 +75,15 @@ module RuboCop
 
         def replacement(node, arg_nodes)
           arg_source = arg_nodes.map(&:source).join(", ")
-          "#{cbase_prefix(node)}Gitlab::Json.safe_parse(#{arg_source})"
+          "#{cbase_prefix(node)}#{target(arg_nodes)}(#{arg_source})"
+        end
+
+        def target(arg_nodes)
+          if arg_nodes.length <= 1
+            "Gitlab::Json::SafeParser.parse"
+          else
+            "Gitlab::Json.safe_parse"
+          end
         end
 
         def cbase_prefix(node)

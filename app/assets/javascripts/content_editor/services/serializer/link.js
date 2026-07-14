@@ -60,8 +60,13 @@ function getLinkHref(mark, useCanonicalSrc = true) {
 const link = {
   open(state, mark, parent) {
     if (isAutoLink(mark, parent)) {
+      // Suppress escaping on the URL text node: an autolink's visible
+      // text is its URL, which must not be escaped; see ./text.js.
+      state.inAutolink = true;
       return '';
     }
+
+    state.inAutolink = false;
 
     const { href, title, isGollumLink } = mark.attrs;
 
@@ -80,6 +85,8 @@ const link = {
     return '[';
   },
   close(state, mark, parent) {
+    state.inAutolink = undefined;
+
     if (isAutoLink(mark, parent)) {
       return '';
     }

@@ -6,9 +6,9 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
   include ListboxHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user)    { project.creator }
+  let_it_be(:user) { project.creator }
   let_it_be(:user2) { create(:user) }
-  let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let_it_be(:merged_merge_request) { create(:merge_request, :merged, source_project: project, target_project: project) }
 
   before_all do

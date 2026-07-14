@@ -130,6 +130,7 @@ export default {
       default: false,
     },
   },
+  emits: ['onDropdownClose', 'onLabelRemove', 'toggleCollapse', 'updateSelectedLabels'],
   data() {
     return {
       contentIsOnViewport: true,

@@ -39,6 +39,7 @@ export default {
       required: false,
     },
   },
+  emits: ['delete-file', 'download-file'],
   computed: {
     filesTableRows() {
       return this.packageFiles.map((pf) => ({

@@ -46,11 +46,7 @@ module Tasks
           end
 
           def allowed_endpoints
-            routes_by_category = routes.group_by(&:category).sort.to_h
-
-            build_section(nil, nil, routes_by_category) do |subsection, subsection_routes|
-              build_category_section(subsection, subsection_routes)
-            end
+            build_category_sections(routes)
           end
 
           def skipped_endpoints
@@ -246,15 +242,6 @@ module Tasks
             end
 
             parts.join("\n")
-          end
-
-          def build_category_section(category, category_routes)
-            title = "### #{category} resources\n"
-            routes_by_resource = category_routes.group_by(&:resource).sort.to_h
-
-            build_section(title, nil, routes_by_resource) do |subsection, subsection_routes|
-              build_resource_section(subsection, subsection_routes)
-            end
           end
         end
       end

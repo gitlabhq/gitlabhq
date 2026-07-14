@@ -205,6 +205,8 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
     before do
       allow(migration_builder).to receive(:build).with(change.context).and_return(built_result)
       allow(keep).to receive_messages(
+        migrate: nil,
+        reset_db: nil,
         labels: %w[group::foo maintenance::removal],
         pick_reviewer: 'engineer-handle'
       )
@@ -214,14 +216,22 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
       result = keep.make_change!(change)
 
       expect(result).to be_a(::Gitlab::Housekeeper::Change)
-      expect(result.title).to eq('Draft: Async-remove unused index index_users_on_foo')
+      expect(result.title).to eq('Remove unused index index_users_on_foo')
       expect(result.changed_files).to contain_exactly(
         migration_file,
-        'db/schema_migrations/20260601000000'
+        'db/schema_migrations/20260601000000',
+        'db/structure.sql'
       )
       expect(result.labels).to eq(%w[group::foo maintenance::removal])
       expect(result.reviewers).to eq(['engineer-handle'])
-      expect(result.assignees).to eq(['engineer-handle'])
+      expect(result.assignees).to be_blank
+    end
+
+    it 'regenerates db/structure.sql by applying the migration', :aggregate_failures do
+      expect(keep).to receive(:migrate).ordered
+      expect(keep).to receive(:reset_db).ordered
+
+      keep.make_change!(change)
     end
 
     it 'renders the description with definition, 180d verification prompt, and escape hatch', :aggregate_failures do
@@ -233,6 +243,21 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
       expect(result.description).to include('[180d]')
       expect(result.description).to include('Cross-environment review checklist')
       expect(result.description).to include('keeps/cleanup_unused_indexes/index_keep_list.yml')
+    end
+
+    it 'interpolates the table and columns into the Kibana review step', :aggregate_failures do
+      result = keep.make_change!(change)
+
+      expect(result.description).to include('pubsub-postgres-inf-gprd*')
+      expect(result.description).to include('json.sql: users AND json.sql: *foo*')
+      expect(result.description).to include('filters/orders on `foo`')
+    end
+
+    it 'warns to use asynchronous removal for large tables', :aggregate_failures do
+      result = keep.make_change!(change)
+
+      expect(result.description).to include('Large tables: remove asynchronously instead')
+      expect(result.description).to include('#drop-indexes-asynchronously')
     end
 
     it 'embeds a Grafana Explore deep link with the index name in the encoded PromQL', :aggregate_failures do
@@ -256,8 +281,8 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
 
     it 'combines group labels with the standard maintenance and review labels' do
       expect(keep.send(:labels, 'users')).to eq(
-        ['group::foo', 'maintenance::removal', 'type::maintenance', 'Category:Database',
-          'pipeline::tier-1', 'database::review pending', 'workflow::in review']
+        ['group::foo', 'automation:cleanup-unused-indexes', 'maintenance::removal', 'type::maintenance',
+          'Category:Database', 'pipeline::tier-1', 'database::review pending', 'workflow::in review']
       )
     end
 
@@ -268,8 +293,8 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
 
       it 'falls back to the standard maintenance and review labels only' do
         expect(keep.send(:labels, 'users')).to eq(
-          ['maintenance::removal', 'type::maintenance', 'Category:Database',
-            'pipeline::tier-1', 'database::review pending', 'workflow::in review']
+          ['automation:cleanup-unused-indexes', 'maintenance::removal', 'type::maintenance',
+            'Category:Database', 'pipeline::tier-1', 'database::review pending', 'workflow::in review']
         )
       end
     end

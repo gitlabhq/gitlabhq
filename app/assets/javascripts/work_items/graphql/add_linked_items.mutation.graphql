@@ -1,22 +1,17 @@
-#import "ee_else_ce/work_items/graphql/work_item.fragment.graphql"
+#import "~/work_items/graphql/work_item_linked_items.fragment.graphql"
+#import "~/work_items/graphql/work_item_linked_items_features.fragment.graphql"
 
+# @feature_category: portfolio_management
 mutation addLinkedItems(
   $input: WorkItemAddLinkedItemsInput!
   $useWorkItemFeatures: Boolean = false
 ) {
   workItemAddLinkedItems(input: $input) {
     workItem {
-      ...WorkItem
-      widgets {
-        ... on WorkItemWidgetLinkedItems {
-          type
-          linkedItems {
-            nodes {
-              linkId
-              linkType
-            }
-          }
-        }
+      id
+      ...WorkItemLinkedItemsFragment @skip(if: $useWorkItemFeatures)
+      features @include(if: $useWorkItemFeatures) {
+        ...WorkItemLinkedItemsFeaturesFragment
       }
     }
     errors

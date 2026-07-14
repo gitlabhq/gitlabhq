@@ -46,6 +46,7 @@ export default {
       required: true,
     },
   },
+  emits: ['delete', 'selectArtifact'],
   computed: {
     isExpired() {
       if (!this.artifact.expireAt) {

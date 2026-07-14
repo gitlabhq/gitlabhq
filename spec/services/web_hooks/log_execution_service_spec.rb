@@ -30,7 +30,9 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
     it 'logs the data' do
       expect { service.execute }.to change { ::WebHookLog.count }.by(1)
 
-      expect(WebHookLog.recent.first).to have_attributes(data)
+      expect(WebHookLog.recent.first).to have_attributes(
+        data.merge(project_id: project_hook.project_id, group_id: nil, organization_id: nil)
+      )
     end
 
     context 'when data contains unsafe YAML properties' do

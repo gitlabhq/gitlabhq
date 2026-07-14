@@ -9,7 +9,7 @@ title: GitLab Dedicated releases and versioning
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Dedicated
+- Offering: GitLab Dedicated, GitLab Dedicated for Government
 
 {{< /details >}}
 
@@ -43,6 +43,10 @@ To check your GitLab version:
 
 ## Release rollout schedule
 
+{{< tabs >}}
+
+{{< tab title="GitLab Dedicated" >}}
+
 Your instance is upgraded during scheduled maintenance windows according
 to a staggered timeline that begins 5 days after each GitLab release.
 
@@ -60,6 +64,22 @@ For example, GitLab 16.9 released on 2024-02-15. Instances in the EMEA and Ameri
 
 If maintenance is deferred due to operational constraints, upgrades occur
 in the next available maintenance window.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Dedicated for Government" >}}
+
+Your instance is upgraded during your assigned maintenance window after internal validation of each GitLab release.
+
+Upgrades occur during fixed weekly windows on Tuesday through Thursday.
+GitLab reserves Monday for internal validation ahead of the upgrade windows.
+
+If maintenance is deferred due to operational constraints, upgrades occur
+in the next available maintenance window.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Update frequency
 

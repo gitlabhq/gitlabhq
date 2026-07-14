@@ -11,7 +11,7 @@ exports[`when resultsError when component loads normally renders component prope
       alt=""
       class="gl-dark-invert-keep-hue gl-max-w-full"
       height="144"
-      src="file-mock"
+      src="file-mock-empty-search-md.svg"
     />
   </div>
   <div

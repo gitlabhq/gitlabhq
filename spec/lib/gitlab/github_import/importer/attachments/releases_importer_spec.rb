@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::Attachments::ReleasesImporter, feature_category: :importers do
   subject(:importer) { described_class.new(project, client) }
 
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   let(:client) { instance_double(Gitlab::GithubImport::Client, web_endpoint: "https://github.com") }
 
   describe '#sequential_import', :clean_gitlab_redis_shared_state do
-    let_it_be(:release, freeze: false) { create(:release, project: project) }
+    let_it_be_with_reload(:release) { create(:release, project: project) }
 
     let_it_be(:release_with_attachment) do
       create(:release,

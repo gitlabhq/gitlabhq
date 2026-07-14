@@ -7,7 +7,8 @@ module Mutations
       description 'Delete an environment.'
 
       authorize :destroy_environment
-      authorize_granular_token permissions: :delete_environment, boundary_argument: :id, boundary_type: :project
+      authorize_granular_token permissions: :delete_environment, boundary_argument: :id, boundary: :project,
+        boundary_type: :project
 
       argument :id,
         ::Types::GlobalIDType[::Environment],

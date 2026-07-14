@@ -556,6 +556,6 @@ Status: Beta
 
 {{< /history >}}
 
-Gitaly Cluster (Praefect) solves the data and service high-availability aspect by replicating data across instances.  
+Gitaly Cluster (Praefect) solves the data and service high-availability aspect by replicating data across instances.
 
 However, Gitaly Cluster on Kubernetes is currently in beta. We are working over these [known issues](#known-issues) and other related items before moving it to general availability.

@@ -59,4 +59,49 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
       end
     end
   end
+
+  describe '.latest_per_application' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:app_a) { create(:oauth_application) }
+    let_it_be(:app_b) { create(:oauth_application) }
+    let_it_be(:older_a) { create(:oauth_consent, user: user, application: app_a, created_at: 2.days.ago) }
+    let_it_be(:newer_a) { create(:oauth_consent, user: user, application: app_a, created_at: 1.day.ago) }
+    let_it_be(:only_b) { create(:oauth_consent, user: user, application: app_b) }
+
+    it 'returns one record per client_id, preferring the most recent created_at' do
+      result = described_class.where(user: user).latest_per_application
+
+      expect(result).to contain_exactly(newer_a, only_b)
+    end
+  end
+
+  describe '.revoke_authorized_for' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:other_user) { create(:user) }
+    let_it_be(:app) { create(:oauth_application) }
+
+    let!(:authorized) { create(:oauth_consent, user: user, application: app) }
+    let!(:other_user_authorized) { create(:oauth_consent, user: other_user, application: app) }
+    let!(:already_revoked) { create(:oauth_consent, :revoked, user: user, application: app) }
+    let!(:rejected) { create(:oauth_consent, :rejected, user: user, application: app) }
+
+    subject(:revoke) { described_class.revoke_authorized_for(user: user, client_id: app.uid) }
+
+    it 'marks the user\'s authorized consent for the client as revoked' do
+      expect { revoke }.to change { authorized.reload.status }.from('authorized').to('revoked')
+    end
+
+    it 'does not touch other users\' consents', :aggregate_failures do
+      revoke
+
+      expect(other_user_authorized.reload).to be_authorized
+    end
+
+    it 'does not touch already-revoked or rejected consents', :aggregate_failures do
+      revoke
+
+      expect(already_revoked.reload).to be_revoked
+      expect(rejected.reload).to be_rejected
+    end
+  end
 end

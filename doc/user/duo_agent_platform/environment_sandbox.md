@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Agent Foundations
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Remote execution environment sandbox
 ---
@@ -15,6 +15,7 @@ title: Remote execution environment sandbox
 - `allow_all_unix_sockets` network policy setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590871) in GitLab 18.11.
 - Instance-level and group-level network access controls [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229531) in GitLab 18.11 [with feature flags](../../administration/feature_flags/_index.md) named `dap_instance_network_access_controls` and `dap_group_network_access_controls`. Disabled by default.
 - Feature flags `dap_instance_network_access_controls` and `dap_group_network_access_controls` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235670) in GitLab 19.0.
+- Feature flag `dap_group_network_access_controls` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243118) in 19.2.
 
 {{< /history >}}
 
@@ -43,7 +44,7 @@ image configurations, see
 To use the execution environment sandbox, you need:
 
 - GitLab Duo Agent Platform enabled in your project.
-- Privileged runner mode enabled. It is [required for sandboxing to function](flows/execution.md#configure-runners).
+- Privileged runner mode enabled. It is [required for sandboxing to function](flows/execution.md#configure-runners-to-execute-flows).
 - A compatible Docker image: this could be the [default GitLab Docker](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/container_registry) image on version `v0.0.6` or above, or a [custom image with Anthropic Sandbox Runtime (SRT) installed](#install-anthropic-sandbox-runtime-srt-on-a-custom-image).
 
 ## How it works
@@ -213,11 +214,6 @@ the host. This is disabled by default.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229531) in GitLab 18.11 [with feature flags](../../administration/feature_flags/_index.md) named `dap_instance_network_access_controls` and `dap_group_network_access_controls`. Disabled by default.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 In addition to [project-level `agent-config.yml` settings](#configure-a-network-policy),
 administrators and top-level group owners can manage network access controls through the GitLab UI.

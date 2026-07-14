@@ -3,6 +3,7 @@
 import StackTraceEntry from './stacktrace_entry.vue';
 
 export default {
+  name: 'ErrorTrackingStacktrace',
   components: {
     StackTraceEntry,
   },

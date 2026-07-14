@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: AI Platform
+group: AI Core Infra
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: AI-native features and functionality.
 title: GitLab Duo data usage
@@ -24,48 +24,49 @@ GitLab Duo AI-native features are in a variety of [feature support levels](../..
 
 ## Data privacy
 
-GitLab Duo AI-native features are powered by a generative AI model. The processing of any personal data is in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/). You may also visit the [Sub-Processors page](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors) to see the list of Sub-Processors we use to provide these features.
+GitLab Duo AI-native features are powered by generative AI models.
+GitLab processes any personal data in accordance with the [GitLab Privacy Statement](https://about.gitlab.com/privacy/).
+
+For a list of AI model sub-processors GitLab uses to provide these features,
+see [third-party sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors).
 
 ## Data retention
 
 ### Model sub-processors
 
-The below reflects the current retention periods of GitLab AI model
-[sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors):
+For GitLab Duo requests, GitLab has a zero data retention policy with Fireworks AI.
+Fireworks AI discards model input and output data immediately after the output is
+provided and does not store input and output data for abuse monitoring.
+The exception to this policy is when prompt caching is turned on for
+GitLab Duo Code Suggestions and GitLab Duo Agentic Chat.
+For OpenAI models, you cannot turn off prompt caching.
 
-For GitLab Duo requests, GitLab has a zero data retention policy
-with Fireworks AI. Fireworks AI discards model input and output data immediately after the output is
-provided and does not store input and output data for abuse monitoring. The exception
-to this policy is when prompt caching is enabled for
-Code Suggestions and GitLab Duo Agentic Chat. For OpenAI models, you cannot turn off prompt caching.
-
-Certain Anthropic and OpenAI models, including when hosted on Amazon Bedrock and Gemini Enterprise Agent Platform (formerly Vertex AI Platform), are subject to limited vendor-side data retention. Models subject to this limited vendor-side data retention are designated in the [GitLab Duo supported models documentation](../duo_agent_platform/model_selection.md#supported-models).
-
-All GitLab AI model sub-processors are restricted from using model input and
-output to train models and are under data protection agreements with GitLab that
-prohibit the use of Customer Content for their own purposes, except to perform
-their independent legal obligations.
+Certain Anthropic and OpenAI models, including when hosted on Amazon Bedrock and
+Gemini Enterprise Agent Platform, are subject to limited vendor-side data retention.
+For more information about these models, see
+[supported AI models for GitLab Duo Agent Platform](../duo_agent_platform/model_selection.md#supported-models).
 
 ### GitLab
 
-GitLab Duo Chat and GitLab Duo Agent Platform retain chat history and workflow
-history, respectively, to help you return quickly to previously discussed topics. You can delete chats in the GitLab Duo Chat interface. On GitLab.com, chat and workflow history may be retained for anti-abuse purposes.
+GitLab Duo Chat and GitLab Duo Agent Platform retain chat and workflow history
+to help you return quickly to previously discussed topics.
+You can delete chats in the GitLab Duo Chat interface.
+On GitLab.com, GitLab retains chat and workflow history for anti-abuse purposes.
+GitLab does not otherwise retain input and output data unless customers provide consent
+through a [GitLab Support ticket](https://about.gitlab.com/support/portal/).
 
-GitLab does not otherwise retain input and output data unless customers provide consent through a GitLab
-[support ticket](https://about.gitlab.com/support/portal/).
+When you enable expanded logging for GitLab Duo Agent Platform, GitLab retains trace data.
+Logging information related to AI features is separate from any
+zero data retention policy with GitLab AI model sub-processors.
+For more information, see [GitLab log system](../../administration/logs/_index.md).
 
-When groups or instances enable extended logging for GitLab Duo Agent Platform workflows, trace data is retained. This is separate from any zero data retention policy with AI model sub-processors.
-
-For more information, see [AI feature logging](../../administration/logs/_index.md).
-
-## Training data
+## Model training
 
 GitLab does not train generative AI models.
 
-For more information on our AI [sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors), see:
-
-- Gemini Enterprise Agent Platform models API [data governance](https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/zero-data-retention), [responsible AI](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/responsible-ai), and Google [Secure AI Framework (SAIF)](https://safety.google/safety/saif/).
-- Anthropic Claude's [constitution](https://www.anthropic.com/news/claudes-constitution), training data [FAQ](https://support.anthropic.com/en/articles/7996885-how-do-you-use-personal-data-in-model-training), [models overview](https://docs.anthropic.com/en/docs/about-claude/models), and [data recency article](https://support.anthropic.com/en/articles/8114494-how-up-to-date-is-claude-s-training-data).
+All GitLab AI model sub-processors are restricted from using model input and output to train models.
+These sub-processors are under data protection agreements with GitLab that prohibit the use of
+customer content for their own purposes, except to perform their independent legal obligations.
 
 ## Telemetry
 

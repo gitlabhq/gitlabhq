@@ -49,8 +49,6 @@ class Projects::BlobController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:inline_blame, @project)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
-    push_frontend_feature_flag(:repository_file_tree_browser, current_user)
-    push_frontend_feature_flag(:blob_edit_refactor, @project)
     push_frontend_feature_flag(:duo_convert_ci_use_developer_flow, @project)
     push_frontend_feature_flag(:vue3_migrate_repository, current_user)
   end
@@ -294,7 +292,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def set_last_commit_sha
     @last_commit_sha = Gitlab::Git::Commit
-      .last_for_path(@repository, ref, @path, literal_pathspec: true).sha
+      .last_for_path(@repository, ref, @path, literal_pathspec: true)&.sha
   end
 
   def show_html

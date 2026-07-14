@@ -19,6 +19,7 @@ import unlockState from '../graphql/mutations/unlock_state.mutation.graphql';
 import InitCommandModal from './init_command_modal.vue';
 
 export default {
+  name: 'StatesTableActions',
   components: {
     GlDropdown,
     GlDropdownDivider,

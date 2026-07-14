@@ -11,7 +11,7 @@ export default {
     'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_footer.vue',
     'app/assets/javascripts/vue_shared/components/dropdown/dropdown_widget/dropdown_widget.vue',
     'app/assets/javascripts/vue_shared/components/user_select/user_select.vue',
-    'ee/app/assets/javascripts/ai/duo_agentic_chat/components/duo_agentic_chat_view.vue',
+    'ee/app/assets/javascripts/ai/duo_agentic_chat/components/prompt_textarea.vue',
     'ee/app/assets/javascripts/ai/tanuki_bot/components/duo_chat_view.vue',
     'ee/app/assets/javascripts/groups/settings/components/access_dropdown.vue',
   ],

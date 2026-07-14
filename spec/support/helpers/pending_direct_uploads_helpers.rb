@@ -11,11 +11,11 @@ module PendingDirectUploadHelpers
   end
 
   def expect_to_have_pending_direct_upload(path)
-    expect(ObjectStorage::PendingDirectUpload.exists?(location_identifier, path)).to eq(true)
+    expect(ObjectStorage::PendingDirectUpload.exists?(location_identifier, path)).to be(true)
   end
 
   def expect_not_to_have_pending_direct_upload(path)
-    expect(ObjectStorage::PendingDirectUpload.exists?(location_identifier, path)).to eq(false)
+    expect(ObjectStorage::PendingDirectUpload.exists?(location_identifier, path)).to be(false)
   end
 
   def expect_pending_uploaded_object_not_to_exist(path)

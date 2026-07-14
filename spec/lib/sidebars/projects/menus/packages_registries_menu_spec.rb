@@ -222,4 +222,21 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_catego
       end
     end
   end
+
+  describe 'Feature Library metadata' do
+    before do
+      stub_config(packages: { enabled: true })
+      stub_container_registry_config(enabled: true)
+    end
+
+    it 'gives every item a description and a unique library_icon', :aggregate_failures do
+      items = described_class.new(context).renderable_items.reject { |item| item.item_id == :harbor_registry }
+      serialized = items.map(&:serialize_for_super_sidebar)
+
+      expect(serialized).not_to be_empty
+      expect(serialized).to all(include(:description, :library_icon))
+      icons = serialized.map { |item| item[:library_icon] }
+      expect(icons).to match_array(icons.uniq)
+    end
+  end
 end

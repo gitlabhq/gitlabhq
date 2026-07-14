@@ -4,6 +4,7 @@ import { createAlert } from '~/alert';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { localeDateFormat, newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
+import { helpPagePath } from '~/lib/utils/path_helpers/help';
 import { __, sprintf } from '~/locale';
 import { dateFields, dateTypes, Tracking } from '../../constants';
 import { dueDateQueries, startDateQueries } from '../../queries/constants';
@@ -34,7 +35,6 @@ export default {
     SidebarInheritDate,
     HelpIcon,
   },
-  inject: ['canUpdate'],
   props: {
     iid: {
       type: String,
@@ -69,6 +69,7 @@ export default {
       default: null,
     },
   },
+  emits: ['closeForm', 'dueDateUpdated', 'startDateUpdated'],
   data() {
     return {
       issuable: {},
@@ -269,7 +270,9 @@ export default {
     help: __('Help'),
     learnMore: __('Learn more'),
   },
-  dateHelpUrl: '/help/user/group/epics/manage_epics.md#start-and-due-date-inheritance',
+  dateHelpUrl: helpPagePath('user/group/epics/manage_epics.md', {
+    anchor: 'start-and-due-date-inheritance',
+  }),
 };
 </script>
 

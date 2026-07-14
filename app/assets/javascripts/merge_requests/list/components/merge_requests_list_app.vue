@@ -203,7 +203,7 @@ export default {
         return !this.hasAnyMergeRequests || isEmpty(this.pageParams) || !this.getMergeRequestsQuery;
       },
     },
-    // The approvals data gets loaded in a seperate request so that if it timesout due to
+    // The approvals data gets loaded in a separate request so that if it timesout due to
     // the large amount of data getting processed on the backend we can still render the
     // merge request list.
     // The data here gets stored in cache and then loaded through the `@client` directives

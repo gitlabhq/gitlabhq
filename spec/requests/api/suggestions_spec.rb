@@ -52,6 +52,16 @@ RSpec.describe API::Suggestions, feature_category: :code_review_workflow do
   describe "PUT /suggestions/:id/apply" do
     let(:url) { "/suggestions/#{suggestion.id}/apply" }
 
+    it_behaves_like 'authorizing granular token permissions', :apply_suggestion do
+      let(:boundary_object) { project }
+
+      before do
+        project.add_maintainer(user)
+      end
+
+      let(:request) { put api(url, personal_access_token: pat) }
+    end
+
     context 'when successfully applies patch' do
       it 'renders an ok response and returns json content' do
         project.add_maintainer(user)
@@ -139,6 +149,18 @@ RSpec.describe API::Suggestions, feature_category: :code_review_workflow do
     end
 
     let(:url) { "/suggestions/batch_apply" }
+
+    it_behaves_like 'authorizing granular token permissions', :apply_suggestion do
+      let(:boundary_object) { project }
+
+      before do
+        project.add_maintainer(user)
+      end
+
+      let(:request) do
+        put api(url, personal_access_token: pat), params: { ids: [suggestion.id] }
+      end
+    end
 
     context 'when successfully applies multiple patches as a batch' do
       before do

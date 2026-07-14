@@ -16,11 +16,7 @@ export default {
     GlAlert,
     PackageRegistrySection,
   },
-  inject: [
-    'showContainerRegistrySettings',
-    'showPackageRegistrySettings',
-    'isContainerRegistryMetadataDatabaseEnabled',
-  ],
+  inject: ['showContainerRegistrySettings', 'showPackageRegistrySettings'],
   i18n: {
     UPDATE_SETTINGS_SUCCESS_MESSAGE,
   },

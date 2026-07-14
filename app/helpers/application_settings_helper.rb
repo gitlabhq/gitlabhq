@@ -54,7 +54,7 @@ module ApplicationSettingsHelper
   # The instance-level MCP toggle only applies to self-managed. On GitLab.com,
   # MCP availability is controlled by the top-level group setting instead.
   def mcp_server_setting_available?
-    !Gitlab.com? && Feature.enabled?(:mcp_server_availability_setting, :instance)
+    !Gitlab.com?
   end
 
   def ssh_enabled?
@@ -297,6 +297,7 @@ module ApplicationSettingsHelper
       :allow_bypass_placeholder_confirmation,
       :ci_delete_pipelines_in_seconds_limit_human_readable,
       :ci_job_live_trace_enabled,
+      :ci_partitions_in_seconds_limit_human_readable,
       :concurrent_github_import_jobs_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,
@@ -335,6 +336,7 @@ module ApplicationSettingsHelper
       # TODO Remove domain_allowlist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)
       :domain_allowlist_raw,
       :outbound_local_requests_allowlist_raw,
+      :outbound_local_requests_whitelist,
       :dsa_key_restriction,
       :ecdsa_key_restriction,
       :ecdsa_sk_key_restriction,
@@ -396,7 +398,10 @@ module ApplicationSettingsHelper
       :jira_connect_public_key_storage_enabled,
       :jira_connect_proxy_url,
       :jira_connect_additional_audience_url,
+      :jira_forge_app_id,
       :math_rendering_limits_enabled,
+      :require_sha_for_merge,
+      :lock_require_sha_for_merge,
       :max_artifacts_content_include_size,
       :max_artifacts_size,
       :max_attachment_size,
@@ -606,6 +611,7 @@ module ApplicationSettingsHelper
       :project_runner_token_expiration_interval,
       :pipeline_limit_per_project_user_sha,
       :pipeline_limit_per_user,
+      :ci_lint_limit_per_user,
       :invitation_flow_enforcement,
       :can_create_group,
       :can_create_organization,
@@ -684,7 +690,9 @@ module ApplicationSettingsHelper
       :runner_jobs_endpoints_api_limit,
       :background_operations_max_jobs,
       :enforce_granular_tokens,
-      :granular_tokens_enforced_after
+      :granular_tokens_enforced_after,
+      :logging_field_schema_version,
+      :logging_field_dual_emit_target
     ].tap do |settings|
       unless Gitlab.com?
         settings << :deactivate_dormant_users
@@ -721,7 +729,9 @@ module ApplicationSettingsHelper
   def deprecated_attributes
     [
       :admin_notification_email,
-      :asset_proxy_whitelist
+      :asset_proxy_whitelist,
+      # Deprecated in favor of `ci_partitions_in_seconds_limit_human_readable`.
+      :ci_partitions_in_seconds_limit
     ]
   end
 
@@ -811,6 +821,31 @@ module ApplicationSettingsHelper
   # Overridden in EE
   def custom_admin_roles_available?
     false
+  end
+
+  def logging_field_changes_data
+    ApplicationSetting::LOGGING_FIELD_SCHEMA_VERSIONS.each_with_object({}) do |v, hash|
+      next if v == 0
+
+      hash[v] = logging_field_changes_for_version(v)
+    end
+  end
+
+  private
+
+  def logging_field_changes_for_version(target_version)
+    variant_versions = Labkit::Fields::VARIANT_VERSION
+    deprecated_mappings = Labkit::Fields::Deprecated::MAPPINGS
+
+    variant_versions.filter_map do |standard_field, version|
+      next unless version == target_version
+
+      deprecated_names = deprecated_mappings[standard_field] || []
+      {
+        standard_field: standard_field,
+        deprecated_fields: deprecated_names
+      }
+    end
   end
 end
 

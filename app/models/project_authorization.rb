@@ -37,7 +37,7 @@ class ProjectAuthorization < ApplicationRecord
   # Consider using BulkInsertSafe module instead since we plan to refactor it in
   # https://gitlab.com/gitlab-org/gitlab/-/issues/331264
   def self.insert_all(attributes)
-    super(attributes, unique_by: connection.schema_cache.primary_keys(table_name))
+    super(attributes, unique_by: [:project_id, :user_id])
   end
 
   def self.find_or_create_authorization_for(user_id, project_id, access_level)

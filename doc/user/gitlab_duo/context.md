@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: AI Platform
+group: AI Core Infra
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn what information GitLab Duo can access to provide suggestions, and how to exclude sensitive content from Code Review context.
 title: GitLab Duo contextual awareness
@@ -60,7 +60,7 @@ are also available when you refer to them explicitly by their ID or URL.
 {{< /details >}}
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17124) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `use_duo_context_exclusion`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17124) in GitLab 18.2 [with a feature flag](../../administration/feature_flags/_index.md) named `use_duo_context_exclusion`. Disabled by default.
 - Changed to beta in GitLab 18.4.
 - Enabled by default in GitLab 18.5.
 

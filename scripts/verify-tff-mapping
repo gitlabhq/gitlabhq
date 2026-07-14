@@ -118,20 +118,29 @@ tests = [
   },
 
   {
-    explanation: 'DB structure should map to schema spec',
+    explanation: 'DB structure should map to schema spec, plus the ClickHouse siphon tables spec (any db/ change)',
     changed_file: 'db/structure.sql',
-    expected: ['spec/db/schema_spec.rb']
+    expected: %w[
+      spec/db/schema_spec.rb
+      spec/db/clickhouse_siphon_tables_spec.rb
+    ]
   },
 
   {
-    explanation: 'Migration should map to its non-timestamped spec',
+    explanation: 'Migration should map to its non-timestamped spec + the ClickHouse siphon tables spec (db/ change)',
     changed_file: 'db/migrate/20251020001530_cleanup_duplicate_work_item_type_custom_lifecycles.rb',
-    expected: ['spec/migrations/cleanup_duplicate_work_item_type_custom_lifecycles_spec.rb']
+    expected: %w[
+      spec/migrations/cleanup_duplicate_work_item_type_custom_lifecycles_spec.rb
+      spec/db/clickhouse_siphon_tables_spec.rb
+    ]
   },
   {
-    explanation: 'Migration should map to its timestamped spec',
+    explanation: 'Migration should map to its timestamped spec + the ClickHouse siphon tables spec (db/ change)',
     changed_file: 'db/post_migrate/20251027104235_queue_backfill_missing_namespace_details.rb',
-    expected: ['spec/migrations/20251027104235_queue_backfill_missing_namespace_details_spec.rb']
+    expected: %w[
+      spec/migrations/20251027104235_queue_backfill_missing_namespace_details_spec.rb
+      spec/db/clickhouse_siphon_tables_spec.rb
+    ]
   },
   {
     explanation: 'FOSS views should map to respective spec',
@@ -645,6 +654,8 @@ tests = [
       ee/spec/features/registrations/saas/subscription_flow_spec.rb
       ee/spec/features/registrations/saas/subscription_sm_flow_spec.rb
       ee/spec/features/registrations/saas/trial_flow_spec.rb
+      ee/spec/features/registrations/saas/unified_free_flow_spec.rb
+      ee/spec/features/registrations/saas/unified_free_to_trial_flow_spec.rb
       ee/spec/controllers/registrations/company_controller_spec.rb
       ee/spec/requests/ee/registrations_controller_spec.rb
       ee/spec/requests/trial_registrations_controller_spec.rb
@@ -740,7 +751,13 @@ tests = [
       ee/spec/lib/gitlab/database/inclusion_of_tables_with_gitlab_sec_schema_spec.rb
       spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb
       spec/lib/gitlab/organizations/sharding_key_spec.rb
+      spec/db/clickhouse_siphon_tables_spec.rb
     ]
+  },
+  {
+    explanation: 'Any db/ change should also run the ClickHouse siphon tables spec',
+    changed_file: 'db/siphon/tables/approvals.yml',
+    expected: ['spec/db/clickhouse_siphon_tables_spec.rb']
   },
   {
     explanation: 'Verify attributes to be imported/exported',

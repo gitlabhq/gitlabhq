@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
+RSpec.describe 'Admin::Hooks', :with_current_organization, feature_category: :webhooks do
   include Spec::Support::Helpers::ModalHelpers
 
-  let_it_be(:user) { create(:admin) }
+  let_it_be(:user) { create(:admin, organizations: [current_organization]) }
 
   before do
     sign_in(user)
@@ -24,7 +24,7 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
     end
 
     it 'has hooks list' do
-      system_hook = create(:system_hook)
+      system_hook = create(:system_hook, organization: current_organization)
 
       visit admin_hooks_path
       expect(page).to have_content(system_hook.url)
@@ -65,7 +65,7 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
 
   describe 'Update existing hook' do
     let(:new_url) { generate(:url) }
-    let_it_be(:hook) { create(:system_hook) }
+    let_it_be(:hook) { create(:system_hook, organization: current_organization) }
 
     it 'updates existing hook', :js do
       visit admin_hooks_path
@@ -81,39 +81,53 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
       expect(page).to have_current_path(edit_admin_hook_path(hook), ignore_query: true)
       expect(page).to have_content('Recent events')
       click_link 'Close'
-      expect(page).not_to have_content('Save changes')
       expect(page).to have_content('Add new webhook')
+      expect(page).not_to have_content('Save changes')
     end
   end
 
   describe 'Remove existing hook', :js do
     let(:hook_url) { generate(:url) }
-
-    before do
-      create(:system_hook, url: hook_url)
-    end
+    let!(:hook) { create(:system_hook, url: hook_url, organization: current_organization) }
 
     context 'removes existing hook' do
       it 'from hooks list page' do
         visit admin_hooks_path
 
+        expect(page).to have_content(hook_url)
         accept_gl_confirm(button_text: 'Delete webhook') { click_link 'Delete' }
-        expect(page).not_to have_content(hook_url)
+
+        expect(page).to have_content('Webhook deleted')
+        expect(SystemHook.exists?(hook.id)).to be(false)
+
+        current_organization.system_hooks.reset
+
+        visit admin_hooks_path
+
+        expect(page).to have_no_content(hook_url)
       end
 
       it 'from hook edit page' do
-        visit admin_hooks_path
-        click_link 'Edit'
+        visit edit_admin_hook_path(hook)
 
+        expect(page).to have_field('URL', with: hook_url)
         accept_gl_confirm(button_text: 'Delete webhook') { click_link 'Delete' }
-        expect(page).not_to have_content(hook_url)
+
+        expect(page).to have_content('Webhook deleted')
+        expect(SystemHook.exists?(hook.id)).to be(false)
+
+        current_organization.system_hooks.reset
+
+        visit admin_hooks_path
+
+        expect(page).to have_no_content(hook_url)
       end
     end
   end
 
   describe 'Test', :js do
     before do
-      system_hook = create(:system_hook)
+      system_hook = create(:system_hook, organization: current_organization)
       WebMock.stub_request(:post, system_hook.url)
       visit admin_hooks_path
 
@@ -147,12 +161,12 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
 
     describe 'Test', :js do
       before do
-        system_hook = create(:system_hook)
+        system_hook = create(:system_hook, organization: current_organization)
         WebMock.stub_request(:post, system_hook.url)
       end
 
       it 'succeeds if the user has a repository with a merge request' do
-        project = create(:project, :repository)
+        project = create(:project, :repository, organization: current_organization)
         create(:project_member, user: user, project: project)
         create(:merge_request, source_project: project)
 

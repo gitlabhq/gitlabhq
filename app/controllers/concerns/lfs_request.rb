@@ -14,8 +14,10 @@
 module LfsRequest
   extend ActiveSupport::Concern
   include Gitlab::Utils::StrongMemoize
+  include GranularTokenAuthorization
 
   CONTENT_TYPE = 'application/vnd.git-lfs+json'
+  GRANULAR_LFS_ABILITIES = %i[download_code push_code].freeze
 
   included do
     before_action :require_lfs_enabled!
@@ -92,6 +94,7 @@ module LfsRequest
     return false if limit_exceeded?
     return true if can?(user, :build_push_code, project) && has_authentication_ability?(:build_push_code)
     return false unless has_authentication_ability?(:push_code)
+    return false unless pat_authorized?(project, :push_code)
 
     lfs_deploy_token? ||
       can?(user, :push_code, project) ||
@@ -109,7 +112,9 @@ module LfsRequest
   end
 
   def user_can_download_code?
-    has_authentication_ability?(:download_code) && can?(user, :download_code, project)
+    has_authentication_ability?(:download_code) &&
+      pat_authorized?(project, :download_code) &&
+      can?(user, :download_code, project)
   end
 
   def build_can_download_code?
@@ -125,6 +130,8 @@ module LfsRequest
   end
 
   def has_authentication_ability?(capability)
+    return GRANULAR_LFS_ABILITIES.include?(capability) if granular_personal_access_token.present?
+
     (authentication_abilities || []).include?(capability)
   end
 

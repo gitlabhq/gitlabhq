@@ -1,5 +1,3 @@
-// To run this spec locally first run `bundle exec rake gitlab:js:routes`
-
 describe('~/lib/utils/path_helpers/organizations', () => {
   const setup = async () => {
     await import('~/behaviors/configure_path_helpers');

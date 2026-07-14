@@ -69,6 +69,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache, feature_category: 
   let(:updated_html) { '<p dir="auto"><code>Bar</code></p>' }
 
   let(:cache_version) { Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_SHIFTED }
+  let(:rollout_flag) { :"markdown_cache_stochastic_rollout_#{Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION}" }
 
   def thing_subclass(klass, *extra_attributes)
     Class.new(klass) { attr_accessor(*extra_attributes) }
@@ -92,10 +93,10 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache, feature_category: 
         is_expected.to be_falsy
       end
 
-      it 'returns false when the version is too late' do
+      it 'returns true when the persisted version is ahead of the current one' do
         thing.cached_markdown_version += 1
 
-        is_expected.to be_falsy
+        is_expected.to be_truthy
       end
 
       it 'returns false when the local version was bumped' do
@@ -127,6 +128,68 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache, feature_category: 
       it 'returns default version' do
         thing.cached_markdown_version = nil
         is_expected.to eq(cache_version)
+      end
+
+      context 'when a rollout is in progress and the stochastic rollout flag is disabled' do
+        let(:previous_cache_version) { (Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION - 1) << 16 }
+
+        before do
+          stub_const(
+            'Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_PREVIOUS_SHIFTED',
+            previous_cache_version
+          )
+          stub_feature_flags(rollout_flag => false)
+        end
+
+        it 'returns the previous shifted version' do
+          thing.cached_markdown_version = nil
+          is_expected.to eq(previous_cache_version)
+        end
+      end
+
+      it 'memoises the roll' do
+        # During a rollout the underlying roll is random per call. Memoising it
+        # is not required for correctness, but keeps an instance's staleness checks
+        # consistent within a request so its fields don't read at mixed
+        # versions on one page.
+        expect(Gitlab::MarkdownCache)
+          .to receive(:latest_cached_markdown_version).once.and_return(cache_version)
+
+        expect(thing.latest_cached_markdown_version).to eq(cache_version)
+        expect(thing.latest_cached_markdown_version).to eq(cache_version)
+      end
+    end
+
+    describe '#cached_html_up_to_date? with the previous version' do
+      let(:previous_cache_version) { (Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION - 1) << 16 }
+      let(:thing) { klass.new(title: markdown, title_html: html, cached_markdown_version: previous_cache_version) }
+
+      context 'in steady state (no rollout in progress)' do
+        it 'is stale even when the rollout flag is enabled' do
+          stub_feature_flags(rollout_flag => true)
+
+          expect(thing.cached_html_up_to_date?(:title)).to be(false)
+        end
+      end
+
+      context 'when a rollout is in progress (CACHE_COMMONMARK_VERSION_PREVIOUS_SHIFTED is set)' do
+        before do
+          stub_const(
+            'Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_PREVIOUS_SHIFTED',
+            previous_cache_version
+          )
+          stub_feature_flags(rollout_flag => false)
+        end
+
+        it 'is stale when the rollout flag is enabled' do
+          stub_feature_flags(rollout_flag => true)
+
+          expect(thing.cached_html_up_to_date?(:title)).to be(false)
+        end
+
+        it 'is up-to-date when the rollout flag is disabled' do
+          expect(thing.cached_html_up_to_date?(:title)).to be(true)
+        end
       end
     end
 
@@ -240,17 +303,6 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache, feature_category: 
           is_expected.to have_key(:user)
           expect(context[:user]).to eq(user)
         end
-
-        context 'when the personal_snippet_reference_filters flag is disabled' do
-          before do
-            stub_feature_flags(personal_snippet_reference_filters: false)
-          end
-
-          it 'does not set the user in the context' do
-            is_expected.not_to have_key(:user)
-            expect(context[:user]).to be_nil
-          end
-        end
       end
     end
 
@@ -259,7 +311,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache, feature_category: 
 
       context 'when the markdown cache is outdated' do
         before do
-          thing.cached_markdown_version += 1
+          thing.cached_markdown_version -= 1
         end
 
         it 'calls #refresh_markdown_cache!' do
@@ -271,7 +323,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache, feature_category: 
 
       context 'when the markdown field does not exist' do
         it 'returns nil' do
-          expect(thing.updated_cached_html_for(:something)).to eq(nil)
+          expect(thing.updated_cached_html_for(:something)).to be_nil
         end
       end
 
@@ -305,7 +357,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache, feature_category: 
         it 'returns nil' do
           allow(thing).to receive(:can_cache_field?).with(:description).and_return false
 
-          expect(thing.rendered_field_content(:description)).to eq nil
+          expect(thing.rendered_field_content(:description)).to be_nil
         end
       end
     end
@@ -413,27 +465,27 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache, feature_category: 
     describe '#attribute_invalidated?' do
       let(:thing) { klass.create!(project_id: project.id, namespace_id: project.project_namespace_id, description: markdown, description_html: html, cached_markdown_version: cache_version) }
 
-      it 'returns true when cached_markdown_version is different' do
+      it 'returns false when cached_markdown_version is ahead of the current one' do
         thing.cached_markdown_version += 1
 
-        expect(thing.attribute_invalidated?(:description_html)).to eq(true)
+        expect(thing.attribute_invalidated?(:description_html)).to be(false)
       end
 
       it 'returns true when markdown is changed' do
         thing.description = updated_markdown
 
-        expect(thing.attribute_invalidated?(:description_html)).to eq(true)
+        expect(thing.attribute_invalidated?(:description_html)).to be(true)
       end
 
       it 'returns true when both markdown and HTML are changed' do
         thing.description = updated_markdown
         thing.description_html = updated_html
 
-        expect(thing.attribute_invalidated?(:description_html)).to eq(true)
+        expect(thing.attribute_invalidated?(:description_html)).to be(true)
       end
 
       it 'returns false when there are no changes' do
-        expect(thing.attribute_invalidated?(:description_html)).to eq(false)
+        expect(thing.attribute_invalidated?(:description_html)).to be(false)
       end
 
       it 'returns false if skip_markdown_cache_validation is true' do
@@ -443,7 +495,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache, feature_category: 
 
         thing.skip_markdown_cache_validation = true
 
-        expect(thing.attribute_invalidated?(:description_html)).to eq(false)
+        expect(thing.attribute_invalidated?(:description_html)).to be(false)
       end
     end
 

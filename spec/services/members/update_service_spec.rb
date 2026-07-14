@@ -8,13 +8,16 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
   let_it_be(:current_user, freeze: false) { create(:user) }
   let_it_be(:member_user1, freeze: false) { create(:user) }
   let_it_be(:member_user2, freeze: false) { create(:user) }
-  let_it_be(:member_users, freeze: false) { [member_user1, member_user2] }
-  let_it_be(:permission, freeze: false) { :update }
-  let_it_be(:access_level, freeze: false) { Gitlab::Access::MAINTAINER }
+
+  let(:permission) { :update }
+  let(:access_level) { Gitlab::Access::MAINTAINER }
+  let(:member_users) { [member_user1, member_user2] }
   let(:members) { source.members_and_requesters.where(user_id: member_users).to_a }
   let(:update_service) { described_class.new(current_user, params) }
   let(:params) { { access_level: access_level, source: source } }
   let(:updated_members) { subject[:members] }
+
+  subject { update_service.execute(members, permission: permission) }
 
   before do
     member_users.first.tap do |member_user|
@@ -47,7 +50,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
   end
 
   shared_examples 'returns error status when params are invalid' do
-    let_it_be(:params, freeze: false) { { expires_at: 2.days.ago, source: source } }
+    let(:params) { { expires_at: 2.days.ago, source: source } }
 
     specify do
       expect(subject[:status]).to eq(:error)
@@ -113,20 +116,20 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
       end
 
       context 'with Gitlab::Access::GUEST level as a string' do
-        let_it_be(:params, freeze: false) { { access_level: Gitlab::Access::GUEST.to_s, source: source } }
+        let(:params) { { access_level: Gitlab::Access::GUEST.to_s, source: source } }
 
         it_behaves_like 'schedules to delete confidential todos'
       end
 
       context 'with Gitlab::Access::GUEST level as an integer' do
-        let_it_be(:params, freeze: false) { { access_level: Gitlab::Access::GUEST, source: source } }
+        let(:params) { { access_level: Gitlab::Access::GUEST, source: source } }
 
         it_behaves_like 'schedules to delete confidential todos'
       end
     end
 
     context 'when access_level is invalid' do
-      let_it_be(:params, freeze: false) { { access_level: 'invalid', source: source } }
+      let(:params) { { access_level: 'invalid', source: source } }
 
       it 'raises an error' do
         expect { described_class.new(current_user, params) }
@@ -229,7 +232,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
     end
 
     context 'when project members expiration date is updated with expiry_notified_at' do
-      let_it_be(:params, freeze: false) { { expires_at: 20.days.from_now, source: source } }
+      let(:params) { { expires_at: 20.days.from_now, source: source } }
 
       before do
         group_project.group.add_owner(current_user)
@@ -262,7 +265,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
     end
 
     context 'when group members expiration date is updated' do
-      let_it_be(:params, freeze: false) { { expires_at: 20.days.from_now, source: source } }
+      let(:params) { { expires_at: 20.days.from_now, source: source } }
 
       it 'emails the users that their group membership expiry has changed' do
         expect do
@@ -272,7 +275,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
     end
 
     context 'when group members expiration date is updated with expiry_notified_at' do
-      let_it_be(:params, freeze: false) { { expires_at: 20.days.from_now, source: source } }
+      let(:params) { { expires_at: 20.days.from_now, source: source } }
 
       before do
         members.each do |member|
@@ -289,8 +292,6 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
       end
     end
   end
-
-  subject { update_service.execute(members, permission: permission) }
 
   shared_examples 'a service returning an error' do
     it_behaves_like 'returns error status when params are invalid'

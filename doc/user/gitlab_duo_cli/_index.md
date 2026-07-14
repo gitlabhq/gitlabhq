@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Editor Extensions
+stage: AI Clients
+group: Developer Clients
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Command-line interface tool that brings the GitLab Duo Agent Platform to your terminal.
 title: GitLab Duo CLI (`duo`)
@@ -10,7 +10,6 @@ title: GitLab Duo CLI (`duo`)
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -31,8 +30,18 @@ title: GitLab Duo CLI (`duo`)
 - Environment variable and option to enable user-level Agent Skills [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.83.0) in GitLab Duo CLI 8.83.0 as an [experiment](../../policy/development_stages_support.md#experiment), during the GitLab 19.0 release.
 - Approve tool for session option [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2129) in GitLab 19.0.
   - Introduced in [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.80.0) 8.80.0.
+- `/exit` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.88.0) in GitLab Duo CLI 8.88.0, during the GitLab 19.0 release.
+- `/doctor` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.94.0) in GitLab Duo CLI 8.94.0, during the GitLab 19.0 release.
+- `/skills` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.81.0) in GitLab Duo CLI 8.81.0, during the GitLab 19.0 release.
+- `/mcp` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.95.0) in GitLab Duo CLI 8.95.0, during the GitLab 19.0 release.
+- Settings panel [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.90.0) in GitLab Duo CLI 8.90.0, during the GitLab 19.0 release.
+- `AI_AGENT` environment variable [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.95.0) in GitLab Duo CLI 8.95.0, during the GitLab 19.0 release.
 - Pattern-based tool approval [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21850) in GitLab 19.1.
   - Introduced in [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.101.0) 8.101.0.
+- System notifications [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.105.0) in GitLab Duo CLI 8.105.0, during the GitLab 19.1 release.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/19717) as GitLab Duo CLI 9.0.0 in GitLab 19.2.
+- Pattern-based tool approval [removed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/3699) on July 10, 2026.
+  - Removed in [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.3.0) 9.3.0.
 
 {{< /history >}}
 
@@ -48,6 +57,10 @@ The GitLab Duo CLI can help you:
 - Automate CI/CD configuration, troubleshoot pipeline errors, and optimize pipelines.
 - Perform multi-step development tasks autonomously.
 
+> [!note]
+> The GitLab Duo CLI is now generally available. Update to
+> GitLab Duo CLI 9.0.0 or later for the full generally available experience.
+
 The GitLab Duo CLI offers two modes:
 
 - Interactive mode: Provides a chat experience similar to GitLab Duo Chat in the GitLab UI or in
@@ -59,10 +72,39 @@ the GitLab Duo Agent Platform, including `chat-rules.md`, `AGENTS.md`, and `SKIL
 
 ## Prerequisites
 
-- GitLab 18.11 or later.
-- Meet the [prerequisites for GitLab Duo Agent Platform](../duo_agent_platform/_index.md#prerequisites).
-- [Beta and experimental features](../duo_agent_platform/turn_on_off.md#turn-on-beta-and-experimental-features)
-  turned on.
+- GitLab 19.2 or later.
+- The [prerequisites for GitLab Duo Agent Platform](../duo_agent_platform/_index.md#prerequisites).
+
+> [!note]
+> If you are on GitLab 18.11 to 19.1, you can use the latest version of the GitLab Duo CLI by turning on [beta and experimental features](../duo_agent_platform/turn_on_off.md#turn-on-beta-and-experimental-features).
+
+## Turn GitLab Duo CLI access on or off
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242250) in GitLab 19.2.
+
+{{< /history >}}
+
+By default, GitLab Duo CLI access is turned on.
+
+On GitLab Self-Managed and GitLab Dedicated, you can turn GitLab Duo CLI access on or off for an instance.
+
+Prerequisites:
+
+- You must be an administrator.
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo CLI**, select or clear the **Turn on GitLab Duo CLI access** checkbox.
+1. Select **Save changes**.
 
 ## Set up the GitLab Duo CLI
 
@@ -78,7 +120,7 @@ and functionality.
 
 Prerequisites:
 
-- [GitLab CLI](https://docs.gitlab.com/cli/) 1.87.0 or later.
+- [GitLab CLI](https://docs.gitlab.com/cli/) 1.107.0 or later.
 - GitLab CLI is [authenticated](https://docs.gitlab.com/cli/#authenticate-with-gitlab).
 
 To set up the GitLab Duo CLI for use through the GitLab CLI:
@@ -100,12 +142,6 @@ To use the GitLab Duo CLI as a standalone tool, install it and then authenticate
 
 #### Install
 
-Install the GitLab Duo CLI as a compiled binary.
-
-{{< tabs >}}
-
-{{< tab title="Compiled binary" >}}
-
 To install the GitLab Duo CLI as a compiled binary, download and run the install script.
 
 On macOS and Linux:
@@ -119,31 +155,6 @@ On Windows:
 ```shell
 irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.ps1" | iex
 ```
-
-{{< /tab >}}
-
-{{< tab title="npm package (deprecated)" >}}
-
-> [!warning]
-> The GitLab Duo CLI npm package was [deprecated](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2399) in GitLab 19.1.
-> Install using the GitLab CLI (`glab`) or the compiled binary instead.
-
-Prerequisites:
-
-- Node.js 22 or later.
-- For GitLab Self-Managed with a self-signed certificate, either:
-  - Node.js LTS 22.20.0 or later
-  - Node.js 23.8.0 or later
-
-To install the GitLab Duo CLI as an npm package, run:
-
-```shell
-npm install --global @gitlab/duo-cli
-```
-
-{{< /tab >}}
-
-{{< /tabs >}}
 
 #### Authenticate
 
@@ -270,14 +281,52 @@ actions. Enter a slash command at the prompt and press <kbd>Enter</kbd>.
 
 The following slash commands are available:
 
-| Command      | Description                                         |
-|--------------|-----------------------------------------------------|
-| `/copy`      | Copy the last GitLab Duo response to the clipboard. |
-| `/feedback`  | Submit a bug report or feature request.             |
-| `/help`      | Display a list of available slash commands.         |
-| `/model`     | Switch the AI model for the current session.        |
-| `/new`       | Start a new chat session.                           |
-| `/sessions`  | Browse, search, and switch sessions.                |
+| Command     | Description                                          |
+|-------------|------------------------------------------------------|
+| `/copy`     | Copy the last GitLab Duo response to the clipboard.  |
+| `/doctor`   | Show diagnostics for the GitLab Duo CLI environment. |
+| `/exit`     | Exit the GitLab Duo CLI.                             |
+| `/feedback` | Submit a bug report or feature request.              |
+| `/help`     | Display a list of available slash commands.          |
+| `/mcp`      | View configured MCP servers and their status.        |
+| `/model`    | Switch the AI model for the current session.         |
+| `/new`      | Start a new chat session.                            |
+| `/sessions` | Browse, search, and switch sessions.                 |
+| `/settings` | Open the settings panel.                             |
+| `/skills`   | List available Agent Skills in the current project.  |
+
+You can also create your own slash commands.
+For more information, see [custom slash commands](#custom-slash-commands).
+
+#### Settings
+
+To change a setting:
+
+1. In interactive mode, type `/settings` and press <kbd>Enter</kbd>.
+1. Use the arrow keys to navigate the list of settings.
+1. To change the selected setting, press <kbd>Enter</kbd> or <kbd>Space</kbd>.
+1. To close the panel, press <kbd>Escape</kbd>.
+
+Changes persist across sessions.
+
+The following settings are available:
+
+| Setting                  | Description                                                                                       |
+|--------------------------|---------------------------------------------------------------------------------------------------|
+| **Telemetry**            | Send anonymous usage data to improve GitLab Duo.                                                  |
+| **Enable global skills** | (Experimental) Discover [user-level Agent Skills](../duo_agent_platform/customize/agent_skills.md#create-user-level-skills) from `~/.agents/skills/` and `~/.gitlab/duo/skills/`. A restart is required for changes to take effect. |
+| **Notifications**        | Control [system notifications](#system-notifications) (`auto` or `disabled`).                     |
+
+#### System notifications
+
+The GitLab Duo CLI can send a system notification when a session needs your attention
+(for example, when it finishes a task or requires a tool approval) while the terminal window
+is not focused.
+
+Notifications are controlled by the **Notifications** setting in the [settings panel](#settings):
+
+- `auto` (default): Send a system notification when the terminal is unfocused.
+- `disabled`: Never send system notifications.
 
 #### Tool approvals
 
@@ -289,12 +338,10 @@ Your options are:
 - **Approve**: GitLab Duo can use the tool once.
 - **Approve for session**: GitLab Duo can use the tool with these arguments for the remainder of the
   session. Different arguments require additional approval.
-- **Approve all uses of this tool for session** (pattern or wildcard approval): GitLab Duo can use
-  this tool for the remainder of the session whenever the arguments match the approved pattern.
 - **Deny**: GitLab Duo cannot use the tool.
 
 > [!note]
-> To use the **Approve for session** and **Approve all uses of this tool for session** options,
+> To use the **Approve for session** option,
 > your administrator must turn it on for your group or instance.
 > For more information, see [tool approvals](../gitlab_duo_chat/agentic_chat.md#tool-approvals).
 
@@ -460,68 +507,38 @@ as the GitLab IDE extensions. For instructions, see [configure MCP servers](../g
 
 ## Hooks
 
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2209) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab Duo CLI 8.95.0, during the GitLab 19.1 release.
 
 {{< /history >}}
 
-Hooks let you run custom commands at specific points in the GitLab Duo CLI lifecycle.
+Use hooks to run custom commands at specific points in the GitLab Duo CLI lifecycle.
+
 For example, you can inject additional context into every new chat session by running
 a script that gathers information about your environment.
 
-The CLI supports `SessionStart`, which runs when a new
-session starts or an existing session resumes.
+The GitLab Duo CLI supports hooks at two levels:
 
-### Configure hooks
+- User-level (global): Apply to all of your projects.
+- Project-level: Apply only to a specific project. Project-level hooks are disabled by default to
+  prevent running arbitrary code from checked-out repositories.
 
-Define hooks in a `hooks.json` file. The GitLab Duo CLI loads hooks from two locations:
+When both user-level and project-level `hooks.json` files exist, the CLI merges the hooks and runs
+the user-level ones first.
 
-| Location | Path | Loaded by default |
-|----------|------|-------------------|
-| User-level (global) | `~/.gitlab/duo/hooks.json` | Yes |
-| Project-level | `<project>/.gitlab/duo/hooks.json` | No |
+> [!note]
+> For security reasons, sensitive environment variables (`GITLAB_TOKEN`, `GITLAB_OAUTH_TOKEN`, `CI_JOB_TOKEN`) are excluded from hook processes.
 
-Project-level hooks are disabled by default to prevent running arbitrary code from
-checked-out repositories. To enable them, use the `--enable-project-hooks` option
-or set `GITLAB_ENABLE_PROJECT_HOOKS=true`.
+### Hook execution
 
-When both user-level and project-level files exist, the CLI merges the hooks and runs the user-level (global) hooks first.
-
-### Hook configuration format
-
-A `hooks.json` file contains matcher groups for each event. Each matcher group
-has an optional regex `matcher` and an array of command hooks:
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "startup",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cat ~/.my-coding-preferences.md",
-            "timeout": 10
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-| Field | Description |
-|-------|-------------|
-| `matcher` | Optional. Regex tested against the event source (`startup` or `resume` for `SessionStart`). Omit to match all. |
-| `hooks[].type` | Must be `"command"`. |
-| `hooks[].command` | A shell command to execute. |
-| `hooks[].timeout` | Optional. Timeout in seconds. Default: 30. |
-
-### How `SessionStart` hooks work
-
-When a `SessionStart` hook runs, the GitLab Duo CLI:
+When a hook runs, the GitLab Duo CLI:
 
 1. Sends a JSON object to the command's standard input with session metadata:
 
@@ -553,13 +570,158 @@ The hook can return plain text on standard output, or a JSON object:
 If the hook exits with a non-zero status or times out, it is logged as a warning
 but does not block the session from starting.
 
-### Security considerations
+### Create hooks
 
-Sensitive environment variables (`GITLAB_TOKEN`, `GITLAB_OAUTH_TOKEN`, `CI_JOB_TOKEN`)
-are excluded from hook processes. Project-level hooks require explicit opt-in because
-they may contain untrusted code from a cloned repository.
+The GitLab Duo CLI supports the `SessionStart` event, which runs when a new session starts or an existing
+session resumes.
 
-## Options
+To create a hook:
+
+1. Create a `hooks.json` file:
+   - For a user-level hook:
+     - On Linux or macOS, create the file at `~/.gitlab/duo/hooks.json`.
+     - On Windows, create the file at `%APPDATA%\GitLab\duo\hooks.json`.
+   - For a project-level hook, create the file in the root of your project: `<project>/.gitlab/duo/hooks.json`.
+1. Define your hooks in the file.
+   - Create a matcher group for each `SessionStart` event source that should trigger the hook (`startup`
+     or `resume`).
+   - Each matcher group has an optional regex `matcher` value and an array of command hooks:
+
+     | Field | Description |
+     |-------|-------------|
+     | `matcher` | Optional. Regex tested against the event source (`startup` or `resume` for `SessionStart`). Omit to match all. |
+     | `hooks[].type` | Must be `"command"`. |
+     | `hooks[].command` | A shell command to execute. |
+     | `hooks[].timeout` | Optional. Timeout in seconds. Default: 30. |
+
+   - For example:
+
+     ```json
+     {
+       "hooks": {
+         "SessionStart": [
+           {
+             "matcher": "startup",
+             "hooks": [
+               {
+                 "type": "command",
+                 "command": "cat ~/.my-coding-preferences.md",
+                 "timeout": 10
+               }
+             ]
+          }
+         ]
+       }
+     }
+     ```
+
+1. If you have project-level hooks, enable them when you start the GitLab Duo CLI:
+
+   {{< tabs >}}
+
+   {{< tab title="glab" >}}
+
+   ```shell
+   glab duo cli --enable-project-hooks
+   ```
+
+   {{< /tab >}}
+
+   {{< tab title="duo" >}}
+
+   ```shell
+   duo --enable-project-hooks
+   ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
+
+   Alternatively, set the environment variable:
+
+   ```shell
+   export GITLAB_ENABLE_PROJECT_HOOKS=true
+   ```
+
+## Custom slash commands
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/3617) in GitLab Duo CLI 9.2.0, during the GitLab 19.2 release.
+
+{{< /history >}}
+
+Create custom slash commands for prompts you use frequently.
+
+The GitLab Duo CLI supports custom slash commands at two levels:
+
+- User-level: Apply to all of your projects.
+- Project-level: Apply only to a specific project.
+
+If a user-level command and a project-level command share the same name, the project-level command
+takes precedence. Custom slash commands cannot override built-in slash commands or
+[Agent Skills slash commands](../duo_agent_platform/customize/agent_skills.md#expose-skills-as-slash-commands).
+
+### Create a custom slash command
+
+To create a custom slash command, you create a Markdown file.
+
+The filename is the command name, and the file content is the prompt.
+
+For example, a file named `daily.md` creates the `/daily` command:
+
+1. Create a `commands` directory:
+   - For a project-level command, create the directory in the root of your project:
+     `<project>/.agents/commands/`.
+   - For a user-level command, use one of the following locations:
+     - To keep your commands with your other GitLab Duo customization files:
+       - On Linux or macOS, create the directory at `~/.gitlab/duo/commands/`.
+       - On Windows, create the directory at `%APPDATA%\GitLab\duo\commands\`.
+       - If you have set `GLAB_CONFIG_DIR` or `XDG_CONFIG_HOME`, use `$GLAB_CONFIG_DIR/commands/`
+         or `$XDG_CONFIG_HOME/gitlab/duo/commands/`. If both are set, `GLAB_CONFIG_DIR` takes
+         priority.
+     - To share commands with other AI tools:
+       - On Linux or macOS, create the directory at `~/.agents/commands/`.
+       - On Windows, create the directory at `%USERPROFILE%\.agents\commands\`.
+1. In the directory, create a Markdown file.
+   Use the command name as the filename.
+   Command names must start with a letter or number, and can contain only letters, numbers,
+   hyphens, and underscores.
+1. Add the prompt to the file.
+1. Optional. Add a `description` field in YAML front matter at the top of the file.
+   The description appears next to the command in the slash command menu.
+
+   For example, a `/daily` command defined in `daily.md`:
+
+   ```markdown
+   ---
+   description: Prepare a daily report
+   ---
+
+   Use `glab todo list` to fetch my open TODO items. Give me a concise morning report ranked by priority.
+   ```
+
+1. Restart the GitLab Duo CLI. The CLI discovers custom slash commands when it starts.
+
+### Use a custom slash command
+
+In interactive mode, enter the slash command at the prompt and press <kbd>Enter</kbd>.
+The GitLab Duo CLI sends the file content as the prompt.
+
+Any text you enter after the command name is added to the end of the prompt.
+
+Use this to customize what the custom slash command does.
+
+For example, `/daily prioritize my milestone deliverables`.
+
+## Reference
+
+Use these options, commands, and environment variables when you start or run the GitLab Duo CLI.
+
+For more details and the most up-to-date list, see the
+[GitLab Duo CLI reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/cli-reference.md).
+
+### Options
 
 The GitLab Duo CLI supports these options:
 
@@ -569,7 +731,7 @@ The GitLab Duo CLI supports these options:
 - `--log-level <level>`: Set the logging level (`debug`, `info`, `warn`, `error`).
 - `-v`, `--version`: Display version information.
 - `--enable-global-skills`: (Experimental) Enable [user-level Agent Skills](../duo_agent_platform/customize/agent_skills.md#create-user-level-skills).
-- `--enable-project-hooks`: (Experimental) Enable loading project-level [hooks](#hooks) (`.gitlab/duo/hooks.json`).
+- `--enable-project-hooks`: (Experimental) Enable loading project-level [hooks](#hooks).
 - `--model <model>`: Select the AI model to use for the session.
 
 Additional options for headless mode:
@@ -579,7 +741,7 @@ Additional options for headless mode:
 - `--gitlab-auth-token <token>`: Authentication token for a GitLab instance.
 - `--gitlab-base-url <url>`: Base URL of a GitLab instance (default: `https://gitlab.com`).
 
-## Commands
+### Commands
 
 The following commands are available for each setup:
 
@@ -614,7 +776,7 @@ The following commands are available for each setup:
 
 {{< /tabs >}}
 
-## Environment variables
+### Environment variables
 
 You can configure the GitLab Duo CLI using environment variables:
 
@@ -626,6 +788,10 @@ You can configure the GitLab Duo CLI using environment variables:
 - `GITLAB_ENABLE_PROJECT_HOOKS`: (Experimental) Enable loading project-level [hooks](#hooks).
 - `GITLAB_OAUTH_TOKEN` or `GITLAB_TOKEN`: Authentication token.
 - `LOG_LEVEL`: Logging level.
+
+When the GitLab Duo CLI runs a command on your behalf, it sets the `AI_AGENT` environment variable
+in that process. Scripts and tools can read `AI_AGENT` to detect that they are running in an
+AI-driven execution.
 
 ## Proxy and custom certificate configuration
 
@@ -724,6 +890,7 @@ For information on contributing to the GitLab Duo CLI, see the
 ## Related topics
 
 - [Security considerations for editor extensions](../../editor_extensions/security_considerations.md)
+- [GitLab Duo CLI reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/cli-reference.md)
 - [GitLab CLI](https://docs.gitlab.com/cli/)
 - [Customize GitLab Duo Agent Platform](../duo_agent_platform/customize/_index.md)
 - [GitLab Duo Agent Platform sessions](../duo_agent_platform/sessions/_index.md)

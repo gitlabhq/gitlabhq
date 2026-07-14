@@ -7,15 +7,10 @@ module Types
 
       possible_types Types::IssueType, Types::WorkItemType, Types::MergeRequestType, Types::Wikis::WikiPageType
 
-      def self.resolve_type(object, context)
+      def self.resolve_type(object, _context)
         case object
         when ::WorkItem
-          # Return WorkItemType when feature flag is enabled, otherwise IssueType for backward compatibility
-          if ::Feature.enabled?(:work_items_autocomplete, context[:current_user])
-            Types::WorkItemType
-          else
-            Types::IssueType
-          end
+          Types::WorkItemType
         when ::Issue
           Types::IssueType
         when ::MergeRequest

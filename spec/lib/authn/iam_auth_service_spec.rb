@@ -22,7 +22,15 @@ RSpec.describe Authn::IamAuthService, feature_category: :system_access do
         })
       end
 
-      it 'returns host:port address' do
+      it 'returns tls:// address in non-development environment' do
+        allow(Rails.env).to receive(:development?).and_return(false)
+
+        expect(grpc_address).to eq('tls://iam.example.com:5444')
+      end
+
+      it 'returns plain address in development environment' do
+        allow(Rails.env).to receive(:development?).and_return(true)
+
         expect(grpc_address).to eq('iam.example.com:5444')
       end
     end

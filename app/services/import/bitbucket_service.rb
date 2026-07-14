@@ -14,19 +14,21 @@ module Import
       @params = params
     end
 
-    # rubocop:disable Style/IfUnlessModifier -- line becomes too long
     def execute
       unless authorized?
-        return log_and_return_error("You don't have permissions to import this project", :unauthorized)
+        return log_and_return_error("You don't have permissions to import this project",
+          _("You don't have permissions to import this project"), :unauthorized)
       end
 
       unless bitbucket_user.present?
-        return log_and_return_error('Unable to authorize with Bitbucket. Check your credentials', :unauthorized)
+        return log_and_return_error('Unable to authorize with Bitbucket. Check your credentials',
+          _('Unable to authorize with Bitbucket. Check your credentials'), :unauthorized)
       end
 
       if bitbucket_repo.error
         return log_and_return_error(
           Kernel.format("Project %{repo_path} could not be found", repo_path: normalized_repo_path),
+          format(_("Project %{repo_path} could not be found"), repo_path: normalized_repo_path),
           :unprocessable_entity
         )
       end
@@ -36,6 +38,7 @@ module Import
       unless project
         return log_and_return_error(
           Kernel.format("Project %{repo_path} could not be found or is invalid", repo_path: normalized_repo_path),
+          format(_("Project %{repo_path} could not be found or is invalid"), repo_path: normalized_repo_path),
           :unprocessable_entity
         )
       end
@@ -47,23 +50,29 @@ module Import
       elsif project.errors[:import_source_disabled].present?
         error(project.errors[:import_source_disabled], :forbidden)
       else
-        log_and_return_error(project_save_error(project), :unprocessable_entity)
+        save_error = project_save_error(project)
+        log_and_return_error(save_error, save_error, :unprocessable_entity)
       end
     rescue StandardError => e
-      log_and_return_error("Import failed due to an error: #{e}", :bad_request)
+      log_and_return_error("Import failed due to an error: #{e}", _("Import failed due to an error"), :bad_request)
     end
-    # rubocop:enable Style/IfUnlessModifier
 
     private
 
     def client
-      @client ||= Bitbucket::Client.new(credentials)
+      @client ||= Bitbucket::Client.new(credentials.merge(client_options), http_client: Import::Clients::HTTP)
     end
 
     def credentials
       {
         email: params[:bitbucket_email],
         api_token: params[:bitbucket_api_token]
+      }
+    end
+
+    def client_options
+      {
+        logger: ::Import::Framework::Logger
       }
     end
 
@@ -97,9 +106,9 @@ module Import
       @target_namespace ||= find_or_create_namespace(params[:target_namespace], current_user.namespace_path)
     end
 
-    def log_and_return_error(message, error_type)
+    def log_and_return_error(message, translated_message, error_type)
       log_error(message)
-      error(_(message), error_type)
+      error(translated_message, error_type)
     end
 
     def log_error(message)

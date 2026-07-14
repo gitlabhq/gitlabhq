@@ -14,6 +14,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['input'],
   computed: {
     paginationProps() {
       return { ...this.pageInfo, ...this.$attrs };

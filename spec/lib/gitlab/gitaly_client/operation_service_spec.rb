@@ -38,7 +38,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         .to receive(:user_create_branch).with(request, hash_including({
           metadata: hash_not_including("gitaly-client-context-bin")
         }))
-        .and_return(response)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       expect(subject.name).to eq(branch_name)
       expect(subject.dereferenced_target).to eq(commit)
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
               "gitaly-client-context-bin" => '{"skip-ci":true}'
             })
           }))
-          .and_return(response)
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
         expect(subject.name).to eq(branch_name)
       end
@@ -161,7 +161,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     it 'sends a user_update_branch message' do
       expect_any_instance_of(Gitaly::OperationService::Stub)
         .to receive(:user_update_branch).with(request, kind_of(Hash))
-        .and_return(response)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       subject
     end
@@ -174,7 +174,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       it "throws a PreReceive exception" do
         expect_any_instance_of(Gitaly::OperationService::Stub)
           .to receive(:user_update_branch).with(request, kind_of(Hash))
-          .and_return(response)
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
         expect { subject }.to raise_error(
           Gitlab::Git::PreReceiveError, "something failed")
@@ -210,7 +210,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
           expect(request.expected_old_oid).to eq("")
           expect(request.timestamp.nanos).to eq(0)
           expect(request.sign).to be false
-        end.and_return(response)
+        end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
         client.user_merge_to_ref(user, **payload)
       end
@@ -237,7 +237,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     it 'sends a user_delete_branch message' do
       expect_any_instance_of(Gitaly::OperationService::Stub)
         .to receive(:user_delete_branch).with(request, kind_of(Hash))
-        .and_return(response)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       subject
     end
@@ -248,7 +248,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       it 'sends a user_delete_branch message without target_sha' do
         expect_any_instance_of(Gitaly::OperationService::Stub)
           .to receive(:user_delete_branch).with(request, kind_of(Hash))
-          .and_return(response)
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
         subject
       end
@@ -552,7 +552,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       before do
         expect_any_instance_of(Gitaly::OperationService::Stub)
           .to receive(:user_ff_branch).with(request, kind_of(Hash))
-          .and_return(response)
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
       end
 
       it 'sends a user_ff_branch message and returns a BranchUpdate object' do
@@ -754,7 +754,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     it 'sends a user_cherry_pick message and returns a BranchUpdate' do
       expect_any_instance_of(Gitaly::OperationService::Stub)
         .to receive(:user_cherry_pick).with(request, kind_of(Hash))
-                                      .and_return(response)
+                                      .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
       expect(subject.newrev).to be_present
@@ -884,7 +884,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     it 'sends a user_revert message and returns a BranchUpdate' do
       expect_any_instance_of(Gitaly::OperationService::Stub)
         .to receive(:user_revert).with(request, kind_of(Hash))
-                                 .and_return(response)
+                                 .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
       expect(subject.newrev).to be_present
@@ -898,7 +898,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       before do
         expect_any_instance_of(Gitaly::OperationService::Stub)
           .to receive(:user_revert).with(kind_of(Gitaly::UserRevertRequest), kind_of(Hash))
-                                   .and_return(response)
+                                   .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
       end
 
       it_behaves_like 'cherry pick and revert errors'
@@ -1008,7 +1008,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       it 'sends a user_revert message with expected_old_oid and returns a BranchUpdate' do
         expect_any_instance_of(Gitaly::OperationService::Stub)
           .to receive(:user_revert).with(request_with_expected_old_oid, kind_of(Hash))
-                                   .and_return(response)
+                                   .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
         expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
         expect(subject.newrev).to be_present
@@ -1170,7 +1170,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
           )
           expect(request.expected_old_oid).to eq("")
           expect(request.timestamp.nanos).to eq(0)
-        end.and_return(response)
+        end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
         client.user_rebase_to_ref(user, **payload)
       end
@@ -1209,7 +1209,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     it 'sends a user_squash message and returns the squash sha' do
       expect_any_instance_of(Gitaly::OperationService::Stub)
         .to receive(:user_squash).with(request, kind_of(Hash))
-        .and_return(response)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       expect(subject).to eq(squash_sha)
     end
@@ -1309,7 +1309,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       it 'sends a user_update_submodule message and returns a BranchUpdate' do
         expect_any_instance_of(Gitaly::OperationService::Stub)
           .to receive(:user_update_submodule).with(request, kind_of(Hash))
-                                             .and_return(response)
+                                             .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
         expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
         expect(subject.newrev).to eq('new-commit-id')
@@ -1322,7 +1322,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       before do
         expect_any_instance_of(Gitaly::OperationService::Stub)
           .to receive(:user_update_submodule).with(request, kind_of(Hash))
-                                             .and_return(response)
+                                             .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
       end
 
       context 'when pre_receive_error is present' do
@@ -1500,7 +1500,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
           expect(header.start_sha).to eq(start_sha)
           expect(header.sign).to eq(sign)
           expect(header.expected_old_oid).to eq(target_sha)
-        end.and_return(Gitaly::UserCommitFilesResponse.new)
+        end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: Gitaly::UserCommitFilesResponse.new, trailing_metadata: {}))
 
         subject
       end
@@ -1510,7 +1510,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       before do
         expect_any_instance_of(Gitaly::OperationService::Stub)
           .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
-          .and_return(response)
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
       end
 
       context 'when a pre_receive_error is present' do

@@ -1,0 +1,25 @@
+# @feature_category: mcp_server
+query mcpSearchLabels($fullPath: ID!, $search: String, $isProject: Boolean = false) {
+  group(fullPath: $fullPath) @skip(if: $isProject) {
+    id
+    labels(searchTerm: $search, includeAncestorGroups: true, includeDescendantGroups: true) {
+      nodes {
+        ... on Label {
+          id
+          title
+        }
+      }
+    }
+  }
+  project(fullPath: $fullPath) @include(if: $isProject) {
+    id
+    labels(searchTerm: $search, includeAncestorGroups: true) {
+      nodes {
+        ... on Label {
+          id
+          title
+        }
+      }
+    }
+  }
+}

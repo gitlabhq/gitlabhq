@@ -10,7 +10,6 @@ RSpec.describe 'User reverts a commit', :js, feature_category: :source_code_mana
   let!(:project) { create_default(:project, :repository, namespace: user.namespace) }
 
   before do
-    stub_feature_flags(rapid_diffs_on_commit_show: false)
     sign_in(user)
   end
 
@@ -19,7 +18,7 @@ RSpec.describe 'User reverts a commit', :js, feature_category: :source_code_mana
       sha = '7d3b0f7cff5f37573aea97cebfd5692ea1689924'
       create(:ci_empty_pipeline, sha: sha)
       visit project_commit_path(project, project.commit(sha).id)
-      click_link 'Pipelines'
+      within('.commit-ci-menu') { click_link 'Pipelines' }
 
       open_modal
 

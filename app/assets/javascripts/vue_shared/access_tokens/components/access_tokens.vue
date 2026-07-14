@@ -14,6 +14,7 @@ import AccessTokenStatistics from './access_token_statistics.vue';
 import UserAvatar from './user_avatar.vue';
 
 export default {
+  name: 'AccessTokens',
   components: {
     GlButton,
     GlFilteredSearch,

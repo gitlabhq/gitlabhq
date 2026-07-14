@@ -3,6 +3,7 @@ package objectstore
 import (
 	"context"
 	"io"
+	"log/slog"
 	"path"
 	"time"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
-	"gitlab.com/gitlab-org/labkit/log"
+	"gitlab.com/gitlab-org/labkit/v2/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 )
@@ -76,7 +77,7 @@ func setS3EncryptionOptions(input *s3.PutObjectInput, s3Config config.S3Config) 
 func (s *S3v2Object) Upload(ctx context.Context, r io.Reader) error {
 	client, err := setupS3Client(s.credentials, s.config)
 	if err != nil {
-		log.WithError(err).Error("error setting up S3 client in upload")
+		slog.Error("error setting up S3 client in upload", log.Error(err))
 		return err
 	}
 
@@ -94,7 +95,7 @@ func (s *S3v2Object) Upload(ctx context.Context, r io.Reader) error {
 
 	_, err = uploader.Upload(ctx, input)
 	if err != nil {
-		log.WithError(err).Error("error uploading S3 session")
+		slog.Error("error uploading S3 session", log.Error(err))
 		return err
 	}
 
@@ -106,6 +107,11 @@ func (s *S3v2Object) Upload(ctx context.Context, r io.Reader) error {
 // ETag returns the ETag of the S3 object.
 func (s *S3v2Object) ETag() string {
 	return ""
+}
+
+// Strategy returns the name identifying the upload backend, used for logging.
+func (s *S3v2Object) Strategy() string {
+	return "s3v2"
 }
 
 // Abort aborts the multipart upload by deleting the object.
@@ -121,7 +127,7 @@ func (s *S3v2Object) Delete() {
 
 	client, err := setupS3Client(s.credentials, s.config)
 	if err != nil {
-		log.WithError(err).Error("error setting up S3 client in delete")
+		slog.Error("error setting up S3 client in delete", log.Error(err))
 		return
 	}
 
@@ -137,7 +143,7 @@ func (s *S3v2Object) Delete() {
 
 	_, err = client.DeleteObject(deleteCtx, input)
 	if err != nil {
-		log.WithError(err).Error("error deleting S3 object", err)
+		slog.Error("error deleting S3 object", log.Error(err))
 	}
 }
 

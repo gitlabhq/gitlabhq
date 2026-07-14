@@ -54,6 +54,7 @@ export default {
       required: false,
     },
   },
+  emits: ['create-clicked', 'select-environment'],
   data() {
     return {
       environmentSearch: this.value,

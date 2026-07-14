@@ -39,7 +39,8 @@ RSpec.describe Gitlab::GitalyClient::ConflictsService do
     shared_examples_for 'listing conflicts' do
       it 'sends an RPC request' do
         expect_any_instance_of(Gitaly::ConflictsService::Stub).to receive(:list_conflict_files)
-          .with(request, kind_of(Hash)).and_return([].to_enum)
+          .with(request, kind_of(Hash))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [].to_enum, trailing_metadata: {}))
 
         client.list_conflict_files(allow_tree_conflicts: allow_tree_conflicts)
       end
@@ -73,7 +74,9 @@ RSpec.describe Gitlab::GitalyClient::ConflictsService do
 
     it 'sends an RPC request' do
       expect_any_instance_of(Gitaly::ConflictsService::Stub).to receive(:resolve_conflicts)
-        .with(kind_of(Enumerator), kind_of(Hash)).and_return(double(resolution_error: ""))
+        .with(kind_of(Enumerator), kind_of(Hash))
+        .and_return(instance_double(GRPC::ActiveCall::Operation,
+          execute: double(resolution_error: ""), trailing_metadata: {}))
 
       subject
     end
@@ -99,7 +102,9 @@ RSpec.describe Gitlab::GitalyClient::ConflictsService do
 
     it 'raises a relevant exception if resolution_error is present' do
       expect_any_instance_of(Gitaly::ConflictsService::Stub).to receive(:resolve_conflicts)
-        .with(kind_of(Enumerator), kind_of(Hash)).and_return(double(resolution_error: "something happened"))
+        .with(kind_of(Enumerator), kind_of(Hash))
+        .and_return(instance_double(GRPC::ActiveCall::Operation,
+          execute: double(resolution_error: "something happened"), trailing_metadata: {}))
 
       expect { subject }.to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
     end

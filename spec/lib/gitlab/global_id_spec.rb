@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GlobalId do
+RSpec.describe Gitlab::GlobalId, feature_category: :api do
   describe '.build' do
     let_it_be(:object) { create(:issue) }
 

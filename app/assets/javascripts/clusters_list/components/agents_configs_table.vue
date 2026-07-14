@@ -36,6 +36,7 @@ export default {
       type: Number,
     },
   },
+  emits: ['register-agent'],
   data() {
     return {
       currentPage: 1,

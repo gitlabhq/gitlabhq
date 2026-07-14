@@ -8,6 +8,7 @@ query requestingReview(
   $reviewerWildcardId: ReviewerWildcardId
   $mergedAfter: Time
   $not: MergeRequestsResolverNegatedParams
+  $updatedAt: Boolean = false
   $ignoredReviewerUsername: String
   $perPage: Int!
   $afterCursor: String

@@ -55,6 +55,7 @@ module ApplicationSettingImplementation
         ci_job_live_trace_enabled: false,
         ci_max_total_yaml_size_bytes: 314572800, # max_yaml_size_bytes * ci_max_includes = 2.megabyte * 150
         ci_delete_pipelines_in_seconds_limit_human_readable: '1 year',
+        ci_partitions_in_seconds_limit_human_readable: '1 month',
         commit_email_hostname: default_commit_email_hostname,
         container_expiration_policies_enable_historic_entries: false,
         container_registry_features: [],
@@ -142,6 +143,8 @@ module ApplicationSettingImplementation
         mailgun_signing_key: nil,
         mailgun_events_enabled: false,
         math_rendering_limits_enabled: true,
+        require_sha_for_merge: false,
+        lock_require_sha_for_merge: false,
         max_artifacts_content_include_size: 5.megabytes,
         max_artifacts_size: Settings.artifacts['max_size'],
         max_attachment_size: Settings.gitlab['max_attachment_size'],
@@ -360,6 +363,7 @@ module ApplicationSettingImplementation
         pages_unique_domain_default_enabled: true,
         scan_execution_policies_action_limit: 0,
         scan_execution_policies_schedule_limit: 0,
+        policy_store_experiment_enabled: false,
         seat_control: 0,
         show_migrate_from_jenkins_banner: true,
         top_level_group_creation_enabled: true,
@@ -379,8 +383,11 @@ module ApplicationSettingImplementation
         duo_external_agents_enabled: true,
         lock_duo_external_agents_enabled: false,
         pipeline_limit_per_user: 0,
+        ci_lint_limit_per_user: 0,
         background_operations_max_jobs: 10,
-        oauth_access_token_expires_in: ApplicationSetting::DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN
+        oauth_access_token_expires_in: ApplicationSetting::DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN,
+        logging_field_schema_version: 0,
+        logging_field_dual_emit_target: nil
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

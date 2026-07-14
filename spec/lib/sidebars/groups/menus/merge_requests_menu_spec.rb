@@ -37,7 +37,9 @@ RSpec.describe Sidebars::Groups::Menus::MergeRequestsMenu, feature_category: :na
         pill_count: menu.pill_count,
         pill_count_field: menu.pill_count_field,
         has_pill: menu.has_pill?,
-        super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::CodeMenu
+        super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::CodeMenu,
+        description: 'Collaborate on code changes with built-in review tools',
+        library_icon: 'merge-request'
       }
     end
   end

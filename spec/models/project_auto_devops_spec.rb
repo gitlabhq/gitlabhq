@@ -85,32 +85,32 @@ RSpec.describe ProjectAutoDevops, feature_category: :auto_devops do
     end
 
     context 'when the project is public' do
-      let(:project) { create(:project, :repository, :public) }
+      let_it_be(:project) { create(:project, :public) }
 
       include_examples 'does not create a gitlab deploy token'
     end
 
     context 'when the project is internal' do
-      let(:project) { create(:project, :repository, :internal) }
+      let_it_be(:project) { create(:project, :internal) }
 
       include_examples 'creates a gitlab deploy token'
     end
 
     context 'when the project is private' do
-      let(:project) { create(:project, :repository, :private) }
+      let_it_be(:project) { create(:project, :private) }
 
       include_examples 'creates a gitlab deploy token'
     end
 
     context 'when autodevops is enabled at project level' do
-      let(:project) { create(:project, :repository, :internal) }
+      let_it_be(:project) { create(:project, :internal) }
       let(:auto_devops) { build(:project_auto_devops, project: project) }
 
       include_examples 'creates a gitlab deploy token'
     end
 
     context 'when autodevops is enabled at instance level' do
-      let(:project) { create(:project, :repository, :internal) }
+      let_it_be(:project) { create(:project, :internal) }
       let(:auto_devops) { build(:project_auto_devops, enabled: nil, project: project) }
 
       before do
@@ -121,14 +121,14 @@ RSpec.describe ProjectAutoDevops, feature_category: :auto_devops do
     end
 
     context 'when autodevops is disabled' do
-      let(:project) { create(:project, :repository, :internal) }
+      let_it_be(:project) { create(:project, :internal) }
       let(:auto_devops) { build(:project_auto_devops, :disabled, project: project) }
 
       include_examples 'does not create a gitlab deploy token'
     end
 
     context 'when the project already has an active gitlab-deploy-token' do
-      let(:project) { create(:project, :repository, :internal) }
+      let_it_be(:project) { create(:project, :internal) }
       let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, projects: [project]) }
       let(:auto_devops) { build(:project_auto_devops, project: project) }
 
@@ -136,7 +136,7 @@ RSpec.describe ProjectAutoDevops, feature_category: :auto_devops do
     end
 
     context 'when the project already has a revoked gitlab-deploy-token' do
-      let(:project) { create(:project, :repository, :internal) }
+      let_it_be(:project) { create(:project, :internal) }
       let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :expired, projects: [project]) }
       let(:auto_devops) { build(:project_auto_devops, project: project) }
 

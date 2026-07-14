@@ -351,7 +351,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         it "sets `hasInstallScript` attribute to `true` for package's metadata" do
           execute_service
 
-          expect(package.npm_metadatum.package_json['hasInstallScript']).to eq(true)
+          expect(package.npm_metadatum.package_json['hasInstallScript']).to be(true)
         end
       end
     end

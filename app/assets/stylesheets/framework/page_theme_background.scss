@@ -1,0 +1,52 @@
+.page-theme-background {
+  // Light mode
+  &:not(.gl-dark) {
+    // default color to mute the gradient
+    --_shade-1: hsla(from var(--super-sidebar-theme-color) h 25 93 / 95%);
+    // alternative color
+    --_shade-2: hsl(from var(--super-sidebar-theme-color) calc(h + 10) calc(s + 20) l);
+    // original color
+    --_shade-3: hsl(from var(--super-sidebar-theme-color) h calc(s + 10) l);
+    // bottom color
+    --_shade-4: hsla(from var(--super-sidebar-theme-color) calc(h + 20) calc(s + 20) l / 40%);
+
+    body {
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.6), transparent 40vw),
+        linear-gradient(var(--_shade-1), var(--_shade-1)),
+        radial-gradient(farthest-side at 50% 0%, var(--_shade-3), transparent 50vw),
+        radial-gradient(farthest-side at 50% 0%, var(--_shade-2), transparent 70vw),
+        linear-gradient(-10deg, var(--_shade-4), transparent 70%),
+        var(--gl-background-color-default);
+      background-color: var(--body-background-color);
+    }
+
+    body.\!gl-bg-default {
+      background: var(--gl-background-color-default);
+    }
+  }
+
+  // Dark mode
+  &.gl-dark {
+    // default color to mute the gradient
+    --_shade-1: hsla(from var(--gl-background-color-default) h s l / 75%);
+    // background
+    --_shade-2: hsl(from var(--super-sidebar-theme-color) h 15 20);
+    // alternative color
+    --_shade-3: hsla(from var(--super-sidebar-theme-color) calc(h + 30) s l / 70%);
+    // original color
+    --_shade-4: hsla(from var(--super-sidebar-theme-color) h s l / 100%);
+    // bottom color
+    --_shade-5: hsla(from var(--super-sidebar-theme-color) h s l / 55%);
+
+    body {
+      background:
+        linear-gradient(var(--_shade-1), var(--_shade-1)),
+        radial-gradient(farthest-side at 50% 0%, var(--_shade-4), transparent 50vw),
+        radial-gradient(farthest-side at 50% 0%, var(--_shade-3), transparent 65vw),
+        linear-gradient(-10deg, var(--_shade-5), transparent),
+        var(--_shade-2);
+      background-color: var(--body-background-color);
+    }
+  }
+}

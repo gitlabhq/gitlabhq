@@ -2,6 +2,7 @@
 import { GlBreadcrumb } from '@gitlab/ui';
 
 export default {
+  name: 'SpaBreadcrumbs',
   components: {
     GlBreadcrumb,
   },

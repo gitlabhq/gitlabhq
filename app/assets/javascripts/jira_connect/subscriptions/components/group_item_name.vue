@@ -3,6 +3,7 @@ import { GlAvatar, GlIcon } from '@gitlab/ui';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 export default {
+  name: 'GroupItemName',
   components: {
     GlAvatar,
     GlIcon,

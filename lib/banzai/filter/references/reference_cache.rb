@@ -7,9 +7,8 @@ module Banzai
         include Gitlab::Utils::StrongMemoize
         include RequestStoreReferenceCache
 
-        def initialize(filter, context, result)
+        def initialize(filter, result)
           @filter = filter
-          @context = context
           @result = result || {}
         end
 
@@ -76,7 +75,7 @@ module Banzai
 
         private
 
-        attr_accessor :filter, :context, :result
+        attr_accessor :filter, :result
 
         delegate :project, :group, :parent, :parent_type, to: :filter
 
@@ -122,10 +121,10 @@ module Banzai
             refs.each do |ref|
               next unless ref
 
-              if context[:project]&.full_path == ref
-                parent_ref[ref] = context[:project]
-              elsif context[:group]&.full_path == ref
-                parent_ref[ref] = context[:group]
+              if project&.full_path == ref
+                parent_ref[ref] = project
+              elsif group&.full_path == ref
+                parent_ref[ref] = group
               end
 
               refs -= [ref] if parent_ref[ref]

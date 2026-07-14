@@ -550,4 +550,17 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       subject
     end
   end
+
+  describe '#prepare_for_bulk_insert' do
+    let(:stage) { build_stubbed(:ci_stage, pipeline: nil, project: nil, partition_id: nil) }
+    let(:pipeline) { build_stubbed(:ci_pipeline, partition_id: 123) }
+
+    it 'assigns pipeline references' do
+      stage.prepare_for_bulk_insert(pipeline)
+
+      expect(stage.pipeline_id).to eq(pipeline.id)
+      expect(stage.partition_id).to eq(123)
+      expect(stage.project_id).to eq(pipeline.project_id)
+    end
+  end
 end

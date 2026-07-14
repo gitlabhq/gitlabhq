@@ -19,7 +19,6 @@ describe('DeleteWikiModal', () => {
         },
       },
       provide: {
-        wikiPath: 'wiki-path',
         cloneSshUrl: 'ssh://clone.url/path',
         cloneHttpUrl: 'http://clone.url/path',
       },

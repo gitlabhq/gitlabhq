@@ -6,7 +6,7 @@ RSpec.describe BulkImports::Groups::Pipelines::NamespaceSettingsPipeline, featur
   subject(:pipeline) { described_class.new(context) }
 
   let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:group, freeze: false) { create(:group, namespace_settings: create(:namespace_settings)) }
+  let_it_be(:group, freeze: false) { create(:group, namespace_settings: create(:namespace_settings), owners: [user]) }
   let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
   let_it_be(:entity, freeze: false) do
     create(:bulk_import_entity, :group_entity, group: group, bulk_import: bulk_import)
@@ -16,8 +16,6 @@ RSpec.describe BulkImports::Groups::Pipelines::NamespaceSettingsPipeline, featur
   let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
   before do
-    group.add_owner(user)
-
     allow(pipeline).to receive(:set_source_objects_counter)
   end
 

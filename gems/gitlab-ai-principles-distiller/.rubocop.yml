@@ -12,6 +12,11 @@ Rails/Output:
 Rails/TimeZone:
   Enabled: false
 
+# This gem runs as a standalone CLI, so `exit` is the correct way to signal a
+# non-zero status to the shell (e.g. the --check-duo-instructions guard).
+Rails/Exit:
+  Enabled: false
+
 Gemfile/MissingFeatureCategory:
   Enabled: false
 

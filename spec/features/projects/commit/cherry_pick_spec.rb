@@ -10,7 +10,6 @@ RSpec.describe 'Cherry-pick Commits', :js, feature_category: :source_code_manage
   let(:master_pickable_commit) { project.commit(sha) }
 
   before do
-    stub_feature_flags(rapid_diffs_on_commit_show: false)
     sign_in(user)
   end
 
@@ -18,7 +17,7 @@ RSpec.describe 'Cherry-pick Commits', :js, feature_category: :source_code_manage
     it 'launches the modal form' do
       create(:ci_empty_pipeline, sha: sha)
       visit project_commit_path(project, master_pickable_commit.id)
-      click_link 'Pipelines'
+      within('.commit-ci-menu') { click_link 'Pipelines' }
 
       open_modal
 

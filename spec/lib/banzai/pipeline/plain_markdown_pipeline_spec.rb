@@ -8,7 +8,7 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :markd
   using RSpec::Parameterized::TableSyntax
 
   context 'with project' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
     let_it_be(:ref)            { 'markdown' }
     let_it_be(:requested_path) { '/' }
     let_it_be(:commit)         { project.commit(ref) }

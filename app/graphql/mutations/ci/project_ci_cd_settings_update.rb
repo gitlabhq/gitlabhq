@@ -52,6 +52,10 @@ module Mutations
         required: false,
         description: 'Indicates whether pipeline variables can be displayed in the UI.'
 
+      argument :skip_branch_pipelines_for_mrs, GraphQL::Types::Boolean,
+        required: false,
+        description: 'Indicates whether branch pipelines are skipped if a merge request is open.'
+
       argument :pipeline_variables_minimum_override_role,
         GraphQL::Types::String,
         required: false,
@@ -108,6 +112,7 @@ module Mutations
           restrict_user_defined_variables: args[:restrict_user_defined_variables],
           ci_pipeline_variables_minimum_override_role: args[:pipeline_variables_minimum_override_role],
           ci_display_pipeline_variables: args[:display_pipeline_variables],
+          ci_skip_branch_pipelines_for_mrs: args[:skip_branch_pipelines_for_mrs],
           resource_group_default_process_mode: args[:resource_group_default_process_mode]
         }.compact
       end

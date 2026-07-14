@@ -3,6 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'NewGroupButton',
   i18n: {
     newGroup: __('New group'),
   },

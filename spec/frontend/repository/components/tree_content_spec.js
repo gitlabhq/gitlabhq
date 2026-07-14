@@ -111,7 +111,7 @@ describe('Repository table component', () => {
   });
 
   describe('FileTable', () => {
-    describe('when "showMore" event is emitted', () => {
+    describe('when "show-more" event is emitted', () => {
       beforeEach(async () => {
         createComponent();
         await nextTick();
@@ -119,7 +119,7 @@ describe('Repository table component', () => {
       });
 
       it('changes hasShowMore to false', async () => {
-        findFileTable().vm.$emit('showMore');
+        findFileTable().vm.$emit('show-more');
 
         await nextTick();
 
@@ -127,7 +127,7 @@ describe('Repository table component', () => {
       });
 
       it('triggers the tree responseHandler', () => {
-        findFileTable().vm.$emit('showMore');
+        findFileTable().vm.$emit('show-more');
 
         expect(paginatedTreeQueryResponseHandler).toHaveBeenCalled();
       });

@@ -71,7 +71,7 @@ module Gitlab
 
             results = merge_results(results, batch_relation.send(@operation, *@operation_args)) # rubocop:disable GitlabSecurity/PublicSend
             batch_start = batch_end
-          rescue ActiveRecord::QueryCanceled => error
+          rescue ActiveRecord::QueryCanceled => error # rubocop:disable Database/RescueQueryCanceled -- Intentional: retries with halved batch size on query timeout
             # retry with a safe batch size & warmer cache
             if batch_size >= 2 * MIN_REQUIRED_BATCH_SIZE
               batch_size /= 2

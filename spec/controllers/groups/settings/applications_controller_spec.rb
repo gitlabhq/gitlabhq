@@ -27,7 +27,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
       end
 
       context 'when it renders all group applications' do
-        before do
+        before_all do
           21.times do
             create(:oauth_application, owner_id: group.id, owner_type: 'Namespace')
           end

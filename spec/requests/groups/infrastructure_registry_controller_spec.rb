@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Groups::InfrastructureRegistryController, feature_category: :package_registry do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :private) }
 
   describe 'GET #index' do

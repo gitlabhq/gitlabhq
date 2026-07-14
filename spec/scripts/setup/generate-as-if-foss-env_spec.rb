@@ -120,7 +120,8 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_RSPEC_PREDICTIVE_PIPELINE_GENERATE: 'true',
         ENABLE_RSPEC_PREDICTIVE_TRIGGER: 'true',
         ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB: 'true',
-        ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION: 'true'
+        ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION: 'true',
+        RUN_ALL_RUBOCOP: 'true'
       })
     end
 
@@ -234,6 +235,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_RSPEC_PREDICTIVE_TRIGGER=true
         ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB=true
         ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION=true
+        RUN_ALL_RUBOCOP=true
       ENV
     end
   end

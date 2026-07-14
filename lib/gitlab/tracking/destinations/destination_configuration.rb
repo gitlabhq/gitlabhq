@@ -6,6 +6,8 @@ module Gitlab
       class DestinationConfiguration
         PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT = 'https://events.gitlab.net'
         PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT_STG = 'https://events-stg.gitlab.net'
+        BILLING_COLLECT_ENDPOINT = 'https://billing.prdsub.gitlab.net'
+        BILLING_COLLECT_ENDPOINT_STG = 'https://billing.stgsub.gitlab.net'
         SNOWPLOW_MICRO_DEFAULT_URI = 'http://localhost:9091'
 
         class << self
@@ -15,6 +17,10 @@ module Gitlab
 
           def snowplow_micro_configuration
             new(snowplow_micro_uri)
+          end
+
+          def billing_configuration
+            new(billing_uri, app_id_suffix: '_billing', billing: true)
           end
 
           def non_production_environment?
@@ -29,7 +35,7 @@ module Gitlab
           def snowplow_micro_uri
             url = Gitlab.config.snowplow_micro.address
             URI("http://#{url}")
-          rescue GitlabSettings::MissingSetting
+          rescue Gitlab::Configs::MissingConfig
             URI(SNOWPLOW_MICRO_DEFAULT_URI)
           end
 
@@ -45,6 +51,14 @@ module Gitlab
             end
           end
 
+          def billing_uri
+            if non_production_environment?
+              URI(BILLING_COLLECT_ENDPOINT_STG)
+            else
+              URI(BILLING_COLLECT_ENDPOINT)
+            end
+          end
+
           def convert_if_bare_hostname(hostname)
             return hostname if hostname.blank? || hostname.include?('/') || hostname.include?('.')
 
@@ -52,10 +66,16 @@ module Gitlab
           end
         end
 
-        attr_reader :uri
+        attr_reader :uri, :app_id_suffix
 
-        def initialize(collector_uri)
+        def initialize(collector_uri, app_id_suffix: nil, billing: false)
           @uri = collector_uri
+          @billing = billing
+          @app_id_suffix = app_id_suffix
+        end
+
+        def billing?
+          @billing
         end
 
         def hostname

@@ -264,7 +264,8 @@ module Gitlab
       end
 
       def archive_metadata(ref, storage_path, project_path, format = "tar.gz", append_sha:, path: nil, ref_type: nil)
-        ref ||= root_ref
+        ref = ref.presence || root_ref
+        return {} if ref.blank?
 
         commit_id = extract_commit_id_from_ref(ref, ref_type: ref_type)
         return {} if commit_id.nil?
@@ -551,6 +552,17 @@ module Gitlab
       end
 
       def find_changed_paths(treeish_objects, merge_commit_diff_mode: nil, find_renames: false, diff_filters: nil)
+        find_changed_paths!(
+          treeish_objects,
+          merge_commit_diff_mode: merge_commit_diff_mode,
+          find_renames: find_renames,
+          diff_filters: diff_filters
+        )
+      rescue CommandError, TypeError, NoRepository
+        []
+      end
+
+      def find_changed_paths!(treeish_objects, merge_commit_diff_mode: nil, find_renames: false, diff_filters: nil)
         processed_objects = treeish_objects.compact
 
         return [] if processed_objects.empty?
@@ -558,8 +570,6 @@ module Gitlab
         wrapped_gitaly_errors do
           gitaly_commit_client.find_changed_paths(processed_objects, merge_commit_diff_mode: merge_commit_diff_mode, find_renames: find_renames, diff_filters: diff_filters)
         end
-      rescue CommandError, TypeError, NoRepository
-        []
       end
 
       # Get refs hash which key is the commit id

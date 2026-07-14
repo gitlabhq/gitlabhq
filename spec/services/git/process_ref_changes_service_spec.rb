@@ -278,7 +278,9 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
 
       before do
         allow(MergeRequests::PushedBranchesService).to receive(:new).and_return(
-          double(execute: %w[create1 create2]), double(execute: %w[changed1]), double(execute: %w[removed2])
+          double(all_branches: %w[create1 create2], open_source_branches: %w[create1 create2]),
+          double(all_branches: %w[changed1], open_source_branches: %w[changed1]),
+          double(all_branches: %w[removed2], open_source_branches: [])
         )
 
         allow(Gitlab::Git::Commit).to receive(:between).and_return([])
@@ -316,6 +318,17 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           Gitlab::Git::SHA1_BLANK_SHA,
           "refs/heads/removed2",
           { 'gitaly_context' => nil, 'push_options' => nil }).ordered
+
+        subject.execute
+      end
+
+      it 'passes merge_request_source_branches to push services' do
+        expect(Git::BranchPushService)
+          .to receive(:new)
+          .with(anything, anything, hash_including(
+            merge_request_source_branches: a_kind_of(Enumerable)
+          )).at_least(:once)
+          .and_return(double(execute: true))
 
         subject.execute
       end

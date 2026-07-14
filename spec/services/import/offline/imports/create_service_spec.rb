@@ -114,6 +114,17 @@ RSpec.describe Import::Offline::Imports::CreateService, :aggregate_failures, fea
       end
     end
 
+    context 'when the offline configuration fails validation' do
+      let(:object_storage_configuration) { super().merge(bucket: '') }
+
+      it 'returns an error response instead of raising' do
+        result = nil
+        expect { result = service.execute }.not_to change { BulkImport.count }
+        expect(result).to be_error
+        expect(result.message).to include("Bucket can't be blank")
+      end
+    end
+
     context 'when offline_transfer_imports is disabled' do
       before do
         stub_feature_flags(offline_transfer_imports: false)

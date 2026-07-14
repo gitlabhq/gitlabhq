@@ -34,6 +34,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['update'],
   i18n: {
     title: s__('DuoFeatures|GitLab Duo context exclusions'),
     description: s__(

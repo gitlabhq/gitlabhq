@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ProjectImportEntity, feature_category: :importers do
   include ImportHelper
 
-  let_it_be(:project, freeze: false) { create(:project, import_status: :started, import_source: 'import_user/project') }
+  let_it_be_with_reload(:project) { create(:project, import_status: :started, import_source: 'import_user/project') }
 
   let(:provider_url) { 'https://provider.com' }
   let(:client) { nil }

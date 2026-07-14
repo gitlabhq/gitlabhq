@@ -249,6 +249,7 @@ function reduceFilter(filterValues) {
 }
 
 export default {
+  name: 'TodosFilterBar',
   SORT_OPTIONS,
   i18n: {
     searchTextOptionLabel: s__('Todos|Raw text search is not currently supported'),

@@ -9,8 +9,6 @@ work_item: "https://gitlab.com/groups/gitlab-org/-/work_items/17482"
 categories: [ Source Code Management ]
 ---
 
-<!-- categories: Source Code Management -->
-
 Previously, the repository commit list had limited filtering, making it harder to
 find specific commits in long histories.
 

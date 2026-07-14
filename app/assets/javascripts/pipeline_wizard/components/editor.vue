@@ -25,6 +25,7 @@ export default {
       required: true,
     },
   },
+  emits: ['touch', 'update:yaml'],
   data() {
     return {
       editor: null,

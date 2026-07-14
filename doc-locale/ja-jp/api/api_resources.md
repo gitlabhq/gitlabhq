@@ -220,9 +220,9 @@ REST APIリソースは次のように編成されています。
 | [To Do](todos.md)                                                                           | `/todos` |
 | [トークン情報](admin/token.md)                                                          | `/admin/token` |
 | [トピック](topics.md)                                                                          | `/topics` |
+| [ユーザーアプリケーション](user_applications.md)                                                    | `/user/applications` |
 | [ユーザー](users.md)                                                                            | `/users` |
 | [Webコミット](web_commits.md)                                                                | `/web_commits/public_key` |
-| [バージョン](version.md)                                                                        | `/version` |
 
 ## テンプレートリソース {#template-resources}
 

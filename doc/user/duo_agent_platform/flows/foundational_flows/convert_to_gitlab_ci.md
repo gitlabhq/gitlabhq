@@ -14,7 +14,7 @@ title: Convert to GitLab CI/CD Flow
 
 {{< history >}}
 
-- Introduced as [a beta](../../../../policy/development_stages_support.md) in GitLab 18.3 [with a flag](../../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci`. Disabled by default, but can be enabled for the instance or a user.
+- Introduced as [a beta](../../../../policy/development_stages_support.md) in GitLab 18.3 [with a feature flag](../../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci`. Disabled by default, but can be enabled for the instance or a user.
 - Feature flag `duo_workflow_in_ci` enabled by default in GitLab 18.4. Feature flag `duo_workflow` must also be enabled, but it is enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 - Feature flags `duo_workflow_in_ci` and `duo_workflow` removed in GitLab 18.9.
@@ -39,7 +39,7 @@ This flow is available in the GitLab UI only.
 - Have the Developer, Maintainer, or Owner role for the target GitLab project.
 - Have access to your Jenkins pipeline configuration.
 - [Configure push rules to allow a service account](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Configure your own runners](../execution.md#configure-runners) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
+- [Configure your own runners](../execution.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
 
 ## Use the flow
 

@@ -121,6 +121,39 @@ RSpec.shared_examples 'Rapid Diffs application' do
     end
   end
 
+  describe 'notebook diff' do
+    let(:notebook_commit) { '5d6ed1503801ca9dc28e95eeb85a7cf863527aee' }
+
+    before do
+      visit project_commit_path(project, notebook_commit)
+      wait_for_requests
+    end
+
+    def notebook_diff_file
+      page.find('[data-testid="rd-diff-file"] h2', text: '.ipynb', match: :first)
+          .ancestor('[data-testid="rd-diff-file"]')
+    end
+
+    it 'renders the rich diff by default' do
+      expect(notebook_diff_file).to have_content('Cell type:markdown')
+    end
+
+    it 'offers a toggle to the plain diff in the options menu' do
+      file = notebook_diff_file
+      file.find('button[aria-label="Show options"]').click
+
+      expect(file).to have_button('View plain diff')
+    end
+  end
+
+  it 'does not offer a rich/plain diff toggle on a non-notebook file', :aggregate_failures do
+    file = find_by_testid('rd-diff-file', match: :first)
+    file.find('button[aria-label="Show options"]').click
+
+    expect(file).to have_no_button('View plain diff')
+    expect(file).to have_no_button('View rich diff')
+  end
+
   describe 'file browser' do
     let(:tree) { page.find('[data-testid="tree-list-scroll"]') }
     let(:tree_item_selector) { 'button[data-file-row], a[data-file-row]' }

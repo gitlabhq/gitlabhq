@@ -66,7 +66,7 @@ RSpec.describe 'CI/CD Catalog releases', :js, feature_category: :pipeline_compos
       within_testid('catalog-list-container') do
         expect(page).to have_content(project.name)
         expect(page).to have_content(tag_name)
-        expect(page).to have_content("Released")
+        expect(page).to have_content("Published")
       end
 
       visit explore_catalog_path(draft_catalog_resource)

@@ -71,13 +71,19 @@ func openHTTPArchive(ctx context.Context, archivePath string) (*archive, error) 
 	}
 	req = req.WithContext(ctx)
 
+	//nolint:bodyclose // On success the body is owned by the returned HTTP
+	// read-seeker and closed by the ctx.Done goroutine below.
 	resp, err := httpClient.Do(req.WithContext(ctx))
-	switch {
-	case err != nil:
+	if err != nil {
 		return nil, fmt.Errorf("HTTP GET %q: %v", scrubbedArchivePath, err)
+	}
+
+	switch {
 	case resp.StatusCode == http.StatusNotFound:
+		_ = resp.Body.Close()
 		return nil, ErrorCode[CodeArchiveNotFound]
 	case resp.StatusCode != http.StatusOK:
+		_ = resp.Body.Close()
 		return nil, fmt.Errorf("HTTP GET %q: %d: %v", scrubbedArchivePath, resp.StatusCode, resp.Status)
 	}
 

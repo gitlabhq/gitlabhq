@@ -6,7 +6,7 @@ import { marked } from 'marked';
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 const NON_WORD_RE = /[^\p{L}\p{M}\p{N}\p{Pc}\- \t]/gu;
 const blockLevelRenderer = () => '';
-const inlineLevelRenderer = (token) => token;
+const inlineLevelRenderer = ({ text }) => text;
 
 /**
  * We use a custom marked rendered to get rid of all the contents we don't need.
@@ -36,7 +36,7 @@ marked.use({
      * @param {string} text
      * @returns {string} Slugified heading text
      */
-    heading(text) {
+    heading({ text }) {
       const slugified = text
         .toLowerCase()
         .replace(/&amp;/g, '&')

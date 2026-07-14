@@ -43,6 +43,11 @@ For more information, see [maximum number of project push mirrors](../../../../a
 
 ## Configure push mirroring
 
+Prerequisites:
+
+- Your GitLab repository and the remote repository use the same object format.
+  You cannot mirror between SHA-1 and SHA-256 repositories.
+
 To set up push mirroring for an existing project:
 
 1. In the top bar, select **Search or go to** and find your project.

@@ -73,8 +73,7 @@ module API
 
       resource do
         before do
-          not_found! unless Gitlab::CurrentSettings.bulk_import_enabled? ||
-            Feature.enabled?(:override_bulk_import_disabled, current_user, type: :ops)
+          not_found! unless Gitlab::CurrentSettings.bulk_import_enabled?
         end
 
         desc 'Schedule a relations export for a group' do
@@ -91,6 +90,8 @@ module API
         params do
           optional :batched, type: Boolean, desc: 'Whether to export in batches'
         end
+        route_setting :authorization,
+          permissions: :create_project_relation_export, boundary_type: :group
         post ':id/export_relations' do
           response = ::BulkImports::ExportService
             .new(portable: user_group, user: current_user, batched: params[:batched])
@@ -129,6 +130,8 @@ module API
 
           all_or_none_of :batched, :batch_number
         end
+        route_setting :authorization,
+          permissions: :download_project_relation_export, boundary_type: :group
         get ':id/export_relations/download' do
           export = user_group.bulk_import_exports.for_user_and_relation(current_user, params[:relation])
             .for_offline_export(nil).first
@@ -183,6 +186,8 @@ module API
         params do
           optional :relation, type: String, desc: 'Group relation name'
         end
+        route_setting :authorization,
+          permissions: :read_project_relation_export, boundary_type: :group
         get ':id/export_relations/status' do
           if params[:relation]
             export = user_group.bulk_import_exports.for_user_and_relation(current_user, params[:relation])

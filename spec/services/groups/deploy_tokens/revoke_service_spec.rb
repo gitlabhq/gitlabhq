@@ -12,9 +12,9 @@ RSpec.describe Groups::DeployTokens::RevokeService, feature_category: :deploymen
     subject { described_class.new(entity, user, deploy_token_params).execute }
 
     it "revokes a group deploy token" do
-      expect(deploy_token.revoked).to eq(false)
+      expect(deploy_token.revoked).to be(false)
 
-      expect { subject }.to change { deploy_token.reload.revoked }.to eq(true)
+      expect { subject }.to change { deploy_token.reload.revoked }.to be(true)
     end
 
     it 'returns a successful ServiceResponse' do

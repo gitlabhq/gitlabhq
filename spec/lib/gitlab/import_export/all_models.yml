@@ -115,6 +115,8 @@ notes:
 - note_metadata
 - duo_metadata
 - user_agent_detail
+- duo_workflow_links
+- linked_duo_workflows
 note_metadata:
   - note
   - email_participant
@@ -136,6 +138,8 @@ commit_notes:
 - note_metadata
 - duo_metadata
 - user_agent_detail
+- duo_workflow_links
+- linked_duo_workflows
 label_links:
 - target
 - label
@@ -281,6 +285,8 @@ merge_requests:
 - policy_dismissals
 - duo_workflows
 - vulnerability_merge_request_links
+- duo_workflow_links
+- linked_duo_workflows
 external_pull_requests:
 merge_data:
 - merge_request
@@ -324,6 +330,7 @@ ci_pipelines: &pipeline_definition
 - current_processable_jobs
 - builds
 - bridges
+- latest_bridges
 - processables
 - generic_commit_statuses
 - trigger
@@ -373,7 +380,6 @@ ci_pipelines: &pipeline_definition
 - dast_profiles_pipeline
 - build_trace_chunks
 - pipeline_metadata
-- build_execution_configs
 - project_mirror
 - workload
 - sbom_occurrence_refs
@@ -408,10 +414,8 @@ builds:
 - needs
 - resource
 - pipeline
-- execution_config
 - sourced_pipeline
 - resource_group
-- metadata
 - runner
 - trigger
 - erased_by
@@ -466,11 +470,10 @@ builds:
 - error_job_messages
 - runner_manager
 - runner_manager_build
+- build_runtime_environment
 - runner_session
 - trace_metadata
 - terraform_state_versions
-- taggings
-- tags
 - security_scans
 - dast_site_profiles_build
 - dast_site_profile
@@ -496,7 +499,6 @@ bridges:
 - job_messages
 - error_job_messages
 - resource_group
-- metadata
 - trigger
 - downstream_pipeline
 - upstream_pipeline
@@ -1228,6 +1230,8 @@ vulnerability_finding:
   - primary_identifier
   - vulnerability
   - one_vulnerability
+  - ascp_component_link
+  - ascp_component
   - state_transitions
   - issue_links
   - external_issue_links

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Wikis::CreateAttachmentService, feature_category: :wiki do

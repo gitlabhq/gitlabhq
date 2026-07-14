@@ -341,6 +341,28 @@ describe('GroupNameAndPath', () => {
         expect(getGroupPathAvailability).not.toHaveBeenCalled();
       });
     });
+
+    describe('when the slugified `Group URL` has an invalid format', () => {
+      it('shows the inline format error on the auto-generated path', async () => {
+        createComponent();
+
+        await findGroupNameField().setValue('a');
+
+        expect(wrapper.findByText('Group URL must be at least 2 characters long.').exists()).toBe(
+          true,
+        );
+      });
+
+      it('does not call the availability API', async () => {
+        createComponent();
+
+        await findGroupNameField().setValue('a');
+        jest.runAllTimers();
+        await waitForPromises();
+
+        expect(getGroupPathAvailability).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('when `Group name` field is invalid', () => {
@@ -424,10 +446,86 @@ describe('GroupNameAndPath', () => {
     });
   });
 
-  describe('when `Group URL` field is invalid', () => {
-    it('shows error message', async () => {
+  describe('when `Group URL` is invalid', () => {
+    it.each`
+      path           | message
+      ${'-abc'}      | ${'Group URL must start with a letter, digit, underscore, or period.'}
+      ${'abc!'}      | ${'Group URL can only contain letters, digits, underscores, periods, and dashes.'}
+      ${'abc.'}      | ${'Group URL must end with a letter, digit, underscore, or dash.'}
+      ${'repo.git'}  | ${'Group URL must not end with `.git` or `.atom`.'}
+      ${'feed.atom'} | ${'Group URL must not end with `.git` or `.atom`.'}
+      ${'a'}         | ${'Group URL must be at least 2 characters long.'}
+    `(
+      'shows the inline error "$message" for path "$path" and does not call the availability API',
+      async ({ path, message }) => {
+        createComponent();
+
+        await findGroupUrlField().setValue(path);
+        await waitForPromises();
+
+        expect(wrapper.findByText(message).exists()).toBe(true);
+        expect(getGroupPathAvailability).not.toHaveBeenCalled();
+      },
+    );
+
+    it('does not show the loading message when the format is invalid', async () => {
       createComponent();
 
+      await findGroupUrlField().setValue('-abc');
+
+      expect(wrapper.findByText(GroupNameAndPath.i18n.apiLoadingMessage).exists()).toBe(false);
+    });
+
+    it('aborts an in-flight availability request when the format becomes invalid', async () => {
+      apiMockLoading();
+
+      const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+
+      createComponent();
+
+      await findGroupUrlField().setValue(mockGroupUrl);
+      expectLoadingMessageExists();
+
+      await findGroupUrlField().setValue('-abc');
+
+      expect(abortSpy).toHaveBeenCalled();
+      expect(wrapper.findByText(GroupNameAndPath.i18n.apiLoadingMessage).exists()).toBe(false);
+      expect(
+        wrapper
+          .findByText('Group URL must start with a letter, digit, underscore, or period.')
+          .exists(),
+      ).toBe(true);
+    });
+
+    it('triggers the availability check once the format becomes valid again', async () => {
+      apiMockAvailablePath();
+
+      createComponent();
+
+      await findGroupUrlField().setValue('-abc');
+      expect(getGroupPathAvailability).not.toHaveBeenCalled();
+
+      await findGroupUrlField().setValue(mockGroupUrl);
+      await waitForPromises();
+
+      expect(getGroupPathAvailability).toHaveBeenCalled();
+      expect(wrapper.findByText(GroupNameAndPath.i18n.inputs.path.validFeedback).exists()).toBe(
+        true,
+      );
+    });
+
+    it('shows the required message when the native `invalid` event fires on an empty field', async () => {
+      createComponent();
+
+      await findGroupUrlField().trigger('invalid');
+
+      expect(wrapper.findByText('Group URL is required.').exists()).toBe(true);
+    });
+
+    it('falls back to the generic pattern message when the value passes client-side rules but the native `invalid` event fires', async () => {
+      createComponent();
+
+      await findGroupUrlField().setValue(mockGroupUrl);
       await findGroupUrlField().trigger('invalid');
 
       expect(

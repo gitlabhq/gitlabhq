@@ -1202,10 +1202,8 @@ preloads:
   issues:
     project: :route
   builds:
-    metadata:
     project:
   bridges:
-    metadata:
   merge_requests:
     source_project: :route # needed by source_branch_sha and diff_head_sha
     target_project: :route # needed by target_branch_sha

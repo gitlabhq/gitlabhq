@@ -15,6 +15,7 @@ import WorkItemStateBadge from './work_item_state_badge.vue';
 import WorkItemTypeIcon from './work_item_type_icon.vue';
 
 export default {
+  name: 'WorkItemCreatedUpdated',
   components: {
     HiddenBadge,
     ImportedBadge,

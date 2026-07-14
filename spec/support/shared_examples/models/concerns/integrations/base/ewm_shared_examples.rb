@@ -52,4 +52,26 @@ RSpec.shared_examples Integrations::Base::Ewm do
       expect(subject.reference_pattern.match("This is rtcwi 123")[:issue]).to eq("rtcwi 123")
     end
   end
+
+  describe '#issue_url' do
+    context 'when issues_url is configured' do
+      before do
+        subject.issues_url = 'https://example.com/issues/:id'
+      end
+
+      it 'returns the URL with the issue ID substituted' do
+        expect(subject.issue_url('bug 123')).to eq('https://example.com/issues/123')
+      end
+    end
+
+    context 'when issues_url is nil' do
+      before do
+        subject.issues_url = nil
+      end
+
+      it 'returns nil' do
+        expect(subject.issue_url('bug 123')).to be_nil
+      end
+    end
+  end
 end

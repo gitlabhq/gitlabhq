@@ -107,6 +107,11 @@ diff-file[data-line-range-dragging] .rd-discussion-row {
   z-index: constants.$diff-file-suggestion-header-z-index;
 }
 
+// stylelint-disable-next-line gitlab/no-has -- scoped to the apply suggestion dropdown
+.rd-note-suggestions:has([data-apply-suggestion-toggle] button[aria-expanded='true']) {
+  z-index: constants.$diff-file-suggestion-active-z-index;
+}
+
 @container discussion-cell (min-width: theme('maxWidth.limited')) {
   .rd-diff-line-discussions-list {
     border-right: 1px solid var(--rd-line-border-color);

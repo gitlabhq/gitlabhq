@@ -478,7 +478,7 @@ You must set up Docker in a Docker container (Docker-in-Docker) to use Code Qual
 
 To ensure Code Quality jobs can run on a Kubernetes executor:
 
-- If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
+- If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/docker_in_docker.md#docker-in-docker-with-tls-enabled-in-kubernetes-recommended).
 - It is possible that the DinD service doesn't start up fully before the Code Quality job starts. This is a limitation documented in
   [Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting/#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running). To resolve the issue, use `before_script` to wait for the Docker daemon to fully boot up. For an example, see the configuration in the `.gitlab-ci.yml` file described in the following section.
 
@@ -522,7 +522,7 @@ name = "docker:29.1.4-dind"
 > the previous Kubernetes configuration in the [`config` field](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration/)
 > of the `values.yaml` file.
 
-To ensure that you use the `overlay2` [storage driver](https://docs.docker.com/storage/storagedriver/select-storage-driver/), which offers the best overall performance:
+To ensure that you use the `overlay2` [storage driver](https://docs.docker.com/engine/storage/drivers/select-storage-driver/), which offers the best overall performance:
 
 - Specify the `DOCKER_HOST` that the Docker CLI communicates with.
 - Set the `DOCKER_DRIVER` variable to empty.
@@ -553,7 +553,7 @@ you must mount the `/var/lib` directory as a volume mount.
 > [!note]
 > If you cannot to mount the `/var/lib` directory as a volume mount, you can set `--storage-driver` to `vfs` instead.
 > If you opt for the `vfs` value, it might have a negative
-> impact on [performance](https://docs.docker.com/storage/storagedriver/select-storage-driver/).
+> impact on [performance](https://docs.docker.com/engine/storage/drivers/select-storage-driver/).
 
 To configure permissions for the Docker daemon:
 

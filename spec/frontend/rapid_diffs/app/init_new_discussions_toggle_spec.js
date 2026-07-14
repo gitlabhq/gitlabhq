@@ -154,6 +154,18 @@ describe('initNewDiscussionToggle', () => {
       expect(lineRange.end).toStrictEqual({ old_line: null, new_line: 5, type: null });
     });
 
+    it('sets the change type on the line range for an added line', () => {
+      appElement.querySelector('[data-position="old"]').dataset.change = 'added';
+
+      appElement
+        .querySelector('[data-position="new"]')
+        .dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+
+      const { lineRange } = toggle;
+      expect(lineRange.start).toStrictEqual({ old_line: null, new_line: 5, type: 'new' });
+      expect(lineRange.end).toStrictEqual({ old_line: null, new_line: 5, type: 'new' });
+    });
+
     it('shows toggle on focus', () => {
       const cell = appElement.querySelector('[data-position]');
 

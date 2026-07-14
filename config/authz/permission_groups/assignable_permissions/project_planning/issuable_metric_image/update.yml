@@ -1,0 +1,9 @@
+---
+name: update_issuable_metric_image
+description: Grants the ability to update issuable metric images
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_issuable_metric_image

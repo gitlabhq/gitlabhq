@@ -2,6 +2,7 @@
 import { sprintf, __ } from '~/locale';
 
 export default {
+  name: 'ModeChanged',
   props: {
     aMode: {
       type: String,

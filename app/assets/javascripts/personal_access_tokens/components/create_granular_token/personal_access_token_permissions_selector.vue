@@ -1,31 +1,25 @@
 <script>
-import { GlTab, GlSearchBoxByType, GlSkeletonLoader } from '@gitlab/ui';
-import { intersection, some } from 'lodash-es';
+import { isEqual, union } from 'lodash-es';
 import { createAlert } from '~/alert';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 import getAccessTokenPermissions from '~/personal_access_tokens/graphql/get_access_token_permissions.query.graphql';
-import { ACCESS_USER_ENUM, ACCESS_INSTANCE_ENUM } from '~/personal_access_tokens/constants';
-import PersonalAccessTokenResourcesList from './personal_access_token_resources_list.vue';
+import { ACCESS_SCOPES, ACCESS_SCOPE_KEYS } from '~/personal_access_tokens/constants';
+import { emptyByScope } from '~/personal_access_tokens/utils';
+import PersonalAccessTokenResourcePanel from './personal_access_token_resource_panel.vue';
 import PersonalAccessTokenGranularPermissionsList from './personal_access_token_granular_permissions_list.vue';
 
 export default {
   name: 'PersonalAccessTokenPermissionsSelector',
   components: {
-    GlTab,
-    GlSearchBoxByType,
-    GlSkeletonLoader,
-    PersonalAccessTokenResourcesList,
+    PersonalAccessTokenResourcePanel,
     PersonalAccessTokenGranularPermissionsList,
   },
   props: {
     value: {
-      type: Array,
+      type: Object,
       required: false,
-      default: () => [],
-    },
-    targetBoundaries: {
-      type: Array,
-      required: true,
+      default: emptyByScope,
+      validator: (value) => ACCESS_SCOPE_KEYS.every((key) => Array.isArray(value[key])),
     },
     error: {
       type: String,
@@ -35,25 +29,23 @@ export default {
     aiPermissions: {
       type: Object,
       required: false,
-      default: () => ({ suggested: [], removed: [] }),
+      default: () => ({ suggested: emptyByScope(), removed: emptyByScope() }),
     },
   },
   emits: ['input'],
   data() {
     return {
       permissions: [],
-      selectedResources: [],
-      searchTerm: '',
+      activeBoundary: 'namespace',
+      selectedResources: emptyByScope(),
+      pendingInput: null,
     };
   },
   apollo: {
     permissions: {
       query: getAccessTokenPermissions,
       update(data) {
-        const all = data?.accessTokenPermissions || [];
-        return all.filter(
-          ({ boundaries }) => intersection(this.targetBoundaries, boundaries).length > 0,
-        );
+        return data?.accessTokenPermissions || [];
       },
       error(error) {
         createAlert({
@@ -65,64 +57,30 @@ export default {
     },
   },
   computed: {
-    selectedPermissions: {
-      get() {
-        return this.value ?? [];
-      },
-      set(val) {
-        this.$emit('input', val);
-      },
-    },
     isLoading() {
       return Boolean(this.$apollo.queries.permissions.loading);
     },
-    scope() {
-      if (this.targetBoundaries.includes(ACCESS_INSTANCE_ENUM)) {
-        return 'instance';
-      }
+    permissionsByBoundary() {
+      const result = emptyByScope();
 
-      if (this.targetBoundaries.includes(ACCESS_USER_ENUM)) {
-        return 'user';
-      }
+      this.permissions.forEach((permission) => {
+        ACCESS_SCOPES.forEach(({ key, boundaries }) => {
+          if (boundaries.some((boundary) => permission.boundaries.includes(boundary))) {
+            result[key].push(permission);
+          }
+        });
+      });
 
-      return 'namespace';
-    },
-    tabTitle() {
-      return this.$options.i18n[this.scope].tabTitle;
-    },
-    permissionsFilteredBySearch() {
-      if (!this.permissions) {
-        return [];
-      }
-
-      if (!this.searchTerm) {
-        return this.permissions;
-      }
-
-      return this.permissions.filter((permission) =>
-        some(['description', 'category'], (field) =>
-          permission[field].toLowerCase().includes(this.searchTerm.toLowerCase()),
-        ),
-      );
+      return result;
     },
   },
   watch: {
-    selectedResources(newResources, oldResources) {
-      if (!oldResources.length) return;
-
-      const removedResources = oldResources.filter((resource) => !newResources.includes(resource));
-
-      if (removedResources.length > 0) {
-        this.removePermissionsForResources(removedResources);
-      }
-    },
-    value(newPermissions) {
-      // when a token is duplicated, parent passes down selected permissions
-      // select associated resources for those permissions
-      this.syncSelectedResources(newPermissions);
+    value() {
+      this.pendingInput = null;
+      this.syncSelectedResources();
     },
     permissions() {
-      this.syncSelectedResources(this.value);
+      this.syncSelectedResources();
       this.applyAiSuggestedPermissions(this.aiPermissions.suggested);
     },
     'aiPermissions.suggested': {
@@ -139,102 +97,138 @@ export default {
     },
   },
   methods: {
-    handleRemoveResource(resourceToRemove) {
-      this.selectedResources = this.selectedResources.filter(
+    handleResourcesInput(newResources) {
+      const boundary = this.activeBoundary;
+      const removedResources = this.selectedResources[boundary].filter(
+        (resource) => !newResources.includes(resource),
+      );
+
+      this.selectedResources[boundary] = newResources;
+
+      if (removedResources.length > 0) {
+        this.removePermissionsForResources(boundary, removedResources);
+      }
+    },
+    handleRemoveResource(boundary, resourceToRemove) {
+      this.selectedResources[boundary] = this.selectedResources[boundary].filter(
         (resource) => resource !== resourceToRemove,
       );
+
+      this.removePermissionsForResources(boundary, [resourceToRemove]);
     },
-    removePermissionsForResources(removedResources) {
-      const permissionsToRemove = this.permissions
+    removePermissionsForResources(boundary, removedResources) {
+      const permissionsToRemove = this.permissionsByBoundary[boundary]
         .filter((permission) => removedResources.includes(permission.resource))
         .map((permission) => permission.name);
 
-      this.selectedPermissions = this.selectedPermissions.filter(
-        (permission) => !permissionsToRemove.includes(permission),
+      this.emitPermissions(
+        boundary,
+        this.value[boundary].filter((permission) => !permissionsToRemove.includes(permission)),
       );
     },
-    getMatchingPermissions(permissionNames) {
-      if (!permissionNames.length || !this.permissions.length) return [];
-
-      const namesSet = new Set(permissionNames);
-
-      return this.permissions.filter((p) => namesSet.has(p.name));
+    pendingValue() {
+      return this.pendingInput || this.value;
     },
-    syncSelectedResources(permissionNames) {
-      const matching = this.getMatchingPermissions(permissionNames);
-      if (!matching.length) return;
+    emitInput(updated) {
+      if (isEqual(updated, this.pendingValue())) return;
 
-      this.selectedResources = [
-        ...new Set([...this.selectedResources, ...matching.map((p) => p.resource)]),
-      ];
+      this.pendingInput = updated;
+      this.$emit('input', updated);
+    },
+    emitPermissions(boundary, permissionNames) {
+      this.emitInput({ ...this.pendingValue(), [boundary]: permissionNames });
+    },
+    selectResourcesForNames(boundary, names) {
+      const nameSet = new Set(names);
+      if (!nameSet.size) return [];
+
+      const matching = this.permissionsByBoundary[boundary].filter((permission) =>
+        nameSet.has(permission.name),
+      );
+
+      this.selectedResources[boundary] = union(
+        this.selectedResources[boundary],
+        matching.map((permission) => permission.resource),
+      );
+
+      return matching;
+    },
+    syncSelectedResources() {
+      ACCESS_SCOPES.forEach(({ key }) => {
+        this.selectResourcesForNames(key, this.value[key]);
+      });
     },
     applyAiSuggestedPermissions(suggested) {
-      const matching = this.getMatchingPermissions(suggested);
-      if (!matching.length) return;
+      if (!this.permissions.length) return;
 
-      this.selectedResources = [
-        ...new Set([...this.selectedResources, ...matching.map((p) => p.resource)]),
-      ];
-      this.selectedPermissions = [
-        ...new Set([...this.selectedPermissions, ...matching.map((p) => p.name)]),
-      ];
+      const updated = { ...this.pendingValue() };
+
+      ACCESS_SCOPES.forEach(({ key }) => {
+        const names = this.selectResourcesForNames(key, suggested?.[key]).map(
+          (permission) => permission.name,
+        );
+
+        updated[key] = union(updated[key], names);
+      });
+
+      this.emitInput(updated);
     },
     applyAiRemovedPermissions(removed) {
-      if (!removed.length) return;
+      const updated = { ...this.pendingValue() };
 
-      const removalSet = new Set(removed);
+      ACCESS_SCOPES.forEach(({ key }) => {
+        const removalSet = new Set(removed?.[key]);
+        if (!removalSet.size) return;
 
-      this.selectedPermissions = this.selectedPermissions.filter((name) => !removalSet.has(name));
+        updated[key] = updated[key].filter((name) => !removalSet.has(name));
+      });
+
+      this.emitInput(updated);
     },
   },
   i18n: {
-    namespace: {
-      tabTitle: s__('AccessTokens|Group and project'),
-    },
-    user: {
-      tabTitle: s__('AccessTokens|User'),
-    },
-    instance: {
-      tabTitle: s__('AccessTokens|Global'),
-    },
-    searchPlaceholder: s__('AccessTokens|Search for resources to add'),
-    noResourcesFound: __('No resources found'),
+    selectorTitle: s__('AccessTokens|Resource and permission selector'),
     fetchError: s__('AccessTokens|Error loading permissions. Please refresh page.'),
   },
+  scopes: ACCESS_SCOPES,
 };
 </script>
 
 <template>
-  <gl-tab :title="tabTitle" :tab-count="selectedResources.length">
-    <div class="gl-flex gl-flex-col lg:gl-flex-row">
-      <div class="gl-border gl-w-full gl-border-t-0 gl-p-4 lg:gl-min-h-75 lg:gl-w-2/5">
-        <gl-search-box-by-type
-          v-model="searchTerm"
-          :placeholder="$options.i18n.searchPlaceholder"
-          class="gl-mb-4"
-        />
-
-        <gl-skeleton-loader v-if="isLoading" />
-        <personal-access-token-resources-list
-          v-else-if="permissionsFilteredBySearch.length"
-          v-model="selectedResources"
-          :permissions="permissionsFilteredBySearch"
-          :scope="scope"
-          :is-filtering="Boolean(searchTerm)"
-        />
-        <div v-else class="gl-my-4 gl-text-center gl-text-subtle">
-          {{ $options.i18n.noResourcesFound }}
-        </div>
+  <div>
+    <div class="gl-rounded-base gl-border-1 gl-border-solid gl-border-section gl-@container/panel">
+      <div
+        class="gl-flex gl-items-center gl-justify-between gl-rounded-t-base gl-border-b-1 gl-border-b-section gl-bg-subtle gl-px-5 gl-py-3 gl-font-bold gl-border-b-solid"
+      >
+        {{ $options.i18n.selectorTitle }}
+        <slot name="header-actions"></slot>
       </div>
 
-      <personal-access-token-granular-permissions-list
-        v-model="selectedPermissions"
-        :permissions="permissions"
-        :selected-resources="selectedResources"
-        :scope="scope"
-        @remove-resource="handleRemoveResource"
-      />
+      <div class="gl-flex gl-flex-col @md/panel:gl-flex-row">
+        <personal-access-token-resource-panel
+          class="gl-w-full gl-min-w-0 gl-p-4 @md/panel:gl-min-h-75 @md/panel:gl-w-2/5 @md/panel:gl-border-r-1 @md/panel:gl-border-r-section @md/panel:gl-border-r-solid"
+          :active-boundary="activeBoundary"
+          :permissions="permissionsByBoundary[activeBoundary]"
+          :selected-resources="selectedResources"
+          :is-loading="isLoading"
+          @boundary-change="activeBoundary = $event"
+          @resources-input="handleResourcesInput"
+        />
+
+        <div class="gl-w-full gl-min-w-0 gl-px-5 @md/panel:gl-w-3/5">
+          <personal-access-token-granular-permissions-list
+            v-for="scope in $options.scopes"
+            :key="scope.key"
+            :value="value[scope.key]"
+            :permissions="permissionsByBoundary[scope.key]"
+            :selected-resources="selectedResources[scope.key]"
+            :scope="scope.key"
+            @input="emitPermissions(scope.key, $event)"
+            @remove-resource="handleRemoveResource(scope.key, $event)"
+          />
+        </div>
+      </div>
     </div>
-    <div v-if="error" class="invalid-feedback gl-block gl-pb-4">{{ error }}</div>
-  </gl-tab>
+    <div v-if="error" class="invalid-feedback gl-block gl-pt-4">{{ error }}</div>
+  </div>
 </template>

@@ -1,8 +1,8 @@
 <script>
 import { GlIcon, GlLink, GlPopover } from '@gitlab/ui';
+import { uniqueId } from 'lodash-es';
 import { InternalEvents } from '~/tracking';
 import glFeaturesMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { joinPaths, mergeUrlParams } from '~/lib/utils/url_utility';
 import {
   EVENT_LABEL_CLICK_METRIC_IN_DASHBOARD_TABLE,
   VALUE_STREAM_METRIC_METADATA,
@@ -24,26 +24,21 @@ export default {
       required: true,
       validator: (key) => Object.keys(VALUE_STREAM_METRIC_METADATA).includes(key),
     },
-    requestPath: {
+    link: {
       type: String,
       required: false,
       default: '',
-    },
-    isProject: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    filterLabels: {
-      type: Array,
-      required: false,
-      default: () => [],
     },
     trackingProperty: {
       type: String,
       required: false,
       default: '',
     },
+  },
+  data() {
+    return {
+      popoverTarget: uniqueId(`metric-label-popover-${this.identifier}`),
+    };
   },
   computed: {
     metric() {
@@ -52,25 +47,8 @@ export default {
     tooltip() {
       return VALUE_STREAM_METRIC_METADATA[this.identifier];
     },
-    link() {
-      const { groupLink, projectLink } = this.tooltip;
-      const url = joinPaths(
-        '/',
-        gon.relative_url_root,
-        !this.isProject ? 'groups' : '',
-        this.requestPath,
-        this.isProject ? projectLink : groupLink,
-      );
-
-      if (!this.filterLabels.length) return url;
-
-      return mergeUrlParams({ label_name: this.filterLabels }, url, { spreadArrays: true });
-    },
-    popoverTarget() {
-      return `${this.requestPath}__${this.identifier}`.replace('/', '_');
-    },
-    hasRequestPath() {
-      return Boolean(this.requestPath.length);
+    hasLink() {
+      return Boolean(this.link);
     },
   },
   methods: {
@@ -91,7 +69,7 @@ export default {
 <template>
   <div>
     <gl-link
-      v-if="hasRequestPath"
+      v-if="hasLink"
       :href="link"
       data-testid="metric_label"
       variant="meta"

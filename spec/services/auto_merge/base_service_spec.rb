@@ -33,6 +33,19 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
       is_expected.to eq(:base)
     end
 
+    it 'fires an update merge request webhook including the auto-merge change', :aggregate_failures do
+      allow(merge_request.project).to receive(:execute_hooks) do |data, hooks_scope|
+        expect(hooks_scope).to eq(:merge_request_hooks)
+        expect(data[:object_attributes][:action]).to eq('update')
+        expect(data[:changes][:merge_when_pipeline_succeeds])
+          .to eq({ previous: false, current: true })
+      end
+
+      subject
+
+      expect(merge_request.project).to have_received(:execute_hooks)
+    end
+
     context 'when merge parameters are given' do
       let(:params) do
         {
@@ -50,8 +63,8 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
         merge_request.reload
         expect(merge_request.merge_params['commit_message']).to eq("Merge branch 'patch-12' into 'master'")
         expect(merge_request.merge_params['sha']).to eq('200fcc9c260f7219eaf0daba87d818f0922c5b18')
-        expect(merge_request.merge_params['should_remove_source_branch']).to eq(false)
-        expect(merge_request.squash_on_merge?).to eq(false)
+        expect(merge_request.merge_params['should_remove_source_branch']).to be(false)
+        expect(merge_request.squash_on_merge?).to be(false)
         expect(merge_request.merge_params['squash_commit_message']).to eq('Update README.md')
       end
     end
@@ -98,6 +111,12 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
         expect(Gitlab::ErrorTracking)
           .to receive(:track_exception)
           .with(kind_of(RuntimeError), merge_request_id: merge_request.id)
+
+        execute_with_error_in_yield
+      end
+
+      it 'does not fire merge request webhooks' do
+        expect(merge_request.project).not_to receive(:execute_hooks)
 
         execute_with_error_in_yield
       end
@@ -176,6 +195,21 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
         expect { |b| service.execute(merge_request, &b) }.not_to yield_control
       end
     end
+
+    context 'when the merge request is broken (e.g. its fork relationship is gone)' do
+      before do
+        merge_request.source_project = create(:project)
+        allow(merge_request).to receive(:source_project_missing?).and_return(true)
+      end
+
+      it 'still clears the auto-merge parameters and succeeds', :aggregate_failures do
+        expect(subject[:status]).to eq(:success)
+
+        merge_request.reload
+        expect(merge_request).not_to be_auto_merge_enabled
+        expect(merge_request.merge_user).to be_nil
+      end
+    end
   end
 
   describe '#cancel' do
@@ -185,6 +219,23 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
 
     it_behaves_like 'Canceled or Dropped'
 
+    it 'fires an update merge request webhook including the auto-merge change', :aggregate_failures do
+      # Reload to reset the cumulative reportable changes from the factory build,
+      # so the webhook payload reports the true -> false transition on cancel.
+      merge_request.reload
+
+      allow(merge_request.project).to receive(:execute_hooks) do |data, hooks_scope|
+        expect(hooks_scope).to eq(:merge_request_hooks)
+        expect(data[:object_attributes][:action]).to eq('update')
+        expect(data[:changes][:merge_when_pipeline_succeeds])
+          .to eq({ previous: true, current: false })
+      end
+
+      subject
+
+      expect(merge_request.project).to have_received(:execute_hooks)
+    end
+
     context 'when failed to save merge request' do
       before do
         allow(merge_request).to receive(:save!) { raise ActiveRecord::RecordInvalid }
@@ -193,6 +244,12 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
       it 'returns error status' do
         expect(subject[:status]).to eq(:error)
         expect(subject[:message]).to eq("Can't cancel the automatic merge")
+      end
+
+      it 'does not fire merge request webhooks' do
+        expect(merge_request.project).not_to receive(:execute_hooks)
+
+        subject
       end
     end
 
@@ -231,6 +288,12 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
     let(:reason) { 'an error' }
 
     it_behaves_like 'Canceled or Dropped'
+
+    it 'does not fire merge request webhooks' do
+      expect(merge_request.project).not_to receive(:execute_hooks)
+
+      subject
+    end
 
     context 'when failed to save' do
       before do

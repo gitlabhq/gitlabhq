@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Admin::DatabaseDiagnostics', feature_category: :database do
   include AdminModeHelper
 
-  let_it_be(:admin, freeze: false) { create(:admin) }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:user) { create(:user) }
 
   shared_examples 'unauthorized request' do
     context 'when user is not an admin' do
@@ -50,6 +50,16 @@ RSpec.describe 'Admin::DatabaseDiagnostics', feature_category: :database do
         send_request
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'triggers an internal event and increments the unique user metric', :clean_gitlab_redis_shared_state do
+        expect { send_request }
+          .to trigger_internal_events('visit_db_diagnostics_page')
+          .with(user: admin, category: 'Admin::DatabaseDiagnosticsController')
+          .and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_visit_db_diagnostics_page_monthly',
+            'redis_hll_counters.count_distinct_user_id_from_visit_db_diagnostics_page_weekly'
+          )
       end
 
       it 'embeds database information as a data attribute', :aggregate_failures do

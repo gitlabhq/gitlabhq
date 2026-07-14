@@ -8,6 +8,7 @@ import AssociationsList from '../associations/associations_list.vue';
 import eventHub, { EVENT_OPEN_DELETE_USER_MODAL } from './delete_user_modal_event_hub';
 
 export default {
+  name: 'DeleteUserModal',
   components: {
     GlModal,
     GlButton,

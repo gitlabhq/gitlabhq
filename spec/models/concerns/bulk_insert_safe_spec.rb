@@ -59,11 +59,11 @@ RSpec.describe BulkInsertSafe, feature_category: :database do
     end
   end
 
-  let_it_be(:bulk_insert_parent_item, freeze: false) do
+  let_it_be(:bulk_insert_parent_item) do
     BulkInsertParentItem.create!(name: 'parent')
   end
 
-  let_it_be(:bulk_insert_item_class, freeze: false) do
+  let_it_be(:bulk_insert_item_class) do
     Class.new(ActiveRecord::Base) do
       self.table_name = '_test_bulk_insert_items'
 
@@ -269,7 +269,7 @@ RSpec.describe BulkInsertSafe, feature_category: :database do
     end
 
     context 'when a model with composite primary key is inserted' do
-      let_it_be(:bulk_insert_items_with_composite_pk_class, freeze: false) do
+      let_it_be(:bulk_insert_items_with_composite_pk_class) do
         Class.new(ActiveRecord::Base) do
           self.table_name = '_test_bulk_insert_items_with_composite_pk'
 
@@ -295,8 +295,8 @@ RSpec.describe BulkInsertSafe, feature_category: :database do
     end
 
     context 'when the primary key is not serial' do
-      let_it_be(:project, freeze: false) { create(:project) }
-      let_it_be(:bulk_insert_item_class, freeze: false) do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:bulk_insert_item_class) do
         Class.new(ActiveRecord::Base) do
           self.table_name = '_test_bulk_insert_with_non_serial_pk'
 

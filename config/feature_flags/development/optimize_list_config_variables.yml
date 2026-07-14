@@ -1,0 +1,10 @@
+---
+name: optimize_list_config_variables
+description: Use Ci::Config directly instead of YamlProcessor to extract pipeline variables with prefill data, skipping unnecessary job processing and validation
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/599883
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237538
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600456
+milestone: '19.2'
+group: group::pipeline authoring
+type: development
+default_enabled: false

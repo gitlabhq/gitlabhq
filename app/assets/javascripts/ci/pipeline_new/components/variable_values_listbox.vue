@@ -18,6 +18,7 @@ export default {
       required: true,
     },
   },
+  emits: ['select'],
   data() {
     return {
       searchTerm: '',

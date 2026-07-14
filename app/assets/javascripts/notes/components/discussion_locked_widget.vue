@@ -4,6 +4,7 @@ import { __, sprintf } from '~/locale';
 import issuableStateMixin from '../mixins/issuable_state';
 
 export default {
+  name: 'DiscussionLockedWidget',
   components: {
     GlIcon,
     GlLink,

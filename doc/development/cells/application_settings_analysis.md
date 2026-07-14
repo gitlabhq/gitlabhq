@@ -30,6 +30,8 @@ title: Application Settings analysis
 | `after_sign_out_path` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `after_sign_up_text` | `false` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `ai_action_api_rate_limit` | `false` | `integer` | `` | `true` | `160` | `false` | `false`| `false` |
+| `ai_gateway_timeout_seconds` | `false` | `integer` | `` | `false` | `60` | `false` | `false`| `false` |
+| `ai_gateway_url` | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
 | `akismet_api_key` | `true` | `text` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `akismet_enabled` | `false` | `boolean` | `boolean` | `false` | `false` | `false` | `false`| `true` |
 | `allow_account_deletion` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
@@ -151,6 +153,7 @@ title: Application Settings analysis
 | `domain_denylist` | `false` | `text` | `array of strings` | `false` | `null` | `true` | `true`| `true` |
 | `domain_denylist_enabled` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `true`| `true` |
 | `dsa_key_restriction` | `false` | `integer` | `integer` | `true` | `'-1'::integer` | `false` | `false`| `true` |
+| `duo_agent_platform_service_url` | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
 | `duo_chat` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `duo_foundational_flows_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `true`| `false` |
@@ -179,6 +182,7 @@ title: Application Settings analysis
 | `enable_artifact_external_redirect_warning_page` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `enable_member_promotion_management` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `enabled_git_access_protocol` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
+| `enabled_instance_verbose_ai_logs` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `enforce_ci_inbound_job_token_scope_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `enforce_namespace_storage_limit` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `enforce_terms` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `true`| `true` |
@@ -421,6 +425,7 @@ title: Application Settings analysis
 | `security_policies` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `security_policy_global_group_approvers_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `true` | `false`| `true` |
 | `security_txt_content` | `false` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
+| `self_hosted_duo_agent_platform_service_secure` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `sentry_clientside_dsn` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `sentry_clientside_traces_sample_rate` | `false` | `double` | `` | `true` | `0.0` | `true` | `false`| `false` |
 | `sentry_dsn` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |

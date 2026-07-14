@@ -68,6 +68,26 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper, feature_categ
     end
   end
 
+  describe '.insert_or_replace_git_data' do
+    let_it_be(:import_project) { create(:project, :repository) }
+    let(:merge_request) { create(:merge_request, source_project: import_project, target_project: import_project) }
+
+    it 'keeps the merge commit around synchronously' do
+      allow(merge_request).to receive(:merge_commit_sha).and_return('abc123')
+
+      expect(merge_request.project.repository).to receive(:keep_around).with(
+        'abc123',
+        source: 'MergeRequest'
+      )
+
+      helper.insert_or_replace_git_data(
+        merge_request,
+        merge_request.source_branch_sha,
+        merge_request.target_branch_sha
+      )
+    end
+  end
+
   describe '.insert_merge_request_reviewers' do
     subject { helper.insert_merge_request_reviewers(merge_request, reviewers) }
 

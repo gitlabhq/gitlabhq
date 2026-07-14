@@ -5,6 +5,7 @@ module Members
     include SafeFormatHelper
 
     helper EmailsHelper
+    helper InvitesHelper
 
     helper_method :reminder_common_body_options
 

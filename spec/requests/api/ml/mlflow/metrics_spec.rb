@@ -164,5 +164,13 @@ RSpec.describe API::Ml::Mlflow::Metrics, feature_category: :mlops do
         is_expected.to have_gitlab_http_status(:forbidden)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_ml_experiment do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        get api(route, personal_access_token: pat), params: default_params
+      end
+    end
   end
 end

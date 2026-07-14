@@ -31,12 +31,15 @@ module API
       feature_category = noteable_type.feature_category
       noteable_class = noteable_type.noteable_class
       boundary_type = parent_type.to_sym
+      noteable_name = noteable_type.human_name
+      noteable_article = noteable_name.match?(/\A[aeiou]/i) ? 'an' : 'a'
 
       params do
         requires :id, type: String, desc: "The ID of a #{parent_type}"
       end
       resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc "Get a list of #{noteable_type.human_name} notes" do
+        desc "List all #{noteable_name} notes" do
+          detail "Lists all notes for a specified #{noteable_name}."
           success Entities::Note
           tags ['notes']
         end
@@ -90,7 +93,8 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        desc "Get a single #{noteable_type.human_name} note" do
+        desc "Retrieve #{noteable_article} #{noteable_name} note" do
+          detail "Retrieves a specified note for #{noteable_article} #{noteable_name}."
           success Entities::Note
           tags %w[notes]
         end
@@ -120,7 +124,8 @@ module API
           get_note(noteable, params[:note_id], noteable_class)
         end
 
-        desc "Create a new #{noteable_type.human_name} note" do
+        desc "Create #{noteable_article} #{noteable_name} note" do
+          detail "Creates a note for #{noteable_article} #{noteable_name}."
           success Entities::Note
           tags %w[notes]
         end
@@ -164,7 +169,8 @@ module API
           end
         end
 
-        desc "Update an existing #{noteable_type.human_name} note" do
+        desc "Update #{noteable_article} #{noteable_name} note" do
+          detail "Updates an existing note for #{noteable_article} #{noteable_name}."
           success Entities::Note
           tags %w[notes]
         end
@@ -186,7 +192,8 @@ module API
           update_note(noteable, params[:note_id], noteable_class)
         end
 
-        desc "Delete a #{noteable_type.human_name} note" do
+        desc "Delete #{noteable_article} #{noteable_name} note" do
+          detail "Deletes a specified note from #{noteable_article} #{noteable_name}."
           success Entities::Note
           tags %w[notes]
         end

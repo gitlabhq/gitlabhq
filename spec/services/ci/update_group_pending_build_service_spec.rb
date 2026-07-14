@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::UpdateGroupPendingBuildService, '#execute', feature_category: :continuous_integration do
-  let_it_be(:parent_group, freeze: false) { create(:group) }
+  let_it_be_with_reload(:parent_group) { create(:group) }
   let_it_be(:parent_group_project) { create(:project, namespace: parent_group) }
   let_it_be(:child_group) { create(:group, parent: parent_group) }
   let_it_be(:child_group_project) { create(:project, namespace: child_group) }

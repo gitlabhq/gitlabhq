@@ -1,13 +1,7 @@
 <script>
-import {
-  GlEmptyState,
-  GlLoadingIcon,
-  GlModal,
-  GlLink,
-  GlSprintf,
-  GlKeysetPagination,
-  GlAlert,
-} from '@gitlab/ui';
+import { GlLoadingIcon, GlModal, GlLink, GlSprintf, GlKeysetPagination, GlAlert } from '@gitlab/ui';
+import PipelinesEmptyState from '~/ci/common/empty_state/pipelines_empty_state.vue';
+import PipelinesErrorState from '~/ci/common/empty_state/pipelines_error_state.vue';
 import { createAlert } from '~/alert';
 import Api from '~/api';
 import { fetchPolicies } from '~/lib/graphql';
@@ -16,22 +10,27 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import { s__, __ } from '~/locale';
-import getMergeRequestPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
-import getSinglePipeline from '~/ci/pipelines_page/graphql/queries/get_single_pipeline.query.graphql';
-import getPipelinesDownstream from '~/ci/merge_requests/graphql/queries/get_pipelines_downstream.query.graphql';
-import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
-import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
+
 import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { PIPELINES_PER_PAGE } from '~/ci/pipelines_page/constants';
-import mrPipelineStatusesUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/mr_pipeline_statuses_updated.subscription.graphql';
-import downstreamPipelineStatusUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/downstream_pipeline_status_updated.subscription.graphql';
 import { PIPELINE_ALIVE_STATUSES } from '~/ci/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import getPipelineCreationRequests from '~/ci/merge_requests/graphql/queries/get_pipeline_creation_requests.query.graphql';
-import pipelineCreationRequestsUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
+
+import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
+import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
+
+import getMergeRequestSinglePipeline from '../graphql/queries/get_merge_request_single_pipeline.query.graphql';
+import getMergeRequestPipelines from '../graphql/queries/get_merge_request_pipelines.query.graphql';
+import getPipelinesDownstream from '../graphql/queries/get_pipelines_downstream.query.graphql';
+import getPipelineCreationRequests from '../graphql/queries/get_pipeline_creation_requests.query.graphql';
+
+import mrPipelineStatusesUpdatedSubscription from '../graphql/subscriptions/mr_pipeline_statuses_updated.subscription.graphql';
+import downstreamPipelineStatusUpdatedSubscription from '../graphql/subscriptions/downstream_pipeline_status_updated.subscription.graphql';
+import pipelineCreationRequestsUpdatedSubscription from '../graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
+
 import { createSubscriptionsCollection, updateDownstreamPipelineInList } from '../utils';
 import { MR_PIPELINE_TYPE_DETACHED, MR_PIPELINE_TYPE_MERGED_RESULT } from '../constants';
 
@@ -41,25 +40,17 @@ export default {
   name: 'PipelinesTableWrapper',
   components: {
     GlAlert,
-    GlEmptyState,
     GlKeysetPagination,
     GlLink,
     GlLoadingIcon,
     GlModal,
     GlSprintf,
+    PipelinesEmptyState,
+    PipelinesErrorState,
     PipelinesTable,
     RunPipelineButton,
   },
-  inject: ['graphqlPath', 'mergeRequestId', 'targetProjectFullPath'],
   props: {
-    errorStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    emptyStateSvgPath: {
-      type: String,
-      required: true,
-    },
     canCreatePipelineInTargetProject: {
       type: Boolean,
       required: false,
@@ -70,10 +61,20 @@ export default {
       required: false,
       default: '',
     },
+    targetProjectFullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     projectId: {
       type: String,
       required: false,
       default: '',
+    },
+    mergeRequestId: {
+      type: Number,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -532,7 +533,7 @@ export default {
     async refetchSinglePipeline(pipelineGid) {
       try {
         const { data } = await this.$apollo.query({
-          query: getSinglePipeline,
+          query: getMergeRequestSinglePipeline,
           variables: {
             fullPath: this.targetProjectFullPath,
             id: pipelineGid,
@@ -566,6 +567,10 @@ export default {
       }
     },
     onJobActionExecuted(pipeline) {
+      // Force-alive so the pipeline stays subscribed even if the refetched status is not
+      // yet alive.
+      this.forcedAliveParentIds = [...new Set([...this.forcedAliveParentIds, pipeline.graphqlId])];
+
       const downstreamIds = (pipeline.downstream?.nodes || [])
         .slice(0, MAX_DOWNSTREAM_SUBSCRIPTIONS)
         .map((d) => d.id);
@@ -717,8 +722,6 @@ export default {
     },
   },
   i18n: {
-    fetchError: __("There was an error fetching this merge request's pipelines."),
-    runPipelinePopoverTitle: s__('Pipeline|Run merge request pipeline'),
     runPipelinePopoverDescription: s__(
       `Pipeline|To run a merge request pipeline, the jobs in the CI/CD configuration file %{ciDocsLinkStart}must be configured%{ciDocsLinkEnd} to run in merge request pipelines
       and you must have %{permissionDocsLinkStart}sufficient permissions%{permissionDocsLinkEnd} in the source project.`,
@@ -756,56 +759,43 @@ export default {
       class="gl-mt-6"
     />
 
-    <gl-empty-state
-      v-else-if="shouldRenderErrorState"
-      :svg-path="errorStateSvgPath"
-      :title="
-        s__(`Pipelines|There was an error fetching the pipelines.
-        Try again in a few moments or contact your support team.`)
-      "
-      data-testid="pipeline-error-empty-state"
-    />
-    <template v-else-if="shouldRenderEmptyState">
-      <gl-empty-state
-        :svg-path="emptyStateSvgPath"
-        :svg-height="150"
-        :title="$options.i18n.emptyStateTitle"
-        data-testid="pipeline-empty-state"
-      >
-        <template #description>
-          <gl-sprintf :message="$options.i18n.runPipelinePopoverDescription">
-            <template #ciDocsLink="{ content }">
-              <gl-link
-                :href="$options.mrPipelinesDocsPath"
-                target="_blank"
-                data-testid="mr-pipelines-docs-link"
-                >{{ content }}</gl-link
-              >
-            </template>
-            <template #permissionDocsLink="{ content }">
-              <gl-link
-                :href="$options.userPermissionsDocsPath"
-                target="_blank"
-                data-testid="user-permissions-docs-link"
-                >{{ content }}</gl-link
-              >
-            </template>
-          </gl-sprintf>
-        </template>
+    <pipelines-error-state v-else-if="shouldRenderErrorState" />
+    <pipelines-empty-state
+      v-else-if="shouldRenderEmptyState"
+      :title="$options.i18n.emptyStateTitle"
+    >
+      <template #description>
+        <gl-sprintf :message="$options.i18n.runPipelinePopoverDescription">
+          <template #ciDocsLink="{ content }">
+            <gl-link
+              :href="$options.mrPipelinesDocsPath"
+              target="_blank"
+              data-testid="mr-pipelines-docs-link"
+              >{{ content }}</gl-link
+            >
+          </template>
+          <template #permissionDocsLink="{ content }">
+            <gl-link
+              :href="$options.userPermissionsDocsPath"
+              target="_blank"
+              data-testid="user-permissions-docs-link"
+              >{{ content }}</gl-link
+            >
+          </template>
+        </gl-sprintf>
+      </template>
 
-        <template #actions>
-          <div class="gl-align-middle">
-            <run-pipeline-button
-              variant="confirm"
-              data-testid="run_pipeline_button"
-              :is-loading="showRunPipelineButtonLoader"
-              :merge-request-id="mergeRequestId"
-              @run-pipeline="tryRunPipeline"
-            />
-          </div>
-        </template>
-      </gl-empty-state>
-    </template>
+      <template #actions>
+        <div class="gl-align-middle">
+          <run-pipeline-button
+            variant="confirm"
+            :is-loading="showRunPipelineButtonLoader"
+            :merge-request-id="mergeRequestId"
+            @run-pipeline="tryRunPipeline"
+          />
+        </div>
+      </template>
+    </pipelines-empty-state>
 
     <div v-else-if="shouldRenderTable">
       <div
@@ -822,17 +812,21 @@ export default {
 
       <pipelines-table
         :is-creating-pipeline="isCreatingPipeline"
-        :show-run-pipeline-button="canRenderPipelineButton"
-        :run-pipeline-button-loading="showRunPipelineButtonLoader"
-        :merge-request-id="mergeRequestId"
         :pipelines="pipelinesWithDownstream"
         :source-project-full-path="sourceProjectFullPath"
         class="@lg/panel:-gl-mt-px"
         @cancel-pipeline="cancelPipeline"
-        @run-pipeline="tryRunPipeline"
         @retry-pipeline="retryPipeline"
         @job-action-executed="onJobActionExecuted"
-      />
+      >
+        <template v-if="canRenderPipelineButton" #table-header-actions>
+          <run-pipeline-button
+            :is-loading="showRunPipelineButtonLoader"
+            :merge-request-id="mergeRequestId"
+            @run-pipeline="tryRunPipeline"
+          />
+        </template>
+      </pipelines-table>
       <div class="gl-mt-5 gl-flex gl-justify-center">
         <gl-keyset-pagination
           v-if="showPagination"

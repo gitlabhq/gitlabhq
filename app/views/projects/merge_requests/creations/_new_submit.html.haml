@@ -52,7 +52,7 @@
         = yield
       - if @pipelines.any?
         #pipelines.pipelines.tab-pane
-          = render 'projects/merge_requests/pipelines', endpoint: url_for(safe_params.merge(action: 'pipelines', format: :json)), disable_initialization: true
+          = render 'projects/merge_requests/pipelines', endpoint: url_for(safe_params.merge(action: 'pipelines', format: :json))
 
   .mr-loading-status
     .loading.hide

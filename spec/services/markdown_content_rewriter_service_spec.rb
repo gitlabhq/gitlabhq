@@ -91,7 +91,7 @@ RSpec.describe MarkdownContentRewriterService, feature_category: :markdown do
           expect(new_content[:description]).to include(destination_path)
           expect(new_content[:description]).not_to eq(content)
           expect(new_content[:description].length).to eq(content.length)
-          expect(new_content[1]).to eq(nil)
+          expect(new_content[1]).to be_nil
         end
       end
 
@@ -197,20 +197,20 @@ RSpec.describe MarkdownContentRewriterService, feature_category: :markdown do
       let(:milestone) { create(:milestone, project: source_parent) }
       let(:content) { "Description that references #{milestone.to_reference}" }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when content has uploaded file references' do
       let(:image_uploader) { build(:file_uploader, container: source_parent) }
       let(:content) { "Text and #{image_uploader.markdown_link}" }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when content does not have references or uploads' do
       let(:content) { "simples text with ```code```" }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 end

@@ -447,7 +447,7 @@ find('.form-control').native.send_keys(:enter)
 expect(page).to have_selector('.card')
 ```
 
-### Consider **not** writing a system test
+### Consider not writing a system test
 
 If we're confident that the low-level components work well (and we should be if
 we have enough Unit & Integration tests), we shouldn't need to duplicate their

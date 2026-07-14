@@ -3,6 +3,7 @@ import { GlIcon, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'PageTitle',
   i18n: {
     agentTitle: s__('KubernetesDashboard|Agent %{name} ID #%{id}'),
   },

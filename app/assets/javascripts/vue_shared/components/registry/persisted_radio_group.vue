@@ -23,6 +23,7 @@ export default {
       required: true,
     },
   },
+  emits: ['change'],
   data() {
     return {
       selected: this.options[0].value,

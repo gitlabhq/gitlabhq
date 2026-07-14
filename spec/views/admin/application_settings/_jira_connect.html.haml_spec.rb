@@ -25,4 +25,9 @@ RSpec.describe 'admin/application_settings/_jira_connect.html.haml', feature_cat
     render
     expect(rendered).to have_field('Enable public key storage', type: 'checkbox')
   end
+
+  it 'renders the Forge app ID field' do
+    render
+    expect(rendered).to have_field('Forge app ID', type: 'text')
+  end
 end

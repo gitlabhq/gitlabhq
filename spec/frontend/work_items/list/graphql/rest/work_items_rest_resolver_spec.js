@@ -27,6 +27,7 @@ const makeRestItem = (overrides = {}) => ({
   closed_at: null,
   reference: 'gitlab-org/gitlab-shell#42',
   web_path: '/gitlab-org/gitlab-shell/-/work_items/42',
+  web_url: 'http://localhost/gitlab-org/gitlab-shell/-/work_items/42',
   user_discussions_count: 0,
   author: {
     id: 1,
@@ -48,6 +49,13 @@ const makeRestItem = (overrides = {}) => ({
   features: null,
   ...overrides,
 });
+
+const basePaginationHeaders = {
+  'x-page': '1',
+  'x-per-page': '20',
+  'x-total': '50',
+  'x-total-pages': '3',
+};
 
 describe('workItemsRestResolver', () => {
   let mockAxios;
@@ -86,6 +94,19 @@ describe('workItemsRestResolver', () => {
       expect(mockAxios.history.get[0].url).toContain(encodedSlashPath);
     });
 
+    it('uses the /groups/:full_path/-/work_items endpoint for group namespaces', async () => {
+      const groupNamespace = makeNamespace('my-group', 'gid://gitlab/Group/7');
+      const encodedGroupPath = encodeURIComponent('my-group');
+      mockAxios
+        .onGet(`/api/v4/groups/${encodedGroupPath}/-/work_items`)
+        .reply(HTTP_STATUS_OK, [], {});
+
+      await workItemsRestResolver(groupNamespace, {});
+
+      expect(mockAxios.history.get).toHaveLength(1);
+      expect(mockAxios.history.get[0].url).toBe(`/api/v4/groups/${encodedGroupPath}/-/work_items`);
+    });
+
     it('maps REST item fields to the GraphQL WorkItem shape', async () => {
       const item = makeRestItem();
       mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
@@ -93,16 +114,19 @@ describe('workItemsRestResolver', () => {
       const { nodes } = await workItemsRestResolver(makeNamespace(), {});
       const node = nodes[0];
 
-      expect(node).toMatchObject({ __typename: 'WorkItem' });
-      expect(node.id).toBe(item.global_id);
-      expect(node.iid).toBe(String(item.iid));
-      expect(node.title).toBe(item.title);
-      expect(node.state).toBe('OPEN');
-      expect(node.createdAt).toBe(item.created_at);
-      expect(node.updatedAt).toBe(item.updated_at);
-      expect(node.closedAt).toBeNull();
-      expect(node.webPath).toBe(item.web_path);
-      expect(node.userDiscussionsCount).toBe(0);
+      expect(node).toMatchObject({
+        __typename: 'WorkItem',
+        id: item.global_id,
+        iid: String(item.iid),
+        title: item.title,
+        state: 'OPEN',
+        createdAt: item.created_at,
+        updatedAt: item.updated_at,
+        closedAt: null,
+        webPath: item.web_path,
+        webUrl: item.web_url,
+        userDiscussionsCount: 0,
+      });
     });
 
     it('maps confidential field with default value of false', async () => {
@@ -166,10 +190,43 @@ describe('workItemsRestResolver', () => {
       const { nodes } = await workItemsRestResolver(makeNamespace(), {});
       const { author } = nodes[0];
 
-      expect(author).toMatchObject({ __typename: 'UserCore' });
-      expect(author.id).toBe(`gid://gitlab/User/${item.author.id}`);
-      expect(author.name).toBe(item.author.name);
-      expect(author.username).toBe(item.author.username);
+      expect(author).toMatchObject({
+        __typename: 'UserCore',
+        id: `gid://gitlab/User/${item.author.id}`,
+        name: item.author.name,
+        username: item.author.username,
+      });
+    });
+
+    it('maps author webUrl from REST web_url field', async () => {
+      const item = makeRestItem({
+        author: {
+          id: 1,
+          name: 'Administrator',
+          username: 'root',
+          web_path: '/root',
+          web_url: 'https://gitlab.example.com/root',
+        },
+      });
+      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+
+      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+      expect(nodes[0].author).toMatchObject({
+        webPath: '/root',
+        webUrl: 'https://gitlab.example.com/root',
+      });
+    });
+
+    it('maps author webUrl to null when web_url is missing', async () => {
+      const item = makeRestItem({
+        author: { id: 1, name: 'Administrator', username: 'root', web_path: '/root' },
+      });
+      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+
+      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+      expect(nodes[0].author.webUrl).toBeNull();
     });
 
     it('maps namespace from REST API response to Namespace shape', async () => {
@@ -201,10 +258,12 @@ describe('workItemsRestResolver', () => {
       const { nodes } = await workItemsRestResolver(makeNamespace(), {});
       const { workItemType } = nodes[0];
 
-      expect(workItemType).toMatchObject({ __typename: 'WorkItemType' });
-      expect(workItemType.id).toBe(`gid://gitlab/WorkItems::Type/${item.work_item_type.id}`);
-      expect(workItemType.name).toBe(item.work_item_type.name);
-      expect(workItemType.iconName).toBe(item.work_item_type.icon_name);
+      expect(workItemType).toMatchObject({
+        __typename: 'WorkItemType',
+        id: `gid://gitlab/WorkItems::Type/${item.work_item_type.id}`,
+        name: item.work_item_type.name,
+        iconName: item.work_item_type.icon_name,
+      });
     });
 
     it('returns an empty nodes array when response data is empty', async () => {
@@ -217,34 +276,101 @@ describe('workItemsRestResolver', () => {
   });
 
   describe('pagination', () => {
-    it('sets hasNextPage and endCursor from x-next-cursor header', async () => {
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [], { 'x-next-cursor': 'cursor_abc' });
+    describe('keyset pagination (cursor-based)', () => {
+      it('sets hasNextPage and endCursor from x-next-cursor header', async () => {
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [], { 'x-next-cursor': 'cursor_abc' });
 
-      const { pageInfo } = await workItemsRestResolver(makeNamespace(), {});
+        const { pageInfo } = await workItemsRestResolver(makeNamespace(), {});
 
-      expect(pageInfo).toMatchObject({ __typename: 'PageInfo' });
-      expect(pageInfo.hasNextPage).toBe(true);
-      expect(pageInfo.endCursor).toBe('cursor_abc');
+        expect(pageInfo).toMatchObject({
+          __typename: 'PageInfo',
+          hasNextPage: true,
+          endCursor: 'cursor_abc',
+        });
+      });
+
+      it('sets hasPreviousPage and startCursor from x-prev-cursor header', async () => {
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [], { 'x-prev-cursor': 'cursor_xyz' });
+
+        const { pageInfo } = await workItemsRestResolver(makeNamespace(), {});
+
+        expect(pageInfo.hasPreviousPage).toBe(true);
+        expect(pageInfo.startCursor).toBe('cursor_xyz');
+      });
+
+      describe('when cursor headers are absent', () => {
+        beforeEach(() => {
+          mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [], {});
+        });
+
+        it('sets hasNextPage and hasPreviousPage to false', async () => {
+          const { pageInfo } = await workItemsRestResolver(makeNamespace(), {});
+
+          expect(pageInfo).toMatchObject({
+            hasNextPage: false,
+            hasPreviousPage: false,
+            endCursor: null,
+            startCursor: null,
+          });
+        });
+      });
     });
 
-    it('sets hasPreviousPage and startCursor from x-prev-cursor header', async () => {
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [], { 'x-prev-cursor': 'cursor_xyz' });
+    describe('offset pagination (page-based)', () => {
+      describe('when x-next-page header is present', () => {
+        beforeEach(() => {
+          mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [], {
+            ...basePaginationHeaders,
+            'x-next-page': '2',
+          });
+        });
 
-      const { pageInfo } = await workItemsRestResolver(makeNamespace(), {});
+        it('sets hasNextPage true', async () => {
+          const { pageInfo } = await workItemsRestResolver(makeNamespace(), {});
 
-      expect(pageInfo.hasPreviousPage).toBe(true);
-      expect(pageInfo.startCursor).toBe('cursor_xyz');
-    });
+          expect(pageInfo).toMatchObject({
+            __typename: 'PageInfo',
+            hasNextPage: true,
+            endCursor: '2',
+          });
+        });
+      });
 
-    it('sets hasNextPage and hasPreviousPage to false when cursor headers are absent', async () => {
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [], {});
+      describe('when x-prev-page header is present', () => {
+        beforeEach(() => {
+          mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [], {
+            ...basePaginationHeaders,
+            'x-page': '2',
+            'x-prev-page': '1',
+          });
+        });
 
-      const { pageInfo } = await workItemsRestResolver(makeNamespace(), {});
+        it('sets hasPreviousPage true', async () => {
+          const { pageInfo } = await workItemsRestResolver(makeNamespace(), {});
 
-      expect(pageInfo.hasNextPage).toBe(false);
-      expect(pageInfo.hasPreviousPage).toBe(false);
-      expect(pageInfo.endCursor).toBeNull();
-      expect(pageInfo.startCursor).toBeNull();
+          expect(pageInfo.hasPreviousPage).toBe(true);
+          expect(pageInfo.startCursor).toBe('1');
+        });
+      });
+
+      it('sets hasNextPage false on last page', async () => {
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [], {
+          ...basePaginationHeaders,
+          'x-page': '3',
+        });
+
+        const { pageInfo } = await workItemsRestResolver(makeNamespace(), {});
+
+        expect(pageInfo.hasNextPage).toBe(false);
+      });
+
+      it('sets hasPreviousPage false on first page', async () => {
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [], basePaginationHeaders);
+
+        const { pageInfo } = await workItemsRestResolver(makeNamespace(), {});
+
+        expect(pageInfo.hasPreviousPage).toBe(false);
+      });
     });
   });
 
@@ -271,8 +397,10 @@ describe('workItemsRestResolver', () => {
       const { nodes } = await workItemsRestResolver(makeNamespace(), {});
       const labelsWidget = nodes[0].widgets.find((w) => w.type === 'LABELS');
 
-      expect(labelsWidget).toMatchObject({ __typename: 'WorkItemWidgetLabels' });
-      expect(labelsWidget.allowsScopedLabels).toBe(true);
+      expect(labelsWidget).toMatchObject({
+        __typename: 'WorkItemWidgetLabels',
+        allowsScopedLabels: true,
+      });
       expect(labelsWidget.labels.nodes).toHaveLength(1);
       expect(labelsWidget.labels.nodes[0]).toMatchObject({
         __typename: 'Label',
@@ -286,25 +414,35 @@ describe('workItemsRestResolver', () => {
   });
 
   describe('ASSIGNEES widget mapping', () => {
-    it('returns an empty assignees array when features is null', async () => {
-      const item = makeRestItem({ features: null });
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+    describe('when features is null', () => {
+      beforeEach(() => {
+        const item = makeRestItem({ features: null });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+      });
 
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
-      const assigneesWidget = nodes[0].widgets.find((w) => w.type === 'ASSIGNEES');
+      it('returns an empty assignees array', async () => {
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+        const assigneesWidget = nodes[0].widgets.find((w) => w.type === 'ASSIGNEES');
 
-      expect(assigneesWidget).toMatchObject({ __typename: 'WorkItemWidgetAssignees' });
-      expect(assigneesWidget.assignees.nodes).toEqual([]);
+        expect(assigneesWidget).toMatchObject({
+          __typename: 'WorkItemWidgetAssignees',
+          assignees: { __typename: 'UserCoreConnection', nodes: [] },
+        });
+      });
     });
 
-    it('returns an empty assignees array when features.assignees is undefined', async () => {
-      const item = makeRestItem({ features: {} });
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+    describe('when features.assignees is undefined', () => {
+      beforeEach(() => {
+        const item = makeRestItem({ features: {} });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+      });
 
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
-      const assigneesWidget = nodes[0].widgets.find((w) => w.type === 'ASSIGNEES');
+      it('returns an empty assignees array', async () => {
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+        const assigneesWidget = nodes[0].widgets.find((w) => w.type === 'ASSIGNEES');
 
-      expect(assigneesWidget.assignees.nodes).toEqual([]);
+        expect(assigneesWidget.assignees.nodes).toEqual([]);
+      });
     });
 
     it('maps assignees from features.assignees to UserCore nodes', async () => {
@@ -402,25 +540,35 @@ describe('workItemsRestResolver', () => {
   });
 
   describe('MILESTONE widget mapping', () => {
-    it('returns null milestone when features is null', async () => {
-      const item = makeRestItem({ features: null });
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+    describe('when features is null', () => {
+      beforeEach(() => {
+        const item = makeRestItem({ features: null });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+      });
 
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
-      const milestoneWidget = nodes[0].widgets.find((w) => w.type === 'MILESTONE');
+      it('returns null milestone', async () => {
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+        const milestoneWidget = nodes[0].widgets.find((w) => w.type === 'MILESTONE');
 
-      expect(milestoneWidget).toMatchObject({ __typename: 'WorkItemWidgetMilestone' });
-      expect(milestoneWidget.milestone).toBeNull();
+        expect(milestoneWidget).toMatchObject({
+          __typename: 'WorkItemWidgetMilestone',
+          milestone: null,
+        });
+      });
     });
 
-    it('returns null milestone when features.milestone is undefined', async () => {
-      const item = makeRestItem({ features: {} });
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+    describe('when features.milestone is undefined', () => {
+      beforeEach(() => {
+        const item = makeRestItem({ features: {} });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+      });
 
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
-      const milestoneWidget = nodes[0].widgets.find((w) => w.type === 'MILESTONE');
+      it('returns null milestone', async () => {
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+        const milestoneWidget = nodes[0].widgets.find((w) => w.type === 'MILESTONE');
 
-      expect(milestoneWidget.milestone).toBeNull();
+        expect(milestoneWidget.milestone).toBeNull();
+      });
     });
 
     it('maps milestone from features.milestone to Milestone object', async () => {
@@ -431,7 +579,7 @@ describe('workItemsRestResolver', () => {
             title: 'v1.0',
             due_date: '2024-12-31',
             start_date: '2024-01-01',
-            web_path: 'https://gitlab.example.com/groups/my-group/-/milestones/1',
+            web_url: 'https://gitlab.example.com/groups/my-group/-/milestones/1',
           },
         },
       });
@@ -446,7 +594,8 @@ describe('workItemsRestResolver', () => {
         title: 'v1.0',
         dueDate: '2024-12-31',
         startDate: '2024-01-01',
-        webPath: 'https://gitlab.example.com/groups/my-group/-/milestones/1',
+        webPath: '/groups/my-group/-/milestones/1',
+        webUrl: 'https://gitlab.example.com/groups/my-group/-/milestones/1',
       });
     });
 
@@ -471,23 +620,28 @@ describe('workItemsRestResolver', () => {
         dueDate: null,
         startDate: null,
         webPath: null,
+        webUrl: null,
       });
     });
   });
 
   describe('START_AND_DUE_DATE widget mapping', () => {
-    it('includes START_AND_DUE_DATE widget with null dates when features.start_and_due_date is not present', async () => {
-      const item = makeRestItem({ features: null });
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+    describe('when features.start_and_due_date is not present', () => {
+      beforeEach(() => {
+        const item = makeRestItem({ features: null });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+      });
 
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
-      const startAndDueDateWidget = nodes[0].widgets.find((w) => w.type === 'START_AND_DUE_DATE');
+      it('includes START_AND_DUE_DATE widget with null dates', async () => {
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+        const startAndDueDateWidget = nodes[0].widgets.find((w) => w.type === 'START_AND_DUE_DATE');
 
-      expect(startAndDueDateWidget).toMatchObject({
-        __typename: 'WorkItemWidgetStartAndDueDate',
-        type: 'START_AND_DUE_DATE',
-        startDate: null,
-        dueDate: null,
+        expect(startAndDueDateWidget).toMatchObject({
+          __typename: 'WorkItemWidgetStartAndDueDate',
+          type: 'START_AND_DUE_DATE',
+          startDate: null,
+          dueDate: null,
+        });
       });
     });
 
@@ -536,6 +690,83 @@ describe('workItemsRestResolver', () => {
     });
   });
 
+  describe('AWARD_EMOJI widget mapping', () => {
+    describe('when features.award_emoji is not present', () => {
+      beforeEach(() => {
+        const item = makeRestItem({ features: null });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+      });
+
+      it('includes AWARD_EMOJI widget with zero counts', async () => {
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+        const awardEmojiWidget = nodes[0].widgets.find((w) => w.type === 'AWARD_EMOJI');
+
+        expect(awardEmojiWidget).toMatchObject({
+          __typename: 'WorkItemWidgetAwardEmoji',
+          type: 'AWARD_EMOJI',
+          upvotes: 0,
+          downvotes: 0,
+        });
+      });
+    });
+
+    it('maps upvotes and downvotes from features.award_emoji', async () => {
+      const item = makeRestItem({
+        features: { award_emoji: { upvotes: 3, downvotes: 1 } },
+      });
+      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+
+      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+      const awardEmojiWidget = nodes[0].widgets.find((w) => w.type === 'AWARD_EMOJI');
+
+      expect(awardEmojiWidget).toMatchObject({
+        __typename: 'WorkItemWidgetAwardEmoji',
+        type: 'AWARD_EMOJI',
+        upvotes: 3,
+        downvotes: 1,
+      });
+    });
+  });
+
+  describe('DEVELOPMENT widget mapping', () => {
+    describe('when features.development is not present', () => {
+      beforeEach(() => {
+        const item = makeRestItem({ features: {} });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+      });
+
+      it('does not include the DEVELOPMENT widget', async () => {
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+        const developmentWidget = nodes[0].widgets.find((w) => w.type === 'DEVELOPMENT');
+
+        expect(developmentWidget).toBeUndefined();
+      });
+    });
+
+    it('maps closing_merge_requests_count to the DEVELOPMENT widget', async () => {
+      const item = makeRestItem({
+        features: {
+          development: {
+            closing_merge_requests_count: 3,
+          },
+        },
+      });
+      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+
+      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+      const developmentWidget = nodes[0].widgets.find((w) => w.type === 'DEVELOPMENT');
+
+      expect(developmentWidget).toMatchObject({
+        __typename: 'WorkItemWidgetDevelopment',
+        type: 'DEVELOPMENT',
+        closingMergeRequests: {
+          count: 3,
+          __typename: 'WorkItemClosingMergeRequestConnection',
+        },
+      });
+    });
+  });
+
   describe('error handling', () => {
     it('throws when axios request fails', async () => {
       mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
@@ -545,204 +776,264 @@ describe('workItemsRestResolver', () => {
   });
 
   describe('features mapping', () => {
-    beforeEach(() => {
-      window.gon = { api_version: 'v4', features: { workItemFeaturesField: true } };
-    });
-
-    it('returns populated features (alongside widgets) on each work item when the flag is enabled', async () => {
-      const item = makeRestItem();
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
-
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
-
-      expect(nodes[0].features).toMatchObject({ __typename: 'WorkItemFeatures' });
-      expect(nodes[0].features.labels).not.toBeNull();
-      expect(nodes[0].widgets.length).toBeGreaterThan(0);
-    });
-
-    it('returns widgets (and a null-valued features placeholder) when the flag is disabled', async () => {
-      window.gon = { api_version: 'v4', features: { workItemFeaturesField: false } };
-      const item = makeRestItem();
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
-
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
-
-      expect(nodes[0].widgets.length).toBeGreaterThan(0);
-      expect(nodes[0].features).toMatchObject({
-        __typename: 'WorkItemFeatures',
-        labels: null,
-        assignees: null,
-        milestone: null,
-        startAndDueDate: null,
-        hierarchy: null,
+    describe('when the flag is enabled', () => {
+      beforeEach(() => {
+        window.gon = { api_version: 'v4', features: { workItemFeaturesField: true } };
       });
-    });
 
-    it('maps labels to features.labels', async () => {
-      const item = makeRestItem({
-        features: {
-          labels: {
-            allows_scoped_labels: true,
-            labels: [
+      it('returns populated features (alongside widgets) on each work item', async () => {
+        const item = makeRestItem();
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+        expect(nodes[0].features).toMatchObject({ __typename: 'WorkItemFeatures' });
+        expect(nodes[0].features.labels).not.toBeNull();
+        expect(nodes[0].widgets.length).toBeGreaterThan(0);
+      });
+
+      it('maps labels to features.labels', async () => {
+        const item = makeRestItem({
+          features: {
+            labels: {
+              allows_scoped_labels: true,
+              labels: [
+                {
+                  id: 10,
+                  title: 'bug',
+                  color: '#e11',
+                  text_color: '#fff',
+                  description: 'A bug',
+                },
+              ],
+            },
+          },
+        });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+        expect(nodes[0].features.labels).toMatchObject({
+          __typename: 'WorkItemWidgetLabels',
+          allowsScopedLabels: true,
+        });
+        expect(nodes[0].features.labels.labels.nodes).toHaveLength(1);
+        expect(nodes[0].features.labels.labels.nodes[0]).toMatchObject({
+          __typename: 'Label',
+          id: 'gid://gitlab/Label/10',
+          title: 'bug',
+          color: '#e11',
+          textColor: '#fff',
+          description: 'A bug',
+        });
+      });
+
+      it('maps assignees to features.assignees', async () => {
+        const item = makeRestItem({
+          features: {
+            assignees: [
               {
-                id: 10,
-                title: 'bug',
-                color: '#e11',
-                text_color: '#fff',
-                description: 'A bug',
+                id: 100,
+                name: 'John Doe',
+                username: 'jdoe',
+                avatar_url: 'https://example.com/avatar.png',
+                web_url: 'https://gitlab.example.com/jdoe',
+                web_path: '/jdoe',
               },
             ],
           },
-        },
-      });
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+        });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
 
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
 
-      expect(nodes[0].features.labels).toMatchObject({
-        __typename: 'WorkItemWidgetLabels',
-        allowsScopedLabels: true,
+        expect(nodes[0].features.assignees).toMatchObject({
+          __typename: 'WorkItemWidgetAssignees',
+        });
+        expect(nodes[0].features.assignees.assignees.nodes).toHaveLength(1);
+        expect(nodes[0].features.assignees.assignees.nodes[0]).toMatchObject({
+          __typename: 'UserCore',
+          id: 'gid://gitlab/User/100',
+          name: 'John Doe',
+          username: 'jdoe',
+          avatarUrl: 'https://example.com/avatar.png',
+          webUrl: 'https://gitlab.example.com/jdoe',
+          webPath: '/jdoe',
+        });
       });
-      expect(nodes[0].features.labels.labels.nodes).toHaveLength(1);
-      expect(nodes[0].features.labels.labels.nodes[0]).toMatchObject({
-        __typename: 'Label',
-        id: 'gid://gitlab/Label/10',
-        title: 'bug',
-        color: '#e11',
-        textColor: '#fff',
-        description: 'A bug',
-      });
-    });
 
-    it('maps assignees to features.assignees', async () => {
-      const item = makeRestItem({
-        features: {
-          assignees: [
-            {
-              id: 100,
-              name: 'John Doe',
-              username: 'jdoe',
-              avatar_url: 'https://example.com/avatar.png',
-              web_url: 'https://gitlab.example.com/jdoe',
-              web_path: '/jdoe',
+      it('maps milestone to features.milestone', async () => {
+        const item = makeRestItem({
+          features: {
+            milestone: {
+              id: 50,
+              title: 'v1.0',
+              due_date: '2024-12-31',
+              start_date: '2024-01-01',
+              web_url: 'https://gitlab.example.com/groups/my-group/-/milestones/1',
             },
-          ],
-        },
-      });
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+          },
+        });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
 
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
 
-      expect(nodes[0].features.assignees).toMatchObject({
-        __typename: 'WorkItemWidgetAssignees',
-      });
-      expect(nodes[0].features.assignees.assignees.nodes).toHaveLength(1);
-      expect(nodes[0].features.assignees.assignees.nodes[0]).toMatchObject({
-        __typename: 'UserCore',
-        id: 'gid://gitlab/User/100',
-        name: 'John Doe',
-        username: 'jdoe',
-        avatarUrl: 'https://example.com/avatar.png',
-        webUrl: 'https://gitlab.example.com/jdoe',
-        webPath: '/jdoe',
-      });
-    });
-
-    it('maps milestone to features.milestone', async () => {
-      const item = makeRestItem({
-        features: {
+        expect(nodes[0].features.milestone).toMatchObject({
+          __typename: 'WorkItemWidgetMilestone',
           milestone: {
-            id: 50,
+            __typename: 'Milestone',
+            id: 'gid://gitlab/Milestone/50',
             title: 'v1.0',
-            due_date: '2024-12-31',
-            start_date: '2024-01-01',
-            web_path: 'https://gitlab.example.com/groups/my-group/-/milestones/1',
+            dueDate: '2024-12-31',
+            startDate: '2024-01-01',
+            webPath: '/groups/my-group/-/milestones/1',
+            webUrl: 'https://gitlab.example.com/groups/my-group/-/milestones/1',
           },
-        },
+        });
       });
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
 
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+      it('maps start_and_due_date to features.startAndDueDate', async () => {
+        const item = makeRestItem({
+          features: {
+            start_and_due_date: {
+              start_date: '2024-01-01',
+              due_date: '2024-01-31',
+            },
+          },
+        });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
 
-      expect(nodes[0].features.milestone).toMatchObject({
-        __typename: 'WorkItemWidgetMilestone',
-        milestone: {
-          __typename: 'Milestone',
-          id: 'gid://gitlab/Milestone/50',
-          title: 'v1.0',
-          dueDate: '2024-12-31',
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+        expect(nodes[0].features.startAndDueDate).toMatchObject({
+          __typename: 'WorkItemWidgetStartAndDueDate',
           startDate: '2024-01-01',
-          webPath: 'https://gitlab.example.com/groups/my-group/-/milestones/1',
-        },
+          dueDate: '2024-01-31',
+        });
       });
-    });
 
-    it('maps start_and_due_date to features.startAndDueDate', async () => {
-      const item = makeRestItem({
-        features: {
-          start_and_due_date: {
-            start_date: '2024-01-01',
-            due_date: '2024-01-31',
-          },
-        },
-      });
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
-
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
-
-      expect(nodes[0].features.startAndDueDate).toMatchObject({
-        __typename: 'WorkItemWidgetStartAndDueDate',
-        startDate: '2024-01-01',
-        dueDate: '2024-01-31',
-      });
-    });
-
-    it('maps hierarchy parent to features.hierarchy', async () => {
-      const item = makeRestItem({
-        features: {
-          hierarchy: {
-            parent: {
-              global_id: 'gid://gitlab/WorkItem/10',
-              iid: 5,
-              title: 'Parent work item',
-              confidential: true,
-              web_url: 'https://gitlab.example.com/work_items/10',
-              work_item_type: {
-                id: 1,
-                name: 'Epic',
-                icon_name: 'issue-type-epic',
+      it('maps hierarchy parent to features.hierarchy', async () => {
+        const item = makeRestItem({
+          features: {
+            hierarchy: {
+              parent: {
+                global_id: 'gid://gitlab/WorkItem/10',
+                iid: 5,
+                title: 'Parent work item',
+                confidential: true,
+                web_url: 'https://gitlab.example.com/work_items/10',
+                work_item_type: {
+                  id: 1,
+                  name: 'Epic',
+                  icon_name: 'issue-type-epic',
+                },
               },
             },
           },
-        },
+        });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+        expect(nodes[0].features.hierarchy).toMatchObject({
+          __typename: 'WorkItemWidgetHierarchy',
+          parent: {
+            __typename: 'WorkItem',
+            id: 'gid://gitlab/WorkItem/10',
+            iid: '5',
+            title: 'Parent work item',
+            confidential: true,
+            webUrl: 'https://gitlab.example.com/work_items/10',
+          },
+        });
       });
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
 
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+      it('maps award_emoji to features.awardEmoji', async () => {
+        const item = makeRestItem({
+          features: { award_emoji: { upvotes: 5, downvotes: 2 } },
+        });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
 
-      expect(nodes[0].features.hierarchy).toMatchObject({
-        __typename: 'WorkItemWidgetHierarchy',
-        parent: {
-          __typename: 'WorkItem',
-          id: 'gid://gitlab/WorkItem/10',
-          iid: '5',
-          title: 'Parent work item',
-          confidential: true,
-          webUrl: 'https://gitlab.example.com/work_items/10',
-        },
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+        expect(nodes[0].features.awardEmoji).toMatchObject({
+          __typename: 'WorkItemWidgetAwardEmoji',
+          upvotes: 5,
+          downvotes: 2,
+        });
+      });
+
+      it('maps development to features.development', async () => {
+        const item = makeRestItem({
+          features: { development: { closing_merge_requests_count: 1 } },
+        });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+        expect(nodes[0].features.development).toMatchObject({
+          __typename: 'WorkItemWidgetDevelopment',
+          closingMergeRequests: {
+            count: 1,
+            __typename: 'WorkItemClosingMergeRequestConnection',
+          },
+        });
+      });
+
+      describe('when REST features are absent', () => {
+        beforeEach(() => {
+          const item = makeRestItem({ features: null });
+          mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+        });
+
+        it('returns null values for features', async () => {
+          const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+          expect(nodes[0].features.milestone.milestone).toBeNull();
+          expect(nodes[0].features.assignees.assignees.nodes).toEqual([]);
+          expect(nodes[0].features.startAndDueDate.startDate).toBeNull();
+          expect(nodes[0].features.hierarchy.parent).toBeNull();
+          expect(nodes[0].features.awardEmoji).toMatchObject({ upvotes: 0, downvotes: 0 });
+          expect(nodes[0].features.development).toBeNull();
+        });
+      });
+
+      describe('when development feature is not present', () => {
+        beforeEach(() => {
+          const item = makeRestItem({ features: {} });
+          mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+        });
+
+        it('returns null for features.development', async () => {
+          const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+          expect(nodes[0].features.development).toBeNull();
+        });
       });
     });
 
-    it('returns null values for features when REST features are absent', async () => {
-      const item = makeRestItem({ features: null });
-      mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+    describe('when the flag is disabled', () => {
+      beforeEach(() => {
+        window.gon = { api_version: 'v4', features: { workItemFeaturesField: false } };
+      });
 
-      const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+      it('returns widgets (and a null-valued features placeholder)', async () => {
+        const item = makeRestItem();
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
 
-      expect(nodes[0].features.milestone.milestone).toBeNull();
-      expect(nodes[0].features.assignees.assignees.nodes).toEqual([]);
-      expect(nodes[0].features.startAndDueDate.startDate).toBeNull();
-      expect(nodes[0].features.hierarchy.parent).toBeNull();
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+        expect(nodes[0].widgets.length).toBeGreaterThan(0);
+        expect(nodes[0].features).toMatchObject({
+          __typename: 'WorkItemFeatures',
+          labels: null,
+          assignees: null,
+          milestone: null,
+          startAndDueDate: null,
+          hierarchy: null,
+          awardEmoji: null,
+        });
+      });
     });
   });
 });

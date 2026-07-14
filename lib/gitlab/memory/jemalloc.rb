@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fiddle'
+require 'ffi'
 
 module Gitlab
   module Memory
@@ -39,17 +39,20 @@ module Gitlab
       end
 
       def with_malloc_stats_print
-        fiddle_func = malloc_stats_print
-        return unless fiddle_func
+        stats_print = malloc_stats_print
+        return unless stats_print
 
-        yield fiddle_func
+        yield stats_print
       end
 
       def malloc_stats_print
-        method = Fiddle::Handle.sym("malloc_stats_print")
+        # Look up malloc_stats_print in the current process. When jemalloc is not
+        # loaded the symbol is absent and find_function returns nil, in which case
+        # we return nil too.
+        symbol = current_process.find_function('malloc_stats_print')
+        return unless symbol
 
-        Fiddle::Function.new(
-          method,
+        FFI::Function.new(
           # C signature:
           # void (write_cb_t *write_cb, void *cbopaque, const char *opts)
           #   arg1: callback function pointer (see below)
@@ -60,21 +63,26 @@ module Gitlab
           # void (void *, const char *)
           #   arg1: pointer to cbopaque data (see above; unused)
           #   arg2: pointer to string buffer holding textual output
-          [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP],
-          Fiddle::TYPE_VOID
+          :void,
+          [:pointer, :pointer, :string],
+          symbol
         )
-      rescue Fiddle::DLError
-        # This means the Fiddle::Handle to jemalloc was not open (jemalloc wasn't loaded)
-        # or already closed. Eiher way, return nil.
       end
 
       def write_stats(stats_print, io, format)
-        callback = Fiddle::Closure::BlockCaller.new(
-          Fiddle::TYPE_VOID, [Fiddle::TYPE_VOIDP, Fiddle::TYPE_VOIDP]) do |_, fragment|
+        callback = FFI::Function.new(:void, [:pointer, :string]) do |_cbopaque, fragment|
           io << fragment
         end
 
         stats_print.call(callback, nil, format[:options])
+      end
+
+      # Handle to the current process, used to resolve symbols loaded into it
+      # (e.g. jemalloc when injected via LD_PRELOAD).
+      def current_process
+        FFI::DynamicLibrary.open(
+          nil, FFI::DynamicLibrary::RTLD_LAZY | FFI::DynamicLibrary::RTLD_GLOBAL
+        )
       end
     end
   end

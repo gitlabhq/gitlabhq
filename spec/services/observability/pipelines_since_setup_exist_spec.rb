@@ -80,4 +80,36 @@ RSpec.describe Observability::PipelinesSinceSetupExist, feature_category: :obser
 
     it { is_expected.to be(false) }
   end
+
+  context 'with a personal (user) namespace' do
+    let_it_be(:user_namespace) { create(:namespace) }
+    let_it_be(:personal_project) { create(:project, namespace: user_namespace) }
+    let_it_be(:personal_setting) do
+      create(:observability_group_o11y_setting, group: user_namespace, created_at: 2.days.ago)
+    end
+
+    subject(:result) { described_class.new(user_namespace).execute }
+
+    context 'when no matching pipelines exist' do
+      it { is_expected.to be(false) }
+    end
+
+    context 'when matching pipelines exist' do
+      before do
+        create(:ci_pipeline, :success, project: personal_project, finished_at: 1.day.ago)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when namespace has no projects' do
+      let_it_be(:empty_namespace) { create(:namespace) }
+
+      before do
+        create(:observability_group_o11y_setting, group: empty_namespace, created_at: 2.days.ago)
+      end
+
+      it { expect(described_class.new(empty_namespace).execute).to be(false) }
+    end
+  end
 end

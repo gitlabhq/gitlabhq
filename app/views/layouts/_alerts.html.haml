@@ -1,6 +1,6 @@
 .alert-wrapper.alert-wrapper-top-space.gl-flex.gl-flex-col.gl-gap-3.container-fluid{ class: alert_class }
   = dispensable_render 'shared/outdated_browser'
-  = dispensable_render_if_exists "layouts/header/seat_alert"
+  = dispensable_render_if_exists "layouts/header/admin_seat_alert"
   -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab/-/issues/13)
   = dispensable_render_if_exists "layouts/header/account_notification"
   = dispensable_render "shared/groups_projects/self_or_ancestor_marked_for_deletion_notice", context: context

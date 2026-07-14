@@ -1,0 +1,9 @@
+---
+name: ci_enforce_ci_lint_rate_limit
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/599486
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241630
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/602468
+milestone: '19.2'
+type: gitlab_com_derisk
+group: group::pipeline authoring
+default_enabled: false

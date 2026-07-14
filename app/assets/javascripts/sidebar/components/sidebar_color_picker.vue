@@ -80,7 +80,7 @@ export default {
         @click.prevent="handleColorClick(getColorCode(color))"
       />
     </div>
-    <div class="gl-flex">
+    <div class="gl-mt-3 gl-flex">
       <gl-form-group class="-gl-mr-1 gl-mb-0 gl-w-8 gl-shrink-0">
         <gl-form-input
           v-model.trim="selectedColor"

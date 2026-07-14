@@ -1,0 +1,9 @@
+---
+name: subscribe_merge_request
+description: Grants the ability to subscribe to merge requests
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - subscribe_merge_request

@@ -12,7 +12,6 @@ export default {
       importPath: '',
     };
   },
-  inject: ['createModelVersionPath'],
   props: {
     model: {
       type: Object,

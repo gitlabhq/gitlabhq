@@ -1,0 +1,27 @@
+# @feature_category: team_planning
+fragment MoveTargetWorkItemType on WorkItemType {
+  id
+  name
+  iconName
+}
+
+query workItemMoveTargets(
+  $targetFullPath: ID!
+  $sourceFullPath: String!
+  $sourceTypeIds: [WorkItemsTypeID!]!
+) {
+  namespace(fullPath: $targetFullPath) {
+    id
+    workItemMoveTargets(sourceFullPath: $sourceFullPath, sourceTypeIds: $sourceTypeIds) {
+      sourceType {
+        ...MoveTargetWorkItemType
+      }
+      suggestedTargetType {
+        ...MoveTargetWorkItemType
+      }
+      validTargetTypes {
+        ...MoveTargetWorkItemType
+      }
+    }
+  }
+}

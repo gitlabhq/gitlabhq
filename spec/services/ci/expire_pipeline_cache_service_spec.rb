@@ -15,6 +15,7 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
       pipelines_path = "/#{project.full_path}/-/pipelines.json"
       new_mr_pipelines_path = "/#{project.full_path}/-/merge_requests/new.json"
       pipeline_path = "/#{project.full_path}/-/pipelines/#{pipeline.id}.json"
+      commit_pipelines_path = "/#{project.full_path}/-/commit/#{pipeline.sha}/pipelines.json"
       graphql_pipeline_path = "/api/graphql:pipelines/id/#{pipeline.id}"
       graphql_pipeline_sha_path = "/api/graphql:pipelines/sha/#{pipeline.sha}"
       graphql_project_on_demand_scan_counts_path = "/api/graphql:on_demand_scan/counts/#{project.full_path}"
@@ -24,11 +25,21 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
         pipelines_path,
         new_mr_pipelines_path,
         pipeline_path,
+        commit_pipelines_path,
         graphql_pipeline_path,
         graphql_pipeline_sha_path,
         graphql_project_on_demand_scan_counts_path,
         graphql_project_pipelines_path
       )
+
+      subject.execute(pipeline)
+    end
+
+    it 'invalidates the commit pipelines path using the sha without hitting Gitaly' do
+      commit_pipelines_path = "/#{project.full_path}/-/commit/#{pipeline.sha}/pipelines.json"
+
+      expect(pipeline).not_to receive(:commit)
+      expect_touched_etag_caching_paths(commit_pipelines_path)
 
       subject.execute(pipeline)
     end
@@ -66,7 +77,7 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
     end
 
     context 'destroyed pipeline' do
-      let(:project_with_repo) { create(:project, :repository) }
+      let(:project_with_repo) { create(:project, :small_repo) }
       let!(:pipeline_with_commit) { create(:ci_pipeline, :success, project: project_with_repo, sha: project_with_repo.commit.id) }
 
       it 'clears the cache', :use_clean_rails_redis_caching do
@@ -133,18 +144,6 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
 
     it 'does not raise an error' do
       expect { subject.execute(pipeline_without_sha) }.not_to raise_error
-    end
-  end
-
-  context 'when pipeline does not have commit' do
-    let(:pipeline_without_commit) { create(:ci_pipeline, project: project) }
-
-    before do
-      allow(pipeline_without_commit).to receive(:commit).and_return(nil)
-    end
-
-    it 'does not raise an error' do
-      expect { subject.execute(pipeline_without_commit) }.not_to raise_error
     end
   end
 

@@ -17,7 +17,7 @@ include:
     - |
       bundle exec orchestrator create deployment "${DEPLOYMENT_TYPE:-kind}" \
         --gitlab-domain "${GITLAB_DOMAIN}" \
-        --timeout 5m \
+        --timeout "${DEPLOY_TIMEOUT:-5m}" \
         --chart-sha "${GITLAB_HELM_CHART_REF}" \
         --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
         --retry 1 \
@@ -152,6 +152,13 @@ cng-instance:
     - .cng-test-parallel
     - .with-coverband-arg
 
+cng-instance-ff-inverse:
+  extends: cng-instance
+  variables:
+    QA_FEATURE_FLAGS: $FEATURE_FLAGS
+  rules:
+    - !reference [.rules:test:feature-flags-set, rules]
+
 cng-registry:
   extends:
     - .cng-test
@@ -160,6 +167,15 @@ cng-registry:
     QA_SCENARIO: Test::Integration::Registry
     QA_RUN_IN_PARALLEL: "false"
 
+cng-secrets-manager:
+  extends:
+    - .cng-test
+  variables:
+    QA_SCENARIO: Test::Integration::SecretsManager
+    QA_RSPEC_TAGS: --tag secrets_manager
+    QA_RUN_IN_PARALLEL: "false"
+    QA_FEATURE_FLAGS: "secrets_manager=enabled,group_secrets_manager=enabled,secrets_manager_namespace_enrollment=enabled,secrets_manager_instance_enrollment=enabled"
+    DEPLOY_TIMEOUT: 15m
 
 cng-relative-url:
   extends:

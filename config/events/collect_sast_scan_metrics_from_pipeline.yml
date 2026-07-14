@@ -42,3 +42,19 @@ additional_properties:
     description: "scan mode used: full or differential"
   incremental_scan_enabled:
     description: "whether incremental scanning (taint signature caching) was enabled (1=yes, 0=no)"
+  total_size_bytes:
+    description: "total size of scanned files in bytes"
+  parse_time_s:
+    description: "time spent parsing files in seconds"
+  rule_count:
+    description: "total number of rules loaded"
+  peak_memory_bytes:
+    description: "peak main memory usage of the scan container in bytes"
+  cpu_count:
+    description: "number of CPUs available to the scan job"
+  memory_limit_bytes:
+    description: "memory limit of the scan job in bytes"
+  pipeline_source:
+    description: "pipeline context: merge_request_event, push, schedule, etc."
+  perf_breakdown:
+    description: "engine-specific performance breakdown as a JSON-encoded string (must not be a nested object — the event validator rejects Hash/Array values); keys carry unit suffixes (_s, _bytes, _count)"

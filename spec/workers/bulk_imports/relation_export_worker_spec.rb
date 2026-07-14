@@ -144,7 +144,10 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
               kind_of(StandardError),
               portable_id: group.id,
               portable_type: group.class.name,
-              offline_export_id: offline_export_id
+              relation: relation,
+              batched: batched,
+              offline_export_id: offline_export_id,
+              importer: export.import_source
             )
 
           described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('*' * 300))
@@ -163,7 +166,10 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
               kind_of(Import::Exceptions::SidekiqExhaustedInterruptionsError),
               portable_id: group.id,
               portable_type: group.class.name,
-              offline_export_id: offline_export_id
+              relation: relation,
+              batched: batched,
+              offline_export_id: offline_export_id,
+              importer: export.import_source
             )
 
           described_class.interruptions_exhausted_block.call(job)
@@ -190,6 +196,32 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
       it_behaves_like 'a failed relation export' do
         let(:export) { offline_relation_export }
         let(:other_relation_export) { bulk_import_export }
+      end
+    end
+
+    context 'when export no longer exists' do
+      let(:job_args) { [user.id, group.id, group.class.name, relation, batched] }
+
+      before do
+        bulk_import_export.destroy!
+      end
+
+      it 'tracks the exception without an importer and does not raise' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(
+            kind_of(StandardError),
+            portable_id: group.id,
+            portable_type: group.class.name,
+            relation: relation,
+            batched: batched,
+            offline_export_id: nil,
+            importer: nil
+          )
+
+        expect do
+          described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('error'))
+        end.not_to raise_error
       end
     end
   end

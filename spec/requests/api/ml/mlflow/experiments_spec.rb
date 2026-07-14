@@ -52,6 +52,15 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
   end
 
   describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/get' do
+    it_behaves_like 'authorizing granular token permissions', :read_ml_experiment do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        get api("/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/experiments/get?experiment_id=#{experiment.iid}",
+          personal_access_token: pat)
+      end
+    end
+
     let(:experiment_iid) { experiment.iid.to_s }
     let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/get?experiment_id=#{experiment_iid}" }
 
@@ -82,6 +91,14 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
   end
 
   describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/list' do
+    it_behaves_like 'authorizing granular token permissions', :read_ml_experiment do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        get api("/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/experiments/list", personal_access_token: pat)
+      end
+    end
+
     let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/list" }
 
     it 'returns the experiments', :aggregate_failures do
@@ -105,6 +122,15 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
   end
 
   describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/get-by-name' do
+    it_behaves_like 'authorizing granular token permissions', :read_ml_experiment do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        path = "/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/experiments/get-by-name"
+        get api("#{path}?experiment_name=#{experiment.name}", personal_access_token: pat)
+      end
+    end
+
     let(:experiment_name) { experiment.name }
     let(:route) do
       "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/get-by-name?experiment_name=#{experiment_name}"
@@ -135,6 +161,15 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
   end
 
   describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/create' do
+    it_behaves_like 'authorizing granular token permissions', :create_ml_experiment do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        post api("/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/experiments/create", personal_access_token: pat),
+          params: { name: "gpat_exp_#{SecureRandom.hex(4)}" }
+      end
+    end
+
     let(:route) do
       "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/create"
     end
@@ -184,6 +219,16 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
   end
 
   describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/set-experiment-tag' do
+    it_behaves_like 'authorizing granular token permissions', :update_ml_experiment do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        path = "/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/experiments/set-experiment-tag"
+        post api(path, personal_access_token: pat),
+          params: { experiment_id: experiment.iid.to_s, key: "gpat_key", value: "v" }
+      end
+    end
+
     let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/set-experiment-tag" }
     let(:default_params) { { experiment_id: experiment.iid.to_s, key: 'some_key', value: 'value' } }
     let(:params) { default_params }
@@ -209,6 +254,15 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
   end
 
   describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/search' do
+    it_behaves_like 'authorizing granular token permissions', :read_ml_experiment do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        post api("/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/experiments/search", personal_access_token: pat),
+          params: {}
+      end
+    end
+
     let_it_be(:experiment_b) do
       create(:ml_experiments, project: project, name: "#{experiment.name}_2")
     end
@@ -286,6 +340,16 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
   end
 
   describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/delete' do
+    it_behaves_like 'authorizing granular token permissions', :delete_ml_experiment do
+      let_it_be(:del_experiment) { create(:ml_experiments, project: project) }
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        post api("/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/experiments/delete", personal_access_token: pat),
+          params: { experiment_id: del_experiment.iid.to_s }
+      end
+    end
+
     let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/delete" }
     let(:default_params) { { experiment_id: experiment.iid.to_s } }
     let(:params) { default_params }

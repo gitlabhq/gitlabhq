@@ -15,7 +15,7 @@ title: JaCoCo coverage visualization
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227345) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `jacoco_coverage_reports`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227345) in GitLab 17.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `jacoco_coverage_reports`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170513) in GitLab 17.6. Feature flag `jacoco_coverage_reports` removed.
 
 {{< /history >}}

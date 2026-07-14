@@ -15,7 +15,7 @@ In addition, we want to thank all of our contributors, including this month's no
 
 ## This month’s Notable Contributor: Harshith Sudar
 
-Harshith is currently a Level 3 Contributor who has made impactful contributions improving community tooling and analytics, from triage automation and contributor recognition to [GitLab Duo](https://about.gitlab.com/gitlab-duo/) usage insights.
+Harshith is currently a Level 3 Contributor who has made impactful contributions improving community tooling and analytics, from triage automation and contributor recognition to [GitLab Duo](https://about.gitlab.com/gitlab-duo-agent-platform/) usage insights.
 
 Harshith’s contributions were first recognized by [Lee Tickett](https://gitlab.com/leetickett-gitlab), Fullstack Engineer in DevRel Engineering at GitLab, who nominated him. His work has strengthened how we support contributors behind the scenes through improvements to our automation and contributor-facing experiences. For example, he expanded our triage automation by [updating the `IssueSummary` processor in triage-ops to work with multiple projects](https://gitlab.com/gitlab-org/quality/triage-ops/-/merge_requests/3589), including [contributors.gitlab.com](https://contributors.gitlab.com), making it easier for us to keep more community projects consistently summarized and visible. He also helped recognize community-created content through the [new “Add content” button and flow](https://gitlab.com/gitlab-org/developer-relations/contributor-success/contributors-gitlab-com/-/merge_requests/1250), which lets contributors log blog posts, videos, and other content directly from their profile and get rewarded.
 
@@ -640,7 +640,7 @@ Try it out today by using the `macos-26-xcode-26` image in your `.gitlab-ci.yml`
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- Links: [Documentation](https://docs.gitlab.com/runner)
+- Links: [Documentation](https://docs.gitlab.com/runner/)
 
 {{< /details >}}
 

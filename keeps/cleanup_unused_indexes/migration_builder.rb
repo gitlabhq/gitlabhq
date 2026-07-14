@@ -37,7 +37,7 @@ module Keeps
       # Cop/FilenameLength caps migration filenames at 100 chars; the SHA
       # suffix disambiguates names that would otherwise truncate to the same.
       def unique_migration_name_for(index_name)
-        base = "async_remove_unused_index_#{index_name}"
+        base = "remove_unused_index_#{index_name}"
         return base if base.length <= 80
 
         suffix = Digest::SHA256.hexdigest(index_name)[0, 8]
@@ -57,18 +57,16 @@ module Keeps
         <<~RUBY.strip
           disable_ddl_transaction!
 
-            restrict_gitlab_migration gitlab_schema: :#{ctx[:gitlab_schema]}
-
             TABLE_NAME = #{ctx[:tablename].to_sym.inspect}
             INDEX_NAME = #{ctx[:name].to_sym.inspect}
             COLUMN_NAMES = #{ctx[:columns].inspect}
 
             def up
-              prepare_async_index_removal(TABLE_NAME, COLUMN_NAMES, name: INDEX_NAME)
+              remove_concurrent_index_by_name(TABLE_NAME, INDEX_NAME)
             end
 
             def down
-              unprepare_async_index_by_name(TABLE_NAME, INDEX_NAME)
+              add_concurrent_index(TABLE_NAME, COLUMN_NAMES, name: INDEX_NAME)
             end
         RUBY
       end

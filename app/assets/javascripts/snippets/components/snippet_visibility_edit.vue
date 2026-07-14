@@ -4,6 +4,7 @@ import { SNIPPET_LEVELS_RESTRICTED, SNIPPET_LEVELS_DISABLED } from '~/snippets/c
 import { defaultSnippetVisibilityLevels } from '../utils/blob';
 
 export default {
+  name: 'SnippetVisibilityEdit',
   components: {
     GlIcon,
     GlFormGroup,

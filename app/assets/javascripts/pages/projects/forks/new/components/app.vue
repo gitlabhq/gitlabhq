@@ -2,6 +2,7 @@
 import ForkForm from './fork_form.vue';
 
 export default {
+  name: 'NewForkApp',
   components: {
     ForkForm,
   },

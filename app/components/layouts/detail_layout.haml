@@ -1,30 +1,26 @@
-.gl-detail-layout{ @options }
-  = render ::Layouts::PageHeadingComponent.new(@heading, options: { class: class_names('gl-sr-only': @page_heading_sr_only) }) do |c|
+= render ::Layouts::BaseLayout.new(heading: @heading, description: @description, page_heading_sr_only: @page_heading_sr_only, loading: @loading, options: @options) do |c|
+  - if heading?
     - c.with_heading do
-      = heading || @heading
-    - if actions?
-      - c.with_actions do
-        = actions
-    - if description? || @description
-      - c.with_description do
-        = description || @description
-
+      = heading
+  - if actions?
+    - c.with_actions do
+      = actions
+  - if description?
+    - c.with_description do
+      = description
   - if alerts?
-    .gl-detail-layout-alerts.js-detail-layout-alerts{ data: { testid: 'detail-layout-alerts' } }
+    - c.with_alerts do
       = alerts
 
-  - if @loading
-    = render ::Pajamas::SpinnerComponent.new(size: :lg, class: 'gl-detail-layout-loading-icon',  data: { testid: 'detail-layout-loading-icon' } )
-  - else
-    .gl-detail-layout-container{ class: class_names('gl-detail-layout-container-has-sidebar': sidebar?), data: { testid: 'detail-layout-container' } }
-      .gl-detail-layout-content{ data: { testid: 'detail-layout-content' } }
-        = content
-      - if sidebar?
-        .gl-detail-layout-sidebar{ data: { testid: 'detail-layout-sidebar' } }
-          = sidebar
-      - if widgets?
-        .gl-detail-layout-widgets{ data: { testid: 'detail-layout-widgets' } }
-          = widgets
-      - if activity?
-        .gl-detail-layout-activity{ data: { testid: 'detail-layout-activity' } }
-          = activity
+  .gl-detail-layout-container{ class: class_names('gl-detail-layout-container-has-sidebar': sidebar?), data: { testid: 'detail-layout-container' } }
+    .gl-detail-layout-content{ data: { testid: 'detail-layout-content' } }
+      = content
+    - if sidebar?
+      .gl-detail-layout-sidebar{ data: { testid: 'detail-layout-sidebar' } }
+        = sidebar
+    - if widgets?
+      .gl-detail-layout-widgets{ data: { testid: 'detail-layout-widgets' } }
+        = widgets
+    - if activity?
+      .gl-detail-layout-activity{ data: { testid: 'detail-layout-activity' } }
+        = activity

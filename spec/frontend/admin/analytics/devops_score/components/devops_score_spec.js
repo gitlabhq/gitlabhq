@@ -3,7 +3,7 @@ import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import DevopsScore from '~/analytics/devops_reports/components/devops_score.vue';
-import { devopsScoreMetricsData, noDataImagePath, devopsScoreTableHeaders } from '../mock_data';
+import { devopsScoreMetricsData, devopsScoreTableHeaders } from '../mock_data';
 
 describe('DevopsScore', () => {
   let wrapper;
@@ -13,7 +13,6 @@ describe('DevopsScore', () => {
       mount(DevopsScore, {
         provide: {
           devopsScoreMetrics,
-          noDataImagePath,
         },
       }),
     );

@@ -13,6 +13,7 @@ import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+import Tracking from '~/tracking';
 import * as constants from '~/notes/constants';
 
 export default {
@@ -32,14 +33,26 @@ export default {
     GlDisclosureDropdownGroup,
     ReplyButton,
     UserAccessRoleBadge,
+    DuoChatFeedbackModal: () => import('ee_component/ai/components/duo_chat_feedback_modal.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [Tracking.mixin()],
   props: {
     authorId: {
       type: Number,
       required: true,
+    },
+    noteId: {
+      type: [String, Number],
+      required: false,
+      default: '',
+    },
+    isAmazonQCodeReview: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     noteUrl: {
       type: String,
@@ -110,10 +123,11 @@ export default {
       default: false,
     },
   },
-  emits: ['award', 'delete', 'resolve', 'startEditing', 'startReplying'],
+  emits: ['award', 'delete', 'resolve', 'start-editing', 'startReplying'],
   data() {
     return {
       abuseDrawerOpen: false,
+      feedbackReceived: false,
     };
   },
   computed: {
@@ -156,6 +170,28 @@ export default {
     async onCopyUrl() {
       await copyToClipboard(this.noteUrl).catch(() => {});
       this.$toast.show(__('Link copied to clipboard.'));
+    },
+    showFeedbackModal() {
+      this.$refs.feedbackModal.show();
+    },
+    /**
+     * Tracks feedback submitted for Amazon Q code reviews
+     * @param {Object} options - The feedback options
+     * @param {Array<string>} [options.feedbackOptions] - Array of selected feedback options (e.g. ['helpful', 'incorrect'])
+     * @param {string} [options.extendedFeedback] - Additional text feedback provided by the user
+     */
+    trackFeedback({ feedbackOptions, extendedFeedback } = {}) {
+      this.track('amazon_q_code_review_feedback', {
+        action: 'amazon_q',
+        label: 'code_review_feedback',
+        property: feedbackOptions,
+        extra: {
+          extendedFeedback,
+          note_id: this.noteId,
+        },
+      });
+
+      this.feedbackReceived = true;
     },
   },
 };
@@ -214,7 +250,7 @@ export default {
       :aria-label="$options.i18n.editCommentLabel"
       icon="pencil"
       category="tertiary"
-      @click="$emit('startEditing')"
+      @click="$emit('start-editing')"
     />
     <gl-button
       v-if="showDeleteAction"
@@ -247,12 +283,24 @@ export default {
           >
             <template #list-item>{{ $options.i18n.reportAbuse }}</template>
           </gl-disclosure-dropdown-item>
+          <gl-disclosure-dropdown-item
+            v-if="isAmazonQCodeReview && !feedbackReceived"
+            data-testid="amazon-q-feedback-button"
+            @action="showFeedbackModal"
+          >
+            <template #list-item>{{ s__('AmazonQ|Provide feedback on code review') }}</template>
+          </gl-disclosure-dropdown-item>
           <gl-disclosure-dropdown-item v-if="canEdit" variant="danger" @action="$emit('delete')">
             <template #list-item>{{ __('Delete comment') }}</template>
           </gl-disclosure-dropdown-item>
         </gl-disclosure-dropdown-group>
       </gl-disclosure-dropdown>
     </div>
+    <duo-chat-feedback-modal
+      v-if="isAmazonQCodeReview && !feedbackReceived"
+      ref="feedbackModal"
+      @feedback-submitted="trackFeedback"
+    />
     <abuse-category-selector
       v-if="canReportAsAbuse && abuseDrawerOpen"
       :reported-user-id="authorId"

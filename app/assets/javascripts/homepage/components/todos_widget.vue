@@ -64,6 +64,7 @@ const FILTER_OPTIONS = [
 ];
 
 export default {
+  name: 'TodosWidget',
   components: {
     TodoItem,
     GlCollapsibleListbox,

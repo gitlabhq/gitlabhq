@@ -32,9 +32,9 @@ describe('IntegrationStatus', () => {
     it.each`
       props                  | iconName         | iconClassName
       ${{ icon, iconClass }} | ${icon}          | ${iconClass}
-      ${{ icon }}            | ${icon}          | ${'text-info'}
+      ${{ icon }}            | ${icon}          | ${'!gl-fill-icon-info'}
       ${{ iconClass }}       | ${'information'} | ${iconClass}
-      ${null}                | ${'information'} | ${'text-info'}
+      ${null}                | ${'information'} | ${'!gl-fill-icon-info'}
     `('displays correct icon when props are $props', ({ props, iconName, iconClassName }) => {
       createWrapper({ props });
 

@@ -121,4 +121,26 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Repository, feature_catego
         .to include 'Commit not found'
     end
   end
+
+  context 'when Gitaly is unavailable' do
+    let(:error_message) { 'Upstream Gitaly has been exhausted. Try again later' }
+
+    # The stub is applied within the `command` definition itself so it is in place before
+    # the top-level `before` hook builds the step and calls `perform!`. Stubbing in a nested
+    # `before` hook would be too late, as RSpec runs it after the outer hook.
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        project: project, current_user: user, origin_ref: 'master', checkout_sha: project.commit.id
+      ).tap do |cmd|
+        allow(cmd).to receive(:ambiguous_ref?)
+          .and_raise(Gitlab::Git::ResourceExhaustedError, error_message)
+      end
+    end
+
+    it 'breaks the chain, records the error, and sets the failure reason', :aggregate_failures do
+      expect(step.break?).to be true
+      expect(pipeline.errors.to_a).to include error_message
+      expect(pipeline.failure_reason).to eq('gitaly_unavailable')
+    end
+  end
 end

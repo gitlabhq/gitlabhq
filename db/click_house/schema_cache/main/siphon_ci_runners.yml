@@ -115,3 +115,10 @@ columns:
   type: DateTime64(6, 'UTC')
   default_kind: DEFAULT
   default_expression: toDateTime64('9999-12-31 23:59:59.999999', 6, 'UTC')
+- name: _siphon_watermark
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: uuid
+  type: Nullable(UUID)

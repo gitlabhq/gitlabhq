@@ -13,6 +13,7 @@ import csrf from '~/lib/utils/csrf';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
+  name: 'ImportFromGithubApp',
   components: {
     GlButton,
     GlFormGroup,

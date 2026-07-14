@@ -11,8 +11,8 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
   let_it_be(:user1)         { create(:user, can_create_group: false) }
   let_it_be(:user2)         { create(:user) }
   let_it_be(:admin)         { create(:admin) }
-  let_it_be(:private_group, freeze: false) { create(:group, :private) }
-  let_it_be(:public_group)  { create(:group, :public) }
+  let_it_be_with_reload(:private_group) { create(:group, :private) }
+  let_it_be(:public_group) { create(:group, :public) }
 
   # similar to the API "GET /groups/:id"
   describe "Query group(fullPath)" do
@@ -307,7 +307,7 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
 
     context 'with general settings' do
       let(:omniauth_provider_config_oidc) do
-        GitlabSettings::Options.new(
+        Gitlab::Configs.build_options(
           name: 'openid_connect',
           label: 'OpenID Connect',
           step_up_auth: {

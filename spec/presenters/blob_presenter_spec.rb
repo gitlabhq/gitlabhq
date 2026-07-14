@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BlobPresenter do
+RSpec.describe BlobPresenter, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { project.first_owner }
 
@@ -465,7 +465,7 @@ RSpec.describe BlobPresenter do
       let(:file) { 'README.md' }
 
       it 'returns plain content' do
-        expect(presenter.plain_data).to include('<span id="LC1" class="line" lang="markdown">')
+        expect(presenter.plain_data).to include('<span id="LC1" class="line" data-lang="markdown">')
       end
 
       it 'does not load whole blob' do
@@ -480,7 +480,7 @@ RSpec.describe BlobPresenter do
 
       it 'returns highlighted syntax content' do
         expect(presenter.plain_data)
-          .to include '<span id="LC1" class="line" lang="ruby"><span class="k">module</span> <span class="nn">Gitlab</span>'
+          .to include '<span id="LC1" class="line" data-lang="ruby"><span class="k">module</span> <span class="nn">Gitlab</span>'
       end
     end
 
@@ -488,7 +488,7 @@ RSpec.describe BlobPresenter do
       let(:file) { 'LICENSE' }
 
       it 'returns plain text highlighted content' do
-        expect(presenter.plain_data).to include('<span id="LC1" class="line" lang="plaintext">The MIT License (MIT)</span>')
+        expect(presenter.plain_data).to include('<span id="LC1" class="line" data-lang="plaintext">The MIT License (MIT)</span>')
       end
     end
   end

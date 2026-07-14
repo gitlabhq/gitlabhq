@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Math rendering', :js, feature_category: :markdown do
-  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
 
   it 'renders inline and display math correctly' do
     description = <<~MATH
@@ -119,12 +119,12 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
     end
 
     context 'when limits are disabled' do
-      let_it_be(:namespace_settings, freeze: false) do
+      let_it_be_with_reload(:namespace_settings) do
         create(:namespace_settings, math_rendering_limits_enabled: false)
       end
 
-      let_it_be(:group, freeze: false) { create(:group, namespace_settings: namespace_settings) }
-      let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
+      let_it_be_with_reload(:group) { create(:group, namespace_settings: namespace_settings) }
+      let_it_be(:project) { create(:project, :public, group: group) }
 
       it 'does not render lazy load button' do
         create_and_visit_issue_with_description(lazy_load_description)

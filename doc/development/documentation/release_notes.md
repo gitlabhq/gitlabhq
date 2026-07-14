@@ -137,7 +137,7 @@ To update the content for the current release:
 
    ```markdown
    # Original
-   title: GitLab <version> - not yet released
+   title: GitLab <version> (Upcoming release)
 
    # New
    title: GitLab <version>
@@ -258,7 +258,7 @@ maps to one of the following sections:
 | Section                     | Stages |
 | --------------------------- | ------ |
 | Primary features            | -      |
-| Agentic Core                | `ai-powered`, `modelops` |
+| Agentic Core                | `ai_platform`, `ai_coding`, `agent_foundations`, `ai_clients`, `modelops` |
 | Unified DevOps and Security | `analytics`, `application_security_testing`, `create`, `deploy`, `knowledge_graph`, `package`, `plan`, `security_risk_management`, `software_supply_chain_security`, `verify` |
 | Scale and Deployments       | `data_access`, `database_excellence`, `developer_experience`, `foundations`, `fulfillment`, `gitlab_dedicated`, `gitlab_delivery`, `growth`, `production_engineering`, `tenant_scale`, `unlisted/unknown` |
 
@@ -278,7 +278,7 @@ values unless a note must absolutely appear first.
 
 | Metadata      | Format                                                                                                                         | Description |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------- |
-| `title`       | Pre-release: `GitLab <version> - not yet released`<br>Post-release: `GitLab <version>`                                         | Page title. Uses the first format before release, and the second on release day. |
+| `title`       | Pre-release: `GitLab <version> (Upcoming release)`<br>Post-release: `GitLab <version>`                                         | Page title. Uses the first format before release, and the second on release day. |
 | `description` | Pre-release: `Summary of features included in <version>`<br>Post-release: `GitLab <version> released with <top feature title>` | Short summary displayed on cards for the index page. |
 | `group`       | `Monthly Release`, `Patch Release`                                                                                             | Used for analytics and feedback. Always uses `Monthly Release`; patch releases are created through a different process. |
 | `stage`       | `Release Notes`                                                                                                                | Used for analytics and feedback. Always uses `Release Notes`. |
@@ -292,11 +292,10 @@ values unless a note must absolutely appear first.
 | `offering`           | array, formatted like `[ gitlab_com, self_managed, gitlab_dedicated, gitlab_dedicated_for_government ]` | Feature offerings. Formatting matters. Requires at least one. Always follow this order. |
 | `documentation_link` | relative URL                                                                                           | Link to the feature documentation. Don't use `https://`-style links, and omit `_index.md` or the `.md` extension. |
 | `work_item`          | absolute URL                                                                                           | Link to the related work item. Must not be confidential. |
-| `categories`         | array                                                                                                  | An array with the `Name` value of one or more [categories](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml). Values are case-sensitive, separate multiple values with commas. If a related category doesn't exist, make another merge request to add it. For 19.1, also add the categories information to an HTML comment in the body text. For more information, see the [template](#feature-release-note). |
+| `categories`         | array                                                                                                  | An array with the `Name` value of one or more [categories](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml). Values are case-sensitive, separate multiple values with commas. If a related category doesn't exist, make another merge request to add it. |
 | `stage`              | string                                                                                                 | Name of the stage that created the feature. Used to [organize](#organization) the section the release note appears in. |
 | `level`              | One of: `primary` or `secondary`                                                                       | Optional. Controls placement in the `Primary features` section. If undefined, defaults to `secondary`. |
 | `weight`             | number                                                                                                 | Optional. Controls ordering in each [section](#organization). Lower numbers go first. To force a feature release note first in a section, use a lower number such as 10. To avoid sorting issues with other feature release notes, avoid using single-digit numbers unless the note must absolutely appear first. |
-| `ignore_in_report`   | boolean                                                                                                | Required to be `true` by internal tooling. Has no impact on rendering the feature release note. |
 
 ## Templates
 
@@ -304,7 +303,7 @@ values unless a note must absolutely appear first.
 
 ```markdown
 ---
-title: "GitLab <version> - not yet released"
+title: "GitLab <version> (Upcoming release)"
 description: "Summary of features included in <version>"
 group: Monthly Release
 stage: Release Notes
@@ -318,10 +317,6 @@ These features are now available on GitLab.com.
 
 ### Feature release note
 
-> [!note]
-> For the 19.1 release, also add the categories information to an HTML comment in the body text.
-> Use this format: `<!-- categories: System Access, Permissions -->`.
-
 ```markdown
 ---
 title:
@@ -333,10 +328,7 @@ work_item: https://gitlab.com/groups/gitlab-org/-/work_items/<work-item-number>
 categories: [ System Access, Permissions ]
 level: primary or secondary
 weight: 50
-ignore_in_report: true
 ---
-
-<!-- categories: System Access, Permissions -->
 
 The text of the feature release note.
 

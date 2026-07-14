@@ -17,7 +17,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
 
   it 'has the expected fields' do
     expected_fields = %w[
-      notes discussions user_permissions id iid title title_html description
+      notes discussions discussions_with_activity user_permissions id iid title title_html description
       description_html state created_at updated_at source_project target_project
       project project_id source_project_id target_project_id source_branch
       target_branch target_branch_path draft merge_when_pipeline_succeeds diff_head_sha

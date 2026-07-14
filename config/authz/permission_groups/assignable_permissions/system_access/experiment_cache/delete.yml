@@ -1,0 +1,9 @@
+---
+name: delete_experiment_cache
+description: Grants the ability to delete cached variant assignments for an experiment
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_experiment_cache

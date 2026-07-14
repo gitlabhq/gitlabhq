@@ -47,7 +47,7 @@ Prerequisites:
 {{< history >}}
 
 - Ability to create non-expiring project access tokens was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
-- Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../../../administration/feature_flags/_index.md) named `buffered_token_expiration_limit`. Disabled by default.
+- Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `buffered_token_expiration_limit`. Disabled by default.
 - Project access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
 {{< /history >}}
@@ -69,7 +69,7 @@ To create a project access token:
    - By default, the expiry date cannot be more than 365 days from today. On GitLab 17.6 and later,
      administrators can [modify the maximum lifetime of access tokens](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
 1. Select a role for the token.
-1. Select one or more [project access token scopes](#project-access-token-scopes).
+1. Select one or more [project access token scopes](../../../security/tokens/access_token_scopes.md).
 1. Select **Create project access token**.
 
 A project access token is displayed. Save the project access token somewhere safe. After you leave
@@ -84,44 +84,13 @@ configured for personal access tokens.
 > If an internal user creates a project access token, that token can access
 > all projects that have visibility level set to Internal.
 
-### Project access token scopes
-
-{{< history >}}
-
-- `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../../../administration/feature_flags/_index.md) named `k8s_proxy_pat`. Enabled by default.
-- Feature flag `k8s_proxy_pat` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131518) in GitLab 16.5.
-- `self_rotate` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178111) in GitLab 17.9. Enabled by default.
-
-{{< /history >}}
-
-Scopes define the actions available when you authenticate with a project access token.
-
-| Scope              | Description |
-| ------------------ | ----------- |
-| `api`              | Grants complete read and write access to the scoped project API, including the [container registry](../../packages/container_registry/_index.md), the [dependency proxy](../../packages/dependency_proxy/_index.md), and the [package registry](../../packages/package_registry/_index.md). |
-| `read_api`         | Grants read access to the scoped project API, including the [package registry](../../packages/package_registry/_index.md). |
-| `read_registry`    | Grants read access (pull) to [container registry](../../packages/container_registry/_index.md) images if the project is private and authorization is required. Available only when the container registry is enabled. |
-| `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/_index.md). To push images, you must include the `read_registry` scope. Available only when the container registry is enabled. |
-| `read_repository`  | Grants read access (pull) to the repository in the project. |
-| `write_repository` | Grants read and write access (pull and push) to the repository in the project. |
-| `create_runner`    | Grants permission to create runners in the project. |
-| `manage_runner`    | Grants permission to manage runners in the project. |
-| `ai_features`      | Grants permission to perform API actions for GitLab Duo, the Code Suggestions API, and the GitLab Duo Chat API. Designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see the individual extension documentation. Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7. On GitLab Self-Managed and GitLab Dedicated, this scope is only available when GitLab Duo is enabled. |
-| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project. |
-| `self_rotate`      | Grants permission to rotate this token using the [personal access token API](../../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
-
-> [!warning]
-> If you have enabled [external authorization](../../../administration/settings/external_authorization.md),
-> personal access tokens cannot access container or package registries. To restore access,
-> turn off external authorization.
-
 ## View your access tokens
 
 {{< history >}}
 
 - In GitLab 16.0 and earlier, token usage information is updated every 24 hours.
 - The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
-- Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `pat_ip`. Enabled by default in 17.9.
+- Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `pat_ip`. Enabled by default in 17.9.
 - Ability to view IP addresses made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513302) in GitLab 17.10. Feature flag `pat_ip` removed.
 
 {{< /history >}}
@@ -152,7 +121,7 @@ Expired, rotated, or revoked tokens are stored in the **Inactive project access 
 
 {{< history >}}
 
-- Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
+- Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
 - Ability to view expired and revoked tokens until they are automatically deleted [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
 
 {{< /history >}}
@@ -179,7 +148,7 @@ To rotate a project access token:
 
 {{< history >}}
 
-- Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
+- Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
 - Ability to view expired and revoked tokens until they are automatically deleted [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
 
 {{< /history >}}
@@ -219,9 +188,9 @@ see [non-expiring access tokens](../../../update/deprecations.md#non-expiring-ac
 
 {{< history >}}
 
-- 60 and 30 day expiry notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a flag](../../../administration/feature_flags/_index.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
+- 60 and 30 day expiry notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
 - 60 and 30 day notifications [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173792) in GitLab 17.7. Feature flag `expiring_pats_30d_60d_notifications` removed.
-- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../../administration/feature_flags/_index.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a feature flag](../../../administration/feature_flags/_index.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
 - Feature flag `pat_expiry_inherited_members_notification` [enabled by default in GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/393772).
 - Feature flag `pat_expiry_inherited_members_notification` removed in GitLab `17.11`
 
@@ -245,7 +214,7 @@ deleted. On GitLab Self-Managed, you can modify this
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.2 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default. When enabled new bot users are made members with no expiry date and, when the token is later revoked or expires, the bot user is retained for 30 days.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default. When enabled new bot users are made members with no expiry date and, when the token is later revoked or expires, the bot user is retained for 30 days.
 - Inactive bot users retention is [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
 
 {{< /history >}}

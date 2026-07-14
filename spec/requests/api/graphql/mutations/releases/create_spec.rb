@@ -6,7 +6,7 @@ RSpec.describe 'Creation of a new release', feature_category: :release_orchestra
   include GraphqlHelpers
   include Presentable
 
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let_it_be(:milestone_12_3) { create(:milestone, project: project, title: '12.3') }
   let_it_be(:milestone_12_4) { create(:milestone, project: project, title: '12.4') }
   let_it_be(:public_user) { create(:user) }

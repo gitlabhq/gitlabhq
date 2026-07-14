@@ -56,6 +56,7 @@ export default {
       default: true,
     },
   },
+  emits: ['execute'],
   data() {
     return {
       isActive: null,

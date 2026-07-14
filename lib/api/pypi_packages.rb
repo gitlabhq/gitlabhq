@@ -157,6 +157,21 @@ module API
 
         true
       end
+
+      # Overridden in EE to enforce the Dependency Firewall before a locally
+      # hosted package file is served. CE intentionally does nothing.
+      def enforce_dependency_firewall_on_download!(_package); end
+
+      # Overridden in EE to enforce the Dependency Firewall before a package is
+      # persisted on upload. CE intentionally does nothing.
+      def enforce_dependency_firewall_on_upload!(_project, _name, _version); end
+
+      # Overridden in EE to redirect a forwarded (non-local) package download to the
+      # upstream artifact after a Dependency Firewall check. CE returns false so the
+      # file route falls through to its 404.
+      def handle_pypi_upstream_file_redirect!(_project)
+        false
+      end
     end
 
     params do
@@ -176,7 +191,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[pypi_packages]
+          tags %w[packages_pypi]
         end
         params do
           use :package_download
@@ -206,7 +221,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[packages]
+          tags %w[packages_pypi]
         end
 
         # An API entry point but returns an HTML file instead of JSON.
@@ -226,7 +241,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[packages]
+          tags %w[packages_pypi]
         end
 
         params do
@@ -258,7 +273,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[packages]
+          tags %w[packages_pypi]
         end
 
         params do
@@ -274,12 +289,28 @@ module API
           authorize_job_token_policies!(project)
 
           filename = "#{params[:file_identifier]}.#{params[:format]}"
-          package = Packages::Pypi::PackageFinder.new(current_user, project, { filename: filename, sha256: params[:sha256] }).execute
-          package_file = ::Packages::PackageFileFinder.new(package, filename, with_file_name_like: false).execute
 
-          track_package_event('pull_package', :pypi, project: project, namespace: project.namespace)
+          package =
+            begin
+              Packages::Pypi::PackageFinder.new(current_user, project, { filename: filename, sha256: params[:sha256] }).execute
+            rescue ActiveRecord::RecordNotFound
+              nil
+            end
 
-          present_package_file!(package_file, supports_direct_download: true)
+          if package
+            package_file = ::Packages::PackageFileFinder.new(package, filename, with_file_name_like: false).execute
+
+            enforce_dependency_firewall_on_download!(package)
+
+            track_package_event('pull_package', :pypi, project: project, namespace: project.namespace)
+
+            present_package_file!(package_file, supports_direct_download: true)
+          elsif handle_pypi_upstream_file_redirect!(project)
+            # The EE forwarded path issued a 302 to the upstream artifact (after firewall
+            # enforcement). Nothing more to do - the redirect is the terminal response.
+          else
+            not_found!('Package')
+          end
         end
 
         desc 'List all packages for a project' do
@@ -290,7 +321,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[packages]
+          tags %w[packages_pypi]
         end
 
         # An API entry point but returns an HTML file instead of JSON.
@@ -313,7 +344,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[packages]
+          tags %w[packages_pypi]
         end
 
         params do
@@ -343,7 +374,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 422, message: 'Unprocessable Entity' }
           ]
-          tags %w[packages]
+          tags %w[packages_pypi]
         end
 
         params do
@@ -374,6 +405,8 @@ module API
             bad_request!('File is too large')
           end
 
+          enforce_dependency_firewall_on_upload!(project, params[:name], params[:version])
+
           track_package_event('push_package', :pypi, project: project, namespace: project.namespace)
 
           validate_fips! if Gitlab::FIPS.enabled?
@@ -403,7 +436,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[packages]
+          tags %w[packages_pypi]
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
@@ -422,3 +455,5 @@ module API
     end
   end
 end
+
+API::PypiPackages.prepend_mod

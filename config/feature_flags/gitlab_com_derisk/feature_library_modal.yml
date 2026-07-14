@@ -1,0 +1,10 @@
+---
+name: feature_library_modal
+description: Renders the Feature Library modal in the super sidebar for browsing and pinning navigation items.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/601394
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239299
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/603145
+milestone: '19.1'
+group: group::activation
+type: gitlab_com_derisk
+default_enabled: false

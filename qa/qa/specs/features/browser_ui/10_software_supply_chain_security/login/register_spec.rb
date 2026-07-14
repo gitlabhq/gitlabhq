@@ -59,7 +59,18 @@ module QA
               show.delete_account(user.password)
             end
 
-            expect(page).to have_text("Account scheduled for removal.")
+            # Confirming the deletion redirects, and an immediate text check can race the DOM swap
+            # and raise a transient Chrome inspector error ("Node with given id does not belong to
+            # the document") that Capybara does not retry. Retry the check until the confirmation is
+            # present, then assert. See gitlab-org/gitlab#594514.
+            account_scheduled_for_removal = Support::Retrier.retry_until(
+              max_attempts: 3, sleep_interval: 1, retry_on_exception: true, raise_on_failure: false
+            ) do
+              page.has_text?("Account scheduled for removal.")
+            end
+
+            expect(account_scheduled_for_removal).to be_truthy,
+              "Expected page to show 'Account scheduled for removal.' after deleting the account"
           end
 
           it "allows to recreate deleted user with same credentials",
@@ -104,7 +115,22 @@ module QA
         end
 
         around do |example|
-          with_application_settings(require_admin_approval_after_user_signup: true) { example.run }
+          with_application_settings(require_admin_approval_after_user_signup: true) do
+            # Wait for the setting to propagate.
+            # The user's blocked_pending_approval state is set at registration time based on
+            # this setting, so it must be active before the user registers.
+            # See https://gitlab.com/gitlab-org/gitlab/-/issues/603412
+            #
+            Support::Waiter.wait_until(
+              max_duration: 15,
+              sleep_interval: 1,
+              message: 'Waiting for require_admin_approval_after_user_signup setting to propagate'
+            ) do
+              Runtime::ApplicationSettings.get_application_setting(:require_admin_approval_after_user_signup) == true
+            end
+
+            example.run
+          end
         end
 
         it 'allows user login after approval' do
@@ -115,9 +141,12 @@ module QA
           # The pending-approval alert is rendered after a blocked sign-in attempt, but it can be
           # lost while the sign-in flow runs its post-login processing (onboarding checks, etc.),
           # leaving a bare login page. Retry the blocked sign-in until the alert is reliably
-          # present before asserting on it. See gitlab-org/gitlab#594514.
+          # present before asserting on it. retry_on_exception also covers the transient Chrome
+          # inspector error ("Node with given id does not belong to the document") that can be
+          # raised when has_text? checks the DOM mid-navigation. See gitlab-org/gitlab#594514.
           Support::Retrier.retry_until(
-            max_attempts: 3, sleep_interval: 1, message: 'Expected pending-approval blocked message'
+            max_attempts: 3, sleep_interval: 2, retry_on_exception: true,
+            message: 'Expected pending-approval blocked message'
           ) do
             Flow::Login.sign_in(as: user, skip_page_validation: true)
             page.has_text?(pending_approval_blocked_text)
@@ -128,8 +157,15 @@ module QA
           Flow::Login.sign_in(as: user, skip_page_validation: true)
 
           Flow::UserOnboarding.onboard_user
-          # In development env and .com the user is asked to create a group and a project
-          Flow::UserOnboarding.create_initial_project if page.has_text?("Create or import your first project", wait: 0)
+          # In development env and .com the user is asked to create a group and a project.
+          # onboard_user clicks "Get started", which navigates; an immediate text check can race
+          # the DOM swap and raise a transient Chrome inspector error ("Node with given id does
+          # not belong to the document") that Capybara does not retry. Retry the check ourselves
+          # before deciding whether the project-creation step is shown. See gitlab-org/gitlab#594514.
+          first_project_prompt_shown = Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            page.has_text?("Create or import your first project")
+          end
+          Flow::UserOnboarding.create_initial_project if first_project_prompt_shown
           Runtime::Browser.visit(:gitlab, Page::Dashboard::Welcome)
 
           expect(Page::Main::Menu.perform(&:has_personal_area?)).to be_truthy

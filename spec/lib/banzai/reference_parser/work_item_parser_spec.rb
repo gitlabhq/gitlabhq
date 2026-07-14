@@ -37,7 +37,7 @@ RSpec.describe Banzai::ReferenceParser::WorkItemParser, feature_category: :markd
       Nokogiri::HTML.fragment(%(<a data-work-item="#{work_item.id}"></a>)).children[0]
     end
 
-    before do
+    before_all do
       project.add_developer(user)
     end
 

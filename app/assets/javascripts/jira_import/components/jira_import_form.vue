@@ -70,6 +70,7 @@ export default {
       required: true,
     },
   },
+  emits: ['error'],
   data() {
     return {
       hasMoreUsers: false,

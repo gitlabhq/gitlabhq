@@ -17,6 +17,9 @@
           "type": "string"
         },
         {
+          "type": "null"
+        },
+        {
           "type": "array",
           "items": {
             "type": "string"
@@ -24,11 +27,26 @@
           "minItems": 1
         }
       ],
-      "description": "One broader permission (string) or several (array). Roles holding ALL listed permissions implicitly hold this permission as well."
+      "description": "One broader permission (string) or several (array), or null when the permission has no broader counterpart. Roles holding ALL listed permissions implicitly hold this permission as well."
     }
   },
   "required": [
     "name",
     "description"
-  ]
+  ],
+  "if": {
+    "properties": {
+      "name": {
+        "pattern": "^_"
+      }
+    },
+    "required": [
+      "name"
+    ]
+  },
+  "then": {
+    "required": [
+      "conditionally_enables"
+    ]
+  }
 }

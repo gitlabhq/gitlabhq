@@ -214,6 +214,61 @@ export const localTimeAgo = (elements, updateTooltip = true) => {
 };
 
 /**
+ * Replaces the relative text ("2 days ago") of every `<time datetime>` element with an
+ * absolute date, so printed/exported pages remain meaningful without the "now" reference.
+ * The original text is stashed on the element so it can be restored after printing.
+ */
+const renderAbsoluteTimesForPrint = () => {
+  document.querySelectorAll('time[datetime]').forEach((el) => {
+    // Skip elements with nested markup (e.g. a `<gl-truncate>` wrapper) to avoid clobbering it.
+    if (el.children.length > 0) {
+      return;
+    }
+
+    try {
+      // Include the timezone (e.g. "GMT+1") so printed dates are unambiguous.
+      const absolute = localeDateFormat.asDateTimeWithTimezone.format(newDate(el.dateTime));
+
+      if (el.dataset.relativeText === undefined) {
+        el.dataset.relativeText = el.textContent;
+      }
+      el.textContent = absolute;
+    } catch {
+      // Ignore elements with an invalid `datetime` so printing is never interrupted.
+    }
+  });
+};
+
+/**
+ * Restores the relative text that {@link renderAbsoluteTimesForPrint} replaced.
+ */
+const restoreRelativeTimesAfterPrint = () => {
+  document.querySelectorAll('time[data-relative-text]').forEach((el) => {
+    el.textContent = el.dataset.relativeText;
+    delete el.dataset.relativeText;
+  });
+};
+
+/**
+ * Registers listeners that swap relative timestamps for absolute ones while the page is being
+ * printed, then revert them once printing is done.
+ *
+ * `beforeprint`/`afterprint` cover Chrome and Firefox; Safari only fires the matchMedia change.
+ */
+export const initTimeagoPrintHandler = () => {
+  window.addEventListener('beforeprint', renderAbsoluteTimesForPrint);
+  window.addEventListener('afterprint', restoreRelativeTimesAfterPrint);
+
+  window.matchMedia('print').addEventListener('change', ({ matches }) => {
+    if (matches) {
+      renderAbsoluteTimesForPrint();
+    } else {
+      restoreRelativeTimesAfterPrint();
+    }
+  });
+};
+
+/**
  * Returns remaining or passed time over the given time.
  * @param {*} time
  * @param {*} expiredLabel

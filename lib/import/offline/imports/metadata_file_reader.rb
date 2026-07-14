@@ -11,8 +11,7 @@ module Import
         # https://gitlab.com/gitlab-org/gitlab/-/work_items/598364
         MIN_SUPPORTED_VERSION = Gitlab::VersionInfo.new(19, 0)
 
-        MetadataParseError = Class.new(StandardError)
-        UnsupportedVersionError = Class.new(StandardError)
+        MetadataError = Class.new(StandardError)
 
         def initialize(configuration)
           @configuration = configuration
@@ -22,7 +21,10 @@ module Import
           download_from_object_storage
           decompress_metadata_file
 
-          parsed_metadata.tap { |m| validate_source_version!(m[:instance_version]) }
+          parsed_metadata.tap do |m|
+            validate_source_hostname!(m[:source_hostname])
+            validate_source_version!(m[:instance_version])
+          end
         ensure
           FileUtils.remove_entry(tmpdir_path)
         end
@@ -57,14 +59,20 @@ module Import
           @tmpdir_path ||= Dir.mktmpdir(TMPDIR_SEGMENT)
         end
 
+        def validate_source_hostname!(source_hostname)
+          return if source_hostname.present?
+
+          raise MetadataError, s_('OfflineTransfer|Missing source hostname in metadata')
+        end
+
         def validate_source_version!(instance_version)
           version = Gitlab::VersionInfo.parse(instance_version)
 
-          raise UnsupportedVersionError, s_('OfflineTransfer|Invalid source version') unless version.valid?
+          raise MetadataError, s_('OfflineTransfer|Invalid source version') unless version.valid?
 
           return unless version < MIN_SUPPORTED_VERSION
 
-          raise UnsupportedVersionError, format(
+          raise MetadataError, format(
             s_("OfflineTransfer|Unsupported GitLab version. The minimum supported version is '%{version}'."),
             version: MIN_SUPPORTED_VERSION
           )
@@ -72,11 +80,11 @@ module Import
 
         def parsed_metadata
           result = Gitlab::Json.safe_parse(File.read(File.join(tmpdir_path, METADATA_FILENAME)))
-          raise MetadataParseError, "Failed to parse metadata" if result.nil?
+          raise MetadataError, "Failed to parse metadata" if result.nil?
 
           result.symbolize_keys
         rescue JSON::ParserError
-          raise MetadataParseError, "Failed to parse metadata"
+          raise MetadataError, "Failed to parse metadata"
         end
       end
     end

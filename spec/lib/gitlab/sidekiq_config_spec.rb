@@ -28,7 +28,8 @@ RSpec.describe Gitlab::SidekiqConfig do
 
     it 'delegates to CronJobs' do
       jobs = { 'some_worker' => { 'class' => 'SomeWorker', 'cron' => '0 * * * *' } }
-      expect(Gitlab::SidekiqConfig::CronJobs).to receive(:config).and_return(jobs)
+      cron_jobs_instance = instance_double(Gitlab::SidekiqConfig::CronJobs, jobs: jobs)
+      expect(Gitlab::SidekiqConfig::CronJobs).to receive(:config).and_return(cron_jobs_instance)
 
       expect(described_class.cron_jobs).to eq(jobs)
     end

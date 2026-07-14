@@ -6,14 +6,6 @@ export default {
   name: 'DbSchemasSection',
   components: { GlBadge, GlIcon, GlTableLite },
   props: {
-    currentUser: {
-      type: String,
-      required: true,
-    },
-    searchPath: {
-      type: String,
-      required: true,
-    },
     schemas: {
       type: Array,
       required: true,
@@ -25,8 +17,6 @@ export default {
   ],
   i18n: {
     title: s__('DatabaseDiagnostics|Schemas'),
-    currentUserLabel: s__('DatabaseDiagnostics|Current user:'),
-    searchPathLabel: s__('DatabaseDiagnostics|Search path:'),
     currentBadge: s__('DatabaseDiagnostics|Current'),
   },
 };
@@ -38,17 +28,6 @@ export default {
       <gl-icon name="information-o" variant="info" />
       {{ $options.i18n.title }}
     </h4>
-
-    <p class="gl-text-sm gl-text-subtle">
-      <span data-testid="current-user">
-        <strong>{{ $options.i18n.currentUserLabel }}</strong>
-        <code>{{ currentUser }}</code>
-      </span>
-      <span class="gl-ml-3" data-testid="search-path">
-        <strong>{{ $options.i18n.searchPathLabel }}</strong>
-        <code>{{ searchPath }}</code>
-      </span>
-    </p>
 
     <gl-table-lite
       :items="schemas"

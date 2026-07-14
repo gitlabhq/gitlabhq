@@ -11,7 +11,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
   let(:ghost_user) { Users::Internal.in_organization(user.organization_id).ghost }
 
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
 
   context "when migrating a user's associated records to the ghost user" do
     context 'for issues' do
@@ -219,7 +219,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
 
       it "deletes the access token" do
         service.execute
-        expect(PersonalAccessToken.find_by(id: token.id)).to eq nil
+        expect(PersonalAccessToken.find_by(id: token.id)).to be_nil
       end
     end
   end
@@ -273,9 +273,9 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         service.execute
       end
 
-      it 'nullifies associations marked as `dependent: :nullify` and'\
-         'destroys the associations marked as `dependent: :destroy`, in batches and'\
-         'deletes associations marked as delete_all', :aggregate_failures do
+      it 'nullifies associations marked as `dependent: :nullify` and' \
+        'destroys the associations marked as `dependent: :destroy`, in batches and' \
+        'deletes associations marked as delete_all', :aggregate_failures do
         # associations to be nullified
         issue = create(:issue, closed_by: user, updated_by: user)
         resource_state_event = create(:resource_state_event, user: user)

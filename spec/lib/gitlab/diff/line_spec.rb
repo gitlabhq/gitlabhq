@@ -118,6 +118,62 @@ RSpec.describe Gitlab::Diff::Line do
     end
   end
 
+  describe '#added_content?' do
+    subject { line.added_content? }
+
+    context 'when type is "new"' do
+      let(:type) { 'new' }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when type is "new-nomappinginraw"' do
+      let(:type) { 'new-nomappinginraw' }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when type is "new-nonewline"' do
+      let(:type) { 'new-nonewline' }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when type is "old"' do
+      let(:type) { 'old' }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#removed_content?' do
+    subject { line.removed_content? }
+
+    context 'when type is "old"' do
+      let(:type) { 'old' }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when type is "old-nomappinginraw"' do
+      let(:type) { 'old-nomappinginraw' }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when type is "old-nonewline"' do
+      let(:type) { 'old-nonewline' }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when type is "new"' do
+      let(:type) { 'new' }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#match?' do
     subject { line.match? }
 

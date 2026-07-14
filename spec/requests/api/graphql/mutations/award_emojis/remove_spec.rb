@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Removing an AwardEmoji', feature_category: :shared do
   include GraphqlHelpers
 
-  let_it_be(:awardable, freeze: false) { create(:note) }
+  let_it_be_with_reload(:awardable) { create(:note) }
   let_it_be(:project) { awardable.project }
   let_it_be(:current_user) { create(:user, guest_of: project) }
 

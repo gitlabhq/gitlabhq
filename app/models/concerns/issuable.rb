@@ -35,6 +35,7 @@ module Issuable
   TITLE_LENGTH_MAX = 255
   SEARCHABLE_FIELDS = %w[title description].freeze
   MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS = 200
+  LABELS_HASH_BATCH_SIZE = 1_000
 
   STATE_ID_MAP = {
     opened: 1,
@@ -44,7 +45,7 @@ module Issuable
   }.with_indifferent_access.freeze
 
   included do
-    cache_markdown_field :title, pipeline: :single_line
+    cache_markdown_field :title, pipeline: :issuable_title
     cache_markdown_field :description, issuable_reference_expansion_enabled: true
 
     redact_field :description
@@ -141,7 +142,7 @@ module Issuable
       includes(*associations)
     end
 
-    attr_mentionable :title, pipeline: :single_line
+    attr_mentionable :title, pipeline: :issuable_title
     attr_mentionable :description
 
     participant :author
@@ -155,9 +156,11 @@ module Issuable
       def labels_hash
         issue_labels = Hash.new { |h, k| h[k] = [] }
 
-        relation = unscoped.where(id: self.select(:id)).eager_load(:labels)
-        relation.pluck(:id, 'labels.title').each do |issue_id, label|
-          issue_labels[issue_id] << label if label.present?
+        relation = unscoped.where(id: self.select(:id))
+        relation.each_batch(of: Issuable::LABELS_HASH_BATCH_SIZE) do |batch|
+          batch.eager_load(:labels).pluck(:id, 'labels.title').each do |issue_id, label|
+            issue_labels[issue_id] << label if label.present?
+          end
         end
 
         issue_labels
@@ -499,6 +502,19 @@ module Issuable
 
   def resource_parent
     project
+  end
+
+  def root_ancestor
+    resource_parent.root_ancestor
+  end
+
+  # An organization is isolated to a single cell, so two issuables in different
+  # organizations cannot reference each other (links, hierarchy, promotion...).
+  # `other` is another resource-parent-scoped record (issue, work item, epic).
+  def same_organization_as?(other)
+    return true if other.nil?
+
+    resource_parent&.organization_id == other.resource_parent&.organization_id
   end
 
   def assignee_or_author?(user)

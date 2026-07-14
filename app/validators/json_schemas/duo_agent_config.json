@@ -102,6 +102,40 @@
         }
       },
       "additionalProperties": false
+    },
+    "id_tokens": {
+      "description": "CI/CD ID tokens to inject into the flow workload for OIDC authentication",
+      "type": "object",
+      "maxProperties": 20,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+          "type": "object",
+          "required": [
+            "aud"
+          ],
+          "properties": {
+            "aud": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      }
     }
   },
   "additionalProperties": false

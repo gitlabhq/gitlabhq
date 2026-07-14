@@ -25,7 +25,17 @@ module Gitlab
       ALLOWED_ROUTER_RULE_ACTIONS = %w[classify proxy].freeze
       # We do not expect a type for `proxy` rules
       ROUTER_RULE_ACTIONS_WITHOUT_TYPE = %w[proxy].freeze
-      ALLOWED_ROUTER_RULE_TYPES = %w[FIRST_CELL SESSION_PREFIX CELL_ID].freeze
+
+      # Session-based classify types from the HTTP Router's `ClassifyType` enum.
+      # https://gitlab.com/gitlab-org/cells/http-router/-/blob/main/src/rules/types.d.ts
+      CLASSIFY_RULE_TYPES = %w[FIRST_CELL SESSION_PREFIX CELL_ID].freeze
+      # Claim types set by path-based routing rules. On a successful
+      # classification the HTTP Router emits the claim key (e.g.
+      # `organization_path`) as the rule type header, so the source of truth is
+      # the Topology Service `Claim` proto. Deriving the list from the generated
+      # client keeps it in sync as new claim types are added upstream.
+      CLAIM_RULE_TYPES = Gitlab::Cells::TopologyService::Types::V1::Claim.descriptor.map(&:name).freeze
+      ALLOWED_ROUTER_RULE_TYPES = (CLASSIFY_RULE_TYPES + CLAIM_RULE_TYPES).freeze
 
       private
 

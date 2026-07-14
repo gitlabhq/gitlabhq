@@ -3,7 +3,7 @@
 module API
   module Entities
     class IntegrationBasic < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 75 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 75 }
       expose :title, documentation: { type: 'String', example: 'Jenkins CI' }
       expose :slug, documentation: { type: 'String', example: 'jenkins' } do |integration|
         integration.to_param.dasherize

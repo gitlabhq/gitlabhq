@@ -61,6 +61,10 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
             expect(page).to have_css('[data-testid="pipelines-manual-actions-dropdown"]')
             expect(page).to have_css('[data-testid="pipeline-multi-actions-dropdown"]')
           end
+
+          within('.merge-request-tabs') do
+            expect(page).to have_link('Pipelines 1')
+          end
         end
 
         context 'with a detached merge request pipeline' do
@@ -73,7 +77,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
               click_link('Pipelines')
             end
 
-            expect(page).to have_testid('run_pipeline_button', text: 'Run pipeline')
+            expect(page).to have_testid('run-mr-pipeline-button', text: 'Run pipeline')
           end
         end
 
@@ -87,7 +91,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
               click_link('Pipelines')
             end
 
-            expect(page).to have_testid('run_pipeline_button', text: 'Run pipeline')
+            expect(page).to have_testid('run-mr-pipeline-button', text: 'Run pipeline')
           end
         end
 
@@ -136,7 +140,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
           end
 
           expect(page).to have_content('There are currently no pipelines.')
-          expect(find_by_testid('run_pipeline_button')).to have_text('Run pipeline')
+          expect(page).to have_testid('run-mr-pipeline-button', text: 'Run pipeline')
         end
       end
     end

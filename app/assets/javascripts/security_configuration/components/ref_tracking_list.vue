@@ -18,6 +18,7 @@ import RefUntrackingConfirmation from './ref_untracking_confirmation.vue';
 import RefTrackingSelection from './ref_tracking_selection.vue';
 
 export default {
+  name: 'RefTrackingList',
   components: {
     GlAlert,
     GlCard,

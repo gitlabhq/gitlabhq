@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop:disable RSpec/VariableDefinition, RSpec/VariableName
 
 require 'spec_helper'

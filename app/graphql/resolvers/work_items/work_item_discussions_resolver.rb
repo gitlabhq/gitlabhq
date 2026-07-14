@@ -42,7 +42,7 @@ module Resolvers
         true
       end
 
-      def self.complexity_multiplier(args)
+      def self.complexity_multiplier(_args)
         0.05
       end
 

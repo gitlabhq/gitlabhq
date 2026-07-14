@@ -5,6 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Upgrading operating systems for PostgreSQL
 ---
 
+## When to check locale compatibility
+
+Changes to locale data in `glibc` can cause PostgreSQL database files to become incompatible between
+operating systems, leading to index corruption. Check for locale compatibility when you:
+
+- Upgrade the operating system running PostgreSQL.
+- Move binary PostgreSQL data between servers.
+- Update or change third-party container images that include PostgreSQL.
+
+To check for locale compatibility, see
+[Check OS locale data compatibility](../geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility).
+
 > [!warning]
 > [Geo](../geo/_index.md) cannot be used to migrate a PostgreSQL database from one operating system to another. If you attempt to do so, the secondary site may appear to be 100% replicated when in fact some data is not replicated, leading to data loss. This is because Geo depends on PostgreSQL streaming replication, which suffers from the limitations described in this document. Also see [Geo Troubleshooting - Check OS locale data compatibility](../geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility).
 

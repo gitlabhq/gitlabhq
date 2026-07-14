@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :source_code_management do
   include GraphqlHelpers
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:repository, freeze: false) { project.repository }
 
@@ -347,16 +352,21 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
   describe 'commits filtering with author display name' do
     let_it_be_with_reload(:user) { create(:user, name: 'Original Name', email: 'original@example.com') }
 
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:project_with_user_commits, freeze: false) do
-      project = create(:project, :repository)
-      project.repository.create_file(
-        user,
-        'test.txt',
-        'test content',
-        message: 'Test commit',
-        branch_name: 'master'
-      )
-      project
+      create(:project, :repository).tap do |project|
+        project.repository.create_file(
+          user,
+          'test.txt',
+          'test content',
+          message: 'Test commit',
+          branch_name: 'master'
+        )
+      end
     end
 
     before do

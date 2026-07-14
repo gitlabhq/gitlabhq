@@ -35,7 +35,7 @@ The following SAML SSO options are available:
 To add a SAML provider for your GitLab Dedicated instance:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
-1. At the top of the page, select **Configuration**.
+1. In the left sidebar, select **Configuration**.
 1. Expand **SAML providers**.
 1. Select **Add SAML provider**.
 1. In the **SAML label** text box, enter a name to identify this provider in Switchboard.

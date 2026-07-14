@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Members::Projects::CreatorService, feature_category: :groups_and_projects do
   let_it_be_with_reload(:source) { create(:project, :public) }
   let_it_be_with_reload(:source2) { create(:project, :public) }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   describe '.access_levels' do
     it 'returns Gitlab::Access.sym_options_with_owner' do
@@ -76,7 +76,7 @@ RSpec.describe Members::Projects::CreatorService, feature_category: :groups_and_
     end
 
     context 'service account membership eligibility' do
-      let_it_be(:maintainer, freeze: false) { create(:user, maintainer_of: source) }
+      let_it_be(:maintainer) { create(:user, maintainer_of: source) }
 
       context 'when the service account is not eligible for membership' do
         let_it_be(:other_project) { create(:project, namespace: source.namespace) }

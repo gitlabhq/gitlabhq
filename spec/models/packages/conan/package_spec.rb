@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::Package, type: :model, feature_category: :package_registry do
-  let_it_be(:package, freeze: false) { create(:conan_package, without_package_files: true) }
+  let_it_be_with_reload(:package) { create(:conan_package, without_package_files: true) }
 
   describe 'relationships' do
     it { is_expected.to have_one(:conan_metadatum).inverse_of(:package) }
@@ -75,7 +75,7 @@ RSpec.describe Packages::Conan::Package, type: :model, feature_category: :packag
       end
 
       context 'with pending destruction package' do
-        let_it_be(:package, freeze: false) { create(:conan_package, :pending_destruction) }
+        let_it_be_with_reload(:package) { create(:conan_package, :pending_destruction) }
 
         it 'allows a conan package with same recipe' do
           expect(new_package).to be_valid
@@ -119,7 +119,7 @@ RSpec.describe Packages::Conan::Package, type: :model, feature_category: :packag
   end
 
   describe '#default_recipe_revision' do
-    let_it_be(:package, freeze: false) { create(:conan_package, without_revisions: true) }
+    let_it_be_with_reload(:package) { create(:conan_package, without_revisions: true) }
 
     subject(:revision) { package.default_recipe_revision }
 

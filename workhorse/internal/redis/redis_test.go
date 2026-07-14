@@ -126,18 +126,39 @@ func TestConfigureValidConfigX(t *testing.T) {
 
 func TestConnectToSentinel(t *testing.T) {
 	testCases := []struct {
-		scheme string
+		name     string
+		scheme   string
+		username string
+		password string
 	}{
 		{
+			name:   "redis scheme",
 			scheme: "redis",
 		},
 		{
+			name:   "tcp scheme",
 			scheme: "tcp",
+		},
+		{
+			name:     "username and password",
+			scheme:   "redis",
+			username: "redis-user",
+			password: "redis-password",
+		},
+		{
+			name:     "password only",
+			scheme:   "redis",
+			password: "redis-password",
+		},
+		{
+			name:     "username only",
+			scheme:   "redis",
+			username: "redis-user",
 		},
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.scheme, func(t *testing.T) {
+		t.Run(tc.name, func(t *testing.T) {
 			a, connectReceived := mockRedisServer(t)
 
 			addrs := []string{tc.scheme + "://" + a}
@@ -148,13 +169,23 @@ func TestConnectToSentinel(t *testing.T) {
 				sentinelUrls = append(sentinelUrls, config.TomlURL{URL: *parsedURL})
 			}
 
-			redisCfg := &config.RedisConfig{Sentinel: sentinelUrls}
+			redisCfg := &config.RedisConfig{
+				Sentinel: sentinelUrls,
+				Username: tc.username,
+				Password: tc.password,
+			}
 			cfg := &config.Config{Redis: redisCfg}
 			rdb, err := Configure(cfg)
 			require.NoError(t, err)
 			defer rdb.Close()
 
 			require.NotNil(t, rdb.Conn(), "Pool should not be nil")
+
+			// The master ACL username and password must be propagated to the
+			// failover client, since the master URL is not parsed in Sentinel mode.
+			opt := rdb.Options()
+			require.Equal(t, tc.username, opt.Username)
+			require.Equal(t, tc.password, opt.Password)
 
 			// goredis initialize connections lazily
 			rdb.Ping(context.Background())

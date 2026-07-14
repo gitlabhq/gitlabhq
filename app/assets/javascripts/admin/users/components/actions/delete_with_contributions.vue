@@ -7,6 +7,7 @@ import { SOLO_OWNED_ORGANIZATIONS_EMPTY } from '~/admin/users/constants';
 import eventHub, { EVENT_OPEN_DELETE_USER_MODAL } from '../modals/delete_user_modal_event_hub';
 
 export default {
+  name: 'DeleteWithContributions',
   i18n: {
     loading: __('Loading'),
   },
@@ -58,9 +59,7 @@ export default {
 
         const { data: associationsCountData } = await associationsCount(this.userId).catch(
           (error) => {
-            // eslint-disable-next-line no-param-reassign
-            error.id = associationsCountErrorId;
-            throw error;
+            throw Object.assign(error, { id: associationsCountErrorId });
           },
         );
 

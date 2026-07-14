@@ -1,4 +1,4 @@
-/* eslint-disable @gitlab/require-i18n-strings */
+/* eslint-disable @gitlab/require-i18n-strings, @gitlab/no-hardcoded-urls -- Mock data, not real URLs */
 import { uniqueId } from 'lodash-es';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { slugify } from '~/lib/utils/text_utility';

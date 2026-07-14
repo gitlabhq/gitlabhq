@@ -118,37 +118,37 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
     context 'with guest' do
       let(:current_user) { guest }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with reporter' do
       let(:current_user) { reporter }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with developer' do
       let(:current_user) { developer }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with maintainer' do
       let(:current_user) { maintainer }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'with owner' do
       let(:current_user) { owner }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'with admin' do
       let(:current_user) { admin }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when project is an empty repository' do
@@ -159,13 +159,13 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
       context 'when user is an admin' do
         let(:current_user) { admin }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when user is maintainer' do
         let(:current_user) { maintainer }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when user is developer and initial push is allowed' do
@@ -176,7 +176,7 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
             .and_return(Gitlab::Access::BranchProtection.protected_after_initial_push)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when user is developer and initial push is not allowed' do
@@ -187,14 +187,14 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
             .and_return(Gitlab::Access::BranchProtection.protected_fully)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end
 
   describe '.can_update_security_orchestration_policy_project?' do
     it 'returns false' do
-      expect(described_class.can_update_security_orchestration_policy_project?(build_stubbed(:user), build_stubbed(:project))).to eq(false)
+      expect(described_class.can_update_security_orchestration_policy_project?(build_stubbed(:user), build_stubbed(:project))).to be(false)
     end
   end
 
@@ -524,36 +524,36 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
 
   describe '#protected?' do
     context 'existing project' do
-      let(:project) { create(:project, :repository) }
+      let(:project) { create(:project, :small_repo) }
 
       it 'returns true when the branch matches a protected branch via direct match' do
         create(:protected_branch, project: project, name: "foo")
 
-        expect(described_class.protected?(project, 'foo')).to eq(true)
+        expect(described_class.protected?(project, 'foo')).to be(true)
       end
 
       it 'returns true when the branch matches a protected branch via wildcard match' do
         create(:protected_branch, project: project, name: "production/*")
 
-        expect(described_class.protected?(project, 'production/some-branch')).to eq(true)
+        expect(described_class.protected?(project, 'production/some-branch')).to be(true)
       end
 
       it 'returns false when the branch does not match a protected branch via direct match' do
-        expect(described_class.protected?(project, 'foo')).to eq(false)
+        expect(described_class.protected?(project, 'foo')).to be(false)
       end
 
       it 'returns false when the branch does not match a protected branch via wildcard match' do
         create(:protected_branch, project: project, name: "production/*")
 
-        expect(described_class.protected?(project, 'staging/some-branch')).to eq(false)
+        expect(described_class.protected?(project, 'staging/some-branch')).to be(false)
       end
 
       it 'returns false when branch name is nil' do
-        expect(described_class.protected?(project, nil)).to eq(false)
+        expect(described_class.protected?(project, nil)).to be(false)
       end
 
       context 'with caching', :use_clean_rails_redis_caching do
-        let_it_be(:project, freeze: false) { create(:project, :repository) }
+        let_it_be(:project, freeze: false) { create(:project, :small_repo) }
         let_it_be(:protected_branch, freeze: false) { create(:protected_branch, project: project, name: "“jawn”") }
 
         before do
@@ -568,13 +568,13 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
 
           create_params = { name: 'bar', merge_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }] }
           branch = ProtectedBranches::CreateService.new(project, project.owner, create_params).execute
-          expect(described_class.protected?(project, protected_branch.name)).to eq(true)
+          expect(described_class.protected?(project, protected_branch.name)).to be(true)
 
           ProtectedBranches::UpdateService.new(project, project.owner, name: 'ber').execute(branch)
-          expect(described_class.protected?(project, protected_branch.name)).to eq(true)
+          expect(described_class.protected?(project, protected_branch.name)).to be(true)
 
           ProtectedBranches::DestroyService.new(project, project.owner).execute(branch)
-          expect(described_class.protected?(project, protected_branch.name)).to eq(true)
+          expect(described_class.protected?(project, protected_branch.name)).to be(true)
         end
 
         context 'when project is updated' do
@@ -601,7 +601,7 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
         it 'correctly uses the cached version' do
           expect(described_class).not_to receive(:matching)
 
-          expect(described_class.protected?(project, protected_branch.name)).to eq(true)
+          expect(described_class.protected?(project, protected_branch.name)).to be(true)
         end
       end
     end
@@ -682,28 +682,28 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
 
   describe '#any_protected?' do
     context 'existing project' do
-      let(:project) { create(:project, :repository) }
+      let(:project) { create(:project, :small_repo) }
 
       it 'returns true when any of the branch names match a protected branch via direct match' do
         create(:protected_branch, project: project, name: 'foo')
 
-        expect(described_class.any_protected?(project, ['foo', 'production/some-branch'])).to eq(true)
+        expect(described_class.any_protected?(project, ['foo', 'production/some-branch'])).to be(true)
       end
 
       it 'returns true when any of the branch matches a protected branch via wildcard match' do
         create(:protected_branch, project: project, name: 'production/*')
 
-        expect(described_class.any_protected?(project, ['foo', 'production/some-branch'])).to eq(true)
+        expect(described_class.any_protected?(project, ['foo', 'production/some-branch'])).to be(true)
       end
 
       it 'returns false when none of branches does not match a protected branch via direct match' do
-        expect(described_class.any_protected?(project, ['foo'])).to eq(false)
+        expect(described_class.any_protected?(project, ['foo'])).to be(false)
       end
 
       it 'returns false when none of the branches does not match a protected branch via wildcard match' do
         create(:protected_branch, project: project, name: 'production/*')
 
-        expect(described_class.any_protected?(project, ['staging/some-branch'])).to eq(false)
+        expect(described_class.any_protected?(project, ['staging/some-branch'])).to be(false)
       end
     end
   end

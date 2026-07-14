@@ -70,14 +70,14 @@ module API
         find_authorized_group!
       end
 
-      desc 'Composer packages endpoint at group level' do
-        detail 'This feature was introduced in GitLab 13.1'
+      desc 'Retrieve repository URL templates' do
+        detail 'Retrieves the repository URL templates for requesting individual packages for a group.'
         success code: 200
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[packages]
+        tags %w[packages_composer]
       end
       route_setting :authentication, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true, deploy_token_allowed: true
       route_setting :authorization, skip_job_token_policies: true, permissions: :read_composer_package, boundary_type: :group
@@ -85,14 +85,14 @@ module API
         presenter.root
       end
 
-      desc 'Composer packages endpoint at group level for packages list' do
-        detail 'This feature was introduced in GitLab 13.1'
+      desc 'List all packages for a group' do
+        detail 'Lists all repository packages for a specified group. Composer V2 is recommended over V1.'
         success code: 200
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[packages]
+        tags %w[packages_composer]
       end
       params do
         requires :sha, type: String, desc: 'Shasum of current json', documentation: { example: '673594f85a55fe3c0eb45df7bd2fa9d95a1601ab' }
@@ -110,7 +110,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[packages]
+        tags %w[packages_composer]
       end
       params do
         requires :package_name, type: String, file_path: true, desc: 'The Composer package name', documentation: { example: 'my-composer-package' }
@@ -130,7 +130,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[packages]
+        tags %w[packages_composer]
       end
       params do
         requires :package_name, type: String, file_path: true, desc: 'The Composer package name', documentation: { example: 'my-composer-package' }
@@ -155,8 +155,8 @@ module API
         route_setting :authorization, job_token_policies: :admin_packages, permissions: :publish_composer_package,
           boundary_type: :project
 
-        desc 'Composer packages endpoint for registering packages' do
-          detail 'This feature was introduced in GitLab 13.1'
+        desc 'Create a package' do
+          detail 'Creates a Composer package from a specified Git tag or branch for a project.'
           success code: 201
           failure [
             { code: 400, message: 'Bad Request' },
@@ -164,7 +164,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[packages]
+          tags %w[packages_composer]
         end
         params do
           optional :branch, type: String, desc: 'The name of the branch', documentation: { example: 'release' }
@@ -199,7 +199,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[packages]
+          tags %w[packages_composer]
         end
         params do
           requires :sha, type: String, desc: 'Shasum of current json', documentation: { example: '673594f85a55fe3c0eb45df7bd2fa9d95a1601ab' }

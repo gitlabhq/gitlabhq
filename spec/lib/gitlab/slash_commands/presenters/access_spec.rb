@@ -77,6 +77,32 @@ RSpec.describe Gitlab::SlashCommands::Presenters::Access do
     end
   end
 
+  describe '#authorize_for_mention' do
+    context 'with an authorization URL' do
+      subject { described_class.new('http://authorize.me').authorize_for_mention }
+
+      it { is_expected.to be_a(Hash) }
+
+      it 'tells the user to connect their account with Duo-specific context' do
+        expect(subject[:text]).to match("connect your GitLab account")
+        expect(subject[:text]).to match("GitLab Duo")
+        expect(subject[:text]).to match("mention me again")
+        expect(subject[:response_type]).to be(:ephemeral)
+      end
+    end
+
+    context 'without authorization url' do
+      subject { described_class.new.authorize_for_mention }
+
+      it { is_expected.to be_a(Hash) }
+
+      it 'tells the user it could not identify them' do
+        expect(subject[:text]).to match("Couldn't identify you")
+        expect(subject[:response_type]).to be(:ephemeral)
+      end
+    end
+  end
+
   describe '#confirm' do
     let(:url) { 'https://example.com/api' }
 

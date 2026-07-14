@@ -3,6 +3,7 @@ import axios from '~/lib/utils/axios_utils';
 export default class Service {
   constructor(endpoint) {
     this.endpoint = `${endpoint}.json`;
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- dynamic path suffix appended to server-provided endpoint, not ideal but acceptable
     this.realtimeEndpoint = `${endpoint}/realtime_changes`;
   }
 

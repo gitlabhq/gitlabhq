@@ -45,7 +45,7 @@ RSpec.describe Resolvers::BlobsResolver, feature_category: :source_code_manageme
     end
 
     context 'when authorized' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 

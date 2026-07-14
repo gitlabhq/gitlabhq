@@ -11,9 +11,9 @@ RSpec.describe 'Deleting a release', feature_category: :release_orchestration do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository, guests: guest, reporters: reporter, developers: developer, maintainers: maintainer) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository, guests: guest, reporters: reporter, developers: developer, maintainers: maintainer) }
   let_it_be(:tag_name) { 'v1.1.0' }
-  let_it_be(:release, freeze: false) { create(:release, project: project, tag: tag_name) }
+  let_it_be_with_reload(:release) { create(:release, project: project, tag: tag_name) }
 
   let(:mutation_name) { :release_delete }
 

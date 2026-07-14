@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GpgKeySubkey do
+RSpec.describe GpgKeySubkey, feature_category: :source_code_management do
   subject { build(:gpg_key_subkey) }
 
   describe 'associations' do

@@ -11,6 +11,7 @@ const i18n = {
 };
 
 export default {
+  name: 'InstanceTable',
   components: { GlEmptyState, GlLink, GlTable },
   props: {
     cloudsqlInstances: {

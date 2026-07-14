@@ -36,7 +36,7 @@ exports[`Alert integration settings form default state should match the default 
       >
         Incident template (optional).
         <gl-link-stub
-          href="/help/user/project/description_templates#create-an-issue-template"
+          href="/help/user/project/description_templates#create-a-description-template"
           target="_blank"
         >
           <span

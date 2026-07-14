@@ -48,6 +48,14 @@ module MirrorHelper
     Gitlab::Json.dump(remote_mirrors.map { |m| serialize_remote_mirror_row(m) })
   end
 
+  def pull_mirror_table_data(_project)
+    nil
+  end
+
+  def repository_mirrors_available?
+    false
+  end
+
   private
 
   # Shared builder for both push and pull mirror JSON rows.

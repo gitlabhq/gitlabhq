@@ -22,6 +22,7 @@ describe('WorkItemRelationshipIcons', () => {
   const createComponent = async ({
     workItemType = 'Task',
     workItemLinkedItemsHandler = workItemLinkedItemsSuccessHandler,
+    provide = {},
   } = {}) => {
     const mockApollo = createMockApollo([
       [workItemLinkedItemsSlimQuery, workItemLinkedItemsHandler],
@@ -29,6 +30,10 @@ describe('WorkItemRelationshipIcons', () => {
 
     wrapper = shallowMountExtended(WorkItemRelationshipIcons, {
       apolloProvider: mockApollo,
+      provide: {
+        glFeatures: {},
+        ...provide,
+      },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
@@ -101,5 +106,27 @@ describe('WorkItemRelationshipIcons', () => {
     await waitForPromises();
 
     expect(workItemLinkedItemsSuccessHandler).toHaveBeenCalled();
+  });
+
+  it('passes useWorkItemFeatures as false to the query by default', async () => {
+    createComponent();
+
+    await findBlockedIcon().trigger('mouseenter');
+    await waitForPromises();
+
+    expect(workItemLinkedItemsSuccessHandler).toHaveBeenCalledWith(
+      expect.objectContaining({ useWorkItemFeatures: false }),
+    );
+  });
+
+  it('passes useWorkItemFeatures as true to the query when workItemFeaturesField feature flag is enabled', async () => {
+    createComponent({ provide: { glFeatures: { workItemFeaturesField: true } } });
+
+    await findBlockedIcon().trigger('mouseenter');
+    await waitForPromises();
+
+    expect(workItemLinkedItemsSuccessHandler).toHaveBeenCalledWith(
+      expect.objectContaining({ useWorkItemFeatures: true }),
+    );
   });
 });

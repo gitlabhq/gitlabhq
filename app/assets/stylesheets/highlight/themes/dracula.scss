@@ -1,0 +1,423 @@
+@use "sass:color";
+
+/* https://github.com/dracula/pygments/blob/master/dracula.css */
+
+@import '../common';
+@import 'highlight.js/styles/base16/dracula';
+
+/*
+* Dracula Colors
+*/
+$dracula-bg: #282a36;
+$dracula-border: #44475a;
+$dracula-code-mark: #44475a;
+$dracula-text-color: #f8f8f2;
+$dracula-line-num-color: rgba(255, 255, 255, 0.3);
+$dracula-line-num-color-new: #5fa777;
+$dracula-line-num-color-old: #c16a6a;
+$dracula-line-empty-bg: #44475a;
+$dracula-line-empty-border: color.adjust($dracula-line-empty-bg, $lightness: -15%);
+$dracula-diff-border: #44475a;
+$dracula-highlight-bg: #f1fa8c;
+$dracula-expanded-bg: #343746;
+$dracula-coverage: #50fa7b;
+$dracula-no-coverage: #ff5555;
+
+$dracula-new-bg: #2a3c2e;
+$dracula-new-idiff: rgba(80, 250, 123, 0.15);
+
+$dracula-old-bg: #3d2b30;
+$dracula-old-idiff: rgba(255, 85, 85, 0.2);
+
+$dracula-hll: #44475a;
+$dracula-c: #6272a4;
+$dracula-err-color: #f8f8f2;
+$dracula-err-bg: transparent;
+$dracula-k: #ff79c6;
+$dracula-l: #f8f8f2;
+$dracula-n: #f8f8f2;
+$dracula-o: #ff79c6;
+$dracula-p: #f8f8f2;
+$dracula-cm: #6272a4;
+$dracula-cp: #ff79c6;
+$dracula-c1: #6272a4;
+$dracula-cs: #6272a4;
+$dracula-cd: #6272a4;
+$dracula-kc: #ff79c6;
+$dracula-kd: #8be9fd;
+$dracula-kn: #ff79c6;
+$dracula-kp: #ff79c6;
+$dracula-kr: #ff79c6;
+$dracula-kt: #8be9fd;
+$dracula-ld: #f8f8f2;
+$dracula-m: #bd93f9;
+$dracula-s: #f1fa8c;
+$dracula-na: #50fa7b;
+$dracula-nb: #8be9fd;
+$dracula-nc: #50fa7b;
+$dracula-no: #f8f8f2;
+$dracula-nd: #f8f8f2;
+$dracula-ni: #f8f8f2;
+$dracula-ne: #f8f8f2;
+$dracula-nf: #50fa7b;
+$dracula-nl: #8be9fd;
+$dracula-nn: #f8f8f2;
+$dracula-nx: #f8f8f2;
+$dracula-py: #f8f8f2;
+$dracula-nt: #ff79c6;
+$dracula-nv: #8be9fd;
+$dracula-ow: #ff79c6;
+$dracula-w: #f8f8f2;
+$dracula-mf: #bd93f9;
+$dracula-mh: #bd93f9;
+$dracula-mi: #bd93f9;
+$dracula-mo: #bd93f9;
+$dracula-sb: #f1fa8c;
+$dracula-sc: #f1fa8c;
+$dracula-sd: #f1fa8c;
+$dracula-s2: #f1fa8c;
+$dracula-se: #f1fa8c;
+$dracula-sh: #f1fa8c;
+$dracula-si: #f1fa8c;
+$dracula-sx: #f1fa8c;
+$dracula-sr: #f1fa8c;
+$dracula-s1: #f1fa8c;
+$dracula-ss: #f1fa8c;
+$dracula-bp: #f8f8f2;
+$dracula-vc: #8be9fd;
+$dracula-vg: #8be9fd;
+$dracula-vi: #8be9fd;
+$dracula-il: #bd93f9;
+$dracula-gu: #6272a4;
+$dracula-gd: #ff5555;
+$dracula-gi: #50fa7b;
+$dracula-gh: #6272a4;
+
+:root {
+  --default-diff-color-deletion: #c87872;
+  --default-diff-color-addition: #678528;
+  --diff-addition-color: #{$dracula-new-bg};
+  --diff-deletion-color: #{$dracula-old-bg};
+}
+
+.code.dracula,
+.code-syntax-highlight-theme {
+  --code-dark-theme: 1;
+  --code-border-lightness-adjust: 0.1;
+  --diff-expansion-background-color: #{$gl-color-neutral-600};
+
+  --code-background: #{$dracula-bg};
+  --code-empty-background: #{color.adjust($dracula-bg, $lightness: -1.5%)};
+  --code-border-color: #{$gl-color-neutral-700};
+  --code-changed-border-color: #{rgba(255,255,255,0.1)};
+
+  --code-line-number-background-color: #{$dracula-bg};
+  --code-line-number-color: #{$dracula-line-num-color};
+  --code-line-number-hover-background-color: #{$gl-color-purple-800};
+  --code-line-number-hover-border-color: #{$gl-color-purple-700};
+  --code-line-number-hover-color: #{$gl-color-purple-50};
+
+  --code-old-diff-line-number-background-color: #{$dracula-old-bg};
+  --code-old-diff-line-number-color: #{$dracula-line-num-color-old};
+  --code-old-diff-sign-color: #{$dracula-line-num-color-old};
+  --code-old-diff-background-color: #{$dracula-old-bg};
+  --code-old-diff-border-color: #{$dracula-diff-border};
+  --code-old-diff-color: #{$dracula-line-num-color-old};
+  --code-old-inline-diff-background-color: #{$dracula-old-idiff};
+
+  --code-new-diff-line-number-background-color: #{$dracula-new-bg};
+  --code-new-diff-line-number-color: #{$dracula-line-num-color-new};
+  --code-new-diff-sign-color: #{$dracula-line-num-color-new};
+  --code-new-diff-background-color: #{$dracula-new-bg};
+  --code-new-diff-border-color: #{$dracula-diff-border};
+  --code-new-diff-color: #{$dracula-line-num-color-new};
+  --code-new-inline-diff-background-color: #{$dracula-new-idiff};
+
+  --code-meta-diff-background-color: #{$dark-diff-match-color};
+  --code-meta-diff-color: #{$gl-color-neutral-200};
+
+  --code-diff-hunk-header-background-color: #{$dark-diff-match-color};
+  --code-diff-hunk-header-color: #{$gl-color-neutral-200};
+
+  --code-diff-expand-button-background-color: #{$gl-color-neutral-600};
+  --code-diff-expand-button-color: #{$gl-color-neutral-200};
+  --code-diff-expand-button-hover-background-color: #{$gl-color-neutral-300};
+  --code-diff-expand-button-hover-color: #{$gl-color-neutral-0};
+
+  --code-highlighted-line-background-color: #{$gl-color-orange-800};
+  --code-highlighted-line-border-color: #{$gl-color-orange-500};
+
+  // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)
+  // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
+  @include hljs-override('string', $dracula-s);
+  @include hljs-override('attr', $dracula-na);
+  @include hljs-override('attribute', $dracula-n);
+  @include hljs-override('selector-tag', $dracula-nt);
+  @include hljs-override('keyword', $dracula-k);
+  @include hljs-override('variable', $dracula-nv);
+  @include hljs-override('variable\\.language_', $dracula-k);
+  @include hljs-override('title', $dracula-nf);
+  @include hljs-override('name', $dracula-k);
+  @include hljs-override('tag', $dracula-nt);
+  @include hljs-override('type', $dracula-nc);
+  @include hljs-override('number', $dracula-mf);
+  @include hljs-override('literal', $dracula-kc);
+  @include hljs-override('built_in', $dracula-n);
+  @include hljs-override('section', $dracula-gh);
+  @include hljs-override('bullet', $dracula-n);
+  @include hljs-override('subst', $dracula-p);
+  @include hljs-override('symbol', $dracula-ss);
+  @include hljs-override('title\\.class_\\.inherited__', $dracula-no);
+  @include hljs-override('title\\.class\\.inherited', $dracula-no);
+  @include hljs-override('title\\.class', $dracula-nc);
+  @include hljs-override('title\\.function', $dracula-nf);
+  @include hljs-override('variable\\.constant', $dracula-no);
+  @include hljs-override('variable\\.language', $dracula-nb);
+  @include hljs-override('params', $dracula-nb);
+
+  // Line numbers
+  .file-line-blame {
+    @include line-link($gl-color-neutral-0, 'git');
+  }
+
+  .line-links {
+    @include line-hover-bg($dracula-bg);
+  }
+
+  .line-numbers,
+  .diff-line-num,
+  .code-search-line {
+    background-color: $dracula-bg;
+  }
+
+  .diff-line-num,
+  .diff-line-num a {
+    color: $dracula-line-num-color;
+  }
+
+  .diff-grid-row.line_holder.diff-tr .diff-td.commented:not(.hll) {
+    --highlight-border-color: #{$gl-color-blue-600};
+    background-color: $gl-color-blue-900;
+  }
+
+  // Code itself
+  pre.code,
+  .diff-line-num {
+    border-color: $dracula-border;
+  }
+
+  &,
+  pre.code,
+  .line_holder .line_content {
+    background-color: $dracula-bg;
+    color: $dracula-text-color;
+  }
+
+  .diff-line-expand-button {
+    @include diff-expansion($gl-color-neutral-600, $gl-color-neutral-200, $gl-color-neutral-300, $gl-color-neutral-0);
+  }
+
+  // Diff line
+  .line_holder {
+    &.match .line_content,
+    &.old-nonewline .line_content,
+    &.new-nonewline .line_content {
+      @include dark-diff-match-line;
+    }
+
+    .diff-td.diff-line-num.hll,
+    .diff-td.line-coverage.hll,
+    .diff-td.line-inline-findings.hll,
+    .diff-td.line_content.hll,
+    td.diff-line-num.hll,
+    td.line-coverage.hll,
+    td.line_content.hll {
+      --highlight-border-color: #{$gl-color-orange-500};
+      background-color: $gl-color-orange-800;
+    }
+
+    .line-coverage {
+      @include line-coverage-border-color($dracula-coverage, $dracula-no-coverage);
+    }
+
+    .diff-line-num.new,
+    .line-coverage.new,
+    .line-inline-findings.new,
+    .line_content.new,
+    .diff-line-num.new-nomappinginraw,
+    .line-coverage.new-nomappinginraw,
+    .line-inline-findings.new-nomappinginraw,
+    .line_content.new-nomappinginraw {
+      @include diff-background($dracula-new-bg, $dracula-new-idiff, $dracula-diff-border);
+
+      &::before,
+      a {
+        color: $dracula-line-num-color-new;
+      }
+    }
+
+    .diff-line-num.old,
+    .line-coverage.old,
+    .line-inline-findings.old,
+    .line_content.old,
+    .diff-line-num.old-nomappinginraw,
+    .line-coverage.old-nomappinginraw,
+    .line-inline-findings.old-nomappinginraw,
+    .line_content.old-nomappinginraw {
+      @include diff-background($dracula-old-bg, $dracula-old-idiff, $dracula-diff-border);
+
+      &::before,
+      a {
+        color: $dracula-line-num-color-old;
+      }
+    }
+
+    &:not(.match) .diff-grid-left:hover,
+    &:not(.match) .diff-grid-right:hover,
+    &.code-search-line:hover {
+      .diff-line-num:not(.empty-cell) {
+        @include line-number-hover-dark;
+      }
+    }
+
+    .diff-line-num {
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
+        @include line-number-hover-dark;
+      }
+    }
+
+    .line_content.match {
+      @include dark-diff-match-line;
+    }
+
+    &:not(.diff-expanded) + .diff-expanded,
+    &.diff-expanded + .line_holder:not(.diff-expanded) {
+      > .diff-line-num,
+      > .line-coverage,
+      > .line_content {
+        border-top: 1px solid $gl-color-neutral-1000;
+      }
+    }
+
+    &.diff-expanded {
+      > .diff-line-num,
+      > .line-coverage,
+      > .line_content {
+        background: $dracula-expanded-bg;
+        border-color: $dracula-expanded-bg;
+      }
+    }
+  }
+
+  @include conflict-colors('dracula');
+
+  // highlight line via anchor
+  pre .hll {
+    background-color: $dracula-hll !important;
+  }
+
+  // mark lines via mark_multiple_lines
+  pre.dracula code {
+    .selected-inline-section-marker {
+      background: $dracula-code-mark !important;
+    }
+
+    .inline-section-marker {
+      background: $dracula-hll;
+    }
+  }
+
+  .file-holder div.code.dracula {
+    .selected-inline-number-mark {
+      color: $gl-color-neutral-200;
+    }
+
+    .unselected-inline-number-mark {
+      color: $gl-color-neutral-600;
+    }
+  }
+
+
+
+  // Search result highlight
+  span.highlight_word {
+    background-color: $dracula-highlight-bg !important;
+    color: $gl-color-neutral-1000 !important;
+  }
+
+  // Links to URLs, emails, or dependencies
+  .line a {
+    color: $dracula-k;
+  }
+
+  .hll { background-color: $dracula-hll; }
+  .c { color: $dracula-c; } // Comment
+  .err { /* Error */
+    color: $dracula-err-color;
+    background-color: $dracula-err-bg;
+  }
+  .k { color: $dracula-k; } // Keyword
+  .l { color: $dracula-l; } // Literal
+  .n { color: $dracula-n; } // Name
+  .o { color: $dracula-o; } // Operator
+  .p { color: $dracula-p; } // Punctuation
+  .cm { color: $dracula-cm; } // Comment.Multiline
+  .cp { color: $dracula-cp; } // Comment.Preproc
+  .c1 { color: $dracula-c1; } // Comment.Single
+  .cs { color: $dracula-cs; } // Comment.Special
+  .cd { color: $dracula-cd; } // Comment.Doc
+  .ge { font-style: italic; } // Generic.Emph
+  .gs { font-weight: $gl-font-weight-bold; } // Generic.Strong
+  .kc { color: $dracula-kc; } // Keyword.Constant
+  .kd { color: $dracula-kd; } // Keyword.Declaration
+  .kn { color: $dracula-kn; } // Keyword.Namespace
+  .kp { color: $dracula-kp; } // Keyword.Pseudo
+  .kr { color: $dracula-kr; } // Keyword.Reserved
+  .kt { color: $dracula-kt; } // Keyword.Type
+  .ld { color: $dracula-ld; } // Literal.Date
+  .m { color: $dracula-m; } // Literal.Number
+  .s { color: $dracula-s; } // Literal.String
+  .na { color: $dracula-na; } // Name.Attribute
+  .nb { color: $dracula-nb; } // Name.Builtin
+  .nc { color: $dracula-nc; } // Name.Class
+  .no { color: $dracula-no; } // Name.Constant
+  .nd { color: $dracula-nd; } // Name.Decorator
+  .ni { color: $dracula-ni; } // Name.Entity
+  .ne { color: $dracula-ne; } // Name.Exception
+  .nf { color: $dracula-nf; } // Name.Function
+  .nl { color: $dracula-nl; } // Name.Label
+  .nn { color: $dracula-nn; } // Name.Namespace
+  .nx { color: $dracula-nx; } // Name.Other
+  .py { color: $dracula-py; } // Name.Property
+  .nt { color: $dracula-nt; } // Name.Tag
+  .nv { color: $dracula-nv; } // Name.Variable
+  .ow { color: $dracula-ow; } // Operator.Word
+  .w { color: $dracula-w; } // Text.Whitespace
+  .mf { color: $dracula-mf; } // Literal.Number.Float
+  .mh { color: $dracula-mh; } // Literal.Number.Hex
+  .mi { color: $dracula-mi; } // Literal.Number.Integer
+  .mo { color: $dracula-mo; } // Literal.Number.Oct
+  .sb { color: $dracula-sb; } // Literal.String.Backtick
+  .sc { color: $dracula-sc; } // Literal.String.Char
+  .sd { color: $dracula-sd; } // Literal.String.Doc
+  .s2 { color: $dracula-s2; } // Literal.String.Double
+  .se { color: $dracula-se; } // Literal.String.Escape
+  .sh { color: $dracula-sh; } // Literal.String.Heredoc
+  .si { color: $dracula-si; } // Literal.String.Interpol
+  .sx { color: $dracula-sx; } // Literal.String.Other
+  .sr { color: $dracula-sr; } // Literal.String.Regex
+  .s1 { color: $dracula-s1; } // Literal.String.Single
+  .ss { color: $dracula-ss; } // Literal.String.Symbol
+  .bp { color: $dracula-bp; } // Name.Builtin.Pseudo
+  .vc { color: $dracula-vc; } // Name.Variable.Class
+  .vg { color: $dracula-vg; } // Name.Variable.Global
+  .vi { color: $dracula-vi; } // Name.Variable.Instance
+  .il { color: $dracula-il; } // Literal.Number.Integer.Long
+  .gu { color: $dracula-gu; } // Generic.Subheading & Diff Unified/Comment?
+  .gd { color: $dracula-gd; } // Generic.Deleted & Diff Deleted
+  .gi { color: $dracula-gi; } // Generic.Inserted & Diff Inserted
+  .gh { color: $dracula-gh; } // Generic.Heading
+}
+
+@include merge-conflicts-syntax-highlight-theme('dracula');

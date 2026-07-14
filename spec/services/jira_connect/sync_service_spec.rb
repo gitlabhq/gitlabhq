@@ -77,4 +77,29 @@ RSpec.describe JiraConnect::SyncService, feature_category: :integrations do
       end
     end
   end
+
+  describe '#execute when the installation registered a Forge system token' do
+    let_it_be(:direct_project) { create(:project, :repository) }
+    let_it_be(:forge_installation) do
+      create(:jira_connect_installation,
+        jira_api_base_url: 'https://api.atlassian.com/ex/jira/cloud-xyz',
+        forge_system_token: 'system-token')
+    end
+
+    before do
+      create(:jira_connect_subscription, namespace: direct_project.namespace, installation: forge_installation)
+    end
+
+    it 'routes outbound sync through SystemTokenClient (direct Jira call)' do
+      expect_next_instance_of(
+        Atlassian::Forge::SystemTokenClient, forge_installation.jira_api_base_url, forge_installation.forge_system_token
+      ) do |client|
+        expect(client).to receive(:send_info)
+          .with(project: direct_project, commits: [])
+          .and_return([{ status: 'success' }])
+      end
+
+      described_class.new(direct_project).execute(commits: [])
+    end
+  end
 end

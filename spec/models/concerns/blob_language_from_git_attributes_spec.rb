@@ -20,13 +20,13 @@ RSpec.describe BlobLanguageFromGitAttributes do
     it 'returns nil if repository is absent' do
       allow(blob).to receive(:repository).and_return(nil)
 
-      expect(blob.language_from_gitattributes).to eq(nil)
+      expect(blob.language_from_gitattributes).to be_nil
     end
 
     it 'returns nil if repository does not exist' do
       allow(blob.repository).to receive(:exists?).and_return(false)
 
-      expect(blob.language_from_gitattributes).to eq(nil)
+      expect(blob.language_from_gitattributes).to be_nil
     end
   end
 end

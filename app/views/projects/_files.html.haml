@@ -1,7 +1,6 @@
 - ref = local_assigns.fetch(:ref) { current_ref }
 - project = local_assigns.fetch(:project) { @project }
 - pipeline = local_assigns.fetch(:pipeline, nil)
-- repository_file_tree_browser_enabled = Feature.enabled?(:repository_file_tree_browser, current_user)
 - unless @skip_logs_tree_loading
   - add_page_startup_api_call logs_file_project_ref_path(@project, ref, @path, format: "json", offset: 0, ref_type: @ref_type&.upcase)
 - if readme_path = @project.repository.readme_path
@@ -9,13 +8,9 @@
 - add_page_specific_style 'page_bundles/commit_description'
 - add_page_specific_style 'page_bundles/projects'
 
-- if repository_file_tree_browser_enabled
-  .gl-flex.navigation-root
-    -# Pre-reserve width to prevent CLS; must match TREE_WIDTH in file_tree_browser.vue
-    #js-file-browser{ style: 'width:320px' }
-    .gl-w-full.gl-min-w-0
-      #tree-holder.tree-holder.gl-clearfix.js-per-page.gl-mt-4{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
-        = render 'projects/tree_content', project: project, ref: ref, pipeline: pipeline, tree: @tree, ref_type: @ref_type
-- else
-  #tree-holder.tree-holder.gl-clearfix.js-per-page.gl-mt-5{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
-    = render 'projects/tree_content', project: project, ref: ref, pipeline: pipeline, tree: @tree, ref_type: @ref_type
+.gl-flex.navigation-root
+  -# Pre-reserve width to prevent CLS; must match TREE_WIDTH in file_tree_browser.vue
+  #js-file-browser{ style: 'width:320px' }
+  .gl-w-full.gl-min-w-0
+    #tree-holder.tree-holder.gl-clearfix.js-per-page.gl-mt-4{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
+      = render 'projects/tree_content', project: project, ref: ref, pipeline: pipeline, tree: @tree, ref_type: @ref_type

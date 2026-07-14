@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Artifactable do
+RSpec.describe Ci::Artifactable, feature_category: :job_artifacts do
   let(:ci_job_artifact) { build(:ci_job_artifact) }
 
   describe 'artifact properties are included' do
@@ -27,6 +27,26 @@ RSpec.describe Ci::Artifactable do
         it 'iterates blob once' do
           expect { |b| artifact.each_blob(&b) }.to yield_control.once
         end
+
+        it 'caps decompression output during size validation', :aggregate_failures do
+          expect(Gitlab::Ci::DecompressedGzipSizeValidator)
+            .to receive(:new).with(hash_including(limit_output: true)).and_call_original
+
+          expect { |b| artifact.each_blob(&b) }.to yield_control.once
+        end
+
+        context 'when ci_optimize_artifact_parsing is disabled' do
+          before do
+            stub_feature_flags(ci_optimize_artifact_parsing: false)
+          end
+
+          it 'does not cap decompression output during size validation', :aggregate_failures do
+            expect(Gitlab::Ci::DecompressedGzipSizeValidator)
+              .to receive(:new).with(hash_including(limit_output: false)).and_call_original
+
+            expect { |b| artifact.each_blob(&b) }.to yield_control.once
+          end
+        end
       end
 
       context 'when gzip file contains three files' do
@@ -49,6 +69,75 @@ RSpec.describe Ci::Artifactable do
         it 'fails on blob' do
           expect { |b| artifact.each_blob(&b) }
             .to raise_error(::Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator::FileDecompressionError)
+        end
+      end
+    end
+
+    context 'when artifact is stored remotely' do
+      include HttpIOHelpers
+
+      let(:artifact) { create(:ci_job_artifact, :junit, :remote_store) }
+      let(:fixture_path) { Rails.root.join('spec/fixtures/junit/junit.xml.gz') }
+      let(:url_pattern) { %r{https://artifacts.+junit\.xml\.gz} }
+
+      before do
+        stub_artifacts_object_storage
+      end
+
+      context 'when ci_optimize_artifact_parsing is enabled' do
+        before do
+          stub_request(:get, url_pattern)
+            .to_return(status: 200, body: File.binread(fixture_path))
+        end
+
+        it 'downloads the file only once', :aggregate_failures do
+          expect { |b| artifact.each_blob(&b) }.to yield_control.once
+
+          expect(WebMock).to have_requested(:get, url_pattern).once
+        end
+
+        it 'caps decompression output during size validation', :aggregate_failures do
+          expect(Gitlab::Ci::DecompressedGzipSizeValidator)
+            .to receive(:new).with(hash_including(limit_output: true)).and_call_original
+
+          expect { |b| artifact.each_blob(&b) }.to yield_control.once
+        end
+
+        context 'when decompressed artifact size validator fails' do
+          before do
+            allow_next_instance_of(Gitlab::Ci::DecompressedGzipSizeValidator) do |instance|
+              allow(instance).to receive(:valid?).and_return(false)
+            end
+          end
+
+          it 'fails on blob' do
+            expect { |b| artifact.each_blob(&b) }
+              .to raise_error(::Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator::FileDecompressionError)
+          end
+        end
+      end
+
+      context 'when ci_optimize_artifact_parsing is disabled' do
+        before do
+          stub_feature_flags(ci_optimize_artifact_parsing: false)
+
+          stub_remote_url_206(url_pattern, fixture_path)
+          stub_request(:get, url_pattern)
+            .with { |request| request.headers['Range'].blank? }
+            .to_return(status: 200, body: File.binread(fixture_path))
+        end
+
+        it 'downloads the file for validation and again for parsing', :aggregate_failures do
+          expect { |b| artifact.each_blob(&b) }.to yield_control.once
+
+          expect(WebMock).to have_requested(:get, url_pattern).twice
+        end
+
+        it 'does not cap decompression output during size validation', :aggregate_failures do
+          expect(Gitlab::Ci::DecompressedGzipSizeValidator)
+            .to receive(:new).with(hash_including(limit_output: false)).and_call_original
+
+          expect { |b| artifact.each_blob(&b) }.to yield_control.once
         end
       end
     end

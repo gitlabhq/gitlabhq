@@ -33,10 +33,10 @@ module API
     end
 
     before do
-      not_found! unless Gitlab::CurrentSettings.bulk_import_enabled? ||
-        Feature.enabled?(:override_bulk_import_disabled, current_user, type: :ops)
+      not_found! unless Gitlab::CurrentSettings.bulk_import_enabled?
 
       authenticate!
+      set_current_organization
     end
 
     resource :bulk_imports do
@@ -107,7 +107,6 @@ module API
           end
         end
 
-        set_current_organization
         response = ::BulkImports::CreateService.new(
           current_user,
           params[:entities],

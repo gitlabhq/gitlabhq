@@ -1,4 +1,4 @@
-import { GlButton } from '@gitlab/ui';
+import { GlNavItem } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import IconOnlyToggle from '~/super_sidebar/components/icon_only_toggle.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -18,7 +18,7 @@ describe('IconOnlyToggle', () => {
     });
   };
 
-  const findButton = () => wrapper.findComponent(GlButton);
+  const findNavItem = () => wrapper.findComponent(GlNavItem);
 
   describe('when sidebar is expanded', () => {
     beforeEach(() => {
@@ -26,15 +26,15 @@ describe('IconOnlyToggle', () => {
     });
 
     it('renders button with correct icon', () => {
-      expect(findButton().props('icon')).toBe('collapse-left');
+      expect(findNavItem().props('icon')).toBe('collapse-left');
     });
 
     it('displays shrink text', () => {
-      expect(findButton().text()).toBe('Collapse sidebar');
+      expect(findNavItem().text()).toBe('Collapse sidebar');
     });
 
     it('does not show tooltip', () => {
-      expect(findButton().attributes('title')).toBeUndefined();
+      expect(findNavItem().attributes('title')).toBeUndefined();
     });
   });
 
@@ -44,16 +44,16 @@ describe('IconOnlyToggle', () => {
     });
 
     it('renders button with correct icon', () => {
-      expect(findButton().props('icon')).toBe('collapse-right');
+      expect(findNavItem().props('icon')).toBe('collapse-right');
     });
 
     it('does not display text content', () => {
-      expect(findButton().text()).toBe('Expand sidebar');
-      expect(findButton().props('buttonTextClasses')).toBe('gl-hidden');
+      expect(findNavItem().attributes('aria-label')).toBe('Expand sidebar');
+      expect(findNavItem().props('isIconOnly')).toBe(true);
     });
 
     it('shows tooltip with expand text', () => {
-      const buttonTooltipDirective = getBinding(findButton().element, 'gl-tooltip');
+      const buttonTooltipDirective = getBinding(findNavItem().element, 'gl-tooltip');
 
       expect(buttonTooltipDirective.value).toBe('Expand sidebar');
     });
@@ -65,7 +65,7 @@ describe('IconOnlyToggle', () => {
     });
 
     it('emits toggle event when clicked', async () => {
-      await findButton().vm.$emit('click');
+      await findNavItem().vm.$emit('click');
 
       expect(wrapper.emitted('toggle')).toHaveLength(1);
     });

@@ -33,11 +33,11 @@ RSpec.describe Users::MigrateHumanRecordsToGhostUserInBatchesWorker, feature_cat
   end
 
   it_behaves_like 'an idempotent worker' do
-    let_it_be(:user, freeze: false) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, namespace: create(:group)) }
-    let_it_be(:ghost_user, freeze: false) { Users::Internal.in_organization(project.organization).ghost }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, namespace: create(:group)) }
+    let_it_be(:ghost_user) { Users::Internal.in_organization(project.organization).ghost }
 
-    let_it_be(:issue, freeze: false) do
+    let_it_be(:issue) do
       create(:issue, project: project, author: user, last_edited_by: user, last_edited_at: Time.current)
     end
 

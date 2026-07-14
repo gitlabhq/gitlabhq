@@ -14,11 +14,27 @@ module RapidDiffs
       @extra_file_data = extra_file_data
     end
 
+    private
+
     def extra_file_data
-      {
+      data = {
         code_review_id: @diff_file.code_review_id,
         blob_raw_path: blob_raw_path
-      }.merge(@extra_file_data)
+      }
+      diff_refs = diff_refs_data
+      data[:diff_refs] = diff_refs if diff_refs
+      data.merge(@extra_file_data)
+    end
+
+    def diff_refs_data
+      refs = @diff_file.diff_refs
+      return unless refs
+
+      {
+        base_sha: refs.base_sha,
+        start_sha: refs.start_sha,
+        head_sha: refs.head_sha
+      }
     end
 
     def blob_raw_path
@@ -46,6 +62,8 @@ module RapidDiffs
 
     def edit_in_sfe
       return unless @diff_file.text?
+      return if @diff_file.stored_externally?
+      return unless @merge_request.source_project
 
       editor_path = helpers.project_edit_blob_path(
         @merge_request.source_project,
@@ -54,7 +72,7 @@ module RapidDiffs
       )
 
       {
-        text: _('Edit in single-file editor'),
+        text: _('Edit single file'),
         href: editor_path,
         position: 2
       }

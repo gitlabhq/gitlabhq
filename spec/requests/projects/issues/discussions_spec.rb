@@ -4,10 +4,15 @@ require 'spec_helper'
 
 RSpec.describe 'issue discussions', feature_category: :team_planning do
   describe 'GET /:namespace/:project/-/issues/:iid/discussions' do
-    let_it_be(:user, freeze: false) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:issue, freeze: false) { create(:issue, project: project) }
-    let_it_be(:note_author, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be_with_reload(:issue) { create(:issue, project: project) }
+    let_it_be_with_reload(:note_author) { create(:user) }
+    # `freeze: false` is required here: this `let_it_be` subject is mutated
+    # in-memory across examples in a way that survives both
+    # `let_it_be_with_reload` and `let_it_be_with_refind` (e.g. a memoized
+    # association/collection or a non-persisted attribute). Keeping it unfrozen
+    # is the only correct cure (see gitlab-org/gitlab#602925).
     let_it_be(:notes, freeze: false) { create_list(:note, 5, project: project, noteable: issue, author: note_author) }
 
     before_all do

@@ -1,0 +1,20 @@
+.gl-base-layout{ @options }
+  = render ::Layouts::PageHeadingComponent.new(@heading, options: { class: class_names('gl-sr-only': @page_heading_sr_only) }) do |c|
+    - c.with_heading do
+      = heading || @heading
+    - if actions?
+      - c.with_actions do
+        = actions
+    - if description? || @description
+      - c.with_description do
+        = description || @description
+
+  - if alerts?
+    .gl-base-layout-alerts.js-base-layout-alerts{ data: { testid: 'base-layout-alerts' } }
+      = alerts
+
+  %div{ data: { testid: 'base-layout-content' } }
+    - if @loading
+      = render ::Pajamas::SpinnerComponent.new(size: :lg, class: 'gl-base-layout-loading-icon',  data: { testid: 'base-layout-loading-icon' } )
+    - else
+      = content

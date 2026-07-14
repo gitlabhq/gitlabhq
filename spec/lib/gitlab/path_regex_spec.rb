@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::PathRegex do
+RSpec.describe Gitlab::PathRegex, feature_category: :groups_and_projects do
   # Pass in a full path to remove the format segment:
   # `/ci/lint(.:format)` -> `/ci/lint`
   def without_format(path)

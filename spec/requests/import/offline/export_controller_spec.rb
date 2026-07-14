@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Import::Offline::ExportController, feature_category: :importers do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     login_as(user)
@@ -12,7 +12,7 @@ RSpec.describe Import::Offline::ExportController, feature_category: :importers d
   describe 'GET show' do
     context 'when offline_transfer_ui feature flag is disabled' do
       before do
-        stub_feature_flags(offline_transfer_ui: false, offline_transfer_exports: true)
+        stub_feature_flags(offline_transfer_ui: false)
       end
 
       it 'returns 404' do
@@ -23,7 +23,7 @@ RSpec.describe Import::Offline::ExportController, feature_category: :importers d
 
     context 'when offline_transfer_exports feature flag is disabled' do
       before do
-        stub_feature_flags(offline_transfer_ui: true, offline_transfer_exports: false)
+        stub_feature_flags(offline_transfer_exports: false)
       end
 
       it 'returns 404' do
@@ -33,10 +33,6 @@ RSpec.describe Import::Offline::ExportController, feature_category: :importers d
     end
 
     context 'when both feature flags are enabled' do
-      before do
-        stub_feature_flags(offline_transfer_ui: true, offline_transfer_exports: true)
-      end
-
       it 'renders the template' do
         get import_offline_export_path
         expect(response).to have_gitlab_http_status(:ok)
@@ -45,13 +41,33 @@ RSpec.describe Import::Offline::ExportController, feature_category: :importers d
   end
 
   describe 'GET history' do
-    before do
-      stub_feature_flags(offline_transfer_ui: true, offline_transfer_exports: true)
+    context 'when offline_transfer_ui feature flag is disabled' do
+      before do
+        stub_feature_flags(offline_transfer_ui: false)
+      end
+
+      it 'returns 404' do
+        get history_import_offline_export_path
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
 
-    it 'returns 404' do
-      get history_import_offline_export_path
-      expect(response).to have_gitlab_http_status(:not_found)
+    context 'when offline_transfer_exports feature flag is disabled' do
+      before do
+        stub_feature_flags(offline_transfer_exports: false)
+      end
+
+      it 'returns 404' do
+        get history_import_offline_export_path
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when both feature flags are enabled' do
+      it 'renders the template' do
+        get history_import_offline_export_path
+        expect(response).to have_gitlab_http_status(:ok)
+      end
     end
   end
 end

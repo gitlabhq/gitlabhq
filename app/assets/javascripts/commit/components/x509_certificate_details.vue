@@ -2,6 +2,7 @@
 import { X509_CERTIFICATE_KEY_IDENTIFIER_TITLE } from '../constants';
 
 export default {
+  name: 'X509CertificateDetails',
   props: {
     subject: {
       type: String,

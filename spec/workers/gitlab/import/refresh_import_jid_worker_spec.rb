@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Import::RefreshImportJidWorker, feature_category: :import
   end
 
   describe '#perform' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
     let(:import_state) { create(:import_state, project: project, jid: '123abc', status: :started) }
 
     context 'when the project does not exist' do

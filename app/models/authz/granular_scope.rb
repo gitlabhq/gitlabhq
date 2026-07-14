@@ -16,13 +16,6 @@ module Authz
     validate :organization_match, if: -> { namespace.present? }
 
     scope :with_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
-    scope :for_standalone, ->(access) do
-      where(namespace_id: nil, access: access).where.not(access: Access::ALL_MEMBERSHIPS)
-    end
-    scope :for_namespaces, ->(namespaces) do
-      where(namespace_id: namespaces, access: [Access::PERSONAL_PROJECTS, Access::SELECTED_MEMBERSHIPS])
-        .or(where(namespace_id: nil, access: Access::ALL_MEMBERSHIPS))
-    end
 
     module Access
       PERSONAL_PROJECTS = :personal_projects
@@ -42,32 +35,21 @@ module Authz
 
     enum :access, Access::LEVELS
 
-    def self.permitted_for_boundary?(boundary, permissions)
-      required_permissions = Array(permissions).map(&:to_sym)
-      token_permissions = token_permissions(boundary)
-      (required_permissions - token_permissions).empty?
-    end
-
-    def self.token_permissions(boundary)
-      scope = case boundary.access
-              when Access::USER, Access::INSTANCE
-                for_standalone(boundary.access)
-              when Access::SELECTED_MEMBERSHIPS
-                for_namespaces(boundary.namespace.self_and_ancestor_ids)
-              end
-
-      # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- limited permissions, and not used with IN clause
-      scope
-        .pluck(Arel.sql('DISTINCT jsonb_array_elements_text(permissions)'))
-        .flat_map { |p| ::Authz::PermissionGroups::Assignable.get(p)&.permissions }
-        .compact.map(&:to_sym)
-      # rubocop:enable Database/AvoidUsingPluckWithoutLimit
-    end
-
     def expanded_permissions
       Array(permissions)
         .flat_map { |p| ::Authz::PermissionGroups::Assignable.get(p)&.permissions }
         .compact.map(&:to_sym)
+    end
+
+    def applicable_to_boundary?(boundary)
+      case boundary.access
+      when Access::USER, Access::INSTANCE
+        standalone_access?(boundary.access)
+      when Access::SELECTED_MEMBERSHIPS
+        namespace_access?(boundary) || all_memberships_access?
+      else
+        false
+      end
     end
 
     def build_copy
@@ -75,6 +57,19 @@ module Authz
     end
 
     private
+
+    def standalone_access?(access_level)
+      namespace_id.nil? && access.to_sym == access_level
+    end
+
+    def namespace_access?(boundary)
+      [Access::SELECTED_MEMBERSHIPS, Access::PERSONAL_PROJECTS].include?(access.to_sym) &&
+        boundary.namespace.self_and_ancestor_ids.include?(namespace_id)
+    end
+
+    def all_memberships_access?
+      namespace_id.nil? && access.to_sym == Access::ALL_MEMBERSHIPS
+    end
 
     def organization_match
       return if namespace.organization_id == organization_id

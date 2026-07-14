@@ -1,15 +1,9 @@
 # frozen_string_literal: true
 
-require 'uri'
-
-# This filter handles autolinking when a pipeline does not
-# use the MarkdownFilter, which handles it's own autolinking.
-# This happens in particular for the SingleLinePipeline,
-# CommitDescriptionPipeline, and org-mode markup rendering.
+# This filter performs autolinking, for pipelines that don't rely on
+# MarkdownFilter (which does its own autolinking) but still want autolinks!
 #
-# rubocop:disable Rails/OutputSafety -- this is legacy/unused, no need fixing.
-# rubocop:disable Gitlab/NoCodeCoverageComment -- no coverage needed for a legacy filter
-# :nocov: undercoverage
+# rubocop:disable Rails/OutputSafety -- written a long time ago; could be cleaned up
 module Banzai
   module Filter
     # HTML Filter for auto-linking URLs in HTML.
@@ -74,13 +68,6 @@ module Banzai
       TEXT_LENGTH_LIMIT = 50.kilobytes
 
       def call
-        if MarkdownFilter.glfm_markdown?(context) &&
-            context[:pipeline] != :single_line &&
-            context[:pipeline] != :commit_description &&
-            context[:pipeline] != :org_markup
-          return doc
-        end
-
         return doc if context[:autolink] == false
 
         @link_count = 0
@@ -187,6 +174,4 @@ module Banzai
     end
   end
 end
-# :nocov:
-# rubocop:enable Gitlab/NoCodeCoverageComment
 # rubocop:enable Rails/OutputSafety

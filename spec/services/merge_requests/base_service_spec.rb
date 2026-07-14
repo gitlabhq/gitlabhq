@@ -80,12 +80,12 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
     end
   end
 
-  describe `#create_pipeline_for` do
+  describe '#create_pipeline_for' do
     let_it_be(:merge_request) { create(:merge_request) }
 
     subject { MergeRequests::ExampleService.new(project: project, current_user: user, params: params) }
 
-    context 'async: false' do
+    context 'when async is false' do
       it 'creates a pipeline directly' do
         expect(MergeRequests::CreatePipelineService)
           .to receive(:new)
@@ -96,7 +96,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
         subject.execute(merge_request, async: false)
       end
 
-      context 'allow_duplicate: true' do
+      context 'when allow_duplicate is true' do
         it 'passes :allow_duplicate as true' do
           expect(MergeRequests::CreatePipelineService)
           .to receive(:new)
@@ -109,7 +109,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
       end
     end
 
-    context 'when async: true' do
+    context 'when async is true' do
       it 'executes MergeRequests::CreatePipelineService async' do
         service = instance_double(MergeRequests::CreatePipelineService)
 
@@ -123,7 +123,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
         subject.execute(merge_request, async: true)
       end
 
-      context 'when allow_duplicate: true' do
+      context 'when allow_duplicate is true' do
         it 'passes :allow_duplicate as true' do
           service = instance_double(MergeRequests::CreatePipelineService)
 

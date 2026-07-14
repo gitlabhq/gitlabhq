@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
     end
 
     context 'when such migration already exists' do
-      before do
+      before_all do
         create(
           :batched_background_migration,
           job_class_name: 'MyJobClass',
@@ -245,9 +245,9 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
 
     context 'when the max_value is not given' do
       context 'when records exist in the database' do
-        let!(:event1) { create(:event) }
-        let!(:event2) { create(:event) }
-        let!(:event3) { create(:event) }
+        let_it_be(:event1) { create(:event) }
+        let_it_be(:event2) { create(:event) }
+        let_it_be(:event3) { create(:event) }
 
         it 'creates the record with the current max value' do
           expect do
@@ -439,7 +439,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
   end
 
   describe '#finalize_batched_background_migration' do
-    let!(:batched_migration) { create(:batched_background_migration, job_class_name: 'MyClass', table_name: :projects, column_name: :id, job_arguments: []) }
+    let_it_be(:batched_migration) { create(:batched_background_migration, job_class_name: 'MyClass', table_name: :projects, column_name: :id, job_arguments: []) }
 
     before do
       expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
@@ -558,7 +558,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
     end
 
     context 'when migration exists' do
-      before do
+      before_all do
         create(
           :batched_background_migration,
           job_class_name: 'MyJobClass',

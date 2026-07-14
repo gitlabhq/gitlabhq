@@ -24,21 +24,30 @@ RSpec.describe Ci::Refs::EnqueuePipelinesToUnlockService, :unlock_pipelines, :cl
     end
 
     shared_examples_for 'unlocking pipelines' do
-      let(:is_tag) { target_ref.ref_path.include?(::Gitlab::Git::TAG_REF_PREFIX) }
+      let_it_be(:is_tag) { target_ref.ref_path.include?(::Gitlab::Git::TAG_REF_PREFIX) }
 
-      let!(:other_ref_pipeline) { create_pipeline(:locked, other_ref, :failed, tag: false) }
-      let!(:old_unlocked_pipeline) { create_pipeline(:unlocked, ref, :failed) }
-      let!(:old_locked_pipeline_1) { create_pipeline(:locked, ref, :failed) }
-      let!(:old_locked_pipeline_2) { create_pipeline(:locked, ref, :success) }
-      let!(:old_locked_pipeline_3) { create_pipeline(:locked, ref, :success) }
-      let!(:old_locked_pipeline_3_child) { create_pipeline(:locked, ref, :success, child_of: old_locked_pipeline_3) }
-      let!(:old_locked_pipeline_4) { create_pipeline(:locked, ref, :success) }
-      let!(:old_locked_pipeline_4_child) { create_pipeline(:locked, ref, :success, child_of: old_locked_pipeline_4) }
-      let!(:old_locked_pipeline_5) { create_pipeline(:locked, ref, :failed) }
-      let!(:old_locked_pipeline_5_child) { create_pipeline(:locked, ref, :success, child_of: old_locked_pipeline_5) }
-      let!(:pipeline) { create_pipeline(:locked, ref, :failed) }
-      let!(:child_pipeline) { create_pipeline(:locked, ref, :failed, child_of: pipeline) }
-      let!(:newer_pipeline) { create_pipeline(:locked, ref, :failed) }
+      let_it_be(:other_ref_pipeline) { create_pipeline(:locked, other_ref, :failed, tag: false) }
+      let_it_be(:old_unlocked_pipeline) { create_pipeline(:unlocked, ref, :failed) }
+      let_it_be(:old_locked_pipeline_1) { create_pipeline(:locked, ref, :failed) }
+      let_it_be(:old_locked_pipeline_2) { create_pipeline(:locked, ref, :success) }
+      let_it_be(:old_locked_pipeline_3) { create_pipeline(:locked, ref, :success) }
+      let_it_be(:old_locked_pipeline_3_child) do
+        create_pipeline(:locked, ref, :success, child_of: old_locked_pipeline_3)
+      end
+
+      let_it_be(:old_locked_pipeline_4) { create_pipeline(:locked, ref, :success) }
+      let_it_be(:old_locked_pipeline_4_child) do
+        create_pipeline(:locked, ref, :success, child_of: old_locked_pipeline_4)
+      end
+
+      let_it_be(:old_locked_pipeline_5) { create_pipeline(:locked, ref, :failed) }
+      let_it_be(:old_locked_pipeline_5_child) do
+        create_pipeline(:locked, ref, :success, child_of: old_locked_pipeline_5)
+      end
+
+      let_it_be(:pipeline) { create_pipeline(:locked, ref, :failed) }
+      let_it_be(:child_pipeline) { create_pipeline(:locked, ref, :failed, child_of: pipeline) }
+      let_it_be(:newer_pipeline) { create_pipeline(:locked, ref, :failed) }
 
       context 'when before_pipeline is given' do
         let(:before_pipeline) { pipeline }
@@ -95,7 +104,7 @@ RSpec.describe Ci::Refs::EnqueuePipelinesToUnlockService, :unlock_pipelines, :cl
     end
 
     context 'when ref is a tag', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/451377' do
-      let(:target_ref) { ci_ref_tag }
+      let_it_be(:target_ref) { ci_ref_tag }
 
       it_behaves_like 'unlocking pipelines'
     end
@@ -104,7 +113,7 @@ RSpec.describe Ci::Refs::EnqueuePipelinesToUnlockService, :unlock_pipelines, :cl
     # this one started failing in the merge request:
     #   https://gitlab.com/gitlab-org/gitlab/-/jobs/7424531351#L505
     context 'when ref is a branch', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/451377' do
-      let(:target_ref) { ci_ref_branch }
+      let_it_be(:target_ref) { ci_ref_branch }
 
       it_behaves_like 'unlocking pipelines'
     end

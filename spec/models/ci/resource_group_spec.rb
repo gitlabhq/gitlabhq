@@ -2,8 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery do
-  let_it_be(:group) { create(:group) }
+RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery, factory_default: :keep do
+  let_it_be(:namespace) { create_default(:namespace) }
+  let_it_be(:project)   { create_default(:project) }
+  let_it_be(:group)     { create(:group) }
 
   it_behaves_like 'cleanup by a loose foreign key' do
     let!(:parent) { create(:project, group: group) }
@@ -192,6 +194,61 @@ RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery do
 
     context 'when resource is not retained by a build' do
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#stale_processables' do
+    subject(:stale_processables) { resource_group.stale_processables }
+
+    let_it_be(:resource_group) { create(:ci_resource_group) }
+
+    shared_examples 'returns a stale processable after the grace period' do
+      it 'returns empty' do
+        is_expected.to be_empty
+      end
+
+      it 'returns the stale processable a few minutes later' do
+        travel_to(10.minutes.since) do
+          is_expected.to eq([build])
+        end
+      end
+    end
+
+    context 'when no resources are retained' do
+      it 'returns empty' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when the processable is running' do
+      let_it_be_with_reload(:build) { create(:ci_build, :running, resource_group: resource_group) }
+      let_it_be(:resource) do
+        create(:ci_resource, processable: build, partition_id: build.partition_id, resource_group: resource_group)
+      end
+
+      before_all do
+        # Creating unrelated builds to make sure the `retained` scope is working
+        create(:ci_build, :running, resource_group: resource_group)
+      end
+
+      it 'returns empty' do
+        is_expected.to be_empty
+      end
+
+      context 'and doomed' do
+        before do
+          build.doom!
+        end
+
+        it_behaves_like 'returns a stale processable after the grace period'
+
+        it 'uses literal (id, partition_id) predicates so the planner can prune partitions' do
+          sql = stale_processables.to_sql
+
+          expect(sql).to include('"p_ci_builds"."partition_id" = ')
+          expect(sql).not_to include('ci_resources')
+        end
+      end
     end
   end
 end

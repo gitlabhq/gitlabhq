@@ -24,6 +24,11 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
     it { is_expected.to validate_length_of(:terraform_module_duplicate_exception_regex).is_at_most(255) }
 
     describe 'regex values' do
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:package_settings, freeze: false) { create(:namespace_package_setting) }
 
       subject { package_settings }
@@ -113,6 +118,11 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
           let(:package_name) { package.name }
           let(:package_version) { package.version }
           let_it_be(:package_type) { package.package_type }
+          # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+          # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+          # subject, or an in-memory mutation that survives reload/refind). Do not
+          # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+          # (see gitlab-org/gitlab#602925).
           let_it_be(:package_setting, freeze: false) { package.project.namespace.package_settings }
 
           where(:duplicates_allowed, :duplicate_exception_regex, :result) do

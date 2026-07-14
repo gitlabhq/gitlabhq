@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe 'User page', feature_category: :user_profile do
   include ExternalAuthorizationServiceHelpers
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:user, freeze: false) { create(:user, bio: '<b>Lorem</b> <i>ipsum</i> dolor sit <a href="https://example.com">amet</a>') }
 
   subject(:visit_profile) { visit(user_path(user)) }
@@ -57,6 +62,24 @@ RSpec.describe 'User page', feature_category: :user_profile do
         subject
 
         expect(page).to have_content('GitLab - work info test')
+      end
+    end
+
+    context 'bio' do
+      let_it_be(:user, freeze: false) do
+        create(:user, bio: '**bold** _emphasis_ [link](https://example.com) <script>alert(1)</script>')
+      end
+
+      it 'renders the bio as restricted Markdown #security', :aggregate_failures do
+        subject
+
+        page.within('.profile-user-bio') do
+          expect(page).to have_css('strong', text: 'bold')
+          expect(page).to have_css('em', text: 'emphasis')
+          expect(page).to have_content('link')
+          expect(page).not_to have_link
+          expect(page).not_to have_content('alert(1)')
+        end
       end
     end
 
@@ -160,13 +183,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
         end
       end
 
-      context 'with profile_tabs_vue feature flag disabled' do
-        before do
-          stub_feature_flags(profile_tabs_vue: false)
-        end
-
-        it_behaves_like 'follower links with count badges'
-      end
+      it_behaves_like 'follower links with count badges'
 
       it 'does show button to follow' do
         sign_in(user)
@@ -359,10 +376,6 @@ RSpec.describe 'User page', feature_category: :user_profile do
   end
 
   context 'most recent activity' do
-    before do
-      stub_feature_flags(profile_tabs_vue: false)
-    end
-
     context 'when external authorization is enabled' do
       before do
         enable_external_authorization_service_check
@@ -434,17 +447,13 @@ RSpec.describe 'User page', feature_category: :user_profile do
       expect(page).to have_selector('#js-user-achievements')
     end
 
-    context 'when the user has chosen not to display achievements' do
-      let(:user) { create(:user) }
+    context 'when the user has opted out of receiving achievements' do
+      let(:user) { create(:user, achievements_enabled: false) }
 
-      before do
-        user.update!(achievements_enabled: false)
-      end
-
-      it 'does not render the user achievements mount point' do
+      it 'still renders the user achievements mount point' do
         subject
 
-        expect(page).not_to have_selector('#js-user-achievements')
+        expect(page).to have_selector('#js-user-achievements')
       end
     end
 

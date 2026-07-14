@@ -363,4 +363,31 @@ describe('Diffs view store', () => {
       expect(useDiffsList().reloadDiffs).not.toHaveBeenCalled();
     });
   });
+
+  describe('#resolveInitialFileIndex', () => {
+    const files = [
+      { type: 'blob', filePaths: { old: 'a.js', new: 'a.js' }, fileHash: 'aaa' },
+      { type: 'blob', filePaths: { old: 'b.js', new: 'b.js' }, fileHash: 'bbb' },
+      { type: 'blob', filePaths: { old: 'c.js', new: 'c.js' }, fileHash: 'ccc' },
+    ];
+
+    beforeEach(() => {
+      useFileBrowser().tree = files;
+    });
+
+    it('resolves index from linked file data', () => {
+      store.resolveInitialFileIndex({ linkedFileData: { oldPath: 'c.js', newPath: 'c.js' } });
+      expect(store.currentFileIndex).toBe(2);
+    });
+
+    it('keeps default index when linked file is not found', () => {
+      store.resolveInitialFileIndex({ linkedFileData: { oldPath: 'x.js', newPath: 'x.js' } });
+      expect(store.currentFileIndex).toBe(0);
+    });
+
+    it('keeps default index when no linked file data is provided', () => {
+      store.resolveInitialFileIndex({});
+      expect(store.currentFileIndex).toBe(0);
+    });
+  });
 });

@@ -76,6 +76,7 @@ describe('WorkItemLinksForm', () => {
     createMutation = createMutationResolver,
     isGroup = false,
     createGroupLevelWorkItems = true,
+    workItemFeaturesField = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinksForm, {
       apolloProvider: createMockApollo([
@@ -101,6 +102,9 @@ describe('WorkItemLinksForm', () => {
       },
       provide: {
         projectNamespaceFullPath: 'full-path',
+        glFeatures: {
+          workItemFeaturesField,
+        },
       },
       stubs: {
         GlFormGroup: stubComponent(GlFormGroup, {
@@ -218,6 +222,25 @@ describe('WorkItemLinksForm', () => {
         expect(wrapper.emitted('add-child')).toEqual([[]]);
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
+
+      it.each`
+        workItemFeaturesField | useWorkItemFeatures
+        ${true}               | ${true}
+        ${false}              | ${false}
+      `(
+        'passes useWorkItemFeatures: $useWorkItemFeatures to the create mutation when workItemFeaturesField is $workItemFeaturesField',
+        async ({ workItemFeaturesField, useWorkItemFeatures }) => {
+          await createComponent({ workItemFeaturesField });
+
+          submitForm({ title: 'Create task test' });
+
+          await waitForPromises();
+
+          expect(createMutationResolver).toHaveBeenCalledWith(
+            expect.objectContaining({ useWorkItemFeatures }),
+          );
+        },
+      );
 
       it('creates child task in confidential parent', async () => {
         await createComponent({ parentConfidential: true });

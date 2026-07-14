@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::AddContextService, feature_category: :code_review_workflow do
-  let(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let(:admin) { create(:admin) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: admin) }
   let(:commits) { ["874797c3a73b60d2187ed6e2fcabd289ff75171e"] }

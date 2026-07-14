@@ -3,7 +3,7 @@
 module API
   module Entities
     class EnvironmentBasic < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :name, documentation: { type: 'String', example: 'deploy' }
       expose :slug, documentation: { type: 'String', example: 'deploy' }
       expose :external_url, documentation: { type: 'String', example: 'https://deploy.gitlab.example.com' }

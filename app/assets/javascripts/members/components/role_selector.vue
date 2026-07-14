@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 export default {
+  name: 'RoleSelector',
   ACCESS_LEVEL_SECURITY_MANAGER_STRING,
   components: { GlCollapsibleListbox, SecurityManagerNewBadge },
   inject: {
@@ -32,6 +33,7 @@ export default {
       default: s__('MemberRole|Change role'),
     },
   },
+  emits: ['input'],
   computed: {
     manageRolesText() {
       return this.manageMemberRolesPath ? s__('MemberRole|Manage roles') : '';

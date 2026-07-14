@@ -38,6 +38,7 @@ export default {
       default: '',
     },
   },
+  emits: ['change'],
   cancelModalOptions: {
     text: __('Close'),
   },

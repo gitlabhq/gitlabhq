@@ -33,6 +33,13 @@ function relativePath(absPath) {
   return absPath;
 }
 
+// Generated route helpers (`rake gitlab:js:routes` writes them under
+// lib/utils/path_helpers/, and `yarn clean` removes them) are not committed
+// source, so they should not be recorded as per-test coverage.
+function isGeneratedSource(relativeSourcePath) {
+  return relativeSourcePath.includes('lib/utils/path_helpers/');
+}
+
 // Project Istanbul statement counters onto line numbers. Statements span one
 // or more lines (start.line..end.line); the line's hit count is the max
 // across all statements that touch it.
@@ -79,9 +86,12 @@ class PerTestCoverageReporter {
     const filesForThisTest = {};
 
     for (const [absSourcePath, fileCoverage] of Object.entries(testResult.coverage)) {
+      const sourceFile = relativePath(absSourcePath);
+      if (isGeneratedSource(sourceFile)) continue;
+
       const lineHits = statementMapToLineHits(fileCoverage);
       if (lineHits) {
-        filesForThisTest[relativePath(absSourcePath)] = lineHits;
+        filesForThisTest[sourceFile] = lineHits;
       }
     }
 

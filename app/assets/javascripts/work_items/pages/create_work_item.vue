@@ -125,6 +125,7 @@ export default {
       }
     },
     handleCancelClick() {
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Vue Router path segment manipulation, not ideal but acceptable
       const listPath = this.$router.history.base + this.$route.fullPath.replace('/new', '');
       const isWorkItemRoute = this.$route.params?.type === 'work_items';
       const isGroupWorkItemRoute = isWorkItemRoute && this.$router.history.base.includes('groups');

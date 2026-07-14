@@ -54,7 +54,7 @@ RSpec.describe Settings, feature_category: :system_access do
     with_them do
       before do
         allow(Gitlab.config).to receive(:gitlab).and_return(
-          GitlabSettings::Options.build({
+          Gitlab::Configs.build_options({
             'host' => host,
             'https' => true,
             'port' => port,
@@ -203,6 +203,47 @@ RSpec.describe Settings, feature_category: :system_access do
     it 'sets up storage settings' do
       described_class.repositories.storages.each do |_, storage|
         expect(storage).to be_a Gitlab::GitalyClient::StorageSettings
+      end
+    end
+  end
+
+  describe 'Gitlab::Configs.on_mutation_warning callback (installed in config/settings.rb)' do
+    # These specs exercise the lambda installed at the top of config/settings.rb,
+    # which replaces the old Options#log_and_raise_dev_exception Rails coupling.
+    let(:options) { Gitlab::Configs.build_options(foo: 'bar') }
+
+    context 'when in production environment' do
+      before do
+        allow(Rails.env).to receive(:production?).and_return(true)
+      end
+
+      it 'logs via Gitlab::AppJsonLogger.warn with message, caller, and method keys' do
+        expect(Gitlab::AppJsonLogger).to receive(:warn).with(
+          hash_including(
+            message: a_string_including('Do not mutate'),
+            caller: be_an(Array).and(be_present),
+            method: :stringify_keys!
+          )
+        )
+
+        options.stringify_keys!
+      end
+
+      it 'does not raise' do
+        allow(Gitlab::AppJsonLogger).to receive(:warn)
+
+        expect { options.stringify_keys! }.not_to raise_error
+      end
+    end
+
+    context 'when not in production environment' do
+      before do
+        allow(Rails.env).to receive(:production?).and_return(false)
+      end
+
+      it 'raises the mutation warning message' do
+        expect { options.stringify_keys! }
+          .to raise_error("Warning: Do not mutate Gitlab::Configs::Options objects: `stringify_keys!`")
       end
     end
   end

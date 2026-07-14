@@ -4,6 +4,7 @@ import validation, { initForm } from '~/vue_shared/directives/validation';
 import csrf from '~/lib/utils/csrf';
 
 export default {
+  name: 'ImportFromBitbucketServerApp',
   components: {
     GlButton,
     GlFormGroup,

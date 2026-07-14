@@ -94,7 +94,7 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
                   a_hash_including(
                     'exception.backtrace' => anything,
                     'exception.class' => 'NoMethodError',
-                    'exception.message' => /^undefined method `model_id' for nil/,
+                    'exception.message' => /^undefined method ['`]model_id' for nil/,
                     'message' => 'Failed to fetch source entity id'
                   )
                 ).twice
@@ -159,7 +159,7 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
         .sidekiq_retries_exhausted_block
         .call({ 'args' => [entity.id] }, StandardError.new(error))
 
-      expect(entity.reload.failed?).to eq(true)
+      expect(entity.reload.failed?).to be(true)
       expect(entity.failures.last.exception_message).to eq(error)
     end
 

@@ -101,7 +101,7 @@ RSpec.describe Repositories::RewriteHistoryService, feature_category: :source_co
       it 'does not mark repository as writable, because it is locked by a different process' do
         execute
 
-        expect(project.reload.repository_read_only).to eq(true)
+        expect(project.reload.repository_read_only).to be(true)
       end
     end
 
@@ -116,7 +116,7 @@ RSpec.describe Repositories::RewriteHistoryService, feature_category: :source_co
         is_expected.to be_error
         expect(execute.message).to eq('Boom')
 
-        expect(project.reload.repository_read_only).to eq(false)
+        expect(project.reload.repository_read_only).to be(false)
       end
     end
 
@@ -144,7 +144,8 @@ RSpec.describe Repositories::RewriteHistoryService, feature_category: :source_co
         )
         expect(instance).to receive(:rewrite_history)
           .with(rewrite_history_requests, kind_of(Hash))
-          .and_return(Gitaly::RewriteHistoryResponse.new)
+          .and_return(instance_double(GRPC::ActiveCall::Operation,
+            execute: Gitaly::RewriteHistoryResponse.new, trailing_metadata: {}))
       end
     end
   end

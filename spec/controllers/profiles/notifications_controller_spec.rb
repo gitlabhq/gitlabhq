@@ -153,8 +153,8 @@ RSpec.describe Profiles::NotificationsController, feature_category: :team_planni
 
       user.reload
       expect(user.notification_email).to eq('new@example.com')
-      expect(user.notified_of_own_activity).to eq(true)
-      expect(user.admin).to eq(false)
+      expect(user.notified_of_own_activity).to be(true)
+      expect(user.admin).to be(false)
       expect(controller).to set_flash[:notice].to('Notification settings saved')
     end
 

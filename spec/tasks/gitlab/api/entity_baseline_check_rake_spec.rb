@@ -67,8 +67,10 @@ RSpec.describe 'gitlab:api:check_high_impact_entity_baseline rake task', :silenc
           rubocop/cop/api/config/api_entity_exposure_baseline.yml
         ========================================================================
         lib/api/entities/new_thing.rb:
-        - id
-        - name
+          usage_radius: 25
+          fields:
+          - id
+          - name
         Documentation: https://docs.gitlab.com/development/api_styleguide/#high-impact-entities-and-feature-bounded-entities
       OUTPUT
     end
@@ -154,11 +156,15 @@ RSpec.describe 'gitlab:api:check_high_impact_entity_baseline rake task', :silenc
           rubocop/cop/api/config/api_entity_exposure_baseline.yml
         ========================================================================
         lib/api/entities/new_a.rb:
-        - id
-        - name
+          usage_radius: 20
+          fields:
+          - id
+          - name
         lib/api/entities/new_b.rb:
-        - bar
-        - foo
+          usage_radius: 30
+          fields:
+          - bar
+          - foo
         Documentation: https://docs.gitlab.com/development/api_styleguide/#high-impact-entities-and-feature-bounded-entities
       OUTPUT
     end
@@ -272,8 +278,10 @@ RSpec.describe 'gitlab:api:check_high_impact_entity_baseline rake task', :silenc
           rubocop/cop/api/config/api_entity_exposure_baseline.yml
         ========================================================================
         lib/api/entities/new_a.rb:
-        - id
-        - name
+          usage_radius: 20
+          fields:
+          - id
+          - name
 
         ========================================================================
         MANUAL REVIEW REQUIRED: no exposed fields could be extracted

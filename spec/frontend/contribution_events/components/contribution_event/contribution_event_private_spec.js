@@ -28,6 +28,6 @@ describe('ContributionEventPrivate', () => {
   });
 
   it('renders message', () => {
-    expect(wrapper.findByTestId('event-body').text()).toBe(ContributionEventPrivate.i18n.message);
+    expect(wrapper.findByTestId('event-title').text()).toBe(ContributionEventPrivate.i18n.message);
   });
 });

@@ -168,6 +168,11 @@ class Note < ApplicationRecord
   end
 
   scope :diff_notes, -> { where(type: %w[LegacyDiffNote DiffNote]) }
+  scope :non_legacy_diff_notes, -> { where(type: 'DiffNote') }
+  # Deprecated: use `non_legacy_diff_notes` instead. The `new_` prefix is
+  # misleading: this scope selects `DiffNote` records (as opposed to
+  # `LegacyDiffNote`), not recently-created notes. Remove once all callers
+  # have migrated.
   scope :new_diff_notes, -> { where(type: 'DiffNote') }
   scope :non_diff_notes, -> { where(type: NON_DIFF_NOTE_TYPES) }
 
@@ -212,7 +217,6 @@ class Note < ApplicationRecord
   # Syncs `confidential` with `internal` as we rename the column.
   # https://gitlab.com/gitlab-org/gitlab/-/issues/367923
   before_create :set_internal_flag
-  after_save :keep_around_commit, if: :for_project_noteable?, unless: -> { importing? || skip_keep_around_commits }
   after_save :touch_noteable, if: :touch_noteable?
   after_commit :enqueue_keep_around_commit, on: [:create, :update], if: :for_project_noteable?, unless: -> {
     importing? || skip_keep_around_commits
@@ -329,6 +333,24 @@ class Note < ApplicationRecord
 
     def cherry_picked_merge_requests(shas)
       where(noteable_type: 'MergeRequest', commit_id: shas).select(:noteable_id)
+    end
+
+    # Resolves a project's commit-note IDs for the given commit SHAs. Used by the
+    # commit-notes export paths, which walk the repository for SHAs and resolve
+    # notes from them.
+    #
+    # Queries by commit_id only, then filters project_id and noteable_type in Ruby.
+    # Adding project_id to the WHERE makes the planner build a BitmapAnd against
+    # index_notes_on_project_id_and_noteable_type, scanning every note in the
+    # project (tens of millions of rows on large projects, ~29s observed). Querying
+    # by commit_id alone uses index_notes_on_commit_id and returns only the matching
+    # rows (bounded by the SHA page), which are cheap to filter in Ruby.
+    def commit_note_ids_for_shas(shas, project_id)
+      where(commit_id: shas)
+        .pluck(:id, :project_id, :noteable_type)
+        .filter_map do |id, note_project_id, noteable_type|
+          id if note_project_id == project_id && noteable_type == 'Commit'
+        end
     end
 
     def with_web_entity_associations
@@ -806,15 +828,8 @@ class Note < ApplicationRecord
     !group_restriction || Ability.allowed?(user, group_restriction, project&.group)
   end
 
-  def keep_around_commit
-    return if async_keep_around_refs?
-
-    project.repository.keep_around(self.commit_id, source: "#{noteable_type}/#{self.class.name}")
-  end
-
   def enqueue_keep_around_commit
     return unless commit_id.present?
-    return unless async_keep_around_refs?
 
     MergeRequests::KeepAroundRefsWorker.perform_async(
       [project.id],
@@ -822,11 +837,6 @@ class Note < ApplicationRecord
       "#{noteable_type}/#{self.class.name}"
     )
   end
-
-  def async_keep_around_refs?
-    Feature.enabled?(:async_keep_around_refs_for_merge_request_diffs, project, type: :gitlab_com_derisk)
-  end
-  strong_memoize_attr :async_keep_around_refs?
 
   def ensure_organization_id
     return if organization_id.present? && !noteable_changed? && !project_changed?

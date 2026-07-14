@@ -14,6 +14,7 @@ import { sprintf, __ } from '~/locale';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
 export default {
+  name: 'IssueDueDate',
   components: {
     WorkItemAttribute,
     GlIcon,

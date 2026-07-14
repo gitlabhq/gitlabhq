@@ -227,11 +227,7 @@ RSpec.describe Gitlab::Changelog::Config, feature_category: :source_code_managem
   describe '#always_credit_author?' do
     let_it_be(:group_member) { create(:user) }
     let_it_be(:non_group_member) { create(:user) }
-    let_it_be(:group) { create(:group, :private, path: 'group') }
-
-    before do
-      group.add_developer(group_member)
-    end
+    let_it_be(:group) { create(:group, :private, path: 'group', developers: group_member) }
 
     context 'when include_groups is defined' do
       context 'when user generating changelog has access to group' do

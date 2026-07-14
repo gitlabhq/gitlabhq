@@ -22,7 +22,7 @@ Before you can install the agent in your cluster, you need:
   - [Amazon Elastic Kubernetes Service (EKS)](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
   - [Azure Kubernetes Service (AKS)](https://learn.microsoft.com/en-us/azure/aks/what-is-aks)
   - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/getting-started/quickstart/)
-  - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster)
+  - [Google Kubernetes Engine (GKE)](https://docs.cloud.google.com/kubernetes-engine/docs/deploy-app-cluster)
   - You should use [Infrastructure as Code techniques](../../../infrastructure/iac/_index.md) for managing infrastructure resources at scale.
 - Access to an agent server:
   - On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.

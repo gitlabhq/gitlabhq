@@ -14,6 +14,7 @@ import { generateUserPaths } from '../utils';
 import Actions from './actions';
 
 export default {
+  name: 'UserActions',
   components: {
     GlButton,
     GlDisclosureDropdown,

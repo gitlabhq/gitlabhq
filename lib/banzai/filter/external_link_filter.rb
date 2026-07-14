@@ -13,6 +13,8 @@ module Banzai
 
       def call
         links.each do |node|
+          next if node_src(node)&.start_with?('#')
+
           # URI.parse does stricter checking on the url than Addressable,
           # such as on `mailto:` links. Since we've been using it, do an
           # initial parse for validity and then use Addressable

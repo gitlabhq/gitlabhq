@@ -10,6 +10,9 @@ module Gitlab
 
         def call(severity, datetime, _, data)
           time = data.delete :time
+          # grape_logging 2.1.0+ adds `request_id` from `action_dispatch.request_id`, the same value
+          # already logged as `correlation_id`. Drop it to keep api_json.log parity with grape_logging 1.8.4.
+          data.delete(:request_id)
           data[:params] = process_params(data)
 
           attributes = {

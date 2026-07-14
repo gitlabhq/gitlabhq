@@ -13,6 +13,9 @@ include:
       gem_name: "bundler-checksum"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
+      gem_name: "gitlab-email_handler"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
       gem_name: "gitlab-rspec"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
@@ -29,6 +32,9 @@ include:
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
       gem_name: "gitlab-safe_request_store"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "safe_zip"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
       gem_name: "csv_builder"
@@ -59,3 +65,12 @@ include:
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
       gem_name: "gitlab-ai-principles-distiller"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-configs"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-bitbucket"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-bitbucket-server"

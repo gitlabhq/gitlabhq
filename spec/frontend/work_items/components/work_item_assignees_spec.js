@@ -25,6 +25,7 @@ import {
   currentUserResponse,
   currentUserNullResponse,
   projectMembersAutocompleteResponseWithNoMatchingUsers,
+  projectMembersAutocompleteResponseWithoutCurrentUser,
 } from 'ee_else_ce_jest/work_items/mock_data';
 import { i18n, TRACKING_CATEGORY_SHOW, NEW_WORK_ITEM_IID } from '~/work_items/constants';
 import { ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
@@ -60,6 +61,9 @@ describe('WorkItemAssignees component', () => {
   const successSearchWithNoMatchingUsers = jest
     .fn()
     .mockResolvedValue(projectMembersAutocompleteResponseWithNoMatchingUsers);
+  const successSearchWithoutCurrentUser = jest
+    .fn()
+    .mockResolvedValue(projectMembersAutocompleteResponseWithoutCurrentUser);
 
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
@@ -247,6 +251,25 @@ describe('WorkItemAssignees component', () => {
 
       expect(findSidebarDropdownWidget().props('listItems')[0].options[0]).toMatchObject({
         text: currentUserResponse.data.currentUser.name,
+      });
+    });
+  });
+
+  describe('when the current user is not in the autocomplete results', () => {
+    beforeEach(async () => {
+      createComponent({
+        assignees: [],
+        searchQueryHandler: successSearchWithoutCurrentUser,
+        currentUserQueryHandler: successCurrentUserQueryHandler,
+      });
+      showDropdown();
+      await waitForPromises();
+    });
+
+    it('pins the current user to the top of the list', () => {
+      expect(findSidebarDropdownWidget().props('listItems')[0]).toMatchObject({
+        text: currentUserResponse.data.currentUser.name,
+        value: currentUserResponse.data.currentUser.id,
       });
     });
   });

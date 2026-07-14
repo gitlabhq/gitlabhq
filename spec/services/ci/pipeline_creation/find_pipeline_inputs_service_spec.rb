@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category: :pipeline_composition do
   include ReactiveCachingHelpers
 
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :small_repo) }
   let_it_be(:user) { create(:user) }
 
   let(:ref) { 'master' }
@@ -195,7 +195,7 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
       end
 
       context 'when config is expected on another project' do
-        let!(:another_project) { create(:project, :repository) }
+        let!(:another_project) { create(:project, :small_repo) }
 
         before do
           another_project.add_developer(user)

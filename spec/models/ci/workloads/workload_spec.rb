@@ -80,7 +80,7 @@ RSpec.describe Ci::Workloads::Workload, feature_category: :continuous_integratio
   end
 
   describe 'state transitions' do
-    let_it_be(:workload_for_aasm, freeze: false) { build(:ci_workload) }
+    let(:workload_for_aasm) { build(:ci_workload) }
 
     using RSpec::Parameterized::TableSyntax
     where(:status, :can_finish, :can_drop) do
@@ -99,9 +99,14 @@ RSpec.describe Ci::Workloads::Workload, feature_category: :continuous_integratio
     end
 
     describe 'cleanup refs after transition to finished or failed' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :small_repo) }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
       let_it_be(:ref_path) { 'refs/workloads/7db' }
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:workload, freeze: false) do
         create(:ci_workload, project: project, pipeline: pipeline, branch_name: ref_path)
       end
@@ -141,7 +146,7 @@ RSpec.describe Ci::Workloads::Workload, feature_category: :continuous_integratio
   end
 
   describe '#cleanup_refs' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let(:ref_path) { 'refs/workloads/test123' }
     let(:workload) { create(:ci_workload, project: project, pipeline: pipeline, branch_name: ref_path) }

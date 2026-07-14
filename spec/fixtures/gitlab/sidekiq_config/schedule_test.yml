@@ -1,0 +1,6 @@
+test_cron_worker:
+  class: TestCronWorker
+  cron: "0 6 * * *"
+gitlab_service_ping_worker:
+  class: GitlabServicePingWorker
+  cron:

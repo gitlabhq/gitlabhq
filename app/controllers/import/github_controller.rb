@@ -68,7 +68,9 @@ class Import::GithubController < Import::BaseController
   def details; end
 
   def create
-    result = Import::GithubService.new(client, current_user, import_params).execute(access_params, provider_name)
+    import_service = Import::GithubService.new(client, current_user,
+      import_params.merge(organization_id: Current.organization.id))
+    result = import_service.execute(access_params, provider_name)
 
     if result[:status] == :success
       render json: serialized_imported_projects(result[:project])

@@ -34,7 +34,8 @@ RSpec.shared_examples 'User views wiki sidebar' do
       it 'can create a custom sidebar' do
         click_on 'Add custom sidebar'
         fill_in :wiki_content, with: 'My custom sidebar'
-        click_on 'Create sidebar'
+
+        create_sidebar
 
         within('.wiki-sidebar') do
           expect(page).to have_content('My custom sidebar')
@@ -72,7 +73,8 @@ RSpec.shared_examples 'User views wiki sidebar' do
         expect(page).to have_field(:wiki_content, with: 'My custom sidebar')
 
         fill_in :wiki_content, with: 'My other custom sidebar'
-        click_on 'Save changes'
+
+        save_changes
 
         within('.wiki-sidebar') do
           expect(page).to have_content('My other custom sidebar')

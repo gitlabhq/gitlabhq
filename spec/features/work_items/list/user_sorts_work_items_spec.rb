@@ -44,6 +44,7 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
     task.save!
     visit project_work_items_path(project)
 
+    click_button 'Display'
     pajamas_sort_by 'Updated date', from: 'Created date'
 
     wait_for_requests
@@ -61,6 +62,7 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
     it 'sorts by start date' do
       visit project_work_items_path(project)
 
+      click_button 'Display'
       pajamas_sort_by 'Start date', from: 'Created date'
 
       wait_for_requests
@@ -71,6 +73,7 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
     it 'sorts by due date' do
       visit project_work_items_path(project)
 
+      click_button 'Display'
       pajamas_sort_by 'Due date', from: 'Created date'
 
       wait_for_requests
@@ -81,6 +84,7 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
     it 'sorts by due date reverse order' do
       visit project_work_items_path(project)
 
+      click_button 'Display'
       pajamas_sort_by 'Due date', from: 'Created date'
 
       click_button _('Sort direction: Descending')
@@ -95,6 +99,7 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
 
       visit project_work_items_path(project)
 
+      click_button 'Display'
       pajamas_sort_by 'Due date', from: 'Created date'
 
       wait_for_requests
@@ -107,6 +112,7 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
     it 'sorts by ascending' do
       visit project_work_items_path(project)
 
+      click_button 'Display'
       pajamas_sort_by 'Title', from: 'Created date'
 
       click_button _('Sort direction: Descending')
@@ -119,6 +125,7 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
     it 'sorts by descending' do
       visit project_work_items_path(project)
 
+      click_button 'Display'
       pajamas_sort_by 'Title', from: 'Created date'
 
       wait_for_requests
@@ -140,6 +147,7 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
 
       select_tokens 'Assignee', '=', user2.username, submit: true
 
+      click_button 'Display'
       pajamas_sort_by 'Title', from: 'Created date'
 
       wait_for_requests

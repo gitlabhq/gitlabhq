@@ -129,14 +129,14 @@ Add one or more active CRM contacts.
 
 ### `add_email`
 
-Add up to six email participants.
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../administration/feature_flags/list.md) named `issue_email_participants`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a feature flag](../../administration/feature_flags/list.md) named `issue_email_participants`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 18.10. Feature flag `issue_email_participants` removed.
 
 {{< /history >}}
+
+Add up to six email participants.
 
 **Availability**:
 
@@ -284,13 +284,13 @@ Assign one or more users as reviewers, or request a new review from existing rev
 
 ### `award`
 
-Toggle an emoji reaction.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412275) in GitLab 16.5 for tasks, objectives, and key results.
 
 {{< /history >}}
+
+Toggle an emoji reaction.
 
 **Availability**:
 
@@ -323,13 +323,13 @@ Toggle an emoji reaction.
 
 ### `blocked_by`
 
-Mark the item as blocked by other items.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214232) in GitLab 16.0.
 
 {{< /history >}}
+
+Mark the item as blocked by other items.
 
 **Availability**:
 
@@ -375,13 +375,13 @@ Mark the item as blocked by other items.
 
 ### `blocks`
 
-Mark the item as blocking other items.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214232) in GitLab 16.0.
 
 {{< /history >}}
+
+Mark the item as blocking other items.
 
 **Availability**:
 
@@ -451,13 +451,13 @@ Move issue to a column on the board.
 
 ### `checkin_reminder`
 
-Schedule check-in reminders for objectives.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422761) in GitLab 16.4 with flags named `okrs_mvc` and `okr_checkin_reminders`. Disabled by default.
 
 {{< /history >}}
+
+Schedule check-in reminders for objectives.
 
 > [!flag]
 > The availability of this feature is controlled by a feature flag. For more information, see the history.
@@ -601,13 +601,13 @@ Close the work item.
 
 ### `confidential`
 
-Mark the work item as confidential.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412276) in GitLab 16.4 for tasks, objectives, and key results.
 
 {{< /history >}}
+
+Mark the work item as confidential.
 
 **Availability**:
 
@@ -635,13 +635,13 @@ Mark the work item as confidential.
 
 ### `convert_to_ticket`
 
-Convert an issue into a Service Desk ticket.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9.
 
 {{< /history >}}
+
+Convert an issue into a Service Desk ticket.
 
 **Availability**:
 
@@ -666,13 +666,13 @@ Convert an issue into a Service Desk ticket.
 
 ### `copy_metadata`
 
-Copy labels and milestone from another item.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509076) in GitLab 17.9 for tasks, objectives, and key results.
 
 {{< /history >}}
+
+Copy labels and milestone from another item.
 
 **Availability**:
 
@@ -736,13 +736,13 @@ Create a new merge request starting from the current issue.
 
 ### `done`
 
-Mark a to-do item as done.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412277) in GitLab 16.2 for tasks, objectives, and key results.
 
 {{< /history >}}
+
+Mark a to-do item as done.
 
 **Availability**:
 
@@ -965,13 +965,13 @@ Set the health status.
 
 ### `iteration`
 
-Set the iteration.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) in GitLab 16.9 for `--current` and `--next` options.
 
 {{< /history >}}
+
+Set the iteration.
 
 **Availability**:
 
@@ -1199,13 +1199,13 @@ Start escalations for the incident.
 
 ### `promote_to`
 
-Promote a work item to a specified type.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412534) in GitLab 16.1 for tasks and key results.
 
 {{< /history >}}
+
+Promote a work item to a specified type.
 
 **Availability**:
 
@@ -1288,13 +1288,13 @@ Publish an issue to an associated Status Page.
 
 ### `react`
 
-Toggle an emoji reaction.
-
 {{< history >}}
 
 - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from `/award` in GitLab 16.7. `/award` is still available as an aliased command.
 
 {{< /history >}}
+
+Toggle an emoji reaction.
 
 **Availability**:
 
@@ -1513,13 +1513,13 @@ Mark items as related.
 
 ### `remove_child`
 
-Remove an item as a child item.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/132761) in GitLab 16.10 for objectives.
 
 {{< /history >}}
+
+Remove an item as a child item.
 
 **Availability**:
 
@@ -1601,14 +1601,14 @@ Remove the due date.
 
 ### `remove_email`
 
-Remove up to six email participants.
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../administration/feature_flags/list.md) named `issue_email_participants`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a feature flag](../../administration/feature_flags/list.md) named `issue_email_participants`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 18.10. Feature flag `issue_email_participants` removed.
 
 {{< /history >}}
+
+Remove up to six email participants.
 
 **Availability**:
 
@@ -1714,13 +1714,13 @@ Remove the milestone.
 
 ### `remove_parent`
 
-Remove the parent from the item.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434344) in GitLab 16.9 for tasks and key results.
 
 {{< /history >}}
+
+Remove the parent from the item.
 
 **Availability**:
 
@@ -1852,13 +1852,13 @@ Assign a reviewer or request a new review from one or more users.
 
 ### `run_pipeline`
 
-Run a new pipeline for the merge request.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212811) in GitLab 18.7.
 
 {{< /history >}}
+
+Run a new pipeline for the merge request.
 
 **Availability**:
 
@@ -1885,14 +1885,14 @@ Run a new pipeline for the merge request.
 
 ### `set_parent`
 
-Set the parent item.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420798) in GitLab 16.5 for tasks and key results.
 - Alias `/epic` for issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514942) in GitLab 17.10.
 
 {{< /history >}}
+
+Set the parent item.
 
 **Availability**:
 
@@ -2082,13 +2082,13 @@ Submit a pending [review](merge_requests/reviews/_index.md#submit-a-review).
 
 ### `subscribe`
 
-Subscribe to notifications for a work item.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420796) in GitLab 16.4 for tasks, objectives, and key results.
 
 {{< /history >}}
+
+Subscribe to notifications for a work item.
 
 **Availability**:
 
@@ -2202,13 +2202,13 @@ Change the title.
 
 ### `todo`
 
-Add a to-do item for yourself.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412277) in GitLab 16.2 for tasks, objectives, and key results.
 
 {{< /history >}}
+
+Add a to-do item for yourself.
 
 **Availability**:
 
@@ -2230,13 +2230,13 @@ Add a to-do item for yourself.
 
 ### `type`
 
-Convert a work item to a specified type.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385227) in GitLab 16.0.
 
 {{< /history >}}
+
+Convert a work item to a specified type.
 
 **Availability**:
 
@@ -2415,14 +2415,14 @@ Remove labels.
 
 ### `unlink`
 
-Remove a link to another item.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414400) in GitLab 16.1 for issues and epics.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481851) in GitLab 17.8 for tasks, objectives, and key results.
 
 {{< /history >}}
+
+Remove a link to another item.
 
 **Availability**:
 
@@ -2486,13 +2486,13 @@ Unlock the discussions.
 
 ### `unsubscribe`
 
-Unsubscribe from notifications for a work item.
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420796) in GitLab 16.4 for tasks, objectives, and key results.
 
 {{< /history >}}
+
+Unsubscribe from notifications for a work item.
 
 **Availability**:
 

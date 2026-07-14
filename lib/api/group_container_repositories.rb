@@ -23,8 +23,8 @@ module API
         desc: 'The ID or URL-encoded path of the group accessible by the authenticated user'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'List registry repositories within a group' do
-        detail 'Get a list of registry repositories in a group. This feature was introduced in GitLab 12.2.'
+      desc 'List all registry repositories for a group' do
+        detail 'Lists all registry repositories for a specified group.'
         success Entities::ContainerRegistry::Repository
         failure [
           { code: 401, message: 'Unauthorized' },

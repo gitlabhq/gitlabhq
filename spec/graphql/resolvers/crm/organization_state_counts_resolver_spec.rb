@@ -24,7 +24,7 @@ RSpec.describe Resolvers::Crm::OrganizationStateCountsResolver do
     end
 
     context 'with authorized user' do
-      before do
+      before_all do
         group.add_reporter(user)
       end
 

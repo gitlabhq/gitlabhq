@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::PollingInterval do
+RSpec.describe Gitlab::PollingInterval, feature_category: :source_code_management do
   let(:polling_interval) { described_class }
 
   describe '.set_header' do

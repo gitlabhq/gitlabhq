@@ -138,7 +138,7 @@ RSpec.describe API::Admin::BroadcastMessages, :aggregate_failures, feature_categ
         post api(path, admin, admin_mode: true), params: attrs
 
         expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['dismissable']).to eq true
+        expect(json_response['dismissable']).to be true
       end
 
       it 'accepts a theme' do
@@ -271,7 +271,7 @@ RSpec.describe API::Admin::BroadcastMessages, :aggregate_failures, feature_categ
         put api(path, admin, admin_mode: true), params: attrs
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['dismissable']).to eq true
+        expect(json_response['dismissable']).to be true
       end
 
       it 'accepts a theme' do

@@ -21,8 +21,8 @@ To generate a composite identity token, you must have:
    1. Service accounts can be shared across features, but differentiating actions in the UI is harder if they share the same account (for example, the same user might appear to both create and review an MR).
 
 1. Availability and licensing:
-   1. Service accounts are available on Premium and Ultimate.
-   1. As a result, composite identity requires GitLab Premium or Ultimate licenses.
+   1. Service accounts are available on all tiers, with limits on GitLab Free. For more information, see [service accounts](../../user/profile/service_accounts.md).
+   1. Composite identity requires GitLab Premium or Ultimate licenses.
 1. The service account must have `composite_identity_enforced` set to `true`.
    1. This setting is not available in the service account creation UI and must be configured programmatically.
 1. The OAuth application used for composite identity must enable a dynamic scope of `user:*`.

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe DependencyProxy::Blob, type: :model, feature_category: :virtual_registry do

@@ -33,7 +33,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organ
 
         expect(json_response).to be_a Hash
         expect(json_response['application_id']).to eq application.uid
-        expect(application.secret_matches?(json_response['secret'])).to eq(true)
+        expect(application.secret_matches?(json_response['secret'])).to be(true)
         expect(json_response['callback_url']).to eq application.redirect_uri
         expect(json_response['confidential']).to eq application.confidential
         expect(application.scopes.to_s).to eq('api')
@@ -264,7 +264,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organ
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['secret']).not_to be_nil
-        expect(application.secret_matches?(json_response['secret'])).not_to eq(true)
+        expect(application.secret_matches?(json_response['secret'])).not_to be(true)
       end
 
       it 'return 404 when application_id not found' do

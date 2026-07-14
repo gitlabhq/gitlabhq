@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Releases::Links::CreateService, feature_category: :release_orchestration do
   let(:service) { described_class.new(release, user, params) }
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
-  let_it_be(:user, freeze: false) { create(:user, developer_of: project) }
-  let_it_be(:release, freeze: false) { create(:release, project: project, author: user, tag: 'v1.1.0') }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:user) { create(:user, developer_of: project) }
+  let_it_be_with_reload(:release) { create(:release, project: project, author: user, tag: 'v1.1.0') }
 
   let(:params) { { name: name, url: url, direct_asset_path: direct_asset_path, link_type: link_type } }
   let(:name) { 'link' }
@@ -31,7 +31,7 @@ RSpec.describe Releases::Links::CreateService, feature_category: :release_orches
     end
 
     context 'when user does not have access to create release link' do
-      before do
+      before_all do
         project.add_guest(user)
       end
 

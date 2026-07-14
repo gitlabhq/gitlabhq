@@ -22,6 +22,7 @@ import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { markAsSpamProjectIssuePath } from '~/lib/utils/path_helpers/issues';
 
 import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_change_type_modal.vue';
 import {
@@ -42,6 +43,7 @@ import CreateWorkItemModal from './create_work_item_modal.vue';
 import MoveWorkItemModal from './move_work_item_modal.vue';
 
 export default {
+  name: 'WorkItemActions',
   CREATION_CONTEXT_RELATED_ITEM,
   i18n: {
     enableConfidentiality: s__('WorkItem|Turn on confidentiality'),
@@ -238,6 +240,19 @@ export default {
       default: false,
     },
   },
+  emits: [
+    'deleteWorkItem',
+    'dropdown-show',
+    'error',
+    'promotedToObjective',
+    'toggleReportAbuseModal',
+    'toggleSidebar',
+    'toggleTruncationEnabled',
+    'toggleWorkItemConfidentiality',
+    'work-item-created',
+    'workItemStateUpdated',
+    'workItemTypeChanged',
+  ],
   data() {
     return {
       isLockDiscussionUpdating: false,
@@ -369,11 +384,14 @@ export default {
     objectiveWorkItemTypeId() {
       return this.workItemTypes.find((type) => type.name === WORK_ITEM_TYPE_NAME_OBJECTIVE).id;
     },
+    currentWorkItemTypeId() {
+      return this.workItemTypes.find((type) => type.name === this.workItemType)?.id ?? '';
+    },
     showDropdownTooltip() {
       return !this.isDropdownVisible ? this.$options.i18n.moreActions : '';
     },
     submitAsSpamItem() {
-      const href = this.workItemWebUrl.replaceAll('work_items', 'issues').concat('/mark_as_spam');
+      const href = markAsSpamProjectIssuePath(this.fullPath, { id: this.workItemIid });
       return { text: __('Submit as spam'), href };
     },
     isAuthor() {
@@ -886,6 +904,7 @@ export default {
       :visible="isMoveWorkItemModalVisible"
       :work-item-id="workItemId"
       :work-item-iid="workItemIid"
+      :work-item-type-id="currentWorkItemTypeId"
       :full-path="fullPath"
       :project-id="projectId"
       @hideModal="isMoveWorkItemModalVisible = false"

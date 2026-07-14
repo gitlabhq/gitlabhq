@@ -131,7 +131,7 @@ module Issues
       args = {
         'mentionable_type' => 'Issue',
         'mentionable_id' => issue.id,
-        'hook_data' => issue_data,
+        'hook_data' => issue_data.as_json, # ensure sidekiq-compatible (native JSON) hash argument
         'is_confidential' => issue.confidential?
       }
 

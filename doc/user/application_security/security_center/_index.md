@@ -66,7 +66,7 @@ After you remove projects, the security dashboard and vulnerability report no lo
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/546219) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `vulnerabilities_pdf_export`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/546219) in GitLab 18.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `vulnerabilities_pdf_export`. Enabled by default.
 - Generally available in 18.5. Feature flag `vulnerabilities_pdf_export` removed.
 
 {{< /history >}}

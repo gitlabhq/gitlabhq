@@ -9,27 +9,20 @@ RSpec.describe "User edits a comment on a commit", :js, feature_category: :sourc
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
-  where(:rapid_diffs_enabled) do
-    [false, true]
+  before do
+    sign_in(user)
+    project.add_developer(user)
   end
 
-  with_them do
-    before do
-      stub_feature_flags(rapid_diffs_on_commit_show: rapid_diffs_enabled)
-      sign_in(user)
-      project.add_developer(user)
-    end
+  it "edits comment" do
+    visit(project_commit_path(project, sample_commit.id))
 
-    it "edits comment" do
-      visit(project_commit_path(project, sample_commit.id))
+    add_note("XML attached")
 
-      add_note("XML attached")
+    new_comment_text = "+1 Awesome!"
 
-      new_comment_text = "+1 Awesome!"
-
-      page.within(
-        ".main-notes-list .note, [data-testid='commit-timeline'] [data-testid='noteable-note-container']"
-      ) do |scope|
+    within_testid('commit-timeline') do
+      within_testid('noteable-note-container') do |scope|
         scope.hover
         find_button("Edit comment").click
         fill_in("note[note]", with: new_comment_text)
@@ -38,34 +31,34 @@ RSpec.describe "User edits a comment on a commit", :js, feature_category: :sourc
         expect(scope).to have_content(new_comment_text)
       end
     end
+  end
 
-    context 'when checking task lists' do
-      let(:note_with_task) do
-        <<~MARKDOWN
+  context 'when checking task lists' do
+    let(:note_with_task) do
+      <<~MARKDOWN
 
-        - [ ] Task 1
-        MARKDOWN
-      end
+      - [ ] Task 1
+      MARKDOWN
+    end
 
-      before do
-        create(:note_on_commit, project: project, commit_id: sample_commit.id, note: note_with_task, author: user)
-        create(:note_on_commit, project: project, commit_id: sample_commit.id, note: note_with_task, author: user)
+    before do
+      create(:note_on_commit, project: project, commit_id: sample_commit.id, note: note_with_task, author: user)
+      create(:note_on_commit, project: project, commit_id: sample_commit.id, note: note_with_task, author: user)
 
-        visit(project_commit_path(project, sample_commit.id))
-      end
+      visit(project_commit_path(project, sample_commit.id))
+    end
 
-      it 'allows the tasks to be checked' do
-        expect(page).to have_selector('li.task-list-item', count: 2)
-        expect(page).to have_selector('li.task-list-item input[checked]', count: 0)
+    it 'allows the tasks to be checked', :aggregate_failures do
+      expect(page).to have_selector('li.task-list-item', count: 2)
+      expect(page).to have_selector('li.task-list-item input[checked]', count: 0)
 
-        all('.task-list-item-checkbox').each(&:click)
-        wait_for_requests
+      all('.task-list-item-checkbox').each(&:click)
+      wait_for_requests
 
-        visit(project_commit_path(project, sample_commit.id))
+      visit(project_commit_path(project, sample_commit.id))
 
-        expect(page).to have_selector('li.task-list-item', count: 2)
-        expect(page).to have_selector('li.task-list-item input[checked]', count: 2)
-      end
+      expect(page).to have_selector('li.task-list-item', count: 2)
+      expect(page).to have_selector('li.task-list-item input[checked]', count: 2)
     end
   end
 end

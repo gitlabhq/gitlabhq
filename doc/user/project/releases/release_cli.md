@@ -38,7 +38,7 @@ For more information, see [`release`](../../../ci/yaml/_index.md#release).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/524346) in GitLab 18.0, [with a flag](../../../administration/feature_flags/_index.md) named `ci_glab_for_release`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/524346) in GitLab 18.0, [with a feature flag](../../../administration/feature_flags/_index.md) named `ci_glab_for_release`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/537398) in GitLab 18.4. Feature flag `ci_glab_for_release` removed.
 
 {{< /history >}}

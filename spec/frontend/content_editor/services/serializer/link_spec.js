@@ -25,6 +25,16 @@ it('correctly escapes URLs in links', () => {
   );
 });
 
+it('does not escape backslashes or other Markdown-sensitive characters in autolinks', () => {
+  expect(
+    serialize(paragraph(link({ href: 'https://google.com\\a' }, 'https://google.com\\a'))),
+  ).toBe('https://google.com\\a');
+
+  expect(
+    serialize(paragraph(link({ href: 'https://example.com/~foo' }, 'https://example.com/~foo'))),
+  ).toBe('https://example.com/~foo');
+});
+
 it('correctly serializes a malformed URL-encoded link', () => {
   expect(
     serialize(

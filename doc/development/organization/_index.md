@@ -83,9 +83,9 @@ end
 
 ### Scoping queries to organizations
 
-There will be a ActiveRecord extension (`gitlab-database-data_isolation`)
-that will provide Organization Scoping, dependent on the isolation state of the
-organization.
+An ActiveRecord extension (`gitlab-database-data_isolation`) scopes queries to the
+current organization, dependent on the isolation state of the organization.
+For more information, see [Organization data isolation](query_scoping.md).
 
 ## Organization routing
 

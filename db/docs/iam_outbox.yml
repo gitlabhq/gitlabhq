@@ -1,0 +1,14 @@
+---
+table_name: iam_outbox
+classes:
+- Authn::IamOutbox
+feature_categories:
+- system_access
+description: Transactional outbox of entity changes pending replication to the IAM service.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241350
+milestone: '19.2'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: todo
+table_size: small

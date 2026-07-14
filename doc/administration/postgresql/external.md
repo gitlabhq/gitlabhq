@@ -68,6 +68,25 @@ After you set up the external PostgreSQL server:
    sudo gitlab-ctl restart
    ```
 
+## Database schemas
+
+Create or use databases exclusively for GitLab, [Geo](../geo/_index.md),
+[Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md), or other components.
+Do not create or modify databases, schemas, users, or other properties except when following:
+
+- Procedures in the GitLab documentation.
+- The directions of GitLab Support or engineers.
+
+The main GitLab application uses three schemas:
+
+- The default `public` schema.
+- `gitlab_partitions_static` (created automatically).
+- `gitlab_partitions_dynamic` (created automatically).
+
+During Rails database migrations, GitLab might create or modify schemas or tables.
+Database migrations are tested against the schema definition in the GitLab codebase.
+If you modify any schema, [GitLab upgrades](../../update/_index.md) might fail.
+
 ## Container registry metadata database
 
 If you plan to use the [container registry metadata database](../packages/container_registry_metadata_database.md),

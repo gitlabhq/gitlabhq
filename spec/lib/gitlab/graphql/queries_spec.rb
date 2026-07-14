@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Graphql::Queries do
   end
 
   # Toy schema to validate queries against
-  let_it_be(:schema, freeze: false) do
+  let_it_be(:schema) do
     author = Class.new(GraphQL::Schema::Object) do
       graphql_name 'Author'
       field :name, GraphQL::Types::String, null: true

@@ -1,7 +1,7 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 保護環境API
 ---
 
@@ -12,17 +12,16 @@ title: 保護環境API
 
 {{< /details >}}
 
-このAPIを使用して、[保護環境](../ci/environments/protected_environments.md)とやり取りします。
+このAPIを使用して、[保護環境](../ci/environments/protected_environments.md)と対話します。
 
-{{< alert type="note" >}}
+> [!note]
+> プロジェクトで保護環境APIを使用するには、CI/CDを有効にする必要があります。プロジェクトで[CI/CDが無効](../user/project/settings/_index.md#turn-off-cicd-for-a-project)になっている場合、リクエストは`403 Forbidden`を返します。これは、保護環境を管理する権限を持つユーザーでも同様です。
 
-グループレベルの[group-level protected environments API](group_protected_environments.md)については、こちらを参照してください
-
-{{< /alert >}}
+グループレベルの保護環境については、[グループレベルの保護環境API](group_protected_environments.md)を参照してください。
 
 ## 有効なアクセスレベル {#valid-access-levels}
 
-アクセスレベルは、`ProtectedEnvironments::DeployAccessLevel::ALLOWED_ACCESS_LEVELS`メソッドで定義されています。現在、次のレベルが認識されています:
+アクセスレベルは`ProtectedEnvironments::DeployAccessLevel::ALLOWED_ACCESS_LEVELS`メソッドで定義されています。現在、これらのレベルが認識されています:
 
 ```plaintext
 30 => Developer access
@@ -30,18 +29,18 @@ title: 保護環境API
 60 => Admin access
 ```
 
-## グループメンバーシップの継承の種類 {#group-inheritance-types}
+## グループ継承タイプ {#group-inheritance-types}
 
-グループメンバーシップの継承により、デプロイアクセスレベルと承認ルールは、継承されたグループメンバーシップを考慮に入れることができます。グループメンバーシップの継承の種類は、`ProtectedEnvironments::Authorizable::GROUP_INHERITANCE_TYPE`で定義されます。次の種類が認識されます:
+グループ継承により、デプロイアクセスレベルとアクセスルールは、継承されたグループメンバーシップを考慮に入れることができます。グループ継承タイプは`ProtectedEnvironments::Authorizable::GROUP_INHERITANCE_TYPE`によって定義されます。以下のタイプが認識されます:
 
 ```plaintext
 0 => Direct group membership only (default)
 1 => All inherited groups
 ```
 
-## 保護された環境の一覧 {#list-protected-environments}
+## 保護環境を一覧表示 {#list-protected-environments}
 
-プロジェクトから保護環境の一覧を取得します:
+プロジェクトから保護環境のリストを取得します:
 
 ```plaintext
 GET /projects/:id/protected_environments
@@ -56,7 +55,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/protected_environments/"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -95,7 +94,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/protected_environments/production"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -126,12 +125,12 @@ POST /projects/:id/protected_environments
 | --------- | ---- | -------- | ----------- |
 | `id`                            | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `name`                          | 文字列         | はい | 環境の名前。 |
-| `deploy_access_levels`          | 配列          | はい | デプロイを許可されたアクセスレベルの配列。それぞれはハッシュで記述されます。 |
-| `approval_rules`                | 配列          | いいえ  | 承認を許可されたアクセスレベルの配列。それぞれはハッシュで記述されます。[複数の承認ルール](../ci/environments/deployment_approvals.md#add-multiple-approval-rules)を参照してください。 |
+| `deploy_access_levels`          | 配列          | はい | デプロイが許可されるアクセスレベルの配列で、それぞれがハッシュによって記述されます。 |
+| `approval_rules`                | 配列          | いいえ  | 承認が許可されるアクセスレベルの配列で、それぞれがハッシュによって記述されます。[複数の承認ルール](../ci/environments/deployment_approvals.md#add-multiple-approval-rules)を参照してください。 |
 
-`deploy_access_levels`および`approval_rules`配列内の要素は、`user_id`、`group_id`、または`access_level`のいずれかで、形式は`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`になります。オプションで、[有効なグループメンバーシップの継承タイプ](#group-inheritance-types)のいずれかとして、各`group_inheritance_type`を指定できます。
+`deploy_access_levels`と`approval_rules`配列の要素は、`user_id`、`group_id`または`access_level`のいずれかであり、`{user_id: integer}`、`{group_id: integer}`または`{access_level: integer}`の形式を取る必要があります。オプションで、それぞれに`group_inheritance_type`を[有効なグループ継承タイプ](#group-inheritance-types)の1つとして指定できます。
 
-各ユーザーはプロジェクトへのアクセス権を持ち、各グループは[このプロジェクトを共有](../user/project/members/sharing_projects_groups.md)する必要があります。
+各ユーザーはプロジェクトへのアクセス権を持ち、各グループは[このプロジェクトを共有](../user/project/members/sharing_projects_groups.md)している必要があります。
 
 ```shell
 curl --header 'Content-Type: application/json' \
@@ -141,7 +140,7 @@ curl --header 'Content-Type: application/json' \
      --url "https://gitlab.example.com/api/v4/projects/22034114/protected_environments"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -198,21 +197,21 @@ PUT /projects/:id/protected_environments/:name
 | --------- | ---- | -------- | ----------- |
 | `id`                            | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `name`                          | 文字列         | はい | 環境の名前。 |
-| `deploy_access_levels`          | 配列          | いいえ  | デプロイを許可されたアクセスレベルの配列。それぞれはハッシュで記述されます。 |
-| `approval_rules`                | 配列          | いいえ  | 承認を許可されたアクセスレベルの配列。それぞれはハッシュで記述されます。詳細については、[複数の承認ルール](../ci/environments/deployment_approvals.md#add-multiple-approval-rules)を参照してください。 |
+| `deploy_access_levels`          | 配列          | いいえ  | デプロイが許可されるアクセスレベルの配列で、それぞれがハッシュによって記述されます。 |
+| `approval_rules`                | 配列          | いいえ  | 承認が許可されるアクセスレベルの配列で、それぞれがハッシュによって記述されます。詳細については、[複数の承認ルール](../ci/environments/deployment_approvals.md#add-multiple-approval-rules)を参照してください。 |
 
-`deploy_access_levels`および`approval_rules`配列内の要素は、`user_id`、`group_id`、または`access_level`のいずれかで、形式は`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`になります。オプションで、[有効なグループメンバーシップの継承タイプ](#group-inheritance-types)のいずれかとして、各`group_inheritance_type`を指定できます。
+`deploy_access_levels`と`approval_rules`配列の要素は、`user_id`、`group_id`または`access_level`のいずれかであり、`{user_id: integer}`、`{group_id: integer}`または`{access_level: integer}`の形式を取る必要があります。オプションで、それぞれに`group_inheritance_type`を[有効なグループ継承タイプ](#group-inheritance-types)の1つとして指定できます。
 
 更新するには:
 
-- **`user_id`**: 更新されたユーザーがプロジェクトへのアクセス権を持っていることを確認します。それぞれのハッシュで、`deploy_access_level`デプロイアクセスレベルまたは`approval_rule`承認ルールの`id`も渡す必要があります。
-- **`group_id`**: 更新されたグループが[このプロジェクトを共有](../user/project/members/sharing_projects_groups.md)していることを確認します。それぞれのハッシュで、`deploy_access_level`デプロイアクセスレベルまたは`approval_rule`承認ルールの`id`も渡す必要があります。
+- **`user_id`**: 更新されたユーザーがプロジェクトへのアクセス権を持っていることを確認してください。また、それぞれのハッシュで、`deploy_access_level`または`approval_rule`のいずれかの`id`を渡す必要があります。
+- **`group_id`**: 更新されたグループが[このプロジェクトを共有](../user/project/members/sharing_projects_groups.md)していることを確認してください。また、それぞれのハッシュで、`deploy_access_level`または`approval_rule`のいずれかの`id`を渡す必要があります。
 
 削除するには:
 
 - `_destroy`を`true`に設定して渡す必要があります。次の例を参照してください。
 
-### 例: `deploy_access_level`デプロイアクセスレベルレコードを作成 {#example-create-a-deploy_access_level-record}
+### 例: `deploy_access_level`レコードを作成 {#example-create-a-deploy_access_level-record}
 
 ```shell
 curl --header 'Content-Type: application/json' \
@@ -222,7 +221,7 @@ curl --header 'Content-Type: application/json' \
      --url "https://gitlab.example.com/api/v4/projects/22034114/protected_environments/production"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -241,7 +240,7 @@ curl --header 'Content-Type: application/json' \
 }
 ```
 
-### 例: `deploy_access_level`デプロイアクセスレベルレコードを更新 {#example-update-a-deploy_access_level-record}
+### 例: `deploy_access_level`レコードを更新 {#example-update-a-deploy_access_level-record}
 
 ```shell
 curl --header 'Content-Type: application/json' \
@@ -268,7 +267,7 @@ curl --header 'Content-Type: application/json' \
 }
 ```
 
-### 例: `deploy_access_level`デプロイアクセスレベルレコードを削除 {#example-delete-a-deploy_access_level-record}
+### 例: `deploy_access_level`レコードを削除 {#example-delete-a-deploy_access_level-record}
 
 ```shell
 curl --header 'Content-Type: application/json' \
@@ -278,7 +277,7 @@ curl --header 'Content-Type: application/json' \
      --url "https://gitlab.example.com/api/v4/projects/22034114/protected_environments/production"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -288,7 +287,7 @@ curl --header 'Content-Type: application/json' \
 }
 ```
 
-### 例: `approval_rule`承認ルールレコードを作成 {#example-create-an-approval_rule-record}
+### 例: `approval_rule`レコードを作成 {#example-create-an-approval_rule-record}
 
 ```shell
 curl --header 'Content-Type: application/json' \
@@ -298,7 +297,7 @@ curl --header 'Content-Type: application/json' \
      --url "https://gitlab.example.com/api/v4/projects/22034114/protected_environments/production"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -317,7 +316,7 @@ curl --header 'Content-Type: application/json' \
 }
 ```
 
-### 例: `approval_rule`承認ルールレコードを更新 {#example-update-an-approval_rule-record}
+### 例: `approval_rule`レコードを更新 {#example-update-an-approval_rule-record}
 
 ```shell
 curl --header 'Content-Type: application/json' \
@@ -344,7 +343,7 @@ curl --header 'Content-Type: application/json' \
 }
 ```
 
-### 例: `approval_rule`承認ルールレコードを削除 {#example-delete-an-approval_rule-record}
+### 例: `approval_rule`レコードを削除 {#example-delete-an-approval_rule-record}
 
 ```shell
 curl --header 'Content-Type: application/json' \
@@ -354,7 +353,7 @@ curl --header 'Content-Type: application/json' \
      --url "https://gitlab.example.com/api/v4/projects/22034114/protected_environments/production"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

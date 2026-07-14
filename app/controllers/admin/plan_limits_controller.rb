@@ -11,7 +11,7 @@ class Admin::PlanLimitsController < Admin::ApplicationController
     redirect_path = referer_path(request) || general_admin_application_settings_path
 
     respond_to do |format|
-      if @plan_limits.update(plan_limits_params)
+      if @plan_limits.update(plan_limits_params.except(:plan_id, :plan_name_uid))
         format.json { head :ok }
         format.html { redirect_to redirect_path, notice: _('Application limits saved successfully') }
       else
@@ -24,13 +24,16 @@ class Admin::PlanLimitsController < Admin::ApplicationController
   private
 
   def set_plan_limits
-    @plan_limits = Plan.find(plan_limits_params[:plan_id]).actual_limits
+    uid = plan_limits_params[:plan_name_uid]
+    plan = uid.present? ? Plan.find_by_plan_name_uid!(uid) : Plan.find(plan_limits_params[:plan_id])
+    @plan_limits = plan.actual_limits
   end
 
   def plan_limits_params
     params.require(:plan_limits)
       .permit(%i[
         plan_id
+        plan_name_uid
         conan_max_file_size
         helm_max_file_size
         maven_max_file_size

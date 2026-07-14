@@ -51,9 +51,11 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
   end
 
   describe '#run', :clean_gitlab_redis_shared_state do
-    before do
+    before_all do
       group.add_owner(user)
+    end
 
+    before do
       allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return(
           BulkImports::Pipeline::ExtractedData.new(data: extract_data)

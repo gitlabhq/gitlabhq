@@ -22,12 +22,14 @@ const STRATEGIES = Object.freeze({
 });
 
 export default {
+  name: 'StrategyParameters',
   props: {
     strategy: {
       type: Object,
       required: true,
     },
   },
+  emits: ['change'],
   computed: {
     strategyComponent() {
       return STRATEGIES[this.strategy?.name];

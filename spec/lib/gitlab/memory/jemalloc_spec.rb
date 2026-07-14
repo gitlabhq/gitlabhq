@@ -3,16 +3,24 @@
 require 'fast_spec_helper'
 require 'tempfile'
 
-RSpec.describe Gitlab::Memory::Jemalloc do
+RSpec.describe Gitlab::Memory::Jemalloc, feature_category: :durability_metrics do
   let(:outfile) { Tempfile.new }
+  let(:current_process) { instance_double(::FFI::DynamicLibrary) }
 
   after do
     outfile.close
     outfile.unlink
   end
 
+  before do
+    allow(::FFI::DynamicLibrary).to receive(:open).and_return(current_process)
+    # The stats callback is a real FFI::Function built from a block; only the
+    # malloc_stats_print lookup is stubbed (see #stub_stats_call).
+    allow(::FFI::Function).to receive(:new).and_call_original
+  end
+
   context 'when jemalloc is loaded' do
-    let(:fiddle_func) { instance_double(::Fiddle::Function) }
+    let(:stats_print) { instance_double(::FFI::Function) }
 
     context 'with JSON format' do
       let(:format) { :json }
@@ -87,7 +95,7 @@ RSpec.describe Gitlab::Memory::Jemalloc do
 
   context 'when jemalloc is not loaded' do
     before do
-      expect(::Fiddle::Handle).to receive(:sym).and_raise(Fiddle::DLError)
+      expect(current_process).to receive(:find_function).with('malloc_stats_print').and_return(nil)
     end
 
     describe '.stats' do
@@ -109,14 +117,14 @@ RSpec.describe Gitlab::Memory::Jemalloc do
 
   def stub_stats_call(output, expected_options = '')
     # Stub function pointer to stats call.
-    func_pointer = Fiddle::Pointer.new(0xd34db33f)
-    expect(::Fiddle::Handle).to receive(:sym).with('malloc_stats_print').and_return(func_pointer)
+    symbol = instance_double(::FFI::DynamicLibrary::Symbol)
+    expect(current_process).to receive(:find_function).with('malloc_stats_print').and_return(symbol)
 
     # Stub actual function call.
-    expect(::Fiddle::Function).to receive(:new)
-      .with(func_pointer, anything, anything)
-      .and_return(fiddle_func)
-    expect(fiddle_func).to receive(:call).with(anything, nil, expected_options) do |callback, _, options|
+    expect(::FFI::Function).to receive(:new)
+      .with(:void, [:pointer, :pointer, :string], symbol)
+      .and_return(stats_print)
+    expect(stats_print).to receive(:call).with(anything, nil, expected_options) do |callback, _, options|
       callback.call(nil, output)
     end
   end

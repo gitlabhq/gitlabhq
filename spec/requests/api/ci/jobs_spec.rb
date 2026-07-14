@@ -689,10 +689,8 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     let(:query) { {} }
 
     before do
-      allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-        threshold = Gitlab::ApplicationRateLimiter.rate_limits[:jobs_index][:threshold].call
-        allow(strategy).to receive(:increment).and_return(threshold + 1)
-      end
+      allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+        .with(:jobs_index, scope: anything).and_return(true)
 
       get api("/projects/#{project.id}/jobs", api_user), params: query
     end
@@ -797,6 +795,13 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       unless example.metadata[:skip_before_request]
         get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
       end
+    end
+
+    describe 'mcp route setting', :skip_before_request do
+      subject { get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user) }
+
+      it_behaves_like 'an endpoint with mcp route setting', :get_job_log,
+        expected_params: [:id, :job_id]
     end
 
     context 'authorized user' do
@@ -1226,6 +1231,18 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         expect(debug_input.project_id).to eq(project.id)
       end
 
+      context 'when logging' do
+        let(:skip_before) { true }
+
+        it 'masks input values' do
+          expect(::API::API::LOGGER).to receive(:info).with(
+            include(params: include('inputs' => '[FILTERED]'))
+          )
+
+          call_retry_job
+        end
+      end
+
       context 'when inputs are invalid' do
         let(:retry_inputs) { { 'environment' => 'development' } }
 
@@ -1460,6 +1477,19 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
             expect(job.reload).to be_pending
             expect(job.inputs.map(&:name)).to contain_exactly('environment')
             expect(job.inputs.find_by(name: 'environment').value).to eq('production')
+          end
+
+          it 'masks input values when logging' do
+            playable_job = create(:ci_build, :manual, project: project, pipeline: pipeline, options: {
+              inputs: { environment: { type: 'string' } }
+            })
+
+            expect(::API::API::LOGGER).to receive(:info).with(
+              include(params: include('job_inputs' => '[FILTERED]'))
+            )
+
+            post api("/projects/#{project.id}/jobs/#{playable_job.id}/play", api_user),
+              params: { job_inputs: { environment: 'production' } }
           end
         end
 

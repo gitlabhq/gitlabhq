@@ -4,6 +4,14 @@ module Namespaces
   module Stateful
     extend ActiveSupport::Concern
 
+    # States whose value is inherited by descendants and resolved through ancestor traversal.
+    # See ADR 003 - State propagation model:
+    # https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/group_and_project_operations_and_state_management/decisions/003_state_propagation_model/
+    PROPAGATED_STATES = %i[ancestor_inherited archived deletion_scheduled maintenance].freeze
+
+    # Transient, in-progress states that apply only to the namespace itself and are never propagated.
+    NON_PROPAGATED_STATES = %i[creation_in_progress deletion_in_progress transfer_in_progress transfer_scheduled].freeze
+
     included do
       include ::Gitlab::TenantContainerLifecycle::Stateful::TransitionContext
       include TransitionCallbacks
@@ -24,6 +32,8 @@ module Namespaces
         maintenance: 6,
         transfer_scheduled: 7
       }, instance_methods: false
+
+      scope :with_state, ->(states) { where(state: states) }
 
       state_machine :state, initial: :ancestor_inherited do
         state :creation_in_progress

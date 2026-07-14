@@ -1,0 +1,16 @@
+---
+description: Tracks when a user opens the feature library modal by
+  clicking the "More features" nav item in the sidebar.
+internal_events: true
+action: open_feature_library_modal
+identifiers:
+- user
+product_group: engagement
+product_categories:
+- navigation
+milestone: '19.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243059
+tiers:
+- free
+- premium
+- ultimate

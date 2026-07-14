@@ -93,7 +93,8 @@ module Ci
 
     TAG_LIST_MAX_LENGTH = 50
 
-    has_many :runner_managers, inverse_of: :runner
+    has_many :runner_managers, inverse_of: :runner,
+      foreign_key: [:runner_id, :runner_type], primary_key: [:id, :runner_type]
     has_many :builds
     has_many :running_builds, inverse_of: :runner
     has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -112,6 +113,7 @@ module Ci
     belongs_to :creator, class_name: 'User', optional: true
 
     before_save :ensure_token
+    before_save :ensure_uuid
     after_destroy :cleanup_runner_queue
 
     scope :active, ->(value = true) { where(active: value) }
@@ -136,11 +138,13 @@ module Ci
     scope :deprecated_specific, -> { project_type.or(group_type) }
 
     scope :belonging_to_project, ->(project_id) {
-      joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
+      scope = joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
+      ci_runner_partition_pruning_enabled? ? scope.project_type : scope
     }
 
     scope :belonging_to_group, ->(group_id) {
-      joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_id })
+      scope = joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_id })
+      ci_runner_partition_pruning_enabled? ? scope.group_type : scope
     }
 
     scope :created_by_admins, -> { with_creator_id(User.admins.ids) }
@@ -148,7 +152,13 @@ module Ci
     scope :with_creator_id, ->(value) { where(creator_id: value) }
 
     scope :belonging_to_group_or_project_descendants, ->(group_id) {
-      group_ids = Ci::NamespaceMirror.by_group_and_descendants(group_id).select(:namespace_id)
+      group_mirrors = if ci_runners_count_traversal_ids_index_enabled?
+                        Ci::NamespaceMirror.by_group_and_descendants_using_covering_index(group_id)
+                      else
+                        Ci::NamespaceMirror.by_group_and_descendants(group_id)
+                      end
+
+      group_ids = group_mirrors.select(:namespace_id)
       project_ids = Ci::ProjectMirror.by_namespace_id(group_ids).select(:project_id)
 
       group_runners = belonging_to_group(group_ids)
@@ -353,6 +363,34 @@ module Ci
 
     def self.taggings_join_model
       ::Ci::RunnerTagging
+    end
+
+    # Gates the `runner_type` filter added to scopes like `belonging_to_project`
+    # and `belonging_to_group` so PostgreSQL can prune `ci_runners` partitions.
+    #
+    # We gate on `Feature.current_request` rather than a project/group actor on
+    # purpose: these are class-level scopes invoked with raw ids, id arrays, and
+    # relations (e.g. `belonging_to_group(namespace_id_batch)`), so there is no
+    # single domain actor to key on. The change is a logical no-op (identical
+    # result sets), so the flag only needs to derisk the query-plan change; a
+    # per-request gate keeps every runner query within one request consistent,
+    # which makes the rollout observable on the database dashboards.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/594861.
+    def self.ci_runner_partition_pruning_enabled?
+      Feature.enabled?(:ci_runner_partition_pruning, Feature.current_request)
+    end
+
+    # Gates resolving group descendants in `belonging_to_group_or_project_descendants` through
+    # the `index_ci_namespace_mirrors_on_traversal_ids_unnest` covering index instead of the
+    # GIN `traversal_ids @>` operator, which times out for large subtrees.
+    #
+    # We gate on `Feature.current_request` rather than a domain actor for the same reasons as
+    # `ci_runner_partition_pruning_enabled?`: this is a class-level scope invoked with a raw id,
+    # the change is a logical no-op (identical result sets), and a per-request gate keeps the
+    # query-plan change observable on the database dashboards.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/601877.
+    def self.ci_runners_count_traversal_ids_index_enabled?
+      Feature.enabled?(:ci_runners_count_traversal_ids_index, Feature.current_request)
     end
 
     def self.created_runner_prefix
@@ -574,8 +612,12 @@ module Ci
     end
 
     def ensure_manager(system_xid)
+      # runner_type in the find conditions enables ci_runner_machines partition pruning.
+      attrs = { runner: self, system_xid: system_xid.to_s }
+      attrs[:runner_type] = runner_type if self.class.ci_runner_partition_pruning_enabled?
+
       # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- This is used only in API endpoints outside of transactions
-      RunnerManager.safe_find_or_create_by!(runner: self, system_xid: system_xid.to_s) do |m|
+      RunnerManager.safe_find_or_create_by!(**attrs) do |m|
         m.runner_type = runner_type
         m.organization_id = organization_id
       end
@@ -604,7 +646,38 @@ module Ci
       self.class.runner_types[runner_type]
     end
 
+    def ensure_uuid
+      write_attribute(:uuid, Gitlab::Utils.uuid_v7) unless read_attribute(:uuid).present?
+    end
+
+    # Each existing runner needs to have a uuid.
+    # We do this on read to cover the window between adding the UUID column
+    # and the background migration completing the backfill.
+    # TODO: Remove this override once BackfillCiRunnersUuid is finalized in milestone 19.6.
+    def uuid
+      ensure_uuid!
+      read_attribute(:uuid)
+    end
+
     private
+
+    # Transitional helper supporting the lazy uuid getter above.
+    # Do not call from new code - this method exists only to backfill
+    # uuids for runners that pre-date the column being added.
+    # TODO: Remove this method once BackfillCiRunnersUuid is finalized in milestone 19.6.
+    def ensure_uuid!
+      return if read_attribute(:uuid).present?
+      return unless Gitlab::Database.read_write?
+
+      new_uuid = Gitlab::Utils.uuid_v7
+      updated = self.class.where(id: id, uuid: nil).update_all(uuid: new_uuid)
+
+      if updated == 1
+        write_attribute(:uuid, new_uuid)
+      else
+        write_attribute(:uuid, self.class.where(id: id).pick(:uuid))
+      end
+    end
 
     scope :with_upgrade_status, ->(upgrade_status) do
       joins(:runner_managers).merge(RunnerManager.with_upgrade_status(upgrade_status))

@@ -7,7 +7,7 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
   include TermsHelper
   include Features::SettingsHelpers
 
-  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be_with_reload(:admin) { create(:admin) }
 
   context 'when application setting :admin_mode is enabled', :request_store, :enable_admin_mode do
     before do

@@ -1,0 +1,20 @@
+---
+description: Clicked the Wiki link in the Project information panel on the project overview page.
+internal_events: true
+action: click_wiki_on_project_overview
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Whether the user clicked to add the wiki ("add") or to view the existing one ("view").
+product_group: knowledge
+product_categories:
+- wiki
+milestone: '19.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243186
+tiers:
+- free
+- premium
+- ultimate

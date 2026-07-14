@@ -2,6 +2,7 @@
 import { __ } from '~/locale';
 
 export default {
+  name: 'ItemTitle',
   props: {
     title: {
       type: String,

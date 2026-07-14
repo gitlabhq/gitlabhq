@@ -15,6 +15,7 @@ export default {
       default: false,
     },
   },
+  emits: ['load-more'],
 };
 </script>
 

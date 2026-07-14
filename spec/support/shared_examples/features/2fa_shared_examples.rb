@@ -87,29 +87,31 @@ RSpec.shared_examples 'OTP devices work independently of WebAuthn authenticators
       visit profile_account_path
     end
 
-    describe 'when no device is registered' do
-      before do
-        gitlab_sign_out
-        submit_sign_in_form_for(user)
+    with_and_without_ff(:two_factor_vue) do
+      describe 'when no device is registered' do
+        before do
+          gitlab_sign_out
+          submit_sign_in_form_for(user)
+        end
+
+        it 'shows the fallback otp code UI' do
+          assert_fallback_ui(page)
+        end
       end
 
-      it 'shows the fallback otp code UI' do
-        assert_fallback_ui(page)
-      end
-    end
+      describe 'when a device is registered' do
+        before do
+          visit profile_two_factor_auth_path
+          register_device(device_type, password: user.password)
+          gitlab_sign_out
+          submit_sign_in_form_for(user)
+        end
 
-    describe 'when a device is registered' do
-      before do
-        visit profile_two_factor_auth_path
-        register_device(device_type, password: user.password)
-        gitlab_sign_out
-        submit_sign_in_form_for(user)
-      end
+        it 'provides a button that shows the fallback otp code UI' do
+          use_otp_fallback
 
-      it 'provides a button that shows the fallback otp code UI' do
-        click_button(_('Sign in via 2FA code'))
-
-        assert_fallback_ui(page)
+          assert_fallback_ui(page)
+        end
       end
     end
   end

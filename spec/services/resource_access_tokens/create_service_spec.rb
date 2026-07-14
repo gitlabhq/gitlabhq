@@ -5,12 +5,18 @@ require 'spec_helper'
 RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_access do
   subject { described_class.new(user, resource, params).execute }
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:organization, freeze: false) { create(:organization) }
   let_it_be(:user, freeze: false) { create(:user, organization: organization) }
   let_it_be(:project, freeze: false) { create(:project, :private, organization: organization) }
   let_it_be(:group, freeze: false) { create(:group, :private, organization: organization) }
-  let_it_be(:params, freeze: false) { { expires_at: Date.today + 1.month } }
-  let_it_be(:max_pat_access_token_lifetime, freeze: false) do
+
+  let(:params) { { expires_at: Date.today + 1.month } }
+  let(:max_pat_access_token_lifetime) do
     PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date.freeze
   end
 
@@ -20,6 +26,11 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
   describe '#execute' do
     shared_examples 'token creation fails' do
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:resource, freeze: false) { create(:project, organization: organization) }
 
       it 'does not add the project bot as a member' do
@@ -64,7 +75,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
           group_id = root.is_a?(Group) ? root.id : nil
           access_token.user.reload
 
-          expect(access_token.user.confirmed?).to eq(true)
+          expect(access_token.user.confirmed?).to be(true)
           expect(access_token.group_id).to eq(group_id)
           expect(access_token.user_type).to eq("project_bot")
           expect(access_token.user.user_type).to eq("project_bot")
@@ -106,7 +117,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'when user provides name' do
-          let_it_be(:params, freeze: false) { { name: 'Random bot', expires_at: Date.today + 1.month } }
+          let(:params) { { name: 'Random bot', expires_at: Date.today + 1.month } }
 
           it 'overrides the default name value' do
             response = subject
@@ -125,7 +136,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'when description is passed' do
-          let_it_be(:params, freeze: false) { { description: 'Test token', expires_at: Date.today + 1.month } }
+          let(:params) { { description: 'Test token', expires_at: Date.today + 1.month } }
 
           it 'set the description value' do
             expect(subject.payload[:access_token].description).to eq("Test token")
@@ -172,13 +183,13 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'when user specifies an access level' do
-          let_it_be(:params, freeze: false) { { access_level: Gitlab::Access::DEVELOPER, expires_at: Date.today + 1.month } }
+          let(:params) { { access_level: Gitlab::Access::DEVELOPER, expires_at: Date.today + 1.month } }
 
           it_behaves_like 'bot with access level'
         end
 
         context 'with DEVELOPER access_level, in string format' do
-          let_it_be(:params, freeze: false) { { access_level: Gitlab::Access::DEVELOPER.to_s, expires_at: Date.today + 1.month } }
+          let(:params) { { access_level: Gitlab::Access::DEVELOPER.to_s, expires_at: Date.today + 1.month } }
 
           it_behaves_like 'bot with access level'
         end
@@ -189,7 +200,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
           end
 
           it 'creates resource bot user with external status' do
-            expect(subject.payload[:access_token].user.external).to eq true
+            expect(subject.payload[:access_token].user.external).to be true
           end
         end
       end
@@ -207,7 +218,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'when user provides scope explicitly' do
-          let_it_be(:params, freeze: false) { { scopes: Gitlab::Auth::REPOSITORY_SCOPES, expires_at: Date.today + 1.month } }
+          let(:params) { { scopes: Gitlab::Auth::REPOSITORY_SCOPES, expires_at: Date.today + 1.month } }
 
           it 'overrides the default scope value' do
             response = subject
@@ -219,7 +230,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
         context 'expires_at' do
           context 'when no expiration value is passed' do
-            let_it_be(:params, freeze: false) { { expires_at: nil } }
+            let(:params) { { expires_at: nil } }
 
             context 'when allow_resource_access_token_creation_without_expiry_date is disabled' do
               before do
@@ -291,7 +302,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
           end
 
           context 'when user provides expiration value' do
-            let_it_be(:params, freeze: false) { { expires_at: Date.today + 1.month } }
+            let(:params) { { expires_at: Date.today + 1.month } }
 
             it 'overrides the default expiration value' do
               response = subject
@@ -329,7 +340,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
         context 'when invalid scope is passed' do
           let(:error_message) { 'Scopes can only contain available scopes' }
-          let_it_be(:params, freeze: false) { { scopes: [:invalid_scope], expires_at: Date.today + 1.month } }
+          let(:params) { { scopes: [:invalid_scope], expires_at: Date.today + 1.month } }
 
           it_behaves_like 'token creation fails'
           it_behaves_like 'correct error message'
@@ -351,7 +362,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'with MAINTAINER access_level, in integer format' do
-          let_it_be(:params, freeze: false) { { access_level: Gitlab::Access::MAINTAINER, expires_at: Date.today + 1.month } }
+          let(:params) { { access_level: Gitlab::Access::MAINTAINER, expires_at: Date.today + 1.month } }
 
           it_behaves_like 'token creation fails'
           it_behaves_like 'correct error message'
@@ -359,7 +370,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'with MAINTAINER access_level, in string format' do
-          let_it_be(:params, freeze: false) { { access_level: Gitlab::Access::MAINTAINER.to_s, expires_at: Date.today + 1.month } }
+          let(:params) { { access_level: Gitlab::Access::MAINTAINER.to_s, expires_at: Date.today + 1.month } }
 
           it_behaves_like 'token creation fails'
           it_behaves_like 'correct error message'
@@ -384,6 +395,10 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
     end
 
     context 'when resource is a project' do
+      # `freeze: false` is kept here because this `let_it_be` subject is not an
+      # ActiveRecord record, so freezing gives no cross-example isolation benefit
+      # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+      # gitlab-org/gitlab#602925).
       let_it_be(:resource_type, freeze: false) { 'project' }
       let_it_be(:resource, freeze: false) { project }
 
@@ -406,7 +421,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'when user specifies an access level of OWNER for the bot' do
-          let_it_be(:params, freeze: false) { { access_level: Gitlab::Access::OWNER, expires_at: Date.today + 1.month } }
+          let(:params) { { access_level: Gitlab::Access::OWNER, expires_at: Date.today + 1.month } }
 
           context 'when the executor is a MAINTAINER' do
             let(:error_message) { 'Access level of the token contains permissions not held by the creating user' }
@@ -418,7 +433,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
             context 'with OWNER access_level, in string format' do
               let(:error_message) { 'Access level of the token contains permissions not held by the creating user' }
-              let_it_be(:params, freeze: false) { { access_level: Gitlab::Access::OWNER.to_s, expires_at: Date.today + 1.month } }
+              let(:params) { { access_level: Gitlab::Access::OWNER.to_s, expires_at: Date.today + 1.month } }
 
               it_behaves_like 'token creation fails'
               it_behaves_like 'correct error message'
@@ -455,7 +470,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         it_behaves_like 'allows creation of bot with valid params'
 
         context 'when user specifies an access level of OWNER for the bot' do
-          let_it_be(:params, freeze: false) { { access_level: Gitlab::Access::OWNER, expires_at: Date.today + 1.month } }
+          let(:params) { { access_level: Gitlab::Access::OWNER, expires_at: Date.today + 1.month } }
 
           it 'adds the bot user with the specified access level in the resource' do
             response = subject
@@ -470,6 +485,11 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
     context 'when resource is a sub-group' do
       let_it_be(:resource_type, freeze: false) { 'group' }
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:parent_group, freeze: false) { create(:group, :private, organization: organization) }
       let_it_be(:child_group, freeze: false) { create(:group, :private, organization: organization, parent: parent_group) }
       let_it_be(:resource, freeze: false) { child_group }
@@ -489,6 +509,11 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
       let_it_be(:resource_type, freeze: false) { 'project' }
       let_it_be(:parent_group, freeze: false) { create(:group, :private, organization: organization) }
       let_it_be(:child_group, freeze: false) { create(:group, :private, organization: organization, parent: parent_group) }
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:child_project, freeze: false) { create(:project, :private, organization: organization, namespace: child_group) }
       let_it_be(:resource, freeze: false) { child_project }
 

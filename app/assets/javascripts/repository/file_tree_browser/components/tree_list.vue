@@ -290,6 +290,7 @@ export default {
 
         const { project } = data;
         const treeData = project?.repository?.paginatedTree?.nodes[0];
+        if (!treeData) return;
         const directoryContents = {
           trees: dedupeByFlatPathAndId(treeData.trees.nodes),
           blobs: dedupeByFlatPathAndId(treeData.blobs.nodes),

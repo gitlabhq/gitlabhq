@@ -42,7 +42,10 @@ RSpec.describe Gitlab::Database::Sos::DbLoopStatsActivity, feature_category: :da
         when :table_relation_size
           expect(result.fields).to eq %w[timestamp relation total_size_bytes]
         when :pg_lock_stat_activity
-          expect(result.fields).to include("timestamp", "pid", "usename", "application_name", "client_addr")
+          expect(result.fields).to include(
+            "timestamp", "pid", "usename", "application_name", "client_addr",
+            "backend_age", "xact_start", "xact_age", "query_age", "query_id", "query", "locks"
+          )
         end
       end
     end

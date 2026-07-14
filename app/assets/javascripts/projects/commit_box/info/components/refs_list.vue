@@ -1,5 +1,7 @@
 <script>
 import { GlCollapse, GlBadge, GlButton, GlIcon, GlSkeletonLoader, GlLoadingIcon } from '@gitlab/ui';
+import { projectCommitsPath } from '~/lib/utils/path_helpers/repository';
+import { encodeUrlHash } from '~/lib/utils/url_utility';
 import {
   CONTAINING_COMMIT,
   FETCH_CONTAINING_REFS_EVENT,
@@ -19,7 +21,7 @@ export default {
     GlLoadingIcon,
   },
   props: {
-    urlPart: {
+    fullPath: {
       type: String,
       required: true,
     },
@@ -84,7 +86,10 @@ export default {
       this.$emit(FETCH_CONTAINING_REFS_EVENT);
     },
     getRefUrl(ref) {
-      return `${this.urlPart}${encodeURIComponent(ref)}?ref_type=${this.refType}`;
+      // projectCommitsPath encodes the ref as a glob param via encodeURI, which
+      // preserves `/` (for hierarchical refs) but leaves `#` untouched, so refs
+      // like `C#tag` must have it encoded to avoid being read as a URL fragment.
+      return encodeUrlHash(projectCommitsPath(this.fullPath, ref, { ref_type: this.refType }));
     },
   },
   i18n: {

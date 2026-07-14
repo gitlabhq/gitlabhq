@@ -41,6 +41,11 @@ module Enums
     # for 'unknown' or 'not_provided' packages).
     INTERNAL_PURL_TYPES = %w[unknown not_provided].freeze
 
+    SEMVER_DIALECTS_PURL_TYPE_ALIASES = {
+      'golang' => 'go',
+      'composer' => 'packagist'
+    }.freeze
+
     UNKNOWN = :unknown
     IN_USE = :in_use
     NOT_FOUND = :not_found
@@ -196,6 +201,13 @@ module Enums
 
     def self.package_manager_from_trivy_pkg_type(pkg_type)
       PACKAGE_MANAGERS_FROM_TRIVY_PKG_TYPE[pkg_type]
+    end
+
+    # semver_dialects and gemnasium-db name a couple of ecosystems differently
+    # from our purl types (see the inline notes on PURL_TYPES above). Callers
+    # parsing or comparing versions through semver_dialects must translate first.
+    def self.semver_dialects_purl_type(purl_type)
+      SEMVER_DIALECTS_PURL_TYPE_ALIASES.fetch(purl_type, purl_type)
     end
 
     # We do not use the namespaced names for OS component types even

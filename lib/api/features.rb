@@ -71,6 +71,10 @@ module API
         optional :project,
           type: String,
           desc: "A projects path, for example `gitlab-org/gitlab-foss`, or comma-separated multiple project paths"
+        optional :organization,
+          type: String,
+          desc: "An organization ID or path, for example `1` or `default`, or comma-separated multiple " \
+            "organization IDs or paths"
         optional :repository,
           type: String,
           desc: "A repository path, for example `gitlab-org/gitlab-test.git`, `gitlab-org/gitlab-test.wiki.git`, " \
@@ -89,6 +93,7 @@ module API
         mutually_exclusive :key, :group
         mutually_exclusive :key, :namespace
         mutually_exclusive :key, :project
+        mutually_exclusive :key, :organization
         mutually_exclusive :key, :repository
         mutually_exclusive :key, :runner
         mutually_exclusive :key, :endpoint

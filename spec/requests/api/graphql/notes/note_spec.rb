@@ -8,7 +8,7 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:reporter_user) { create(:user) }
   let_it_be(:project) { create(:project, :private, reporters: reporter_user) }
-  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:issue, freeze: false) { create(:issue, project: project) }
   let_it_be(:note) { create(:note, noteable: issue, project: project) }
   let_it_be(:system_note) { create(:note, :system, noteable: issue, project: project) }
 
@@ -23,6 +23,15 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
   it_behaves_like 'a working graphql query' do
     before do
       post_graphql(query, current_user: current_user)
+    end
+  end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :read_note do
+    let(:user) { reporter_user }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql(graphql_query_for('note', { 'id' => global_id_of(note) }, 'id body'),
+        token: { personal_access_token: pat })
     end
   end
 

@@ -70,15 +70,9 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
           .payload
       end
 
-      before do
-        visit project_merge_request_path(project, merge_request)
-
-        page.within('.merge-request-tabs') do
-          click_link('Pipelines')
-        end
-      end
-
       it 'sees branch pipelines and detached merge request pipelines in correct order' do
+        visit_merge_request_pipelines_tab(merge_request)
+
         page.within('.ci-table') do
           expect(page).to have_selector('[data-label="Status"] [data-testid="ci-icon"]', text: 'Created', count: 2)
           expect(first('[data-testid="pipeline-url-link"]')).to have_content("##{detached_merge_request_pipeline.id}")
@@ -86,7 +80,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       end
 
       it 'sees the latest detached merge request pipeline as the head pipeline', :sidekiq_might_not_need_inline do
-        click_link "Overview"
+        visit project_merge_request_path(project, merge_request)
 
         page.within('.ci-widget-content') do
           expect(page).to have_content("##{detached_merge_request_pipeline.id}")
@@ -106,15 +100,9 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
             .payload
         end
 
-        before do
-          visit project_merge_request_path(project, merge_request)
-
-          page.within('.merge-request-tabs') do
-            click_link('Pipelines')
-          end
-        end
-
         it 'sees branch pipelines and detached merge request pipelines in correct order' do
+          visit_merge_request_pipelines_tab(merge_request)
+
           page.within('.ci-table') do
             expect(page).to have_selector('[data-label="Status"] [data-testid="ci-icon"]', text: 'Pending', count: 4)
 
@@ -133,6 +121,8 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
         end
 
         it 'sees detached tag for detached merge request pipelines' do
+          visit_merge_request_pipelines_tab(merge_request)
+
           page.within('.ci-table') do
             expect(all('[data-testid="pipeline-url-table-cell"]')[0])
               .to have_content(expected_detached_mr_tag)
@@ -149,7 +139,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
         end
 
         it 'sees the latest detached merge request pipeline as the head pipeline' do
-          click_link 'Overview'
+          visit project_merge_request_path(project, merge_request)
 
           page.within('.ci-widget-content') do
             expect(page).to have_content("##{detached_merge_request_pipeline_2.id}")
@@ -158,17 +148,9 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       end
 
       context 'when a user created a merge request in the parent project' do
-        before do
-          visit project_merge_request_path(project, merge_request)
-
-          page.within('.merge-request-tabs') do
-            click_link('Pipelines')
-          end
-        end
-
         context 'when a user merges a merge request in the parent project', :sidekiq_might_not_need_inline do
           before do
-            click_link 'Overview'
+            visit project_merge_request_path(project, merge_request)
             click_button 'Set to auto-merge'
 
             wait_for_requests
@@ -183,7 +165,6 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
           context 'when branch pipeline succeeds' do
             before do
-              click_link 'Overview'
               push_pipeline.reload.succeed!
 
               wait_for_requests
@@ -213,6 +194,8 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
         end
 
         it 'sees a branch pipeline in pipeline tab' do
+          visit_merge_request_pipelines_tab(merge_request)
+
           page.within('.ci-table') do
             expect(page).to have_selector('[data-label="Status"] [data-testid="ci-icon"]', text: 'Created', count: 1)
             expect(first('[data-testid="pipeline-url-link"]')).to have_content("##{push_pipeline.id}")
@@ -220,7 +203,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
         end
 
         it 'sees the latest branch pipeline as the head pipeline', :sidekiq_might_not_need_inline do
-          click_link 'Overview'
+          visit project_merge_request_path(project, merge_request)
 
           page.within('.ci-widget-content') do
             expect(page).to have_content("##{push_pipeline.id}")
@@ -257,15 +240,11 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
       before do
         forked_project.add_maintainer(user2)
-
-        visit project_merge_request_path(project, merge_request)
-
-        page.within('.merge-request-tabs') do
-          click_link('Pipelines')
-        end
       end
 
       it 'sees branch pipelines and detached merge request pipelines in correct order' do
+        visit_merge_request_pipelines_tab(merge_request)
+
         page.within('.ci-table') do
           expect(page).to have_selector('[data-label="Status"] [data-testid="ci-icon"]', text: 'Pending', count: 2)
           expect(first('[data-testid="pipeline-url-link"]')).to have_content("##{detached_merge_request_pipeline.id}")
@@ -273,7 +252,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       end
 
       it 'sees the latest detached merge request pipeline as the head pipeline' do
-        click_link "Overview"
+        visit project_merge_request_path(project, merge_request)
 
         page.within('.ci-widget-content') do
           expect(page).to have_content("##{detached_merge_request_pipeline.id}")
@@ -299,15 +278,9 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
             .payload
         end
 
-        before do
-          visit project_merge_request_path(project, merge_request)
-
-          page.within('.merge-request-tabs') do
-            click_link('Pipelines')
-          end
-        end
-
         it 'sees branch pipelines and detached merge request pipelines in correct order' do
+          visit_merge_request_pipelines_tab(merge_request)
+
           page.within('.ci-table') do
             expect(page).to have_selector('[data-label="Status"] [data-testid="ci-icon"]', text: 'Pending', count: 4)
 
@@ -326,6 +299,8 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
         end
 
         it 'sees detached tag for detached merge request pipelines' do
+          visit_merge_request_pipelines_tab(merge_request)
+
           page.within('.ci-table') do
             expect(all('[data-testid="pipeline-url-table-cell"]')[0])
               .to have_content(expected_detached_mr_tag)
@@ -342,7 +317,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
         end
 
         it 'sees the latest detached merge request pipeline as the head pipeline' do
-          click_link "Overview"
+          visit project_merge_request_path(project, merge_request)
 
           page.within('.ci-widget-content') do
             expect(page).to have_content("##{detached_merge_request_pipeline_2.id}")
@@ -387,8 +362,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
       context 'when a user merges a merge request from a forked project to the parent project' do
         before do
-          click_link("Overview")
-
+          visit project_merge_request_path(project, merge_request)
           click_button 'Set to auto-merge'
 
           wait_for_requests
@@ -428,6 +402,14 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
           end
         end
       end
+    end
+  end
+
+  def visit_merge_request_pipelines_tab(merge_request)
+    visit project_merge_request_path(merge_request.target_project, merge_request)
+
+    page.within('.merge-request-tabs') do
+      click_link('Pipelines')
     end
   end
 end

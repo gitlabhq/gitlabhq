@@ -8,12 +8,12 @@ RSpec.describe ProjectAPICompatibility do
   # git_strategy
   it "converts build_git_strategy=fetch to build_allow_git_fetch=true" do
     project.update!(build_git_strategy: 'fetch')
-    expect(project.build_allow_git_fetch).to eq(true)
+    expect(project.build_allow_git_fetch).to be(true)
   end
 
   it "converts build_git_strategy=clone to build_allow_git_fetch=false" do
     project.update!(build_git_strategy: 'clone')
-    expect(project.build_allow_git_fetch).to eq(false)
+    expect(project.build_allow_git_fetch).to be(false)
   end
 
   describe '#auto_devops_enabled' do

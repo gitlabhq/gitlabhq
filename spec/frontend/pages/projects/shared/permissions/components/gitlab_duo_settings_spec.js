@@ -21,6 +21,7 @@ const defaultProps = {
   initialDuoFoundationalFlowsAvailability: false,
   initialDuoSastFpDetectionEnabled: false,
   initialDuoSecretDetectionFpEnabled: false,
+  initialDuoDependencyBumpBreakingChangesEnabled: false,
   initialDuoSastVrWorkflowEnabled: false,
 };
 
@@ -38,6 +39,7 @@ describe('GitlabDuoSettings', () => {
       provide: {
         glFeatures: {
           duoSecretDetectionFalsePositive: true,
+          enableDependencyBumpBreakingChanges: true,
           ...provide,
         },
       },
@@ -69,12 +71,22 @@ describe('GitlabDuoSettings', () => {
   const findDuoSastFpDetectionToggle = () => wrapper.findByTestId('duo-sast-fp-detection-enabled');
   const findDuoSecretDetectionFpToggle = () =>
     wrapper.findByTestId('duo-secret-detection-fp-enabled');
+  const findDuoDependencyBumpToggle = () =>
+    wrapper.findByTestId('duo-dependency-bump-breaking-changes-enabled');
   const findDuoSastVrWorkflowToggle = () => wrapper.findByTestId('duo-sast-vr-workflow-enabled');
   const findAutoReviewToggle = () => wrapper.findByTestId('amazon-q-auto-review-enabled');
   const findToolApprovalToggle = () => wrapper.findByTestId('tool-approval-for-session-enabled');
   const findToolApprovalCascadingLockIcon = () =>
     wrapper.findByTestId('tool-approval-cascading-lock-icon');
   const findDapSessionTrackingToggle = () => wrapper.findByTestId('dap-session-tracking-enabled');
+  const findAuditEventsStorageToggle = () =>
+    wrapper.findByTestId('ai-audit-events-storage-enabled');
+  const findAuditEventsStorageHiddenInput = () =>
+    wrapper.find(
+      'input[name="project[project_setting_attributes][ai_audit_events_storage_enabled]"]',
+    );
+  const findAuditEventsStorageCascadingLockIcon = () =>
+    wrapper.findByTestId('ai-audit-events-storage-cascading-lock-icon');
   const findGovernanceCard = () => wrapper.findByTestId('duo-governance-info-card-header');
   const findGovernanceLink = () => wrapper.findByTestId('duo-governance-link');
 
@@ -380,13 +392,14 @@ describe('GitlabDuoSettings', () => {
           expect(findDuoSecretDetectionFpToggle().props('disabled')).toBe(false);
         });
 
-        it('does not show Secret Detection FP Detection toggle when feature flag is disabled', () => {
-          wrapper = createWrapper(
-            { duoFeaturesEnabled: true, amazonQAvailable: false },
-            { duoSecretDetectionFalsePositive: false },
-          );
+        it('does not show SAST FP Detection toggle when ultimateFeaturesAvailable is false', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            ultimateFeaturesAvailable: false,
+          });
 
-          expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
+          expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
         });
 
         it('does not disable Secret Detection FP Detection toggle when Duo features are locked on', () => {
@@ -548,69 +561,122 @@ describe('GitlabDuoSettings', () => {
         });
       });
 
-      describe('Duo SAST VR Workflow settings', () => {
-        it('shows SAST VR Workflow toggle when feature flag is enabled', () => {
+      describe('AI audit event storage settings', () => {
+        it('does not render the toggle when the feature flag is disabled', () => {
           wrapper = createWrapper(
             { duoFeaturesEnabled: true, amazonQAvailable: false },
-            { enableVulnerabilityResolution: true },
+            { agentArtifactsPage: false },
           );
+
+          expect(findAuditEventsStorageToggle().exists()).toBe(false);
+        });
+
+        it('renders the toggle off by default when the feature flag is enabled', () => {
+          wrapper = createWrapper(
+            { duoFeaturesEnabled: true, amazonQAvailable: false },
+            { agentArtifactsPage: true },
+          );
+
+          expect(findAuditEventsStorageToggle().exists()).toBe(true);
+          expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(false);
+        });
+
+        it('renders the toggle on when aiAuditEventsStorageEnabled is true', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              aiAuditEventsStorageEnabled: true,
+            },
+            { agentArtifactsPage: true },
+          );
+
+          expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(true);
+        });
+
+        it('does not show cascading lock icon when not locked', () => {
+          wrapper = createWrapper(
+            { duoFeaturesEnabled: true, amazonQAvailable: false },
+            { agentArtifactsPage: true },
+          );
+
+          expect(findAuditEventsStorageCascadingLockIcon().exists()).toBe(false);
+        });
+
+        it('shows cascading lock icon and disables the toggle when locked', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              aiAuditEventsStorageCascadingSettings: {
+                lockedByAncestor: true,
+                lockedByApplicationSetting: false,
+              },
+            },
+            { agentArtifactsPage: true },
+          );
+
+          expect(findAuditEventsStorageCascadingLockIcon().exists()).toBe(true);
+          expect(findAuditEventsStorageToggle().props('disabled')).toBe(true);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper(
+            { duoFeaturesEnabled: true, amazonQAvailable: false },
+            { agentArtifactsPage: true },
+          );
+
+          expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(false);
+
+          await findAuditEventsStorageToggle().vm.$emit('change', true);
+
+          expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(true);
+        });
+      });
+
+      describe('Duo SAST VR Workflow settings', () => {
+        it('shows SAST VR Workflow toggle', () => {
+          wrapper = createWrapper({ duoFeaturesEnabled: true, amazonQAvailable: false });
 
           expect(findDuoSastVrWorkflowToggle().exists()).toBe(true);
           expect(findDuoSastVrWorkflowToggle().props('disabled')).toBe(false);
         });
 
-        it('does not show SAST VR Workflow toggle when feature flag is disabled', () => {
-          wrapper = createWrapper(
-            { duoFeaturesEnabled: true, amazonQAvailable: false },
-            { enableVulnerabilityResolution: false },
-          );
-
-          expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
-        });
-
         it('does not show SAST VR Workflow toggle when ultimateFeaturesAvailable is false', () => {
-          wrapper = createWrapper(
-            { duoFeaturesEnabled: true, amazonQAvailable: false, ultimateFeaturesAvailable: false },
-            { enableVulnerabilityResolution: true },
-          );
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            ultimateFeaturesAvailable: false,
+          });
 
           expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
         });
 
         it('does not disable SAST VR Workflow toggle when Duo features are locked on', () => {
-          wrapper = createWrapper(
-            {
-              duoFeaturesEnabled: true,
-              duoFeaturesLocked: true,
-              amazonQAvailable: false,
-            },
-            { enableVulnerabilityResolution: true },
-          );
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoFeaturesLocked: true,
+            amazonQAvailable: false,
+          });
 
           expect(findDuoSastVrWorkflowToggle().props('disabled')).toBe(false);
         });
 
         it('does not render SAST VR Workflow toggle when Duo features are not enabled', () => {
-          wrapper = createWrapper(
-            {
-              duoFeaturesEnabled: false,
-              amazonQAvailable: false,
-            },
-            { enableVulnerabilityResolution: true },
-          );
+          wrapper = createWrapper({
+            duoFeaturesEnabled: false,
+            amazonQAvailable: false,
+          });
 
           expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
         });
 
         it('updates the hidden input value when toggled', async () => {
-          wrapper = createWrapper(
-            {
-              duoFeaturesEnabled: true,
-              amazonQAvailable: false,
-              initialDuoSastVrWorkflowEnabled: true,
-            },
-            { enableVulnerabilityResolution: true },
-          );
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            initialDuoSastVrWorkflowEnabled: true,
+          });
 
           const findHiddenInput = () =>
             wrapper.find(
@@ -829,14 +895,11 @@ describe('GitlabDuoSettings', () => {
   describe('visibleSettings allowlist', () => {
     describe('when restricted to the SAST VR workflow setting', () => {
       beforeEach(() => {
-        wrapper = createWrapper(
-          {
-            duoFeaturesEnabled: true,
-            amazonQAvailable: false,
-            visibleSettings: ['duoSastVrWorkflowEnabled'],
-          },
-          { enableVulnerabilityResolution: true },
-        );
+        wrapper = createWrapper({
+          duoFeaturesEnabled: true,
+          amazonQAvailable: false,
+          visibleSettings: ['duoSastVrWorkflowEnabled'],
+        });
       });
 
       it('renders only the SAST VR workflow toggle and the save button', () => {
@@ -848,6 +911,115 @@ describe('GitlabDuoSettings', () => {
         expect(findDuoEnabledToggle().exists()).toBe(false);
         expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
         expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
+        expect(findDuoDependencyBumpToggle().exists()).toBe(false);
+        expect(findToolApprovalToggle().exists()).toBe(false);
+        expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findExclusionSettings().exists()).toBe(false);
+      });
+    });
+
+    describe('when restricted to the SAST FP detection setting', () => {
+      beforeEach(() => {
+        wrapper = createWrapper(
+          {
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            visibleSettings: ['duoSastFpDetectionEnabled'],
+          },
+          { enableVulnerabilityResolution: true },
+        );
+      });
+
+      it('renders only the SAST FP detection toggle and the save button', () => {
+        expect(findDuoSastFpDetectionToggle().exists()).toBe(true);
+        expect(findSaveButton().exists()).toBe(true);
+      });
+
+      it('hides the Duo enable toggle and every other Duo setting', () => {
+        expect(findDuoEnabledToggle().exists()).toBe(false);
+        expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
+        expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
+        expect(findToolApprovalToggle().exists()).toBe(false);
+        expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findExclusionSettings().exists()).toBe(false);
+      });
+    });
+
+    describe('when restricted to the Secret Detection FP setting', () => {
+      beforeEach(() => {
+        wrapper = createWrapper(
+          {
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            visibleSettings: ['duoSecretDetectionFpEnabled'],
+          },
+          { duoSecretDetectionFalsePositive: true },
+        );
+      });
+
+      it('renders only the Secret Detection FP toggle and the save button', () => {
+        expect(findDuoSecretDetectionFpToggle().exists()).toBe(true);
+        expect(findSaveButton().exists()).toBe(true);
+      });
+
+      it('hides the Duo enable toggle and every other Duo setting', () => {
+        expect(findDuoEnabledToggle().exists()).toBe(false);
+        expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
+        expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
+        expect(findToolApprovalToggle().exists()).toBe(false);
+        expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findExclusionSettings().exists()).toBe(false);
+      });
+    });
+
+    describe('when restricted to both SAST VR and SAST FP detection settings', () => {
+      beforeEach(() => {
+        wrapper = createWrapper(
+          {
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            visibleSettings: ['duoSastVrWorkflowEnabled', 'duoSastFpDetectionEnabled'],
+          },
+          { enableVulnerabilityResolution: true },
+        );
+      });
+
+      it('renders both the SAST VR and SAST FP detection toggles', () => {
+        expect(findDuoSastVrWorkflowToggle().exists()).toBe(true);
+        expect(findDuoSastFpDetectionToggle().exists()).toBe(true);
+        expect(findSaveButton().exists()).toBe(true);
+      });
+
+      it('hides the Duo enable toggle and non-allowed settings', () => {
+        expect(findDuoEnabledToggle().exists()).toBe(false);
+        expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
+        expect(findToolApprovalToggle().exists()).toBe(false);
+        expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findExclusionSettings().exists()).toBe(false);
+      });
+    });
+
+    describe('when restricted to both SAST FP and Secret Detection FP settings', () => {
+      beforeEach(() => {
+        wrapper = createWrapper(
+          {
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            visibleSettings: ['duoSastFpDetectionEnabled', 'duoSecretDetectionFpEnabled'],
+          },
+          { duoSecretDetectionFalsePositive: true },
+        );
+      });
+
+      it('renders both the SAST FP and Secret Detection FP toggles', () => {
+        expect(findDuoSastFpDetectionToggle().exists()).toBe(true);
+        expect(findDuoSecretDetectionFpToggle().exists()).toBe(true);
+        expect(findSaveButton().exists()).toBe(true);
+      });
+
+      it('hides the Duo enable toggle and non-allowed settings', () => {
+        expect(findDuoEnabledToggle().exists()).toBe(false);
+        expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
         expect(findToolApprovalToggle().exists()).toBe(false);
         expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
         expect(findExclusionSettings().exists()).toBe(false);
@@ -856,14 +1028,11 @@ describe('GitlabDuoSettings', () => {
 
     describe('when the allowlist contains ALL_SETTINGS', () => {
       beforeEach(() => {
-        wrapper = createWrapper(
-          {
-            duoFeaturesEnabled: true,
-            amazonQAvailable: false,
-            visibleSettings: [ALL_SETTINGS],
-          },
-          { enableVulnerabilityResolution: true },
-        );
+        wrapper = createWrapper({
+          duoFeaturesEnabled: true,
+          amazonQAvailable: false,
+          visibleSettings: [ALL_SETTINGS],
+        });
       });
 
       it('renders the full set of Duo settings', () => {

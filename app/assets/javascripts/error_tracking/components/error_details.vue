@@ -28,6 +28,7 @@ import TimelineChart from './timeline_chart.vue';
 const SENTRY_TIMEOUT = 10000;
 
 export default {
+  name: 'ErrorDetails',
   components: {
     GlButton,
     GlFormInput,

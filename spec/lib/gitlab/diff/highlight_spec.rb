@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Diff::Highlight, feature_category: :source_code_managemen
         it 'blobs are highlighted as plain text without loading all data' do
           expect(diff_file.blob).not_to receive(:load_all_data!)
 
-          expect(subject[2].rich_text).to eq(%{ <span class="line">  def popen(cmd, path=nil)</span>\n})
+          expect(subject[2].rich_text).to eq(%{ <span class="line" data-lang="plaintext">  def popen(cmd, path=nil)</span>\n})
           expect(subject[2].rich_text).to be_html_safe
         end
       end
@@ -147,7 +147,7 @@ RSpec.describe Gitlab::Diff::Highlight, feature_category: :source_code_managemen
         it 'blobs are highlighted as plain text without loading all data' do
           expect(diff_file.blob).not_to receive(:load_all_data!)
 
-          expect(subject[2].rich_text).to eq(%{ <span class="line">  def popen(cmd, path=nil)</span>\n})
+          expect(subject[2].rich_text).to eq(%{ <span class="line" data-lang="plaintext">  def popen(cmd, path=nil)</span>\n})
           expect(subject[2].rich_text).to be_html_safe
         end
       end

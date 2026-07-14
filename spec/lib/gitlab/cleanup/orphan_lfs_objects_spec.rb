@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Cleanup::OrphanLfsObjects, feature_category: :source_code_management do
   let(:null_logger) { Logger.new('/dev/null') }
+  let_it_be(:project1) { create(:project) }
 
   subject(:service) { described_class.new(dry_run: dry_run, logger: null_logger) }
 
@@ -21,7 +22,6 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsObjects, feature_category: :source_code
 
   describe '#run!' do
     context 'with LFS objects that have missing files' do
-      let_it_be(:project1) { create(:project) }
       let_it_be(:project2) { create(:project) }
 
       let!(:lfs_object_with_file) { create(:lfs_object, :with_file) }
@@ -68,7 +68,6 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsObjects, feature_category: :source_code
     end
 
     context 'with no missing LFS objects' do
-      let_it_be(:project1) { create(:project) }
       let(:dry_run) { false }
 
       let!(:lfs_object_with_file) { create(:lfs_object, :with_file) }
@@ -82,8 +81,6 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsObjects, feature_category: :source_code
 
     context 'when file check raises an error' do
       let(:dry_run) { true }
-
-      let_it_be(:project1) { create(:project) }
 
       let!(:lfs_object) { create(:lfs_object, :with_file) }
 
@@ -104,8 +101,6 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsObjects, feature_category: :source_code
 
     context 'with object storage' do
       let(:dry_run) { true }
-
-      let_it_be(:project1) { create(:project) }
 
       let!(:lfs_object_remote) { create(:lfs_object, :with_file) }
 
@@ -164,7 +159,6 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsObjects, feature_category: :source_code
 
     context 'when local store file uploader is nil' do
       let(:dry_run) { true }
-      let_it_be(:project1) { create(:project) }
       let!(:lfs_object) { create(:lfs_object, :with_file) }
 
       before do
@@ -183,7 +177,6 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsObjects, feature_category: :source_code
 
     context 'when destroy fails with RecordNotDestroyed' do
       let(:dry_run) { false }
-      let_it_be(:project1) { create(:project) }
       let!(:lfs_object_missing_file) { create(:lfs_object, :with_file) }
 
       before do
@@ -206,8 +199,6 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsObjects, feature_category: :source_code
   end
 
   describe 'query performance' do
-    let_it_be(:project1) { create(:project) }
-
     it 'does not cause N+1 queries when fetching linked project IDs', :request_store, :use_sql_query_cache do
       # Create initial object for control
       lfs_object = create(:lfs_object, :with_file)
@@ -232,7 +223,6 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsObjects, feature_category: :source_code
   end
 
   describe 'progress reporting' do
-    let_it_be(:project1) { create(:project) }
     let(:dry_run) { true }
 
     it 'logs progress every PROGRESS_INTERVAL objects checked' do

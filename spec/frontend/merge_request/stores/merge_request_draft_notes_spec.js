@@ -216,144 +216,232 @@ describe('mergeRequestDraftNotes store', () => {
     });
   });
 
-  describe('source version filtering', () => {
-    const basePosition = {
+  describe('diff refs filtering', () => {
+    const mergeHeadRefs = { base_sha: 'target', start_sha: 'target', head_sha: 'merge_head' };
+    const sourceStraightRefs = { base_sha: 'mbase', start_sha: 'mbase', head_sha: 'source_head' };
+    const unknownRefs = { base_sha: 'x', start_sha: 'x', head_sha: 'x' };
+    const mergeHeadPosition = {
       position_type: 'text',
       old_path: 'a.js',
       new_path: 'a.js',
-      old_line: 1,
-      new_line: 1,
-      head_sha: 'source_head_1',
+      old_line: 88,
+      new_line: 88,
+      ...mergeHeadRefs,
     };
-    const nonMatchingPosition = { ...basePosition, head_sha: 'source_head_2' };
+    const sourceStraightPosition = {
+      position_type: 'text',
+      old_path: 'a.js',
+      new_path: 'a.js',
+      old_line: 78,
+      new_line: 78,
+      ...sourceStraightRefs,
+    };
+    const draftOnMergeHead = () =>
+      makeDraft(1, { position: sourceStraightPosition, original_position: mergeHeadPosition });
 
-    it('excludes drafts whose head_sha does not match sourceHeadSha', () => {
-      useBatchComments().$patch({
-        drafts: [makeDraft(1, { position: nonMatchingPosition })],
+    it('attaches on the latest (merge-head) view via original_position', () => {
+      useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
+
+      const result = store.findDraftsForPosition({
+        oldPath: 'a.js',
+        newPath: 'a.js',
+        oldLine: 88,
+        newLine: 88,
+        diffRefs: mergeHeadRefs,
       });
+
+      expect(result).toHaveLength(1);
+      expect(result[0].position).toMatchObject(mergeHeadRefs);
+    });
+
+    it('attaches on the selected (source-straight) version via position', () => {
+      useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
+
+      const result = store.findDraftsForPosition({
+        oldPath: 'a.js',
+        newPath: 'a.js',
+        oldLine: 78,
+        newLine: 78,
+        diffRefs: sourceStraightRefs,
+      });
+
+      expect(result).toHaveLength(1);
+      expect(result[0].position).toMatchObject(sourceStraightRefs);
+    });
+
+    it('excludes drafts when the rendered refs match no known position', () => {
+      useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
 
       expect(
         store.findDraftsForPosition({
           oldPath: 'a.js',
           newPath: 'a.js',
-          oldLine: 1,
-          newLine: 1,
-          sourceHeadSha: 'source_head_1',
+          oldLine: 88,
+          newLine: 88,
+          diffRefs: unknownRefs,
         }),
       ).toHaveLength(0);
     });
 
-    it('includes drafts whose head_sha matches sourceHeadSha', () => {
-      useBatchComments().$patch({
-        drafts: [makeDraft(1, { position: basePosition })],
-      });
+    it('matches the line of the applicable position, not the repositioned one', () => {
+      useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
 
       expect(
         store.findDraftsForPosition({
           oldPath: 'a.js',
           newPath: 'a.js',
-          oldLine: 1,
-          newLine: 1,
-          sourceHeadSha: 'source_head_1',
+          oldLine: 78,
+          newLine: 78,
+          diffRefs: mergeHeadRefs,
         }),
-      ).toHaveLength(1);
+      ).toHaveLength(0);
     });
 
-    it('includes all drafts when sourceHeadSha is not provided', () => {
-      useBatchComments().$patch({
-        drafts: [makeDraft(1, { position: nonMatchingPosition })],
-      });
+    it('falls back to position when the file has no refs', () => {
+      useBatchComments().$patch({ drafts: [makeDraft(1, { position: sourceStraightPosition })] });
 
       expect(
-        store.findDraftsForPosition({
-          oldPath: 'a.js',
-          newPath: 'a.js',
-          oldLine: 1,
-          newLine: 1,
-        }),
+        store.findDraftsForPosition({ oldPath: 'a.js', newPath: 'a.js', oldLine: 78, newLine: 78 }),
       ).toHaveLength(1);
     });
 
-    it('includes all drafts when isLatestVersion is true', () => {
-      useBatchComments().$patch({
-        drafts: [makeDraft(1, { position: nonMatchingPosition })],
+    it('findDraftsAsLineDiscussionsForFile returns the applicable position for the rendered refs', () => {
+      useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
+
+      const [result] = store.findDraftsAsLineDiscussionsForFile({
+        oldPath: 'a.js',
+        newPath: 'a.js',
+        diffRefs: mergeHeadRefs,
       });
 
-      expect(
-        store.findDraftsForPosition({
-          oldPath: 'a.js',
-          newPath: 'a.js',
-          oldLine: 1,
-          newLine: 1,
-          sourceHeadSha: 'source_head_1',
-          isLatestVersion: true,
-        }),
-      ).toHaveLength(1);
+      expect(result.position).toMatchObject(mergeHeadRefs);
     });
 
-    it('prefers original_position.head_sha over position.head_sha for matching', () => {
-      useBatchComments().$patch({
-        drafts: [
-          makeDraft(1, {
-            position: { ...basePosition, head_sha: 'rewritten_by_backend' },
-            original_position: { head_sha: 'source_head_1' },
-          }),
-        ],
-      });
-
-      expect(
-        store.findDraftsForPosition({
-          oldPath: 'a.js',
-          newPath: 'a.js',
-          oldLine: 1,
-          newLine: 1,
-          sourceHeadSha: 'source_head_1',
-        }),
-      ).toHaveLength(1);
-    });
-
-    it('falls back to position.head_sha when original_position is absent', () => {
-      useBatchComments().$patch({
-        drafts: [makeDraft(1, { position: basePosition })],
-      });
-
-      expect(
-        store.findDraftsForPosition({
-          oldPath: 'a.js',
-          newPath: 'a.js',
-          oldLine: 1,
-          newLine: 1,
-          sourceHeadSha: 'source_head_1',
-        }),
-      ).toHaveLength(1);
-    });
-
-    it('findDraftsAsLineDiscussionsForFile respects sourceHeadSha', () => {
-      useBatchComments().$patch({
-        drafts: [makeDraft(1, { position: nonMatchingPosition })],
-      });
+    it('findDraftsAsLineDiscussionsForFile excludes drafts when refs match no position', () => {
+      useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
 
       expect(
         store.findDraftsAsLineDiscussionsForFile({
           oldPath: 'a.js',
           newPath: 'a.js',
-          sourceHeadSha: 'source_head_1',
+          diffRefs: unknownRefs,
+          isLatestVersion: false,
         }),
       ).toHaveLength(0);
     });
 
-    it('findDraftsAsDiscussionsForFile respects sourceHeadSha', () => {
-      useBatchComments().$patch({
-        drafts: [makeDraft(1, { position: nonMatchingPosition })],
+    it('shows the draft on the latest version even when no position matches the refs', () => {
+      useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
+
+      expect(
+        store.findDraftsForPosition({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          oldLine: 88,
+          newLine: 88,
+          diffRefs: unknownRefs,
+          isLatestVersion: true,
+        }),
+      ).toHaveLength(1);
+    });
+
+    it('hides the draft on a non-latest version when no position matches the refs', () => {
+      useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
+
+      expect(
+        store.findDraftsForPosition({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          oldLine: 88,
+          newLine: 88,
+          diffRefs: unknownRefs,
+          isLatestVersion: false,
+        }),
+      ).toHaveLength(0);
+    });
+
+    it('findDraftsAsLineDiscussionsForFile shows the draft on the latest with no matching refs', () => {
+      useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
+
+      expect(
+        store.findDraftsAsLineDiscussionsForFile({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          diffRefs: unknownRefs,
+          isLatestVersion: true,
+        }),
+      ).toHaveLength(1);
+    });
+
+    it('findDraftsAsDiscussionsForFile attaches drafts matching the rendered refs', () => {
+      useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
+
+      const [result] = store.findDraftsAsDiscussionsForFile({
+        oldPath: 'a.js',
+        newPath: 'a.js',
+        diffRefs: mergeHeadRefs,
       });
+
+      expect(result.position).toMatchObject(mergeHeadRefs);
+    });
+
+    it('findDraftsAsDiscussionsForFile excludes drafts on a non-latest version when refs match no position', () => {
+      useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
 
       expect(
         store.findDraftsAsDiscussionsForFile({
           oldPath: 'a.js',
           newPath: 'a.js',
-          sourceHeadSha: 'source_head_1',
+          diffRefs: unknownRefs,
+          isLatestVersion: false,
         }),
       ).toHaveLength(0);
+    });
+
+    it('findDraftsAsFileDiscussionsForFile attaches file drafts matching the rendered refs', () => {
+      useBatchComments().$patch({
+        drafts: [
+          makeFileDraft(1, {
+            position: {
+              position_type: 'file',
+              old_path: 'a.js',
+              new_path: 'a.js',
+              ...mergeHeadRefs,
+            },
+          }),
+        ],
+      });
+
+      expect(
+        store.findDraftsAsFileDiscussionsForFile({
+          oldPath: 'a.js',
+          newPath: 'a.js',
+          diffRefs: mergeHeadRefs,
+        }),
+      ).toHaveLength(1);
+    });
+
+    it('findDraftsAsImageDiscussionsForFile attaches image drafts matching the rendered refs', () => {
+      useBatchComments().$patch({
+        drafts: [
+          makeImageDraft(1, {
+            position: {
+              position_type: 'image',
+              old_path: 'a.png',
+              new_path: 'a.png',
+              ...mergeHeadRefs,
+            },
+          }),
+        ],
+      });
+
+      expect(
+        store.findDraftsAsImageDiscussionsForFile({
+          oldPath: 'a.png',
+          newPath: 'a.png',
+          diffRefs: mergeHeadRefs,
+        }),
+      ).toHaveLength(1);
     });
   });
 

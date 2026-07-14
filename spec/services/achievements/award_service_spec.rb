@@ -33,6 +33,25 @@ RSpec.describe Achievements::AwardService, feature_category: :user_profile do
       end
     end
 
+    context 'when the recipient has disabled achievement notifications' do
+      let(:current_user) { maintainer }
+      let(:recipient) { create(:user, achievements_enabled: false) }
+
+      it 'returns success' do
+        expect(response).to be_success
+      end
+
+      it 'still creates a UserAchievement record' do
+        expect { response }.to change { Achievements::UserAchievement.count }.by(1)
+      end
+
+      it 'does not send a notification email' do
+        expect(NotificationService).not_to receive(:new)
+
+        response
+      end
+    end
+
     context 'when user has permission' do
       let(:current_user) { maintainer }
       let(:notification_service) { instance_double(NotificationService) }

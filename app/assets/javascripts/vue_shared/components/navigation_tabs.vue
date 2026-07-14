@@ -42,6 +42,7 @@ export default {
       default: '',
     },
   },
+  emits: ['on-change-tab'],
   mounted() {
     initScrollingTabs();
   },

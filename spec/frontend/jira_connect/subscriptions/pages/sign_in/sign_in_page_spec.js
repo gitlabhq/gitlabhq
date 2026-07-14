@@ -1,22 +1,25 @@
 import { shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
+import Vue from 'vue';
 
 import SignInPage from '~/jira_connect/subscriptions/pages/sign_in/sign_in_page.vue';
 import SignInGitlabCom from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_com.vue';
 import SignInGitlabMultiversion from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_multiversion/index.vue';
-import createStore from '~/jira_connect/subscriptions/store';
+
+Vue.use(PiniaVuePlugin);
 
 describe('SignInPage', () => {
   let wrapper;
-  let store;
 
   const findSignInGitlabCom = () => wrapper.findComponent(SignInGitlabCom);
   const findSignInGitabMultiversion = () => wrapper.findComponent(SignInGitlabMultiversion);
 
   const createComponent = ({ props = {}, publicKeyStorageEnabled } = {}) => {
-    store = createStore();
+    const pinia = createTestingPinia();
 
     wrapper = shallowMount(SignInPage, {
-      store,
+      pinia,
       propsData: {
         hasSubscriptions: false,
         publicKeyStorageEnabled,

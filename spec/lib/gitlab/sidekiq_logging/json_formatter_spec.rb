@@ -84,7 +84,7 @@ RSpec.describe Gitlab::SidekiqLogging::JSONFormatter do
       it 'properly flattens arguments to a String' do
         hash_input['args'] = [1, "test", 2, { 'test' => 1 }]
 
-        expect(subject['args']).to eq(["1", "test", "2", %({"test"=>1})])
+        expect(subject['args']).to eq(["1", "test", "2", { 'test' => 1 }.to_s])
       end
     end
 

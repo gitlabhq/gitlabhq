@@ -7,6 +7,7 @@ import (
 	"image"
 	"image/png"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -15,7 +16,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"gitlab.com/gitlab-org/labkit/log"
+	"gitlab.com/gitlab-org/labkit/v2/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
@@ -27,7 +28,8 @@ const imagePath = "../../testdata/image.png"
 
 func TestMain(m *testing.M) {
 	if err := testhelper.BuildExecutables(); err != nil {
-		log.WithError(err).Fatal()
+		slog.Error("failed to build test executables", log.Error(err))
+		os.Exit(1)
 	}
 
 	os.Exit(m.Run())

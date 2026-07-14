@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineSchedulesFinder, feature_category: :continuous_integration do
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   describe "#execute" do
-    let!(:active_schedule) { create(:ci_pipeline_schedule, project: project) }
-    let!(:inactive_schedule) { create(:ci_pipeline_schedule, :inactive, project: project) }
+    let_it_be(:active_schedule) { create(:ci_pipeline_schedule, project: project) }
+    let_it_be(:inactive_schedule) { create(:ci_pipeline_schedule, :inactive, project: project) }
 
     subject { described_class.new(project).execute(**params) }
 

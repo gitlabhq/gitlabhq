@@ -38,7 +38,9 @@ module QA
           end
 
           def submit_changes
-            wait_until(reload: false) { !find_element('commit-changes-button').disabled? }
+            wait_until(reload: false) do
+              !element_disabled?('commit-changes-button')
+            end
             click_element('commit-changes-button')
 
             wait_for_requests

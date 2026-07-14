@@ -11,6 +11,7 @@ export default {
   components: {
     GlAlert,
   },
+  emits: ['closeAlert', 'showImage'],
 };
 </script>
 

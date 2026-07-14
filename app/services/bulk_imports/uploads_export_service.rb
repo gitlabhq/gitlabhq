@@ -9,10 +9,11 @@ module BulkImports
 
     attr_reader :exported_objects_count
 
-    def initialize(portable, export_path)
+    def initialize(portable, export_path, offline_export_id)
       @portable = portable
       @export_path = export_path
       @exported_objects_count = 0
+      @offline_export_id = offline_export_id
     end
 
     def execute(options = {})
@@ -36,13 +37,20 @@ module BulkImports
         # Do not fail entire project export if something goes wrong during file download
         # (e.g. downloaded file has filename that exceeds 255 characters).
         # Ignore raised exception, skip such upload, log the error and keep going with the export instead.
-        Gitlab::ErrorTracking.log_exception(e, portable_id: portable.id, portable_class: portable.class.name, upload_id: upload.id)
+        Gitlab::ErrorTracking.log_exception(
+          e,
+          portable_id: portable.id,
+          portable_class: portable.class.name,
+          upload_id: upload.id,
+          offline_export_id: offline_export_id,
+          importer: offline_export_id ? ::Import::SOURCE_OFFLINE_TRANSFER : ::Import::SOURCE_DIRECT_TRANSFER
+        )
       end
     end
 
     private
 
-    attr_reader :portable, :export_path
+    attr_reader :portable, :export_path, :offline_export_id
 
     def export_subdir_path(upload)
       subdir = if upload.path == avatar_path

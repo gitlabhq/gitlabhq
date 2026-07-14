@@ -36,6 +36,7 @@ export default {
       default: null,
     },
   },
+  emits: ['error', 'saved'],
   data() {
     return {
       saving: false,

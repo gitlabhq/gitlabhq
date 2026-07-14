@@ -33,7 +33,7 @@ RSpec.describe Mutations::IncidentManagement::TimelineEventTag::Create, feature_
     end
 
     context 'when user has no permissions to create tags on a project' do
-      before do
+      before_all do
         project.add_developer(current_user)
       end
 

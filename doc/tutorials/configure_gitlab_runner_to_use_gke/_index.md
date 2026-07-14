@@ -9,7 +9,7 @@ title: 'Tutorial: Configure GitLab Runner to use the Google Kubernetes Engine'
 This tutorial describes how to configure GitLab Runner to use the Google Kubernetes Engine (GKE)
 to run jobs.
 
-In this tutorial, you configure GitLab Runner to run jobs in the [Standard cluster mode](https://cloud.google.com/kubernetes-engine/docs/concepts/types-of-clusters).
+In this tutorial, you configure GitLab Runner to run jobs in the [Standard cluster mode](https://docs.cloud.google.com/kubernetes-engine/docs/concepts/configuration-overview).
 
 To configure GitLab Runner to use the GKE:
 
@@ -37,7 +37,7 @@ Install the tools to configure and use GitLab Runner in the GKE.
 
 This step describes how to create a cluster and connect to it. After you connect to the cluster, you use kubectl to interact with it.
 
-1. In the Google Cloud Platform, create a [standard](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-zonal-cluster) cluster.
+1. In the Google Cloud Platform, create a [standard](https://docs.cloud.google.com/kubernetes-engine/docs/how-to/creating-a-zonal-cluster) cluster.
 1. Install the kubectl authentication plugin:
 
    ```shell

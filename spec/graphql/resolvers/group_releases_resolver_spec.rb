@@ -9,8 +9,11 @@ RSpec.describe Resolvers::GroupReleasesResolver, feature_category: :release_orch
   let_it_be(:yesterday, freeze: false) { today - 1.day }
   let_it_be(:tomorrow, freeze: false) { today + 1.day }
 
-  let_it_be(:group) { create(:group, :private) }
-  let_it_be(:project, freeze: false) { create(:project, :private, namespace: group) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:public_user) { create(:user) }
+
+  let_it_be(:group) { create(:group, :private, owners: developer) }
+  let_it_be(:project, freeze: false) { create(:project, :private, namespace: group, developers: developer) }
   let_it_be(:release_v1, freeze: false) do
     create(:release, project: project, tag: 'v1.0.0', released_at: yesterday, created_at: tomorrow)
   end
@@ -23,16 +26,8 @@ RSpec.describe Resolvers::GroupReleasesResolver, feature_category: :release_orch
     create(:release, project: project, tag: 'v3.0.0', released_at: tomorrow, created_at: today)
   end
 
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:public_user) { create(:user) }
-
   let(:args) { { sort: :released_at_desc } }
   let(:all_releases) { [release_v1, release_v2, release_v3] }
-
-  before do
-    group.add_member(developer, :owner)
-    project.add_developer(developer)
-  end
 
   describe '#resolve' do
     it_behaves_like 'releases and group releases resolver'

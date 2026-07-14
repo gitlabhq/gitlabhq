@@ -1,6 +1,7 @@
 import { GlCollapse, GlButton, GlBadge, GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
 import RefsList from '~/projects/commit_box/info/components/refs_list.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import {
   CONTAINING_COMMIT,
   FETCH_CONTAINING_REFS_EVENT,
@@ -66,18 +67,29 @@ describe('Commit references component', () => {
   });
 
   it.each`
-    description                       | refs
-    ${'regular refs'}                 | ${['main', 'development']}
-    ${'refs with special characters'} | ${['C#tag', 'C++tag', 'tag/1-2', 'tag@1.2.3']}
-  `('renders links for $description such as refs=$refs', ({ refs }) => {
-    createComponent({ tippingRefs: refs });
+    ref            | expectedPath
+    ${'main'}      | ${'/some/project/-/commits/main'}
+    ${'C#tag'}     | ${'/some/project/-/commits/C%23tag'}
+    ${'C++tag'}    | ${'/some/project/-/commits/C++tag'}
+    ${'tag/1-2'}   | ${'/some/project/-/commits/tag/1-2'}
+    ${'tag@1.2.3'} | ${'/some/project/-/commits/tag@1.2.3'}
+  `('builds the correct ref link for ref "$ref"', ({ ref, expectedPath }) => {
+    createComponent({ tippingRefs: [ref] });
 
-    const refBadges = findTippingRefs();
+    expect(findTippingRefs().at(0).attributes('href')).toBe(
+      `${expectedPath}?ref_type=${refsListPropsMock.refType}`,
+    );
+  });
 
-    refs.forEach((ref, index) => {
-      const refBadge = refBadges.at(index);
-      const expectedUrl = `${refsListPropsMock.urlPart}${encodeURIComponent(ref)}?ref_type=${refsListPropsMock.refType}`;
-      expect(refBadge.attributes('href')).toBe(expectedUrl);
+  describe('with relative url', () => {
+    useConfigurePathHelpers('/gitlab');
+
+    it('prefixes the ref link with the relative url root', () => {
+      createComponent({ tippingRefs: ['main'] });
+
+      expect(findTippingRefs().at(0).attributes('href')).toBe(
+        `/gitlab/some/project/-/commits/main?ref_type=${refsListPropsMock.refType}`,
+      );
     });
   });
 

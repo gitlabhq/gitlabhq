@@ -5,6 +5,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
 export default {
+  name: 'AsyncToken',
   components: {
     BaseToken,
     GlFilteredSearchSuggestion,

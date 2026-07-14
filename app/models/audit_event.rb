@@ -17,7 +17,8 @@ class AuditEvent < ApplicationRecord
 
   self.primary_key = :id
 
-  partitioned_by :created_at, strategy: :monthly
+  # Audit events are retained indefinitely for compliance; pruning is intentionally disabled.
+  partitioned_by :created_at, strategy: :monthly, retain_for: :ever
 
   serialize :details, type: Hash # rubocop:disable Cop/ActiveRecordSerialize
 

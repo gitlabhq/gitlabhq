@@ -27,6 +27,12 @@ module Mutations
           required: false,
           description: 'Expiration date of the token.'
 
+        argument :sudo, GraphQL::Types::Boolean,
+          required: false,
+          default_value: false,
+          description: 'Whether the token can impersonate other users with sudo. ' \
+            'Requires the token owner to be an administrator.'
+
         argument :granular_scopes, [::Mutations::Authz::AccessTokens::GranularScopeInputType],
           required: true,
           description: 'List of granular scopes to assign to the token.'
@@ -40,8 +46,11 @@ module Mutations
 
           granular_scopes = build_granular_scopes(args.delete(:granular_scopes))
 
-          if (calling_token = context[:access_token])&.granular?
-            validate_no_privilege_escalation!(granular_scopes, calling_token)
+          if (calling_token = context[:access_token]).try(:granular?)
+            escalation_check = ::Authz::Tokens::PrivilegeEscalationCheck.new(granular_scopes, calling_token).execute
+            raise_resource_not_available_error!(escalation_check.message) if escalation_check.error?
+
+            validate_sudo_not_escalated!(args[:sudo], calling_token)
           end
 
           response = ::Authn::PersonalAccessTokens::CreateGranularService.new(
@@ -111,52 +120,13 @@ module Mutations
           end
         end
 
-        def validate_no_privilege_escalation!(new_scopes, calling_token)
-          token_scopes = calling_token.granular_scopes.to_a
+        def validate_sudo_not_escalated!(sudo, calling_token)
+          return unless sudo
+          return if calling_token.sudo?
 
-          new_scopes.each do |scope|
-            next if calling_token_covers_scope?(token_scopes, scope)
-
-            raise_resource_not_available_error!(
-              'A granular token can only create tokens with equal or lesser permissions.'
-            )
-          end
-        end
-
-        def calling_token_covers_scope?(token_scopes, scope)
-          return true if Array(scope.permissions).empty?
-
-          required = scope.expanded_permissions
-          covered = scopes_for_scope(token_scopes, scope).flat_map(&:expanded_permissions)
-          (required - covered).empty?
-        end
-
-        def scopes_for_scope(token_scopes, scope)
-          case scope.access.to_sym
-          when ::Authz::GranularScope::Access::USER
-            token_scopes.select(&:user?)
-          when ::Authz::GranularScope::Access::INSTANCE
-            token_scopes.select(&:instance?)
-          when ::Authz::GranularScope::Access::ALL_MEMBERSHIPS
-            token_scopes.select(&:all_memberships?)
-          when ::Authz::GranularScope::Access::PERSONAL_PROJECTS
-            token_scopes.select { |s| covers_personal_projects?(s, scope) }
-          when ::Authz::GranularScope::Access::SELECTED_MEMBERSHIPS
-            ancestor_ids = scope.namespace.self_and_ancestor_ids
-            token_scopes.select { |s| covers_selected_memberships?(s, ancestor_ids) }
-          else
-            []
-          end
-        end
-
-        def covers_personal_projects?(token_scope, new_scope)
-          token_scope.all_memberships? ||
-            (token_scope.personal_projects? && token_scope.namespace_id == new_scope.namespace_id)
-        end
-
-        def covers_selected_memberships?(token_scope, ancestor_ids)
-          token_scope.all_memberships? ||
-            (token_scope.selected_memberships? && ancestor_ids.include?(token_scope.namespace_id))
+          raise_resource_not_available_error!(
+            'A granular token without sudo cannot create a token with sudo.'
+          )
         end
       end
     end

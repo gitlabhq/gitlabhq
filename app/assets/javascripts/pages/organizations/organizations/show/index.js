@@ -1,3 +1,3 @@
-import { initOrganizationsShow } from '~/organizations/show';
+import { initOrganizationsShow } from 'ee_else_ce/organizations/show';
 
 initOrganizationsShow();

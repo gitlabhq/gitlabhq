@@ -62,9 +62,12 @@ docs-lint markdown:
     reports:
       codequality: markdownlint-cli2-codequality.json
 
-# This job runs when release notes are added or changed.
+# This job runs on merge requests that add or change release notes.
 # It validates that every H3 feature heading has a <!-- categories: ... --> tag
 # and that the category name(s) exactly match a 'name' field in categories.yml in the www-gitlab-com repo.
+#
+# Only the release notes changed in the MR are validated. Already-published notes are
+# left alone, so renaming a category in categories.yml can't retroactively fail them.
 
 docs-lint release-note-categories:
   extends:
@@ -73,7 +76,19 @@ docs-lint release-note-categories:
   stage: lint
   needs: []
   script:
-    - ruby scripts/lint/validate_release_categories.rb --release-notes doc/releases/**/*.md
+    - |
+      # Fetch the merge base so we can diff against it (the CI clone is shallow).
+      git fetch --depth=1 origin "$CI_MERGE_REQUEST_DIFF_BASE_SHA"
+      # The 'doc/releases/*.md' git pathspec matches .md files at any depth ('*' spans '/'), so no extra grep is needed.
+      changed_files="$(git diff --name-only --diff-filter=d "$CI_MERGE_REQUEST_DIFF_BASE_SHA" HEAD -- 'doc/releases/*.md')"
+      if [ -z "$changed_files" ]; then
+        echo "No release note files changed in this merge request; skipping category validation."
+        exit 0
+      fi
+      echo "Validating changed release notes:"
+      echo "$changed_files"
+      # shellcheck disable=SC2086 # Word splitting is intentional to pass each path as a separate arg.
+      ruby scripts/lint/validate_release_categories.rb --release-notes $changed_files
 
 docs-lint mermaid:
   extends:
@@ -105,13 +120,13 @@ docs code_quality:
     when: always
 
 docs hugo_build:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.150.1
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.154.5
   extends:
     - .docs:rules:docs-all-lint
     - .lint-base
   stage: lint
   variables:
-    DOCS_BRANCH: "main"
+    DOCS_BRANCH: 'main'
   before_script:
     # Check if this a release branch, which would be the case for a backport.
     # If this is a backport MR, we need to checkout the appropriate version
@@ -167,7 +182,7 @@ docs-lint links:
 
 docs-lint generated-content:
   variables:
-    SETUP_DB: "false"
+    SETUP_DB: 'false'
   extends:
     - .ruby-cache
     - .default-before_script
@@ -182,6 +197,80 @@ docs-lint generated-content:
     - bundle exec rake gitlab:docs:check_deprecations
     - bundle exec rake gitlab:docs:check_windows
     - bundle exec rake gitlab:docs:check_events
+    - bundle exec rake gitlab:organizations:release:check_docs
+
+ai-principles-manifest:
+  # Intentionally lightweight: the validator is Rails-free and its only runtime
+  # dependency is the `rainbow` gem, so this runs on a bare Ruby image with a
+  # single `gem install rainbow` instead of the full bundle/Rails-gems setup.
+  # The trigger is deliberately broad (any doc/** change can orphan a manifest
+  # reference), so keeping the job cheap is what makes the broad trigger
+  # acceptable. See gitlab-org/gitlab#604077.
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
+  stage: lint
+  needs: []
+  extends:
+    - .default-retry
+    - .docs:rules:ai-principles-manifest
+  variables:
+    GIT_DEPTH: '1'
+    RUBY_RUN: 'ruby'
+  before_script:
+    - gem install rainbow --no-document
+  script:
+    - scripts/lint-ai-principles-manifest.sh
+
+# Read-only drift guard: detects Duo Code Review instruction fences in
+# .gitlab/duo/mr-review-instructions.yaml that are stale, malformed, or
+# orphaned relative to .ai/principles/distilled/. Rails-free; only runtime
+# dependency is the `rainbow` gem (same bare-Ruby execution model as the
+# sibling ai-principles-manifest job). To fix: re-run the principles sync to
+# regenerate stale fences, or correct/remove malformed or orphaned markers.
+#
+# Fence regeneration is decoupled from distillation (gitlab-org/gitlab#604890):
+# a team's distilled MR merges independently and the daily fence-reconcile job
+# catches the fences up from merged master afterwards. So fence STALENESS is
+# expected transient state on ordinary MRs and on master, not something those
+# refs can fix. The guard therefore runs as two jobs:
+#
+# - `ai-duo-review-instructions` (STRICT) fires on the reconcile MR and on MRs
+#   touching the fence's OWNED files (the Duo instructions file, the distiller
+#   gem, or the guard script). There, staleness is a real, ref-fixable drift
+#   and blocks.
+# - `ai-duo-review-instructions-warn` (WARN-STALE) fires on master and on
+#   ordinary MRs caught by the broad manifest trigger. It sets WARN_STALE=1, so
+#   staleness only warns — but malformed and orphaned fences still fail (they
+#   are ref-fixable breakage regardless of the reconcile). It is NOT
+#   allow_failure for that reason.
+#
+# See gitlab-org/gitlab#604738.
+.ai-duo-review-instructions-base:
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
+  stage: lint
+  needs: []
+  variables:
+    GIT_DEPTH: '1'
+    RUBY_RUN: 'ruby'
+  before_script:
+    - gem install rainbow --no-document
+  script:
+    - scripts/lint-duo-review-instructions.sh
+
+ai-duo-review-instructions:
+  extends:
+    - .ai-duo-review-instructions-base
+    - .default-retry
+    - .docs:rules:ai-duo-review-instructions-strict
+
+ai-duo-review-instructions-warn:
+  extends:
+    - .ai-duo-review-instructions-base
+    - .default-retry
+    - .docs:rules:ai-duo-review-instructions-warn
+  variables:
+    GIT_DEPTH: '1'
+    RUBY_RUN: 'ruby'
+    WARN_STALE: '1'
 
 docs-lint redirects:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
@@ -204,17 +293,27 @@ docs-i18n-lint markdown:
     - install_gitlab_gem
     - scripts/i18n_lint_doc.sh
 
-docs-i18n-lint links:
+# Reports on broken links in the localized docs (doc-locale). The localization
+# team is building up translations incrementally, so many crosslinks point to
+# pages that are not translated yet. This job is therefore a report rather than
+# a lint check: it always runs green and writes the lychee output to an artifact
+# that can be reviewed when needed. See #602393.
+docs-i18n-report links:
   extends:
     - .docs:rules:docs-i18n-lint
     - .docs-markdown-lint-image
     - .lint-base
   stage: lint
-  allow_failure: true
+  when: manual
   before_script:
     - source scripts/utils.sh
   script:
-    - lychee --offline --include-fragments --exclude "\.(png|jpg|gif|svg)$" --exclude "(ja-jp|ko-kr|fr-fr)/development" doc-locale
+    - lychee --offline --include-fragments --exclude "\.(png|jpg|gif|svg)$" --exclude "(ja-jp|ko-kr|fr-fr)/development" doc-locale | tee docs-i18n-links-report.txt
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - docs-i18n-links-report.txt
 
 # Japanese-specific Vale linting with language-specific rules
 docs-i18n-lint japanese-vale:
@@ -224,8 +323,8 @@ docs-i18n-lint japanese-vale:
     - .lint-base
   stage: lint
   variables:
-    LANGUAGE_CODE: "ja-jp"
-    LANGUAGE_NAME: "Japanese"
+    LANGUAGE_CODE: 'ja-jp'
+    LANGUAGE_NAME: 'Japanese'
   script:
     - source ./scripts/utils.sh
     - install_gitlab_gem
@@ -239,8 +338,8 @@ docs-i18n-lint korean-vale:
     - .lint-base
   stage: lint
   variables:
-    LANGUAGE_CODE: "ko-kr"
-    LANGUAGE_NAME: "Korean"
+    LANGUAGE_CODE: 'ko-kr'
+    LANGUAGE_NAME: 'Korean'
   script:
     - source ./scripts/utils.sh
     - install_gitlab_gem
@@ -254,8 +353,8 @@ docs-i18n-lint french-vale:
     - .lint-base
   stage: lint
   variables:
-    LANGUAGE_CODE: "fr-fr"
-    LANGUAGE_NAME: "French"
+    LANGUAGE_CODE: 'fr-fr'
+    LANGUAGE_NAME: 'French'
   script:
     - source ./scripts/utils.sh
     - install_gitlab_gem

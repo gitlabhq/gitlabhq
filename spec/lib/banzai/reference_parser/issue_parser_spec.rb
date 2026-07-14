@@ -100,7 +100,7 @@ RSpec.describe Banzai::ReferenceParser::IssueParser, feature_category: :markdown
       Nokogiri::HTML.fragment(%(<a data-issue="#{issue.id}"></a>)).children[0]
     end
 
-    before do
+    before_all do
       project.add_developer(user)
     end
 

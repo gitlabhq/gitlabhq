@@ -293,6 +293,14 @@ created using the [Experiment tracking template](https://gitlab.com/gitlab-org/g
 the worker name itself, for example, `run_sidekiq_jobs_AuthorizedProjectsWorker`. Some examples for using `worker` type feature
 flags can be found in [deferring Sidekiq jobs](#deferring-sidekiq-jobs).
 
+### `markdown_cache` type
+
+`markdown_cache` feature flags drive the phased rollout of a `Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION` bump.
+Like `worker` flags, they have no YAML definition: the name is generated from the target cache version, for example,
+`markdown_cache_stochastic_rollout_34`. Because every bump uses its own flag, a fresh flag starts disabled, so a percentage
+left set on a previous bump's flag cannot carry into the next. For the rollout procedure, see
+[phased rollout of `CACHE_COMMONMARK_VERSION` bumps](../gitlab_flavored_markdown/banzai_pipeline_and_parsing.md#phased-rollout-of-cache_commonmark_version-bumps).
+
 ### (Deprecated) `development` type
 
 The `development` type is deprecated in favor of the `gitlab_com_derisk`, `wip`, and `beta` feature flag types.
@@ -1019,22 +1027,30 @@ expect(page).to have_pushed_frontend_feature_flags(valueStreamAnalyticsPathNavig
 
 ### `stub_feature_flags` vs `Feature.enable*`
 
-It is preferred to use `stub_feature_flags` to enable feature flags
-in the testing environment. This method provides a simple and well described
-interface for simple use cases.
-
-However, in some cases more complex behavior needs to be tested,
-like percentage rollouts of feature flags. This can be done using
-`.enable_percentage_of_time` or `.enable_percentage_of_actors`:
+Because all feature flags are enabled by default in the testing environment, you
+typically use `stub_feature_flags` to disable a flag, or to enable it only for
+specific actors.
+This method provides a simple and well-described interface for these use cases:
 
 ```ruby
-# Good: feature needs to be explicitly disabled, as it is enabled by default if not defined
+# Good: disable the flag to test the disabled code path
 stub_feature_flags(my_feature: false)
-stub_feature_flags(my_feature: true)
+
+# Good: enable the flag only for specific actors, leaving it disabled elsewhere
 stub_feature_flags(my_feature: project)
 stub_feature_flags(my_feature: [project, project2])
 
-# Bad
+# Redundant: the flag is already enabled by default in tests, so this has no
+# effect unless the flag was disabled by default in spec/spec_helper.rb
+stub_feature_flags(my_feature: true)
+```
+
+For more complex behavior, such as percentage rollouts, use
+`.enable_percentage_of_time` or `.enable_percentage_of_actors` instead of
+`stub_feature_flags`:
+
+```ruby
+# Bad: prefer stub_feature_flags for simple enable/disable
 Feature.enable(:my_feature_2)
 
 # Good: enable my_feature for 50% of time
@@ -1165,7 +1181,7 @@ When `Feature.enable` or `Feature.disable` is called, a `Gitlab::FeatureFlags::F
 > [!NOTE]
 > Events are only published when `Feature.enable` or `Feature.disable` returns `true`, indicating a state change occurred.
 > Percentage-based rollout methods (`Feature.enable_percentage_of_actors` and
-> `Feature.enable_percentage_of_time`) do **not** publish events.
+> `Feature.enable_percentage_of_time`) do not publish events.
 
 The event includes:
 

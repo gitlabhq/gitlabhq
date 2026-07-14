@@ -318,13 +318,13 @@ RSpec.shared_examples 'snippet visibility' do
       allow(Ability).to receive(:allowed?).and_call_original
       allow(Ability).to receive(:allowed?).with(author, :read_cross_project) { false }
 
-      service = described_class.new(author, organization_id: snippet_org.id)
+      finder = described_class.new(author, organization_id: snippet_org.id)
 
-      expect(service).to receive(:personal_snippets).and_call_original
-      expect(service).not_to receive(:snippets_of_visible_projects)
-      expect(service).not_to receive(:snippets_of_authorized_projects)
+      expect(finder).to receive(:personal_snippets).and_call_original
+      expect(finder).not_to receive(:snippets_of_visible_projects)
+      expect(finder).not_to receive(:snippets_of_authorized_projects)
 
-      expect(service.execute).to match_array([personal_snippet])
+      expect(finder.execute).to match_array([personal_snippet])
     end
   end
 end

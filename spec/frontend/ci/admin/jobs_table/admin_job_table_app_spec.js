@@ -31,7 +31,6 @@ import {
   mockAllJobsResponsePaginated,
   mockCancelableJobsCountResponse,
   mockAllJobsResponseEmpty,
-  statuses,
   mockFailedSearchToken,
   mockAllJobsCountResponse,
 } from 'jest/ci/jobs_mock_data';
@@ -91,7 +90,6 @@ describe('Job table app', () => {
         };
       },
       provide: {
-        jobStatuses: statuses,
         glFeatures: { adminJobsFilterRunnerType: true },
         ...provideOptions,
       },

@@ -26,6 +26,7 @@ export default {
       required: true,
     },
   },
+  emits: ['change'],
   CANCEL_PROPS: {
     text: __('Cancel'),
   },

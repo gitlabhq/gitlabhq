@@ -3,18 +3,24 @@
 module Gitlab
   module Current
     class Organization
-      attr_reader :params, :user, :headers
+      attr_reader :params, :headers
 
       HTTP_HEADER = "X-GitLab-Organization-ID"
 
       def initialize(params: {}, user: nil, rack_env: nil)
         @params = params
-        @user = user
+        @user_or_proc = user
         @headers = rack_env ? Rack::Proxy.extract_http_request_headers(rack_env) : nil
       end
 
       def organization
         from_params || from_headers || from_user || fallback_organization
+      end
+
+      def user
+        return @user if defined?(@user)
+
+        @user = @user_or_proc.respond_to?(:call) ? @user_or_proc.call : @user_or_proc
       end
 
       private

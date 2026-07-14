@@ -1,10 +1,10 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import animateMixin from '../mixins/animate';
 
 export default {
+  name: 'ShowTitle',
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml,

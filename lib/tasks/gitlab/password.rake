@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 namespace :gitlab do
   namespace :password do
     desc "GitLab | Password | Reset a user's password"

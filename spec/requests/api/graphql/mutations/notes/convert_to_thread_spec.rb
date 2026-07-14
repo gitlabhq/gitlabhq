@@ -31,7 +31,7 @@ RSpec.describe Mutations::Notes::ConvertToThread, feature_category: :team_planni
     post_graphql_mutation(mutation, current_user: current_user)
 
     expect(mutation_response['note']).to match a_graphql_entity_for(note.becomes!(DiscussionNote))
-    expect(mutation_response.dig('note', 'resolvable')).to eq(true)
+    expect(mutation_response.dig('note', 'resolvable')).to be(true)
     expect(mutation_response['errors']).to be_empty
   end
 

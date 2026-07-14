@@ -212,7 +212,7 @@ RSpec.describe Ci::CreatePipelineService,
       CI_CONFIG
     end
 
-    it 'creates jobs with correct execution_config data' do
+    it 'creates jobs with correct run_steps data' do
       expect(pipeline).to be_created_successfully
 
       job1 = pipeline.builds.find_by(name: 'job1')
@@ -356,14 +356,13 @@ RSpec.describe Ci::CreatePipelineService,
       CI_CONFIG
     end
 
-    it 'creates one execution config for each unique execution config' do
+    it 'produces identical run_steps for identical configurations' do
       expect(pipeline).to be_created_successfully
 
       job1 = pipeline.builds.find_by(name: 'job1')
       job2 = pipeline.builds.find_by(name: 'job2')
       pipeline.builds.find_by(name: 'job3')
 
-      expect(Ci::BuildExecutionConfig.count).to eq(0)
       expect(job1.run_steps).to eq(job2.run_steps)
     end
   end
@@ -394,13 +393,12 @@ RSpec.describe Ci::CreatePipelineService,
       CI_CONFIG
     end
 
-    it 'creates one execution config for identical func-based configurations' do
+    it 'produces identical run_steps for identical func-based configurations' do
       expect(pipeline).to be_created_successfully
 
       job1 = pipeline.builds.find_by(name: 'job1')
       job2 = pipeline.builds.find_by(name: 'job2')
 
-      expect(Ci::BuildExecutionConfig.count).to eq(0)
       expect(job1.run_steps).to eq(job2.run_steps)
     end
   end

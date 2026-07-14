@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerTagEntity do
+RSpec.describe ContainerTagEntity, feature_category: :container_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:repository) { create(:container_repository, name: 'image', project: project) }
@@ -25,7 +25,7 @@ RSpec.describe ContainerTagEntity do
   end
 
   context 'when user can manage repositories' do
-    before do
+    before_all do
       project.add_developer(user)
     end
 

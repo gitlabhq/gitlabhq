@@ -105,11 +105,13 @@ describe('Merge requests query component', () => {
 
     await waitForPromises();
 
-    expect(reviewerQueryMock).toHaveBeenCalledWith({
-      perPage: 20,
-      state: 'opened',
-      sort: 'UPDATED_DESC',
-    });
+    expect(reviewerQueryMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        perPage: 20,
+        state: 'opened',
+        sort: 'UPDATED_DESC',
+      }),
+    );
   });
 
   it('calls assigneeQueryMock for assignee query', async () => {
@@ -117,11 +119,13 @@ describe('Merge requests query component', () => {
 
     await waitForPromises();
 
-    expect(assigneeQueryMock).toHaveBeenCalledWith({
-      perPage: 20,
-      state: 'opened',
-      sort: 'UPDATED_DESC',
-    });
+    expect(assigneeQueryMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        perPage: 20,
+        state: 'opened',
+        sort: 'UPDATED_DESC',
+      }),
+    );
   });
 
   it('does not call count query if hideCount is true', async () => {

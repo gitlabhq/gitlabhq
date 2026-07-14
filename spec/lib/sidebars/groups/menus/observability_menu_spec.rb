@@ -293,4 +293,20 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       end
     end
   end
+
+  describe 'Feature Library metadata' do
+    before do
+      stub_feature_flags(observability_sass_features: group, o11y_settings_access: user)
+      allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
+        Observability::GroupO11ySetting, persisted?: true))
+    end
+
+    it 'gives every item a description and a unique library_icon', :aggregate_failures do
+      serialized = observability_menu.renderable_items.map(&:serialize_for_super_sidebar)
+
+      expect(serialized).to all(include(:description, :library_icon))
+      icons = serialized.map { |item| item[:library_icon] }
+      expect(icons).to match_array(icons.uniq)
+    end
+  end
 end

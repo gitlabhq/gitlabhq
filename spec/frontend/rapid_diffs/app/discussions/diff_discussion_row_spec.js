@@ -66,6 +66,25 @@ describe('DiffDiscussionRow', () => {
     store = useMockStore();
   });
 
+  describe('per-file diffRefs', () => {
+    const diffRefs = { base_sha: 'base', start_sha: 'start', head_sha: 'head' };
+
+    it('passes the injected diffRefs to findLineDiscussionsForPosition', () => {
+      store.discussions = [createDiscussion()];
+      wrapper = shallowMount(DiffDiscussionRow, {
+        propsData: { oldLine: 5, newLine: null, parallel: false },
+        provide: { store, filePaths: { oldPath, newPath }, diffRefs },
+      });
+      expect(store.findLineDiscussionsForPosition).toHaveBeenCalledWith({
+        oldPath,
+        newPath,
+        oldLine: 5,
+        newLine: null,
+        diffRefs,
+      });
+    });
+  });
+
   describe('inline view', () => {
     it('renders one cell with colspan 3', () => {
       store.discussions = [createDiscussion()];

@@ -88,8 +88,8 @@ describe('Captcha Modal', () => {
             callback(captchaResponse);
           });
 
-          it('emits receivedCaptchaResponse exactly once with the captcha response', () => {
-            expect(wrapper.emitted('receivedCaptchaResponse')).toEqual([[captchaResponse]]);
+          it('emits received-captcha-response exactly once with the captcha response', () => {
+            expect(wrapper.emitted('received-captcha-response')).toEqual([[captchaResponse]]);
           });
 
           it('hides modal with null trigger', () => {
@@ -117,8 +117,8 @@ describe('Captcha Modal', () => {
               findGlModal().vm.$emit('hide', bvModalEvent);
             });
 
-            it(`emits receivedCaptchaResponse with ${JSON.stringify(expected)}`, () => {
-              expect(wrapper.emitted('receivedCaptchaResponse')).toEqual(expected);
+            it(`emits received-captcha-response with ${JSON.stringify(expected)}`, () => {
+              expect(wrapper.emitted('received-captcha-response')).toEqual(expected);
             });
           });
         });
@@ -138,8 +138,8 @@ describe('Captcha Modal', () => {
           findGlModal().vm.$emit('shown');
         });
 
-        it('emits receivedCaptchaResponse exactly once with null', () => {
-          expect(wrapper.emitted('receivedCaptchaResponse')).toEqual([[null]]);
+        it('emits received-captcha-response exactly once with null', () => {
+          expect(wrapper.emitted('received-captcha-response')).toEqual([[null]]);
         });
 
         it('hides modal with null trigger', () => {

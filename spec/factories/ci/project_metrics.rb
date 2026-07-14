@@ -11,5 +11,9 @@ FactoryBot.define do
     trait :ai_generated do
       ci_config_generated_by { 'ci_expert_agent/v1' }
     end
+
+    trait :with_ai_pipeline_results_viewed do
+      first_ai_pipeline_results_viewed_at { Time.current }
+    end
   end
 end

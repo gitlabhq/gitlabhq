@@ -15,7 +15,7 @@ title: Attestations API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/547865) in GitLab 18.5 [with a flag](../administration/feature_flags/_index.md) named `slsa_provenance_statement`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/547865) in GitLab 18.5 [with a feature flag](../administration/feature_flags/_index.md) named `slsa_provenance_statement`. Disabled by default.
 
 {{< /history >}}
 

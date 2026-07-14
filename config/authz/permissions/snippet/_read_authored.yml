@@ -5,3 +5,4 @@ description: Grants the ability to read a project snippet that the user
   project's visibility. Used by the project snippet policy to elevate the
   author's read access on their own snippets without granting the broader
   _read_private_snippet capability.
+conditionally_enables: _read_private_snippet

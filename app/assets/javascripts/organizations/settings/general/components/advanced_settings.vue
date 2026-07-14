@@ -24,6 +24,7 @@ export default {
       required: true,
     },
   },
+  emits: ['toggle-expand'],
 };
 </script>
 

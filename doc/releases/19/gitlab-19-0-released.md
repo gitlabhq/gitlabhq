@@ -531,7 +531,7 @@ providers and SCIM clients receive consistent success responses.
 The in-product GitLab Credits dashboard now supports product filtering, date
 range selection, and Secrets Manager usage visibility.
 
-You can filter usage by product (including GitLab Duo and Secrets Manager) 
+You can filter usage by product (including GitLab Duo and Secrets Manager)
 and date range, see a daily usage chart across selected products, and
 review per-user attribution with a Usage control status column.
 

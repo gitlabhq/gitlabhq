@@ -54,6 +54,7 @@ export default {
       required: false,
     },
   },
+  emits: ['packageToDelete'],
   computed: {
     hasPipeline() {
       return Boolean(this.packageEntity.pipeline?.user?.name);
@@ -137,9 +138,13 @@ export default {
       <span>
         <gl-sprintf :message="__('Created %{timestamp}')">
           <template #timestamp>
-            <span v-gl-tooltip :title="tooltipTitle(packageEntity.created_at)">
+            <time
+              v-gl-tooltip
+              :datetime="packageEntity.created_at"
+              :title="tooltipTitle(packageEntity.created_at)"
+            >
               {{ timeFormatted(packageEntity.created_at) }}
-            </span>
+            </time>
           </template>
         </gl-sprintf>
       </span>

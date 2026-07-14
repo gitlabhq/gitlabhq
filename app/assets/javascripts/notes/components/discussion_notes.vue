@@ -8,6 +8,7 @@ import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { SYSTEM_NOTE } from '../constants';
+import { shouldRenderAsDuoSystemNote } from '../utils';
 import DiscussionNotesRepliesWrapper from './discussion_notes_replies_wrapper.vue';
 import NoteEditedText from './note_edited_text.vue';
 import NoteableNote from './noteable_note.vue';
@@ -100,9 +101,7 @@ export default {
       }
 
       if (note.system) {
-        return note.author?.user_type === 'duo_code_review_bot'
-          ? DuoCodeReviewSystemNote
-          : SystemNote;
+        return shouldRenderAsDuoSystemNote(note) ? DuoCodeReviewSystemNote : SystemNote;
       }
 
       return NoteableNote;

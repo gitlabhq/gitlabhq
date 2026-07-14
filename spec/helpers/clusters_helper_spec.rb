@@ -95,7 +95,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
     end
 
     context 'user is a maintainer' do
-      before do
+      before_all do
         project.add_maintainer(current_user)
       end
 

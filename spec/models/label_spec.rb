@@ -211,6 +211,11 @@ RSpec.describe Label, feature_category: :team_planning, factory_default: :keep d
       # rubocop:enable Rails/SaveBang
 
       context 'when updating a label' do
+        # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+        # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+        # subject, or an in-memory mutation that survives reload/refind). Do not
+        # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+        # (see gitlab-org/gitlab#602925).
         let_it_be(:template_label, freeze: false) { create(:label, template: true) }
 
         where(:lock_on_merge, :valid, :errors) do
@@ -335,6 +340,11 @@ RSpec.describe Label, feature_category: :team_planning, factory_default: :keep d
   end
 
   describe '#hook_attrs' do
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:label, freeze: false) { build_stubbed(:label) }
 
     subject(:attrs) { label.hook_attrs }

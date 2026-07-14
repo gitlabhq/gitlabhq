@@ -9,6 +9,12 @@ module API
       authenticate!
     end
 
+    params do
+      requires :database_name,
+        type: String,
+        values: Gitlab::Database.all_database_names,
+        desc: 'The database name'
+    end
     resources 'databases/:database_name/dictionary/tables' do
       desc 'List dictionary tables' do
         detail 'Returns database dictionary tables filtered by database and optional table size'

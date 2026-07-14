@@ -13,6 +13,12 @@ RSpec.describe API::Admin::Dictionary, feature_category: :database do
       get api(path, admin, admin_mode: true)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_database_dictionary do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
+
     context 'when the database does not exist' do
       it 'returns bad request' do
         get api("/admin/databases/#{non_existing_record_id}/dictionary/tables/achievements", admin, admin_mode: true)

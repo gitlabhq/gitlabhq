@@ -8,6 +8,7 @@ class NewNoteWorker # rubocop:disable Scalability/IdempotentWorker
   sidekiq_options retry: 3
 
   feature_category :team_planning
+  prefer_calling_context_feature_category true
   urgency :high
   worker_resource_boundary :cpu
   weight 2

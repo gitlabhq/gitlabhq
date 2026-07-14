@@ -60,7 +60,7 @@ The doctor script validates four conventions enforced across the monorepo:
 |---|---|---|
 | **CLAUDE.md / AGENTS.md parity** | Every directory with either file must have both, with identical content. `AGENTS.md` is the source of truth. Symlinks are forbidden — both must be regular files. | ✅ `--fix` copies AGENTS.md → CLAUDE.md |
 | **.ai/ reference resolution** | Every `.ai/<path>` reference in any `AGENTS.md` must point to an existing file. | ❌ Must create missing files manually |
-| **.gitignore coverage** | Root `.gitignore` must contain `CLAUDE.local.md` and `.ai/*` as non-rooted entries. | ✅ `--fix` appends missing entries |
+| **.gitignore coverage** | Root `.gitignore` must contain `CLAUDE.local.md`, `AGENTS.local.md`, and `.ai/*` as non-rooted entries. | ✅ `--fix` appends missing entries |
 | **Forbidden committed files** | Tool-specific config (`.claude/`, `.opencode/`, `.gitlab/duo/chat-rules.md`, `*.local.md`) must never be tracked by git. | ❌ Hard fail — remove and `git rm --cached` |
 
 For full details on each check — including parity rules, forbidden file list,

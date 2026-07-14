@@ -40,6 +40,8 @@ The following is not supported:
   For more information and to track its progress, see
   [issue 18993](https://gitlab.com/gitlab-org/gitlab/-/issues/18993).
 - Mirroring repositories over [dumb HTTP protocol](https://git-scm.com/book/en/v2/Git-on-the-Server-The-Protocols#_dumb_http).
+- Mirroring between repositories that use different object formats.
+  For example, between SHA-1 and [SHA-256](../../_index.md#create-a-project-that-uses-sha-256-hashing) repositories.
 
 ## Create a repository mirror
 

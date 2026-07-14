@@ -7,6 +7,10 @@ RSpec.describe Gitlab::ExperimentFeatureRollout, :experiment, feature_category: 
 
   let(:subject_experiment) { experiment('namespaced/stub') }
 
+  before do
+    stub_const('Namespaced::StubExperiment', Class.new(ApplicationExperiment))
+  end
+
   describe "#enabled?" do
     before do
       stub_feature_flags(gitlab_experiment: true)

@@ -366,10 +366,12 @@ RSpec.describe Gitlab::Ci::CronParser, feature_category: :continuous_integration
       end
 
       context 'when an unsupported duration is specified' do
-        subject { described_class.parse_natural_with_timestamp(time, { unit: 'month', duration: 7 }) }
+        let(:cadence) { { unit: 'month', duration: 7 } }
+
+        subject { described_class.parse_natural_with_timestamp(time, cadence) }
 
         it 'raises an exception' do
-          expect { subject }.to raise_error(NotImplementedError, 'The cadence {:unit=>"month", :duration=>7} is not supported')
+          expect { subject }.to raise_error(NotImplementedError, "The cadence #{cadence} is not supported")
         end
       end
     end

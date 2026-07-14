@@ -13,7 +13,8 @@ class Admin::IntegrationsController < Admin::ApplicationController
   def overrides
     respond_to do |format|
       format.json do
-        projects = Project.with_active_integration(integration.class).merge(::Integration.with_custom_settings)
+        projects = Project.with_active_integration(integration.class)
+                          .merge(::Integration.overriding_instance_default(integration))
         serializer = ::Integrations::ProjectSerializer.new.with_pagination(request, response)
 
         render json: serializer.represent(projects)

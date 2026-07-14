@@ -54,11 +54,14 @@ module ConcurrencyLimit
 
       limit = worker_limit(worker)
       queue_size = queue_size(worker)
+      return unless queue_size > 0
+      return if limit < 0 # do not re-queue jobs if circuit-broken
+
+      cleanup_stale_trackers(worker)
+
       current = concurrent_worker_count(worker)
       to_resume = limit - current
 
-      return unless queue_size > 0
-      return if limit < 0 # do not re-queue jobs if circuit-broken
       return if limit != 0 && to_resume <= 0
 
       Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.worker_stats_log(
@@ -66,7 +69,6 @@ module ConcurrencyLimit
       )
 
       resumed_jobs_num = resume_processing!(worker)
-      cleanup_stale_trackers(worker)
 
       if queue_size(worker) > 0
         Gitlab::SidekiqSharding::Router.route(worker) do

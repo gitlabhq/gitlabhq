@@ -14,7 +14,7 @@ description: "Configure and manage settings for project and group integrations o
 {{< /details >}}
 
 > [!note]
-> This page contains administrator documentation for project and group integrations. For user documentation, see [Project integrations](../../user/project/integrations/_index.md).
+> For user documentation, see [project integrations](../../user/project/integrations/_index.md).
 
 Project and group administrators can configure and enable integrations.
 As an instance administrator, you can:

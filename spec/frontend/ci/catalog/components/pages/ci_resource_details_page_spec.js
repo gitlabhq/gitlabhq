@@ -140,12 +140,12 @@ describe('CiResourceDetailsPage', () => {
             {
               value: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
               text: '1.1.0',
-              createdAt: '2026-02-15',
+              releasedAt: '2026-02-15',
             },
             {
               value: 'gid://gitlab/Ci::Catalog::Resources::Version/1',
               text: '1.0.0',
-              createdAt: '2024-02-15',
+              releasedAt: '2024-02-15',
             },
           ],
           initialVersionId: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
@@ -222,12 +222,12 @@ describe('CiResourceDetailsPage', () => {
         {
           value: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
           text: '1.1.0',
-          createdAt: '2026-02-15',
+          releasedAt: '2026-02-15',
         },
         {
           value: 'gid://gitlab/Ci::Catalog::Resources::Version/1',
           text: '1.0.0',
-          createdAt: '2024-02-15',
+          releasedAt: '2024-02-15',
         },
         {
           text: '0.5.0',
@@ -280,7 +280,7 @@ describe('CiResourceDetailsPage', () => {
                 {
                   id: 'gid://gitlab/Ci::Catalog::Resources::Version/1',
                   name: '1.0.0',
-                  createdAt: '2024-02-15T00:00:00Z',
+                  releasedAt: '2024-02-15T00:00:00Z',
                 },
               ],
             },

@@ -4,8 +4,8 @@ require "spec_helper"
 
 # rubocop:disable Rails/SaveBang -- None of the offenses are ActiveRecord calls
 RSpec.shared_examples 'wiki_page' do |container_type|
-  let(:user) { create(:user) }
-  let(:owner) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:owner) { create(:user) }
   let(:container) { create(container_type) }
   let(:wiki) { container.wiki }
 

@@ -51,12 +51,84 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Diff do
       end
     end
 
+    context 'when a rephrased line changes an inline-code identifier' do
+      let(:old_content) do
+        "### JSON Parsing\n\n" \
+          "- Use `Gitlab::Json.safe_parse` instead of `Gitlab::Json.parse` when handling untrusted input\n"
+      end
+
+      let(:new_content) do
+        "### JSON Parsing\n\n" \
+          "- Use `Gitlab::Json::SafeParser.parse` instead of `Gitlab::Json.parse` when handling untrusted input\n"
+      end
+
+      it 'keeps the new wording so the identifier change survives', :aggregate_failures do
+        expect(result).to include('`Gitlab::Json::SafeParser.parse`')
+        expect(result).not_to include('`Gitlab::Json.safe_parse`')
+      end
+    end
+
+    context 'when a rephrased line keeps the same inline-code identifier' do
+      let(:old_content) { "### Section A\n\n- Query changes validated with `Gitlab::Json.parse` at scale\n" }
+      let(:new_content) { "### Section A\n\n- Query changes must be validated with `Gitlab::Json.parse` at scale\n" }
+
+      it 'still collapses to the old wording', :aggregate_failures do
+        expect(result).to include('- Query changes validated with `Gitlab::Json.parse` at scale')
+        expect(result).not_to include('must be')
+      end
+    end
+
     context 'when new line is substantially different' do
       let(:old_content) { "### Section A\n\n- Use foo\n" }
       let(:new_content) { "### Section A\n\n- Completely different rule about bar\n" }
 
       it 'keeps new wording' do
         expect(result).to include('- Completely different rule about bar')
+      end
+    end
+
+    context 'when content inside a fenced code block changes' do
+      let(:old_content) do
+        "### Examples\n\n" \
+          "```ruby\n" \
+          "data = Gitlab::Json.safe_parse(input)\n" \
+          "```\n"
+      end
+
+      let(:new_content) do
+        "### Examples\n\n" \
+          "```ruby\n" \
+          "data = Gitlab::Json::SafeParser.parse(input)\n" \
+          "```\n"
+      end
+
+      it 'keeps the new fenced content verbatim', :aggregate_failures do
+        expect(result).to include('data = Gitlab::Json::SafeParser.parse(input)')
+        expect(result).not_to include('data = Gitlab::Json.safe_parse(input)')
+      end
+    end
+
+    context 'when a fenced line resembles a prior checklist line' do
+      let(:old_content) { "### A\n\n- run `bundle install` before tests\n" }
+      let(:new_content) do
+        "### A\n\n- run `bundle install` before tests\n\n" \
+          "```shell\n" \
+          "run `bundle install` before tests\n" \
+          "```\n"
+      end
+
+      it 'does not collapse the fenced line into the prose bullet', :aggregate_failures do
+        expect(result).to include("```shell")
+        expect(result.scan('run `bundle install` before tests').size).to eq(2)
+      end
+    end
+
+    context 'when a rephrased line uses a multi-backtick code span' do
+      let(:old_content) { "### A\n\n- Use ``code with ` backtick`` for the old name\n" }
+      let(:new_content) { "### A\n\n- Use ``code with ` backtick`` for the renamed thing\n" }
+
+      it 'keeps the new wording rather than risk a wrong collapse' do
+        expect(result).to include('for the renamed thing')
       end
     end
 
@@ -211,6 +283,75 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Diff do
       let(:line_b) { '- use gitlabsaferequeststore for memoization' }
 
       it { is_expected.to eq(1.0) }
+    end
+  end
+
+  describe '.same_code_tokens? (private helper)' do
+    subject(:same) { described_class.send(:same_code_tokens?, line_a, line_b) }
+
+    context 'with identical inline-code spans in different order' do
+      let(:line_a) { 'Use `foo` then `bar`' }
+      let(:line_b) { 'Prefer `bar` over `foo` here' }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with a changed inline-code span' do
+      let(:line_a) { 'Use `Gitlab::Json.safe_parse` here' }
+      let(:line_b) { 'Use `Gitlab::Json::SafeParser.parse` here' }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with no inline-code spans on either line' do
+      let(:line_a) { 'plain prose one' }
+      let(:line_b) { 'plain prose two' }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when a line uses a multi-backtick span (unfingerprintable)' do
+      let(:line_a) { 'Use ``a ` b`` here' }
+      let(:line_b) { 'Use ``a ` b`` here' }
+
+      it 'is not provably equal, so returns false' do
+        expect(same).to be false
+      end
+    end
+
+    context 'when a line has an odd number of backticks' do
+      let(:line_a) { 'Use `foo here' }
+      let(:line_b) { 'Use `foo here' }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '.fence_delimiter? (private helper)' do
+    subject(:fence) { described_class.send(:fence_delimiter?, line) }
+
+    context 'with an opening fence and info string' do
+      let(:line) { '```ruby' }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with an indented closing fence' do
+      let(:line) { '  ```' }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with a tilde fence' do
+      let(:line) { '~~~' }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with a normal bullet containing inline code' do
+      let(:line) { '- Use `Foo` here' }
+
+      it { is_expected.to be false }
     end
   end
 

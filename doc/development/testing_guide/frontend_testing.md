@@ -851,7 +851,7 @@ We want our test environment to be strict, so your tests should fail when unexpe
 ### Ignoring console messages from watcher
 
 Since there's a lot of code outside of our control, there are some console messages that
-are ignored by default and will **not** fail a test if used. This list of ignored
+are ignored by default and will not fail a test if used. This list of ignored
 messages can be maintained where we call `setupConsoleWatcher`. Example:
 
 ```javascript
@@ -1499,6 +1499,52 @@ export function handleMyFeatureOperation({ operationName, variables, res, ctx })
   return res(ctx.json(handler({ operationName, variables })));
 }
 ```
+
+### Assert Apollo cache integrity
+
+Use the request-tracking utilities in `operation_helpers.js` to verify that a
+mutation updates the Apollo cache does not trigger unwanted network calls because
+of cache mismatch.
+
+Every intercepted GraphQL operation and REST endpoint is recorded in
+`capturedRequests`. The global `test_setup.js` resets this record in `afterEach`,
+so each test starts with a clean count. You may need to manually call it in your
+own test suite if stray operations are fired after the initial reset has been called.
+
+| Function | Description |
+|---|---|
+| `snapshotRequests()` | Returns a map of `operationName -> count` at the current point in time. |
+| `getSnapshotRequestsDiff(baseline, current)` | Returns the operations that fired between two snapshots. |
+| `expectGraphQLCalls(baseline, { expect, forbid })` | Asserts that `expect` operations fired and `forbid` operations did not. |
+
+Take a snapshot before the action, perform the action, then assert inside
+`waitFor`. Entries in `forbid` can be strings or regular expressions to match
+operation families:
+
+```javascript
+import { snapshotRequests, expectGraphQLCalls } from 'jest/msw_integration/operation_helpers';
+
+it('updates the comment count without refetching the list', async () => {
+  const baseline = snapshotRequests();
+
+  await waitAndSetValue(findTextarea, 'Test comment from drawer');
+  await waitAndClick(findConfirmButton);
+
+  await waitFor(() => {
+    expect(getText(findIssuableComments())).toContain('1');
+
+    expectGraphQLCalls(baseline, {
+      expect: ['createWorkItemNote'],
+      forbid: ['getWorkItemsFullEE', 'getWorkItemsFull'],
+    });
+  });
+});
+```
+
+Avoid matching two `snapshotRequests` without using `expectGraphQLCalls`: if a forbidden operation fires, `expectGraphQLCalls` throws with a Jest diff that highlights the unexpected call, which makes debugging easier. For an
+example, see the cache integrity regression in
+[merge request 236298](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236298#note_3404031805),
+where creating a comment triggered an unnecessary list refetch.
 
 ### Write a test file
 

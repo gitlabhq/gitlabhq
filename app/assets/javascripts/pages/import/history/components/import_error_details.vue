@@ -5,6 +5,7 @@ import { createAlert } from '~/alert';
 import { DEFAULT_ERROR } from '../utils/error_messages';
 
 export default {
+  name: 'ImportErrorDetails',
   components: {
     GlLoadingIcon,
   },

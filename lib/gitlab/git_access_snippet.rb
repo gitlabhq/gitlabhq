@@ -45,6 +45,16 @@ module Gitlab
 
     private
 
+    # Personal snippets have no project, so they resolve to the token user's
+    # standalone (user) boundary. Snippet permissions (read_snippet/
+    # update_snippet) come from download_ability/push_ability.
+    override :granular_pat_boundaries
+    def granular_pat_boundaries
+      return ::Authz::Boundary.for(project) if project
+
+      ::Authz::Boundary.for(::Authz::GranularScope::Access::USER)
+    end
+
     # TODO: Implement EE/Geo https://gitlab.com/gitlab-org/gitlab/issues/205629
     override :check_custom_ssh_action!
     def check_custom_ssh_action!

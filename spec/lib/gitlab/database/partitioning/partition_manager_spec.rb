@@ -114,7 +114,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       Class.new(ApplicationRecord) do
         include PartitionedTable
 
-        partitioned_by :created_at, strategy: :monthly
+        partitioned_by :created_at, strategy: :monthly, retain_for: :ever
       end
     end
 
@@ -183,7 +183,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
           Class.new(base_model) do
             include PartitionedTable
 
-            partitioned_by :created_at, strategy: :monthly
+            partitioned_by :created_at, strategy: :monthly, retain_for: :ever
           end
         end
 
@@ -344,6 +344,24 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
       pending_drop = Postgresql::DetachedPartition.find_by!(table_name: "#{partitioned_table_name}_202104")
       expect(pending_drop.drop_after).to eq(Time.current + described_class::RETAIN_DETACHED_PARTITIONS_FOR)
+    end
+
+    context 'when the model overrides the detached partition retention period' do
+      let(:my_model) do
+        Class.new(ApplicationRecord) do
+          include PartitionedTable
+
+          partitioned_by :created_at, strategy: :monthly, retain_for: 1.month,
+            retain_detached_partitions_for: 3.days
+        end
+      end
+
+      it 'uses the model-specific retention period for the drop_after timestamp' do
+        subject
+
+        pending_drop = Postgresql::DetachedPartition.find_by!(table_name: "#{partitioned_table_name}_202104")
+        expect(pending_drop.drop_after).to eq(Time.current + 3.days)
+      end
     end
 
     context 'when the model is the target of a foreign key' do

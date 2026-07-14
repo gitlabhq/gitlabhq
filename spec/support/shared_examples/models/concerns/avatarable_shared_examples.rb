@@ -27,4 +27,16 @@ RSpec.shared_examples Avatarable do
       end
     end
   end
+
+  context 'when batch loading the avatar' do
+    it 'uses partition pruning to load the avatar' do
+      avatar_upload = Upload.where(model: model).where(uploader: AvatarUploader.name).first!
+      expect(avatar_upload.model_type).to eq(model.class.polymorphic_name)
+
+      expect do
+        # When the model is first created, the avatar is set directly and bypasses the upload loader
+        model.reload.avatar_url
+      end.to make_queries_matching(/SELECT .* "uploads"."model_type" = '#{avatar_upload.model_type}'/)
+    end
+  end
 end

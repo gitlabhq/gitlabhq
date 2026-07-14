@@ -61,6 +61,10 @@ export default {
 
       return children.find((child) => child?.key === targetKey);
     },
+    emitInputEvents(event) {
+      this.$emit('update:modelValue', event);
+      this.$emit('input', event);
+    },
   },
 };
 </script>
@@ -86,7 +90,7 @@ export default {
     @start="$emit('start', $event)"
     @end="$emit('end', $event)"
     @update="$emit('update', $event)"
-    @update:model-value="$emit('update:modelValue', $event)"
+    @update:model-value="emitInputEvents"
   >
     <template #item="slotProps">
       <component :is="itemSlot(slotProps.element)" v-bind="slotProps" />

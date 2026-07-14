@@ -29,6 +29,7 @@ import { AWARD_EMOJI_TO_NOTE_ERROR } from '../constants';
 import DesignReplyForm from './design_reply_form.vue';
 
 export default {
+  name: 'DesignNote',
   i18n: {
     editCommentLabel: __('Edit comment'),
     moreActionsLabel: __('More actions'),

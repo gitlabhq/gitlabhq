@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Workflow Catalog
+stage: Agent Foundations
+group: AI Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Connect custom agents in the AI Catalog to external data sources and third-party services using MCP servers.
 title: MCP servers in the AI Catalog
@@ -9,14 +9,14 @@ title: MCP servers in the AI Catalog
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590708) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_mcp_servers`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590708) in GitLab 18.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_mcp_servers`. Disabled by default.
 
 {{< /history >}}
 
@@ -26,7 +26,7 @@ title: MCP servers in the AI Catalog
 > This feature is available for testing, but not ready for production use.
 
 Custom agents in the AI Catalog can connect to external data sources and
-third-party services (such as Jira or Google Drive) through the
+third-party services (such as Jira or Linear) through the
 [Model Context Protocol](https://modelcontextprotocol.io/) (MCP).
 
 This feature is an [experiment](../../../policy/development_stages_support.md#experiment).
@@ -50,12 +50,28 @@ at both the group and project level.
   [turned on GitLab Duo experiment and beta features](../turn_on_off.md#on-gitlabcom-2).
 - On GitLab Self-Managed, your instance has
   [GitLab Duo experiment and beta features turned on](../turn_on_off.md#on-gitlab-self-managed-2).
-- To add or edit MCP servers, you must be an instance administrator.
+- On GitLab Self-Managed and GitLab Dedicated, an administrator has enabled the `mcp_client`
+  [feature flag](../../../administration/feature_flags/_index.md).
 - The MCP server must be a:
   - Vetted or partner MCP server. Arbitrary URLs are not allowed.
   - Remote MCP server.
 
 ## Add an MCP server to the AI Catalog
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+Prerequisites:
+
+- Administrator access for the instance.
+
+On GitLab Self-Managed and GitLab Dedicated, instance administrators can add an MCP server to the AI Catalog for their instance from the list of [available MCP Servers](#available-mcp-servers).
+
+> [!note]
+> On GitLab.com, top-level group members cannot add an MCP server to the AI Catalog because this is centrally managed by GitLab.com administrators.
 
 To add an MCP server to the AI Catalog:
 
@@ -80,6 +96,21 @@ To add an MCP server to the AI Catalog:
 The MCP server is now available in your organization's catalog and can be associated with agents.
 
 ## Edit an MCP server
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+Prerequisites:
+
+- Administrator access for the instance.
+
+On GitLab Self-Managed and GitLab Dedicated, instance administrators can edit an MCP server in the AI Catalog for their instance.
+
+> [!note]
+> On GitLab.com, top-level group members cannot edit an MCP server in the AI Catalog because this is centrally managed by GitLab.com administrators.
 
 To edit an MCP server:
 
@@ -171,7 +202,13 @@ You do not need to provide OAuth credentials manually.
 
 ## Available MCP servers
 
-You can add the following MCP servers to the AI Catalog.
+{{< details >}}
+
+- Offering: GitLab.com
+
+{{< /details >}}
+
+You can add the following MCP servers from the AI Catalog to your custom agents.
 For more servers proposed for the catalog, see [issue 591969](https://gitlab.com/gitlab-org/gitlab/-/work_items/591969).
 
 ### Linear
@@ -216,3 +253,49 @@ source and adds them to your prompt.
 ## Related topics
 
 - [GitLab MCP server](mcp_server.md)
+
+## Troubleshooting
+
+When working with MCP servers in the AI Catalog, you might encounter the following issues.
+
+### MCP server issues due to outbound request restrictions
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+GitLab validates an MCP server's URL the same way it validates other outbound requests, such
+as webhooks and integrations. If your GitLab Self-Managed instance restricts [outbound requests](../../../security/webhooks.md),
+attempts to add, edit, or connect to an MCP server might fail, even when the URL itself is valid.
+
+How you resolve this issue depends on where the MCP service is hosted.
+
+For more troubleshooting information, see
+[filtering outbound requests](../../../security/webhooks.md#troubleshooting).
+
+#### Public MCP server
+
+A public MCP server can be a vetted or partner server, or your own server reachable
+over the internet.
+
+If your instance [blocks all outbound requests except those in an allowlist](../../../security/webhooks.md#filter-requests),
+ask your instance administrator to add the MCP server's domain or IP address to the
+[outbound request allowlist](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+
+If your instance does not do this, no further action is required.
+
+#### Internal or local MCP server
+
+An internal or local MCP server can be a server running on `localhost`, or on a private or internal network.
+
+By default, GitLab blocks requests to local and private network addresses to protect against server-side request forgery.
+
+To allow the request, ask your instance administrator to do either of the following:
+
+- [Allow requests to the local network from webhooks and integrations](../../../security/webhooks.md#allow-requests-to-the-local-network-from-webhooks-and-integrations).
+  This allows requests to all local and private network addresses, not just your MCP server.
+- Add only the MCP server's domain or IP address (and port, if needed) to the outbound request
+  allowlist. This option is more restrictive, because it does not open access to the entire
+  local network.

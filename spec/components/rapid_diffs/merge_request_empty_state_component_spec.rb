@@ -18,15 +18,44 @@ RSpec.describe RapidDiffs::MergeRequestEmptyStateComponent, feature_category: :c
     expect(page).to have_text('All changes from feature are already present in main.')
   end
 
-  it 'falls back to the default empty state for :no_changes' do
-    render_inline(described_class.new(merge_request: merge_request, type: :no_changes))
+  describe ':no_changes' do
+    let(:presenter) { instance_double(MergeRequestPresenter, can_push_to_source_branch?: can_push) }
 
-    expect(page).to have_text('There are no changes')
-  end
+    before do
+      allow(merge_request).to receive(:present).and_return(presenter)
+    end
 
-  it 'falls back to the default empty state when type is unknown' do
-    render_inline(described_class.new(merge_request: merge_request, type: :unknown_state))
+    context 'when the user can push to the source branch' do
+      let(:can_push) { true }
 
-    expect(page).to have_text('There are no changes')
+      it 'renders the no-changes copy and a Create commit button', :aggregate_failures do
+        render_inline(described_class.new(merge_request: merge_request, type: :no_changes))
+
+        expect(page).to have_text('There are no changes yet')
+        expect(page).to have_text('No changes between feature and main')
+        expect(page).to have_link('Create commit')
+      end
+    end
+
+    context 'when the user cannot push to the source branch' do
+      let(:can_push) { false }
+
+      it 'does not render the Create commit button', :aggregate_failures do
+        render_inline(described_class.new(merge_request: merge_request, type: :no_changes))
+
+        expect(page).to have_text('There are no changes yet')
+        expect(page).not_to have_link('Create commit')
+      end
+    end
+
+    context 'when type is unknown' do
+      let(:can_push) { false }
+
+      it 'falls back to the no-changes empty state' do
+        render_inline(described_class.new(merge_request: merge_request, type: :unknown_state))
+
+        expect(page).to have_text('There are no changes yet')
+      end
+    end
   end
 end

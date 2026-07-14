@@ -1,0 +1,8 @@
+---
+name: billing_event_tracking
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240688
+rollout_issue_url:
+milestone: '19.2'
+type: development
+group: group::analytics instrumentation
+default_enabled: false

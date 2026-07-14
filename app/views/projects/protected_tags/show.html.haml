@@ -7,7 +7,9 @@
 
   .gl-col-lg-9
     %h5= s_("ProtectedTag|Matching Tags")
-    - if @matching_refs.present?
+    - if @gitaly_unavailable
+      = render 'shared/errors/gitaly_unavailable', reason: s_('ProtectedTag|Unable to load matching tags')
+    - elsif @matching_refs.present?
       .table-responsive
         %table.table.protected-tags-list
           %colgroup

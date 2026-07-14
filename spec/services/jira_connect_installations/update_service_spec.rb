@@ -85,7 +85,7 @@ RSpec.describe JiraConnectInstallations::UpdateService, feature_category: :integ
     end
 
     it 'returns a successful result' do
-      expect(execute_service.success?).to eq(true)
+      expect(execute_service.success?).to be(true)
     end
 
     context 'with organization id' do
@@ -103,7 +103,7 @@ RSpec.describe JiraConnectInstallations::UpdateService, feature_category: :integ
       let(:update_params) { { instance_url: 'invalid' } }
 
       it 'returns an error result' do
-        expect(execute_service.error?).to eq(true)
+        expect(execute_service.error?).to be(true)
         expect(execute_service.message).to eq(installation.errors)
       end
     end
@@ -150,7 +150,7 @@ RSpec.describe JiraConnectInstallations::UpdateService, feature_category: :integ
 
             execute_service
 
-            expect(installation.instance_url).to eq(nil)
+            expect(installation.instance_url).to be_nil
           end
 
           it 'does not send an installed event' do

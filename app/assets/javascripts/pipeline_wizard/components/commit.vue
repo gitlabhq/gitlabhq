@@ -65,6 +65,7 @@ export default {
       required: true,
     },
   },
+  emits: ['back', 'done', 'update:message'],
   data() {
     return {
       branch: this.defaultBranch,

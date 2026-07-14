@@ -14,7 +14,7 @@ title: Security scanning results
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/490334) in GitLab 17.9 [with a flag](../../../administration/feature_flags/_index.md) named `dependency_scanning_for_pipelines_with_cyclonedx_reports`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/490334) in GitLab 17.9 [with a feature flag](../../../administration/feature_flags/_index.md) named `dependency_scanning_for_pipelines_with_cyclonedx_reports`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/490332) in GitLab 17.9.
 - Feature flag `dependency_scanning_for_pipelines_with_cyclonedx_reports` removed in 17.10.
 

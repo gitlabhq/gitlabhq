@@ -4,6 +4,13 @@ module API
   # Internal access API
   module Internal
     class Base < ::API::Base
+      # The gitlab-shell internal API authenticates via a shared secret and
+      # populates `actor.user` itself. The global before_validation hook in
+      # API::API does not know how to derive the user from that flow, so let
+      # the existing explicit set_current_organization(user: actor.user) call
+      # keep doing the work.
+      skip_global_organization_setup!
+
       include Gitlab::RackLoadBalancingHelpers
 
       WORKHORSE_CIRCUIT_BREAKER_HEADER = 'Enable-Workhorse-Circuit-Breaker'

@@ -1,7 +1,12 @@
 <script>
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { PUSH_EVENT_REF_TYPE_BRANCH, PUSH_EVENT_REF_TYPE_TAG } from '../../constants';
+import {
+  PUSH_EVENT_REF_TYPE_BRANCH,
+  PUSH_EVENT_REF_TYPE_TAG,
+  VARIANT_DEFAULT,
+} from '../../constants';
+import { isValidVariant } from '../../utils';
 import ResourceParentLink from '../resource_parent_link.vue';
 import ContributionEventBase from './contribution_event_base.vue';
 
@@ -42,6 +47,12 @@ export default {
       type: Object,
       required: true,
     },
+    variant: {
+      type: String,
+      required: false,
+      default: VARIANT_DEFAULT,
+      validator: isValidVariant,
+    },
   },
   computed: {
     ref() {
@@ -75,7 +86,7 @@ export default {
 </script>
 
 <template>
-  <contribution-event-base :event="event" :icon-name="iconName">
+  <contribution-event-base :event="event" :variant="variant" :icon-name="iconName">
     <gl-sprintf :message="message">
       <template #refLink>
         <gl-link v-if="ref.path" :href="ref.path" class="gl-font-monospace">{{ ref.name }}</gl-link>

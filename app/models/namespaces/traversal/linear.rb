@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # Query a recursively defined namespace hierarchy using linear methods through
 # the traversal_ids attribute.

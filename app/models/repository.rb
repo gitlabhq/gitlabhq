@@ -684,6 +684,13 @@ class Repository
         tree.path
       end
     end
+  rescue Gitlab::Git::BaseError
+    # A corrupt or headless repository (for example, one left in an invalid
+    # state by a failed import) cannot resolve its default branch, so the
+    # avatar lookup raises. Treat it as "no avatar" rather than letting the
+    # error propagate and break every caller (project page, group listing,
+    # GraphQL). https://gitlab.com/gitlab-org/gitlab/-/issues/604218
+    nil
   end
   cache_method :avatar
 
@@ -1554,7 +1561,7 @@ class Repository
   end
 
   def redis_set_cache
-    @redis_set_cache ||= if Feature.enabled?(:ref_cache_with_rebuild_queue, project)
+    @redis_set_cache ||= if project && Feature.enabled?(:ref_cache_with_rebuild_queue, project)
                            Gitlab::Repositories::RebuildableSetCache.new(self)
                          else
                            Gitlab::RepositorySetCache.new(self)

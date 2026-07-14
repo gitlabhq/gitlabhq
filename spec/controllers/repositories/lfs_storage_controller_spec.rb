@@ -139,8 +139,11 @@ RSpec.describe Repositories::LfsStorageController, feature_category: :source_cod
     let_it_be(:token) { create(:personal_access_token, user: user, scopes: ['read_repository']) }
     let_it_be(:extra_headers) { { 'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials(user.username, token.token) } }
 
-    before do
+    before_all do
       create(:lfs_objects_project, project: private_project, lfs_object: lfs_object)
+    end
+
+    before do
       request.headers.merge!(extra_headers)
     end
 
@@ -158,7 +161,7 @@ RSpec.describe Repositories::LfsStorageController, feature_category: :source_cod
         end
 
         context 'when the LFS object metadata exists but file is missing' do
-          let_it_be(:broken_lfs_object, freeze: false) { create(:lfs_object) }
+          let_it_be_with_reload(:broken_lfs_object) { create(:lfs_object) }
           let(:params) { { repository_path: repository_path, oid: broken_lfs_object.oid } }
 
           before do

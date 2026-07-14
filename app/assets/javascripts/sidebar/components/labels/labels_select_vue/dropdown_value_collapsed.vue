@@ -19,6 +19,7 @@ export default {
       required: true,
     },
   },
+  emits: ['onValueClick'],
   computed: {
     labelsList() {
       const labelsString = this.labels.length

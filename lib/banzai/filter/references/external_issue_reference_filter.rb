@@ -97,6 +97,8 @@ module Banzai
         # We might be operating on cached HTML which already has hrefs;
         # replace them anyway, as they could be out of date.
         class LinkResolutionFilter < HTML::Pipeline::Filter
+          include Concerns::ContextAccessors
+
           def call
             # Early return if the project isn't using an external tracker
             return doc if project.nil? || ExternalIssueReferenceFilter.default_issues_tracker?(project)
@@ -112,10 +114,6 @@ module Banzai
             @query ||= %{descendant-or-self::a[
               @data-reference-type="external_issue" and boolean(@data-external-issue)
             ]}
-          end
-
-          def project
-            context[:project]
           end
 
           def url_for_issue(issue_id)

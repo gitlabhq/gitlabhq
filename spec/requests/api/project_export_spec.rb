@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cache, feature_category: :importers do
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:project_none) { create(:project) }
   let_it_be(:project_started) { create(:project) }
   let(:project_finished) { create(:project, :with_export, export_user: user) }
@@ -264,16 +264,9 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         context 'when rate limit is exceeded' do
           subject(:request) { get api(download_path, admin, admin_mode: true) }
 
-          before do
-            allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-              threshold = Gitlab::ApplicationRateLimiter.rate_limits[:project_download_export][:threshold].call
-              allow(strategy).to receive(:increment).and_return(threshold + 1)
-            end
-          end
-
           it 'prevents requesting project export' do
             expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-              .with(:project_download_export, scope: [user, project]).and_call_original
+              .with(:project_download_export, scope: [user, project]).and_return(true)
 
             request
 
@@ -474,10 +467,8 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
         context 'when rate limit is exceeded across projects' do
           before do
-            allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-              threshold = Gitlab::ApplicationRateLimiter.rate_limits[:project_export][:threshold].call
-              allow(strategy).to receive(:increment).and_return(threshold + 1)
-            end
+            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+              .with(:project_export, scope: anything).and_return(true)
           end
 
           it 'prevents requesting project export' do
@@ -672,8 +663,8 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
       describe 'GET /projects/:id/export_relations/download' do
         context 'when export request is not batched' do
-          let_it_be(:export, freeze: false) { create(:bulk_import_export, project: project, relation: 'labels', user: user) }
-          let_it_be(:upload, freeze: false) { create(:bulk_import_export_upload, export: export) }
+          let_it_be_with_reload(:export) { create(:bulk_import_export, project: project, relation: 'labels', user: user) }
+          let_it_be_with_reload(:upload) { create(:bulk_import_export_upload, export: export) }
 
           it_behaves_like 'authorizing granular token permissions', :download_project_relation_export do
             before do
@@ -731,7 +722,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
           context 'when export is batched' do
             let(:relation) { 'issues' }
 
-            let_it_be(:export, freeze: false) { create(:bulk_import_export, :batched, project: project, relation: 'issues', user: user) }
+            let_it_be_with_reload(:export) { create(:bulk_import_export, :batched, project: project, relation: 'issues', user: user) }
 
             it 'returns 400' do
               export.update!(batched: true)
@@ -804,7 +795,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         end
 
         context 'when export is from an offline transfer export' do
-          let_it_be(:export, freeze: false) { create(:bulk_import_export, :offline, project: project, relation: 'labels', user: user) }
+          let_it_be_with_reload(:export) { create(:bulk_import_export, :offline, project: project, relation: 'labels', user: user) }
 
           it 'returns 404' do
             get api(download_path, user)
@@ -919,26 +910,6 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
       context 'with bulk_import is disabled' do
         before do
           stub_application_setting(bulk_import_enabled: false)
-          stub_feature_flags(override_bulk_import_disabled: false)
-        end
-
-        shared_examples 'flag override' do |expected_http_status:|
-          it 'enables the feature when override flag is enabled for the user' do
-            stub_feature_flags(override_bulk_import_disabled: user)
-
-            request
-
-            expect(response).to have_gitlab_http_status(expected_http_status)
-          end
-
-          it 'does not enable the feature when override flag is enabled for another user' do
-            other_user = create(:user)
-            stub_feature_flags(override_bulk_import_disabled: other_user)
-
-            request
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
         end
 
         describe 'POST /projects/:id/export_relations' do
@@ -947,13 +918,11 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
           it_behaves_like '404 response' do
             let(:message) { '404 Not Found' }
           end
-
-          it_behaves_like 'flag override', expected_http_status: :accepted
         end
 
         describe 'GET /projects/:id/export_relations/download' do
-          let_it_be(:export, freeze: false) { create(:bulk_import_export, project: project, relation: 'labels', user: user) }
-          let_it_be(:upload, freeze: false) { create(:bulk_import_export_upload, export: export) }
+          let_it_be_with_reload(:export) { create(:bulk_import_export, project: project, relation: 'labels', user: user) }
+          let_it_be_with_reload(:upload) { create(:bulk_import_export_upload, export: export) }
 
           subject(:request) { get api(download_path, user) }
 
@@ -964,8 +933,6 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
           it_behaves_like '404 response' do
             let(:message) { '404 Not Found' }
           end
-
-          it_behaves_like 'flag override', expected_http_status: :ok
         end
 
         describe 'GET /projects/:id/export_relations/status' do
@@ -974,8 +941,6 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
           it_behaves_like '404 response' do
             let(:message) { '404 Not Found' }
           end
-
-          it_behaves_like 'flag override', expected_http_status: :ok
         end
       end
     end

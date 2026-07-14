@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Common::Pipelines::LabelsPipeline, feature_category: :importers do
   let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group, owners: [user]) }
   let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
   let_it_be(:filepath, freeze: false) { 'spec/fixtures/bulk_imports/gz/labels.ndjson.gz' }
   let_it_be(:entity, freeze: false) do
@@ -26,7 +26,6 @@ RSpec.describe BulkImports::Common::Pipelines::LabelsPipeline, feature_category:
   before do
     allow(subject).to receive(:set_source_objects_counter)
     FileUtils.copy_file(filepath, File.join(tmpdir, 'labels.ndjson.gz'))
-    group.add_owner(user)
   end
 
   subject { described_class.new(context) }

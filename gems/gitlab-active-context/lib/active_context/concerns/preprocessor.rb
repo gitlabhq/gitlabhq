@@ -50,11 +50,11 @@ module ActiveContext
           successful_refs << ref
         rescue *skip_error_types => e
           ::ActiveContext::Logger.skippable_exception(
-            e, class: self.class.name, reference: ref.serialize, reference_id: ref.identifier
+            e, class_name: self.class.name, reference: ref.serialize, reference_id: ref.identifier
           )
         rescue *retry_error_types => e
           ::ActiveContext::Logger.retryable_exception(
-            e, class: self.class.name, reference: ref.serialize, reference_id: ref.identifier
+            e, class_name: self.class.name, reference: ref.serialize, reference_id: ref.identifier
           )
 
           failed_refs << ref
@@ -71,11 +71,11 @@ module ActiveContext
 
           { successful: refs, failed: [], retryable: [] }
         rescue *infinite_retry_error_types => e
-          ::ActiveContext::Logger.retryable_exception(e, class: self.class.name, refs: refs.map(&:serialize))
+          ::ActiveContext::Logger.retryable_exception(e, class_name: self.class.name, refs: refs.map(&:serialize))
 
           { successful: [], failed: [], retryable: refs }
         rescue *error_types => e
-          ::ActiveContext::Logger.retryable_exception(e, class: self.class.name, refs: refs.map(&:serialize))
+          ::ActiveContext::Logger.retryable_exception(e, class_name: self.class.name, refs: refs.map(&:serialize))
 
           { successful: [], failed: refs, retryable: [] }
         end

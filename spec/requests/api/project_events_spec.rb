@@ -3,13 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe API::ProjectEvents, feature_category: :user_profile do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:non_member) { create(:user) }
-  let_it_be(:private_project, freeze: false) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
+  let_it_be_with_reload(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
   let_it_be(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
   let_it_be(:closed_issue_event) { create(:closed_issue_event, project: private_project, author: user, target: closed_issue, created_at: Date.new(2016, 12, 30)) }
 
   describe 'GET /projects/:id/events' do
+    it_behaves_like 'authorizing granular token permissions', :read_event do
+      let(:boundary_object) { private_project }
+      let(:request) { get api("/projects/#{private_project.id}/events", personal_access_token: pat) }
+    end
+
     context 'when unauthenticated ' do
       it 'returns 404 for private project' do
         get api("/projects/#{private_project.id}/events")
@@ -130,7 +135,7 @@ RSpec.describe API::ProjectEvents, feature_category: :user_profile do
     end
 
     context 'when exists some events' do
-      let_it_be(:merge_request1, freeze: false) { create(:closed_merge_request, author: user, assignees: [user], source_project: private_project) }
+      let_it_be_with_reload(:merge_request1) { create(:closed_merge_request, author: user, assignees: [user], source_project: private_project) }
       let_it_be(:merge_request2) { create(:closed_merge_request, author: user, assignees: [user], source_project: private_project) }
 
       let_it_be(:token) { create(:personal_access_token, user: user) }

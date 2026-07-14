@@ -27,12 +27,16 @@
   position: relative;
 
   &::before {
-    // stylelint-disable length-zero-no-unit
-    @include vertical-line(0px, 7px);
+    @include vertical-line(-16px, 7px, -40px);
     @apply gl-bg-strong;
 
     @include gl-container-width-down(md, panel) {
       display: none;
     }
   }
+}
+
+// Shorten last line to height of item
+.daily-commit:last-child .daily-commits-item::before {
+  height: calc(100% + 16px);
 }

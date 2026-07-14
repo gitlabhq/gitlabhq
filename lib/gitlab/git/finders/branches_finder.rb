@@ -63,8 +63,9 @@ module Gitlab
             sort_by: normalized_sort,
             per_page: effective_per_page,
             page_token: page_token,
-            ignore_case: true
+            ignore_case: search.present?
           }
+          ref_finder_params[:max_per_page] = effective_per_page if offset_page?
 
           if exact_match_search?
             ref_finder_params[:ref_names] = [search.delete_prefix('^').delete_suffix('$')]
@@ -143,7 +144,9 @@ module Gitlab
         strong_memoize_attr :search
 
         def per_page
-          params[:per_page]
+          return params[:per_page] if params[:per_page].blank?
+
+          [params[:per_page].to_i, Gitlab::PaginationDelegate::MAX_PER_PAGE].min
         end
 
         def page_token

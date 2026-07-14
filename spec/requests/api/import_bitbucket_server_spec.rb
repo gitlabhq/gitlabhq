@@ -16,7 +16,7 @@ RSpec.describe API::ImportBitbucketServer, :with_current_organization, feature_c
       browse_url: "#{base_uri}/projects/#{project_key}/repos/#{repo_slug}/browse",
       clone_url: "#{base_uri}/scm/#{project_key}/#{repo_slug}.git",
       description: 'provider',
-      visibility_level: Gitlab::VisibilityLevel::PUBLIC
+      public?: true
     )
   end
 

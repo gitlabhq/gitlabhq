@@ -4,13 +4,14 @@ require 'spec_helper'
 
 # Features not yet implemented in the REST API
 UNIMPLEMENTED_FEATURES = %w[
-  agent_plan ai_session crm_contacts current_user_todos custom_fields development
+  agent_plan ai_session crm_contacts current_user_todos
   email_participants linked_resources notes participants test_reports vulnerabilities
 ].freeze
 
-# linked_items is only exposed via the EE prepend on Features::Entity. In FOSS-only test
-# runs the prepend doesn't apply, so add it to the exception list for that context only.
-FOSS_ONLY_UNIMPLEMENTED_FEATURES = Gitlab.ee? ? [] : %w[linked_items].freeze
+# linked_items and custom_fields are only exposed via the EE prepend on Features::Entity. In
+# FOSS-only test runs the prepend doesn't apply, so add them to the exception list for that
+# context only.
+FOSS_ONLY_UNIMPLEMENTED_FEATURES = Gitlab.ee? ? [] : %w[linked_items custom_fields].freeze
 
 RSpec.describe API::Entities::WorkItems::Features::Entity, feature_category: :team_planning do
   let(:requested_features) { [] }
@@ -128,6 +129,57 @@ RSpec.describe API::Entities::WorkItems::Features::Entity, feature_category: :te
 
       it 'omits the hierarchy payload' do
         expect(representation).not_to have_key(:hierarchy)
+      end
+    end
+  end
+
+  describe 'development feature' do
+    let(:work_item) { build_stubbed(:work_item) }
+    let(:requested_features) { [:development] }
+
+    subject(:representation) do
+      described_class
+        .new(work_item, requested_features: requested_features, closing_merge_requests_counts: counts)
+        .as_json
+    end
+
+    context 'when a closing merge requests count is preloaded for the work item' do
+      let(:counts) { { work_item.id => 3 } }
+
+      it 'exposes the preloaded count' do
+        expect(representation).to include(development: { closing_merge_requests_count: 3 })
+      end
+    end
+
+    context 'when no count is preloaded for the work item' do
+      let(:counts) { {} }
+
+      it 'defaults the count to zero' do
+        expect(representation).to include(development: { closing_merge_requests_count: 0 })
+      end
+    end
+
+    context 'when no counts hash is passed in options' do
+      subject(:representation) do
+        described_class.new(work_item, requested_features: requested_features).as_json
+      end
+
+      it 'defaults the count to zero' do
+        expect(representation).to include(development: { closing_merge_requests_count: 0 })
+      end
+    end
+
+    context 'when the work item does not have the development widget' do
+      let(:counts) { {} }
+
+      before do
+        # No FOSS work item type lacks the development widget, so stub the guard rather than couple
+        # the test to an EE-only type.
+        allow(work_item).to receive(:has_widget?).with(:development).and_return(false)
+      end
+
+      it 'omits the development payload' do
+        expect(representation).not_to have_key(:development)
       end
     end
   end

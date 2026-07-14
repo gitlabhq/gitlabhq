@@ -1,0 +1,5 @@
+---
+name: Continuous Deployment Application Link
+description: An external reference link (runbook, dashboard, docs, and so on) for a
+  continuous deployment application
+feature_category: continuous_delivery

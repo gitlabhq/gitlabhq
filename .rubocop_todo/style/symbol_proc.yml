@@ -143,7 +143,6 @@ Style/SymbolProc:
     - 'spec/requests/api/snippet_repository_storage_moves_spec.rb'
     - 'spec/requests/api/tags_spec.rb'
     - 'spec/services/ci/pipelines/add_job_service_spec.rb'
-    - 'spec/services/groups/transfer_service_spec.rb'
     - 'spec/services/merge_requests/conflicts/list_service_spec.rb'
     - 'spec/services/packages/go/create_package_service_spec.rb'
     - 'spec/support/generate-seed-repo-rb'

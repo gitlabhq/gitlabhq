@@ -1,6 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContributionEventMerged from '~/contribution_events/components/contribution_event/contribution_event_merged.vue';
 import ContributionEventBase from '~/contribution_events/components/contribution_event/contribution_event_base.vue';
+import { VARIANT_DEFAULT } from '~/contribution_events/constants';
 import { eventMerged } from '../../utils';
 
 const defaultPropsData = {
@@ -24,6 +25,7 @@ describe('ContributionEventMerged', () => {
     expect(wrapper.findComponent(ContributionEventBase).props()).toEqual({
       event: defaultPropsData.event,
       iconName: 'merge-request',
+      variant: VARIANT_DEFAULT,
       message: ContributionEventMerged.i18n.message,
     });
   });

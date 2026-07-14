@@ -2,19 +2,27 @@
 - render_remember_me = admin_mode ? false : remember_me_enabled?
 - user_params = params[:user].presence || params
 
-= gitlab_ui_form_for(:user, url: target_path, method: :post, html: { class: "gl-show-field-errors js-2fa-form #{'hidden' if @user.can_use_existing_webauthn_authenticator_for_2fa?}", aria: { live: 'assertive' }}) do |f|
-  .form-group
-    = f.label :otp_attempt, _('Enter verification code')
-    -# Note: we use inputmode="numeric", because TOTP. However, recovery codes are alphanumeric.
-    = f.text_field :otp_attempt, class: 'form-control gl-form-input', required: true, autofocus: true, autocomplete: 'one-time-code', inputmode: 'numeric', title: _('This field is required.'), data: { testid: 'two-fa-code-field' }
-    %p.form-text.gl-text-subtle.hint
-      = _("Enter the code from your two-factor authenticator app. If you've lost your device, you can enter one of your recovery codes.")
+-# Steps 1-2 migrate the TOTP, recovery-code, and WebAuthn verification screens to Vue. Users
+-# who are eligible for the email OTP fallback still rely on a flow that is not migrated yet, so
+-# they stay on the legacy HAML form until it lands in a later step; enabling the flag never
+-# breaks them. See https://gitlab.com/gitlab-org/gitlab/-/work_items/579316
+- use_vue_2fa = Feature.enabled?(:two_factor_vue, @user) && !fallback_to_email_otp_permitted?(@user)
+- if use_vue_2fa
+  #js-2fa{ data: { path: target_path, admin_mode: admin_mode.to_s, active_method: params[:two_factor_method].presence, remember_me: user_params.fetch(:remember_me, 0), remember_me_enabled: render_remember_me.to_s, totp_enabled: @user.two_factor_otp_enabled?.to_s, webauthn_enabled: @user.can_use_existing_webauthn_authenticator_for_2fa?.to_s } }
+- else
+  = gitlab_ui_form_for(:user, url: target_path, method: :post, html: { class: "gl-show-field-errors js-2fa-form #{'hidden' if @user.can_use_existing_webauthn_authenticator_for_2fa?}", aria: { live: 'assertive' }}) do |f|
+    .form-group
+      = f.label :otp_attempt, _('Enter verification code')
+      -# Note: we use inputmode="numeric", because TOTP. However, recovery codes are alphanumeric.
+      = f.text_field :otp_attempt, class: 'form-control gl-form-input', required: true, autofocus: true, autocomplete: 'one-time-code', inputmode: 'numeric', title: _('This field is required.'), data: { testid: 'two-fa-code-field' }
+      %p.form-text.gl-text-subtle.hint
+        = _("Enter the code from your two-factor authenticator app. If you've lost your device, you can enter one of your recovery codes.")
 
-    - if render_remember_me
-      = f.hidden_field :remember_me, value: user_params.fetch(:remember_me, 0)
+      - if render_remember_me
+        = f.hidden_field :remember_me, value: user_params.fetch(:remember_me, 0)
 
-  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'verify-code-button' } }) do
-    = _("Verify code")
+    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'verify-code-button' } }) do
+      = _("Verify code")
 
 - if render_email_otp_fallback_for_totp?(@user)
   - verification_data_hash = verification_data(@user)

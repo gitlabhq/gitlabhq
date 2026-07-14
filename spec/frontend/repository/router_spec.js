@@ -110,6 +110,63 @@ describe('Repository router spec', () => {
     );
   });
 
+  describe('Container layout toggle', () => {
+    const setupContainer = (initialClasses = 'container-fluid') => {
+      document.body.innerHTML = `<div class="${initialClasses}"><main id="content-body"></main></div>`;
+      return document.getElementById('content-body').parentElement;
+    };
+
+    afterEach(() => {
+      document.body.innerHTML = '';
+    });
+
+    it('removes container-limited when navigating to a tree route', async () => {
+      const containerEl = setupContainer('container-fluid container-limited');
+      const router = createRouter('', 'main');
+
+      await router.push('/-/tree/main/app');
+
+      expect(containerEl.classList.contains('container-limited')).toBe(false);
+    });
+
+    it('removes container-limited when navigating to a blob route', async () => {
+      const containerEl = setupContainer('container-fluid container-limited');
+      const router = createRouter('', 'main');
+
+      await router.push('/-/blob/main/file.md');
+
+      expect(containerEl.classList.contains('container-limited')).toBe(false);
+    });
+
+    it('restores container-limited when returning to project root from a fluid route', async () => {
+      const containerEl = setupContainer('container-fluid container-limited');
+      const router = createRouter('', 'main');
+
+      await router.push('/-/tree/main/app');
+      expect(containerEl.classList.contains('container-limited')).toBe(false);
+
+      await router.push('/');
+      expect(containerEl.classList.contains('container-limited')).toBe(true);
+    });
+
+    it('preserves a Fluid layout preference when navigating to project root', async () => {
+      const containerEl = setupContainer('container-fluid');
+      const router = createRouter('', 'main');
+
+      await router.push('/-/tree/main/app');
+      expect(containerEl.classList.contains('container-limited')).toBe(false);
+
+      await router.push('/');
+      expect(containerEl.classList.contains('container-limited')).toBe(false);
+    });
+
+    it('does not throw when #content-body is absent from the DOM', async () => {
+      const router = createRouter('', 'main');
+
+      await expect(router.push('/-/tree/main/app')).resolves.not.toThrow();
+    });
+  });
+
   describe('Component reactivity with route changes', () => {
     const PROJECT_PATH = 'project';
     const BRANCH = 'master';

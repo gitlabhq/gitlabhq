@@ -6,7 +6,7 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: current_user) }
 
   let_it_be(:variable_one) do
@@ -141,6 +141,33 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
               { "key" => 'ABC', "value" => "ABC123", "variableType" => 'ENV_VAR' }
             ]
           )
+      end
+    end
+
+    context 'when masking sensitive variables in logs' do
+      let(:pipeline_schedule_parameters) do
+        { inputs: [{ name: 'SECRET_INPUT', value: 'top-secret-value' }] }
+      end
+
+      let(:mutation) do
+        graphql_mutation(
+          :pipeline_schedule_update,
+          { id: pipeline_schedule.to_global_id.to_s, **pipeline_schedule_parameters },
+          'errors',
+          [],
+          'updatePipelineSchedule'
+        )
+      end
+
+      it 'does not log input values in plaintext' do
+        logger_instance = instance_double(Gitlab::GraphqlLogger)
+        allow(Gitlab::GraphqlLogger).to receive(:build).and_return(logger_instance)
+        allow(logger_instance).to receive(:info) do |payload|
+          expect(payload[:variables].to_s).not_to include('top-secret-value')
+          expect(payload[:variables].to_s).to include('[FILTERED]')
+        end
+
+        post_graphql_mutation(mutation, current_user: current_user)
       end
     end
 

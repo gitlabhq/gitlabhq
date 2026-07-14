@@ -33,8 +33,21 @@ export default {
       return Boolean(this.options.includeLegendAvgMax);
     },
     fullOptions() {
-      // Exclude `tooltip` to prevent ECharts from rendering default tooltip
-      return merge({ yAxis: { min: 0 } }, omit(this.options, 'tooltip'));
+      const unit = this.options.yAxis?.valueUnit;
+      const base = {
+        yAxis: {
+          min: 0,
+          ...(unit && {
+            axisLabel: {
+              formatter: (value) => humanizeChartTooltipValue({ unit, value }),
+            },
+          }),
+        },
+      };
+
+      // Exclude `tooltip` to prevent ECharts from rendering default tooltip, and
+      // `yAxis.valueUnit` since it is our own concept, not an ECharts option.
+      return merge(base, omit(this.options, ['tooltip', 'yAxis.valueUnit']));
     },
   },
   methods: {

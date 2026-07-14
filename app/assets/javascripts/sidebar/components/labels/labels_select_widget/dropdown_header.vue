@@ -35,6 +35,7 @@ export default {
       default: false,
     },
   },
+  emits: ['closeDropdown', 'input', 'searchEnter', 'toggleDropdownContentsCreateView'],
   computed: {
     dropdownTitle() {
       return this.showDropdownContentsCreateView ? this.labelsCreateTitle : this.labelsListTitle;

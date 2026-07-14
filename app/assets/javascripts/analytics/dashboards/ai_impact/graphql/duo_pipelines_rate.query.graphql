@@ -1,0 +1,17 @@
+# @feature_category: value_stream_management
+#import "./duo_pipelines_rate_item.fragment.graphql"
+
+query duoPipelinesRateQuery($fullPath: ID!, $startDate: Time!, $endDate: Time!) {
+  group(fullPath: $fullPath) {
+    id
+    analytics {
+      ...DuoPipelinesRateItem
+    }
+  }
+  project(fullPath: $fullPath) {
+    id
+    analytics {
+      ...DuoPipelinesRateItem
+    }
+  }
+}

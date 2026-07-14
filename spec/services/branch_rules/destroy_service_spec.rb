@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe BranchRules::DestroyService, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:protected_branch, freeze: false) { create(:protected_branch) }
+  let_it_be_with_reload(:protected_branch) { create(:protected_branch) }
 
   describe '#execute' do
     let(:branch_rule) { Projects::BranchRule.new(project, protected_branch) }

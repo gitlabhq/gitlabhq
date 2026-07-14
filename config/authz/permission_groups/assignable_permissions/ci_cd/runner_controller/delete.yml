@@ -1,0 +1,9 @@
+---
+name: delete_runner_controller
+description: Grants the ability to delete runner controllers
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_runner_controller

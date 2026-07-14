@@ -35,6 +35,7 @@ permissions:
   - update_iteration_cadence
   - update_merge_request_note
   - update_milestone
+  - update_note
   - update_snippet_discussion
   - update_snippet_discussion_note
   - update_snippet_note

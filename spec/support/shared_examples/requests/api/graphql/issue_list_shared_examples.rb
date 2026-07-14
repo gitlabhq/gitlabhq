@@ -337,10 +337,11 @@ RSpec.shared_examples 'graphql issue list request spec' do
 
       # don't use support bot because this isn't a req for ticket WIT
       let_it_be(:ticket, freeze: false) { create(:work_item, :ticket, project: project, author: current_user) }
-      # Get work item as issue because this query only returns issues.
-      let_it_be(:service_desk_items, freeze: false) { [service_desk_issue, Issue.find(ticket.id)] }
 
-      let_it_be(:base_params, freeze: false) { { iids: service_desk_items.map { |issue| issue.iid.to_s } } }
+      # Get work item as issue because this query only returns issues.
+      let(:service_desk_items) { [service_desk_issue, Issue.find(ticket.id)] }
+
+      let(:base_params) { { iids: service_desk_items.map { |issue| issue.iid.to_s } } }
 
       let(:issue_filter_params) { { author_username: 'support-bot' } }
 
@@ -667,7 +668,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
       create(:incident_management_issuable_escalation_status, issue: issue_a)
     end
 
-    let_it_be(:incident_type, freeze: false) { build(:work_item_system_defined_type, :incident) }
+    let_it_be(:incident_type) { build(:work_item_system_defined_type, :incident) }
 
     let(:fields) do
       <<~QUERY

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::TemplateType do
+RSpec.describe Types::Ci::TemplateType, feature_category: :pipeline_composition do
   specify { expect(described_class.graphql_name).to eq('CiTemplate') }
 
   it 'exposes the expected fields' do

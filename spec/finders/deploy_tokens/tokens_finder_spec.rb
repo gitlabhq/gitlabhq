@@ -8,8 +8,8 @@ RSpec.describe DeployTokens::TokensFinder do
   let_it_be(:admin)      { create(:admin) }
   let_it_be(:user)       { create(:user) }
   let_it_be(:other_user) { create(:user) }
-  let_it_be(:project)    { create(:project, creator_id: user.id) }
-  let_it_be(:group)      { create(:group) }
+  let_it_be(:project)    { create(:project, creator_id: user.id, maintainers: user) }
+  let_it_be(:group)      { create(:group, maintainers: user) }
 
   let_it_be(:project_deploy_token) { create(:deploy_token, projects: [project]) }
   let_it_be(:revoked_project_deploy_token) { create(:deploy_token, projects: [project], revoked: true) }
@@ -70,10 +70,6 @@ RSpec.describe DeployTokens::TokensFinder do
     context 'when scope is a Project' do
       subject { described_class.new(user, project, params).execute }
 
-      before do
-        project.add_maintainer(user)
-      end
-
       it 'returns all deploy tokens for the project' do
         is_expected.to match_array(
           [
@@ -102,10 +98,6 @@ RSpec.describe DeployTokens::TokensFinder do
 
     context 'when scope is a Group' do
       subject { described_class.new(user, group, params).execute }
-
-      before do
-        group.add_maintainer(user)
-      end
 
       it 'returns all deploy tokens for the group' do
         is_expected.to match_array(

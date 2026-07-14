@@ -490,10 +490,10 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   end
 
   describe '#issuable_label_selector_data' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     context 'with a new issuable' do
-      let_it_be(:issuable, freeze: false) { build(:issue, project: project) }
+      let_it_be(:issuable) { build(:issue, project: project) }
 
       it 'returns the expected data' do
         expect(helper.issuable_label_selector_data(project, issuable)).to match({
@@ -510,9 +510,9 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
 
     context 'with an existing issuable' do
-      let_it_be(:label, freeze: false) { create(:label, name: 'Bug') }
-      let_it_be(:label2, freeze: false) { create(:label, name: 'Community contribution') }
-      let_it_be(:issuable, freeze: false) do
+      let_it_be(:label) { create(:label, name: 'Bug') }
+      let_it_be(:label2) { create(:label, name: 'Community contribution') }
+      let_it_be(:issuable) do
         create(:merge_request, source_project: project, target_project: project, labels: [label, label2])
       end
 

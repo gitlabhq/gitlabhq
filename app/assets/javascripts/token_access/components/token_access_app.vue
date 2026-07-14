@@ -5,6 +5,7 @@ import InboundTokenAccess from './inbound_token_access.vue';
 import AuthLog from './auth_log.vue';
 
 export default {
+  name: 'TokenAccessApp',
   components: {
     GlIntersectionObserver,
     AuthLog,

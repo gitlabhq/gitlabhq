@@ -58,7 +58,7 @@ RSpec.describe Mutations::Achievements::UpdateUserAchievement, feature_category:
 
         expect(graphql_data_at(:user_achievements_update, :user_achievement, :id))
           .to eq(user_achievement.to_global_id.to_s)
-        expect(graphql_data_at(:user_achievements_update, :user_achievement, :show_on_profile)).to eq(false)
+        expect(graphql_data_at(:user_achievements_update, :user_achievement, :show_on_profile)).to be(false)
       end
     end
   end

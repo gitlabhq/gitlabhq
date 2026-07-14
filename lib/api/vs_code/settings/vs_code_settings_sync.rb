@@ -26,6 +26,9 @@ module API
         end
 
         resource :vscode do
+          params do
+            optional :settings_context_hash, type: String, desc: 'The settings context hash'
+          end
           resource '/settings_sync(/:settings_context_hash)' do
             content_type :json, 'application/json'
             content_type :json, 'text/plain'
@@ -37,6 +40,7 @@ module API
               ]
               tags %w[vscode]
             end
+            route_setting :authorization, permissions: :read_vscode_setting, boundary_type: :user
             get '/v1/manifest' do
               settings = SettingsFinder.new(current_user: current_user,
                 setting_types: SETTINGS_TYPES,
@@ -62,12 +66,13 @@ module API
                 values: SETTINGS_TYPES
               requires :id, type: String, desc: 'ID of the resource to retrieve'
             end
+            route_setting :authorization, permissions: :read_vscode_setting, boundary_type: :user
             get '/v1/resource/:resource_name/:id' do
               settings = find_settings
 
               if settings.blank?
                 status :no_content
-                header :etag, NO_CONTENT_ETAG
+                header 'Etag', NO_CONTENT_ETAG
                 body false
               else
                 # This endpoint does not use the :id parameter
@@ -76,7 +81,7 @@ module API
                 # We can rely on obtaining the first record of the setting
                 # result.
                 setting = settings.first
-                header :etag, setting[:uuid]
+                header 'Etag', setting[:uuid]
                 presenter = VsCodeSettingPresenter.new setting
                 present presenter, with: Entities::VsCodeSetting
               end
@@ -94,6 +99,7 @@ module API
               requires :resource_name, type: String, desc: 'Name of the resource such as settings',
                 values: SETTINGS_TYPES
             end
+            route_setting :authorization, permissions: :read_vscode_setting, boundary_type: :user
             get '/v1/resource/:resource_name' do
               settings = find_settings
               present settings, with: Entities::VsCodeSettingReference,
@@ -112,6 +118,7 @@ module API
               requires :resource_name, type: String, desc: 'Name of the resource such as settings',
                 values: SETTINGS_TYPES
             end
+            route_setting :authorization, permissions: :update_vscode_setting, boundary_type: :user
             post '/v1/resource/:resource_name' do
               response = CreateOrUpdateService.new(current_user: current_user,
                 params: {
@@ -137,6 +144,7 @@ module API
               ]
               tags %w[vscode]
             end
+            route_setting :authorization, permissions: :delete_vscode_setting, boundary_type: :user
             delete '/v1/collection' do
               DeleteService.new(current_user: current_user).execute
 

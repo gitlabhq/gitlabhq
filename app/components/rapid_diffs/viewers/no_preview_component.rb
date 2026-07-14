@@ -60,6 +60,7 @@ module RapidDiffs
       def matched_no_preview_reason
         return if @diff_file.empty?
         return :too_large if @diff_file.too_large?
+        return :stored_externally if @diff_file.stored_externally?
         return :generated_collapsed if @diff_file.collapsed? && @diff_file.generated?
         return :collapsed if @diff_file.collapsed?
         return :not_diffable unless @diff_file.diffable?
@@ -72,12 +73,26 @@ module RapidDiffs
       def no_preview_reasons
         {
           too_large: -> { _("File size exceeds preview limit.") },
+          stored_externally: -> { stored_externally_message },
           generated_collapsed: -> { generated_collapsed_message },
           collapsed: -> { _("Preview size limit exceeded, changes collapsed.") },
           not_diffable: -> { _("Preview suppressed by a .gitattributes entry or the file's encoding is unsupported.") },
           whitespace_only: -> { _("Contains only whitespace changes.") },
           file_type: -> { _("No diff preview for this file type.") }
         }
+      end
+
+      def stored_externally_message
+        docs_link = helpers.link_to(
+          '',
+          helpers.help_page_path('topics/git/lfs/_index.md'),
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        )
+        helpers.safe_format(
+          _('File stored in LFS. %{linkStart}Learn more%{linkEnd}.'),
+          helpers.tag_pair(docs_link, :linkStart, :linkEnd)
+        )
       end
 
       def generated_collapsed_message

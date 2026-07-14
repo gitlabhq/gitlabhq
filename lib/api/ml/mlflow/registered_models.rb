@@ -31,6 +31,7 @@ module API
               desc: 'Optional description for registered model.'
             optional :tags, type: Array, desc: 'Additional metadata for registered model.'
           end
+          route_setting :authorization, permissions: :create_ml_model, boundary_type: :project
           post 'create', urgency: :low do
             service_result = ::Ml::CreateModelService.new(
               user_project,
@@ -60,6 +61,7 @@ module API
             optional :name, type: String, default: '',
               desc: 'Registered model unique name identifier, in reference to the project'
           end
+          route_setting :authorization, permissions: :read_ml_model, boundary_type: :project
           get 'get', urgency: :low do
             present find_model(user_project, params[:name]), with: Entities::Ml::Mlflow::RegisteredModel,
               root: :registered_model
@@ -80,6 +82,7 @@ module API
             optional :description, type: String,
               desc: 'Optional description for registered model.'
           end
+          route_setting :authorization, permissions: :update_ml_model, boundary_type: :project
           patch 'update', urgency: :low do
             present ::Ml::UpdateModelService.new(
               find_model(user_project, params[:name]), params[:description]
@@ -98,6 +101,7 @@ module API
             optional :name, type: String,
               desc: 'Registered model unique name identifier, in reference to the project'
           end
+          route_setting :authorization, permissions: :read_ml_model, boundary_type: :project
           post 'get-latest-versions', urgency: :low do
             model = find_model(user_project, params[:name])
 
@@ -118,6 +122,7 @@ module API
             optional :name, type: String,
               desc: 'Registered model unique name identifier, in reference to the project'
           end
+          route_setting :authorization, permissions: :delete_ml_model, boundary_type: :project
           delete 'delete', urgency: :low do
             resource_not_found! unless params[:name]
 
@@ -155,6 +160,7 @@ module API
               type: String,
               desc: 'Token for pagination'
           end
+          route_setting :authorization, permissions: :read_ml_model, boundary_type: :project
           get 'search', urgency: :low do
             max_results = [params[:max_results], 1000].min
 
@@ -186,6 +192,7 @@ module API
             detail 'https://mlflow.org/docs/2.19.0/rest-api.html#get-model-version-by-alias'
             tags ['mlops']
           end
+          route_setting :authorization, permissions: :read_ml_model, boundary_type: :project
           get 'alias', urgency: :low do
             present find_model_version(user_project, params[:name], params[:alias]),
               with: Entities::Ml::Mlflow::ModelVersion, root: :model_version

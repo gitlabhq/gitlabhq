@@ -5,6 +5,10 @@ module Gitlab
     class TransferTracker
       attr_reader :tracked_table_locations
 
+      EXCLUDED_CALL_PATHS = [
+        %r{lib/users/internal\.rb}
+      ].freeze
+
       def initialize(service_path_pattern: nil)
         @tracked_table_locations = {}
         @subscriber = nil
@@ -46,13 +50,9 @@ module Gitlab
 
         parsed = PgQuery.parse(sql)
         stmt = parsed.tree.stmts.first&.stmt
-        return unless stmt.try(:update_stmt)
 
-        update_stmt = stmt.update_stmt
-        table_name = update_stmt.relation.relname
-
-        set_columns = update_stmt.target_list.map { |target| target.res_target.name }
-        return unless set_columns.any? { |col| organization_column?(col) }
+        table_name, columns = extract_statement_info(stmt)
+        return unless table_name && columns&.any? { |col| organization_column?(col) }
 
         @mutex.synchronize do
           record_table(table_name, location) if org_sharded_table?(table_name)
@@ -61,6 +61,20 @@ module Gitlab
       rescue StandardError => e
         @exception ||= e
         warn("TransferTracker error: #{e.message}")
+      end
+
+      def extract_statement_info(stmt)
+        if stmt.try(:update_stmt)
+          update_stmt = stmt.update_stmt
+          table_name = update_stmt.relation.relname
+          columns = update_stmt.target_list.map { |target| target.res_target.name }
+          [table_name, columns]
+        elsif stmt.try(:insert_stmt)
+          insert_stmt = stmt.insert_stmt
+          table_name = insert_stmt.relation.relname
+          columns = insert_stmt.cols.map { |col| col.res_target.name }
+          [table_name, columns]
+        end
       end
 
       def record_table(table_name, location)
@@ -124,12 +138,21 @@ module Gitlab
           .group_by { |p| p.parent_identifier.split('.').last }
       end
 
+      # NOTE: INSERT ... SELECT ... statements (with no explicit column list) will not be tracked
+      # because insert_stmt.cols returns an empty array. If a transfer pattern uses this form,
+      # extract_statement_info will need to be extended.
       def find_service_caller_location
         return unless @service_path_pattern
 
-        location = caller_locations(0, 50).find { |loc| loc.path.match?(@service_path_pattern) }
-        return unless location
+        locations = caller_locations(0, 200)
 
+        service_index = locations.index { |loc| loc.path.match?(@service_path_pattern) }
+        return unless service_index
+
+        excluded_index = locations.index { |loc| EXCLUDED_CALL_PATHS.any? { |pattern| loc.path.match?(pattern) } }
+        return if excluded_index && excluded_index < service_index
+
+        location = locations[service_index]
         "#{location.path}:#{location.lineno}"
       end
     end

@@ -1,0 +1,27 @@
+#import "./fragments/pipeline_aggregate_metric_item.fragment.graphql"
+
+query getAggregatePipelineAnalytics(
+  $fullPath: ID!
+  $fromTime: Time!
+  $toTime: Time!
+  $source: CiPipelineSources
+  $branch: String
+  $skipPipelineCount: Boolean = false
+  $skipPipelineSuccessRate: Boolean = false
+  $skipPipelineFailureRate: Boolean = false
+  $skipPipelineOtherRate: Boolean = false
+  $skipPipelineMedian: Boolean = false
+) {
+  group(fullPath: $fullPath) {
+    id
+    pipelineAnalytics(fromTime: $fromTime, toTime: $toTime, source: $source, ref: $branch) {
+      ...PipelineAggregateMetricItem
+    }
+  }
+  project(fullPath: $fullPath) {
+    id
+    pipelineAnalytics(fromTime: $fromTime, toTime: $toTime, source: $source, ref: $branch) {
+      ...PipelineAggregateMetricItem
+    }
+  }
+}

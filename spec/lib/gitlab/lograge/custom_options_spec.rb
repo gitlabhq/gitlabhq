@@ -127,17 +127,15 @@ RSpec.describe Gitlab::Lograge::CustomOptions, feature_category: :observability 
       end
     end
 
-    context 'when duo_workflow_id is set in SafeRequestStore', :request_store do
-      before do
-        Gitlab::SafeRequestStore[Gitlab::Middleware::DuoWorkflowId::STORE_KEY] = 'duo-abc-123'
-      end
-
+    context 'when duo_workflow_id is set in ApplicationContext' do
       it 'includes duo_workflow_id in the payload' do
-        expect(subject[Labkit::Fields::DUO_WORKFLOW_ID]).to eq('duo-abc-123')
+        Gitlab::ApplicationContext.with_context(duo_workflow_id: 'duo-abc-123') do
+          expect(subject[Labkit::Fields::DUO_WORKFLOW_ID]).to eq('duo-abc-123')
+        end
       end
     end
 
-    context 'when duo_workflow_id is not set in SafeRequestStore', :request_store do
+    context 'when duo_workflow_id is not set in ApplicationContext' do
       it 'does not include duo_workflow_id in the payload' do
         expect(subject).not_to have_key(Labkit::Fields::DUO_WORKFLOW_ID)
       end

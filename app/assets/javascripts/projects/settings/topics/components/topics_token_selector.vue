@@ -8,6 +8,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
 
 export default {
+  name: 'TopicsTokenSelector',
   components: {
     GlTokenSelector,
     GlAvatarLabeled,

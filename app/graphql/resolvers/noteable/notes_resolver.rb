@@ -34,7 +34,8 @@ module Resolvers
 
       def preloads
         {
-          award_emoji: [:award_emoji]
+          award_emoji: [:award_emoji],
+          suggestions: [:suggestions]
         }
       end
 

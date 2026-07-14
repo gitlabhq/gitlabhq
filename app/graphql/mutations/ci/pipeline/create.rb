@@ -34,7 +34,8 @@ module Mutations
 
         argument :ref, GraphQL::Types::String,
           required: true,
-          description: 'Ref on which to run the pipeline.'
+          description: 'Ref on which to run the pipeline. ' \
+            'Ignored when `mergeRequestIid` is provided; the merge request ref path is used instead.'
 
         argument :variables, [Types::Ci::VariableInputType],
           required: false,
@@ -57,7 +58,9 @@ module Mutations
           project = authorized_find!(project_path)
 
           merge_request = find_merge_request(project, merge_request_iid) if merge_request_iid
-          creation_params = { ref: ref, variables_attributes: variables.map(&:to_h) }
+
+          pipeline_ref = merge_request ? merge_request.ref_path : ref
+          creation_params = { ref: pipeline_ref, variables_attributes: variables.map(&:to_h) }
 
           execute_options = EXECUTE_OPTIONS.merge(inputs: parse_inputs(inputs))
           execute_options[:merge_request] = merge_request if merge_request

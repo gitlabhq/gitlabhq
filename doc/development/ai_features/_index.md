@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: AI Platform
+group: AI Core Infra
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: AI features based on 3rd-party integrations
 ---
@@ -102,7 +102,7 @@ If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repo
 
 [A1003](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) is more around permissions, either an invalid/missing Anthropic token or a misconfiguration of `gcloud`.
 
-In Agentic Chat, authentication errors may happen and **not** result in A1003 error. Use `gdk tail duo-workflow-service` to make sure the workflow service runs without issues. If you see an authentication error, you need to [get a new Anthropic key](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/#set-up-anthropic-api-key) and [re-run the ai-setup script](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-the-ai-gateway)
+In Agentic Chat, authentication errors may happen and not result in A1003 error. Use `gdk tail duo-workflow-service` to make sure the workflow service runs without issues. If you see an authentication error, you need to [get a new Anthropic key](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/#set-up-anthropic-api-key) and [re-run the ai-setup script](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-the-ai-gateway)
 
 ### Tips for local development
 
@@ -150,7 +150,7 @@ else:
   # Build a prompt from the old prompt template
 ```
 
-**IMPORTANT**: At the [cleaning up](../feature_flags/controls.md#cleaning-up) step, remove the feature flag in AI Gateway repository **before** removing the flag in GitLab-Rails repository.
+**IMPORTANT**: At the [cleaning up](../feature_flags/controls.md#cleaning-up) step, remove the feature flag in AI Gateway repository before removing the flag in GitLab-Rails repository.
 If you clean up the flag in GitLab-Rails repository at first, the feature flag in AI Gateway will be disabled immediately as it's the default state, hence you might encounter a surprising behavior.
 
 **IMPORTANT**: Cleaning up the feature flag in AI Gateway will immediately distribute the change to all GitLab instances, including GitLab.com, GitLab Self-Managed, and GitLab Dedicated.

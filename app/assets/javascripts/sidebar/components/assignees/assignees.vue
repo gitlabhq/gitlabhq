@@ -29,6 +29,7 @@ export default {
       default: TYPE_ISSUE,
     },
   },
+  emits: ['assign-self'],
   computed: {
     hasNoUsers() {
       return !this.users.length;

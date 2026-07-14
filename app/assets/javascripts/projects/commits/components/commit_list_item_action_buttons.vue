@@ -25,6 +25,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     anchorId: {
       type: String,
       required: false,
@@ -66,6 +71,7 @@ export default {
     <div :class="{ 'gl-invisible': !commit.description }">
       <expand-collapse-button
         :is-collapsed="isCollapsed"
+        :loading="isLoading"
         :anchor-id="anchorId"
         :accessible-label="commit.titleHtml"
         @click="$emit('click')"

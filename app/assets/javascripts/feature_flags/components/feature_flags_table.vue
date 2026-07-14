@@ -15,6 +15,7 @@ import { labelForStrategy } from '../utils';
 import StrategyLabel from './strategy_label.vue';
 
 export default {
+  name: 'FeatureFlagsTable',
   i18n: {
     deleteLabel: __('Delete'),
     editLabel: __('Edit'),
@@ -42,6 +43,7 @@ export default {
       required: true,
     },
   },
+  emits: ['toggle-flag'],
   data() {
     return {
       deleteFeatureFlagUrl: null,

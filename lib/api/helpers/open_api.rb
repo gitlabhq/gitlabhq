@@ -10,6 +10,8 @@ module API
           return if Rails.env.production?
 
           open_api_config = YAML.load_file(Rails.root.join('config/open_api.yml'))['metadata'].deep_symbolize_keys
+          open_api_config[:swagger_endpoint_guard] =
+            'route_setting :authorization, skip_granular_token_authorization: :internal_testing'
 
           add_swagger_documentation(open_api_config)
         end

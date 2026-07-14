@@ -16,6 +16,7 @@ import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_fra
 import { useMockBoundingClientRect } from 'helpers/mock_bounding_client_rect';
 import { visitUrl } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
+import { showPasskeySignIn } from 'ee_else_ce/authentication/sign_in/utils';
 
 const csrfToken = 'mock-csrf-token';
 jest.mock('~/lib/utils/csrf', () => ({ token: csrfToken }));
@@ -24,6 +25,9 @@ jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
+}));
+jest.mock('ee_else_ce/authentication/sign_in/utils', () => ({
+  showPasskeySignIn: jest.fn(),
 }));
 
 describe('SignInForm', () => {
@@ -37,6 +41,8 @@ describe('SignInForm', () => {
   useMockBoundingClientRect();
 
   beforeEach(() => {
+    showPasskeySignIn.mockReturnValue(true);
+
     setHTMLFixture(htmlSessionsNew);
     const el = document.getElementById('js-sign-in-form');
 
@@ -314,26 +320,41 @@ describe('SignInForm', () => {
   });
 
   describe('passkeys button and remember me', () => {
-    beforeEach(() => {
-      createComponent();
+    describe('when showPasskeySignIn returns false', () => {
+      beforeEach(() => {
+        showPasskeySignIn.mockReturnValue(false);
+        createComponent();
+      });
+
+      it('does not render passkeys form', () => {
+        expect(findPasskeysForm().exists()).toBe(false);
+      });
     });
 
-    it('renders form with passkeys button', () => {
-      const form = findPasskeysForm();
-      const submitButton = form.findComponent(GlButton);
-      expect(form.attributes()).toMatchObject({
-        method: 'post',
-        action: defaultPropsData.passkeysSignInPath,
+    describe('when showPasskeySignIn returns true', () => {
+      beforeEach(() => {
+        createComponent();
       });
-      expect(form.find('input[type="hidden"][name="authenticity_token"]').attributes('value')).toBe(
-        csrfToken,
-      );
-      expect(submitButton.attributes('type')).toBe('submit');
-      expect(submitButton.props('icon')).toBe('passkey');
-      expect(submitButton.text()).toBe('Passkey');
+
+      it('renders form with passkeys button', () => {
+        const form = findPasskeysForm();
+        const submitButton = form.findComponent(GlButton);
+        expect(form.attributes()).toMatchObject({
+          method: 'post',
+          action: defaultPropsData.passkeysSignInPath,
+        });
+        expect(
+          form.find('input[type="hidden"][name="authenticity_token"]').attributes('value'),
+        ).toBe(csrfToken);
+        expect(submitButton.attributes('type')).toBe('submit');
+        expect(submitButton.props('icon')).toBe('passkey');
+        expect(submitButton.text()).toBe('Passkey');
+      });
     });
 
     it('renders hidden remember me input that is controlled by remember me checkbox', async () => {
+      createComponent();
+
       const hiddenRememberMeInput = findPasskeysForm().find(
         'input[type="hidden"][name="remember_me"]',
       );
@@ -369,10 +390,10 @@ describe('SignInForm', () => {
         expect(findSubmitButton().text()).toBe('Continue');
       });
 
-      it('does not render passkeys form', () => {
+      it('calls showPasskeySignIn with showPasswordField as false', () => {
         createComponent({ provide });
 
-        expect(findPasskeysForm().exists()).toBe(false);
+        expect(showPasskeySignIn).toHaveBeenCalledWith(false);
       });
 
       describe('when user enters login and clicks Continue', () => {

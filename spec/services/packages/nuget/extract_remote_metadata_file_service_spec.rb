@@ -50,6 +50,11 @@ RSpec.describe Packages::Nuget::ExtractRemoteMetadataFileService, feature_catego
 
     context 'when nuspec file is fragmented' do
       let_it_be(:nuspec_path) { expand_fixture_path('packages/nuget/with_metadata.nuspec') }
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:tmp_zip, freeze: false) { Tempfile.new('nuget_zip') }
       let_it_be(:zipped_nuspec) { zip_nuspec_file(nuspec_path, tmp_zip.path).get_raw_input_stream.read }
       let_it_be(:fragments) { zipped_nuspec.chars.each_slice(zipped_nuspec.size / 2).map(&:join) }

@@ -1,12 +1,12 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import EMPTY_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
 import JobsTableEmptyState from '~/ci/jobs_page/components/jobs_table_empty_state.vue';
 
 describe('Jobs table empty state', () => {
   let wrapper;
 
   const pipelineEditorPath = '/root/project/-/ci/editor';
-  const emptyStateSvgPath = 'illustrations/empty-state/empty-pipeline-md.svg';
 
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
@@ -14,7 +14,6 @@ describe('Jobs table empty state', () => {
     wrapper = shallowMount(JobsTableEmptyState, {
       provide: {
         pipelineEditorPath,
-        emptyStateSvgPath,
       },
     });
   };
@@ -32,6 +31,6 @@ describe('Jobs table empty state', () => {
   });
 
   it('shows an empty state image', () => {
-    expect(findEmptyState().props('svgPath')).toBe(emptyStateSvgPath);
+    expect(findEmptyState().props('svgPath')).toBe(EMPTY_STATE_SVG);
   });
 });

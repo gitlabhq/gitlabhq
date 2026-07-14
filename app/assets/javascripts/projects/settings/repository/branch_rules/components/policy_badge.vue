@@ -11,11 +11,6 @@ export default {
   components: {
     GlBadge,
   },
-  inject: {
-    securityPoliciesPath: {
-      default: '',
-    },
-  },
   props: {
     isProtectedByPolicy: {
       type: Boolean,

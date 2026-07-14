@@ -19,7 +19,8 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::BatchFromList, :o
     let!(:non_existent_object) { create_fog_file.tap(&:destroy) }
     let!(:object_with_job_artifact_record) do
       create_fog_file.tap do |file|
-        create(:ci_job_artifact, file_final_path: path_without_bucket_prefix(file.key))
+        create(:ci_job_artifact, file_final_path: path_without_bucket_prefix(file.key),
+          job: create(:ci_build, pipeline: create(:ci_pipeline, project: create(:project, skip_disk_validation: true))))
       end
     end
 
@@ -43,7 +44,18 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::BatchFromList, :o
     end
 
     before do
+      # BatchFromList reads remote_directory/bucket_prefix from the global
+      # Gitlab.config.artifacts.object_store (via StorageHelpers#configuration),
+      # so we must stub it to return the same config used to build the Fog files.
+      # Otherwise bucket_prefix is not applied and orphan detection fails to match
+      # job artifact records by their stripped file_final_path.
+      allow(Gitlab.config.artifacts).to receive(:object_store).and_return(config)
+
       allow(Gitlab::AppLogger).to receive(:info)
+    end
+
+    prepend_before do
+      Fog::Mock.reset
     end
 
     subject(:orphan_objects) { batch.orphan_objects }

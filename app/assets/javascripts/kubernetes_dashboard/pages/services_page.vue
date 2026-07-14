@@ -6,6 +6,7 @@ import WorkloadLayout from '../components/workload_layout.vue';
 import k8sServicesQuery from '../graphql/queries/k8s_dashboard_services.query.graphql';
 
 export default {
+  name: 'ServicesPage',
   components: {
     WorkloadLayout,
   },

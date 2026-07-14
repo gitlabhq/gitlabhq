@@ -166,7 +166,7 @@ When a client exceeds the rate limit (HTTP status `429`), the following addition
 | Header                | Example                         | Description                                                                                                                                                   |
 |:----------------------|:--------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `RateLimit-ResetTime` | `Tue, 05 Jan 2021 11:00:00 GMT` | [RFC2616](https://www.rfc-editor.org/rfc/rfc2616#section-3.3.1)-formatted date and time when the request quota is reset.                                     |
-| `Retry-After`         | `30`                            | Remaining duration in seconds until the quota is reset. This is a [standard HTTP header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After). |
+| `Retry-After`         | `30`                            | Remaining duration in seconds until the quota is reset. This is a [standard HTTP header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Retry-After). |
 
 ## Use an HTTP header to bypass rate limiting
 

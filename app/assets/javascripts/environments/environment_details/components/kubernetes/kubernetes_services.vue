@@ -45,6 +45,7 @@ export default {
       type: String,
     },
   },
+  emits: ['cluster-error', 'select-item'],
   data() {
     return {
       k8sServices: [],

@@ -73,7 +73,7 @@ RSpec.describe 'Groups > Members > Tabs', :js, feature_category: :groups_and_pro
 
     context 'and then searching "Members"' do
       before do
-        click_link 'Members'
+        within('[role="tablist"]') { click_link 'Members' }
 
         within_testid 'members-filtered-search-bar' do
           find_field('Filter members').click
@@ -101,7 +101,7 @@ RSpec.describe 'Groups > Members > Tabs', :js, feature_category: :groups_and_pro
 
     context 'and then using "Members" pagination' do
       before do
-        click_link 'Members'
+        within('[role="tablist"]') { click_link 'Members' }
 
         page.within '.gl-pagination' do
           click_link '2'

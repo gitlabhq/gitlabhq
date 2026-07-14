@@ -408,6 +408,66 @@ RSpec.describe PerTestCoverageArtifactDownloader, feature_category: :tooling do
       end
     end
 
+    context 'when running as one node of a parallel export (CI_NODE_INDEX and CI_NODE_TOTAL)' do
+      let(:env_vars) { super().merge('CI_NODE_INDEX' => '1', 'CI_NODE_TOTAL' => '2') }
+      let(:pattern) { /per-test-coverage/ }
+      let(:matching_jobs) do
+        [
+          { 'id' => 100, 'name' => 'rspec unit per-test-coverage 1/4' },
+          { 'id' => 101, 'name' => 'rspec unit per-test-coverage 2/4' },
+          { 'id' => 102, 'name' => 'rspec unit per-test-coverage 3/4' },
+          { 'id' => 103, 'name' => 'rspec unit per-test-coverage 4/4' }
+        ]
+      end
+
+      before do
+        stub_bridges([
+          { 'name' => described_class::BRIDGE_NAME,
+            'downstream_pipeline' => { 'id' => child_pipeline_id } }
+        ])
+        stub_jobs(matching_jobs)
+        stub_request(:get, %r{/projects/#{project_id}/jobs/\d+/artifacts})
+          .with(headers: { 'JOB-TOKEN' => job_token })
+          .to_return(status: 200, body: 'fake-zip-bytes')
+        allow(downloader).to receive(:system).with('unzip', any_args).and_return(true)
+      end
+
+      it 'downloads only this node\'s round-robin slice of the sorted shards', :aggregate_failures do
+        expect(downloader.run).to eq(0)
+
+        # Node 1 of 2 over sorted ids [100, 101, 102, 103] (positions 0..3) keeps
+        # the even positions, so it owns 100 and 102 and leaves 101 and 103 to node 2.
+        expect(WebMock).to have_requested(:get, "#{api_url}/projects/#{project_id}/jobs/100/artifacts").once
+        expect(WebMock).to have_requested(:get, "#{api_url}/projects/#{project_id}/jobs/102/artifacts").once
+        expect(WebMock).not_to have_requested(:get, "#{api_url}/projects/#{project_id}/jobs/101/artifacts")
+        expect(WebMock).not_to have_requested(:get, "#{api_url}/projects/#{project_id}/jobs/103/artifacts")
+      end
+    end
+
+    context 'when this node owns no shards in its slice' do
+      let(:env_vars) { super().merge('CI_NODE_INDEX' => '4', 'CI_NODE_TOTAL' => '4') }
+      let(:pattern) { /per-test-coverage/ }
+      let(:matching_jobs) do
+        [
+          { 'id' => 100, 'name' => 'rspec unit per-test-coverage 1/2' },
+          { 'id' => 101, 'name' => 'rspec unit per-test-coverage 2/2' }
+        ]
+      end
+
+      before do
+        stub_bridges([
+          { 'name' => described_class::BRIDGE_NAME,
+            'downstream_pipeline' => { 'id' => child_pipeline_id } }
+        ])
+        stub_jobs(matching_jobs)
+      end
+
+      it 'returns 0 without downloading anything (fewer shards than nodes)' do
+        expect(downloader.run).to eq(0)
+        expect(WebMock).not_to have_requested(:get, %r{/projects/#{project_id}/jobs/\d+/artifacts})
+      end
+    end
+
     context 'when a process command is set without an output glob' do
       it 'raises so the unbounded-disk misconfiguration fails loudly' do
         expect do
@@ -416,6 +476,37 @@ RSpec.describe PerTestCoverageArtifactDownloader, feature_category: :tooling do
           )
         end.to raise_error(ArgumentError, /output_glob/)
       end
+    end
+  end
+
+  describe '.shards_for_node' do
+    let(:jobs) { (1..10).map { |i| { 'id' => i, 'name' => "rspec #{i} per-test-coverage" } } }
+
+    it 'returns every job unchanged for a single node' do
+      expect(described_class.shards_for_node(jobs, node_index: 1, node_total: 1)).to eq(jobs)
+    end
+
+    it 'splits the jobs into disjoint slices that cover every job exactly once' do
+      ids = (1..4).flat_map do |node|
+        described_class.shards_for_node(jobs, node_index: node, node_total: 4).map { |job| job['id'] }
+      end
+
+      expect(ids).to match_array(1..10)
+    end
+
+    it 'balances the shard count across nodes to within one' do
+      sizes = (1..4).map { |node| described_class.shards_for_node(jobs, node_index: node, node_total: 4).size }
+
+      expect(sizes.max - sizes.min).to be <= 1
+    end
+
+    it 'computes the same slice regardless of the order the jobs arrive in' do
+      expect(described_class.shards_for_node(jobs.reverse, node_index: 2, node_total: 4))
+        .to eq(described_class.shards_for_node(jobs, node_index: 2, node_total: 4))
+    end
+
+    it 'gives a node an empty slice when there are fewer jobs than nodes' do
+      expect(described_class.shards_for_node(jobs.first(2), node_index: 4, node_total: 4)).to be_empty
     end
   end
 end

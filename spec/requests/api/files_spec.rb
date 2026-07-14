@@ -393,7 +393,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         expect(json_response['file_name']).to eq(file_name)
         expect(json_response['last_commit_id']).to eq(last_commit_id)
         expect(json_response['content_sha256']).to eq(content_sha256)
-        expect(json_response['execute_filemode']).to eq(false)
+        expect(json_response['execute_filemode']).to be(false)
         expect(Base64.decode64(json_response['content']).lines.first).to eq("require 'fileutils'\n")
       end
     end
@@ -415,7 +415,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
             expect(json_response['file_name']).to eq('ls')
             expect(json_response['last_commit_id']).to eq('6b8dc4a827797aa025ff6b8f425e583858a10d4f')
             expect(json_response['content_sha256']).to eq('2c74b1181ef780dfb692c030d3a0df6e0b624135c38a9344e56b9f80007b6191')
-            expect(json_response['execute_filemode']).to eq(true)
+            expect(json_response['execute_filemode']).to be(true)
             expect(Base64.decode64(json_response['content']).lines.first).to eq("#!/bin/sh\n")
           end
         end
@@ -865,6 +865,13 @@ RSpec.describe API::Files, feature_category: :source_code_management do
             head api(route(file_path) + '/blame', personal_access_token: pat), params: params
           end
         end
+
+        it_behaves_like 'authorizing granular token permissions', :read_repository_file_blame do
+          let(:boundary_object) { project }
+          let(:request) do
+            get api(route(file_path) + '/blame', personal_access_token: pat), params: params
+          end
+        end
       end
 
       context 'and user is a guest' do
@@ -925,7 +932,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
           let(:request) { head api(route('files%2Flfs%2Flfs_object.iso') + '/raw', current_user), params: params.merge(lfs: true) }
 
           context 'and the file has an lfs object' do
-            let_it_be(:lfs_object, freeze: false) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897') }
+            let_it_be_with_reload(:lfs_object) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897') }
 
             it 'responds with 404' do
               request
@@ -1065,7 +1072,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         it_behaves_like '404 response'
 
         context 'and the file has an lfs object' do
-          let_it_be(:lfs_object, freeze: false) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897') }
+          let_it_be_with_reload(:lfs_object) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897') }
 
           it_behaves_like '404 response'
 
@@ -1259,7 +1266,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         last_commit = project.repository.commit.raw
         expect(last_commit.author_email).to eq(current_user.email)
         expect(last_commit.author_name).to eq(current_user.name)
-        expect(project.repository.blob_at_branch(params[:branch], CGI.unescape(file_path)).executable?).to eq(false)
+        expect(project.repository.blob_at_branch(params[:branch], CGI.unescape(file_path)).executable?).to be(false)
       end
     end
 
@@ -1280,7 +1287,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
             last_commit = project.repository.commit.raw
             expect(last_commit.author_email).to eq(user.email)
             expect(last_commit.author_name).to eq(user.name)
-            expect(project.repository.blob_at_branch(params[:branch], CGI.unescape(file_path)).executable?).to eq(true)
+            expect(project.repository.blob_at_branch(params[:branch], CGI.unescape(file_path)).executable?).to be(true)
           end
 
           context 'when no mandatory params given' do
@@ -1588,7 +1595,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
 
             aggregate_failures 'testing response' do
               expect(response).to have_gitlab_http_status(:ok)
-              expect(project.repository.blob_at_branch(branch, CGI.unescape(file_path)).executable?).to eq(true)
+              expect(project.repository.blob_at_branch(branch, CGI.unescape(file_path)).executable?).to be(true)
             end
           end
         end
@@ -1603,7 +1610,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
 
             aggregate_failures 'testing response' do
               expect(response).to have_gitlab_http_status(:ok)
-              expect(project.repository.blob_at_branch(branch, CGI.unescape(executable_file_path)).executable?).to eq(false)
+              expect(project.repository.blob_at_branch(branch, CGI.unescape(executable_file_path)).executable?).to be(false)
             end
           end
         end
@@ -1677,6 +1684,18 @@ RSpec.describe API::Files, feature_category: :source_code_management do
             expect(json_response['file_path']).to eq(CGI.unescape(file_path))
           end
         end
+      end
+    end
+
+    context 'when file_path is a directory' do
+      # 'files%2Fruby' is a directory in the test repository
+      let(:url) { api(route('files%2Fruby'), user) }
+
+      it 'returns a 400 bad request' do
+        workhorse_body_upload(url, params)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to include(_('Path is a directory, not a file'))
       end
     end
 

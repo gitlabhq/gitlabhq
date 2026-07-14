@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User filters work items', :js, feature_category: :team_planning do
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:project) { create(:project_empty_repo, :public) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project_empty_repo, :public) }
 
   before do
     create(:issue, author: user, project: project, title: 'foobar',

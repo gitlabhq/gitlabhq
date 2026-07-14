@@ -327,18 +327,12 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
   end
 
   context 'when user is an inherited member from the parent group' do
-    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:group) do
+      create(:group, :public, guests: [guest, author], planners: planner, reporters: reporter,
+        developers: [developer, bot])
+    end
 
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
-
-    before_all do
-      group.add_guest(guest)
-      group.add_guest(author)
-      group.add_planner(planner)
-      group.add_reporter(reporter)
-      group.add_developer(developer)
-      group.add_developer(bot)
-    end
 
     context 'when the project is public' do
       let(:project) { create(:project, :public, group: group) }
@@ -601,6 +595,41 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
       it 'allows admin to access and modify the MR' do
         expect_allowed(:read_merge_request, :update_merge_request, :approve_merge_request)
       end
+    end
+  end
+
+  describe 'work item relation permissions', feature_category: :code_review_workflow do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
+    let(:work_item_relation_permissions) do
+      [:create_merge_request_work_item_relation, :delete_merge_request_work_item_relation]
+    end
+
+    context 'when the user can admin the merge request' do
+      let(:user) { developer }
+
+      before_all do
+        project.add_developer(developer)
+      end
+
+      it { expect_allowed(*work_item_relation_permissions) }
+    end
+
+    context 'when the user cannot admin the merge request' do
+      let(:user) { guest }
+
+      before_all do
+        project.add_guest(guest)
+      end
+
+      it { expect_disallowed(*work_item_relation_permissions) }
+    end
+
+    context 'when the user is anonymous' do
+      let(:user) { nil }
+
+      it { expect_disallowed(*work_item_relation_permissions) }
     end
   end
 end

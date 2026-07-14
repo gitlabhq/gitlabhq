@@ -111,22 +111,17 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
   end
 
   describe '#ui_for_organizations_enabled?' do
-    where(:opt_out_organizations_enabled, :ui_for_organizations_enabled, :current_user_present, :expected_result) do
+    where(:ui_for_organizations_enabled, :current_user_present, :expected_result) do
       [
-        [true,  true,  true,  false],
-        [true,  true,  false, false],
-        [true,  false, true,  false],
-        [true,  false, false, false],
-        [false, true,  true,  true],
-        [false, true,  false, true],
-        [false, false, true,  false],
-        [false, false, false, false]
+        [true,  true,  true],
+        [true,  false, true],
+        [false, true,  false],
+        [false, false, false]
       ]
     end
 
     with_them do
       before do
-        stub_feature_flags(opt_out_organizations: opt_out_organizations_enabled)
         stub_feature_flags(ui_for_organizations: ui_for_organizations_enabled)
         allow(helper).to receive(:current_user).and_return(current_user_present ? user : nil)
       end
@@ -139,22 +134,20 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
 
   describe '#organization_show_app_data' do
     before do
-      allow(helper).to receive(:can?).with(user, :read_artifact_registry, organization).and_return(true)
       allow(helper).to receive(:can?).with(user, :update_organization, organization).and_return(true)
     end
 
-    it 'returns expected json' do
+    it 'returns expected json without artifact registry data', unless: Gitlab.ee? do
       expect(
         Gitlab::Json.parse(
           helper.organization_show_app_data(organization)
         )
-      ).to include(
+      ).to eq(
         {
           'organization' => {
             'name' => organization.name,
             'path' => organization.path
           },
-          'can_read_artifact_registry' => true,
           'can_admin_organization' => true
         }
       )
@@ -226,6 +219,8 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
   describe '#organization_settings_general_app_data' do
     it 'returns expected json' do
       expect(organization).to receive(:avatar_url).with(size: 192).and_return('avatar.jpg')
+      expect(organization).to receive(:max_group_visibility_level).and_return(Gitlab::VisibilityLevel::PRIVATE)
+
       expect(Gitlab::Json.parse(helper.organization_settings_general_app_data(organization))).to eq(
         {
           'organization' => {
@@ -236,6 +231,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
             'avatar' => 'avatar.jpg',
             'visibility_level' => organization.visibility_level
           },
+          'max_group_visibility_level' => Gitlab::VisibilityLevel::PRIVATE,
           'organizations_url' => 'http://test.host/o/',
           'preview_markdown_path' => '/o/-/preview_markdown'
         }

@@ -13,27 +13,17 @@ RSpec.describe Discussions::UnresolveService, feature_category: :code_review_wor
     let(:service) { described_class.new(discussion, user) }
 
     before do
-      project.add_developer(user)
       discussion.resolve!(user)
     end
 
-    it "unresolves the discussion" do
-      service.execute
-
-      expect(discussion).not_to be_resolved
-    end
-
-    it "counts the unresolve event" do
+    it "unresolves the discussion, counts the event, and sends GraphQL triggers", :aggregate_failures do
       expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
         .to receive(:track_unresolve_thread_action).with(user: user)
-
-      service.execute
-    end
-
-    it "sends GraphQL triggers" do
       expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(discussion.noteable)
 
       service.execute
+
+      expect(discussion).not_to be_resolved
     end
 
     context "when there are existing unresolved discussions" do

@@ -2,35 +2,29 @@
 $detail-layout-sidebar-width: px-to-rem(290px);
 $detail-layout-gap: 2rem;
 
-.gl-detail-layout-alerts {
-  @apply gl-mb-5;
-  @apply gl-flex;
-  @apply gl-flex-col;
-  @apply gl-gap-3;
-}
-
-.gl-detail-layout-loading-icon {
-  @apply gl-m-5;
-}
-
 .gl-detail-layout-container {
   --gl-detail-layout-gap: #{$detail-layout-gap};
   display: grid;
   gap: var(--gl-detail-layout-gap);
 }
 
+.gl-detail-layout-content,
+.gl-detail-layout-sidebar,
+.gl-detail-layout-activity,
 .gl-detail-layout-widgets {
   min-width: 0; // Allow grid item to shrink below its content size, preventing overflow of the visible area
+
+  // Remove margin from first widget
+  > div:first-child,
+  > section:first-child {
+    margin-top: 0 !important;
+  }
 }
 
 .gl-detail-layout-container-has-sidebar {
   // Set explicit minimum grid column size instead of implicit `auto`
   // so contents don't overflow in smaller viewports
   grid-template-columns: minmax(0, 1fr);
-
-  @include gl-container-width-down(md, panel) {
-    display: block;
-  }
 
   @include gl-container-width-up(md) {
     $detail-layout-sidebar-min-width: 13rem;

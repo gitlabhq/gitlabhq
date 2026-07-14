@@ -259,6 +259,12 @@ module Gitlab
 
         def setup_merge_request
           @relation_hash['merge_when_pipeline_succeeds'] = false
+
+          # A merge request is always restored as a child of the project being
+          # imported (its target). A malformed export can omit target_project_id;
+          # without this, the target stays nil through validation and raises in
+          # Project#in_fork_network_of?. project_id is already the importable id.
+          @relation_hash['target_project_id'] ||= @relation_hash['project_id']
         end
 
         def setup_approval

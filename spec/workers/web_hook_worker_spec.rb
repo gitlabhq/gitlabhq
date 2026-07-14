@@ -7,9 +7,10 @@ RSpec.describe WebHookWorker, feature_category: :integrations do
 
   let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:project_hook, freeze: false) { create(:project_hook, project: project) }
-  let_it_be(:data, freeze: false) { { foo: 'bar' } }
-  let_it_be(:hook_name, freeze: false) { 'push_hooks' }
-  let_it_be(:response, freeze: false) { ServiceResponse.success }
+
+  let(:data) { { foo: 'bar' } }
+  let(:hook_name) { 'push_hooks' }
+  let(:response) { ServiceResponse.success }
 
   describe '#perform' do
     it 'delegates to WebHookService' do

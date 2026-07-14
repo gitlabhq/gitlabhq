@@ -4,16 +4,16 @@
 
 fragment WorkItemMetadataWidgets on WorkItemWidget {
   type
-  ... on WorkItemWidgetStartAndDueDate {
+  ... on WorkItemWidgetStartAndDueDate @skip(if: $useWorkItemFeatures) {
     dueDate
     startDate
   }
-  ... on WorkItemWidgetMilestone {
+  ... on WorkItemWidgetMilestone @skip(if: $useWorkItemFeatures) {
     milestone {
       ...MilestoneFragment
     }
   }
-  ... on WorkItemWidgetAssignees {
+  ... on WorkItemWidgetAssignees @skip(if: $useWorkItemFeatures) {
     allowsMultipleAssignees
     canInviteMembers
     assignees {
@@ -22,7 +22,7 @@ fragment WorkItemMetadataWidgets on WorkItemWidget {
       }
     }
   }
-  ... on WorkItemWidgetLabels {
+  ... on WorkItemWidgetLabels @skip(if: $useWorkItemFeatures) {
     labels {
       nodes {
         ...Label

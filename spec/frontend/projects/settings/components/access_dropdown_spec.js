@@ -11,11 +11,22 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
-import { getUsers, getGroups, getDeployKeys } from '~/projects/settings/api/access_dropdown_api';
+import {
+  getMemberRoles,
+  getUsers,
+  getGroups,
+  getDeployKeys,
+} from 'ee_else_ce/projects/settings/api/access_dropdown_api';
 import AccessDropdown, { i18n } from '~/projects/settings/components/access_dropdown.vue';
 import { ACCESS_LEVELS, LEVEL_TYPES } from '~/projects/settings/constants';
 
-jest.mock('~/projects/settings/api/access_dropdown_api', () => ({
+jest.mock('ee_else_ce/projects/settings/api/access_dropdown_api', () => ({
+  getMemberRoles: jest.fn().mockResolvedValue({
+    data: [
+      { id: 1, name: 'Lead Developer', base_access_level: 30 },
+      { id: 2, name: 'Senior Maintainer', base_access_level: 40 },
+    ],
+  }),
   getGroups: jest.fn().mockResolvedValue({
     data: [
       { id: 4, name: 'group4' },
@@ -111,6 +122,7 @@ describe('Access Level Dropdown', () => {
   const findAllDropdownHeaders = () => findDropdown().findAllComponents(GlDropdownSectionHeader);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findDeployKeyDropdownItem = () => wrapper.findByTestId('deploy_key-dropdown-item');
+  const findMemberRoleDropdownItems = () => wrapper.findAllByTestId('member-role-dropdown-item');
 
   const findDropdownItemWithText = (items, text) =>
     items.filter((item) => item.text().includes(text)).at(0);
@@ -471,6 +483,59 @@ describe('Access Level Dropdown', () => {
       findDropdownItemWithText(dropdownItems, mockAccessLevelsData[1].text).trigger('click');
 
       expect(wrapper.emitted('select')[1]).toHaveLength(1);
+    });
+  });
+
+  describe('custom roles section', () => {
+    it('renders the custom roles section when enabled for the group context', async () => {
+      createComponent({ showCustomRoles: true, accessLevel: ACCESS_LEVELS.MERGE });
+      await waitForPromises();
+
+      expect(getMemberRoles).toHaveBeenCalled();
+      expect(findMemberRoleDropdownItems()).toHaveLength(2);
+      expect(findMemberRoleDropdownItems().at(0).text()).toBe('Lead Developer');
+    });
+
+    it('does not render or fetch custom roles when showCustomRoles is false', async () => {
+      createComponent({ showCustomRoles: false, accessLevel: ACCESS_LEVELS.MERGE });
+      await waitForPromises();
+
+      expect(getMemberRoles).not.toHaveBeenCalled();
+      expect(findMemberRoleDropdownItems()).toHaveLength(0);
+    });
+
+    it('does not render custom roles for a non-branch access level', async () => {
+      createComponent({ showCustomRoles: true, accessLevel: ACCESS_LEVELS.CREATE });
+      await waitForPromises();
+
+      expect(getMemberRoles).not.toHaveBeenCalled();
+      expect(findMemberRoleDropdownItems()).toHaveLength(0);
+    });
+
+    it('does not render custom roles without a license', async () => {
+      createComponent({
+        showCustomRoles: true,
+        accessLevel: ACCESS_LEVELS.MERGE,
+        hasLicense: false,
+      });
+      await waitForPromises();
+
+      expect(getMemberRoles).not.toHaveBeenCalled();
+      expect(findMemberRoleDropdownItems()).toHaveLength(0);
+    });
+
+    it('toggles the checked state of a custom role on click', async () => {
+      createComponent({ showCustomRoles: true, accessLevel: ACCESS_LEVELS.MERGE });
+      await waitForPromises();
+
+      const role = findMemberRoleDropdownItems().at(0);
+      role.trigger('click');
+      await nextTick();
+      expect(role.props('isChecked')).toBe(true);
+
+      role.trigger('click');
+      await nextTick();
+      expect(role.props('isChecked')).toBe(false);
     });
   });
 

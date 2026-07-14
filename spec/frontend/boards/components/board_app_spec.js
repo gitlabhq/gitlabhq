@@ -54,7 +54,6 @@ describe('BoardApp', () => {
         isGroupBoard: false,
         hasCustomFieldsFeature: false,
       },
-      stubs: ['router-view'],
     });
   };
 

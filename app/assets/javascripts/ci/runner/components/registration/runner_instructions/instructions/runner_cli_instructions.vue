@@ -25,6 +25,7 @@ export default {
       default: null,
     },
   },
+  emits: ['close', 'error'],
   data() {
     return {
       selectedArchName: this.platform?.architectures[0]?.name || null,

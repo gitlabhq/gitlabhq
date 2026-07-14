@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 query workItemErrorTracking($fullPath: ID!, $iid: String!, $useWorkItemFeatures: Boolean = false) {
   namespace(fullPath: $fullPath) {
     id

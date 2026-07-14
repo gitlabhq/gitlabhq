@@ -66,6 +66,7 @@ export default {
       required: false,
     },
   },
+  emits: ['delete'],
   i18n: {
     REMOVE_TAGS_BUTTON_TITLE,
     TAGS_LIST_TITLE,
@@ -274,7 +275,7 @@ export default {
           ref="deleteModal"
           :items-to-be-deleted="itemsToBeDeleted"
           @confirmDelete="confirmDelete"
-          @cancel="track('cancel_delete')"
+          @cancel-delete="track('cancel_delete')"
         />
       </template>
     </template>

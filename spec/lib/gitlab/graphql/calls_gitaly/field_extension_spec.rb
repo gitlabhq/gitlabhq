@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Gitlab::Graphql::CallsGitaly::FieldExtension, :request_store do

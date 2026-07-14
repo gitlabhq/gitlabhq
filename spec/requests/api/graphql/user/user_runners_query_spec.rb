@@ -5,6 +5,13 @@ require 'spec_helper'
 RSpec.describe 'Getting runners of the current user', feature_category: :fleet_visibility do
   include GraphqlHelpers
 
+  # NOTE: No cross-organization isolation test for the user-scoped path (`User#ci_available_runners`).
+  # Organization filtering on this path was implemented in
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/591183
+  # (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226892) but reverted in
+  # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229222 due to a cross-database query
+  # incident, so no organization boundary is enforced in master today. A boundary test should be
+  # added once the filtering is reinstated.
   let_it_be(:current_user) { create(:user) }
 
   let(:query) do

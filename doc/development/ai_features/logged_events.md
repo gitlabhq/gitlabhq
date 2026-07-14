@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Logged events
 ---
@@ -138,6 +138,8 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
     - `response_from_llm: response_body`
     - `latency_seconds: latency_seconds`
     - `user_id: user.id`
+    - `input_tokens: integer` (when present in response)
+    - `output_tokens: integer` (when present in response)
   - Part of the system: abstraction_layer
   - Expanded logging?: yes
   - Rails: no

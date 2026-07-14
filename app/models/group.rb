@@ -424,6 +424,7 @@ class Group < Namespace
   scope :order_path_desc, -> { reorder(self.arel_table['path'].desc) }
   scope :in_organization, ->(organization) { where(organization: organization) }
   scope :by_min_access_level, ->(user, access_level) { joins(:group_members).where(members: { user: user }).where('members.access_level >= ?', access_level) }
+  scope :requiring_two_factor_authentication, ->(enabled) { where(require_two_factor_authentication: enabled) }
 
   class << self
     def sort_by_attribute(method)
@@ -739,8 +740,8 @@ class Group < Namespace
     add_member(user, :maintainer, current_user: current_user)
   end
 
-  def add_owner(user, current_user = nil)
-    add_member(user, :owner, current_user: current_user)
+  def add_owner(user, current_user = nil, **args)
+    add_member(user, :owner, current_user: current_user, **args)
   end
 
   def member?(user, min_access_level = Gitlab::Access::GUEST)
@@ -962,7 +963,7 @@ class Group < Namespace
 
     unless only_concrete_membership
       return GroupMember::OWNER if user.can_admin_all_resources?
-      return GroupMember::OWNER if user.can_admin_organization?(organization)
+      return GroupMember::OWNER if user.can_update_organization?(organization)
     end
 
     max_member_access(user)

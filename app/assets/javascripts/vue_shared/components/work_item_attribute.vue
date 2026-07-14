@@ -81,6 +81,7 @@ export default {
       default: null,
     },
   },
+  emits: ['click'],
   computed: {
     tooltipTarget() {
       return () => {

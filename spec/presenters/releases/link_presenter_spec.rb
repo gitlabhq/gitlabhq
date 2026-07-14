@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Releases::LinkPresenter do
+RSpec.describe Releases::LinkPresenter, feature_category: :release_orchestration do
   describe '#direct_asset_url' do
     let_it_be(:release) { create(:release) }
 

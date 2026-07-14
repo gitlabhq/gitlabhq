@@ -80,7 +80,7 @@ sidekiq -[#ff8dd1,norank]--> database
 - **Redis** - Separate cache and persistent instances, each optionally deployed with standby replica for high availability
 - **Object Storage** - Object Storage services such as S3, Google Cloud Storage, or Azure Blob Storage for artifacts and packages
 
-For recommended managed service providers (such as GCP Cloud SQL, AWS RDS, Azure Database), see [recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services).
+For recommended managed service providers (such as GCP Cloud SQL, AWS RDS, Azure Database), see [infrastructure and services](_index.md#infrastructure-and-services).
 
 ## Available architectures
 

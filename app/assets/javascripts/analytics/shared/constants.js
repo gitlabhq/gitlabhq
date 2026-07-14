@@ -209,11 +209,13 @@ export const AI_METRICS = {
   DUO_AGENT_PLATFORM_CHATS: 'duo_agent_platform_chats',
   DUO_AGENT_PLATFORM_AGENTS_FLOWS_USERS_COUNT: 'duo_agent_platform_agent_flows_users_count',
   DUO_POWER_USERS_COUNT: 'duo_power_users_count',
+  DUO_PIPELINES_RATE: 'duo_pipelines_rate',
 };
 
 export const VALUE_STREAM_METRIC_DISPLAY_UNITS = {
   [UNITS.COUNT]: '',
   [UNITS.DAYS]: __('days'),
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- False positive, not a URL
   [UNITS.PER_DAY]: __('/day'),
   [UNITS.PERCENT]: '%',
 };
@@ -477,21 +479,21 @@ export const USAGE_OVERVIEW_IDENTIFIER_PIPELINES = 'pipelines';
 
 // Defines the constants used for querying the API as well as the order they appear
 export const USAGE_OVERVIEW_METADATA = {
-  [USAGE_OVERVIEW_IDENTIFIER_GROUPS]: { options: { title: __('Groups'), titleIcon: 'group' } },
+  [USAGE_OVERVIEW_IDENTIFIER_GROUPS]: { options: { title: __('Groups'), metricIcon: 'group' } },
   [USAGE_OVERVIEW_IDENTIFIER_PROJECTS]: {
-    options: { title: __('Projects'), titleIcon: 'project' },
+    options: { title: __('Projects'), metricIcon: 'project' },
   },
   [USAGE_OVERVIEW_IDENTIFIER_USERS]: {
-    options: { title: __('Users'), titleIcon: 'user' },
+    options: { title: __('Users'), metricIcon: 'user' },
   },
   [USAGE_OVERVIEW_IDENTIFIER_ISSUES]: {
-    options: { title: __('Issues'), titleIcon: 'work-item-issue' },
+    options: { title: __('Issues'), metricIcon: 'work-item-issue' },
   },
   [USAGE_OVERVIEW_IDENTIFIER_MERGE_REQUESTS]: {
-    options: { title: __('Merge requests'), titleIcon: 'merge-request' },
+    options: { title: __('Merge requests'), metricIcon: 'merge-request' },
   },
   [USAGE_OVERVIEW_IDENTIFIER_PIPELINES]: {
-    options: { title: __('Pipelines'), titleIcon: 'pipeline' },
+    options: { title: __('Pipelines'), metricIcon: 'pipeline' },
   },
 };
 

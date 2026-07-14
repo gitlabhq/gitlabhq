@@ -10,6 +10,7 @@ import { useUserLists } from '../store/index';
 import UserListsTable from './user_lists_table.vue';
 
 export default {
+  name: 'UserLists',
   components: {
     EmptyState,
     UserListsTable,

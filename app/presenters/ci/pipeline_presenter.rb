@@ -23,7 +23,8 @@ module Ci
         composite_identity_forbidden: 'This pipeline did not run because the code should be reviewed by a non-AI ' \
           'user first. Verify that all changes in this merge request are safe before running a new pipeline.',
         pipeline_ref_creation_failure: 'Failed to create pipeline ref.',
-        filtered_by_no_pipeline: 'The pipeline did not run. The commit was pushed with the `ci.no_pipeline` option.' }
+        filtered_by_no_pipeline: 'The pipeline did not run. The commit was pushed with the `ci.no_pipeline` option.',
+        gitaly_unavailable: 'The pipeline failed because Gitaly was temporarily unavailable. Please try again.' }
     end
 
     presents ::Ci::Pipeline, as: :pipeline

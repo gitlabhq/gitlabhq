@@ -5,6 +5,7 @@ import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
+  name: 'RichTimestampTooltip',
   components: {
     GlTooltip,
   },

@@ -5,6 +5,7 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import { getLineClasses } from './multiline_comment_utils';
 
 export default {
+  name: 'MultilineCommentForm',
   components: { GlFormSelect, GlSprintf },
   props: {
     lineRange: {

@@ -5,6 +5,7 @@ module Ci
   # proper pending build to runner on runner API request
   class RegisterJobService
     include ::Gitlab::Ci::Artifacts::Logger
+    include Gitlab::Utils::StrongMemoize
 
     attr_reader :runner, :runner_manager, :metrics
 
@@ -195,6 +196,15 @@ module Ci
         return
       end
 
+      # Best-effort check that the main DB replica is at least as up-to-date as the pipeline creation
+      # logic, so the job sees the same or newer merge request state (important for newly created MRs).
+      # The stuck location expires after Sticking::EXPIRATION (30s), after which this check is bypassed.
+      unless merge_request_replica_caught_up?(build)
+        @metrics.increment_queue_operation(:queue_merge_request_replication_lag)
+
+        return ResultFactory.invalid
+      end
+
       # Make sure that composite identity is propagated to `PipelineProcessWorker`
       # when the build's status change.
       ::Gitlab::Auth::Identity.link_from_job(build)
@@ -278,6 +288,18 @@ module Ci
         runner_type: runner.runner_type,
         class: self.class.to_s)
       ResultFactory.invalid
+    end
+
+    def merge_request_replica_caught_up?(build)
+      merge_request_id = build.pipeline.merge_request_id
+      return true unless merge_request_id
+
+      # The lag is per-merge-request, so memoize the result for the duration of this `execute` to
+      # avoid repeating the Redis lookup when a runner iterates multiple builds of the same pipeline.
+      strong_memoize_with(:merge_request_replica_caught_up, merge_request_id) do
+        ::MergeRequest.sticking.find_caught_up_replica(
+          :merge_request, merge_request_id, use_primary_on_failure: false)
+      end
     end
 
     def runner_matched?(build)

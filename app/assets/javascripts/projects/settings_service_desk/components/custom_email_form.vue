@@ -43,6 +43,7 @@ import {
 } from '../custom_email_constants';
 
 export default {
+  name: 'CustomEmailForm',
   customEmailHelpUrl: helpPagePath('user/project/service_desk/configure.html', {
     anchor: 'custom-email-address',
   }),

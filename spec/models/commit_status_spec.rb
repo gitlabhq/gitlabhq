@@ -17,6 +17,16 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
   it_behaves_like 'having unique enum values'
 
+  describe 'ignored columns' do
+    it 'ignores the legacy options and yaml_variables columns' do
+      expect(described_class.ignored_columns).to include('options', 'yaml_variables')
+    end
+
+    it 'does not expose the legacy columns as model attributes' do
+      expect(described_class.column_names).not_to include('options', 'yaml_variables')
+    end
+  end
+
   it do
     is_expected.to belong_to(:pipeline).class_name('Ci::Pipeline')
       .with_foreign_key(:commit_id).inverse_of(:statuses)
@@ -1088,6 +1098,36 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
       end
 
       it { is_expected.not_to be_archived }
+    end
+  end
+
+  describe '#prepare_for_bulk_insert' do
+    let(:pipeline) { build_stubbed(:ci_pipeline, partition_id: 123) }
+    let(:stage) { build_stubbed(:ci_stage, id: 456) }
+    let(:commit_status) do
+      build_stubbed(:commit_status, pipeline: nil, project: nil, partition_id: nil, ci_stage: stage)
+    end
+
+    it 'assigns pipeline references and sets processed to false' do
+      commit_status.prepare_for_bulk_insert(pipeline)
+
+      expect(commit_status.commit_id).to eq(pipeline.id)
+      expect(commit_status.partition_id).to eq(123)
+      expect(commit_status.project_id).to eq(pipeline.project_id)
+      expect(commit_status.processed).to eq(false)
+      expect(commit_status.stage_id).to eq(456)
+    end
+
+    context 'when ci_stage is nil' do
+      let(:commit_status) do
+        build_stubbed(:commit_status, pipeline: nil, project: nil, partition_id: nil, ci_stage: nil)
+      end
+
+      it 'does not set stage_id' do
+        commit_status.prepare_for_bulk_insert(pipeline)
+
+        expect(commit_status.stage_id).to be_nil
+      end
     end
   end
 end

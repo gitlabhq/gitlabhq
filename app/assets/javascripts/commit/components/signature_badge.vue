@@ -5,6 +5,7 @@ import { typeConfig, statusConfig } from 'ee_else_ce/commit/constants';
 import X509CertificateDetails from './x509_certificate_details.vue';
 
 export default {
+  name: 'SignatureBadge',
   components: {
     GlBadge,
     GlPopover,

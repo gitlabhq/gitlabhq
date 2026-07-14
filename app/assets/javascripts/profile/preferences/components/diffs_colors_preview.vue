@@ -2,6 +2,7 @@
 import { s__ } from '~/locale';
 
 export default {
+  name: 'DiffsColorsPreview',
   i18n: {
     previewLabel: s__('Preferences|Preview'),
   },

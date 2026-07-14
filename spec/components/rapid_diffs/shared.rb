@@ -93,6 +93,31 @@ RSpec.shared_context "with diff file component tests" do
     end
   end
 
+  context "when file is stored externally" do
+    context "when file is not an image" do
+      before do
+        allow(diff_file).to receive(:stored_externally?).and_return(true)
+      end
+
+      it "renders no preview", :aggregate_failures do
+        render_component
+        expect(file_data['viewer']).to eq('no_preview')
+        expect(web_component).to have_css("[data-virtual='no_preview']")
+      end
+    end
+
+    context "when file is an image" do
+      before do
+        allow(diff_file).to receive_messages(stored_externally?: true, image_diff?: true)
+      end
+
+      it "renders image viewer" do
+        render_component
+        expect(file_data['viewer']).to eq('image')
+      end
+    end
+  end
+
   context "when no viewer found" do
     before do
       allow(diff_file).to receive_messages(text?: false, content_changed?: false)

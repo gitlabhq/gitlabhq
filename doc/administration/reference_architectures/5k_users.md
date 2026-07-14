@@ -528,7 +528,7 @@ Use a reputable provider that runs a [supported PostgreSQL version](../../instal
 
 For more information, including guidance on high availability and database load balancing, see:
 
-- [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services).
+- [Infrastructure and services](_index.md#infrastructure-and-services).
 - [Best practices for the database services](_index.md#best-practices-for-the-database-services).
 
 If you use a third party external service:
@@ -874,7 +874,7 @@ You can optionally use a [third party external service for the Redis instance](.
 - Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
 - You must set the [Redis eviction mode](../redis/replication_and_failover_external.md#setting-the-eviction-policy) according to your setup.
 
-For more information, see [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services).
+For more information, see [Infrastructure and services](_index.md#infrastructure-and-services).
 
 ### Configure the Redis cluster
 
@@ -1184,7 +1184,7 @@ A reputable provider or solution should be used for this. [Google Cloud SQL](htt
 and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from
 [14.4.0](https://archives.docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes/#1440).
 
-See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 
 Once the database is set up, follow the [post configuration](#praefect-postgresql-post-configuration).
 
@@ -2103,7 +2103,7 @@ running [Prometheus](../monitoring/prometheus/_index.md):
 GitLab supports using an [object storage](../object_storage.md) service for holding numerous types of data.
 It's recommended over [NFS](../nfs.md) for data objects and in general it's better
 in larger setups as object storage is typically much more performant, reliable,
-and scalable. See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+and scalable. See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
 
 There are two ways of specifying object storage configuration in GitLab:
 

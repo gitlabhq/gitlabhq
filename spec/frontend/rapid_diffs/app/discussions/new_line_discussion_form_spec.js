@@ -1,13 +1,15 @@
-import { nextTick } from 'vue';
+import { nextTick, reactive } from 'vue';
 import { merge } from 'lodash-es';
 import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
+import { stubComponent } from 'helpers/stub_component';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { clearDraft } from '~/lib/utils/autosave';
 import { createAlert } from '~/alert';
 import { SOMETHING_WENT_WRONG } from '~/diffs/i18n';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
+import LineRangeHeadline from '~/rapid_diffs/app/discussions/line_range_headline.vue';
 import NewLineDiscussionForm from '~/rapid_diffs/app/discussions/new_line_discussion_form.vue';
 
 jest.mock('~/alert');
@@ -39,10 +41,23 @@ describe('NewLineDiscussionForm', () => {
       pinia,
       propsData: merge({ discussion }, props),
       provide: merge({ store }, provide),
+      stubs: { LineRangeHeadline: stubComponent(LineRangeHeadline) },
     });
   };
 
   const findNoteForm = () => wrapper.findComponent(NoteForm);
+  const findLineRangeHeadline = () => wrapper.findComponent(LineRangeHeadline);
+
+  const withLineRange = (start, end) => ({
+    ...createDiscussion(),
+    position: {
+      ...createDiscussion().position,
+      line_range: {
+        start: { old_line: null, new_line: start, type: 'new' },
+        end: { old_line: null, new_line: end, type: 'new' },
+      },
+    },
+  });
 
   beforeEach(() => {
     pinia = createTestingPinia({ stubActions: false });
@@ -145,6 +160,41 @@ describe('NewLineDiscussionForm', () => {
     it('sets lineRange to null when position has no line_range', () => {
       createComponent();
       expect(findNoteFormConfig().lineRange).toBeNull();
+    });
+  });
+
+  describe('line range info', () => {
+    it('passes no line range to the headline when discussion has none', () => {
+      createComponent();
+      expect(findLineRangeHeadline().props('lineRange')).toBeNull();
+    });
+
+    it('passes the discussion line range to the headline', () => {
+      const discussion = withLineRange(5, 8);
+      createComponent({ discussion });
+      expect(findLineRangeHeadline().props('lineRange')).toEqual(discussion.position.line_range);
+    });
+  });
+
+  describe('focus request', () => {
+    it('focuses the comment textarea when shouldFocus becomes true', async () => {
+      const discussion = reactive({ ...createDiscussion(), shouldFocus: false });
+      store.discussionForms = [discussion];
+      wrapper = shallowMount(NewLineDiscussionForm, {
+        pinia,
+        propsData: { discussion },
+        provide: { store },
+        stubs: { LineRangeHeadline: stubComponent(LineRangeHeadline) },
+      });
+      const textarea = document.createElement('textarea');
+      wrapper.element.appendChild(textarea);
+      const focusSpy = jest.spyOn(textarea, 'focus');
+
+      discussion.shouldFocus = true;
+      await nextTick();
+      await nextTick();
+
+      expect(focusSpy).toHaveBeenCalled();
     });
   });
 

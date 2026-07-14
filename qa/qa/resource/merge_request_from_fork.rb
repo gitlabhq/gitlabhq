@@ -73,6 +73,51 @@ module QA
       def create_target?
         false
       end
+
+      # Push the source commit, then wait until the upstream can compute a diff against the fork before
+      # creating the merge request.
+      #
+      # A fork reporting `import_status: finished` does not guarantee its repository is consistent for
+      # cross-project operations. Creating the merge request too early can persist a merge request diff with a
+      # blank base SHA (an uncomputable merge base), which crashes MR preparation and leaves the MR
+      # permanently unprepared.
+      # See https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43197
+      #
+      # @return [void]
+      def populate_target_and_source_if_required
+        super
+
+        return if @no_preparation
+
+        wait_until_comparable_with_upstream
+      end
+
+      # Poll the cross-project compare endpoint until the upstream can compute a merge-base based comparison
+      # against the fork's source branch. This exercises the same cross-repository merge base that merge
+      # request diff preparation relies on, so a successful comparison means the fork is ready for the MR.
+      #
+      # @return [void]
+      def wait_until_comparable_with_upstream
+        Support::Retrier.retry_until(
+          max_duration: 60,
+          sleep_interval: 3,
+          message: "Wait for fork '#{fork.path_with_namespace}' to be comparable with upstream"
+        ) do
+          response = get(request_url(
+            "/projects/#{fork.id}/repository/compare",
+            from: project.default_branch,
+            to: fork.default_branch,
+            from_project_id: project.id,
+            straight: false
+          ))
+
+          Runtime::Logger.debug(
+            "Fork readiness compare returned #{response.code} (fork: #{fork.id}, upstream: #{project.id})"
+          )
+
+          response.code == HTTP_STATUS_OK
+        end
+      end
     end
   end
 end

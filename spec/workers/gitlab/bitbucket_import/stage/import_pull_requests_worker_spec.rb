@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker, feature_category: :importers do
-  let_it_be(:project, freeze: false) { create(:project, :import_started) }
+  let_it_be(:project) { create(:project, :import_started) }
 
   subject(:worker) { described_class.new }
 
@@ -26,9 +26,17 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker, feature
 
       it 'logs stage start and finish' do
         expect(Gitlab::BitbucketImport::Logger)
-          .to receive(:info).with(hash_including(message: 'starting stage', project_id: project.id))
+          .to receive(:info).with(hash_including(
+            message: 'starting stage',
+            project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          ))
         expect(Gitlab::BitbucketImport::Logger)
-          .to receive(:info).with(hash_including(message: 'stage finished', project_id: project.id))
+          .to receive(:info).with(hash_including(
+            message: 'stage finished',
+            project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          ))
 
         worker.perform(project.id)
       end

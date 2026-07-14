@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :remote_mirror, class: 'RemoteMirror' do
     association :project, :repository
-    url { "http://foo:bar@test.com" }
+    sequence(:url) { |n| "http://foo:bar@test#{n}.com" }
 
     trait :ssh do
       url { 'ssh://git@test.com:foo/bar.git' }

@@ -24,7 +24,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
-	"gitlab.com/gitlab-org/labkit/log"
+	"gitlab.com/gitlab-org/labkit/v2/fields"
+	"gitlab.com/gitlab-org/labkit/v2/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
@@ -48,11 +49,19 @@ const testProject = "group/test"
 
 func TestMain(m *testing.M) {
 	if _, err := os.Stat(path.Join(testRepoRoot, testRepo)); os.IsNotExist(err) {
-		log.WithError(err).Fatal("cannot find test repository. Please run 'make prepare-tests'")
+		log.New().Error(
+			"cannot find test repository. Please run 'make prepare-tests'",
+			log.Error(err),
+		)
+		os.Exit(1)
 	}
 
 	if err := testhelper.BuildExecutables(); err != nil {
-		log.WithError(err).Fatal()
+		log.New().Error(
+			"failed to build testhelper executables",
+			log.Error(err),
+		)
+		os.Exit(1)
 	}
 
 	gitaly.InitializeSidechannelRegistry(logrus.StandardLogger())
@@ -163,7 +172,7 @@ func TestStaticFileRelativeURL(t *testing.T) {
 	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), http.HandlerFunc(http.NotFound))
 
 	backendURLString := ts.URL + "/my-relative-url"
-	log.Info(backendURLString)
+	log.New().Info(backendURLString)
 	ws := startWorkhorseServer(t, backendURLString)
 
 	resource := "/my-relative-url/static.txt"
@@ -726,17 +735,17 @@ func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code in
 
 		w.Header().Set("Content-Type", api.ResponseContentType)
 
-		logEntry := log.WithFields(log.Fields{
-			"method": r.Method,
-			"url":    r.URL,
-		})
-		logEntryWithCode := logEntry.WithField("code", code)
+		logger := log.New().With(
+			fields.HTTPMethod, r.Method,
+			fields.HTTPURL, r.URL,
+		)
+		loggerWithCode := logger.With(fields.HTTPStatusCode, code)
 
 		if params != nil {
 			currentParams := r.URL.Query()
 			for key := range params {
 				if currentParams.Get(key) != params.Get(key) {
-					logEntry.Info("UPSTREAM", "DENY", "invalid auth server params")
+					logger.Info("UPSTREAM", "DENY", "invalid auth server params")
 					w.WriteHeader(http.StatusForbidden)
 					return
 				}
@@ -745,7 +754,7 @@ func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code in
 
 		// Write pure string
 		if data, ok := body.(string); ok {
-			logEntryWithCode.Info("UPSTREAM")
+			loggerWithCode.Info("UPSTREAM")
 
 			w.WriteHeader(code)
 			fmt.Fprint(w, data)
@@ -755,14 +764,14 @@ func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code in
 		// Write json string
 		data, err := json.Marshal(body)
 		if err != nil {
-			logEntry.WithError(err).Error("UPSTREAM")
+			logger.Error("UPSTREAM", log.Error(err))
 
 			w.WriteHeader(503)
 			fmt.Fprint(w, err)
 			return
 		}
 
-		logEntryWithCode.Info("UPSTREAM")
+		loggerWithCode.Info("UPSTREAM")
 
 		w.WriteHeader(code)
 		w.Write(data)

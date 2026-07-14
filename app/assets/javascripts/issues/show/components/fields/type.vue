@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlFormGroup, GlIcon, GlCollapsibleListbox } from '@gitlab/ui';
 import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
@@ -12,6 +11,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'FieldsType',
   i18n,
   issuableTypes,
   components: {

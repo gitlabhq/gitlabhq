@@ -20,7 +20,8 @@ $super-sidebar-nav-flayout-menu-z-index: 800;
 $super-sidebar-nav-item-menu-z-index: $super-sidebar-nav-flayout-menu-z-index + 1;
 $super-sidebar-nav-item-z-index: $super-sidebar-nav-item-menu-z-index + 1;
 $panel-header-inner-z-index: 99;
-$panel-header-inner-height: 2.5rem; //= 40px
+$base-layout-sticky-header-z-index: $panel-header-inner-z-index - 1;
+$panel-header-inner-height: 2.25rem; //= 36px
 $top-bar-z-index: 210;
 $settings-sticky-header-height: 3rem;
 $settings-sticky-header-z-index: 98;
@@ -177,7 +178,7 @@ $file-header-height: 42px;
 $mr-sticky-header-title-height: max($gl-button-small-size, $gl-font-size-base * 1.5);
 $mr-static-tabs-height: $gl-spacing-scale-9;
 $mr-sticky-tabs-height: $gl-spacing-scale-8;
-$mr-sticky-description-padding: $gl-spacing-scale-1;
+$mr-sticky-description-padding: $gl-spacing-scale-2;
 $mr-sticky-header-height: calc(#{$mr-sticky-tabs-height} + #{$mr-sticky-header-title-height} + #{$mr-sticky-description-padding} + #{$gl-border-size-1});
 $mr-review-bar-height: calc(2rem + 16px);
 

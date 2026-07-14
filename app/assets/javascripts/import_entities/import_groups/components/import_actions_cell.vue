@@ -13,6 +13,7 @@ import { __ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 
 export default {
+  name: 'ImportActionsCell',
   components: {
     HelpPopover,
     GlDisclosureDropdown,

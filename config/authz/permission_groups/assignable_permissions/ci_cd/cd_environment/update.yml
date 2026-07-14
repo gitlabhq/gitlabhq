@@ -1,0 +1,9 @@
+---
+name: update_cd_environment
+description: Grants the ability to update continuous deployment environments
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_cd_environment

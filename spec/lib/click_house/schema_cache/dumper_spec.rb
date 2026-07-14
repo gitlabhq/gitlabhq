@@ -36,6 +36,21 @@ RSpec.describe ClickHouse::SchemaCache::Dumper, feature_category: :database do
         'is_in_sorting_key' => 1,
         'is_in_primary_key' => 1,
         'is_in_sampling_key' => 0
+      },
+      {
+        'table' => 'users',
+        'name' => 'traversal_path',
+        'type' => 'String',
+        'position' => 2,
+        'default_kind' => 'DEFAULT',
+        'default_expression' =>
+          "dictGetOrDefault('gitlab_clickhouse_test.project_traversal_paths_dict', 'traversal_path', project_id, '0/')",
+        'comment' => '',
+        'compression_codec' => '',
+        'is_in_partition_key' => 0,
+        'is_in_sorting_key' => 0,
+        'is_in_primary_key' => 0,
+        'is_in_sampling_key' => 0
       }
     ]
   end
@@ -61,6 +76,14 @@ RSpec.describe ClickHouse::SchemaCache::Dumper, feature_category: :database do
       expect(table.settings).to eq('index_granularity' => '8192')
       expect(table.columns.first.name).to eq('id')
       expect(table.columns.first.type).to eq('UInt64')
+    end
+
+    it 'strips the database name prefix from default_expression in dictionary references' do
+      traversal_column = dumper.tables.first.columns.find { |c| c.name == 'traversal_path' }
+
+      expect(traversal_column.default_expression).to eq(
+        "dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/')"
+      )
     end
   end
 

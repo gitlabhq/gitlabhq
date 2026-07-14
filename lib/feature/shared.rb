@@ -73,6 +73,16 @@ module Feature
             default_enabled_if_undefined: false)
         RUBY
       },
+      markdown_cache: {
+        description: "Version-stamped ops flags driving the phased rollout of a `CACHE_COMMONMARK_VERSION` bump",
+        optional: true,
+        rollout_issue: false,
+        can_be_default_enabled: false,
+        example: <<~'RUBY'
+          Feature.enabled?(:"markdown_cache_stochastic_rollout_#{CACHE_COMMONMARK_VERSION}",
+            type: :markdown_cache, default_enabled_if_undefined: false)
+        RUBY
+      },
       undefined: {
         description: "Feature flags that are undefined in GitLab codebase (should not be used)",
         optional: true,

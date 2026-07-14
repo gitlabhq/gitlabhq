@@ -79,6 +79,16 @@ RSpec.describe Import::PlaceholderUserDetail, feature_category: :importers do
     end
   end
 
+  describe '.with_organization' do
+    let_it_be(:placeholder_user_detail) { create(:import_placeholder_user_details) }
+
+    it 'preloads the organization association' do
+      record = described_class.with_organization.find(placeholder_user_detail.id)
+
+      expect(record.association(:organization)).to be_loaded
+    end
+  end
+
   describe '#increment_deletion_attempt' do
     let(:placeholder_user_detail) { create(:import_placeholder_user_details, deletion_attempts: 2) }
 

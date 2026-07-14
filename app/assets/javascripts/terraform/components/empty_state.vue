@@ -5,6 +5,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import InitCommandModal from './init_command_modal.vue';
 
 export default {
+  name: 'EmptyState',
   COMMAND_MODAL_ID: 'init-command-modal',
   i18n: {
     title: s__("Terraform|Your project doesn't have any Terraform state files"),

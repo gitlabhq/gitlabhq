@@ -20,7 +20,7 @@ module Database
     end
 
     def expect_table_columns_to_match(expected_column_attributes, table_name)
-      expect(connection.table_exists?(table_name)).to eq(true)
+      expect(connection.table_exists?(table_name)).to be(true)
 
       actual_columns = connection.columns(table_name)
       expect(actual_columns.size).to eq(column_attributes.size)
@@ -38,7 +38,7 @@ module Database
     end
 
     def expect_index_to_exist(name, schema: nil)
-      expect(index_exists_by_name(name, schema: schema)).to eq(true)
+      expect(index_exists_by_name(name, schema: schema)).to be(true)
     end
 
     def expect_index_not_to_exist(name, schema: nil)
@@ -46,7 +46,7 @@ module Database
     end
 
     def expect_foreign_key_to_exist(table_name, name, schema: nil)
-      expect(foreign_key_exists_by_name(table_name, name, schema: schema)).to eq(true)
+      expect(foreign_key_exists_by_name(table_name, name, schema: schema)).to be(true)
     end
 
     def expect_foreign_key_not_to_exist(table_name, name, schema: nil)

@@ -15,7 +15,6 @@ import { visitUrl, joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
@@ -57,7 +56,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin(), glAbilitiesMixin()],
+  mixins: [InternalEvents.mixin(), glAbilitiesMixin()],
   inject: [
     'canCollaborate',
     'canEditTree',
@@ -206,11 +205,7 @@ export default {
       );
     },
     showFileTreeBrowserToggle() {
-      return (
-        this.glFeatures.repositoryFileTreeBrowser &&
-        !this.isProjectOverview &&
-        !this.fileTreeBrowserIsExpanded
-      );
+      return !this.isProjectOverview && !this.fileTreeBrowserIsExpanded;
     },
     toggleFileBrowserShortcutKey() {
       return this.shortcutsEnabled ? keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY)[0] : null;
@@ -220,7 +215,7 @@ export default {
     },
   },
   mounted() {
-    if (this.glFeatures.repositoryFileTreeBrowser && !this.isReadmeView) {
+    if (!this.isReadmeView) {
       this.initializeFileTreeBrowser();
       this.bindShortcuts();
     }
@@ -279,8 +274,7 @@ export default {
   <section
     class="gl-items-center gl-justify-between"
     :class="{
-      [glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-flex' : '@sm/panel:gl-flex']:
-        isProjectOverview,
+      '@md/panel:gl-flex': isProjectOverview,
     }"
   >
     <div
@@ -318,19 +312,13 @@ export default {
 
     <div
       :class="[
-        'gl-flex gl-flex-col gl-items-stretch gl-justify-end',
-        glFeatures.repositoryFileTreeBrowser
-          ? '@md/panel:gl-flex-row @md/panel:gl-items-center @md/panel:gl-gap-5'
-          : '@sm/panel:gl-flex-row @sm/panel:gl-items-center @sm/panel:gl-gap-5',
+        'gl-flex gl-flex-col gl-items-stretch gl-justify-end @md/panel:gl-flex-row @md/panel:gl-items-center @md/panel:gl-gap-5',
         { 'gl-my-5': !isProjectOverview },
       ]"
     >
       <h1
         v-if="!isReadmeView && !isProjectOverview"
-        :class="[
-          'gl-mt-0 gl-inline-flex gl-flex-1 gl-items-center gl-gap-3 gl-break-words gl-text-size-h1',
-          glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-my-0' : '@sm/panel:gl-my-0',
-        ]"
+        class="gl-mt-0 gl-inline-flex gl-flex-1 gl-items-center gl-gap-3 gl-break-words gl-text-size-h1 @md/panel:gl-my-0"
         data-testid="repository-heading"
       >
         <file-icon
@@ -351,18 +339,12 @@ export default {
       <!-- Tree controls -->
       <div
         v-if="!showBlobControls"
-        :class="[
-          'tree-controls gl-mb-3 gl-flex gl-flex-wrap gl-gap-3',
-          glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-mb-0' : '@sm/panel:gl-mb-0',
-        ]"
+        class="tree-controls gl-mb-3 gl-flex gl-flex-wrap gl-gap-3 @md/panel:gl-mb-0"
         data-testid="tree-controls-container"
       >
         <add-to-tree
           v-if="!isReadmeView"
-          :class="[
-            'gl-hidden',
-            glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-block' : '@sm/panel:gl-block',
-          ]"
+          class="gl-hidden @md/panel:gl-block"
           :current-path="currentPath"
           :can-collaborate="canCollaborate"
           :can-edit-tree="canEditTree"
@@ -390,20 +372,14 @@ export default {
           v-gl-tooltip.html="findFileTooltip"
           :aria-keyshortcuts="findFileShortcutKey"
           data-testid="tree-find-file-control"
-          :class="[
-            'gl-w-full',
-            glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-w-auto' : '@sm/panel:gl-w-auto',
-          ]"
+          class="gl-w-full @md/panel:gl-w-auto"
           @click="handleFindFile"
         >
           {{ $options.i18n.findFile }}
         </gl-button>
         <!-- web ide -->
         <web-ide-link
-          :class="[
-            'gl-w-full @sm/panel:!gl-ml-0',
-            glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-w-auto' : '@sm/panel:gl-w-auto',
-          ]"
+          class="gl-w-full @sm/panel:!gl-ml-0 @md/panel:gl-w-auto"
           data-testid="js-tree-web-ide-link"
           :project-id="projectIdAsNumber"
           :project-path="projectPath"
@@ -426,18 +402,11 @@ export default {
           v-on="$listeners"
         />
         <!-- code + mobile panel -->
-        <div
-          :class="[
-            'project-code-holder gl-w-full',
-            glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-w-auto' : '@sm/panel:gl-w-auto',
-          ]"
-        >
+        <div class="project-code-holder gl-w-full @md/panel:gl-w-auto">
           <div class="gl-flex gl-justify-end gl-gap-3">
             <add-to-tree
               v-if="!isReadmeView"
-              :class="
-                glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-hidden' : '@sm/panel:gl-hidden'
-              "
+              class="@md/panel:gl-hidden"
               :current-path="currentPath"
               :can-collaborate="canCollaborate"
               :can-edit-tree="canEditTree"

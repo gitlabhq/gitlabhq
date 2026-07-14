@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services, feature_category: :source_code_management do
   include RepoHelpers
 
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let_it_be_with_refind(:project) { create(:project, :repository, maintainers: user) }
 
   let(:blankrev) { Gitlab::Git::SHA1_BLANK_SHA }

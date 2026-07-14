@@ -6,7 +6,7 @@ import WikiSidebarToggle from './wiki_sidebar_toggle.vue';
 export default {
   name: 'WikiSidebarHeader',
   components: { WikiSidebarToggle, GlButton },
-  inject: ['hasCustomSidebar', 'hasWikiPages', 'editSidebarUrl', 'canCreate', 'isEditingSidebar'],
+  inject: ['hasCustomSidebar', 'editSidebarUrl', 'canCreate', 'isEditingSidebar'],
   props: {
     pagesListExpanded: {
       type: Boolean,

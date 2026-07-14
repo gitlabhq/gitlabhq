@@ -211,6 +211,77 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Exists, feature_category:
         expect(entry.errors).to include(/contains unknown keys: invalid/)
       end
     end
+
+    context 'with regexp:' do
+      context 'when regexp is a valid pattern' do
+        let(:config) { { regexp: '^src/.*\.rb$' } }
+
+        it_behaves_like 'a valid config'
+      end
+
+      context 'when regexp uses a negative lookahead for negation' do
+        let(:config) { { regexp: '^(?!docs/)' } }
+
+        it_behaves_like 'a valid config'
+      end
+
+      context 'when regexp uses alternation for negation' do
+        let(:config) { { regexp: '^(?:src|lib|spec)/' } }
+
+        it_behaves_like 'a valid config'
+      end
+
+      context 'when regexp is an invalid pattern' do
+        let(:config) { { regexp: '[invalid' } }
+
+        it 'returns an error', :aggregate_failures do
+          is_expected.not_to be_valid
+          expect(entry.errors).to include(/regexp is invalid/)
+        end
+      end
+
+      context 'when regexp exceeds the maximum length' do
+        let(:config) { { regexp: 'a' * 256 } }
+
+        it 'returns an error', :aggregate_failures do
+          is_expected.not_to be_valid
+          expect(entry.errors).to include(/regexp is too long/)
+        end
+      end
+
+      context 'when regexp is not a string' do
+        let(:config) { { regexp: 123 } }
+
+        it 'returns an error', :aggregate_failures do
+          is_expected.not_to be_valid
+          expect(entry.errors).to include(/should be a string/)
+        end
+      end
+
+      context 'when both paths and regexp are provided' do
+        let(:config) { { paths: ['abc.md'], regexp: '^src/.*' } }
+
+        it 'returns an error', :aggregate_failures do
+          is_expected.not_to be_valid
+          expect(entry.errors).to include(/must use exactly one of these keys: paths, regexp/)
+        end
+      end
+
+      context 'when neither paths nor regexp is provided' do
+        let(:config) { { project: 'path/to/project' } }
+
+        it 'returns an error', :aggregate_failures do
+          is_expected.not_to be_valid
+          expect(entry.errors).to include(/must use exactly one of these keys: paths, regexp/)
+        end
+      end
+
+      context 'when regexp is used with project:' do
+        let(:config) { { regexp: '^src/.*', project: 'path/to/project' } }
+
+        it_behaves_like 'a valid config'
+      end
+    end
   end
 
   context 'when the policy strategy does not match' do

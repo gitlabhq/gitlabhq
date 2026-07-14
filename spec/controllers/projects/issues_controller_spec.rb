@@ -10,7 +10,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_reload(:user) { create(:user) }
 
-  let_it_be(:issue, freeze: false) { create(:issue, project: project) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project) }
   let(:spam_action_response_fields) { { 'stub_spam_action_response_fields' => true } }
 
   before do
@@ -49,8 +49,8 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       context 'when project has moved' do
-        let_it_be(:new_project, freeze: false) { create(:project) }
-        let_it_be(:issue, freeze: false) { create(:issue, project: new_project) }
+        let_it_be(:new_project) { create(:project) }
+        let_it_be(:issue) { create(:issue, project: new_project) }
 
         before_all do
           new_project.add_developer(user)
@@ -108,7 +108,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     describe 'pagination' do
-      let_it_be(:issue_list, freeze: false) { create_list(:issue, 2, project: project) }
+      let_it_be(:issue_list) { create_list(:issue, 2, project: project) }
       let(:collection) { project.issues }
       let(:last_page) { collection.page.total_pages }
       let(:params) do
@@ -169,7 +169,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     context 'when issue is of type task' do
       let(:query) { {} }
 
-      let_it_be(:task, freeze: false) { create(:issue, :task, project: project) }
+      let_it_be(:task) { create(:issue, :task, project: project) }
 
       shared_examples 'redirects to show work item page' do
         it 'redirects to work item' do
@@ -250,7 +250,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'when item is a work item type and user cannot edit' do
-      let_it_be(:work_item_issue, freeze: false) { create(:issue, :task, project: project) }
+      let_it_be(:work_item_issue) { create(:issue, :task, project: project) }
 
       before_all do
         project.add_guest(user)
@@ -294,7 +294,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'on external issue tracker' do
-      let_it_be(:service, freeze: false) do
+      let_it_be(:service) do
         create(:custom_issue_tracker_integration, project: project, new_issue_url: 'http://test.com')
       end
 
@@ -449,7 +449,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       context 'when moving issue to another private project' do
-        let_it_be(:another_project, freeze: false) { create(:project, :private) }
+        let_it_be(:another_project) { create(:project, :private) }
 
         context 'when user has access to move issue' do
           before_all do
@@ -489,12 +489,12 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'PUT #reorder' do
-    let_it_be(:group, freeze: false)  { create(:group, projects: [project]) }
-    let_it_be(:issue1, freeze: false) { create(:issue, project: project, relative_position: 10) }
-    let_it_be(:issue2, freeze: false) { create(:issue, project: project, relative_position: 20) }
-    let_it_be(:issue3, freeze: false) { create(:issue, project: project, relative_position: 30) }
-    let_it_be(:other_group_project, freeze: false) { create(:project, group: create(:group)) }
-    let_it_be(:other_group_issue, freeze: false) { create(:issue, project: other_group_project) }
+    let_it_be(:group)  { create(:group, projects: [project]) }
+    let_it_be(:issue1) { create(:issue, project: project, relative_position: 10) }
+    let_it_be(:issue2) { create(:issue, project: project, relative_position: 20) }
+    let_it_be(:issue3) { create(:issue, project: project, relative_position: 30) }
+    let_it_be(:other_group_project) { create(:project, group: create(:group)) }
+    let_it_be(:other_group_issue) { create(:issue, project: other_group_project) }
 
     before do
       sign_in(user)
@@ -718,15 +718,15 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'Confidential Issues' do
-    let_it_be(:project, freeze: false) { create(:project_empty_repo, :public) }
-    let_it_be(:assignee, freeze: false) { create(:assignee) }
-    let_it_be(:author, freeze: false) { create(:user) }
-    let_it_be(:non_member, freeze: false) { create(:user) }
-    let_it_be(:member, freeze: false) { create(:user) }
-    let_it_be(:admin, freeze: false) { create(:admin) }
-    let_it_be(:issue, freeze: false) { create(:issue, project: project) }
-    let_it_be(:unescaped_parameter_value, freeze: false) { create(:issue, :confidential, project: project, author: author) }
-    let_it_be(:request_forgery_timing_attack, freeze: false) { create(:issue, :confidential, project: project, assignees: [assignee]) }
+    let_it_be_with_reload(:project) { create(:project_empty_repo, :public) }
+    let_it_be_with_reload(:assignee) { create(:assignee) }
+    let_it_be(:author) { create(:user) }
+    let_it_be(:non_member) { create(:user) }
+    let_it_be(:member) { create(:user) }
+    let_it_be(:admin) { create(:admin) }
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:unescaped_parameter_value) { create(:issue, :confidential, project: project, author: author) }
+    let_it_be(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignees: [assignee]) }
 
     shared_examples_for 'restricted action' do |http_status|
       it 'returns 404 for guests' do
@@ -821,7 +821,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       it_behaves_like 'restricted action', success: 200
 
       context 'changing the assignee' do
-        let_it_be(:assignee, freeze: false) { create(:user) }
+        let_it_be(:assignee) { create(:user) }
 
         before_all do
           project.add_developer(assignee)
@@ -921,8 +921,8 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
           end
 
           context 'when recaptcha is verified' do
-            let_it_be(:spammy_title, freeze: false) { 'Whatever' }
-            let_it_be(:spam_logs, freeze: false) { create_list(:spam_log, 2, user: user, title: spammy_title) }
+            let_it_be(:spammy_title) { 'Whatever' }
+            let_it_be(:spam_logs) { create_list(:spam_log, 2, user: user, title: spammy_title) }
 
             def update_verified_issue
               update_issue(issue_params: { title: spammy_title }, additional_params: { spam_log_id: spam_logs.last.id, 'g-recaptcha-response': 'a-valid-captcha-response' })
@@ -1112,14 +1112,14 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       issue = post_new_issue
 
       expect(issue).to be_a(Issue)
-      expect(issue.persisted?).to eq(true)
+      expect(issue.persisted?).to be(true)
       expect(issue.work_item_type.base_type).to eq('issue')
     end
 
     context 'resolving discussions in MergeRequest' do
       let_it_be(:discussion, freeze: false) { create(:diff_note_on_merge_request).to_discussion }
-      let_it_be(:merge_request, freeze: false) { discussion.noteable }
-      let_it_be(:project, freeze: false) { merge_request.source_project }
+      let_it_be(:merge_request) { discussion.noteable }
+      let_it_be(:project) { merge_request.source_project }
 
       let(:merge_request_params) do
         { merge_request_to_resolve_discussions_of: merge_request.iid }
@@ -1151,7 +1151,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         post_issue(title: 'Hello')
         discussion.first_note.reload
 
-        expect(discussion.resolved?).to eq(true)
+        expect(discussion.resolved?).to be(true)
       end
 
       it 'sets a flash message' do
@@ -1168,7 +1168,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         it 'resolves a single discussion' do
           discussion.first_note.reload
 
-          expect(discussion.resolved?).to eq(true)
+          expect(discussion.resolved?).to be(true)
         end
 
         it 'sets a flash message that one discussion was resolved' do
@@ -1248,9 +1248,9 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         end
 
         context 'when Recaptcha is verified' do
-          let_it_be(:spam_logs, freeze: false) { create_list(:spam_log, 2, user: user, title: 'Title') }
+          let_it_be(:spam_logs) { create_list(:spam_log, 2, user: user, title: 'Title') }
           let_it_be_with_reload(:last_spam_log) { spam_logs.last }
-          let_it_be(:other_user_spam_log, freeze: false) { create(:spam_log) }
+          let_it_be(:other_user_spam_log) { create(:spam_log) }
 
           def post_verified_issue
             post_new_issue({}, { spam_log_id: last_spam_log.id, 'g-recaptcha-response': 'abc123' })
@@ -1378,7 +1378,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe "DELETE #destroy" do
-    let_it_be(:owner, freeze: false) { create(:user) }
+    let_it_be(:owner) { create(:user) }
 
     before_all do
       project.add_owner(owner)
@@ -1559,7 +1559,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'POST #import_csv' do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public) }
 
     let(:file) { fixture_file_upload('spec/fixtures/csv_comma.csv') }
 
@@ -1675,12 +1675,12 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'GET service_desk' do
-    let_it_be(:project, freeze: false) { create(:project_empty_repo, :public) }
-    let_it_be(:support_bot, freeze: false) { create(:support_bot) }
-    let_it_be(:other_user, freeze: false) { create(:user) }
-    let_it_be(:service_desk_issue_1, freeze: false) { create(:issue, project: project, author: support_bot) }
-    let_it_be(:service_desk_issue_2, freeze: false) { create(:issue, project: project, author: support_bot, assignees: [other_user]) }
-    let_it_be(:other_user_issue, freeze: false) { create(:issue, project: project, author: other_user) }
+    let_it_be(:project) { create(:project_empty_repo, :public) }
+    let_it_be(:support_bot) { create(:support_bot) }
+    let_it_be_with_reload(:other_user) { create(:user) }
+    let_it_be(:service_desk_issue_1) { create(:issue, project: project, author: support_bot) }
+    let_it_be(:service_desk_issue_2) { create(:issue, project: project, author: support_bot, assignees: [other_user]) }
+    let_it_be(:other_user_issue) { create(:issue, project: project, author: other_user) }
 
     def get_service_desk(extra_params = {})
       get :service_desk, params: extra_params.merge(namespace_id: project.namespace, project_id: project)
@@ -1712,8 +1712,8 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'GET #discussions' do
-    let_it_be(:issue, freeze: false) { create(:issue, project: project) }
-    let_it_be(:discussion, freeze: false) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
 
     context 'when authenticated' do
       before_all do
@@ -1726,8 +1726,8 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
       context do
         it_behaves_like 'discussions provider' do
-          let_it_be(:note_on_issue1, freeze: false) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }
-          let_it_be(:note_on_issue2, freeze: false) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }
+          let_it_be(:note_on_issue1) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }
+          let_it_be(:note_on_issue2) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }
 
           let(:requested_iid) { issue.iid }
           let(:expected_discussion_count) { 3 }
@@ -1778,15 +1778,15 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       context 'when user is setting notes filters' do
-        let_it_be(:issuable, freeze: false) { issue }
-        let_it_be(:issuable_parent, freeze: false) { project }
-        let_it_be(:discussion_note, freeze: false) { create(:discussion_note_on_issue, :system, noteable: issuable, project: project) }
+        let_it_be(:issuable) { issue }
+        let_it_be(:issuable_parent) { project }
+        let_it_be(:discussion_note) { create(:discussion_note_on_issue, :system, noteable: issuable, project: project) }
 
         it_behaves_like 'issuable notes filter'
       end
 
       context 'with cross-reference system note', :request_store do
-        let_it_be(:new_issue, freeze: false) { create(:issue) }
+        let_it_be(:new_issue) { create(:issue) }
 
         let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }
 
@@ -1831,10 +1831,10 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       context 'private project' do
-        let_it_be(:branch_note, freeze: false) { create(:discussion_note_on_issue, :system, noteable: issue, project: project) }
-        let_it_be(:commit_note, freeze: false) { create(:discussion_note_on_issue, :system, noteable: issue, project: project) }
-        let_it_be(:branch_note_meta, freeze: false) { create(:system_note_metadata, note: branch_note, action: "branch") }
-        let_it_be(:commit_note_meta, freeze: false) { create(:system_note_metadata, note: commit_note, action: "commit") }
+        let_it_be(:branch_note) { create(:discussion_note_on_issue, :system, noteable: issue, project: project) }
+        let_it_be(:commit_note) { create(:discussion_note_on_issue, :system, noteable: issue, project: project) }
+        let_it_be(:branch_note_meta) { create(:system_note_metadata, note: branch_note, action: "branch") }
+        let_it_be(:commit_note_meta) { create(:system_note_metadata, note: commit_note, action: "commit") }
 
         context 'user is allowed access' do
           before_all do

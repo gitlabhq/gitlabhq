@@ -151,6 +151,101 @@ RSpec.describe Gitlab::PrinciplesDistiller::ProvisionFlow do
     end
   end
 
+  describe '#graphql' do
+    let(:instance) { described_class.new({ dry_run: false }) }
+    let(:client) { instance_double(Gitlab::PrinciplesDistiller::GraphqlClient) }
+
+    before do
+      allow(instance).to receive(:graphql_client).and_return(client)
+    end
+
+    context 'when the call succeeds' do
+      it 'returns the data payload' do
+        allow(client).to receive(:query).and_return({ 'ok' => true })
+
+        expect(instance.send(:graphql, 'query {}')).to eq({ 'ok' => true })
+      end
+    end
+
+    context 'when the call raises a permission-denied error and an action is given' do
+      let(:error) do
+        Gitlab::PrinciplesDistiller::GraphqlClient::Error.new(
+          "GraphQL errors: The resource that you are attempting to access does not exist " \
+            "or you don't have permission to perform this action"
+        )
+      end
+
+      before do
+        allow(client).to receive(:query).and_raise(error)
+      end
+
+      it 'aborts with actionable maintainer guidance rather than the raw error' do
+        # `abort` writes the message to stderr; capture and assert on it.
+        expect { instance.send(:graphql, 'mutation {}', {}, action: 'release a new flow version') }
+          .to output(/not authorized to release a new flow version/).to_stderr
+          .and(raise_error(SystemExit))
+      end
+
+      it 'includes the manual provisioning command and the admin ability name' do
+        expect { instance.send(:graphql, 'mutation {}', {}, action: 'release a new flow version') }
+          .to output(/admin_ai_catalog_item.*provision-flow/m).to_stderr
+          .and(raise_error(SystemExit))
+      end
+    end
+
+    context 'when the call raises a permission-denied error but no action is given' do
+      let(:error) do
+        Gitlab::PrinciplesDistiller::GraphqlClient::Error.new("you don't have permission to perform this action")
+      end
+
+      it 'aborts with the raw error message' do
+        allow(client).to receive(:query).and_raise(error)
+
+        expect { instance.send(:graphql, 'query {}') }
+          .to output(/perform this action/).to_stderr
+          .and(raise_error(SystemExit))
+      end
+    end
+
+    context 'when the call raises a non-permission error with an action' do
+      let(:error) { Gitlab::PrinciplesDistiller::GraphqlClient::Error.new('GraphQL HTTP 500: boom') }
+
+      it 'aborts with the raw error, not the permission guidance', :aggregate_failures do
+        allow(client).to receive(:query).and_raise(error)
+
+        # `abort` writes to stderr and raises SystemExit. Compose a single
+        # stderr matcher so the negative check (no permission guidance) shares
+        # the same block that expects SystemExit, rather than a bare `not_to
+        # output` block whose SystemExit would go unrescued.
+        raw_error_only = a_string_matching(/GraphQL HTTP 500: boom/)
+          .and(satisfy { |s| !s.include?('not authorized') })
+
+        expect { instance.send(:graphql, 'mutation {}', {}, action: 'create the catalog flow') }
+          .to output(raw_error_only).to_stderr
+          .and(raise_error(SystemExit))
+      end
+    end
+  end
+
+  describe '#permission_denied?' do
+    let(:instance) { described_class.new({ dry_run: true }) }
+
+    it 'matches the GitLab authorization error string' do
+      error = Gitlab::PrinciplesDistiller::GraphqlClient::Error.new(
+        "The resource that you are attempting to access does not exist " \
+          "or you don't have permission to perform this action"
+      )
+
+      expect(instance.send(:permission_denied?, error)).to be(true)
+    end
+
+    it 'does not match unrelated errors' do
+      error = Gitlab::PrinciplesDistiller::GraphqlClient::Error.new('GraphQL HTTP 502: bad gateway')
+
+      expect(instance.send(:permission_denied?, error)).to be(false)
+    end
+  end
+
   describe '.parse_options' do
     around do |example|
       original_argv = ARGV.dup

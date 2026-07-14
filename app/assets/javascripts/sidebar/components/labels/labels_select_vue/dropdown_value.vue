@@ -21,6 +21,7 @@ export default {
       default: false,
     },
   },
+  emits: ['onLabelRemove'],
   computed: {
     ...mapState([
       'selectedLabels',

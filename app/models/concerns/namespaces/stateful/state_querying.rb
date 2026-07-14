@@ -27,13 +27,15 @@ module Namespaces
         delegate :deletion_scheduled_by_user, to: :namespace_details
       end
 
-      # Returns the effective state for this namespace, considering ancestor inheritance.
-      # If the namespace has its own explicit state (not ancestor_inherited), returns that state.
-      # Otherwise, traverses up the ancestor hierarchy to find the first ancestor with an explicit state.
-      # Returns :ancestor_inherited if no ancestor has an explicit state.
+      # Returns the effective state for this namespace.
+      #
+      # When the `namespace_state_propagation` flag is disabled, the namespace's own explicit
+      # state is returned, or the hierarchy is traversed to find the first ancestor with an
+      # explicit state, falling back to :ancestor_inherited when no ancestor has one.
       #
       # @return [Symbol] the effective state name
       def effective_state
+        return state_name if Feature.enabled?(:namespace_state_propagation, self)
         return state_name if !ancestor_inherited? || parent_id.nil?
 
         closest_ancestor_state =

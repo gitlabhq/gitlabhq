@@ -45,7 +45,6 @@ describe('access tokens', () => {
       expect(wrapper.findComponent(AccessTokenTableApp).vm).toMatchObject({
         // Required value
         accessTokenType,
-        accessTokenTypePlural,
         initialActiveAccessTokens,
 
         // Default values
@@ -76,7 +75,6 @@ describe('access tokens', () => {
       expect(component.exists()).toBe(true);
       expect(wrapper.findComponent(AccessTokenTableApp).vm).toMatchObject({
         accessTokenType,
-        accessTokenTypePlural,
         initialActiveAccessTokens,
         noActiveTokensMessage,
         showRole: true,

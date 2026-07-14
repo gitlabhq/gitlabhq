@@ -27,6 +27,12 @@ RSpec.describe Import::FogbugzService, feature_category: :importers do
     end
 
     it 'returns an error' do
+      expect(::Import::Framework::Logger).to receive(:error).with(
+        message: 'Import failed due to a Fogbugz error',
+        error: "Project #{repo_id} could not be found",
+        Labkit::Fields::GL_ORGANIZATION_ID => user.namespace.organization_id
+      )
+
       result = subject.execute(credentials)
 
       expect(result).to include(
@@ -142,6 +148,7 @@ RSpec.describe Import::FogbugzService, feature_category: :importers do
     exception = StandardError.new(message)
 
     allow(client).to receive(:repo).and_raise(exception)
+    allow(::Import::Framework::Logger).to receive(:error)
 
     expect(subject.execute(credentials)).to include({
       status: :error,

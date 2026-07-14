@@ -67,7 +67,7 @@ RSpec.describe Gitlab::BitbucketServerImport::ProjectCreator, feature_category: 
         description: repo.description,
         namespace_id: namespace.id,
         organization_id: namespace.organization_id,
-        visibility_level: repo.visibility_level,
+        visibility_level: Gitlab::VisibilityLevel::PUBLIC,
         import_type: 'bitbucket_server',
         import_source: repo.browse_url,
         import_url: repo.clone_url,

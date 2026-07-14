@@ -10,6 +10,7 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
   let_it_be(:user) { create(:user, developer_of: project_no_snippets) }
   let_it_be(:admin) { create(:admin, developer_of: project_no_snippets) }
   let_it_be_with_reload(:public_snippet) { create(:project_snippet, :public, :repository, project: project) }
+  let_it_be(:snippet_maintainer) { create(:user, maintainer_of: project) }
 
   describe "GET /projects/:project_id/snippets/:id/user_agent_detail" do
     let_it_be(:user_agent_detail) { create(:user_agent_detail, subject: public_snippet) }
@@ -43,6 +44,14 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
     context 'with snippets disabled' do
       it_behaves_like '403 response' do
         subject(:request) { get api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}/user_agent_detail", admin, admin_mode: true) }
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_snippet_user_agent_detail do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        get api("/projects/#{project.id}/snippets/#{public_snippet.id}/user_agent_detail", personal_access_token: pat)
       end
     end
   end
@@ -91,6 +100,11 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
         subject(:request) { get api("/projects/#{project_no_snippets.id}/snippets", user) }
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_snippet do
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/snippets", personal_access_token: pat) }
+    end
   end
 
   describe 'GET /projects/:project_id/snippets/:id' do
@@ -124,6 +138,13 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
 
     it_behaves_like 'project snippet access levels' do
       let(:path) { "/projects/#{snippet.project.id}/snippets/#{snippet.id}" }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_snippet do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/snippets/#{snippet.id}", personal_access_token: pat)
+      end
     end
   end
 
@@ -310,6 +331,15 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
         subject(:request) { post api("/projects/#{project_no_snippets.id}/snippets", user), params: params }
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_snippet do
+      let(:boundary_object) { project }
+      let(:user) { snippet_maintainer }
+      let(:request) do
+        post api("/projects/#{project.id}/snippets", personal_access_token: pat),
+          params: { title: 'GPAT snippet', visibility: 'private', files: [{ file_path: 'a.rb', content: 'x' }] }
+      end
+    end
   end
 
   describe 'PUT /projects/:project_id/snippets/:id/' do
@@ -384,6 +414,15 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
       end
     end
 
+    it_behaves_like 'authorizing granular token permissions', :update_snippet do
+      let(:boundary_object) { project }
+      let(:user) { snippet_maintainer }
+      let(:request) do
+        put api("/projects/#{project.id}/snippets/#{snippet.id}", personal_access_token: pat),
+          params: { title: 'Updated title' }
+      end
+    end
+
     def update_snippet(snippet_id: snippet.id, admin_mode: false, params: {})
       put api("/projects/#{snippet.project.id}/snippets/#{snippet_id}", admin, admin_mode: admin_mode), params: params
     end
@@ -440,6 +479,16 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
         subject(:request) { delete api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}", admin, admin_mode: true) }
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_snippet do
+      let_it_be(:deletable_snippet) { create(:project_snippet, :public, project: project) }
+
+      let(:boundary_object) { project }
+      let(:user) { snippet_maintainer }
+      let(:request) do
+        delete api("/projects/#{project.id}/snippets/#{deletable_snippet.id}", personal_access_token: pat)
+      end
+    end
   end
 
   describe 'GET /projects/:project_id/snippets/:id/raw' do
@@ -482,6 +531,13 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
 
       subject { get api(path, snippet.author, admin_mode: admin_mode) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_snippet do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/snippets/#{snippet.id}/raw", personal_access_token: pat)
+      end
+    end
   end
 
   describe 'GET /projects/:project_id/snippets/:id/files/:ref/:file_path/raw' do
@@ -498,5 +554,14 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
     end
 
     it_behaves_like 'project snippet access levels'
+
+    it_behaves_like 'authorizing granular token permissions', :read_snippet do
+      let(:boundary_object) { project }
+      let(:user) { snippet_maintainer }
+      let(:request) do
+        get api("/projects/#{project.id}/snippets/#{snippet.id}/files/master/%2Egitattributes/raw",
+          personal_access_token: pat)
+      end
+    end
   end
 end

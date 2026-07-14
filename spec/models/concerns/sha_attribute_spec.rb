@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ShaAttribute do
+RSpec.describe ShaAttribute, feature_category: :database do
   let(:model) do
     Class.new(ActiveRecord::Base) do
       include ShaAttribute

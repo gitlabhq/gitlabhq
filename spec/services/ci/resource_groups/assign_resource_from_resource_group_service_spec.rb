@@ -21,20 +21,16 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
     let!(:ci_build) { create(:ci_build, :waiting_for_resource, project: project, user: user, resource_group: resource_group) }
 
     context 'when there is an available resource' do
-      it 'requests resource' do
-        subject
-
-        expect(ci_build.reload).to be_pending
-        expect(ci_build.resource).to be_present
-      end
-
-      it 'pre-computes pending build args outside the transaction' do
+      it 'requests resource and pre-computes pending build args outside the transaction', :aggregate_failures do
         expect(Ci::PendingBuild).to receive(:args_from_build).with(ci_build).and_call_original
         expect(Ci::PendingBuild).to receive(:upsert_from_args!)
           .with(a_hash_including(:build, :project, :namespace))
           .and_call_original
 
         subject
+
+        expect(ci_build.reload).to be_pending
+        expect(ci_build.resource).to be_present
       end
 
       it_behaves_like 'internal event tracking' do
@@ -50,16 +46,12 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
           end
         end
 
-        it 'has a build waiting for resource' do
-          subject
-
-          expect(ci_build.reload).to be_waiting_for_resource
-        end
-
-        it 'does not track the internal event' do
+        it 'has a build waiting for resource and does not track the internal event', :aggregate_failures do
           expect(Gitlab::InternalEvents).not_to receive(:track_event)
 
           subject
+
+          expect(ci_build.reload).to be_waiting_for_resource
         end
       end
 
@@ -190,7 +182,15 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
 
         context 'when build is a deployable' do
           let!(:environment) { create(:environment, name: 'prod', project: project) }
-          let!(:ci_build) { create_deploy_job_with_persisted_deployment(user, project, resource_group, environment.name, 'waiting_for_resource') }
+          let!(:ci_build) do
+            create_deploy_job_with_persisted_deployment(
+              user,
+              project,
+              resource_group,
+              environment.name,
+              'waiting_for_resource'
+            )
+          end
 
           it 'enqueues the build' do
             subject
@@ -212,29 +212,89 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
               expect(ci_build.failure_reason).to eq 'failed_outdated_deployment_job'
             end
           end
+
+          context 'with multiple deployable builds' do
+            before do
+              allow_any_instance_of(Ci::Build).to receive_messages(drop!: true, enqueue_waiting_for_resource: true)
+            end
+
+            it 'avoids N+1 queries when checking outdated deployments' do
+              control_resource_group = create(:ci_resource_group, project: project)
+              control_environment = create(:environment, name: 'control', project: project)
+              create(:ci_resource, resource_group: control_resource_group)
+              create_deploy_job_with_persisted_deployment(
+                user,
+                project,
+                control_resource_group,
+                control_environment.name,
+                'waiting_for_resource'
+              )
+              create_deploy_job_with_persisted_deployment(
+                user,
+                project,
+                control_resource_group,
+                control_environment.name,
+                'success'
+              )
+
+              control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+                service.execute(control_resource_group)
+              end
+
+              extra_resource_group = create(:ci_resource_group, project: project)
+              extra_environment = create(:environment, name: 'extra', project: project)
+              create_list(:ci_resource, 2, resource_group: extra_resource_group)
+              create_list(:ci_build, 2, :deploy_job,
+                project: project,
+                user: user,
+                resource_group: extra_resource_group,
+                status: 'waiting_for_resource',
+                environment: extra_environment.name) do |deploy_job|
+                create_persisted_deployment(deploy_job, 'created')
+                deploy_job.save!
+              end
+              create_deploy_job_with_persisted_deployment(
+                user,
+                project,
+                extra_resource_group,
+                extra_environment.name,
+                'success'
+              )
+
+              expect { service.execute(extra_resource_group) }
+                .not_to exceed_all_query_limit(control)
+            end
+
+            context 'when resource_group_assignment_preloads is disabled' do
+              before do
+                stub_feature_flags(resource_group_assignment_preloads: false)
+              end
+
+              it 'does not preload last deployments' do
+                expect(::Preloaders::Environments::DeploymentPreloader).not_to receive(:new)
+
+                subject
+              end
+            end
+          end
         end
       end
     end
 
     context 'when there are no available resources' do
-      let!(:other_build) { create(:ci_build) }
+      let!(:other_build) { create(:ci_build, project: project) }
 
       before do
         resource_group.assign_resource_to(other_build)
       end
 
-      it 'does not request resource' do
+      it 'does not request resource or re-spawn the worker', :aggregate_failures do
         expect_any_instance_of(Ci::Build).not_to receive(:enqueue_waiting_for_resource)
+        expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).not_to receive(:perform_in)
 
         subject
 
         expect(ci_build.reload).to be_waiting_for_resource
-      end
-
-      it 'does not re-spawn the new worker for assigning a resource' do
-        expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).not_to receive(:perform_in)
-
-        subject
       end
 
       context 'when there is a stale build assigned to a resource' do
@@ -243,7 +303,9 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
           other_build.update_column(:updated_at, 10.minutes.ago)
         end
 
-        it 'releases the resource from the stale build and assignes to the waiting build' do
+        it 'releases the stale resource via the resource group and assigns the waiting build' do
+          expect(resource_group).to receive(:stale_processables).and_call_original
+
           subject
 
           expect(ci_build.reload).to be_pending
@@ -254,7 +316,7 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
   end
 
   def create_deploy_job_with_persisted_deployment(user, project, resource_group, environment_name, status)
-    pipeline = create(:ci_empty_pipeline, sha: OpenSSL::Digest::SHA256.hexdigest(SecureRandom.hex))
+    pipeline = create(:ci_empty_pipeline, project: project, sha: OpenSSL::Digest::SHA256.hexdigest(SecureRandom.hex))
 
     deploy_job = create(
       :ci_build,

@@ -25,6 +25,8 @@ import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
+import { groupPath } from '~/lib/utils/path_helpers/group';
+import { projectPath } from '~/lib/utils/path_helpers/project';
 
 import { isFailed, isImporting } from '../utils';
 import { DEFAULT_ERROR } from '../utils/error_messages';
@@ -203,8 +205,10 @@ export default {
       }
     },
 
-    destinationLinkHref(params) {
-      return joinPaths(gon.relative_url_root || '', '/', params.destination_full_path);
+    destinationLinkHref(item) {
+      return item.entity_type === NAMESPACE_GROUP
+        ? groupPath(item.destination_full_path)
+        : projectPath(item.destination_full_path);
     },
 
     pathWithSuffix(path, item) {

@@ -321,74 +321,51 @@ RSpec.describe Note, feature_category: :team_planning do
       end
     end
 
-    describe '#keep_around_commit' do
+    describe '#enqueue_keep_around_commit' do
       let_it_be(:noteable) { create(:issue) }
 
-      it "skips keep_around_commit if 'skip_keep_around_commits' is true" do
+      it "skips enqueue_keep_around_commit if 'skip_keep_around_commits' is true" do
         note = build(:note, project: noteable.project, noteable: noteable, skip_keep_around_commits: true)
 
-        expect(note).not_to receive(:keep_around_commit)
+        expect(note).not_to receive(:enqueue_keep_around_commit)
 
         note.save!
       end
 
-      it "skips keep_around_commit if 'importing' is true" do
+      it "skips enqueue_keep_around_commit if 'importing' is true" do
         note = build(:note, project: noteable.project, noteable: noteable, importing: true)
 
-        expect(note).not_to receive(:keep_around_commit)
+        expect(note).not_to receive(:enqueue_keep_around_commit)
 
         note.save!
       end
 
-      context 'when async_keep_around_refs_for_merge_request_diffs is enabled' do
-        before do
-          stub_feature_flags(async_keep_around_refs_for_merge_request_diffs: true)
-        end
+      it 'does not call keep_around synchronously in after_save' do
+        note = build(:note, project: noteable.project, noteable: noteable)
 
-        it 'does not call keep_around synchronously in after_save' do
-          note = build(:note, project: noteable.project, noteable: noteable)
+        expect(note.project.repository).not_to receive(:keep_around)
 
-          expect(note.project.repository).not_to receive(:keep_around)
-
-          note.save!
-        end
-
-        it 'enqueues KeepAroundRefsWorker via after_commit' do
-          note = create(:note, project: noteable.project, noteable: noteable, commit_id: 'abc123')
-
-          expect(MergeRequests::KeepAroundRefsWorker).to receive(:perform_async).with(
-            [note.project.id],
-            ['abc123'],
-            "#{note.noteable_type}/#{note.class.name}"
-          )
-
-          note.update!(note: 'updated')
-        end
+        note.save!
       end
 
-      context 'when async_keep_around_refs_for_merge_request_diffs is disabled' do
-        before do
-          stub_feature_flags(async_keep_around_refs_for_merge_request_diffs: false)
-        end
+      it 'enqueues KeepAroundRefsWorker via after_commit' do
+        note = create(:note, project: noteable.project, noteable: noteable, commit_id: 'abc123')
 
-        it 'calls keep_around synchronously in after_save' do
-          note = create(:note, project: noteable.project, noteable: noteable, commit_id: 'abc123')
+        expect(MergeRequests::KeepAroundRefsWorker).to receive(:perform_async).with(
+          [note.project.id],
+          ['abc123'],
+          "#{note.noteable_type}/#{note.class.name}"
+        )
 
-          expect(note.project.repository).to receive(:keep_around).with(
-            'abc123',
-            source: "#{note.noteable_type}/#{note.class.name}"
-          )
+        note.update!(note: 'updated')
+      end
 
-          note.update!(note: 'updated')
-        end
+      it 'does not enqueue KeepAroundRefsWorker when commit_id is not present' do
+        note = build(:note, project: noteable.project, noteable: noteable, commit_id: nil)
 
-        it 'does not enqueue KeepAroundRefsWorker' do
-          note = create(:note, project: noteable.project, noteable: noteable, commit_id: 'abc123')
+        expect(MergeRequests::KeepAroundRefsWorker).not_to receive(:perform_async)
 
-          expect(MergeRequests::KeepAroundRefsWorker).not_to receive(:perform_async)
-
-          note.update!(note: 'updated')
-        end
+        note.send(:enqueue_keep_around_commit)
       end
     end
 
@@ -1598,6 +1575,31 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
+  describe '.commit_note_ids_for_shas' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:commit_note) { create(:note_on_commit, project: project, commit_id: 'abc123') }
+
+    it 'returns the project commit-note IDs for the given SHAs' do
+      expect(described_class.commit_note_ids_for_shas(['abc123'], project.id)).to contain_exactly(commit_note.id)
+    end
+
+    it 'excludes notes on the same SHA that belong to another project' do
+      create(:note_on_commit, project: create(:project), commit_id: 'abc123')
+
+      expect(described_class.commit_note_ids_for_shas(['abc123'], project.id)).to contain_exactly(commit_note.id)
+    end
+
+    it 'excludes notes on the same SHA that are not commit notes' do
+      create(:note_on_issue, project: project).update_column(:commit_id, 'abc123')
+
+      expect(described_class.commit_note_ids_for_shas(['abc123'], project.id)).to contain_exactly(commit_note.id)
+    end
+
+    it 'returns an empty array when no commit notes match' do
+      expect(described_class.commit_note_ids_for_shas(['def456'], project.id)).to be_empty
+    end
+  end
+
   describe '#for_work_item?' do
     it 'returns true for a work item' do
       expect(build(:note_on_work_item).for_work_item?).to be true
@@ -2041,6 +2043,15 @@ RSpec.describe Note, feature_category: :team_planning do
 
           expect(notes_by_author).to contain_exactly(note)
         end
+      end
+    end
+
+    describe '.non_legacy_diff_notes' do
+      let_it_be(:diff_note) { create(:diff_note_on_merge_request) }
+      let_it_be(:legacy_diff_note) { create(:legacy_diff_note_on_merge_request) }
+
+      it 'returns only DiffNote records, excluding LegacyDiffNote and other notes' do
+        expect(described_class.non_legacy_diff_notes).to contain_exactly(diff_note)
       end
     end
 

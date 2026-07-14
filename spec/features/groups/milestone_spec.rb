@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Group milestones', feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project_empty_repo, group: group) }
-  let_it_be(:user, freeze: false) { create(:group_member, :maintainer, user: create(:user), group: group).user }
+  let_it_be_with_reload(:project) { create(:project_empty_repo, group: group) }
+  let_it_be_with_reload(:user) { create(:group_member, :maintainer, user: create(:user), group: group).user }
 
   around do |example|
     freeze_time { example.run }
@@ -79,7 +79,7 @@ RSpec.describe 'Group milestones', feature_category: :team_planning do
     context 'when milestones exists', :js do
       let_it_be(:other_project) { create(:project_empty_repo, group: group) }
 
-      let_it_be(:active_project_milestone1, freeze: false) do
+      let_it_be_with_reload(:active_project_milestone1) do
         create(
           :milestone,
           project: project,
@@ -95,7 +95,7 @@ RSpec.describe 'Group milestones', feature_category: :team_planning do
       let_it_be(:closed_project_milestone2) { create(:milestone, project: other_project, state: 'closed', title: 'v2.0') }
       let_it_be(:active_group_milestone) { create(:milestone, group: group, state: 'active', title: 'GL-113') }
       let_it_be(:closed_group_milestone) { create(:milestone, group: group, state: 'closed') }
-      let_it_be(:issue, freeze: false) do
+      let_it_be_with_reload(:issue) do
         create :issue, project: project, assignees: [user], author: user, milestone: active_project_milestone1
       end
 

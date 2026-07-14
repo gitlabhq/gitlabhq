@@ -413,6 +413,59 @@ describe('work items graphql cache utils', () => {
 
       expect(features.status.status).toEqual(allowedStatus1);
     });
+
+    // Regression guard for https://gitlab.com/gitlab-org/gitlab/-/work_items/598491:
+    // every field the `WorkItemFeatures` fragment selects must be seeded here, otherwise Apollo
+    // throws "Missing field 'X' while writing result" when the create form loads with the
+    // `work_item_features_field` flag on. Keep this list in sync with the fragment.
+    it('seeds every feature key required by the WorkItemFeatures fragment', () => {
+      const { features } = callGetNewWorkItemSharedCache(buildWidgetDefinitions());
+
+      expect(Object.keys(features).sort()).toEqual(
+        [
+          'agentPlan',
+          'assignees',
+          'awardEmoji',
+          'color',
+          'crmContacts',
+          'currentUserTodos',
+          'customFields',
+          'description',
+          'development',
+          'errorTracking',
+          'healthStatus',
+          'hierarchy',
+          'iteration',
+          'labels',
+          'linkedItems',
+          'linkedResources',
+          'milestone',
+          'notes',
+          'notifications',
+          'participants',
+          'progress',
+          'startAndDueDate',
+          'status',
+          'timeTracking',
+          'weight',
+        ].sort(),
+      );
+    });
+
+    // These fragment-required fields are not sourced from the widget definition and were the
+    // repeated cause of the "Missing field" errors, so assert they are always present.
+    it('seeds fragment fields that are not derived from the widget definition', () => {
+      const { features } = callGetNewWorkItemSharedCache(buildWidgetDefinitions());
+
+      expect(features.hierarchy.type).toBe(WIDGET_TYPE_HIERARCHY);
+      expect(features.labels.allowsScopedLabels).toBeDefined();
+      expect(features.assignees.allowsMultipleAssignees).toBeDefined();
+      expect(features.assignees.canInviteMembers).toBeDefined();
+      expect(features.weight.rolledUpWeight).toBeNull();
+      expect(features.weight.rolledUpCompletedWeight).toBeNull();
+      expect(features.healthStatus.rolledUpHealthStatus).toBeNull();
+      expect(features.customFields.customFieldValues).toBeDefined();
+    });
   });
 
   describe('statuses for legacyGetNewWorkItemSharedCache', () => {

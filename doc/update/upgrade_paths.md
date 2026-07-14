@@ -45,7 +45,16 @@ If you're upgrading a GitLab Helm chart instance, see the
 
 ### Required GitLab 19 upgrade stops
 
-Required upgrade stops occur at versions `19.2`, `19.5`, `19.8`, and `19.11`.
+> [!note]
+> Some of these versions might not be released yet. To check which versions are available, see the
+> [GitLab 19 release notes](../releases/19/_index.md).
+
+Required upgrade stops occur at versions:
+
+- `19.2`
+- `19.5`
+- `19.8`
+- `19.11`
 
 You must upgrade to those versions of GitLab 19 before upgrading to later versions. For each version you upgrade to,
 see the [upgrade notes for GitLab 19](versions/gitlab_19_changes.md). If a version is not

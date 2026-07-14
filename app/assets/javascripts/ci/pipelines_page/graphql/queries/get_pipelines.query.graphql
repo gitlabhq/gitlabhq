@@ -1,8 +1,8 @@
 # @feature_category: continuous_integration
 #import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "~/ci/pipelines_page/graphql/fragments/pipeline_details.fragment.graphql"
-#import "~/ci/pipelines_page/graphql/fragments/pipeline_downstream_item.fragment.graphql"
+#import "~/ci/common/graphql/fragments/pipeline_downstream_list_item.fragment.graphql"
+#import "../fragments/pipeline_list_item.fragment.graphql"
 
 query getPipelines(
   $fullPath: ID!
@@ -32,13 +32,8 @@ query getPipelines(
       ids: $ids
     ) {
       nodes {
-        ...PipelineDetails
-        downstream(first: 3) {
-          count
-          nodes {
-            ...PipelineDownstreamItem
-          }
-        }
+        ...PipelineListItem
+        ...PipelineDownstreamListItem
         upstream {
           id
           detailedStatus {

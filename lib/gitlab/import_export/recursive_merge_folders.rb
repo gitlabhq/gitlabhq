@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # This class is used by Import/Export to move files and folders from a source folders into a target folders
 # that can already have the same folders in it, resolving in a merged folder.

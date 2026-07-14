@@ -215,120 +215,122 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
         create(:user, :two_factor_via_otp, :two_factor_via_webauthn, :with_passkey, registrations_count: 1)
       end
 
-      context 'with valid authentications' do
-        context 'with second_factor authenticators' do
-          it "allows a user to sign-in with an already registered WebAuthn authenticator" do
-            webauthn_authenticator = add_webauthn_device(app_id, user)
+      with_and_without_ff(:two_factor_vue) do
+        context 'with valid authentications' do
+          context 'with second_factor authenticators' do
+            it "allows a user to sign-in with an already registered WebAuthn authenticator" do
+              webauthn_authenticator = add_webauthn_device(app_id, user)
 
-            submit_sign_in_form_for(user)
-            webauthn_authenticator.respond_to_webauthn_authentication
+              submit_sign_in_form_for(user)
+              webauthn_authenticator.respond_to_webauthn_authentication
 
-            expect(page).to have_current_path(root_path)
+              expect(page).to have_current_path(root_path)
+            end
+
+            context 'when multiple authenticators have been registered by the same user' do
+              it 'allows a user to sign-in with either authenticator' do
+                first_device = add_webauthn_device(app_id, user)
+                second_device = add_webauthn_device(app_id, user)
+
+                # Authenticate as both devices
+                [first_device, second_device].each do |device|
+                  submit_sign_in_form_for(user)
+
+                  device.respond_to_webauthn_authentication
+
+                  expect(page).to have_current_path(root_path)
+
+                  gitlab_sign_out(user)
+                end
+              end
+            end
           end
 
-          context 'when multiple authenticators have been registered by the same user' do
-            it 'allows a user to sign-in with either authenticator' do
-              first_device = add_webauthn_device(app_id, user)
-              second_device = add_webauthn_device(app_id, user)
+          context 'with passkeys' do
+            it 'allows a user to sign-in with passkey, second_factor & OTP authenticators' do
+              # with passkey
+              passkey = add_passkey(app_id, user)
+              submit_sign_in_form_for(user)
+              passkey.respond_to_webauthn_authentication
+              expect(page).to have_current_path(root_path)
+              gitlab_sign_out(user)
 
-              # Authenticate as both devices
-              [first_device, second_device].each do |device|
-                submit_sign_in_form_for(user)
+              # with WebAuthn
+              second_factor_authenticator = add_webauthn_device(app_id, user)
+              submit_sign_in_form_for(user)
+              second_factor_authenticator.respond_to_webauthn_authentication
+              expect(page).to have_current_path(root_path)
+              gitlab_sign_out(user)
 
-                device.respond_to_webauthn_authentication
-
-                expect(page).to have_current_path(root_path)
-
-                gitlab_sign_out(user)
-              end
+              # with OTP
+              submit_sign_in_form_for(user)
+              sign_in_with_otp(user)
+              expect(page).to have_current_path(root_path)
+              gitlab_sign_out(user)
             end
           end
         end
 
-        context 'with passkeys' do
-          it 'allows a user to sign-in with passkey, second_factor & OTP authenticators' do
-            # with passkey
-            passkey = add_passkey(app_id, user)
-            submit_sign_in_form_for(user)
-            passkey.respond_to_webauthn_authentication
-            expect(page).to have_current_path(root_path)
-            gitlab_sign_out(user)
+        context 'with invalid authentications' do
+          let(:other_user) { create(:user, :two_factor_via_webauthn, registrations_count: 1) }
 
-            # with WebAuthn
-            second_factor_authenticator = add_webauthn_device(app_id, user)
-            submit_sign_in_form_for(user)
-            second_factor_authenticator.respond_to_webauthn_authentication
-            expect(page).to have_current_path(root_path)
-            gitlab_sign_out(user)
-
-            # with OTP
-            submit_sign_in_form_for(user)
-            add_otp(user)
-            expect(page).to have_current_path(root_path)
-            gitlab_sign_out(user)
-          end
-        end
-      end
-
-      context 'with invalid authentications' do
-        let(:other_user) { create(:user, :two_factor_via_webauthn, registrations_count: 1) }
-
-        context 'when a given WebAuthn authenticator in GitLab is not owned by a user' do
-          it 'does not allow a user to sign-in in with that particular authenticator' do
-            webauthn_authenticator = add_webauthn_device(app_id, user)
-
-            # Sign-in with a 2FA enabled user & perform the user verification
-            submit_sign_in_form_for(other_user)
-            webauthn_authenticator.respond_to_webauthn_authentication
-
-            expect(page).to have_content('Authentication via WebAuthn device failed')
-          end
-        end
-
-        context 'with retries' do
-          it 'allows retrying authentication' do
-            webauthn_authenticator = add_webauthn_device(app_id, user)
-
-            # Failed authentication
-            submit_sign_in_form_for(other_user)
-            webauthn_authenticator.respond_to_webauthn_authentication
-
-            expect(page).to have_content('Authentication via WebAuthn device failed')
-
-            # Successful authentication
-            webauthn_authenticator2 = add_webauthn_device(app_id, other_user)
-            webauthn_authenticator2.respond_to_webauthn_authentication
-
-            expect(page).to have_current_path(root_path)
-          end
-        end
-
-        context 'with passkeys' do
-          context 'when a given passkey in GitLab is not owned by a user' do
+          context 'when a given WebAuthn authenticator in GitLab is not owned by a user' do
             it 'does not allow a user to sign-in in with that particular authenticator' do
-              passkey = add_passkey(app_id, user)
+              webauthn_authenticator = add_webauthn_device(app_id, user)
 
+              # Sign-in with a 2FA enabled user & perform the user verification
               submit_sign_in_form_for(other_user)
-              passkey.respond_to_webauthn_authentication
+              webauthn_authenticator.respond_to_webauthn_authentication
 
-              expect(page).to have_content('Failed to connect to your device')
+              expect(page).to have_content('Authentication via WebAuthn device failed')
             end
           end
 
           context 'with retries' do
             it 'allows retrying authentication' do
-              passkey = add_passkey(app_id, user)
+              webauthn_authenticator = add_webauthn_device(app_id, user)
 
               # Failed authentication
               submit_sign_in_form_for(other_user)
-              passkey.respond_to_webauthn_authentication
-              expect(page).to have_content('Failed to connect to your device')
+              webauthn_authenticator.respond_to_webauthn_authentication
+
+              expect(page).to have_content('Authentication via WebAuthn device failed')
 
               # Successful authentication
-              passkey_for_other_user = add_passkey(app_id, other_user)
-              passkey_for_other_user.respond_to_webauthn_authentication
+              webauthn_authenticator2 = add_webauthn_device(app_id, other_user)
+              webauthn_authenticator2.respond_to_webauthn_authentication
 
               expect(page).to have_current_path(root_path)
+            end
+          end
+
+          context 'with passkeys' do
+            context 'when a given passkey in GitLab is not owned by a user' do
+              it 'does not allow a user to sign-in in with that particular authenticator' do
+                passkey = add_passkey(app_id, user)
+
+                submit_sign_in_form_for(other_user)
+                passkey.respond_to_webauthn_authentication
+
+                expect(page).to have_content('Failed to connect to your device')
+              end
+            end
+
+            context 'with retries' do
+              it 'allows retrying authentication' do
+                passkey = add_passkey(app_id, user)
+
+                # Failed authentication
+                submit_sign_in_form_for(other_user)
+                passkey.respond_to_webauthn_authentication
+                expect(page).to have_content('Failed to connect to your device')
+
+                # Successful authentication
+                passkey_for_other_user = add_passkey(app_id, other_user)
+                passkey_for_other_user.respond_to_webauthn_authentication
+
+                expect(page).to have_current_path(root_path)
+              end
             end
           end
         end
@@ -350,7 +352,7 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
             click_button(_('Passkey'))
             expect(page).to have_current_path(users_passkeys_sign_in_path)
 
-            passkey.respond_to_webauthn_authentication(passkey: true)
+            passkey.respond_to_webauthn_authentication
 
             expect(page).to have_current_path(root_path)
           end
@@ -365,7 +367,7 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
               click_button(_('Passkey'))
               expect(page).to have_current_path(users_passkeys_sign_in_path)
 
-              passkey.respond_to_webauthn_authentication(passkey: true)
+              passkey.respond_to_webauthn_authentication
 
               expect(page).to have_content('Failed to connect to your device')
             end
@@ -378,12 +380,12 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
               visit root_path
               click_button(_('Passkey'))
               expect(page).to have_current_path(users_passkeys_sign_in_path)
-              passkey.respond_to_webauthn_authentication(passkey: true)
+              passkey.respond_to_webauthn_authentication
               expect(page).to have_content('Failed to connect to your device')
 
               # Successful authentication
               passkey = add_passkey(app_id, user)
-              passkey.respond_to_webauthn_authentication(passkey: true)
+              passkey.respond_to_webauthn_authentication
 
               expect(page).to have_current_path(root_path)
             end

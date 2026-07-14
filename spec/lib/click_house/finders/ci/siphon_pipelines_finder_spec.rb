@@ -127,10 +127,10 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonPipelinesFinder, :click_house, :fr
             argMax(`siphon_p_ci_pipelines`.`_siphon_deleted`, `siphon_p_ci_pipelines`.`_siphon_replicated_at`) AS _siphon_deleted
           FROM `siphon_p_ci_pipelines`
           WHERE `siphon_p_ci_pipelines`.`traversal_path` = '#{project_path}'
+            AND `siphon_p_ci_pipelines`.`started_at` >= toDateTime64('2024-01-01 00:00:00', 6, 'UTC')
+            AND `siphon_p_ci_pipelines`.`started_at` <  toDateTime64('2024-02-01 00:00:00', 6, 'UTC')
           GROUP BY id, partition_id) pipelines
-        WHERE `pipelines`.`started_at` >= toDateTime64('2024-01-01 00:00:00', 6, 'UTC')
-          AND `pipelines`.`started_at` <  toDateTime64('2024-02-01 00:00:00', 6, 'UTC')
-          AND `pipelines`.`source` = #{source_int}
+        WHERE `pipelines`.`source` = #{source_int}
           AND `pipelines`.`ref` = 'master'
           AND `pipelines`.`status` IN ('success', 'failed', 'canceled', 'skipped')
           AND `pipelines`.`_siphon_deleted` = 'false'
@@ -207,17 +207,17 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonPipelinesFinder, :click_house, :fr
     context 'with both bounds' do
       subject(:sql) { instance.within_dates(from_time, to_time).to_sql }
 
-      it 'includes both date bounds', :aggregate_failures do
-        is_expected.to include("`pipelines`.`started_at` >= toDateTime64('2024-01-01 00:00:00', 6, 'UTC')")
-        is_expected.to include("`pipelines`.`started_at` < toDateTime64('2024-02-01 00:00:00', 6, 'UTC')")
+      it 'pushes both date bounds into the inner WHERE', :aggregate_failures do
+        is_expected.to include("`siphon_p_ci_pipelines`.`started_at` >= toDateTime64('2024-01-01 00:00:00', 6, 'UTC')")
+        is_expected.to include("`siphon_p_ci_pipelines`.`started_at` < toDateTime64('2024-02-01 00:00:00', 6, 'UTC')")
       end
     end
 
     context 'with only from_time' do
       subject(:sql) { instance.within_dates(from_time, nil).to_sql }
 
-      it 'includes only the lower bound', :aggregate_failures do
-        is_expected.to include(">= toDateTime64('2024-01-01 00:00:00', 6, 'UTC')")
+      it 'pushes only the lower bound into the inner WHERE', :aggregate_failures do
+        is_expected.to include("`siphon_p_ci_pipelines`.`started_at` >= toDateTime64('2024-01-01 00:00:00', 6, 'UTC')")
         is_expected.not_to include("< toDateTime64('2024-02-01")
       end
     end
@@ -225,8 +225,8 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonPipelinesFinder, :click_house, :fr
     context 'with only to_time' do
       subject(:sql) { instance.within_dates(nil, to_time).to_sql }
 
-      it 'includes only the upper bound', :aggregate_failures do
-        is_expected.to include("< toDateTime64('2024-02-01 00:00:00', 6, 'UTC')")
+      it 'pushes only the upper bound into the inner WHERE', :aggregate_failures do
+        is_expected.to include("`siphon_p_ci_pipelines`.`started_at` < toDateTime64('2024-02-01 00:00:00', 6, 'UTC')")
         is_expected.not_to include(">= toDateTime64('2024-01-01")
       end
     end
@@ -234,7 +234,9 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonPipelinesFinder, :click_house, :fr
     context 'with both nil' do
       subject(:sql) { instance.within_dates(nil, nil).to_sql }
 
-      it { is_expected.not_to include('`pipelines`.`started_at`') }
+      it 'does not add any started_at predicate' do
+        is_expected.not_to match(/`siphon_p_ci_pipelines`\.`started_at`\s*(>=|<)/)
+      end
     end
   end
 
@@ -253,11 +255,19 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonPipelinesFinder, :click_house, :fr
       it { is_expected.to include("`pipelines`.`source` = #{::Ci::Pipeline.sources['web']}") }
     end
 
-    context 'with an unknown source' do
+    context 'with an invalid source' do
       let(:source) { :bogus_source }
 
       it 'raises ArgumentError instead of silently emitting WHERE source IS NULL' do
         expect { sql }.to raise_error(ArgumentError, /Unknown pipeline source: :bogus_source/)
+      end
+    end
+
+    context 'with the unknown source' do
+      let(:source) { :unknown }
+
+      it 'matches pipelines without a recorded source' do
+        is_expected.to include('`pipelines`.`source` IS NULL')
       end
     end
   end

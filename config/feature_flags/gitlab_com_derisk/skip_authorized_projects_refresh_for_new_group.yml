@@ -1,0 +1,12 @@
+---
+name: skip_authorized_projects_refresh_for_new_group
+description: Skip the high-urgency AuthorizedProjectsWorker refresh when adding the
+  creator as owner of a brand-new group, since a newly created group has no projects
+  to authorize.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/22633
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243821
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605070
+milestone: '19.2'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

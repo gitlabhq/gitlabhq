@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Projects::IssueLinksController do
   let_it_be(:namespace) { create(:group, :public) }
-  let_it_be(:project)   { create(:project, :public, namespace: namespace) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:issue1) { create(:issue, project: project) }
-  let_it_be(:issue2) { create(:issue, project: project) }
+  let_it_be(:user)      { create(:user) }
+  let_it_be(:project)   { create(:project, :public, namespace: namespace, developers: user) }
+  let_it_be(:issue1)    { create(:issue, project: project) }
+  let_it_be(:issue2)    { create(:issue, project: project) }
 
   describe 'GET #index' do
     let_it_be(:issue_link) { create(:issue_link, source: issue1, target: issue2, link_type: 'relates_to') }
@@ -22,10 +22,6 @@ RSpec.describe Projects::IssueLinksController do
       }
 
       get :index, params: params, as: :json
-    end
-
-    before do
-      project.add_developer(user)
     end
 
     it 'returns success response' do
@@ -52,10 +48,6 @@ RSpec.describe Projects::IssueLinksController do
       }
 
       post :create, params: post_params, as: :json
-    end
-
-    before do
-      project.add_developer(user)
     end
 
     it 'returns success response' do

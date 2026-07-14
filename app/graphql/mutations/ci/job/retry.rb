@@ -30,7 +30,8 @@ module Mutations
           description: 'Inputs to use when retrying the job.'
 
         authorize :retry_job
-        authorize_granular_token permissions: :retry_job, boundary_argument: :id, boundary_type: :project
+        authorize_granular_token permissions: :retry_job, boundary_argument: :id, boundary: :project,
+          boundary_type: :project
 
         def resolve(id:, variables:, inputs:)
           job = authorized_find!(id: id)

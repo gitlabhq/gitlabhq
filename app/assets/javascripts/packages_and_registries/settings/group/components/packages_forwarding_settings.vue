@@ -41,6 +41,7 @@ export default {
       required: true,
     },
   },
+  emits: ['error', 'success'],
   data() {
     return {
       mutationLoading: false,

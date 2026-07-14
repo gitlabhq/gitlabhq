@@ -13,8 +13,8 @@ module Gitlab
         # unconfirmed/confirmed lifecycle and has no confirmed_by_user_id.
         ::Organizations::Organization.create!(
           id: ::Organizations::Organization::DEFAULT_ORGANIZATION_ID,
-          name: 'Default',
-          path: 'default',
+          name: ENV['GITLAB_ROOT_ORG_NAME'].presence || 'Default',
+          path: ENV['GITLAB_ROOT_ORG_PATH'].presence || 'default',
           visibility_level: ::Organizations::Organization::PUBLIC,
           state: ::Organizations::Organization.states[:active]
         )

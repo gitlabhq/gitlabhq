@@ -200,7 +200,8 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
 
           expect(Gitlab::GithubImport::Logger).to receive(:info).with(hash_including(
             message: include('GitHub user not found.'),
-            username: 'Copilot'
+            username: 'Copilot',
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
           ))
           expect { finder.source_user(user) }.to change { Import::SourceUser.count }.by(1)
           expect(Import::SourceUser.last).to have_attributes(

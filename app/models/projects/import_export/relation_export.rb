@@ -3,6 +3,7 @@
 module Projects
   module ImportExport
     class RelationExport < ApplicationRecord
+      COMMIT_NOTES_RELATION = 'commit_notes'
       DESIGN_REPOSITORY_RELATION = 'design_repository'
       LFS_OBJECTS_RELATION = 'lfs_objects'
       REPOSITORY_RELATION = 'repository'

@@ -107,21 +107,21 @@ RSpec.describe ServiceResponse, feature_category: :shared do
 
   describe '#success?' do
     it 'returns true for a successful response' do
-      expect(described_class.success.success?).to eq(true)
+      expect(described_class.success.success?).to be(true)
     end
 
     it 'returns false for a failed response' do
-      expect(described_class.error(message: 'Bad apple').success?).to eq(false)
+      expect(described_class.error(message: 'Bad apple').success?).to be(false)
     end
   end
 
   describe '#error?' do
     it 'returns false for a successful response' do
-      expect(described_class.success.error?).to eq(false)
+      expect(described_class.success.error?).to be(false)
     end
 
     it 'returns true for a failed response' do
-      expect(described_class.error(message: 'Bad apple').error?).to eq(true)
+      expect(described_class.error(message: 'Bad apple').error?).to be(true)
     end
   end
 

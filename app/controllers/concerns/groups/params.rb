@@ -50,6 +50,8 @@ module Groups
         :resource_access_token_creation_allowed,
         :resource_access_token_notify_inherited,
         :lock_resource_access_token_notify_inherited,
+        :require_sha_for_merge,
+        :lock_require_sha_for_merge,
         :prevent_sharing_groups_outside_hierarchy,
         :setup_for_company,
         :jobs_to_be_done,

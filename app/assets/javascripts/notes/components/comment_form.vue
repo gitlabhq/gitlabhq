@@ -194,6 +194,7 @@ export default {
     },
     autosaveKeyInternalNote() {
       if (this.isLoggedIn) {
+        // eslint-disable-next-line @gitlab/no-hardcoded-urls -- False positive, not a URL
         return `${this.autosaveKey}/internalNote`;
       }
 

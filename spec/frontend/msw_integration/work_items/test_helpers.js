@@ -38,6 +38,7 @@ export function findInDrawer(testId) {
 export function createPortalElement(id = 'contextual-panel-portal') {
   const existing = document.getElementById(id);
   if (existing) return existing;
+
   const portalEl = document.createElement('div');
   portalEl.id = id;
   document.body.appendChild(portalEl);
@@ -80,6 +81,19 @@ export const findMilestoneListboxItem = () =>
   withinDrawer()?.queryByRole('option', {
     name: new RegExp(escapeRegExp(firstMilestone.title), 'i'),
   }) ?? null;
+export const findRelationshipsWidget = () => findInDrawer('work-item-relationships');
+export const findLinkItemAddButton = () => findInDrawer('link-item-add-button');
+export const findLinkItemForm = () => findInDrawer('link-work-item-form');
+export const findLinkWorkItemSubmitButton = () => findInDrawer('link-work-item-button');
+export const findLinkedItemsCountBadge = () => findInDrawer('linked-items-count-bage');
+export const findRemoveLinkedItemButton = () => findInDrawer('remove-work-item-link');
+export const findTokenSelectorInput = () =>
+  withinDrawer()?.queryByTestId('work-item-token-select-input')?.querySelector('input') ?? null;
+export const findTokenSelectorResult = () =>
+  withinDrawer()?.queryByText('Linkable test issue', { exact: false }) ?? null;
+export const findTodosToggleButton = () =>
+  withinDrawer()?.queryByRole('button', { name: /mark to-do items done/i }) ?? null;
+
 export const findIssuableTitleLink = () =>
   within(findIssueToEdit()).queryByTestId('issuable-title-link');
 export const findAssigneeLink = () => within(findIssueToEdit()).queryByTestId('assignee-link');

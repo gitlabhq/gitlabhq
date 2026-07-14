@@ -48,6 +48,7 @@ export default {
       type: String,
     },
   },
+  emits: ['closeForm', 'confidentialityUpdated', 'expandSidebar'],
   data() {
     return {
       confidential: false,

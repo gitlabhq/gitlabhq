@@ -8,7 +8,7 @@ RSpec.describe CommitSignatures::X509CommitSignature, feature_category: :source_
   # The email for this commit is 'r.meier@siemens.com'
   let_it_be(:commit_sha) { '189a6c924013fc3fe40d6f1ec1dc20214183bc97' }
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:commit, freeze: false) { create(:commit, project: project, sha: commit_sha) }
+  let_it_be_with_reload(:commit) { create(:commit, project: project, sha: commit_sha) }
   let_it_be(:x509_certificate) { create(:x509_certificate, email: 'r.meier@siemens.com') }
   let_it_be(:verification_status) { "unverified_author_email" }
   let_it_be(:committer_email) { nil }

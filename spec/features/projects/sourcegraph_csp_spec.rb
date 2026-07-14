@@ -15,7 +15,7 @@ RSpec.describe 'Sourcegraph Content Security Policy', feature_category: :groups_
   it_behaves_like 'setting CSP', 'connect-src' do
     let_it_be(:sourcegraph_url) { 'https://sourcegraph.test' }
     let_it_be(:allowlisted_url) { "#{sourcegraph_url}/.api/" }
-    let_it_be(:extended_controller_class, freeze: false) { Projects::BlobController }
+    let_it_be(:extended_controller_class) { Projects::BlobController }
 
     subject do
       visit project_blob_path(project, File.join('master', 'README.md'))

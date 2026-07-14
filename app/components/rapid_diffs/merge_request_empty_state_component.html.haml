@@ -4,4 +4,4 @@
 - when :already_merged
   = render RapidDiffs::EmptyStateComponent.new(message: s_('MergeRequest|Changes already merged'), description: already_merged_description)
 - else
-  = render RapidDiffs::EmptyStateComponent.new
+  = render RapidDiffs::EmptyStateComponent.new(message: s_('MergeRequest|There are no changes yet'), description: no_changes_description, primary_button_text: _('Create commit'), primary_button_link: new_blob_path)

@@ -7,6 +7,14 @@ import UserPresenter from '~/glql/components/presenters/user.vue';
 import FieldPresenter from '~/glql/components/presenters/field.vue';
 import { MOCK_LABELS, MOCK_ASSIGNEES } from '../../mock_data';
 
+jest.mock('~/lib/utils/path_helpers/issues', () => ({
+  projectIssuesPath: jest.fn(),
+}));
+
+jest.mock('~/lib/utils/path_helpers/group', () => ({
+  issuesGroupPath: jest.fn(),
+}));
+
 describe('CollectionPresenter', () => {
   let wrapper;
 

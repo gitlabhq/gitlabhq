@@ -65,17 +65,17 @@ RSpec.describe Ci::PipelineArtifacts::CoverageReportService, feature_category: :
     end
 
     context 'when pipeline has coverage report from child pipeline' do
-      let!(:pipeline) { create(:ci_pipeline, :success, project: project) }
-      let!(:child_pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project, child_of: pipeline) }
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :success, project: project) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project, child_of: pipeline) }
 
       it_behaves_like 'creating or updating a pipeline coverage report'
     end
 
     context 'when pipeline has existing pipeline artifact for coverage report' do
-      let!(:pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project) }
-      let!(:child_pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project, child_of: pipeline) }
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project, child_of: pipeline) }
 
-      let!(:pipeline_artifact) do
+      let_it_be(:pipeline_artifact) do
         create(:ci_pipeline_artifact, :with_coverage_report, pipeline: pipeline, expire_at: 1.day.from_now)
       end
 
@@ -83,7 +83,7 @@ RSpec.describe Ci::PipelineArtifacts::CoverageReportService, feature_category: :
     end
 
     context 'when pipeline is running and coverage report does not exist' do
-      let(:pipeline) { create(:ci_pipeline, :running) }
+      let(:pipeline) { create(:ci_pipeline, :running, project: project) }
 
       it 'does not persist data' do
         expect { subject }.not_to change { Ci::PipelineArtifact.count }.from(0)

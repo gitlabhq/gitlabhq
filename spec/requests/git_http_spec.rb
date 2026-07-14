@@ -252,7 +252,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
         context 'when authenticated' do
           before do
-            allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(102)
+            allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(103)
           end
 
           it 'creates a new project under the existing namespace' do
@@ -940,23 +940,23 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 end
 
                 context 'when username and password are provided' do
-                  it_behaves_like 'pulls are disallowed'
-                  it_behaves_like 'pushes are disallowed'
-                end
-
-                context 'when username and personal access token are provided' do
-                  let(:env) { { user: user.username, password: access_token.token } }
-
                   it_behaves_like 'pulls are allowed'
                   it_behaves_like 'pushes are allowed'
                 end
 
-                context 'when :email_based_mfa feature flag disabled' do
+                context 'when email_otp_enabled application setting is enabled' do
                   before do
-                    stub_feature_flags(email_based_mfa: false)
+                    stub_application_setting(email_otp_enabled: true)
                   end
 
                   context 'when username and password are provided' do
+                    it_behaves_like 'pulls are disallowed'
+                    it_behaves_like 'pushes are disallowed'
+                  end
+
+                  context 'when username and personal access token are provided' do
+                    let(:env) { { user: user.username, password: access_token.token } }
+
                     it_behaves_like 'pulls are allowed'
                     it_behaves_like 'pushes are allowed'
                   end
@@ -982,46 +982,48 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                   end
 
                   context 'when username and password are provided' do
-                    it_behaves_like 'pulls are disallowed'
-                    it_behaves_like 'pushes are disallowed'
+                    it_behaves_like 'pulls are allowed'
+                    it_behaves_like 'pushes are allowed'
+                  end
 
-                    it 'calls set_email_otp_required_after_based_on_restrictions on pull' do
-                      allow_next_instance_of(User) do |instance|
-                        expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
-                          .with(save: true).and_call_original
+                  context 'when email_otp_enabled application setting is enabled' do
+                    before do
+                      stub_application_setting(email_otp_enabled: true)
+                    end
+
+                    context 'when username and password are provided' do
+                      it_behaves_like 'pulls are disallowed'
+                      it_behaves_like 'pushes are disallowed'
+
+                      it 'calls set_email_otp_required_after_based_on_restrictions on pull' do
+                        allow_next_instance_of(User) do |instance|
+                          expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
+                            .with(save: true).and_call_original
+                        end
+
+                        download(path, **env) do |response|
+                          expect(response).to have_gitlab_http_status(:unauthorized)
+                        end
                       end
 
-                      download(path, **env) do |response|
-                        expect(response).to have_gitlab_http_status(:unauthorized)
+                      it 'calls set_email_otp_required_after_based_on_restrictions on push' do
+                        allow_next_instance_of(User) do |instance|
+                          expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
+                            .with(save: true).and_call_original
+                        end
+
+                        upload(path, **env) do |response|
+                          expect(response).to have_gitlab_http_status(:unauthorized)
+                        end
                       end
                     end
 
-                    it 'calls set_email_otp_required_after_based_on_restrictions on push' do
-                      allow_next_instance_of(User) do |instance|
-                        expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
-                          .with(save: true).and_call_original
-                      end
-
-                      upload(path, **env) do |response|
-                        expect(response).to have_gitlab_http_status(:unauthorized)
-                      end
-                    end
-
-                    context 'when :email_based_mfa feature flag disabled' do
-                      before do
-                        stub_feature_flags(email_based_mfa: false)
-                      end
+                    context 'when username and personal access token are provided' do
+                      let(:env) { { user: user.username, password: access_token.token } }
 
                       it_behaves_like 'pulls are allowed'
                       it_behaves_like 'pushes are allowed'
                     end
-                  end
-
-                  context 'when username and personal access token are provided' do
-                    let(:env) { { user: user.username, password: access_token.token } }
-
-                    it_behaves_like 'pulls are allowed'
-                    it_behaves_like 'pushes are allowed'
                   end
                 end
               end

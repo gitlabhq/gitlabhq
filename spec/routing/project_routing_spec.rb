@@ -989,6 +989,28 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
     end
   end
 
+  describe Projects::WorkItemsController, 'routing' do
+    it 'routes to #show with a numeric iid' do
+      expect(get('/gitlab/gitlabhq/-/work_items/1')).to route_to('projects/work_items#show', namespace_id: 'gitlab', project_id: 'gitlabhq', iid: '1')
+    end
+
+    it 'does not route an iid with a non-numeric suffix' do
+      expect(get('/gitlab/gitlabhq/-/work_items/1foo')).to route_to_route_not_found
+    end
+
+    it 'still routes to #new' do
+      expect(get('/gitlab/gitlabhq/-/work_items/new')).to route_to('projects/work_items#new', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+
+    it 'routes to #show for the designs path with a numeric iid' do
+      expect(get('/gitlab/gitlabhq/-/work_items/1/designs')).to route_to('projects/work_items#show', namespace_id: 'gitlab', project_id: 'gitlabhq', iid: '1')
+    end
+
+    it 'does not route the designs path with a non-numeric iid suffix' do
+      expect(get('/gitlab/gitlabhq/-/work_items/1foo/designs')).to route_to_route_not_found
+    end
+  end
+
   describe Projects::EnvironmentsController, 'routing' do
     describe 'legacy routing' do
       it_behaves_like 'redirecting a legacy path', "/gitlab/gitlabhq/environments", "/gitlab/gitlabhq/-/environments"

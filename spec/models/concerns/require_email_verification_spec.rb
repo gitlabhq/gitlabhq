@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
-  let_it_be(:model, freeze: false) do
+  let_it_be(:model) do
     Class.new(ApplicationRecord) do
       self.table_name = 'users'
 
@@ -60,7 +60,7 @@ RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
           instance.failed_attempts = 2
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when failed_attempts is GTE overridden amount but LT Devise default amount' do
@@ -76,7 +76,7 @@ RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
           instance.failed_attempts = instance.class.maximum_attempts
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -88,7 +88,7 @@ RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
           instance.locked_at = 9.minutes.ago
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when locked longer ago than Devise default time but shorter ago than overridden time' do
@@ -104,7 +104,7 @@ RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
           instance.locked_at = (24.hours + 1.minute).ago
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
   end

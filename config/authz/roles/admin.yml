@@ -16,6 +16,7 @@ group:
   permissions: []
   raw_permissions:
   - delete_custom_attribute
+  - lock_namespace_duo_feature
   - read_custom_attribute
   - update_custom_attribute
   - update_max_artifacts_size
@@ -24,9 +25,11 @@ organization:
   raw_permissions:
   - access_organization_admin_area
   - create_group
+  - delete_organization
   - read_artifact_registry
   - read_organization
   - read_organization_user
   - read_work_item_type
+  - restore_organization
   - transfer_group
   - update_organization

@@ -62,6 +62,8 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`admin_override_cleared_for_namespace_duo_availability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244301) | Admin cleared a duo_availability override from a namespace | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/issues/603325) | Group |
+| [`admin_override_set_for_namespace_duo_availability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244301) | Admin set a duo_availability override on a namespace | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/issues/603325) | Group |
 | [`ai_setting_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230001) | An AI setting is updated | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593015) | Instance |
 
 ### AI agents
@@ -124,6 +126,7 @@ Audit event types belong to the following product categories.
 | [`update_instance_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125846) | An instance level external audit event destination is updated | {{< yes >}} | GitLab [16.2](https://gitlab.com/gitlab-org/gitlab/-/issues/404730) | Instance |
 | [`updated_group_audit_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148388) | An external audit event destination for a top-level group is updated | {{< yes >}} | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/436610) | Group |
 | [`updated_instance_audit_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149104) | An external audit event destination for a GitLab instance is updated | {{< yes >}} | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/436615) | Instance |
+| [`ai_audit_events_storage_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242767) | Added when ai_audit_events_storage_enabled is changed on a group or project. | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/604014) | Group, Project |
 
 ### Authorization
 
@@ -180,6 +183,7 @@ Audit event types belong to the following product categories.
 | [`project_reset_approvals_on_push_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66234) | A project has its setting on whether approvals are reset on a push is updated | {{< yes >}} | GitLab [14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) | Project |
 | [`project_resolve_outdated_diff_discussions_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's resolve outdated diff discussions setting is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
 | [`show_diff_preview_in_email_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Email notification to include diff preview is updated | {{< yes >}} | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group, Project |
+| [`require_sha_for_merge_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236732) | Added when require_sha_for_merge is changed. | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/599954) | Group |
 | [`selective_code_owner_removals_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148743) | Selective code owner removal is updated | {{< yes >}} | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/327562) | Project |
 
 ### Code suggestions
@@ -385,6 +389,7 @@ Audit event types belong to the following product categories.
 | [`prompt_injection_protection_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/232180) | Prompt injection protection level setting on group changed | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593025) | Group |
 | [`third_party_agent_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227761) | A third-party agent access token was generated | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/issues/593031) | User |
 | [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A subset of API requests authenticated by a token with an audited scope | {{< yes >}} | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
+| [`duo_cli_session_blocked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242484) | A Duo CLI session was blocked because the administrator disabled Duo CLI | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/597833) | User |
 | [`lock_duo_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235370) | Added when lock_duo_features_enabled is changed. | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/598658) | Group |
 
 ### Dynamic application security testing
@@ -787,23 +792,28 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`allow_mfa_for_subgroups_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting for Subgroups can set up their own two-factor authentication rules updated | {{< yes >}} | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
+| [`allow_personal_snippets_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238576) | Setting Allow personal snippets is updated | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/486532) | Group |
 | [`allowed_email_domain_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166105) | Group setting allowed email domain entry is updated | {{< yes >}} | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
 | [`application_setting_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124639) | An application setting is updated | {{< yes >}} | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/282428) | Instance |
 | [`disable_personal_access_tokens_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Disable personal access tokens is updated | {{< yes >}} | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
 | [`disable_ssh_keys_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205020) | Setting Disable SSH Keys is updated | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/30343) | Group |
 | [`email_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114546) | An email is created | {{< yes >}} | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
 | [`email_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114546) | An email is destroyed | {{< yes >}} | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
+| [`enterprise_users_extensions_marketplace_opt_in_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238576) | Setting Enable extension marketplace is updated | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/486532) | Group |
 | [`group_access_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | A group access token is created | {{< yes >}} | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
 | [`group_access_token_creation_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Creating a group access token failed | {{< yes >}} | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
 | [`group_access_token_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | A group access token is deleted | {{< yes >}} | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
 | [`group_access_token_deletion_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Deleting a group access token failed | {{< yes >}} | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
 | [`group_require_two_factor_authentication_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106079) | A group's require two factor authentication setting is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369325) | Group |
 | [`group_two_factor_grace_period_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106079) | A group's two factor grace period is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369326) | Group |
+| [`hide_email_on_profile_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238576) | Setting Hide email address from public profile is updated | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/486532) | Group |
 | [`ip_restrictions_changed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86037) | Any changes in the IP allowlist | {{< yes >}} | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) | Group |
 | [`ldap_group_sync_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226913) | LDAP group sync failed due to a connection or server error | {{< yes >}} | GitLab [18.10](https://gitlab.com/gitlab-org/gitlab/-/issues/6054) | Group |
 | [`login_failed_with_otp_authentication`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129595) | Sign-in fails because of an incorrect OTP | {{< yes >}} | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/377758) | User |
 | [`login_failed_with_standard_authentication`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129595) | Sign-in to GitLab fails with standard authentication, such as password | {{< yes >}} | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/377758) | Instance |
 | [`login_failed_with_webauthn_authentication`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129595) | Sign-in fails when using a WebAuthn device | {{< yes >}} | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/377758) | User |
+| [`namespace_ban_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240763) | A namespace ban is created | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/603088) | Group |
+| [`namespace_ban_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240763) | A namespace ban is destroyed | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/603088) | Group |
 | [`new_user_signups_cap_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Number of users for user cap is updated | {{< yes >}} | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
 | [`personal_access_token_settings_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235703) | The namespace owner changes fine-grained personal access token settings | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593961) | Group |
 | [`project_access_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | A project access token is created | {{< yes >}} | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
@@ -869,11 +879,11 @@ Audit event types belong to the following product categories.
 | [`user_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113784) | A user is scheduled for removal from the instance. Group and Project scopes were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167021) in GitLab 17.5. | {{< yes >}} | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User, Group, Project |
 | [`user_email_changed_and_user_signed_in`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106090) | User email changed and user signed in | {{< yes >}} | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369331) | User |
 | [`user_impersonation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79340) | An instance administrator starts or stops impersonating a user | {{< yes >}} | GitLab [14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/300961) | User, Group |
-| [`user_password_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106086) | A user password is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369330) | User |
+| [`user_password_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106086) | A user's password is updated. Group scope was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240990) for enterprise users in GitLab 19.2. | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369330) | User, Group |
 | [`user_provisioned_by_scim`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174040) | A user is provisioned by SCIM | {{< yes >}} | GitLab [17.8](https://gitlab.com/gitlab-org/gitlab/-/issues/423322) | Group |
 | [`user_records_migrated_to_ghost`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203756) | Event triggered when user records are migrated to a ghost user during batch processing | {{< yes >}} | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/567635) | User |
 | [`user_rejected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113784) | A user registration is rejected | {{< yes >}} | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
-| [`user_external_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207107) | A user is either flagged as external or has the external flag removed. | {{< yes >}} | GitLab [18.5](https://gitlab.com/gitlab-org/gitlab/-/issues/546230) | User |
+| [`user_external_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207107) | A user is either flagged as external or has the external flag removed. Group scope was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240990) for enterprise users in GitLab 19.2. | {{< yes >}} | GitLab [18.5](https://gitlab.com/gitlab-org/gitlab/-/issues/546230) | User, Group |
 
 ### User profile
 
@@ -882,13 +892,15 @@ Audit event types belong to the following product categories.
 | [`add_ssh_key`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195379) | An SSH key is added to a user's profile. Group scope is only available for enterprise users. | {{< yes >}} | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/361778) | User, Group |
 | [`email_confirmation_sent`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129261) | Users add or change an email address and it must be confirmed | {{< no >}} | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/377625) | User |
 | [`remove_ssh_key`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65615) | An SSH key is removed from a user's profile. Group scope was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195390) for enterprise users in GitLab 18.2. | {{< yes >}} | GitLab [14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) | User, Group |
-| [`user_admin_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65168) | A user is either made an administrator or removed as an administrator | {{< yes >}} | GitLab [14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323905) | User |
-| [`user_auditor_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136456) | A user is either made an auditor or removed as an auditor | {{< yes >}} | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/430235) | User |
-| [`user_email_address_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2103) | A user updates their email address | {{< yes >}} | GitLab [10.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/1370) | User |
-| [`user_name_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167484) | A user's name is updated | {{< yes >}} | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | User |
+| [`user_admin_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65168) | A user is either made an administrator or removed as an administrator. Group scope was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240990) for enterprise users in GitLab 19.2. | {{< yes >}} | GitLab [14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323905) | User, Group |
+| [`user_auditor_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136456) | A user is either made an auditor or removed as an auditor. Group scope was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240990) for enterprise users in GitLab 19.2. | {{< yes >}} | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/430235) | User, Group |
+| [`user_can_create_group_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240990) | A user's ability to create groups is updated | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/603254) | User, Group |
+| [`user_email_address_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2103) | A user's email address is updated. Group scope was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240990) for enterprise users in GitLab 19.2. | {{< yes >}} | GitLab [10.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/1370) | User, Group |
+| [`user_name_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167484) | A user's name is updated. Group scope was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240990) for enterprise users in GitLab 19.2. | {{< yes >}} | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | User, Group |
 | [`user_profile_visibility_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187207) | User toggles private profile user setting | {{< no >}} | GitLab [17.11](https://gitlab.com/gitlab-org/gitlab/-/issues/474386) | User |
 | [`user_profile_visiblity_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129149) | User toggles private profile user setting (DEPRECATED). Use `user_profile_visibility_updated` instead. | {{< no >}} | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129149) | User |
-| [`user_username_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106086) | A user's username is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369329) | User |
+| [`user_projects_limit_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240990) | A user's project creation limit is updated | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/603254) | User, Group |
+| [`user_username_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106086) | A user's username is updated. Group scope was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240990) for enterprise users in GitLab 19.2. | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369329) | User, Group |
 
 ### Value stream management
 
@@ -919,7 +931,9 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`duo_sast_fp_detection_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241556) | GitLab Duo SAST False Positive Detection Feature enabled setting on project changed by Security Manager | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/603463) | Project |
 | [`duo_sast_vr_workflow_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238854) | GitLab Duo SAST Vulnerability Resolution Feature enabled setting on project changed | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/work_items/599650) | Project |
+| [`duo_secret_detection_fp_detection_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243208) | GitLab Duo Secret Detection False Positive Detection Feature enabled setting on project changed by Security Manager | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/603477) | Project |
 | [`project_feature_infrastructure_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's infrastructure access level setting is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369305) | Project |
 | [`remove_vulnerability_false_positive_flag`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213091) | A user removes a false positive flag from a vulnerability. | {{< yes >}} | GitLab [18.7](https://gitlab.com/gitlab-org/gitlab/-/issues/578903) | Project |
 

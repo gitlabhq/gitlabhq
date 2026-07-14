@@ -66,6 +66,16 @@ For details, see [Analyze dependencies for behaviors](experiment_libbehave_depen
 | Dependency Scanning with Gemnasium | Deprecated (17.9)    | Pipeline           | Existing projects pending migration                        |
 | Analyze dependencies for behaviors | Experiment           | Pipeline           | Detecting malicious package behavior                       |
 
+## AI-native features
+
+### Agentic breaking change resolution
+
+When a merge request that bumps a dependency has a failed pipeline, GitLab Duo can analyze the
+failure and provide fixes to resolve it.
+
+For more information, see
+[agentic breaking change resolution (for dependency bumps)](agentic-breaking-change-resolution.md).
+
 ## Contributing to the vulnerability database
 
 To find a vulnerability, you can search the [`GitLab advisory database`](https://advisories.gitlab.com/).

@@ -8,6 +8,7 @@ import { __ } from '~/locale';
 const GOOGLE_CONSOLE_URL = 'https://console.cloud.google.com/iam-admin/serviceaccounts';
 
 export default {
+  name: 'ServiceAccountsList',
   components: { GlAlert, GlButton, GlEmptyState, GlLink, GlSprintf, GlTable },
   props: {
     list: {

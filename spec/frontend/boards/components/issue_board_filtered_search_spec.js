@@ -1,11 +1,16 @@
 import { orderBy } from 'lodash-es';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import BoardFilteredSearch from 'ee_else_ce/boards/components/board_filtered_search.vue';
 import IssueBoardFilteredSpec from '~/boards/components/issue_board_filtered_search.vue';
 import issueBoardFilters from 'ee_else_ce/boards/issue_board_filters';
 import { mockTokens } from '../mock_data';
 
 jest.mock('ee_else_ce/boards/issue_board_filters');
+
+Vue.use(VueApollo);
 
 describe('IssueBoardFilter', () => {
   let wrapper;
@@ -27,9 +32,7 @@ describe('IssueBoardFilter', () => {
           workItemTasksOnBoards: workItemTasksOnBoardsEnabled,
         },
       },
-      mocks: {
-        $apollo: {},
-      },
+      apolloProvider: createMockApollo([]),
     });
   };
 

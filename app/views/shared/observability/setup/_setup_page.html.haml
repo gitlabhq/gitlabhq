@@ -1,0 +1,222 @@
+-# Shared setup page partial for both group and project observability setup.
+-# Required locals:
+-#   namespace                       - the Group or personal Namespace
+-#   access_requests_path            - path for the Enable Observability button POST
+-#   enable_scope_label              - "this group" or "this project" for the admin message
+-#   endpoint_configuration_partial  - partial path for the context-specific endpoint configuration
+-#   endpoint_configuration_locals   - hash of locals to forward to that partial
+-# Optional locals:
+-#   scope_note - string, renders a note above the Enable button (e.g. personal namespace copy)
+
+- setting = namespace.observability_group_o11y_setting
+- endpoint_partial = local_assigns.fetch(:endpoint_configuration_partial)
+- endpoint_locals = local_assigns.fetch(:endpoint_configuration_locals, {})
+- scope_note = local_assigns[:scope_note]
+
+- breadcrumb_title s_('Observability|Observability')
+- page_title s_('Observability|Observability')
+- add_page_specific_style 'page_bundles/observability'
+
+- content_for :page_title, s_('Observability|General')
+- content_for :page_description, s_('Observability|General Observability information')
+
+.page-content
+  .content-wrapper
+    .container-fluid.container-limited
+      .row
+        .gl-col-md-10.col-md-offset-1
+          - if setting.present?
+            = render endpoint_partial, **endpoint_locals
+          - else
+            = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-8' }) do |c|
+              - c.with_body do
+                .gl-p-8
+                  .gl-text-center.gl-mb-8
+                    %h2.gl-text-size-h2.gl-font-bold.gl-mb-6
+                      = s_('Observability|GitLab Observability')
+
+                    %p.gl-text-lg.gl-line-height-24.gl-mb-6
+                      = s_('Observability|GitLab Observability is an open source, OpenTelemetry-native observability platform that unifies logs, metrics, and traces in a single application. Monitor application performance with APM dashboards, visualize distributed traces across microservices, manage centralized logs with powerful querying, and set up intelligent alerts.')
+
+                    %p.gl-text-lg.gl-line-height-24.gl-text-subtle.gl-mb-8
+                      = s_('Observability|Built on ClickHouse for superior performance, GitLab Observability makes observability accessible within GitLab.')
+
+                  - if scope_note.present?
+                    .gl-text-center.gl-mb-4
+                      %p.gl-text-sm.gl-text-subtle
+                        = scope_note
+
+                  .gl-text-center.gl-mb-8
+                    - if Gitlab.com?
+                      .gl-flex.gl-justify-center.gl-gap-4
+                        = render Pajamas::ButtonComponent.new(href: access_requests_path, method: :post, category: :primary, variant: :confirm, size: :large) do
+                          = sprite_icon('rocket-launch', css_class: 'gl-mr-2', size: 16)
+                          = s_('Observability|Enable Observability')
+                    - else
+                      %p.gl-text-lg.gl-text-subtle
+                        = sprite_icon('admin', css_class: 'gl-mr-2', size: 16)
+                        - strong_tag = content_tag(:strong, '')
+                        = safe_format(s_('Observability|To enable GitLab Observability, please ask your %{strong_start}GitLab administrator%{strong_end} to enable it for %{scope}.'), tag_pair(strong_tag, :strong_start, :strong_end), scope: enable_scope_label)
+
+                  .gl-grid.gl-grid-cols-1.gl-gap-6.gl-mb-8{ class: "@md/panel:gl-grid-cols-2 @lg/panel:gl-grid-cols-3" }
+                    .gl-bg-subtle.gl-rounded-lg.gl-p-6.gl-text-center
+                      .gl-mb-4
+                        = sprite_icon('tachometer', css_class: 'observability-performance-icon', size: 32)
+                      %h3.gl-text-size-h3.gl-font-bold.gl-mb-3
+                        = s_('Observability|APM & performance')
+                      %p.gl-text-sm.gl-line-height-20
+                        = s_('Observability|Application performance monitoring with p99 latency tracking and real-time metrics visualization')
+
+                    .gl-bg-subtle.gl-rounded-lg.gl-p-6.gl-text-center
+                      .gl-mb-4
+                        = sprite_icon('status-health', css_class: 'observability-health-icon', size: 32)
+                      %h3.gl-text-size-h3.gl-font-bold.gl-mb-3
+                        = s_('Observability|Distributed tracing')
+                      %p.gl-text-sm.gl-line-height-20
+                        = s_('Observability|Visualize distributed traces with flamegraphs across microservices and understand request flows')
+
+                    .gl-bg-subtle.gl-rounded-lg.gl-p-6.gl-text-center
+                      .gl-mb-4
+                        = sprite_icon('log', css_class: 'observability-log-icon', size: 32)
+                      %h3.gl-text-size-h3.gl-font-bold.gl-mb-3
+                        = s_('Observability|Centralized logs')
+                      %p.gl-text-sm.gl-line-height-20
+                        = s_('Observability|Centralized log management with powerful querying capabilities and advanced search')
+
+                    .gl-bg-subtle.gl-rounded-lg.gl-p-6.gl-text-center
+                      .gl-mb-4
+                        = sprite_icon('status-alert', css_class: 'observability-alert-icon', size: 32)
+                      %h3.gl-text-size-h3.gl-font-bold.gl-mb-3
+                        = s_('Observability|Smart alerts')
+                      %p.gl-text-sm.gl-line-height-20
+                        = s_('Observability|Custom dashboards with anomaly-based alerting and intelligent notification systems')
+
+                    .gl-bg-subtle.gl-rounded-lg.gl-p-6.gl-text-center
+                      .gl-mb-4
+                        = sprite_icon('bug', css_class: 'observability-exception-icon', size: 32)
+                      %h3.gl-text-size-h3.gl-font-bold.gl-mb-3
+                        = s_('Observability|Exception tracking')
+                      %p.gl-text-sm.gl-line-height-20
+                        = s_('Observability|Exception tracking and error monitoring with detailed stack traces and context')
+
+                    .gl-bg-subtle.gl-rounded-lg.gl-p-6.gl-text-center
+                      .gl-mb-4
+                        = sprite_icon('kubernetes', css_class: 'observability-kubernetes-icon', size: 32)
+                      %h3.gl-text-size-h3.gl-font-bold.gl-mb-3
+                        = s_('Observability|Kubernetes monitoring')
+                      %p.gl-text-sm.gl-line-height-20
+                        = s_('Observability|Native Kubernetes monitoring with pod-level metrics and cluster health insights')
+
+            = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-8' }) do |c|
+              - c.with_header do
+                %h2.gl-text-size-h2.gl-font-bold.gl-text-center.gl-m-0
+                  = s_('Observability|What you get')
+              - c.with_body do
+                .gl-p-6
+                  .gl-grid.gl-grid-cols-1.gl-gap-6.gl-text-center{ class: "@md/panel:gl-grid-cols-2" }
+                    .gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                      = sprite_icon('check', css_class: 'gl-text-success', size: 16)
+                      .gl-flex.gl-flex-col.gl-items-center
+                        %strong.gl-mb-2
+                          = s_('Observability|OpenTelemetry native')
+                        %span.gl-text-sm.gl-text-subtle
+                          = s_('Observability|Built on industry-standard OpenTelemetry for seamless integration')
+
+                    .gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                      = sprite_icon('check', css_class: 'gl-text-success', size: 16)
+                      .gl-flex.gl-flex-col.gl-items-center
+                        %strong.gl-mb-2
+                          = s_('Observability|ClickHouse performance')
+                        %span.gl-text-sm.gl-text-subtle
+                          = s_('Observability|Superior query performance and data compression with ClickHouse backend')
+
+                    .gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                      = sprite_icon('check', css_class: 'gl-text-success', size: 16)
+                      .gl-flex.gl-flex-col.gl-items-center
+                        %strong.gl-mb-2
+                          = s_('Observability|Unified platform')
+                        %span.gl-text-sm.gl-text-subtle
+                          = s_('Observability|Single pane of glass for logs, metrics, and traces within GitLab')
+
+                    .gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                      = sprite_icon('check', css_class: 'gl-text-success', size: 16)
+                      .gl-flex.gl-flex-col.gl-items-center
+                        %strong.gl-mb-2
+                          = s_('Observability|Drive the roadmap')
+                        %span.gl-text-sm.gl-text-subtle
+                          = s_('Observability|Shape the roadmap with direct feedback channels to our development team')
+
+            = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-8' }) do |c|
+              - c.with_header do
+                %h2.gl-text-size-h2.gl-font-bold.gl-text-center.gl-m-0
+                  = s_('Observability|See it in action')
+              - c.with_body do
+                .gl-p-6
+                  %p.gl-text-lg.gl-text-center.gl-text-subtle.gl-mb-8
+                    = s_('Observability|Experience the power of GitLab Observability with real-time dashboards and comprehensive monitoring capabilities.')
+
+                  .gl-grid.gl-grid-cols-1.gl-gap-8{ class: "@lg/panel:gl-grid-cols-2" }
+                    .gl-text-center
+                      .gl-bg-default.gl-border.gl-border-subtle.gl-rounded-lg.gl-p-4.gl-mb-4
+                        = image_tag('observability/observability-dashboard-1.png',
+                            alt: s_('Observability|GitLab Observability dashboard - performance metrics'),
+                            class: 'gl-w-full gl-h-auto gl-rounded-base',
+                            loading: 'lazy')
+                      %h3.gl-text-size-h3.gl-font-bold.gl-mb-2
+                        = s_('Observability|Performance overview')
+                      %p.gl-text-sm.gl-text-subtle
+                        = s_('Observability|Monitor application performance with detailed metrics, response times, and system health indicators in real-time dashboards.')
+
+                    .gl-text-center
+                      .gl-bg-default.gl-border.gl-border-subtle.gl-rounded-lg.gl-p-4.gl-mb-4
+                        = image_tag('observability/observability-dashboard-2.png',
+                            alt: s_('Observability|GitLab Observability dashboard - advanced analytics'),
+                            class: 'gl-w-full gl-h-auto gl-rounded-base',
+                            loading: 'lazy')
+                      %h3.gl-text-size-h3.gl-font-bold.gl-mb-2
+                        = s_('Observability|Advanced analytics')
+                      %p.gl-text-sm.gl-text-subtle
+                        = s_('Observability|Dive deep into your data with comprehensive analytics, custom visualizations, and intelligent insights for better decision-making.')
+
+          = render Pajamas::CardComponent.new do |c|
+            - c.with_header do
+              %h2.gl-text-size-h2.gl-font-bold.gl-text-center.gl-m-0
+                = s_('Observability|Important information')
+            - c.with_body do
+              .gl-p-6
+                .gl-flex.gl-text-center
+                  - if !setting.present? || setting.provisioning?
+                    .gl-flex-1.gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                      = sprite_icon('timer', css_class: 'observability-important-information-icon')
+                      .gl-flex.gl-flex-col.gl-items-center
+                        %strong.gl-text-sm
+                          = s_('Observability|Provisioning time')
+                        %span.gl-text-sm.gl-text-subtle
+                          = (s_('Observability|Up to %{minutes} minutes') % { minutes: Observability::O11yToken::SETUP_BUFFER_MINUTES }).html_safe
+
+                  .gl-flex-1.gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                    = sprite_icon('work-item-test-case', css_class: 'observability-important-information-icon')
+                    .gl-flex.gl-flex-col.gl-items-center
+                      %strong.gl-text-sm
+                        = s_('Observability|Experimental')
+                      %span.gl-text-sm.gl-text-subtle
+                        = s_('Observability|Experimental functionality')
+
+                  .gl-flex-1.gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                    = sprite_icon('check', css_class: 'observability-important-information-icon')
+                    .gl-flex.gl-flex-col.gl-items-center
+                      %strong.gl-text-sm
+                        = s_('Observability|No cost')
+                      %span.gl-text-sm.gl-text-subtle
+                        = s_('Observability|Free during the experimental phase')
+
+                .gl-mt-6.gl-pt-6.gl-border-t.gl-border-subtle.gl-text-center
+                  %span.gl-text-sm
+                    = sprite_icon('book', css_class: 'observability-important-information-icon gl-mr-2')
+                    - help_page_link = link_to('', help_page_path('operations/observability.md'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-text-link gl-font-medium')
+                    = safe_format(s_('Observability|View the %{help_page_link_start}Observability documentation%{help_page_link_end} for:'), tag_pair(help_page_link, :help_page_link_start, :help_page_link_end))
+                    %ul.gl-text-sm.gl-mt-2.gl-list-none.gl-p-0
+                      %li= s_('Observability|Feature overview and capabilities')
+                      %li= s_('Observability|Dashboard templates and use cases')
+                      %li= s_('Observability|Troubleshooting tips')
+                      %li= s_("Observability|What's coming next")

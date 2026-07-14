@@ -156,7 +156,7 @@ end
 The allowlist in
 [`api_entity_exposure_baseline.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/api/config/api_entity_exposure_baseline.yml)
 records the permitted field names for each protected entity. You should
-**not** manually edit the allowlist to add new fields; instead, create a
+not manually edit the allowlist to add new fields; instead, create a
 feature-bounded entity as described above.
 
 If you believe a field genuinely belongs on a high-impact entity (for example,
@@ -257,6 +257,7 @@ Every endpoint must have a `success` value for each `desc` block.
 The value should accurately describe a success response for the endpoint.
 
 Do not use the `http_codes` option to document the success response.
+Use `success` and `failure` instead. The `API/DeprecatedHttpCodes` RuboCop cop enforces this rule.
 
 The `success` option accepts either:
 
@@ -355,6 +356,27 @@ entity fields, or from field types if no field-level examples are defined.
             }
           }
   ```
+
+### Defining endpoint failures
+
+Every endpoint must declare at least one `failure` response in each `desc` block.
+Use it to document the 4xx and 5xx responses the endpoint can return.
+
+The `failure` option accepts an array of hashes. Each hash accepts the following options:
+
+| Option | Type | Required | Description |
+| --- | --- | --- | --- |
+| `code` | Integer | Required | The HTTP status code. |
+| `message` | String | No | A short description of the failure response. |
+
+```ruby
+failure [
+  { code: 401, message: 'Unauthorized' },
+  { code: 404, message: 'Not found' }
+]
+```
+
+The `API/DescriptionFailureResponse` RuboCop cop enforces this rule.
 
 ### Marking endpoints as deprecated
 
@@ -561,21 +583,21 @@ While in the [experiment status](../policy/development_stages_support.md#experim
   - Any added arguments must be ignored.
   - Any added fields must not be exposed.
 - The [API documentation](../api/api_resources.md) must [document the experimental status](documentation/experiment_beta.md) and the feature flag [must be documented](documentation/feature_flags.md).
-- The [OpenAPI documentation](../api/openapi/openapi_interactive.md) must not describe the changes (for example, using [the `hidden` option](https://github.com/ruby-grape/grape-swagger#hiding-an-endpoint-)).
+- The [OpenAPI documentation](../api/openapi/_index.md) must not describe the changes (for example, using [the `hidden` option](https://github.com/ruby-grape/grape-swagger#hiding-an-endpoint-)).
 
 While in the [beta status](../policy/development_stages_support.md#beta):
 
 - Add `route_setting :lifecycle, :beta` before the endpoint. For more information, see [Marking endpoint lifecycle](#marking-endpoint-lifecycle).
 - Use a feature flag that is [on by default](feature_flags/_index.md#beta-type).
 - The [API documentation](../api/api_resources.md) must [document the beta status](documentation/experiment_beta.md) and the feature flag [must be documented](documentation/feature_flags.md).
-- The [OpenAPI documentation](../api/openapi/openapi_interactive.md) must not describe the changes.
+- The [OpenAPI documentation](../api/openapi/_index.md) must not describe the changes.
 
 When the feature becomes [generally available](../policy/development_stages_support.md#generally-available):
 
 - [Remove](feature_flags/controls.md#cleaning-up) the feature flag.
 - Remove `route_setting :lifecycle` from the endpoint.
 - Remove the [experiment or beta status](documentation/experiment_beta.md) from the [API documentation](../api/api_resources.md).
-- Add the [OpenAPI documentation](../api/openapi/openapi_interactive.md) to make the changes programmatically discoverable.
+- Add the [OpenAPI documentation](../api/openapi/_index.md) to make the changes programmatically discoverable.
 
 ## Declared parameters
 

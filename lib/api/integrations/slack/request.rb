@@ -17,10 +17,9 @@ module API
         def self.verify!(request)
           return false unless Gitlab::CurrentSettings.slack_app_signing_secret
 
-          timestamp, signature = request.headers.values_at(
-            VERIFICATION_TIMESTAMP_HEADER,
-            VERIFICATION_SIGNATURE_HEADER
-          )
+          headers = request.headers
+          timestamp = headers[VERIFICATION_TIMESTAMP_HEADER]
+          signature = headers[VERIFICATION_SIGNATURE_HEADER]
 
           return false if timestamp.nil? || signature.nil?
           return false if Time.current.to_i - timestamp.to_i >= VERIFICATION_TIMESTAMP_EXPIRY

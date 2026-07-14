@@ -30,7 +30,6 @@ module Gitlab
             noteable_type: note.noteable_type,
             noteable_id: noteable_id,
             project_id: project.id,
-            namespace_id: project.project_namespace_id,
             author_id: author_id,
             note: note_body(author_found),
             discussion_id: note.discussion_id,

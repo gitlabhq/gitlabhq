@@ -89,13 +89,13 @@ RSpec.describe ActiveContext::Logger do
 
     it 'logs exception with class when explicitly provided' do
       expect(mock_logger).to receive(:error).with({
-        'class' => 'PaymentService',
+        'class_name' => 'PaymentService',
         'exception_class' => 'StandardError',
         'exception_message' => 'Something went wrong',
         'exception_backtrace' => backtrace
       })
 
-      described_class.exception(exception, class: 'PaymentService')
+      described_class.exception(exception, class_name: 'PaymentService')
     end
 
     it 'handles custom exception classes' do
@@ -144,13 +144,13 @@ RSpec.describe ActiveContext::Logger do
 
     it 'logs retryable exception with class when explicitly provided' do
       expect(mock_logger).to receive(:warn).with({
-        'class' => 'ApiService',
+        'class_name' => 'ApiService',
         'exception_class' => 'StandardError',
         'exception_message' => 'Retryable Error occurred: Temporary failure',
         'exception_backtrace' => backtrace
       })
 
-      described_class.retryable_exception(exception, class: 'ApiService')
+      described_class.retryable_exception(exception, class_name: 'ApiService')
     end
   end
 end

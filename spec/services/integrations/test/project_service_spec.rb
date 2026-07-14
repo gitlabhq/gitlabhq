@@ -6,7 +6,7 @@ RSpec.describe Integrations::Test::ProjectService, feature_category: :integratio
   include AfterNextHelpers
 
   describe '#execute' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     let(:integration) { create(:integrations_slack, project: project) }
     let(:user) { project.first_owner }
@@ -149,7 +149,7 @@ RSpec.describe Integrations::Test::ProjectService, feature_category: :integratio
       end
 
       context 'deployment' do
-        let_it_be(:project, freeze: false) { create(:project, :test_repo) }
+        let_it_be_with_reload(:project) { create(:project, :test_repo) }
 
         let(:deployment) { build(:deployment) }
         let(:event) { 'deployment' }
@@ -187,7 +187,7 @@ RSpec.describe Integrations::Test::ProjectService, feature_category: :integratio
       end
 
       context 'wiki_page' do
-        let_it_be(:project, freeze: false) { create(:project, :wiki_repo) }
+        let_it_be_with_reload(:project) { create(:project, :wiki_repo) }
 
         let(:event) { 'wiki_page' }
 

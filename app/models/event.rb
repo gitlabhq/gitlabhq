@@ -140,24 +140,6 @@ class Event < ApplicationRecord
   scope :created_at, ->(time) { where(created_at: time) }
   scope :with_target, -> { preload(:target) }
 
-  scope :in_organization, ->(organization) do
-    return none if organization.nil?
-
-    project_events = where.not(project_id: nil)
-      .joins(:project)
-      .where(projects: { organization: organization })
-
-    group_events = where.not(group_id: nil)
-      .joins(:group)
-      .where(namespaces: { organization: organization })
-
-    personal_namespace_events = where.not(personal_namespace_id: nil)
-      .joins(:personal_namespace)
-      .where(namespaces: { organization: organization })
-
-    from_union([project_events, group_events, personal_namespace_events], remove_duplicates: false)
-  end
-
   # Authors are required as they're used to display who pushed data.
   #
   # We're just validating the presence of the ID here as foreign key constraints

@@ -3,6 +3,7 @@ import { GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'PapaParseAlert',
   components: {
     GlAlert,
   },

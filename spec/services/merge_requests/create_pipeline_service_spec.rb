@@ -423,29 +423,13 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
       ).to be_truthy
     end
 
-    context 'when defer_mr_pipeline_creation_request_completion is enabled' do
-      it 'includes defer_request_completion in worker params' do
-        expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async).with(
-          project.id, user.id, merge_request.id,
-          hash_including('defer_request_completion' => true)
-        )
+    it 'includes defer_request_completion in worker params' do
+      expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async).with(
+        project.id, user.id, merge_request.id,
+        hash_including('defer_request_completion' => true)
+      )
 
-        service.execute_async(merge_request)
-      end
-    end
-
-    context 'when defer_mr_pipeline_creation_request_completion is disabled' do
-      before do
-        stub_feature_flags(defer_mr_pipeline_creation_request_completion: false)
-      end
-
-      it 'does not include defer_request_completion in worker params' do
-        expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async) do |_proj_id, _user_id, _mr_id, params|
-          expect(params).not_to have_key('defer_request_completion')
-        end
-
-        service.execute_async(merge_request)
-      end
+      service.execute_async(merge_request)
     end
   end
 

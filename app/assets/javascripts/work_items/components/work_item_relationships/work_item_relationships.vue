@@ -4,6 +4,7 @@ import { GlAlert, GlButton, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { cloneDeep } from 'lodash-es';
 
 import { s__, n__, sprintf } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
@@ -31,6 +32,7 @@ import WorkItemRelationshipList from './work_item_relationship_list.vue';
 import WorkItemAddRelationshipForm from './work_item_add_relationship_form.vue';
 
 export default {
+  name: 'WorkItemRelationships',
   linkedCategories: LINKED_CATEGORIES_MAP,
   WORKITEM_RELATIONSHIPS_METADATA_LOCALSTORAGEKEY,
   components: {
@@ -46,6 +48,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   provide() {
     return {
       preventRouterNav: true,
@@ -100,6 +103,7 @@ export default {
       default: false,
     },
   },
+  emits: ['showModal'],
   apollo: {
     linkedWorkItems: {
       query: workItemLinkedItemsQuery,
@@ -107,6 +111,7 @@ export default {
         return {
           fullPath: this.workItemFullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       skip() {
@@ -305,7 +310,11 @@ export default {
             }
             const queryArgs = {
               query: workItemLinkedItemsQuery,
-              variables: { fullPath: this.workItemFullPath, iid: this.workItemIid },
+              variables: {
+                fullPath: this.workItemFullPath,
+                iid: this.workItemIid,
+                useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
+              },
             };
             const sourceData = cache.readQuery(queryArgs);
 

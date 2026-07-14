@@ -1,12 +1,11 @@
 <script>
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash-es';
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapMutations, mapActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import { retrieveAlert } from '~/jira_connect/subscriptions/utils';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE } from '../constants';
-import { SET_ALERT } from '../store/mutation_types';
+import { useJiraConnectSubscriptions } from '../store';
 import SignInPage from '../pages/sign_in/sign_in_page.vue';
 import SubscriptionsPage from '../pages/subscriptions_page.vue';
 import UserLink from './user_link.vue';
@@ -34,8 +33,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['currentUser']),
-    ...mapState(['alert', 'subscriptions']),
+    ...mapState(useJiraConnectSubscriptions, ['currentUser', 'alert', 'subscriptions']),
     shouldShowAlert() {
       return Boolean(this.alert?.message);
     },
@@ -66,10 +64,7 @@ export default {
     this.fetchSubscriptionsOauth();
   },
   methods: {
-    ...mapMutations({
-      setAlert: SET_ALERT,
-    }),
-    ...mapActions(['fetchSubscriptions']),
+    ...mapActions(useJiraConnectSubscriptions, ['setAlert', 'fetchSubscriptions']),
     /**
      * Fetch subscriptions from the REST API.
      */

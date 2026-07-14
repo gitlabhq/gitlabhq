@@ -84,3 +84,32 @@ curl --request GET \
   }
 ]
 ```
+
+## キャッシュされた割り当てを削除 {#delete-cached-assignments}
+
+キャッシュストアから、実験のすべてのキャッシュされたバリアントの割り当てを削除します。このエンドポイントを使用して、コードベースからコードが削除されても、キャッシュされた割り当てが残っている完了した実験をクリーンアップします。
+
+```plaintext
+DELETE /experiments/:name/cache
+```
+
+サポートされている属性:
+
+| 属性 | 型   | 必須 | 説明 |
+|-----------|--------|----------|-------------|
+| `name`    | 文字列 | はい      | クリアする実験のキャッシュキー。 |
+
+成功すると、[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
+
+指定された名前にキャッシュされた割り当てが存在しない場合でも、リクエストは`204 No Content`を返します。名前が実験ではないキャッシュキーを参照している場合、リクエストは`400 Bad Request`を返します。リクエストが認証されていない場合、リクエストは`401 Unauthorized`を返します。ユーザーがGitLabチームメンバーではない場合、リクエストは`403 Forbidden`を返します。
+
+> [!warning]
+> `name`の値は、キャッシュキーとして直接使用されます。このエンドポイントは、現在定義されている実験に属していない場合でも、一致するすべてのキャッシュエントリをクリアします。この動作は、コードが削除された孤立した実験のクリーンアップをサポートします。このエンドポイントを呼び出す前に、名前を確認してください。
+
+リクエスト例: 
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/experiments/code_quality_walkthrough/cache"
+```

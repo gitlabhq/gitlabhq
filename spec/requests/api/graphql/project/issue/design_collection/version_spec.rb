@@ -9,7 +9,7 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
 
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:stranger) { create(:user) }
   let_it_be(:old_version) do
     create(:design_version, issue: issue, created_designs: create_list(:design, 3, issue: issue))
@@ -36,7 +36,6 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
 
   before do
     enable_design_management
-    project.add_developer(developer)
   end
 
   describe 'scalar fields' do

@@ -158,6 +158,7 @@ describe('BoardFilteredSearch', () => {
       it.each([
         ['None', url('None')],
         ['Any', url('Any')],
+        ['Me', url('Me')],
       ])('sets the url param %s', (assigneeParam, expected) => {
         const mockFilters = [
           { type: TOKEN_TYPE_ASSIGNEE, value: { data: assigneeParam, operator: '=' } },

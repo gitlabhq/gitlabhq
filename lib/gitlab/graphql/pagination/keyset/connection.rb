@@ -67,6 +67,32 @@ module Gitlab
           end
           # rubocop: enable Naming/PredicatePrefix
 
+          # This is overriden to accommodate for how our redaction works.
+          # The GraphQL library implementation uses the `nodes` array directly as follows:
+          #
+          #    def end_cursor
+          #      nodes.last && cursor_for(nodes.last)
+          #    end
+          #
+          # Redaction directly edits the `nodes` array. If every value in `nodes` is redacted
+          # then we have no value to use as the end cursor, even if we may still have data in the db
+          # that we should iterate through (that may not be redacted, but by order just happens to
+          # come after the redacted data).
+          #
+          # We already locally cache the initial result set in `limited_nodes`, so we can use that
+          # array to create the correct cursor.
+          def end_cursor
+            # The end cursor needs to point to the final value in *this page*. `limited_nodes`
+            # attempts to retrieve `page size + 1` to determine if there is a next page.
+            #
+            # If the extra node is present, the `end_cursor` should point to the second-to-last node
+            # (the actual last value in this page), otherwise `end_cursor` should be the last node.
+            offset = limited_nodes.size > limit_value ? -2 : -1
+
+            # Then it's just `nodes.last && cursor_for(nodes.last)` but using the adjusted fields.
+            limited_nodes[offset] && cursor_for(limited_nodes[offset])
+          end
+
           def cursor_for(node)
             order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(items)
             encode(order.cursor_attributes_for_node(node).to_json)

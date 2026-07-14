@@ -189,8 +189,8 @@ These processes prioritize compliance, security, and stability throughout all ma
 ### Maintenance
 
 Your instance receives maintenance during fixed weekly windows.
-For details, see
-[GitLab Dedicated maintenance operations](../../administration/dedicated/maintenance.md#maintenance-window-schedule).
+For more information, see the
+[maintenance window schedule](../../administration/dedicated/maintenance.md#maintenance-window-schedule).
 
 ### Releases and versions
 
@@ -198,7 +198,8 @@ Your instance runs one release behind the latest GitLab version.
 For example, if the latest version is 16.8, your instance runs 16.7.
 
 This approach provides stability while you receive critical security patches through emergency maintenance.
-Features are rolled out after compliance and change review processes.
+For more information, see the
+[release rollout schedule](../../administration/dedicated/releases.md#release-rollout-schedule).
 
 ### Service level agreement
 

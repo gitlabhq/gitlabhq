@@ -3,6 +3,7 @@ import { GlFormGroup, GlFormInput } from '@gitlab/ui';
 import TemplateSelector from '~/blob/filepath_form/components/template_selector.vue';
 
 export default {
+  name: 'FilepathForm',
   components: {
     GlFormGroup,
     GlFormInput,

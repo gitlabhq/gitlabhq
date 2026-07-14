@@ -204,12 +204,13 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
           bulk_import_entity_type: entity.source_type,
           source_full_path: entity.source_full_path,
           source_version: entity.bulk_import.source_version_info.to_s,
+          Labkit::Fields::GL_ORGANIZATION_ID => entity.organization_id,
           importer: 'gitlab_migration'
         ))
 
       described_class.sidekiq_retries_exhausted_block.call({ 'args' => [entity.id] }, exception)
 
-      expect(entity.reload.failed?).to eq(true)
+      expect(entity.reload.failed?).to be(true)
     end
 
     context 'when entity is not found' do

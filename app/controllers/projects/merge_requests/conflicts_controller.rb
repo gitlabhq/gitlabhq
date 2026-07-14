@@ -2,6 +2,7 @@
 
 class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::ApplicationController
   include IssuableActions
+  include HandlesGitalyErrors
 
   before_action :authorize_can_resolve_conflicts!
 
@@ -70,8 +71,6 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
       render json: { redirect_to: project_merge_request_path(@project, @merge_request, resolved_conflicts: true) }
     rescue Gitlab::Git::Conflict::Resolver::ResolutionError => e
       render status: :bad_request, json: { message: e.message }
-    rescue Gitlab::Git::CommandError => e
-      render status: :internal_server_error, json: { message: e.message }
     rescue Gitlab::Git::PreReceiveError => e
       render status: :unprocessable_entity, json: { message: e.message }
     end
@@ -85,6 +84,11 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
     @conflicts_list = ::MergeRequests::Conflicts::ListService.new(@merge_request)
 
     render_404 unless @conflicts_list.can_be_resolved_by?(current_user)
+    return if performed?
+
+    # Trigger Gitaly call early to allow HandlesGitalyErrors to catch
+    # unavailability. The result is cached, so subsequent calls are free.
+    @conflicts_list.can_be_resolved_in_ui?
   end
 
   def serializer

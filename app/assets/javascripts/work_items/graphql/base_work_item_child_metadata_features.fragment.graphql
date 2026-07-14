@@ -1,0 +1,32 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/work_items/graphql/milestone.fragment.graphql"
+
+fragment BaseWorkItemChildMetadataFeatures on WorkItemFeatures {
+  assignees {
+    allowsMultipleAssignees
+    canInviteMembers
+    assignees {
+      nodes {
+        ...User
+      }
+    }
+  }
+  labels {
+    allowsScopedLabels
+    labels {
+      nodes {
+        ...Label
+      }
+    }
+  }
+  startAndDueDate {
+    startDate
+    dueDate
+  }
+  milestone {
+    milestone {
+      ...MilestoneFragment
+    }
+  }
+}

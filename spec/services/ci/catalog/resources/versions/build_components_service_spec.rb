@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Resources::Versions::BuildComponentsService, feature_category: :pipeline_composition do
   describe '#execute from passed data' do
-    let!(:project) { create(:project, :small_repo) }
-    let!(:catalog_resource) { create(:ci_catalog_resource, project: project) }
-    let!(:release) { create(:release, tag: '1.2.0', project: project, sha: project.repository.root_ref_sha) }
-    let!(:version) { create(:ci_catalog_resource_version, release: release, catalog_resource: catalog_resource) }
+    let_it_be_with_reload(:project) { create(:project, :small_repo) }
+    let_it_be_with_reload(:catalog_resource) { create(:ci_catalog_resource, project: project) }
+    let_it_be(:release) { create(:release, tag: '1.2.0', project: project, sha: project.repository.root_ref_sha) }
+    let_it_be(:version) { create(:ci_catalog_resource_version, release: release, catalog_resource: catalog_resource) }
 
     let(:components_data) do
       [

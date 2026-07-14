@@ -53,7 +53,12 @@ export default {
 </script>
 <template>
   <gl-button-group>
-    <gl-button :variant="variant" :loading="isLoading" @click="$emit('run-pipeline')">
+    <gl-button
+      :variant="variant"
+      data-testid="run-mr-pipeline-button"
+      :loading="isLoading"
+      @click="$emit('run-pipeline')"
+    >
       {{ s__('Pipeline|Run pipeline') }}
     </gl-button>
 

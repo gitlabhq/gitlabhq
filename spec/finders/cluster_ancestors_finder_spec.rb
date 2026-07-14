@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ClusterAncestorsFinder, '#execute' do
   let(:group) { create(:group) }
   let(:project) { create(:project, group: group) }
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   let!(:project_cluster) do
     create(:cluster, :provided_by_user, :project, projects: [project])
@@ -15,7 +15,7 @@ RSpec.describe ClusterAncestorsFinder, '#execute' do
     create(:cluster, :provided_by_user, :group, groups: [group])
   end
 
-  let!(:instance_cluster) do
+  let_it_be(:instance_cluster) do
     create(:cluster, :provided_by_user, :instance)
   end
 

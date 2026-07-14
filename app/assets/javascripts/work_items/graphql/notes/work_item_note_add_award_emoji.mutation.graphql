@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 mutation workItemNoteAddAwardEmoji($awardableId: AwardableID!, $name: String!) {
   awardEmojiAdd(input: { awardableId: $awardableId, name: $name }) {
     errors

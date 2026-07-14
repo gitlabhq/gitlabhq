@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
-  let_it_be(:group) { create(:group, :public) }
-  let_it_be(:project) { create(:project, :public, group: group) }
-  let_it_be(:project2) { create(:project, group: group) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group, :public, owners: user) }
+  let_it_be(:project) { create(:project, :public, group: group, maintainers: user) }
+  let_it_be(:project2) { create(:project, group: group) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let(:title) { '肯定不是中文的问题' }
 
@@ -20,8 +20,6 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
 
   before do
     sign_in(user)
-    group.add_owner(user)
-    project.add_maintainer(user)
   end
 
   it_behaves_like 'milestone tabs' do
@@ -130,11 +128,11 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
       end
 
       context 'when subgroup milestones are present' do
-        let(:subgroup) { create(:group, :private, parent: group) }
-        let(:sub_project) { create(:project, :private, group: subgroup) }
-        let!(:group_milestone) { create(:milestone, group: group, title: 'Group milestone') }
-        let!(:sub_project_milestone) { create(:milestone, project: sub_project, title: 'Sub Project Milestone') }
-        let!(:subgroup_milestone) { create(:milestone, title: 'Subgroup Milestone', group: subgroup) }
+        let_it_be(:subgroup) { create(:group, :private, parent: group) }
+        let_it_be(:sub_project) { create(:project, :private, group: subgroup) }
+        let_it_be(:group_milestone) { create(:milestone, group: group, title: 'Group milestone') }
+        let_it_be(:sub_project_milestone) { create(:milestone, project: sub_project, title: 'Sub Project Milestone') }
+        let_it_be(:subgroup_milestone) { create(:milestone, title: 'Subgroup Milestone', group: subgroup) }
 
         it 'shows subgroup milestones that user has access to' do
           get :index, params: { group_id: group.to_param }

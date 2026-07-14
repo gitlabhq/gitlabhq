@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ContainerRegistry::Protection::CreateTagRuleService, '#execute', feature_category: :container_registry do
   include ContainerRegistryHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
   let(:service) { described_class.new(project: project, current_user: current_user, params: params) }
@@ -131,7 +131,7 @@ RSpec.describe ContainerRegistry::Protection::CreateTagRuleService, '#execute', 
   end
 
   context 'when the maximum number of tag rules already exist in the project' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
     before do

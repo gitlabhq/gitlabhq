@@ -38,7 +38,7 @@ RSpec.describe CiEnsureApplicationSettingsHaveDefinitionFile, feature_category: 
       let(:attributes) { [attribute] }
 
       it 'prints an error and raises an exception' do
-        expect(attribute.definition_file_exist?).to eq(false)
+        expect(attribute.definition_file_exist?).to be(false)
         expect(stderr).to receive(:puts).with(
           %r{Attribute `foo` is missing a definition file at `.+config/application_setting_columns/foo.yml`!}
         )

@@ -8,7 +8,7 @@ RSpec.describe JiraConnect::SyncProjectWorker, factory_default: :keep, feature_c
   it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
 
   describe '#perform' do
-    let_it_be(:project) { create_default(:project, :repository).freeze }
+    let_it_be(:project) { create_default(:project, :small_repo).freeze }
 
     let!(:mr_with_jira_title) { create(:merge_request, :unique_branches, title: 'TEST-123') }
     let!(:mr_with_jira_description) { create(:merge_request, :unique_branches, description: 'TEST-323') }
@@ -38,7 +38,8 @@ RSpec.describe JiraConnect::SyncProjectWorker, factory_default: :keep, feature_c
     end
 
     before do
-      stub_request(:post, 'https://sample.atlassian.net/rest/devinfo/0.10/bulk').to_return(status: 200, body: '', headers: {})
+      stub_request(:post, 'https://sample.atlassian.net/rest/devinfo/0.10/bulk')
+        .to_return(status: 202, body: {}.to_json, headers: { 'Content-Type' => 'application/json' })
 
       jira_connect_sync_service
       allow(JiraConnect::SyncService).to receive(:new) { jira_connect_sync_service }
@@ -64,7 +65,7 @@ RSpec.describe JiraConnect::SyncProjectWorker, factory_default: :keep, feature_c
           project.repository.create_branch(jira_referencing_branch_name)
 
           allow_next(Atlassian::JiraConnect::Client).to receive(:post)
-            .with(request_path, request_body)
+            .with(request_path, request_body).and_call_original
 
           perform(project.id, update_sequence_id)
         end

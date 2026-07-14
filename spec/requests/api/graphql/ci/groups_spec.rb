@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'Query.project.pipeline.stages.groups', feature_category: :continuous_integration do

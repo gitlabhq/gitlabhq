@@ -1,0 +1,7 @@
+# This is a stub query for CE. The actual implementation is in EE.
+# @feature_category: software_composition_analysis
+query ProjectAutoRemediationProfileCE($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+  }
+}

@@ -13,6 +13,7 @@ import {
 } from '../custom_email_constants';
 
 export default {
+  name: 'CustomEmail',
   components: {
     GlBadge,
     GlButton,

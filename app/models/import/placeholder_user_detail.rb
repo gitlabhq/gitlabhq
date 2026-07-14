@@ -13,6 +13,8 @@ module Import
     validates :deletion_attempts, numericality: { greater_than_or_equal_to: 0 }
     validates :placeholder_user, presence: true
 
+    scope :with_organization, -> { includes(:organization) }
+
     def self.eligible_for_deletion(max_attempts = PlaceholderUserCleanupWorker::MAX_ATTEMPTS)
       base_query = where(deletion_attempts: ...max_attempts, namespace_id: nil)
 

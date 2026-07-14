@@ -15,9 +15,12 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric, feature
   end
 
   describe '#value' do
-    let_it_be(:issue_1, freeze: false) { create(:issue) }
-    let_it_be(:issue_2, freeze: false) { create(:issue) }
-    let_it_be(:issue_3, freeze: false) { create(:issue) }
+    let_it_be_with_reload(:issue_1) { create(:issue) }
+    let_it_be_with_reload(:issue_2) { create(:issue) }
+    let_it_be_with_reload(:issue_3) { create(:issue) }
+    # `freeze: false` is required here: this `let_it_be` subject is an
+    # ActiveRecord::Relation whose `deep_freeze` traversal recurses infinitely
+    # (SystemStackError). Keep the opt-out (see gitlab-org/gitlab#602925).
     let_it_be(:issues, freeze: false) { Issue.all }
 
     before do

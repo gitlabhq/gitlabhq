@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe Mutations::Releases::Delete do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let_it_be(:non_project_member) { create(:user) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
   let_it_be(:tag) { 'v1.1.0' }
-  let_it_be(:release, freeze: false) { create(:release, project: project, tag: tag) }
+  let_it_be_with_reload(:release) { create(:release, project: project, tag: tag) }
 
   let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 

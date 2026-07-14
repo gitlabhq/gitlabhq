@@ -16,4 +16,5 @@ fragment RunnerFieldsShared on CiRunner {
     ...User
   }
   status
+  contactedAt
 }

@@ -14,9 +14,11 @@ RSpec.describe Projects::ContainerRepository::ThirdParty::CleanupTagsService, :c
   let(:service) { described_class.new(container_repository: repository, current_user: user, params: params) }
   let(:tags) { %w[latest A Ba Bb C D E] }
 
-  before do
-    project.add_maintainer(user) if user
+  before_all do
+    project.add_maintainer(user)
+  end
 
+  before do
     stub_container_registry_config(enabled: true)
 
     stub_container_registry_tags(

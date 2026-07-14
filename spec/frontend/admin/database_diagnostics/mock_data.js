@@ -145,6 +145,45 @@ export const singleDatabaseResults = {
   },
 };
 
+export const vacuumActivity = [
+  {
+    pid: 4242,
+    schema_name: 'public',
+    table_name: 'ci_builds',
+    phase: 'vacuuming indexes',
+    heap_blks_total: 1000,
+    heap_blks_scanned: 600,
+    heap_blks_vacuumed: 500,
+    index_vacuum_count: 2,
+    max_dead_tuple_bytes: 2097152,
+    dead_tuple_bytes: 2000000,
+    indexes_total: 5,
+    indexes_processed: 3,
+    vacuum_type: 'autovacuum',
+    anti_wraparound: false,
+    running_time_seconds: 36000,
+    delay_time: 12.5,
+  },
+  {
+    pid: 4243,
+    schema_name: 'public',
+    table_name: 'merge_requests',
+    phase: 'scanning heap',
+    heap_blks_total: 2000,
+    heap_blks_scanned: 100,
+    heap_blks_vacuumed: 0,
+    index_vacuum_count: 0,
+    max_dead_tuple_bytes: 2097152,
+    dead_tuple_bytes: 50000,
+    indexes_total: 3,
+    indexes_processed: 0,
+    vacuum_type: 'manual',
+    anti_wraparound: false,
+    running_time_seconds: 300,
+    delay_time: null,
+  },
+];
+
 export const databaseInformationResults = {
   databases: {
     main: {
@@ -154,6 +193,30 @@ export const databaseInformationResults = {
         { name: 'public', current: true, owner: 'postgres' },
         { name: 'gitlab_partitions_dynamic', current: false, owner: 'postgres' },
         { name: 'gitlab_partitions_static', current: false, owner: 'postgres' },
+      ],
+      findings: [],
+      vacuums: vacuumActivity,
+    },
+  },
+};
+
+export const databaseInformationWithFindings = {
+  databases: {
+    main: {
+      current_user: 'gitlab',
+      search_path: 'public',
+      schemas: [{ name: 'public', current: true, owner: 'postgres' }],
+      findings: [
+        {
+          severity: 'error',
+          code: 'search_path_missing_public',
+          message: 'The public schema is not in the search path.',
+        },
+        {
+          severity: 'warning',
+          code: 'search_path_non_default',
+          message: 'The search path differs from the expected default of "$user", public.',
+        },
       ],
     },
   },

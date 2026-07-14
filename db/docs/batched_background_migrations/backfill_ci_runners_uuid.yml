@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillCiRunnersUuid
+description: Backfill uuid column in ci_runners table for rows that pre-date the column being added
+feature_category: runner_core
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235296
+milestone: '19.2'
+queued_migration_version: '20260623013233'
+finalized_by: # version of the migration that finalized this BBM

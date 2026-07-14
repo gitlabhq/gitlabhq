@@ -71,7 +71,7 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
           expect(json_response['raw']).to eq(variable.raw?)
           expect(json_response['variable_type']).to eq('env_var')
           expect(json_response['description']).to be_nil
-          expect(json_response['hidden']).to eq(true)
+          expect(json_response['hidden']).to be(true)
         end
       end
 
@@ -89,7 +89,7 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
           expect(json_response['raw']).to eq(variable.raw?)
           expect(json_response['variable_type']).to eq('env_var')
           expect(json_response['description']).to be_nil
-          expect(json_response['hidden']).to eq(false)
+          expect(json_response['hidden']).to be(false)
         end
 
         it_behaves_like 'authorizing granular token permissions', :read_variable do
@@ -184,7 +184,7 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
           expect(json_response['key']).to eq('TEST_VARIABLE_2')
           expect(json_response['value']).to eq('PROTECTED_VALUE_2')
           expect(json_response['protected']).to be_truthy
-          expect(json_response['hidden']).to eq(false)
+          expect(json_response['hidden']).to be(false)
           expect(json_response['masked']).to be_truthy
           expect(json_response['raw']).to be_truthy
           expect(json_response['variable_type']).to eq('env_var')
@@ -199,7 +199,7 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
           expect(json_response['key']).to eq('TEST_VARIABLE_2')
           expect(json_response['value']).to be_nil
           expect(json_response['protected']).to be_truthy
-          expect(json_response['hidden']).to eq(true)
+          expect(json_response['hidden']).to be(true)
           expect(json_response['masked']).to be_truthy
           expect(json_response['raw']).to be_truthy
           expect(json_response['variable_type']).to eq('env_var')
@@ -227,7 +227,7 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
           expect(json_response['raw']).to be_falsey
           expect(json_response['variable_type']).to eq('file')
           expect(json_response['description']).to eq('description')
-          expect(json_response['hidden']).to eq(false)
+          expect(json_response['hidden']).to be(false)
         end
 
         it 'does not allow to duplicate variable key' do

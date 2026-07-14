@@ -77,6 +77,7 @@ export default {
       default: '',
     },
   },
+  emits: ['follow', 'unfollow'],
   data() {
     return {
       toggleFollowLoading: false,
@@ -279,9 +280,9 @@ export default {
               <gl-icon name="mail" class="gl-shrink-0" />
               <span ref="email" class="gl-ml-2">{{ user.email }}</span>
             </div>
-            <div v-if="user.bio" class="gl-mb-2 gl-flex">
+            <div v-if="user.bioHtml" class="gl-mb-2 gl-flex">
               <gl-icon name="profile" class="gl-shrink-0" />
-              <span ref="bio" class="gl-ml-2">{{ user.bio }}</span>
+              <span ref="bio" v-safe-html="user.bioHtml" class="gl-ml-2"></span>
             </div>
             <div v-if="user.workInformation" class="gl-mb-2 gl-flex">
               <gl-icon name="work" class="gl-shrink-0" />

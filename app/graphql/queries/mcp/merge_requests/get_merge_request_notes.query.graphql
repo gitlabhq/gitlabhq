@@ -1,0 +1,57 @@
+# @feature_category: mcp_server
+query getMergeRequestNotes(
+  $fullPath: ID!
+  $iid: String!
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  project(fullPath: $fullPath) {
+    id
+    mergeRequest(iid: $iid) {
+      id
+      resolvedDiscussionsCount
+      resolvableDiscussionsCount
+      notes(after: $after, before: $before, first: $first, last: $last) {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+        count
+        nodes {
+          id
+          webUrl: url
+          body
+          system
+          internal
+          createdAt
+          updatedAt
+          author {
+            id
+            username
+            name
+          }
+          position {
+            newPath
+            oldPath
+            newLine
+            oldLine
+          }
+          discussion {
+            id
+            resolvable
+            resolved
+            resolvedBy {
+              id
+              username
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

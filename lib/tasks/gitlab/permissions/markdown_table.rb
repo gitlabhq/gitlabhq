@@ -29,6 +29,27 @@ module Tasks
 
           [title, description, subsections].compact.join("\n")
         end
+
+        def build_category_sections(records)
+          build_section(nil, nil, group_and_sort(records, :category)) do |category, category_records|
+            build_category_section(category, category_records)
+          end
+        end
+
+        def build_category_section(category, category_records)
+          title = "### #{category} resources\n"
+
+          build_section(title, nil, group_and_sort(category_records, :resource)) do |resource, resource_records|
+            build_resource_section(resource, resource_records)
+          end
+        end
+
+        def group_and_sort(records, attribute)
+          records
+            .group_by(&attribute)
+            .sort_by { |key, _| [key.to_s.downcase, key.to_s] }
+            .to_h
+        end
       end
     end
   end

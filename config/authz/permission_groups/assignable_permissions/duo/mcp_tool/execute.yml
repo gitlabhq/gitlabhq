@@ -1,0 +1,9 @@
+---
+name: execute_mcp_tool
+description: Grants the ability to execute tools through the MCP server
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - execute_mcp_tool

@@ -33,6 +33,9 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :fleet_visibili
       end
     end
 
+    # NOTE: No cross-organization isolation test for the admin/instance path. These resolvers return
+    # cell-scoped results (admins see every runner on the cell, across all organizations), so a
+    # second-organization runner is expected to be returned here, not filtered out.
     context 'when user can see runners' do
       let(:obj) { nil }
 

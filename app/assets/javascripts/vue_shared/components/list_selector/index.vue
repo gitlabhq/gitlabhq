@@ -95,6 +95,7 @@ export default {
       default: false,
     },
   },
+  emits: ['delete', 'select'],
   data() {
     return {
       searchValue: '',

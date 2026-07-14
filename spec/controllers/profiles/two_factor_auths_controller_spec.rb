@@ -425,7 +425,7 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       it 'disables two factor' do
         go
 
-        expect(user.reload.two_factor_enabled?).to eq(false)
+        expect(user.reload.two_factor_enabled?).to be(false)
       end
 
       it 'redirects to profile_two_factor_auth_url' do
@@ -479,14 +479,14 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       end
 
       it 'disables OTP authenticator and leaves WebAuthn devices unaffected' do
-        expect(user.two_factor_otp_enabled?).to eq(true)
-        expect(user.two_factor_webauthn_enabled?).to eq(true)
+        expect(user.two_factor_otp_enabled?).to be(true)
+        expect(user.two_factor_webauthn_enabled?).to be(true)
 
         go
 
         user.reload
-        expect(user.two_factor_otp_enabled?).to eq(false)
-        expect(user.two_factor_webauthn_enabled?).to eq(true)
+        expect(user.two_factor_otp_enabled?).to be(false)
+        expect(user.two_factor_webauthn_enabled?).to be(true)
       end
 
       it 'redirects to profile_two_factor_auth_url' do
@@ -530,14 +530,14 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       end
 
       it 'leaves WebAuthn devices unaffected' do
-        expect(user.two_factor_otp_enabled?).to eq(false)
-        expect(user.two_factor_webauthn_enabled?).to eq(true)
+        expect(user.two_factor_otp_enabled?).to be(false)
+        expect(user.two_factor_webauthn_enabled?).to be(true)
 
         go
 
         user.reload
-        expect(user.two_factor_otp_enabled?).to eq(false)
-        expect(user.two_factor_webauthn_enabled?).to eq(true)
+        expect(user.two_factor_otp_enabled?).to be(false)
+        expect(user.two_factor_webauthn_enabled?).to be(true)
       end
 
       it 'redirects to profile_two_factor_auth_url' do

@@ -1,0 +1,6 @@
+---
+name: _bypass_ip_enforcement
+description: Private permission that exempts the holder from group IP-restriction
+  enforcement. Used only within policies to skip the prevent_all that is otherwise
+  applied when an IP restriction would block access.
+conditionally_enables: null

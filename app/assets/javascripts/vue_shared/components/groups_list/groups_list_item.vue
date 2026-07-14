@@ -15,6 +15,7 @@ import GroupListItemActions from '~/vue_shared/components/groups_list/group_list
 import ListItemInactiveBadge from '~/vue_shared/components/resource_lists/list_item_inactive_badge.vue';
 
 export default {
+  name: 'GroupsListItem',
   i18n: {
     subgroups: __('Subgroups'),
     projects: __('Projects'),
@@ -66,6 +67,7 @@ export default {
       default: false,
     },
   },
+  emits: ['click-avatar', 'hover-stat', 'hover-visibility', 'refetch'],
   computed: {
     visibility() {
       return this.group.visibility;

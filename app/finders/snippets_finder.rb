@@ -232,8 +232,10 @@ class SnippetsFinder < UnionFinder
   end
 
   def should_apply_organization_filter?
-    project.blank? &&
-      !return_all_available_and_permitted?
+    return false if project.present?
+    return false if return_all_available_and_permitted?
+
+    ::Gitlab::Organizations::Isolation.enabled?
   end
 
   def hide_created_by_banned_user(snippets)

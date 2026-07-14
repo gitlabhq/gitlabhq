@@ -15,7 +15,10 @@ module Gitlab
         def decrypt_public_session_id(data)
           encrypted_data = data.delete_prefix(session_cookie_token_prefix)
           decrypted = encryptor.decrypt_and_verify(encrypted_data, purpose: public_session_id_purpose)
-          ::Gitlab::Json.parse(decrypted)
+          # safe_parse still raises JSON::ParserError on malformed input; rescue to return nil
+          ::Gitlab::Json.safe_parse(decrypted)
+        rescue JSON::ParserError
+          nil
         end
 
         def valid_authenticity_token?(session, masked_authenticity_token)

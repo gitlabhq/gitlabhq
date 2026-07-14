@@ -24,7 +24,7 @@ RSpec.describe Import::LoadPlaceholderReferencesWorker, feature_category: :impor
   end
 
   describe '#sidekiq_retries_exhausted' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     shared_examples 'failed user contribution mapping' do
       it 'logs the failure and clears the placeholder cache', :aggregate_failures do

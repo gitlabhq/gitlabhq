@@ -237,8 +237,8 @@ describe('Interval Pattern Input Component', () => {
     });
   });
 
-  describe('cronValue event', () => {
-    it('emits cronValue event with cron value', async () => {
+  describe('cron-value event', () => {
+    it('emits cron-value event with cron value', async () => {
       // Provide initial value to prevent immediate watch trigger
       createWrapper({
         initialCronInterval: '0 * * * *',
@@ -249,7 +249,7 @@ describe('Interval Pattern Input Component', () => {
 
       await nextTick();
 
-      expect(wrapper.emitted()).toEqual({ cronValue: [['0 16 * * *']] });
+      expect(wrapper.emitted()).toEqual({ 'cron-value': [['0 16 * * *']] });
     });
   });
 

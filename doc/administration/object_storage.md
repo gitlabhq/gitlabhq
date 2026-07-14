@@ -372,18 +372,18 @@ GitLab reads the value of `google_json_key_location`, then `google_json_key_stri
 It uses the first of these settings that has a value.
 
 The service account must have permission to access the bucket. For more information,
-see the [Cloud Storage authentication documentation](https://cloud.google.com/storage/docs/authentication).
+see the [Cloud Storage authentication documentation](https://docs.cloud.google.com/storage/docs/authentication).
 
 #### Google Cloud Application Default Credentials
 
-[Google Cloud Application Default Credentials (ADC)](https://cloud.google.com/docs/authentication/application-default-credentials) are typically
+[Google Cloud Application Default Credentials (ADC)](https://docs.cloud.google.com/docs/authentication/application-default-credentials) are typically
 used with GitLab to use the default service account or [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation).
 Set `google_application_default` to `true` and omit `google_json_key_location` and `google_json_key_string`.
 
 If you use ADC, be sure that:
 
 - The service account that you use has the
-  [`iam.serviceAccounts.signBlob` permission](https://cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signBlob).
+  [`iam.serviceAccounts.signBlob` permission](https://docs.cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signBlob).
   Typically this is done by granting the `Service Account Token Creator` role to the service account.
 - If you are using Google Compute virtual machines, ensure they have the [correct access scopes to access Google Cloud APIs](https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#changeserviceaccountandscopes). If the machines do not have the right scope, the error logs may show:
 
@@ -392,7 +392,7 @@ If you use ADC, be sure that:
   ```
 
 > [!note]
-> To use bucket encryption with [customer-managed encryption keys](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys), use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
+> To use bucket encryption with [customer-managed encryption keys](https://docs.cloud.google.com/storage/docs/encryption/using-customer-managed-keys), use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 {{< tabs >}}
 
@@ -1450,7 +1450,7 @@ When the consolidated form is:
 
 {{< /history >}}
 
-ETag mismatch errors occur also in Google Cloud Storage (GCS) when enabling [data encryption with customer-managed encryption keys (CMEK)](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys).
+ETag mismatch errors occur also in Google Cloud Storage (GCS) when enabling [data encryption with customer-managed encryption keys (CMEK)](https://docs.cloud.google.com/storage/docs/encryption/using-customer-managed-keys).
 
 To use CMEK, use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 

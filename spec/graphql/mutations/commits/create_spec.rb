@@ -8,7 +8,7 @@ RSpec.describe Mutations::Commits::Create, feature_category: :source_code_manage
   subject(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let_it_be(:group) { create(:group, :public) }
 
   specify { expect(described_class).to require_graphql_authorizations(:push_code) }

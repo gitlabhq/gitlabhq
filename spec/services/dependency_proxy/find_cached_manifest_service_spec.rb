@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe DependencyProxy::FindCachedManifestService, feature_category: :virtual_registry do
@@ -27,14 +28,14 @@ RSpec.describe DependencyProxy::FindCachedManifestService, feature_category: :vi
         expect(subject[:status]).to eq(:success)
         expect(subject[:manifest]).to be_a(DependencyProxy::Manifest)
         expect(subject[:manifest]).to be_persisted
-        expect(subject[:from_cache]).to eq false
+        expect(subject[:from_cache]).to be false
       end
     end
 
     shared_examples 'returning no manifest' do
       it 'returns a nil manifest' do
         expect(subject[:status]).to eq(:success)
-        expect(subject[:from_cache]).to eq false
+        expect(subject[:from_cache]).to be false
         expect(subject[:manifest]).to be_nil
       end
     end
@@ -81,7 +82,7 @@ RSpec.describe DependencyProxy::FindCachedManifestService, feature_category: :vi
           expect(subject[:status]).to eq(:success)
           expect(subject[:manifest]).to be_a(DependencyProxy::Manifest)
           expect(subject[:manifest]).to eq(dependency_proxy_manifest)
-          expect(subject[:from_cache]).to eq true
+          expect(subject[:from_cache]).to be true
         end
       end
 

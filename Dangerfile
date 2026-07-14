@@ -45,5 +45,13 @@ Gitlab::Dangerfiles.for_project(self, project_name) do |gitlab_dangerfiles|
   gitlab_dangerfiles.config.included_optional_codeowners_sections_for_roulette.push(
     'Backend Static Code Analysis'
   )
+  # Reviewer Roulette downcases CODEOWNERS section names when building the category
+  # (gitlab-dangerfiles `Approval.from_approval_rule`), so a title-cased label such as
+  # ~"Merge Requests backend" no longer matches (label references are case-sensitive)
+  # and renders as plain text. Map the downcased category back to the correctly-cased
+  # label reference so it renders as a colored label.
+  gitlab_dangerfiles.config.custom_labels_for_categories = {
+    'merge requests backend': '~"Merge Requests backend"'
+  }
   gitlab_dangerfiles.import_dangerfiles(except: %w[simple_roulette])
 end

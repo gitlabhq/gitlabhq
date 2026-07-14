@@ -109,7 +109,7 @@ module ClickHouse
           type: row['type'],
           position: row['position'].to_i,
           default_kind: row['default_kind'],
-          default_expression: row['default_expression'],
+          default_expression: strip_database_prefix(row['default_expression']),
           comment: row['comment'],
           compression_codec: row['compression_codec'],
           is_in_partition_key: to_bool(row['is_in_partition_key']),
@@ -117,6 +117,12 @@ module ClickHouse
           is_in_primary_key: to_bool(row['is_in_primary_key']),
           is_in_sampling_key: to_bool(row['is_in_sampling_key'])
         )
+      end
+
+      def strip_database_prefix(expr)
+        return expr if expr.blank?
+
+        expr.gsub("#{@connection.database_name}.", '')
       end
 
       def to_bool(value)

@@ -4,7 +4,7 @@ module API
   module Entities
     module Ci
       class PipelineSchedule < Grape::Entity
-        expose :id, documentation: { type: 'Integer', example: 13 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 13 }
         expose :description, documentation: { type: 'String', example: 'Test schedule pipeline' }
         expose :ref, documentation: { type: 'String', example: 'develop' }
         expose :cron, documentation: { type: 'String', example: '* * * * *' }

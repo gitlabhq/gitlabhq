@@ -258,6 +258,40 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Configurations::Kind do
     }.deep_merge(Gitlab::Orchestrator::Deployment::ResourcePresets.resource_values(resource_preset)))
   end
 
+  context "when secrets manager is enabled" do
+    around do |example|
+      ClimateControl.modify({ "QA_RSPEC_TAGS" => "--tag secrets_manager" }) { example.run }
+    end
+
+    it "provisions an OpenBao database in the CNPG cluster and creates its password secret" do
+      expect { configuration.run_pre_deployment_setup }
+        .to output(/Creating OpenBao database password secret/).to_stdout
+
+      expect(Gitlab::Orchestrator::Deployment::Services::CloudNativePG).to have_received(:new).with(
+        a_hash_including(additional_databases: [
+          a_hash_including(name: "openbao", owner: "openbao", password: a_kind_of(String))
+        ])
+      )
+    end
+
+    it "enables OpenBao backed by its own database in the helm values", :aggregate_failures do
+      expect { configuration.run_pre_deployment_setup }.to output.to_stdout
+
+      expect(configuration.values.dig(:global, :openbao)).to eq({
+        enabled: true,
+        url: "http://openbao.127.0.0.1.nip.io:80",
+        internal_url: "http://gitlab-openbao-active.gitlab.svc.cluster.local:8200",
+        psql: {
+          host: "cnpg-rw.gitlab.svc.cluster.local",
+          database: "openbao",
+          username: "openbao",
+          password: { secret: "gitlab-openbao-postgresql", key: "password" }
+        }
+      })
+      expect(configuration.values[:openbao]).to eq({ install: true, ingress: { tls: { enabled: false } } })
+    end
+  end
+
   it "returns correct gitlab url" do
     expect(configuration.gitlab_url).to eq("http://gitlab.127.0.0.1.nip.io")
   end

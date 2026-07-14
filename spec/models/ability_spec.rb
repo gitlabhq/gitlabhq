@@ -168,7 +168,7 @@ RSpec.describe Ability, feature_category: :system_access do
       described_class.users_that_can_read_personal_snippet(users, snippet)
     end
 
-    let(:users)  { create_list(:user, 3) }
+    let_it_be(:users) { create_list(:user, 3) }
     let(:author) { users[0] }
 
     it 'private snippet is readable only by its author' do

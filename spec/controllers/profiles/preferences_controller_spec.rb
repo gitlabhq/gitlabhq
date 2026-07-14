@@ -127,7 +127,7 @@ RSpec.describe Profiles::PreferencesController, feature_category: :user_profile 
         go params: prefs
         user.reload
 
-        expect(user.enabled_following).to eq(false)
+        expect(user.enabled_following).to be(false)
       end
     end
   end

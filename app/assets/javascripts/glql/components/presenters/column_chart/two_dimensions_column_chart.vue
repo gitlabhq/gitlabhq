@@ -1,7 +1,7 @@
 <script>
 import { GlStackedColumnChart } from '@gitlab/ui/src/charts';
 import { buildStackedByDimension, tooltipContentFromParams } from '../../../utils/chart_data';
-import { formatterFor, axisFormatterFor } from '../../../utils/value_format';
+import { formatterFor, axisFormatterFor, dimensionAxisTitleFor } from '../../../utils/value_format';
 import FormattedTooltipContent from '../chart/formatted_tooltip_content.vue';
 
 export default {
@@ -40,6 +40,9 @@ export default {
     metricAxisFormatter() {
       return axisFormatterFor(this.metric?.key);
     },
+    xAxisTitle() {
+      return dimensionAxisTitleFor(this.primaryDimension, this.secondaryDimension);
+    },
     chartOptions() {
       // GlStackedColumnChart declares yAxis as an array; pass an array so the
       // formatter merges in. Axis uses the compact variant for counts; tooltip
@@ -59,7 +62,7 @@ export default {
 <template>
   <gl-stacked-column-chart
     x-axis-type="category"
-    :x-axis-title="primaryDimension.label"
+    :x-axis-title="xAxisTitle"
     :y-axis-title="metric.label"
     :group-by="chart.groups"
     :bars="chart.bars"

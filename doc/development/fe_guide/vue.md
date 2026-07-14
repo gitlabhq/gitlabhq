@@ -268,6 +268,12 @@ Dependency injection can potentially break a child component (either an immediat
 
 A [default value](https://vuejs.org/guide/components/provide-inject.html#injection-default-values) might be useful in contexts where it makes sense.
 
+Dependency injection decays over time.
+When a component that uses `inject` is refactored or removed, the matching `provide` entry often
+stays behind as dead plumbing.
+To find and remove provides that no component injects, see
+[trace unused Vue provides](tooling.md#trace-unused-vue-provides).
+
 ##### props
 
 If the value from HAML doesn't fit the criteria of dependency injection, use `props`.

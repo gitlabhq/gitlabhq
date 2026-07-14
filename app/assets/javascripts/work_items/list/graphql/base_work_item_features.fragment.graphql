@@ -4,6 +4,14 @@
 #import "~/work_items/graphql/work_item_parent_fields.fragment.graphql"
 
 fragment BaseWorkItemFeatures on WorkItemFeatures {
+  currentUserTodos {
+    currentUserTodos(state: pending) {
+      nodes {
+        id
+        state
+      }
+    }
+  }
   description {
     description
     descriptionHtml

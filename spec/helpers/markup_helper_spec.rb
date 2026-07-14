@@ -483,7 +483,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
       it 'displays the first line of a code block' do
         object = create_object("```\nCode block\nwith two lines\n```")
-        expected = %r{<pre.+><code><span class="line" lang="plaintext">Code block\.\.\.</span></code></pre>}
+        expected = %r{<pre.+><code><span class="line" data-lang="plaintext">Code block\.\.\.</span></code></pre>}
 
         expect(helper.first_line_in_markdown(object, attribute, 100, project: project)).to match(expected)
       end
@@ -499,7 +499,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
       it 'preserves code color scheme' do
         object = create_object("```ruby\ndef test\n  'hello world'\nend\n```")
         expected = "<pre class=\"code highlight js-syntax-highlight language-ruby\">" \
-          "<code><span class=\"line\" lang=\"ruby\"><span class=\"k\">def</span> <span class=\"nf\">test</span>...</span>" \
+          "<code><span class=\"line\" data-lang=\"ruby\"><span class=\"k\">def</span> <span class=\"nf\">test</span>...</span>" \
           "</code></pre>"
 
         expect(helper.first_line_in_markdown(object, attribute, 150, project: project)).to eq(expected)

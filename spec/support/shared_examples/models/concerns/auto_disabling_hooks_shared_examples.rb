@@ -114,6 +114,7 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
         .with(a_hash_including(
           hook_id: hook.id,
           action: 'enable',
+          Labkit::Fields::GL_ORGANIZATION_ID => hook.parent.organization_id,
           recent_failures: 0,
           disabled_until: nil
         ))
@@ -165,7 +166,10 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
         expect(logger)
           .to receive(:info)
           .with(a_hash_including(
-            hook_id: hook.id, action: 'backoff', recent_failures: 1
+            hook_id: hook.id,
+            action: 'backoff',
+            Labkit::Fields::GL_ORGANIZATION_ID => hook.parent.organization_id,
+            recent_failures: 1
           ))
 
         hook.backoff!
@@ -201,6 +205,7 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
           .with(a_hash_including(
             hook_id: hook.id,
             action: 'backoff',
+            Labkit::Fields::GL_ORGANIZATION_ID => hook.parent.organization_id,
             recent_failures: WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1,
             disabled_until: 1.minute.from_now
           ))

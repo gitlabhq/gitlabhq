@@ -31,6 +31,7 @@ describe('WorkItemAddRelationshipForm', () => {
     childrenIds = [],
     linkedWorkItemsMutationHandler = linkedWorkItemsSuccessMutationHandler,
     hasBlockedWorkItemsFeature = true,
+    glFeatures = {},
   } = {}) => {
     const mockApolloProvider = createMockApollo([
       [addLinkedItemsMutation, linkedWorkItemsMutationHandler],
@@ -38,6 +39,9 @@ describe('WorkItemAddRelationshipForm', () => {
 
     wrapper = shallowMountExtended(WorkItemAddRelationshipForm, {
       apolloProvider: mockApolloProvider,
+      provide: {
+        glFeatures,
+      },
       propsData: {
         workItemId,
         workItemIid,
@@ -141,6 +145,27 @@ describe('WorkItemAddRelationshipForm', () => {
           workItemsIds: ['gid://gitlab/WorkItem/641', 'gid://gitlab/WorkItem/642'],
         },
         useWorkItemFeatures: false,
+      });
+    });
+
+    it('passes useWorkItemFeatures as true to mutation when workItemFeaturesField flag is enabled', async () => {
+      await createComponent({ glFeatures: { workItemFeaturesField: true } });
+
+      await selectWorkItemTokens([{ id: 'gid://gitlab/WorkItem/641' }]);
+
+      findLinkWorkItemForm().vm.$emit('submit', {
+        preventDefault: jest.fn(),
+        stopPropagation: jest.fn(),
+      });
+      await waitForPromises();
+
+      expect(linkedWorkItemsSuccessMutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          linkType: LINKED_ITEM_TYPE_VALUE.RELATED,
+          workItemsIds: ['gid://gitlab/WorkItem/641'],
+        },
+        useWorkItemFeatures: true,
       });
     });
 

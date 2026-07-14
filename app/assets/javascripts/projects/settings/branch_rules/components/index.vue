@@ -21,6 +21,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import editBranchRuleMutation from 'ee_else_ce/projects/settings/branch_rules/mutations/edit_branch_rule.mutation.graphql';
 import { getAccessLevels, getAccessLevelInputFromEdges } from 'ee_else_ce/projects/settings/utils';
+import AccessLevelsDrawer from 'ee_else_ce/projects/settings/branch_rules/components/access_levels_drawer.vue';
 import {
   BRANCH_RULE_DETAILS_LABEL,
   CHANGED_BRANCH_RULE_TARGET,
@@ -35,7 +36,6 @@ import editSquashOptionMutation from '../mutations/edit_squash_option.mutation.g
 import deleteSquashOptionMutation from '../mutations/delete_squash_option.mutation.graphql';
 import BranchRuleModal from '../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
-import AccessLevelsDrawer from './access_levels_drawer.vue';
 import SquashSettingsDrawer from './squash_settings_drawer.vue';
 import ProtectionToggle from './protection_toggle.vue';
 import {
@@ -78,25 +78,17 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
-    allowEditSquashSetting: { default: false },
-    projectPath: {
-      default: '',
-    },
-    projectId: {
-      default: null,
-    },
-    protectedBranchesPath: {
-      default: '',
-    },
-    branchRulesPath: {
-      default: '',
-    },
-    branchesPath: {
-      default: '',
-    },
-    showStatusChecks: { default: false },
-    showApprovers: { default: false },
+    branchRulesPath: { default: '' },
+    branchesPath: { default: '' },
     canAdminProtectedBranches: { default: false },
+    canReadSquashOption: { default: false },
+    canUpdateSquashOption: { default: false },
+    projectId: { default: null },
+    projectPath: { default: '' },
+    protectedBranchesPath: { default: '' },
+    showApprovers: { default: false },
+    showStatusChecks: { default: false },
+    squashOptionsFeatureAvailable: { default: false },
   },
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
@@ -211,6 +203,12 @@ export default {
     isAllProtectedBranchesRule() {
       return this.branch === this.$options.i18n.allProtectedBranches;
     },
+    isBranchRule() {
+      return !this.isAllBranchesRule && !this.isAllProtectedBranchesRule;
+    },
+    isWildcardBranchRule() {
+      return this.isBranchRule && this.branch?.includes('*');
+    },
     modificationBlockedByPolicy() {
       return this.branchProtection?.modificationBlockedByPolicy ?? false;
     },
@@ -235,13 +233,17 @@ export default {
     showMergeRequestsSection() {
       return this.showApprovers || this.showSquashSetting;
     },
+    squashOptionsFeatureAvailableForRule() {
+      return (
+        this.isAllBranchesRule ||
+        (this.isBranchRule && !this.isWildcardBranchRule && this.squashOptionsFeatureAvailable)
+      );
+    },
     showSquashSetting() {
-      return !this.branch?.includes('*') && !this.isAllProtectedBranchesRule; // Squash settings are not available for wildcards or All protected branches
+      return this.canReadSquashOption && this.squashOptionsFeatureAvailableForRule;
     },
     showEditSquashSetting() {
-      return (
-        this.canAdminProtectedBranches && (this.allowEditSquashSetting || this.isAllBranchesRule)
-      );
+      return this.canUpdateSquashOption && this.squashOptionsFeatureAvailableForRule;
     },
     showDeleteRuleBtn() {
       return (
@@ -436,14 +438,27 @@ export default {
               id: this.branchRule.id,
               name,
               branchProtection: {
-                allowForcePush: this.allowForcePush,
+                // Under a push security policy the model forces allow_force_push
+                // to a synthetic false; echoing it back would persist that value
+                // over the branch's real stored setting. It is not editable while
+                // the policy applies, so omit it (mirrors pushAccessLevels below).
+                ...(!this.protectedFromPushBySecurityPolicy && {
+                  allowForcePush: this.allowForcePush,
+                }),
                 ...(this.branchProtection.codeOwnerApprovalRequired !== undefined && {
                   codeOwnerApprovalRequired: this.branchProtection.codeOwnerApprovalRequired,
                 }),
                 ...(includeAccessLevels && {
-                  pushAccessLevels: this.getAccessLevelInputFromEdges(
-                    this.branchProtection.pushAccessLevels?.edges || [],
-                  ),
+                  // When pushing is controlled by a security policy, the query
+                  // returns a synthetic "no one" push access level. Echoing it
+                  // back would be read as a real push-access change and blocked
+                  // by the policy, so omit push access levels here (they are not
+                  // editable while the policy applies).
+                  ...(!this.protectedFromPushBySecurityPolicy && {
+                    pushAccessLevels: this.getAccessLevelInputFromEdges(
+                      this.branchProtection.pushAccessLevels?.edges || [],
+                    ),
+                  }),
                   mergeAccessLevels: this.getAccessLevelInputFromEdges(
                     this.branchProtection.mergeAccessLevels?.edges || [],
                   ),
@@ -527,8 +542,10 @@ export default {
         :users="accessLevelsDrawerData.users"
         :groups="accessLevelsDrawerData.groups"
         :deploy-keys="accessLevelsDrawerData.deployKeys"
+        :member-roles="accessLevelsDrawerData.memberRoles"
         :is-loading="isRuleUpdating"
         :group-id="groupId"
+        :project-path="projectPath"
         :title="accessLevelsDrawerTitle"
         :is-push-access-levels="isAllowedToPushAndMergeDrawerOpen"
         @editRule="onEditAccessLevels"

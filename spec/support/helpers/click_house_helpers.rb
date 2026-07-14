@@ -49,10 +49,36 @@ module ClickHouseHelpers
           )
     end)
 
-    expect(result).to eq(true)
+    expect(result).to be(true)
   end
   # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/PerceivedComplexity
+
+  def insert_merge_requests_to_click_house(merge_requests_data, default_project: nil)
+    result = clickhouse_fixture(:merge_requests, merge_requests_data.map do |data|
+      project = data[:project] || default_project
+
+      {
+        id: data[:id],
+        iid: data[:id],
+        target_branch: data.fetch(:target_branch, 'main'),
+        source_branch: data.fetch(:source_branch, 'feature'),
+        title: 'Test MR',
+        description: '',
+        merge_jid: '',
+        target_project_id: project&.id || 0,
+        state_id: data.fetch(:state_id, MergeRequest.available_states[:opened]),
+        created_at: data[:created_at],
+        updated_at: data.fetch(:updated_at, data[:created_at]),
+        metric_merged_at: data[:metric_merged_at],
+        traversal_path: project&.project_namespace&.traversal_path(with_organization: true)&.to_s || '0/',
+        _siphon_replicated_at: data.fetch(:_siphon_replicated_at, data[:created_at]),
+        _siphon_deleted: data.fetch(:_siphon_deleted, false)
+      }
+    end)
+
+    expect(result).to be(true)
+  end
 
   def insert_ci_pipelines_to_click_house(pipelines)
     result = clickhouse_fixture(:ci_finished_pipelines, pipelines.map do |pipeline|
@@ -66,9 +92,35 @@ module ClickHouseHelpers
            )
     end)
 
-    expect(result).to eq(true)
+    expect(result).to be(true)
 
     insert_ci_pipelines_to_siphon(pipelines)
+  end
+
+  def insert_ci_builds_to_siphon(builds, replicated_at: Time.current, deleted: false)
+    result = clickhouse_fixture(:siphon_p_ci_builds, builds.map do |build|
+      project = build.project
+
+      {
+        id: build.id,
+        partition_id: build.try(:partition_id) || 100,
+        project_id: project&.id || 0,
+        commit_id: build.commit_id || build.pipeline_id,
+        status: build.status,
+        name: build.name,
+        stage_id: build.stage_id,
+        type: build.try(:type) || 'Ci::Build',
+        started_at: build.started_at,
+        finished_at: build.finished_at,
+        created_at: build.created_at,
+        updated_at: build.try(:updated_at) || build.created_at,
+        traversal_path: project&.project_namespace&.traversal_path(with_organization: true) || '0/',
+        _siphon_replicated_at: replicated_at,
+        _siphon_deleted: deleted
+      }
+    end)
+
+    expect(result).to be(true)
   end
 
   def insert_ci_pipelines_to_siphon(pipelines, replicated_at: Time.current, deleted: false)
@@ -98,7 +150,7 @@ module ClickHouseHelpers
       }
     end)
 
-    expect(result).to eq(true)
+    expect(result).to be(true)
   end
 
   def insert_ci_stages_to_siphon(stages, replicated_at: Time.current, deleted: false)
@@ -121,7 +173,7 @@ module ClickHouseHelpers
       }
     end)
 
-    expect(result).to eq(true)
+    expect(result).to be(true)
   end
 
   def self.default_timezone

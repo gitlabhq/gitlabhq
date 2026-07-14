@@ -38,24 +38,24 @@ RSpec.describe ImportCsv::PreprocessMilestonesService, feature_category: :import
     end
 
     context 'with csv that includes project milestones' do
-      let!(:project_milestone) { create(:milestone, project: project, title: '15.10') }
+      let_it_be(:project_milestone) { create(:milestone, project: project, title: '15.10') }
 
       it_behaves_like 'csv import',
         { is_success: false, milestone_errors: { missing: { header: 'Milestone', titles: ["10.1"] } } }
     end
 
     context 'with csv that includes milestones column' do
-      let!(:project_milestone) { create(:milestone, project: project, title: '15.10') }
+      let_it_be(:project_milestone) { create(:milestone, project: project, title: '15.10') }
 
       context 'when milestones exist in the importing projects group' do
-        let!(:group_milestone) { create(:milestone, group: group, title: '10.1') }
+        let_it_be(:group_milestone) { create(:milestone, group: group, title: '10.1') }
 
         it_behaves_like 'csv import', { is_success: true, milestone_errors: nil }
       end
 
       context 'when milestones exist in a subgroup of the importing projects group' do
         let_it_be(:subgroup) { create(:group, parent: group) }
-        let!(:group_milestone) { create(:milestone, group: subgroup, title: '10.1') }
+        let_it_be(:group_milestone) { create(:milestone, group: subgroup, title: '10.1') }
 
         it_behaves_like 'csv import',
           { is_success: false, milestone_errors: { missing: { header: 'Milestone', titles: ["10.1"] } } }
@@ -63,7 +63,7 @@ RSpec.describe ImportCsv::PreprocessMilestonesService, feature_category: :import
 
       context 'when milestones exist in a different project from the importing project' do
         let_it_be(:second_project) { create(:project, group: group) }
-        let!(:second_project_milestone) { create(:milestone, project: second_project, title: '10.1') }
+        let_it_be(:second_project_milestone) { create(:milestone, project: second_project, title: '10.1') }
 
         it_behaves_like 'csv import',
           { is_success: false, milestone_errors: { missing: { header: 'Milestone', titles: ["10.1"] } } }
@@ -72,14 +72,14 @@ RSpec.describe ImportCsv::PreprocessMilestonesService, feature_category: :import
       context 'when duplicate milestones exist in the projects group and parent group' do
         let_it_be(:sub_group) { create(:group, parent: group) }
         let_it_be(:project) { create(:project, group: sub_group) }
-        let!(:ancestor_group_milestone) do
+        let_it_be(:ancestor_group_milestone) do
           build(:milestone, group: group, title: '15.10').tap do |record|
             record.save!(validate: false)
           end
         end
 
-        let!(:ancestor_group_milestone_two) { create(:milestone, group: group, title: '10.1') }
-        let!(:group_milestone) do
+        let_it_be(:ancestor_group_milestone_two) { create(:milestone, group: group, title: '10.1') }
+        let_it_be(:group_milestone) do
           build(:milestone, group: sub_group, title: '10.1').tap do |record|
             record.save!(validate: false)
           end

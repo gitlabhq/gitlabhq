@@ -14,7 +14,7 @@ RSpec.describe GpgKeys::ValidateIntegrationsService, feature_category: :source_c
   end
 
   it 'returns true' do
-    expect(service.execute).to eq(true)
+    expect(service.execute).to be(true)
   end
 
   context 'when BeyondIdentity integration is not activated' do
@@ -23,7 +23,7 @@ RSpec.describe GpgKeys::ValidateIntegrationsService, feature_category: :source_c
     it 'return false' do
       expect(::Gitlab::BeyondIdentity::Client).not_to receive(:new)
 
-      expect(service.execute).to eq(true)
+      expect(service.execute).to be(true)
     end
   end
 
@@ -37,7 +37,7 @@ RSpec.describe GpgKeys::ValidateIntegrationsService, feature_category: :source_c
         )
       end
 
-      expect(service.execute).to eq(true)
+      expect(service.execute).to be(true)
       expect(gpg_key.externally_verified).to be_truthy
       expect(gpg_key.externally_verified_at).to be_present
     end
@@ -56,7 +56,7 @@ RSpec.describe GpgKeys::ValidateIntegrationsService, feature_category: :source_c
         let(:error_code) { 403 }
 
         it 'returns false and sets an error' do
-          expect(service.execute).to eq(false)
+          expect(service.execute).to be(false)
           expect(gpg_key.errors.full_messages).to eq(["BeyondIdentity: #{error_message}"])
           expect(gpg_key.externally_verified).to be_falsey
           expect(gpg_key.externally_verified_at).not_to be_present
@@ -68,7 +68,7 @@ RSpec.describe GpgKeys::ValidateIntegrationsService, feature_category: :source_c
         let(:error_code) { 404 }
 
         it 'returns true and does not set an error' do
-          expect(service.execute).to eq(true)
+          expect(service.execute).to be(true)
           expect(gpg_key.errors.full_messages).to eq([])
           expect(gpg_key.externally_verified).to be_falsey
         end

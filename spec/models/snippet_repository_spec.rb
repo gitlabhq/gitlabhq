@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe SnippetRepository, feature_category: :source_code_management do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   let(:snippet) { create(:personal_snippet, :repository, author: user) }
   let(:snippet_repository) { snippet.snippet_repository }
@@ -19,10 +19,10 @@ RSpec.describe SnippetRepository, feature_category: :source_code_management do
   # This is for the cells related sharding keys:
   #   snippet_project_id and snippet_organization_id
   describe 'sharding key validations' do
-    let_it_be(:organization, freeze: false) { create(:organization) }
-    let_it_be(:project, freeze: false) { create(:project, organization: organization) }
-    let_it_be(:personal_snippet, freeze: false) { create(:personal_snippet, organization: organization) }
-    let_it_be(:project_snippet, freeze: false) { create(:project_snippet, project: project) }
+    let_it_be_with_reload(:organization) { create(:organization) }
+    let_it_be_with_reload(:project) { create(:project, organization: organization) }
+    let_it_be_with_reload(:personal_snippet) { create(:personal_snippet, organization: organization) }
+    let_it_be_with_reload(:project_snippet) { create(:project_snippet, project: project) }
 
     describe 'validations' do
       context 'when both sharding keys are present' do
@@ -75,8 +75,8 @@ RSpec.describe SnippetRepository, feature_category: :source_code_management do
     end
 
     describe 'before_validation callbacks' do
-      let_it_be(:other_organization, freeze: false) { create(:organization) }
-      let_it_be(:other_project, freeze: false) { create(:project) }
+      let_it_be_with_reload(:other_organization) { create(:organization) }
+      let_it_be_with_reload(:other_project) { create(:project) }
 
       context 'for personal snippet' do
         it 'automatically assigns organization from snippet' do
@@ -137,7 +137,7 @@ RSpec.describe SnippetRepository, feature_category: :source_code_management do
   end
 
   it_behaves_like 'shardable scopes' do
-    let_it_be(:record_1, freeze: false) { create(:snippet_repository) }
+    let_it_be_with_reload(:record_1) { create(:snippet_repository) }
     let_it_be_with_reload(:record_2) { create(:snippet_repository) }
   end
 
@@ -160,7 +160,15 @@ RSpec.describe SnippetRepository, feature_category: :source_code_management do
     let(:update_file) { { previous_path: 'README', file_path: 'README', content: 'bar' } }
     let(:data) { [new_file, move_file, update_file] }
 
+    # `freeze: false` is kept here because this `let_it_be` subject is not an
+    # ActiveRecord record (it's a plain Hash/String/Array/Struct), so freezing
+    # gives no cross-example isolation benefit and `let_it_be_with_reload`/
+    # `refind` are no-ops on it. Keep as-is (see gitlab-org/gitlab#602925).
     let_it_be(:unnamed_snippet, freeze: false) { { file_path: '', content: 'dummy', action: :create } }
+    # `freeze: false` is kept here because this `let_it_be` subject is not an
+    # ActiveRecord record (it's a plain Hash/String/Array/Struct), so freezing
+    # gives no cross-example isolation benefit and `let_it_be_with_reload`/
+    # `refind` are no-ops on it. Keep as-is (see gitlab-org/gitlab#602925).
     let_it_be(:named_snippet, freeze: false) { { file_path: 'fee.txt', content: 'bar', action: :create } }
 
     it 'returns nil when files argument is empty' do
@@ -444,8 +452,8 @@ RSpec.describe SnippetRepository, feature_category: :source_code_management do
 
   context 'with loose foreign key on snippet_repositories.shard_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let_it_be(:parent, freeze: false) { Shard.find_or_create_by!(name: 'default') }
-      let_it_be(:model, freeze: false) { create(:snippet_repository, shard: parent) }
+      let_it_be_with_reload(:parent) { Shard.find_or_create_by!(name: 'default') }
+      let_it_be_with_reload(:model) { create(:snippet_repository, shard: parent) }
     end
   end
 end

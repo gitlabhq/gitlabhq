@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 subscription workItemNoteDeleted($noteableId: NoteableID) {
   workItemNoteDeleted(noteableId: $noteableId) {
     id

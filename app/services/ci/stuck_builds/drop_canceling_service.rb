@@ -5,7 +5,7 @@ module Ci
     class DropCancelingService
       include DropHelpers
 
-      TIMEOUT = 30.minutes
+      BUILD_CANCELING_OUTDATED_TIMEOUT = 30.minutes
 
       def execute
         Gitlab::AppLogger.info "#{self.class}: Cleaning canceling, timed-out builds"
@@ -18,8 +18,8 @@ module Ci
       def canceling_timed_out_builds
         Ci::Build
           .canceling
-          .created_at_before(TIMEOUT.ago)
-          .updated_at_before(TIMEOUT.ago)
+          .created_at_before(BUILD_CANCELING_OUTDATED_TIMEOUT.ago)
+          .updated_at_before(BUILD_CANCELING_OUTDATED_TIMEOUT.ago)
           .order(created_at: :asc, project_id: :asc) # rubocop:disable CodeReuse/ActiveRecord -- query optimization
       end
     end

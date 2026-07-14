@@ -47,6 +47,180 @@ RSpec.describe DiffPositionableNote, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#stringified_hash?' do
+    it 'returns true for a string-keyed Ruby Hash#inspect string' do
+      expect(diff_note.stringified_hash?('{"base_sha"=>"abc"}')).to be(true)
+    end
+
+    it 'returns true for a symbol-keyed Ruby Hash#inspect string' do
+      expect(diff_note.stringified_hash?('{:base_sha=>"abc"}')).to be(true)
+    end
+
+    it 'returns false for a normal YAML string' do
+      expect(diff_note.stringified_hash?("--- !ruby/object\n")).to be(false)
+    end
+
+    it 'returns false for nil' do
+      expect(diff_note.stringified_hash?(nil)).to be(false)
+    end
+  end
+
+  describe '#recover_stringified_position' do
+    let(:stringified_position) do
+      '{"base_sha"=>"abc123", "start_sha"=>"abc123", "head_sha"=>"def456", ' \
+        '"old_path"=>"README.md", "new_path"=>"README.md", ' \
+        '"position_type"=>"text", "old_line"=>nil, "new_line"=>3}'
+    end
+
+    it 'returns a Gitlab::Diff::Position for a valid stringified hash', :aggregate_failures do
+      result = diff_note.recover_stringified_position(stringified_position)
+
+      expect(result).to be_a(Gitlab::Diff::Position)
+      expect(result.base_sha).to eq('abc123')
+      expect(result.head_sha).to eq('def456')
+      expect(result.new_line).to eq(3)
+    end
+
+    it 'returns nil for a non-stringified-hash string' do
+      expect(diff_note.recover_stringified_position('not a hash')).to be_nil
+    end
+
+    it 'returns nil for nil' do
+      expect(diff_note.recover_stringified_position(nil)).to be_nil
+    end
+
+    context 'when recovery raises an unexpected error', :request_store do
+      before do
+        allow(Gitlab::Json).to receive(:safe_parse).and_raise(StandardError, 'boom')
+      end
+
+      it 'tracks the exception with the attribute and returns nil', :aggregate_failures do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(StandardError),
+          hash_including(note_id: diff_note.id, attribute: :position)
+        ).once
+
+        expect(diff_note.recover_stringified_position(stringified_position, :position)).to be_nil
+      end
+
+      it 'dedupes the tracked exception per note within a request' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).once
+
+        3.times { diff_note.recover_stringified_position(stringified_position, :position) }
+      end
+    end
+
+    context 'when a value contains the hash-rocket sequence' do
+      let(:stringified_position) do
+        '{"base_sha"=>"abc123", "start_sha"=>"abc123", "head_sha"=>"def456", ' \
+          '"old_path"=>"a=>b.rb", "new_path"=>"a=>b.rb", ' \
+          '"position_type"=>"text", "old_line"=>nil, "new_line"=>3}'
+      end
+
+      it 'preserves the value verbatim instead of corrupting it', :aggregate_failures do
+        result = diff_note.recover_stringified_position(stringified_position)
+
+        expect(result).to be_a(Gitlab::Diff::Position)
+        expect(result.old_path).to eq('a=>b.rb')
+        expect(result.new_path).to eq('a=>b.rb')
+      end
+    end
+
+    context 'when the top-level hash is symbol-keyed' do
+      let(:stringified_position) do
+        '{:base_sha=>"abc123", :start_sha=>"abc123", :head_sha=>"def456", ' \
+          ':old_path=>"README.md", :new_path=>"README.md", ' \
+          ':position_type=>"text", :old_line=>nil, :new_line=>3}'
+      end
+
+      it 'recovers the position', :aggregate_failures do
+        result = diff_note.recover_stringified_position(stringified_position)
+
+        expect(result).to be_a(Gitlab::Diff::Position)
+        expect(result.base_sha).to eq('abc123')
+        expect(result.head_sha).to eq('def456')
+        expect(result.new_line).to eq(3)
+      end
+    end
+
+    context 'when the hash has a string-keyed multi-line line_range' do
+      let(:stringified_position) do
+        '{"base_sha"=>"abc123", "start_sha"=>"abc123", "head_sha"=>"def456", ' \
+          '"old_path"=>"README.md", "new_path"=>"README.md", "position_type"=>"text", ' \
+          '"old_line"=>nil, "new_line"=>3, ' \
+          '"line_range"=>{"start"=>{"line_code"=>"abc_0_1", "type"=>"new", "new_line"=>1}, ' \
+          '"end"=>{"line_code"=>"abc_0_3", "type"=>"new", "new_line"=>3}}}'
+      end
+
+      it 'recovers the position with its line_range', :aggregate_failures do
+        result = diff_note.recover_stringified_position(stringified_position)
+
+        expect(result).to be_a(Gitlab::Diff::Position)
+        expect(result.line_range['start']['new_line']).to eq(1)
+        expect(result.line_range['end']['new_line']).to eq(3)
+      end
+    end
+
+    context 'when the hash has a symbol-keyed nested line_range' do
+      let(:stringified_position) do
+        '{"base_sha"=>"abc123", "start_sha"=>"abc123", "head_sha"=>"def456", ' \
+          '"old_path"=>"README.md", "new_path"=>"README.md", "position_type"=>"text", ' \
+          '"old_line"=>nil, "new_line"=>3, ' \
+          '"line_range"=>{:start=>{:line_code=>"abc_0_1", :type=>"new", :new_line=>1}, ' \
+          ':end=>{:line_code=>"abc_0_3", :type=>"new", :new_line=>3}}}'
+      end
+
+      it 'recovers the position with its line_range', :aggregate_failures do
+        result = diff_note.recover_stringified_position(stringified_position)
+
+        expect(result).to be_a(Gitlab::Diff::Position)
+        expect(result.line_range['start']['new_line']).to eq(1)
+        expect(result.line_range['end']['new_line']).to eq(3)
+      end
+    end
+  end
+
+  describe 'position reader recovery from stringified-hash columns', :request_store do
+    let(:stringified_position) do
+      '{"base_sha"=>"abc123", "start_sha"=>"abc123", "head_sha"=>"def456", ' \
+        '"old_path"=>"README.md", "new_path"=>"README.md", ' \
+        '"position_type"=>"text", "old_line"=>nil, "new_line"=>3}'
+    end
+
+    %i[original_position position change_position].each do |attribute|
+      context "when #{attribute} column contains a stringified Ruby Hash" do
+        before do
+          Note.connection.execute(
+            Note.sanitize_sql_array(
+              ["UPDATE notes SET #{attribute} = ? WHERE id = ?", stringified_position, diff_note.id]
+            )
+          )
+          diff_note.reload
+        end
+
+        it 'returns a Gitlab::Diff::Position without raising', :aggregate_failures do
+          allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+          result = diff_note.public_send(attribute)
+
+          expect(result).to be_a(Gitlab::Diff::Position)
+          expect(result.base_sha).to eq('abc123')
+          expect(result.new_line).to eq(3)
+        end
+
+        it 'does not persist the recovered value' do
+          allow(Gitlab::ErrorTracking).to receive(:track_exception)
+          diff_note.public_send(attribute)
+
+          raw = Note.connection.select_value(
+            "SELECT #{attribute} FROM notes WHERE id = #{diff_note.id}"
+          )
+          expect(raw).to eq(stringified_position)
+        end
+      end
+    end
+  end
+
   describe '#active?' do
     context 'when position is nil (e.g. corrupt YAML in the column)' do
       before do

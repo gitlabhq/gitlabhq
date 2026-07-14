@@ -40,7 +40,9 @@ module Sidebars
         def serialize_as_menu_item_args
           super.merge({
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
-            item_id: :project_wiki
+            item_id: :project_wiki,
+            description: _('Create and manage documentation'),
+            library_icon: 'book'
           })
         end
       end

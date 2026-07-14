@@ -381,12 +381,12 @@ export default {
     <div
       ref="viewsWrapper"
       v-gl-resize-observer="handleResize"
-      class="gl-border-b gl-flex gl-w-full gl-min-w-0 gl-flex-nowrap sm:gl-border-none"
+      class="gl-border-b gl-flex gl-w-full gl-min-w-0 gl-flex-nowrap gl-pt-2 sm:gl-border-none"
     >
       <button
         ref="defaultButton"
         category="tertiary"
-        class="default-selector gl-h-[50px] !gl-whitespace-nowrap gl-border-none gl-bg-transparent gl-px-4 hover:gl-bg-gray-50 focus:gl-bg-gray-50"
+        class="default-selector gl-h-8 !gl-whitespace-nowrap gl-border-none gl-bg-transparent gl-px-4 hover:gl-bg-gray-50 focus:gl-bg-gray-50"
         :class="{ 'default-selector-active gl-font-bold': isDefaultButtonActive }"
         data-testid="saved-views-default-view-selector"
         @click="$emit('navigate-to-all-items')"

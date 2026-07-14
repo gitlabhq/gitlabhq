@@ -1,0 +1,9 @@
+---
+name: read_offline_export
+description: Grants the ability to read offline transfer exports
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_offline_export

@@ -37,6 +37,7 @@ export default {
       required: true,
     },
   },
+  emits: ['onLabelRemove'],
   computed: {
     sortedSelectedLabels() {
       return sortBy(this.selectedLabels, (label) => isScopedLabel(label));

@@ -23,6 +23,11 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
       .where(id: group_integration.id..integration.id)
   end
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
   let_it_be(:group_integration, freeze: false) { create(:jira_integration, :group, group: group, url: 'http://group.jira.com') }
@@ -158,6 +163,11 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
 
   context 'with a GitLab for Slack app integration' do
     let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:project, freeze: false) { create(:project, group: subgroup) }
 
     let_it_be(:group_integration, freeze: false) do
@@ -377,6 +387,11 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
     end
 
     describe 'propagation from instance integration' do
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:instance_integration, freeze: false) { create(:jira_integration, :instance) }
 
       let_it_be(:integration, freeze: false) do

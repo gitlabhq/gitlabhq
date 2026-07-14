@@ -20,6 +20,7 @@ export default {
       },
     },
   },
+  emits: ['timer-expired'],
 
   data() {
     return {

@@ -14,9 +14,9 @@ describe('GLQL rendering inside the real Duo Chat markdown wrapper', () => {
   stubCrypto();
 
   beforeEach(async () => {
-    document.body.innerHTML = await renderDuoChatMarkdownPreview(
-      '```glql\nassignee = currentUser()\n```',
-    );
+    const result = await renderDuoChatMarkdownPreview('```glql\nassignee = currentUser()\n```');
+
+    document.body.innerHTML = result.html;
   });
 
   it('emits a glql code block that render_gfm can detect', () => {

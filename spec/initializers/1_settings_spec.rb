@@ -280,6 +280,37 @@ RSpec.describe '1_settings', feature_category: :settings do
     end
   end
 
+  describe 'IAM Data Access Service configuration' do
+    context 'with default configuration' do
+      before do
+        stub_config(iam_data_access_service: { grpc: {} })
+        load_settings
+      end
+
+      it { expect(Settings.iam_data_access_service.secret_file).to be_nil }
+      it { expect(Settings.iam_data_access_service.grpc.host).to eq('localhost') }
+      it { expect(Settings.iam_data_access_service.grpc.port).to eq(5005) }
+    end
+
+    context 'with custom configuration' do
+      before do
+        stub_config(iam_data_access_service: {
+          secret_file: '/etc/gitlab/iam-data-access/.gitlab_iam_data_access_secret',
+          grpc: { host: 'iam.example.com', port: 443 }
+        })
+        load_settings
+      end
+
+      it 'reads secret_file from config' do
+        expect(Settings.iam_data_access_service.secret_file)
+          .to eq('/etc/gitlab/iam-data-access/.gitlab_iam_data_access_secret')
+      end
+
+      it { expect(Settings.iam_data_access_service.grpc.host).to eq('iam.example.com') }
+      it { expect(Settings.iam_data_access_service.grpc.port).to eq(443) }
+    end
+  end
+
   describe 'cron jobs', unless: Gitlab.ee? do
     around do |example|
       Gitlab::SidekiqConfig::CronJobs.reset!
@@ -325,6 +356,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         ci_schedule_delete_objects_worker
         ci_schedule_old_pipelines_removal_cron_worker
         ci_schedule_unlock_pipelines_in_queue_worker
+        ci_stuck_pipelines_process_worker
         cleanup_container_registry_worker
         cleanup_dangling_debian_package_files_worker
         cleanup_dependency_proxy_worker
@@ -422,6 +454,37 @@ RSpec.describe '1_settings', feature_category: :settings do
 
       it 'is set from the environment variable' do
         expect(Settings.cron_jobs['poll_interval']).to eq(30)
+      end
+    end
+  end
+
+  describe 'webrick listener addresses' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:exporter) do
+      %w[sidekiq_exporter sidekiq_health_checks web_exporter]
+    end
+
+    with_them do
+      it 'defaults to localhost when not configured' do
+        stub_config(monitoring: { exporter => {} })
+        load_settings
+
+        expect(Settings.monitoring[exporter]['address']).to eq('localhost')
+      end
+
+      it 'preserves an explicit nil address' do
+        stub_config(monitoring: { exporter => { address: nil } })
+        load_settings
+
+        expect(Settings.monitoring[exporter]['address']).to be_nil
+      end
+
+      it 'uses the configured value' do
+        stub_config(monitoring: { exporter => { address: '0.0.0.0' } })
+        load_settings
+
+        expect(Settings.monitoring[exporter]['address']).to eq('0.0.0.0')
       end
     end
   end

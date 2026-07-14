@@ -33,9 +33,17 @@ RSpec.describe Gitlab::BitbucketServerImport::ImportPullRequestWorker, feature_c
 
       it 'logs stage start and finish' do
         expect(Gitlab::BitbucketServerImport::Logger)
-          .to receive(:info).with(hash_including(message: 'importer started', project_id: project.id))
+          .to receive(:info).with(hash_including(
+            message: 'importer started',
+            project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          ))
         expect(Gitlab::BitbucketServerImport::Logger)
-          .to receive(:info).with(hash_including(message: 'importer finished', project_id: project.id))
+          .to receive(:info).with(hash_including(
+            message: 'importer finished',
+            project_id: project.id,
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          ))
 
         worker.perform(project.id, {}, job_waiter_key)
       end

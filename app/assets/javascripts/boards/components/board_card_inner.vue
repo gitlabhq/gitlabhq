@@ -18,6 +18,7 @@ import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
 
 export default {
+  name: 'BoardCardInner',
   components: {
     GlLabel,
     GlLoadingIcon,
@@ -48,7 +49,6 @@ export default {
     'rootPath',
     'scopedLabelsAvailable',
     'isEpicBoard',
-    'issuableType',
     'isGroupBoard',
     'disabled',
   ],
@@ -73,6 +73,7 @@ export default {
       default: false,
     },
   },
+  emits: ['setFilters', 'view-all-sessions'],
   data() {
     return {
       limitBeforeCounter: 2,
@@ -291,7 +292,7 @@ export default {
           variant="warning"
         />
         <a
-          :href="item.path || item.webUrl || ''"
+          :href="item.path || item.webPath || ''"
           :title="item.title"
           :class="{ '!gl-text-disabled': isLoading }"
           class="js-no-trigger-title gl-text-default hover:gl-text-default"
@@ -447,7 +448,7 @@ export default {
           :blocked-by-count="blockedByCount"
           :work-item-full-path="workItemFullPath"
           :work-item-iid="item.iid"
-          :work-item-web-url="item.webUrl"
+          :work-item-web-url="item.webPath"
           :target-id="targetId"
         />
         <div class="gl-max-w-20">

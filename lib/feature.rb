@@ -333,6 +333,10 @@ module Feature
     end
 
     def log_feature_flag_states?(key)
+      # Short-circuit while :feature_flag_state_logs is mid-resolution to avoid a recursive
+      # cycle through the DB load balancer's own flag checks.
+      return false if recursion_stack.include?(:feature_flag_state_logs)
+
       Feature::Definition.log_states?(key)
     end
 
@@ -356,6 +360,12 @@ module Feature
                  .map { |v| v.sub("Group:", "") }
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    # Geo needs this to expire the same L2 store that Flipper reads from,
+    # which is not necessarily the same Redis instance as Rails.cache.
+    def l2_cache_backend
+      ::Gitlab::Redis::FeatureFlag.cache_store
+    end
 
     private
 
@@ -412,7 +422,7 @@ module Feature
 
       return unless database_exists?
 
-      flag_stack = ::Thread.current[:feature_flag_recursion_check] || []
+      flag_stack = recursion_stack
       Thread.current[:feature_flag_recursion_check] = flag_stack
 
       # Prevent more than 10 levels of recursion. This limit was chosen as a fairly
@@ -433,6 +443,10 @@ module Feature
     def pop_recursion_stack
       flag_stack = Thread.current[:feature_flag_recursion_check]
       flag_stack.pop if flag_stack
+    end
+
+    def recursion_stack
+      ::Thread.current[:feature_flag_recursion_check] || []
     end
 
     def flipper
@@ -530,10 +544,6 @@ module Feature
       Gitlab::ProcessMemoryCache.cache_backend
     end
 
-    def l2_cache_backend
-      ::Gitlab::Redis::FeatureFlag.cache_store
-    end
-
     def log(key:, action:, **extra)
       extra ||= {}
       extra = extra.transform_keys { |k| "extra.#{k}" }
@@ -611,11 +621,11 @@ module Feature
     end
 
     def gate_specified?
-      %i[user project group feature_group namespace repository runner endpoint].any? { |key| params.key?(key) }
+      %i[user project group feature_group namespace organization repository runner endpoint].any? { |key| params.key?(key) }
     end
 
     def targets
-      [feature_group, users, projects, groups, namespaces, repositories, runners, endpoints].flatten.compact
+      [feature_group, users, projects, groups, namespaces, organizations, repositories, runners, endpoints].flatten.compact
     end
 
     private
@@ -648,6 +658,16 @@ module Feature
 
     def namespaces
       find_targets(:namespace) { |arg| Namespace.without_project_namespaces.find_by_full_path(arg) }
+    end
+
+    def organizations
+      find_targets(:organization) do |arg|
+        if arg.match?(/\A\d+\z/)
+          Organizations::Organization.find_by_id(arg)
+        else
+          Organizations::Organization.find_by_path(arg)
+        end
+      end
     end
 
     def repositories

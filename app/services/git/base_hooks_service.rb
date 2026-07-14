@@ -72,7 +72,7 @@ module Git
     def execute_project_hooks
       return unless params.fetch(:execute_project_hooks, true)
 
-      # Creating push_data invokes one CommitDelta RPC per commit. Only
+      # Creating push_data performs a batched changed-paths lookup. Only
       # build this data if we actually need it.
       project.execute_hooks(push_data, hook_name) if project.has_active_hooks?(hook_name)
 

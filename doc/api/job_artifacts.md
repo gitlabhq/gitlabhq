@@ -62,7 +62,7 @@ artifact_download:
 
 {{< history >}}
 
-- `search_recent_successful_pipelines` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/515864) in GitLab 18.7 [with a flag](../administration/feature_flags/_index.md) named `ci_search_recent_successful_pipelines`. Disabled by default.
+- `search_recent_successful_pipelines` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/515864) in GitLab 18.7 [with a feature flag](../administration/feature_flags/_index.md) named `ci_search_recent_successful_pipelines`. Disabled by default.
 - Feature flag `ci_search_recent_successful_pipelines` removed in GitLab 18.10
 
 {{< /history >}}
@@ -267,7 +267,7 @@ list_artifacts:
 
 {{< history >}}
 
-- `search_recent_successful_pipelines` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/515864) in GitLab 18.9 [with a flag](../administration/feature_flags/_index.md) named `ci_search_recent_successful_pipelines`. Disabled by default.
+- `search_recent_successful_pipelines` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/515864) in GitLab 18.9 [with a feature flag](../administration/feature_flags/_index.md) named `ci_search_recent_successful_pipelines`. Disabled by default.
 - Feature flag `ci_search_recent_successful_pipelines` removed in GitLab 18.10
 
 {{< /history >}}

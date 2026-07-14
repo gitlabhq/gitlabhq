@@ -91,6 +91,7 @@ export default {
       default: () => [TOKEN_TYPE_AUTHOR, TOKEN_TYPE_ASSIGNEE],
     },
   },
+  emits: ['error-alert-dismissed', 'filters-changed', 'page-changed', 'tabs-changed'],
   data() {
     return {
       searchTerm: this.textQuery,

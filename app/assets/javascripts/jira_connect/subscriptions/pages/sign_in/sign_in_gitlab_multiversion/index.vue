@@ -1,6 +1,5 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapMutations } from 'vuex';
+import { mapActions } from 'pinia';
 import { GlButton } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
@@ -12,7 +11,7 @@ import {
   I18N_UPDATE_INSTALLATION_ERROR_MESSAGE,
   FAILED_TO_UPDATE_DOC_LINK,
 } from '~/jira_connect/subscriptions/constants';
-import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
+import { useJiraConnectSubscriptions } from '~/jira_connect/subscriptions/store';
 
 import SignInOauthButton from '../../../components/sign_in_oauth_button.vue';
 import VersionSelectForm from './version_select_form.vue';
@@ -24,6 +23,7 @@ export default {
     SignInOauthButton,
     VersionSelectForm,
   },
+  emits: ['error', 'sign-in-oauth'],
   data() {
     return {
       gitlabBasePath: null,
@@ -42,9 +42,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations({
-      setAlert: SET_ALERT,
-    }),
+    ...mapActions(useJiraConnectSubscriptions, ['setAlert']),
     resetGitlabBasePath() {
       this.gitlabBasePath = null;
       setApiBaseURL();

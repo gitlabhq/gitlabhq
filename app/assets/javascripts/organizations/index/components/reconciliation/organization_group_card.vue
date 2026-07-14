@@ -1,7 +1,14 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/constants';
+import {
+  VISIBILITY_TYPE_ICON,
+  VISIBILITY_LEVELS_STRING_TO_INTEGER,
+  VISIBILITY_LEVEL_PRIVATE_STRING,
+  VISIBILITY_LEVEL_INTERNAL_STRING,
+  GROUP_VISIBILITY_TYPE,
+} from '~/visibility_level/constants';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
+import { s__ } from '~/locale';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
 
 export default {
@@ -18,13 +25,56 @@ export default {
       type: Object,
       required: true,
     },
+    organizationVisibility: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
+    visibility() {
+      if (this.organizationVisibility === null) {
+        return this.group.visibility;
+      }
+
+      const visibilityInteger = VISIBILITY_LEVELS_STRING_TO_INTEGER[this.group.visibility];
+      const organizationVisibilityInteger =
+        VISIBILITY_LEVELS_STRING_TO_INTEGER[this.organizationVisibility];
+
+      if (visibilityInteger > organizationVisibilityInteger) {
+        return this.organizationVisibility;
+      }
+
+      return this.group.visibility;
+    },
     visibilityIcon() {
-      return VISIBILITY_TYPE_ICON[this.group.visibility];
+      return VISIBILITY_TYPE_ICON[this.visibility];
     },
     visibilityTooltip() {
-      return GROUP_VISIBILITY_TYPE[this.group.visibility];
+      return GROUP_VISIBILITY_TYPE[this.visibility];
+    },
+    hasVisibilityChanged() {
+      return this.visibility !== this.group.visibility;
+    },
+    visibilityChangedTooltip() {
+      if (!this.hasVisibilityChanged) {
+        return '';
+      }
+
+      switch (this.visibility) {
+        case VISIBILITY_LEVEL_PRIVATE_STRING:
+          return s__(
+            'Organization|The visibility of this group will be changed to private because the Organization is private.',
+          );
+
+        case VISIBILITY_LEVEL_INTERNAL_STRING:
+          return s__(
+            'Organization|The visibility of this group will be changed to internal because the Organization is internal.',
+          );
+
+        default:
+          return '';
+      }
     },
   },
   methods: {
@@ -45,6 +95,13 @@ export default {
           class="gl-ml-2"
           variant="subtle"
           data-testid="group-visibility"
+        /><gl-icon
+          v-if="hasVisibilityChanged"
+          v-gl-tooltip="visibilityChangedTooltip"
+          name="warning-solid"
+          class="gl-ml-2"
+          variant="warning"
+          data-testid="visibility-warning"
         />
       </div>
     </div>

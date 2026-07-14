@@ -1,5 +1,4 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
@@ -10,9 +9,6 @@ const NEWLINE_CHAR = '&#x000A;';
 export default {
   name: 'CommitListItemDescription',
   directives: { SafeHtml },
-  components: {
-    GlLoadingIcon,
-  },
   inject: ['projectFullPath'],
   props: {
     commitSha: {
@@ -20,6 +16,7 @@ export default {
       required: true,
     },
   },
+  emits: ['loaded'],
   data() {
     return { descriptionHtml: null };
   },
@@ -31,6 +28,10 @@ export default {
           projectPath: this.projectFullPath,
           ref: this.commitSha,
         };
+      },
+      // Let the parent gate its open animation until the description is ready.
+      result() {
+        this.$emit('loaded');
       },
       update(data) {
         let { descriptionHtml } = data.project?.repository?.commit || {};
@@ -44,6 +45,8 @@ export default {
         return descriptionHtml;
       },
       error(error) {
+        // Still signal the parent so the row can open even when loading failed.
+        this.$emit('loaded');
         createAlert({
           message:
             error.message ||
@@ -56,11 +59,6 @@ export default {
       },
     },
   },
-  computed: {
-    isLoading() {
-      return this.$apollo.queries.descriptionHtml.loading;
-    },
-  },
   safeHtmlConfig: {
     ADD_TAGS: ['gl-emoji'],
   },
@@ -68,10 +66,8 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="isLoading" />
-
   <pre
-    v-else-if="descriptionHtml"
+    v-if="descriptionHtml"
     v-safe-html:[$options.safeHtmlConfig]="descriptionHtml"
     class="gl-mb-0 gl-border-none"
   ></pre>

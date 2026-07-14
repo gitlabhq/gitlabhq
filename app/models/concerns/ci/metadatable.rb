@@ -2,26 +2,15 @@
 
 module Ci
   ##
-  # This module implements methods that need to read and write
-  # metadata for CI/CD entities.
+  # This module implements methods that expose CI/CD processable configuration.
   #
   module Metadatable
     extend ActiveSupport::Concern
     include Gitlab::Utils::StrongMemoize
 
     included do
-      has_one :metadata,
-        ->(build) { where(partition_id: build.partition_id) },
-        class_name: 'Ci::BuildMetadata',
-        foreign_key: :build_id,
-        partition_foreign_key: :partition_id,
-        inverse_of: :build,
-        autosave: true
-
-      accepts_nested_attributes_for :metadata
-
-      scope :with_project_and_metadata, -> do
-        preload(:project, :metadata, :job_definition)
+      scope :with_project_and_job_definition, -> do
+        preload(:project, :job_definition)
       end
 
       def self.any_with_exposed_artifacts?
@@ -29,18 +18,12 @@ module Ci
 
         includes(:job_definition).each_batch do |batch|
           # We only load what we need for `has_exposed_artifacts?`
-          records = batch.select(:id, :partition_id, :project_id, :options).to_a
+          records = batch.select(:id, :partition_id, :project_id).to_a
 
           ActiveRecord::Associations::Preloader.new(
             records: records,
             associations: :job_artifacts_metadata,
             scope: Ci::JobArtifact.select(:job_id, :partition_id, :exposed_as)
-          ).call
-
-          ActiveRecord::Associations::Preloader.new(
-            records: records,
-            associations: :metadata,
-            scope: Ci::BuildMetadata.select(:build_id, :partition_id, :config_options)
           ).call
 
           next unless records.any?(&:has_exposed_artifacts?)
@@ -53,7 +36,7 @@ module Ci
       end
 
       def self.select_with_exposed_artifacts
-        includes(:metadata, :job_definition, :job_artifacts_metadata, :project).select(&:has_exposed_artifacts?)
+        includes(:job_definition, :job_artifacts_metadata, :project).select(&:has_exposed_artifacts?)
       end
     end
 
@@ -67,31 +50,26 @@ module Ci
 
     def degenerate!
       self.class.transaction do
-        self.update!(options: nil, yaml_variables: nil)
         self.needs.all.delete_all
-        self.metadata&.destroy
         self.job_definition_instance&.destroy
         yield if block_given?
       end
     end
 
     def options
-      read_metadata_attribute(:options, :config_options, :options, {})
+      read_job_definition_attribute(:options, {})
     end
 
     def yaml_variables
-      read_metadata_attribute(:yaml_variables, :config_variables, :yaml_variables, [])
+      read_job_definition_attribute(:yaml_variables, [])
     end
 
     def interruptible
-      return job_definition.interruptible if job_definition
-      return temp_job_definition.interruptible if temp_job_definition
-
-      metadata&.read_attribute(:interruptible)
+      read_job_definition_attribute(:interruptible, false)
     end
 
     def id_tokens
-      read_metadata_attribute(nil, :id_tokens, :id_tokens, {}).deep_stringify_keys
+      read_job_definition_attribute(:id_tokens, {}).deep_stringify_keys
     end
 
     def id_tokens?
@@ -100,9 +78,8 @@ module Ci
 
     def debug_trace_enabled?
       return debug_trace_enabled unless debug_trace_enabled.nil?
-      return true if degenerated?
 
-      !!metadata&.debug_trace_enabled?
+      degenerated?
     end
 
     def enable_debug_trace!
@@ -110,11 +87,11 @@ module Ci
     end
 
     def timeout_human_readable_value
-      timeout_human_readable || metadata&.timeout_human_readable
+      timeout_human_readable
     end
 
     def timeout_value
-      timeout || metadata&.timeout
+      timeout
     end
 
     # This method is called from within a Ci::Build state transition;
@@ -129,9 +106,8 @@ module Ci
       valid?
     end
 
-    # metadata has `unknown_timeout_source` as default
     def timeout_source_value
-      timeout_source || metadata&.timeout_source || 'unknown_timeout_source'
+      timeout_source || 'unknown_timeout_source'
     end
 
     def artifacts_exposed_as
@@ -151,32 +127,12 @@ module Ci
       read_attribute(:scoped_user_id) || options[:scoped_user_id]
     end
 
-    def exit_code
-      read_attribute(:exit_code) || metadata&.exit_code
-    end
-
     def exit_code=(value)
       return unless value
 
       safe_value = value.to_i.clamp(0, Gitlab::Database::MAX_SMALLINT_VALUE)
 
       write_attribute(:exit_code, safe_value)
-    end
-
-    # Should be removed when the column is dropped from p_ci_builds
-    # allows deleting data for `degenerate!`
-    def options=(value)
-      raise ActiveRecord::ReadonlyAttributeError, 'This data is read only' unless value.nil?
-
-      super
-    end
-
-    # Should be removed when the column is dropped from p_ci_builds
-    # allows deleting data for `degenerate!`
-    def yaml_variables=(value)
-      raise ActiveRecord::ReadonlyAttributeError, 'This data is read only' unless value.nil?
-
-      super
     end
 
     def interruptible=(_value)
@@ -193,18 +149,16 @@ module Ci
 
     private
 
-    def read_metadata_attribute(legacy_key, metadata_key, job_definition_key, default_value = nil)
-      result = read_attribute(legacy_key) if legacy_key
-      return result if result
+    def read_job_definition_attribute(key, default_value = nil)
+      result =
+        if key.in?(::Ci::JobDefinition::NORMALIZED_DATA_COLUMNS)
+          [job_definition&.read_attribute(key), temp_job_definition&.read_attribute(key)].find { |value| !value.nil? }
+        else
+          [job_definition&.config&.dig(key), temp_job_definition&.config&.dig(key)].find { |value| !value.nil? }
+        end
 
-      result = job_definition&.config&.dig(job_definition_key) || temp_job_definition&.config&.dig(job_definition_key)
-      return result if result
-
-      # New builds are created with a `temp_job_definition`, so we know it's not stored in metadata.
-      # We return from this point because the `metadata` lookup raises N+1 queries in `after_commit` callbacks.
-      return default_value if temp_job_definition
-
-      metadata&.read_attribute(metadata_key) || default_value
+      # Only nil falls back; false is a valid value for normalized columns.
+      result.nil? ? default_value : result
     end
   end
 end

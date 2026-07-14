@@ -1,5 +1,6 @@
 #import "ee_else_ce/work_items/graphql/notes/work_item_note.fragment.graphql"
 
+# @feature_category: team_planning
 mutation toggleWorkItemNoteResolveDiscussion($id: DiscussionID!, $resolve: Boolean!) {
   discussionToggleResolve(input: { id: $id, resolve: $resolve }) {
     discussion {

@@ -73,3 +73,15 @@ locks:
     warning_days: 7
     merge_buffer: 0
     block_level: only_pdm
+  - start_date: "2026-06-27T01:00:00Z"
+    end_date: "2026-06-30T15:00:00Z"
+    details: "Upgrading Patroni clusters from PostgreSQL 17 to PostgreSQL 18 (SEC only). This lock is in lieu of a Hard PCL."
+    change_request_issue_url: "https://gitlab.com/gitlab-com/gl-infra/production/-/work_items/22363"
+    warning_days: 5
+    merge_buffer: 0
+  - start_date: "2026-07-11T11:00:00Z"
+    end_date: "2026-07-11T23:30:00Z"
+    details: "Upgrading Patroni CI clusters from PostgreSQL 17 to PostgreSQL 18 (CI only). This lock is in lieu of a Hard PCL."
+    change_request_issue_url: "https://gitlab.com/gitlab-com/gl-infra/production/-/work_items/22444"
+    warning_days: 5
+    merge_buffer: 2

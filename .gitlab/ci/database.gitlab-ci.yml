@@ -126,6 +126,7 @@ db:migrate:multi-version-upgrade:
       apt-get update -qq && apt-get install -y -qq postgresql-client
       psql --output /dev/null -v "ON_ERROR_STOP=1" -h postgres -U postgres -d gitlabhq_test < gitlabhq_production
       bundle exec rake gitlab:db:configure
+      bundle exec rake gitlab:db:execute_batched_migrations
 
 # Validate PG version supported by GitLab
 db:migrate:multi-version-upgrade-pg18:
@@ -150,7 +151,6 @@ db:check-schema:
     - .rails:rules:db:check-schema
   script:
     - bundle exec rake db:drop db:create db:migrate
-    - scripts/validate_migration_timestamps
     - scripts/validate_migration_checksum
 
 db:check-migrations:
@@ -160,6 +160,7 @@ db:check-migrations:
     - .rails:rules:ee-and-foss-mr-with-migration
   script:
     - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
+    - scripts/validate_migration_timestamps
     - scripts/validate_migration_schema
 
 db:check-migrations-single-db:

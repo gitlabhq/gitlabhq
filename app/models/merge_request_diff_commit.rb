@@ -59,26 +59,22 @@ class MergeRequestDiffCommit < ApplicationRecord
   # cf. https://gitlab.com/gitlab-org/gitlab/issues/207989 for progress
   def self.create_bulk(merge_request_diff_id, commits, project, skip_commit_data: false)
     organization_id = project.organization_id
-    partition_enabled = Feature.enabled?(:merge_request_diff_commits_partition, project)
     commit_hashes, user_triples = prepare_commits_for_bulk_insert(commits, organization_id)
     users = MergeRequest::DiffCommitUser.bulk_find_or_create(user_triples)
 
     rows = commit_hashes.map.with_index do |commit_hash, index|
       raw_sha = commit_hash.delete(:id)
-      trailers = commit_hash.fetch(:trailers, {})
 
       author = users[[commit_hash[:author_name], commit_hash[:author_email], organization_id]]
       committer = users[[commit_hash[:committer_name], commit_hash[:committer_email], organization_id]]
 
-      # These fields are only used to determine the author/committer IDs, we
-      # don't store them in the DB.
-      #
-      # Trailers are stored in the DB here in order to allow changelog parsing.
-      # Rather than add an additional column for :extended_trailers, we're instead
-      # ignoring it for now until we deprecate the :trailers field and replace it with
-      # the new functionality.
+      # Author/committer names and emails are only used to determine the IDs;
+      # they are not stored on the diff_commits row. Trailers and
+      # extended_trailers are also dropped here - trailers was not migrated to
+      # the partitioned diff_commits table or to merge_request_commits_metadata,
+      # so we stop writing it in preparation for the table swap.
       commit_hash = commit_hash
-        .except(:author_name, :author_email, :committer_name, :committer_email, :extended_trailers)
+        .except(:author_name, :author_email, :committer_name, :committer_email, :extended_trailers, :trailers)
 
       commit_hash = commit_hash.merge(
         commit_author_id: author.id,
@@ -87,15 +83,14 @@ class MergeRequestDiffCommit < ApplicationRecord
         relative_order: index,
         sha: Gitlab::Database::ShaAttribute.serialize(raw_sha),
         authored_date: Gitlab::Database.sanitize_timestamp(commit_hash[:authored_date]),
-        committed_date: Gitlab::Database.sanitize_timestamp(commit_hash[:committed_date]),
-        trailers: Gitlab::Json.dump(trailers)
+        committed_date: Gitlab::Database.sanitize_timestamp(commit_hash[:committed_date])
       )
 
       # Need to add `raw_sha` to commit_hash as we will use that when
       # inserting the `sha` in `merge_request_commits_metadata` table.
       commit_hash[:raw_sha] = raw_sha
 
-      commit_hash[:project_id] = project.id if partition_enabled
+      commit_hash[:project_id] = project.id
       commit_hash = commit_hash.merge(message: '') if skip_commit_data
 
       commit_hash
@@ -131,7 +126,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   def self.oldest_merge_request_id_per_commit(project_id, shas)
     # This method is defined here and not on MergeRequest, otherwise the SHA
     # values used in the WHERE below won't be encoded correctly.
-    relation = select(['merge_request_diff_commits.sha AS sha', 'min(merge_requests.id) AS merge_request_id'])
+    select(['merge_request_diff_commits.sha AS sha', 'min(merge_requests.id) AS merge_request_id'])
       .joins(:merge_request_diff)
       .joins(
         'INNER JOIN merge_requests ' \
@@ -145,42 +140,26 @@ class MergeRequestDiffCommit < ApplicationRecord
         }
       )
       .group(:sha)
-
-    relation = relation.where(project_id: project_id) if read_new_commits_table?(project_id)
-
-    relation
   end
 
-  def self.commit_shas_from_metadata(project_id:, limit:, partition_enabled: false)
+  def self.commit_shas_from_metadata(project_id:, limit:)
+    return commit_shas_from_new_table(project_id: project_id, limit: limit) if read_new_commits_table?(project_id)
+
     # Until `merge_request_commits_metadata` records are backfilled, SHAs data may be in found in either table
-    metadata_join_sql =
-      if Feature.enabled?(:commit_shas_metadata_lateral_join, Feature.current_request)
-        # LATERAL with LIMIT 1 fences the subquery against pull-up so the planner does a per-row primary key
-        # lookup (nested loop) instead of a hash join that scans every metadata row for the project.
-        <<~SQL.squish
-          LEFT JOIN LATERAL (
-            SELECT sha
-            FROM merge_request_commits_metadata
-            WHERE merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id
-            AND merge_request_commits_metadata.project_id = ?
-            LIMIT 1
-          ) merge_request_commits_metadata ON TRUE
-        SQL
-      else
-        <<~SQL.squish
-          LEFT JOIN merge_request_commits_metadata
-          ON merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id
-          AND merge_request_commits_metadata.project_id = ?
-        SQL
-      end
+    metadata_join_sql = <<~SQL.squish
+      LEFT JOIN LATERAL (
+        SELECT sha
+        FROM merge_request_commits_metadata
+        WHERE merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id
+        AND merge_request_commits_metadata.project_id = ?
+        LIMIT 1
+      ) merge_request_commits_metadata ON TRUE
+    SQL
 
     # raw SQL in pluck() bypass ActiveRecord's type casting, so encode() is needed to convert bytea to hex
     shas_sql = Arel.sql("encode(COALESCE(merge_request_commits_metadata.sha, merge_request_diff_commits.sha), 'hex')")
 
-    relation = self.joins(self.sanitize_sql_array([metadata_join_sql, project_id]))
-      .order(:relative_order)
-
-    relation = relation.where(project_id: project_id) if partition_enabled
+    relation = self.joins(self.sanitize_sql_array([metadata_join_sql, project_id])).order(:relative_order)
 
     relation = relation.limit(limit) if limit
 
@@ -190,11 +169,39 @@ class MergeRequestDiffCommit < ApplicationRecord
   end
 
   def self.read_new_commits_table?(project_id)
-    actor = Project.actor_from_id(project_id)
-
-    Feature.enabled?(:mr_diff_commits_read_new_table, actor) &&
-      Feature.enabled?(:merge_request_diff_commits_partition, actor)
+    Feature.enabled?(:mr_diff_commits_read_new_table, Project.actor_from_id(project_id))
   end
+
+  def self.project_id_pruning_enabled?(project_id)
+    read_new_commits_table?(project_id) &&
+      Feature.enabled?(:mr_diff_commits_project_id_pruning, Project.actor_from_id(project_id))
+  end
+
+  def self.commit_shas_from_new_table(project_id:, limit:)
+    # LATERAL with LIMIT 1 pins the planner to a per-row PK lookup on
+    # merge_request_commits_metadata.id, rather than a hash join over every
+    # metadata row for the project.
+    join_sql = <<~SQL.squish
+      INNER JOIN LATERAL (
+        SELECT sha
+        FROM merge_request_commits_metadata
+        WHERE merge_request_commits_metadata.id = #{quoted_table_name}.merge_request_commits_metadata_id
+        AND merge_request_commits_metadata.project_id = ?
+        LIMIT 1
+      ) merge_request_commits_metadata ON TRUE
+    SQL
+
+    # raw SQL in pluck() bypasses ActiveRecord's type casting, so encode() is needed to convert bytea to hex
+    shas_sql = Arel.sql("encode(merge_request_commits_metadata.sha, 'hex')")
+    relation = joins(sanitize_sql_array([join_sql, project_id])).order(:relative_order)
+    relation = relation.where(project_id: project_id) if project_id_pruning_enabled?(project_id)
+    relation = relation.limit(limit) if limit
+
+    # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- limit may be applied in the caller
+    relation.pluck(shas_sql)
+    # rubocop:enable Database/AvoidUsingPluckWithoutLimit
+  end
+  private_class_method :commit_shas_from_new_table
 
   def self.commit_rows_with_metadata(project_id, merge_request_diff_id, rows)
     commits_metadata_mapping = MergeRequest::CommitsMetadata.bulk_find_or_create(
@@ -209,23 +216,29 @@ class MergeRequestDiffCommit < ApplicationRecord
       # the row that will be inserted into `merge_request_diff_commits` table.
       row.delete(:raw_sha)
       DEDUPLICATED_COLUMNS.each { |column| row.delete(column) }
+      row.delete(:trailers) if read_new_commits_table?(project_id)
     end
 
     rows_without_metadata = rows.select { |row| row[:merge_request_commits_metadata_id].nil? }
 
-    if rows_without_metadata.any?
-      Gitlab::ErrorTracking.track_exception(
-        CouldNotCreateMetadataError.new,
-        message: 'Failed to create metadata',
-        failed_count: rows_without_metadata.size,
-        total_count: rows.size,
-        merge_request_diff_id: merge_request_diff_id,
-        project_id: project_id,
-        relative_orders: rows_without_metadata.filter_map { |r| r[:relative_order] }
-      )
-    end
+    return rows unless rows_without_metadata.any?
 
-    rows
+    raise CouldNotCreateMetadataError, format(
+      "Failed to create metadata for commits: %{relative_orders}, project_id: %{project_id}, " \
+        "merge_request_diff_id: %{merge_request_diff_id}. " \
+        "Commits in batch: %{total_count}, failed: %{failed_count}",
+      failed_count: rows_without_metadata.size,
+      total_count: rows.size,
+      merge_request_diff_id: merge_request_diff_id,
+      project_id: project_id,
+      relative_orders: rows_without_metadata.filter_map { |r| r[:relative_order] }
+    )
+  end
+
+  # Placeholder while the trailers references are being removed.
+  # Tracked in https://gitlab.com/gitlab-org/gitlab/-/work_items/603480
+  def trailers
+    {}
   end
 
   def author_name
@@ -256,7 +269,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   end
 
   def project_id
-    project.id
+    read_attribute(:project_id) || project&.id
   end
 
   def authored_date

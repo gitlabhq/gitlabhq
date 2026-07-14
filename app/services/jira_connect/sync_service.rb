@@ -12,7 +12,13 @@ module JiraConnect
       preload_reviewers_for_merge_requests(args[:merge_requests]) if args.key?(:merge_requests)
 
       JiraConnectInstallation.for_project(project).flat_map do |installation|
-        client = Atlassian::JiraConnect::Client.new(installation.base_url, installation.shared_secret)
+        client = if installation.forge_direct?
+                   Atlassian::Forge::SystemTokenClient.new(
+                     installation.jira_api_base_url, installation.forge_system_token
+                   )
+                 else
+                   Atlassian::JiraConnect::Client.new(installation.base_url, installation.shared_secret)
+                 end
 
         responses = client.send_info(project: project, **args)
 

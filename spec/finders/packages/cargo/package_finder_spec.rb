@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::Cargo::PackageFinder, feature_category: :package_registry do
-  let_it_be(:project, freeze: false) { create(:project) }
-  let_it_be(:package, freeze: false) { create(:cargo_package, name: 'my-crate', version: '1.0.0', project: project) }
-  let_it_be(:metadatum, freeze: false) { create(:cargo_metadatum, package: package) }
+  let_it_be(:project) { create(:project) }
+  let_it_be_with_reload(:package) { create(:cargo_package, name: 'my-crate', version: '1.0.0', project: project) }
+  let_it_be(:metadatum) { create(:cargo_metadatum, package: package) }
 
   let(:package_name) { package.name }
   let(:package_version) { package.version }
@@ -28,11 +28,11 @@ RSpec.describe ::Packages::Cargo::PackageFinder, feature_category: :package_regi
     end
 
     context 'when the name uses underscores instead of hyphens' do
-      let_it_be(:underscore_package, freeze: false) do
+      let_it_be(:underscore_package) do
         create(:cargo_package, name: 'with-underscore', version: '2.0.0', project: project)
       end
 
-      let_it_be(:underscore_metadatum, freeze: false) { create(:cargo_metadatum, package: underscore_package) }
+      let_it_be(:underscore_metadatum) { create(:cargo_metadatum, package: underscore_package) }
 
       let(:package_name) { 'with_underscore' }
       let(:package_version) { '2.0.0' }
@@ -43,11 +43,11 @@ RSpec.describe ::Packages::Cargo::PackageFinder, feature_category: :package_regi
     end
 
     context 'when the version includes a build metadata suffix' do
-      let_it_be(:plain_version_package, freeze: false) do
+      let_it_be(:plain_version_package) do
         create(:cargo_package, name: 'plain-version', version: '3.0.0', project: project)
       end
 
-      let_it_be(:plain_version_metadatum, freeze: false) { create(:cargo_metadatum, package: plain_version_package) }
+      let_it_be(:plain_version_metadatum) { create(:cargo_metadatum, package: plain_version_package) }
 
       let(:package_name) { 'plain-version' }
       let(:package_version) { '3.0.0+build42' }
@@ -90,7 +90,7 @@ RSpec.describe ::Packages::Cargo::PackageFinder, feature_category: :package_regi
     end
 
     context 'when the package belongs to a different project' do
-      let_it_be(:other_project, freeze: false) { create(:project) }
+      let_it_be(:other_project) { create(:project) }
 
       subject(:execute) do
         described_class.new(

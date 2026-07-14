@@ -71,6 +71,7 @@ query getJobs(
           path
           user {
             id
+            name
             webPath
             avatarUrl
           }

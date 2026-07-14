@@ -15,22 +15,22 @@ module Observability
     end
 
     SEGMENT_TITLES = {
-      'services' => 'Observability|Services',
-      'service-map' => 'Observability|Service map',
-      'trace' => 'Observability|Traces',
-      'traces' => 'Observability|Traces',
-      'traces-explorer' => 'Observability|Traces',
-      'logs' => 'Observability|Logs',
-      'logs-explorer' => 'Observability|Logs',
-      'dashboard' => 'Observability|Dashboard',
-      'alerts' => 'Observability|Alerts',
-      'exceptions' => 'Observability|Exceptions',
-      'metrics-explorer' => 'Observability|Metrics explorer',
-      'infrastructure-monitoring' => 'Observability|Infrastructure monitoring',
-      'messaging-queues' => 'Observability|Messaging queues',
-      'api-monitoring' => 'Observability|API monitoring',
-      'settings' => 'Observability|Notification channels',
-      'settings/api-keys' => 'Observability|API keys'
+      'services' => -> { s_('Observability|Services') },
+      'service-map' => -> { s_('Observability|Service map') },
+      'trace' => -> { s_('Observability|Traces') },
+      'traces' => -> { s_('Observability|Traces') },
+      'traces-explorer' => -> { s_('Observability|Traces') },
+      'logs' => -> { s_('Observability|Logs') },
+      'logs-explorer' => -> { s_('Observability|Logs') },
+      'dashboard' => -> { s_('Observability|Dashboard') },
+      'alerts' => -> { s_('Observability|Alerts') },
+      'exceptions' => -> { s_('Observability|Exceptions') },
+      'metrics-explorer' => -> { s_('Observability|Metrics explorer') },
+      'infrastructure-monitoring' => -> { s_('Observability|Infrastructure monitoring') },
+      'messaging-queues' => -> { s_('Observability|Messaging queues') },
+      'api-monitoring' => -> { s_('Observability|API monitoring') },
+      'settings' => -> { s_('Observability|Notification channels') },
+      'settings/api-keys' => -> { s_('Observability|API keys') }
     }.freeze
 
     PATHS = %w[
@@ -168,10 +168,11 @@ module Observability
 
     def title
       path_str = @path.to_s
-      SEGMENT_TITLES.fetch(path_str) do
+      translation = SEGMENT_TITLES.fetch(path_str) do
         first_segment = path_str.split('/').first.to_s
-        SEGMENT_TITLES.fetch(first_segment, 'Observability')
+        SEGMENT_TITLES.fetch(first_segment) { -> { _('Observability') } }
       end
+      translation.call
     end
 
     def auth_tokens

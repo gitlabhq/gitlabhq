@@ -5,3 +5,4 @@ description: Grants the ability to administer a project snippet that the user
   snippet policy to gate :admin_snippet on the author's own snippets, separate
   from the broader admin_snippet capability that applies to all snippets in the
   project.
+conditionally_enables: admin_snippet

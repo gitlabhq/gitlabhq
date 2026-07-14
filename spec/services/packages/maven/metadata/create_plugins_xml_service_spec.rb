@@ -36,8 +36,8 @@ RSpec.describe ::Packages::Maven::Metadata::CreatePluginsXmlService, feature_cat
     shared_examples 'returning an xml with plugins from the database' do
       it 'returns an metadata versions xml with versions in the database', :aggregate_failures do
         expect(subject).to be_success
-        expect(subject.payload[:changes_exist]).to eq(true)
-        expect(subject.payload[:empty_versions]).to eq(false)
+        expect(subject.payload[:changes_exist]).to be(true)
+        expect(subject.payload[:empty_versions]).to be(false)
         expect(plugins_from(subject.payload[:metadata_content])).to match_array(plugins_in_database)
       end
     end

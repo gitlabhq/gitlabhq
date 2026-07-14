@@ -50,10 +50,11 @@ Migration/UpdateLargeTable:
   - :ci_job_artifact_states
   - :ci_pipeline_messages
   - :deployment_merge_requests
-  - :import_source_user_placeholder_references
   - :job_environments
+  - :label_links
   - :lfs_objects
   - :lfs_objects_projects
+  - :merge_request_cleanup_schedules
   - :namespaces
   - :packages_package_files
   - :personal_access_tokens
@@ -64,7 +65,6 @@ Migration/UpdateLargeTable:
   - :resource_state_events
   - :sbom_occurrences
   - :security_scans
-  - :uploads
   - :vulnerabilities
   - :vulnerability_occurrence_identifiers
   DeniedMethods:

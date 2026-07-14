@@ -38,8 +38,8 @@ test-coverage:export-rspec-and-e2e:
     - ruby scripts/coverage/merge_e2e_backend_test_mapping.rb
     - ruby scripts/coverage/backend_coverage_exporter.rb || true
     - echo "Exporting E2E per-test coverage (Coverband backend + Istanbul frontend)..."
-    - bundle exec test-coverage --per-test-coverage 'coverage-e2e-backend/coverband-coverage-*.json' || true
-    - bundle exec test-coverage --per-test-coverage 'coverage-e2e-per-test-frontend/per-test-coverage-e2e-frontend-*.json' || true
+    - bundle exec test-coverage --per-test-coverage 'coverage-e2e-backend/coverband-coverage-*.json' --clickhouse-url "${CLICKHOUSE_URL}" --clickhouse-database "${CLICKHOUSE_DATABASE}" --clickhouse-username "${CLICKHOUSE_USERNAME}" || true
+    - bundle exec test-coverage --per-test-coverage 'coverage-e2e-per-test-frontend/per-test-coverage-e2e-frontend-*.json' --clickhouse-url "${CLICKHOUSE_URL}" --clickhouse-database "${CLICKHOUSE_DATABASE}" --clickhouse-username "${CLICKHOUSE_USERNAME}" || true
   artifacts:
     paths:
       - coverage-backend/
@@ -91,6 +91,11 @@ test-coverage:export-per-test-rspec:
     - .coverage-export-base
     - .per-test-coverage:rules:delta
   stage: post-qa
+  # parallel:N splits the rspec shards across nodes. The downloader reads
+  # CI_NODE_INDEX and CI_NODE_TOTAL and inserts a disjoint slice per node, so a
+  # big-delta capture is no longer one long serial download and insert.
+  # Aggregation runs once afterwards in test-coverage:aggregate-per-test.
+  parallel: 4
   needs:
     - job: per-test-coverage:trigger
       artifacts: false
@@ -106,7 +111,7 @@ test-coverage:export-per-test-rspec:
         --pattern "$JOB_PATTERN" \
         --batch-size 10 \
         --output-glob 'tmp/per-test-coverage-rspec-*.ndjson' \
-        --process-command "bundle exec test-coverage --per-test-coverage 'tmp/per-test-coverage-rspec-*.ndjson' --jest-quarantine-file scripts/frontend/quarantined_vue3_specs.txt"
+        --process-command "bundle exec test-coverage --per-test-coverage 'tmp/per-test-coverage-rspec-*.ndjson' --test-reports 'rspec/rspec-*.json' --jest-quarantine-file scripts/frontend/quarantined_vue3_specs.txt --skip-aggregation --clickhouse-url ${CLICKHOUSE_URL} --clickhouse-database ${CLICKHOUSE_DATABASE} --clickhouse-username ${CLICKHOUSE_USERNAME}"
 
 test-coverage:export-per-test-jest:
   extends:
@@ -125,7 +130,24 @@ test-coverage:export-per-test-jest:
         --pattern "$JOB_PATTERN" \
         --batch-size 10 \
         --output-glob 'tmp/per-test-coverage-jest-*.json' \
-        --process-command "bundle exec test-coverage --per-test-coverage 'tmp/per-test-coverage-jest-*.json' --jest-quarantine-file scripts/frontend/quarantined_vue3_specs.txt"
+        --process-command "bundle exec test-coverage --per-test-coverage 'tmp/per-test-coverage-jest-*.json' --jest-quarantine-file scripts/frontend/quarantined_vue3_specs.txt --skip-aggregation --clickhouse-url ${CLICKHOUSE_URL} --clickhouse-database ${CLICKHOUSE_DATABASE} --clickhouse-username ${CLICKHOUSE_USERNAME}"
+
+test-coverage:aggregate-per-test:
+  extends:
+    - .coverage-export-base
+    - .per-test-coverage:rules:delta
+  stage: post-qa
+  needs:
+    - job: test-coverage:export-per-test-rspec
+      artifacts: false
+    - job: test-coverage:export-per-test-jest
+      artifacts: false
+  script:
+    # The rspec and jest exports insert with --skip-aggregation, the rspec one
+    # across parallel nodes. Run the table-wide aggregation exactly once here,
+    # after every shard has landed, so a full-bucket capture aggregates a single
+    # time instead of once per node.
+    - bundle exec test-coverage --run-aggregation --clickhouse-url "${CLICKHOUSE_URL}" --clickhouse-database "${CLICKHOUSE_DATABASE}" --clickhouse-username "${CLICKHOUSE_USERNAME}"
 
 test-coverage:export-workhorse:
   extends:

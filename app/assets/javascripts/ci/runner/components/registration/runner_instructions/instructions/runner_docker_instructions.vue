@@ -9,6 +9,7 @@ export default {
     GlButton,
     GlIcon,
   },
+  emits: ['close'],
   methods: {
     onClose() {
       this.$emit('close');

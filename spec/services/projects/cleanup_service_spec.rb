@@ -6,7 +6,7 @@ RSpec.describe Projects::CleanupService, feature_category: :source_code_manageme
   subject(:service) { described_class.new(project) }
 
   describe '.enqueue' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :small_repo) }
     let_it_be(:user) { create(:user) }
 
     let(:object_map_file) { fixture_file_upload('spec/fixtures/bfg_object_map.txt') }

@@ -5,8 +5,8 @@ RSpec.shared_examples 'a GraphQL query for access levels' do |access_level_kind|
 
   let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:current_user, freeze: false) { create(:user, maintainer_of: project) }
-  let_it_be(:variables, freeze: false) { { path: project.full_path } }
 
+  let(:variables) { { path: project.full_path } }
   let(:fields) { all_graphql_fields_for("#{access_level_kind.to_s.classify}AccessLevel") }
   let(:access_levels) { protected_branch.public_send("#{access_level_kind}_access_levels") }
   let(:access_levels_count) { access_levels.size }

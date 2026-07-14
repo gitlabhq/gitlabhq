@@ -81,6 +81,7 @@ module Gitlab
 
       def track_exception
         attributes = {
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
           import_type: project.import_type,
           project_id: project.id,
           source: error_source,

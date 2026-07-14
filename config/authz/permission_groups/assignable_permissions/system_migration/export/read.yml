@@ -3,6 +3,7 @@ name: read_export
 description: Grants the ability to read exports
 boundaries:
   - project
+  - group
 available_for:
   - granular_access_token
 permissions:

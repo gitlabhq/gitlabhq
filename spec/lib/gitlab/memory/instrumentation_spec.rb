@@ -67,4 +67,28 @@ RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :durability_me
       end
     end
   end
+
+  describe '.measure_thread_memory_allocations' do
+    let(:previous) do
+      { total_allocated_objects: 1000, total_malloc_bytes: 2000, total_mallocs: 500 }
+    end
+
+    subject { described_class.measure_thread_memory_allocations(previous) }
+
+    context 'when the current counters are lower than the previous ones' do
+      before do
+        allow(Thread.current).to receive(:memory_allocations)
+          .and_return(total_allocated_objects: 10, total_malloc_bytes: 20, total_mallocs: 5)
+      end
+
+      it 'clamps each counter to zero' do
+        expect(subject).to include(
+          mem_objects: 0,
+          mem_bytes: 0,
+          mem_mallocs: 0,
+          mem_total_bytes: 0
+        )
+      end
+    end
+  end
 end

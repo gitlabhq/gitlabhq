@@ -40,13 +40,7 @@ export default {
             jobName: this.jobName,
           }),
         },
-        message: sprintf(
-          __('Custom confirmation message: %{message}'),
-          {
-            message: this.customMessage,
-          },
-          false,
-        ),
+        message: this.customMessage,
         title: sprintf(this.$options.i18n.title, {
           jobName: this.jobName,
         }),

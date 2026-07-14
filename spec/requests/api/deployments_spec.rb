@@ -768,6 +768,38 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :deployment_delete do
+      let(:current_user) { user }
+      let(:other_user) { create(:user) }
+
+      # A separate deletable deployment for the second scope: not the
+      # environment's last deployment (so DestroyService won't 400) and
+      # not consumed by `request` above.
+      let!(:other_deploy) do
+        create(
+          :deployment,
+          :success,
+          project: project,
+          environment: environment,
+          deployable: nil,
+          sha: commits[0].sha,
+          finished_at: 2.years.ago
+        )
+      end
+
+      before do
+        project.add_maintainer(other_user)
+      end
+
+      def request
+        delete api("/projects/#{project.id}/deployments/#{old_deploy.id}", user)
+      end
+
+      def request_with_second_scope
+        delete api("/projects/#{project.id}/deployments/#{other_deploy.id}", other_user)
+      end
+    end
   end
 
   describe 'GET /projects/:id/deployments/:deployment_id/merge_requests' do

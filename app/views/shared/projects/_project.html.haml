@@ -63,10 +63,10 @@
           = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project, additional_classes: '!gl-ml-2'
 
       - if show_last_commit_as_description
-        .description.gl-hidden.gl-overflow-hidden.gl-mr-3.gl-mt-2.gl-text-sm{ class: "@sm/panel:gl-block" }
+        .description.gl-overflow-hidden.gl-mr-3.gl-mt-2.gl-text-sm
           = link_to_markdown(last_commit.title, project_commit_path(project, last_commit), class: "commit-row-message")
       - elsif project.description.present?
-        .description.gl-hidden.gl-overflow-hidden.gl-mr-3.gl-mt-2.gl-text-sm{ class: "@sm/panel:gl-block" }
+        .description.gl-overflow-hidden.gl-mr-3.gl-mt-2.gl-text-sm
           = markdown_field(project, :description)
 
       - if project.topics.any?

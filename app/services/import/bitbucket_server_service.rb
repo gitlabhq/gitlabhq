@@ -20,23 +20,27 @@ module Import
 
     def execute(credentials)
       unless project_key.present? && BITBUCKET_PROJECT_KEY_FORMAT.match?(project_key)
-        return log_and_return_error("Missing or invalid project key", :unprocessable_entity)
+        return log_and_return_error("Missing or invalid project key", _("Missing or invalid project key"), :unprocessable_entity)
       end
 
       unless repo_slug.present? && BITBUCKET_REPO_SLUG_FORMAT.match?(repo_slug)
-        return log_and_return_error("Missing or invalid repository slug", :unprocessable_entity)
+        return log_and_return_error("Missing or invalid repository slug", _("Missing or invalid repository slug"), :unprocessable_entity)
       end
 
       if blocked_url?
-        return log_and_return_error("Invalid URL: #{url}", :bad_request)
+        return log_and_return_error("Invalid URL: #{url}", format(_("Invalid URL: %{url}"), url: url), :bad_request)
       end
 
       unless authorized?
-        return log_and_return_error("You don't have permissions to import this project", :unauthorized)
+        return log_and_return_error("You don't have permissions to import this project", _("You don't have permissions to import this project"), :unauthorized)
       end
 
       unless repo
-        return log_and_return_error("Project %{project_repo} could not be found" % { project_repo: "#{project_key}/#{repo_slug}" }, :unprocessable_entity)
+        return log_and_return_error(
+          "Project #{project_key}/#{repo_slug} could not be found",
+          format(_("Project %{project_repo} could not be found"), project_repo: "#{project_key}/#{repo_slug}"),
+          :unprocessable_entity
+        )
       end
 
       project = create_project(credentials)
@@ -48,10 +52,11 @@ module Import
       elsif project.errors[:import_source_disabled].present?
         error(project.errors[:import_source_disabled], :forbidden)
       else
-        log_and_return_error(project_save_error(project), :unprocessable_entity)
+        save_error = project_save_error(project)
+        log_and_return_error(save_error, save_error, :unprocessable_entity)
       end
     rescue BitbucketServer::Connection::ConnectionError => e
-      log_and_return_error("Import failed due to a BitBucket Server error: #{e}", :bad_request)
+      log_and_return_error("Import failed due to a BitBucket Server error: #{e}", _("Import failed due to a BitBucket Server error"), :bad_request)
     end
 
     private
@@ -116,9 +121,9 @@ module Import
       )
     end
 
-    def log_and_return_error(message, error_type)
+    def log_and_return_error(message, translated_message, error_type)
       log_error(message)
-      error(_(message), error_type)
+      error(translated_message, error_type)
     end
 
     def log_error(message)

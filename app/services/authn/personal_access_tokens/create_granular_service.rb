@@ -5,8 +5,9 @@ module Authn
     class CreateGranularService < BaseService
       include Gitlab::InternalEventsTracking
 
-      def initialize(current_user:, organization:, granular_scopes:, params: {})
+      def initialize(current_user:, organization:, granular_scopes:, target_user: current_user, params: {})
         @current_user = current_user
+        @target_user = target_user
         @organization = organization
         @params = params.dup
         @granular_scopes = granular_scopes
@@ -19,7 +20,7 @@ module Authn
 
         ::PersonalAccessToken.transaction do
           response = ::PersonalAccessTokens::CreateService.new(
-            current_user: current_user, target_user: current_user, params: personal_access_token_params,
+            current_user: current_user, target_user: target_user, params: personal_access_token_params,
             organization_id: organization.id
           ).execute
 
@@ -43,7 +44,7 @@ module Authn
 
       private
 
-      attr_reader :organization, :granular_scopes
+      attr_reader :organization, :granular_scopes, :target_user
 
       def personal_access_token_params
         default_params = {

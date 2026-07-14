@@ -5,6 +5,7 @@ import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 export default {
+  name: 'ProjectsDropdown',
   components: {
     GlCollapsibleListbox,
     GlAvatarLabeled,

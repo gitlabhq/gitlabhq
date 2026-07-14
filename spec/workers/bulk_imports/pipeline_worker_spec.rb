@@ -110,7 +110,8 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
             source_full_path: entity.source_full_path,
             pipeline_class: pipeline_tracker.pipeline_name,
             importer: 'gitlab_migration',
-            source_version: entity.bulk_import.source_version_info.to_s
+            source_version: entity.bulk_import.source_version_info.to_s,
+            Labkit::Fields::GL_ORGANIZATION_ID => entity.organization_id
           )
         )
 
@@ -337,7 +338,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
       worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
-      expect(pipeline_tracker.reload.finished?).to eq(true)
+      expect(pipeline_tracker.reload.finished?).to be(true)
     end
   end
 
@@ -647,7 +648,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         pipeline_tracker.reload
 
         expect(pipeline_tracker.status_name).to eq(:started)
-        expect(pipeline_tracker.batched).to eq(true)
+        expect(pipeline_tracker.batched).to be(true)
         expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
         expect(described_class.jobs).to be_empty
       end
@@ -663,7 +664,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         pipeline_tracker.reload
 
         expect(pipeline_tracker.status_name).to eq(:started)
-        expect(pipeline_tracker.batched).to eq(true)
+        expect(pipeline_tracker.batched).to be(true)
         expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
         expect(described_class.jobs).to be_empty
       end
@@ -707,8 +708,8 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           pipeline_tracker.reload
 
           expect(pipeline_tracker.status_name).to eq(:started)
-          expect(pipeline_tracker.batches.find_by(batch_number: 1).failed?).to eq(false)
-          expect(pipeline_tracker.batches.find_by(batch_number: 2).failed?).to eq(true)
+          expect(pipeline_tracker.batches.find_by(batch_number: 1).failed?).to be(false)
+          expect(pipeline_tracker.batches.find_by(batch_number: 2).failed?).to be(true)
         end
 
         it 'enqueue BulkImports::PipelineBatchWorker for all tracker batches' do
@@ -753,7 +754,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           pipeline_tracker.reload
 
           expect(pipeline_tracker.status_name).to eq(:started)
-          expect(pipeline_tracker.batched).to eq(true)
+          expect(pipeline_tracker.batched).to be(true)
           expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2)
           expect(described_class.jobs).to contain_exactly(
             hash_including(
@@ -781,7 +782,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
               pipeline_tracker.reload
 
               expect(pipeline_tracker.status_name).to eq(:started)
-              expect(pipeline_tracker.batched).to eq(true)
+              expect(pipeline_tracker.batched).to be(true)
               expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2)
               expect(described_class.jobs).to contain_exactly(
                 hash_including(
@@ -913,7 +914,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         expect { worker.perform(pipeline_tracker.id, pipeline_tracker.stage, offline_entity.id) }
           .not_to raise_error
 
-        expect(offline_entity.reload.failed?).to eq(false)
+        expect(offline_entity.reload.failed?).to be(false)
       end
     end
 
@@ -937,7 +938,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         pipeline_tracker.reload
 
         expect(pipeline_tracker.status_name).to eq(:started)
-        expect(pipeline_tracker.batched).to eq(true)
+        expect(pipeline_tracker.batched).to be(true)
         expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
         expect(described_class.jobs).to be_empty
       end
@@ -954,7 +955,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         pipeline_tracker.reload
 
         expect(pipeline_tracker.status_name).to eq(:started)
-        expect(pipeline_tracker.batched).to eq(true)
+        expect(pipeline_tracker.batched).to be(true)
         expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
       end
 
@@ -973,8 +974,8 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
           pipeline_tracker.reload
 
-          expect(pipeline_tracker.batches.find_by(batch_number: 1).failed?).to eq(false)
-          expect(pipeline_tracker.batches.find_by(batch_number: 2).failed?).to eq(true)
+          expect(pipeline_tracker.batches.find_by(batch_number: 1).failed?).to be(false)
+          expect(pipeline_tracker.batches.find_by(batch_number: 2).failed?).to be(true)
         end
 
         it 'records failure with batch_error message' do
@@ -1027,7 +1028,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           pipeline_tracker.reload
 
           expect(pipeline_tracker.status_name).to eq(:started)
-          expect(pipeline_tracker.batched).to eq(true)
+          expect(pipeline_tracker.batched).to be(true)
           expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2)
           expect(described_class.jobs).to contain_exactly(
             hash_including(

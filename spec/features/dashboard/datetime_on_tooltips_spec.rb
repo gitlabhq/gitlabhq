@@ -8,10 +8,6 @@ RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :user_profil
 
   let(:created_date)    { 1.day.ago.beginning_of_minute - 1.hour }
 
-  before do
-    stub_feature_flags(profile_tabs_vue: false)
-  end
-
   context 'on the activity tab' do
     before do
       Event.create!(

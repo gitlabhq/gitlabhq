@@ -106,6 +106,26 @@ RSpec.describe Namespaces::UserNamespacePolicy, feature_category: :groups_and_pr
     end
   end
 
+  describe 'transfer projects' do
+    let(:current_user) { owner }
+
+    context 'when user can create projects' do
+      before do
+        allow(current_user).to receive(:can_create_project?).and_return(true)
+      end
+
+      it { is_expected.to be_allowed(:transfer_projects) }
+    end
+
+    context 'when user cannot create projects' do
+      before do
+        allow(current_user).to receive(:can_create_project?).and_return(false)
+      end
+
+      it { is_expected.to be_disallowed(:transfer_projects) }
+    end
+  end
+
   describe 'import projects', feature_category: :importers do
     context 'when user can import projects' do
       let(:current_user) { owner }

@@ -5,6 +5,8 @@ module Mutations
     class Accept < Base
       graphql_name 'MergeRequestAccept'
       authorize :accept_merge_request
+      authorize_granular_token permissions: :merge_merge_request, boundary_argument: :project_path,
+        boundary_type: :project
       description <<~DESC
         Accepts a merge request.
         When accepted, the source branch will be scheduled to merge into the target branch, either
@@ -103,3 +105,5 @@ module Mutations
     end
   end
 end
+
+Mutations::MergeRequests::Accept.prepend_mod

@@ -181,7 +181,7 @@ describe('Pipeline Url Component', () => {
     it('passes popoverTargetId matching the commit SHA link id', () => {
       const popoverId = findCommitPopover().props('popoverTargetId');
       expect(findCommitShortSha().attributes('id')).toBe(popoverId);
-      expect(popoverId).toBe(`pipeline-commit-popover-${mockBranchPipeline.commit.sha}`);
+      expect(popoverId).toBe(`pipeline-commit-popover-${mockBranchPipeline.commit.shortId}`);
     });
   });
 

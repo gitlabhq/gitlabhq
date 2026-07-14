@@ -6,9 +6,9 @@ RSpec.describe Projects::Aws::ConfigurationController, feature_category: :not_ow
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:url) { project_aws_configuration_path(project) }
 
-  let_it_be(:user_guest, freeze: false) { create(:user, guest_of: project) }
-  let_it_be(:user_developer, freeze: false) { create(:user, developer_of: project) }
-  let_it_be(:user_maintainer, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be(:user_guest) { create(:user, guest_of: project) }
+  let_it_be(:user_developer) { create(:user, developer_of: project) }
+  let_it_be(:user_maintainer) { create(:user, maintainer_of: project) }
 
   let_it_be(:unauthorized_members) { [user_guest, user_developer] }
   let_it_be(:authorized_members) { [user_maintainer] }

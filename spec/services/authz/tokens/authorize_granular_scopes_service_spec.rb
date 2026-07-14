@@ -197,6 +197,10 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
 
       it_behaves_like 'error response', 'Access denied: This operation requires a fine-grained personal access token ' \
         'with the following instance permissions: [Project: Read, Work Item: Read].'
+
+      it 'exposes the missing permissions in the payload' do
+        expect(service.execute.payload).to eq(denied_permissions: [:read_issue, :read_epic, :read_fork])
+      end
     end
 
     context 'when the boundary is not visible to the user' do
@@ -211,6 +215,7 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
         expect(result).to be_error
         expect(result.reason).to eq(:resource_not_found)
         expect(result.message).to eq('404 Not Found')
+        expect(result.payload).not_to have_key(:denied_permissions)
       end
 
       context 'when the user is a member of the boundary' do

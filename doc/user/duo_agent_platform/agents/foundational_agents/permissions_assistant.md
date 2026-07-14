@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Workflow Catalog
+stage: Agent Foundations
+group: AI Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Permissions Assistant
 ---
@@ -9,13 +9,13 @@ title: Permissions Assistant
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592230) as a [beta](../../../../policy/development_stages_support.md#beta) feature in GitLab 18.11.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/596613) in GitLab 19.2.
 
 {{< /history >}}
 
@@ -31,10 +31,8 @@ until the selection matches your needs.
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../../_index.md#prerequisites).
 - Have [foundational agents turned on](_index.md#turn-foundational-agents-on-or-off).
-- Have fine-grained personal access tokens enabled. This feature depends on the
-  `granular_personal_access_tokens` feature flag, which is enabled by default on GitLab.com.
-  On GitLab Self-Managed and GitLab Dedicated, an administrator must
-  [enable it](../../../../administration/feature_flags/_index.md).
+- Have fine-grained personal access tokens enabled. This feature is controlled by the
+  `granular_personal_access_tokens` feature flag, which is enabled by default.
 
 ## Use the Permissions Assistant
 
@@ -62,6 +60,8 @@ To use the Permissions Assistant:
   requests in a single project" gives better results than "I need API access."
 - If the initial selection is too broad or too narrow, ask for adjustments.
 - Use the suggested prompts as a starting point if you are unsure how to describe your needs.
+- Suggestions are applied to the relevant access level (Group and project, User, or Global),
+  so the same permission can be added in more than one section when your request spans them.
 
 ## Example prompts
 
@@ -69,3 +69,4 @@ To use the Permissions Assistant:
 - "I need to manage CI/CD pipelines and read job logs."
 - "I want to automate issue and merge request management."
 - "I need read-only access to projects and groups."
+- "I want to read all snippets, not just my own."

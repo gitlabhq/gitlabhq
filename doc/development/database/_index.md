@@ -32,6 +32,7 @@ title: Database development guidelines
 - [Adding required stops](required_stops.md)
 - [Avoiding downtime in migrations](avoiding_downtime_in_migrations.md)
 - [Batched background migrations guidelines](batched_background_migrations.md)
+- [Background operations](background_operations.md)
 - [Create a regular migration](../migration_style_guide.md#create-a-regular-schema-migration), including creating new models
 - [Deleting migrations](deleting_migrations.md)
 - [Different types of migrations](../migration_style_guide.md#choose-an-appropriate-migration-type)
@@ -76,6 +77,7 @@ title: Database development guidelines
 - [Data layout and access patterns](layout_and_access_patterns.md)
 - [Efficient `IN` operator queries](efficient_in_operator_queries.md)
 - [Fixed items models](../fixed_items_model.md)
+- [Forcing index seeks with LATERAL joins](lateral_planner_fence.md)
 - [Foreign keys & associations](foreign_keys.md)
 - [Hash indexes](hash_indexes.md)
 - [Insert into tables in batches](insert_into_tables_in_batches.md)

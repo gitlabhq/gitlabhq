@@ -133,7 +133,7 @@ RSpec.describe 'Updating an existing release', feature_category: :release_orches
       let(:boundary_object) { project }
       let(:mutation) do
         graphql_mutation(:release_update,
-          { projectPath: project.full_path, tagName: tag_name }, 'errors')
+          { projectPath: project.full_path, tagName: tag_name, name: 'Updated name' }, 'errors')
       end
 
       let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }

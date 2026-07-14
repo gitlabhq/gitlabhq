@@ -13,6 +13,12 @@ module ClickHouse
         end
       end
 
+      def pending(table_name)
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.llen(buffer_key(table_name)).to_i
+        end
+      end
+
       def pop(table_name, limit)
         Array.wrap(lpop_with_limit(buffer_key(table_name), limit)).map do |hash|
           Gitlab::Json.parse(hash, symbolize_names: true)

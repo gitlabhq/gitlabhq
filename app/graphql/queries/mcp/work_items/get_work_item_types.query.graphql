@@ -1,0 +1,16 @@
+# @feature_category: mcp_server
+query getNamespaceWorkItemTypes($fullPath: ID!) {
+  namespace(fullPath: $fullPath) {
+    id
+    workItemTypes {
+      nodes {
+        id
+        name
+        iconName
+        widgetDefinitions {
+          type
+        }
+      }
+    }
+  }
+}

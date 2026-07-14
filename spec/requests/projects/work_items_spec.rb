@@ -8,7 +8,7 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
   include_context 'workhorse headers'
 
   let_it_be(:work_item) { create(:work_item) }
-  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
   let(:file) { fixture_file_upload("spec/fixtures/#{filename}") }
@@ -186,6 +186,13 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
         expect(response.headers['Content-Type']).to have_content('text/calendar')
         expect(response.body).to have_text('BEGIN:VCALENDAR')
       end
+
+      it_behaves_like 'calendar endpoint without dates_source N+1' do
+        let(:calendar_path) { work_items_path }
+        let(:create_dated_work_item) do
+          -> { create(:work_item, project: work_item.project, due_date: Date.tomorrow) }
+        end
+      end
     end
 
     context 'when the user cannot read the project' do
@@ -252,7 +259,7 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
     shared_examples 'handles authorisation' do
       context 'when unauthorized' do
         context 'with non-member' do
-          let_it_be(:current_user, freeze: false) { create(:user) }
+          let_it_be(:current_user) { create(:user) }
 
           before do
             sign_in(current_user)

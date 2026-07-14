@@ -1,0 +1,9 @@
+---
+name: update_admin_data_management
+description: Grants the ability to recalculate data management checksums
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_admin_data_management

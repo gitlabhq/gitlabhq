@@ -51,6 +51,8 @@ module Ci
     has_many :runner_manager_builds, inverse_of: :runner_manager, foreign_key: :runner_machine_id,
       class_name: 'Ci::RunnerManagerBuild'
     has_many :builds, through: :runner_manager_builds, class_name: 'Ci::Build'
+    has_many :build_runtime_environments, inverse_of: :runner_manager, foreign_key: :runner_machine_id,
+      class_name: 'Ci::BuildRuntimeEnvironment'
     belongs_to :runner_version, inverse_of: :runner_managers, primary_key: :version, foreign_key: :version,
       class_name: 'Ci::RunnerVersion'
 

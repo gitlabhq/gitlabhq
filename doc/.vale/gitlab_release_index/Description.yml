@@ -1,0 +1,31 @@
+---
+name: gitlab_release_index.Description
+description: Ensures the minor release index page has a non-empty description.
+message: "The `description` metadata is required (for example, `Summary of features included in 19.1`)."
+link: https://docs.gitlab.com/development/documentation/release_notes/#minor-release-index-metadata
+level: error
+extends: script
+scope: raw
+script: |
+  text := import("text")
+  matches := []
+
+  if text.re_match("^---\\n", scope) {
+    fmEnd := text.index(scope, "\n---")
+    if fmEnd > 0 {
+      fm := scope[0:fmEnd]
+      if !text.re_match("(?m)^description:", fm) {
+        matches = append(matches, {begin: 0, end: 3})
+      } else {
+        m := text.re_find("(?m)^description:[ \\t]*(.*)$", fm, 1)
+        if !is_undefined(m) {
+          cap := m[0][1]
+          span := {begin: cap.begin, end: cap.begin + len(cap.text)}
+          v := text.trim_space(text.re_replace("[\"']", cap.text, ""))
+          if v == "" {
+            matches = append(matches, span)
+          }
+        }
+      }
+    }
+  }

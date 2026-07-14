@@ -13,6 +13,7 @@ import {
 import { TOOLBAR_CONTROL_TRACKING_ACTION, MARKDOWN_EDITOR_TRACKING_LABEL } from './tracking';
 
 export default {
+  name: 'ToolbarMoreDropdown',
   components: {
     GlDisclosureDropdown,
     GlTooltip,

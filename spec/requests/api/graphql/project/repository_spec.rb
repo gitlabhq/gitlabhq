@@ -24,8 +24,35 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
     expect(graphql_data['project']['repository']).to be_present
   end
 
+  describe 'count fields' do
+    let(:fields) { 'branchCount tagCount commitCount' }
+
+    it 'returns the repository counts' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:project, :repository)).to include(
+        'branchCount' => repository.branch_count,
+        'tagCount' => repository.tag_count,
+        'commitCount' => repository.commit_count
+      )
+    end
+
+    context 'when the repository is empty' do
+      let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
+
+      it 'returns zero for each count without a null-propagation error', :aggregate_failures do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_errors).to be_nil
+        expect(graphql_data_at(:project, :repository)).to include(
+          'branchCount' => 0, 'tagCount' => 0, 'commitCount' => 0
+        )
+      end
+    end
+  end
+
   context 'when authorizing granular token permissions' do
-    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_code do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_code] do
       let(:user) { current_user }
       let(:boundary_object) { project }
       let(:query) do
@@ -39,7 +66,8 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
       let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
     end
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_repository_tree do
+    it_behaves_like 'authorizing granular token permissions for GraphQL',
+      [:read_project, :read_code, :read_repository_tree] do
       let(:user) { current_user }
       let(:boundary_object) { project }
       let(:query) do
@@ -57,7 +85,8 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
       let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
     end
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_repository_blob do
+    it_behaves_like 'authorizing granular token permissions for GraphQL',
+      [:read_project, :read_code, :read_repository_tree, :read_repository_blob] do
       let(:user) { current_user }
       let(:boundary_object) { project }
       let(:query) do
@@ -91,11 +120,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
   end
 
   context 'as a non-admin' do
-    let(:current_user) { create(:user) }
-
-    before do
-      project.add_role(current_user, :developer)
-    end
+    let(:current_user) { create(:user, developer_of: project) }
 
     it 'does not return diskPath' do
       post_graphql(query, current_user: current_user)

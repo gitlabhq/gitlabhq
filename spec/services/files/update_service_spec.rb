@@ -94,6 +94,18 @@ RSpec.describe Files::UpdateService, feature_category: :source_code_management d
           expect(results.data).to eq(new_contents)
         end
       end
+
+      context "when the file_path is a directory" do
+        # 'files/ruby' is a directory in the test repository
+        let(:file_path) { 'files/ruby' }
+
+        it "returns an error" do
+          result = update_service.execute
+
+          expect(result[:status]).to eq(:error)
+          expect(result[:message]).to eq(_('Path is a directory, not a file'))
+        end
+      end
     end
 
     context 'with LFS enabled' do

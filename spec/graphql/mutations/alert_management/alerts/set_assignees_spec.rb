@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Mutations::AlertManagement::Alerts::SetAssignees, feature_category: :api do
   include GraphqlHelpers
 
-  let_it_be(:starting_assignee, freeze: false) { create(:user) }
+  let_it_be_with_reload(:starting_assignee) { create(:user) }
   let_it_be(:unassigned_user) { create(:user) }
-  let_it_be(:alert, freeze: false) { create(:alert_management_alert, assignees: [starting_assignee]) }
+  let_it_be_with_reload(:alert) { create(:alert_management_alert, assignees: [starting_assignee]) }
   let_it_be(:project) { alert.project }
 
   let(:current_user) { starting_assignee }

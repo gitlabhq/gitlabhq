@@ -10,11 +10,9 @@ RSpec.describe 'Project variables', :js, feature_category: :pipeline_composition
 
   before do
     sign_in(user)
+
     project.add_maintainer(user)
     project.variables << variable
-
-    visit page_path
-    wait_for_requests
   end
 
   context 'when ci_variables_pages FF is enabled' do

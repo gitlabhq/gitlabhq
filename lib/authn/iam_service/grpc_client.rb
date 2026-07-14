@@ -2,17 +2,23 @@
 
 module Authn
   module IamService
-    class GrpcClient
+    class GrpcClient < BaseClient
       RequestError = Class.new(StandardError)
 
       TIMEOUT_SECONDS = 5
 
+      # Workaround: the GATE sandbox Envoy gateway requires this header to route
+      # gRPC traffic to the IAM backend. Harmless when sent to non-Envoy endpoints.
+      # TODO: remove when direct gRPC routing replaces the Envoy header-based routing.
+      ROUTING_HEADER = 'x-gitlab-svc'
+      ROUTING_HEADER_VALUE = 'iam-auth-grpc'
+
       REQUEST_TYPES = {
-        health: ::Auth::V1::HealthRequest,
-        accept_login_challenge: ::Auth::V1::LoginServiceAcceptRequest,
-        get_consent_challenge: ::Auth::V1::ConsentServiceGetRequest,
-        accept_consent_challenge: ::Auth::V1::ConsentServiceAcceptRequest,
-        reject_consent_challenge: ::Auth::V1::ConsentServiceRejectRequest
+        health: ::Gitlab::Iam::Auth::V1::HealthRequest,
+        accept_login_challenge: ::Gitlab::Iam::Auth::V1::LoginServiceAcceptRequest,
+        get_consent_challenge: ::Gitlab::Iam::Auth::V1::ConsentServiceGetRequest,
+        accept_consent_challenge: ::Gitlab::Iam::Auth::V1::ConsentServiceAcceptRequest,
+        reject_consent_challenge: ::Gitlab::Iam::Auth::V1::ConsentServiceRejectRequest
       }.freeze
 
       def health(**kwargs)
@@ -57,45 +63,30 @@ module Authn
       end
 
       def stub
-        build_stub(::Auth::V1::AuthService::Stub)
+        build_stub(::Gitlab::Iam::Auth::V1::AuthService::Stub, grpc_address, timeout: TIMEOUT_SECONDS)
       end
 
       def login_stub
-        build_stub(::Auth::V1::LoginService::Stub)
+        build_stub(::Gitlab::Iam::Auth::V1::LoginService::Stub, grpc_address, timeout: TIMEOUT_SECONDS)
       end
 
       def consent_stub
-        build_stub(::Auth::V1::ConsentService::Stub)
+        build_stub(::Gitlab::Iam::Auth::V1::ConsentService::Stub, grpc_address, timeout: TIMEOUT_SECONDS)
       end
 
-      def build_stub(stub_class)
-        address = Authn::IamAuthService.grpc_address
-        stub_class.new(
-          strip_scheme(address),
-          channel_credentials(address),
-          interceptors: [Labkit::Correlation::GRPC::ClientInterceptor.instance],
-          timeout: TIMEOUT_SECONDS
-        )
-      end
-
-      def channel_credentials(address)
-        uri = URI(address)
-
-        if uri.scheme == 'tls' || uri.scheme == 'dns+tls'
-          GRPC::Core::ChannelCredentials.new(::Gitlab::X509::Certificate.ca_certs_bundle)
-        else
-          :this_channel_is_insecure
-        end
-      rescue URI::InvalidURIError
-        :this_channel_is_insecure
-      end
-
-      def strip_scheme(address)
-        address.sub(%r{^tcp://|^tls://}, '').sub(%r{^dns\+tls:}, 'dns:')
+      def grpc_address
+        Authn::IamAuthService.grpc_address
       end
 
       def metadata
-        { Authn::IamAuthService::IAM_AUTH_TOKEN_HEADER => Authn::IamAuthService.secret }
+        { ROUTING_HEADER => ROUTING_HEADER_VALUE }
+      end
+
+      def service_token_credentials
+        {
+          header: Authn::IamAuthService::IAM_AUTH_TOKEN_HEADER,
+          token: Authn::IamAuthService.secret
+        }
       end
     end
   end

@@ -39,6 +39,7 @@ export default {
       default: null,
     },
   },
+  emits: ['set-page', 'set-page-size'],
 
   computed: {
     humanizedTotal() {

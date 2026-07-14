@@ -52,6 +52,12 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       dependency_scanning: 4
     }.freeze
 
+    POST_PROCESSING_SCAN_PROFILE_TYPES = {
+      dependency_scanning_post_processing: 20
+    }.freeze
+
+    SECURITY_PROFILE_TYPES = SCAN_PROFILES_TYPES.merge(POST_PROCESSING_SCAN_PROFILE_TYPES).freeze
+
     SCAN_PROFILE_STATUSES = {
       not_configured: 0,
       success: 1,
@@ -62,7 +68,8 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
     SCAN_PROFILE_TRIGGER_TYPES = {
       default_branch_pipeline: 0,
       merge_request_pipeline: 1,
-      git_push_event: 2
+      git_push_event: 2,
+      sbom_ingested: 3
     }.freeze
 
     DEFAULT_CONFIGURATION_SOURCE = :sbom
@@ -82,6 +89,12 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
         container_scanning_for_registry: 11,
         secret_detection_pipeline_based: 12,
         container_scanning_pipeline_based: 13
+      })
+    end
+
+    def self.analyzer_types_for_status
+      extended_analyzer_types.merge({
+        dependency_scanning_post_processing: 14
       })
     end
 
@@ -107,6 +120,14 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
     def self.scan_profile_types
       SCAN_PROFILES_TYPES
+    end
+
+    def self.post_processing_scan_profile_types
+      POST_PROCESSING_SCAN_PROFILE_TYPES
+    end
+
+    def self.security_profile_types
+      SECURITY_PROFILE_TYPES
     end
 
     def self.scan_profile_statuses

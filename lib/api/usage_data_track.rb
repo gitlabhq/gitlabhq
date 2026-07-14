@@ -10,8 +10,9 @@ module API
 
     namespace 'usage_data' do
       resource :track_event do
-        desc 'Track gitlab internal events' do
-          detail 'This feature was introduced in GitLab 16.2.'
+        desc 'Track an internal GitLab event' do
+          detail 'Tracks a GitLab internal event. This action increments Service Ping counters in Redis and is ' \
+            'optionally sent to Snowplow. Introduced in GitLab 16.2.'
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },

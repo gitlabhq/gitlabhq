@@ -77,6 +77,12 @@ module Types
     field :web_path,
       GraphQL::Types::String, null: true,
       description: 'Web path to the deployment page.'
+
+    def commit
+      return if object.sha.nil?
+
+      BatchLoader::GraphQL.wrap(Commit.lazy(object.project, object.sha))
+    end
   end
 end
 

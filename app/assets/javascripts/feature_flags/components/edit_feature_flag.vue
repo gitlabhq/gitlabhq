@@ -6,6 +6,7 @@ import { sprintf, __ } from '~/locale';
 import FeatureFlagForm from './form.vue';
 
 export default {
+  name: 'EditFeatureFlag',
   components: {
     GlAlert,
     GlLoadingIcon,

@@ -6,7 +6,7 @@ require_relative '../../support/shared_examples/events/event_with_schema_shared_
 
 RSpec.describe Ci::PipelineFinishedEvent, feature_category: :continuous_integration do
   it_behaves_like 'an event with schema',
-    valid_data: { pipeline_id: 1, status: 'success' },
+    valid_data: { pipeline_id: 1, status: 'success', source: 'push', partition_id: 100 },
     missing_required: %i[pipeline_id status],
     invalid_types: { pipeline_id: 'not_an_integer', status: 123 }
 end

@@ -1,0 +1,30 @@
+# A work item's own hierarchy state (excludes the `children` connection), shared
+# by the full tree hierarchy fragment and the slim mutation-response fragment.
+
+fragment WorkItemHierarchyFields on WorkItemWidgetHierarchy {
+  type
+  hasChildren
+  hasParent
+  depthLimitReachedByType {
+    workItemType {
+      id
+      name
+    }
+    depthLimitReached
+  }
+  rolledUpCountsByType {
+    countsByState {
+      opened
+      all
+      closed
+    }
+    workItemType {
+      id
+      name
+      iconName
+    }
+  }
+  parent {
+    id
+  }
+}

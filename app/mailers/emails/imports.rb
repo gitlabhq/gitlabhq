@@ -52,6 +52,19 @@ module Emails
       )
     end
 
+    def bulk_import_offline_complete(user_id, bulk_import_id)
+      user = User.find(user_id)
+      @bulk_import = BulkImport.find(bulk_import_id)
+      configuration = @bulk_import.offline_configuration
+      @export_prefix = configuration&.export_prefix
+      @hostname = Gitlab::UrlSanitizer.sanitize(configuration&.source_hostname.to_s)
+
+      email_with_layout(
+        to: user.notification_email_or_default,
+        subject: subject(s_('OfflineTransfer|Offline transfer import completed'))
+      )
+    end
+
     def bulk_import_csv_user_mapping(
       user_id,
       group_id,

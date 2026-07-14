@@ -31,6 +31,7 @@ export default {
       default: '',
     },
   },
+  emits: ['reset-size', 'resize-end', 'resize-start', 'update:size'],
   data() {
     return {
       size: this.startSize,

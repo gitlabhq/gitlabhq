@@ -6,11 +6,17 @@ module Directives
       repeatable true
 
       argument :permissions, [GraphQL::Types::String],
+        required: false,
         description: 'Granular scope permissions required to access the field or type.'
 
       argument :boundary_type, Types::Authz::AccessTokens::BoundaryEnum,
+        required: false,
         description: 'The type of authorization boundary (project, group, user, instance). ' \
           'Used for validation and documentation of the permission boundary.'
+
+      argument :skip_reason, GraphQL::Types::String,
+        required: false,
+        description: 'Reason the field or type intentionally opts out of granular token authorization. '
 
       argument :boundary, GraphQL::Types::String,
         required: false,

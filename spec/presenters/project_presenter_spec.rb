@@ -326,7 +326,8 @@ RSpec.describe ProjectPresenter do
               expect(presenter.gitlab_ci_anchor_data).to have_attributes(
                 is_link: false,
                 label: a_string_including('Set up CI/CD'),
-                link: presenter.project_ci_pipeline_editor_path(project)
+                link: presenter.project_ci_pipeline_editor_path(project),
+                data: { event_tracking: 'click_cicd_on_project_overview', event_label: 'add' }
               )
             end
           end
@@ -342,7 +343,8 @@ RSpec.describe ProjectPresenter do
               expect(presenter.gitlab_ci_anchor_data).to have_attributes(
                 is_link: false,
                 label: a_string_including('CI/CD configuration'),
-                link: presenter.project_ci_pipeline_editor_path(project)
+                link: presenter.project_ci_pipeline_editor_path(project),
+                data: { event_tracking: 'click_cicd_on_project_overview', event_label: 'view' }
               )
             end
           end
@@ -491,7 +493,8 @@ RSpec.describe ProjectPresenter do
           expect(presenter.readme_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('Add README'),
-            link: presenter.add_readme_path
+            link: presenter.add_readme_path,
+            data: { event_tracking: 'click_readme_on_project_overview', event_label: 'add' }
           )
         end
       end
@@ -503,7 +506,8 @@ RSpec.describe ProjectPresenter do
           expect(presenter.readme_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('README'),
-            link: presenter.readme_path
+            link: presenter.readme_path,
+            data: { event_tracking: 'click_readme_on_project_overview', event_label: 'view' }
           )
         end
       end
@@ -519,7 +523,8 @@ RSpec.describe ProjectPresenter do
           expect(presenter.changelog_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('Add CHANGELOG'),
-            link: presenter.add_changelog_path
+            link: presenter.add_changelog_path,
+            data: { event_tracking: 'click_changelog_on_project_overview', event_label: 'add' }
           )
         end
       end
@@ -531,7 +536,8 @@ RSpec.describe ProjectPresenter do
           expect(presenter.changelog_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('CHANGELOG'),
-            link: presenter.changelog_path
+            link: presenter.changelog_path,
+            data: { event_tracking: 'click_changelog_on_project_overview', event_label: 'view' }
           )
         end
       end
@@ -547,7 +553,8 @@ RSpec.describe ProjectPresenter do
           expect(presenter.license_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('Add LICENSE'),
-            link: presenter.add_license_path
+            link: presenter.add_license_path,
+            data: { event_tracking: 'click_license_on_project_overview', event_label: 'add' }
           )
         end
       end
@@ -559,7 +566,8 @@ RSpec.describe ProjectPresenter do
           expect(presenter.license_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including(presenter.license_short_name),
-            link: presenter.license_path
+            link: presenter.license_path,
+            data: { event_tracking: 'click_license_on_project_overview', event_label: 'view' }
           )
         end
       end
@@ -575,7 +583,8 @@ RSpec.describe ProjectPresenter do
           expect(presenter.contribution_guide_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('Add CONTRIBUTING'),
-            link: presenter.add_contribution_guide_path
+            link: presenter.add_contribution_guide_path,
+            data: { event_tracking: 'click_contributing_on_project_overview', event_label: 'add' }
           )
         end
       end
@@ -587,7 +596,8 @@ RSpec.describe ProjectPresenter do
           expect(presenter.contribution_guide_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('CONTRIBUTING'),
-            link: presenter.contribution_guide_path
+            link: presenter.contribution_guide_path,
+            data: { event_tracking: 'click_contributing_on_project_overview', event_label: 'view' }
           )
         end
       end
@@ -636,7 +646,7 @@ RSpec.describe ProjectPresenter do
           allow(project).to receive(:has_ci_config_file?).and_return(false)
         end
 
-        it 'returns anchor data with icon when Auto DevOps is disabled' do
+        it 'returns anchor data with icon when Auto DevOps is disabled', :aggregate_failures do
           allow(project).to receive(:auto_devops_enabled?).and_return(false)
 
           anchor_data = presenter.autodevops_anchor_data
@@ -644,6 +654,7 @@ RSpec.describe ProjectPresenter do
 
           expect(label).to include('Enable Auto DevOps')
           expect(label).to include('data-testid="plus-icon"')
+          expect(anchor_data.data).to eq(event_tracking: 'click_auto_devops_on_project_overview', event_label: 'add')
         end
 
         it 'returns anchor data with link when Auto DevOps is enabled' do
@@ -655,7 +666,8 @@ RSpec.describe ProjectPresenter do
             is_link: false,
             label: a_string_including('Auto DevOps enabled'),
             link: presenter.project_settings_ci_cd_path(project, anchor: 'autodevops-settings'),
-            class_modifier: 'btn-default'
+            class_modifier: 'btn-default',
+            data: { event_tracking: 'click_auto_devops_on_project_overview', event_label: 'view' }
           )
         end
 
@@ -695,7 +707,8 @@ RSpec.describe ProjectPresenter do
           expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('Kubernetes'),
-            link: presenter.project_cluster_path(project, cluster)
+            link: presenter.project_cluster_path(project, cluster),
+            data: { event_tracking: 'click_kubernetes_cluster_on_project_overview', event_label: 'view' }
           )
         end
 
@@ -708,7 +721,8 @@ RSpec.describe ProjectPresenter do
           expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('Kubernetes'),
-            link: presenter.project_clusters_path(project)
+            link: presenter.project_clusters_path(project),
+            data: { event_tracking: 'click_kubernetes_cluster_on_project_overview', event_label: 'view' }
           )
         end
 
@@ -718,7 +732,8 @@ RSpec.describe ProjectPresenter do
           expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('Add Kubernetes cluster'),
-            link: presenter.project_clusters_path(project)
+            link: presenter.project_clusters_path(project),
+            data: { event_tracking: 'click_kubernetes_cluster_on_project_overview', event_label: 'add' }
           )
         end
       end
@@ -768,7 +783,8 @@ RSpec.describe ProjectPresenter do
           is_link: false,
           label: a_string_ending_with('Wiki'),
           link: wiki_path(project.wiki, action: :index),
-          class_modifier: 'btn-default'
+          class_modifier: 'btn-default',
+          data: { event_tracking: 'click_wiki_on_project_overview', event_label: 'view' }
         )
       end
 
@@ -776,7 +792,8 @@ RSpec.describe ProjectPresenter do
         have_attributes(
           is_link: false,
           label: a_string_ending_with('Add Wiki'),
-          link: "#{wiki_path(project.wiki)}?view=create"
+          link: "#{wiki_path(project.wiki)}?view=create",
+          data: { event_tracking: 'click_wiki_on_project_overview', event_label: 'add' }
         )
       end
 
@@ -821,7 +838,8 @@ RSpec.describe ProjectPresenter do
           link: Gitlab::Pages::UrlBuilder
           .new(project)
           .pages_url,
-          class_modifier: 'btn-default'
+          class_modifier: 'btn-default',
+          data: { event_tracking: 'click_pages_on_project_overview' }
         )
       end
 
@@ -912,7 +930,8 @@ RSpec.describe ProjectPresenter do
               is_link: false,
               label: a_string_including('Observability configuration'),
               link: expected_link,
-              class_modifier: 'btn-default'
+              class_modifier: 'btn-default',
+              data: { event_tracking: 'click_observability_on_project_overview', event_label: 'view' }
             )
           end
         end
@@ -923,7 +942,8 @@ RSpec.describe ProjectPresenter do
               is_link: false,
               label: a_string_including('Enable Observability'),
               link: expected_link,
-              class_modifier: nil
+              class_modifier: nil,
+              data: { event_tracking: 'click_observability_on_project_overview', event_label: 'add' }
             )
           end
         end
@@ -963,8 +983,13 @@ RSpec.describe ProjectPresenter do
       it 'includes a button to configure integrations for maintainers' do
         project.add_maintainer(user)
 
-        expect(empty_repo_statistics_buttons.map(&:label)).to include(
-          a_string_including('Configure Integration')
+        integrations_button = empty_repo_statistics_buttons.find do |button|
+          button.label.include?('Configure Integration')
+        end
+
+        expect(integrations_button).to have_attributes(
+          label: a_string_including('Configure Integration'),
+          data: { event_tracking: 'click_integrations_on_project_overview' }
         )
       end
 

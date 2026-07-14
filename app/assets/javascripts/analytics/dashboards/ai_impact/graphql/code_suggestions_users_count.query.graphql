@@ -1,0 +1,17 @@
+# @feature_category: product_analytics
+#import "./code_suggestions_users_count_metric_item.fragment.graphql"
+
+query codeSuggestionsUsersCountQuery($fullPath: ID!, $startDate: Date!, $endDate: Date!) {
+  project(fullPath: $fullPath) {
+    id
+    aiMetrics(startDate: $startDate, endDate: $endDate) {
+      ...CodeSuggestionsUsersCountMetricItem
+    }
+  }
+  group(fullPath: $fullPath) {
+    id
+    aiMetrics(startDate: $startDate, endDate: $endDate) {
+      ...CodeSuggestionsUsersCountMetricItem
+    }
+  }
+}

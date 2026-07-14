@@ -4,6 +4,7 @@ module WorkItems
   module ParentLinks
     class BaseService < IssuableLinks::CreateService
       extend ::Gitlab::Utils::Override
+      include Gitlab::Utils::StrongMemoize
 
       def initialize(issuable, user, params)
         @previous_parents = Set.new
@@ -32,11 +33,13 @@ module WorkItems
         SystemNoteService.relate_work_item(issuable, work_item, current_user)
       end
 
-      def linkable_issuables(work_items)
-        @linkable_issuables ||= work_items.select do |work_item|
+      override :linkable_issuables
+      def linkable_issuables
+        referenced_issuables.select do |work_item|
           can_add_to_parent?(issuable, work_item) && linkable?(work_item)
         end
       end
+      strong_memoize_attr :linkable_issuables
 
       def linkable?(work_item)
         can_admin_link?(work_item) && previous_related_issuables.exclude?(work_item)
@@ -77,8 +80,9 @@ module WorkItems
 
       override :previous_related_issuables
       def previous_related_issuables
-        @previous_related_issuables ||= issuable.work_item_children.to_a
+        issuable.work_item_children.to_a
       end
+      strong_memoize_attr :previous_related_issuables
 
       override :target_issuable_type
       def target_issuable_type

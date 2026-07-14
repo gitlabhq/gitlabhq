@@ -25,13 +25,13 @@ RSpec.describe RuboCop::QAHelpers, feature_category: :test_platform do
     it 'returns true for a node in the qa/ directory' do
       node = build_and_parse_source('10', rails_root_join('qa', 'qa', 'page', 'dashboard', 'groups.rb'))
 
-      expect(cop.in_qa_file?(node)).to eq(true)
+      expect(cop.in_qa_file?(node)).to be(true)
     end
 
     it 'returns false for a node outside the qa/ directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
-      expect(cop.in_qa_file?(node)).to eq(false)
+      expect(cop.in_qa_file?(node)).to be(false)
     end
   end
 end

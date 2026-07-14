@@ -31,7 +31,7 @@ We are so grateful to Salihu for all of his contributions and to all of our open
 
 ### GitLab Duo Self-Hosted is generally available
 
-<!-- categories: Self-Hosted Models -->
+<!-- categories: Model Selection -->
 
 {{< details >}}
 
@@ -73,7 +73,7 @@ Parallel deployments expire after 24 hours by default to help manage storage spa
 
 ### Add project files to Duo Chat in VS Code and JetBrains IDEs
 
-<!-- categories: Editor Extensions, Duo Chat -->
+<!-- categories: VS Code, JetBrains, Web Chat -->
 
 {{< details >}}
 
@@ -268,7 +268,7 @@ This can help reduce the disk usage in projects that run lots of pipelines that 
 
 ### Composite identity for more secure AI connections
 
-<!-- categories: Duo Agent Platform -->
+<!-- categories: System Access -->
 
 {{< details >}}
 
@@ -519,7 +519,7 @@ The `inject_policy` stage replaces `inject_ci` which will be deprecated, allowin
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Links: [Documentation](../../user/profile/personal_access_tokens.md#personal-access-token-scopes) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430748)
+- Links: [Documentation](../../security/tokens/access_token_scopes.md) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430748)
 
 {{< /details >}}
 

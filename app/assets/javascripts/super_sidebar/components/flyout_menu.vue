@@ -220,7 +220,7 @@ export default {
       </header>
       <hr v-if="isIconOnly && title" class="-gl-mx-2 gl-my-2" />
       <ul
-        class="gl-m-0 gl-max-h-[70vh] gl-min-w-20 gl-max-w-34 gl-list-none gl-overflow-y-auto gl-p-0"
+        class="gl-m-0 gl-max-h-[70vh] gl-min-w-[12rem] gl-max-w-34 gl-list-none gl-overflow-y-auto gl-p-0"
         @mouseenter="showSVG = false"
       >
         <nav-item

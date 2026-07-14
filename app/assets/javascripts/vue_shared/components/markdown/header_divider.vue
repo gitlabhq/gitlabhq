@@ -1,5 +1,7 @@
 <script>
-export default {};
+export default {
+  name: 'HeaderDivider',
+};
 </script>
 <template>
   <div class="gl-flex gl-py-2">

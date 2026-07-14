@@ -538,7 +538,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
     end
 
     describe 'merge' do
-      let(:project) { create(:project, :private, :repository, group: group) }
+      let(:project) { create(:project, :private, :repository, group: group, maintainers: user) }
 
       let(:opts) do
         {
@@ -547,10 +547,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
       end
 
       let(:service) { described_class.new(project: project, current_user: user, params: opts) }
-
-      before do
-        project.add_maintainer(user)
-      end
 
       context 'without pipeline' do
         before do
@@ -997,14 +993,17 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
         end
 
         context 'when merge_when_checks_pass is enabled' do
-          it 'publishes a DraftStateChangeEvent with new_draft_status: false' do
+          it 'publishes a DraftStateChangeEvent' do
             expected_data = {
               current_user_id: user.id,
-              merge_request_id: merge_request.id,
-              new_draft_status: false
+              merge_request_id: merge_request.id
             }
 
             expect { update_merge_request(title: 'New title') }.to publish_event(MergeRequests::DraftStateChangeEvent).with(expected_data)
+          end
+
+          it 'publishes a MergeRequests::ReadyEvent' do
+            expect { update_merge_request(title: 'New title') }.to publish_event(MergeRequests::ReadyEvent)
           end
         end
 
@@ -1016,15 +1015,19 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
               .to(title)
           end
 
-          it 'publishes a DraftStateChangeEvent with new_draft_status: false' do
+          it 'publishes a DraftStateChangeEvent' do
             expected_data = {
               current_user_id: user.id,
-              merge_request_id: merge_request.id,
-              new_draft_status: false
+              merge_request_id: merge_request.id
             }
 
             expect { update_merge_request({ wip_event: "ready" }) }
               .to publish_event(MergeRequests::DraftStateChangeEvent).with(expected_data)
+          end
+
+          it 'publishes a MergeRequests::ReadyEvent' do
+            expect { update_merge_request({ wip_event: "ready" }) }
+              .to publish_event(MergeRequests::ReadyEvent)
           end
         end
       end
@@ -1046,11 +1049,10 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
         end
 
         context 'when merge_when_checks_pass is enabled' do
-          it 'publishes a DraftStateChangeEvent with new_draft_status: true' do
+          it 'publishes a DraftStateChangeEvent' do
             expected_data = {
               current_user_id: user.id,
-              merge_request_id: merge_request.id,
-              new_draft_status: true
+              merge_request_id: merge_request.id
             }
 
             expect { update_merge_request(title: 'Draft: New title') }.to publish_event(MergeRequests::DraftStateChangeEvent).with(expected_data)
@@ -1071,15 +1073,19 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
               .to(draft_title)
           end
 
-          it 'publishes a DraftStateChangeEvent with new_draft_status: true' do
+          it 'publishes a DraftStateChangeEvent' do
             expected_data = {
               current_user_id: user.id,
-              merge_request_id: merge_request.id,
-              new_draft_status: true
+              merge_request_id: merge_request.id
             }
 
             expect { update_merge_request({ wip_event: "draft" }) }
               .to publish_event(MergeRequests::DraftStateChangeEvent).with(expected_data)
+          end
+
+          it 'does not publish a MergeRequests::ReadyEvent' do
+            expect { update_merge_request({ wip_event: "draft" }) }
+              .not_to publish_event(MergeRequests::ReadyEvent)
           end
         end
       end
@@ -1106,6 +1112,10 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
 
         it 'does not publish a DraftStateChangeEvent' do
           expect { update_merge_request(title: 'Draft: New title') }.not_to publish_event(MergeRequests::DraftStateChangeEvent)
+        end
+
+        it 'does not publish a MergeRequests::ReadyEvent' do
+          expect { update_merge_request(title: 'Draft: New title') }.not_to publish_event(MergeRequests::ReadyEvent)
         end
       end
     end

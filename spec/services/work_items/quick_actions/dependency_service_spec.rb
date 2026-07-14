@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::QuickActions::DependencyService, feature_category: :team_planning do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:other_issue) { create(:issue, project: project) }

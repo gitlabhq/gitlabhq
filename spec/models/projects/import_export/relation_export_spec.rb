@@ -62,7 +62,7 @@ RSpec.describe Projects::ImportExport::RelationExport, type: :model, feature_cat
       relation_export.mark_as_failed("Error message")
       relation_export.reload
 
-      expect(relation_export.failed?).to eq(true)
+      expect(relation_export.failed?).to be(true)
       expect(relation_export.export_error).to eq("Error message")
     end
   end

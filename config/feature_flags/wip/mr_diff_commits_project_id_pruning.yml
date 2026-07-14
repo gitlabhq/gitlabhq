@@ -1,0 +1,10 @@
+---
+name: mr_diff_commits_project_id_pruning
+description: Enable table pruning for merge_request_diff_commits
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594699
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240394
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/604357
+milestone: '19.2'
+group: group::code review
+type: wip
+default_enabled: false

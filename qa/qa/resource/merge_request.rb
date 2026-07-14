@@ -179,7 +179,7 @@ module QA
         wait_until_mergable
 
         Support::Retrier.retry_on_exception(max_attempts: 10, sleep_interval: 5) do
-          response = put(Runtime::API::Request.new(api_client, api_merge_path).url)
+          response = put(Runtime::API::Request.new(api_client, api_merge_path).url, { sha: api_resource[:sha] })
 
           unless response.code == HTTP_STATUS_OK
             raise ResourceUpdateFailedError, "Could not merge. Request returned (#{response.code}): `#{response}`."

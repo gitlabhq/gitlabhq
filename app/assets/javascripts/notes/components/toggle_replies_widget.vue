@@ -13,6 +13,7 @@ import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
+  name: 'ToggleRepliesWidget',
   i18n: {
     collapseReplies: s__('Notes|Collapse replies'),
     expandReplies: s__('Notes|Expand replies'),

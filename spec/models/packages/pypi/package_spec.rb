@@ -100,7 +100,7 @@ RSpec.describe Packages::Pypi::Package, :aggregate_failures, feature_category: :
     end
 
     describe '.preload_files_and_file_metadatum' do
-      let_it_be(:package, freeze: false) { create(:pypi_package) }
+      let_it_be_with_reload(:package) { create(:pypi_package) }
       let_it_be(:package_file) { create(:package_file, package:) }
       let_it_be(:pypi_file_metadatum) { create(:pypi_file_metadatum, package_file:) }
 
@@ -114,7 +114,7 @@ RSpec.describe Packages::Pypi::Package, :aggregate_failures, feature_category: :
   end
 
   describe '#normalized_pypi_name' do
-    let_it_be(:package, freeze: false) { create(:pypi_package) }
+    let_it_be_with_reload(:package) { create(:pypi_package) }
 
     subject { package.normalized_pypi_name }
 

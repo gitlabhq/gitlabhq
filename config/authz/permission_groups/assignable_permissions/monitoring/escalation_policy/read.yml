@@ -1,0 +1,9 @@
+---
+name: read_escalation_policy
+description: Grants the ability to read escalation policies
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_incident_management_escalation_policy

@@ -3,12 +3,14 @@
 FactoryBot.define do
   factory :plan_limits do
     plan
+    plan_name_uid { Plan::PLAN_NAME_UID_LIST[:default] }
 
     dast_profile_schedules { 50 }
 
-    Plan.all_plans.each do |plan|
-      trait :"#{plan}_plan" do
-        plan factory: :"#{plan}_plan"
+    Plan.all_plans.each do |plan_name|
+      trait :"#{plan_name}_plan" do
+        plan factory: :"#{plan_name}_plan"
+        plan_name_uid { Plan::PLAN_NAME_UID_LIST[plan_name.to_sym] }
       end
     end
 

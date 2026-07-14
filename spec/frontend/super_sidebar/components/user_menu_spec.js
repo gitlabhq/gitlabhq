@@ -129,6 +129,7 @@ describe('UserMenu component', () => {
           },
         );
         expect(findStopImpersonationButton().exists()).toBe(true);
+        expect(findStopImpersonationButton().attributes('href')).toBe('/admin/impersonation');
       });
     });
   });
@@ -475,7 +476,7 @@ describe('UserMenu component', () => {
 
     it('should render a link to the profile page', () => {
       expect(item.text()).toBe(UserMenu.i18n.editProfile);
-      expect(item.find('a').attributes('href')).toBe(userMenuMockData.settings.profile_path);
+      expect(item.find('a').attributes('href')).toBe('/-/user_settings/profile');
     });
 
     it('has Snowplow tracking attributes', () => {
@@ -504,9 +505,7 @@ describe('UserMenu component', () => {
 
     it('should render a link to the profile page', () => {
       expect(item.text()).toBe(UserMenu.i18n.preferences);
-      expect(item.find('a').attributes('href')).toBe(
-        userMenuMockData.settings.profile_preferences_path,
-      );
+      expect(item.find('a').attributes('href')).toBe('/-/profile/preferences');
     });
 
     it('has Snowplow tracking attributes', () => {
@@ -704,9 +703,7 @@ describe('UserMenu component', () => {
       });
 
       it('should render the menu item with a link to sign out and correct data attribute', () => {
-        expect(findSignOutGroup().find('a').attributes('href')).toBe(
-          userMenuMockData.sign_out_link,
-        );
+        expect(findSignOutGroup().find('a').attributes('href')).toBe('/users/sign_out');
         expect(findSignOutGroup().find('a').attributes('data-method')).toBe('post');
       });
 

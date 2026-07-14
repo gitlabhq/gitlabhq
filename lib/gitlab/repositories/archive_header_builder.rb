@@ -52,7 +52,7 @@ module Gitlab
       attr_reader :repository, :ref, :format, :append_sha, :path, :ref_type
 
       def validate_metadata!
-        raise "Repository or ref not found" if metadata.empty?
+        raise Gitlab::Workhorse::ArchiveNotFoundError, "Repository or ref not found" if metadata.empty?
       end
     end
   end

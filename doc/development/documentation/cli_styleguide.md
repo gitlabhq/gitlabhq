@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI Coding
 group: Code Review
 info: For assistance with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 description: Structure, style, and language conventions for glab CLI reference documentation.
@@ -291,7 +291,7 @@ The title must follow the conventional commits format defined in the project's
 ## Front matter
 
 Every generated page includes front matter. The `stage` and `group` values are
-hardcoded in the generator (`cmd/gen-docs/docs.go`) to `Create` and
+hardcoded in the generator (`cmd/gen-docs/docs.go`) to `AI Coding` and
 `Code Review` for all commands. Do not edit these values in the generated files.
 They are overwritten each time `make gen-docs` runs.
 

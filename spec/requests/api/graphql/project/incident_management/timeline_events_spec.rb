@@ -8,7 +8,7 @@ RSpec.describe 'getting incident timeline events', feature_category: :incident_m
   let_it_be(:project) { create(:project) }
   let_it_be(:private_project) { create(:project, :private) }
   let_it_be(:issue) { create(:issue, project: private_project) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user, guest_of: project) }
   let_it_be(:updated_by_user) { create(:user) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:another_incident) { create(:incident, project: project) }
@@ -71,7 +71,6 @@ RSpec.describe 'getting incident timeline events', feature_category: :incident_m
   end
 
   before do
-    project.add_guest(current_user)
     stub_feature_flags(hide_incident_management_features: false)
     post_graphql(query, current_user: current_user)
   end

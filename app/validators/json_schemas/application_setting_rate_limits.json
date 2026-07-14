@@ -198,6 +198,11 @@
       "minimum": 0,
       "description": "Number of pipelines allowed to be created per user"
     },
+    "ci_lint_limit_per_user": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of CI Lint requests allowed per minute per user. Set to 0 for unlimited requests per minute."
+    },
     "raw_blob_request_limit_unauthenticated": {
       "type": "integer",
       "minimum": 0,

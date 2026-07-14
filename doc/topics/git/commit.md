@@ -214,6 +214,35 @@ To create a new merge request from the default branch targeting a different bran
 git push -o merge_request.create -o merge_request.target=feature-branch
 ```
 
+### Newlines in push option values
+
+Push option values cannot contain literal newline characters. If you pass a
+multi-line value directly, Git returns the following error:
+
+```plaintext
+fatal: push options must not have new line characters
+```
+
+To include newlines in push option values (for example, in a merge request
+description), use the `\n` escape sequence instead of a literal newline:
+
+```shell
+git push origin my-branch \
+  -o merge_request.create \
+  -o merge_request.title="My feature" \
+  -o merge_request.description="# Summary\nDo something.\n\n# Testing\nDeploy this on your box."
+```
+
+GitLab converts `\n` sequences to newlines in the merge request description.
+
+To separate paragraphs without newlines, use HTML paragraph tags instead of `\n`:
+
+```shell
+git push origin my-branch \
+  -o merge_request.create \
+  -o merge_request.description="<p>First paragraph</p><p>Second paragraph</p>"
+```
+
 ### Create Git aliases for pushing
 
 Adding push options to Git commands can create very long commands. If

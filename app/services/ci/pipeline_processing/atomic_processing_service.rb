@@ -147,15 +147,32 @@ module Ci
       end
 
       def observe_processing_delay(job)
-        ready_at = if job.scheduling_type_dag?
-                     @collection.max_finished_at_of_jobs(job.aggregated_needs_names.to_a)
-                   else
-                     @collection.max_finished_at_prior_to_stage(job.stage_idx.to_i)
-                   end
+        dependency_finished_at = if job.scheduling_type_dag?
+                                   @collection.max_finished_at_of_jobs(job.aggregated_needs_names.to_a)
+                                 else
+                                   @collection.max_finished_at_prior_to_stage(job.stage_idx.to_i)
+                                 end
 
-        ready_at ||= pipeline.created_at
+        # Anchor to the later of the dependency finish time and the job's own creation time.
+        # For a first run the dependency finish time wins (it reflects real upstream runtime),
+        # while for a retried/cloned job the fresh created_at wins, preventing a stale
+        # dependency finished_at (or the original pipeline.created_at) from folding human
+        # decide-to-retry time into the measured delay.
+        if dependency_finished_at && dependency_finished_at >= job.created_at
+          ready_at = dependency_finished_at
+          anchored_on = 'dependency'
+        else
+          ready_at = job.created_at
+          anchored_on = 'job_created_at'
+        end
 
-        Labkit::UserExperienceSli.observed(:ci_job_processing_delay, start_time: ready_at)
+        Labkit::UserExperienceSli.observed(
+          :ci_job_processing_delay,
+          start_time: ready_at,
+          scheduling_type: job.scheduling_type,
+          anchored_on: anchored_on,
+          retried: job.retried?
+        )
       end
 
       # Gets the jobs that changed from stopped to alive status since the initial status collection

@@ -6,7 +6,7 @@ RSpec.describe Ci::MergeRequests::AddTodoWhenBuildFailsWorker, feature_category:
   describe '#perform' do
     let_it_be(:project) { create(:project) }
     let_it_be(:pipeline) { create(:ci_pipeline, :detached_merge_request_pipeline) }
-    let_it_be(:job, freeze: false) { create(:ci_build, project: project, pipeline: pipeline, status: :failed) }
+    let_it_be_with_reload(:job) { create(:ci_build, project: project, pipeline: pipeline, status: :failed) }
 
     let(:job_args) { job.id }
 
@@ -26,7 +26,7 @@ RSpec.describe Ci::MergeRequests::AddTodoWhenBuildFailsWorker, feature_category:
       let(:job_args) { 0 }
 
       it 'returns nil' do
-        expect(described_class.new.perform(job_args)).to eq(nil)
+        expect(described_class.new.perform(job_args)).to be_nil
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Ci::MergeRequests::AddTodoWhenBuildFailsWorker, feature_category:
       end
 
       it 'returns nil' do
-        expect(described_class.new.perform(job_args)).to eq(nil)
+        expect(described_class.new.perform(job_args)).to be_nil
       end
     end
   end

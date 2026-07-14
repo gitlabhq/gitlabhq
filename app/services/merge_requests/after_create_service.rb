@@ -17,16 +17,9 @@ module MergeRequests
     private
 
     def prepare_for_mergeability(merge_request)
-      if async_pipeline_creation?(merge_request)
-        logger.info(**log_payload(merge_request, 'Creating pipeline async'))
-        create_pipeline_for(merge_request, current_user, async: true)
-        logger.info(**log_payload(merge_request, 'Pipeline creating async'))
-      else
-        logger.info(**log_payload(merge_request, 'Creating pipeline'))
-        create_pipeline_for(merge_request, current_user, async: false)
-        merge_request.update_head_pipeline
-        logger.info(**log_payload(merge_request, 'Pipeline created'))
-      end
+      logger.info(**log_payload(merge_request, 'Creating pipeline async'))
+      create_pipeline_for(merge_request, current_user, async: true)
+      logger.info(**log_payload(merge_request, 'Pipeline creating async'))
 
       check_mergeability(merge_request)
     end
@@ -38,7 +31,7 @@ module MergeRequests
       merge_request_activity_counter.track_mr_including_ci_config(user: current_user, merge_request: merge_request)
 
       notification_service.new_merge_request(merge_request, current_user)
-      merge_request.diffs(include_stats: false).write_cache
+      write_diffs_cache(merge_request)
       merge_request.create_cross_references!(current_user)
       todo_service.new_merge_request(merge_request, current_user)
       merge_request.cache_merge_request_closes_issues!(current_user)
@@ -50,6 +43,12 @@ module MergeRequests
       )
 
       link_lfs_objects(merge_request)
+    end
+
+    # The diffs highlight/stats cache is display-only and not required for the MR
+    # to be prepared, so it can be warmed off the critical path. See #417973.
+    def write_diffs_cache(merge_request)
+      MergeRequests::WriteDiffsCacheWorker.perform_async(merge_request.id)
     end
 
     def link_lfs_objects(merge_request)
@@ -79,10 +78,6 @@ module MergeRequests
         merge_request_id: merge_request.id,
         message: message
       )
-    end
-
-    def async_pipeline_creation?(merge_request)
-      Feature.enabled?(:async_mr_pipeline_creation, merge_request.target_project)
     end
   end
 end

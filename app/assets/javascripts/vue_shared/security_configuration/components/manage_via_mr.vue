@@ -24,6 +24,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'ManageViaMr',
   apolloProvider,
   components: {
     GlButton,

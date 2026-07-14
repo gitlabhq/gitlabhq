@@ -68,6 +68,9 @@ For more information about included credits, see [GitLab Promotions Terms & Cond
 Monthly Commitment Pool is a shared pool of credits available to all users in the subscription.
 All users in your subscription can draw from this shared pool after they have consumed their included credits.
 
+You can't reserve the pool for a subset of users or isolate consumption to specific users, groups, or projects.
+To limit how much individual users consume, use usage caps.
+
 You can purchase the Monthly Commitment Pool as a recurring annual or multi-year term.
 The number of credits purchased for the year is divided in 12.
 
@@ -114,7 +117,8 @@ and the additional 25 are billed as on-demand usage.
 
 GitLab Credits are consumed in the following order:
 
-1. Included credits are used by each user first.
+1. Temporary evaluation credits are used first.
+1. Included credits are consumed by each user before any shared credits.
 1. Monthly Commitment Pool of credits are used after all included credits have been consumed.
 1. On-Demand credits are used after all other available credits
    (included credits and Monthly Commitment Pool, if applicable) are depleted and usage billing terms are signed.
@@ -253,10 +257,10 @@ You are charged for model usage based on the following billing methods:
 
 - Variable pricing for GitLab-managed models: A request is equivalent to a single LLM call. One flow makes one or many calls. The credit cost depends on the model used.
 - Variable pricing for self-hosted models: A request is equivalent to a single LLM call. One flow makes one or many calls. You can make eight requests with one credit for any [supported](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#supported-models) or [compatible](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#compatible-models) self-hosted model.
-- Flat pricing for GitLab Duo features: Each successful end-to-end execution consumes a pre-set amount of credits, regardless of how many LLM calls (GitLab-managed and self-hosted models) are made during execution.
-
-Only completed calls or executions are billed.
-If a call or execution fails, no credits are deducted.
+- Flat pricing for GitLab Duo features: Each end-to-end execution consumes a pre-set amount of credits, regardless of how many LLM calls (GitLab-managed and self-hosted models) are made during execution. Features that run on a self-hosted model receive a 20% discount on the credits consumed for an execution.
+- Credit deduction for a failed execution depends on the offering:
+  - On GitLab.com with GitLab-managed models, a flow that fails before it completes deducts no credits, even if some LLM calls were already made.
+  - On GitLab Self-Managed with self-hosted models, for features that do not use a flat price, billing is based on individual LLM calls, not flow completion. Each call is metered when it starts, so calls made before a flow fails are still billed. This means a flow that fails partway through may still consume credits for the calls that were already initiated. For flat-priced features, the full flat price is charged even if the flow fails, regardless of how many LLM calls were actually made.
 
 For subsidized models with basic integration:
 
@@ -274,9 +278,12 @@ For premium models with optimized integration:
 |-------|------------------------|
 | `claude-4.5-haiku` | 6.7 |
 | `gpt-5-4-mini` | 6.7 |
+| `gpt-5.6-luna` <sup>2</sup> | 5.0 |
 | `gemini-3.5-flash` | 3.3 |
 | `gpt-5` | 3.3 |
 | `gpt-5-codex` | 3.3 |
+| `claude-sonnet-5` <sup>1</sup> | 3.2 |
+| `gpt-5.6-luna` <sup>3</sup> | 2.86 |
 | `gpt-5.2` | 2.5 |
 | `gpt-5.2-codex` | 2.5 |
 | `gpt-5.3-codex` | 2.5 |
@@ -284,31 +291,50 @@ For premium models with optimized integration:
 | `claude-3.7-sonnet` | 2.0 |
 | `claude-sonnet-4.5` | 2.0 |
 | `claude-sonnet-4.6` | 2.0 |
-| `gpt-5.4` <sup>1</sup> | 2.0 |
+| `gpt-5.4` <sup>2</sup> | 2.0 |
+| `gpt-5.6-terra` <sup>2</sup> | 2.0 |
 | `claude-opus-4.5` | 1.2 |
-| `gpt-5.4` <sup>2</sup> | 1.11 |
+| `gpt-5.4` <sup>3</sup> | 1.11 |
+| `gpt-5.6-terra` <sup>3</sup> | 1.11 |
 | `claude-opus-4.6` | 1.1 |
 | `claude-opus-4.7` | 1.1 |
 | `claude-opus-4.8` | 1.1 |
-| `gpt-5.5` <sup>1</sup> | 1.0 |
-| `gpt-5.5` <sup>2</sup> | 0.57 |
+| `gpt-5.5` <sup>2</sup> | 1.0 |
+| `gpt-5.6-sol` <sup>2</sup> | 1.0 |
+| `claude-fable-5` | 0.6 |
+| `gpt-5.5` <sup>3</sup> | 0.57 |
+| `gpt-5.6-sol` <sup>3</sup> | 0.57 |
 
 **Footnotes**:
 
+1. Promotional pricing through August 31, 2026.
+   Afterwards, the rate changes to approximately 2.1 calls per credit.
 1. Short context window of up to 272,000 tokens.
 1. Long context window of more than 272,000 tokens.
 
 ### Features
 
+{{< history >}}
+
+- Self-hosted model discount introduced in GitLab 19.1 [with a feature flag](../administration/feature_flags/_index.md) named `self_hosted_flat_pricing_discount`.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the self-hosted model discount is controlled by a feature flag.
+> For more information, see the history.
+
 The following table lists the number of executions you can make with one GitLab Credit for different features.
 This pricing applies to all models (including self-hosted models) available for the feature.
 
-| Feature | Executions with one credit |
-|---------|---------------------------|
-| [GitLab Duo Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md) | 50 |
-| Code Review Flow | 4 |
-| SAST False Positive Detection Flow | 1 |
-| SAST Vulnerability Resolution Flow | 0.25 |
+A feature that runs on a [self-hosted model](../administration/gitlab_duo_self_hosted/_index.md) receives a 20% discount.
+
+| Feature | Executions with one credit (GitLab-managed model) | Executions with one credit (self-hosted model) |
+|---------|----------------------------|------------------------------------------------|
+| [GitLab Duo Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md) | 50 | 62.5 |
+| Code Review Flow | 4 | 5 |
+| SAST False Positive Detection Flow | 1 | 1.25 |
+| SAST Vulnerability Resolution Flow | 0.25 | 0.3125 |
 
 For GitLab Duo Agentic Chat, one sent message counts as one or more billable requests,
 because one or more LLM calls are made to answer the question.
@@ -378,7 +404,7 @@ The dashboard displays summary cards of key metrics:
 > This dashboard displays usage of all GitLab Duo Agent Platform features, including non-billable
 > beta and experiment features. To view billable usage only, go to the Customers Portal.
 >
-> Some pre-release features, such as the Security Review Agent, are billable and subject to
+> Some pre-release features, such as the Security Review Flow, are billable and subject to
 > GitLab Credits charges.
 
 The GitLab Credits dashboard in GitLab provides operational visibility into the usage of credits in your organization.

@@ -224,7 +224,9 @@ Sidekiq workers are deferred by two ways,
 1. Manual: Feature flags can be used to explicitly defer a particular worker, more details can be found in [deferring Sidekiq jobs](../feature_flags/_index.md#deferring-sidekiq-jobs).
 1. Automatic: Similar to the [throttling mechanism](../database/batched_background_migrations.md#throttling-batched-migrations) in batched migrations, database health indicators are used to defer a Sidekiq worker.
 
-   To use the automatic deferring mechanism, worker has to opt-in by calling `defer_on_database_health_signal` with `gitlab_schema`, `delay_by` (time to delay) and tables (which is used by autovacuum db indicator) as it's parameters.
+   To use the automatic deferring mechanism, the worker has to opt in by calling `defer_on_database_health_signal`
+   with `gitlab_schema`, `tables` (used by the autovacuum database indicator), and `delay_by`
+   (time to delay, 5 seconds by default) as its parameters.
 
    **Example**:
 
@@ -244,6 +246,33 @@ Sidekiq workers are deferred by two ways,
           Gitlab::Chaos.sleep(duration_s)
         end
       end
+    end
+   ```
+
+   If the schema and tables are not known in advance, pass a block instead of static values.
+   The block receives the job arguments, schema, and tables, and must return an array with the
+   schema and tables to check.
+   The middleware evaluates the block when fetching the job from the queue.
+
+   **Example**:
+
+   ```ruby
+    defer_on_database_health_signal(:gitlab_main, [], 1.minute) do |job_args, schema, tables|
+      resource = Resource.find(job_args.first)
+
+      schema = resource.db_schema
+      tables = [resource.db_table]
+
+      [schema, tables]
+    end
+   ```
+
+   To control when deferral applies, for example to gate deferral behind a feature flag,
+   the worker can override `defer_on_database_health_signal?`:
+
+   ```ruby
+    def self.defer_on_database_health_signal?
+      Feature.enabled?(:defer_my_worker)
     end
    ```
 

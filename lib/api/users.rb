@@ -74,6 +74,12 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
+        # Auditors can :read_all_resources while admins can :read_all_resources and
+        # read_admin_users. In EE, a regular user can read_admin_users through custom admin roles.
+        def can_read_admin_user_data?
+          current_user&.can?(:read_admin_users) || current_user&.can_read_all_resources?
+        end
+
         params :optional_attributes do
           optional :linkedin, type: String, desc: 'The LinkedIn username'
           optional :twitter, type: String, desc: 'The Twitter username'
@@ -229,7 +235,7 @@ module API
 
         authenticated_as_admin! if index_params[:extern_uid].present? && index_params[:provider].present?
 
-        unless current_user&.can?(:read_admin_users)
+        unless can_read_admin_user_data?
           index_params.except!(:created_after, :created_before, :order_by, :sort, :two_factor, :without_projects)
         end
 
@@ -247,7 +253,7 @@ module API
         users = UsersFinder.new(current_user, index_params).execute
         users = reorder_users(users)
 
-        entity = current_user&.can?(:read_admin_users) ? Entities::UserWithAdmin : Entities::UserBasic
+        entity = can_read_admin_user_data? ? Entities::UserWithAdmin : Entities::UserBasic
 
         if entity == Entities::UserWithAdmin
           users = users.preload(:identities, :second_factor_webauthn_registrations, :namespace, :followers, :followees, :user_preference, :user_detail)
@@ -263,7 +269,7 @@ module API
 
       desc 'Retrieve a user as a regular user' do
         detail 'Retrieves a specified user as a regular user.'
-        success Entities::User
+        success Entities::UserProfile
         tags ['users']
       end
       params do
@@ -287,7 +293,7 @@ module API
 
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        opts = { with: current_user.can?(:read_admin_users) ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
+        opts = { with: can_read_admin_user_data? ? Entities::UserDetailsWithAdmin : Entities::UserProfile, current_user: current_user }
         user, opts = with_custom_attributes(user, opts)
 
         present user, opts
@@ -1200,7 +1206,13 @@ module API
           end
           route_setting :authorization, permissions: :read_impersonation_token, boundary_type: :instance
           get feature_category: :system_access do
-            present paginate(finder(declared_params(include_missing: false)).execute), with: Entities::ImpersonationToken
+            tokens = finder(declared_params(include_missing: false)).execute
+
+            if Feature.enabled?(:expose_last_used_ips_for_access_tokens, current_user)
+              tokens = tokens.preload_last_used_ips
+            end
+
+            present paginate(tokens), with: Entities::ImpersonationToken
           end
 
           desc 'Create an impersonation token' do
@@ -1216,16 +1228,36 @@ module API
             optional :description, type: String, desc: 'The description of the personal access token'
             optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the impersonation token'
             optional :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The array of scopes of the impersonation token'
+            use :granular_scope_params
+            mutually_exclusive :scopes, :granular_scopes
           end
           route_setting :authorization, permissions: :create_impersonation_token, boundary_type: :instance
           post feature_category: :system_access do
-            impersonation_token = finder.build(declared_params(include_missing: false))
-            impersonation_token.organization = Current.organization
+            if params[:granular_scopes]
+              target_user = find_user_by_id(params)
+              not_found! if Feature.disabled?(:granular_personal_access_tokens, target_user)
 
-            if impersonation_token.save
-              present impersonation_token, with: Entities::ImpersonationTokenWithToken
+              all_params = declared_params(include_missing: false)
+              granular_scopes = build_granular_scopes(target_user, all_params[:granular_scopes])
+              token_params = all_params.except(:granular_scopes)
+                .merge(impersonation: true, creation_source: PersonalAccessToken::CREATION_SOURCE_API)
+
+              response = create_granular_token(current_user, granular_scopes, token_params, target_user: target_user)
+
+              if response.success?
+                present response.payload[:personal_access_token], with: Entities::ImpersonationTokenWithToken
+              else
+                render_api_error!(response.message, response.reason || :unprocessable_entity)
+              end
             else
-              render_validation_error!(impersonation_token)
+              impersonation_token = finder.build(declared_params(include_missing: false))
+              impersonation_token.organization = Current.organization
+
+              if impersonation_token.save
+                present impersonation_token, with: Entities::ImpersonationTokenWithToken
+              else
+                render_validation_error!(impersonation_token)
+              end
             end
           end
 
@@ -1821,23 +1853,37 @@ module API
         end
         params do
           use :create_personal_access_token_params
+          use :granular_scope_params
           # NOTE: for security reasons only the k8s_proxy and self_rotate scope is allowed at the moment.
           # See details in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923#note_1571272897
           # and in https://gitlab.com/gitlab-org/gitlab/-/issues/425171
           # and in https://gitlab.com/gitlab-org/gitlab/-/issues/555546
-          requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE, ::Gitlab::Auth::SELF_ROTATE_SCOPE].map(&:to_s),
+          optional :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE, ::Gitlab::Auth::SELF_ROTATE_SCOPE].map(&:to_s),
             desc: 'The array of scopes of the personal access token'
+          exactly_one_of :scopes, :granular_scopes
         end
         route_setting :authorization, permissions: :create_personal_access_token, boundary_type: :user
         post feature_category: :system_access do
-          response = ::PersonalAccessTokens::CreateService.new(
-            current_user: current_user, target_user: current_user, params: declared_params(include_missing: false).merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API), organization_id: Current.organization.id
-          ).execute
+          response =
+            if params[:granular_scopes]
+              not_found! if Feature.disabled?(:granular_personal_access_tokens, current_user)
+
+              all_params = declared_params(include_missing: false)
+              granular_scopes = build_granular_scopes(current_user, all_params[:granular_scopes])
+              token_params = all_params.except(:granular_scopes)
+                .merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API)
+
+              create_granular_token(current_user, granular_scopes, token_params)
+            else
+              ::PersonalAccessTokens::CreateService.new(
+                current_user: current_user, target_user: current_user, params: declared_params(include_missing: false).merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API), organization_id: Current.organization.id
+              ).execute
+            end
 
           if response.success?
             present response.payload[:personal_access_token], with: Entities::PersonalAccessTokenWithToken
           else
-            render_api_error!(response.message, response.http_status || :unprocessable_entity)
+            render_api_error!(response.message, response.reason || :unprocessable_entity)
           end
         end
       end

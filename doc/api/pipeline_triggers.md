@@ -27,7 +27,8 @@ GET /projects/:id/triggers
 | `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/triggers"
 ```
 
@@ -62,7 +63,8 @@ GET /projects/:id/triggers/:trigger_id
 | `trigger_id` | integer        | Yes      | The trigger ID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/triggers/5"
 ```
 
@@ -166,7 +168,7 @@ curl --request DELETE \
 
 {{< history >}}
 
-- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10 [with a flag](../administration/feature_flags/_index.md) named `ci_inputs_for_pipelines`. Disabled by default.
+- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10 [with a feature flag](../administration/feature_flags/_index.md) named `ci_inputs_for_pipelines`. Disabled by default.
 - `inputs` attribute [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11.
 - `inputs` attribute [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536548) in GitLab 18.1. Feature flag `ci_inputs_for_pipelines` removed.
 

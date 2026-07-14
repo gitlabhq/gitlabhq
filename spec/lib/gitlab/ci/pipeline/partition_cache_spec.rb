@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::PartitionCache, feature_category: :continuous_integration do
-  let_it_be(:lower_partition, freeze: false) { create(:ci_partition, pipelines_id_range: 100...200) }
-  let_it_be(:upper_partition, freeze: false) { create(:ci_partition, pipelines_id_range: (200...)) }
+  let_it_be_with_reload(:lower_partition) { create(:ci_partition, pipelines_id_range: 100...200) }
+  let_it_be(:upper_partition) { create(:ci_partition, pipelines_id_range: (200...)) }
 
   before do
     described_class.invalidate

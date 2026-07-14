@@ -31,6 +31,7 @@ export default {
       default: false,
     },
   },
+  emits: ['next', 'prev'],
   computed: {
     nodes() {
       return this.organizations.nodes || [];

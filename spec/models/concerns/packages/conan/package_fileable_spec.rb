@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::PackageFileable, type: :model, feature_category: :package_registry do
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:instance, freeze: false) { build(:conan_recipe_revision) }
 
   describe 'associations' do
@@ -27,6 +32,11 @@ RSpec.describe Packages::Conan::PackageFileable, type: :model, feature_category:
     end
 
     context 'when package_files is not empty' do
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:package_file, freeze: false) do
         create(:conan_package_file, :conan_recipe_file, package: instance.package, conan_recipe_revision: instance)
       end

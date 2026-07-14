@@ -3,6 +3,7 @@ import { GlModal, GlDisclosureDropdownItem, GlModalDirective } from '@gitlab/ui'
 import { __, s__, sprintf } from '~/locale';
 
 export default {
+  name: 'DeleteModelVersionDisclosureDropdownItem',
   components: {
     GlModal,
     GlDisclosureDropdownItem,

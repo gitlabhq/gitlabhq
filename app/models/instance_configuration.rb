@@ -211,6 +211,8 @@ class InstanceConfiguration
   end
 
   def ssh_algorithm_md5(ssh_file_content)
+    return if Gitlab::FIPS.enabled?
+
     Gitlab::SSHPublicKey.new(ssh_file_content).fingerprint
   end
 

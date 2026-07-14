@@ -1,9 +1,10 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlNavItem, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
-  components: { GlButton },
+  name: 'IconOnlyToggle',
+  components: { GlNavItem },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -28,18 +29,14 @@ export default {
 </script>
 
 <template>
-  <gl-button
+  <gl-nav-item
     v-gl-tooltip.right="isIconOnly ? text : ''"
-    :class="[
-      'application-chrome-nav-item super-sidebar-nav-item !gl-mx-3 !-gl-mt-2 !gl-mb-2 !gl-justify-start !gl-px-2-5 !gl-py-2',
-      { 'gl-gap-3': !isIconOnly },
-    ]"
-    :button-text-classes="isIconOnly ? 'gl-hidden' : null"
+    :is-icon-only="isIconOnly"
     :icon="icon"
     :aria-label="text"
-    category="tertiary"
     data-testid="super-sidebar-collapse-button"
     @click="emitToggle"
-    >{{ text }}</gl-button
   >
+    {{ text }}
+  </gl-nav-item>
 </template>

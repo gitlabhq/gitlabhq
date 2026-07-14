@@ -392,7 +392,7 @@ RSpec.describe Trigger, feature_category: :tooling do
           end
 
           it 'sets GITLAB_TAG to nil' do
-            expect(subject.variables['GITLAB_TAG']).to eq(nil)
+            expect(subject.variables['GITLAB_TAG']).to be_nil
           end
         end
       end
@@ -404,7 +404,7 @@ RSpec.describe Trigger, feature_category: :tooling do
           end
 
           it 'sets CE_PIPELINE to nil' do
-            expect(subject.variables['CE_PIPELINE']).to eq(nil)
+            expect(subject.variables['CE_PIPELINE']).to be_nil
           end
         end
 
@@ -436,7 +436,7 @@ RSpec.describe Trigger, feature_category: :tooling do
           end
 
           it 'sets EE_PIPELINE to nil' do
-            expect(subject.variables['EE_PIPELINE']).to eq(nil)
+            expect(subject.variables['EE_PIPELINE']).to be_nil
           end
         end
       end
@@ -1059,6 +1059,8 @@ RSpec.describe Trigger, feature_category: :tooling do
           .and_return(double(auto_paginate: mr_notes))
 
         allow(com_gitlab_client).to receive(:update_commit_status)
+
+        allow(com_gitlab_client).to receive(:commit_status).and_return(double(auto_paginate: []))
       end
 
       it 'invokes the trigger with expected variables' do
@@ -1067,14 +1069,43 @@ RSpec.describe Trigger, feature_category: :tooling do
         subject.invoke!
       end
 
-      describe 'pending commit status' do
-        it 'posts a pending database-testing commit status against the upstream target SHA' do
+      context 'when a database-testing commit status is already running for the SHA' do
+        before do
+          allow(com_gitlab_client).to receive(:commit_status)
+            .with(
+              env['CI_PROJECT_PATH'],
+              env['CI_COMMIT_SHA'],
+              name: described_class::COMMIT_STATUS_NAME
+            )
+            .and_return(
+              double(
+                auto_paginate: [
+                  double(
+                    name: described_class::COMMIT_STATUS_NAME,
+                    status: 'running',
+                    target_url: 'https://gitlab.com/gitlab-org/gitlab/-/jobs/1'
+                  )
+                ]
+              )
+            )
+        end
+
+        it 'aborts without triggering a downstream pipeline or posting a new status' do
+          expect(downstream_gitlab_client).not_to receive(:run_trigger)
+          expect(com_gitlab_client).not_to receive(:update_commit_status)
+
+          expect { subject.invoke! }.to raise_error(SystemExit)
+        end
+      end
+
+      describe 'running commit status' do
+        it 'posts a running database-testing commit status against the upstream target SHA' do
           expect_run_trigger_with_params
           expect(com_gitlab_client).to receive(:update_commit_status)
             .with(
               env['CI_PROJECT_PATH'],
               env['CI_COMMIT_SHA'],
-              'pending',
+              'running',
               name: described_class::COMMIT_STATUS_NAME,
               target_url: env['CI_JOB_URL'],
               description: described_class::COMMIT_STATUS_DESCRIPTION
@@ -1094,7 +1125,7 @@ RSpec.describe Trigger, feature_category: :tooling do
               .with(
                 env['CI_PROJECT_PATH'],
                 env['CI_COMMIT_SHA'],
-                'pending',
+                'running',
                 hash_including(name: described_class::COMMIT_STATUS_NAME)
               )
 

@@ -250,9 +250,54 @@ Additional response attributes:
   "lock_duo_features_enabled": false,
   "duo_availability": "default_on",
   "experiment_features_enabled": false,
+  "ai_settings": {
+    "duo_agent_platform_enabled": true,
+    "duo_workflow_mcp_enabled": false,
+    "foundational_agents_default_enabled": true,
+    "ai_catalog_restricted_to_group_hierarchy": false,
+    "ai_usage_data_collection_enabled": false,
+    "prompt_injection_protection_level": "no_checks",
+    "include_recommended_allowed": false,
+    "allow_all_unix_sockets": false,
+    "allow_project_extension": true,
+    "minimum_access_level_execute": "developer",
+    "minimum_access_level_execute_async": "developer",
+    "minimum_access_level_manage": "maintainer",
+    "minimum_access_level_enable_on_projects": "maintainer"
+  },
   ...
 }
 ```
+
+The `ai_settings` object contains the AI-related settings for the group.
+For details, see [Response attributes for `ai_settings`](#response-attributes-for-ai_settings).
+
+### Response attributes for `ai_settings`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239568) in GitLab 19.2.
+
+{{< /history >}}
+
+The `ai_settings` object is included in the response for users who can read the group,
+when GitLab Duo Agent Platform is available for the group. The object contains the following attributes:
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `ai_catalog_restricted_to_group_hierarchy` | boolean | When `true`, the AI Catalog is restricted to items in this top-level group hierarchy. Premium and Ultimate only. |
+| `ai_usage_data_collection_enabled` | boolean | When `true`, AI usage data collection is enabled for this group. GitLab.com only. |
+| `allow_all_unix_sockets` | boolean | When `true`, all Unix sockets are allowed for GitLab Duo Agent Platform. |
+| `allow_project_extension` | boolean | When `true`, projects can extend the network access domain allowlist for GitLab Duo Agent Platform. |
+| `duo_agent_platform_enabled` | boolean | When `true`, GitLab Duo Agent Platform features are enabled for this group. Premium and Ultimate. Also available on the Free tier on GitLab.com with GitLab Credits. |
+| `duo_workflow_mcp_enabled` | boolean | When `true`, MCP support for GitLab Duo Agent Platform is enabled. Premium and Ultimate. Also available on the Free tier on GitLab.com with GitLab Credits. |
+| `foundational_agents_default_enabled` | boolean | When `true`, new foundational agents are enabled by default for this group. Premium and Ultimate. Also available on the Free tier on GitLab.com with GitLab Credits. |
+| `include_recommended_allowed` | boolean | When `true`, recommended domains are included in the network access allowlist for GitLab Duo Agent Platform. |
+| `minimum_access_level_enable_on_projects` | string | The minimum access level required to enable GitLab Duo Agent Platform on projects. One of `developer`, `maintainer`, or `owner`. Returned when the `dap_group_customizable_permissions` feature flag is enabled. |
+| `minimum_access_level_execute` | string | The minimum access level required for users to interact with GitLab Duo Agent Platform features. One of `guest`, `planner`, `reporter`, `developer`, `maintainer`, or `owner`. Returned when the `dap_group_customizable_permissions` feature flag is enabled. |
+| `minimum_access_level_execute_async` | string | The minimum access level required to execute GitLab Duo Agent Platform features in CI/CD. One of `developer`, `maintainer`, or `owner`. Returned when the `dap_group_customizable_permissions` feature flag is enabled. |
+| `minimum_access_level_manage` | string | The minimum access level required to manage GitLab Duo Agent Platform. One of `developer`, `maintainer`, or `owner`. Returned when the `dap_group_customizable_permissions` feature flag is enabled. |
+| `prompt_injection_protection_level` | string | The prompt injection protection level. One of `no_checks`, `log_only`, or `interrupt`. |
 
 When adding the parameter `with_projects=false`, projects aren't returned.
 
@@ -727,6 +772,29 @@ Example response:
       "repository_storage":"default"
    }
 ]
+```
+
+### Delete a shared project
+
+Delete a project shared to a group. Requires the Owner role for the group.
+
+```plaintext
+DELETE /groups/:id/shared_projects/:project_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `project_id` | integer | yes | The ID of the project. |
+
+If successful, returns `204 No Content`.
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/shared_projects/2"
 ```
 
 ### List all SAML users
@@ -1476,7 +1544,7 @@ Parameters:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a feature flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/526771) in GitLab 18.9. Feature flag `archive_group` removed.
 
 {{< /history >}}
@@ -1563,7 +1631,7 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a feature flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/526771) in GitLab 18.9. Feature flag `archive_group` removed.
 
 {{< /history >}}
@@ -1796,17 +1864,14 @@ Returns `204` and no content on success.
 {{< history >}}
 
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183101) in GitLab 18.0. Feature flag `limit_unique_project_downloads_per_namespace_user` removed.
-- `web_based_commit_signing_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193928) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `use_web_based_commit_signing_enabled`. Disabled by default.
-- `allow_personal_snippets` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575) in GitLab 18.5 [with a flag](../administration/feature_flags/_index.md) named `allow_personal_snippets_setting`. Disabled by default.
+- `web_based_commit_signing_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193928) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `use_web_based_commit_signing_enabled`. Disabled by default.
+- `web_based_commit_signing_enabled` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542975) in GitLab 18.10. Feature flag `use_web_based_commit_signing_enabled` removed.
+- `allow_personal_snippets` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575) in GitLab 18.5 [with a feature flag](../administration/feature_flags/_index.md) named `allow_personal_snippets_setting`. Disabled by default.
 - `allow_personal_snippets` [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/583564) in GitLab 18.9. Feature flag `allow_personal_snippets_setting` removed.
-- `built_in_project_templates_enabled` and `lock_built_in_project_templates_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default.
+- `built_in_project_templates_enabled` and `lock_built_in_project_templates_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default.
+- `built_in_project_templates_enabled` and `lock_built_in_project_templates_enabled` [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623) in GitLab 19.2. Feature flag `use_built_in_project_templates_enabled` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of the `web_based_commit_signing_enabled` attribute is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 Updates the attributes for a specified group.
 
@@ -1825,8 +1890,8 @@ PUT /groups/:id
 | `path`                                               | string            | no       | The path of the group. |
 | `auto_devops_enabled`                                | boolean           | no       | Default to Auto DevOps pipeline for all projects within this group. |
 | `avatar`                                             | mixed             | no       | Image file for avatar of the group. |
-| `built_in_project_templates_enabled`                | boolean           | no       | Enable built-in project templates when users create projects in the group. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default. |
-| `lock_built_in_project_templates_enabled`           | boolean           | no       | Enforce the `built_in_project_templates_enabled` setting for all subgroups. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default. |
+| `built_in_project_templates_enabled`                | boolean           | no       | Enable built-in project templates when users create projects in the group. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623) in GitLab 19.2. Feature flag `use_built_in_project_templates_enabled` removed. |
+| `lock_built_in_project_templates_enabled`           | boolean           | no       | Enforce the `built_in_project_templates_enabled` setting for all subgroups. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623) in GitLab 19.2. Feature flag `use_built_in_project_templates_enabled` removed. |
 | `default_branch`                                     | string            | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11. |
 | `default_branch_protection`                          | integer           | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead. |
 | `default_branch_protection_defaults`                 | hash              | no       | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. For available options, see [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
@@ -1997,12 +2062,12 @@ All attributes are optional.
 |-----|------|-------------|
 | `ai_catalog_restricted_to_group_hierarchy` | boolean | When `true`, restricts the AI Catalog to items in this top-level group hierarchy. Can only be set on top-level groups. Premium and Ultimate only. |
 | `ai_usage_data_collection_enabled` | boolean | When `true`, enables AI usage data collection for this group. GitLab.com only. |
-| `allow_all_unix_sockets` | boolean | When `true`, allows all Unix sockets for GitLab Duo Agent Platform network access. Available when the `dap_group_network_access_controls` feature flag is enabled. |
-| `allow_project_extension` | boolean | When `true`, allows projects to extend the network access domain allowlist for GitLab Duo Agent Platform. Available when the `dap_group_network_access_controls` feature flag is enabled. |
+| `allow_all_unix_sockets` | boolean | When `true`, allows all Unix sockets for GitLab Duo Agent Platform. |
+| `allow_project_extension` | boolean | When `true`, allows projects to extend the network access domain allowlist for GitLab Duo Agent Platform. |
 | `duo_agent_platform_enabled` | boolean | When `true`, enables GitLab Duo Agent Platform features for this group. Available on Premium and Ultimate. Also available on the Free tier on GitLab.com with GitLab Credits. |
 | `duo_workflow_mcp_enabled` | boolean | When `true`, enables MCP support for GitLab Duo Agent Platform. Available on Premium and Ultimate. Also available on the Free tier on GitLab.com with GitLab Credits. |
 | `foundational_agents_default_enabled` | boolean | When `true`, new foundational agents are enabled by default for this group. Available on Premium and Ultimate. Also available on the Free tier on GitLab.com with GitLab Credits. |
-| `include_recommended_allowed` | boolean | When `true`, includes recommended domains in the network access allowlist for GitLab Duo Agent Platform. Available when the `dap_group_network_access_controls` feature flag is enabled. |
+| `include_recommended_allowed` | boolean | When `true`, includes recommended domains in the network access allowlist for GitLab Duo Agent Platform. |
 | `minimum_access_level_enable_on_projects` | integer | The minimum access level required to enable GitLab Duo Agent Platform on projects. Valid values: `30` (Developer), `40` (Maintainer), `50` (Owner). Available when the `dap_group_customizable_permissions` feature flag is enabled. |
 | `minimum_access_level_execute` | integer | The minimum access level required for users to use GitLab Duo Agent Platform features. Valid values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), `50` (Owner). Available when the `dap_group_customizable_permissions` feature flag is enabled. |
 | `minimum_access_level_execute_async` | integer | The minimum access level required to execute GitLab Duo Agent Platform features in CI/CD. Valid values: `30` (Developer), `40` (Maintainer), `50` (Owner). Available when the `dap_group_customizable_permissions` feature flag is enabled. |
@@ -2096,7 +2161,7 @@ POST /groups/:id/ldap_sync
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16343) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `manage_pat_by_group_owners_ready`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16343) in GitLab 18.6 [with a feature flag](../administration/feature_flags/_index.md) named `manage_pat_by_group_owners_ready`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/578133) in GitLab 18.7. Feature flag `manage_pat_by_group_owners_ready` removed.
 
 {{< /history >}}

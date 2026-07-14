@@ -46,6 +46,22 @@ RSpec.describe Cells::LostTransactionRecoveryWorker, feature_category: :cell do
         worker.perform
       end
 
+      it 'runs a windowed reconciliation outside the top of the hour' do
+        travel_to(Time.utc(2026, 1, 1, 3, 30)) do
+          expect(mock_reconciliation_service).to receive(:execute).with(full_scan: false)
+
+          worker.perform
+        end
+      end
+
+      it 'runs a full scan at the top of the hour' do
+        travel_to(Time.utc(2026, 1, 1, 3, 0)) do
+          expect(mock_reconciliation_service).to receive(:execute).with(full_scan: true)
+
+          worker.perform
+        end
+      end
+
       it 'logs reconciliation summary with correct counts' do
         expect(worker).to receive(:log_hash_metadata_on_done).with(
           message: 'Lost transaction recovery completed',

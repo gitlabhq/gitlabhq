@@ -6,7 +6,7 @@ require 'gitlab/dangerfiles/spec_helper'
 require_relative '../../../tooling/danger/config_files'
 require_relative '../../../tooling/danger/project_helper'
 
-RSpec.describe Tooling::Danger::ConfigFiles do
+RSpec.describe Tooling::Danger::ConfigFiles, feature_category: :tooling do
   include_context "with dangerfile"
 
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }

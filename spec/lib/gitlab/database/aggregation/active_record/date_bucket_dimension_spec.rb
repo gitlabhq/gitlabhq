@@ -96,7 +96,7 @@ RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::DateBucketDimension,
     )
 
     expect(engine).to execute_aggregation(request).with_errors(array_including(
-      a_string_matching(%r{Unknown granularity "daily"})
+      a_string_matching(%r{Invalid value\(s\) for parameter `granularity`: daily})
     ))
   end
 end

@@ -7,6 +7,7 @@ project:
   raw_permissions:
   - _read_public_build
   - _read_public_ci_cd_analytics
+  - _read_public_pipeline
   - _read_public_pipeline_schedule
   - download_code
   - download_debian_package
@@ -16,9 +17,11 @@ project:
   - download_maven_package_file
   - download_npm_package
   - download_nuget_package
+  - download_package
   - download_pypi_package
   - download_wiki_code
   - read_analytics
+  - read_approval_rule
   - read_avatar
   - read_badge
   - read_branch
@@ -27,6 +30,8 @@ project:
   - read_commit
   - read_commit_comment
   - read_commit_diff
+  - read_commit_discussion
+  - read_commit_discussion_note
   - read_commit_merge_request
   - read_commit_ref
   - read_commit_sequence
@@ -37,18 +42,30 @@ project:
   - read_cycle_analytics
   - read_deployment
   - read_environment
+  - read_event
   - read_fork
   - read_go_module
   - read_insights
+  - read_issuable_metric_image
   - read_issue
   - read_issue_board
   - read_issue_board_list
   - read_issue_closing_merge_request
+  - read_issue_discussion
+  - read_issue_discussion_note
+  - read_issue_iteration_event
+  - read_issue_label_event
   - read_issue_merge_request
+  - read_issue_milestone_event
+  - read_issue_note
+  - read_issue_note_award_emoji
   - read_issue_participant
+  - read_issue_state_event
   - read_issue_statistic
   - read_issue_time_statistic
+  - read_issue_weight_event
   - read_label
+  - read_member
   - read_merge_request
   - read_merge_request_approval_rule
   - read_merge_request_approval_state
@@ -56,16 +73,24 @@ project:
   - read_merge_request_commit
   - read_merge_request_context_commit
   - read_merge_request_diff
+  - read_merge_request_discussion
+  - read_merge_request_discussion_note
   - read_merge_request_draft_note
   - read_merge_request_iid
+  - read_merge_request_label_event
   - read_merge_request_merge_ref
+  - read_merge_request_milestone_event
+  - read_merge_request_note
+  - read_merge_request_note_award_emoji
   - read_merge_request_participant
   - read_merge_request_pipeline
   - read_merge_request_raw_diff
   - read_merge_request_related_issue
   - read_merge_request_reviewer
+  - read_merge_request_state_event
   - read_merge_request_time_statistic
   - read_milestone
+  - read_model_version
   - read_note
   - read_npm_package
   - read_npm_package_tag
@@ -91,22 +116,37 @@ project:
   - read_repository_tag_signature
   - read_repository_tree
   - read_snippet
+  - read_snippet_discussion
+  - read_snippet_discussion_note
+  - read_snippet_note
+  - read_snippet_note_award_emoji
   - read_starring_user
   - read_upload
   - read_wiki
+  - read_wiki_page_meta_note
+  - use_global_search
 group:
   permissions: []
   raw_permissions:
   - download_maven_package_file
+  - download_pypi_package
   - read_avatar
   - read_badge
   - read_composer_package
   - read_descendant_group
   - read_epic_award_emoji
+  - read_epic_discussion
+  - read_epic_discussion_note
+  - read_epic_issue
+  - read_epic_label_event
+  - read_epic_link
+  - read_epic_note
   - read_epic_note_award_emoji
+  - read_epic_state_event
   - read_group
   - read_issue_statistic
   - read_markdown_upload
+  - read_member
   - read_merge_request
   - read_milestone_issue
   - read_milestone_merge_request
@@ -114,5 +154,9 @@ group:
   - read_package
   - read_package_within_public_registries
   - read_project
+  - read_pypi_package
   - read_shared_project
   - read_subgroup
+  - read_wiki
+  - read_wiki_page_meta_note
+  - use_global_search

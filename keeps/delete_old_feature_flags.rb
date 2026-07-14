@@ -29,7 +29,7 @@ module Keeps
       'locale/',
       'db/structure.sql'
     ].freeze
-    ROLLOUT_ISSUE_URL_REGEX = %r{\Ahttps://gitlab\.com/(?<project_path>.*)/-/issues/(?<issue_iid>\d+)\z}
+    ROLLOUT_ISSUE_URL_REGEX = %r{\Ahttps://gitlab\.com/(?<project_path>.*)/-/(?:issues|work_items)/(?<issue_iid>\d+)\z}
     API_ISSUE_URL = "https://gitlab.com/api/v4/projects/%<project_path>s/issues/%<issue_iid>s"
     FEATURE_FLAG_LOG_ISSUES_URL = "https://gitlab.com/gitlab-com/gl-infra/feature-flag-log/-/issues/?search=%<feature_flag_name>s&sort=created_date&state=all&label_name%%5B%%5D=host%%3A%%3Agitlab.com"
     MISSING_URL_PLACEHOLDER = '(missing URL)'
@@ -434,7 +434,7 @@ module Keeps
     end
 
     def all_feature_flag_files
-      Dir.glob("{,ee/}config/feature_flags/{development,gitlab_com_derisk,beta,wip}/*.yml")
+      Dir.glob("{,ee/}config/feature_flags/{development,gitlab_com_derisk,beta,wip,experiment}/*.yml")
     end
 
     def remove_feature_flag_prompts

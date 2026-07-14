@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI Coding
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Documentation for the REST API for merge requests in GitLab.
@@ -20,7 +20,7 @@ title: Merge requests API
 - `reference` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7.
 - `merged_by` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7.
 - `merge_status` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in favor of `detailed_merge_status` in GitLab 15.6.
-- `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11 [with a flag](../administration/feature_flags/_index.md) named `restrict_merge_status_recheck` to be ignored for requests from users with insufficient permissions. Disabled by default.
+- `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11 [with a feature flag](../administration/feature_flags/_index.md) named `restrict_merge_status_recheck` to be ignored for requests from users with insufficient permissions. Disabled by default.
 - `approvals_before_merge` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503) in GitLab 16.0.
 - `prepared_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122001) in GitLab 16.1.
 - `merge_user_id` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 17.0.
@@ -2317,7 +2317,7 @@ Example response:
 
 {{< history >}}
 
-- `generated_file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags/_index.md) named `collapse_generated_diff_files`. Disabled by default.
+- `generated_file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a feature flag](../administration/feature_flags/_index.md) named `collapse_generated_diff_files`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670) in GitLab 16.10.
 - `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
 - `collapsed` and `too_large` response attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199633) in GitLab 18.4.
@@ -2921,6 +2921,7 @@ curl --request DELETE \
   [with a feature flag](../administration/feature_flags/_index.md) named
   `fix_merge_api_train_bypass`. Disabled by default. The merge request is added to the merge
   train instead of merging directly.
+- Feature flag `fix_merge_api_train_bypass` removed in GitLab 19.1.
 
 {{< /history >}}
 

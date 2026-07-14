@@ -8,6 +8,7 @@ import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import { __, s__ } from '~/locale';
 
 export default {
+  name: 'StickyHeader',
   NAMESPACE_PROJECT,
   components: {
     ConfidentialityBadge,
@@ -70,6 +71,7 @@ export default {
       required: true,
     },
   },
+  emits: ['hide', 'show'],
   computed: {
     isOpen() {
       return this.issuableState === STATUS_OPEN || this.issuableState === STATUS_REOPENED;

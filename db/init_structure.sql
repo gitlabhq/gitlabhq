@@ -10139,29 +10139,6 @@ CREATE SEQUENCE ai_catalog_items_id_seq
 
 ALTER SEQUENCE ai_catalog_items_id_seq OWNED BY ai_catalog_items.id;
 
-CREATE TABLE ai_code_suggestion_events (
-    id bigint NOT NULL,
-    "timestamp" timestamp with time zone NOT NULL,
-    user_id bigint NOT NULL,
-    organization_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    event smallint NOT NULL,
-    namespace_path text,
-    payload jsonb,
-    CONSTRAINT check_ba9ae3f258 CHECK ((char_length(namespace_path) <= 255))
-)
-PARTITION BY RANGE ("timestamp");
-
-CREATE SEQUENCE ai_code_suggestion_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE ai_code_suggestion_events_id_seq OWNED BY ai_code_suggestion_events.id;
-
 CREATE TABLE ai_conversation_messages (
     id bigint NOT NULL,
     thread_id bigint NOT NULL,
@@ -10210,31 +10187,6 @@ CREATE SEQUENCE ai_conversation_threads_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ai_conversation_threads_id_seq OWNED BY ai_conversation_threads.id;
-
-CREATE TABLE ai_duo_chat_events (
-    id bigint NOT NULL,
-    "timestamp" timestamp with time zone NOT NULL,
-    user_id bigint NOT NULL,
-    personal_namespace_id bigint,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    event smallint NOT NULL,
-    namespace_path text,
-    payload jsonb,
-    organization_id bigint,
-    CONSTRAINT check_628cdfbf3f CHECK ((char_length(namespace_path) <= 255)),
-    CONSTRAINT check_f759f45177 CHECK ((organization_id IS NOT NULL))
-)
-PARTITION BY RANGE ("timestamp");
-
-CREATE SEQUENCE ai_duo_chat_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE ai_duo_chat_events_id_seq OWNED BY ai_duo_chat_events.id;
 
 CREATE SEQUENCE ai_events_counts_id_seq
     START WITH 1
@@ -10370,30 +10322,6 @@ CREATE TABLE ai_testing_terms_acceptances (
     user_email text NOT NULL,
     CONSTRAINT check_5efe98894e CHECK ((char_length(user_email) <= 255))
 );
-
-CREATE TABLE ai_troubleshoot_job_events (
-    id bigint NOT NULL,
-    "timestamp" timestamp with time zone NOT NULL,
-    user_id bigint NOT NULL,
-    job_id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    event smallint NOT NULL,
-    namespace_path text,
-    payload jsonb,
-    CONSTRAINT check_29d6dbc329 CHECK ((char_length(namespace_path) <= 255))
-)
-PARTITION BY RANGE ("timestamp");
-
-CREATE SEQUENCE ai_troubleshoot_job_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE ai_troubleshoot_job_events_id_seq OWNED BY ai_troubleshoot_job_events.id;
 
 CREATE SEQUENCE ai_usage_events_id_seq
     START WITH 1
@@ -30359,13 +30287,9 @@ ALTER TABLE ONLY ai_catalog_item_versions ALTER COLUMN id SET DEFAULT nextval('a
 
 ALTER TABLE ONLY ai_catalog_items ALTER COLUMN id SET DEFAULT nextval('ai_catalog_items_id_seq'::regclass);
 
-ALTER TABLE ONLY ai_code_suggestion_events ALTER COLUMN id SET DEFAULT nextval('ai_code_suggestion_events_id_seq'::regclass);
-
 ALTER TABLE ONLY ai_conversation_messages ALTER COLUMN id SET DEFAULT nextval('ai_conversation_messages_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_conversation_threads ALTER COLUMN id SET DEFAULT nextval('ai_conversation_threads_id_seq'::regclass);
-
-ALTER TABLE ONLY ai_duo_chat_events ALTER COLUMN id SET DEFAULT nextval('ai_duo_chat_events_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_events_counts ALTER COLUMN id SET DEFAULT nextval('ai_events_counts_id_seq'::regclass);
 
@@ -30378,8 +30302,6 @@ ALTER TABLE ONLY ai_namespace_feature_settings ALTER COLUMN id SET DEFAULT nextv
 ALTER TABLE ONLY ai_self_hosted_models ALTER COLUMN id SET DEFAULT nextval('ai_self_hosted_models_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_settings ALTER COLUMN id SET DEFAULT nextval('ai_settings_id_seq'::regclass);
-
-ALTER TABLE ONLY ai_troubleshoot_job_events ALTER COLUMN id SET DEFAULT nextval('ai_troubleshoot_job_events_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_usage_events ALTER COLUMN id SET DEFAULT nextval('ai_usage_events_id_seq'::regclass);
 
@@ -32706,17 +32628,11 @@ ALTER TABLE ONLY ai_catalog_item_versions
 ALTER TABLE ONLY ai_catalog_items
     ADD CONSTRAINT ai_catalog_items_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY ai_code_suggestion_events
-    ADD CONSTRAINT ai_code_suggestion_events_pkey PRIMARY KEY (id, "timestamp");
-
 ALTER TABLE ONLY ai_conversation_messages
     ADD CONSTRAINT ai_conversation_messages_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_conversation_threads
     ADD CONSTRAINT ai_conversation_threads_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY ai_duo_chat_events
-    ADD CONSTRAINT ai_duo_chat_events_pkey PRIMARY KEY (id, "timestamp");
 
 ALTER TABLE ONLY ai_events_counts
     ADD CONSTRAINT ai_events_counts_pkey PRIMARY KEY (id, events_date);
@@ -32738,9 +32654,6 @@ ALTER TABLE ONLY ai_settings
 
 ALTER TABLE ONLY ai_testing_terms_acceptances
     ADD CONSTRAINT ai_testing_terms_acceptances_pkey PRIMARY KEY (user_id);
-
-ALTER TABLE ONLY ai_troubleshoot_job_events
-    ADD CONSTRAINT ai_troubleshoot_job_events_pkey PRIMARY KEY (id, "timestamp");
 
 ALTER TABLE ONLY ai_usage_events
     ADD CONSTRAINT ai_usage_events_pkey PRIMARY KEY (id, "timestamp");
@@ -38068,8 +37981,6 @@ CREATE INDEX idx_project_control_statuses_on_project_id ON project_control_compl
 
 CREATE INDEX idx_project_control_statuses_on_requirement_id ON project_control_compliance_statuses USING btree (compliance_requirement_id);
 
-CREATE INDEX idx_project_namespace_id_from_namespace_path_timestamp_and_id ON ONLY ai_code_suggestion_events USING btree ((("substring"(namespace_path, '([0-9]+)[^0-9]*$'::text))::bigint), "timestamp", id);
-
 CREATE INDEX idx_project_repository_check_partial ON projects USING btree (repository_storage, created_at) WHERE (last_repository_check_at IS NULL);
 
 CREATE INDEX idx_project_requirement_statuses_on_framework_id ON project_requirement_compliance_statuses USING btree (compliance_framework_id);
@@ -38446,10 +38357,6 @@ CREATE INDEX index_ai_catalog_items_on_verification_level ON ai_catalog_items US
 
 CREATE INDEX index_ai_catalog_items_where_deleted_at_is_null ON ai_catalog_items USING btree (deleted_at) WHERE (deleted_at IS NULL);
 
-CREATE INDEX index_ai_code_suggestion_events_on_organization_id ON ONLY ai_code_suggestion_events USING btree (organization_id);
-
-CREATE INDEX index_ai_code_suggestion_events_on_user_id ON ONLY ai_code_suggestion_events USING btree (user_id);
-
 CREATE INDEX index_ai_conversation_messages_on_agent_version_id ON ai_conversation_messages USING btree (agent_version_id);
 
 CREATE INDEX index_ai_conversation_messages_on_message_xid ON ai_conversation_messages USING btree (message_xid);
@@ -38465,12 +38372,6 @@ CREATE INDEX index_ai_conversation_threads_on_last_updated_at ON ai_conversation
 CREATE INDEX index_ai_conversation_threads_on_organization_id ON ai_conversation_threads USING btree (organization_id);
 
 CREATE INDEX index_ai_conversation_threads_on_user_id_and_last_updated_at ON ai_conversation_threads USING btree (user_id, last_updated_at);
-
-CREATE INDEX index_ai_duo_chat_events_on_organization_id ON ONLY ai_duo_chat_events USING btree (organization_id);
-
-CREATE INDEX index_ai_duo_chat_events_on_personal_namespace_id ON ONLY ai_duo_chat_events USING btree (personal_namespace_id);
-
-CREATE INDEX index_ai_duo_chat_events_on_user_id ON ONLY ai_duo_chat_events USING btree (user_id);
 
 CREATE INDEX index_ai_events_counts_on_organization_id ON ONLY ai_events_counts USING btree (organization_id);
 
@@ -38497,12 +38398,6 @@ CREATE INDEX index_ai_settings_on_duo_workflow_oauth_application_id ON ai_settin
 CREATE INDEX index_ai_settings_on_duo_workflow_service_account_user_id ON ai_settings USING btree (duo_workflow_service_account_user_id);
 
 CREATE UNIQUE INDEX index_ai_settings_on_singleton ON ai_settings USING btree (singleton);
-
-CREATE INDEX index_ai_troubleshoot_job_events_on_job_id ON ONLY ai_troubleshoot_job_events USING btree (job_id);
-
-CREATE INDEX index_ai_troubleshoot_job_events_on_project_id ON ONLY ai_troubleshoot_job_events USING btree (project_id);
-
-CREATE INDEX index_ai_troubleshoot_job_events_on_user_id ON ONLY ai_troubleshoot_job_events USING btree (user_id);
 
 CREATE INDEX index_ai_usage_events_on_namespace_id_event_timestamp_and_id ON ONLY ai_usage_events USING btree (namespace_id, event, "timestamp", id);
 
@@ -49964,9 +49859,6 @@ ALTER TABLE ONLY packages_conan_file_metadata
 ALTER TABLE ONLY related_epic_links
     ADD CONSTRAINT fk_rails_0b72027748 FOREIGN KEY (target_id) REFERENCES epics(id) ON DELETE CASCADE;
 
-ALTER TABLE ai_code_suggestion_events
-    ADD CONSTRAINT fk_rails_0ba241cf56 FOREIGN KEY (organization_id) REFERENCES organizations(id);
-
 ALTER TABLE ONLY audit_events_external_audit_event_destinations
     ADD CONSTRAINT fk_rails_0bc80a4edc FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -50158,9 +50050,6 @@ ALTER TABLE ONLY granular_scopes
 
 ALTER TABLE ONLY external_status_checks
     ADD CONSTRAINT fk_rails_1f5a8aa809 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ai_troubleshoot_job_events
-    ADD CONSTRAINT fk_rails_1fb7e812da FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dora_daily_metrics
     ADD CONSTRAINT fk_rails_1fd07aff6f FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
@@ -50881,9 +50770,6 @@ ALTER TABLE ONLY merge_request_context_commit_diff_files
 
 ALTER TABLE ONLY audit_events_streaming_http_group_namespace_filters
     ADD CONSTRAINT fk_rails_74a28d2432 FOREIGN KEY (external_audit_event_destination_id) REFERENCES audit_events_external_audit_event_destinations(id) ON DELETE CASCADE;
-
-ALTER TABLE ai_duo_chat_events
-    ADD CONSTRAINT fk_rails_74ddd0b91f FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_workloads
     ADD CONSTRAINT fk_rails_74f339da60 FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -51709,9 +51595,6 @@ ALTER TABLE ONLY board_user_preferences
 
 ALTER TABLE uploads_9ba88c4165
     ADD CONSTRAINT fk_rails_dc321bb575 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ai_duo_chat_events
-    ADD CONSTRAINT fk_rails_dc42b37fb3 FOREIGN KEY (personal_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY instance_audit_events_streaming_headers
     ADD CONSTRAINT fk_rails_dc933c1f3c FOREIGN KEY (instance_external_audit_event_destination_id) REFERENCES audit_events_instance_external_audit_event_destinations(id) ON DELETE CASCADE;

@@ -84,57 +84,5 @@ RSpec.describe RemoveUnacceptedMemberInvitesWorker, feature_category: :system_ac
         expect(Member.where(id: accepted_project_invitee.id)).to exist
       end
     end
-
-    context 'when cells claims cleanup' do
-      before do
-        stub_const("#{described_class}::EXPIRATION_THRESHOLD", 1.day)
-      end
-
-      let_it_be(:expired_invitee) do
-        create(
-          :group_member,
-          :invited,
-          created_at: 5.days.ago
-        )
-      end
-
-      context 'when invite_email claims are enabled' do
-        before do
-          allow(Member).to receive(:cells_claims_enabled_for_attribute?)
-            .with(:invite_email).and_return(true)
-        end
-
-        it 'enqueues BulkClaimsWorker with destroy metadata for the deleted invite' do
-          expect(Cells::BulkClaimsWorker).to receive(:perform_async).with(
-            'Member',
-            'invite_email',
-            hash_including(
-              'destroy_metadata' => array_including(
-                hash_including('bucket_value' => expired_invitee.invite_email, 'primary_key' => expired_invitee.id)
-              )
-            )
-          )
-
-          worker.perform
-        end
-      end
-
-      context 'when invite_email claims are disabled' do
-        before do
-          allow(Member).to receive(:cells_claims_enabled_for_attribute?)
-            .with(:invite_email).and_return(false)
-        end
-
-        it 'does not enqueue BulkClaimsWorker' do
-          expect(Cells::BulkClaimsWorker).not_to receive(:perform_async)
-
-          worker.perform
-        end
-
-        it 'still deletes the expired invite' do
-          expect { worker.perform }.to change { Member.where(id: expired_invitee.id).count }.from(1).to(0)
-        end
-      end
-    end
   end
 end

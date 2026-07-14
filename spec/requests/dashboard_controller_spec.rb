@@ -39,7 +39,7 @@ RSpec.describe DashboardController, feature_category: :system_access do
 
   context 'issues dashboard' do
     it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
-      let_it_be(:current_user, freeze: false) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
 
       before do
         sign_in current_user
@@ -56,7 +56,7 @@ RSpec.describe DashboardController, feature_category: :system_access do
   end
 
   context 'merge requests dashboard' do
-    let_it_be(:current_user, freeze: false) { create(:user) }
+    let_it_be(:current_user) { create(:user) }
 
     before do
       sign_in current_user
@@ -81,7 +81,7 @@ RSpec.describe DashboardController, feature_category: :system_access do
 
   context 'search merge requests dashboard' do
     it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
-      let_it_be(:current_user, freeze: false) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
 
       before do
         sign_in current_user
@@ -98,7 +98,7 @@ RSpec.describe DashboardController, feature_category: :system_access do
   end
 
   shared_examples 'load project events' do
-    let_it_be(:current_user, freeze: false) { create(:user) }
+    let_it_be(:current_user) { create(:user) }
     let_it_be(:user1) { create(:user) }
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:events) { create_list(:event, 25, author: user1, project: project) } # rubocop:disable FactoryBot/ExcessiveCreateList -- We need more than 20 events to demonstrate how the controller limits the amount of returned objects
@@ -176,7 +176,7 @@ RSpec.describe DashboardController, feature_category: :system_access do
   end
 
   context "when fetching all user activity" do
-    let_it_be(:current_user, freeze: false) { create(:user) }
+    let_it_be(:current_user) { create(:user) }
     let_it_be(:recent_project) { create(:project, :public, title: "Recent Project") }
     let_it_be(:old_project) { create(:project, :public, title: "Old Project") }
     let_it_be(:oldest_event) { create(:event, author: current_user, project: old_project, created_at: 2.days.ago.beginning_of_day) }

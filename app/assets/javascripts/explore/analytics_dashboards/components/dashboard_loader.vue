@@ -16,6 +16,7 @@ export default {
   name: 'DashboardLoader',
   components: { GlSkeletonLoader, GlAlert },
   inject: ['breadcrumbState'],
+  emits: ['loaded'],
   data() {
     return {
       dashboard: null,
@@ -58,13 +59,13 @@ export default {
         ? GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT
         : undefined;
     },
-    hasPanels() {
-      return this.config.panels && this.config.panels.length > 0;
-    },
   },
   watch: {
     dashboard() {
       this.breadcrumbState.update({ name: this.config.title, slug: this.slug });
+      // Emit the processed config so consumers receive panels with unique ids,
+      // matching what the slot-scoped config renders.
+      this.$emit('loaded', JSON.parse(JSON.stringify({ ...this.dashboard, config: this.config })));
     },
   },
   apollo: {
@@ -99,7 +100,6 @@ export default {
       name="dashboard"
       :dashboard-id="dashboardId"
       :config="config"
-      :has-panels="hasPanels"
       :cell-height="cellHeight"
       :min-cell-height="minCellHeight"
       :is-system-dashboard="isSystemDashboard"

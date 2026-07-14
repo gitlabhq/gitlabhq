@@ -36,7 +36,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   inject: [
-    'pageInfo',
     'currentUserData',
     'markdownPreviewPath',
     'noteableType',

@@ -194,9 +194,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
     end
 
     context 'suggestions' do
-      it 'displays list of related issues' do
-        visit(new_project_issue_path(project))
-
+      it 'displays list of related issues', :aggregate_failures do
         issue = create(:issue, project: project)
         create(:issue, project: project, title: 'test issue')
 
@@ -204,9 +202,10 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
 
         fill_in 'Title', with: issue.title
 
-        expect(page).to have_text('Similar items')
-
+        # Wait on the result item (rendered only after the debounced query resolves)
+        # before the panel title, which is present-but-hidden until then.
         expect(page).to have_css('.suggestion-item', text: issue.title, count: 1)
+        expect(page).to have_text('Similar items')
       end
     end
 

@@ -44,10 +44,7 @@
   .user-profile{ class: @user.blocked? ? '' : 'user-profile-with-sidebar' }
     .user-profile-content
       - if allowable_actions.any?
-        - if Feature.enabled?(:profile_tabs_vue, current_user)
-          #js-user-profile-app{ data: user_profile_app_data(@user) }
-        - else
-          = render 'users/legacy_tabs', action: @action, endpoint: @endpoint, allowable_actions: allowable_actions
+        = render 'users/legacy_tabs', action: @action, endpoint: @endpoint, allowable_actions: allowable_actions
         .loading.hide
           = render Pajamas::SpinnerComponent.new(size: :md)
       - else

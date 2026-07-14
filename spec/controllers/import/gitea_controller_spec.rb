@@ -146,6 +146,34 @@ RSpec.describe Import::GiteaController, feature_category: :importers do
       end
     end
 
+    it 'imports the project into a namespace scoped to the current organization', :aggregate_failures do
+      group = create(:group)
+      group.add_owner(user)
+      provider_user = double('user', login: user.username)
+      provider_repo = {
+        name: 'vim',
+        full_name: "#{user.username}/vim",
+        owner: double('owner', login: user.username),
+        clone_url: 'https://try.gitea.io/user/vim.git',
+        description: 'provider',
+        private: false,
+        has_wiki: false
+      }
+
+      stub_client(user: provider_user, repo: provider_repo, repository: provider_repo)
+      assign_host_url
+      assign_session_token(provider)
+
+      expect { post :create, params: { target_namespace: group.full_path }, format: :json }
+        .to change { Project.count }.by(1)
+
+      expect(response).to have_gitlab_http_status(:ok)
+
+      project = group.projects.last
+      expect(project.namespace).to eq(group)
+      expect(project.organization_id).to eq(current_organization.id)
+    end
+
     it_behaves_like 'project import rate limiter'
   end
 

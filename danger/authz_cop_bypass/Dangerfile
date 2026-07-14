@@ -1,0 +1,3 @@
+# frozen_string_literal: true
+
+authz_cop_bypass.add_comment_for_authz_cop_bypass

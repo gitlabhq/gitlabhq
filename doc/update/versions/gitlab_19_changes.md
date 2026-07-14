@@ -140,6 +140,20 @@ The `s3_v2` driver introduces two breaking changes for non-AWS S3-compatible bac
   versions, OVH S3, and other S3-compatible backends may reject these with HTTP 400
   (`XAmzContentSHA256Mismatch`). Add `'checksum_disabled' => true` to disable this behavior.
 
+  The `checksum_disabled` setting only suppresses checksums on upload (`PutObject`) calls.
+  The `DeleteObjects` code path also sends a CRC32 checksum header that some S3-compatible
+  backends do not support. If your backend rejects this header, image pushes that trigger
+  blob deletions fail with a `MissingContentMD5` or `InvalidRequest` error even when
+  `checksum_disabled` is set to `true`.
+
+  To resolve this issue, upgrade your S3-compatible storage backend to a version that
+  supports CRC32 checksum headers. Consult your storage provider's documentation for
+  the minimum version required.
+
+  No `gitlab.rb` configuration workaround exists for the `DeleteObjects` code path.
+  For more information, see
+  [issue 2309](https://gitlab.com/gitlab-org/container-registry/-/issues/2309).
+
 For Ceph RGW and most S3-compatible backends, update your configuration as follows:
 
 ```ruby
@@ -229,8 +243,10 @@ distribution. Before upgrading to GitLab 19.0, migrate to Ubuntu 22.04 or anothe
 - Affected versions: 19.0.0
 
 Support for Redis 6 is removed in GitLab 19.0. If you use an external Redis 6 deployment, migrate
-to Redis 7.2 or Valkey 7.2 before upgrading. The bundled Redis included with the Linux package has
-used Redis 7 since GitLab 16.2 and is not affected.
+to Redis 7.0 or higher, or Valkey 7.2, before upgrading. Redis 7.2 or Valkey 7.2 is recommended.
+Redis 7.0 has reached end-of-life (EOL) upstream, but in some cases is actively maintained by
+vendors, such as Amazon ElastiCache for Redis 7.1. The bundled Redis included with the Linux
+package has used Redis 7 since GitLab 16.2 and is not affected.
 
 ### Mattermost removed from the Linux package
 
@@ -241,6 +257,19 @@ Bundled Mattermost is removed from the Linux package in GitLab 19.0. If you curr
 bundled Mattermost, see
 [Migrating from the Linux package to Mattermost Standalone](https://docs.mattermost.com/administration-guide/onboard/migrate-gitlab-omnibus.html)
 for migration instructions. If you do not use the bundled Mattermost, you are not impacted.
+
+Before upgrading to GitLab 19.0, remove or comment out all `mattermost[...]` settings from `/etc/gitlab/gitlab.rb`.
+If any `mattermost[...]` keys remain, `gitlab-ctl reconfigure` aborts immediately after the package
+is installed with:
+
+```plaintext
+RuntimeError: Removed configurations found in gitlab.rb. Aborting reconfigure.
+```
+
+> [!NOTE]
+> `gitlab-ctl check-config --version 19.0.x` does not currently detect this condition.
+> Do not rely on `check-config` to validate Mattermost key removal before upgrading.
+> See [issue 9916](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9916) for details.
 
 ### Linux package support for SUSE distributions discontinued
 

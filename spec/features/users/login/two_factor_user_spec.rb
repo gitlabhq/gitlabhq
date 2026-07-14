@@ -23,13 +23,27 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
   describe 'with two-factor authentication', :js do
     def enter_code(code, only_two_factor_webauthn_enabled: false)
-      if only_two_factor_webauthn_enabled # rubocop:disable RSpec/AvoidConditionalStatements -- shared helper used for both WebAuthn-only and TOTP/WebAuthn paths; the branch reflects a real UI difference, not test flakiness
-        # When this button is visible we know that the JavaScript functionality is ready.
-        find_button(_('Try again?'))
-        click_button _("Sign in via 2FA code")
-      end
+      # rubocop:disable RSpec/AvoidConditionalStatements -- the legacy and Vue WebAuthn screens reach the code field differently
+      if only_two_factor_webauthn_enabled && Feature.enabled?(:two_factor_vue, user)
+        # The Vue WebAuthn screen has no OTP input. WebAuthn-only users reach the recovery code
+        # field via "Recover your account"; Capybara waits for the button, which also confirms
+        # the Vue screen has mounted.
+        find_by_testid('recovery-button').click
+        fill_in s_('TwoFactorAuth|Recovery code'), with: code
+      else
+        if only_two_factor_webauthn_enabled
+          # The legacy WebAuthn screen hides the OTP form behind a "Sign in via 2FA code" toggle.
+          find_button(_('Try again?'))
+          click_button _('Sign in via 2FA code')
+        end
 
-      fill_in _('Enter verification code'), with: code
+        # Fill by DOM name (not label): it's the one anchor shared by the legacy HAML
+        # ("Enter verification code") and Vue ("6-digit code") screens. When :two_factor_vue
+        # is removed, replace it for fill_in s_('TwoFactorAuth|6-digit code').
+        fill_in 'user_otp_attempt', with: code
+      end
+      # rubocop:enable RSpec/AvoidConditionalStatements
+
       click_button _('Verify code')
     end
 
@@ -94,6 +108,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
             expect(ActiveSession).to receive(:cleanup).with(user).once.and_call_original
 
             enter_code(codes.sample, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
+            expect(page).to have_content('Welcome to GitLab')
           end
         end
 
@@ -121,136 +136,184 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
     context 'with valid username/password', :freeze_time do
       let(:user) { create(:user, :two_factor) }
 
-      before do
-        submit_sign_in_form_for(user, remember: true)
-      end
+      # TOTP and recovery codes are exercised with two_factor_vue on (Vue) and off (HAML).
+      # WebAuthn users keep the legacy form regardless of the flag, so they stay below.
+      with_and_without_ff(:two_factor_vue) do
+        before do
+          submit_sign_in_form_for(user, remember: true)
+        end
 
-      it 'does not show a "You are already signed in." error message' do
-        expect(authentication_metrics)
-          .to increment(:user_authenticated_counter)
-          .and increment(:user_two_factor_authenticated_counter)
-
-        enter_code(user.current_otp)
-        expect(page).to have_content('Welcome to GitLab')
-        expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
-        expect_single_session_with_authenticated_ttl
-      end
-
-      it 'does not allow sign-in if the user password is updated before entering a one-time code' do
-        expect(page).to have_content('Enter verification code')
-
-        user.update!(password: User.random_password)
-        enter_code(user.current_otp)
-
-        expect(page).to have_content('An error occurred. Please sign in again.')
-      end
-
-      context 'when using a one-time code' do
-        it 'allows login with valid code' do
+        it 'does not show a "You are already signed in." error message' do
           expect(authentication_metrics)
             .to increment(:user_authenticated_counter)
             .and increment(:user_two_factor_authenticated_counter)
 
           enter_code(user.current_otp)
           expect(page).to have_content('Welcome to GitLab')
+          expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
           expect_single_session_with_authenticated_ttl
-          expect(page).to have_current_path root_path, ignore_query: true
         end
 
-        it 'persists remember_me value via hidden field' do
-          expect(page).to have_field('user_remember_me', type: :hidden, with: '1')
-        end
+        it 'does not allow sign-in if the user password is updated before entering a one-time code' do
+          expect(page).to have_button(_('Verify code'))
 
-        it 'blocks login with invalid code' do
-          # TODO invalid 2FA code does not generate any events
-          # See gitlab-org/gitlab-ce#49785
-
-          enter_code('foo')
-
-          expect(page).to have_content('Invalid two-factor code')
-        end
-
-        it 'allows login with invalid code, then valid code' do
-          expect(authentication_metrics)
-            .to increment(:user_authenticated_counter)
-            .and increment(:user_two_factor_authenticated_counter)
-
-          enter_code('foo')
-          expect(page).to have_content('Invalid two-factor code')
-
+          user.update!(password: User.random_password)
           enter_code(user.current_otp)
-          expect(page).to have_content('Welcome to GitLab')
-          expect_single_session_with_authenticated_ttl
-          expect(page).to have_current_path root_path, ignore_query: true
+
+          expect(page).to have_content('An error occurred. Please sign in again.')
         end
 
-        it 'triggers ActiveSession.cleanup for the user' do
-          expect(authentication_metrics)
-            .to increment(:user_authenticated_counter)
-            .and increment(:user_two_factor_authenticated_counter)
-          expect(ActiveSession).to receive(:cleanup).with(user).once.and_call_original
+        context 'when using a one-time code' do
+          it 'allows login with valid code' do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
+              .and increment(:user_two_factor_authenticated_counter)
 
-          enter_code(user.current_otp)
+            enter_code(user.current_otp)
+            expect(page).to have_content('Welcome to GitLab')
+            expect_single_session_with_authenticated_ttl
+            expect(page).to have_current_path root_path, ignore_query: true
+          end
+
+          it 'persists remember_me value via hidden field' do
+            expect(page).to have_field('user[remember_me]', type: :hidden, with: '1')
+          end
+
+          it 'blocks login with invalid code' do
+            # TODO invalid 2FA code does not generate any events
+            # See gitlab-org/gitlab-ce#49785
+
+            enter_code('foo')
+
+            expect(page).to have_content('Invalid two-factor code')
+          end
+
+          it 'allows login with invalid code, then valid code' do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
+              .and increment(:user_two_factor_authenticated_counter)
+
+            enter_code('foo')
+            expect(page).to have_content('Invalid two-factor code')
+
+            enter_code(user.current_otp)
+            expect(page).to have_content('Welcome to GitLab')
+            expect_single_session_with_authenticated_ttl
+            expect(page).to have_current_path root_path, ignore_query: true
+          end
+
+          it 'triggers ActiveSession.cleanup for the user' do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
+              .and increment(:user_two_factor_authenticated_counter)
+            expect(ActiveSession).to receive(:cleanup).with(user).once.and_call_original
+
+            enter_code(user.current_otp)
+            expect(page).to have_content('Welcome to GitLab')
+          end
         end
-      end
 
-      context 'when user with TOTP enabled' do
-        let(:user) { create(:user, :two_factor) }
+        context 'when user with TOTP enabled' do
+          let(:user) { create(:user, :two_factor) }
 
-        include_examples 'can login with recovery codes'
+          include_examples 'can login with recovery codes'
+        end
       end
 
       context 'when user with only Webauthn enabled' do
         let(:user) { create(:user, :two_factor_via_webauthn, registrations_count: 1) }
 
-        include_examples 'can login with recovery codes', only_two_factor_webauthn_enabled: true
+        # WebAuthn users now reach the redesigned Vue screen with the flag on, and the legacy
+        # HAML form with it off. The recovery-code path is exercised in both states; enter_code
+        # picks the right UI affordances.
+        with_and_without_ff(:two_factor_vue) do
+          before do
+            submit_sign_in_form_for(user, remember: true)
+          end
+
+          include_examples 'can login with recovery codes', only_two_factor_webauthn_enabled: true
+        end
       end
     end
 
     context 'when signing in with WebAuthn' do
+      let(:app_id) { "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}" }
       let(:user) { create(:user, :two_factor_via_webauthn, organization: current_organization) }
 
+      # This user is not email-OTP eligible, so the relaxed guard routes them to the redesigned
+      # Vue WebAuthn screen with the flag on, and to the legacy form with it off. Either way the
+      # FakeWebauthnDevice helper drives whichever "Try again" affordance renders.
+      with_and_without_ff(:two_factor_vue) do
+        before do
+          allow(WebAuthn.configuration.relying_party).to receive(:allowed_origins).and_return([app_id])
+
+          visit new_user_session_path
+          fill_in 'user_login', with: user.username
+          fill_in 'user_password', with: user.password
+          click_button 'Sign in'
+        end
+
+        it 'signs the user in' do
+          webauthn_device = add_webauthn_device(app_id, user)
+
+          expect(authentication_metrics)
+            .to increment(:user_authenticated_counter)
+            .and increment(:user_two_factor_authenticated_counter)
+
+          webauthn_device.respond_to_webauthn_authentication
+
+          expect(page).to have_content('Welcome to GitLab')
+          expect(page).to have_current_path(root_path, ignore_query: true)
+        end
+      end
+    end
+
+    context 'when WebAuthn falls back to email OTP' do
+      let(:app_id) { "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}" }
+      let(:user) { create(:user, :two_factor_via_webauthn, organization: current_organization) }
+      let(:email_otp_enabled) { false }
+
+      # The email OTP fallback is not migrated to Vue yet, so it stays on the legacy form. (The
+      # relaxed guard also keeps any email-OTP-eligible user on legacy regardless of the flag.)
       before do
+        stub_feature_flags(two_factor_vue: false)
+        stub_application_setting(email_otp_enabled: email_otp_enabled)
+        allow(WebAuthn.configuration.relying_party).to receive(:allowed_origins).and_return([app_id])
+
         visit new_user_session_path
         fill_in 'user_login', with: user.username
         fill_in 'user_password', with: user.password
         click_button 'Sign in'
       end
 
-      context 'when falling back to email OTP' do
-        context 'when email_based_mfa feature flag is disabled' do
-          before do
-            stub_feature_flags(email_based_mfa: false)
-          end
+      it 'does not show the email OTP fallback footer' do
+        expect(page).not_to have_content('Having trouble signing in?')
+        expect(page).not_to have_link('send code to email address')
+      end
 
-          it 'does not show the email OTP fallback footer' do
-            expect(page).not_to have_content('Having trouble signing in?')
-            expect(page).not_to have_link('send code to email address')
-          end
-        end
+      context 'when email_otp_enabled application setting is enabled' do
+        let(:email_otp_enabled) { true }
 
-        context 'when email_based_mfa feature flag is enabled' do
-          # we will not be testing different email_otp_required_after values
-          # since this is covered in the unit test level
-          context 'when user has email_otp_required_after set to past date' do
-            let(:user) { create(:user, :two_factor_via_webauthn, email_otp_required_after: 1.day.ago) }
+        # we will not be testing different email_otp_required_after values
+        # since this is covered in the unit test level
+        context 'when user has email_otp_required_after set to past date' do
+          let(:user) { create(:user, :two_factor_via_webauthn, email_otp_required_after: 1.day.ago) }
 
-            context 'when WebAuthn authentication fails' do
-              before do
-                ActionMailer::Base.deliveries.clear
-              end
+          context 'when WebAuthn authentication fails' do
+            before do
+              ActionMailer::Base.deliveries.clear
+            end
 
-              it 'shows the email OTP fallback footer with helpful links' do
-                expect(page).to have_content('Having trouble signing in?')
-                expect(page).to have_link('Enter recovery code')
-                expect(page).to have_button('send code to email address')
+            it 'shows the email OTP fallback footer with helpful links' do
+              expect(page).to have_content('Having trouble signing in?')
+              expect(page).to have_link('Enter recovery code')
+              expect(page).to have_button('send code to email address')
 
-                expect(authentication_metrics)
-                  .to increment(:user_authenticated_counter)
-                  .and increment(:user_session_override_counter)
+              expect(authentication_metrics)
+                .to increment(:user_authenticated_counter)
+                .and increment(:user_session_override_counter)
 
-                verify_email_otp_fallback_workflow(user)
-              end
+              verify_email_otp_fallback_workflow(user)
             end
           end
         end
@@ -321,7 +384,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           sign_in_using_saml!
           expect(page).to have_content('Welcome to GitLab')
           expect_single_session_with_authenticated_ttl
-          expect(page).not_to have_content(_('Enter verification code'))
+          expect(page).not_to have_button(_('Verify code'))
           expect(page).to have_current_path root_path, ignore_query: true
         end
       end
@@ -337,7 +400,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
           sign_in_using_saml!
 
-          expect(page).to have_content('Enter verification code')
+          expect(page).to have_button(_('Verify code'))
 
           enter_code(user.current_otp)
           expect(page).to have_content('Welcome to GitLab')

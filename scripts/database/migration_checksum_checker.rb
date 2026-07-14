@@ -10,6 +10,15 @@ class MigrationChecksumChecker
   CHECKSUM_LENGTH = 64
   ERROR_CODE = 1
 
+  DOC_URL = 'https://docs.gitlab.com/development/migration_style_guide/' \
+    '#keeping-the-migration-checksum-file-up-to-date'
+  REMEDIATION = <<~MSG.chomp
+    To fix, run `bundle exec rails db:migrate` to generate the db/schema_migrations/<timestamp>
+    checksum files for your migrations, then commit them. If you changed a migration's timestamp,
+    remove the stale checksum file first and re-run the migration. See:
+    #{DOC_URL}
+  MSG
+
   Result = Struct.new(:error_code, :error_message)
 
   def check
@@ -65,6 +74,7 @@ class MigrationChecksumChecker
       "#{issue_type} for migration: #{file}\n"
     end.join('')
 
-    Result.new(ERROR_CODE, "\e[31mError: Issues found with migration checksum files\n\n#{message}\e[0m")
+    Result.new(ERROR_CODE,
+      "\e[31mError: Issues found with migration checksum files\n\n#{message}\n#{REMEDIATION}\e[0m")
   end
 end

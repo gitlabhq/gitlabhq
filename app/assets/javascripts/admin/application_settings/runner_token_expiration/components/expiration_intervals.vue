@@ -5,6 +5,7 @@ import ChronicDurationInput from '~/admin/application_settings/runner_token_expi
 import ExpirationIntervalDescription from './expiration_interval_description.vue';
 
 export default {
+  name: 'ExpirationIntervals',
   components: {
     ChronicDurationInput,
     ExpirationIntervalDescription,
@@ -50,10 +51,7 @@ export default {
   },
   methods: {
     updateValidity(obj, event) {
-      /* eslint-disable no-param-reassign */
-      obj.valid = event.valid;
-      obj.feedback = event.feedback;
-      /* eslint-enable no-param-reassign */
+      Object.assign(obj, { valid: event.valid, feedback: event.feedback });
     },
   },
   i18n: {

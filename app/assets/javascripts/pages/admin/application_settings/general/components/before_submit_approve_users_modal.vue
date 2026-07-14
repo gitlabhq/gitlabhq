@@ -16,6 +16,7 @@ export default {
       required: true,
     },
   },
+  emits: ['hide', 'primary', 'secondary'],
   computed: {
     actionPrimary() {
       return {

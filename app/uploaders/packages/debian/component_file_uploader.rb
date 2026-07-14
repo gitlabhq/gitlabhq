@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Packages::Debian::ComponentFileUploader < GitlabUploader
   extend Workhorse::UploadPath
   include ObjectStorage::Concern

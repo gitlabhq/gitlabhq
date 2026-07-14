@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe 'shared/milestones/_milestone.html.haml', feature_category: :team_planning do
   # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Necessary to check authorization
   let_it_be(:group) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, group: group) }
+  let_it_be_with_reload(:project) { create(:project, group: group) }
   let_it_be(:developer) { create(:user, developer_of: [group]) }
-  let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
-  let_it_be(:release, freeze: false) { create(:release, project: project, milestones: [milestone]) }
+  let_it_be_with_reload(:milestone) { create(:milestone, project: project) }
+  let_it_be_with_reload(:release) { create(:release, project: project, milestones: [milestone]) }
   let_it_be(:unauthorized_user) { create(:user) }
   # rubocop:enable RSpec/FactoryBot/AvoidCreate
 

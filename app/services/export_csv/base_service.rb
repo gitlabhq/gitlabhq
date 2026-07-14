@@ -33,7 +33,12 @@ module ExportCsv
         data_hash = MapExportFieldsService.new(fields, header_to_value_hash).execute
 
         if preload_associations_in_batches?
-          CsvBuilder.new(objects, data_hash, associations_to_preload)
+          collection = KeysetCollection.new(
+            objects,
+            associations_to_preload: associations_to_preload,
+            on_batch_loaded: method(:on_batch_loaded)
+          )
+          CsvBuilder.new(collection, data_hash)
         else
           CsvBuilder.new(objects.preload(associations_to_preload), data_hash, [])
         end
@@ -52,5 +57,7 @@ module ExportCsv
     def preload_associations_in_batches?
       false
     end
+
+    def on_batch_loaded(_records); end
   end
 end

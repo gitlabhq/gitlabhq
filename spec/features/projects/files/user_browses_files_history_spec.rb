@@ -20,7 +20,7 @@ RSpec.describe "User browses files history", :js, feature_category: :source_code
     end
 
     it "shows the `Browse Directory` link" do
-      click_link("files")
+      within_testid('file-tree-table') { click_link("files") }
 
       page.within('.repo-breadcrumb') do
         expect(page).to have_link('files')
@@ -66,7 +66,7 @@ RSpec.describe "User browses files history", :js, feature_category: :source_code
       end
 
       it "shows the `Browse files` link in Actions dropdown for directory" do
-        click_link("files")
+        within_testid('file-tree-table') { click_link("files") }
 
         page.within('.repo-breadcrumb') do
           expect(page).to have_link('files')
@@ -126,7 +126,7 @@ RSpec.describe "User browses files history", :js, feature_category: :source_code
     end
 
     it "shows history button that points to correct url for directory" do
-      click_link("files")
+      within_testid('file-tree-table') { click_link("files") }
 
       page.within('.repo-breadcrumb') do
         expect(page).to have_link('files')

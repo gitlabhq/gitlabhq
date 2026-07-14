@@ -4,6 +4,7 @@ import { sprintf, s__ } from '~/locale';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
 export default {
+  name: 'UserActionsApp',
   components: {
     GlDisclosureDropdown,
     AbuseCategorySelector,

@@ -233,6 +233,12 @@ type Response struct {
 	Gob GOBSettings `json:"gob"`
 
 	DuoWorkflow *DuoWorkflow
+
+	// Destination is the OAuth routing decision returned by
+	// /api/v4/internal/workhorse/oauth_routing: "iam" or "rails".
+	// Consumed by the oauthproxy package for the gradual rollout of OAuth
+	// handling to the IAM Auth service (gitlab-org/gitlab#594504).
+	Destination string `json:"destination"`
 }
 
 // GitalyServer represents configuration parameters for a Gitaly server,

@@ -1,12 +1,15 @@
 import { upperFirst, lowerCase } from 'lodash-es';
 
 export const extractGroupOrProject = (url = window.location.href) => {
+  // These are URL parsing operations on dynamic values, not ideal but acceptable
+  /* eslint-disable @gitlab/no-hardcoded-urls */
   let fullPath = url
     .replace(window.location.origin, '')
     .split('/-/')[0]
     .replace(new RegExp(`^${gon.relative_url_root}/`), '/');
 
   const isGroup = fullPath.startsWith('/groups');
+  /* eslint-enable @gitlab/no-hardcoded-urls */
   fullPath = fullPath.replace(/^\/groups\//, '').replace(/^\//g, '');
   if (isGroup) return { group: fullPath };
   if (fullPath) return { project: fullPath };

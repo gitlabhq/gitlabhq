@@ -99,7 +99,7 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
         update!
 
         expect(response).to have_gitlab_http_status(:found)
-        expect(group.reload.runner_registration_enabled).to eq(true)
+        expect(group.reload.runner_registration_enabled).to be(true)
       end
 
       it 'does not change the registration token' do
@@ -128,7 +128,7 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
           update!
 
           expect(response).to have_gitlab_http_status(:found)
-          expect(group.reload.runner_registration_enabled).to eq(false)
+          expect(group.reload.runner_registration_enabled).to be(false)
         end
 
         it 'changes the registration token' do

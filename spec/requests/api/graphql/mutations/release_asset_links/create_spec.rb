@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Creation of a new release asset link', feature_category: :release_orchestration do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
-  let_it_be(:release, freeze: false) { create(:release, project: project, tag: 'v13.10') }
+  let_it_be_with_reload(:project) { create(:project, :private, :repository) }
+  let_it_be_with_reload(:release) { create(:release, project: project, tag: 'v13.10') }
   let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:current_user) { developer }

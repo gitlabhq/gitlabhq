@@ -8,9 +8,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers::FeatureFlagMigratorHelpers, f
   include MigrationsHelpers
 
   let(:feature_flag_name) { 'test_feature_flag' }
-  let_it_be(:application_settings, freeze: false) { table(:application_settings) }
-  let_it_be(:features, freeze: false) { table(:features) }
-  let_it_be(:feature_gates, freeze: false) { table(:feature_gates) }
+  let_it_be(:application_settings) { table(:application_settings) }
+  let_it_be(:features) { table(:features) }
+  let_it_be(:feature_gates) { table(:feature_gates) }
 
   let(:model) do
     ActiveRecord::Migration.new.extend(described_class)

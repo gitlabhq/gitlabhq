@@ -5,3 +5,4 @@ description: Private permission that gates read access to job artifacts with
   this permission with the artifact's accessibility setting to enable the
   public read_job_artifacts permission. Must not be checked directly at
   enforcement points.
+conditionally_enables: null

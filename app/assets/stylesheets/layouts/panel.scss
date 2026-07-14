@@ -47,10 +47,10 @@
   @apply gl-justify-start;
   @apply gl-gap-3;
   @apply gl-bg-default;
+  @apply gl-pt-2;
   @apply gl-pl-[--container-padding-x];
-  @apply gl-pr-3;
+  padding-right: 0.4375rem; // Optical alignment fix -> [40 - 26 / 2] (visualy height - panel controls / 2)
   @apply gl-rounded-t-lg;
-  @apply gl-border-b;
   z-index: $panel-header-inner-z-index;
   min-height: $panel-header-inner-height;
 
@@ -79,7 +79,6 @@
   @apply gl-border;
   @apply gl-leading-0;
   @apply gl-ml-2;
-  @apply -gl-mr-[1px];
   border-radius: calc(var(--gl-border-radius-lg) + 1px);
 }
 
@@ -114,6 +113,31 @@
   @apply gl-overflow-x-hidden;
   @apply gl-overflow-y-auto;
   scrollbar-gutter: stable;
+  container-type: scroll-state;
+}
+
+// Top shadow on scroll
+.panel-content-inner::before {
+  content: '';
+  @apply gl-shrink-0;
+  @apply gl-block;
+  @apply gl-sticky;
+  @apply gl-top-0;
+  @apply gl-left-0;
+  @apply gl-w-full;
+  @apply gl-h-2;
+  @apply -gl-mb-2;
+  @apply gl-bg-default;
+  @apply gl-border-b;
+  @apply gl-border-b-subtle;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+
+  @container scroll-state(scrollable: top) {
+    opacity: 1;
+    z-index: 2;
+  }
 }
 
 .panel-content-inner > .container-fluid {
@@ -155,8 +179,8 @@
   top: $calc-application-bars-height;
   width: calc(100% - (var(--gl-spacing-scale-3) * 2));
   // Since the element is fixed-positioned, subtract the header heights and navigation rail from the
-  // viewport height. The trailing spacing scale offsets the negative top margin set above.
-  height: calc(100% - #{$calc-application-bars-height} - var(--ai-navigation-rail-size) - #{$gl-spacing-scale-2});
+  // viewport height. The trailing spacing scale offsets the vertical margins.
+  height: calc(100% - #{$calc-application-bars-height} - var(--ai-navigation-rail-size) + calc(var(--gl-spacing-scale-2) * 2));
   z-index: 999;
 
   @include media-breakpoint-up(sm) {

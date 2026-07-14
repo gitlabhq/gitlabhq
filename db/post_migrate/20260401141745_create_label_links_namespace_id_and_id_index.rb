@@ -7,7 +7,9 @@ class CreateLabelLinksNamespaceIdAndIdIndex < Gitlab::Database::Migration[2.3]
   milestone '18.11'
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- label_links is a large table but this index is required for namespace-scoped queries
     add_concurrent_index :label_links, [:namespace_id, :label_id, :id], name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

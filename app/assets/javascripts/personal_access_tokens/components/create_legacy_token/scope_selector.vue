@@ -91,9 +91,7 @@ export default {
       }
     },
   },
-  scopesHelpPagePath: helpPagePath('user/profile/personal_access_tokens', {
-    anchor: 'personal-access-token-scopes',
-  }),
+  scopesHelpPagePath: helpPagePath('security/tokens/access_token_scopes'),
 };
 </script>
 

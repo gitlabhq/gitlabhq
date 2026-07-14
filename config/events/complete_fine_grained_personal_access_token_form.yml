@@ -1,0 +1,16 @@
+---
+description: User completes the fine-grained personal access token creation form
+internal_events: true
+status: active
+action: complete_fine_grained_personal_access_token_form
+identifiers:
+- user
+product_group: authorization
+product_categories:
+- permissions
+milestone: '19.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242402
+tiers:
+- free
+- premium
+- ultimate

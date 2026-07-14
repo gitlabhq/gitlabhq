@@ -11,13 +11,6 @@ export const CHAT_MODES = {
   AGENTIC: 'agentic',
 };
 
-export const SUPER_SIDEBAR_PEEK_OPEN_DELAY = 200;
-export const SUPER_SIDEBAR_PEEK_CLOSE_DELAY = 500;
-export const SUPER_SIDEBAR_PEEK_STATE_CLOSED = 'closed';
-export const SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN = 'will-open';
-export const SUPER_SIDEBAR_PEEK_STATE_OPEN = 'open';
-export const SUPER_SIDEBAR_PEEK_STATE_WILL_CLOSE = 'will-close';
-
 export const TRACKING_UNKNOWN_ID = 'item_without_id';
 export const TRACKING_UNKNOWN_PANEL = 'nav_panel_unknown';
 export const CLICK_MENU_ITEM_ACTION = 'click_menu_item';
@@ -39,8 +32,6 @@ export const SIDEBAR_PINS_EXPANDED_COOKIE = 'sidebar_pinned_section_expanded';
 export const SIDEBAR_COOKIE_EXPIRATION = 365 * 10;
 
 export const PINNED_NAV_STORAGE_KEY = 'super-sidebar-pinned-nav-item-clicked';
-
-export const NAV_ITEM_LINK_ACTIVE_CLASS = 'super-sidebar-nav-item-current';
 
 // Frequent items constants
 export const FREQUENT_ITEMS = {

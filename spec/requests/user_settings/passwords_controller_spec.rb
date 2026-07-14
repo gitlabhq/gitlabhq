@@ -38,6 +38,42 @@ RSpec.describe UserSettings::PasswordsController, type: :request, feature_catego
     end
   end
 
+  describe '#reset' do
+    context 'when user is an SSO/OAuth user without a password' do
+      let(:sso_user) { create(:omniauth_user, password_automatically_set: true) }
+
+      before do
+        sign_in sso_user
+        stub_application_setting(disable_password_authentication_for_users_with_sso_identities: true)
+      end
+
+      it 'sends reset password instructions and does not return 404' do
+        expect { put reset_user_settings_password_path }
+          .to have_enqueued_mail(DeviseMailer, :reset_password_instructions)
+
+        expect(response).to redirect_to(edit_user_settings_password_path)
+      end
+    end
+
+    context 'when user has password authentication disabled and has already set a password' do
+      let(:regular_user) { create(:user, password_automatically_set: false) }
+
+      before do
+        sign_in regular_user
+        stub_application_setting(
+          password_authentication_enabled_for_web: false,
+          password_authentication_enabled_for_git: false
+        )
+      end
+
+      it 'returns 404' do
+        put reset_user_settings_password_path
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe '#create' do
     context 'when a deactivated user signs-in after an admin resets their password' do
       before do

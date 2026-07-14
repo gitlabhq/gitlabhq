@@ -5,7 +5,7 @@ require 'spec_helper'
 require_relative '../concerns/membership_actions_shared_examples'
 
 RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and_projects do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:membershipable) { create(:project, :public, namespace: create(:group, :public), creator: user) }
 
   let(:membershipable_path) { project_path(membershipable) }

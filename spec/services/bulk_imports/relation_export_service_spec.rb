@@ -6,17 +6,14 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
   let_it_be(:jid) { 'jid' }
   let_it_be(:relation) { 'labels' }
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:group) { create(:group) }
-  let_it_be(:project) { create(:project) }
+  let_it_be_with_reload(:group) { create(:group, owners: user) }
+  let_it_be(:project) { create(:project, maintainers: user) }
   let_it_be(:label) { create(:group_label, group: group) }
   let_it_be(:export_path) { "#{Dir.tmpdir}/relation_export_service_spec/tree" }
   let_it_be_with_reload(:export) { create(:bulk_import_export, group: group, relation: relation, user: user) }
 
   before do
     FileUtils.mkdir_p(export_path)
-
-    group.add_owner(user)
-    project.add_maintainer(user)
 
     allow(subject).to receive(:export_path).and_return(export_path)
   end
@@ -36,8 +33,8 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
       subject.execute
 
       expect(export.reload.upload.export_file).to be_present
-      expect(export.finished?).to eq(true)
-      expect(export.batched?).to eq(false)
+      expect(export.finished?).to be(true)
+      expect(export.batched?).to be(false)
       expect(export.batches_count).to eq(0)
       expect(export.batches.count).to eq(0)
       expect(export.total_objects_count).to eq(1)
@@ -46,7 +43,7 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
     it 'removes temp export files' do
       subject.execute
 
-      expect(Dir.exist?(export_path)).to eq(false)
+      expect(Dir.exist?(export_path)).to be(false)
     end
 
     it 'exports specified relation and marks export as finished' do
@@ -133,7 +130,7 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
           .from(2)
           .to(0)
 
-        expect(export.batched?).to eq(false)
+        expect(export.batched?).to be(false)
         expect(export.batches_count).to eq(0)
       end
     end

@@ -3,6 +3,7 @@ import { SIDEBAR_PORTAL_ID } from '../constants';
 import { portalState } from '../state';
 
 export default {
+  name: 'SidebarPortalTarget',
   mounted() {
     portalState.ready = true;
   },

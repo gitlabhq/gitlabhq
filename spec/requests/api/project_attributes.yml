@@ -96,6 +96,7 @@ ci_cd_settings:
     - project_id
     - merge_trains_enabled
     - merge_trains_skip_train_allowed
+    - merge_train_enforcement
     - max_pipelines_per_merge_train
     - merge_pipelines_enabled
     - auto_rollback_enabled
@@ -107,6 +108,7 @@ ci_cd_settings:
     - delete_pipelines_in_seconds
     - allow_composite_identities_to_run_pipelines
     - max_pipelines_per_merge_train
+    - skip_branch_pipelines_for_mrs
   remapped_attributes:
     pipeline_variables_minimum_override_role: ci_pipeline_variables_minimum_override_role
     push_repository_for_job_token_allowed: ci_push_repository_for_job_token_allowed
@@ -210,13 +212,15 @@ project_setting:
     - duo_sast_fp_detection_enabled
     - duo_sast_vr_workflow_enabled
     - duo_secret_detection_fp_enabled
+    - duo_dependency_bump_breaking_changes_enabled
+    - duo_dependency_bump_breaking_changes_enabled_by_id
     - enabled_foundational_flows
-    - reviewer_assignment_strategy
     - merge_request_title_regex
     - merge_request_title_regex_description
     - pipeline_execution_policy_bot_access_enabled
     - pipeline_execution_policy_bot_access_file_patterns
     - pipeline_execution_policy_bot_access_group_id
+    - ai_audit_events_storage_enabled
     - dap_session_tracking_enabled
     - tool_approval_for_session_enabled
 build_service_desk_setting: # service_desk_setting
@@ -236,5 +240,6 @@ build_service_desk_setting: # service_desk_setting
     - add_external_participants_from_cc
     - reopen_issue_on_external_participant_note
     - tickets_confidential_by_default
+    - project_key_address_slug
   remapped_attributes:
     project_key: service_desk_address

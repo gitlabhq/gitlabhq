@@ -6,7 +6,7 @@ require 'spec_helper'
 # In FOSS_ONLY=1 mode, nothing should happen
 RSpec.describe 'license metadata tags', feature_category: :plan_provisioning, if: Gitlab.ee? do
   it 'applies the without_license metadata tag by default' do |example|
-    expect(example.metadata[:without_license]).to eq(true)
+    expect(example.metadata[:without_license]).to be(true)
   end
 
   it 'does not apply the with_license metadata tag by default' do |example|

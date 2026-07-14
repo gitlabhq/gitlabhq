@@ -25,7 +25,7 @@ RSpec.describe StubMethodCalls do
     it 'stubs the method response' do
       stub_method(object, method_to_stub) { true }
 
-      expect(object.send(method_to_stub)).to eq(true)
+      expect(object.send(method_to_stub)).to be(true)
     end
 
     context 'when calling it on an already stubbed method' do
@@ -36,7 +36,7 @@ RSpec.describe StubMethodCalls do
       it 'stubs correctly' do
         stub_method(object, method_to_stub) { true }
 
-        expect(object.send(method_to_stub)).to eq(true)
+        expect(object.send(method_to_stub)).to be(true)
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe StubMethodCalls do
     end
 
     it 'restores original behaviour' do
-      expect(object.test_method).to eq(true)
+      expect(object.test_method).to be(true)
 
       restore_original_method(object, :test_method)
 

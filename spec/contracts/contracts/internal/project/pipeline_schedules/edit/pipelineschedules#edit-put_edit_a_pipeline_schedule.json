@@ -1,0 +1,48 @@
+{
+  "consumer": {
+    "name": "PipelineSchedules#edit"
+  },
+  "provider": {
+    "name": "PUT edit a pipeline schedule"
+  },
+  "interactions": [
+    {
+      "description": "a request to edit a pipeline schedule",
+      "providerState": "a project with a pipeline schedule exists",
+      "request": {
+        "method": "PUT",
+        "path": "/gitlab-org/gitlab-qa/-/pipeline_schedules/25",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": {
+          "schedule": {
+            "description": "bar",
+            "cron": "0 1 * * *",
+            "cron_timezone": "UTC",
+            "active": true
+          }
+        }
+      },
+      "response": {
+        "status": 302,
+        "headers": {
+          "Content-Type": "text/html; charset=utf-8"
+        },
+        "body": "<html><body>You are being <a href=\"http://example.org/gitlab-org/gitlab-qa/-/pipelines/5\">redirected</a>.</body></html>",
+        "matchingRules": {
+          "$.body": {
+            "match": "regex",
+            "regex": "You are being <a href=\\\"(.)+\\\">redirected<\\/a>."
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

@@ -12,7 +12,7 @@ class ProjectsController < Projects::ApplicationController
 
   REFS_LIMIT = 100
 
-  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
+  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss, permission: :read_event) }
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
@@ -54,7 +54,6 @@ class ProjectsController < Projects::ApplicationController
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
-    push_frontend_feature_flag(:repository_file_tree_browser, current_user)
     push_frontend_feature_flag(:vue3_migrate_repository, current_user)
 
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)

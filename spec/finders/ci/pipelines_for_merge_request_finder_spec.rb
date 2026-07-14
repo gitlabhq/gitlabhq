@@ -16,7 +16,7 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous
     let_it_be(:parent_project) { create(:project, :repository, :private) }
     let_it_be(:forked_project) { fork_project(parent_project, nil, repository: true, target_project: create(:project, :private, :repository)) }
 
-    let_it_be(:merge_request, freeze: false) do
+    let_it_be(:merge_request) do
       create(
         :merge_request, source_project: forked_project, source_branch: 'feature',
         target_project: parent_project, target_branch: 'master'

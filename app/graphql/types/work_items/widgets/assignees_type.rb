@@ -10,6 +10,8 @@ module Types
         graphql_name 'WorkItemWidgetAssignees'
         description 'Represents an assignees widget'
 
+        authorize_granular_token skip_reason: :parent_authorizes
+
         implements ::Types::WorkItems::WidgetInterface
 
         def self.authorization_scopes

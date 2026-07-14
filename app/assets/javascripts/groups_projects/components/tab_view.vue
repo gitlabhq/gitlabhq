@@ -78,6 +78,7 @@ export default {
       },
     },
   },
+  emits: ['keyset-page-change', 'offset-page-change', 'query-complete', 'refetch', 'update-count'],
   data() {
     return {
       items: {},

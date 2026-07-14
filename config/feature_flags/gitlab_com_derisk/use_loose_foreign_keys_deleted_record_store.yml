@@ -1,0 +1,12 @@
+---
+name: use_loose_foreign_keys_deleted_record_store
+description: Routes LFK cleanup through Gitlab::LooseForeignKeys::DeletedRecordStore
+  facade, which fans operations across the cell-local DeletedRecord and the four sharding-keyed
+  models.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/597949
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236671
+rollout_issue_url:
+milestone: '19.2'
+group: group::database frameworks
+type: gitlab_com_derisk
+default_enabled: false

@@ -86,6 +86,10 @@ module Gitlab
                attributes_hash.dig(:options, :bridge_needs, :pipeline).present?)
           end
 
+          def deployment?
+            dig(:environment).present?
+          end
+
           def to_resource
             logger.instrument(:pipeline_seed_build_to_resource) do
               if bridge?
@@ -245,9 +249,7 @@ module Gitlab
             # Currently, `execution_config` is passed from `lib/gitlab/ci/yaml_processor/result.rb` and deleted
             # in the `initialize` method of this class and assigned to `@execution_config_attribute`.
             # Today, we don't want to make a huge change in the process; we only want to save the data to the
-            # `p_ci_job_definitions` table. In the future (https://gitlab.com/groups/gitlab-org/-/epics/19262), we'll
-            # remove the `build_execution_config_attribute` method and splat the `execution_config` to
-            # `build_attributes` in `lib/gitlab/ci/yaml_processor/result.rb`.
+            # `p_ci_job_definitions` table.
             attrs.merge(@execution_config_attribute)
           end
         end

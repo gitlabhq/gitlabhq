@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlEmptyState } from '@gitlab/ui';
 import { sprintf } from '~/locale';
@@ -11,6 +10,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'BranchesIndex',
   components: {
     GlEmptyState,
     NewBranchForm,

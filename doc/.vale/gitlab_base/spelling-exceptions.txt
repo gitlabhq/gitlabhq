@@ -554,6 +554,7 @@ Kibana
 kibibyte
 kibibytes
 Kinesis
+Kiro
 Klar
 Knative
 KPIs
@@ -1290,6 +1291,8 @@ wireframing
 Wireshark
 Wordpress
 Workato
+workplan
+workplans
 workstream
 worktree
 worktrees

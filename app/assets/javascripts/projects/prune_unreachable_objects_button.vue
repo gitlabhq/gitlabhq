@@ -4,6 +4,7 @@ import csrf from '~/lib/utils/csrf';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'PruneUnreachableObjectsButton',
   components: {
     GlButton,
     GlLink,

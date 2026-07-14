@@ -87,11 +87,7 @@ module Types
     field :group, Types::GroupType,
       null: true,
       resolver: Resolvers::GroupResolver,
-      description: "Find a group.",
-      directives: granular_scope_directive(
-        permissions: :read_group, boundary_argument: :full_path, boundary_type: :group,
-        traversal: true
-      )
+      description: "Find a group."
     field :groups, Types::GroupType.connection_type,
       null: true,
       resolver: Resolvers::GroupsResolver,
@@ -149,18 +145,12 @@ module Types
       null: true,
       resolver: Resolvers::Organizations::OrganizationResolver,
       description: "Find an organization.",
-      experiment: { milestone: '16.4' },
-      directives: granular_scope_directive(
-        permissions: :read_organization, boundary: :instance, boundary_type: :instance
-      )
+      experiment: { milestone: '16.4' }
     field :organizations, Types::Organizations::OrganizationType.connection_type,
       null: true,
       resolver: Resolvers::Organizations::OrganizationsResolver,
       description: "List organizations.",
-      experiment: { milestone: '16.8' },
-      directives: granular_scope_directive(
-        permissions: :read_organization, boundary: :instance, boundary_type: :instance
-      )
+      experiment: { milestone: '16.8' }
     field :package,
       description: 'Find a package. This field can only be resolved for one query in any single request. ' \
         'Returns `null` if a package has no `default` status.',
@@ -169,11 +159,7 @@ module Types
       null: true,
       resolver: Resolvers::ProjectResolver,
       description: "Find a project.",
-      scopes: [:api, :read_api, :ai_workflows],
-      directives: granular_scope_directive(
-        permissions: :read_project, boundary_argument: :full_path, boundary_type: :project,
-        traversal: true
-      )
+      scopes: [:api, :read_api, :ai_workflows]
     field :projects,
       null: true,
       resolver: Resolvers::ProjectsResolver,
@@ -184,15 +170,7 @@ module Types
     field :runner, Types::Ci::RunnerType,
       null: true,
       resolver: Resolvers::Ci::RunnerResolver,
-      description: "Find a runner.",
-      directives: granular_scope_directive(
-        permissions: :read_runner,
-        boundaries: [
-          { boundary: :owner, boundary_type: :project },
-          { boundary: :owner, boundary_type: :group },
-          { boundary: :instance, boundary_type: :instance }
-        ]
-      )
+      description: "Find a runner."
     field :runner_platforms, resolver: Resolvers::Ci::RunnerPlatformsResolver,
       deprecated: {
         reason: 'No longer used, use gitlab-runner documentation to learn about supported platforms',
@@ -207,10 +185,7 @@ module Types
       null: true,
       resolver: Resolvers::Ci::RunnersResolver,
       description: "Get all runners in the GitLab instance (project and shared). " \
-        "Access is restricted to users with administrator access.",
-      directives: granular_scope_directive(
-        permissions: :read_runner, boundary: :instance, boundary_type: :instance
-      )
+        "Access is restricted to users with administrator access."
     field :snippets,
       Types::SnippetType.connection_type,
       null: true,

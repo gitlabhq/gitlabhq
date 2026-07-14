@@ -18,7 +18,7 @@ module API
       end
 
       class ClientKey < Grape::Entity
-        expose :id, documentation: { type: 'Integer', example: 1 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
         expose :active, documentation: { type: 'Boolean' }
         expose :public_key, documentation: { type: 'String', example: 'glet_aa77551d849c083f76d0bc545ed053a3' }
         expose :sentry_dsn, documentation: { type: 'String', example: 'https://glet_aa77551d849c083f76d0bc545ed053a3@example.com/errortracking/api/v1/projects/5' }

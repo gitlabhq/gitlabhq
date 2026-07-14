@@ -7,7 +7,7 @@ module API
 
       expose :stats, using: ::API::Entities::CommitStats, if: :include_stats
       expose :status_for, as: :status, documentation: { type: 'String', example: 'success' }
-      expose :project_id, documentation: { type: 'Integer', example: 1 }
+      expose :project_id, documentation: { type: 'Integer', format: 'int64', example: 1 }
 
       expose :last_pipeline, documentation: { type: ::API::Entities::Ci::PipelineBasic.to_s } do |commit, options|
         pipeline = commit.lazy_latest_pipeline if can_read_pipeline?

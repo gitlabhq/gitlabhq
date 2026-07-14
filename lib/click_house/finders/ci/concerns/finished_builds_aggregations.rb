@@ -72,8 +72,8 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
           def mean_duration
             add_aggregation_select(
-              round(ms_to_s(query_builder.avg(:duration))).as("mean_duration"),
-              requires_fields: [:duration]
+              round(ms_to_s(query_builder.avg(duration_expression))).as("mean_duration"),
+              requires_fields: duration_requires_fields
             )
           end
 
@@ -91,13 +91,16 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           end
 
           def group_by(*fields)
+            fields = Array(fields).flatten.compact
+            return self if fields.empty?
+
             validate_columns!(fields, :group)
 
-            apply_group(*fields.map { |f| query_builder[f] }.uniq)
+            apply_group(*fields.map { |f| field_expression(f) }.uniq)
           end
 
           def filter_by_pipeline_attrs(project:, from_time: nil, to_time: nil, source: nil, ref: nil)
-            pipelines = ::ClickHouse::Models::Ci::FinishedPipeline
+            pipelines = pipelines_finder
                           .for_container(project)
                           .within_dates(from_time, to_time)
 
@@ -108,6 +111,12 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           end
 
           private
+
+          # Maps a logical group/select field to its query expression. Override
+          # to redirect joined columns (e.g. :stage_name) to their alias.
+          def field_expression(field)
+            query_builder[field]
+          end
 
           def validate_columns!(fields, operation)
             invalid_columns = Array(fields) - ALLOWED_COLUMNS_BY_OPERATION[operation]
@@ -156,9 +165,20 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
           def duration_of_percentile(percentile)
             add_aggregation_select(
-              round(ms_to_s(query_builder.quantile(percentile.to_f / 100.0, :duration))).as("p#{percentile}_duration"),
-              requires_fields: [:duration]
+              round(ms_to_s(query_builder.quantile(percentile.to_f / 100.0, duration_expression)))
+                .as("p#{percentile}_duration"),
+              requires_fields: duration_requires_fields
             )
+          end
+
+          # Hooks for finders whose table lacks a `duration` column and must
+          # derive it (e.g. from timestamps). Default to the stored column.
+          def duration_expression
+            :duration
+          end
+
+          def duration_requires_fields
+            [:duration]
           end
 
           def aggregate?(field)
@@ -179,6 +199,13 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
               6,
               query_builder.quote('UTC')
             ])
+          end
+
+          # The ClickHouse model used to resolve pipelines for source/ref
+          # filtering. Siphon-backed finders override this to read from the
+          # siphon_p_ci_pipelines replica instead.
+          def pipelines_finder
+            ::ClickHouse::Models::Ci::FinishedPipeline
           end
         end
       end

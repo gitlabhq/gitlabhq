@@ -26,7 +26,7 @@ RSpec.describe WebHooks::HasWebHooks, feature_category: :webhooks do
   describe 'last_webhook_failure', :clean_gitlab_redis_shared_state do
     subject { MinimalTestClass.new.last_webhook_failure }
 
-    it { is_expected.to eq(nil) }
+    it { is_expected.to be_nil }
 
     context 'when there was an older failure', :clean_gitlab_redis_shared_state do
       let(:last_failure_date) { 1.month.ago.iso8601 }

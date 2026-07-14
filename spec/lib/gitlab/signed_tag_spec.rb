@@ -14,7 +14,7 @@ RSpec.describe Gitlab::SignedTag, feature_category: :source_code_management do
     ]
   end
 
-  let_it_be(:snippet_repository, freeze: false) { create(:project_snippet, :repository).repository }
+  let_it_be(:snippet_repository) { create(:project_snippet, :repository).repository }
 
   def build_tag_context(id:)
     {

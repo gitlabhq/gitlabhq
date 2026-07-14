@@ -183,14 +183,14 @@ RSpec.describe RuboCop::Formatter::GracefulFormatter, :isolated_environment, fea
     context 'with Details in config' do
       let(:config) { { 'Details' => 'grace period' } }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'with unknown value for Details in config' do
       let(:config) { { 'Details' => 'unknown' } }
 
       specify do
-        expect { is_expected.to eq(false) }
+        expect { is_expected.to be(false) }
           .to output(/#{cop_name}: Unhandled value "unknown" for `Details` key./)
           .to_stderr
       end
@@ -199,13 +199,13 @@ RSpec.describe RuboCop::Formatter::GracefulFormatter, :isolated_environment, fea
     context 'with empty config' do
       let(:config) { {} }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'without Details in config' do
       let(:config) { { 'Exclude' => false } }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

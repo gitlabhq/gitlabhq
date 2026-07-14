@@ -311,7 +311,7 @@ describe('BoardContent', () => {
     createComponent();
     await waitForPromises();
 
-    findBoardColumns().wrappers[0].vm.$emit('dragStart', {
+    findBoardColumns().wrappers[0].vm.$emit('drag-start', {
       itemId: 'gid://gitlab/WorkItems::Type/1',
     });
 

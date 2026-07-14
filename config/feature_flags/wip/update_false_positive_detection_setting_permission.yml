@@ -1,0 +1,9 @@
+---
+name: update_false_positive_detection_setting_permission
+description: Extends permission to Security Manager role to update the duo_sast_fp_detection_enabled (false positive detection) project setting
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/602868
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241277
+milestone: '19.2'
+type: wip
+group: group::security insights
+default_enabled: false

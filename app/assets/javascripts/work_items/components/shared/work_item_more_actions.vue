@@ -16,6 +16,7 @@ import {
 } from '~/work_items/utils';
 
 export default {
+  name: 'WorkItemMoreActions',
   i18n: {
     displayOptions: s__('WorkItem|Display options'),
     fields: s__('WorkItems|Fields'),
@@ -69,6 +70,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['toggle-show-closed', 'update-hidden-metadata-keys'],
   data() {
     return {
       isDropdownVisible: false,

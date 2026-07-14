@@ -1,0 +1,3 @@
+---
+name: read_namespace_duo_availability
+description: Grants the ability to read Duo features availability across namespaces

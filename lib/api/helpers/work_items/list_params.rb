@@ -27,8 +27,8 @@ module API
             desc: 'Filter by assignee usernames.',
             coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
           optional :assignee_wildcard_id, type: String,
-            values: %w[None Any],
-            desc: 'Filter by assignee wildcard. Values: None or Any.'
+            values: %w[None Any Me],
+            desc: 'Filter by assignee wildcard. Values: None, Any, or Me.'
           mutually_exclusive :assignee_usernames, :assignee_wildcard_id
 
           optional :label_name, type: Array[String],

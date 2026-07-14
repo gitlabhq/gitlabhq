@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Gitlab::MarkdownCache::Redis::Extension, :clean_gitlab_redis_cache do

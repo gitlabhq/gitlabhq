@@ -9,6 +9,7 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 const USERS_PER_PAGE = 20;
 
 export default {
+  name: 'UserSelect',
   components: {
     GlAvatarLabeled,
     GlCollapsibleListbox,

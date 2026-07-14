@@ -1,0 +1,7 @@
+---
+migration_job_name: BackfillMergeRequestDiffsShaBytea
+description: Backfills bytea SHA columns (base/start/head_commit_sha_bytea) on merge_request_diffs from their varchar (hex) counterparts.
+feature_category: code_review_workflow
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237659
+milestone: '19.2'
+queued_migration_version: 20260616023542

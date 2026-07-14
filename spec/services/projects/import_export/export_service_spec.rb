@@ -29,17 +29,37 @@ RSpec.describe Projects::ImportExport::ExportService, feature_category: :importe
       service.execute
     end
 
-    it 'saves the models' do
+    it 'excludes commit_notes from the tree saver and adds a dedicated CommitNotesSaver' do
       saver_params = {
         project: project,
         current_user: user,
         shared: shared,
-        params: {},
+        params: { excluded_relations: ['commit_notes'] },
         logger: an_instance_of(Gitlab::Export::Logger)
       }
       expect(Gitlab::ImportExport::Project::TreeSaver).to receive(:new).with(saver_params).and_call_original
+      expect(Import::Export::Project::CommitNotesSaver).to receive(:new).and_call_original
 
       service.execute
+    end
+
+    context 'when commit_notes_export_via_repo is disabled' do
+      before do
+        stub_feature_flags(commit_notes_export_via_repo: false)
+      end
+
+      it 'saves the models' do
+        saver_params = {
+          project: project,
+          current_user: user,
+          shared: shared,
+          params: {},
+          logger: an_instance_of(Gitlab::Export::Logger)
+        }
+        expect(Gitlab::ImportExport::Project::TreeSaver).to receive(:new).with(saver_params).and_call_original
+
+        service.execute
+      end
     end
 
     it 'saves the uploads' do
@@ -219,7 +239,7 @@ RSpec.describe Projects::ImportExport::ExportService, feature_category: :importe
         expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
 
         expect(project.import_export_upload_by_user(user)).to be_nil
-        expect(File.exist?(shared.archive_path)).to eq(false)
+        expect(File.exist?(shared.archive_path)).to be(false)
       end
     end
 

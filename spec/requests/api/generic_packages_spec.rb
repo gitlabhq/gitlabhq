@@ -620,7 +620,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       context 'with existing package' do
         let_it_be(:package_name) { 'mypackage' }
         let_it_be(:package_version) { '1.2.3' }
-        let_it_be(:existing_package, freeze: false) do
+        let_it_be_with_reload(:existing_package) do
           create(:generic_package, name: package_name, version: package_version, project: project)
         end
 
@@ -1001,7 +1001,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
   describe 'GET /api/v4/projects/:id/packages/generic/:package_name/:package_version/(*path)/:file_name' do
     let_it_be(:package) { create(:generic_package, project: project) }
-    let_it_be(:package_file, freeze: false) { create(:package_file, :generic, package: package) }
+    let_it_be_with_reload(:package_file) { create(:package_file, :generic, package: package) }
 
     it_behaves_like 'enforcing job token policies', :read_packages,
       allow_public_access_for_enabled_project_features: :package_registry do

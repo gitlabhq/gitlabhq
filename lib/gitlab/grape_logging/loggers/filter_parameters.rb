@@ -17,15 +17,33 @@ module Gitlab
 
           return loggable_params unless settings&.key?(:log_safety)
 
-          settings[:log_safety][:safe].each do |key|
-            loggable_params[key] = request.params[key] if loggable_params.key?(key)
-          end
-
-          settings[:log_safety][:unsafe].each do |key|
-            loggable_params[key] = @replacement if loggable_params.key?(key)
-          end
+          apply_safe_overrides(loggable_params, request.params, settings[:log_safety][:safe])
+          apply_unsafe_replacements(loggable_params, settings[:log_safety][:unsafe])
+          apply_unsafe_nested_replacements(loggable_params, settings[:log_safety][:unsafe_nested])
 
           loggable_params
+        end
+
+        def apply_safe_overrides(loggable_params, request_params, keys)
+          Array(keys).each do |key|
+            loggable_params[key] = request_params[key] if loggable_params.key?(key)
+          end
+        end
+
+        def apply_unsafe_replacements(loggable_params, keys)
+          Array(keys).each do |key|
+            loggable_params[key] = @replacement if loggable_params.key?(key)
+          end
+        end
+
+        def apply_unsafe_nested_replacements(loggable_params, pairs)
+          Array(pairs).each do |parent_key, nested_key|
+            next unless loggable_params[parent_key].is_a?(Array)
+
+            loggable_params[parent_key] = loggable_params[parent_key].map do |item|
+              item.is_a?(Hash) && item.key?(nested_key) ? item.merge(nested_key => @replacement) : item
+            end
+          end
         end
       end
     end

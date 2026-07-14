@@ -1,4 +1,4 @@
-import { __, formatNumber } from '~/locale';
+import { __, sprintf, formatNumber } from '~/locale';
 import {
   timeIntervalInWords,
   humanizeTimeInterval,
@@ -110,3 +110,14 @@ export const yAxisTitleFor = (metrics) => {
   }
   return '';
 };
+
+/**
+ * Combines a two-dimension chart's category axis title so it reflects both
+ * the primary dimension (the axis categories) and the secondary dimension
+ * (conveyed only through the legend/stack otherwise), e.g. "Language by IDE".
+ */
+export const dimensionAxisTitleFor = (primaryDimension, secondaryDimension) =>
+  sprintf(__('%{primary} by %{secondary}'), {
+    primary: primaryDimension.label,
+    secondary: secondaryDimension.label,
+  });

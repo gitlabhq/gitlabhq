@@ -22,6 +22,7 @@ export default {
       required: true,
     },
   },
+  emits: ['created'],
   data() {
     return {
       tooltipTitle: '',

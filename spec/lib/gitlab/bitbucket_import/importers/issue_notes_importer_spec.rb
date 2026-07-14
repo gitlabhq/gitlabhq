@@ -12,14 +12,14 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueNotesImporter, :clean_gi
   end
 
   let_it_be(:bitbucket_user) { create(:user) }
-  let_it_be(:identity, freeze: false) do
+  let_it_be_with_reload(:identity) do
     create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket)
   end
 
   let_it_be(:issue) { create(:issue, project: project) }
   let(:hash) { { iid: issue.iid } }
   let(:note_body) { 'body' }
-  let(:client) { Bitbucket::Client.new({}) }
+  let(:client) { Bitbucket::Client.new({}, http_client: Import::Clients::HTTP) }
   let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket', project) }
 
   subject(:importer) { described_class.new(project, hash) }

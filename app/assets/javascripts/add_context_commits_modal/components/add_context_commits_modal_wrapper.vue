@@ -62,7 +62,7 @@ export default {
           token: UserToken,
           defaultAuthors: [],
           unique: true,
-          fetchAuthors: this.fetchAuthors,
+          fetchUsers: this.fetchAuthors,
           initialAuthors: [],
         },
         {
@@ -145,7 +145,7 @@ export default {
     },
   },
   mounted() {
-    eventHub.$on('openModal', this.openModal);
+    eventHub.$on('open-modal', this.openModal);
     this.setBaseConfig({
       contextCommitsPath: this.contextCommitsPath,
       mergeRequestIid: this.mergeRequestIid,
@@ -153,7 +153,7 @@ export default {
     });
   },
   beforeDestroy() {
-    eventHub.$off('openModal', this.openModal);
+    eventHub.$off('open-modal', this.openModal);
   },
   methods: {
     ...mapActions([

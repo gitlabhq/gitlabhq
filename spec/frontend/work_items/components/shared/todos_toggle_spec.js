@@ -62,15 +62,18 @@ describe('WorkItemTodo component', () => {
   ];
 
   const createComponent = ({
-    mutation = createWorkItemTodosMutation,
-    currentUserTodosHandler = createTodoSuccessHandler,
+    handlers = [[createWorkItemTodosMutation, createTodoSuccessHandler]],
     currentUserTodos = [],
     todosButtonType = 'tertiary',
+    glFeatures = {},
   } = {}) => {
-    const mockApolloProvider = createMockApollo([[mutation, currentUserTodosHandler]]);
+    const mockApolloProvider = createMockApollo(handlers);
 
     wrapper = shallowMountExtended(TodosToggle, {
       apolloProvider: mockApolloProvider,
+      provide: {
+        glFeatures,
+      },
       propsData: {
         itemId: mockWorkItemId,
         currentUserTodos,
@@ -92,114 +95,136 @@ describe('WorkItemTodo component', () => {
     expect(findTodoWidget().props('category')).toBe('tertiary');
   });
 
-  it('renders mark to-do items done button when there is pending item', () => {
-    createComponent({
-      currentUserTodos: [mockCurrentUserTodos],
-    });
-
-    expect(findAnimatedTodoIcon().attributes('name')).toEqual(TODO_DONE_ICON);
-    expect(findAnimatedTodoIcon().props('isOn')).toBe(true);
-    expect(findAnimatedTodoIcon().classes('!gl-text-status-info')).toBe(true);
-  });
-
-  it('calls create todos mutation when to do button is toggled and no pending todos', async () => {
-    createComponent({
-      mutation: createWorkItemTodosMutation,
-      currentUserTodosHandler: createTodoSuccessHandler,
-      currentUserTodos: [],
-    });
-
-    findTodoWidget().vm.$emit('click');
-
-    await waitForPromises();
-
-    expect(createTodoSuccessHandler).toHaveBeenCalledWith({
-      input: inputVariablesCreateTodos,
-    });
-    expect(wrapper.emitted('todosUpdated')[0][0]).toMatchObject({
-      cache: expect.anything(),
-      todos: [{ id: expect.anything() }],
-    });
-    expect(updateGlobalTodoCount).toHaveBeenCalledWith(1);
-  });
-
-  it('calls mark all done mutation when to do button is toggled and has pending todo', async () => {
-    const mockApolloProvider = createMockApollo([
-      [createWorkItemTodosMutation, createTodoSuccessHandler],
-      [updateWorkItemCurrentUserTodosMutation, markAllDoneTodoSuccessHandler],
-    ]);
-
-    wrapper = shallowMountExtended(TodosToggle, {
-      apolloProvider: mockApolloProvider,
-      propsData: {
-        itemId: mockWorkItemId,
+  describe('when there is a pending to-do', () => {
+    beforeEach(() => {
+      createComponent({
+        handlers: [
+          [createWorkItemTodosMutation, createTodoSuccessHandler],
+          [updateWorkItemCurrentUserTodosMutation, markAllDoneTodoSuccessHandler],
+        ],
         currentUserTodos: [mockCurrentUserTodos],
-        todosButtonType: 'tertiary',
-      },
-      stubs: {
-        GlAnimatedTodoIcon,
-      },
+      });
     });
 
-    findTodoWidget().vm.$emit('click');
-
-    await waitForPromises();
-
-    expect(markAllDoneTodoSuccessHandler).toHaveBeenCalledWith({
-      input: inputVariablesMarkAllDoneTodos,
+    it('renders the mark to-do items done button', () => {
+      expect(findAnimatedTodoIcon().attributes('name')).toEqual(TODO_DONE_ICON);
+      expect(findAnimatedTodoIcon().props('isOn')).toBe(true);
+      expect(findAnimatedTodoIcon().classes('!gl-text-status-info')).toBe(true);
     });
-    expect(wrapper.emitted('todosUpdated')[0][0]).toMatchObject({
-      cache: expect.anything(),
-      todos: [],
+
+    it('calls the mark all done mutation on toggle', async () => {
+      findTodoWidget().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(markAllDoneTodoSuccessHandler).toHaveBeenCalledWith({
+        input: inputVariablesMarkAllDoneTodos,
+        useWorkItemFeatures: false,
+      });
+      expect(wrapper.emitted('todosUpdated')[0][0]).toMatchObject({
+        cache: expect.anything(),
+        todos: [],
+      });
+      expect(updateGlobalTodoCount).toHaveBeenCalledWith(-1);
     });
-    expect(updateGlobalTodoCount).toHaveBeenCalledWith(-1);
   });
 
-  it('decrements global todo count by correct amount when marking multiple todos done', async () => {
-    const mockApolloProvider = createMockApollo([
-      [createWorkItemTodosMutation, createTodoSuccessHandler],
-      [updateWorkItemCurrentUserTodosMutation, markAllDoneTodoSuccessHandler],
-    ]);
+  describe('when workItemFeaturesField feature flag is enabled', () => {
+    beforeEach(() => {
+      createComponent({
+        handlers: [
+          [createWorkItemTodosMutation, createTodoSuccessHandler],
+          [updateWorkItemCurrentUserTodosMutation, markAllDoneTodoSuccessHandler],
+        ],
+        currentUserTodos: [mockCurrentUserTodos],
+        glFeatures: { workItemFeaturesField: true },
+      });
+    });
 
-    wrapper = shallowMountExtended(TodosToggle, {
-      apolloProvider: mockApolloProvider,
-      propsData: {
-        itemId: mockWorkItemId,
+    it('passes useWorkItemFeatures as true to the mutation', async () => {
+      findTodoWidget().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(markAllDoneTodoSuccessHandler).toHaveBeenCalledWith({
+        input: inputVariablesMarkAllDoneTodos,
+        useWorkItemFeatures: true,
+      });
+    });
+  });
+
+  describe('when there are no pending to-dos', () => {
+    beforeEach(() => {
+      createComponent({
+        currentUserTodos: [],
+      });
+    });
+
+    it('calls the create to-dos mutation on toggle', async () => {
+      findTodoWidget().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(createTodoSuccessHandler).toHaveBeenCalledWith({
+        input: inputVariablesCreateTodos,
+      });
+      expect(wrapper.emitted('todosUpdated')[0][0]).toMatchObject({
+        cache: expect.anything(),
+        todos: [{ id: expect.anything() }],
+      });
+      expect(updateGlobalTodoCount).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('when there are multiple pending to-dos', () => {
+    beforeEach(() => {
+      createComponent({
+        handlers: [
+          [createWorkItemTodosMutation, createTodoSuccessHandler],
+          [updateWorkItemCurrentUserTodosMutation, markAllDoneTodoSuccessHandler],
+        ],
         currentUserTodos: mockMultipleCurrentUserTodos,
-        todosButtonType: 'tertiary',
-      },
-      stubs: {
-        GlAnimatedTodoIcon,
-      },
+      });
     });
 
-    findTodoWidget().vm.$emit('click');
+    it('decrements the global to-do count by the number of to-dos marked done on toggle', async () => {
+      findTodoWidget().vm.$emit('click');
 
-    await waitForPromises();
+      await waitForPromises();
 
-    expect(markAllDoneTodoSuccessHandler).toHaveBeenCalledWith({
-      input: inputVariablesMarkAllDoneTodos,
+      expect(markAllDoneTodoSuccessHandler).toHaveBeenCalledWith({
+        input: inputVariablesMarkAllDoneTodos,
+        useWorkItemFeatures: false,
+      });
+      expect(updateGlobalTodoCount).toHaveBeenCalledWith(-3);
     });
-    expect(updateGlobalTodoCount).toHaveBeenCalledWith(-3);
   });
 
-  it('renders secondary button when `todosButtonType` is secondary', () => {
-    createComponent({
-      todosButtonType: 'secondary',
+  describe('when todosButtonType is secondary', () => {
+    beforeEach(() => {
+      createComponent({
+        todosButtonType: 'secondary',
+      });
     });
 
-    expect(findTodoWidget().props('category')).toBe('secondary');
+    it('renders a secondary button', () => {
+      expect(findTodoWidget().props('category')).toBe('secondary');
+    });
   });
 
-  it('emits error when the update mutation fails', async () => {
-    createComponent({
-      currentUserTodosHandler: failureHandler,
+  describe('when the update mutation fails', () => {
+    beforeEach(() => {
+      createComponent({
+        handlers: [[createWorkItemTodosMutation, failureHandler]],
+      });
     });
 
-    findTodoWidget().vm.$emit('click');
+    it('emits an error on toggle', async () => {
+      findTodoWidget().vm.$emit('click');
 
-    await waitForPromises();
+      await waitForPromises();
 
-    expect(wrapper.emitted('error')).toEqual([[errorMessage]]);
+      expect(wrapper.emitted('error')).toEqual([[errorMessage]]);
+    });
   });
 });

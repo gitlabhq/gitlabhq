@@ -9,6 +9,8 @@ module Types
         graphql_name 'WorkItemWidgetStartAndDueDate'
         description 'Represents a start and due date widget'
 
+        authorize_granular_token skip_reason: :parent_authorizes
+
         implements ::Types::WorkItems::WidgetInterface
 
         def self.authorization_scopes

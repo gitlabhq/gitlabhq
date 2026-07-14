@@ -1,0 +1,14 @@
+#import "~/ci/common/graphql/fragments/pipeline_list_item_base.fragment.graphql"
+#import "~/ci/common/graphql/fragments/pipeline_downstream_list_item.fragment.graphql"
+
+fragment CommitPipelineListItem on Pipeline {
+  ...PipelineListItemBase
+  ...PipelineDownstreamListItem
+  mergeRequest {
+    id
+    iid
+    webPath
+    title
+    sourceBranch
+  }
+}

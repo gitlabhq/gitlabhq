@@ -8,11 +8,6 @@ module Mcp
         PROJECT_AND_GROUP_TYPES = %w[Issue Task].freeze
         ALL_TYPES = (PROJECT_AND_GROUP_TYPES + GROUP_ONLY_TYPES).freeze
 
-        URL_PATTERNS = {
-          work_item: %r{\A/?(?:groups/)?(?<path>\S*)/-/work_items/(?<id>\d+)\z},
-          quick_action: %r{^\s*/\w+}
-        }.freeze
-
         VERSIONS = {
           v0_1_0: '0.1.0'
         }.freeze

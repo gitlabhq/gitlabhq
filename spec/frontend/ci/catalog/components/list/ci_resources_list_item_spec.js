@@ -26,7 +26,6 @@ describe('CiResourcesListItem', () => {
   const resource = catalogSinglePageResponse.data.ciCatalogResources.nodes[0];
   const release = {
     author: { id: 'author-id', name: 'author', username: 'author-username', webPath: '/user/1' },
-    createdAt: Date.now(),
     name: '1.0.0',
   };
   const defaultProps = {
@@ -54,6 +53,7 @@ describe('CiResourcesListItem', () => {
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findMarkdown = () => wrapper.findComponent(Markdown);
   const findTimeAgoMessage = () => wrapper.findComponent(GlSprintf);
+  const findPublishedInfo = () => wrapper.findByTestId('published-info');
   const findTopicBadgesComponent = () => wrapper.findComponent(TopicBadges);
   const findVerificationBadge = () => wrapper.findComponent(CiVerificationBadge);
   const findVisibilityIcon = () => wrapper.findComponent(ProjectVisibilityIcon);
@@ -163,7 +163,7 @@ describe('CiResourcesListItem', () => {
         createComponent({ props: { resource: { ...resource, versions } } });
       });
 
-      it('renders the correct component names with a delimeter', () => {
+      it('renders the correct component names with a delimiter', () => {
         expect(findComponentNames().text()).toMatchInterpolatedText(
           '• Components: test-component, component_two, test-component, component_two, test-component',
         );
@@ -287,6 +287,12 @@ describe('CiResourcesListItem', () => {
         });
       });
 
+      it('renders the correct published message', () => {
+        expect(findPublishedInfo().text()).toMatchInterpolatedText(
+          `Published Jan 27, 2024 by ${release.author.name}`,
+        );
+      });
+
       it('the user link renders the author name', () => {
         expect(findUserLink().text()).toBe(release.author.name);
       });
@@ -303,7 +309,7 @@ describe('CiResourcesListItem', () => {
       it('has tooltip with release information on the badge', () => {
         const badge = findVersionBadge();
         const tooltip = getBinding(badge.element, 'gl-tooltip');
-        const title = 'Released Jan 26, 2024 7:40pm UTC';
+        const title = 'Released Jan 27, 2024 7:40pm UTC';
 
         expect(badge.attributes()).toMatchObject({
           title,

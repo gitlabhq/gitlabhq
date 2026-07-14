@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::LineMapper do
+RSpec.describe Gitlab::Diff::LineMapper, feature_category: :code_review_workflow do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

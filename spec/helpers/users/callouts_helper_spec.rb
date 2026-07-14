@@ -264,92 +264,84 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       travel_back
     end
 
-    it { is_expected.to be true }
+    it { is_expected.to be false }
 
-    context 'when user is not signed in' do
+    context 'when email_otp_enabled application setting is enabled' do
       before do
-        allow(helper).to receive(:current_user).and_return(nil)
+        stub_application_setting(email_otp_enabled: true)
       end
 
-      it { is_expected.to be false }
-    end
+      it { is_expected.to be true }
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(email_based_mfa: false)
-      end
-
-      it { is_expected.to be false }
-
-      context 'and email_otp_enabled application setting is enabled' do
+      context 'when user is not signed in' do
         before do
-          stub_application_setting(email_otp_enabled: true)
+          allow(helper).to receive(:current_user).and_return(nil)
         end
+
+        it { is_expected.to be false }
+      end
+
+      context 'when user has dismissed the banner' do
+        before do
+          create(:callout, user: user, feature_name: :email_otp_enrollment_callout)
+        end
+
+        it { is_expected.to be false }
+      end
+
+      context 'when user does not have email_otp_required_after set' do
+        let(:email_otp_required_after) { nil }
+
+        it { is_expected.to be false }
+      end
+
+      context 'when user has two-factor authentication enabled' do
+        before do
+          user.update!(otp_required_for_login: true)
+        end
+
+        it { is_expected.to be false }
+      end
+
+      context 'when user does not sign in with a password' do
+        before do
+          user.update!(password_automatically_set: true)
+        end
+
+        it { is_expected.to be false }
+      end
+
+      context 'when user is not allowed to use password for authentication' do
+        before do
+          allow(user).to receive(:allow_password_authentication?).and_return(false)
+        end
+
+        it { is_expected.to be false }
+      end
+
+      context 'when at the start of the callout period' do
+        let(:email_otp_required_after) { now + 14.days }
 
         it { is_expected.to be true }
       end
-    end
 
-    context 'when user has dismissed the banner' do
-      before do
-        create(:callout, user: user, feature_name: :email_otp_enrollment_callout)
+      context 'when almost at the end of the callout period' do
+        let(:email_otp_required_after) { now + 7.days + 1.minute }
+
+        it { is_expected.to be true }
       end
 
-      it { is_expected.to be false }
-    end
+      context 'when before the callout period starts' do
+        let(:email_otp_required_after) { now + 14.days + 1.hour }
 
-    context 'when user does not have email_otp_required_after set' do
-      let(:email_otp_required_after) { nil }
-
-      it { is_expected.to be false }
-    end
-
-    context 'when user has two-factor authentication enabled' do
-      before do
-        user.update!(otp_required_for_login: true)
+        it { is_expected.to be false }
       end
 
-      it { is_expected.to be false }
-    end
+      context 'when after the callout period ends' do
+        let(:email_otp_required_after) { now + 7.days }
 
-    context 'when user does not sign in with a password' do
-      before do
-        user.update!(password_automatically_set: true)
+        it { is_expected.to be false }
       end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when user is not allowed to use password for authentication' do
-      before do
-        allow(user).to receive(:allow_password_authentication?).and_return(false)
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when at the start of the callout period' do
-      let(:email_otp_required_after) { now + 14.days }
-
-      it { is_expected.to be true }
-    end
-
-    context 'when almost at the end of the callout period' do
-      let(:email_otp_required_after) { now + 7.days + 1.minute }
-
-      it { is_expected.to be true }
-    end
-
-    context 'when before the callout period starts' do
-      let(:email_otp_required_after) { now + 14.days + 1.hour }
-
-      it { is_expected.to be false }
-    end
-
-    context 'when after the callout period ends' do
-      let(:email_otp_required_after) { now + 7.days }
-
-      it { is_expected.to be false }
     end
   end
 

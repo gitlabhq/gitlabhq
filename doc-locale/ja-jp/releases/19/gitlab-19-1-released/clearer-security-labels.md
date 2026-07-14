@@ -1,25 +1,27 @@
 ---
-title: 脆弱性の詳細における、より明確でセキュリティ業界標準に準拠したラベル
+title: 脆弱性詳細のより明確なセキュリティ業界標準ラベル
 stage: application_security_testing
-weight:  
 level: secondary
-tier: ultimate
-offering: [ gitlab_com, self_managed, gitlab_dedicated ] 
+tier: [ Ultimate ]
+offering: [ gitlab_com, self_managed, gitlab_dedicated ]
 documentation_link: "../../../user/application_security/vulnerabilities/"
 work_item: "https://gitlab.com/groups/gitlab-org/-/work_items/21978"
+categories: [ Vulnerability Management ]
 ---
 
 <!-- categories: Vulnerability Management -->
 
-GitLab 19.1では、脆弱性の結果の詳細ページで、スキャン結果について、一貫性があり、わかりやすく、セキュリティ業界標準に準拠した用語が使用されるようになりました:
+GitLab 19.1では、脆弱性の結果の詳細ページで、スキャン結果に対して一貫性があり、わかりやすく、セキュリティ業界標準に準拠した用語が使用されるようになりました:
 
-- **スキャナー**は**検出元**になりました
-- **EPSS**は**悪用される可能性（EPSS）**になりました
-- **既知の悪用された脆弱性（KEV）**は**悪用が確認済み（CISA KEV）**になりました
-- **到達可能**は**到達可能性**になりました
-- **イメージ**は**コンテナイメージ**（コンテナスキャン）になりました
-- **場所**は**影響を受ける場所**になりました
-- **URL**は**影響を受けるエンドポイント**（DAST、APIファジング）になりました
-- **メソッド**は**HTTPメソッド**（DAST、APIファジング）になりました
-- **解決策**は**修正ガイダンス**になりました
-- **リンク**は**参照**になりました
+| 変更前                    | 変更後                                 | 日本語                          |
+| ---------------------- | ----------------------------------- | ---------------------------- |
+| Scanner                | Detected by                         | 検出元                          |
+| EPSS                   | Exploit Probability（EPSS）           | 悪用可能性スコア（EPSS）               |
+| Has Known Exploit（KEV） | Known Exploited（CISA KEV）           | 既知の悪用（CISA KEV）              |
+| Reachable              | Reachability                        | 到達可能性                        |
+| Image                  | Container Image（Container Scanning） | コンテナイメージ（コンテナスキャン）           |
+| Location               | Affected Location                   | 影響を受ける場所                     |
+| URL                    | Affected Endpoint（DAST、APIファジング）    | 影響を受けるエンドポイント（DAST、APIファジング） |
+| Method                 | HTTP Method（DAST、APIファジング）          | HTTPメソッド（DAST、APIファジング）      |
+| Solution               | Remediation Guidance                | 修正ガイダンス                      |
+| Links                  | References                          | 参考情報                         |

@@ -27,6 +27,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['error'],
   apollo: {
     k8sConnection: {
       query: k8sConnectionStatusQuery,

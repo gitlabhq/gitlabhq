@@ -11,9 +11,9 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Quantile, :click_house
 
       metrics do
         quantile :duration, :float,
-          -> { Arel.sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))") }
+          ->(_params) { Arel.sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))") }
         quantile :duration_with_param, :float,
-          -> { Arel.sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))") },
+          ->(_params) { Arel.sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))") },
           parameters: { quantile: { type: :float } }
       end
     end

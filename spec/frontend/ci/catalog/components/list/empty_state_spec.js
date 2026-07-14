@@ -1,4 +1,5 @@
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import EMPTY_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-catalog-md.svg';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyState from '~/ci/catalog/components/list/empty_state.vue';
 import { COMPONENTS_DOCS_URL } from '~/ci/catalog/constants';
@@ -35,7 +36,7 @@ describe('EmptyState', () => {
       expect(emptyState.props().description).toBe(
         'Create a pipeline component repository and make reusing pipeline configurations faster and easier.',
       );
-      expect(emptyState.props().svgPath).toBe('file-mock');
+      expect(emptyState.props().svgPath).toBe(EMPTY_SVG_URL);
     });
   });
 

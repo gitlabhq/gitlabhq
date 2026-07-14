@@ -82,7 +82,7 @@ describe('~/environments/components/deploy_board_wrapper.vue', () => {
       wrapper = createWrapper();
       jest.spyOn(mockApollo.defaultClient, 'mutate');
       const deployBoard = findDeployBoard();
-      deployBoard.vm.$emit('changeCanaryWeight', 15);
+      deployBoard.vm.$emit('change-canary-weight', 15);
       expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({
         mutation: setEnvironmentToChangeCanaryMutation,
         variables: { environment: resolvedEnvironment, weight: 15 },

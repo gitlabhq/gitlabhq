@@ -48,7 +48,7 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
 
         deploy_status = GenericCommitStatus.last
         expect(deploy_status.description).not_to be_present
-        expect(project.pages_deployed?).to eq(true)
+        expect(project.pages_deployed?).to be(true)
       end
 
       it_behaves_like 'old deployments'
@@ -116,8 +116,8 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
       it "doesn't delete artifacts after deploying" do
         expect(service.execute[:status]).to eq(:success)
 
-        expect(project.pages_deployed?).to eq(true)
-        expect(build.artifacts?).to eq(true)
+        expect(project.pages_deployed?).to be(true)
+        expect(build.artifacts?).to be(true)
       end
 
       it 'succeeds' do
@@ -280,7 +280,7 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
 
           deploy_status = GenericCommitStatus.last
           expect(deploy_status).to be_failed
-          expect(project.pages_deployed?).to eq(false)
+          expect(project.pages_deployed?).to be(false)
         end
       end
 
@@ -296,7 +296,7 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
 
           deploy_status = GenericCommitStatus.last
           expect(deploy_status).to be_failed
-          expect(project.pages_deployed?).to eq(false)
+          expect(project.pages_deployed?).to be(false)
         end
       end
 

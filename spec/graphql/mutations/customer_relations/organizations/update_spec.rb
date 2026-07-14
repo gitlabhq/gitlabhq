@@ -29,7 +29,7 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
     end
 
     context 'when the user does not have permission to update an crm_organization' do
-      before do
+      before_all do
         group.add_reporter(current_user)
       end
 

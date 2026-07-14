@@ -14,8 +14,11 @@ RSpec.describe Ci::BridgePolicy, feature_category: :continuous_integration do
   end
 
   it_behaves_like 'a deployable job policy', :ci_bridge do
-    before do
+    before_all do
       downstream_project.add_maintainer(user)
+    end
+
+    before do
       allow(job).to receive(:downstream_project).at_least(:once).and_return(downstream_project)
     end
   end

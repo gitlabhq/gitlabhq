@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe ProjectNoteEntity do
   include Gitlab::Routing
 
-  let_it_be(:note, freeze: false) { create(:note_on_merge_request) }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:note) { create(:note_on_merge_request) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   let(:request) { double('request', current_user: user, noteable: note.noteable) }
   let(:entity) { described_class.new(note, request: request) }

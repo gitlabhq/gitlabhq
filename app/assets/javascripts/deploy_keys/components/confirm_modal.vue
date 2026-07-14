@@ -14,6 +14,7 @@ export default {
       default: false,
     },
   },
+  emits: ['cancel', 'remove'],
   i18n: {
     body: __(
       'Are you sure you want to remove this deploy key? If anything is still using this key, it will stop working.',

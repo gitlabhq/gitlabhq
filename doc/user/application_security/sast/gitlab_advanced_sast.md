@@ -302,7 +302,7 @@ When no rule IDs are specified, all findings on that line are suppressed.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16790) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `vulnerability_partial_scans`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16790) in GitLab 18.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `vulnerability_partial_scans`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/552051) in GitLab 18.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/552051) in GitLab 18.6. Feature flag `vulnerability_partial_scans` removed.
 

@@ -246,6 +246,27 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
     end
   end
 
+  describe '#application_stylesheet_name' do
+    context 'when the no_bootstrap_utils_stylesheet flag is enabled' do
+      it 'appends the no_bootstrap_utils suffix', :aggregate_failures do
+        expect(helper.application_stylesheet_name).to eq('application_no_bootstrap_utils')
+        expect(helper.application_stylesheet_name('application_dark'))
+          .to eq('application_dark_no_bootstrap_utils')
+      end
+    end
+
+    context 'when the no_bootstrap_utils_stylesheet flag is disabled' do
+      before do
+        stub_feature_flags(no_bootstrap_utils_stylesheet: false)
+      end
+
+      it 'returns the base stylesheet name' do
+        expect(helper.application_stylesheet_name).to eq('application')
+        expect(helper.application_stylesheet_name('application_dark')).to eq('application_dark')
+      end
+    end
+  end
+
   describe '#user_application_system_mode?' do
     context 'with a user' do
       it "returns true if user's selected auto mode" do

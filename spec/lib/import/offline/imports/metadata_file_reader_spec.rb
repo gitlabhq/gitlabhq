@@ -63,20 +63,30 @@ RSpec.describe Import::Offline::Imports::MetadataFileReader, feature_category: :
       expect(Dir.exist?(tmpdir)).to be(false)
     end
 
+    context 'when source_hostname is missing' do
+      let(:metadata) { super().except(:source_hostname) }
+
+      it 'raises a MetadataError' do
+        expect { reader.read }.to raise_error(
+          described_class::MetadataError, 'Missing source hostname in metadata'
+        )
+      end
+    end
+
     context 'when the instance version is invalid' do
       let(:metadata) { super().merge(instance_version: 'not-a-version') }
 
-      it 'raises an UnsupportedVersionError' do
-        expect { reader.read }.to raise_error(described_class::UnsupportedVersionError, 'Invalid source version')
+      it 'raises a MetadataError' do
+        expect { reader.read }.to raise_error(described_class::MetadataError, 'Invalid source version')
       end
     end
 
     context 'when the instance version is below the minimum supported version' do
       let(:metadata) { super().merge(instance_version: '18.11.0') }
 
-      it 'raises an UnsupportedVersionError' do
+      it 'raises a MetadataError' do
         expect { reader.read }.to raise_error(
-          described_class::UnsupportedVersionError,
+          described_class::MetadataError,
           "Unsupported GitLab version. The minimum supported version is '#{described_class::MIN_SUPPORTED_VERSION}'."
         )
       end
@@ -87,8 +97,8 @@ RSpec.describe Import::Offline::Imports::MetadataFileReader, feature_category: :
         File.write(File.join(tmpdir, described_class::METADATA_FILENAME), 'null')
       end
 
-      it 'raises a MetadataParseError' do
-        expect { reader.read }.to raise_error(described_class::MetadataParseError, 'Failed to parse metadata')
+      it 'raises a MetadataError' do
+        expect { reader.read }.to raise_error(described_class::MetadataError, 'Failed to parse metadata')
       end
     end
 
@@ -97,8 +107,8 @@ RSpec.describe Import::Offline::Imports::MetadataFileReader, feature_category: :
         File.write(File.join(tmpdir, described_class::METADATA_FILENAME), 'not valid json')
       end
 
-      it 'raises a MetadataParseError' do
-        expect { reader.read }.to raise_error(described_class::MetadataParseError, 'Failed to parse metadata')
+      it 'raises a MetadataError' do
+        expect { reader.read }.to raise_error(described_class::MetadataError, 'Failed to parse metadata')
       end
     end
 
@@ -107,8 +117,8 @@ RSpec.describe Import::Offline::Imports::MetadataFileReader, feature_category: :
         File.write(File.join(tmpdir, described_class::METADATA_FILENAME), '')
       end
 
-      it 'raises a MetadataParseError' do
-        expect { reader.read }.to raise_error(described_class::MetadataParseError, 'Failed to parse metadata')
+      it 'raises a MetadataError' do
+        expect { reader.read }.to raise_error(described_class::MetadataError, 'Failed to parse metadata')
       end
     end
 

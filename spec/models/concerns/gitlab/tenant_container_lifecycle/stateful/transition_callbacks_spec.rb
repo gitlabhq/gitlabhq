@@ -12,7 +12,7 @@ RSpec.describe Gitlab::TenantContainerLifecycle::Stateful::TransitionCallbacks, 
     where(:initial_state, :event, :args) do
       :active       | :soft_delete | ref(:user_args)
       :soft_deleted | :hard_delete | ref(:user_args)
-      :soft_deleted | :restore     | {}
+      :confirmed    | :activate    | {}
     end
 
     let(:user_args) { { transition_user: user } }
@@ -34,8 +34,8 @@ RSpec.describe Gitlab::TenantContainerLifecycle::Stateful::TransitionCallbacks, 
     end
 
     it 'allows nil transition_user' do
-      organization.update_column(:state, Organizations::Organization.states['soft_deleted'])
-      organization.restore!
+      organization.update_column(:state, Organizations::Organization.states['confirmed'])
+      organization.activate!
 
       metadata = organization.organization_detail.reload.state_metadata
 

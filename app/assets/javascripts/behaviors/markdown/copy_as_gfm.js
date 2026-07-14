@@ -1,6 +1,11 @@
-import $ from 'jquery';
 import { sanitize } from '~/lib/dompurify';
 import { getSelectedFragment, insertText } from '~/lib/utils/common_utils';
+
+const delegatedTarget = (event, selector) => {
+  const el =
+    event.target.nodeType === Node.ELEMENT_NODE ? event.target : event.target.parentElement;
+  return el?.closest(selector);
+};
 
 export class CopyAsGFM {
   constructor() {
@@ -11,23 +16,37 @@ export class CopyAsGFM {
     const isIOS = /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent);
     if (isIOS) return;
 
-    $(document).on('copy', '.md, .duo-chat-message', (e) => {
-      CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection);
+    document.addEventListener('copy', (e) => {
+      const mdTarget = delegatedTarget(e, '.md, .duo-chat-message');
+      if (mdTarget) {
+        CopyAsGFM.copyAsGFM(e, mdTarget, CopyAsGFM.transformGFMSelection);
+        return;
+      }
+
+      const codeTarget = delegatedTarget(
+        e,
+        'pre.code.highlight, table.code td.line_content, .code pre, [data-gfm-source]',
+      );
+      if (codeTarget) {
+        CopyAsGFM.copyAsGFM(e, codeTarget, CopyAsGFM.transformCodeSelection);
+      }
     });
-    $(document).on('copy', 'pre.code.highlight, table.code td.line_content, .code pre', (e) => {
-      CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformCodeSelection);
+
+    document.addEventListener('paste', (e) => {
+      if (delegatedTarget(e, '.js-gfm-input')) {
+        CopyAsGFM.pasteGFM(e);
+      }
     });
-    $(document).on('paste', '.js-gfm-input', CopyAsGFM.pasteGFM);
   }
 
-  static copyAsGFM(e, transformer) {
-    const { clipboardData } = e.originalEvent;
+  static copyAsGFM(e, target, transformer) {
+    const { clipboardData } = e;
     if (!clipboardData) return;
 
     const documentFragment = getSelectedFragment();
     if (!documentFragment) return;
 
-    const el = transformer(documentFragment.cloneNode(true), e.currentTarget);
+    const el = transformer(documentFragment.cloneNode(true), target);
     if (!el) return;
 
     e.preventDefault();
@@ -54,7 +73,7 @@ export class CopyAsGFM {
   }
 
   static pasteGFM(e) {
-    const { clipboardData } = e.originalEvent;
+    const { clipboardData } = e;
     if (!clipboardData) return;
 
     const text = clipboardData.getData('text/plain');
@@ -154,7 +173,11 @@ export class CopyAsGFM {
       codeElement.className = 'code highlight';
 
       const [firstLine] = lineElements;
-      const lang = firstLine.getAttribute('lang') || firstLine.dataset.lang;
+      const lang =
+        firstLine?.dataset?.lang ||
+        firstLine?.closest('pre')?.dataset?.lang ||
+        firstLine?.closest('pre')?.dataset?.canonicalLang;
+
       if (lang) {
         codeElement.setAttribute('lang', lang);
       }
@@ -175,6 +198,13 @@ export class CopyAsGFM {
     }
 
     [...codeElement.querySelectorAll('.idiff')].forEach((el) => el.classList.remove('idiff'));
+
+    // Elements marked `data-gfm-ignore` are presentational overlays (e.g. coverage
+    // and code quality indicators) that sit alongside the code. When a selection
+    // includes them they can end up appended verbatim above, and a block-level
+    // overlay then serializes to extra blank lines. `codeElement` is built from a
+    // clone of the selection, so removing them here does not touch the live DOM.
+    [...codeElement.querySelectorAll('[data-gfm-ignore]')].forEach((el) => el.remove());
 
     return codeElement;
   }

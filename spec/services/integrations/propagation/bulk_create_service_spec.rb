@@ -9,10 +9,7 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
     stub_jira_integration_test
   end
 
-  let_it_be(:excluded_group) { create(:group) }
-  let_it_be(:excluded_project) { create(:project, group: excluded_group) }
-
-  let(:instance_integration) { create(:jira_integration, :instance) }
+  let_it_be_with_reload(:instance_integration) { create(:jira_integration, :instance) }
   let(:excluded_attributes) do
     %w[
       id project_id group_id inherit_from_id instance template
@@ -166,7 +163,7 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
     end
 
     context 'with a project association' do
-      let!(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
       let(:created_integration) { Integration.find_by(project: project) }
       let(:batch) { Project.where(id: project.id) }
       let(:association) { 'project' }
@@ -198,7 +195,7 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
     end
 
     context 'with a group association' do
-      let!(:group) { create(:group) }
+      let_it_be(:group) { create(:group) }
       let(:created_integration) { Integration.find_by(group: group) }
       let(:batch) { Group.where(id: group.id) }
       let(:association) { 'group' }
@@ -249,8 +246,8 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
     end
 
     context 'with a project association' do
-      let!(:project) { create(:project, group: group) }
-      let(:integration) { create(:jira_integration, :group, group: group) }
+      let_it_be(:project) { create(:project, group: group) }
+      let_it_be_with_reload(:integration) { create(:jira_integration, :group, group: group) }
       let(:created_integration) { Integration.find_by(project: project) }
       let(:batch) { Project.without_integration(integration).in_namespace(integration.group.self_and_descendants) }
       let(:association) { 'project' }
@@ -267,7 +264,7 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
       end
 
       context 'with different foreign key of data_fields' do
-        let(:integration) { create(:zentao_integration, :group, group: group) }
+        let_it_be_with_reload(:integration) { create(:zentao_integration, :group, group: group) }
 
         it_behaves_like 'creates integration successfully'
       end
@@ -287,8 +284,11 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
     end
 
     context 'with a group association' do
-      let!(:subgroup) { create(:group, parent: group) }
-      let(:integration) { create(:jira_integration, :group, group: group, inherit_from_id: instance_integration.id) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be_with_reload(:integration) do
+        create(:jira_integration, :group, group: group, inherit_from_id: instance_integration.id)
+      end
+
       let(:created_integration) { Integration.find_by(group: subgroup) }
       let(:batch) { Group.where(id: subgroup.id) }
       let(:association) { 'group' }
@@ -305,7 +305,7 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
       end
 
       context 'with different foreign key of data_fields' do
-        let(:integration) do
+        let_it_be_with_reload(:integration) do
           create(:zentao_integration, :group, group: group, inherit_from_id: instance_integration.id)
         end
 

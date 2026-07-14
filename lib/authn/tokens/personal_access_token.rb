@@ -30,6 +30,8 @@ module Authn
         @current_user = current_user
         service = service_by_type
 
+        return ServiceResponse.error(message: 'Unsupported personal access token type') if service.nil?
+
         service.execute
       end
 
@@ -43,8 +45,6 @@ module Authn
           resource_access_token_service
         elsif user.human?
           personal_access_token_service
-        else
-          raise ::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported personal access token type'
         end
       end
 

@@ -142,6 +142,76 @@ Read more about [Gems development guidelines](gems.md).
 > [!note]
 > When upgrading to the next patch release, you can skip to step 5 and upgrade the Gemfiles and NPM packages directly.
 
+## Validate a dependency upgrade in CI
+
+Use the `next?` mechanism to test a future version of a dependency without changing the default bundle.
+`Gemfile.next` is a symbolic link to `Gemfile`, and the `next?` helper in `Gemfile` selects future versions
+inside `if next? ... else ... end` branches.
+For the merge request that introduced this mechanism, see
+[merge request 236811](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236811).
+
+Ordinary merge request pipelines run the default bundle, so the `next?` branch never runs.
+A merge request can pass while the future bundle is broken.
+Only a pipeline that sets `BUNDLE_GEMFILE` to `Gemfile.next` runs the future bundle.
+
+> [!warning]
+> A green default-bundle pipeline does not mean the future bundle passes.
+> When you review a dependency upgrade, confirm that a pipeline exercised the future bundle.
+
+### Exercise the future bundle on a merge request
+
+1. Add a `next?` condition in `Gemfile` for the dependency you want to upgrade:
+
+   ```ruby
+   if next?
+     gem 'example-gem', '~> 2.0'
+   else
+     gem 'example-gem', '~> 1.0'
+   end
+   ```
+
+1. Regenerate `Gemfile.next.lock` so the lock file matches the `next?` branches.
+   A CI check fails when the lock file is stale.
+
+   ```shell
+   bundle exec rake bundler:gemfile:sync
+   ```
+
+1. Add the `pipeline:run-with-rails-next` label to the merge request, then run a new pipeline.
+
+> [!note]
+> The label is named for Rails but applies to any dependency upgrade that uses `Gemfile.next`.
+
+The label sets `BUNDLE_GEMFILE` to `Gemfile.next` for the whole pipeline.
+Every job the merge request normally runs instead runs against the future bundle, across all pipeline tiers.
+
+### Isolate the dependency
+
+The `next?` bundle can upgrade several dependencies at once.
+When you run the bundle unchanged, CI failures can come from other upgraded dependencies instead of yours,
+and the future bundle can stay red across unrelated incompatibilities.
+
+To attribute failures to your dependency alone, add a temporary do-not-merge commit that changes the `next?`
+branches so that only your target dependency uses the future version.
+Pin every other dependency to the current default version.
+Remove this commit before you merge.
+
+> [!note]
+> Some upgrades are coupled.
+> When a companion library requires the new major version of your dependency, upgrade both behind the same
+> `next?` condition.
+
+### Reproduce and verify locally
+
+Point `BUNDLE_GEMFILE` at `Gemfile.next` to reproduce the future-bundle behavior locally:
+
+```shell
+BUNDLE_GEMFILE=Gemfile.next bundle exec rspec <spec>
+```
+
+The codebase must work on both bundles.
+Confirm that every fix keeps the default bundle green and makes the future bundle pass.
+
 ## Upgrading dependencies because of vulnerabilities
 
 When upgrading dependencies because of a vulnerability, we

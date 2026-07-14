@@ -375,4 +375,56 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
       expect(described_class.tracker).to be_an_instance_of(Gitlab::Tracking::Destinations::Snowplow)
     end
   end
+
+  describe '.billing_tracker' do
+    before do
+      described_class.instance_variable_set(:@billing_tracker, nil)
+    end
+
+    after do
+      described_class.instance_variable_set(:@billing_tracker, nil)
+    end
+
+    context 'when not in development' do
+      before do
+        allow(Rails.env).to receive(:development?).and_return(false)
+      end
+
+      it 'returns a Snowplow instance' do
+        expect(described_class.billing_tracker).to be_an_instance_of(Gitlab::Tracking::Destinations::Snowplow)
+      end
+
+      it 'uses an app_id with _billing suffix' do
+        stub_application_setting(snowplow_enabled?: false, gitlab_dedicated_instance?: false)
+        allow(Gitlab).to receive(:staging?).and_return(false)
+        stub_config_setting(host: 'example.com')
+
+        expect(described_class.billing_tracker.app_id).to eq('gitlab_sm_billing')
+      end
+
+      it 'uses an app_id with _billing suffix for dedicated instances' do
+        stub_application_setting(snowplow_enabled?: false, gitlab_dedicated_instance?: true)
+        allow(Gitlab).to receive(:staging?).and_return(false)
+        stub_config_setting(host: 'example.com')
+
+        expect(described_class.billing_tracker.app_id).to eq('gitlab_dedicated_billing')
+      end
+
+      it 'uses an app_id with _billing suffix when snowplow is enabled' do
+        stub_application_setting(snowplow_enabled?: true, snowplow_app_id: 'custom_app')
+
+        expect(described_class.billing_tracker.app_id).to eq('custom_app_billing')
+      end
+    end
+
+    context 'when in development' do
+      before do
+        allow(Rails.env).to receive(:development?).and_return(true)
+      end
+
+      it 'returns a SnowplowMicro instance' do
+        expect(described_class.billing_tracker).to be_an_instance_of(Gitlab::Tracking::Destinations::SnowplowMicro)
+      end
+    end
+  end
 end

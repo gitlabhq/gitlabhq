@@ -46,6 +46,7 @@ export default {
       default: '',
     },
   },
+  emits: ['hideCreateView', 'labelCreated'],
   data() {
     return {
       labelTitle: this.searchKey,

@@ -27,7 +27,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
   end
 
   context 'when the current user does not have permission to create members' do
-    let(:current_user) { create(:user) }
+    let_it_be(:current_user) { create(:user) }
 
     it 'returns an unauthorized http_status' do
       expect(execute_service[:status]).to eq(:error)

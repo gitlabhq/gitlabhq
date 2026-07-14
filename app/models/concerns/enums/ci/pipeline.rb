@@ -20,12 +20,17 @@ module Enums
           filtered_by_workflow_rules: 27,
           composite_identity_forbidden: 28,
           pipeline_ref_creation_failure: 29,
-          filtered_by_no_pipeline: 30
+          filtered_by_no_pipeline: 30,
+          gitaly_unavailable: 31
         }
       end
 
       def self.persistable_failure_reasons
-        failure_reasons.except(:filtered_by_rules, :filtered_by_workflow_rules, :filtered_by_no_pipeline)
+        # `gitaly_unavailable` is excluded because it represents a transient Gitaly overload
+        # condition; we surface it for metrics but do not persist a dropped pipeline for it.
+        failure_reasons.except(
+          :filtered_by_rules, :filtered_by_workflow_rules, :filtered_by_no_pipeline, :gitaly_unavailable
+        )
       end
 
       def self.persistable_failure_reason?(reason)

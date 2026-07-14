@@ -94,7 +94,7 @@ module Gitlab
         ApplicationRecord.with_fast_read_statement_timeout do
           finder.count_by_state
         end
-      rescue ActiveRecord::QueryCanceled => err
+      rescue ActiveRecord::QueryCanceled => err # rubocop:disable Database/RescueQueryCanceled -- Intentional: fast_fail mode uses a short timeout to degrade gracefully, returning -1 sentinel values instead of blocking
         fast_count_by_state_failure!
 
         Gitlab::ErrorTracking.track_exception(

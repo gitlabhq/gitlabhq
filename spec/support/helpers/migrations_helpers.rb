@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module MigrationsHelpers
+  TIME_PARTITIONING_STRATEGIES = %i[monthly weekly daily].freeze
+
   def migration_out_of_test_window?(migration_class)
     return false if ENV.fetch('RUN_ALL_MIGRATION_TESTS', false)
 
@@ -78,7 +80,10 @@ module MigrationsHelpers
 
       attr_readonly by if partitioning_options[:strategy] == :sliding_list
 
-      partitioned_by by, **partitioning_options.reverse_merge(strategy: :monthly)
+      options = partitioning_options.reverse_merge(strategy: :monthly)
+      options = options.reverse_merge(retain_for: :ever) if TIME_PARTITIONING_STRATEGIES.include?(options[:strategy])
+
+      partitioned_by by, **options
 
       def self.name
         table_name.singularize.camelcase

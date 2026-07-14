@@ -91,8 +91,8 @@ RSpec.describe Groups::AutocompleteService, feature_category: :groups_and_projec
   end
 
   describe '#merge_requests' do
-    let(:project) { create(:project, :repository, group: group) }
-    let(:sub_group_project) { create(:project, :repository, group: sub_group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:sub_group_project) { create(:project, group: sub_group) }
 
     let!(:project_mr) { create(:merge_request, source_project: project) }
     let!(:sub_group_project_mr) { create(:merge_request, source_project: sub_group_project) }
@@ -104,8 +104,8 @@ RSpec.describe Groups::AutocompleteService, feature_category: :groups_and_projec
   end
 
   describe '#milestones' do
-    let_it_be(:group_milestone, freeze: false) { create(:milestone, group: group) }
-    let_it_be(:subgroup_milestone, freeze: false) { create(:milestone, group: sub_group) }
+    let_it_be_with_reload(:group_milestone) { create(:milestone, group: group) }
+    let_it_be_with_reload(:subgroup_milestone) { create(:milestone, group: sub_group) }
 
     before_all do
       sub_group.add_maintainer(user)

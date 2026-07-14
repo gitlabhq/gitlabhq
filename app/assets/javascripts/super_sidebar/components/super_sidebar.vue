@@ -1,6 +1,5 @@
 <script>
 import { computed } from 'vue';
-import { GlTooltipDirective } from '@gitlab/ui';
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
 import { Mousetrap } from '~/lib/mousetrap';
 import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
@@ -22,6 +21,7 @@ import SidebarMenu from './sidebar_menu.vue';
 import ScrollScrim from './scroll_scrim.vue';
 
 export default {
+  name: 'SuperSidebar',
   components: {
     IconOnlyToggle,
     HelpCenter,
@@ -29,9 +29,6 @@ export default {
     SidebarPortalTarget,
     ScrollScrim,
     TrialWidget: () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
   i18n: {
@@ -52,24 +49,17 @@ export default {
   data() {
     return {
       sidebarState,
-      showPeekHint: false,
       isMouseover: false,
       isAnimatable: false,
       wasToggledManually: false,
     };
   },
   computed: {
-    showOverlay() {
-      return this.sidebarState.isPeek || this.sidebarState.isHoverPeek;
-    },
     menuItems() {
       return this.sidebarData.current_menu_items || [];
     },
-    peekClasses() {
+    sidebarClasses() {
       return {
-        'super-sidebar-peek-hint': this.showPeekHint,
-        'super-sidebar-peek': this.showOverlay,
-        'super-sidebar-has-peeked': this.sidebarState.hasPeeked,
         'super-sidebar-is-icon-only': this.isIconOnly,
         'super-sidebar-is-mobile': this.sidebarState.isMobile,
         'super-sidebar-animatable': this.isAnimatable,
@@ -88,7 +78,7 @@ export default {
       handler(collapsed) {
         this.setupFocusTrapListener();
 
-        if (this.isNotPeeking() && !collapsed) {
+        if (!collapsed) {
           this.$nextTick(() => {
             this.firstFocusableElement().focus();
           });
@@ -101,10 +91,9 @@ export default {
       is_logged_in: isLoggedIn,
       current_context: currentContext,
       username,
-      track_visits_path: trackVisitsPath,
     } = this.sidebarData;
     if (isLoggedIn && currentContext.namespace) {
-      trackContextAccess(username, currentContext, trackVisitsPath);
+      trackContextAccess(username, currentContext);
     }
   },
   mounted() {
@@ -132,9 +121,6 @@ export default {
     isOverlapping() {
       return GlBreakpointInstance.windowWidth() < breakpoints.xl;
     },
-    isNotPeeking() {
-      return !(sidebarState.isHoverPeek || sidebarState.isPeek);
-    },
     setupFocusTrapListener() {
       /**
        * Only trap focus when sidebar displays over page content to avoid
@@ -150,7 +136,7 @@ export default {
       toggleSuperSidebarCollapsed(true);
     },
     handleEscKey() {
-      if (this.isOverlapping() && this.isNotPeeking()) {
+      if (this.isOverlapping()) {
         this.collapseSidebar();
         document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`)?.focus();
       }
@@ -192,7 +178,7 @@ export default {
       id="super-sidebar"
       aria-labelledby="super-sidebar-heading"
       class="super-sidebar"
-      :class="peekClasses"
+      :class="sidebarClasses"
       data-testid="super-sidebar"
       :inert="sidebarState.isCollapsed"
       @mouseenter="isMouseover = true"
@@ -219,7 +205,7 @@ export default {
             :is-logged-in="sidebarData.is_logged_in"
             :panel-type="sidebarData.panel_type"
             :pinned-item-ids="sidebarData.pinned_items"
-            :update-pins-url="sidebarData.update_pins_url"
+            :show-feedback-link="sidebarData.show_feature_library_feedback"
           />
           <sidebar-portal-target />
         </scroll-scrim>
@@ -239,7 +225,9 @@ export default {
             <help-center ref="helpCenter" :sidebar-data="sidebarData" class="gl-mr-2" />
           </div>
         </div>
-        <icon-only-toggle v-if="canIconOnly" class="gl-hidden xl:gl-flex" @toggle="toggleSidebar" />
+        <div v-if="canIconOnly" class="-gl-mt-2 gl-hidden gl-px-3 gl-pb-3 xl:gl-block">
+          <icon-only-toggle @toggle="toggleSidebar" />
+        </div>
       </div>
     </nav>
     <a

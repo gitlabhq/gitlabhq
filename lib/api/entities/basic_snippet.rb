@@ -3,14 +3,14 @@
 module API
   module Entities
     class BasicSnippet < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :title, documentation: { type: 'String', example: 'test' }
       expose :description, documentation: { type: 'String', example: 'Ruby test snippet' }
       expose :visibility, documentation: { type: 'String', example: 'public' }
       expose :author, using: ::API::Entities::UserBasic, documentation: { type: '::API::Entities::UserBasic' }
       expose :created_at, documentation: { type: 'DateTime', example: '2012-06-28T10:52:04Z' }
       expose :updated_at, documentation: { type: 'DateTime', example: '2012-06-28T10:52:04Z' }
-      expose :project_id, documentation: { type: 'Integer', example: 1 }
+      expose :project_id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :web_url, documentation: {
         type: 'String', example: 'http://example.com/example/example/snippets/1'
       } do |snippet|

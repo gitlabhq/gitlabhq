@@ -23,11 +23,13 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
   end
 
   describe 'validations' do
-    describe 'ancestors_state validations' do
-      let_it_be(:parent, freeze: false) { create(:group) }
-      let_it_be(:child, freeze: false) { create(:group, parent: parent) }
+    describe 'ancestor state validations' do
+      let_it_be_with_reload(:grandparent) { create(:group) }
+      let_it_be_with_reload(:parent) { create(:group, parent: grandparent) }
+      let_it_be_with_reload(:child) { create(:group, parent: parent) }
 
       after do
+        grandparent.update!(state: :ancestor_inherited)
         parent.update!(state: :ancestor_inherited)
         child.update!(state: :ancestor_inherited)
       end
@@ -51,7 +53,9 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
             child.update!(state: child_from)
 
             expect { child.public_send(event, transition_user: user) }.not_to change { child.reload.state_name }
-            expect(child.errors[:state]).to include(match(/cannot be changed as ancestor ID \d+ is #{parent_state}/))
+            expect(child.errors[:state]).to include(
+              format("cannot be changed as ancestor ID %{id} is %{state_name}", id: parent.id, state_name: parent_state)
+            )
           end
         end
       end
@@ -87,6 +91,26 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
         with_them do
           it "allows #{params[:event]} when parent is #{params[:parent_state]}" do
             parent.update!(state: parent_state)
+            child.update!(state: child_from)
+
+            expect { child.public_send(event, transition_user: user) }
+              .to change { child.reload.state_name }.from(child_from).to(child_to)
+            expect(child.errors).to be_empty
+          end
+        end
+      end
+
+      describe 'ignores ancestors beyond the direct parent' do
+        where(:event, :child_from, :child_to, :grandparent_state) do
+          :archive           | :ancestor_inherited | :archived           | :archived
+          :archive           | :ancestor_inherited | :archived           | :deletion_scheduled
+          :unarchive         | :archived           | :ancestor_inherited | :deletion_scheduled
+          :schedule_deletion | :ancestor_inherited | :deletion_scheduled | :deletion_scheduled
+        end
+
+        with_them do
+          it "allows #{params[:event]} when only the grandparent is #{params[:grandparent_state]}" do
+            grandparent.update!(state: grandparent_state)
             child.update!(state: child_from)
 
             expect { child.public_send(event, transition_user: user) }

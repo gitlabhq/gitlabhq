@@ -8,6 +8,7 @@ import { I18N_WORK_ITEM_ERROR_DELETING, WORK_ITEM_TYPE_NAME_EPIC } from '../cons
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 
 export default {
+  name: 'WorkItemRoot',
   components: {
     GlAlert,
     WorkItemDetail,

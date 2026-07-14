@@ -13,8 +13,8 @@ RSpec.describe Cells::OutstandingLease, feature_category: :cell do
   end
 
   describe 'scopes' do
-    let_it_be(:lease1) { create(:cells_outstanding_lease, updated_at: 2.days.ago) }
-    let_it_be(:lease2) { create(:cells_outstanding_lease, updated_at: 1.hour.ago) }
+    let_it_be(:lease1) { create(:cells_outstanding_lease, created_at: 2.days.ago) }
+    let_it_be(:lease2) { create(:cells_outstanding_lease, created_at: 1.hour.ago) }
 
     describe '.by_uuid' do
       it 'returns only the lease matching the given uuid' do
@@ -27,17 +27,17 @@ RSpec.describe Cells::OutstandingLease, feature_category: :cell do
       end
     end
 
-    describe '.updated_before' do
-      it 'returns leases updated before the given time' do
+    describe '.created_before' do
+      it 'returns leases created before the given time' do
         cutoff = 1.day.ago
 
-        expect(described_class.updated_before(cutoff)).to contain_exactly(lease1)
+        expect(described_class.created_before(cutoff)).to contain_exactly(lease1)
       end
 
       it 'returns an empty relation when no leases match' do
         cutoff = 3.days.ago
 
-        expect(described_class.updated_before(cutoff)).to be_empty
+        expect(described_class.created_before(cutoff)).to be_empty
       end
     end
   end

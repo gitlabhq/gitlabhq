@@ -45,7 +45,7 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
     )
   end
 
-  let!(:webauthn_credential) { WebAuthn::Credential.from_get(webauthn_authenticate_result) }
+  let(:webauthn_credential) { WebAuthn::Credential.from_get(webauthn_authenticate_result) }
   let(:device_response) { webauthn_authenticate_result.to_json }
 
   # Main service

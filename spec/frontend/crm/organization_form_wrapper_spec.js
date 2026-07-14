@@ -1,22 +1,21 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import OrganizationFormWrapper from '~/crm/organizations/components/organization_form_wrapper.vue';
 import CrmForm from '~/crm/components/crm_form.vue';
 import getGroupOrganizationsQuery from '~/crm/organizations/components/graphql/get_group_organizations.query.graphql';
 import createCustomerRelationsOrganizationMutation from '~/crm/organizations/components/graphql/create_customer_relations_organization.mutation.graphql';
 import updateCustomerRelationsOrganizationMutation from '~/crm/organizations/components/graphql/update_customer_relations_organization.mutation.graphql';
+import { getGroupOrganizationsQueryResponse } from './mock_data';
+
+Vue.use(VueApollo);
 
 describe('Customer relations organization form wrapper', () => {
   let wrapper;
 
   const findOrganizationForm = () => wrapper.findComponent(CrmForm);
 
-  const $apollo = {
-    queries: {
-      organizations: {
-        loading: false,
-      },
-    },
-  };
   const $route = {
     params: {
       id: 7,
@@ -25,6 +24,9 @@ describe('Customer relations organization form wrapper', () => {
   const organizations = [{ id: 'gid://gitlab/CustomerRelations::Organization/7' }];
 
   const mountComponent = ({ isEditMode = false } = {}) => {
+    const apolloProvider = createMockApollo([
+      [getGroupOrganizationsQuery, jest.fn().mockResolvedValue(getGroupOrganizationsQueryResponse)],
+    ]);
     wrapper = shallowMountExtended(OrganizationFormWrapper, {
       propsData: {
         isEditMode,
@@ -33,8 +35,8 @@ describe('Customer relations organization form wrapper', () => {
         groupFullPath: 'flightjs',
         groupId: 26,
       },
+      apolloProvider,
       mocks: {
-        $apollo,
         $route,
       },
     });

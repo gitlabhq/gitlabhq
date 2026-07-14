@@ -1921,6 +1921,30 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'download_package' do
+    let(:current_user) { anonymous }
+
+    context 'with a public project' do
+      let(:project) { public_project }
+
+      it { is_expected.to be_allowed(:download_package) }
+
+      context 'when the package registry is disabled' do
+        before do
+          project.project_feature.update!(package_registry_access_level: ProjectFeature::DISABLED)
+        end
+
+        it { is_expected.to be_disallowed(:download_package) }
+      end
+    end
+
+    context 'with a private project' do
+      let(:project) { private_project }
+
+      it { is_expected.to be_disallowed(:download_package) }
+    end
+  end
+
   describe 'admin_package' do
     context 'with admin' do
       let(:current_user) { admin }

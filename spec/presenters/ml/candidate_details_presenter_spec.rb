@@ -3,10 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:user, freeze: false) { build_stubbed(:user, :with_avatar) }
   let_it_be(:project) { build_stubbed(:project, :private, creator: user) }
   let_it_be(:experiment) { build_stubbed(:ml_experiments, user: user, project: project, iid: 100) }
   let_it_be(:model_version) { build_stubbed(:ml_model_versions, project: project) }
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:candidate, freeze: false) do
     build_stubbed(:ml_candidates, :with_artifact, :with_ml_model, experiment: experiment, user: user, project: project,
       internal_id: 100)

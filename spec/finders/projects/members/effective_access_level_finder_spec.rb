@@ -4,13 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
   let_it_be(:group) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, group: group) }
+  let_it_be_with_reload(:project) { create(:project, group: group) }
 
   # The result set is being converted to json just for the ease of testing.
   subject { described_class.new(project).execute.as_json }
 
   context 'for a personal project' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     shared_examples_for 'includes access level of the owner of the project' do
       it 'includes access level of the owner of the project as Owner' do
@@ -115,7 +115,7 @@ RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
     end
 
     context 'project in a subgroup' do
-      let_it_be(:project, freeze: false) { create(:project, group: create(:group, :nested)) }
+      let_it_be_with_reload(:project) { create(:project, group: create(:group, :nested)) }
 
       it 'includes access levels of users who are members of the ancestors of the parent group' do
         group_member = create(:group_member, :maintainer, source: project.group.parent)
@@ -210,7 +210,7 @@ RSpec.describe Projects::Members::EffectiveAccessLevelFinder, '#execute' do
   context 'for a project that is shared with other group(s)' do
     let_it_be(:shared_with_group) { create(:group) }
     let_it_be(:user_from_shared_with_group) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, group: create(:group)) }
+    let_it_be_with_reload(:project) { create(:project, group: create(:group)) }
 
     before_all do
       create(:project_group_link, :developer, project: project, group: shared_with_group)

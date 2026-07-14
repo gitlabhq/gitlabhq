@@ -187,6 +187,24 @@ The `Pajamas::CheckboxComponent` follows the [Pajamas Checkbox](https://design.g
 For the full list of options, see its
 [source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/checkbox_component.rb).
 
+#### Select
+
+The `Pajamas::SelectComponent` follows the [Pajamas Select](https://design.gitlab.com/components/select/) specification. It renders the same markup as the Vue `GlFormSelect` (a `.gl-form-select-wrapper` around a `gl-form-select` element), so the dropdown chevron is drawn by the wrapper and the whole control is clickable.
+
+**Example**:
+
+```haml
+= render Pajamas::SelectComponent.new(name: :role,
+  choices: [['Guest', 10], ['Reporter', 20]],
+  selected: 20,
+  width: :md)
+```
+
+The `choices` argument accepts the same choices as [`options_for_select`](https://api.rubyonrails.org/classes/ActionView/Helpers/FormOptionsHelper.html#method-i-options_for_select). Like `GlFormSelect`, the component renders only the control: pair it with a label whose `for` matches the select `id`.
+
+For the full list of options, see its
+[source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/select_component.rb).
+
 #### Experiment badge
 
 The `Pajamas::ExperimentBadgeComponent` follows the [Pajamas Experiment Badge](https://design.gitlab.com/patterns/feature-management#glexperimentbadge) specification.

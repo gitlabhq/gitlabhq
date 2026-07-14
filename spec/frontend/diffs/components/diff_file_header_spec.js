@@ -690,7 +690,7 @@ describe('DiffFileHeader component', () => {
     expect(wrapper.find('[data-testid="comment-files-button"]').exists()).toEqual(true);
   });
 
-  describe('edit in single-file editor button', () => {
+  describe('edit single file button', () => {
     const existingEditPath = 'link/to/edit/path';
     const createProps = ({
       canModifyBlob = true,

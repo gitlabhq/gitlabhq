@@ -1,0 +1,13 @@
+---
+table_name: project_topic_upload_states
+description: Separate table for Project Topic Upload verification states
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234552
+milestone: '19.2'
+feature_categories:
+  - geo_replication
+classes:
+  - Geo::ProjectTopicUploadState
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: todo

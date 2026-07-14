@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Admin::DashboardController, feature_category: :not_owned do # rubocop:disable RSpec/FeatureCategory -- Controller already marked not_owned
-  let_it_be(:admin, freeze: false) { create(:admin) }
-  let_it_be(:organization_owner, freeze: false) { create(:organization_owner).user }
-  let_it_be(:regular_user, freeze: false) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:organization_owner) { create(:organization_owner).user }
+  let_it_be(:regular_user) { create(:user) }
 
   describe 'GET /admin' do
     context 'when user is an instance admin' do

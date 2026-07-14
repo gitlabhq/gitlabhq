@@ -63,6 +63,23 @@ describe('Experimental new project creation app', () => {
     ).toBe(canImportProjects);
   });
 
+  it.each`
+    showBuiltInProjectTemplates | outcome
+    ${false}                    | ${'forwards showBuiltInProjectTemplates as false'}
+    ${true}                     | ${'forwards showBuiltInProjectTemplates as true'}
+  `(
+    '$outcome when showBuiltInProjectTemplates is $showBuiltInProjectTemplates',
+    ({ showBuiltInProjectTemplates }) => {
+      createComponent({
+        showBuiltInProjectTemplates,
+      });
+
+      expect(findNewNamespacePage().props('showBuiltInProjectTemplates')).toBe(
+        showBuiltInProjectTemplates,
+      );
+    },
+  );
+
   it('creates correct breadcrumbs for top-level projects', () => {
     createComponent();
 

@@ -14,6 +14,7 @@ import { getRandomGreeting } from '~/homepage/utils/build_time_aware_greetings';
 const DEFAULT_EMOJI_COLOR = 'var(--gl-color-neutral-200)';
 
 export default {
+  name: 'GreetingHeader',
   components: {
     GlAvatar,
     SetStatusModalWrapper,

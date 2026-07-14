@@ -238,50 +238,78 @@ module API
         optional :order, type: String, desc: 'List commits in order', default: 'default', values: %w[default topo]
         optional :trailers, type: Boolean, desc: 'Parse and include Git trailers for every commit', default: false
         use :pagination
+        optional :pagination, type: String, values: %w[legacy keyset], default: 'legacy',
+          desc: 'Specify the pagination method'
+
+        given pagination: ->(value) { value == 'keyset' } do
+          optional :page_token, type: String, desc: 'Record from which to start the keyset pagination'
+        end
       end
       route_setting :authorization, permissions: :read_commit, boundary_type: :project
       get ':id/repository/commits', urgency: :low do
         not_found! 'Repository' unless user_project.repository_exists?
 
-        page = params[:page] > 0 ? params[:page] : 1
-        per_page = params[:per_page] > 0 ? params[:per_page] : Kaminari.config.default_per_page
-        limit = [per_page, Kaminari.config.max_per_page].min
-        offset = (page - 1) * limit
+        # When the :commits_keyset_pagination flag is enabled, pagination=keyset
+        # routes through CommitsFinder + GitalyKeysetPager (keyset mode, with
+        # validation of unsupported params). When the flag is disabled, the
+        # request falls through to the offset path below, matching pre-flag
+        # behavior - keyset params are simply ignored.
+        if params[:pagination] == 'keyset' && Feature.enabled?(:commits_keyset_pagination, user_project)
+          finder = ::Repositories::CommitsFinder.new(user_project, declared_params(include_missing: false))
+          commits = Gitlab::Pagination::GitalyKeysetPager.new(self, user_project).paginate(finder)
 
-        path = params[:path].presence || ''
-        path = path.sub(%r{^/+}, '') # remove the leading slashes
-        before = params[:until]
-        after = params[:since]
-        ref = params[:ref_name].presence || user_project.default_branch unless params[:all]
-        all = params[:all]
-        with_stats = params[:with_stats]
-        first_parent = params[:first_parent]
-        order = params[:order]
-        author = params[:author]
+          serializer = params[:with_stats] ? Entities::CommitWithStats : Entities::Commit
 
-        commits = user_project.repository.commits(ref,
-          path: path,
-          limit: limit,
-          offset: offset,
-          before: before,
-          after: after,
-          all: all,
-          first_parent: first_parent,
-          order: order,
-          author: author,
-          trailers: params[:trailers],
-          follow: params[:follow])
+          present commits, with: serializer
+        else
+          # Offset pagination path. This inline implementation is slated to be
+          # refactored to run through Repositories::CommitsFinder +
+          # GitalyKeysetPager (the same classes the keyset path uses), so the
+          # endpoint becomes a thin controller for both modes. Offset pagination
+          # itself remains supported; only the implementation changes.
+          # Tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/603239
+          page = params[:page] > 0 ? params[:page] : 1
+          per_page = params[:per_page] > 0 ? params[:per_page] : Kaminari.config.default_per_page
+          limit = [per_page, Kaminari.config.max_per_page].min
+          offset = (page - 1) * limit
 
-        serializer = with_stats ? Entities::CommitWithStats : Entities::Commit
+          path = params[:path].presence || ''
+          path = path.sub(%r{^/+}, '') # remove the leading slashes
+          before = params[:until]
+          after = params[:since]
+          ref = params[:ref_name].presence || user_project.default_branch unless params[:all]
+          all = params[:all]
+          with_stats = params[:with_stats]
+          first_parent = params[:first_parent]
+          order = params[:order]
+          author = params[:author]
 
-        # This tells kaminari that there is 1 more commit after the one we've
-        # loaded, meaning there will be a next page, if the currently loaded set
-        # of commits is equal to the requested page size.
-        commit_count = offset + commits.size + 1
-        paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
+          commits = user_project.repository.commits(ref,
+            path: path,
+            limit: limit,
+            offset: offset,
+            before: before,
+            after: after,
+            all: all,
+            first_parent: first_parent,
+            order: order,
+            author: author,
+            trailers: params[:trailers],
+            follow: params[:follow])
 
-        present paginate(paginated_commits, exclude_total_headers: true, without_count: true), with: serializer
+          serializer = with_stats ? Entities::CommitWithStats : Entities::Commit
 
+          # This tells kaminari that there is 1 more commit after the one we've
+          # loaded, meaning there will be a next page, if the currently loaded set
+          # of commits is equal to the requested page size.
+          commit_count = offset + commits.size + 1
+          paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
+
+          present paginate(paginated_commits, exclude_total_headers: true, without_count: true), with: serializer
+        end
+
+      rescue ::Repositories::CommitsFinder::UnsupportedKeysetParamError => e
+        render_api_error!(e.message, 400)
       rescue ArgumentError
         render_api_error!('ref_name is invalid', 400)
       end

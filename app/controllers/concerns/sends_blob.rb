@@ -8,11 +8,11 @@ module SendsBlob
     include SendFileUpload
   end
 
-  def send_blob(repository, blob, inline: true, allow_caching: false)
+  def send_blob(repository, blob, inline: true, allow_caching: false, force_revalidate: false)
     if blob
       headers['X-Content-Type-Options'] = 'nosniff'
 
-      return if cached_blob?(blob, allow_caching: allow_caching)
+      return if cached_blob?(blob, allow_caching: allow_caching, force_revalidate: force_revalidate)
 
       if blob.stored_externally?
         send_lfs_object(blob, repository.project)
@@ -26,8 +26,26 @@ module SendsBlob
 
   private
 
-  def cached_blob?(blob, allow_caching: false)
+  def cached_blob?(blob, allow_caching: false, force_revalidate: false)
     stale = stale?(strong_etag: blob.id)
+
+    max_age, options = blob_cache_directives(allow_caching: allow_caching, force_revalidate: force_revalidate)
+    # Because we are opinionated we set the cache headers ourselves.
+    expires_in(max_age, **options)
+
+    !stale
+  end
+
+  # When force_revalidate is set, the caller mutates this blob's content under
+  # a stable URL (e.g. a snippet served at a branch ref). Every cache window
+  # must be zero so the browser and any shared cache (CDN) revalidate via the
+  # ETag on every request rather than serving the pre-save copy via max-age,
+  # s-maxage, stale-while-revalidate, or stale-if-error.
+  def blob_cache_directives(allow_caching:, force_revalidate:)
+    if force_revalidate
+      return [0, { public: allow_caching, must_revalidate: true,
+                   stale_if_error: 0, stale_while_revalidate: 0, 's-maxage': 0 }]
+    end
 
     max_age =
       if @ref && @commit && @ref == @commit.id # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -41,12 +59,8 @@ module SendsBlob
         Blob::CACHE_TIME
       end
 
-    # Because we are opinionated we set the cache headers ourselves.
-    expires_in(max_age,
-      public: allow_caching, must_revalidate: true, stale_if_error: 5.minutes,
-      stale_while_revalidate: 1.minute, 's-maxage': 1.minute)
-
-    !stale
+    [max_age, { public: allow_caching, must_revalidate: true,
+                stale_if_error: 5.minutes, stale_while_revalidate: 1.minute, 's-maxage': 1.minute }]
   end
 
   def send_lfs_object(blob, project)

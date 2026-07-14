@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountUsersWithoutGroupOrProjectMembershipMetric, feature_category: :service_ping do
   let_it_be(:user_without_membership) { create(:user) }
-  let_it_be(:user_with_membership, freeze: false) { create(:user) }
+  let_it_be(:user_with_membership) { create(:user) }
   let_it_be(:deactivated_user_without_membership) { create(:user, state: :deactivated) }
 
   let(:expected_value) { 1 }

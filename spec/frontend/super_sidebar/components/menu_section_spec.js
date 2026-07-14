@@ -1,5 +1,5 @@
 import Vue, { computed, nextTick } from 'vue';
-import { GlCollapse, GlAnimatedChevronRightDownIcon } from '@gitlab/ui';
+import { GlNavItem, GlCollapse } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
@@ -11,14 +11,10 @@ describe('MenuSection component', () => {
   // eslint-disable-next-line no-restricted-properties
   const provideState = Vue.observable({ isIconOnly: false });
 
-  const findButton = () => wrapper.find('button');
   const findCollapse = () => wrapper.findComponent(GlCollapse);
   const findFlyout = () => wrapper.findComponent(FlyoutMenu);
   const findNavItems = () => wrapper.findAllComponents(NavItem);
-  const findChevron = () => wrapper.findComponent(GlAnimatedChevronRightDownIcon);
-  const findChevronRightDownIsOn = () =>
-    // In Vue3 this is kebabbed, in Vue2 it is not :(
-    findChevron().attributes('is-on') || findChevron().attributes('ison');
+  const findNavItem = () => wrapper.findComponent(GlNavItem);
 
   const createWrapper = (item, otherProps, provide = {}) => {
     provideState.isIconOnly = provide.isIconOnly ?? false;
@@ -29,6 +25,7 @@ describe('MenuSection component', () => {
         isIconOnly: computed(() => provideState.isIconOnly),
       },
       stubs: {
+        GlNavItem,
         GlCollapse: stubComponent(GlCollapse, {
           props: ['visible'],
         }),
@@ -38,7 +35,7 @@ describe('MenuSection component', () => {
 
   it('renders its title', () => {
     createWrapper({ title: 'Asdf' });
-    expect(findButton().text()).toBe('Asdf');
+    expect(findNavItem().text()).toBe('Asdf');
   });
 
   it('renders all its subitems', () => {
@@ -54,7 +51,7 @@ describe('MenuSection component', () => {
 
   it('associates button with list with aria-controls', () => {
     createWrapper({ title: 'Asdf' });
-    expect(findButton().attributes('aria-controls')).toBe('asdf');
+    expect(findNavItem().attributes('aria-controls')).toBe('asdf');
     expect(findCollapse().attributes('id')).toBe('asdf');
   });
 
@@ -62,33 +59,31 @@ describe('MenuSection component', () => {
     describe('when active', () => {
       it('is expanded', () => {
         createWrapper({ title: 'Asdf', is_active: true });
+        expect(findNavItem().props('expanded')).toBe(true);
         expect(findCollapse().props('visible')).toBe(true);
-        expect(findChevronRightDownIsOn()).toBe('true');
       });
     });
 
     describe('when set to expanded', () => {
       it('is expanded', () => {
         createWrapper({ title: 'Asdf' }, { expanded: true });
-        expect(findButton().attributes('aria-expanded')).toBe('true');
+        expect(findNavItem().props('expanded')).toBe(true);
         expect(findCollapse().props('visible')).toBe(true);
-        expect(findChevronRightDownIsOn()).toBe('true');
       });
     });
 
     describe('when not active nor set to expanded', () => {
       it('is not expanded', () => {
         createWrapper({ title: 'Asdf' }, { expanded: false });
-        expect(findButton().attributes('aria-expanded')).toBe('false');
+        expect(findNavItem().props('expanded')).toBe(false);
         expect(findCollapse().props('visible')).toBe(false);
-        expect(findChevronRightDownIsOn()).toBeUndefined();
       });
     });
 
     describe('when in icon-only mode', () => {
       it('does not show as expanded nor is expandable', () => {
         createWrapper({ title: 'Asdf' }, { expanded: true }, { isIconOnly: true });
-        expect(findChevron().exists()).toBe(false);
+        expect(findNavItem().props('isIconOnly')).toBe(true);
 
         // Regression test: We have to keep the GlCollapse with its child NavItems in the DOM
         // for keyboard shortcuts to work. Keyboard shortcuts look for elements by id to navigate
@@ -132,7 +127,7 @@ describe('MenuSection component', () => {
         describe('when section is expanded', () => {
           it('is not rendered', async () => {
             createWrapper({ title: 'Asdf' }, { 'has-flyout': true, expanded: true });
-            await findButton().trigger('pointerover', { pointerType });
+            await findNavItem().trigger('pointerover', { pointerType });
             expect(findFlyout().exists()).toBe(false);
           });
         });
@@ -141,7 +136,7 @@ describe('MenuSection component', () => {
           describe('when section has no items', () => {
             it('is not rendered', async () => {
               createWrapper({ title: 'Asdf' }, { 'has-flyout': true, expanded: false });
-              await findButton().trigger('pointerover', { pointerType });
+              await findNavItem().trigger('pointerover', { pointerType });
               expect(findFlyout().exists()).toBe(false);
             });
           });
@@ -155,15 +150,15 @@ describe('MenuSection component', () => {
             });
 
             it('is rendered and shown', async () => {
-              await findButton().trigger('pointerover', { pointerType });
+              await findNavItem().trigger('pointerover', { pointerType });
               expect(findFlyout().isVisible()).toBe(true);
             });
 
             it('adds a class to keep hover effect on button while flyout is hovered', async () => {
-              await findButton().trigger('pointerover', { pointerType });
-              expect(findButton().classes()).not.toContain('with-mouse-over-flyout');
+              await findNavItem().trigger('pointerover', { pointerType });
+              expect(findNavItem().classes()).not.toContain('with-mouse-over-flyout');
               await findFlyout().vm.$emit('mouseover');
-              expect(findButton().classes()).toContain('with-mouse-over-flyout');
+              expect(findNavItem().classes()).toContain('with-mouse-over-flyout');
             });
           });
         });
@@ -180,12 +175,12 @@ describe('MenuSection component', () => {
 
         it('opens the flyout menu', async () => {
           expect(findFlyout().exists()).toBe(false);
-          await findButton().trigger('click');
+          await findNavItem().trigger('click');
           expect(findFlyout().exists()).toBe(true);
         });
 
         it('closes the flyout menu on outside click', async () => {
-          await findButton().trigger('click');
+          await findNavItem().trigger('click');
           expect(findFlyout().exists()).toBe(true);
 
           await document.body.click();
@@ -200,16 +195,16 @@ describe('MenuSection component', () => {
               { title: 'Asdf', items: [{ title: 'Item1', href: '/item1' }] },
               { expanded: true, 'has-flyout': true },
             );
-            await findButton().trigger('click');
-            await findButton().trigger('pointerover', { pointerType: 'mouse' });
+            await findNavItem().trigger('click');
+            await findNavItem().trigger('pointerover', { pointerType: 'mouse' });
           });
 
           it('shows the flyout only after section title gets hovered out and in again', async () => {
             expect(findCollapse().props('visible')).toBe(false);
             expect(findFlyout().exists()).toBe(false);
 
-            await findButton().trigger('pointerleave');
-            await findButton().trigger('pointerover', { pointerType: 'mouse' });
+            await findNavItem().trigger('pointerleave');
+            await findNavItem().trigger('pointerover', { pointerType: 'mouse' });
 
             expect(findCollapse().props('visible')).toBe(false);
             expect(findFlyout().isVisible()).toBe(true);
@@ -222,16 +217,16 @@ describe('MenuSection component', () => {
               { title: 'Asdf', items: [{ title: 'Item1', href: '/item1' }] },
               { expanded: true, 'has-flyout': true },
             );
-            await findButton().trigger('click');
-            await findButton().trigger('pointerover', { pointerType: 'pen' });
+            await findNavItem().trigger('click');
+            await findNavItem().trigger('pointerover', { pointerType: 'pen' });
           });
 
           it('shows the flyout only after section title gets hovered out and in again', async () => {
             expect(findCollapse().props('visible')).toBe(false);
             expect(findFlyout().exists()).toBe(false);
 
-            await findButton().trigger('pointerleave');
-            await findButton().trigger('pointerover', { pointerType: 'pen' });
+            await findNavItem().trigger('pointerleave');
+            await findNavItem().trigger('pointerover', { pointerType: 'pen' });
 
             expect(findCollapse().props('visible')).toBe(false);
             expect(findFlyout().isVisible()).toBe(true);

@@ -27,6 +27,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::LfsObjectsImporter, :clean_gi
     {
       import_stage: 'import_lfs_objects',
       class: described_class.name,
+      Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
       project_id: project.id,
       project_path: project.full_path
     }
@@ -55,6 +56,21 @@ RSpec.describe Gitlab::BitbucketImport::Importers::LfsObjectsImporter, :clean_gi
         expect(waiter.jobs_remaining).to eq(1)
       end
 
+      it 'refreshes the token before reading the LFS download list' do
+        importer = described_class.new(project)
+        client = instance_double(Bitbucket::Client)
+
+        allow(Import::BitbucketImport::ClientFactory).to receive(:for).with(project).and_return(client)
+
+        expect(client).to receive(:refresh_if_expired!).ordered
+
+        expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |service|
+          expect(service).to receive(:each_list_item).ordered.and_yield(lfs_download_object)
+        end
+
+        importer.execute
+      end
+
       it 'logs its progress' do
         importer = described_class.new(project)
 
@@ -64,6 +80,32 @@ RSpec.describe Gitlab::BitbucketImport::Importers::LfsObjectsImporter, :clean_gi
           .to receive(:info).with(common_log_messages.merge(message: 'finished')).and_call_original
 
         importer.execute
+      end
+
+      context 'when the LFS batch list returns Unauthorized' do
+        let(:unauthorized_error) do
+          Projects::LfsPointers::LfsObjectDownloadListService::LfsObjectDownloadListUnauthorizedError
+            .new('The LFS objects download list couldn\'t be imported. Error: Unauthorized')
+        end
+
+        before do
+          allow_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |service|
+            allow(service).to receive(:each_list_item).and_raise(unauthorized_error)
+          end
+        end
+
+        it 're-raises the error so Sidekiq retries the stage instead of tracking it as a failure',
+          :aggregate_failures do
+          importer = described_class.new(project)
+
+          expect(Gitlab::Import::ImportFailureService).not_to receive(:track)
+          expect(Gitlab::BitbucketImport::ImportLfsObjectWorker).not_to receive(:perform_in)
+
+          expect { importer.execute }
+            .to raise_error(
+              Projects::LfsPointers::LfsObjectDownloadListService::LfsObjectDownloadListUnauthorizedError
+            )
+        end
       end
 
       context 'when LFS list download fails' do

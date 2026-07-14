@@ -39,6 +39,7 @@ const isValidErrorId = (errorId) => {
 };
 export const tableDataClass = 'gl-flex @md/panel:gl-table-cell gl-items-center';
 export default {
+  name: 'ErrorTrackingList',
   i18n: I18N_ERROR_TRACKING_LIST,
   fields: [
     {
@@ -371,7 +372,7 @@ export default {
             <span class="gl-flex">
               <gl-icon
                 class="gl-dropdown-item-check-icon"
-                :class="{ invisible: !isCurrentStatusFilter(status) }"
+                :class="{ 'gl-invisible': !isCurrentStatusFilter(status) }"
                 name="check"
               />
               {{ label }}
@@ -388,7 +389,7 @@ export default {
             <span class="gl-flex">
               <gl-icon
                 class="gl-dropdown-item-check-icon"
-                :class="{ invisible: !isCurrentSortField(field) }"
+                :class="{ 'gl-invisible': !isCurrentSortField(field) }"
                 name="check"
               />
               {{ label }}

@@ -1,13 +1,16 @@
 MultiplePartitionScanDetector:
-  tables:
-    - p_ci_builds
-    - p_ci_builds_metadata
-    - p_ci_job_annotations
-    - p_ci_runner_machine_builds
   todos:
-    # List query fingerprints which should be ignored until they are fixed.
+    # Queries known to be unpruned that we ignore until they are fixed.
     # These fingerprints can be found in the auto_explain pipeline artifacts.
+    # Each entry is either a bare fingerprint or a hash carrying the tracking issue.
     # Example:
     # - c2cfe803a497101b
+    # - fingerprint: d3e4f5a6b7c8d9e0
+    #   issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/XXXX"
+  allowed:
+    # Queries that legitimately scan all partitions and cannot prune.
+    # - fingerprint: c2cfe803a497101b
+    #   reason: "Runner heartbeat scans all partitions by design"
+    #   issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/XXXX"
 JSONBScanDetector:
   todos:

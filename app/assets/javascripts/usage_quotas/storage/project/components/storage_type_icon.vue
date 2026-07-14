@@ -2,6 +2,7 @@
 import { GlIcon } from '@gitlab/ui';
 
 export default {
+  name: 'StorageTypeIcon',
   components: { GlIcon },
   props: {
     name: {

@@ -31,7 +31,7 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu, feature_category: 
     describe 'behavior based on access level setting' do
       using RSpec::Parameterized::TableSyntax
 
-      let_it_be(:project, freeze: false) { create(:project) }
+      let_it_be_with_reload(:project) { create(:project) }
       let(:enabled) { Featurable::PRIVATE }
       let(:disabled) { Featurable::DISABLED }
 
@@ -178,6 +178,24 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu, feature_category: 
           it_behaves_like 'access rights checks'
         end
       end
+    end
+  end
+
+  describe 'Feature Library metadata' do
+    before do
+      stub_feature_flags(cloudseed_aws: true)
+      configured_google_oauth2 = Struct.new(:app_id, :app_secret).new('app_id', 'app_secret')
+      allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for)
+                                                .with('google_oauth2')
+                                                .and_return(configured_google_oauth2)
+    end
+
+    it 'gives every item a description and a unique library_icon', :aggregate_failures do
+      serialized = described_class.new(context).renderable_items.map(&:serialize_for_super_sidebar)
+
+      expect(serialized).to all(include(:description, :library_icon))
+      icons = serialized.map { |item| item[:library_icon] }
+      expect(icons).to match_array(icons.uniq)
     end
   end
 end

@@ -19,6 +19,10 @@ module Gitlab
             }
             field_options[:experiment] = opts[:experiment] if opts.key?(:experiment)
 
+            if opts[:granular_authorization_opts]
+              field_options[:directives] = granular_scope_directive(**opts[:granular_authorization_opts])
+            end
+
             field opts[:field_name], **field_options
           end
         end

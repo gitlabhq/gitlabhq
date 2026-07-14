@@ -1,0 +1,62 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+
+fragment PipelineListItemBase on Pipeline {
+  id
+  iid
+  detailedStatus {
+    ...CiIcon
+    name
+  }
+  finishedAt
+  duration
+  name
+  ref
+  commit {
+    id
+    shortId
+    title
+    webPath
+    author {
+      id
+      avatarUrl
+      webPath
+      name
+    }
+  }
+  user {
+    id
+    name
+    webPath
+    avatarUrl
+  }
+  source
+  latest
+  yamlErrors
+  yamlErrorMessages
+  failureReason
+  configSource
+  stuck
+  type
+  path
+  retryable
+  cancelable
+  stages {
+    nodes {
+      id
+      name
+      detailedStatus {
+        ...CiIcon
+        name
+        tooltip
+      }
+    }
+  }
+  mergeRequestEventType
+  project {
+    id
+    fullPath
+  }
+  hasManualActions
+  hasScheduledActions
+  failedJobsCount
+}

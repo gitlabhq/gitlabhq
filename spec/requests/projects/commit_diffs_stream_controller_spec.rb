@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Commit diffs stream', feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
   let(:commit_with_two_diffs) { project.commit("874797c3a73b60d2187ed6e2fcabd289ff75171e") }
   let(:offset) { 0 }
   let(:diff_files) { commit_with_two_diffs.diffs.diff_files }

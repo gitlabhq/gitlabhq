@@ -27,8 +27,11 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
     context 'when user can manage members' do
       let_it_be(:invited) { create_list(:group_member, 3, :invited, group: group) }
 
-      before do
+      before_all do
         group.add_owner(user)
+      end
+
+      before do
         sign_in(user)
       end
 
@@ -136,11 +139,14 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
       let_it_be(:shared_group) { create(:group, parent: group) }
       let_it_be(:shared_group_user) { create(:user) }
 
-      before do
+      before_all do
         group.add_owner(user)
         nested_group.add_owner(nested_group_user)
         shared_group.add_owner(shared_group_user)
         create(:group_group_link, shared_group: nested_group, shared_with_group: shared_group)
+      end
+
+      before do
         sign_in(user)
       end
 
@@ -167,8 +173,11 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
   describe 'PUT update' do
     let_it_be(:requester) { create(:group_member, :access_request, group: group) }
 
-    before do
+    before_all do
       group.add_owner(user)
+    end
+
+    before do
       sign_in(user)
     end
 
@@ -269,7 +278,7 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
 
   describe 'DELETE destroy' do
     let_it_be(:sub_group) { create(:group, parent: group) }
-    let_it_be(:member, freeze: false) { create(:group_member, :developer, group: group) }
+    let_it_be(:member) { create(:group_member, :developer, group: group) }
     let_it_be(:sub_member) { create(:group_member, :developer, group: sub_group, user: member.user) }
 
     before do
@@ -474,7 +483,7 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
   end
 
   describe 'POST approve_access_request' do
-    let_it_be(:member, freeze: false) { create(:group_member, :access_request, group: group) }
+    let_it_be(:member) { create(:group_member, :access_request, group: group) }
 
     before do
       sign_in(user)

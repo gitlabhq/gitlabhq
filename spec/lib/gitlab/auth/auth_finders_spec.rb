@@ -1210,8 +1210,8 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
   end
 
-  describe '#find_user_from_basic_auth_password' do
-    subject(:auth_subject) { find_user_from_basic_auth_password }
+  describe '#find_user_from_basic_auth_password_for_git' do
+    subject(:auth_subject) { find_user_from_basic_auth_password_for_git }
 
     context 'when the request does not have AUTHORIZATION header' do
       it { is_expected.to be_nil }
@@ -1247,10 +1247,24 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
       is_expected.to be_nil
     end
 
-    it 'returns user with correct credentials' do
-      set_basic_auth_header(user.username, user.password)
+    context 'with correct password' do
+      before do
+        set_basic_auth_header(user.username, user.password)
+      end
 
-      is_expected.to eq(user)
+      it 'returns user' do
+        is_expected.to eq(user)
+      end
+
+      context "with password authentication disabled for Git" do
+        before do
+          stub_application_setting(password_authentication_enabled_for_git: false)
+        end
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
     end
   end
 

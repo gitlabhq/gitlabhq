@@ -4,6 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountProjectsWithMonitorEnabledMetric,
   feature_category: :observability do
+  # `freeze: false` is required here: this `let_it_be` subject is mutated
+  # in-memory across examples in a way that survives both
+  # `let_it_be_with_reload` and `let_it_be_with_refind` (e.g. a memoized
+  # association/collection or a non-persisted attribute). Keeping it unfrozen
+  # is the only correct cure (see gitlab-org/gitlab#602925).
   let_it_be(:projects, freeze: false) { create_list(:project, 3) }
 
   let(:expected_value) { 2 }

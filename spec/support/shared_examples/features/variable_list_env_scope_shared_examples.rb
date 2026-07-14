@@ -8,11 +8,9 @@ RSpec.shared_examples 'variable list env scope' do
   let(:page_path) { project_settings_ci_cd_path(project) }
 
   before do
-    sign_in(user)
     project.add_maintainer(user)
 
     visit page_path
-    wait_for_requests
   end
 
   it 'adds a new variable with an environment scope' do
@@ -22,17 +20,15 @@ RSpec.shared_examples 'variable list env scope' do
       fill_in 'Key', with: 'akey'
       fill_in 'Value', with: 'akey_value'
 
-      click_button('All (default)')
+      toggle_listbox('All (default)')
       fill_in 'Search', with: 'review/*'
       find('[data-testid="create-scope-button"]').click
 
       click_button('Add variable')
     end
 
-    wait_for_requests
-
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find('.js-ci-variable-row:first-child [data-label="Environments"]').text).to eq('review/*')
+      expect(page).to have_selector('.js-ci-variable-row:first-child [data-label="Environments"]', text: 'review/*')
     end
   end
 
@@ -44,14 +40,12 @@ RSpec.shared_examples 'variable list env scope' do
     open_drawer
 
     page.within('[data-testid="ci-variable-drawer"]') do
-      click_button('All (default)')
+      toggle_listbox('All (default)')
 
       # default list of env scopes
       expect_env_scope_items(['*', 'dev', 'env_1', 'env_2'])
 
       fill_in 'Search', with: 'env'
-      sleep 0.5 # wait for debounce
-      wait_for_requests
 
       # search filters the list of env scopes
       expect_env_scope_items(%w[env_1 env_2])
@@ -63,7 +57,7 @@ RSpec.shared_examples 'variable list env scope' do
     open_drawer
 
     page.within('[data-testid="ci-variable-drawer"]') do
-      click_button('All (default)')
+      toggle_listbox('All (default)')
 
       # dropdown should reset back to default list of env scopes
       expect_env_scope_items(['*', 'dev', 'env_1', 'env_2'])
@@ -75,7 +69,6 @@ RSpec.shared_examples 'variable list env scope' do
   def open_drawer
     page.within('[data-testid="ci-variable-table"]') do
       click_button('Add variable')
-      wait_for_requests
     end
   end
 

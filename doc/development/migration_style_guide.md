@@ -14,7 +14,7 @@ big burden for most organizations. For this reason, it is important that your
 migrations are written carefully, can be applied online, and adhere to the style
 guide below.
 
-Migrations are **not** allowed to require GitLab installations to be taken
+Migrations are not allowed to require GitLab installations to be taken
 offline ever. Migrations always must be written in such a way to avoid
 downtime. In the past we had a process for defining migrations that allowed for
 downtime by setting a `DOWNTIME` constant. You may see this when looking at
@@ -1246,7 +1246,7 @@ first place.
 
 ## Storing JSON in database
 
-The Rails 5 natively supports `JSONB` (binary JSON) column type.
+Rails 5 natively supports `JSONB` (binary JSON) column type.
 Example migration adding this column:
 
 ```ruby

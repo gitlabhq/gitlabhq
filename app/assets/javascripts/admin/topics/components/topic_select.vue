@@ -24,6 +24,7 @@ export default {
       default: null,
     },
   },
+  emits: ['click'],
   apollo: {
     topics: {
       query: searchProjectTopics,

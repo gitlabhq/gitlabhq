@@ -414,10 +414,17 @@ Example of response:
 
 ## List all trigger jobs by pipeline
 
+{{< history >}}
+
+- `trigger_jobs` route [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241496) in GitLab 19.2.
+- `bridges` route [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241496) in GitLab 19.2. Use `trigger_jobs` instead.
+
+{{< /history >}}
+
 Lists all trigger jobs for a specified pipeline.
 
 ```plaintext
-GET /projects/:id/pipelines/:pipeline_id/bridges
+GET /projects/:id/pipelines/:pipeline_id/trigger_jobs
 ```
 
 | Attribute     | Type                           | Required | Description |
@@ -429,7 +436,7 @@ GET /projects/:id/pipelines/:pipeline_id/bridges
 ```shell
 curl --globoff \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/6/bridges?scope[]=pending&scope[]=running"
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/6/trigger_jobs?scope[]=pending&scope[]=running"
 ```
 
 Example of response:

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-#
+
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/refer_to_index_by_name'
 

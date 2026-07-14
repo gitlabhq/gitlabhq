@@ -3,6 +3,12 @@
 module API
   module Ci
     class Runner < ::API::Base
+      # Runner endpoints set Current.organization to the runner's own
+      # organization from within the endpoint body (via authenticate_runner!).
+      # Disable the global fallback in API::API's before_validation hook so it
+      # does not pre-empt that assignment with the default organization.
+      skip_global_organization_setup!
+
       helpers ::API::Ci::Helpers::Runner
 
       content_type :txt, 'text/plain'

@@ -1,6 +1,5 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapState } from 'vuex';
+import { mapState } from 'pinia';
 import {
   GlLoadingIcon,
   GlPagination,
@@ -14,12 +13,14 @@ import {
   DEFAULT_GROUPS_PER_PAGE,
   MINIMUM_SEARCH_TERM_LENGTH,
 } from '~/jira_connect/subscriptions/constants';
+import { useJiraConnectSubscriptions } from '~/jira_connect/subscriptions/store';
 import { ACCESS_LEVEL_MAINTAINER_INTEGER } from '~/access_level/constants';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import GroupsListItem from './groups_list_item.vue';
 
 export default {
+  name: 'GroupsList',
   components: {
     GlLoadingIcon,
     GlPagination,
@@ -47,7 +48,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['accessToken', 'currentUser']),
+    ...mapState(useJiraConnectSubscriptions, ['accessToken', 'currentUser']),
     showPagination() {
       return this.totalItems > this.$options.DEFAULT_GROUPS_PER_PAGE && this.groups.length > 0;
     },

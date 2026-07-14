@@ -1,0 +1,9 @@
+---
+name: subscribe_issue
+description: Grants the ability to subscribe to issues
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - subscribe_issue

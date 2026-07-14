@@ -25,6 +25,7 @@ RSpec.describe Gitlab::GitalyClient::ObjectPoolService, feature_category: :sourc
         expect(stub)
           .to receive(:create_object_pool)
           .with(expected_request, kind_of(Hash))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}))
       end
 
       subject.create(raw_repository) # rubocop:disable Rails/SaveBang -- This is a gitaly call

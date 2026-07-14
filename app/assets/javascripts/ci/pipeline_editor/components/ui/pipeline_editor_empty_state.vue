@@ -4,6 +4,7 @@ import ROCKET_ILLUSTRATION from '@gitlab/svgs/dist/illustrations/rocket-launch-m
 import DuoAnalyzeCard from 'ee_component/ci/pipeline_editor/components/ui/duo_analyze_card.vue';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
+import { exploreCatalogIndexPath } from '~/lib/utils/path_helpers/explore';
 
 export default {
   name: 'PipelineEditorEmptyState',
@@ -15,9 +16,14 @@ export default {
     GlEmptyState,
   },
   mixins: [glAbilitiesMixin()],
-  inject: ['usesExternalConfig', 'newPipelinePath', 'ciCatalogPath'],
+  inject: ['usesExternalConfig', 'newPipelinePath'],
   emits: ['create-empty-config-file'],
   emptyStateIllustrationPath: ROCKET_ILLUSTRATION,
+  computed: {
+    exploreCatalogIndexPath() {
+      return exploreCatalogIndexPath();
+    },
+  },
   methods: {
     createEmptyConfigFile() {
       this.$emit('create-empty-config-file');
@@ -49,7 +55,7 @@ export default {
           <p class="gl-grow">
             {{ s__('Pipelines|Start with a pre-built and customizable CI/CD component.') }}
           </p>
-          <gl-button :href="ciCatalogPath" data-testid="browse-catalog-button">
+          <gl-button :href="exploreCatalogIndexPath" data-testid="browse-catalog-button">
             {{ s__('Pipelines|Browse catalog') }}
           </gl-button>
         </template>

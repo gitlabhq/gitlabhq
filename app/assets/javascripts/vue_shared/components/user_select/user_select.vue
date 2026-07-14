@@ -99,6 +99,7 @@ export default {
       default: null,
     },
   },
+  emits: ['error', 'input', 'toggle'],
   data() {
     return {
       search: '',

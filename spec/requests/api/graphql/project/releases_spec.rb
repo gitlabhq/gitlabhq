@@ -182,4 +182,40 @@ RSpec.describe 'Query.project(fullPath).releases()', feature_category: :release_
       end
     end
   end
+
+  describe 'avoiding a Gitaly N+1 when resolving release commits', :request_store do
+    let_it_be_with_reload(:n_plus_one_project) { create(:project, :repository, :public) }
+    let_it_be(:n_plus_one_user) { create(:user, developer_of: n_plus_one_project) }
+
+    # More releases than MAXIMUM_GITALY_CALLS, each on a distinct commit, so an
+    # un-batched resolve trips the built-in Gitaly N+1 detector.
+    let_it_be(:release_count) do
+      shas = n_plus_one_project.repository
+        .commits('master', limit: Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS + 5)
+        .map(&:id).uniq
+
+      shas.each_with_index do |sha, index|
+        create(:release, project: n_plus_one_project, tag: "n-plus-one-#{index}", sha: sha, author: n_plus_one_user)
+      end
+
+      shas.size
+    end
+
+    specify do
+      # sanity check for the essential test setup pre-condition
+      expect(release_count).to be > Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS
+    end
+
+    it 'resolves every release commit within the Gitaly call limit' do
+      query = graphql_query_for(:project, { fullPath: n_plus_one_project.full_path },
+        %(releases(first: #{release_count}) { nodes { commit { id sha webUrl title } } }))
+
+      post_graphql(query, current_user: n_plus_one_user)
+
+      expect_graphql_errors_to_be_empty
+      nodes = graphql_data.dig('project', 'releases', 'nodes')
+      expect(nodes.size).to eq(release_count)
+      expect(nodes).to all(include('commit' => include('sha')))
+    end
+  end
 end

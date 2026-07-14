@@ -44,6 +44,7 @@ export default {
       required: true,
     },
   },
+  emits: ['error', 'input'],
   data() {
     return {
       isFetching: false,

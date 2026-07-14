@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::BuildService, feature_category: :team_planning do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:guest) { create(:user, guest_of: project) }
 

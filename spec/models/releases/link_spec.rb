@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Releases::Link do
-  let(:release) { create(:release, project: project) }
-  let(:project) { create(:project) }
+  let_it_be_with_refind(:project) { create(:project) }
+  let_it_be_with_refind(:release) { create(:release, project: project) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:release) }

@@ -1,0 +1,10 @@
+---
+name: vue_mirror_table
+description: Enables the Vue-based mirror table on the repository settings page
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/595303
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240866
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/603167
+milestone: '19.2'
+group: group::source code
+type: beta
+default_enabled: false

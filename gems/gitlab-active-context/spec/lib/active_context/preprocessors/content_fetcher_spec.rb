@@ -79,7 +79,7 @@ RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
         expect(ActiveContext::Logger).to receive(:retryable_exception) do |e, kwargs|
           expect(e).to be_a(ActiveContext::Preprocessors::ContentFetcher::ContentNotFoundError)
           expect(e.message).to eq("content not found for chunk with id: id2")
-          expect(kwargs[:class]).to eq("Class")
+          expect(kwargs[:class_name]).to eq("Class")
           expect(kwargs[:reference]).to match(/id2/)
           expect(kwargs[:reference_id]).to eq("id2")
         end

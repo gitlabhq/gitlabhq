@@ -3,13 +3,10 @@ import jsYaml from 'js-yaml';
 import { isEmpty } from 'lodash-es';
 import {
   GlForm,
-  GlLink,
   GlButton,
   GlButtonGroup,
   GlCollapsibleListbox,
-  GlSprintf,
   GlFormGroup,
-  GlFormCheckbox,
   GlFormInput,
   GlFormSelect,
   GlTooltipDirective,
@@ -23,7 +20,6 @@ import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
@@ -47,13 +43,6 @@ import DeleteWikiModal from './delete_wiki_modal.vue';
 const trackingMixin = Tracking.mixin({
   label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
 });
-
-const MARKDOWN_LINK_TEXT = {
-  markdown: '[Link Title](page-slug)',
-  rdoc: '{Link title}[link:page-slug]',
-  asciidoc: 'link:page-slug[Link title]',
-  org: '[[page-slug]]',
-};
 
 const SAVE_MESSAGE = {
   AUTO: 'AUTO',
@@ -100,15 +89,6 @@ export default {
       placeholder: s__('WikiPage|Page title'),
       templatePlaceholder: s__('WikiPage|Template title'),
       newPagePlaceholder: s__('WikiPage|{Give this page a title}'),
-      helpText: {
-        existingPage: s__(
-          'WikiPage|Tip: You can move this page by adding the path to the beginning of the title.',
-        ),
-        newPage: s__(
-          'WikiPage|Tip: You can specify the full path for the new file. We will automatically create any missing directories.',
-        ),
-        learnMore: s__('WikiPage|Learn more.'),
-      },
       defaultTitle: __('Untitled'),
     },
     path: {
@@ -136,9 +116,6 @@ export default {
       label: s__('WikiPage|Content'),
       placeholder: s__('WikiPage|Write your content or drag files here…'),
     },
-    linksHelpText: s__(
-      'WikiPage|To link to a (new) page, type %{linkExample}. %{linkStart}What types of links are supported?%{linkEnd}',
-    ),
     commitMessage: {
       label: s__('WikiPage|Commit message'),
       value: {
@@ -165,11 +142,8 @@ export default {
     WikiSidebarToggle,
     GlForm,
     GlFormGroup,
-    GlFormCheckbox,
     GlFormInput,
     GlFormSelect,
-    GlSprintf,
-    GlLink,
     GlButton,
     MarkdownEditor,
     WikiTemplate,
@@ -278,12 +252,6 @@ export default {
     formAction() {
       return getPagePath(this.pageInfo);
     },
-    helpPath() {
-      return setUrlFragment(
-        this.pageInfo.helpPath,
-        this.pageInfo.persisted ? 'move-a-wiki-page' : 'create-a-new-wiki-page',
-      );
-    },
     commitMessageI18n() {
       if (this.pageInfo.persisted) {
         if (this.isTemplate) return this.$options.i18n.commitMessage.value.existingTemplate;
@@ -291,9 +259,6 @@ export default {
       }
       if (this.isTemplate) return this.$options.i18n.commitMessage.value.newTemplatePage;
       return this.$options.i18n.commitMessage.value.newPage;
-    },
-    linkExample() {
-      return MARKDOWN_LINK_TEXT[this.format];
     },
     submitButtonText() {
       if (this.isTemplate) {
@@ -313,26 +278,15 @@ export default {
 
       return buttonText;
     },
-    titleHelpText() {
-      return this.pageInfo.persisted
-        ? this.$options.i18n.title.helpText.existingPage
-        : this.$options.i18n.title.helpText.newPage;
-    },
     cancelFormPath() {
       if (this.pageInfo.persisted) return this.pageInfo.path;
       return this.pageInfo.wikiPath;
-    },
-    wikiSpecificMarkdownHelpPath() {
-      return helpPagePath('user/project/wiki/markdown', { anchor: 'links' });
     },
     contentEditorHelpPath() {
       return setUrlFragment(this.pageInfo.helpPath, 'gitlab-flavored-markdown-support');
     },
     isMarkdownFormat() {
       return this.format === 'markdown';
-    },
-    displayWikiSpecificMarkdownHelp() {
-      return !this.isContentEditorActive;
     },
     drawioEnabled() {
       return typeof this.drawioUrl === 'string' && this.drawioUrl.length > 0;
@@ -377,12 +331,8 @@ export default {
       this.onTitleUpdate();
     },
     shouldGeneratePathFromTitle(newValue) {
-      if (this.glFeatures.wikiImmersiveEditor) {
-        if (newValue) {
-          this.generatePathFromTitle();
-        }
-      } else {
-        this.legacyUpdateFrontMatterTitle();
+      if (newValue) {
+        this.generatePathFromTitle();
       }
     },
   },
@@ -397,9 +347,7 @@ export default {
   },
   methods: {
     async submitForm() {
-      if (this.glFeatures.wikiImmersiveEditor) {
-        this.setMissingFields();
-      }
+      this.setMissingFields();
 
       this.isFormDirty = false;
 
@@ -424,11 +372,6 @@ export default {
     },
 
     onTitleUpdate() {
-      if (!this.glFeatures.wikiImmersiveEditor) {
-        this.legacyUpdateFrontMatterTitle();
-        return;
-      }
-
       if (!this.placeholderActive) {
         this.frontMatter.title = this.pageTitle;
         this.frontMatter = { ...this.frontMatter };
@@ -442,20 +385,6 @@ export default {
       ) {
         this.generatePathFromTitle();
       }
-    },
-
-    legacyUpdateFrontMatterTitle() {
-      if (this.shouldGeneratePathFromTitle) {
-        delete this.frontMatter.title;
-        this.path = this.title.replace(/ +/g, '-');
-      } else {
-        this.frontMatter.title = this.pageTitle;
-        if (this.pageInfo.persisted) {
-          this.path = this.pageInfo.slug;
-        }
-      }
-
-      this.frontMatter = { ...this.frontMatter };
     },
 
     updateDrafts() {
@@ -564,14 +493,11 @@ export default {
 
       this.parentPath = this.pageTitle.replace(/\{new_page_title\}$/, '');
 
-      if (this.glFeatures.wikiImmersiveEditor) {
-        this.pageTitle = this.placeholderText;
-        if (this.shouldGeneratePathFromTitle) {
-          this.path = this.parentPath;
-        }
-      } else {
-        this.pageTitle = `${this.parentPath}${this.placeholderText}`;
+      this.pageTitle = this.placeholderText;
+      if (this.shouldGeneratePathFromTitle) {
+        this.path = this.parentPath;
       }
+
       this.placeholderActive = true;
 
       await this.$nextTick();
@@ -581,8 +507,7 @@ export default {
     positionCursorForPlaceholder() {
       const input = this.$refs.titleInput?.$el || this.$refs.titleInput;
       if (input) {
-        const cursorPosition = this.glFeatures.wikiImmersiveEditor ? 0 : this.parentPath.length;
-        input.setSelectionRange(cursorPosition, cursorPosition);
+        input.setSelectionRange(0, 0);
         input.focus();
       }
     },
@@ -611,18 +536,11 @@ export default {
 
       if (this.placeholderActive && this.isPrintableKey(event)) {
         this.placeholderActive = false;
-
-        if (this.glFeatures.wikiImmersiveEditor) {
-          this.pageTitle = '';
-        } else {
-          this.pageTitle = this.parentPath;
-        }
-
+        this.pageTitle = '';
         await this.$nextTick();
         const input = this.$refs.titleInput?.$el || this.$refs.titleInput;
         if (input) {
-          const cursorPosition = this.glFeatures.wikiImmersiveEditor ? 0 : this.parentPath.length;
-          input.setSelectionRange(cursorPosition, cursorPosition);
+          input.setSelectionRange(0, 0);
         }
       }
     },
@@ -665,12 +583,6 @@ export default {
     },
 
     handleSave() {
-      if (!this.glFeatures.wikiImmersiveEditor) {
-        this.validateTitle();
-        this.submitForm();
-        return;
-      }
-
       if (this.useAutoCommitMessage) {
         this.submitForm();
       } else {
@@ -733,16 +645,9 @@ export default {
     :action="formAction"
     method="post"
     class="wiki-form common-note-form js-quick-submit"
-    :class="{
-      'gl-mt-5': !isEditingPath && !glFeatures.wikiImmersiveEditor,
-      immersive: glFeatures.wikiImmersiveEditor,
-    }"
     @submit.prevent="handleSave"
     @input="isFormDirty = true"
   >
-    <h1 v-if="!glFeatures.wikiImmersiveEditor" class="gl-sr-only">
-      {{ pageTitle }}
-    </h1>
     <input :value="csrfToken" type="hidden" name="authenticity_token" />
     <input v-if="pageInfo.persisted" type="hidden" name="_method" value="put" />
     <input
@@ -751,90 +656,12 @@ export default {
       name="wiki[last_commit_sha]"
       :value="pageInfo.lastCommitSha"
     />
-    <input
-      v-if="glFeatures.wikiImmersiveEditor"
-      :value="commitMessage"
-      name="wiki[message]"
-      type="hidden"
-    />
+    <input :value="commitMessage" name="wiki[message]" type="hidden" />
     <input v-if="isCustomSidebar" value="_sidebar" name="wiki[title]" type="hidden" />
-    <div v-if="!glFeatures.wikiImmersiveEditor" class="row">
-      <div class="gl-col-12">
-        <gl-form-group
-          :label="$options.i18n.title.label"
-          label-for="wiki_title"
-          :class="{ 'gl-hidden': isCustomSidebar }"
-          :invalid-feedback="$options.i18n.title.invalid"
-        >
-          <gl-form-input
-            id="wiki_title"
-            ref="titleInput"
-            v-model="pageTitle"
-            type="text"
-            class="form-control"
-            data-testid="wiki-title-textbox"
-            :required="true"
-            :autofocus="!pageInfo.persisted"
-            :placeholder="titlePlaceholder"
-            :state="isTitleValid"
-            @input="handleTitleInput"
-            @keydown="handleTitleKeydown"
-            @focus="handleTitleFocus"
-            @blur="validateTitle"
-          />
-        </gl-form-group>
-      </div>
-
-      <div class="gl-col-12">
-        <gl-form-group :label="$options.i18n.path.label" label-for="wiki_path">
-          <gl-form-input
-            id="wiki_path"
-            v-model="path"
-            name="wiki[title]"
-            data-testid="wiki-path-textbox"
-            type="text"
-            class="form-control !gl-font-monospace"
-            :required="true"
-            :readonly="shouldGeneratePathFromTitle"
-            :placeholder="$options.i18n.path.placeholder"
-          />
-          <gl-form-checkbox v-model="shouldGeneratePathFromTitle" class="gl-mt-3 gl-pt-2">{{
-            __('Generate page path from title')
-          }}</gl-form-checkbox>
-        </gl-form-group>
-      </div>
-    </div>
-
-    <div v-if="!glFeatures.wikiImmersiveEditor" class="row">
-      <div class="gl-col-sm-6">
-        <gl-form-group :label="$options.i18n.format.label" label-for="wiki_format">
-          <gl-form-select
-            id="wiki_format"
-            v-model="format"
-            name="wiki[format]"
-            :disabled="isContentEditorActive"
-            :value="formatOptions.Markdown"
-          >
-            <option v-for="(key, label) of formatOptions" :key="key" :value="key">
-              {{ label }}
-            </option>
-          </gl-form-select>
-        </gl-form-group>
-      </div>
-      <div v-if="!isTemplate" class="gl-col-sm-6">
-        <gl-form-group :label="$options.i18n.template.label" label-for="wiki_template">
-          <wiki-template :format="format" :templates="templates" @input="setTemplate" />
-        </gl-form-group>
-      </div>
-    </div>
 
     <div class="row">
       <div class="gl-col-sm-12 row-sm-5">
-        <gl-form-group
-          :label="$options.i18n.content.label"
-          label-for="wiki_content"
-          :label-sr-only="glFeatures.wikiImmersiveEditor"
-        >
+        <gl-form-group :label="$options.i18n.content.label" label-for="wiki_content" label-sr-only>
           <markdown-editor
             ref="markdownEditor"
             v-model="content"
@@ -850,13 +677,13 @@ export default {
             :drawio-enabled="drawioEnabled"
             supports-table-of-contents
             :disable-attachments="isTemplate"
-            :immersive="glFeatures.wikiImmersiveEditor"
+            immersive
             @contentEditor="notifyContentEditorActive"
             @markdownField="notifyContentEditorInactive"
             @keydown.ctrl.enter="submitFormWithShortcut"
             @keydown.meta.enter="submitFormWithShortcut"
           >
-            <template v-if="glFeatures.wikiImmersiveEditor" #header>
+            <template #header>
               <div
                 class="gl-flex gl-items-start gl-bg-default gl-px-5 gl-pt-3"
                 data-testid="wiki-form-actions"
@@ -1003,74 +830,11 @@ export default {
             </template>
           </markdown-editor>
           <input name="wiki[content]" type="hidden" :value="rawContent" />
-          <template v-if="!glFeatures.wikiImmersiveEditor" #description>
-            <div class="gl-mt-3">
-              <gl-sprintf
-                v-if="displayWikiSpecificMarkdownHelp && !isTemplate"
-                :message="$options.i18n.linksHelpText"
-              >
-                <template #linkExample>
-                  <code>{{ linkExample }}</code>
-                </template>
-                <template
-                  #link="// eslint-disable-next-line vue/no-template-shadow
-                  { content }"
-                  ><gl-link
-                    :href="wikiSpecificMarkdownHelpPath"
-                    target="_blank"
-                    data-testid="wiki-markdown-help-link"
-                    >{{ content }}</gl-link
-                  ></template
-                >
-              </gl-sprintf>
-            </div>
-          </template>
         </gl-form-group>
       </div>
-    </div>
-
-    <div v-if="!glFeatures.wikiImmersiveEditor" class="row">
-      <div class="gl-col-sm-12 row-sm-5">
-        <gl-form-group :label="$options.i18n.commitMessage.label" label-for="wiki_message">
-          <gl-form-input
-            id="wiki_message"
-            v-model.trim="commitMessage"
-            name="wiki[message]"
-            type="text"
-            class="form-control"
-            data-testid="wiki-message-textbox"
-            :placeholder="$options.i18n.commitMessage.label"
-          />
-        </gl-form-group>
-      </div>
-    </div>
-
-    <div
-      v-if="!glFeatures.wikiImmersiveEditor"
-      class="gl-flex gl-justify-between gl-gap-3"
-      data-testid="wiki-form-actions"
-    >
-      <div class="gl-flex gl-gap-3">
-        <gl-button
-          category="primary"
-          variant="confirm"
-          type="submit"
-          data-testid="wiki-submit-button"
-          >{{ submitButtonText }}</gl-button
-        >
-        <gl-button
-          data-testid="wiki-cancel-button"
-          :href="cancelFormHref"
-          @click="cancelFormAction"
-        >
-          {{ $options.i18n.cancel }}</gl-button
-        >
-      </div>
-      <delete-wiki-modal />
     </div>
 
     <gl-modal
-      v-if="glFeatures.wikiImmersiveEditor"
       v-model="commitMessageModalOpen"
       modal-id="commit-message-modal"
       data-testid="commit-message-modal"

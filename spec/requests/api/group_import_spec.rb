@@ -7,7 +7,7 @@ RSpec.describe API::GroupImport, :with_current_organization, feature_category: :
 
   include_context 'workhorse headers'
 
-  let_it_be(:user, freeze: false) { create(:user, organizations: [current_organization]) }
+  let_it_be_with_reload(:user) { create(:user, organizations: [current_organization]) }
   let_it_be(:group) { create(:group, organization: current_organization) }
 
   let(:path) { '/groups/import' }

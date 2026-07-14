@@ -3,6 +3,7 @@ import { GlTooltipDirective, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'TimelineEventButton',
   i18n: {
     buttonText: __('Add comment to incident timeline'),
     addError: __('Error promoting the note to timeline event: %{error}'),

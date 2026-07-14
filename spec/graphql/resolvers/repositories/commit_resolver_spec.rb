@@ -7,7 +7,7 @@ RSpec.describe Resolvers::Repositories::CommitResolver, feature_category: :sourc
 
   subject(:commit) { resolve(described_class, obj: repository, args: { ref: ref }) }
 
-  let_it_be(:repository, freeze: false) { create(:project, :repository).repository }
+  let_it_be_with_reload(:repository) { create(:project, :repository).repository }
 
   let(:ref) { 'master' }
 

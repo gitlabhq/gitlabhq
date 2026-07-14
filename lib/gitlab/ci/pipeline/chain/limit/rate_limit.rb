@@ -26,7 +26,6 @@ module Gitlab
               # that would otherwise hit the rate limit due to having the same scope (project, user, sha).
               # We also exclude specific duo workflow definitions (e.g., sast_fp_detection/v1)
               # to prevent rate limiting when processing multiple vulnerabilities concurrently.
-              # when processing multiple vulnerabilities concurrently.
               return if excluded_from_rate_limit?
 
               throttled_keys = find_throttled_keys
@@ -46,7 +45,13 @@ module Gitlab
             def excluded_from_rate_limit?
               pipeline.parent_pipeline? ||
                 creating_policy_pipeline? ||
-                excluded_duo_workflow?
+                excluded_duo_workflow? ||
+                excluded_lint_request?
+            end
+
+            def excluded_lint_request?
+              command.linting? &&
+                ::Feature.enabled?(:ci_enforce_ci_lint_rate_limit, project, type: :gitlab_com_derisk)
             end
 
             def creating_policy_pipeline?

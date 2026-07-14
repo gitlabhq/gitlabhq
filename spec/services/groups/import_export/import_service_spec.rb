@@ -34,7 +34,7 @@ RSpec.describe Groups::ImportExport::ImportService, feature_category: :importers
       it 'marks the group import as in progress' do
         import_service.async_execute
 
-        expect(group.import_state.in_progress?).to eq true
+        expect(group.import_state.in_progress?).to be true
       end
 
       it 'returns truthy' do
@@ -183,7 +183,7 @@ RSpec.describe Groups::ImportExport::ImportService, feature_category: :importers
         service.execute
 
         expect(FileUtils).to have_received(:rm_rf).with(shared.base_path)
-        expect(Dir.exist?(shared.base_path)).to eq(false)
+        expect(Dir.exist?(shared.base_path)).to be(false)
       end
 
       it 'logs the import success' do

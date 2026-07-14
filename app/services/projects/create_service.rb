@@ -176,6 +176,7 @@ module Projects
 
         if group_access_level > GroupMember::NO_ACCESS
           ProjectAuthorization.find_or_create_authorization_for(current_user.id, @project.id, group_access_level)
+          @project.team.purge_member_access_cache_for_user_id(current_user.id)
         end
 
         AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(@project.id)
@@ -333,6 +334,9 @@ module Projects
       # Skip for projects created through the Direct Transfer importer.
       return if import_type == BulkImports::Projects::Transformers::ProjectAttributesTransformer::PROJECT_IMPORT_TYPE
 
+      # Skip for projects created through the Offline Transfer importer.
+      return if import_type == ::Import::SOURCE_OFFLINE_TRANSFER.to_s
+
       # Skip for project template importers, as their feature availability is not
       # controlled by the `import_sources` application setting.
       return if Gitlab::ImportSources.template?(import_type)
@@ -352,7 +356,7 @@ module Projects
 
     def import_schedule
       if @project.errors.empty?
-        @project.import_state.schedule if @project.import? && !@project.gitlab_project_migration?
+        @project.import_state.schedule if @project.import? && !@project.transfer_import?
       else
         fail(error: @project.errors.full_messages.join(', '))
       end

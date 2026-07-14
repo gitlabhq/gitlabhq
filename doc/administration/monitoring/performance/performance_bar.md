@@ -108,6 +108,76 @@ exceeded the threshold.
 
 ![Gitaly call duration exceeded threshold](img/performance_bar_gitaly_threshold_v12_4.png)
 
+### Warning format
+
+Each warning message follows the format:
+
+```plaintext
+<metric> <type>: <actual> over <threshold>
+```
+
+For example, `es calls: 83 over 5` shows 83 Elasticsearch calls,
+which exceeds the threshold of five.
+
+Three threshold types can trigger a warning:
+
+- `calls`: The total number of calls made to the service during the request.
+- `duration`: The total time in milliseconds spent across all calls to the service.
+- `individual call`: The time in milliseconds for a single call to the service.
+  Individual call warnings appear in the detail dialog for that metric, not in the bar itself.
+
+### Metrics and default thresholds
+
+The following metrics emit warnings when a request exceeds their thresholds.
+Thresholds differ between production and all other environments. The values labeled `(development)`
+in the table apply to every non-production environment, such as development and test.
+The values shown here reflect the defaults defined in the source files under
+`lib/peek/views/`.
+
+| Metric | Warning label prefix | Calls threshold | Total duration threshold | Individual call threshold |
+|--------|---------------------|-----------------|--------------------------|---------------------------|
+| Database (SQL) | `active-record` | 100 | 3,000 ms (development) / 15,000 ms (production) | 1,000 ms (development) / 5,000 ms (production) |
+| Gitaly | `gitaly` | 30 | 1,000 ms | 500 ms |
+| Elasticsearch | `es` | 5 | 1,000 ms | 1,000 ms |
+| External HTTP | `external-http` | 10 | 1,000 ms | 100 ms |
+| ClickHouse | `ch` | 5 | 1,000 ms | 1,000 ms |
+| Zoekt | `zkt` | 3 (development) / 5 (production) | 500 ms (development) / 1,000 ms (production) | 500 ms (development) / 1,000 ms (production) |
+
+The performance bar tracks and displays Redis calls but does not define thresholds for them,
+so it emits no warnings for Redis.
+
+The Bullet metric is an exception to the format above. Bullet detects N+1 queries and runs
+by default in the development environment only. When active, it emits a fixed
+`Unoptimized queries detected` warning instead of a threshold-based
+`<metric> <type>: <actual> over <threshold>` message.
+
+The production thresholds for the database metric are higher than the development defaults
+because production queries often take longer against larger data volumes.
+All other metrics except Zoekt use the same thresholds across environments.
+These values are configurable defaults defined in the source files.
+If the thresholds change, the source files are the authoritative reference.
+
+### When a warning is actionable
+
+A warning indicates that a request uses more resources than expected for typical pages.
+Use the following guidance to decide whether to investigate:
+
+- A high call count (for example, `gitaly calls: 45 over 30`) often indicates an N+1 pattern
+  where the same type of call repeats in a loop. Select the metric to open the detail
+  dialog and look for repeated calls with similar parameters.
+- A high total duration (for example, `active-record duration: 4500 over 3000`) means the service
+  is slow overall. Check whether a small number of expensive calls are responsible, or whether
+  many small calls accumulate.
+- A high individual call duration appears in the detail dialog next to the specific call.
+  A single slow call often points to a missing index, a large payload, or an unoptimized query.
+
+Some warnings are expected noise in specific contexts:
+
+- Pages that aggregate data across many projects or groups (for example, dashboards or group
+  overview pages) make more calls than single-resource pages.
+- Development environments with small datasets can trigger duration warnings that production does
+  not, and production data volumes can trigger warnings that development does not.
+
 ## Enable the performance bar for non-administrators
 
 The performance bar is disabled by default for non-administrators. To enable it

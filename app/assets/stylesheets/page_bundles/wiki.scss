@@ -233,7 +233,7 @@
 
 /* Sidebar in edit mode */
 // stylelint-disable-next-line gitlab/no-has -- scoped to a specific wiki-overview element
-.wiki-overview:has(.wiki-form.immersive) .wiki-sidebar {
+.wiki-overview:has(.wiki-form) .wiki-sidebar {
 
   /* Hide the floating `open`-toggle since the edit header has its own */
   .wiki-sidebar-toggle.toggle-action-open {
@@ -295,12 +295,12 @@ ul.wiki-pages-list.content-list {
 }
 
 // stylelint-disable-next-line gitlab/no-has -- scoped to a specific wiki-overview element
-.wiki-overview:has(.wiki-form.immersive) {
+.wiki-overview:has(.wiki-form) {
   gap: 0;
 }
 
 // stylelint-disable-next-line gitlab/no-has -- scoped to a specific wiki-page-details element
-.wiki-page-details:has(.wiki-form.immersive) {
+.wiki-page-details:has(.wiki-form) {
   max-width: none;
 }
 
@@ -310,16 +310,14 @@ ul.wiki-pages-list.content-list {
   max-height: 55vh;
 }
 
-.wiki-form.immersive {
+.wiki-form {
   --immersive-editor-text-width: #{$wiki-content-default-width};
 
   .markdown-area, .ProseMirror, .md-write-holder {
     min-height: max(60vh, 320px);
     max-height: none;
   }
-}
 
-.wiki-form {
   .flexible-input-container {
     @apply gl-w-full;
   }

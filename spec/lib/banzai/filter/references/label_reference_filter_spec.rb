@@ -535,7 +535,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   describe 'cross group label references' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :public, namespace: group) }
-    let_it_be(:another_group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:another_group) { create(:group) }
     let_it_be(:another_project) { create(:project, :public, namespace: another_group) }
     let_it_be(:group_label) { create(:group_label, group: another_group, color: '#00ff00') }
     let(:reference) { "#{another_project.full_path}~#{group_label.name}" }
@@ -568,7 +568,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     context 'when group name has HTML entities' do
-      let_it_be(:another_group, freeze: false) { create(:group, name: 'random', path: 'another_group') }
+      let_it_be_with_reload(:another_group) { create(:group, name: 'random', path: 'another_group') }
 
       before do
         another_group.name = "<img src=x onerror=alert(1)>"
@@ -756,7 +756,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     let_it_be(:group_label)          { create(:group_label, group: group) }
     let_it_be(:parent_group_label)   { create(:group_label, group: parent_group) }
     let_it_be(:another_parent_group) { create(:group) }
-    let_it_be(:another_group, freeze: false) { create(:group, parent: another_parent_group) }
+    let_it_be_with_reload(:another_group) { create(:group, parent: another_parent_group) }
     let_it_be(:another_project) { create(:project, :public, group: another_group) }
 
     context 'with a project label' do

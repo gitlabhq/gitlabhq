@@ -20,6 +20,7 @@ export default {
     selected: { type: Boolean, required: true },
     matcher: { type: String, required: false, default: '' },
   },
+  emits: ['click'],
   computed: {
     projectAvatarUrl() {
       return this.project.avatar_url || this.project.avatarUrl;

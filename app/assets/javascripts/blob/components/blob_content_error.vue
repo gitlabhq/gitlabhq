@@ -8,6 +8,7 @@ import {
 } from './constants';
 
 export default {
+  name: 'BlobContentError',
   components: {
     GlSprintf,
     GlLink,

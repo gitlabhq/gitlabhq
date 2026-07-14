@@ -8,6 +8,7 @@ import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obs
 import { MEMBER_MODEL_TYPE_GROUP_MEMBER } from '../../constants';
 
 export default {
+  name: 'RemoveMemberModal',
   actionCancel: {
     text: __('Cancel'),
   },

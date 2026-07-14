@@ -4,7 +4,7 @@ module API
   module Entities
     module Ci
       class JobBasic < Grape::Entity
-        expose :id, documentation: { type: 'Integer', example: 1 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
         expose :status, documentation: { type: 'String', example: 'waiting_for_resource' }
         expose :stage, documentation: { type: 'String', example: 'deploy' }
         expose :name, documentation: { type: 'String', example: 'deploy_to_production' }

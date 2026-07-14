@@ -24,6 +24,7 @@ const REVOKE = 'revoke';
 const ROTATE = 'rotate';
 
 export default {
+  name: 'AccessTokenTable',
   components: {
     GlBadge,
     GlDisclosureDropdown,

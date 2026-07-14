@@ -7,6 +7,7 @@ import { getErrorMessages } from '~/user_lists/store/utils';
 import UserListForm from './user_list_form.vue';
 
 export default {
+  name: 'NewUserList',
   components: {
     GlAlert,
     UserListForm,

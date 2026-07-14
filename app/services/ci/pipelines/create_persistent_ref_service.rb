@@ -11,6 +11,8 @@ module Ci
       end
 
       def execute
+        return true if persistent_ref_creation_disabled?
+
         # NOTE: caching here is to prevent overwhelming calls to Gitaly API
         # triggered by the job transition to `running` in the same pipeline
         Rails.cache.fetch(pipeline_persistent_ref_cache_key, expires_in: TIMEOUT) do
@@ -27,6 +29,11 @@ module Ci
       attr_reader :pipeline
 
       delegate :persistent_ref, to: :pipeline
+
+      def persistent_ref_creation_disabled?
+        Feature.enabled?(:stop_ci_persistent_ref_creation, pipeline.project) &&
+          Feature.disabled?(:stop_ci_persistent_ref_creation_override, pipeline.project)
+      end
 
       def pipeline_persistent_ref_cache_key
         format(CACHE_KEY, id: pipeline.id)

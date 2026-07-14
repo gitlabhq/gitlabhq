@@ -479,6 +479,41 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         end
       end
 
+      context 'when open MRs target the branch but their heads are not part of the push' do
+        # Regression test for the filter ordering in `post_merge_manually_merged`:
+        # the cheap persisted-column filters (diff_head_sha, diff state) must run
+        # before the Gitaly-backed `diff_head_commit` lookup, so MRs whose head is
+        # not contained in the push never trigger a Gitaly call.
+        # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243084
+        let!(:non_matching_merge_request) do
+          create(
+            :merge_request,
+            source_project: @fork_project,
+            source_branch: 'fix',
+            target_branch: 'feature',
+            target_project: @project
+          )
+        end
+
+        before do
+          # Its persisted head SHA is not among the pushed commits, so the cheap
+          # column filter excludes it before `diff_head_commit` (Gitaly) is reached.
+          non_matching_merge_request.merge_request_diff.update_column(:head_commit_sha, 'a' * 40)
+        end
+
+        it 'only runs the Gitaly diff_head_commit lookup for MRs whose head is in the push' do
+          checked_mr_ids = []
+          allow_any_instance_of(MergeRequest).to receive(:diff_head_commit).and_wrap_original do |method|
+            checked_mr_ids << method.receiver.id
+            method.call
+          end
+
+          service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+
+          expect(checked_mr_ids).to contain_exactly(@merge_request.id, @fork_merge_request.id)
+        end
+      end
+
       context 'manual merge of source branch' do
         before do
           # Merge master -> feature branch
@@ -805,6 +840,44 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           )
         end
       end
+
+      context 'when closed or merged merge requests share the source branch' do
+        it 'only caches closing issues for open merge requests', :aggregate_failures do
+          open_mr = create(
+            :merge_request,
+            target_branch: 'master',
+            source_branch: 'feature',
+            source_project: project
+          )
+          closed_mr = create(
+            :merge_request,
+            :closed,
+            :skip_diff_creation,
+            target_branch: 'test',
+            source_branch: 'feature',
+            source_project: project
+          )
+          merged_mr = create(
+            :merge_request,
+            :merged,
+            :skip_diff_creation,
+            target_branch: 'fix',
+            source_branch: 'feature',
+            source_project: project
+          )
+
+          cached_for = []
+          allow_any_instance_of(MergeRequest).to receive(:cache_merge_request_closes_issues!) do |merge_request, _user|
+            cached_for << merge_request.id
+          end
+
+          refresh_service = service.new(project: project, current_user: user)
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/feature')
+
+          expect(cached_for).to include(open_mr.id)
+          expect(cached_for).not_to include(closed_mr.id, merged_mr.id)
+        end
+      end
     end
 
     context 'marking the merge request as draft' do
@@ -941,6 +1014,60 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         # #merge_commit_sha
         expect(merge_request.read_attribute(:merged_commit_sha)).to eq('646ece5cfed840eca0a4feb21bcd6a81bb19bda3')
         expect(merge_request_side_branch.read_attribute(:merged_commit_sha)).to eq('29284d9bcc350bcae005872d0be6edd016e2efb5')
+      end
+
+      # Asserts one batched commits_by call for all oids (not one commit RPC per MR),
+      # so merge commit resolution uses a single batched Gitaly lookup.
+      it 'resolves merge commit sources in a single batched lookup', :aggregate_failures do
+        merge_commit_shas = %w[646ece5cfed840eca0a4feb21bcd6a81bb19bda3 29284d9bcc350bcae005872d0be6edd016e2efb5]
+
+        expect(project.repository)
+          .to receive(:commits_by)
+          .once
+          .with(oids: match_array(merge_commit_shas))
+          .and_call_original
+        expect(project).not_to receive(:commit)
+
+        subject
+      end
+
+      context 'when Gitaly omits a merge commit SHA it cannot resolve' do
+        before do
+          # Gitaly silently omits oids it can't resolve, so commits_by returns fewer
+          # commits than requested - mirroring the old per-MR lookup yielding nil.
+          allow(project.repository).to receive(:commits_by).and_return([])
+        end
+
+        it 'passes a nil source to PostMergeService without raising', :aggregate_failures do
+          expect_next_instances_of(MergeRequests::PostMergeService, 2) do |post_merge_service|
+            expect(post_merge_service).to receive(:execute).with(anything, nil)
+          end
+
+          expect { subject }.not_to raise_error
+        end
+      end
+
+      context 'when two merge requests resolve to the same merge commit SHA' do
+        let(:shared_sha) { '646ece5cfed840eca0a4feb21bcd6a81bb19bda3' }
+
+        before do
+          allow_next_instance_of(Gitlab::BranchPushMergeCommitAnalyzer) do |analyzer|
+            allow(analyzer).to receive(:get_merge_commit).and_return(shared_sha)
+          end
+        end
+
+        it 'passes the same non-nil decorated commit as source to both merge requests', :aggregate_failures do
+          sources = []
+
+          allow_next_instances_of(MergeRequests::PostMergeService, 2) do |post_merge_service|
+            allow(post_merge_service).to receive(:execute) { |_mr, source| sources << source }
+          end
+
+          subject
+
+          expect(sources.size).to eq(2)
+          expect(sources).to all(be_a(Commit).and(have_attributes(id: shared_sha)))
+        end
       end
     end
   end

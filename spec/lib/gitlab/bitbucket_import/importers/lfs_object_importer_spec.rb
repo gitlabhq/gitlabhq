@@ -67,6 +67,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::LfsObjectImporter, feature_ca
         oid: oid,
         import_stage: 'import_lfs_object',
         class: described_class.name,
+        Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
         project_id: project.id,
         project_path: project.full_path
       }

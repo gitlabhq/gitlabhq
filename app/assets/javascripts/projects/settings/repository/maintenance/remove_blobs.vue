@@ -36,6 +36,7 @@ const i18n = {
 };
 
 export default {
+  name: 'RemoveBlobs',
   i18n,
   DRAWER_Z_INDEX,
   removeBlobsHelpLink: helpPagePath('/user/project/repository/repository_size', {

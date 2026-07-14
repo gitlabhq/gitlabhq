@@ -2,6 +2,7 @@
 import { GlBadge, GlTooltip } from '@gitlab/ui';
 
 export default {
+  name: 'FeatureCardBadge',
   components: {
     GlBadge,
     GlTooltip,

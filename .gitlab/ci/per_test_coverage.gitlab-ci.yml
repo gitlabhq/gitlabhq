@@ -103,6 +103,13 @@ per-test-coverage:trigger:
       artifacts: false
     - job: "compile-test-assets"
       artifacts: false
+    # The jest child jobs pull compile-fe-islands
+    # artifacts through cross-pipeline needs, which do not wait for the parent
+    # jobs to finish. Gate the trigger on them so the child is created only
+    # after their artifacts exist; otherwise the jest shards race ahead and
+    # fail with missing_dependency_failure.
+    - job: "compile-fe-islands"
+      artifacts: false
     - job: "per-test-coverage:pipeline-generate"
       artifacts: true
   # Per-test coverage capture is data collection, not a release gate. A failing

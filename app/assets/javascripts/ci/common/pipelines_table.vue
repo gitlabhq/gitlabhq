@@ -1,7 +1,7 @@
 <script>
 import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import DuoWorkflowAction from 'ee_component/ai/shared/widgets/duo_workflow_action.vue';
-import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
+import { buildFixPipelineContext } from '~/ci/utils';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
@@ -45,7 +45,6 @@ export default {
     PipelineStatusBadge,
     PipelineTriggerer,
     PipelineUrl,
-    RunPipelineButton,
     DuoWorkflowAction,
   },
   directives: {
@@ -78,23 +77,8 @@ export default {
         return value === PIPELINE_IID_KEY || value === PIPELINE_ID_KEY;
       },
     },
-    showRunPipelineButton: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    runPipelineButtonLoading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    mergeRequestId: {
-      type: Number,
-      required: false,
-      default: null,
-    },
   },
-  emits: ['cancel-pipeline', 'job-action-executed', 'retry-pipeline', 'run-pipeline'],
+  emits: ['cancel-pipeline', 'job-action-executed', 'retry-pipeline'],
   computed: {
     tableFields() {
       return [
@@ -195,6 +179,9 @@ export default {
     isFailed(item) {
       return item?.details?.status?.group === 'failed' || item?.detailedStatus?.name === 'FAILED';
     },
+    isLatest(item) {
+      return Boolean(item?.flags?.latest || item?.latest);
+    },
     getPipelinePath(item) {
       if (item.path) {
         return `${gon.gitlab_url}${item.path}`;
@@ -208,24 +195,19 @@ export default {
       return mergeRequestSourceBranch || refName || null;
     },
     showDuoWorkflowAction(item) {
-      return this.isFailed(item) && this.mergeRequestPath && this.currentBranch(item);
+      return (
+        this.isFailed(item) &&
+        this.isLatest(item) &&
+        Boolean(this.mergeRequestPath) &&
+        Boolean(this.currentBranch(item))
+      );
     },
     getAdditionalContext(item) {
-      return [
-        {
-          Category: 'merge_request',
-          Content: JSON.stringify({
-            url: this.mergeRequestPath,
-          }),
-        },
-        {
-          Category: 'pipeline',
-          Content: JSON.stringify({
-            source_branch: this.currentBranch(item),
-            source: item?.source || '',
-          }),
-        },
-      ];
+      return buildFixPipelineContext({
+        source: item?.source,
+        sourceBranch: this.currentBranch(item),
+        mergeRequestPath: this.mergeRequestPath,
+      });
     },
   },
   TBODY_TR_ATTR: {
@@ -246,15 +228,9 @@ export default {
       fixed
     >
       <template #head(actions)>
-        <div v-if="showRunPipelineButton" class="gl-text-right">
-          <run-pipeline-button
-            data-testid="run_pipeline_button"
-            :is-loading="runPipelineButtonLoading"
-            :merge-request-id="mergeRequestId"
-            @run-pipeline="$emit('run-pipeline')"
-          />
+        <div class="gl-block gl-text-right">
+          <slot name="table-header-actions">{{ s__('Pipeline|Actions') }}</slot>
         </div>
-        <span v-else class="gl-block gl-text-right">{{ s__('Pipeline|Actions') }}</span>
       </template>
 
       <template #table-colgroup="{ fields }">
@@ -333,6 +309,7 @@ export default {
           :pipeline-path="item.path"
           :project-path="getProjectPath(item)"
           class="-gl-my-3 -gl-ml-4"
+          @retried="onJobActionExecuted(item)"
         />
       </template>
     </gl-table-lite>

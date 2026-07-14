@@ -97,7 +97,9 @@ RSpec.describe RapidDiffs::DiffCompareVersionsEntity, feature_category: :code_re
       let(:options) { { commit_id: commit.id } }
 
       before do
-        allow(merge_request).to receive(:commit_exists?).with(commit.id).and_return(true)
+        allow_next_instance_of(::Gitlab::MergeRequests::CommitResolver, merge_request, commit.id) do |resolver|
+          allow(resolver).to receive(:resolve).and_return(commit)
+        end
       end
 
       it 'includes selected commit with full commit data and diff_refs' do
@@ -115,10 +117,6 @@ RSpec.describe RapidDiffs::DiffCompareVersionsEntity, feature_category: :code_re
 
         before do
           allow(entity).to receive(:commit_ids).and_return(commit_shas)
-
-          commit_shas.each do |sha|
-            allow(merge_request).to receive(:commit_exists?).with(sha).and_return(true)
-          end
         end
 
         context 'when commit is in the middle' do
@@ -171,34 +169,15 @@ RSpec.describe RapidDiffs::DiffCompareVersionsEntity, feature_category: :code_re
       end
     end
 
-    context 'when commit_id does not belong to the MR' do
+    context 'when the commit_id does not resolve to a commit' do
       let(:commit) { project.repository.commits('master', limit: 1).map { |c| project.commit(c.id) }.first }
       let(:options) { { commit_id: commit.id } }
 
       before do
-        allow(merge_request).to receive(:commit_exists?).with(commit.id).and_return(false)
+        allow_next_instance_of(::Gitlab::MergeRequests::CommitResolver, merge_request, commit.id) do |resolver|
+          allow(resolver).to receive(:resolve).and_return(nil)
+        end
       end
-
-      it 'returns nil for commit' do
-        expect(serialized[:commit]).to be_nil
-      end
-    end
-
-    context 'when commit_exists? but project.commit returns nil' do
-      let(:options) { { commit_id: 'stale_sha' } }
-
-      before do
-        allow(merge_request).to receive(:commit_exists?).with('stale_sha').and_return(true)
-        allow(project).to receive(:commit).with('stale_sha').and_return(nil)
-      end
-
-      it 'returns nil for commit' do
-        expect(serialized[:commit]).to be_nil
-      end
-    end
-
-    context 'when commit_id does not exist' do
-      let(:options) { { commit_id: 'nonexistent000000000000000000000000000000' } }
 
       it 'returns nil for commit' do
         expect(serialized[:commit]).to be_nil

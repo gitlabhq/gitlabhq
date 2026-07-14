@@ -9,6 +9,7 @@ import {
   GlSprintf,
   GlEmptyState,
 } from '@gitlab/ui';
+import VALIDATE_TAB_ILLUSTRATION from '@gitlab/svgs/dist/illustrations/empty-state/empty-devops-md.svg?url';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -69,7 +70,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
-  inject: ['ciConfigPath', 'ciLintPath', 'projectFullPath', 'validateTabIllustrationPath'],
+  inject: ['ciConfigPath', 'ciLintPath', 'projectFullPath'],
   props: {
     ciFileContent: {
       type: String,
@@ -194,6 +195,7 @@ export default {
   i18n,
   BASE_CLASSES,
   lintHref: helpPagePath('ci/yaml/lint.md'),
+  VALIDATE_TAB_ILLUSTRATION,
 };
 </script>
 
@@ -243,7 +245,7 @@ export default {
     </div>
     <gl-empty-state
       v-if="isInitState"
-      :svg-path="validateTabIllustrationPath"
+      :svg-path="$options.VALIDATE_TAB_ILLUSTRATION"
       :title="$options.i18n.title"
     >
       <template #description>

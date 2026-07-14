@@ -1,0 +1,8 @@
+---
+migration_job_name: MigrateEpicSentNotificationsToWorkItems
+description: Migrate sent_notifications to use the work_item_id of the Epic instead of the legacy Epic ID.
+feature_category: portfolio_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243106
+milestone: '19.2'
+queued_migration_version: 20260630180334
+finalized_by: # version of the migration that finalized this BBM

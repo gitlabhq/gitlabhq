@@ -13,8 +13,8 @@ RSpec.describe Awardable do
   end
 
   describe "ClassMethods" do
-    let_it_be(:note2, freeze: false) { create(:note) }
-    let_it_be(:award_emoji2, freeze: false) { create(:award_emoji, awardable: note2) }
+    let_it_be_with_reload(:note2) { create(:note) }
+    let_it_be_with_reload(:award_emoji2) { create(:award_emoji, awardable: note2) }
 
     describe "orders" do
       it "orders on upvotes" do

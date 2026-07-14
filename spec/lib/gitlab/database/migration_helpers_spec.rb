@@ -1099,6 +1099,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     before do
       stub_const('Plan', Class.new(ActiveRecord::Base))
       stub_const('PlanLimits', Class.new(ActiveRecord::Base))
+      stub_const('Plan::PLAN_NAME_UID_LIST', { free: 2, premium: 5 }.freeze)
 
       Plan.class_eval do
         self.table_name = 'plans'
@@ -1111,9 +1112,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
     it 'properly escapes names' do
       expect(model).to receive(:execute).with <<~SQL
-        INSERT INTO plan_limits (plan_id, "project_hooks")
-        SELECT id, '10' FROM plans WHERE name = 'free' LIMIT 1
-        ON CONFLICT (plan_id) DO UPDATE SET "project_hooks" = EXCLUDED."project_hooks";
+        INSERT INTO plan_limits (plan_id, plan_name_uid, "project_hooks")
+        SELECT id, '2', '10' FROM plans WHERE name = 'free' LIMIT 1
+        ON CONFLICT (plan_id) DO UPDATE SET "project_hooks" = EXCLUDED."project_hooks", plan_name_uid = EXCLUDED.plan_name_uid;
       SQL
 
       model.create_or_update_plan_limit('project_hooks', 'free', 10)
@@ -1135,6 +1136,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
             .to change { PlanLimits.count }.by(1)
 
           expect(PlanLimits.pluck(:project_hooks)).to contain_exactly(10)
+          expect(PlanLimits.pluck(:plan_name_uid)).to contain_exactly(5)
         end
       end
 
@@ -1146,6 +1148,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
             .not_to change { PlanLimits.count }
 
           expect(plan_limit.reload.project_hooks).to eq(999)
+          expect(plan_limit.reload.plan_name_uid).to eq(5)
         end
       end
     end

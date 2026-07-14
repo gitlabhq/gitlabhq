@@ -3,19 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe SearchService, :with_current_organization, feature_category: :global_search do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   let_it_be(:accessible_group) { create(:group, :private) }
   let_it_be(:inaccessible_group) { create(:group, :private) }
   let_it_be(:group_member) { create(:group_member, group: accessible_group, user: user) }
 
   let_it_be(:accessible_project) do
-    create(:project, :repository, :private, name: 'accessible_project', maintainers: user)
+    create(:project, :private, name: 'accessible_project', maintainers: user)
   end
 
   let_it_be(:note) { create(:note_on_issue, project: accessible_project) }
 
-  let_it_be(:inaccessible_project) { create(:project, :repository, :private, name: 'inaccessible_project') }
+  let_it_be(:inaccessible_project) { create(:project, :private, name: 'inaccessible_project') }
 
   let_it_be(:snippet) { create(:personal_snippet, author: user) }
   let_it_be(:group_project) { create(:project, group: accessible_group, name: 'group_project') }

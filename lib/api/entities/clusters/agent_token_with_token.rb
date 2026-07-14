@@ -4,7 +4,7 @@ module API
   module Entities
     module Clusters
       class AgentTokenWithToken < AgentToken
-        expose :token
+        expose :token, documentation: { type: 'String' }
       end
     end
   end

@@ -7,7 +7,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ServiceDeskSettingPipeline, fea
   let_it_be(:entity, freeze: false) { create(:bulk_import_entity, :project_entity, project: project) }
   let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
-  let_it_be(:setting, freeze: false) { { 'issue_template_key' => 'test', 'project_key' => 'key' } }
+
+  let(:setting) { { 'issue_template_key' => 'test', 'project_key' => 'key' } }
 
   subject(:pipeline) { described_class.new(context) }
 

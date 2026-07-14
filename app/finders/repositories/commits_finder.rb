@@ -2,9 +2,18 @@
 
 module Repositories
   class CommitsFinder
+    # Raised when keyset pagination is requested together with a parameter the
+    # Gitaly keyset path cannot honor. Subclasses ArgumentError so callers that
+    # rescue ArgumentError keep working, while the API endpoint can rescue this
+    # specific class to route the error without inspecting the message string.
+    UnsupportedKeysetParamError = Class.new(ArgumentError)
+
     attr_reader :next_cursor
 
-    UNSUPPORTED_KEYSET_PARAMS = %w[path first_parent order trailers follow].freeze
+    UNSUPPORTED_KEYSET_PARAMS = %w[first_parent order trailers follow].freeze
+    # Message fragment used to build the user-facing error. It omits the verb
+    # ("is"/"are") so it reads correctly in both the singular and plural forms.
+    KEYSET_PARAM_ERROR_SUFFIX = 'not supported with keyset pagination'
 
     def initialize(project, params = {})
       @project = project
@@ -32,6 +41,8 @@ module Repositories
       response = project.repository.list_commits(
         ref: effective_ref,
         author: params[:author],
+        path: sanitized_path.presence,
+        literal_pathspec: sanitized_path.present?,
         committed_before: params[:until],
         committed_after: params[:since],
         pagination_params: pagination_params
@@ -74,7 +85,14 @@ module Repositories
       unsupported = UNSUPPORTED_KEYSET_PARAMS.select { |p| param_present?(p) }
       return if unsupported.empty?
 
-      raise ArgumentError, "The '#{unsupported.first}' parameter is not supported with keyset pagination"
+      raise UnsupportedKeysetParamError, unsupported_keyset_params_error(unsupported)
+    end
+
+    def unsupported_keyset_params_error(unsupported_params)
+      names = unsupported_params.map { |p| "'#{p}'" }.join(', ')
+      pluralized = unsupported_params.one? ? 'parameter is' : 'parameters are'
+
+      "The #{names} #{pluralized} #{KEYSET_PARAM_ERROR_SUFFIX}"
     end
 
     def param_present?(name)

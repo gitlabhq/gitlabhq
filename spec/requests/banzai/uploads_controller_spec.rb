@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Banzai::UploadsController, feature_category: :markdown do
   describe '#show' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     let(:txt_upload) { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
     let(:jpg_upload) { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }

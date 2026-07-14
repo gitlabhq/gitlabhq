@@ -38,7 +38,10 @@ module Gitlab
 
         Gitlab::ErrorTracking.track_exception(
           exception,
-          attributes.merge(relation_name: relation_key)
+          attributes.merge(
+            Labkit::Fields::GL_ORGANIZATION_ID => importable.organization_id,
+            relation_name: relation_key
+          )
         )
 
         ImportFailure.create(

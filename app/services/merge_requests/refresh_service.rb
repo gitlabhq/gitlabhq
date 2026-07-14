@@ -98,11 +98,14 @@ module MergeRequests
         .preload_merge_data(@project)
         .preload_latest_diff_commit(@project)
         .where(target_branch: @push.branch_name).to_a
-        .select(&:diff_head_commit)
+        # Filter on the cheap persisted columns (diff_head_sha, diff state) first so the
+        # Gitaly-backed `diff_head_commit` lookup only runs for the handful of MRs whose
+        # head is actually part of this push, instead of every open MR targeting the branch.
         .select do |merge_request|
           commit_ids.include?(merge_request.diff_head_sha) &&
             merge_request.merge_request_diff.state != 'empty'
         end
+        .select(&:diff_head_commit)
       merge_requests = filter_merge_requests(merge_requests)
 
       return if merge_requests.empty?
@@ -112,8 +115,16 @@ module MergeRequests
         relevant_commit_ids: merge_requests.map(&:diff_head_sha)
       )
 
+      merge_commit_sha_by_diff_head_sha = merge_requests
+        .map(&:diff_head_sha)
+        .uniq
+        .index_with { |diff_head_sha| analyzer.get_merge_commit(diff_head_sha) }
+
+      merge_commit_shas = merge_commit_sha_by_diff_head_sha.values.compact.uniq
+      commits_by_sha = @project.repository.commits_by(oids: merge_commit_shas).index_by(&:id)
+
       merge_requests.each do |merge_request|
-        sha = analyzer.get_merge_commit(merge_request.diff_head_sha)
+        sha = merge_commit_sha_by_diff_head_sha[merge_request.diff_head_sha]
         merge_request.merge_commit_sha = sha
         merge_request.merged_commit_sha = sha
 
@@ -130,7 +141,7 @@ module MergeRequests
           commit_sha: sha
         ).execute.first
 
-        source = source_merge_request || @project.commit(sha)
+        source = source_merge_request || commits_by_sha[sha]
 
         MergeRequests::PostMergeService
           .new(project: merge_request.target_project, current_user: @current_user)
@@ -350,9 +361,13 @@ module MergeRequests
 
     # If the merge requests closes any issues, save this information in the
     # `MergeRequestsClosingIssues` model (as a performance optimization).
+    #
+    # Only open merge requests are considered: `cache_merge_request_closes_issues!`
+    # is a no-op for closed and merged merge requests, so loading them here is
+    # wasted work when a source branch is shared by many such merge requests.
     # rubocop: disable CodeReuse/ActiveRecord
     def cache_merge_requests_closing_issues
-      @project.merge_requests.where(source_branch: @push.branch_name).find_each do |merge_request|
+      @project.merge_requests.opened.where(source_branch: @push.branch_name).find_each do |merge_request|
         merge_request.cache_merge_request_closes_issues!(@current_user)
       end
     end

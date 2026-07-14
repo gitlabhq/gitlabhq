@@ -43,6 +43,7 @@ export default {
       required: true,
     },
   },
+  emits: ['job-retried'],
   data() {
     return {
       failedJobs: [],

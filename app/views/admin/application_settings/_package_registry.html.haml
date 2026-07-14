@@ -28,6 +28,7 @@
                   = form_errors(plan)
                   %fieldset
                     = f.hidden_field(:plan_id, value: plan.id)
+                    = f.hidden_field(:plan_name_uid, value: plan.plan_name_uid_before_type_cast)
                     .form-group
                       = f.label :conan_max_file_size, _('Maximum Conan package file size in bytes'), class: 'label-bold'
                       = f.number_field :conan_max_file_size, class: 'form-control gl-form-input'

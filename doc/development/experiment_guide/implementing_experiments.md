@@ -18,8 +18,37 @@ the type. For the sake of documentation let's name our feature flag (and experim
 bin/feature-flag pill_color -t experiment
 ```
 
-After you generate the desired feature flag, you can immediately implement an
-experiment in code. A basic experiment implementation can be:
+After you generate the desired feature flag, define an experiment class. Every
+experiment must be declaratively defined as a class in `app/experiments` (or
+`ee/app/experiments` for EE experiments). GitLab sets `config.strict_registration = true`
+in [`config/initializers/gitlab_experiment.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/gitlab_experiment.rb),
+so inline experiments that run without a registered class raise
+`Gitlab::Experiment::UnregisteredExperiment`. Use the Rails generator to create
+the class:
+
+```shell
+rails generate gitlab:experiment pill_color control red blue
+```
+
+This generates `app/experiments/pill_color_experiment.rb` with the variants you
+provide to the generator:
+
+```ruby
+class PillColorExperiment < ApplicationExperiment
+  control { 'control' }
+  variant(:red) { 'red' }
+  variant(:blue) { 'blue' }
+end
+```
+
+After you define the class, run the experiment in code:
+
+```ruby
+experiment(:pill_color, actor: current_user).run
+```
+
+You can also pass a block to override the registered variants at the call site.
+The block form runs the experiment without an explicit `run`:
 
 ```ruby
 experiment(:pill_color, actor: current_user) do |e|
@@ -162,45 +191,38 @@ authenticated users - `{ user: current_user }` would be just as effective.
 > experiment is run. Not only that, your experiment would not be "sticky" and events
 > wouldn't be resolvable.
 
-### Advanced experimentation
+### Declaring context keys for the experiments API
 
-There are two ways to implement an experiment:
-
-1. The basic experiment style described previously.
-1. A more advanced style where an experiment class is provided.
-
-The advanced style is handled by naming convention, and works similar to what you
-would expect in Rails.
-
-To generate a custom experiment class that can override the defaults in
-`ApplicationExperiment` use the Rails generator:
-
-```shell
-rails generate gitlab:experiment pill_color control red blue
-```
-
-This generates an experiment class in `app/experiments/pill_color_experiment.rb`
-with the _behaviors_ we've provided to the generator. Here's an example
-of how that class would look after migrating our previous example into it:
+To read cached variant assignments through the
+[experiments API](../../api/experiments.md), the experiment class must declare
+its context keys by overriding `self.context_keys`. The declared keys must match
+the context used at the experiment's call sites:
 
 ```ruby
-class PillColorExperiment < ApplicationExperiment
-  control { 'control' }
-  variant(:red) { 'red' }
-  variant(:blue) { 'blue' }
+class MyExperiment < ApplicationExperiment
+  def self.context_keys = %i[user]
 end
 ```
 
-We can now simplify where we run our experiment to the following call, instead of
-providing the block we were initially providing, by explicitly calling `run`:
+Multiple keys are supported. Declare them in the same order as the keyword
+arguments in the `experiment()` call, because GLEX derives cache keys from
+the ordered context. For example, if the experiment is called with
+`experiment(:my_experiment, user: user, namespace: namespace)`:
 
 ```ruby
-experiment(:pill_color, actor: current_user).run
+class MyExperiment < ApplicationExperiment
+  def self.context_keys = %i[user namespace]
+end
 ```
 
-The _behaviors_ we defined in our experiment class represent the default
-implementation. You can still use the block syntax to override these _behaviors_
-however, so the following would also be valid:
+The supported keys are `user`, `actor`, `namespace`, and `project`. When you
+query the API, pass every declared key as a `context` parameter. Only the
+`user` and `actor` keys fall back to the authenticated user.
+
+### Advanced experimentation
+
+The block form shown previously can override a single variant while leaving the
+rest to the class defaults:
 
 ```ruby
 experiment(:pill_color, actor: current_user) do |e|
@@ -385,9 +407,8 @@ export default {
 
 ### Tracking with the tracking mixin
 
-Use `Tracking.mixin` to add a `track` method to Vue components that automatically
-includes the experiment context. Call `this.track()` in your component to fire
-events with the correct experiment context.
+Use `Tracking.mixin` to add a `track` method to Vue components that automatically includes the experiment context.
+Call `this.track()` in your component to fire events with the correct experiment context.
 
 ```vue
 <script>

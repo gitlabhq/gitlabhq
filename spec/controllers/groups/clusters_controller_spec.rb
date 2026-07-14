@@ -7,10 +7,9 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
   include GoogleApi::CloudPlatformHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, maintainer_of: group) }
 
   before do
-    group.add_maintainer(user)
     sign_in(user)
   end
 
@@ -215,7 +214,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
   end
 
   describe 'PUT update_migration' do
-    let(:cluster) { create(:cluster, :group, groups: [group]) }
+    let_it_be(:cluster) { create(:cluster, :group, groups: [group]) }
     let(:redirect_path) { group_cluster_path(group, cluster, tab: 'migrate') }
 
     def go
@@ -340,7 +339,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
   end
 
   describe 'GET cluster_status' do
-    let(:cluster) { create(:cluster, :group, groups: [group]) }
+    let_it_be(:cluster) { create(:cluster, :group, groups: [group]) }
 
     def go
       get :cluster_status,
@@ -378,7 +377,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
   end
 
   describe 'GET show' do
-    let(:cluster) { create(:cluster, :group, groups: [group]) }
+    let_it_be(:cluster) { create(:cluster, :group, groups: [group]) }
 
     def go(tab: nil)
       get :show,

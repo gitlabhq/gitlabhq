@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe TimeboxesHelper, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:milestone_expired, freeze: false) { build(:milestone, due_date: Date.today.prev_month) }
-  let_it_be(:milestone_closed, freeze: false) { build(:milestone, :closed) }
+  let_it_be(:milestone_expired) { build(:milestone, due_date: Date.today.prev_month) }
+  let_it_be(:milestone_closed) { build(:milestone, :closed) }
   let_it_be(:milestone_upcoming, freeze: false) { build(:milestone, start_date: Date.today.next_month) }
   let_it_be(:milestone_open, freeze: false) { build(:milestone) }
-  let_it_be(:milestone_closed_and_expired, freeze: false) { build(:milestone, :closed, due_date: Date.today.prev_month) }
+  let_it_be(:milestone_closed_and_expired) { build(:milestone, :closed, due_date: Date.today.prev_month) }
 
   describe '#timebox_date_range' do
     let(:yesterday) { Date.yesterday }
@@ -53,7 +53,7 @@ RSpec.describe TimeboxesHelper, feature_category: :team_planning do
 
     subject { helper.recent_releases_with_counts(milestone_open, user) }
 
-    before do
+    before_all do
       project.add_developer(user)
     end
 

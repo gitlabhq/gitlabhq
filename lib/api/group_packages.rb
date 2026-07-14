@@ -30,8 +30,10 @@ module API
       optional :exclude_subgroups, type: Boolean, default: false, desc: 'Determines if subgroups should be excluded'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'List packages within a group' do
-        detail 'Get a list of project packages at the group level. This feature was introduced in GitLab 12.5'
+      desc 'List all packages for a group' do
+        detail 'Lists all packages for a specified group. When accessed without authentication, only packages of ' \
+          'public projects are returned. By default, packages with `default`, `deprecated`, and `error` status are ' \
+          'returned. Use the `status` parameter to view other packages.'
         success ::API::Entities::Package
         failure [
           { code: 401, message: 'Unauthorized' },

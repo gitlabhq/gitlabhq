@@ -50,7 +50,7 @@ RSpec.describe Resolvers::Crm::OrganizationsResolver do
     end
 
     context 'with a group parent' do
-      before do
+      before_all do
         group.add_developer(user)
       end
 

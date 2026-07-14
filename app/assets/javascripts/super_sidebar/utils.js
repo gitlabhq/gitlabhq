@@ -4,6 +4,7 @@ import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/super_sidebar/constants
 import axios from '~/lib/utils/axios_utils';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
+import { trackNamespaceVisitsPath } from '~/lib/utils/path_helpers/routes';
 
 /**
  * This takes an array of project or groups that were stored in the local storage, to be shown in
@@ -54,23 +55,16 @@ export const getTopFrequentItems = (items, maxCount) => {
  *
  * @param {object} item The project/group item being tracked.
  * @param {string} namespace A string indicating whether the tracked entity is a project or a group.
- * @param {string} trackVisitsPath The API endpoint to track visits server-side.
  * @returns {void}
  */
-const updateItemAccess = (
-  contextItem,
-  { lastAccessedOn, frequency = 0 } = {},
-  namespace,
-  trackVisitsPath,
-  // eslint-disable-next-line max-params
-) => {
+const updateItemAccess = (contextItem, { lastAccessedOn, frequency = 0 } = {}, namespace) => {
   const now = Date.now();
   const neverAccessed = !lastAccessedOn;
   const shouldUpdate = neverAccessed || Math.abs(now - lastAccessedOn) / FIFTEEN_MINUTES_IN_MS > 1;
 
   if (shouldUpdate) {
     axios({
-      url: trackVisitsPath,
+      url: trackNamespaceVisitsPath(),
       method: 'POST',
       data: {
         type: namespace,
@@ -95,7 +89,7 @@ const updateItemAccess = (
   };
 };
 
-export const trackContextAccess = (username, context, trackVisitsPath) => {
+export const trackContextAccess = (username, context) => {
   if (!AccessorUtilities.canUseLocalStorage()) {
     return false;
   }
@@ -113,14 +107,12 @@ export const trackContextAccess = (username, context, trackVisitsPath) => {
       context.item,
       storedItems[existingItemIndex],
       context.namespace,
-      trackVisitsPath,
     );
   } else {
     const newItem = updateItemAccess(
       context.item,
       storedItems[existingItemIndex],
       context.namespace,
-      trackVisitsPath,
     );
     if (storedItems.length === FREQUENT_ITEMS.MAX_COUNT) {
       sortItemsByFrequencyAndLastAccess(storedItems);

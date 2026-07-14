@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Import::BulkImports::HttpFileDownloadStrategy, feature_category: :importers do
   let_it_be(:bulk_import) { build_stubbed(:bulk_import, :with_configuration) }
   let_it_be(:entity) { build_stubbed(:bulk_import_entity, :with_portable, bulk_import: bulk_import) }
-  let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(build_stubbed(:bulk_import_tracker, entity: entity)) }
+  let_it_be_with_reload(:context) { BulkImports::Pipeline::Context.new(build_stubbed(:bulk_import_tracker, entity: entity)) }
   let(:import_logger) { instance_double(BulkImports::Logger, info: nil, warn: nil) }
 
   let(:strategy) do

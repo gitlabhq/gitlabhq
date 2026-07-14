@@ -44,6 +44,11 @@ module Gitlab
           end
           strong_memoize_attr :seeds_names
 
+          def deployments_count
+            seeds.count(&:deployment?)
+          end
+          strong_memoize_attr :deployments_count
+
           def included?
             seeds.any?
           end

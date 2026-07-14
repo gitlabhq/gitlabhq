@@ -3,6 +3,7 @@ package upstream
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -331,7 +332,7 @@ func configureRoutes(u *upstream) {
 	proxy := buildProxy(u.Backend, u.Version, u.RoundTripper, u.Config, dependencyProxyInjector, api, proxyOpts...)
 	cableProxy := proxypkg.NewProxy(u.CableBackend, u.Version, u.CableRoundTripper)
 
-	dwHandler := duoworkflow.NewHandler(api, u.rdb, u)
+	dwHandler := duoworkflow.NewHandler(api, u.rdb, u, string(u.URLPrefix))
 	if u.upgradedConnsManager != nil {
 		u.upgradedConnsManager.Register(dwHandler)
 	}
@@ -376,22 +377,33 @@ func configureRoutes(u *upstream) {
 	// (Rails-only).
 	var iamProxy http.Handler
 	if u.IAMServiceURL == nil {
-		log.WithFields(log.Fields{
-			"iam_routing_enabled": false,
-		}).Info("oauthproxy: IAMServiceURL not set; OAuth requests will be handled by Rails")
+		slog.Info(
+			"oauthproxy: IAMServiceURL not set; OAuth requests will be handled by Rails",
+			slog.Bool("iam_routing_enabled", false),
+		)
 	} else {
 		iamRoundTripper := roundtripper.NewBackendRoundTripper(u.IAMServiceURL, "", u.ProxyHeadersTimeout, u.DevelopmentMode)
+		// When IAMServiceURL points at the GATE sandbox Envoy gateway, that
+		// gateway routes by `x-gitlab-svc` header — without it, IAM-bound OAuth
+		// requests fall through to the GitLab default backend. (Hitting the IAM
+		// service directly, bypassing the gateway, doesn't need the header.)
+		// Harmless when sent to non-Envoy endpoints: unknown headers are ignored.
+		// TODO: remove when direct path-based routing replaces the Envoy
+		// header-based routing (see gitlab-org/gitlab!240684 for the matching
+		// gRPC-side workaround).
 		iamProxy = proxypkg.NewProxy(
 			u.IAMServiceURL,
 			u.Version,
 			iamRoundTripper,
 			proxypkg.WithForcedTargetHostHeader(),
 			proxypkg.WithCorrelationID(),
+			proxypkg.WithCustomHeaders(map[string]string{"x-gitlab-svc": "iam-auth-http"}),
 		)
-		log.WithFields(log.Fields{
-			"iam_routing_enabled": true,
-			"iam_backend_url":     u.IAMServiceURL.String(),
-		}).Info("oauthproxy: OAuth routing to IAM service enabled")
+		slog.Info(
+			"oauthproxy: OAuth routing to IAM service enabled",
+			slog.Bool("iam_routing_enabled", true),
+			slog.String("iam_backend_url", u.IAMServiceURL.String()),
+		)
 	}
 	oauthHandler := &oauthproxy.Handler{
 		API:           api,

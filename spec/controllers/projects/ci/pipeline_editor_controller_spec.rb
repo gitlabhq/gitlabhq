@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Ci::PipelineEditorController do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { create(:user) }
 
   subject(:show_request) { get :show, params: { namespace_id: project.namespace, project_id: project } }

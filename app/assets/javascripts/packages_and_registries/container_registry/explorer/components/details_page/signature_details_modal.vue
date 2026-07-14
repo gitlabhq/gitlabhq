@@ -20,6 +20,7 @@ export default {
       default: null,
     },
   },
+  emits: ['close'],
   data() {
     return {
       manifestDetails: null,

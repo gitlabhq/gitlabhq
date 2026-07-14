@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Issues > User sees live update', :js, feature_category: :team_planning do
-  let_it_be(:project, freeze: false) { create(:project, :public) }
-  let_it_be(:user, freeze: false) { project.creator }
+  let_it_be_with_reload(:project) { create(:project, :public) }
+  let_it_be_with_reload(:user) { project.creator }
 
   before do
     sign_in(user)

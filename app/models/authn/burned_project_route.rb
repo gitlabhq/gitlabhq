@@ -7,7 +7,7 @@ module Authn
     belongs_to :organization, class_name: 'Organizations::Organization'
 
     validates :organization_id, presence: true
-    validates :path, presence: true, length: { maximum: 255 }
+    validates :path, presence: true
     validates :project_id, presence: true
     validates :burned_at, presence: true
 

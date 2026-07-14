@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash-es';
+import { isEmpty, kebabCase } from 'lodash-es';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
@@ -198,12 +198,11 @@ const mixins = {
   },
   methods: {
     onRemoveRequest() {
-      let namespacePrefix = '';
-      if (this.eventNamespace && this.eventNamespace.length > 0) {
-        namespacePrefix = `${this.eventNamespace}`;
-      }
+      const eventName = this.eventNamespace
+        ? `${kebabCase(this.eventNamespace)}-remove-request`
+        : 'remove-request';
 
-      this.$emit(`${namespacePrefix}RemoveRequest`, this.idKey);
+      this.$emit(eventName, this.idKey);
 
       this.removeDisabled = true;
     },

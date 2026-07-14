@@ -46,6 +46,7 @@ export default {
       default: false,
     },
   },
+  emits: ['hide', 'reset', 'search', 'selected'],
   i18n: {
     noSearchResultsText: s__('GlobalSearch|No matching results'),
     noLoadResultsText: s__('GlobalSearch|No results found'),

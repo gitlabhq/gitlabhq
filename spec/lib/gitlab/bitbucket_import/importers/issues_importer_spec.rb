@@ -6,7 +6,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssuesImporter, :clean_gitlab
   subject(:importer) { described_class.new(project) }
 
   describe '#execute' do
-    let(:client) { Bitbucket::Client.new(project.import_data.credentials) }
+    let(:client) { Bitbucket::Client.new(project.import_data.credentials, http_client: Import::Clients::HTTP) }
     let_it_be(:project) do
       create(:project, :import_started,
         import_data_attributes: {

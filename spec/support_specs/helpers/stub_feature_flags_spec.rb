@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe StubFeatureFlags do
   let_it_be(:dummy_feature_flag) { :dummy_feature_flag }
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:dummy_definition, freeze: false) do
     Feature::Definition.new(
       nil,
@@ -123,27 +128,27 @@ RSpec.describe StubFeatureFlags do
     it 'subsquent run changes state' do
       # enable FF only on A
       stub_feature_flags({ feature_name => actor(%i[A]) })
-      expect(Feature.enabled?(feature_name)).to eq(false)
-      expect(Feature.enabled?(feature_name, actor(:A))).to eq(true)
-      expect(Feature.enabled?(feature_name, actor(:B))).to eq(false)
+      expect(Feature.enabled?(feature_name)).to be(false)
+      expect(Feature.enabled?(feature_name, actor(:A))).to be(true)
+      expect(Feature.enabled?(feature_name, actor(:B))).to be(false)
 
       # enable FF only on B
       stub_feature_flags({ feature_name => actor(%i[B]) })
-      expect(Feature.enabled?(feature_name)).to eq(false)
-      expect(Feature.enabled?(feature_name, actor(:A))).to eq(false)
-      expect(Feature.enabled?(feature_name, actor(:B))).to eq(true)
+      expect(Feature.enabled?(feature_name)).to be(false)
+      expect(Feature.enabled?(feature_name, actor(:A))).to be(false)
+      expect(Feature.enabled?(feature_name, actor(:B))).to be(true)
 
       # enable FF on all
       stub_feature_flags({ feature_name => true })
-      expect(Feature.enabled?(feature_name)).to eq(true)
-      expect(Feature.enabled?(feature_name, actor(:A))).to eq(true)
-      expect(Feature.enabled?(feature_name, actor(:B))).to eq(true)
+      expect(Feature.enabled?(feature_name)).to be(true)
+      expect(Feature.enabled?(feature_name, actor(:A))).to be(true)
+      expect(Feature.enabled?(feature_name, actor(:B))).to be(true)
 
       # disable FF on all
       stub_feature_flags({ feature_name => false })
-      expect(Feature.enabled?(feature_name)).to eq(false)
-      expect(Feature.enabled?(feature_name, actor(:A))).to eq(false)
-      expect(Feature.enabled?(feature_name, actor(:B))).to eq(false)
+      expect(Feature.enabled?(feature_name)).to be(false)
+      expect(Feature.enabled?(feature_name, actor(:A))).to be(false)
+      expect(Feature.enabled?(feature_name, actor(:B))).to be(false)
     end
   end
 
@@ -151,7 +156,7 @@ RSpec.describe StubFeatureFlags do
     context 'let_it_be variable' do
       let_it_be(:let_it_be_var) { Feature.enabled?(dummy_feature_flag) }
 
-      it { expect(let_it_be_var).to eq true }
+      it { expect(let_it_be_var).to be true }
     end
 
     # rubocop: disable RSpec/BeforeAll
@@ -160,7 +165,7 @@ RSpec.describe StubFeatureFlags do
         @suite_var = Feature.enabled?(dummy_feature_flag)
       end
 
-      it { expect(@suite_var).to eq true }
+      it { expect(@suite_var).to be true }
     end
 
     context 'before(:all) variable' do
@@ -168,7 +173,7 @@ RSpec.describe StubFeatureFlags do
         @suite_var = Feature.enabled?(dummy_feature_flag)
       end
 
-      it { expect(@suite_var).to eq true }
+      it { expect(@suite_var).to be true }
     end
     # rubocop: enable RSpec/BeforeAll
 
@@ -176,11 +181,11 @@ RSpec.describe StubFeatureFlags do
       let(:var) { Feature.enabled?(dummy_feature_flag) }
 
       context 'as true', :stub_feature_flags do
-        it { expect(var).to eq true }
+        it { expect(var).to be true }
       end
 
       context 'as false', stub_feature_flags: false do
-        it { expect(var).to eq false }
+        it { expect(var).to be false }
       end
     end
   end

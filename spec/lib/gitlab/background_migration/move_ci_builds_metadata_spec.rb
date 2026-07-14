@@ -440,7 +440,7 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
 
       # duplicate of job_a, but in a different project
       let!(:other_job) do
-        builds_table.create!(partition_id: other_pipeline.partition_id, project_id: other_pipeline.id,
+        builds_table.create!(partition_id: other_pipeline.partition_id, project_id: other_project.id,
           commit_id: other_pipeline.id
         )
       end

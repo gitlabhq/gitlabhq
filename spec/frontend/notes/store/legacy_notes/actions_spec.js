@@ -407,28 +407,60 @@ describe('Actions Notes Store', () => {
       expect(store.lastFetchedAt).toBe('123456');
     });
 
-    describe('when includes duo code review note', () => {
-      it('removes duo code review sytem note', () => {
-        const systemNote = { author: { user_type: 'duo_code_review_bot' }, system: true };
+    describe('when a Duo mention reply note arrives', () => {
+      it('removes the started (thinking) note from the same discussion', async () => {
+        const startedNote = {
+          id: 'started-note-1',
+          system: true,
+          duo_session_status: 'running',
+          discussion_id: 'discussion-1',
+          author: { id: 101 },
+        };
+        // reply note has no duo_session_status key (undefined); it is authored
+        // by the same identity as the started note (the Duo bot / SA).
+        const replyNote = {
+          id: 'reply-note-1',
+          system: false,
+          discussion_id: 'discussion-1',
+          author: { id: 101 },
+        };
 
         axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_OK, {
-          notes: [{ author: { user_type: 'duo_code_review_bot' }, system: false }],
+          notes: [replyNote],
           last_fetched_at: '123456',
         });
 
-        discussionsStore.discussions = [{ notes: [systemNote] }];
-        return testAction(
-          store.fetchUpdatedNotes,
-          undefined,
-          {},
-          [],
-          [
-            {
-              type: store.removeNote,
-              payload: systemNote,
-            },
-          ],
-        );
+        discussionsStore.discussions = [{ id: 'discussion-1', notes: [startedNote] }];
+        jest.spyOn(store, 'removeNote');
+
+        await store.fetchUpdatedNotes();
+
+        expect(store.removeNote).toHaveBeenCalledWith(startedNote);
+      });
+
+      it('does not remove notes without duo_session_status', async () => {
+        const regularSystemNote = {
+          id: 'system-note-1',
+          system: true,
+          discussion_id: 'discussion-1',
+        };
+        const replyNote = {
+          id: 'reply-note-1',
+          system: false,
+          discussion_id: 'discussion-1',
+        };
+
+        axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_OK, {
+          notes: [replyNote],
+          last_fetched_at: '123456',
+        });
+
+        discussionsStore.discussions = [{ id: 'discussion-1', notes: [regularSystemNote] }];
+        jest.spyOn(store, 'removeNote');
+
+        await store.fetchUpdatedNotes();
+
+        expect(store.removeNote).not.toHaveBeenCalled();
       });
     });
   });

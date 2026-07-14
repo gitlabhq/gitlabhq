@@ -67,7 +67,12 @@ module Banzai
       end
 
       def extract_language_with_priority(code_node, pre_node)
-        pre_node.attr('lang') || code_node.attr('lang') || extract_language_from_class(code_node)
+        # Priority: data-lang > CSS class > legacy lang attribute
+        pre_node.attr('data-lang') ||
+          code_node.attr('data-lang') ||
+          extract_language_from_class(code_node) ||
+          pre_node.attr('lang') ||
+          code_node.attr('lang')
       end
 
       # Returns [language_class, other_classes] from a code node's class attribute.
@@ -98,6 +103,7 @@ module Banzai
 
       def cleanup_all_language_attributes(code_node, pre_node)
         code_node.remove_attribute('lang')
+        code_node.remove_attribute('data-lang')
         pre_node.remove_attribute('lang')
         pre_node.remove_attribute('data-meta')
         code_node.remove_attribute('data-meta')
@@ -105,8 +111,9 @@ module Banzai
       end
 
       def set_final_language_attributes(pre_node, lang, lang_params)
-        pre_node.set_attribute('data-canonical-lang', escape_once(lang))
-        pre_node.set_attribute('data-lang-params', escape_once(lang_params)) if lang_params
+        pre_node.set_attribute('data-lang', lang)
+        pre_node.set_attribute('data-canonical-lang', lang)
+        pre_node.set_attribute('data-lang-params', lang_params) if lang_params
       end
 
       # Parses language parameters from a language string.

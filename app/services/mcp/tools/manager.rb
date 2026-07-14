@@ -38,24 +38,25 @@ module Mcp
       # Registry of all custom tools mapped to their service classes
       CUSTOM_TOOLS = {
         'get_mcp_server_version' => ::Mcp::Tools::GetServerVersionService,
-        'get_merge_request_conflicts' => ::Mcp::Tools::GetMergeRequestConflictsService
+        'get_merge_request_conflicts' => ::Mcp::Tools::MergeRequests::GetMergeRequestConflictsService
       }.freeze
 
       GRAPHQL_TOOLS = {
-        'create_workitem_note' => ::Mcp::Tools::WorkItems::GraphqlCreateWorkItemNoteService,
-        'get_workitem_notes' => ::Mcp::Tools::WorkItems::GraphqlGetWorkItemNotesService,
-        'get_saved_view_work_items' => ::Mcp::Tools::WorkItems::GraphqlGetSavedViewWorkItemsService,
-        'search_labels' => ::Mcp::Tools::Labels::GraphqlSearchService,
-        'link_work_items' => ::Mcp::Tools::WorkItems::GraphqlLinkWorkItemsService,
-        'get_work_item_types' => ::Mcp::Tools::WorkItems::GraphqlGetWorkItemTypesService
+        'create_merge_request_note' => ::Mcp::Tools::MergeRequests::CreateMergeRequestNoteService,
+        'create_workitem_note' => ::Mcp::Tools::WorkItems::CreateWorkItemNoteService,
+        'get_merge_request_notes' => ::Mcp::Tools::MergeRequests::GetMergeRequestNotesService,
+        'get_saved_view_work_items' => ::Mcp::Tools::WorkItems::GetSavedViewWorkItemsService,
+        'get_workitem_notes' => ::Mcp::Tools::WorkItems::GetWorkItemNotesService,
+        'get_work_item_types' => ::Mcp::Tools::WorkItems::GetWorkItemTypesService,
+        'link_work_items' => ::Mcp::Tools::WorkItems::LinkWorkItemsService,
+        'search_labels' => ::Mcp::Tools::Labels::SearchService
       }.freeze
 
       def initialize
-        # Do not call build_tools here. Route discovery (discover_api_tools) reads
-        # API::API.routes which is lazily memoized by Grape. When Manager is instantiated
-        # at class-definition time (via namespace_setting in API::Mcp::Base), EE modules
-        # haven't been prepended yet, so EE-only routes (e.g. SemanticCodeSearch) would be
-        # missed. Deferring to the first call of #tools ensures routes are fully compiled.
+        # Do not call build_tools here. API::API.routes is lazily memoized by Grape, and
+        # Manager is instantiated at class-definition time via namespace_setting in
+        # API::Mcp::Base, before all routes are registered. Deferring to the first call
+        # of #tools ensures a complete route list.
       end
 
       def tools

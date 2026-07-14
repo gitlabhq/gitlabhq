@@ -17,14 +17,13 @@ RSpec.describe API::Internal::MailRoom, feature_category: :service_desk do
     }
   end
 
+  let(:incoming_email_secret_path) { Rails.root.join('tmp', 'tests', '.incoming_email_secret').to_s }
+  let(:service_desk_email_secret_path) { Rails.root.join('tmp', 'tests', '.service_desk_email').to_s }
+
   let(:enabled_configs) do
     {
-      incoming_email: base_configs.merge(
-        secure_file: Rails.root.join('tmp', 'tests', '.incoming_email_secret').to_s
-      ),
-      service_desk_email: base_configs.merge(
-        secure_file: Rails.root.join('tmp', 'tests', '.service_desk_email').to_s
-      )
+      incoming_email: base_configs.merge(secret_file: incoming_email_secret_path),
+      service_desk_email: base_configs.merge(secret_file: service_desk_email_secret_path)
     }
   end
 
@@ -36,9 +35,17 @@ RSpec.describe API::Internal::MailRoom, feature_category: :service_desk do
   let(:email_content) { fixture_file("emails/service_desk_reply.eml") }
 
   before do
-    allow(Gitlab::MailRoom::Authenticator).to receive(:secret).with(:incoming_email).and_return(incoming_email_secret)
-    allow(Gitlab::MailRoom::Authenticator).to receive(:secret).with(:service_desk_email).and_return(service_desk_email_secret)
+    allow(Gitlab::MailRoom::Authenticator).to receive(:read_secret)
+      .with(incoming_email_secret_path).and_return(incoming_email_secret)
+    allow(Gitlab::MailRoom::Authenticator).to receive(:read_secret)
+      .with(service_desk_email_secret_path).and_return(service_desk_email_secret)
     allow(Gitlab::MailRoom).to receive(:enabled_configs).and_return(enabled_configs)
+
+    Gitlab::MailRoom::Authenticator.clear_memoization(:jwt_secret)
+  end
+
+  after do
+    Gitlab::MailRoom::Authenticator.clear_memoization(:jwt_secret)
   end
 
   around do |example|
@@ -173,9 +180,7 @@ RSpec.describe API::Internal::MailRoom, feature_category: :service_desk do
     context 'not enabled mailbox type' do
       let(:enabled_configs) do
         {
-          incoming_email: base_configs.merge(
-            secure_file: Rails.root.join('tmp', 'tests', '.incoming_email_secret').to_s
-          )
+          incoming_email: base_configs.merge(secret_file: incoming_email_secret_path)
         }
       end
 

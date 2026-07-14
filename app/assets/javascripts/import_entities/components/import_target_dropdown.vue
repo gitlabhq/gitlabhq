@@ -21,6 +21,7 @@ const reportNamespaceLoadError = debounce(
 );
 
 export default {
+  name: 'ImportTargetDropdown',
   components: {
     GlCollapsibleListbox,
   },

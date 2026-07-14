@@ -43,7 +43,7 @@ const populateUserInfo = (userRef) => {
           username: userData.username,
           name: userData.name,
           location: userData.location,
-          bio: userData.bio,
+          bioHtml: userData.bio_html,
           workInformation: userData.work_information,
           websiteUrl: userData.website_url,
           pronouns: userData.pronouns,
@@ -107,7 +107,7 @@ function launchPopover(el, mountPopover) {
 
   const emptyUser = {
     location: null,
-    bio: null,
+    bioHtml: null,
     workInformation: null,
     status: null,
     isFollowed: false,

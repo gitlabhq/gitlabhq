@@ -10,6 +10,7 @@ import { __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 
 export default {
+  name: 'ExperimentTrackingDeleteButton',
   components: {
     GlModal,
     GlDisclosureDropdown,

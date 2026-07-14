@@ -1,17 +1,18 @@
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ProjectsDropdown from '~/projects/commit/components/projects_dropdown.vue';
+import { useCherryPickCommit } from '~/projects/commit/store/cherry_pick_commit';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('ProjectsDropdown', () => {
   let wrapper;
+  let pinia;
   let store;
-  const spyFetchProjects = jest.fn();
   const projectsMockData = [
     { id: '1', name: '_project_1_', refsUrl: '_project_1_/refs' },
     { id: '2', name: '_project_2_', refsUrl: '_project_2_/refs' },
@@ -19,16 +20,16 @@ describe('ProjectsDropdown', () => {
   ];
 
   const createComponent = (term, state = {}) => {
-    store = new Vuex.Store({
-      getters: {
-        sortedProjects: () => projectsMockData,
-      },
-      state,
-    });
+    pinia = createTestingPinia();
+    store = useCherryPickCommit();
+    store.$patch({ projects: projectsMockData, ...state });
 
     wrapper = extendedWrapper(
       shallowMount(ProjectsDropdown, {
-        store,
+        pinia,
+        provide: {
+          modalStore: store,
+        },
         propsData: {
           value: term,
         },
@@ -37,10 +38,6 @@ describe('ProjectsDropdown', () => {
   };
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-
-  afterEach(() => {
-    spyFetchProjects.mockReset();
-  });
 
   describe('Projects found', () => {
     beforeEach(() => {

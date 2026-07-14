@@ -6,8 +6,8 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
   include DragTo
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, :public, namespace: group) }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :public, namespace: group) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }
 
   before_all do
@@ -47,7 +47,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
     context 'with existing task' do
       context 'with confidential issue' do
         let_it_be_with_reload(:issue) { create(:issue, :confidential, project: project) }
-        let_it_be(:task, freeze: false) { create(:work_item, :confidential, :task, project: project) }
+        let_it_be_with_reload(:task) { create(:work_item, :confidential, :task, project: project) }
 
         it 'adds an existing child task', :aggregate_failures do
           within_testid('work-item-tree') do
@@ -74,9 +74,9 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
     end
 
     context 'in work item metadata' do
-      let_it_be(:label, freeze: false) { create(:label, title: 'Label 1', project: project) }
-      let_it_be(:milestone, freeze: false) { create(:milestone, project: project, title: 'v1') }
-      let_it_be(:task, freeze: false) do
+      let_it_be_with_reload(:label) { create(:label, title: 'Label 1', project: project) }
+      let_it_be_with_reload(:milestone) { create(:milestone, project: project, title: 'v1') }
+      let_it_be_with_reload(:task) do
         create(
           :work_item,
           :task,

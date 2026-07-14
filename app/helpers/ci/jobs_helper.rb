@@ -36,5 +36,3 @@ module Ci
     end
   end
 end
-
-Ci::JobsHelper.prepend_mod_with('Ci::JobsHelper')

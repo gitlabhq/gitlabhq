@@ -30,6 +30,16 @@ module ApplicationCable
       [:api, :read_api]
     end
 
+    def granular_authorization_denied?(boundaries:, permissions:)
+      return false unless access_token
+
+      ::Authz::Tokens::AuthorizeGranularScopesService.new(
+        boundaries: boundaries,
+        permissions: permissions,
+        token: access_token
+      ).execute.error?
+    end
+
     def client_subscribed?
       !subscription_rejected? && subscription_confirmation_sent?
     end

@@ -1,0 +1,20 @@
+---
+description: Clicked the Auto DevOps link in the Project information panel on the project overview page.
+internal_events: true
+action: click_auto_devops_on_project_overview
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Whether the user clicked to enable the feature ("add") or to view the existing settings ("view").
+product_group: environments
+product_categories:
+- auto_devops
+milestone: '19.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243186
+tiers:
+- free
+- premium
+- ultimate

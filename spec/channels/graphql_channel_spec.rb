@@ -156,6 +156,36 @@ RSpec.describe GraphqlChannel, feature_category: :api do
 
         subscribe(subscribe_params)
       end
+
+      context 'when authenticated with an access token' do
+        before do
+          stub_action_cable_connection current_user: user, access_token: read_api_token
+        end
+
+        it 'includes the access token so granular authorization is enforced' do
+          expect(GitlabSchema).to receive(:execute).with(
+            anything,
+            hash_including(
+              context: hash_including(access_token: read_api_token)
+            )
+          ).and_return(graphql_result)
+
+          subscribe(subscribe_params)
+        end
+      end
+
+      context 'when authenticated via a session (no token)' do
+        it 'sets a nil access token' do
+          expect(GitlabSchema).to receive(:execute).with(
+            anything,
+            hash_including(
+              context: hash_including(access_token: nil)
+            )
+          ).and_return(graphql_result)
+
+          subscribe(subscribe_params)
+        end
+      end
     end
 
     describe 'query normalization' do

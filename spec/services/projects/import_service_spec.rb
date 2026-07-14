@@ -47,6 +47,14 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
     end
   end
 
+  describe '#extra_attributes_for_measurement' do
+    it 'includes the project organization id' do
+      expect(subject.send(:extra_attributes_for_measurement)).to include(
+        Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+      )
+    end
+  end
+
   describe '#execute' do
     context 'with unknown url' do
       before do
@@ -156,6 +164,11 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
             expect(project.repository)
               .to receive(:fetch_as_mirror)
               .and_raise(Gitlab::Git::CommandError, 'Failed to import the repository /a/b/c')
+            expect(Gitlab::Import::ImportFailureService).to receive(:track).with(
+              hash_including(
+                project_id: project.id
+              )
+            ).and_call_original
 
             result = subject.execute
 

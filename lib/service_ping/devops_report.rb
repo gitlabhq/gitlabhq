@@ -17,7 +17,9 @@ module ServicePing
       return if metrics.keys == ['usage_data_id']
 
       report = DevOpsReport::Metric.create(
-        metrics.slice(*DevOpsReport::Metric::METRICS)
+        metrics.slice(*DevOpsReport::Metric::METRICS).merge(
+          'usage_data_id' => metrics['usage_data_id']
+        )
       )
 
       unless report.persisted?

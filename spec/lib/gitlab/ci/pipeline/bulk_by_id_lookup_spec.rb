@@ -22,9 +22,9 @@ RSpec.describe Gitlab::Ci::Pipeline::BulkByIdLookup, feature_category: :continuo
 
   describe '#execute' do
     context 'when ids is empty' do
-      it 'returns an empty hash without issuing queries' do
+      it 'returns an empty array without issuing queries' do
         expect do
-          expect(described_class.new([]).execute).to eq({})
+          expect(described_class.new([]).execute).to eq([])
         end.not_to exceed_query_limit(0).for_query(/SELECT.*p_ci_pipelines/)
       end
     end
@@ -38,11 +38,8 @@ RSpec.describe Gitlab::Ci::Pipeline::BulkByIdLookup, feature_category: :continuo
 
       subject(:execute) { described_class.new([pipeline.id, other_pipeline.id]).execute }
 
-      it 'returns a hash keyed by pipeline id' do
-        expect(execute).to eq(
-          pipeline.id => pipeline,
-          other_pipeline.id => other_pipeline
-        )
+      it 'returns an array of pipelines' do
+        expect(execute).to contain_exactly(pipeline, other_pipeline)
       end
 
       it 'issues a single SELECT on p_ci_pipelines' do
@@ -70,10 +67,7 @@ RSpec.describe Gitlab::Ci::Pipeline::BulkByIdLookup, feature_category: :continuo
           )
         )
 
-        expect(execute).to eq(
-          pipeline.id => pipeline,
-          other_pipeline.id => other_pipeline
-        )
+        expect(execute).to contain_exactly(pipeline, other_pipeline)
       end
     end
 
@@ -93,10 +87,7 @@ RSpec.describe Gitlab::Ci::Pipeline::BulkByIdLookup, feature_category: :continuo
           )
         )
 
-        expect(execute).to eq(
-          pipeline.id => pipeline,
-          other_pipeline.id => other_pipeline
-        )
+        expect(execute).to contain_exactly(pipeline, other_pipeline)
       end
     end
 
@@ -104,7 +95,42 @@ RSpec.describe Gitlab::Ci::Pipeline::BulkByIdLookup, feature_category: :continuo
       subject(:execute) { described_class.new([non_existing_record_id]).execute }
 
       it 'omits unknown ids from the result' do
-        expect(execute).to eq({})
+        expect(execute).to eq([])
+      end
+    end
+
+    context 'with fallback: false' do
+      subject(:execute) { described_class.new([pipeline.id, other_pipeline.id], fallback: false).execute }
+
+      context 'when the cache covers only some ids' do
+        before do
+          partition.update!(pipelines_id_range: pipeline.id...(pipeline.id + 1))
+          Gitlab::Ci::Pipeline::PartitionCache.invalidate
+        end
+
+        it 'returns only the partition-pruned records and skips the full scan' do
+          expect(Gitlab::AppLogger).not_to receive(:info).with(
+            hash_including(message: 'Partition-pruned query missed, falling back to full scan')
+          )
+
+          expect(execute).to contain_exactly(pipeline)
+        end
+
+        it 'issues a single SELECT on p_ci_pipelines' do
+          expect do
+            execute
+          end.not_to exceed_query_limit(1).for_query(/SELECT.*p_ci_pipelines/)
+        end
+      end
+
+      context 'when no cached range covers the ids' do
+        it 'returns an empty array without a full scan' do
+          expect(Gitlab::AppLogger).not_to receive(:info).with(
+            hash_including(message: 'Partition-pruned query missed, falling back to full scan')
+          )
+
+          expect(execute).to eq([])
+        end
       end
     end
 
@@ -117,7 +143,7 @@ RSpec.describe Gitlab::Ci::Pipeline::BulkByIdLookup, feature_category: :continuo
       subject(:execute) { described_class.new([pipeline.id, pipeline.id]).execute }
 
       it 'returns a single entry' do
-        expect(execute).to eq(pipeline.id => pipeline)
+        expect(execute).to contain_exactly(pipeline)
       end
     end
 
@@ -130,7 +156,7 @@ RSpec.describe Gitlab::Ci::Pipeline::BulkByIdLookup, feature_category: :continuo
       subject(:execute) { described_class.new([nil, pipeline.id, nil]).execute }
 
       it 'filters out nils' do
-        expect(execute).to eq(pipeline.id => pipeline)
+        expect(execute).to contain_exactly(pipeline)
       end
     end
   end

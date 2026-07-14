@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Supported models and hardware requirements.
 title: Models and hardware requirements
@@ -15,7 +15,7 @@ title: Models and hardware requirements
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a feature flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Feature flag `ai_custom_model` removed in GitLab 17.8.
@@ -48,9 +48,9 @@ depending on the specific model and feature combination.
 | Model family | Model | Code completion | Code generation | GitLab Duo Non-Agentic Chat | GitLab Duo Agent Platform |
 |--------------|-------|-----------------|-----------------|---------------------------|---------------------------|
 | Claude 4 | [Claude 4 Sonnet](https://www.anthropic.com/news/claude-4) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
-| Claude 4 | [Claude 4.5 Sonnet](https://www.anthropic.com/news/claude-sonnet-4-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
-| Claude 4 | [Claude 4.5 Haiku](https://www.anthropic.com/news/claude-haiku-4-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
-| Claude 4 | [Claude 4.5 Opus](https://www.anthropic.com/news/claude-opus-4-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| Claude 4 | [Claude Haiku 4.5](https://www.anthropic.com/news/claude-haiku-4-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| Claude 4 | [Claude Sonnet 4.6](https://www.anthropic.com/news/claude-sonnet-4-6) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| Claude 4 | [Claude Opus 4.8](https://www.anthropic.com/news/claude-opus-4-8) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | GPT | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | GPT | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | GPT | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
@@ -60,6 +60,7 @@ depending on the specific model and feature combination.
 | GPT | [GPT-5.1](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-51) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | GPT | [GPT-5.2](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-52) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | GPT | [GPT-oss-120B](https://huggingface.co/openai/gpt-oss-120b) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |
+| Mistral Medium 3.5 | [Mistral Medium 3.5 128B](https://huggingface.co/mistralai/Mistral-Medium-3.5-128B) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | Mistral Devstral | [Devstral 2 123B](https://huggingface.co/mistralai/Devstral-2-123B-Instruct-2512) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | Mistral Codestral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | Mistral | [Mistral Small 24B Instruct 2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |

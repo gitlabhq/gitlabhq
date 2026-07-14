@@ -37,11 +37,27 @@ module Gitlab
 
             result_lines << heading if heading
             old_pool = old_lines.dup
+            in_fence = false
 
             new_lines.each do |new_line|
+              # Fenced code blocks are verbatim by nature: never collapse a fence
+              # delimiter or any line inside a fence to prior wording, so exact
+              # code content (and any changes to it) always survives. This also
+              # sidesteps treating fence delimiters as inline-code spans.
+              if fence_delimiter?(new_line)
+                in_fence = !in_fence
+                result_lines << new_line
+                next
+              end
+
+              if in_fence
+                result_lines << new_line
+                next
+              end
+
               best_match, best_score = find_best_match(new_line, old_pool)
 
-              if best_score >= MATCH_THRESHOLD
+              if best_score >= MATCH_THRESHOLD && same_code_tokens?(new_line, best_match)
                 result_lines << best_match
                 old_pool.delete_at(old_pool.index(best_match))
               else
@@ -93,6 +109,43 @@ module Gitlab
 
         def section_heading?(line)
           line.start_with?('## ', '### ')
+        end
+
+        # A Markdown fenced-code delimiter: optional indentation followed by a
+        # run of 3+ backticks or tildes (optionally with an info string, for the
+        # opening fence). Used to treat fenced blocks as verbatim in reduce_noise.
+        def fence_delimiter?(line)
+          line.match?(/\A\s*(?:`{3,}|~{3,})/)
+        end
+
+        # Inline-code spans (backtick-delimited) carry the semantically load-bearing
+        # identifiers in a checklist: API names, class paths, method calls. word_similarity
+        # strips backticks and punctuation, so a line whose ONLY change is an identifier swap
+        # (for example `Gitlab::Json.safe_parse` -> `Gitlab::Json::SafeParser.parse`) still
+        # scores ~0.85 and would be reverted to the stale wording as "just a rephrase". Guard
+        # the rephrase-collapse on the code spans matching exactly so genuine API changes from
+        # the SSOT survive noise reduction.
+        def same_code_tokens?(line_a, line_b)
+          tokens_a = code_tokens(line_a)
+          tokens_b = code_tokens(line_b)
+          # nil means at least one line uses multi/odd backticks we can't fingerprint;
+          # treat as "not provably equal" so the new line is kept verbatim.
+          return false if tokens_a.nil? || tokens_b.nil?
+
+          tokens_a == tokens_b
+        end
+
+        # Extracts single-backtick inline-code spans, which cover essentially all
+        # identifiers in these checklists (`Class`, `method`, `CONST`). Returns
+        # nil for lines that use multi-backtick runs (double-backtick spans, or
+        # unbalanced/odd backtick counts) which this simple model cannot fingerprint
+        # reliably; callers treat nil as "cannot prove equal" and keep the new line,
+        # erring toward preserving SSOT changes over suppressing rephrasing noise.
+        def code_tokens(line)
+          str = line.to_s
+          return nil if str.match?(/`{2,}/) || str.count('`').odd?
+
+          str.scan(/`[^`]+`/).sort
         end
 
         # Jaccard similarity over word tokens.

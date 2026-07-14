@@ -174,6 +174,84 @@ scanTargets:
     tag: "1.25.3"
 ```
 
+### Scan dynamically built images
+
+If image names and tags are known only at runtime, you cannot
+define `scanTargets` in a static `.gitlab-multi-image.yml` file.
+
+To scan these images, override the `multi-cs::generate-scan` job to build the configuration
+file dynamically from dotenv artifacts produced by your build jobs:
+
+```yaml
+include:
+  - template: Jobs/Multi-Container-Scanning.latest.gitlab-ci.yml
+
+.build-rules: &build-rules
+  rules:
+    - if: $CONTAINER_SCANNING_DISABLED == 'true' || $CONTAINER_SCANNING_DISABLED == '1'
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+build-image-1:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  <<: *build-rules
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - export IMAGE1_NAME="$CI_REGISTRY_IMAGE/app1:$CI_COMMIT_SHORT_SHA-$CI_JOB_ID"
+    - docker build -f Dockerfiles/Dockerfile.app1 -t "$IMAGE1_NAME" .
+    - docker push "$IMAGE1_NAME"
+    - echo "IMAGE1_NAME=$IMAGE1_NAME" >> build1.env
+  artifacts:
+    reports:
+      dotenv: build1.env
+
+build-image-2:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  <<: *build-rules
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - export IMAGE2_NAME="$CI_REGISTRY_IMAGE/app2:$CI_COMMIT_SHORT_SHA-$CI_JOB_ID"
+    - docker build -f Dockerfiles/Dockerfile.app2 -t "$IMAGE2_NAME" .
+    - docker push "$IMAGE2_NAME"
+    - echo "IMAGE2_NAME=$IMAGE2_NAME" >> build2.env
+  artifacts:
+    reports:
+      dotenv: build2.env
+
+# Override the template job to inject the dynamically generated config
+multi-cs::generate-scan:
+  needs:
+    - job: build-image-1
+      artifacts: true
+    - job: build-image-2
+      artifacts: true
+  before_script:
+    - !reference [.multi-cs-generate-scan-base, before_script]  # preserve template steps if any
+    - IMAGE1_REPO="${IMAGE1_NAME%:*}"
+    - IMAGE1_TAG="${IMAGE1_NAME##*:}"
+    - IMAGE2_REPO="${IMAGE2_NAME%:*}"
+    - IMAGE2_TAG="${IMAGE2_NAME##*:}"
+    - |
+      cat > .gitlab-multi-image.yml <<EOF
+      scanTargets:
+        - name: ${IMAGE1_REPO}
+          tag: ${IMAGE1_TAG}
+        - name: ${IMAGE2_REPO}
+          tag: ${IMAGE2_TAG}
+      auths:
+        registry.gitlab.com: # Replace with your $CI_REGISTRY value for self-managed GitLab
+          username: \${CI_REGISTRY_USER}
+          password: \${CI_REGISTRY_PASSWORD}
+      EOF
+```
+
 ## CI/CD variables
 
 You can customize multi-container scanning behavior by using CI/CD variables.

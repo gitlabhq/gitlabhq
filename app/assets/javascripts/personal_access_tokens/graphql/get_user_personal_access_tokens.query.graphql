@@ -40,6 +40,7 @@ query getUserPersonalAccessTokens(
         name
         description
         granular
+        sudo
         revoked
         active
         lastUsedAt
@@ -57,6 +58,24 @@ query getUserPersonalAccessTokens(
               id
               name
               fullName
+              fullPath
+              webUrl
+              avatarUrl
+            }
+            group @gl_introduced(version: "19.2.0") {
+              id
+              name
+              fullName
+              fullPath
+              webUrl
+              avatarUrl
+              projectsCount
+              descendantGroupsCount
+            }
+            project {
+              id
+              name
+              fullName: nameWithNamespace
               fullPath
               webUrl
               avatarUrl

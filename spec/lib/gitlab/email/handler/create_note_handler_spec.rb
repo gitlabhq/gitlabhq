@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
   include_context 'email shared context'
 
   let_it_be_with_reload(:user) { create(:user, email: 'jake@adventuretime.ooo') }
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let_it_be(:support_bot) { create(:support_bot) }
 
   let(:noteable)  { note.noteable }
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
     end
 
     context 'when the issue is not a Service Desk issue' do
-      let(:original_recipient) { create(:user, email: 'john@somethingelse.com') }
+      let_it_be(:original_recipient) { create(:user, email: 'john@somethingelse.com') }
 
       context 'with only one email address' do
         it 'raises a UserNotFoundError' do
@@ -96,8 +96,8 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
   end
 
   context 'when issue is confidential' do
-    let(:issue) { create(:issue, project: project) }
-    let(:note) { create(:note, noteable: issue, project: project) }
+    let_it_be_with_reload(:issue) { create(:issue, project: project) }
+    let_it_be(:note) { create(:note, noteable: issue, project: project) }
 
     before do
       issue.update_attribute(:confidential, true)
@@ -332,7 +332,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
           end
         end
 
-        let!(:settings) do
+        let_it_be(:settings) do
           create(:service_desk_setting, project: project, reopen_issue_on_external_participant_note: true)
         end
 

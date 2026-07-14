@@ -20,6 +20,7 @@ const i18n = {
 };
 
 export default {
+  name: 'ServiceTable',
   components: { GlButton, GlTable },
   props: {
     cloudRunUrl: {

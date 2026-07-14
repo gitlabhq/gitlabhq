@@ -191,8 +191,8 @@ constraints(Namespaces::GroupUrlConstraint.new) do
 
     resources :achievements, only: [:index, :new, :edit]
 
-    resources :work_items, only: [:index, :show], param: :iid
-    get 'work_items/new', to: 'work_items#show', as: :work_item_new, format: false
+    resources :work_items, only: [:index, :show], param: :iid, constraints: { iid: /\d+/ }
+    get 'work_items/new', to: 'work_items#show', as: :work_item_new, format: false, defaults: { iid: 'new' }
 
     resource :import_history, only: [:show]
 

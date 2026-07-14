@@ -11,10 +11,10 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Mean, :click_house, fe
 
       metrics do
         mean :session_id, :float
-        mean :duration, :float, -> {
+        mean :duration, :float, ->(_params) {
           Arel.sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))")
         }
-        mean :user_id, :float, nil, if: -> { Arel.sql('session_id < 3') }
+        mean :user_id, :float, nil, if: ->(_params) { Arel.sql('session_id < 3') }
       end
     end
   end

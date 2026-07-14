@@ -25,8 +25,54 @@
         "type": "string"
       }
     },
+    "id_tokens": {
+      "description": "CI builds metadata ID tokens",
+      "type": "object",
+      "maxProperties": 20,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+          "type": "object",
+          "required": [
+            "aud"
+          ],
+          "properties": {
+            "aud": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
     "yaml_definition": {
       "type": "string"
+    },
+    "report_artifacts": {
+      "type": "object",
+      "maxProperties": 20,
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 20,
+        "items": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      }
     }
   }
 }

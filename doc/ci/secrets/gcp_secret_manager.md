@@ -81,7 +81,7 @@ After setting up WIF, you must grant the WIF principal access to the secrets in 
 You must [add these CI/CD variables](../variables/_index.md#for-a-project) to provide details about
 your GCP Secret Manager:
 
-- `GCP_PROJECT_NUMBER`: The GCP [Project Number](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
+- `GCP_PROJECT_NUMBER`: The GCP [Project Number](https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects).
 - `GCP_WORKLOAD_IDENTITY_FEDERATION_POOL_ID`: The WIF Pool ID, for example `gitlab-pool`.
 - `GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER_ID`: The WIF Provider ID, for example `gitlab-provider`.
 

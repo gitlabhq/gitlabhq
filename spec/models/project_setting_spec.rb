@@ -11,10 +11,10 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
   end
 
   describe 'scopes' do
-    let_it_be(:project_1, freeze: false) { create(:project) }
-    let_it_be(:project_2, freeze: false) { create(:project) }
-    let_it_be(:project_setting_1, freeze: false) { create(:project_setting, project: project_1) }
-    let_it_be(:project_setting_2, freeze: false) { create(:project_setting, project: project_2) }
+    let_it_be(:project_1) { create(:project) }
+    let_it_be(:project_2) { create(:project) }
+    let_it_be(:project_setting_1) { create(:project_setting, project: project_1) }
+    let_it_be(:project_setting_2) { create(:project_setting, project: project_2) }
 
     it 'returns project setting for the given projects' do
       expect(described_class.for_projects(project_1)).to contain_exactly(project_setting_1)
@@ -128,7 +128,7 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
 
         create(:project, path: "random-unique-domain.example.com")
 
-        expect(project_setting.update(pages_unique_domain: "random-unique-domain")).to eq(false)
+        expect(project_setting.update(pages_unique_domain: "random-unique-domain")).to be(false)
         expect(project_setting.errors.full_messages_for(:pages_unique_domain))
           .to match(["Pages unique domain already in use"])
       end
@@ -216,8 +216,8 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
 
   describe '#emails_enabled?' do
     context "when a project does not have a parent group" do
-      let_it_be(:project_settings, freeze: false) { create(:project_setting, emails_enabled: true) }
-      let_it_be(:project, freeze: false) { create(:project, project_setting: project_settings) }
+      let_it_be_with_reload(:project_settings) { create(:project_setting, emails_enabled: true) }
+      let_it_be_with_reload(:project) { create(:project, project_setting: project_settings) }
 
       it "returns true" do
         expect(project.emails_enabled?).to be_truthy
@@ -267,12 +267,12 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
   end
 
   describe '#runner_registration_enabled' do
-    let_it_be(:settings, freeze: false) { create(:project_setting) }
-    let_it_be(:group, freeze: false) { create(:group) }
-    let_it_be(:project, freeze: false) { create(:project, project_setting: settings, group: group) }
+    let_it_be_with_reload(:settings) { create(:project_setting) }
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project, project_setting: settings, group: group) }
 
     it 'returns true' do
-      expect(project.runner_registration_enabled).to eq true
+      expect(project.runner_registration_enabled).to be true
     end
 
     context 'when project has runner registration disabled' do
@@ -281,7 +281,7 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
       end
 
       it 'returns false' do
-        expect(project.runner_registration_enabled).to eq false
+        expect(project.runner_registration_enabled).to be false
       end
     end
 
@@ -291,7 +291,7 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
       end
 
       it 'returns false' do
-        expect(project.runner_registration_enabled).to eq false
+        expect(project.runner_registration_enabled).to be false
       end
     end
   end
@@ -302,7 +302,7 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
   end
 
   describe '#reviewer_auto_assignment_available?', feature_category: :code_review_workflow do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     it 'returns false' do
       expect(project.project_setting.reviewer_auto_assignment_available?).to be(false)
@@ -310,7 +310,7 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
   end
 
   describe '#reviewer_auto_assignment_enabled?', feature_category: :code_review_workflow do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
     let(:project_setting) { project.project_setting }
 
     it 'returns false regardless of strategy' do

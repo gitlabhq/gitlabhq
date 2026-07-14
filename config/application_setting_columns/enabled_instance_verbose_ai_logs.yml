@@ -1,0 +1,12 @@
+---
+api_type:
+attr: enabled_instance_verbose_ai_logs
+clusterwide: false
+column: enabled_instance_verbose_ai_logs
+db_type: boolean
+default: 'false'
+description: Whether verbose AI logs are enabled for this instance (cell). Moved from the ai_settings table because it is per-cell operational configuration.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

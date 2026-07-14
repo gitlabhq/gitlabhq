@@ -1,0 +1,8 @@
+---
+name: root_group_organization_backfill
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239141
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/603888
+milestone: '19.2'
+type: ops
+group: group::organizations
+default_enabled: false

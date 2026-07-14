@@ -35,6 +35,7 @@ module API
           :remove_labels,
           :milestone_id,
           :milestone,
+          :severity,
           :state_event,
           :title,
           :issue_type

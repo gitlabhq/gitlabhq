@@ -87,6 +87,9 @@ describe('Merge request dashboard merge request component', () => {
                 username: 'jsmith',
                 webUrl: 'https://gitlab.com/root',
                 webPath: '/root',
+                mergeRequestInteraction: {
+                  updatedAt: '2024-04-22T10:13:09Z',
+                },
               },
               {
                 id: 'gid://gitlab/User/2',
@@ -124,6 +127,10 @@ describe('Merge request dashboard merge request component', () => {
       stubs,
     });
   }
+
+  afterEach(() => {
+    window.gon = {};
+  });
 
   it('renders template', () => {
     createComponent();
@@ -207,5 +214,26 @@ describe('Merge request dashboard merge request component', () => {
 
       expect(findMilestoneLink().exists()).toBe(false);
     });
+  });
+
+  it('renders reviewer updated at when reviewer is current user and has mergeRequestInteraction.updatedAt', () => {
+    window.gon = { current_user_id: 1 };
+
+    createComponent({});
+
+    const reviewerUpdatedAt = wrapper.findByTestId('reviewer-updated-at');
+
+    expect(reviewerUpdatedAt.exists()).toBe(true);
+    expect(reviewerUpdatedAt.props('time')).toBe('2024-04-22T10:13:09Z');
+  });
+
+  it('does not renders reviewer updated at when reviewer is not current user', () => {
+    window.gon = { current_user_id: 2 };
+
+    createComponent({});
+
+    const reviewerUpdatedAt = wrapper.findByTestId('reviewer-updated-at');
+
+    expect(reviewerUpdatedAt.exists()).toBe(false);
   });
 });

@@ -17,6 +17,15 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+
+      it 'returns a WWW-Authenticate challenge pointing at the resource metadata', :aggregate_failures do
+        post api('/mcp')
+
+        metadata_url = "#{Gitlab.config.gitlab.url}/.well-known/oauth-protected-resource/api/v4/mcp"
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(response.headers['WWW-Authenticate'])
+          .to eq(%(Bearer realm="GitLab", resource_metadata="#{metadata_url}"))
+      end
     end
 
     context 'when authenticated' do
@@ -150,45 +159,53 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
       end
     end
 
-    context 'with mcp_server_availability_setting feature flag enabled' do
-      context 'when mcp_server_enabled is true' do
-        before do
-          stub_application_setting(mcp_server_enabled: true)
-        end
-
-        it 'returns ok' do
-          post api('/mcp', user, oauth_access_token: access_token),
-            params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-06-18' } }
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
-      context 'when mcp_server_enabled is false' do
-        before do
-          stub_application_setting(mcp_server_enabled: false)
-        end
-
-        it 'returns not_found' do
-          post api('/mcp', user, oauth_access_token: access_token),
-            params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-06-18' } }
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-    end
-
-    context 'with mcp_server_availability_setting feature flag disabled' do
+    context 'when mcp_server_enabled is true' do
       before do
-        stub_feature_flags(mcp_server_availability_setting: false)
-        stub_application_setting(mcp_server_enabled: false)
+        stub_application_setting(mcp_server_enabled: true)
       end
 
-      it 'returns ok regardless of mcp_server_enabled' do
+      it 'returns ok' do
         post api('/mcp', user, oauth_access_token: access_token),
           params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-06-18' } }
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when mcp_server_enabled is false' do
+      before do
+        stub_application_setting(mcp_server_enabled: false)
+      end
+
+      it 'returns not_found' do
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-06-18' } }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'logs that the MCP server is not available' do
+        expect_next_instance_of(Gitlab::Mcp::Logger) do |logger|
+          expect(logger).to receive(:info).with(
+            message: 'MCP server not available',
+            event_name: 'permission_denied',
+            ai_component: 'mcp_server',
+            denial_reason: :instance_setting_disabled,
+            Labkit::Fields::GL_USER_ID => user.id
+          )
+        end
+
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-11-25' } }
+      end
+    end
+
+    context 'with granular token authorization' do
+      it_behaves_like 'authorizing granular token permissions', :execute_mcp_tool, legacy_token_scopes: [:mcp] do
+        let(:boundary_object) { :user }
+        let(:request) do
+          post api('/mcp', personal_access_token: pat), params: { jsonrpc: '2.0', method: 'tools/list', id: '1' }
+        end
       end
     end
   end
@@ -200,6 +217,15 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+
+      it 'returns a WWW-Authenticate challenge pointing at the resource metadata', :aggregate_failures do
+        get api('/mcp')
+
+        metadata_url = "#{Gitlab.config.gitlab.url}/.well-known/oauth-protected-resource/api/v4/mcp"
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(response.headers['WWW-Authenticate'])
+          .to eq(%(Bearer realm="GitLab", resource_metadata="#{metadata_url}"))
+      end
     end
 
     context 'when authenticated' do
@@ -207,6 +233,14 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         get api('/mcp', user, oauth_access_token: access_token)
 
         expect(response).to have_gitlab_http_status(:method_not_allowed)
+      end
+    end
+
+    context 'with granular token authorization' do
+      it_behaves_like 'authorizing granular token permissions', :execute_mcp_tool,
+        expected_success_status: :method_not_allowed, legacy_token_scopes: [:mcp] do
+        let(:boundary_object) { :user }
+        let(:request) { get api('/mcp', personal_access_token: pat) }
       end
     end
   end

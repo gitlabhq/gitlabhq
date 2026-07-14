@@ -9,9 +9,7 @@ module Import
 
       def show; end
 
-      def history
-        render_404
-      end
+      def history; end
 
       private
 

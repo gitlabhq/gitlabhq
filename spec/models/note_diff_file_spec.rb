@@ -32,7 +32,7 @@ RSpec.describe NoteDiffFile, feature_category: :code_review_workflow do
   end
 
   describe 'ensure sharding key is set' do
-    let_it_be(:diff_note, freeze: false) { create(:diff_note_on_merge_request) }
+    let_it_be_with_reload(:diff_note) { create(:diff_note_on_merge_request) }
 
     context 'when the note is keyed solely by project_id' do
       before do

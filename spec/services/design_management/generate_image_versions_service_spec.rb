@@ -20,7 +20,7 @@ RSpec.describe DesignManagement::GenerateImageVersionsService, feature_category:
 
       described_class.new(version).execute
 
-      expect(action.reload.image_v432x230.file).to eq(nil)
+      expect(action.reload.image_v432x230.file).to be_nil
     end
 
     it 'skips generating image versions if the design file size is too large' do
@@ -28,7 +28,7 @@ RSpec.describe DesignManagement::GenerateImageVersionsService, feature_category:
 
       described_class.new(version).execute
 
-      expect(action.reload.image_v432x230.file).to eq(nil)
+      expect(action.reload.image_v432x230.file).to be_nil
     end
 
     it 'returns the status' do

@@ -9,7 +9,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   let_it_be_with_refind(:user2) { create(:user, name: 'John') }
 
   let_it_be_with_refind(:group) { create(:group) }
-  let_it_be_with_refind(:project) { create(:project, :public, :repository, group: group) }
+  let_it_be_with_refind(:project) { create(:project, :public, group: group) }
   let_it_be_with_refind(:label) { create(:label, project: project, title: "testing-label") }
   let_it_be_with_refind(:label2) { create(:label, project: project, title: "another-label") }
   let_it_be_with_refind(:work_item) { create(:work_item, project: project, labels: [label]) }
@@ -72,20 +72,11 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
       it_behaves_like 'work items linked items'
     end
 
-    context 'with quarantine', quarantine: {
-      issue: [
-        'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16792',
-        'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16793'
-      ]
-    } do
-      it_behaves_like 'work items comments'
-    end
+    it_behaves_like 'work items comments'
 
     it_behaves_like 'work items toggle status button'
 
-    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16794' do
-      it_behaves_like 'work items todos'
-    end
+    it_behaves_like 'work items todos'
 
     it_behaves_like 'work items lock discussion', 'issue'
     it_behaves_like 'work items confidentiality'
@@ -94,18 +85,9 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it_behaves_like 'work items assignees'
     it_behaves_like 'work items labels', 'project'
 
-    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16795' do
-      it_behaves_like 'work items milestone'
-    end
+    it_behaves_like 'work items milestone'
 
-    context 'with quarantine', quarantine: {
-      issue: [
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/556967',
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/554934'
-      ]
-    } do
-      it_behaves_like 'work items time tracking'
-    end
+    it_behaves_like 'work items time tracking'
 
     it_behaves_like 'work items due dates'
     it_behaves_like 'work items crm contacts'
@@ -210,6 +192,8 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   end
 
   context 'for development widget' do
+    let_it_be_with_refind(:project) { create(:project, :public, :repository, group: group) }
+    let_it_be_with_refind(:work_item) { create(:work_item, project: project) }
     let_it_be_with_refind(:merge_request) do
       create(
         :merge_request,

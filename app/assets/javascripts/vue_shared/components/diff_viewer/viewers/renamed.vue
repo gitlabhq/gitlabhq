@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { mapActions } from 'pinia';
@@ -18,6 +17,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { transition } from '../utils';
 
 export default {
+  name: 'ViewersRenamed',
   STATE_LOADING,
   STATE_ERRORED,
   uiText: {

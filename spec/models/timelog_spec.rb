@@ -269,6 +269,28 @@ RSpec.describe Timelog, feature_category: :team_planning do
         expect(user.timelogs.sort_by_field(:updated_at_desc)).to eq([timelog_c, timelog_a, timelog_b, timelog_d])
       end
     end
+
+    describe '.total_time_spent_by_issue_id' do
+      let_it_be(:issue_a, freeze: false) { create(:issue) }
+      let_it_be(:issue_b, freeze: false) { create(:issue) }
+      let_it_be(:issue_without_timelogs) { create(:issue) }
+
+      before_all do
+        create(:issue_timelog, issue: issue_a, time_spent: 3600)
+        create(:issue_timelog, issue: issue_a, time_spent: 1800)
+        create(:issue_timelog, issue: issue_b, time_spent: 600)
+      end
+
+      it 'returns the summed time spent per issue id in a single query' do
+        result = described_class.total_time_spent_by_issue_id([issue_a.id, issue_b.id, issue_without_timelogs.id])
+
+        expect(result).to eq(issue_a.id => 5400, issue_b.id => 600)
+      end
+
+      it 'returns an empty hash when given no issue ids' do
+        expect(described_class.total_time_spent_by_issue_id([])).to eq({})
+      end
+    end
   end
 
   describe 'ensure_namespace_id' do

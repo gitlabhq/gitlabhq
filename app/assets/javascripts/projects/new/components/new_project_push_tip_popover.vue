@@ -5,6 +5,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
+  name: 'NewProjectPushTipPopover',
   components: {
     GlPopover,
     GlFormInputGroup,

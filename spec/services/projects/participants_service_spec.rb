@@ -203,15 +203,9 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
       end
 
       context 'with subgroups' do
-        let(:group_1) { create(:group, path: 'bb') }
-        let(:group_2) { create(:group, path: 'zz') }
-        let(:subgroup) { create(:group, path: 'aa', parent: group_1) }
-
-        before do
-          group_1.add_owner(user)
-          group_2.add_owner(user)
-          subgroup.add_owner(user)
-        end
+        let_it_be(:group_1) { create(:group, path: 'bb', owners: user) }
+        let_it_be(:group_2) { create(:group, path: 'zz', owners: user) }
+        let_it_be(:subgroup) { create(:group, path: 'aa', parent: group_1, owners: user) }
 
         it 'returns results ordered by full path' do
           expect(group_items.pluck(:username)).to eq([
@@ -278,7 +272,7 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
 
       let(:service) { described_class.new(public_project, create(:user)) }
 
-      before do
+      before_all do
         public_group.add_owner(public_group_owner)
       end
 
@@ -291,8 +285,6 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
       let_it_be(:public_group) { create(:group, :public) }
       let_it_be(:private_group) { create(:group, :private, :nested) }
       let_it_be_with_reload(:public_project) { create(:project, :public, namespace: public_group) }
-
-      let_it_be(:project_issue) { create(:issue, project: public_project) }
 
       let_it_be(:public_group_owner) { create(:user) }
       let_it_be(:private_group_member) { create(:user) }
@@ -315,7 +307,8 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
           create(:project_group_link, group: private_group, project: public_project)
         end
 
-        let(:service) { described_class.new(public_project, create(:user)) }
+        let_it_be(:current_user) { create(:user) }
+        let(:service) { described_class.new(public_project, current_user) }
 
         it 'does not return the private group' do
           expect(usernames).not_to include(private_group.name)

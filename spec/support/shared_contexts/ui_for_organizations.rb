@@ -2,10 +2,7 @@
 
 RSpec.shared_context 'when ui_for_organizations_enabled? is false' do
   before do
-    stub_feature_flags(
-      ui_for_organizations: false,
-      opt_out_organizations: true
-    )
+    stub_feature_flags(ui_for_organizations: false)
   end
 end
 

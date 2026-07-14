@@ -62,7 +62,7 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
       it 'marks bulk import as finished' do
         subject.execute
 
-        expect(bulk_import.reload.finished?).to eq(true)
+        expect(bulk_import.reload.finished?).to be(true)
       end
 
       context 'when placeholder references have not finished being loaded to the database' do
@@ -76,7 +76,7 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
         it 'marks bulk import as finished' do
           subject.execute
 
-          expect(bulk_import.reload.finished?).to eq(true)
+          expect(bulk_import.reload.finished?).to be(true)
         end
 
         context 'when importer_user_mapping_enabled is enabled' do
@@ -98,7 +98,7 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
 
             subject.execute
 
-            expect(bulk_import.reload.started?).to eq(true)
+            expect(bulk_import.reload.started?).to be(true)
           end
 
           context 'when the import is offline' do
@@ -127,7 +127,7 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
 
         subject.execute
 
-        expect(bulk_import.reload.failed?).to eq(true)
+        expect(bulk_import.reload.failed?).to be(true)
       end
     end
 
@@ -191,7 +191,7 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
 
         subject.execute
 
-        expect(bulk_import.reload.started?).to eq(true)
+        expect(bulk_import.reload.started?).to be(true)
       end
 
       it 'creates all the required pipeline trackers' do

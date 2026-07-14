@@ -90,10 +90,6 @@ class JiraImportState < ApplicationRecord
     scheduled? || started?
   end
 
-  def non_initial?
-    !initial?
-  end
-
   def store_issue_counts
     import_label_id = Gitlab::JiraImport.get_import_label_id(project.id)
 

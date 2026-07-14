@@ -427,8 +427,8 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe '#subgroup_creation_data' do
     let_it_be(:name) { 'parent group' }
-    let_it_be(:user, freeze: false) { build(:user) }
-    let_it_be(:group, freeze: false) { build(:group, name: name) }
+    let_it_be(:user) { build(:user) }
+    let_it_be(:group) { build(:group, name: name) }
     let_it_be(:subgroup) { build(:group, parent: group) }
 
     before do

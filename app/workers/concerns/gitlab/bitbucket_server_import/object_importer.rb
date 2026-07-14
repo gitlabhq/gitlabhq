@@ -38,7 +38,11 @@ module Gitlab
         import_state = project.import_status
 
         if FAILED_IMPORT_STATES.include?(import_state)
-          info(project.id, message: "project import #{import_state}")
+          info(
+            project.id,
+            message: "project import #{import_state}",
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id
+          )
           return
         end
 
@@ -52,11 +56,11 @@ module Gitlab
       # project - An instance of `Project` to import the data into.
       # hash - A Hash containing the details of the object to import.
       def import(project, hash)
-        info(project.id, message: 'importer started')
+        info(project.id, message: 'importer started', Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id)
 
         importer_class.new(project, hash).execute
 
-        info(project.id, message: 'importer finished')
+        info(project.id, message: 'importer finished', Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id)
       rescue ActiveRecord::RecordInvalid => e
         # We do not raise exception to prevent job retry
         track_exception(project, e)
@@ -87,7 +91,7 @@ module Gitlab
         extra.merge(
           project_id: project_id,
           importer: importer_class.name
-        )
+        ).compact
       end
 
       def track_exception(project, exception, fail_import: false)

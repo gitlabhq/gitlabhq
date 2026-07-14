@@ -16,14 +16,10 @@ RSpec.describe Resolvers::Clusters::AgentsResolver, feature_category: :deploymen
   describe '#resolve' do
     let_it_be(:project) { create(:project) }
     let_it_be(:maintainer) { create(:user, developer_of: project) }
-    let_it_be(:reporter) { create(:user) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
     let_it_be(:agents) { create_list(:cluster_agent, 2, project: project) }
 
     let(:ctx) { { current_user: current_user } }
-
-    before do
-      project.add_reporter(reporter)
-    end
 
     subject { resolve_agents }
 

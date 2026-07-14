@@ -439,8 +439,8 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
               request
 
               expect(response).to include_limited_pagination_headers
-              expect(response.headers['Link']).to match(/page=1&per_page=5/)
-              expect(response.headers['Link']).to match(/page=2&per_page=5/)
+              expect(response.headers['Link']).to match(/page=1&.*per_page=5/)
+              expect(response.headers['Link']).to match(/page=2&.*per_page=5/)
             end
 
             it 'does not include the last page link' do
@@ -662,6 +662,276 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response.first["id"]).to eq(commits.first.id)
         end
+      end
+    end
+
+    context 'with keyset pagination' do
+      include PaginationHelpers
+
+      let(:current_user) { user }
+
+      shared_examples 'rejects unsupported keyset parameter' do |params|
+        it 'returns a 400 with a descriptive message', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset' }.merge(params)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to include(::Repositories::CommitsFinder::KEYSET_PARAM_ERROR_SUFFIX)
+        end
+      end
+
+      it 'returns commits and a next-page Link header for a full page', :aggregate_failures do
+        get api(route, current_user), params: { pagination: 'keyset', per_page: 2 }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an(Array)
+        expect(json_response.size).to eq(2)
+        expect(response.headers['Link']).to match(/rel="next"/)
+        expect(pagination_params_from_next_url(response)).to include('page_token')
+      end
+
+      it 'paginates using the cursor from the next page', :aggregate_failures do
+        get api(route, current_user), params: { pagination: 'keyset', per_page: 2 }
+        first_page = json_response
+
+        cursor = pagination_params_from_next_url(response)['page_token']
+
+        get api(route, current_user), params: { pagination: 'keyset', per_page: 2, page_token: cursor }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).not_to eq(first_page)
+      end
+
+      it 'does not emit a next-page Link header on the last page', :aggregate_failures do
+        get api(route, current_user), params: { pagination: 'keyset', ref_name: '1039376', per_page: 100 }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['Link']).to be_nil
+      end
+
+      context 'with all=true' do
+        it 'succeeds and honors keyset pagination (regression for #586997)', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset', all: true, per_page: 2 }
+          first_page = json_response.map { |c| c['id'] }
+
+          cursor = pagination_params_from_next_url(response)['page_token']
+
+          get api(route, current_user), params: { pagination: 'keyset', all: true, per_page: 2, page_token: cursor }
+          second_page = json_response.map { |c| c['id'] }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(second_page).not_to eq(first_page)
+        end
+      end
+
+      context 'with an unsupported parameter' do
+        it_behaves_like 'rejects unsupported keyset parameter', { first_parent: true }
+      end
+
+      context 'with multiple unsupported parameters' do
+        it 'returns a single 400 mentioning all of them', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset', first_parent: true, follow: true }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to include("'first_parent'")
+          expect(json_response['message']).to include("'follow'")
+          expect(json_response['message']).to include(::Repositories::CommitsFinder::KEYSET_PARAM_ERROR_SUFFIX)
+          expect(json_response['message']).not_to eq('ref_name is invalid')
+        end
+      end
+
+      context 'with a path filter' do
+        let(:path) { 'files/ruby/popen.rb' }
+
+        it 'returns only commits that touch the path', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset', path: path, per_page: 100 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+          expect(json_response).to be_present
+
+          returned_ids = json_response.map { |c| c['id'] }
+          expected_ids = project.repository.commits(project.default_branch, path: path, limit: 100).map(&:id)
+          expect(returned_ids).to match_array(expected_ids)
+        end
+
+        it 'strips a leading slash from the path', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset', path: "/#{path}", per_page: 100 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.map { |c| c['id'] })
+            .to match_array(project.repository.commits(project.default_branch, path: path, limit: 100).map(&:id))
+        end
+
+        context 'with all=true' do
+          it 'succeeds and filters by path', :aggregate_failures do
+            get api(route, current_user), params: { pagination: 'keyset', path: path, all: true, per_page: 100 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_present
+
+            returned_ids = json_response.map { |c| c['id'] }
+            expected_ids = project.repository.commits(nil, all: true, path: path, limit: 100).map(&:id)
+            expect(returned_ids).to match_array(expected_ids)
+          end
+        end
+
+        it 'paginates across pages without dropping or duplicating commits', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset', path: path, per_page: 2 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          first_page = json_response.map { |c| c['id'] }
+
+          cursor = pagination_params_from_next_url(response)['page_token']
+          expect(cursor).to be_present
+
+          get api(route, current_user), params: { pagination: 'keyset', path: path, per_page: 2, page_token: cursor }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          second_page = json_response.map { |c| c['id'] }
+
+          expect(second_page).not_to eq(first_page)
+          expect(first_page & second_page).to be_empty
+        end
+
+        context 'with a glob metacharacter in the path' do
+          let_it_be(:literal_path) { 'files/ruby/star*.rb' }
+          let_it_be(:glob_branch) do
+            project.repository.create_file(
+              user, literal_path, 'puts "star"',
+              message: 'Add file with a literal glob metacharacter',
+              branch_name: 'glob-metacharacter-test',
+              start_branch_name: project.default_branch
+            )
+
+            'glob-metacharacter-test'
+          end
+
+          it 'matches offset pagination for the literal path', :aggregate_failures do
+            get api(route, current_user),
+              params: { pagination: 'keyset', ref_name: glob_branch, path: literal_path, per_page: 100 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            keyset_ids = json_response.map { |c| c['id'] }
+            offset_ids = project.repository.commits(glob_branch, path: literal_path, limit: 100).map(&:id)
+
+            expect(keyset_ids).to be_present
+            expect(offset_ids).to be_present
+            expect(keyset_ids).to match_array(offset_ids)
+          end
+
+          it 'treats the path literally rather than expanding the glob', :aggregate_failures do
+            get api(route, current_user),
+              params: { pagination: 'keyset', ref_name: glob_branch, path: 'files/ruby/*.rb', per_page: 100 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            keyset_ids = json_response.map { |c| c['id'] }
+            offset_ids = project.repository.commits(glob_branch, path: 'files/ruby/*.rb', limit: 100).map(&:id)
+
+            expect(keyset_ids).to be_empty
+            expect(offset_ids).to be_empty
+            expect(keyset_ids).to match_array(offset_ids)
+          end
+        end
+
+        context 'with a path that never existed' do
+          it 'returns an empty array with a 200', :aggregate_failures do
+            get api(route, current_user), params: { pagination: 'keyset', path: 'does/not/exist', per_page: 100 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to eq([])
+          end
+        end
+      end
+
+      context 'when the finder raises a generic ArgumentError' do
+        it 'surfaces the ref_name is invalid fallback, not the keyset message', :aggregate_failures do
+          allow_next_instance_of(::Repositories::CommitsFinder) do |finder|
+            allow(finder).to receive(:execute).and_raise(ArgumentError, 'some unrelated gitaly error')
+          end
+
+          get api(route, current_user), params: { pagination: 'keyset', per_page: 2 }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('ref_name is invalid')
+        end
+      end
+
+      context 'with an invalid pagination value' do
+        it 'is rejected by Grape with a 400', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'banana' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to include('pagination')
+        end
+      end
+
+      context 'with a malformed page_token' do
+        # Unlike the tags endpoint (which validates the ref and returns 422),
+        # the commits keyset path passes page_token straight to Gitaly's
+        # ListCommits RPC without pre-validation. Gitaly treats an unknown
+        # cursor as a starting point with no matching commits, so the endpoint
+        # returns 200 with an empty page and no next-page Link header.
+        it 'returns 200 with an empty page and no next-page Link header', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset', per_page: 2, page_token: 'not-a-real-cursor' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq([])
+          expect(response.headers['Link']).to be_nil
+        end
+      end
+
+      context 'with an empty repository' do
+        let_it_be(:empty_project) { create(:project, :empty_repo, creator: user) }
+
+        let(:route) { "/projects/#{empty_project.id}/repository/commits" }
+
+        before do
+          empty_project.add_maintainer(user)
+          stub_feature_flags(commits_keyset_pagination: empty_project)
+        end
+
+        it 'returns an empty array without erroring', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset', per_page: 2 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq([])
+        end
+      end
+    end
+
+    context 'when commits_keyset_pagination is disabled' do
+      let(:current_user) { user }
+
+      before do
+        stub_feature_flags(commits_keyset_pagination: false)
+      end
+
+      it 'falls back to legacy offset pagination instead of erroring', :aggregate_failures do
+        get api(route, current_user), params: { pagination: 'keyset', per_page: 2 }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an(Array)
+        expect(json_response.size).to eq(2)
+        # Legacy offset pagination uses page-number headers, never a keyset page_token cursor.
+        expect(response.headers['Link'].to_s).not_to include('page_token')
+        expect(response.headers['X-Page']).to eq('1')
+      end
+
+      it 'still honors ?page=N under the legacy path (different commits per page)', :aggregate_failures do
+        get api(route, current_user), params: { pagination: 'keyset', per_page: 2, page: 1 }
+        first_page = json_response.map { |c| c['id'] }
+
+        get api(route, current_user), params: { pagination: 'keyset', per_page: 2, page: 2 }
+        second_page = json_response.map { |c| c['id'] }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(second_page).not_to eq(first_page)
+      end
+
+      it 'does not reject params that are unsupported under keyset pagination' do
+        get api(route, current_user), params: { pagination: 'keyset', first_parent: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
@@ -3769,7 +4039,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
     end
 
     context 'with ssh signed commit' do
-      let_it_be(:project, freeze: false) { create(:project, :repository, :public, :in_group) }
+      let_it_be_with_reload(:project) { create(:project, :repository, :public, :in_group) }
 
       let(:commit_id) { '7b5160f9bb23a3d58a0accdbe89da13b96b1ece9' }
       let!(:commit) { project.commit(commit_id) }

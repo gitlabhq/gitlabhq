@@ -131,7 +131,7 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, :aggregate_failures, feature_categ
 
   context 'custom username field provided' do
     let(:provider_config) do
-      GitlabSettings::Options.build(
+      Gitlab::Configs.build_options(
         {
           name: provider,
           args: { 'gitlab_username_claim' => 'first_name' }

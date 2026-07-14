@@ -49,6 +49,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input', 'validation'],
   computed: {
     textAreaLengthErrorMessage() {
       return this.isInputValid(this.value) ? '' : TEXT_AREA_INVALID_FEEDBACK;

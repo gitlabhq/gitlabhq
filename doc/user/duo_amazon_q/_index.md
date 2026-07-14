@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Duo with Amazon Q
 ---
@@ -15,7 +15,7 @@ title: GitLab Duo with Amazon Q
 
 {{< history >}}
 
-- Introduced as [beta](../../policy/development_stages_support.md#beta) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `amazon_q_integration`. Disabled by default.
+- Introduced as [beta](../../policy/development_stages_support.md#beta) in GitLab 17.7 [with a feature flag](../../administration/feature_flags/_index.md) named `amazon_q_integration`. Disabled by default.
 - Feature flag `amazon_q_integration` removed in GitLab 17.8.
 - Generally available with additional GitLab Duo feature support in GitLab 17.11.
 
@@ -146,10 +146,54 @@ Amazon Q creates a merge request with the suggested tests.
 
 Amazon Q updates the merge request with the suggested tests.
 
+## Authentication and authorization
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/506641) in GitLab 17.9.
+
+{{< /history >}}
+
+GitLab Duo with Amazon Q uses a composite identity to authenticate requests.
+
+> [!note]
+> Support for a composite identity in other areas of the product
+> is proposed in [issue 511373](https://gitlab.com/gitlab-org/gitlab/-/issues/511373).
+
+The token that authenticates requests is a composite of two identities:
+
+- The primary author, which is the Amazon Q [service account](../profile/service_accounts.md).
+  This service account is instance-wide and has the Developer role
+  on the project where the Amazon Q quick action was used. The service account is the owner of the token.
+- The secondary author, which is the human user who submitted the quick action.
+  This user's `id` is included in the scopes of the token.
+
+This composite identity ensures that any activities authored by Amazon Q are
+correctly attributed to the Amazon Q service account.
+At the same time, the composite identity ensures that there is no
+[privilege escalation](https://en.wikipedia.org/wiki/Privilege_escalation) for the human user.
+
+This [dynamic scope](https://github.com/doorkeeper-gem/doorkeeper/pull/1739)
+is checked during the authorization of the API request.
+When authorization is requested, GitLab validates that both the service account
+and the user who originated the quick action have sufficient permissions.
+
+```mermaid
+flowchart TD
+    accTitle: Authentication flow for GitLab Duo
+    accDescr: API requests are checked against user permissions first, then service account permissions, with access denied if either check fails.
+
+    A[API Request] --> B{Human user has access?}
+    B -->|No| D[Access denied]
+    B -->|Yes| C{Service account has access?}
+    C -->|No| D
+    C -->|Yes| E[API request succeeds]
+```
+
 ## Related topics
 
 - [Set up GitLab Duo with Amazon Q](setup.md)
-- [GitLab Duo authentication and authorization](../gitlab_duo/security.md)
+- [Authentication and authorization](#authentication-and-authorization)
 - <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - From idea to merge request](https://youtu.be/jxxzNst3jpo?si=QHO8JnPgMoFIllbL) <!-- Video published on 2025-04-17 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - Upgrade Java](https://www.youtube.com/watch?v=qGyzG9wTsEo) <!-- Video published on 2025-10-16 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - Code review optimization](https://youtu.be/4gFIgyFc02Q?si=S-jO2M2jcXnukuN_) <!-- Video published on 2025-05-20 -->

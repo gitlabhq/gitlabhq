@@ -65,7 +65,6 @@ module Resolvers
       def resolve_groups(parent_path: nil, **args)
         sanitized_args = sanitize_sort_args(args)
         sanitized_args[:parent] = find_authorized_parent!(parent_path) if parent_path
-        sanitized_args[:organization] = Current.organization.id
 
         GroupsFinder
           .new(context[:current_user], sanitized_args)

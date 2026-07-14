@@ -1,0 +1,19 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+fragment AiAgentPlatformFlowsUsageByUserItem on AiMetrics {
+  agentPlatform {
+    userFlowCounts(first: $first, last: $last, after: $after, before: $before) {
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        flowType
+        sessionsCount
+        user {
+          ...User
+        }
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'profiles/preferences/show' do
+RSpec.describe 'profiles/preferences/show', feature_category: :user_profile do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create_default(:user) }

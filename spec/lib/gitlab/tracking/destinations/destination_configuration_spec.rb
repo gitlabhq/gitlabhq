@@ -49,6 +49,54 @@ RSpec.describe Gitlab::Tracking::Destinations::DestinationConfiguration, feature
     end
   end
 
+  describe '.billing_configuration' do
+    subject(:configuration) { described_class.billing_configuration }
+
+    before do
+      stub_application_setting(snowplow_enabled?: false)
+      stub_config_setting(host: host)
+    end
+
+    context 'on production instance' do
+      let(:host) { 'mysite.com' }
+
+      it 'returns configuration with production billing endpoint', :aggregate_failures do
+        expect(configuration.hostname).to eq('billing.prdsub.gitlab.net')
+        expect(configuration.protocol).to eq('https')
+        expect(configuration.uri.to_s).to eq(described_class::BILLING_COLLECT_ENDPOINT)
+        expect(configuration.app_id_suffix).to eq('_billing')
+      end
+
+      it 'is marked as a billing configuration' do
+        expect(configuration.billing?).to be(true)
+      end
+    end
+
+    context 'on staging instance' do
+      let(:host) { 'mysite.com' }
+
+      before do
+        allow(Gitlab).to receive(:staging?).and_return(true)
+      end
+
+      it 'returns configuration with staging billing endpoint' do
+        expect(configuration.hostname).to eq('billing.stgsub.gitlab.net')
+        expect(configuration.protocol).to eq('https')
+        expect(configuration.uri.to_s).to eq(described_class::BILLING_COLLECT_ENDPOINT_STG)
+      end
+    end
+
+    context 'on GitLab qa instance' do
+      let(:host) { 'gitlab-123456789.test' }
+
+      it 'returns configuration with staging billing endpoint' do
+        expect(configuration.hostname).to eq('billing.stgsub.gitlab.net')
+        expect(configuration.protocol).to eq('https')
+        expect(configuration.uri.to_s).to eq(described_class::BILLING_COLLECT_ENDPOINT_STG)
+      end
+    end
+  end
+
   describe '.snowplow_micro_configuration' do
     subject(:configuration) { described_class.snowplow_micro_configuration }
 
@@ -84,7 +132,7 @@ RSpec.describe Gitlab::Tracking::Destinations::DestinationConfiguration, feature
 
     context 'when snowplow_micro config is not set' do
       before do
-        allow(Gitlab.config).to receive(:snowplow_micro).and_raise(GitlabSettings::MissingSetting)
+        allow(Gitlab.config).to receive(:snowplow_micro).and_raise(Gitlab::Configs::MissingConfig)
       end
 
       it 'returns configuration with default localhost URI' do
@@ -103,6 +151,10 @@ RSpec.describe Gitlab::Tracking::Destinations::DestinationConfiguration, feature
 
     it 'sets the URI' do
       expect(configuration.uri).to eq(uri)
+    end
+
+    it 'defaults app_id_suffix to nil' do
+      expect(configuration.app_id_suffix).to be_nil
     end
   end
 

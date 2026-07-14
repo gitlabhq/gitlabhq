@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_category: :importers do
   let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:another_user, freeze: false) { create(:user) }
-  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:group, freeze: false) { create(:group, owners: user, maintainers: another_user) }
   let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
   let_it_be(:bulk_import, freeze: false) { create(:bulk_import, :with_configuration, user: user) }
   let_it_be(:entity, freeze: false) do
@@ -88,9 +88,6 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
 
   describe '#run', :clean_gitlab_redis_shared_state do
     before do
-      group.add_owner(user)
-      group.add_maintainer(another_user)
-
       ::BulkImports::UsersMapper.new(context: context).cache_source_user_id(42, another_user.id)
 
       allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|
@@ -255,6 +252,60 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
 
         expect(note.note_html).to match(attributes['notes'].first['note'])
         expect(note.note_html).not_to match(attributes['notes'].first['note_html'])
+      end
+
+      context 'when an image diff note has float position coordinates' do
+        let(:image_position) do
+          {
+            'base_sha' => 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f',
+            'start_sha' => '9eea46b5c72ead701c22f516474b95049c9d9462',
+            'head_sha' => 'a97f74ddaa848b707bea65441c903ae4bf5d844d',
+            'old_path' => 'files/images/any_image.png',
+            'new_path' => 'files/images/any_image.png',
+            'position_type' => 'image',
+            'x' => 23.7,
+            'y' => 1.5,
+            'width' => 640.25,
+            'height' => 480.75
+          }
+        end
+
+        let(:attributes) do
+          {
+            'notes' => [
+              {
+                'type' => 'DiffNote',
+                'noteable_type' => 'MergeRequest',
+                'note' => 'Image diff note',
+                'author_id' => 22,
+                'author' => { 'name' => 'User 22' },
+                'created_at' => '2016-06-14T15:02:56.632Z',
+                'updated_at' => '2016-06-14T15:02:47.770Z',
+                'position' => image_position.deep_dup,
+                'original_position' => image_position.deep_dup,
+                'discussion_id' => 'a' * 40
+              }
+            ]
+          }
+        end
+
+        it 'imports the diff note with integer position coordinates', :aggregate_failures do
+          expect { pipeline.run }.to change { DiffNote.count }.by(1)
+
+          expect(note).to be_a(DiffNote)
+          expect(note.position).to have_attributes(
+            x: 24,
+            y: 2,
+            width: 640,
+            height: 481
+          )
+          expect(note.original_position).to have_attributes(
+            x: 24,
+            y: 2,
+            width: 640,
+            height: 481
+          )
+        end
       end
     end
 

@@ -5,6 +5,11 @@ module Atlassian
     class Client
       ASSOCIATION_VALUES_LIMIT = 500
 
+      # Cap the request body attached to error logs so a project that
+      # persistently fails does not flood integrations_json.log with
+      # multi-megabyte payloads on every scheduled sync.
+      REQUEST_BODY_LOG_LIMIT = 10_000
+
       AssociationsTruncatedError = Class.new(StandardError)
 
       def self.generate_update_sequence_id
@@ -47,7 +52,7 @@ module Atlassian
       private
 
       def get(path, query_params)
-        uri = URI.join(@base_uri, path)
+        uri = build_uri(path)
         uri.query = URI.encode_www_form(query_params)
 
         Integrations::Clients::HTTP.get(uri, headers: headers(uri, 'GET'))
@@ -116,7 +121,8 @@ module Atlassian
           update_sequence_id: update_sequence_id
         )
 
-        post('/rest/devinfo/0.10/bulk', { repositories: [repo] })
+        r = post('/rest/devinfo/0.10/bulk', { repositories: [repo] })
+        handle_response(r, 'dev_info') { |data| dev_info_errors(data, r) }
       end
 
       def remove_branch_info(project:, remove_branch_info:, update_sequence_id: nil)
@@ -131,15 +137,22 @@ module Atlassian
       end
 
       def post(path, payload)
-        uri = URI.join(@base_uri, path)
+        uri = build_uri(path)
 
         Integrations::Clients::HTTP.post(uri, headers: headers(uri), body: metadata.merge(payload).to_json)
       end
 
       def delete(path)
-        uri = URI.join(@base_uri, path)
+        uri = build_uri(path)
 
         Integrations::Clients::HTTP.delete(uri, headers: headers(uri, 'DELETE'))
+      end
+
+      # append_path (not URI.join) so a base that carries a path prefix (e.g. the
+      # Forge apiBaseUrl https://api.atlassian.com/ex/jira/<cloudId>) keeps it;
+      # URI.join would drop the prefix for an absolute path.
+      def build_uri(path)
+        URI.parse(Gitlab::Utils.append_path(@base_uri, path))
       end
 
       def headers(uri, http_method = 'POST')
@@ -161,7 +174,7 @@ module Atlassian
           yield data
         else
           case response.code
-          when 400 then { 'errorMessages' => parse_jira_error_messages(data) }
+          when 400 then { 'errorMessages' => parse_jira_error_messages(data), 'response' => data, 'requestBody' => truncated_request_body(response) }
           when 401 then { 'errorMessages' => ['Invalid JWT'] }
           when 403 then { 'errorMessages' => ["App does not support #{name}"] }
           when 413 then { 'errorMessages' => ['Data too large'] + parse_jira_error_messages(data) }
@@ -176,12 +189,61 @@ module Atlassian
       def parse_jira_error_messages(data)
         case data
         when Array
-          data.map { |e| e['message'] }
+          data.map { |e| e.is_a?(Hash) ? (e['message'] || e.to_s) : e.to_s }
         when Hash
-          [data['message'] || data['error'] || 'Unknown error']
+          messages = Array(data['errorMessages']).map { |e| e.is_a?(Hash) ? (e['message'] || e.to_s) : e.to_s }
+          messages << data['message'] if data['message'].present?
+          messages << data['error'] if data['error'].present?
+          messages.reject(&:blank?).presence || ["Unrecognized error body: #{data.to_json.truncate(500)}"]
         else
           ['Unknown error']
         end
+      end
+
+      def truncated_request_body(response)
+        raw = response.request.raw_body.to_s
+        return request_body_schema(response) if raw.bytesize <= REQUEST_BODY_LOG_LIMIT
+
+        "Request body truncated (#{raw.bytesize} bytes): #{raw.truncate_bytes(REQUEST_BODY_LOG_LIMIT)}"
+      end
+
+      # The dev_info bulk endpoint reports rejected entities in
+      # `failedDevinfoEntities`, a hash keyed by repository ID. Each repository
+      # entry carries repository-level `errorMessages` plus per-entity errors
+      # under `commits`, `branches`, and `pullRequests`. See:
+      # https://developer.atlassian.com/cloud/jira/software/rest/api-group-development-information#api-rest-devinfo-0-10-bulk-post
+      #
+      # `unknownIssueKeys` is intentionally not treated as an error: it is a
+      # normal occurrence (for example a commit referencing another project's
+      # ticket) and surfacing it would log routine syncs at error level and
+      # attach the full repository payload to the logs.
+      def dev_info_errors(data, response)
+        data = {} unless data.is_a?(Hash)
+        messages = []
+
+        failed_entities = data['failedDevinfoEntities']
+        failed_entities = {} unless failed_entities.is_a?(Hash)
+
+        failed_entities.each_value do |repo_errors|
+          next unless repo_errors.is_a?(Hash)
+
+          Array(repo_errors['errorMessages']).each { |e| messages << e['message'] }
+
+          %w[commits branches pullRequests].each do |type|
+            Array(repo_errors[type]).each do |entity|
+              Array(entity['errorMessages']).each do |e|
+                messages << "#{type} #{entity['id']}: #{e['message']}"
+              end
+            end
+          end
+        end
+
+        result = { 'errorMessages' => messages, 'responseCode' => response.code }
+        # Only attach the request body when there is something to debug, to
+        # avoid logging the full repository payload (commit messages, author
+        # emails, file paths) on every successful sync.
+        result['requestBody'] = request_body_schema(response) if messages.present?
+        result
       end
 
       def errors(data, key, response)

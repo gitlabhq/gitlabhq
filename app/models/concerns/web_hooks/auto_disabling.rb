@@ -102,7 +102,12 @@ module WebHooks
       attrs = { recent_failures: 0, disabled_until: nil }
 
       assign_attributes(attrs)
-      logger.info(hook_id: id, action: 'enable', **attrs)
+      logger.info(
+        hook_id: id,
+        action: 'enable',
+        Labkit::Fields::GL_ORGANIZATION_ID => parent&.organization_id,
+        **attrs
+      )
       save(validate: false)
     end
 
@@ -120,7 +125,12 @@ module WebHooks
 
       return unless changed?
 
-      logger.info(hook_id: id, action: 'backoff', **attrs)
+      logger.info(
+        hook_id: id,
+        action: 'backoff',
+        Labkit::Fields::GL_ORGANIZATION_ID => parent&.organization_id,
+        **attrs
+      )
       save(validate: false)
     end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['BlobViewer'] do
+RSpec.describe GitlabSchema.types['BlobViewer'], feature_category: :source_code_management do
   it 'has the correct fields' do
     expected_fields = [:type, :load_async, :too_large, :collapsed,
       :render_error, :file_type, :loading_partial_name]

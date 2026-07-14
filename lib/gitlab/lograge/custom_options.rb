@@ -37,7 +37,7 @@ module Gitlab
 
         payload[Labkit::Fields::CORRELATION_ID] = event.payload[Labkit::Fields::CORRELATION_ID] || Labkit::Correlation::CorrelationId.current_id
 
-        duo_workflow_id = Gitlab::SafeRequestStore[Gitlab::Middleware::DuoWorkflowId::STORE_KEY]
+        duo_workflow_id = Gitlab::ApplicationContext.current_context_attribute(:duo_workflow_id)
         payload[Labkit::Fields::DUO_WORKFLOW_ID] = duo_workflow_id if duo_workflow_id
 
         # https://github.com/roidrage/lograge#logging-errors--exceptions

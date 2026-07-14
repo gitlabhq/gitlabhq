@@ -4,7 +4,7 @@ module API
   module Entities
     module WorkItems
       class Label < Grape::Entity
-        expose :id, documentation: { type: 'Integer', example: 1 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
         expose :title, documentation: { type: 'String', example: 'bug' }
         expose :description, documentation: { type: 'String', example: 'Bug reports' }
         expose :color, documentation: { type: 'String', example: '#FF0000' } do |label|

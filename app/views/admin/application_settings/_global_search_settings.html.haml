@@ -18,6 +18,6 @@
             options_for_select(default_search_scope_options_for_select, @application_setting.default_search_scope),
             {},
             class: 'form-control'
-          %span.form-text.text-muted
+          %span.form-text{ class: '!gl-text-subtle' }
             = _('Select a default search scope. For the system default, a scope is selected automatically based on context and availability.')
       = f.submit _('Save changes'), pajamas_button: true

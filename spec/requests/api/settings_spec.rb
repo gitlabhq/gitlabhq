@@ -84,6 +84,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['max_terraform_state_size_bytes']).to eq(0)
       expect(json_response['pipeline_limit_per_project_user_sha']).to eq(0)
       expect(json_response['pipeline_limit_per_user']).to eq(0)
+      expect(json_response['ci_lint_limit_per_user']).to eq(0)
       expect(json_response['delete_inactive_projects']).to be(false)
       expect(json_response['inactive_resource_access_tokens_delete_after_days']).to eq(30)
       expect(json_response['inactive_projects_delete_after_months']).to eq(2)
@@ -124,6 +125,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['email_otp_enabled']).to be(false)
       expect(json_response['authn_data_retention_cleanup_enabled']).to be(false)
       expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to be(false)
+      expect(json_response['logging_field_schema_version']).to eq(0)
+      expect(json_response['logging_field_dual_emit_target']).to be_nil
     end
   end
 
@@ -955,6 +958,32 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       end
     end
 
+    context 'outbound_local_requests_whitelist settings' do
+      it 'allows array for outbound_local_requests_whitelist', :aggregate_failures do
+        put api('/application/settings', admin),
+          params: { outbound_local_requests_whitelist: ['192.168.1.1', 'example.com'] }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['outbound_local_requests_whitelist']).to match_array(['192.168.1.1', 'example.com'])
+      end
+
+      it 'allows a comma-separated string for outbound_local_requests_whitelist', :aggregate_failures do
+        put api('/application/settings', admin),
+          params: { outbound_local_requests_whitelist: '192.168.1.1, example.com' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['outbound_local_requests_whitelist']).to match_array(['192.168.1.1', 'example.com'])
+      end
+
+      it 'allows clearing outbound_local_requests_whitelist with an empty array', :aggregate_failures do
+        put api('/application/settings', admin),
+          params: { outbound_local_requests_whitelist: [] }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['outbound_local_requests_whitelist']).to eq([])
+      end
+    end
+
     it 'supports legacy admin_notification_email' do
       put api('/application/settings', admin),
         params: { admin_notification_email: 'test@example.com' }
@@ -1230,6 +1259,40 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       end
     end
 
+    context 'with ci_lint_limit_per_user' do
+      it 'updates the settings', :aggregate_failures do
+        put api("/application/settings", admin), params: {
+          ci_lint_limit_per_user: 30
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'ci_lint_limit_per_user' => 30
+        )
+      end
+
+      it 'updates the settings with zero value', :aggregate_failures do
+        put api("/application/settings", admin), params: {
+          ci_lint_limit_per_user: 0
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'ci_lint_limit_per_user' => 0
+        )
+      end
+
+      it 'does not allow null values', :aggregate_failures do
+        put api("/application/settings", admin), params: {
+          ci_lint_limit_per_user: nil
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['ci_lint_limit_per_user'])
+          .to include(a_string_matching('is not a number'))
+      end
+    end
+
     context 'with ci_max_includes' do
       it 'updates the settings' do
         put api("/application/settings", admin), params: {
@@ -1261,6 +1324,62 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['ci_max_includes'])
           .to include(a_string_matching('is not a number'))
+      end
+    end
+
+    context 'with ci_partitions_in_seconds_limit_human_readable' do
+      it 'updates the settings', :aggregate_failures do
+        put api("/application/settings", admin), params: {
+          ci_partitions_in_seconds_limit_human_readable: '2 months'
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'ci_partitions_in_seconds_limit_human_readable' => '2 months'
+        )
+      end
+
+      it 'does not allow a value below the minimum' do
+        put api("/application/settings", admin), params: {
+          ci_partitions_in_seconds_limit_human_readable: '1 week'
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['ci_partitions_in_seconds_limit'])
+          .to include(a_string_matching('must be greater than or equal to'))
+      end
+
+      it 'does not allow a value above the maximum' do
+        put api("/application/settings", admin), params: {
+          ci_partitions_in_seconds_limit_human_readable: '1 year'
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['ci_partitions_in_seconds_limit'])
+          .to include(a_string_matching('must be less than or equal to'))
+      end
+    end
+
+    context 'with deprecated ci_partitions_in_seconds_limit' do
+      it 'still accepts the raw integer value for backwards compatibility' do
+        put api("/application/settings", admin), params: {
+          ci_partitions_in_seconds_limit: ChronicDuration.parse('2 months')
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'ci_partitions_in_seconds_limit_human_readable' => ChronicDuration.output(
+            ChronicDuration.parse('2 months'), format: :short
+          )
+        )
+      end
+
+      it 'is not exposed in the response', :aggregate_failures do
+        get api("/application/settings", admin)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to have_key('ci_partitions_in_seconds_limit_human_readable')
+        expect(json_response).not_to have_key('ci_partitions_in_seconds_limit')
       end
     end
 
@@ -1434,6 +1553,46 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['vscode_extension_marketplace_enabled']).to be(true)
         expect(json_response['vscode_extension_marketplace'])
           .to eq({ "enabled" => true, "extension_host_domain" => "cdn.web-ide.gitlab-static.net", "single_origin_fallback_enabled" => true })
+      end
+    end
+
+    context 'with logging field version settings' do
+      it 'accepts valid schema_version' do
+        put api('/application/settings', admin), params: { logging_field_schema_version: 1 }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['logging_field_schema_version']).to eq(1)
+      end
+
+      it 'rejects dual_emit_target equal to schema_version' do
+        put api('/application/settings', admin), params: {
+          logging_field_schema_version: 0,
+          logging_field_dual_emit_target: 0
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'accepts dual_emit_target strictly greater than schema_version' do
+        put api('/application/settings', admin), params: {
+          logging_field_schema_version: 0,
+          logging_field_dual_emit_target: 1
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when logging_field_variant_versioning is off' do
+        before do
+          stub_feature_flags(logging_field_variant_versioning: false)
+        end
+
+        it 'ignores valid schema_version' do
+          put api('/application/settings', admin), params: { logging_field_schema_version: 1 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['logging_field_schema_version']).to eq(0)
+        end
       end
     end
   end

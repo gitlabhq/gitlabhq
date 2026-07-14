@@ -7,7 +7,8 @@ module Mutations
         graphql_name 'PipelineScheduleUpdate'
 
         authorize :update_pipeline_schedule
-        authorize_granular_token permissions: :update_pipeline_schedule, boundary_argument: :id, boundary_type: :project
+        authorize_granular_token permissions: :update_pipeline_schedule, boundary_argument: :id, boundary: :project,
+          boundary_type: :project
 
         argument :description, GraphQL::Types::String,
           required: false,

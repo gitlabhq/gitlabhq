@@ -59,16 +59,14 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         end
 
         it 'shows pipeline tabs', :aggregate_failures do
-          expect(find_by_testid('pipelines-tab-all').text).to include('All')
-          expect(find_by_testid('pipelines-tab-all').find('.badge').text).to include('1')
-
-          expect(find_by_testid('pipelines-tab-finished').text).to include('Finished')
-          expect(find_by_testid('pipelines-tab-branches').text).to include('Branches')
-          expect(find_by_testid('pipelines-tab-tags').text).to include('Tags')
+          expect(page).to have_testid('pipelines-tab-all', text: 'All 1', exact_text: true)
+          expect(page).to have_testid('pipelines-tab-finished', text: 'Finished')
+          expect(page).to have_testid('pipelines-tab-branches', text: 'Branches')
+          expect(page).to have_testid('pipelines-tab-tags', text: 'Tags')
         end
 
         it 'updates content when tab is clicked' do
-          find_by_testid('pipelines-tab-finished').click
+          click_on 'Finished'
 
           expect(page).to have_content('There are currently no finished pipelines.')
         end
@@ -102,8 +100,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
               wait_for_requests
 
-              expect(page).not_to have_selector('.js-pipelines-cancel-button')
               expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceled')
+              expect(page).not_to have_selector('.js-pipelines-cancel-button')
             end
 
             it 'targets the pipeline the cancel action was invoked on', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9455' do
@@ -152,9 +150,9 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
               wait_for_requests
             end
 
-            it 'indicates that pipeline is canceling', :sidekiq_inline, quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9456' do
-              expect(page).not_to have_selector('.js-pipelines-cancel-button')
+            it 'indicates that pipeline is canceling', :sidekiq_inline do
               expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceling')
+              expect(page).not_to have_selector('.js-pipelines-cancel-button')
             end
           end
         end
@@ -281,7 +279,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           within_testid('pipeline-url-table-cell') do
             expect(page).to have_link(
               'pipeline schedule',
-              href: edit_pipeline_schedule_path(schedule)
+              href: edit_project_pipeline_schedule_path(project, schedule)
             )
           end
         end
@@ -477,14 +475,20 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
               stage: 'test')
 
             create(:ci_job_artifact, :codequality, job: build)
+            create(:ci_job_artifact, :archive, job: build)
           end
 
           before do
             visit_project_pipelines
           end
 
-          it 'has artifacts dropdown' do
-            expect(page).to have_selector('[data-testid="pipeline-multi-actions-dropdown"]')
+          it 'lists the downloadable artifacts in the dropdown', :aggregate_failures do
+            find('[data-testid="pipeline-multi-actions-dropdown"] button').click
+
+            within_testid('pipeline-multi-actions-dropdown') do
+              expect(page).to have_link('rspec tests:archive')
+              expect(page).to have_link('rspec tests:codequality')
+            end
           end
         end
 
@@ -652,7 +656,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           click_button project.default_branch
           wait_for_requests
 
-          find('.gl-new-dropdown-item', text: 'spooky-stuff').click
+          select_listbox_item('spooky-stuff')
           wait_for_requests
         end
 
@@ -662,7 +666,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           subject(:run_pipeline) do
-            find_by_testid('run-pipeline-button', text: 'New pipeline').click
+            click_button 'New pipeline'
 
             wait_for_requests
           end
@@ -685,7 +689,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
               end
 
               expect do
-                find_by_testid('run-pipeline-button', text: 'New pipeline').click
+                click_button 'New pipeline'
                 wait_for_requests
               end
                 .to change { Ci::Pipeline.count }.by(1)
@@ -698,7 +702,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         context 'without gitlab-ci.yml' do
           before do
-            find_by_testid('run-pipeline-button', text: 'New pipeline').click
+            click_button 'New pipeline'
             wait_for_requests
           end
 
@@ -708,7 +712,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             stub_ci_pipeline_to_return_yaml_file
 
             expect do
-              find_by_testid('run-pipeline-button', text: 'New pipeline').click
+              click_button 'New pipeline'
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)
@@ -770,6 +774,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
       describe 'find pipelines' do
         it 'shows filtered pipelines' do
           click_button project.default_branch
+          expect_listbox_item(project.default_branch)
+
           send_keys('2-mb-file')
 
           expect_listbox_item('2-mb-file')

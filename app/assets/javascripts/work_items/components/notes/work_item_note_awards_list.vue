@@ -23,6 +23,7 @@ export default {
       required: true,
     },
   },
+  emits: ['error'],
   computed: {
     awards() {
       return this.note.awardEmoji.nodes.map((award) => {

@@ -88,7 +88,9 @@ RSpec.describe Gitlab::Cleanup::ProjectUploads do
     context 'orphaned project upload file' do
       context 'when an upload record matching the secret and filename is found' do
         context 'when the project is still in legacy storage' do
-          let(:orphaned) { create(:upload, :issuable_upload, :with_file, model: create(:project, :legacy_storage)) }
+          let_it_be(:legacy_project) { create(:project, :legacy_storage) }
+
+          let(:orphaned) { create(:upload, :issuable_upload, :with_file, model: legacy_project) }
           let(:new_path) { orphaned.absolute_path }
           let(:path) { File.join(FileUploader.root, 'some', 'wrong', 'location', orphaned.path) }
 
@@ -101,7 +103,9 @@ RSpec.describe Gitlab::Cleanup::ProjectUploads do
         end
 
         context 'when the project was moved to hashed storage' do
-          let(:orphaned) { create(:upload, :issuable_upload, :with_file) }
+          let_it_be(:hashed_project) { create(:project) }
+
+          let(:orphaned) { create(:upload, :issuable_upload, :with_file, model: hashed_project) }
           let(:new_path) { orphaned.absolute_path }
           let(:path) { File.join(FileUploader.root, 'some', 'wrong', 'location', orphaned.path) }
 

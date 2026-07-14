@@ -17,7 +17,9 @@ module API
         entity: Entities::MergeRequest,
         source: Project,
         finder: ->(id) { find_merge_request_with_access(id, :update_merge_request) },
-        feature_category: :code_review_workflow
+        feature_category: :code_review_workflow,
+        permission: :subscribe_merge_request,
+        boundary_type: :project
       },
       {
         type: 'issues',
@@ -26,7 +28,9 @@ module API
         entity: Entities::Issue,
         source: Project,
         finder: ->(id) { find_project_issue(id) },
-        feature_category: :team_planning
+        feature_category: :team_planning,
+        permission: :subscribe_issue,
+        boundary_type: :project
       },
       {
         type: 'labels',
@@ -35,7 +39,9 @@ module API
         entity: Entities::ProjectLabel,
         source: Project,
         finder: ->(id) { find_label(user_project, id) },
-        feature_category: :team_planning
+        feature_category: :team_planning,
+        permission: :subscribe_label,
+        boundary_type: :project
       },
       {
         type: 'labels',
@@ -44,7 +50,9 @@ module API
         entity: Entities::GroupLabel,
         source: Group,
         finder: ->(id) { find_label(user_group, id) },
-        feature_category: :team_planning
+        feature_category: :team_planning,
+        permission: :subscribe_label,
+        boundary_type: :group
       }
     ]
 
@@ -64,6 +72,8 @@ module API
           success subscribable[:entity]
           tags ['resource_subscriptions']
         end
+        route_setting :authorization, permissions: subscribable[:permission],
+          boundary_type: subscribable[:boundary_type]
         post ":id/#{subscribable[:type]}/:subscribable_id/subscribe", subscribable.slice(:feature_category) do
           parent = parent_resource(source_type)
           resource = instance_exec(params[:subscribable_id], &subscribable[:finder])
@@ -82,6 +92,8 @@ module API
           success subscribable[:entity]
           tags ['resource_subscriptions']
         end
+        route_setting :authorization, permissions: subscribable[:permission],
+          boundary_type: subscribable[:boundary_type]
         post ":id/#{subscribable[:type]}/:subscribable_id/unsubscribe", subscribable.slice(:feature_category) do
           parent = parent_resource(source_type)
           resource = instance_exec(params[:subscribable_id], &subscribable[:finder])

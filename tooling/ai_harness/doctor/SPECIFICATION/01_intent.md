@@ -110,11 +110,11 @@ the `@` prefix, since `.ai/` references never use it.
 
 ### 2.3 .gitignore Coverage
 
-The root `.gitignore` must contain non-rooted entries for `CLAUDE.local.md`
-and `.ai/*` to ensure user local files are properly ignored at all directory
-levels. `--fix` appends missing entries. Note: committed instruction files
-(like `AGENTS.md`) must be force-added (`git add --force`) since the
-gitignore patterns are non-rooted.
+The root `.gitignore` must contain non-rooted entries for `CLAUDE.local.md`,
+`AGENTS.local.md`, and `.ai/*` to ensure user local override files are
+properly ignored at all directory levels. `--fix` appends missing entries.
+Note: committed instruction files (like `AGENTS.md`) must be force-added
+(`git add --force`) since the gitignore patterns are non-rooted.
 
 ### 2.4 Forbidden Committed Files
 

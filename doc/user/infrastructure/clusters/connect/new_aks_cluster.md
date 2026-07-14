@@ -13,7 +13,7 @@ by using the GitLab agent for Kubernetes.
 **Before you begin**:
 
 - A Microsoft Azure account, with a set of configured
-  [security credentials](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli).
+  [security credentials](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli?view=azure-cli-latest).
 - [A runner](https://docs.gitlab.com/runner/install/) you can use to run the GitLab CI/CD pipeline.
 
 **Steps**:

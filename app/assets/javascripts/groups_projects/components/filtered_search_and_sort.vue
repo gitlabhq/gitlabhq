@@ -18,6 +18,7 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export default {
+  name: 'FilteredSearchAndSort',
   components: {
     FilteredSearchBar,
     GlSorting,
@@ -80,6 +81,7 @@ export default {
       default: __('Filter or search (3 character minimum)'),
     },
   },
+  emits: ['filter', 'sort-by-change', 'sort-direction-change'],
   computed: {
     filteredSearchValue() {
       const tokens = prepareTokens(

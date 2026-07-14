@@ -223,7 +223,7 @@ describe('Create work item component', () => {
       expect(findAlert().exists()).toBe(false);
     });
 
-    it('calls `updateNewWorkItemMutation` mutation when any widget emits `updateWidgetDraft` event', () => {
+    it('calls `updateNewWorkItemMutation` mutation when any widget emits `update-widget-draft` event', () => {
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
       const mockInput = {
         assignees: [
@@ -238,7 +238,7 @@ describe('Create work item component', () => {
         ],
       };
 
-      findAssigneesWidget().vm.$emit('updateWidgetDraft', mockInput);
+      findAssigneesWidget().vm.$emit('update-widget-draft', mockInput);
       expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
         mutation: updateNewWorkItemMutation,
         variables: {
@@ -1309,7 +1309,7 @@ describe('Create work item component', () => {
       wrapper.find('form').trigger('submit');
 
       apolloProvider.defaultClient.mutate.mockClear();
-      findAssigneesWidget().vm.$emit('updateWidgetDraft', { assignees: [] });
+      findAssigneesWidget().vm.$emit('update-widget-draft', { assignees: [] });
       await nextTick();
 
       expect(apolloProvider.defaultClient.mutate).not.toHaveBeenCalledWith(

@@ -4,19 +4,19 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher, feature_category: :value_stream_management do
   let_it_be_with_refind(:project) { create(:project, :public) }
-  let_it_be(:issue_1, freeze: false) { create(:issue, project: project) }
-  let_it_be(:issue_2, freeze: false) { create(:issue, :confidential, project: project) }
-  let_it_be(:issue_3, freeze: false) { create(:issue, project: project) }
+  let_it_be(:issue_1) { create(:issue, project: project) }
+  let_it_be(:issue_2) { create(:issue, :confidential, project: project) }
+  let_it_be(:issue_3) { create(:issue, project: project) }
 
-  let_it_be(:merge_request, freeze: false) { create(:merge_request, :unique_branches, source_project: project, target_project: project) }
+  let_it_be(:merge_request) { create(:merge_request, :unique_branches, source_project: project, target_project: project) }
 
-  let_it_be(:user, freeze: false) { create(:user, developer_of: project) }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
-  let_it_be(:stage, freeze: false) { create(:cycle_analytics_stage, start_event_identifier: :issue_created, end_event_identifier: :issue_deployed_to_production, namespace: project.reload.project_namespace) }
+  let_it_be(:stage) { create(:cycle_analytics_stage, start_event_identifier: :issue_created, end_event_identifier: :issue_deployed_to_production, namespace: project.reload.project_namespace) }
 
-  let_it_be(:stage_event_1, freeze: false) { create(:cycle_analytics_issue_stage_event, stage_event_hash_id: stage.stage_event_hash_id, project_id: project.id, issue_id: issue_1.id, start_event_timestamp: 2.years.ago, end_event_timestamp: 1.year.ago) } # duration: 1 year
-  let_it_be(:stage_event_2, freeze: false) { create(:cycle_analytics_issue_stage_event, stage_event_hash_id: stage.stage_event_hash_id, project_id: project.id, issue_id: issue_2.id, start_event_timestamp: 5.years.ago, end_event_timestamp: 2.years.ago) } # duration: 3 years
-  let_it_be(:stage_event_3, freeze: false) { create(:cycle_analytics_issue_stage_event, stage_event_hash_id: stage.stage_event_hash_id, project_id: project.id, issue_id: issue_3.id, start_event_timestamp: 6.years.ago, end_event_timestamp: 3.months.ago) } # duration: 5+ years
+  let_it_be(:stage_event_1) { create(:cycle_analytics_issue_stage_event, stage_event_hash_id: stage.stage_event_hash_id, project_id: project.id, issue_id: issue_1.id, start_event_timestamp: 2.years.ago, end_event_timestamp: 1.year.ago) } # duration: 1 year
+  let_it_be(:stage_event_2) { create(:cycle_analytics_issue_stage_event, stage_event_hash_id: stage.stage_event_hash_id, project_id: project.id, issue_id: issue_2.id, start_event_timestamp: 5.years.ago, end_event_timestamp: 2.years.ago) } # duration: 3 years
+  let_it_be(:stage_event_3) { create(:cycle_analytics_issue_stage_event, stage_event_hash_id: stage.stage_event_hash_id, project_id: project.id, issue_id: issue_3.id, start_event_timestamp: 6.years.ago, end_event_timestamp: 3.months.ago) } # duration: 5+ years
 
   let(:params) { { from: 10.years.ago, to: Date.today, current_user: user } }
 
@@ -191,8 +191,8 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher, fe
   end
 
   context 'when querying merge requests' do
-    let_it_be(:mr_stage, freeze: false) { create(:cycle_analytics_stage, start_event_identifier: :merge_request_last_build_started, end_event_identifier: :merge_request_last_build_finished, namespace: project.reload.project_namespace) }
-    let_it_be(:mr_stage_event, freeze: false) { create(:cycle_analytics_merge_request_stage_event, stage_event_hash_id: mr_stage.stage_event_hash_id, project_id: project.id, merge_request_id: merge_request.id, start_event_timestamp: 2.years.ago, end_event_timestamp: 1.year.ago) }
+    let_it_be(:mr_stage) { create(:cycle_analytics_stage, start_event_identifier: :merge_request_last_build_started, end_event_identifier: :merge_request_last_build_finished, namespace: project.reload.project_namespace) }
+    let_it_be(:mr_stage_event) { create(:cycle_analytics_merge_request_stage_event, stage_event_hash_id: mr_stage.stage_event_hash_id, project_id: project.id, merge_request_id: merge_request.id, start_event_timestamp: 2.years.ago, end_event_timestamp: 1.year.ago) }
 
     let(:stage) { mr_stage }
     let(:expected_iids) { [merge_request.iid] }

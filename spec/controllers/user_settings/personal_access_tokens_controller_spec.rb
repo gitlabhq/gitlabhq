@@ -13,7 +13,7 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
   describe '#create' do
     let(:token_params) { token_attributes }
 
-    subject(:create_token) { post :create, params: { personal_access_token: token_params } }
+    subject(:create_token) { post :create, params: token_params }
 
     def created_token
       PersonalAccessToken.order(:created_at).last

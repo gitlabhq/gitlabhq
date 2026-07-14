@@ -1,10 +1,10 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapState } from 'vuex';
+import { mapState } from 'pinia';
 import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 
 import SubscriptionsList from '../components/subscriptions_list.vue';
 import AddNamespaceButton from '../components/add_namespace_button.vue';
+import { useJiraConnectSubscriptions } from '../store';
 
 export default {
   name: 'SubscriptionsPage',
@@ -21,7 +21,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['subscriptionsLoading', 'subscriptionsError']),
+    ...mapState(useJiraConnectSubscriptions, ['subscriptionsLoading', 'subscriptionsError']),
   },
 };
 </script>

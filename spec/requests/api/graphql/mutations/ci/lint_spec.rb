@@ -217,6 +217,36 @@ RSpec.describe 'ciLint', feature_category: :pipeline_composition do
     )
   end
 
+  context 'when the ci_lint rate limit is exceeded', :freeze_time, :clean_gitlab_redis_rate_limiting do
+    before do
+      # Detection lives in Gitlab::Ci::Lint, which the mutation routes through.
+      allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+      allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+        .with(:ci_lint, scope: [user]).and_return(true)
+    end
+
+    context 'when ci_enforce_ci_lint_rate_limit is enabled' do
+      it 'returns a top-level error and does not lint the config' do
+        post_mutation
+
+        expect(graphql_errors).to be_present
+        expect(graphql_mutation_response(:ci_lint)).to be_nil
+      end
+    end
+
+    context 'when ci_enforce_ci_lint_rate_limit is disabled (log-only mode)' do
+      before do
+        stub_feature_flags(ci_enforce_ci_lint_rate_limit: false)
+      end
+
+      it 'does not block the request and lints the config' do
+        post_mutation
+
+        expect(graphql_mutation_response(:ci_lint)['config']).to include('status' => 'VALID')
+      end
+    end
+  end
+
   context 'when the config file includes other files' do
     let_it_be(:content) do
       YAML.dump(

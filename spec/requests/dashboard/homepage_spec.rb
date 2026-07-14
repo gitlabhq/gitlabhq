@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard homepage', feature_category: :notifications do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -30,7 +30,7 @@ RSpec.describe 'Dashboard homepage', feature_category: :notifications do
     end
 
     context 'when explicitly setting dashboard to homepage (with flipped mapping)' do
-      let_it_be(:homepage_user, freeze: false) { create(:user, dashboard: :homepage) }
+      let_it_be(:homepage_user) { create(:user, dashboard: :homepage) }
 
       before do
         sign_in(homepage_user)

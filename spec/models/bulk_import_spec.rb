@@ -158,39 +158,63 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
   end
 
   describe 'completion notification trigger' do
-    RSpec::Matchers.define :send_completion_notification do
+    RSpec::Matchers.define :send_completion_notification do |mailer_method|
       def supports_block_expectations?
         true
       end
 
       match(notify_expectation_failures: true) do |proc|
-        expect(Notify).to receive(:bulk_import_complete).with(import.user.id, import.id).and_call_original
+        expect(Notify).to receive(mailer_method).with(import.user.id, import.id).and_call_original
 
         proc.call
         true
       end
 
       match_when_negated(notify_expectation_failures: true) do |proc|
-        expect(Notify).not_to receive(:bulk_import_complete)
+        expect(Notify).not_to receive(mailer_method)
 
         proc.call
         true
       end
     end
 
-    subject(:import) { create(:bulk_import, :started) }
-
     let(:non_triggering_events) do
       import.status_paths.events - %i[finish cleanup_stale fail_op]
     end
 
-    it { expect { import.finish! }.to send_completion_notification }
-    it { expect { import.fail_op! }.to send_completion_notification }
-    it { expect { import.cleanup_stale! }.to send_completion_notification }
+    context 'when the import is a direct transfer' do
+      subject(:import) { create(:bulk_import, :started) }
 
-    it "does not email after non-completing events" do
-      non_triggering_events.each do |event|
-        expect { import.send(:"#{event}!") }.not_to send_completion_notification
+      it { expect { import.finish! }.to send_completion_notification(:bulk_import_complete) }
+      it { expect { import.fail_op! }.to send_completion_notification(:bulk_import_complete) }
+      it { expect { import.cleanup_stale! }.to send_completion_notification(:bulk_import_complete) }
+
+      it 'does not send the offline completion notification' do
+        expect { import.finish! }.not_to send_completion_notification(:bulk_import_offline_complete)
+      end
+
+      it "does not email after non-completing events" do
+        non_triggering_events.each do |event|
+          expect { import.send(:"#{event}!") }.not_to send_completion_notification(:bulk_import_complete)
+        end
+      end
+    end
+
+    context 'when the import is an offline transfer' do
+      subject(:import) { create(:bulk_import, :started, :with_offline_configuration) }
+
+      it { expect { import.finish! }.to send_completion_notification(:bulk_import_offline_complete) }
+      it { expect { import.fail_op! }.to send_completion_notification(:bulk_import_offline_complete) }
+      it { expect { import.cleanup_stale! }.to send_completion_notification(:bulk_import_offline_complete) }
+
+      it 'does not send the direct transfer completion notification' do
+        expect { import.finish! }.not_to send_completion_notification(:bulk_import_complete)
+      end
+
+      it "does not email after non-completing events" do
+        non_triggering_events.each do |event|
+          expect { import.send(:"#{event}!") }.not_to send_completion_notification(:bulk_import_offline_complete)
+        end
       end
     end
   end

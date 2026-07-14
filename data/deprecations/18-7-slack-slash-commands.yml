@@ -14,7 +14,7 @@
   resolution_role: [Admin]
   manual_task: true
   body: |  # (required) Don't change this line.
-    The [Slack slash commands integration](https://docs.gitlab.com/user/project/integrations/slack_slash_commands/) is
+    The Slack slash commands integration is
     deprecated in favor of the [GitLab for Slack app](https://docs.gitlab.com/user/project/integrations/gitlab_slack_application/),
     which provides a more secure integration method with the same capabilities.
 

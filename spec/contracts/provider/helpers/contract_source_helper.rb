@@ -4,10 +4,10 @@ module Provider
   module ContractSourceHelper
     PREFIX_PATHS = {
       rake: {
-        ce: "../../contracts/project",
-        ee: "../../../../ee/spec/contracts/contracts/project"
+        ce: "../../contracts/internal/project",
+        ee: "../../../../ee/spec/contracts/contracts/internal/project"
       },
-      spec: "../contracts/project"
+      spec: "../contracts/internal/project"
     }.freeze
     SUB_PATH_REGEX = %r{project/(?<file_path>.*?)_helper.rb}
 

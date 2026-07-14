@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Workflow Catalog
+stage: Agent Foundations
+group: AI Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Foundational agents
 ---
@@ -50,6 +50,8 @@ Tier availability varies by agent. For details, see each agent's page.
   debugging, and optimizing GitLab CI/CD pipelines.
 - [Permissions Assistant](permissions_assistant.md), for selecting permissions
   when creating a fine-grained personal access token.
+- [Support Assistant](support_assistant.md), for diagnosing and resolving
+  GitLab product problems.
 
 ## Duplicate an agent
 

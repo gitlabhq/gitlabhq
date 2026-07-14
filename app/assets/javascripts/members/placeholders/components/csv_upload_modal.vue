@@ -9,6 +9,7 @@ import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropz
 import BypassConfirmationMessage from './bypass_confirmation_message.vue';
 
 export default {
+  name: 'CsvUploadModal',
   components: {
     GlModal,
     GlLink,

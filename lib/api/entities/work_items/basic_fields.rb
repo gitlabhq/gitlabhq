@@ -10,7 +10,7 @@ module API
           include ::API::Entities::WorkItems::ConditionalExposureHelpers
           include ::Gitlab::Utils::StrongMemoize
 
-          expose :id, documentation: { type: 'Integer', example: 1 }
+          expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
           expose :global_id,
             documentation: { type: 'String', example: 'gid://gitlab/WorkItem/1' } do |work_item|
             work_item.to_gid.to_s

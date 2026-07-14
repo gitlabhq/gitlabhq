@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Labels::AvailableLabelsService, feature_category: :team_planning do

@@ -5,6 +5,7 @@ import { s__, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
+  name: 'UserEmailSetting',
   components: {
     GlFormGroup,
     GlFormInput,

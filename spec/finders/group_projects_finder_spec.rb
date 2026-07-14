@@ -8,7 +8,7 @@ RSpec.describe GroupProjectsFinder do
   subject { finder.execute }
 
   describe 'with a group member current user' do
-    before do
+    before_all do
       root_group.add_maintainer(current_user)
     end
 
@@ -88,7 +88,7 @@ RSpec.describe GroupProjectsFinder do
     end
 
     context "owned" do
-      before do
+      before_all do
         root_group.add_owner(current_user)
       end
 
@@ -111,10 +111,10 @@ RSpec.describe GroupProjectsFinder do
       end
 
       context "with min access level" do
-        let!(:shared_project_4) { create(:project, :internal, path: '8') }
+        let_it_be(:shared_project_4) { create(:project, :internal, path: '8') }
         let(:params) { { min_access_level: Gitlab::Access::MAINTAINER } }
 
-        before do
+        before_all do
           shared_project_4.project_group_links.create!(group_access: Gitlab::Access::REPORTER, group: group)
         end
 
@@ -149,7 +149,7 @@ RSpec.describe GroupProjectsFinder do
       let(:options) { { exclude_shared: true } }
 
       context "without external user" do
-        before do
+        before_all do
           private_project.add_maintainer(current_user)
           subgroup_private_project.add_maintainer(current_user)
           root_group_private_project.add_maintainer(current_user)
@@ -301,10 +301,10 @@ RSpec.describe GroupProjectsFinder do
   end
 
   describe 'feature availability' do
-    let!(:project_with_issues_disabled) { create(:project, :issues_disabled, :internal, path: '9') }
-    let!(:project_with_merge_request_disabled) { create(:project, :merge_requests_disabled, :internal, path: '10') }
+    let_it_be_with_reload(:project_with_issues_disabled) { create(:project, :issues_disabled, :internal, path: '9') }
+    let_it_be_with_reload(:project_with_merge_request_disabled) { create(:project, :merge_requests_disabled, :internal, path: '10') }
 
-    before do
+    before_all do
       project_with_issues_disabled.project_group_links.create!(group_access: Gitlab::Access::REPORTER, group: group)
       project_with_merge_request_disabled.project_group_links.create!(group_access: Gitlab::Access::REPORTER, group: group)
     end

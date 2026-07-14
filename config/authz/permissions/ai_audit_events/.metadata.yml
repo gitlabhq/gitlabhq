@@ -1,0 +1,4 @@
+---
+name: AI audit events
+description: Audit events recorded for AI feature activity.
+feature_category: audit_events

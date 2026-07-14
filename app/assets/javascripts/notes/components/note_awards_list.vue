@@ -6,6 +6,7 @@ import AwardsList from '~/vue_shared/components/awards_list.vue';
 import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
+  name: 'NoteAwardsList',
   components: {
     AwardsList,
   },

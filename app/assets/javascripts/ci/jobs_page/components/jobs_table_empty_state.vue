@@ -1,5 +1,6 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
+import EMPTY_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
 import { s__ } from '~/locale';
 
 export default {
@@ -18,10 +19,8 @@ export default {
     pipelineEditorPath: {
       default: '',
     },
-    emptyStateSvgPath: {
-      default: '',
-    },
   },
+  EMPTY_STATE_SVG,
 };
 </script>
 
@@ -29,7 +28,7 @@ export default {
   <gl-empty-state
     :title="$options.i18n.title"
     :description="$options.i18n.description"
-    :svg-path="emptyStateSvgPath"
+    :svg-path="$options.EMPTY_STATE_SVG"
     :svg-height="null"
     :primary-button-link="pipelineEditorPath"
     :primary-button-text="$options.i18n.buttonText"

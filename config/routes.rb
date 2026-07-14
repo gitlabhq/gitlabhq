@@ -257,10 +257,16 @@ InitializerConnections.warn_if_database_connection do
         # Used by third parties to verify CI_JOB_JWT
         get 'jwks' => 'jwks#index'
 
+        # Dedicated JWKS for the Cloud Connector keys (EE-only).
+        Gitlab.ee do
+          draw :cloud_connector
+        end
+
         draw :snippets
         draw_all :profile
         draw_all :user_settings
         draw_all :autocomplete
+        draw_all :feature_library
 
         post '/mailgun/webhooks' => 'mailgun/webhooks#process_webhook'
 
@@ -403,6 +409,16 @@ InitializerConnections.warn_if_database_connection do
       @organization_scoped_routes = true
       draw_all_routes
       @organization_scoped_routes = false
+    end
+
+    # Used only for sent_notifications
+    scope(path: '-/namespace/:namespace_id', as: :namespace, constraints: { namespace_id: /\d+/ }) do
+      resources :sent_notifications, only: [], constraints: { id: /[0-9a-z\-]{1,44}/ },
+        controller: 'sent_notifications' do
+        member do
+          match :unsubscribe, via: [:get, :post]
+        end
+      end
     end
 
     get '*unmatched_route', to: 'application#route_not_found', format: false

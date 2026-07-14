@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Groups::AutoDevopsService, '#execute', feature_category: :auto_devops do
@@ -19,14 +20,14 @@ RSpec.describe Groups::AutoDevopsService, '#execute', feature_category: :auto_de
   end
 
   context 'when user has enough privileges' do
-    before do
+    before_all do
       group.add_owner(user)
     end
 
     it 'updates group auto devops enabled accordingly' do
       service.execute
 
-      expect(group.auto_devops_enabled).to eq(false)
+      expect(group.auto_devops_enabled).to be(false)
     end
 
     context 'when group has projects' do
@@ -45,7 +46,7 @@ RSpec.describe Groups::AutoDevopsService, '#execute', feature_category: :auto_de
 
         service.execute
 
-        expect(subgroup_1.auto_devops_enabled?).to eq(false)
+        expect(subgroup_1.auto_devops_enabled?).to be(false)
       end
 
       context 'when subgroups have projects' do

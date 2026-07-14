@@ -7,7 +7,8 @@ module Mutations
       description 'Update an environment.'
 
       authorize :update_environment
-      authorize_granular_token permissions: :update_environment, boundary_argument: :id, boundary_type: :project
+      authorize_granular_token permissions: :update_environment, boundary_argument: :id, boundary: :project,
+        boundary_type: :project
 
       argument :id,
         ::Types::GlobalIDType[::Environment],

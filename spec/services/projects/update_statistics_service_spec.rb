@@ -20,7 +20,7 @@ RSpec.describe Projects::UpdateStatisticsService, feature_category: :groups_and_
     end
 
     context 'with an existing project' do
-      let_it_be(:project, freeze: false) { create(:project) }
+      let_it_be_with_reload(:project) { create(:project) }
 
       where(:statistics, :method_caches) do
         []                                                   | %i[size recent_objects_size commit_count]
@@ -54,7 +54,7 @@ RSpec.describe Projects::UpdateStatisticsService, feature_category: :groups_and_
     end
 
     context 'with an existing project with a Wiki' do
-      let(:project) { create(:project, :repository, :wiki_enabled) }
+      let(:project) { create(:project, :small_repo, :wiki_enabled) }
       let(:statistics) { [:wiki_size] }
 
       it 'invalidates and refreshes Wiki size' do

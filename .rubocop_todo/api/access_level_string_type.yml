@@ -1,0 +1,12 @@
+---
+API/AccessLevelStringType:
+  Details: grace period
+  Exclude:
+    - 'ee/lib/api/entities/member_role.rb'
+    - 'ee/lib/api/entities/protected_environments/approval_rule.rb'
+    - 'ee/lib/api/entities/saml_group_link.rb'
+    - 'ee/lib/gitlab_subscriptions/api/entities/internal/member.rb'
+    - 'lib/api/entities/group_association_details.rb'
+    - 'lib/api/entities/project_association_details.rb'
+    - 'lib/api/entities/protected_ref_access.rb'
+    - 'lib/api/entities/resource_access_token.rb'

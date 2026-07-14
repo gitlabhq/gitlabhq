@@ -30,6 +30,7 @@ export default {
       default: false,
     },
   },
+  emits: ['change'],
   data() {
     const modalInfoCopyId = uniqueId('enable-review-app-copy-string-');
 

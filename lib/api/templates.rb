@@ -29,8 +29,8 @@ module API
       end
     end
 
-    desc 'Get all license templates' do
-      detail 'This feature was introduced in GitLab 8.7.'
+    desc 'List all license templates' do
+      detail 'Lists all available license templates.'
       success ::API::Entities::License
       tags ['templates']
     end
@@ -49,8 +49,8 @@ module API
       present paginate(::Kaminari.paginate_array(templates)), with: ::API::Entities::License
     end
 
-    desc 'Get a single license template' do
-      detail 'This feature was introduced in GitLab 8.7.'
+    desc 'Retrieve a license template' do
+      detail 'Retrieves a specified license template. You can pass parameters to replace the license placeholder.'
       success ::API::Entities::License
       tags ['templates']
     end
@@ -75,11 +75,10 @@ module API
     end
 
     GLOBAL_TEMPLATE_TYPES.each do |template_type, properties|
-      gitlab_version = properties[:gitlab_version]
       file_type = properties[:file_type]
 
-      desc "Get all #{file_type} templates" do
-        detail "This feature was introduced in GitLab #{gitlab_version}."
+      desc "List all #{file_type} templates" do
+        detail "Lists all #{file_type} templates."
         success Entities::TemplatesList
         tags ['templates']
       end
@@ -93,8 +92,8 @@ module API
         present paginate(templates), with: Entities::TemplatesList
       end
 
-      desc "Get a single #{file_type} template" do
-        detail "This feature was introduced in GitLab #{gitlab_version}."
+      desc "Retrieve a #{file_type} template" do
+        detail "Retrieves a specified #{file_type} template."
         success Entities::Template
         tags ['templates']
       end

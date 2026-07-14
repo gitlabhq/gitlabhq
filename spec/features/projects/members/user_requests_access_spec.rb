@@ -7,7 +7,7 @@ RSpec.describe 'Projects > Members > User requests access', :js, feature_categor
 
   let_it_be(:user) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository, maintainers: [maintainer]) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository, maintainers: [maintainer]) }
 
   let(:owner) { project.first_owner }
   let(:more_actions_dropdown) do
@@ -62,7 +62,7 @@ RSpec.describe 'Projects > Members > User requests access', :js, feature_categor
     end
 
     it 'user is not listed in the project members page' do
-      within_testid('super-sidebar') do
+      within_testid('non-static-items-section') do
         click_button 'Manage'
         click_link 'Members'
       end

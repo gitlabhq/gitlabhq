@@ -313,7 +313,9 @@
 
 .issues-details-filters,
 .epics-details-filters {
+  @apply gl-pt-3;
   @apply gl-px-[--container-padding-x];
+  @apply gl-bg-transparent;
 }
 
 @include gl-container-width-down(md, panel) {

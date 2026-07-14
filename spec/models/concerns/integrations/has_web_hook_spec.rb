@@ -17,13 +17,13 @@ RSpec.describe Integrations::HasWebHook, feature_category: :webhooks do
   end
 
   context 'when integration does not respond to enable_ssl_verification' do
-    it { expect(integration.hook_ssl_verification).to eq true }
+    it { expect(integration.hook_ssl_verification).to be true }
   end
 
   context 'when integration responds to enable_ssl_verification' do
     let(:integration) { build(:drone_ci_integration, enable_ssl_verification: true) }
 
-    it { expect(integration.hook_ssl_verification).to eq true }
+    it { expect(integration.hook_ssl_verification).to be true }
   end
 
   context 'when assigning a webhook sharding key' do

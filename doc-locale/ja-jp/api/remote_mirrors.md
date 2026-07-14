@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: プロジェクトリモートミラーAPI
 ---
 
@@ -12,37 +12,34 @@ title: プロジェクトリモートミラーAPI
 
 {{< /details >}}
 
-プロジェクトのリポジトリ設定で定義された[プッシュミラー](../user/project/repository/mirror/push.md)は、リモートミラーと呼ばれます。これらのミラーの状態は、リモートミラーAPIでクエリを実行して変更できます。
+このAPIを使用して、[リモートミラー](../user/project/repository/mirror/push.md)を管理できます。このリモートミラーAPIを使用して、これらのミラーの状態をクエリおよび変更できます。
 
-セキュリティ上の理由から、APIレスポンスの`url`属性から、ユーザー名とパスワードの情報が常に削除されます。
+セキュリティ上の理由から、API応答の`url`属性からは、ユーザー名とパスワード情報が常に削除されます。
 
-{{< alert type="note" >}}
+> [!note]
+> [プルミラー](../user/project/repository/mirror/pull.md)は、表示および更新のために[別のAPIエンドポイント](project_pull_mirroring.md#update-project-pull-mirroring-settings)を使用します。
 
-[プルミラー](../user/project/repository/mirror/pull.md)は、表示と更新に[別のAPIエンドポイント](project_pull_mirroring.md#configure-pull-mirroring-for-a-project)を使用します。
-
-{{< /alert >}}
-
-## プロジェクトのリモートミラーの一覧表示 {#list-a-projects-remote-mirrors}
+## プロジェクトのすべてのリモートミラーを一覧表示 {#list-all-remote-mirrors-for-a-project}
 
 {{< history >}}
 
-- `host_keys`属性は、GitLab 18.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435)されました。
+- 属性`host_keys`がGitLab 18.4で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435)。
 
 {{< /history >}}
 
-プロジェクトのリモートミラーとそのステータスの配列を取得します。
+指定されたプロジェクトのすべてのリモートミラーを一覧表示します。
 
 ```plaintext
 GET /projects/:id/remote_mirrors
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明                                                                      |
 |-----------|-------------------|----------|----------------------------------------------------------------------------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。       |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                   | 型    | 説明 |
 |-----------------------------|---------|-------------|
@@ -51,15 +48,15 @@ GET /projects/:id/remote_mirrors
 | `host_keys`                 | 配列   | リモートミラーのSSHホストキーフィンガープリントの配列。 |
 | `id`                        | 整数 | リモートミラーのID。 |
 | `keep_divergent_refs`       | ブール値 | `true`の場合、ミラーリング時に分岐したrefsが保持されます。 |
-| `last_error`                | 文字列  | 前回のミラー試行からのエラーメッセージ。`null`の場合は成功。 |
-| `last_successful_update_at` | 文字列  | 最後に成功したミラー更新のタイムスタンプ。ISO 8601形式。 |
+| `last_error`                | 文字列  | 最後のミラー試行からのエラーメッセージ。`null`の場合、成功。 |
+| `last_successful_update_at` | 文字列  | 最後のミラー更新が正常に完了したタイムスタンプ。ISO 8601形式。 |
 | `last_update_at`            | 文字列  | 最後のミラー試行のタイムスタンプ。ISO 8601形式。 |
 | `last_update_started_at`    | 文字列  | 最後のミラー試行が開始されたときのタイムスタンプ。ISO 8601形式。 |
-| `only_protected_branches`   | ブール値 | `true`の場合、保護ブランチのみがミラーリングされます。 |
-| `update_status`             | 文字列  | ミラー更新のステータス。使用可能な値: `none`、`scheduled`、`started`、`finished`、`failed`。 |
-| `url`                       | 文字列  | セキュリティのために認証情報が削除されたミラーのURL。 |
+| `only_protected_branches`   | ブール値 | `true`の場合、保護ブランチのみがミラーされます。 |
+| `update_status`             | 文字列  | ミラー更新のステータス。指定可能な値: `none`、`scheduled`、`started`、`finished`、`failed`。 |
+| `url`                       | 文字列  | セキュリティのために認証情報が削除されたミラーURL。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -67,7 +64,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -92,28 +89,28 @@ curl --request GET \
 ]
 ```
 
-## 単一プロジェクトのリモートミラーを取得 {#get-a-single-projects-remote-mirror}
+## プロジェクトのリモートミラーを取得 {#retrieve-a-remote-mirror-for-a-project}
 
 {{< history >}}
 
-- `host_keys`属性は、GitLab 18.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435)されました。
+- 属性`host_keys`がGitLab 18.4で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435)。
 
 {{< /history >}}
 
-プロジェクトの単一のリモートミラーとそのステータスを取得します。
+指定されたプロジェクトのリモートミラーを取得します。
 
 ```plaintext
 GET /projects/:id/remote_mirrors/:mirror_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性   | 型              | 必須 | 説明 |
 |-------------|-------------------|----------|-------------|
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `mirror_id` | 整数           | はい      | リモートミラーのID。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                   | 型    | 説明 |
 |-----------------------------|---------|-------------|
@@ -121,15 +118,15 @@ GET /projects/:id/remote_mirrors/:mirror_id
 | `id`                        | 整数 | リモートミラーのID。 |
 | `host_keys`                 | 配列   | リモートミラーのSSHホストキーフィンガープリントの配列。 |
 | `keep_divergent_refs`       | ブール値 | `true`の場合、ミラーリング時に分岐したrefsが保持されます。 |
-| `last_error`                | 文字列  | 前回のミラー試行からのエラーメッセージ。`null`の場合は成功。 |
-| `last_successful_update_at` | 文字列  | 最後に成功したミラー更新のタイムスタンプ。ISO 8601形式。 |
+| `last_error`                | 文字列  | 最後のミラー試行からのエラーメッセージ。`null`の場合、成功。 |
+| `last_successful_update_at` | 文字列  | 最後のミラー更新が正常に完了したタイムスタンプ。ISO 8601形式。 |
 | `last_update_at`            | 文字列  | 最後のミラー試行のタイムスタンプ。ISO 8601形式。 |
 | `last_update_started_at`    | 文字列  | 最後のミラー試行が開始されたときのタイムスタンプ。ISO 8601形式。 |
-| `only_protected_branches`   | ブール値 | `true`の場合、保護ブランチのみがミラーリングされます。 |
-| `update_status`             | 文字列  | ミラー更新のステータス。使用可能な値: `none`、`scheduled`、`started`、`finished`、`failed`。 |
-| `url`                       | 文字列  | セキュリティのために認証情報が削除されたミラーのURL。 |
+| `only_protected_branches`   | ブール値 | `true`の場合、保護ブランチのみがミラーされます。 |
+| `update_status`             | 文字列  | ミラー更新のステータス。指定可能な値: `none`、`scheduled`、`started`、`finished`、`failed`。 |
+| `url`                       | 文字列  | セキュリティのために認証情報が削除されたミラーURL。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -137,7 +134,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -159,7 +156,7 @@ curl --request GET \
 }
 ```
 
-## 単一プロジェクトのリモートミラー公開キーを取得 {#get-a-single-projects-remote-mirror-public-key}
+## リモートミラーの公開キーを取得 {#retrieve-a-public-key-for-a-remote-mirror}
 
 {{< history >}}
 
@@ -167,26 +164,26 @@ curl --request GET \
 
 {{< /history >}}
 
-SSH認証を使用するリモートミラーの公開キーを取得します。
+SSH認証を使用する、指定されたリモートミラーの公開キーを取得します。
 
 ```plaintext
 GET /projects/:id/remote_mirrors/:mirror_id/public_key
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性   | 型              | 必須 | 説明 |
 |-------------|-------------------|----------|-------------|
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `mirror_id` | 整数           | はい      | リモートミラーのID。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性   | 型   | 説明                        |
 |-------------|--------|------------------------------------|
 | `public_key`| 文字列 | リモートミラーの公開キー。  |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -194,7 +191,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486/public_key"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -204,7 +201,7 @@ curl --request GET \
 
 ## プルミラーを作成 {#create-a-pull-mirror}
 
-プロジェクトプルミラーリングAPIを使用して[プルミラーを設定する方法](project_pull_mirroring.md#configure-pull-mirroring-for-a-project)を説明します。
+プロジェクトのプルミラーリングAPIを使用して、[プルミラーを設定する](project_pull_mirroring.md#update-project-pull-mirroring-settings)方法を学習してください。
 
 ## プッシュミラーを作成 {#create-a-push-mirror}
 
@@ -212,30 +209,34 @@ curl --request GET \
 
 - GitLab 16.0では、[デフォルトで有効になっています](https://gitlab.com/gitlab-org/gitlab/-/issues/381667)。
 - GitLab 16.2で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/410354)になりました。機能フラグ`mirror_only_branches_match_regex`は削除されました。
-- `auth_method`は、GitLab 16.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155)されました。
-- `host_keys`属性は、GitLab 18.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435)されました。
+- フィールド`auth_method`がGitLab 16.10で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155)。
+- 属性`host_keys`がGitLab 18.4で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435)。
 
 {{< /history >}}
 
-プロジェクトのプッシュミラーを作成します。プッシュミラーリングはデフォルトで無効になっています。有効にするには、ミラーの作成時にオプションのパラメータ`enabled`を含めます。
+> [!note]
+> 各プロジェクトには、最大10個の有効なプッシュミラーを設定できます。詳細については、[プロジェクトプッシュミラーの最大数](../administration/instance_limits.md#maximum-number-of-project-push-mirrors)を参照してください。
+
+プロジェクトのプッシュミラーを作成します。プッシュミラーリングはデフォルトで無効になっています。有効にするには、ミラーの作成時にオプションパラメータ`enabled`を含めます。
 
 ```plaintext
 POST /projects/:id/remote_mirrors
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                 | 型              | 必須 | 説明 |
 |---------------------------|-------------------|----------|-------------|
 | `id`                      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `url`                     | 文字列            | はい      | リポジトリがミラーリングされるターゲットURL。 |
-| `auth_method`             | 文字列            | いいえ       | ミラーの認証方法: 指定できる値: `ssh_public_key`、`password`。 |
+| `auth_method`             | 文字列            | いいえ       | ミラー認証方法。指定可能な値: `ssh_public_key`、`password`。 |
 | `enabled`                 | ブール値           | いいえ       | `true`の場合、ミラーが有効になります。 |
+| `host_keys`               | 文字列の配列  | いいえ       | ベア形式(`ssh-ed25519 AAAA...`)または完全な`known_hosts`形式(`hostname ssh-ed25519 AAAA...`)のSSHホストキー。ベアキーは、ミラーURLからホスト名を使用します。 |
 | `keep_divergent_refs`     | ブール値           | いいえ       | `true`の場合、ミラーリング時に分岐したrefsが保持されます。 |
-| `mirror_branch_regex`     | 文字列            | いいえ       | ミラーするブランチ名の正規表現。正規表現に一致する名前のブランチのみがミラーリングされます。`only_protected_branches`を無効にする必要があります。PremiumおよびUltimateのみです。 |
-| `only_protected_branches` | ブール値           | いいえ       | `true`の場合、保護ブランチのみがミラーリングされます。 |
+| `mirror_branch_regex`     | 文字列            | いいえ       | ブランチ名をミラーするための正規表現。正規表現に一致する名前のブランチのみがミラーされます。`only_protected_branches`を無効にする必要があります。PremiumおよびUltimateのみです。 |
+| `only_protected_branches` | ブール値           | いいえ       | `true`の場合、保護ブランチのみがミラーされます。 |
 
-成功した場合、[`201 Created`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`201 Created`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                   | 型    | 説明 |
 |-----------------------------|---------|-------------|
@@ -244,15 +245,15 @@ POST /projects/:id/remote_mirrors
 | `host_keys`                 | 配列   | リモートミラーのSSHホストキーフィンガープリントの配列。 |
 | `id`                        | 整数 | リモートミラーのID。 |
 | `keep_divergent_refs`       | ブール値 | `true`の場合、ミラーリング時に分岐したrefsが保持されます。 |
-| `last_error`                | 文字列  | 前回のミラー試行からのエラーメッセージ。`null`の場合は成功。 |
-| `last_successful_update_at` | 文字列  | 最後に成功したミラー更新のタイムスタンプ。ISO 8601形式。 |
+| `last_error`                | 文字列  | 最後のミラー試行からのエラーメッセージ。`null`の場合、成功。 |
+| `last_successful_update_at` | 文字列  | 最後のミラー更新が正常に完了したタイムスタンプ。ISO 8601形式。 |
 | `last_update_at`            | 文字列  | 最後のミラー試行のタイムスタンプ。ISO 8601形式。 |
 | `last_update_started_at`    | 文字列  | 最後のミラー試行が開始されたときのタイムスタンプ。ISO 8601形式。 |
-| `only_protected_branches`   | ブール値 | `true`の場合、保護ブランチのみがミラーリングされます。 |
-| `update_status`             | 文字列  | ミラー更新のステータス。使用可能な値: `none`、`scheduled`、`started`、`finished`、`failed`。 |
-| `url`                       | 文字列  | セキュリティのために認証情報が削除されたミラーのURL。 |
+| `only_protected_branches`   | ブール値 | `true`の場合、保護ブランチのみがミラーされます。 |
+| `update_status`             | 文字列  | ミラー更新のステータス。指定可能な値: `none`、`scheduled`、`started`、`finished`、`failed`。 |
+| `url`                       | 文字列  | セキュリティのために認証情報が削除されたミラーURL。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -261,7 +262,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -284,34 +285,35 @@ curl --request POST \
 }
 ```
 
-## リモートミラーの属性を更新 {#update-a-remote-mirrors-attributes}
+## プロジェクト内のリモートミラーを更新 {#update-a-remote-mirror-in-a-project}
 
 {{< history >}}
 
-- `auth_method`は、GitLab 16.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155)されました。
-- `host_keys`属性は、GitLab 18.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435)されました。
+- フィールド`auth_method`がGitLab 16.10で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155)。
+- 属性`host_keys`がGitLab 18.4で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435)。
 
 {{< /history >}}
 
-リモートミラーの設定を更新します。リモートミラーの切替をオンまたはオフにするか、ミラーリングされるブランチのタイプを変更します。
+指定されたリモートミラーの設定または稼働状況を更新します。
 
 ```plaintext
 PUT /projects/:id/remote_mirrors/:mirror_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                 | 型              | 必須 | 説明 |
 |---------------------------|-------------------|----------|-------------|
 | `id`                      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `mirror_id`               | 整数           | はい      | リモートミラーのID。 |
-| `auth_method`             | 文字列            | いいえ       | ミラーの認証方法: 指定できる値: `ssh_public_key`、`password`。 |
+| `auth_method`             | 文字列            | いいえ       | ミラー認証方法。指定可能な値: `ssh_public_key`、`password`。 |
 | `enabled`                 | ブール値           | いいえ       | `true`の場合、ミラーが有効になります。 |
+| `host_keys`               | 文字列の配列  | いいえ       | ベア形式(`ssh-ed25519 AAAA...`)または完全な`known_hosts`形式(`hostname ssh-ed25519 AAAA...`)のSSHホストキー。ベアキーは、ミラーURLからホスト名を使用します。 |
 | `keep_divergent_refs`     | ブール値           | いいえ       | `true`の場合、ミラーリング時に分岐したrefsが保持されます。 |
-| `mirror_branch_regex`     | 文字列            | いいえ       | ミラーするブランチ名の正規表現。正規表現に一致する名前のブランチのみがミラーリングされます。`only_protected_branches`が有効になっている場合は機能しません。PremiumおよびUltimateのみです。 |
-| `only_protected_branches` | ブール値           | いいえ       | `true`の場合、保護ブランチのみがミラーリングされます。 |
+| `mirror_branch_regex`     | 文字列            | いいえ       | ブランチ名をミラーするための正規表現。正規表現に一致する名前のブランチのみがミラーされます。`only_protected_branches`が有効な場合は動作しません。PremiumおよびUltimateのみです。 |
+| `only_protected_branches` | ブール値           | いいえ       | `true`の場合、保護ブランチのみがミラーされます。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性                   | 型    | 説明 |
 |-----------------------------|---------|-------------|
@@ -320,15 +322,15 @@ PUT /projects/:id/remote_mirrors/:mirror_id
 | `host_keys`                 | 配列   | リモートミラーのSSHホストキーフィンガープリントの配列。 |
 | `id`                        | 整数 | リモートミラーのID。 |
 | `keep_divergent_refs`       | ブール値 | `true`の場合、ミラーリング時に分岐したrefsが保持されます。 |
-| `last_error`                | 文字列  | 前回のミラー試行からのエラーメッセージ。`null`の場合は成功。 |
-| `last_successful_update_at` | 文字列  | 最後に成功したミラー更新のタイムスタンプ。ISO 8601形式。 |
+| `last_error`                | 文字列  | 最後のミラー試行からのエラーメッセージ。`null`の場合、成功。 |
+| `last_successful_update_at` | 文字列  | 最後のミラー更新が正常に完了したタイムスタンプ。ISO 8601形式。 |
 | `last_update_at`            | 文字列  | 最後のミラー試行のタイムスタンプ。ISO 8601形式。 |
 | `last_update_started_at`    | 文字列  | 最後のミラー試行が開始されたときのタイムスタンプ。ISO 8601形式。 |
-| `only_protected_branches`   | ブール値 | `true`の場合、保護ブランチのみがミラーリングされます。 |
-| `update_status`             | 文字列  | ミラー更新のステータス。使用可能な値: `none`、`scheduled`、`started`、`finished`、`failed`。 |
-| `url`                       | 文字列  | セキュリティのために認証情報が削除されたミラーのURL。 |
+| `only_protected_branches`   | ブール値 | `true`の場合、保護ブランチのみがミラーされます。 |
+| `update_status`             | 文字列  | ミラー更新のステータス。指定可能な値: `none`、`scheduled`、`started`、`finished`、`failed`。 |
+| `url`                       | 文字列  | セキュリティのために認証情報が削除されたミラーURL。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PUT \
@@ -337,7 +339,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -360,7 +362,7 @@ curl --request PUT \
 }
 ```
 
-## 強制プッシュミラー更新 {#force-push-mirror-update}
+## プッシュミラーの強制プッシュ更新 {#force-push-mirror-update}
 
 {{< history >}}
 
@@ -368,22 +370,22 @@ curl --request PUT \
 
 {{< /history >}}
 
-プッシュミラーへの[更新を強制する](../user/project/repository/mirror/_index.md#force-an-update)。
+プッシュミラーへの[更新を強制します](../user/project/repository/mirror/_index.md#force-an-update)。
 
 ```plaintext
 POST /projects/:id/remote_mirrors/:mirror_id/sync
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性   | 型              | 必須 | 説明 |
 |-------------|-------------------|----------|-------------|
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `mirror_id` | 整数           | はい      | リモートミラーのID。 |
 
-成功すると、[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
+成功した場合、[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -391,24 +393,24 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486/sync"
 ```
 
-## リモートミラーを削除 {#delete-a-remote-mirror}
+## プロジェクトからリモートミラーを削除 {#delete-a-remote-mirror-from-a-project}
 
-リモートミラーを削除します。
+指定されたプロジェクトからリモートミラーを削除します。
 
 ```plaintext
 DELETE /projects/:id/remote_mirrors/:mirror_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性   | 型              | 必須 | 説明 |
 |-------------|-------------------|----------|-------------|
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `mirror_id` | 整数           | はい      | リモートミラーのID。 |
 
-成功すると、[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
+成功した場合、[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \

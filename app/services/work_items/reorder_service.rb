@@ -54,11 +54,10 @@ module WorkItems
     end
 
     def move_between_ids
-      params
-        .values_at(:move_before_id, :move_after_id)
-        .map(&:to_i)
-        .map { |id| id > 0 ? id : nil }
-        .then { |ids| ids.any? ? ids : nil }
+      Gitlab::RelativePositioning.parse_move_between_ids(
+        params[:move_before_id],
+        params[:move_after_id]
+      )
     end
     strong_memoize_attr :move_between_ids
   end

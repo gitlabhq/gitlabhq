@@ -1,10 +1,14 @@
 #
-# This list of browsers is a conservative definition, based on
+# This targets the Web Platform Baseline "Widely available" browser set: the
+# browser versions old enough to support web platform features that have been
+# stable across the core browser set (Chrome, Edge, Firefox, and Safari, both
+# desktop and mobile) for at least 30 months. See
+# https://web-platform-dx.github.io/baseline/ for details, and the supported
+# web browsers documented at
 # https://docs.gitlab.com/ee/install/requirements.html#supported-web-browsers.
 #
 # To see what browsers this targets, go here:
-# https://browsersl.ist/#q=%3E0.25%25%2C+not+dead
+# https://browsersl.ist/#q=baseline%20widely%20available
 #
 
-> 0.25%
-not dead
+baseline widely available

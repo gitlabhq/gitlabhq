@@ -1,11 +1,11 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { highCountTrim } from '~/lib/utils/text_utility';
 
 export default {
+  name: 'SuperSidebarCounter',
   components: {
-    GlIcon,
+    GlButton,
   },
   props: {
     count: {
@@ -30,32 +30,27 @@ export default {
     ariaLabel() {
       return `${this.count} ${this.label}`;
     },
-    component() {
-      return this.href ? 'a' : 'button';
-    },
     formattedCount() {
       if (Number.isFinite(this.count)) {
         return highCountTrim(this.count);
       }
       return this.count;
     },
-    countExists() {
-      return this.count.toString();
-    },
   },
 };
 </script>
 
 <template>
-  <component
-    :is="component"
+  <gl-button
     :aria-label="ariaLabel"
+    class="!gl-px-3"
     :href="href"
-    class="application-chrome-nav-item gl-relative gl-flex gl-items-center gl-justify-center"
+    :icon="icon"
+    category="tertiary"
+    :button-text-classes="['!gl-overflow-visible']"
   >
-    <gl-icon aria-hidden="true" :name="icon" class="gl-shrink-0" />
-    <span v-if="countExists" aria-hidden="true" class="gl-text-sm gl-font-semibold">{{
-      formattedCount
-    }}</span>
-  </component>
+    <span class="gl-text-sm gl-font-semibold">
+      {{ formattedCount }}
+    </span>
+  </gl-button>
 </template>

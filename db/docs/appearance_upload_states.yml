@@ -1,0 +1,10 @@
+---
+table_name: appearance_upload_states
+description: Separate table for Appearance Upload verification states
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242738
+milestone: '19.2'
+feature_categories:
+  - geo_replication
+classes:
+  - Geo::AppearanceUploadState
+gitlab_schema: gitlab_main_cell_setting

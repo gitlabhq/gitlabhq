@@ -76,7 +76,9 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
       it 'displays count of users projects' do
         visit admin_users_path
 
-        expect(find_by_testid("user-project-count-#{admin.id}").text).to eq("1")
+        within_testid("user-project-count-#{admin.id}") do
+          expect(page).to have_content('1')
+        end
       end
     end
 

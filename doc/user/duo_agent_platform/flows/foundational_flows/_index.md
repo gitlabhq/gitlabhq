@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Agent Foundations
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Foundational flows
 ---
@@ -25,13 +25,16 @@ Each flow is designed to solve a specific problem or help you with a development
 The following foundational flows are available:
 
 - [Software Development](software_development.md): Create AI-generated solutions for work across the software development lifecycle.
-- [Developer](developer.md): Create actionable merge requests from issues.
+- [Developer](developer.md): Create actionable merge requests from issues, or
+  complete different tasks in GitLab Duo Agentic Chat.
 - [Fix CI/CD Pipeline](fix_pipeline.md): Diagnose and repair failed jobs.
 - [Convert to GitLab CI/CD](convert_to_gitlab_ci.md): Migrate Jenkins pipelines to CI/CD.
 - [Code Review](code_review.md): Automate code review with AI-native analysis and feedback.
+- [Security Review](security_review.md): Detect business logic security vulnerabilities in merge request changes.
 - [Agentic SAST Vulnerability Resolution](agentic_sast_vulnerability_resolution.md): Automatically generate merge requests to resolve SAST vulnerabilities.
 - [SAST false positive detection](sast_false_positive_detection.md): Automatically identify and filter false positives in SAST findings.
 - [Secret false positive detection](secret_false_positive_detection.md): Automatically identify and filter false positives in secret detection findings.
+- [Agentic breaking change resolution](agentic-breaking-change-resolution.md): Automatically resolve breaking changes in dependency bump merge requests.
 
 ## For developers
 

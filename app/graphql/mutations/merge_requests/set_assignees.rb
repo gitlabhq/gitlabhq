@@ -5,6 +5,9 @@ module Mutations
     class SetAssignees < Base
       graphql_name 'MergeRequestSetAssignees'
 
+      authorize_granular_token permissions: :update_merge_request, boundary_argument: :project_path,
+        boundary_type: :project
+
       include Assignable
 
       def update_service_class

@@ -165,6 +165,33 @@ describe('TodoItemBody', () => {
       createComponent({ note: { bodyFirstLineHtml: '<p>This is a note</p>' } });
       expect(wrapper.vm.actionName).toBeNull();
     });
+
+    it('strips a leading blockquote so the preview stays inline', () => {
+      createComponent({
+        note: { bodyFirstLineHtml: '<blockquote><p>quoted text</p></blockquote>' },
+      });
+
+      expect(wrapper.find('blockquote').exists()).toBe(false);
+      expect(wrapper.find('p').exists()).toBe(false);
+      expect(wrapper.text()).toContain('quoted text');
+    });
+
+    it('strips a leading code block so the preview stays inline', () => {
+      createComponent({ note: { bodyFirstLineHtml: '<pre>some code</pre>' } });
+
+      expect(wrapper.find('pre').exists()).toBe(false);
+      expect(wrapper.text()).toContain('some code');
+    });
+
+    it('keeps inline formatting and links in the preview', () => {
+      createComponent({
+        note: { bodyFirstLineHtml: '<p>see <strong>this</strong> <a href="/x">link</a></p>' },
+      });
+
+      expect(wrapper.find('p').exists()).toBe(false);
+      expect(wrapper.find('strong').text()).toBe('this');
+      expect(wrapper.find('a').attributes('href')).toBe('/x');
+    });
   });
 
   describe('when current user is the author', () => {

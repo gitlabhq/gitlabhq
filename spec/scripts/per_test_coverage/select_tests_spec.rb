@@ -39,6 +39,14 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
     )
   end
 
+  before do
+    # A per-test coverage capture pipeline can set
+    # GLCI_PER_TEST_COVERAGE_FORCE_BUCKET globally to force a bucket sweep, and
+    # it would otherwise leak into the weekday and weekend examples here. The
+    # forced-bucket context below re-stubs it explicitly.
+    stub_env('GLCI_PER_TEST_COVERAGE_FORCE_BUCKET', nil)
+  end
+
   after do
     FileUtils.rm_rf(output_dir)
   end
@@ -236,6 +244,29 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
         end
       end
 
+      context 'when the weekend-slot API lookup fails' do
+        let(:now) { weekend_start }
+        let(:last_capture_sha) { 'sha' }
+
+        before do
+          allow(gitlab_api).to receive(:count_schedule_pipelines_since)
+            .and_raise(RuntimeError, 'GitLab API 401 for .../pipeline_schedules/23503/pipelines')
+          allow(clickhouse_client).to receive(:query).with(/max\(captured_sha\)/, anything)
+            .and_return([{ 'sha' => last_capture_sha }])
+          allow(git).to receive(:diff_files).and_return([])
+          allow(clickhouse_client).to receive(:query).with(/INTERVAL 14 DAY/, anything).and_return(
+            [{ 'test_file' => 'spec/models/user_spec.rb' }]
+          )
+        end
+
+        it 'does not crash and falls back to the weekday delta path', :aggregate_failures do
+          expect { select_tests.run! }.not_to raise_error
+
+          expect(clickhouse_client).to have_received(:query).with(/INTERVAL 14 DAY/, anything)
+          expect(File.read(foss_queue_path).split("\n")).to match_array(%w[spec/models/user_spec.rb])
+        end
+      end
+
       context 'when on Sunday with the Saturday sweep already done (many prior pipelines)' do
         let(:now) { Time.utc(2026, 5, 17, 12, 0, 0) } # Sunday 12:00 UTC
 
@@ -402,15 +433,15 @@ end
 RSpec.describe PerTestCoverage::SelectTests::GitlabApi, :silence_stdout, feature_category: :tooling do
   let(:api_url) { 'https://gitlab.example/api/v4' }
   let(:project_id) { '278964' }
-  let(:job_token) { 'fake-token' }
+  let(:private_token) { 'fake-token' }
   let(:since_time) { Time.utc(2026, 5, 16, 0, 0, 0) }
   let(:schedule_id) { 23_503 }
   let(:expected_url) do
-    URI.parse("#{api_url}/projects/#{project_id}/pipeline_schedules/#{schedule_id}/pipelines?per_page=100")
+    URI.parse("#{api_url}/projects/#{project_id}/pipeline_schedules/#{schedule_id}/pipelines?per_page=100&sort=desc")
   end
 
   subject(:client) do
-    described_class.new(api_url: api_url, project_id: project_id, job_token: job_token)
+    described_class.new(api_url: api_url, project_id: project_id, private_token: private_token)
   end
 
   def stub_http_get(code:, body:)
@@ -445,12 +476,35 @@ RSpec.describe PerTestCoverage::SelectTests::GitlabApi, :silence_stdout, feature
       expect(count).to eq(1)
     end
 
-    it 'sends the JOB-TOKEN header when one is configured' do
-      response = stub_http_get(code: 200, body: '[]')
+    it 'authenticates with the PRIVATE-TOKEN header, not the unaccepted JOB-TOKEN', :aggregate_failures do
+      captured_request = nil
+      response = instance_double(Net::HTTPResponse, code: '200', body: '[]')
+      http = instance_double(Net::HTTP)
+      allow(http).to receive(:request) do |req|
+        captured_request = req
+        response
+      end
+      allow(Net::HTTP).to receive(:start).and_yield(http).and_return(response)
 
       client.count_schedule_pipelines_since(schedule_id: schedule_id, since_time: since_time)
 
-      expect(response).to have_received(:code).at_least(:once)
+      expect(captured_request['PRIVATE-TOKEN']).to eq(private_token)
+      expect(captured_request['JOB-TOKEN']).to be_nil
+    end
+
+    it 'requests the most recent pipelines first so recent runs are counted' do
+      captured_request = nil
+      response = instance_double(Net::HTTPResponse, code: '200', body: '[]')
+      http = instance_double(Net::HTTP)
+      allow(http).to receive(:request) do |req|
+        captured_request = req
+        response
+      end
+      allow(Net::HTTP).to receive(:start).and_yield(http).and_return(response)
+
+      client.count_schedule_pipelines_since(schedule_id: schedule_id, since_time: since_time)
+
+      expect(captured_request.path).to eq(expected_url.request_uri)
     end
 
     it 'raises on a non-2xx response' do

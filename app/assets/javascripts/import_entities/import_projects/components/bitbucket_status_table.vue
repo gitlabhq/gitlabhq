@@ -3,6 +3,7 @@ import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import ImportProjectsTable from './import_projects_table.vue';
 
 export default {
+  name: 'BitbucketStatusTable',
   components: {
     ImportProjectsTable,
     GlAlert,

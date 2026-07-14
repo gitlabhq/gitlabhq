@@ -22,34 +22,46 @@ RSpec.describe RuboCop::Cop::Mcp::UseApiService, feature_category: :mcp_server d
     RUBY
   end
 
-  it 'flags classes inheriting from ::Mcp::Tools::BaseService' do
+  it 'flags classes inheriting from Base::BaseService' do
     expect_offense(<<~RUBY, msg: msg)
       module Mcp
         module Tools
-          class CustomTool < ::Mcp::Tools::BaseService
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
+          class CustomTool < Base::BaseService
+                             ^^^^^^^^^^^^^^^^^ %{msg}
           end
         end
       end
     RUBY
   end
 
-  it 'does not flag classes inheriting from ApiService' do
-    expect_no_offenses(<<~RUBY)
+  it 'flags classes inheriting from ::Mcp::Tools::Base::BaseService' do
+    expect_offense(<<~RUBY, msg: msg)
       module Mcp
         module Tools
-          class CustomTool < ApiService
+          class CustomTool < ::Mcp::Tools::Base::BaseService
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %{msg}
           end
         end
       end
     RUBY
   end
 
-  it 'does not flag classes inheriting from ::Mcp::Tools::ApiService' do
+  it 'does not flag classes inheriting from Base::ApiService' do
     expect_no_offenses(<<~RUBY)
       module Mcp
         module Tools
-          class CustomTool < ::Mcp::Tools::ApiService
+          class CustomTool < Base::ApiService
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not flag classes inheriting from ::Mcp::Tools::Base::ApiService' do
+    expect_no_offenses(<<~RUBY)
+      module Mcp
+        module Tools
+          class CustomTool < ::Mcp::Tools::Base::ApiService
           end
         end
       end
@@ -60,18 +72,9 @@ RSpec.describe RuboCop::Cop::Mcp::UseApiService, feature_category: :mcp_server d
     expect_no_offenses(<<~RUBY)
       module Mcp
         module Tools
-          class ApiService < BaseService
-          end
-        end
-      end
-    RUBY
-  end
-
-  it 'does not flag ApiService class inheriting from ::Mcp::Tools::BaseService' do
-    expect_no_offenses(<<~RUBY)
-      module Mcp
-        module Tools
-          class ApiService < ::Mcp::Tools::BaseService
+          module Base
+            class ApiService < BaseService
+            end
           end
         end
       end
@@ -101,8 +104,8 @@ RSpec.describe RuboCop::Cop::Mcp::UseApiService, feature_category: :mcp_server d
     expect_offense(<<~RUBY, msg: msg)
       module Mcp
         module Tools
-          class CustomTool < BaseService
-                             ^^^^^^^^^^^ %{msg}
+          class CustomTool < Base::BaseService
+                             ^^^^^^^^^^^^^^^^^ %{msg}
             def perform
               puts "doing work"
             end
@@ -116,8 +119,8 @@ RSpec.describe RuboCop::Cop::Mcp::UseApiService, feature_category: :mcp_server d
     expect_offense(<<~RUBY, msg: msg)
       module Mcp
         module Tools
-          class CustomTool < BaseService
-                             ^^^^^^^^^^^ %{msg}
+          class CustomTool < Base::BaseService
+                             ^^^^^^^^^^^^^^^^^ %{msg}
           end
         end
       end

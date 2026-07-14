@@ -1,5 +1,0 @@
----
-Database/RescueQueryCanceled:
-  Exclude:
-    - 'lib/gitlab/database/batch_counter.rb'
-    - 'lib/gitlab/issuables_count_for_state.rb'

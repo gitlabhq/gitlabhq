@@ -5,16 +5,16 @@ require 'spec_helper'
 RSpec.describe LooksAhead do
   include GraphqlHelpers
 
-  let_it_be(:the_user, freeze: false) { create(:user) }
-  let_it_be(:label_a, freeze: false) { create(:label) }
-  let_it_be(:label_b, freeze: false) { create(:label) }
-  let_it_be(:issue_a, freeze: false) { create(:issue, author: the_user, labels: [label_a, label_b]) }
-  let_it_be(:issue_b, freeze: false) { create(:issue, author: the_user, labels: [label_a]) }
-  let_it_be(:issue_c, freeze: false) { create(:issue, author: the_user, labels: [label_b]) }
-  let_it_be(:issue_d, freeze: false) { create(:issue, author: the_user) }
+  let_it_be(:the_user) { create(:user) }
+  let_it_be(:label_a) { create(:label) }
+  let_it_be(:label_b) { create(:label) }
+  let_it_be(:issue_a) { create(:issue, author: the_user, labels: [label_a, label_b]) }
+  let_it_be(:issue_b) { create(:issue, author: the_user, labels: [label_a]) }
+  let_it_be(:issue_c) { create(:issue, author: the_user, labels: [label_b]) }
+  let_it_be(:issue_d) { create(:issue, author: the_user) }
 
   # Simplified schema to test lookahead
-  let_it_be(:schema, freeze: false) do
+  let_it_be(:schema) do
     issues_resolver = Class.new(GraphQL::Schema::Resolver) do
       include LooksAhead
 

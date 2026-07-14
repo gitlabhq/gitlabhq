@@ -967,7 +967,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
           ai_context = contexts.find { |c| c[:schema] == Gitlab::Tracking::AiContext::SCHEMA_URL }
 
           expect(ai_context).not_to be_nil
-          expect(ai_context[:schema]).to eq('iglu:com.gitlab/ai_context/jsonschema/1-0-0')
+          expect(ai_context[:schema]).to eq('iglu:com.gitlab/ai_context/jsonschema/1-0-2')
           expect(ai_context[:data]).to be_a(Hash)
           expect(ai_context[:data]).to have_key(:session_id)
           expect(ai_context[:data]).to have_key(:model_name)

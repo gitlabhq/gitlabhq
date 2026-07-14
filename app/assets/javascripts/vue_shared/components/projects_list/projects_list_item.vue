@@ -82,6 +82,7 @@ export default {
       default: false,
     },
   },
+  emits: ['click-avatar', 'click-stat', 'click-topic', 'hover-stat', 'hover-visibility', 'refetch'],
   computed: {
     microdataAttributes() {
       if (!this.includeMicrodata) return {};

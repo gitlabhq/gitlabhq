@@ -210,7 +210,7 @@ describe('AddIssuableForm', () => {
         it('emits an event with a "relates_to" link type when the "relates to" radio input selected', () => {
           findAddIssuableForm().trigger('submit');
 
-          expect(wrapper.emitted('addIssuableFormSubmit')).toEqual([
+          expect(wrapper.emitted('add-issuable-form-submit')).toEqual([
             [
               {
                 pendingReferences: '',
@@ -224,7 +224,7 @@ describe('AddIssuableForm', () => {
           findRadioGroup().vm.$emit('input', linkedIssueTypesMap.BLOCKS);
           findAddIssuableForm().trigger('submit');
 
-          expect(wrapper.emitted('addIssuableFormSubmit')).toEqual([
+          expect(wrapper.emitted('add-issuable-form-submit')).toEqual([
             [
               {
                 pendingReferences: '',
@@ -238,7 +238,7 @@ describe('AddIssuableForm', () => {
           findRadioGroup().vm.$emit('input', linkedIssueTypesMap.IS_BLOCKED_BY);
           findAddIssuableForm().trigger('submit');
 
-          expect(wrapper.emitted('addIssuableFormSubmit')).toEqual([
+          expect(wrapper.emitted('add-issuable-form-submit')).toEqual([
             [
               {
                 pendingReferences: '',
@@ -315,6 +315,24 @@ describe('AddIssuableForm', () => {
         expect(actualSources.epics).toContain('?confidential_only=true');
         expect(actualSources.issues).toContain('?confidential_only=true');
       });
+    });
+  });
+
+  describe('canceling the form', () => {
+    it('emits `add-issuable-form-cancel` when Escape is pressed in the input', async () => {
+      createComponent({}, mount);
+
+      await wrapper.find('[data-testid="add-issue-field"]').trigger('keyup.escape');
+
+      expect(wrapper.emitted('add-issuable-form-cancel')).toHaveLength(1);
+    });
+
+    it('emits `add-issuable-form-cancel` when the cancel button is clicked', () => {
+      createComponent({}, mount);
+
+      findFormButtons().at(1).vm.$emit('click');
+
+      expect(wrapper.emitted('add-issuable-form-cancel')).toHaveLength(1);
     });
   });
 });

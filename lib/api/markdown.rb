@@ -26,6 +26,8 @@ module API
         ]
         tags %w[markdown]
       end
+      route_setting :authorization, permissions: :render_markdown,
+        boundaries: [{ boundary_type: :project, boundary_param: :project }, { boundary_type: :user }]
       post do
         context = { only_path: false, current_user: current_user }
         context[:pipeline] = params[:gfm] ? :full : :plain_markdown

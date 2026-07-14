@@ -4,6 +4,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'ExpirationIntervalDescription',
   components: {
     GlLink,
     GlSprintf,

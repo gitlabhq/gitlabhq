@@ -12,6 +12,9 @@ When you are optimizing your SQL queries, there are two dimensions to pay attent
 1. The query execution time. This is paramount as it reflects how the user experiences GitLab.
 1. The query plan. Optimizing the query plan is important in allowing queries to independently scale over time. Realizing that an index keeps a query performing well as the table grows before the query degrades is an example of why we analyze these plans.
 
+When the planner mis-estimates an `IN (...)` predicate and chooses a sequential scan over an index scan, see
+[Forcing index seeks with LATERAL joins](lateral_planner_fence.md) for a rewrite that forces one index seek per value.
+
 ## Timing guidelines for queries
 
 | Query Type                                | Maximum Query Time | Notes                                                                                                                                                                                                                                                                                                                      |

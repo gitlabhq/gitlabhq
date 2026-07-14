@@ -6,6 +6,9 @@ import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs_state';
+import { adminRootPath } from '~/lib/utils/path_helpers/admin';
+import { exploreAnalyticsDashboardsPath } from '~/lib/utils/path_helpers/explore';
+import { newUserRegistrationPath, newUserSessionPath } from '~/lib/utils/path_helpers/routes';
 import SuperSidebarToggle from './super_sidebar_toggle.vue';
 import CreateMenu from './create_menu.vue';
 import UserMenu from './user_menu.vue';
@@ -14,6 +17,7 @@ import PromoMenu from './promo_menu.vue';
 import { SEARCH_MODAL_ID } from './global_search/constants';
 
 export default {
+  name: 'SuperTopbar',
   SEARCH_MODAL_ID,
   staticBreadcrumbs,
   components: {
@@ -46,6 +50,11 @@ export default {
     menuLabel: __('Open navigation menu'),
   },
   inject: ['isSaas'],
+  provide() {
+    return {
+      showAdminAreaLink: this.showAdminButton,
+    };
+  },
   props: {
     sidebarData: {
       type: Object,
@@ -83,6 +92,12 @@ export default {
     },
   },
   methods: {
+    adminRootPath,
+    exploreAnalyticsDashboardsPath,
+    newUserRegistrationPath,
+    signInPath() {
+      return newUserSessionPath({ redirect_to_referer: 'yes' });
+    },
     onSearchButtonDrop(event) {
       const text = event.dataTransfer.getData('text/plain');
       if (text) {
@@ -182,7 +197,7 @@ export default {
         <gl-button
           v-if="glFeatures.exploreAnalyticsDashboards"
           v-gl-tooltip.bottom="$options.i18n.analyticsDashboardsBtnText"
-          :href="sidebarData.explore_analytics_dashboards_path"
+          :href="exploreAnalyticsDashboardsPath()"
           :aria-label="$options.i18n.analyticsDashboardsBtnText"
           category="tertiary"
           icon="chart"
@@ -198,16 +213,11 @@ export default {
           class="gl-border-r gl-mx-2 gl-my-3 gl-block gl-h-5 gl-w-1 gl-border-r-strong md:gl-ml-3 md:gl-mr-0"
         ></div>
 
-        <user-counts
-          v-if="isLoggedIn"
-          :sidebar-data="sidebarData"
-          class="gl-hidden md:gl-flex"
-          counter-class="gl-button btn btn-default btn-default-tertiary !gl-px-3"
-        />
+        <user-counts v-if="isLoggedIn" :sidebar-data="sidebarData" class="gl-hidden md:gl-flex" />
 
         <gl-button
           v-if="showAdminButton"
-          :href="sidebarData.admin_url"
+          :href="adminRootPath()"
           icon="admin"
           class="topbar-admin-link gl-hidden !gl-rounded-lg sm:gl-mr-1 xl:gl-flex"
           data-testid="topbar-admin-link"
@@ -223,7 +233,7 @@ export default {
           :href="
             isSaas && sidebarData.trial_registration_path
               ? sidebarData.trial_registration_path
-              : sidebarData.new_user_registration_path
+              : newUserRegistrationPath()
           "
           variant="confirm"
           class="topbar-signup-button gl-hidden lg:gl-flex"
@@ -233,7 +243,7 @@ export default {
         </gl-button>
         <gl-button
           v-if="signInVisible"
-          :href="sidebarData.sign_in_path"
+          :href="signInPath()"
           class="gl-hidden lg:gl-flex"
           data-testid="topbar-signin-button"
         >

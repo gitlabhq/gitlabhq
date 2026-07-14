@@ -4,7 +4,7 @@ module API
   module Entities
     module Releases
       class Link < Grape::Entity
-        expose :id, documentation: { type: 'Integer', example: 1 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
         expose :name, documentation: { type: 'String', example: 'app-v1.0.dmg' }
         expose :url, documentation:
           {

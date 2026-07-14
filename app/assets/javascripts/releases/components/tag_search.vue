@@ -25,6 +25,7 @@ export default {
       default: '',
     },
   },
+  emits: ['change', 'create', 'select'],
   data() {
     return {
       localQuery: this.query,

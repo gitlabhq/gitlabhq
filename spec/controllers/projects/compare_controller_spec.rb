@@ -8,7 +8,7 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project, :repository, :public) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   let(:private_fork) { fork_project(project, nil, repository: true).tap { |fork| fork.update!(visibility: 'private') } }
   let(:public_fork) do
@@ -21,7 +21,6 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
 
   before do
     sign_in(user)
-    project.add_maintainer(user)
   end
 
   describe 'GET index' do
@@ -199,7 +198,7 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
     end
 
     context 'when the target project is the default source but hidden to the user' do
-      let(:project) { create(:project, :repository, :private) }
+      let_it_be_with_reload(:project) { create(:project, :repository, :private, maintainers: user) }
       let(:from_ref) { 'improve%2Fmore-awesome' }
       let(:to_ref) { 'feature' }
       let(:whitespace) { nil }

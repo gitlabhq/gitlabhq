@@ -6,6 +6,8 @@ module Gitlab
       class Logger
         include ::Gitlab::Utils::StrongMemoize
 
+        DURATION_SUFFIX = '_duration_s'
+
         def self.current_monotonic_time
           ::Gitlab::Metrics::System.monotonic_time
         end
@@ -71,14 +73,12 @@ module Gitlab
               pipeline_creation_service_duration_s: age
             )
 
-            if pipeline.persisted?
-              taggable_statuses(pipeline).flat_map(&:tag_list).tap do |tag_list|
-                attributes[:pipeline_builds_tags_count] = tag_list.count
-                attributes[:pipeline_builds_distinct_tags_count] = tag_list.uniq.count
-              end
-
-              attributes[:pipeline_id] = pipeline.id
+            taggable_definitions(pipeline).flat_map(&:tag_list).tap do |tag_list|
+              attributes[:pipeline_builds_tags_count] = tag_list.count
+              attributes[:pipeline_builds_distinct_tags_count] = tag_list.uniq.count
             end
+
+            attributes[:pipeline_id] = pipeline.id if pipeline.persisted?
 
             attributes.compact!
             attributes.stringify_keys!
@@ -133,19 +133,34 @@ module Gitlab
         def observe_sql_counters(operation, start_db_counters, end_db_counters, once: false)
           end_db_counters.each do |key, value|
             result = value - start_db_counters.fetch(key, 0)
-            next if result == 0
+            next unless emit_sql_counter?(key, result, start_db_counters, end_db_counters)
 
             observe("#{operation}_#{key}", result, once: once)
           end
+        end
+
+        # Duration metrics are emitted even when the measured duration is 0, as
+        # long as the paired count key recorded activity (> 0). A count delta of
+        # 0 is omitted because it means nothing happened for that key.
+        def emit_sql_counter?(key, result, start_db_counters, end_db_counters)
+          return true unless result == 0
+
+          string_key = key.to_s
+          return false unless string_key.end_with?(DURATION_SUFFIX)
+
+          count_key = :"#{string_key.delete_suffix(DURATION_SUFFIX)}_count"
+          end_db_counters.fetch(count_key, 0) > start_db_counters.fetch(count_key, 0)
         end
 
         def current_db_counter_payload
           ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload
         end
 
-        def taggable_statuses(pipeline)
-          # NOTE: tag_list is already cached in memory from the build creation step
-          pipeline.stages.flat_map(&:statuses).select { |status| status.respond_to?(:tag_list=) }
+        def taggable_definitions(pipeline)
+          # NOTE: tag_list is already cached in memory on the temp definition from the build creation step
+          pipeline.stages.flat_map(&:statuses)
+            .filter_map { |status| status.temp_job_definition if status.respond_to?(:temp_job_definition) }
+            .compact
         end
       end
     end

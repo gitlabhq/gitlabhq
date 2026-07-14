@@ -95,6 +95,7 @@ export default {
       default: '',
     },
   },
+  emits: ['error', 'show-flux-resource-details'],
   data() {
     return {
       clusterResourceTypeParams: {

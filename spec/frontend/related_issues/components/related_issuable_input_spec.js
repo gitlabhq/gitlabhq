@@ -77,7 +77,7 @@ describe('RelatedIssuableInput', () => {
   });
 
   describe('when filling in the input', () => {
-    it('emits addIssuableFormInput with data', () => {
+    it('emits add-issuable-form-input with data', () => {
       mountComponent();
 
       const newInputValue = 'filling in things';
@@ -90,7 +90,7 @@ describe('RelatedIssuableInput', () => {
       input.element.selectionEnd = newInputValue.length;
       input.trigger('input');
 
-      expect(wrapper.emitted('addIssuableFormInput')).toEqual([
+      expect(wrapper.emitted('add-issuable-form-input')).toEqual([
         [
           {
             newValue: newInputValue,

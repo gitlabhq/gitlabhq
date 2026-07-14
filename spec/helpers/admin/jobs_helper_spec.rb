@@ -18,7 +18,6 @@ RSpec.describe Admin::JobsHelper, feature_category: :continuous_integration do
     it 'contains the correct data' do
       expect(data).to include(
         job_statuses: {}.to_json,
-        empty_state_svg_path: helper.image_path('illustrations/empty-state/empty-pipeline-md.svg'),
         url: cancel_all_admin_jobs_path,
         can_update_all_jobs: 'true'
       )

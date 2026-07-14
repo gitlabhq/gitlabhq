@@ -72,7 +72,7 @@ GET /projects/:id/pages
 
 | 属性                                 | 型       | 説明                                                                                                                  |
 | ----------------------------------------- | ---------- | -----------------------                                                                                                      |
-| `url`                                     | 文字列     | このプロジェクトのPagesにアクセスするためのURL。                                                                                            |
+| `url`                                     | 文字列     | このプロジェクトのPagesサイトにアクセスするためのURL。                                                                                            |
 | `is_unique_domain_enabled`                | ブール値    | [ユニークドメイン](../user/project/pages/introduction.md)が有効な場合。                                                        |
 | `force_https`                             | ブール値    | プロジェクトがHTTPSの強制に設定されている場合は`true`。                                                                                      |
 | `deployments[]`                           | 配列      | 現在の有効なデプロイのリスト。                                                                                          |
@@ -150,7 +150,7 @@ PATCH /projects/:id/pages
 
 | 属性                                 | 型       | 説明                                                                                                                  |
 | ----------------------------------------- | ---------- | -----------------------                                                                                                      |
-| `url`                                     | 文字列     | このプロジェクトのPagesにアクセスするためのURL。                                                                                            |
+| `url`                                     | 文字列     | このプロジェクトのPagesサイトにアクセスするためのURL。                                                                                            |
 | `is_unique_domain_enabled`                | ブール値    | [ユニークドメイン](../user/project/pages/introduction.md)が有効な場合。                                                        |
 | `force_https`                             | ブール値    | プロジェクトがHTTPSの強制に設定されている場合は`true`。                                                                                      |
 | `deployments[]`                           | 配列      | 現在の有効なデプロイのリスト。                                                                                          |

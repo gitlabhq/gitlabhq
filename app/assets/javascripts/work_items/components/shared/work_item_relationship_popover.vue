@@ -8,6 +8,7 @@ import WorkItemTypeIcon from '../work_item_type_icon.vue';
 const defaultDisplayLimit = 3;
 
 export default {
+  name: 'WorkItemRelationshipPopover',
   components: {
     GlPopover,
     GlLoadingIcon,
@@ -50,6 +51,7 @@ export default {
       required: false,
     },
   },
+  emits: ['click', 'mouseout', 'mouseover'],
   defaultDisplayLimit: 3,
   computed: {
     atLinkedItemsDisplayLimit() {

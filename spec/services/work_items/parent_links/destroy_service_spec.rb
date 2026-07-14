@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe WorkItems::ParentLinks::DestroyService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:guest) { create(:user) }
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project) { create(:project, guests: guest) }
     let_it_be(:work_item) { create(:work_item, project: project) }
     let_it_be(:task) { create(:work_item, :task, project: project) }
     let_it_be_with_refind(:parent_link) { create(:parent_link, work_item: task, work_item_parent: work_item) }
@@ -19,10 +19,6 @@ RSpec.describe WorkItems::ParentLinks::DestroyService, feature_category: :team_p
       # and we don't try to obtain an exclusive lease within a transaction.
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
       create(:support_bot)
-    end
-
-    before do
-      project.add_guest(guest)
     end
 
     context 'when user has permissions to update work items' do
@@ -76,7 +72,7 @@ RSpec.describe WorkItems::ParentLinks::DestroyService, feature_category: :team_p
     end
 
     context 'when user has insufficient permissions' do
-      let(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       it 'returns error message' do
         is_expected.to eq(message: 'No Work Item Link found', status: :error, http_status: 404)

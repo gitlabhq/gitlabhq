@@ -18,7 +18,7 @@ RSpec.describe Users::NamespaceVisitsController, type: :request, feature_categor
     end
 
     context "when user is signed-in" do
-      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       before do
         sign_in(user)

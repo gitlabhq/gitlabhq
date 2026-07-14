@@ -32,7 +32,7 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
 
         expect(page).to have_selector('.results', text: 'application.js')
         expect(page).to have_selector('.file-content .code')
-        expect(page).to have_selector("span.line[lang='javascript']")
+        expect(page).to have_selector("span.line[data-lang='javascript']")
         expect(page).to have_link('application.js', href: %r{master/files/js/application.js})
         expect(page).to have_button('Copy file path')
       end

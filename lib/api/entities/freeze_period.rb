@@ -3,7 +3,7 @@
 module API
   module Entities
     class FreezePeriod < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :freeze_start, documentation: { type: 'String', example: '0 23 * * 5' }
       expose :freeze_end, documentation: { type: 'String', example: '0 8 * * 1' }
       expose :cron_timezone, documentation: { type: 'String', example: 'UTC' }

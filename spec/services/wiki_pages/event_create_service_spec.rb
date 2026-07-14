@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe WikiPages::EventCreateService, feature_category: :wiki do
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
   subject { described_class.new(user) }
 
   describe '#execute' do
-    let_it_be(:page, freeze: false) { create(:wiki_page, project: project) }
+    let_it_be_with_reload(:page) { create(:wiki_page, project: project) }
 
     let(:slug) { generate(:sluggified_title) }
     let(:action) { :created }

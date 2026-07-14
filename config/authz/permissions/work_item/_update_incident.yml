@@ -5,3 +5,4 @@ description: Private permission that gates update access to incident work items.
   this permission, the issue and work item policies prevent updating,
   administering, and linking incident work items. Must not be checked directly
   at enforcement points.
+conditionally_enables: null

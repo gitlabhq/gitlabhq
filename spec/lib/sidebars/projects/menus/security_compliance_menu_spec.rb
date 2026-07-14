@@ -35,4 +35,16 @@ RSpec.describe Sidebars::Projects::Menus::SecurityComplianceMenu do
       end
     end
   end
+
+  describe 'Feature Library metadata' do
+    let(:show_promotions) { false }
+    let(:show_discover_project_security) { false }
+
+    it 'gives every item a description and a library_icon', :aggregate_failures do
+      serialized = described_class.new(context).renderable_items.map(&:serialize_for_super_sidebar)
+
+      expect(serialized).not_to be_empty
+      expect(serialized).to all(include(:description, :library_icon))
+    end
+  end
 end

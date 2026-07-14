@@ -11,6 +11,7 @@ module Projects
       validates :protected_branch, uniqueness: true
 
       validate :validate_protected_branch_belongs_to_project, if: -> { protected_branch_changed? || project_changed? }
+      validate :validate_protected_branch_not_wildcard, if: -> { protected_branch.present? }
 
       def branch_rule
         ::Projects::BranchRule.new(project, protected_branch)
@@ -23,6 +24,13 @@ module Projects
         return if protected_branch.project_id == project.id
 
         errors.add(:protected_branch, _('must belong to project'))
+      end
+
+      def validate_protected_branch_not_wildcard
+        return unless protected_branch.wildcard?
+
+        errors.add(:base,
+          _('Squash option cannot be used with wildcard branch rules. Use an exact branch name.'))
       end
     end
   end

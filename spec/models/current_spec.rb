@@ -149,4 +149,25 @@ RSpec.describe Current, feature_category: :organization do
       end
     end
   end
+
+  describe 'granular denied permissions' do
+    it 'defaults to nil' do
+      expect(described_class.granular_denied_permissions).to be_nil
+      expect(described_class.formatted_granular_denied_permissions).to be_nil
+    end
+
+    it 'accumulates a distinct union of permissions' do
+      described_class.add_granular_denied_permissions([:read_code, :read_repository])
+      described_class.add_granular_denied_permissions(:read_code)
+      described_class.add_granular_denied_permissions(nil)
+
+      expect(described_class.granular_denied_permissions).to contain_exactly(:read_code, :read_repository)
+    end
+
+    it 'formats permissions as a sorted comma-joined string of raw identifiers' do
+      described_class.add_granular_denied_permissions([:read_repository, :read_code])
+
+      expect(described_class.formatted_granular_denied_permissions).to eq('read_code,read_repository')
+    end
+  end
 end

@@ -71,6 +71,27 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
       expect(json_response['name']).to eq(project.name)
     end
 
+    it 'imports the project into the current organization', :aggregate_failures, :with_current_organization do
+      stub_application_setting(import_sources: ['github'])
+
+      group = create(:group)
+      group.add_owner(user)
+
+      expect do
+        post api("/import/github", user), params: {
+          target_namespace: group.full_path,
+          personal_access_token: token,
+          repo_id: non_existing_record_id
+        }
+      end.to change { Project.count }.by(1)
+
+      expect(response).to have_gitlab_http_status(:created)
+
+      imported_project = group.projects.last
+      expect(imported_project.namespace).to eq(group)
+      expect(imported_project.organization_id).to eq(current_organization.id)
+    end
+
     it 'returns 201 response when the project is imported successfully from GHE' do
       allow(Gitlab::LegacyGithubImport::ProjectCreator)
         .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
@@ -260,7 +281,7 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
     end
 
     it_behaves_like 'authorizing granular token permissions', :create_github_import do
-      let_it_be(:target_namespace, freeze: false) { create(:group) }
+      let_it_be(:target_namespace) { create(:group) }
       let(:boundary_object) { target_namespace }
 
       before_all do

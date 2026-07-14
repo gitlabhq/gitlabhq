@@ -4,12 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Commits::CreateService, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
-  let_it_be_with_refind(:project) { create(:project, :repository) }
+  let_it_be_with_refind(:project) { create(:project, :repository, maintainers: user) }
   let(:params) { {} }
-
-  before do
-    project.add_maintainer(user)
-  end
 
   subject(:service) do
     described_class.new(project, user, start_branch: 'master', branch_name: 'master', **params)

@@ -50,21 +50,31 @@ module Gitlab
               a.application_name,
               a.client_addr,
               a.backend_start,
+              (now() - a.backend_start) AS backend_age,
+              a.xact_start,
+              (now() - a.xact_start) AS xact_age,
               a.query_start,
+              (now() - a.query_start) AS query_age,
               a.state,
               a.wait_event_type,
               a.wait_event,
+              a.query_id,
               a.query,
-              l.locktype,
-              l.mode,
-              l.granted,
-              l.relation::regclass AS locked_relation
+              (
+                SELECT json_agg(json_build_object(
+                  'locktype', l.locktype,
+                  'mode', l.mode,
+                  'granted', l.granted,
+                  'locked_relation', l.relation::regclass
+                ))
+                FROM pg_locks l
+                WHERE l.pid = a.pid
+              ) AS locks
             FROM
               pg_stat_activity a
-            LEFT JOIN
-              pg_locks l ON l.pid = a.pid
             WHERE
-              a.state != 'idle'
+              a.pid != pg_backend_pid()
+              AND a.state != 'idle'
             ORDER BY
               a.query_start DESC;
           SQL

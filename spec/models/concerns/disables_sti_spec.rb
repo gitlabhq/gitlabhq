@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe DisablesSti, feature_category: :database do
   describe '.allow_legacy_sti_class' do
     it 'is nil by default' do
-      expect(ApplicationRecord.allow_legacy_sti_class).to eq(nil)
+      expect(ApplicationRecord.allow_legacy_sti_class).to be_nil
     end
 
     it 'is true on legacy models' do
-      expect(PersonalSnippet.allow_legacy_sti_class).to eq(true)
+      expect(PersonalSnippet.allow_legacy_sti_class).to be(true)
     end
   end
 end

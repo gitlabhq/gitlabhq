@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe "Internal references", :js, feature_category: :markdown do
-  include Features::NotesHelpers
-
   let(:private_project_user) { private_project.first_owner }
   let(:private_project) { create(:project, :private, :repository) }
   let(:private_project_issue) { create(:issue, project: private_project) }
@@ -14,17 +12,28 @@ RSpec.describe "Internal references", :js, feature_category: :markdown do
   let(:public_project_issue) { create(:issue, project: public_project) }
   let(:public_project_merge_request) { create(:merge_request, source_project: public_project) }
 
+  # Create the referencing note directly instead of through the UI as
+  # private_project_user. This avoids switching users within a single JS test,
+  # which can fail with ActionController::InvalidAuthenticityToken when an
+  # AJAX request from the previously loaded page (for example
+  # POST /-/track_namespace_visits) is processed after the Warden session
+  # resets and rotates the CSRF token. Calling create_cross_references!
+  # mirrors what Notes::PostProcessService does when a note is created.
+  def create_referencing_note(noteable, reference)
+    create(
+      :note,
+      noteable: noteable,
+      project: private_project,
+      author: private_project_user,
+      note: "##{reference.to_reference(private_project)}"
+    ).create_cross_references!
+  end
+
   context "when referencing to open issue" do
     context "from private project" do
       context "from issue" do
         before do
-          sign_in(private_project_user)
-
-          visit(project_issue_path(private_project, private_project_issue))
-          wait_for_requests
-
-          fill_in('Add a reply', with: "##{public_project_issue.to_reference(private_project)}")
-          click_button 'Comment'
+          create_referencing_note(private_project_issue, public_project_issue)
         end
 
         context "when user doesn't have access to private project" do
@@ -41,12 +50,7 @@ RSpec.describe "Internal references", :js, feature_category: :markdown do
 
       context "from merge request" do
         before do
-          sign_in(private_project_user)
-
-          visit(project_merge_request_path(private_project, private_project_merge_request))
-          wait_for_requests
-
-          add_note("##{public_project_issue.to_reference(private_project)}")
+          create_referencing_note(private_project_merge_request, public_project_issue)
         end
 
         context "when user doesn't have access to private project" do
@@ -64,6 +68,8 @@ RSpec.describe "Internal references", :js, feature_category: :markdown do
 
         context "when user has access to private project" do
           before do
+            sign_in(private_project_user)
+
             visit(project_issue_path(public_project, public_project_issue))
             wait_for_requests
           end
@@ -86,13 +92,7 @@ RSpec.describe "Internal references", :js, feature_category: :markdown do
     context "from private project" do
       context "from issue" do
         before do
-          sign_in(private_project_user)
-
-          visit(project_issue_path(private_project, private_project_issue))
-          wait_for_requests
-
-          fill_in('Add a reply', with: "##{public_project_merge_request.to_reference(private_project)}")
-          click_button 'Comment'
+          create_referencing_note(private_project_issue, public_project_merge_request)
         end
 
         context "when user doesn't have access to private project" do
@@ -109,12 +109,7 @@ RSpec.describe "Internal references", :js, feature_category: :markdown do
 
       context "from merge request" do
         before do
-          sign_in(private_project_user)
-
-          visit(project_merge_request_path(private_project, private_project_merge_request))
-          wait_for_requests
-
-          add_note("##{public_project_merge_request.to_reference(private_project)}")
+          create_referencing_note(private_project_merge_request, public_project_merge_request)
         end
 
         context "when user doesn't have access to private project" do
@@ -132,6 +127,8 @@ RSpec.describe "Internal references", :js, feature_category: :markdown do
 
         context "when user has access to private project" do
           before do
+            sign_in(private_project_user)
+
             visit(project_merge_request_path(public_project, public_project_merge_request))
             wait_for_requests
           end

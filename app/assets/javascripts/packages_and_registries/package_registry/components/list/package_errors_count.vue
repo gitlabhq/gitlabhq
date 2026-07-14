@@ -18,6 +18,7 @@ export default {
   },
   mixins: [InternalEvents.mixin()],
   inject: ['isGroupPage', 'fullPath'],
+  emits: ['confirm-delete'],
   apollo: {
     errorPackages: {
       query: getPackageErrorsCountQuery,

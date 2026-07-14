@@ -88,11 +88,6 @@ export default {
       required: false,
       default: false,
     },
-    supportsQuickActions: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     codeSuggestionsConfig: {
       type: Object,
       required: false,
@@ -268,7 +263,7 @@ export default {
         :autosave-key="autosaveKey"
         :autocomplete-data-sources="autocompleteDataSources"
         :disabled="isSubmitting"
-        :supports-quick-actions="supportsQuickActions"
+        supports-quick-actions
         :autofocus="autofocus"
         :restore-from-autosave="restoreFromAutosave"
         @input="$emit('input', $event)"

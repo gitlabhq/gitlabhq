@@ -45,7 +45,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
   end
 
   context 'group project' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
 
     before_all do
@@ -96,7 +96,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     end
 
     context 'group project' do
-      let_it_be(:group, freeze: false) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group) }
       let_it_be(:project) { create(:project, group: group) }
       let_it_be(:user1) { create(:user) }
       let_it_be(:user2) { create(:user) }
@@ -238,7 +238,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     context 'when source_project does not exist' do
       let_it_be(:source_project) { nil }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -264,7 +264,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     end
 
     context 'group project' do
-      let_it_be(:group, freeze: false) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group) }
       let_it_be(:project) { create(:project, group: group) }
       let_it_be(:requester) { create(:user) }
 
@@ -324,9 +324,9 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
   end
 
   describe '#has_user?' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
     let_it_be(:project) { create(:project, namespace: group) }
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:user2) { create(:user) }
     let_it_be(:invited_project_member) { create(:project_member, :owner, :invited, project: project) }
 
@@ -359,15 +359,15 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
 
     context 'when the user is an invited member' do
       it 'returns false when nil is passed' do
-        expect(invited_project_member.user).to eq(nil)
+        expect(invited_project_member.user).to be_nil
         expect(project.team.has_user?(invited_project_member.user)).to be_falsey
       end
     end
   end
 
   describe "#human_max_access" do
-    let_it_be(:user, freeze: false) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:user) { create(:user) }
+    let_it_be_with_reload(:group) { create(:group) }
     let_it_be(:project) { create(:project, namespace: group) }
 
     it 'returns Maintainer role' do
@@ -470,7 +470,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     end
 
     context 'group project' do
-      let_it_be(:group, freeze: false) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group) }
       let_it_be(:project) { create(:project, group: group) }
 
       before_all do
@@ -507,7 +507,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
   end
 
   describe '#member?' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
     let_it_be(:developer) { create(:user) }
     let_it_be(:maintainer) { create(:user) }
     let_it_be(:group_project) { create(:project, namespace: group) }
@@ -619,7 +619,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
 
   shared_examples 'max member access for users' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group) }
     let_it_be(:second_group) { create(:group) }
 
     let_it_be(:maintainer) { create(:user) }
@@ -684,7 +684,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
   end
 
   describe '#max_member_access_for_user' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     context 'when user is not persisted' do
       let(:non_persisted_user) { build(:user) }

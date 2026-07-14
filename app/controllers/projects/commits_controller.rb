@@ -10,7 +10,7 @@ class Projects::CommitsController < Projects::ApplicationController
   include HandlesGitalyErrors
 
   COMMITS_DEFAULT_LIMIT = 40
-  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
+  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss, permission: :read_code) }
   around_action :allow_gitaly_ref_name_caching
   before_action :require_non_empty_project
   before_action :authorize_read_code!

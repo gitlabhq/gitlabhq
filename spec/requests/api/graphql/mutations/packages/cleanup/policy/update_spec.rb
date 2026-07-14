@@ -41,7 +41,7 @@ RSpec.describe 'Updating the packages cleanup policy', feature_category: :packag
       expect_graphql_errors_to_be_empty
       expect(packages_cleanup_policy_response['keepNDuplicatedPackageFiles'])
         .to eq(params[:keep_n_duplicated_package_files])
-      expect(packages_cleanup_policy_response['nextRunAt']).not_to eq(nil)
+      expect(packages_cleanup_policy_response['nextRunAt']).not_to be_nil
     end
   end
 
@@ -53,7 +53,7 @@ RSpec.describe 'Updating the packages cleanup policy', feature_category: :packag
       expect_graphql_errors_to_be_empty
       expect(packages_cleanup_policy_response['keepNDuplicatedPackageFiles'])
         .to eq(params[:keep_n_duplicated_package_files])
-      expect(packages_cleanup_policy_response['nextRunAt']).not_to eq(nil)
+      expect(packages_cleanup_policy_response['nextRunAt']).not_to be_nil
     end
   end
 

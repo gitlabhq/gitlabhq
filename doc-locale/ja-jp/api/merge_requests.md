@@ -27,9 +27,9 @@ title: マージリクエストAPI
 - GitLab 17.0で`merge_user_username`が[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002)。
 - GitLab 17.2で`order_by`の`merged_at`値が[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147052)。
 - `merge_after`はGitLab 17.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165092)されました。
-- `security_policy_violations`は、GitLab 18.4で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/473704)となりました。機能フラグ`policy_mergability_check`は削除されました。
+- `security_policy_violations`は、GitLab 18.4で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/473704)になりました。機能フラグ`policy_mergability_check`は削除されました。
 - GitLab 19.0で`draft`フィルターパラメータが[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234098)。
-- GitLab 19.0で、`wip`フィルターパラメータは非推奨と[なりました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234098)。
+- GitLab 19.0で、`wip`フィルターパラメータは[非推奨となりました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234098)。
 
 {{< /history >}}
 
@@ -149,7 +149,7 @@ GET /merge_requests?search=foo&in=title
 | `description_html`                       | 文字列   | `render_html`が設定されている場合、記述のレンダリングされたHTMLバージョン。 |
 | `detailed_merge_status`                  | 文字列   | 詳細なマージステータス情報。使用可能な値のリストについては、[マージ状態](#merge-status)を参照してください。 |
 | `discussion_locked`                      | ブール値  | `true`の場合、ディスカッションはロックされます。ロックされたディスカッションでは、プロジェクトメンバーのみがコメントの追加、編集、または解決を行うことができます。 |
-| `downvotes`                              | 整数  | マージリクエストの同意しない数。 |
+| `downvotes`                              | 整数  | マージリクエストに対する不同意の数。 |
 | `draft`                                  | ブール値  | `true`の場合、マージリクエストは`draft`状態としてマークされます。 |
 | `force_remove_source_branch`             | ブール値  | `true`の場合、プロジェクト設定はマージ後にソースブランチの削除を強制します。 |
 | `has_conflicts`                          | ブール値  | `true`の場合、マージリクエストには競合があり、マージできません。`merge_status`プロパティに依存します。`merge_status`が`cannot_be_merged`でない限り、`false`を返します。 |
@@ -223,12 +223,12 @@ GET /merge_requests?search=foo&in=title
 | `title`                                  | 文字列   | マージリクエストのタイトル。 |
 | `title_html`                             | 文字列   | `render_html`が`true`の場合、タイトルのレンダリングされたHTMLバージョン。 |
 | `updated_at`                             | 日時 | マージリクエストの最終更新時のタイムスタンプ。 |
-| `upvotes`                                | 整数  | マージリクエストへの同意数。 |
+| `upvotes`                                | 整数  | マージリクエストに対する同意の数。 |
 | `user_notes_count`                       | 整数  | ユーザーコメントの数。 |
 | `web_url`                                | 文字列   | マージリクエストを表示するためのWeb URL。 |
 | `work_in_progress`                       | ブール値  | 非推奨。代わりに`draft`を使用してください。 |
 
-その他の発生しうる応答:
+その他のレスポンス:
 
 - アクセストークンが無効な場合は`401 Unauthorized`。
 - データベースのクエリがタイムアウトした場合の`408 Request Timeout`。
@@ -439,7 +439,7 @@ GET /projects/:id/merge_requests?my_reaction_emoji=star
 | `[].description`                   | 文字列   | マージリクエストの説明。 |
 | `[].detailed_merge_status`         | 文字列   | マージリクエストの詳細なマージ状態。使用可能な値のリストについては、[マージ状態](#merge-status)を参照してください。 |
 | `[].discussion_locked`             | ブール値  | マージリクエストのコメントがメンバーのみにロックされているかどうかを示します。 |
-| `[].downvotes`                     | 整数  | マージリクエストの同意しない数。 |
+| `[].downvotes`                     | 整数  | マージリクエストに対する不同意の数。 |
 | `[].draft`                         | ブール値  | マージリクエストがドラフトかどうかを示します。 |
 | `[].force_remove_source_branch`    | ブール値  | プロジェクトの設定で、マージ後にソースブランチを削除するかどうかを示します。 |
 | `[].has_conflicts`                 | ブール値  | マージリクエストに競合があり、マージできないかどうかを示します。`merge_status`プロパティに依存します。`merge_status`が`cannot_be_merged`でない限り、`false`を返します。 |
@@ -470,7 +470,7 @@ GET /projects/:id/merge_requests?my_reaction_emoji=star
 | `[].time_stats`                    | オブジェクト   | マージリクエストのタイムトラッキング統計。`time_estimate`、`total_time_spent`、`human_time_estimate`、および`human_total_time_spent`が含まれます。 |
 | `[].title`                         | 文字列   | マージリクエストのタイトル。 |
 | `[].updated_at`                    | 日時 | マージリクエストが更新された時のタイムスタンプ。 |
-| `[].upvotes`                       | 整数  | マージリクエストへの同意数。 |
+| `[].upvotes`                       | 整数  | マージリクエストに対する同意の数。 |
 | `[].user_notes_count`              | 整数  | マージリクエストのユーザーノート数。 |
 | `[].web_url`                       | 文字列   | マージリクエストのWeb URL。 |
 | `[].work_in_progress`              | ブール値  | 非推奨: 代わりに`draft`を使用してください。マージリクエストがドラフトかどうかを示します。 |
@@ -717,7 +717,7 @@ GET /groups/:id/merge_requests?my_reaction_emoji=star
 | `description`                            | 文字列   | マージリクエストの説明。キャッシュ用にHTMLとしてレンダリングされたMarkdownが含まれます。 |
 | `detailed_merge_status`                  | 文字列   | 詳細なマージステータス情報。使用可能な値のリストについては、[マージ状態](#merge-status)を参照してください。 |
 | `discussion_locked`                      | ブール値  | `true`の場合、ディスカッションはロックされます。ロックされたディスカッションでは、プロジェクトメンバーのみがコメントの追加、編集、または解決を行うことができます。 |
-| `downvotes`                              | 整数  | マージリクエストの同意しない数。 |
+| `downvotes`                              | 整数  | マージリクエストに対する不同意の数。 |
 | `draft`                                  | ブール値  | `true`の場合、マージリクエストは`draft`状態としてマークされます。 |
 | `force_remove_source_branch`             | ブール値  | `true`の場合、プロジェクト設定はマージ後にソースブランチの削除を強制します。 |
 | `has_conflicts`                          | ブール値  | `true`の場合、マージリクエストには競合があり、マージできません。`merge_status`プロパティに依存します。`merge_status`が`cannot_be_merged`でない限り、`false`を返します。 |
@@ -790,12 +790,12 @@ GET /groups/:id/merge_requests?my_reaction_emoji=star
 | `time_stats.total_time_spent`            | 整数  | マージリクエストでの作業に費やされた合計時間（秒単位）。 |
 | `title`                                  | 文字列   | マージリクエストのタイトル。 |
 | `updated_at`                             | 日時 | マージリクエストの最終更新時のタイムスタンプ。 |
-| `upvotes`                                | 整数  | マージリクエストへの同意数。 |
+| `upvotes`                                | 整数  | マージリクエストに対する同意の数。 |
 | `user_notes_count`                       | 整数  | ユーザーコメントの数。 |
 | `web_url`                                | 文字列   | マージリクエストを表示するためのWeb URL。 |
 | `work_in_progress`                       | ブール値  | 非推奨。代わりに`draft`を使用してください。 |
 
-その他の発生しうる応答:
+その他のレスポンス:
 
 - アクセストークンが無効な場合は`401 Unauthorized`。
 - プロジェクトまたはマージリクエストが見つからない場合の`404 Not Found`。
@@ -948,7 +948,7 @@ GET /projects/:id/merge_requests/:merge_request_iid
 | `include_rebase_in_progress`     | ブール値           | いいえ       | `true`の場合、レスポンスにリベース操作が進行中かどうかが含まれます。 |
 | `render_html`                    | ブール値           | いいえ       | `true`の場合、レスポンスには、タイトルと説明用にレンダリングされたHTMLが含まれます。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)を返します。その他の発生しうる応答:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)を返します。その他のレスポンス:
 
 - アクセストークンが無効な場合は`401 Unauthorized`。
 - アクセスが拒否された場合の`403 Forbidden`。
@@ -1005,7 +1005,7 @@ GET /projects/:id/merge_requests/:merge_request_iid
 | `diff_refs.head_sha`                                        | 文字列   | ソースブランチのHEADコミットのSHA。マージリクエスト内の最新のコミット。 |
 | `discussion_locked`                                         | ブール値  | `true`の場合、ディスカッションはロックされます。ロックされたディスカッションでは、プロジェクトメンバーのみがコメントの追加、編集、または解決を行うことができます。 |
 | `diverged_commits_count`                                    | 整数  | 設定されている場合、ソースブランチがターゲットブランチに対して遅れているコミットの数。 |
-| `downvotes`                                                 | 整数  | マージリクエストの同意しない数。 |
+| `downvotes`                                                 | 整数  | マージリクエストに対する不同意の数。 |
 | `draft`                                                     | ブール値  | `true`の場合、マージリクエストは`draft`状態としてマークされます。 |
 | `first_contribution`                                        | ブール値  | `true`の場合、作成者のこのプロジェクトへの最初のコントリビュート。 |
 | `first_deployed_to_production_at`                           | 日時 | 最初のデプロイメントが完了した時点のタイムスタンプ。 |
@@ -1135,7 +1135,7 @@ GET /projects/:id/merge_requests/:merge_request_iid
 | `time_stats.total_time_spent`                               | 整数  | マージリクエストでの作業に費やされた合計時間（秒単位）。 |
 | `title`                                                     | 文字列   | マージリクエストのタイトル。 |
 | `updated_at`                                                | 日時 | マージリクエストの最終更新時のタイムスタンプ。 |
-| `upvotes`                                                   | 整数  | マージリクエストへの同意数。 |
+| `upvotes`                                                   | 整数  | マージリクエストに対する同意の数。 |
 | `user[]`                                                    | オブジェクト   | マージリクエストに対してリクエストされたユーザーの権限。 |
 | `user.can_merge`                                            | ブール値  | `true`の場合、現在の認証済みユーザーはこのマージリクエストをマージすることができます。 |
 | `user_notes_count`                                          | 整数  | ユーザーコメントの数。 |
@@ -2879,6 +2879,13 @@ curl --request DELETE \
 
 ## マージリクエストをマージする {#merge-a-merge-request}
 
+{{< history >}}
+
+- [マージトレイン](../ci/pipelines/merge_trains.md)が有効なプロジェクトにおけるマージトレインへの`auto_merge`リクエストのルーティングは、GitLab 19.1で`fix_merge_api_train_bypass`という名前の[機能フラグ](../administration/feature_flags/_index.md)によって[変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237922)されました。デフォルトでは無効になっています。直接マージする代わりに、マージリクエストがマージトレインに追加されます。
+- 機能フラグ`fix_merge_api_train_bypass`はGitLab 19.1で削除されました。
+
+{{< /history >}}
+
 このAPIを使用して、マージリクエストで送信された変更を受け入れてマージします。
 
 ```plaintext
@@ -2891,7 +2898,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/merge
 |--------------------------------|-------------------|----------|-------------|
 | `id`                           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `merge_request_iid`            | 整数           | はい      | マージリクエストの内部ID。 |
-| `auto_merge`                   | ブール値           | いいえ       | `true`の場合、パイプラインが成功すると、マージリクエストがマージされます。 |
+| `auto_merge`                   | ブール値           | いいえ       | もし`true`であれば、チェックがパスするとマージリクエストがマージされます。 |
 | `merge_commit_message`         | 文字列            | いいえ       | カスタムGitLab Duoマージコミットメッセージ。 |
 | `merge_when_pipeline_succeeds` | ブール値           | いいえ       | GitLab 17.11で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/521291)になりました。代わりに`auto_merge`を使用してください。 |
 | `sha`                          | 文字列            | いいえ       | 存在する場合、このSHAはソースブランチのHEADと一致する必要があります。レビューされたコミットのみがマージされることを保証するために使用します。 |
@@ -3350,7 +3357,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 | `[].created_at`             | 日時 | イシューが作成された時点のタイムスタンプ。 |
 | `[].description`            | 文字列   | イシューの説明。 |
 | `[].discussion_locked`      | ブール値  | イシューのコメントがメンバーのみにロックされているかどうかを示します。 |
-| `[].downvotes`              | 整数  | イシューが受け取った「同意しない」の数。 |
+| `[].downvotes`              | 整数  | イシューに対する不同意の数。 |
 | `[].due_date`               | 日付     | イシューの期限。 |
 | `[].id`                     | 整数  | イシューのID。 |
 | `[].iid`                    | 整数  | イシューの内部ID。 |
@@ -3365,7 +3372,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 | `[].title`                  | 文字列   | イシューのタイトル。 |
 | `[].type`                   | 文字列   | イシューのタイプ。`issue_type`と同じですが、大文字です。 |
 | `[].updated_at`             | 日時 | イシューが更新された時点のタイムスタンプ。 |
-| `[].upvotes`                | 整数  | イシューが受け取った同意するの数。 |
+| `[].upvotes`                | 整数  | イシューに対する同意の数。 |
 | `[].user_notes_count`       | 整数  | イシューのユーザーノート数。 |
 | `[].web_url`                | 文字列   | イシューのWeb URL。 |
 | `[].weight`                 | 整数  | イシューのウェイト。 |
@@ -4023,7 +4030,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/versions
 | `id`                | 文字列  | はい      | プロジェクトのID。                |
 | `merge_request_iid` | 整数 | はい      | マージリクエストの内部ID。 |
 
-レスポンス内のSHAの説明については、[API応答内のSHA](#shas-in-the-api-response)を参照してください。
+レスポンス内のSHAの説明については、[APIレスポンスのSHA](#shas-in-the-api-response)を参照してください。
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

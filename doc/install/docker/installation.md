@@ -332,7 +332,7 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
    ```
 
    To reduce complexity, the previous example excludes the `network` configuration.
-   You can find more information in the official [Compose file reference](https://docs.docker.com/compose/compose-file/).
+   You can find more information in the official [Compose file reference](https://docs.docker.com/reference/compose-file/).
 
 1. Create a `gitlab.rb` file:
 

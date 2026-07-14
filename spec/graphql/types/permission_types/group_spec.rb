@@ -26,23 +26,23 @@ RSpec.describe Types::PermissionTypes::Group, feature_category: :groups_and_proj
   end
 
   describe '#can_leave' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:group) { create(:group) }
 
     subject { resolve_field(:can_leave, group, current_user: user) }
 
     context 'when authenticated' do
-      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       context 'when user is member' do
         context 'when user has permission to leave the group' do
-          let_it_be(:group_owner, freeze: false) { create(:group_member, :owner, group: group, user: create(:user)) }
-          let_it_be(:group_member, freeze: false) { create(:group_member, group: group, user: user) }
+          let_it_be(:group_owner) { create(:group_member, :owner, group: group, user: create(:user)) }
+          let_it_be(:group_member) { create(:group_member, group: group, user: user) }
 
           it { is_expected.to be(true) }
         end
 
         context 'when user has no permission to leave the group' do
-          let_it_be(:group_owner, freeze: false) { create(:group_member, :owner, user: user) }
+          let_it_be(:group_owner) { create(:group_member, :owner, user: user) }
 
           it { is_expected.to be(false) }
         end
@@ -54,33 +54,33 @@ RSpec.describe Types::PermissionTypes::Group, feature_category: :groups_and_proj
     end
 
     context 'when unauthenticated' do
-      let_it_be(:user, freeze: false) { nil }
+      let_it_be(:user) { nil }
 
       it { is_expected.to be(false) }
     end
   end
 
   describe '#admin_all_resources' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:group) { create(:group) }
 
     subject { resolve_field(:admin_all_resources, group, current_user: user) }
 
     context 'when authenticated', :enable_admin_mode do
       context 'when user is an admin' do
-        let_it_be(:user, freeze: false) { create(:admin) }
+        let_it_be(:user) { create(:admin) }
 
         it { is_expected.to be(true) }
       end
 
       context 'when user is not an admin' do
-        let_it_be(:user, freeze: false) { create(:user) }
+        let_it_be(:user) { create(:user) }
 
         it { is_expected.to be(false) }
       end
     end
 
     context 'when unauthenticated' do
-      let_it_be(:user, freeze: false) { nil }
+      let_it_be(:user) { nil }
 
       it { is_expected.to be(false) }
     end

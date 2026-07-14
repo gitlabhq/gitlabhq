@@ -55,7 +55,7 @@ Draft your content as soon as possible to avoid missing the cutoff!
          Not every release item links to an exact match in the documentation. Just ensure the link seems appropriate.
   - [ ] `work_item`: Links to correct epic, issue, or MR.
   - [ ] `categories`: Required. Matches an existing term from [`categories.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml). If needed, add or update a category as [described in the handbook](https://handbook.gitlab.com/handbook/product/categories/#category-and-feature-changes).
-  - [ ] `level`: If [`primary`](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#primary-vs-secondary):
+  - [ ] `level`: Optional. If [`primary`](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#primary-vs-secondary):
     - Include or update [`features.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/features.yml) as needed, as described in the [Handbook](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#features).
     - [Update the pricing theme, if a Premium or Ultimate feature](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/.gitlab/merge_request_templates/pricing-theme-primary-feature.md).
   - [ ] `weight`: Default `50`. Only change if the release note must be listed above other items in the section. Smaller numbers are listed first, so change to a smaller number to move an item up in the list. Leave gaps for other items to be inserted above or below.
@@ -102,7 +102,7 @@ After [the technical writer from the corresponding group](https://handbook.gitla
   - [ ] `documentation_link`: Uses a relative URL, no `.md` extension, links to accurate and updated docs
   - [ ] `work_item`: Links to correct epic, issue, or MR.
   - [ ] `categories`: Matches an existing term from [`categories.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml). If a category doesn't exist, the PM must add one.
-  - [ ] `level`: If `primary`, matches an existing term in [`features.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/features.yml). If a feature doesn't exist, the PM must add one.
+  - [ ] `level`: Optional. If `primary`, matches an existing term in [`features.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/features.yml). If a feature doesn't exist, the PM must add one.
   - [ ] `weight`: Default `50`. Only change if the release note must be listed above other items in the section. Smaller numbers are listed first, so change to a smaller number to move an item up in the list. Leave gaps for other items to be inserted above or below.
 - [ ] Content:
   - If possible, limit to 125 words or fewer.

@@ -9,8 +9,6 @@ categories: [ Compliance Management ]
 level: primary
 ---
 
-<!-- categories: Compliance Management -->
-
 You can now create compliance frameworks from predefined templates.
 
 Previously, building a compliance framework required defining every requirement and control by hand, a

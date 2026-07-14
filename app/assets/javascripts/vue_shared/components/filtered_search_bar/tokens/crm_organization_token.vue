@@ -12,6 +12,7 @@ import searchCrmOrganizationsQuery from '../queries/search_crm_organizations.que
 import BaseToken from './base_token.vue';
 
 export default {
+  name: 'CrmOrganizationToken',
   components: {
     BaseToken,
     GlFilteredSearchSuggestion,

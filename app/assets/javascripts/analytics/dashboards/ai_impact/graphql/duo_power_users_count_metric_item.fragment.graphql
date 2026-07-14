@@ -1,0 +1,15 @@
+fragment DuoPowerUsersCountMetricItem on Analytics {
+  duoUsageEvents(timestampFrom: $startDate, timestampTo: $endDate) {
+    aggregated(first: 1, featuresCountFrom: 3) {
+      count
+      nodes {
+        dimensions {
+          user {
+            id
+          }
+        }
+        featuresCount
+      }
+    }
+  }
+}

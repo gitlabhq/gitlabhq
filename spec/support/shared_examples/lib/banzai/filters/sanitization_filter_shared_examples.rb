@@ -188,8 +188,12 @@ RSpec.shared_examples 'sanitize link' do
   end
 end
 
-# not meant to be exhaustive, but verify that the pipeline is doing sanitization
-RSpec.shared_examples 'sanitize pipeline' do
+# Not meant to be exhaustive, but verify that the pipeline is doing sanitization.
+#
+# Pass `pipeline_renders_links: false` for pipelines whose sanitisation strips
+# <a> elements entirely: they don't need link sanitisation, and including it would
+# suggest to readers that links might actually be in the output.
+RSpec.shared_examples 'sanitize pipeline' do |pipeline_renders_links: true|
   subject { described_class.to_html(act, project: nil) }
 
   it 'includes BaseSanitizationFilter' do
@@ -198,7 +202,13 @@ RSpec.shared_examples 'sanitize pipeline' do
     expect(result).not_to be_empty
   end
 
-  it 'includes SanitizeLinkFilter' do
-    expect(described_class.filters).to include(Banzai::Filter::SanitizeLinkFilter)
+  if pipeline_renders_links
+    it 'includes SanitizeLinkFilter' do
+      expect(described_class.filters).to include(Banzai::Filter::SanitizeLinkFilter)
+    end
+  else
+    it 'does not include SanitizeLinkFilter' do
+      expect(described_class.filters).not_to include(Banzai::Filter::SanitizeLinkFilter)
+    end
   end
 end

@@ -58,6 +58,20 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
       expect(page).to have_content "Project '#{new_name}' was successfully updated."
       expect_name_in_breadcrumb(new_name)
     end
+
+    it 'shows and clears the client-side validation error for an invalid project name' do
+      invalid_message = 'Project name must start with a letter, digit, basic emoji, or underscore.'
+
+      within_testid('general-settings-content') do
+        fill_in('Project name', with: '@invalid')
+
+        expect(page).to have_content(invalid_message)
+
+        fill_in('Project name', with: 'valid name')
+
+        expect(page).not_to have_content(invalid_message)
+      end
+    end
   end
 
   context 'when changing project path', :js do

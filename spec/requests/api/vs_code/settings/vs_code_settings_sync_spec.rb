@@ -37,6 +37,11 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
     it_behaves_like "returns unauthorized when not authenticated"
     it_behaves_like "returns 20x when authenticated"
 
+    it_behaves_like 'authorizing granular token permissions', :read_vscode_setting do
+      let(:boundary_object) { :user }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
+
     context 'when no settings record is present' do
       it 'returns a session id' do
         get api(path, personal_access_token: user_token)
@@ -89,6 +94,11 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
 
     it_behaves_like "returns 20x when authenticated", :no_content
     it_behaves_like "returns unauthorized when not authenticated"
+
+    it_behaves_like 'authorizing granular token permissions', :read_vscode_setting do
+      let(:boundary_object) { :user }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
 
     context "when resource type is invalid" do
       let(:path) { "/vscode/settings_sync/v1/resource/foo/1" }
@@ -154,6 +164,11 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
     it_behaves_like "returns unauthorized when not authenticated"
     it_behaves_like "returns 20x when authenticated", :ok
 
+    it_behaves_like 'authorizing granular token permissions', :read_vscode_setting do
+      let(:boundary_object) { :user }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
+
     context 'when settings with that type are not present' do
       it "returns empty array response" do
         get api(path, personal_access_token: user_token)
@@ -217,6 +232,13 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
       post api(path, personal_access_token: user_token), params: { content: '{ "editor.fontSize": 12 }', version: 1 }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :update_vscode_setting do
+      let(:boundary_object) { :user }
+      let(:request) do
+        post api(path, personal_access_token: pat), params: { content: '{ "editor.fontSize": 12 }', version: 1 }
+      end
+    end
+
     it 'returns unauthorized when not authenticated' do
       post api(path)
       expect(response).to have_gitlab_http_status(:unauthorized)
@@ -252,6 +274,11 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
 
     subject(:request) do
       delete api(path, personal_access_token: user_token)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_vscode_setting do
+      let(:boundary_object) { :user }
+      let(:request) { delete api(path, personal_access_token: pat) }
     end
 
     it 'returns unauthorized when not authenticated' do

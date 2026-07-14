@@ -73,11 +73,19 @@ Configure AWS Backup to back up S3 data. This can be done at the same time when 
 
 {{< tab title="Google" >}}
 
-1. [Create a backup bucket in GCS](https://cloud.google.com/storage/docs/creating-buckets).
-1. [Create Storage Transfer Service jobs](https://cloud.google.com/storage-transfer/docs/create-transfers) which copy each GitLab object storage bucket to a backup bucket. You can create these jobs once, and [schedule them to run daily](https://cloud.google.com/storage-transfer/docs/schedule-transfer-jobs). However this mixes new and old object storage data, so files that were deleted in GitLab will still exist in the backup. This wastes storage after restore, but it is otherwise not a problem. These files would be inaccessible to GitLab users because they do not exist in the GitLab database. You can delete [some of these orphaned files](../raketasks/cleanup.md#clean-up-project-upload-files-from-object-storage) after restore, but this clean up Rake task only operates on a subset of files.
+1. [Create a backup bucket in GCS](https://docs.cloud.google.com/storage/docs/creating-buckets).
+1. [Create Storage Transfer Service jobs](https://docs.cloud.google.com/storage-transfer/docs/create-transfers) which copy each GitLab object storage bucket to a backup bucket.
+   You can create these jobs once, and [schedule them to run daily](https://docs.cloud.google.com/storage-transfer/docs/schedule-transfer-jobs).
+   However this mixes new and old object storage data, so files that were deleted in GitLab will still exist in the backup.
+   This wastes storage after restore, but it is otherwise not a problem. These files would be inaccessible to
+   GitLab users because they do not exist in the GitLab database. You can delete
+   [some of these orphaned files](../raketasks/cleanup.md#clean-up-project-upload-files-from-object-storage) after restore,
+   but this clean up Rake task only operates on a subset of files.
+
    1. For `When to overwrite`, choose `Never`. GitLab object stored files are intended to be immutable. This selection could be helpful if a malicious actor succeeded at mutating GitLab files.
    1. For `When to delete`, choose `Never`. If you sync the backup bucket to source, then you cannot recover if files are accidentally or maliciously deleted from source.
-1. Alternatively, it is possible to backup object storage into buckets or subdirectories segregated by day. This avoids the problem of orphaned files after restore, and supports backup of file versions if needed. But it greatly increases backup storage costs. This can be done with [a Cloud Function triggered by Cloud Scheduler](https://cloud.google.com/scheduler/docs/tut-gcf-pub-sub), or with a script run by a cronjob. A partial example:
+
+1. Alternatively, it is possible to backup object storage into buckets or subdirectories segregated by day. This avoids the problem of orphaned files after restore, and supports backup of file versions if needed. But it greatly increases backup storage costs. This can be done with [a Cloud Function triggered by Cloud Scheduler](https://docs.cloud.google.com/scheduler/docs/tut-gcf-pub-sub), or with a script run by a cronjob. A partial example:
 
    ```shell
    # Set GCP project so you don't have to specify it in every command
@@ -316,7 +324,7 @@ new bucket.
 
 {{< tab title="Google" >}}
 
-1. [Create Storage Transfer Service jobs](https://cloud.google.com/storage-transfer/docs/create-transfers) to transfer backed up data to the GitLab buckets.
+1. [Create Storage Transfer Service jobs](https://docs.cloud.google.com/storage-transfer/docs/create-transfers) to transfer backed up data to the GitLab buckets.
 1. You can move on to [Restore PostgreSQL data](#restore-postgresql-data) while the transfer jobs are
    running.
 
@@ -347,7 +355,7 @@ new bucket.
 
 {{< tab title="Google" >}}
 
-1. [Restore the Google Cloud SQL database using built-in tooling](https://cloud.google.com/sql/docs/postgres/backup-recovery/restoring).
+1. [Restore the Google Cloud SQL database using built-in tooling](https://docs.cloud.google.com/sql/docs/postgres/backup-recovery/restoring).
 1. If you restore to a new database instance, then reconfigure GitLab to point to the new database:
 
    - For Linux package installations, follow

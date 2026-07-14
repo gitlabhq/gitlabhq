@@ -4,7 +4,7 @@ import { stripHtml } from '~/lib/utils/text_utility';
 export function diffLineToString(line) {
   const { rich_text: richText, text } = line;
   if (text) return text;
-  return unescape(stripHtml(richText).replace(/\\n/g, '%br').replace(/\n/g, ''));
+  return unescape(stripHtml(richText).replace(/\\n/g, '\uE000').replace(/\n/g, ''));
 }
 
 export function pickDirection({ line, code } = {}) {

@@ -2,7 +2,7 @@
 
 module Mcp
   module Tools
-    class GetServerVersionService < CustomService
+    class GetServerVersionService < Base::CustomService
       extend ::Gitlab::Utils::Override
 
       # Register version 0.1.0

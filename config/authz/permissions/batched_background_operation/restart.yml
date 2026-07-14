@@ -1,0 +1,3 @@
+---
+name: restart_batched_background_operation
+description: Grants the ability to restart batched background operations

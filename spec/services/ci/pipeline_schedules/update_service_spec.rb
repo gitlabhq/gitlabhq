@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuous_integration do
   let_it_be_with_reload(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :small_repo) }
   let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project_owner) { create(:user) }

@@ -1,0 +1,12 @@
+<%= s_('OfflineTransfer|Offline transfer import completed') %>
+
+<% if @export_prefix.present? %>
+<%= safe_format(s_('OfflineTransferImport|The offline transfer import you started on %{start_date} from export %{strong_open}%{export_prefix}%{strong_close} has completed. You can now review your import results.'), strong_open: '', strong_close: '', export_prefix: @export_prefix, start_date: l(@bulk_import.created_at.to_date, format: :long)) %>
+<% else %>
+<%= safe_format(s_('OfflineTransferImport|The offline transfer import you started on %{start_date} has completed. You can now review your import results.'), strong_open: '', strong_close: '', start_date: l(@bulk_import.created_at.to_date, format: :long)) %>
+<% end %>
+
+<% if @hostname.present? %>
+<%= safe_format(s_('OfflineTransferImport|The export was created on %{strong_open}%{hostname}%{strong_close}. This source is self-reported by the export and is not verified, so it may not be trustworthy.'), strong_open: '', strong_close: '', hostname: @hostname) %>
+<% end %>
+<%= s_('OfflineTransfer|View import results') %>: <%= history_import_bulk_import_url(@bulk_import.id) %>

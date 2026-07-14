@@ -30,6 +30,7 @@ export default {
       required: true,
     },
   },
+  emits: ['filter-pipelines'],
   data() {
     return {
       internalValue: [],

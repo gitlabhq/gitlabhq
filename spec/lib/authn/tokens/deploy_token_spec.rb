@@ -30,14 +30,14 @@ RSpec.describe Authn::Tokens::DeployToken, feature_category: :system_access do
     context 'with group missing' do
       let(:plaintext) { deploy_token.token }
 
-      it 'raises unsupported deploy token type' do
+      it 'raises unsupported deploy token type', :aggregate_failures do
         expect(deploy_token).to receive(:group).and_return(nil)
         expect(::DeployToken).to receive(:find_by_token).with(plaintext).and_return(deploy_token)
 
-        expect do
-          token.revoke!(user)
-        end
-          .to raise_error(::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported deploy token type')
+        response = token.revoke!(user)
+
+        expect(response).to be_error
+        expect(response.message).to eq('Unsupported deploy token type')
       end
     end
   end
@@ -52,14 +52,14 @@ RSpec.describe Authn::Tokens::DeployToken, feature_category: :system_access do
     context 'with project missing' do
       let(:plaintext) { deploy_token.token }
 
-      it 'raises unsupported deploy token type' do
+      it 'raises unsupported deploy token type', :aggregate_failures do
         expect(deploy_token).to receive(:project).and_return(nil)
         expect(::DeployToken).to receive(:find_by_token).with(plaintext).and_return(deploy_token)
 
-        expect do
-          token.revoke!(user)
-        end
-          .to raise_error(::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported deploy token type')
+        response = token.revoke!(user)
+
+        expect(response).to be_error
+        expect(response.message).to eq('Unsupported deploy token type')
       end
     end
 

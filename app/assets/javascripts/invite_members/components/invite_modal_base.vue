@@ -39,6 +39,7 @@ const DEFAULT_SLOTS = [
 ];
 
 export default {
+  name: 'InviteModalBase',
   components: {
     RoleSelector,
     GlFormGroup,
@@ -155,6 +156,7 @@ export default {
       required: true,
     },
   },
+  emits: ['cancel', 'close', 'reset', 'shown', 'submit'],
   data() {
     // Be sure to check out reset!
     return {

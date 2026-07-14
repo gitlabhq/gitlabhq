@@ -49,7 +49,7 @@ RSpec.describe PasswordsController, feature_category: :system_access do
 
           expect(response).to redirect_to(new_user_session_path)
           expect(flash[:notice]).to include('password has been changed successfully')
-          expect(user.password_automatically_set).to eq(false)
+          expect(user.password_automatically_set).to be(false)
           expect(user.password_expires_at).to be_nil
         end
       end
@@ -63,7 +63,7 @@ RSpec.describe PasswordsController, feature_category: :system_access do
 
           expect(response).to render_template(:edit)
           expect(response.body).to have_content("Password confirmation doesn't match Password")
-          expect(user.password_automatically_set).to eq(true)
+          expect(user.password_automatically_set).to be(true)
           expect(user.password_expires_at).not_to be_nil
         end
       end

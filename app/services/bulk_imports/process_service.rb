@@ -65,7 +65,7 @@ module BulkImports
 
       return true if store.empty?
 
-      logger.info(
+      logger.with_bulk_import(bulk_import).info(
         message: 'Placeholder references not finished loading to database',
         bulk_import_id: bulk_import.id,
         placeholder_reference_store_count: store.count
@@ -96,7 +96,7 @@ module BulkImports
       # Only update entities if the oldest was not updated in the last 1 hour to avoid excessive load on database.
       return if oldest_updated_at > 1.hour.ago
 
-      logger.info(
+      logger.with_bulk_import(bulk_import).info(
         message: 'Touch created entities',
         bulk_import_id: bulk_import.id
       )

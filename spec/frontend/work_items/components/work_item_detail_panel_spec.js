@@ -70,7 +70,7 @@ describe('WorkItemDetailPanel', () => {
         viewContext: 'drawer_list',
       },
       listeners: {
-        customEvent: mockListener,
+        attributesUpdated: mockListener,
       },
       provide: {
         fullPath: 'gitlab-org/gitlab',
@@ -176,7 +176,7 @@ describe('WorkItemDetailPanel', () => {
     createComponent({ open: true });
     const mockPayload = { iid: '1' };
 
-    findWorkItem().vm.$emit('customEvent', mockPayload);
+    findWorkItem().vm.$emit('attributesUpdated', mockPayload);
 
     expect(mockListener).toHaveBeenCalledWith(mockPayload);
   });

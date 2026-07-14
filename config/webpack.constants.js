@@ -74,6 +74,7 @@ const copyFilesPatterns = [
   {
     from: path.join(ROOT_PATH, 'node_modules', GITLAB_WEB_IDE_PACKAGE, 'dist', 'public'),
     to: GITLAB_WEB_IDE_OUTPUT_PATH,
+    toType: 'dir',
   },
   // Add Sidekiq assets if both source and destination are available
   ...(SIDEKIQ_ASSETS_SOURCE && SIDEKIQ_ASSETS_DEST
@@ -87,6 +88,14 @@ const copyFilesPatterns = [
     : []),
 ];
 
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+const IS_DEV_SERVER = process.env.WEBPACK_SERVE === 'true';
+const { DEV_SERVER_HOST, DEV_SERVER_PUBLIC_ADDR } = process.env;
+const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10);
+const DEV_SERVER_ALLOWED_HOSTS =
+  process.env.DEV_SERVER_ALLOWED_HOSTS && process.env.DEV_SERVER_ALLOWED_HOSTS.split(',');
+const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
+
 module.exports = {
   IS_EE,
   IS_JH,
@@ -96,4 +105,11 @@ module.exports = {
   SOURCEGRAPH_PUBLIC_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
   copyFilesPatterns,
+  IS_PRODUCTION,
+  IS_DEV_SERVER,
+  DEV_SERVER_HOST,
+  DEV_SERVER_PUBLIC_ADDR,
+  DEV_SERVER_PORT,
+  DEV_SERVER_ALLOWED_HOSTS,
+  DEV_SERVER_LIVERELOAD,
 };

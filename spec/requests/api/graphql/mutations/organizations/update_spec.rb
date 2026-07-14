@@ -20,7 +20,8 @@ RSpec.describe Mutations::Organizations::Update, feature_category: :organization
       name: name,
       path: path,
       description: description,
-      avatar: avatar
+      avatar: avatar,
+      visibility: 'private'
     }
   end
 
@@ -93,7 +94,8 @@ RSpec.describe Mutations::Organizations::Update, feature_category: :organization
       expect(graphql_data_at(:organization_update, :organization)).to match a_hash_including(
         'name' => name,
         'path' => path,
-        'description' => description
+        'description' => description,
+        'visibility' => 'private'
       )
       expect(mutation_response['errors']).to be_empty
     end

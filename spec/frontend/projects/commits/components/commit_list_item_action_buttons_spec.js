@@ -70,6 +70,13 @@ describe('CommitListItemActionButtons', () => {
       });
     });
 
+    it('forwards the loading state to the expand/collapse button', () => {
+      expect(findExpandCollapseButton().props('loading')).toBe(false);
+
+      createComponent({ isLoading: true });
+      expect(findExpandCollapseButton().props('loading')).toBe(true);
+    });
+
     it('emits click event when clicked', async () => {
       const expandCollapseButton = findExpandCollapseButton();
       await expandCollapseButton.vm.$emit('click');

@@ -5,12 +5,11 @@ module Organizations
     include ::Groups::Params
 
     feature_category :organization
-    urgency :low, [:create, :new, :destroy]
+    urgency :low, [:create, :new]
 
     before_action :authorize_create_group!, only: [:new]
     before_action :authorize_read_organization!, only: [:edit]
     before_action :authorize_view_edit_page!, only: [:edit]
-    before_action :authorize_remove_group!, only: :destroy
 
     def new; end
 
@@ -24,28 +23,6 @@ module Organizations
         render json: GroupSerializer.new(current_user: current_user).represent(@group)
       else
         render json: { message: @group.errors }, status: :unprocessable_entity
-      end
-    end
-
-    def destroy
-      if group.self_deletion_scheduled? &&
-          ::Gitlab::Utils.to_boolean(params.permit(:permanently_remove)[:permanently_remove])
-
-        return destroy_immediately
-      end
-
-      result = ::Groups::MarkForDeletionService.new(group, current_user).execute
-
-      if result.success?
-        render json: {
-          message: format(
-            _("'%{group_name}' has been scheduled for deletion and will be deleted on %{date}."),
-            group_name: group.name,
-            date: helpers.permanent_deletion_date_formatted(group)
-          )
-        }
-      else
-        render json: { message: result.message }, status: :unprocessable_entity
       end
     end
 
@@ -64,19 +41,6 @@ module Organizations
       return render_404 if group.nil?
 
       access_denied! unless can?(current_user, :view_edit_page, group)
-    end
-
-    def authorize_remove_group!
-      return render_404 if group.nil?
-
-      access_denied! unless can?(current_user, :remove_group, group)
-    end
-
-    def destroy_immediately
-      ::Groups::DestroyService.new(group, current_user).async_execute
-      render json: { message: format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name) }
-    rescue ::Groups::DestroyService::DestroyError => error
-      render json: { message: error.message }, status: :unprocessable_entity
     end
   end
 end

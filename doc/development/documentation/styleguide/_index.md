@@ -146,6 +146,15 @@ Do not add an `H1` heading in Markdown because there can be only one for each pa
 - If you use code in topic titles, ensure the code is in backticks.
 - Do not use bold text in topic titles.
 
+To prevent a heading from appearing in the table of contents (TOC),
+add the `{.no_toc}` attribute after the heading text:
+
+```markdown
+## My heading {.no_toc}
+```
+
+The heading still renders on the page, but it is excluded from the TOC.
+
 ### Description lists in Markdown
 
 To define terms or differentiate between options, use description lists. For a list of UI elements,
@@ -458,8 +467,25 @@ For dates and times in the UI, see [Pajamas](https://design.gitlab.com/content/d
 To make the source content easy to read, and to compare diffs,
 follow these best practices.
 
-- Split long lines at approximately 100 characters. (Exception: Do not split links.)
-- Start each new sentence on a new line.
+- Split long lines at approximately 100 characters, but do not split links.
+- Try to avoid splitting lines between logical word groupings, keep them together on the same line.
+
+For example:
+
+- Use:
+
+  ```markdown
+  This long line talks about how to manage a GitLab Self-Managed instance
+  deployed to Google Cloud for Education.
+  ```
+
+- Instead of:
+
+  ```markdown
+  This long line talks about how to manage a GitLab
+  Self-Managed instance deployed to Google Cloud for
+  Education.
+  ```
 
 ### Comments
 
@@ -2327,6 +2353,33 @@ Combining these examples results in the following:
 Do not copy and paste content from other sources unless it is a limited
 quotation with the source cited. Typically, it is better to rephrase
 relevant information in your own words or link to the source.
+
+## AI-generated content
+
+When you use AI tools to generate or assist with documentation, review the output carefully
+before you submit it. AI-generated content often has these problems:
+
+Repetition
+: Content that restates what has already been said on the page
+  or in a linked topic.
+  Each section should add new information.
+  Do not summarize what was just explained.
+  Do not restate the title or introduction in the first paragraph.
+
+Vague or unverifiable claims
+: Descriptions of how a feature works that
+  are not grounded in the codebase or existing documentation.
+  Only include information you can ground in the existing codebase, linked documentation,
+  or content already on the page.
+  Do not speculate or infer how a feature works.
+  Do not invent command syntax, API parameters, or UI element names.
+
+Incorrect scope
+: A new page has been created for a concept or procedure when a suitable
+  page already exists.
+  Do not create a new page for a single concept, term, or procedure step.
+
+For more information, see [Review AI-generated content](../ai-instruction-files-documentation.md#review-ai-generated-content).
 
 ## Promising features in future versions
 

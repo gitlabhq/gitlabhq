@@ -7,7 +7,10 @@ export default {
     PanelActions,
   },
   provide() {
-    return { panelHeadingTag: 'h2' };
+    return {
+      panelHeadingTag: 'h2',
+      fluidLayout: this.fluidLayout,
+    };
   },
   props: {
     /**

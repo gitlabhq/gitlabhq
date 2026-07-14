@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include RepoHelpers
 
-  let_it_be(:project, freeze: false) do
+  let_it_be_with_reload(:project) do
     create(:project, :with_import_url, :import_started, :empty_repo,
       import_data_attributes: {
         data: { 'project_key' => 'key', 'repo_slug' => 'slug' },
@@ -14,6 +14,9 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, :
     )
   end
 
+  # `freeze: false` is required here: `Repository` is a PORO that memoizes
+  # state (refs, commits); `deep_freeze` raises FrozenError. Keep the
+  # opt-out (see gitlab-org/gitlab#602925).
   let_it_be(:repository, freeze: false) { project.repository }
 
   subject(:importer) { described_class.new(project) }
@@ -166,7 +169,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, :
       end
 
       context 'when a commit already exists' do
-        let_it_be(:commit_sha, freeze: false) do
+        let_it_be(:commit_sha) do
           create_file_in_repo(project, 'master', 'master', 'test.txt', 'testing')[:result]
         end
 

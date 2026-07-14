@@ -19,7 +19,10 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::NumbersMetric, feature_
     let_it_be(:issue_1) { create(:issue) }
     let_it_be(:issue_2) { create(:issue) }
     let_it_be(:issue_3) { create(:issue) }
-    let_it_be(:issues) { Issue.all }
+    # `freeze: false` is required here: this `let_it_be` subject is an
+    # ActiveRecord::Relation whose `deep_freeze` traversal recurses infinitely
+    # (SystemStackError). Keep the opt-out (see gitlab-org/gitlab#602925).
+    let_it_be(:issues, freeze: false) { Issue.all }
 
     let_it_be(:board_1) { create(:board) }
     let_it_be(:boards) { Board.all }

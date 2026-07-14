@@ -368,22 +368,36 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
     let_it_be(:merge_request) { create(:merge_request, source_project: project) }
     let(:filter) { described_class.new('', project: project) }
 
+    subject(:preloaded_commits) { filter.send(:preloaded_all_commits, merge_request) }
+
     it 'preloads commit metadata associations' do
-      commits = merge_request.all_commits
+      all_commits = merge_request.all_commits
 
-      result = filter.send(:preloaded_all_commits, merge_request)
-      expect(result).to eq(commits)
+      expect(preloaded_commits).to eq(all_commits)
 
-      if result.any?
-        expect { result.first.commit_author }.not_to raise_error
-        expect { result.first.committer }.not_to raise_error
+      if preloaded_commits.any?
+        expect { preloaded_commits.first.commit_author }.not_to raise_error
+        expect { preloaded_commits.first.committer }.not_to raise_error
       end
     end
 
-    it 'returns all commits' do
-      commits = filter.send(:preloaded_all_commits, merge_request)
+    it 'preloads commit_author and committer through merge_request_commits_metadata' do
+      metadata = preloaded_commits.first&.merge_request_commits_metadata
 
-      expect(commits).to eq(merge_request.all_commits)
+      expect(preloaded_commits.first&.association(:merge_request_commits_metadata)).to be_loaded
+      expect(metadata&.association(:commit_author)).to be_loaded
+      expect(metadata&.association(:committer)).to be_loaded
+    end
+
+    context 'when mr_diff_commits_read_new_table is disabled' do
+      before do
+        stub_feature_flags(mr_diff_commits_read_new_table: false)
+      end
+
+      it 'preloads commit_author and committer directly on diff commits' do
+        expect(preloaded_commits.first&.association(:commit_author)).to be_loaded
+        expect(preloaded_commits.first&.association(:committer)).to be_loaded
+      end
     end
   end
 end

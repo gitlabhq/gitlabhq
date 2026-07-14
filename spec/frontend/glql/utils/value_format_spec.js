@@ -12,6 +12,7 @@ import {
   buildSharedAxisFormatter,
   formatValueForLabel,
   yAxisTitleFor,
+  dimensionAxisTitleFor,
 } from '~/glql/utils/value_format';
 
 describe('formatCount', () => {
@@ -314,5 +315,14 @@ describe('yAxisTitleFor', () => {
 
   it('returns an empty string for an empty metrics list', () => {
     expect(yAxisTitleFor([])).toBe('');
+  });
+});
+
+describe('dimensionAxisTitleFor', () => {
+  it('combines both dimension labels as "primary by secondary"', () => {
+    const primary = { key: 'language', label: 'Language' };
+    const secondary = { key: 'ideName', label: 'IDE name' };
+
+    expect(dimensionAxisTitleFor(primary, secondary)).toBe('Language by IDE name');
   });
 });

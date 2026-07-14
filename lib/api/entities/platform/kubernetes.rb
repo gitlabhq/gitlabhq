@@ -4,10 +4,10 @@ module API
   module Entities
     module Platform
       class Kubernetes < Grape::Entity
-        expose :api_url
-        expose :namespace
-        expose :authorization_type
-        expose :ca_cert
+        expose :api_url, documentation: { type: 'String' }
+        expose :namespace, documentation: { type: 'String' }
+        expose :authorization_type, documentation: { type: 'String' }
+        expose :ca_cert, documentation: { type: 'String' }
       end
     end
   end

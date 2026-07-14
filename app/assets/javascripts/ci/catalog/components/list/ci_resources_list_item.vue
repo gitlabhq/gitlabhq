@@ -28,7 +28,7 @@ export default {
     components: s__('CiCatalog|Components:'),
     lastRelease: s__('CiCatalog|Released %{date}'),
     lastReleaseMissing: s__('CiCatalog|No release available'),
-    releasedMessage: s__('CiCatalog|Released %{timeAgo} by %{author}'),
+    publishedMessage: s__('CiCatalog|Published %{timeAgo} by %{author}'),
     unreleased: s__('CiCatalog|Unreleased'),
   },
   descriptionTruncateWidth: 260,
@@ -89,13 +89,13 @@ export default {
       return getIdFromGraphQLId(this.resource.id);
     },
     formattedDate() {
-      return formatDate(this.latestVersion?.createdAt);
+      return formatDate(this.latestVersion?.releasedAt);
     },
     hasComponents() {
       return Boolean(this.components?.length);
     },
     hasReleasedVersion() {
-      return Boolean(this.latestVersion?.createdAt);
+      return Boolean(this.latestVersion?.releasedAt);
     },
     hasTopics() {
       return this.resource?.topics?.length;
@@ -107,8 +107,8 @@ export default {
       return this.resource?.verificationLevel !== VERIFICATION_LEVEL_UNVERIFIED;
     },
     lastReleaseText() {
-      if (this.latestVersion?.createdAt) {
-        const date = formatDate(this.latestVersion.createdAt);
+      if (this.latestVersion?.releasedAt) {
+        const date = formatDate(this.latestVersion.releasedAt);
         return sprintf(this.$options.i18n.lastRelease, { date });
       }
 
@@ -120,8 +120,8 @@ export default {
     name() {
       return this.latestVersion?.name || this.$options.i18n.unreleased;
     },
-    createdAt() {
-      return getTimeago().format(this.latestVersion?.createdAt);
+    releasedAt() {
+      return getTimeago().format(this.latestVersion?.releasedAt);
     },
     resourceId() {
       return this.resource?.fullPath;
@@ -137,7 +137,7 @@ export default {
     },
     usageText() {
       return s__(
-        'CiCatalog|The number of projects that used a component from this catalog project in their pipelines in the last 30 days.',
+        'CiCatalog|Number of unique projects that used a component from this catalog project in their pipelines in the last 30 days.',
       );
     },
     webPath() {
@@ -279,11 +279,11 @@ export default {
           />
         </div>
         <div class="gl-flex gl-shrink-0 gl-justify-end">
-          <div v-if="hasReleasedVersion" class="gl-shrink-0">
-            <gl-sprintf :message="$options.i18n.releasedMessage">
+          <div v-if="hasReleasedVersion" class="gl-shrink-0" data-testid="published-info">
+            <gl-sprintf :message="$options.i18n.publishedMessage">
               <template #timeAgo>
                 <span v-gl-tooltip.top :title="formattedDate">
-                  {{ createdAt }}
+                  {{ releasedAt }}
                 </span>
               </template>
               <template #author>

@@ -25,12 +25,9 @@ module Gitlab
           end
 
           def deployments_count
-            stage_seeds.sum do |stage_seed|
-              stage_seed.seeds.count do |build_seed|
-                build_seed.attributes[:environment].present?
-              end
-            end
+            stage_seeds.sum(&:deployments_count)
           end
+          strong_memoize_attr :deployments_count
 
           def root_variables
             @context.root_variables

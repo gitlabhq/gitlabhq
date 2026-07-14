@@ -12,6 +12,7 @@ module Gitlab
 
     def add_instrumentation_data(payload)
       instrument_gitaly(payload)
+      instrument_cost_score(payload)
       instrument_redis(payload)
       instrument_elasticsearch(payload)
       instrument_zoekt(payload)
@@ -40,6 +41,11 @@ module Gitlab
 
       payload[:gitaly_calls] = gitaly_calls
       payload[:gitaly_duration_s] = Gitlab::GitalyClient.query_time
+    end
+
+    def instrument_cost_score(payload)
+      gitaly_cost = Gitlab::RequestCost.current.get(:gitaly)
+      payload[:cost_score_gitaly] = gitaly_cost if gitaly_cost > 0
     end
 
     def instrument_redis(payload)

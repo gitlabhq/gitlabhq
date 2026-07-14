@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/raw/master/config/user_experience_slis/schema.json
+description: 'Run a pipeline to completion'
+feature_category: 'continuous_integration'
+# Wall-clock pipeline duration is workload-dominated, so the apdex tracks the
+# short-pipeline population: the 300s threshold matches the first bucket of
+# gitlab_ci_pipeline_time_to_finished_seconds, where a systemic processing
+# slowdown is most visible.
+urgency: 'custom'
+apdex_threshold_s: 300

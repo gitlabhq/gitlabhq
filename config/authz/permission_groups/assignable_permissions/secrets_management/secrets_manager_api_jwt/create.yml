@@ -1,0 +1,10 @@
+---
+name: create_secrets_manager_api_jwt
+description: Grants the ability to create a Secrets Manager API JWT for direct API access to secrets.
+boundaries:
+  - project
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - create_secrets_manager_api_jwt

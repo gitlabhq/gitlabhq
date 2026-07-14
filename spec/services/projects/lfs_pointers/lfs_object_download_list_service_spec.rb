@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService, feature_category: :source_code_management do
@@ -75,6 +76,33 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService, feature_cate
           checksum = 0
           subject.each_list_item { |lfs_object| checksum += 1 }
           expect(checksum).to eq 2
+        end
+      end
+    end
+
+    context 'when the download link list service raises an error' do
+      before do
+        allow_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService)
+          .to receive(:each_link).and_raise(error)
+      end
+
+      context 'with a generic download links error' do
+        let(:error) { Projects::LfsPointers::LfsDownloadLinkListService::DownloadLinksError.new('boom') }
+
+        it 'wraps it in a LfsObjectDownloadListError' do
+          expect { subject.each_list_item {} }
+            .to raise_error(described_class::LfsObjectDownloadListError, /Error: boom/)
+        end
+      end
+
+      context 'with an unauthorized error' do
+        let(:error) do
+          Projects::LfsPointers::LfsDownloadLinkListService::DownloadLinksRequestUnauthorizedError.new('Unauthorized')
+        end
+
+        it 'wraps it in a LfsObjectDownloadListUnauthorizedError' do
+          expect { subject.each_list_item {} }
+            .to raise_error(described_class::LfsObjectDownloadListUnauthorizedError, /Error: Unauthorized/)
         end
       end
     end

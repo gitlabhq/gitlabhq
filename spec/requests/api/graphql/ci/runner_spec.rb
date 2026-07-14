@@ -7,6 +7,10 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
   using RSpec::Parameterized::TableSyntax
 
+  # NOTE: No cross-organization isolation test for the single-runner lookup path (`Query.runner(id)`).
+  # It resolves a specific runner by global ID and authorizes by the requesting user's permission on
+  # that runner rather than scoping a collection by hierarchy, so there is no organization boundary to
+  # assert here (unlike the `Group.runners` / `Project.runners` collection paths).
   let_it_be(:user) { create(:user, :admin) }
   let_it_be(:another_admin) { create(:user, :admin) }
   let_it_be_with_reload(:group) { create(:group) }
@@ -522,7 +526,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         let_it_be(:owned_project_owner) { create(:user) }
         let_it_be(:owned_project) { create(:project, owners: owned_project_owner) }
         let_it_be(:other_project) { create(:project) }
-        let_it_be(:project_runner, freeze: false) { create(:ci_runner, :project_type, projects: [other_project, owned_project]) }
+        let_it_be(:project_runner) { create(:ci_runner, :project_type, projects: [other_project, owned_project]) }
         let_it_be(:owned_project_pipeline) { create(:ci_pipeline, project: owned_project) }
         let_it_be(:other_project_pipeline) { create(:ci_pipeline, project: other_project) }
         let_it_be(:owned_build) do
@@ -693,7 +697,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     shared_examples 'has no register url' do
       it 'retrieves no register url' do
         post_graphql(query, current_user: user)
-        expect(graphql_data_at(:runner, :ephemeral_register_url)).to eq(nil)
+        expect(graphql_data_at(:runner, :ephemeral_register_url)).to be_nil
       end
     end
 
@@ -808,7 +812,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   describe 'for multiple runners' do
     let_it_be(:project2) { create(:project, :test_repo) }
     let_it_be(:project_runner1) { create(:ci_runner, :project, projects: [project1, project2], description: 'Runner 1') }
-    let_it_be(:project_runner2, freeze: false) { create(:ci_runner, :project, :without_projects, description: 'Runner 2') }
+    let_it_be_with_reload(:project_runner2) { create(:ci_runner, :project, :without_projects, description: 'Runner 2') }
 
     let!(:job) { create(:ci_build, runner: project_runner1) }
 
@@ -1080,7 +1084,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     let_it_be(:merge_request1) { create(:merge_request, source_project: project1) }
     let_it_be(:merge_request2) { create(:merge_request, source_project: project3) }
 
-    let_it_be(:project_runner2, freeze: false) { create(:ci_runner, :project, projects: [project1, project2]) }
+    let_it_be_with_reload(:project_runner2) { create(:ci_runner, :project, projects: [project1, project2]) }
     let_it_be(:pipeline1) do
       create(
         :ci_pipeline,
@@ -1187,7 +1191,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     context 'with project search term' do
       let_it_be(:project1) { create(:project, description: 'abc') }
       let_it_be(:project2) { create(:project, description: 'def') }
-      let_it_be(:project_runner, freeze: false) { create(:ci_runner, :project, projects: [project1, project2]) }
+      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project1, project2]) }
 
       let(:variables) { { id: project_runner.to_global_id.to_s, n: n, project_search_term: search_term } }
 
@@ -1221,7 +1225,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
           it 'returns paged result' do
             expect(projects_data).not_to be_nil
             expect(projects_data['count']).to eq 2
-            expect(projects_data['pageInfo']['hasNextPage']).to eq true
+            expect(projects_data['pageInfo']['hasNextPage']).to be true
           end
         end
 
@@ -1231,7 +1235,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
           it 'returns non-paged result' do
             expect(projects_data).not_to be_nil
             expect(projects_data['count']).to eq 2
-            expect(projects_data['pageInfo']['hasNextPage']).to eq false
+            expect(projects_data['pageInfo']['hasNextPage']).to be false
           end
         end
       end
@@ -1247,7 +1251,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
           it 'returns paged result with no additional pages' do
             expect(projects_data).not_to be_nil
             expect(projects_data['count']).to eq 1
-            expect(projects_data['pageInfo']['hasNextPage']).to eq false
+            expect(projects_data['pageInfo']['hasNextPage']).to be false
           end
         end
       end
@@ -1267,7 +1271,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       end
 
       it_behaves_like 'authorizing granular token permissions for GraphQL', :read_runner do
-        let(:user) { create(:user, developer_of: project1) }
+        let(:user) { create(:user, maintainer_of: project1) }
         let(:boundary_object) { project1 }
         let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
       end
@@ -1288,7 +1292,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       end
 
       it_behaves_like 'authorizing granular token permissions for GraphQL', :read_runner do
-        let(:user) { create(:user, developer_of: group1) }
+        let(:user) { create(:user, maintainer_of: group1) }
         let(:boundary_object) { group1 }
         let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
       end

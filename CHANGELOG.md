@@ -1017,6 +1017,50 @@ entry.
 - [Quarantine flaky expose_job_artifacts_in_mr_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/commit/0131444c50a0135906c1d13ccba129c5d8c695e7) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233934))
 - [Fix non-auto-correctable Style/NumberedParameters offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/9a3ba532c9715bcdfd07fd54cf434c7fcd256229) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227367))
 
+## 19.0.4 (2026-07-07)
+
+### Fixed (2 changes)
+
+- [Backfill NULL organization_id on oauth_applications](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5039efa471f24b04100c341ffdd02d2ce77fa0d7)
+- [Fix ci_finished_builds engine swap on deferred post-deploy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/48ae73d20a63fdca3f2bf9bedc14c0e37b661cfc)
+
+### Security (9 changes)
+
+- [Clear stored password when pull mirror destination changes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/45e312b5f880d429ede2c619fae4a4a1f15e8e61) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6401))
+- [Address private project cross-references visibility issue](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a52af8917fb092e2936d2d6ffb0c8edaf41b7e59) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6347))
+- [Treat failing markup renders as plain text](https://gitlab.com/gitlab-org/security/gitlab/-/commit/26696f5a945b2732e36873b896d1d5af8608b5b7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6386))
+- [Sanitize vulnerability detail keys to prevent XSS via thAttr injection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0f021447503643d0dbf13d6da7f7117c5a3b4eaa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6388))
+- [Fix tag/branch ambiguity in blob view](https://gitlab.com/gitlab-org/security/gitlab/-/commit/52db017dc08d1798228162d8671cbfcfe307376c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6424))
+- [Don't attempt placeholder replacement without a URL](https://gitlab.com/gitlab-org/security/gitlab/-/commit/16fabd43663ccca14cc044136194916cbc5ec14c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6375))
+- [Fix auditor write access to compliance violation mutations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bb568daf697fdabbb1f99cc9adf4ec312922d5b0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6381))
+- [Enforce group-level approval rule lock in approval policies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cacfca9e16fd72668bd8e879997760d3a2f8f299) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6350))
+- [Fix WorkItems auth bypass for Minimal Access users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cfc024612cb9bd1479e65cf43bf71e22735f1841) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6223))
+
+## 19.0.3 (2026-06-23)
+
+### Fixed (5 changes)
+
+- [Fix nil user error in embeddings client](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c1fd729143c6da4ef0373d9308e0fdccc9cecbf2) **GitLab Enterprise Edition**
+- [Fix Amazon Q usage quota check](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5b3aaf2bc762aefbd2566b026a86556b8e07e16c) **GitLab Enterprise Edition**
+- [Filter group template projects by user visibility and membership](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8b68786564b376bd9387d9d29a18e0426711e8f7) **GitLab Enterprise Edition**
+- [Fix url import permission bug](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c62b0e8690b294c97832a6a5d041eef94dfdeca5)
+- [Treat split failure reasons as retry:when aliases](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9a2355717a63bf4a86bfe42e662832f8573ea266)
+
+### Security (12 changes)
+
+- [Fix versionless Maven metadata protected package bypass](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e590b7cff4ab60cd69dfac63ec083a962ca9d1ca) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6299))
+- [Filter notes by readable_by? in Rapid Diffs commit discussions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/34431a947e2a44a8e36c20e7c64a39ff264f9df5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6301))
+- [Detect encoding collisions in snippet hidden file detection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1b2ba536af95b5dac9522275c13646b018501af0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6304))
+- [Fix DNS rebinding SSRF in pull and push mirror services](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d39b585d89bcc031eecd2a817c6fb568e5c739ec) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6281))
+- [Fix IDOR in virtual registry cleanup policy REST API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/60ad4fc53b0cc807f2d26287f0d3fd0dd5f92cdb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6266))
+- [Exclude registry-disabled projects from group packages endpoints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a64f77defdb0f86aad23feec7e69f99be9f79ede) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6294))
+- [Restrict DAST site profile modification when secrets are present](https://gitlab.com/gitlab-org/security/gitlab/-/commit/45a6e9deb0eea0bd835721aa89778133b93631e3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6248))
+- [Fix Web IDE asset security header bypass](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d9c33102c012e62ab0d733f546083c0df95dfe32) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6322))
+- [Restrict value_stream data source filters to known fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/38a9b8939fcb92a27db0cd1e773b4dc007742382) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6254))
+- [Mask pipeline schedule variable values in API logs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/51ca4ef73c9aa7d0c2a8cf35c8731538eba8494e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6323))
+- [Prevent protected environments access when CI/CD is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fecddcd8b73b506b28471f89a963e8c89018fed3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6287))
+- [Fix authorization bypass in securityMetrics.riskScore.byProject](https://gitlab.com/gitlab-org/security/gitlab/-/commit/69db8073804b9e0bf1042e978e843d443f189047) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6307))
+
 ## 19.0.2 (2026-06-10)
 
 ### Fixed (10 changes)
@@ -2069,6 +2113,47 @@ entry.
 - [Sync translations from crowdin (2026-04-09)](https://gitlab.com/gitlab-org/gitlab/-/commit/c6534667f1d65993acc2cda1c1270faef72114ea) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230657))
 - [Fix non-auto-correctable Naming/HeredocDelimiterNaming offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/4eae66671a6afc78181cb1f0e0690e0ab3ed55cb) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230057))
 - [Fix non-auto-correctable API/DescriptionSummary offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/b3eaf6e2b0537ed21ff2332896b45a760a0a9142) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224288))
+
+## 18.11.7 (2026-07-07)
+
+### Fixed (1 change)
+
+- [Fix ci_finished_builds engine swap on deferred post-deploy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4bfb8fa39ae2af8d33b7533774380902e611891d)
+
+### Security (9 changes)
+
+- [Clear stored password when pull mirror destination changes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/446917221b467b393d03199dfa0dadca3830dd94) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6402))
+- [Address private project cross-references visibility issue](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fe7bd925b0944aad5f0215fdd1d2819b5306066e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6348))
+- [Treat failing markup renders as plain text](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6b57791588e0b0e55c5af14761276937108dad11) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6385))
+- [Sanitize vulnerability detail keys to prevent XSS via thAttr injection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5ac85158d988e6701e48bf8bf29cdab87f334fa4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6389))
+- [Fix tag/branch ambiguity in blob view](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f8f72be7846d9d65183d95ea3f0888a6135abc9d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6426))
+- [Don't attempt placeholder replacement without a URL](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6a256146c47fd7ac4a96d4df249c332313c87daf) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6374))
+- [Fix auditor write access to compliance violation mutations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4e789b7cb478fd56856adb69dcb982767c1cfac0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6382))
+- [Enforce group-level approval rule lock in approval policies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0de007ad04cf77aa33136d41f2dae6b8db9bd581) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6351))
+- [Fix WorkItems auth bypass for Minimal Access users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/84c2f788efe88566ef85ae3e3ba8b99e49620e9d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6224))
+
+## 18.11.6 (2026-06-23)
+
+### Fixed (2 changes)
+
+- [Fix Amazon Q usage quota check](https://gitlab.com/gitlab-org/security/gitlab/-/commit/52cf46cadf53a9fcfbc3e9c7736066cb54640f4d) **GitLab Enterprise Edition**
+- [Allow job token basic auth for generic package upload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/adb28bdc2be215707aca42f22b6a351a9b97f8ff)
+
+### Security (13 changes)
+
+- [Fix versionless Maven metadata protected package bypass](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f4bb5a54fc90ebdbdb2174bac53e7144ae89f795) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6300))
+- [Filter notes by readable_by? in Rapid Diffs commit discussions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b0502d5e1bfc9bde78723363f69f9a4286e285f3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6302))
+- [Detect encoding collisions in snippet hidden file detection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/86f561781fe008dc68a992689436fd3830c5e6d3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6305))
+- [Fix DNS rebinding SSRF in pull and push mirror services](https://gitlab.com/gitlab-org/security/gitlab/-/commit/80c18316203d9c08bdccd19124aca57f69c37987) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6283))
+- [Fix IDOR in virtual registry cleanup policy REST API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d9a8371a9fc3be1980f06f0d690b0231543b63f5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6267))
+- [Exclude registry-disabled projects from group packages endpoints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f7f0e0bca1e31639ffca864751f0acaed006b872) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6295))
+- [Restrict DAST site profile modification when secrets are present](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a5096e1ff03424d1f1a37f48a98aae90ccbf1121) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6250))
+- [Fix Web IDE asset security header bypass](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b9013da75ef0ea208c4cd80918ba63af0d346db8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6320))
+- [Restrict value_stream data source filters to known fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9d4f80f7c0fd93161cddca64ba65a1e2e04f0814) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6255))
+- [Mask pipeline schedule variable values in API logs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b29a509db709dc3a6fb45b2380276a70b76c6e7c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6324))
+- [Prevent protected environments access when CI/CD is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/56af4704d63b0d68305ffa49e7c0c21175589f00) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6288))
+- [Fix authorization bypass in securityMetrics.riskScore.byProject](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f8e579daa7baa0a6ac6d10a67985088b4180cf7c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6308))
+- [Bump devfile gem to 0.5.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8a53c240c867de84380634ec8754a4546209b590) **GitLab Enterprise Edition**
 
 ## 18.11.5 (2026-06-10)
 
@@ -5233,6 +5318,12 @@ No changes.
 - [Add missing feature categories to CI/CD fixture specs](https://gitlab.com/gitlab-org/gitlab/-/commit/b1b1ebfea8213f1e23250f1a3d9ec581a86e686d) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218254))
 - [Add missing feature category to epic fixture spec](https://gitlab.com/gitlab-org/gitlab/-/commit/d642e91e0cdf9a7e34b59dec37d344be5b5e9003) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217500)) **GitLab Enterprise Edition**
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/ec8385f51e240397707634c2b25f2c2ec2b40425) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217112))
+
+## 18.8.11 (2026-06-29)
+
+### Other (1 change)
+
+- [Backports dead connection fixes to 18.8](https://gitlab.com/gitlab-org/gitlab/-/commit/55bd3a2d82fd9178d7cf1c893aad39059dda8a59) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233826))
 
 ## 18.8.10 (2026-05-25)
 

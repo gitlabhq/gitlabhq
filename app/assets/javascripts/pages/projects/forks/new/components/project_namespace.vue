@@ -8,6 +8,7 @@ import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/cons
 import searchForkableNamespaces from '../queries/search_forkable_namespaces.query.graphql';
 
 export default {
+  name: 'ProjectNamespace',
   components: {
     GlButton,
     GlButtonGroup,
@@ -39,6 +40,7 @@ export default {
     },
   },
   inject: ['projectFullPath'],
+  emits: ['select'],
   data() {
     return {
       project: {},

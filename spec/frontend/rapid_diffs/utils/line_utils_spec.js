@@ -240,6 +240,24 @@ describe('line_utils', () => {
       expect(getNewLineRangeContent(table, lineRange, 'new')).toEqual(['linebreak']);
     });
 
+    it('strips new line characters for diff suggestions', () => {
+      setHTMLFixture(`
+        <table>
+          <tbody>
+            <tr data-hunk-lines>
+              <td data-position="new"><a data-line-number="3"></a><pre>line\r\nbreak\\n</pre></td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+      const table = document.querySelector('table');
+      const lineRange = {
+        start: { old_line: null, new_line: 3 },
+        end: { old_line: null, new_line: 3 },
+      };
+      expect(getNewLineRangeContent(table, lineRange, 'new')).toEqual(['linebreak\uE000']);
+    });
+
     it('returns empty array when line numbers are stale', () => {
       setHTMLFixture(`
         <table>

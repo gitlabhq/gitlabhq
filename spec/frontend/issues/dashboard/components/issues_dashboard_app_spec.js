@@ -300,6 +300,33 @@ describe('IssuesDashboardApp component', () => {
         });
       });
     });
+
+    describe('work item types in query variables', () => {
+      it('does not pass a default type filter', async () => {
+        const issuesQueryHandler = jest.fn().mockResolvedValue(defaultQueryResponse);
+        setWindowLocation('?search=find+issues');
+        mountComponent({ issuesQueryHandler });
+        await waitForPromises();
+
+        expect(issuesQueryHandler).toHaveBeenCalledWith(
+          expect.not.objectContaining({ types: expect.anything() }),
+        );
+        expect(issuesQueryHandler).toHaveBeenCalledWith(
+          expect.not.objectContaining({ workItemTypeIds: expect.anything() }),
+        );
+      });
+
+      it('still passes a user-selected type filter through', async () => {
+        const issuesQueryHandler = jest.fn().mockResolvedValue(defaultQueryResponse);
+        setWindowLocation('?search=find+issues&type[]=incident');
+        mountComponent({ issuesQueryHandler });
+        await waitForPromises();
+
+        expect(issuesQueryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({ workItemTypeIds: 'gid://gitlab/WorkItems::Type/INCIDENT' }),
+        );
+      });
+    });
   });
 
   describe('initial url params', () => {

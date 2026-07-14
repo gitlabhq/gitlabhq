@@ -1,0 +1,7 @@
+---
+name: read_duo_agent_platform
+description: >-
+  Grants read access to the Duo Agent Platform, such as viewing the Automate
+  page and its read-only data. It gates access only; it does not grant the
+  ability to run agents or workflows, or to create, update, or delete
+  resources, which are controlled by separate permissions such as duo_workflow.

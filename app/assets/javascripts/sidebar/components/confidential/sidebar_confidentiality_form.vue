@@ -37,6 +37,7 @@ export default {
       type: String,
     },
   },
+  emits: ['closeForm'],
   data() {
     return {
       loading: false,

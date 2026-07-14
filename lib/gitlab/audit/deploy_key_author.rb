@@ -4,7 +4,7 @@ module Gitlab
   module Audit
     class DeployKeyAuthor < Gitlab::Audit::NullAuthor
       def initialize(name: nil)
-        super(id: -3, name: name)
+        super(id: DEPLOY_KEY_AUTHOR_ID, name: name)
       end
 
       def name

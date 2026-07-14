@@ -254,6 +254,31 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     end
   end
 
+  describe '#twitter_name' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { build_stubbed(:user, twitter: twitter_input) }
+
+    subject { helper.twitter_name(user) }
+
+    where(:twitter_input, :expected_name) do
+      nil                                   | ''
+      ''                                    | ''
+      'alice'                               | 'alice'
+      '@alice'                              | 'alice'
+      'https://twitter.com/alice'           | 'alice'
+      'https://www.twitter.com/alice'       | 'alice'
+      'http://twitter.com/alice'            | 'alice'
+      'https://x.com/alice'                 | 'alice'
+      'https://x.com/@alice'                | 'alice'
+      'https://twitter.com/alice/more/path' | 'alice'
+    end
+
+    with_them do
+      it { is_expected.to eq(expected_name) }
+    end
+  end
+
   describe '#twitter_url?' do
     using RSpec::Parameterized::TableSyntax
 
@@ -266,18 +291,44 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     end
 
     where(:twitter_name, :twitter_url) do
-      nil                                   | 'https://twitter.com/'
-      ''                                    | 'https://twitter.com/'
-      'alice'                               | 'https://twitter.com/alice'
-      'http://www.twitter.com/alice'        | 'http://www.twitter.com/alice'
-      'http://twitter.com/alice'            | 'http://twitter.com/alice'
-      'https://www.twitter.com/alice'       | 'https://www.twitter.com/alice'
-      'https://twitter.com/alice'           | 'https://twitter.com/alice'
-      'https://twitter.com/alice/more/path' | 'https://twitter.com/alice/more/path'
+      nil                                   | ''
+      ''                                    | ''
+      'alice'                               | 'https://x.com/alice'
+      '@alice'                              | 'https://x.com/alice'
+      'http://www.twitter.com/alice'        | 'https://x.com/alice'
+      'http://twitter.com/alice'            | 'https://x.com/alice'
+      'https://www.twitter.com/alice'       | 'https://x.com/alice'
+      'https://twitter.com/alice'           | 'https://x.com/alice'
+      'https://twitter.com/alice/more/path' | 'https://x.com/alice'
+      'https://x.com/alice'                 | 'https://x.com/alice'
+      'https://x.com/@alice'                | 'https://x.com/alice'
     end
 
     with_them do
       it { is_expected.to eq(twitter_url) }
+    end
+  end
+
+  describe '#github_name' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { build_stubbed(:user, github: github_input) }
+
+    subject { helper.github_name(user) }
+
+    where(:github_input, :expected_name) do
+      nil                                   | ''
+      ''                                    | ''
+      'alice'                               | 'alice'
+      'https://github.com/alice'            | 'alice'
+      'https://www.github.com/alice'        | 'alice'
+      'http://github.com/alice'             | 'alice'
+      'https://github.com/alice/more/path'  | 'alice'
+      'github.com/alice'                    | 'alice'
+    end
+
+    with_them do
+      it { is_expected.to eq(expected_name) }
     end
   end
 
@@ -293,9 +344,14 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     end
 
     where(:github_name, :github_url) do
-      nil      | ''
-      ''       | ''
-      'dosire' | 'https://github.com/dosire'
+      nil                                   | ''
+      ''                                    | ''
+      'dosire'                              | 'https://github.com/dosire'
+      'https://github.com/dosire'           | 'https://github.com/dosire'
+      'https://www.github.com/dosire'       | 'https://github.com/dosire'
+      'http://github.com/dosire'            | 'https://github.com/dosire'
+      'https://github.com/dosire/more/path' | 'https://github.com/dosire'
+      'github.com/dosire'                   | 'https://github.com/dosire'
     end
 
     with_them do
@@ -754,8 +810,8 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       it { is_expected.to include('page-with-panels') }
     end
 
-    describe 'application-chrome' do
-      it { is_expected.to include('application-chrome') }
+    describe 'page-theme-background' do
+      it { is_expected.to include('page-theme-background') }
     end
 
     describe 'user-logged-in and user-logged-out' do

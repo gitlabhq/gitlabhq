@@ -24,6 +24,9 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :define_environment,
     only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_commit_box_vars, only: [:show, :pipelines]
+  before_action only: [:show, :pipelines] do
+    push_frontend_feature_flag(:commit_pipelines_tab_graphql, project)
+  end
   before_action :define_note_vars, only: [:diff_for_path, :diff_files, :discussions, :create_discussions]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
   before_action :rate_limit_for_expanded_diff_files, only: :diff_files

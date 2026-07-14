@@ -25,7 +25,7 @@ However, existing projects are not migrated automatically because of the signifi
 
 Follow this migration guide if you use GitLab dependency scanning and any of the following conditions apply:
 
-- The dependency scanning CI/CD jobs are configured by including a dependency scanning CI/CD templates.
+- The dependency scanning CI/CD jobs are configured by including one of the dependency scanning CI/CD templates.
 
   ```yaml
     include:
@@ -36,41 +36,112 @@ Follow this migration guide if you use GitLab dependency scanning and any of the
 - The dependency scanning CI/CD jobs are configured by using [Scan Execution Policies](../policies/scan_execution_policies.md).
 - The dependency scanning CI/CD jobs are configured by using [Pipeline Execution Policies](../policies/pipeline_execution_policies.md).
 
+## Prepare for migration
+
+Assess your migration effort, identify your path, verify prerequisites, and
+determine which projects are affected.
+
+### Estimate migration effort
+
+The [Dependency Scanning migration evaluator](https://dependency-scanning-migration-evaluator-cb84d1.gitlab.io/)
+generates a tailored migration checklist based on how dependency scanning is configured in your projects.
+It asks about your enablement path, language ecosystems, CI/CD customizations, and (for self-managed instances)
+Package Metadata Database sync status. The evaluator produces:
+
+- An effort estimate (minimal, moderate, significant, or complex).
+- A checklist of the migration steps that apply to your setup, with direct links to the relevant sections of this guide.
+- Flags for situations that need extra attention (like projects that must move from a scan execution policy to a pipeline execution policy).
+
+The evaluator runs entirely in your browser and does not send data anywhere.
+
+### Identify your migration path
+
+Existing configurations are not migrated automatically. To adopt the new feature, you must update your configuration.
+
+Use the following list to find the migration path that applies to you:
+
+- Stable template (`Jobs/Dependency-Scanning.gitlab-ci.yml`): Switch to the `v2` template by following the
+  [generic migration steps](#migrate-to-dependency-scanning-using-sbom),
+  then apply any
+  [language-specific instructions](#language-specific-instructions) for the
+  ecosystems used in your projects.
+- Latest template (`Jobs/Dependency-Scanning.latest.gitlab-ci.yml`): Same as the stable template. Switch to the `v2`
+  template by following the [generic migration steps](#migrate-to-dependency-scanning-using-sbom),
+  then apply any [language-specific instructions](#language-specific-instructions).
+- CI/CD component: The [main component](https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main)
+  already uses the new analyzer but older versions (v0 and v1) lag behind on the analyzer version and on supported inputs.
+  Bump the include to the `v2` version and apply any [language-specific instructions](#language-specific-instructions).
+  If you use a specialized Android, Rust, Swift, or CocoaPods component, migrate to the main component.
+- Scan Execution Policies (SEP) or Pipeline Execution Policies (PEP): Edit the policy to reference the `v2` template,
+  then follow the [generic migration steps](#migrate-to-dependency-scanning-using-sbom)
+  and any [language-specific instructions](#language-specific-instructions) for projects in scope.
+  SEP and PEP are built on top of the CI/CD templates, so the template changes propagate automatically
+  to all projects in scope after the SEP is updated. For PEP, update the policy's CI/CD configuration
+  directly to reference the `v2` template.
+
+### Verify prerequisites: Package Metadata Database synchronization
+
+The new dependency scanning analyzer requires
+[Package Metadata Database (PMDB)](../../../administration/settings/security_and_compliance.md#package-metadata-database-synchronization)
+synchronized for the package types used by your projects.
+On GitLab.com, the instance already synchronizes data for all supported package types.
+On GitLab Self-Managed and GitLab Dedicated, an administrator configures synchronization.
+
+Before you migrate, an administrator should:
+
+- Confirm that PMDB synchronization is enabled and that the package types
+  used by your projects are selected. For more information, see
+  [choose package registry metadata to sync](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync).
+- For offline or firewalled instances, follow
+  [enabling the Package Metadata Database](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
+
+If PMDB synchronization is not complete for a package type that your
+projects use, the new analyzer cannot resolve advisories for the corresponding
+components, and security findings may be missing after the migration.
+
+### Identify affected projects
+
+Identify projects that use the legacy dependency scanning feature. The
+[security inventory](../security_inventory/_index.md) provides visibility
+of scanner coverage across groups and projects. This step is the recommended starting point.
+
+You can also locate legacy usage in your CI/CD configuration:
+
+- Includes of the legacy templates
+  `Jobs/Dependency-Scanning.gitlab-ci.yml` or
+  `Jobs/Dependency-Scanning.latest.gitlab-ci.yml` in `.gitlab-ci.yml` files.
+- References to the same templates in the scan
+  execution policies and pipeline execution policies.
+- Job names from the legacy analyzer (`gemnasium-dependency_scanning`,
+  `gemnasium-maven-dependency_scanning`, `gemnasium-python-dependency_scanning`)
+  in `.gitlab-ci.yml` files, policy YAML, or downstream jobs that use them in
+  `needs:` or `dependencies:`.
+
 ## Understand the changes
 
-Before you migrate your project to dependency scanning using SBOM, you should
-understand the fundamental changes being introduced. The transition represents a
-technical evolution, a new approach to how dependency scanning works in GitLab,
-and various improvements to the user experience, some of which include, but are
-not limited to, the following:
+The transition from the Gemnasium analyzer to the new dependency scanning
+analyzer is a significant technical evolution. Most projects do not need to
+change anything beyond the CI/CD configuration switch described in
+[migrate to dependency scanning using SBOM](#migrate-to-dependency-scanning-using-sbom).
+The changes described in this section help you understand why some
+projects (notably Gradle, Maven, and Python without a lockfile) require
+additional steps.
 
-- Increased language support.
-  The deprecated Gemnasium analyzers are constrained to a small subset of Python
-  and Java versions. The new analyzer gives organizations the necessary
-  flexibility to use older versions of these toolchains with older projects,
-  and the option to try newer versions without waiting on a major update to the
-  analyzer's image. Additionally, the new analyzer benefits from increased
+Key changes:
+
+- Increased language support and file coverage: The new analyzer is not
+  constrained to the Python and Java versions supported by the Gemnasium
+  analyzer, and benefits from increased
   [file coverage](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files).
-- Increased performance.
-  Builds invoked by the Gemnasium analyzers can last for almost an hour and often duplicate work
-  already done by the project's own build jobs. The new analyzer prefers existing lockfiles or
-  dependency graph exports, and runs only for ecosystems that lack lockfiles. These [jobs](dependency_scanning_sbom/_index.md#dependency-resolution)
-  use minimal ecosystem images and run native package manager commands to produce a project's
-  dependency graph. The generated dependency graphs are stored as file artifacts and
-  are passed to the `dependency-scanning` job for security scanning and SBOM creation.
-- Smaller attack surface.
-  To support their build capabilities, the Gemnasium analyzers ship with a wide range of
-  preloaded toolchains and dependencies. The new analyzer separates dependency detection from
-  dependency resolution. The analyzer image carries only what it needs to parse lockfiles and
-  graph exports. Dependency resolution runs in dedicated, minimal ecosystem images. Each
-  image carries only the build tool needed for its ecosystem.
-- More flexible configuration.
-  The deprecated Gemnasium analyzers frequently require configuration of proxies, Certificate
-  Authority (CA) certificate bundles, and other utilities inside a single image that bundles
-  every supported ecosystem. The new analyzer separates concerns. The analyzer itself needs
-  little configuration. Ecosystem-specific settings (private registries, custom CA bundles,
-  JVM options) apply only to the relevant dependency resolution job. You can also override the
-  resolution images to match your build environment.
+- Increased performance: The new analyzer prefers existing lockfiles or
+  dependency graph exports and only runs ecosystem-specific
+  [resolution jobs](dependency_scanning_sbom/_index.md#dependency-resolution)
+  for projects that lack them.
+- Smaller attack surface and more flexible configuration: The analyzer
+  image only parses lockfiles and graph exports. Ecosystem-specific settings
+  (private registries, custom CA bundles, JVM options) apply only to the
+  relevant dependency resolution job. You can override the resolution
+  images to match your build environment.
 
 ### A new approach to security scanning
 
@@ -79,16 +150,6 @@ When using the legacy dependency scanning feature, all scanning work happens in 
 On the other hand, the dependency scanning using SBOM feature relies on a decomposed dependency analysis approach that separates dependency detection from other analyses, like static reachability or vulnerability scanning. While these tasks are still executed in the same CI/CD job, they function as decoupled, reusable components. For instance, the vulnerability scanning analysis reuses the unified engine, the GitLab SBOM vulnerability scanner, that also supports GitLab continuous vulnerability scanning features. This also opens up opportunity for future integration points, enabling more flexible vulnerability scanning workflows.
 
 Read more about how dependency scanning using SBOM [scans an application](dependency_scanning_sbom/_index.md#how-it-scans-an-application).
-
-### CI/CD configuration
-
-To prevent disruption to your CI/CD pipelines, the new approach does not apply to the stable dependency scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`) and as of GitLab 18.5, you must use the `v2` template (`Dependency-Scanning.v2.gitlab-ci.yml`) to enable it.
-Other migration paths might be considered as the feature gains maturity.
-
-If you're using [Scan Execution Policies](../policies/scan_execution_policies.md), these changes apply in the same way because they build upon the CI/CD templates.
-
-If you're using the [main dependency scanning CI/CD component](https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main) you won't see any changes as it already employs the new analyzer.
-However, if you're using the specialized components for Android, Rust, Swift, or CocoaPods, you'll need to migrate to the main component that now covers all supported languages and package managers.
 
 ### Dependency detection for Gradle, Maven, and Python
 
@@ -107,9 +168,7 @@ to determine dependencies, the analyzer uses a multi-tiered detection model that
    `build.gradle`, `build.gradle.kts`) to extract direct dependencies only. Transitive dependencies are not detected and
    exact resolved versions cannot be determined.
 
-Dependency resolution and manifest fallback are turned off by default during the limited availability. To turn them
-on, see the [dependency resolution](dependency_scanning_sbom/_index.md#dependency-resolution) and
-[manifest fallback](dependency_scanning_sbom/_index.md#manifest-fallback) documentation.
+In GitLab 19.0 and later, dependency resolution and manifest fallback are enabled by default.
 
 For the most accurate results, commit a lockfile or dependency graph export to your repository, or generate one in a
 preceding CI/CD job using your project's actual build environment. The following sections describe the options available
@@ -117,75 +176,335 @@ for each language and package manager.
 
 ### Accessing scan results
 
-Users can view dependency scanning results as a job artifact (`gl-dependency-scanning-report.json`) when using `Dependency-Scanning.v2.gitlab-ci.yml`.
-
-#### Beta behavior
-
-The dependency scanning report artifact is included in the Generally Available release.
-The Beta behavior is documented below for historical reference, but is no longer
-officially supported and might be removed from the product.
-
-<details>
-  <summary>Expand this section for details of changes to how you access vulnerability scanning results.</summary>
-
-  When you migrate to dependency scanning using SBOM, you'll notice a fundamental change in how security scan results are handled. The new approach moves the security analysis out of the CI/CD pipeline and into the GitLab platform, which changes how you access and work with the results.
-  With the legacy dependency scanning feature, CI/CD jobs using the Gemnasium analyzer generate a [dependency scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdependency_scanning) containing the scan results, and upload it to the platform. You can access these results by all possible ways offered to job artifacts. This means you can process or modify the results within your CI/CD pipeline before they reach the GitLab platform.
-  The dependency scanning using SBOM approach works differently. The security analysis now happens within the GitLab platform using the built-in GitLab SBOM Vulnerability Scanner, so you won't find the scan results in your job artifacts anymore. Instead, GitLab analyzes the [CycloneDX SBOM report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) that your CI/CD pipeline generates, creating security findings directly in the GitLab platform.
-  To help you transition smoothly, GitLab maintains some backward compatibility. While using the Gemnasium analyzer, you'll still get a standard artifact (using `artifacts:paths`) that contains the scan results. This means if you have succeeding CI/CD jobs that need these results, they can still access them. However, keep in mind that as the GitLab SBOM Vulnerability Scanner evolves and improves, these artifact-based results won't reflect the latest enhancements.
-  When you're ready to fully migrate to the new dependency scanning analyzer, you'll need to adjust how you programmatically access scan results. Instead of reading job artifacts, you'll use GitLab GraphQL API, specifically the ([`Pipeline.securityReportFindings` resource](../../../api/graphql/reference/_index.md#pipelinesecurityreportfindings)).
-</details>
-
-### Compliance framework considerations
-
-When migrating to SBOM-based dependency scanning, be aware of potential impacts on compliance frameworks:
-
-- The "Dependency scanning running" compliance control may fail on GitLab Self-Managed instances (from 18.4) when using SBOM-based scanning because it expects the traditional `gl-dependency-scanning-report.json` artifact.
-- This issue does not affect GitLab.com instances.
-- If your organization uses compliance frameworks with dependency scanning controls, test the migration in a non-production environment first.
-
-For more information, see [compliance framework compatibility](dependency_scanning_sbom/troubleshooting_ds_sbom_analyzer.md#compliance-framework-compatibility).
-
-## Identify affected projects
-
-Identifying which projects need attention helps you plan your migration. Gradle, Maven, and Python projects are most affected
-because dependency detection works differently in the new analyzer. With [dependency resolution](dependency_scanning_sbom/_index.md#dependency-resolution)
-and [manifest fallback](dependency_scanning_sbom/_index.md#manifest-fallback) turned on, many of these projects can scan
-out of the box at a baseline accuracy. Projects that need the highest accuracy still benefit from a committed lockfile
-or dependency graph export.
-This tool examines your GitLab group or GitLab Self-Managed instance and identifies projects that currently use the
-`gemnasium-maven-dependency_scanning` or `gemnasium-python-dependency_scanning` CI/CD jobs. The tool's report helps you
-prioritize projects when you plan to migrate across your organization.
+The `v2` template produces the same
+[`gl-dependency-scanning-report.json`](../../../ci/yaml/artifacts_reports.md#artifactsreportsdependency_scanning)
+job artifact as the legacy template. Downstream jobs that consume this
+artifact (with `needs:` or `dependencies:`) continue to work after the
+migration, though the producing job name changes from
+`gemnasium-dependency_scanning` (and its Maven and Python variants) to
+`dependency-scanning`.
 
 ## Migrate to dependency scanning using SBOM
 
+How you migrate depends on how dependency scanning is enabled in your projects.
+Each subsection covers the customizations to remove, references to update,
+and minimal before-and-after example.
+
+To find the subsection that applies to you, see [identify your migration path](#identify-your-migration-path).
+For multi-language projects, complete the steps for each language in
+[language-specific instructions](#language-specific-instructions).
+
+### Migrate using the stable CI/CD template
+
+To avoid disrupting existing pipelines, the stable template (`Jobs/Dependency-Scanning.gitlab-ci.yml`)
+runs the legacy Gemnasium analyzer and is not updated to use the new analyzer.
+To adopt the new analyzer, switch the `include` to the `v2` template
+(`Jobs/Dependency-Scanning.v2.gitlab-ci.yml`).
+
+Compared to the stable template, the `v2` template:
+
+- Runs the new `dependency-scanning` job instead of the legacy
+  `gemnasium-dependency_scanning`, `gemnasium-maven-dependency_scanning`,
+  and `gemnasium-python-dependency_scanning` jobs.
+- Does not predefine the legacy job names. Customizations that override
+  `gemnasium-*` jobs (for example, by extending them in your `.gitlab-ci.yml`)
+  no longer apply and must be removed or rewritten.
+- Continues to produce the `gl-dependency-scanning-report.json`
+  [job artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdependency_scanning).
+  Downstream jobs that consume this artifact through `needs:` or `dependencies:`
+  continue to work after the migration, but must reference the new
+  `dependency-scanning` job name instead of the legacy `gemnasium-*` job names.
+- Accepts the same CI/CD variables, with some changes documented in
+  [Changes to CI/CD variables](#changes-to-cicd-variables).
+
 Prerequisites:
 
-- To edit the `.gitlab-ci.yml` file or use the CI/CD component: The Developer, Maintainer, or Owner role for the project.
-- To edit scan execution or pipeline execution policies: The Owner role for the group, or a custom role with `manage_security_policy_link` permission.
+- The Developer, Maintainer, or Owner role for the project.
 
-To migrate to the dependency scanning using SBOM method, perform the following steps for each project:
+To migrate using the stable CI/CD template:
 
-1. Remove existing customization for dependency scanning based on the Gemnasium analyzer.
-   - If you have manually overridden the `gemnasium-dependency_scanning`, `gemnasium-maven-dependency_scanning`, or `gemnasium-python-dependency_scanning` CI/CD jobs to customize them in a project's `.gitlab-ci.yml` or in the CI/CD configuration for a Pipeline Execution Policy, remove them.
-   - If you have configured any of [the impacted CI/CD variables](#changes-to-cicd-variables), adjust your configuration accordingly.
-1. Enable the dependency scanning using SBOM feature with one of the following options:
-   - **Recommended**: Use the `v2` dependency scanning CI/CD template `Dependency-Scanning.v2.gitlab-ci.yml` to run the new dependency scanning analyzer:
-     1. Ensure your `.gitlab-ci.yml` CI/CD configuration includes the `v2` dependency scanning CI/CD template.
-     1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
-   - Use a [scan execution policy](dependency_scanning_sbom/_index.md#enforce-scanning-on-multiple-projects) to run the new dependency scanning analyzer:
-     1. Edit the configured scan execution policy for dependency scanning and ensure it uses the `v2` template.
-     1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
-   - Use a [pipeline execution policy](dependency_scanning_sbom/_index.md#enforce-scanning-on-multiple-projects) to run the new dependency scanning analyzer:
-     1. Edit the configured pipeline execution policy and ensure it uses the `v2` template.
-     1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
-   - Use the [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to run the new dependency scanning analyzer:
-     1. Replace the dependency scanning CI/CD template's `include` statement with the dependency scanning CI/CD component in your `.gitlab-ci.yml` CI/CD configuration.
-     1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
+1. Remove customizations that override the legacy `gemnasium-*` jobs in your
+   `.gitlab-ci.yml` or in any included files. The `v2` template does not define
+   these job names, so overrides might cause the pipeline to fail due to invalid
+   CI/CD configuration.
+1. Update the `include` statement to reference the `v2` template.
+1. Update downstream jobs that reference the legacy job names in `needs:` or
+   `dependencies:` to use `dependency-scanning` instead.
+1. Apply any [language-specific instructions](#language-specific-instructions)
+   for the ecosystems in your project.
 
-For multi-language projects, complete all relevant language-specific migration steps.
+Before:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+# Customization that targets the legacy job name.
+gemnasium-dependency_scanning:
+  variables:
+    SECURE_LOG_LEVEL: debug
+
+# Downstream job that consumes the legacy report.
+export-security-report:
+  stage: deploy
+  needs:
+    - job: gemnasium-dependency_scanning
+      artifacts: true
+  script:
+    - ./publish.sh gl-dependency-scanning-report.json
+```
+
+After:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+    inputs:
+      analyzer_log_level: debug
+
+export-security-report:
+  stage: deploy
+  needs:
+    - job: dependency-scanning
+      artifacts: true
+  script:
+    - ./publish.sh gl-dependency-scanning-report.json
+```
+
+If your pipeline needs to run custom jobs before dependency resolution
+(for example, to authenticate to a private registry or prepare a build cache),
+see [adjust resolution job ordering](#adjust-resolution-job-ordering).
+
+### Migrate using the latest CI/CD template
+
+The latest template (`Jobs/Dependency-Scanning.latest.gitlab-ci.yml`) runs the
+legacy Gemnasium analyzer by default. As a transitional step, it supports an
+opt-in to the new analyzer through the `DS_ENFORCE_NEW_ANALYZER` CI/CD variable,
+but only at version `v1` of the new analyzer and without
+[dependency resolution](dependency_scanning_sbom/_index.md#dependency-resolution) jobs.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+For Maven, Gradle, and Python projects, you must either:
+
+- Commit a [lockfile or dependency graph export](dependency_scanning_sbom/_index.md#supported-languages-and-files)
+  to the repository or generated by a preceding CI/CD job.
+- Enable [manifest fallback](dependency_scanning_sbom/_index.md#manifest-fallback).
+
+For full parity with the `v2` template (`v2` analyzer, dependency resolution,
+manifest fallback), switch to the `v2` template by following the
+[stable template steps](#migrate-using-the-stable-cicd-template). The migration
+work is the same: remove customizations targeting the legacy `gemnasium-*` jobs,
+update the `include` statement, and update downstream jobs.
+
+If you already opted in to use the new DS analyzer through `DS_ENFORCE_NEW_ANALYZER`,
+the transition is simpler. Review the changes the new template introduces before finalizing your migration.
+
+If your pipeline needs to run custom jobs before dependency resolution
+(for example, to authenticate to a private registry or prepare a build cache),
+see [adjust resolution job ordering](#adjust-resolution-job-ordering).
+
+### Migrate using the CI/CD component
 
 > [!note]
-> If you decide to migrate from the CI/CD template to the CI/CD component, review the [current limitations](../../../ci/components/_index.md#use-a-gitlabcom-component-on-gitlab-self-managed) for GitLab Self-Managed.
+> On GitLab Self-Managed, review the [current limitations](../../../ci/components/_index.md#use-a-gitlabcom-component-on-gitlab-self-managed)
+> for using GitLab.com CI/CD components.
+
+The `v2` release of the [main dependency scanning CI/CD component](https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main)
+is on par with the `v2` template. It runs the new analyzer in its `v2` version
+and supports the same inputs. Older releases (`v0` and `v1`) lag behind on the
+analyzer version and on supported features, so projects that include `v0` or `v1`
+must bump the include to `v2`.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To migrate using the CI/Cd component:
+
+1. Update the component `include` statement to reference version `2` of
+   the main component.
+1. Replace any inputs that have been renamed or removed in `v2`. The `v2`
+   release of the main component exposes the same input set as the `v2` CI/CD
+   template; see the
+   [available spec inputs](dependency_scanning_sbom/_index.md#available-spec-inputs)
+   reference for the full list.
+1. Apply any [language-specific instructions](#language-specific-instructions)
+   for the ecosystems in your project.
+
+If you use a specialized component for Android, Rust, Swift, or CocoaPods,
+migrate to the main component. The main component now covers all supported
+languages and package managers. The specialized components are no longer
+needed.
+
+Before:
+
+```yaml
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@1
+```
+
+After:
+
+```yaml
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@2
+```
+
+If your pipeline needs to run custom jobs before dependency resolution
+(for example, to authenticate to a private registry or prepare a build cache),
+see [adjust resolution job ordering](#adjust-resolution-job-ordering).
+
+### Migrate using scan execution policies
+
+Scan execution policies enforce a CI/CD template across the projects targeted by
+the policy. For dependency scanning, the policy's `template` field selects which
+template runs. The new analyzer is available through the `v2` template edition.
+
+The policy's behavior on each targeted project mirrors that of a project that
+includes the corresponding CI/CD template directly. After the policy is updated
+to reference `v2`, the steps for [the stable CI/CD template](#migrate-using-the-stable-cicd-template)
+apply to each project in scope: remove customizations that target the legacy
+`gemnasium-*` jobs and update any downstream jobs that consume them.
+
+Prerequisites:
+
+- The Owner role for the group, or a custom role with the `manage_security_policy_link` permission.
+
+To migrate using scan execution policies:
+
+1. Edit the scan execution policy and set `template: v2` for the
+   `dependency_scanning` action.
+1. In each project covered by the policy, remove customizations that override
+   the legacy `gemnasium-*` jobs and update downstream jobs that reference them.
+1. Apply any [language-specific instructions](#language-specific-instructions)
+   for the ecosystems in projects covered by the policy.
+
+Before:
+
+```yaml
+scan_execution_policy:
+  - name: Enforce dependency scanning
+    enabled: true
+    rules:
+      - type: pipeline
+        branch_type: all
+    actions:
+      - scan: dependency_scanning
+```
+
+After:
+
+```yaml
+scan_execution_policy:
+  - name: Enforce dependency scanning
+    enabled: true
+    rules:
+      - type: pipeline
+        branch_type: all
+    actions:
+      - scan: dependency_scanning
+        template: v2
+```
+
+#### Projects not covered by dependency resolution or manifest fallback
+
+Scan execution policies use the `build support` capability from the legacy
+Gemnasium analyzer to provide a default build environment. The new analyzer
+relies on [dependency resolution](dependency_scanning_sbom/_index.md#dependency-resolution)
+or [manifest fallback](dependency_scanning_sbom/_index.md#manifest-fallback)
+to detect dependencies for projects without a committed lockfile or dependency
+graph export.
+
+These mechanisms cover most projects that previously relied on `build support`.
+A few situations still benefit from the additional flexibility of a pipeline
+execution policy:
+
+- The project's ecosystem is outside the current coverage of dependency
+  resolution and manifest fallback (for example, Scala/sbt).
+- Dependency resolution needs a setup step that goes beyond the available
+  CI/CD variables (for example, authenticating against a private registry
+  with non-standard credentials).
+
+For those projects, use a [pipeline execution policy](#migrate-using-pipeline-execution-policies),
+where you can customize the CI/CD jobs more freely and
+[create a lockfile or dependency graph export manually](dependency_scanning_sbom/_index.md#create-lockfile-or-dependency-graph-export-manually).
+
+### Migrate using pipeline execution policies
+
+Pipeline execution policies enforce a complete CI/CD configuration that
+typically includes a dependency scanning template or the CI/CD component, along
+with project-specific customizations. The migration steps that apply depend on
+what the policy's CI/CD configuration includes.
+
+Prerequisites:
+
+- The Owner role for the group, or a custom role with the `manage_security_policy_link` permission.
+
+To migrate using pipeline execution policies:
+
+1. Determine which template or component your policy uses:
+   - If the policy includes the stable CI/CD template, follow
+     [migrate using the stable CI/CD template](#migrate-using-the-stable-cicd-template).
+   - If the policy includes the latest CI/CD template, follow
+     [migrate using the latest CI/CD template](#migrate-using-the-latest-cicd-template).
+   - If the policy includes the CI/CD component, follow
+     [migrate using the CI/CD component](#migrate-using-the-cicd-component).
+
+1. Apply those steps to the policy's CI/CD configuration/
+1. Apply any [language-specific instructions](#language-specific-instructions) for the ecosystems in projects covered by the policy.
+
+CI/CD variables set for projects, groups, or instances (and variables
+defined in the policy's own `variables:` block) continue to apply to the new
+`dependency-scanning` job and to the resolution jobs that run before it.
+For variables whose status has changed in `v2`, see
+[changes to CI/CD variables](#changes-to-cicd-variables).
+
+If your pipeline needs to run custom jobs before dependency resolution
+(for example, to authenticate to a private registry or prepare a build cache),
+see [adjust resolution job ordering](#adjust-resolution-job-ordering).
+
+## Other considerations
+
+The following customizations apply regardless of how dependency scanning is
+enabled in your projects.
+
+### Adjust resolution job ordering
+
+By default, dependency resolution jobs run in the `.pre` stage. If your
+pipeline has custom jobs that must complete before dependency scanning
+runs (for example, a `.pre` job that authenticates to a private registry
+or primes a build cache), the resolution jobs run in parallel with those
+custom jobs rather than after them. Resolution jobs cannot see artifacts
+the custom jobs produce.
+
+To preserve the intended ordering, move the resolution jobs to a later
+stage by using the `resolution_jobs_stage` input on the `v2` template or
+component:
+
+```yaml
+stages:
+  - .pre
+  - prepare
+  - test
+
+include:
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+    inputs:
+      resolution_jobs_stage: prepare
+
+private-registry-cache-build:
+  stage: .pre
+  script:
+    - ./scripts/login-private-registry.sh
+    - ./scripts/build-dependency-cache.sh
+```
+
+The resolution jobs then run in the `prepare` stage after the custom
+`.pre` job completes. Dor the full list of inputs that control resolution job behavior,
+see [available CI/CD inputs](dependency_scanning_sbom/_index.md#available-spec-inputs).
 
 ## Language-specific instructions
 
@@ -214,7 +533,7 @@ Prerequisites:
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
 - The Developer, Maintainer, or Owner role for the project.
 
-There are no additional steps needed to migrate a Bundler project to use the dependency scanning analyzer.
+No additional steps are needed to migrate a Bundler project to use the dependency scanning analyzer.
 
 ### CocoaPods
 
@@ -371,7 +690,9 @@ See the [enablement instructions for Maven](dependency_scanning_sbom/_index.md#m
 This analyzer may scan JavaScript files vendored in a npm project using the `Retire.JS` scanner.
 
 **New behavior**: The new dependency scanning analyzer also extracts the project dependencies by parsing the `package-lock.json` or `npm-shrinkwrap.json.lock` files and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
-This analyzer does not scan vendored JavaScript files. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/epics/7186).
+This analyzer does not scan vendored JavaScript files. For more information, see the
+[Dependency Scanning for JavaScript vendored libraries deprecation announcement](../../../update/deprecations.md#dependency-scanning-for-javascript-vendored-libraries)
+for context and available actions. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/epics/7186).
 
 #### Migrate an npm project
 
@@ -487,7 +808,9 @@ There are no additional steps to migrate a Poetry project to use the dependency 
 This analyzer may scan JavaScript files vendored in a npm project using the `Retire.JS` scanner.
 
 **New behavior**: The new dependency scanning analyzer also extracts the project dependencies by parsing the `pnpm-lock.yaml` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
-This analyzer does not scan vendored JavaScript files. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/epics/7186).
+This analyzer does not scan vendored JavaScript files. For more information, see the
+[Dependency Scanning for JavaScript vendored libraries deprecation announcement](../../../update/deprecations.md#dependency-scanning-for-javascript-vendored-libraries)
+for context and available actions. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/epics/7186).
 
 #### Migrate a pnpm project
 
@@ -498,7 +821,7 @@ Prerequisites:
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
 - The Developer, Maintainer, or Owner role for the project.
 
-There are no additional steps to migrate a `pnpm` project to use the dependency scanning analyzer.
+No additional steps are required to migrate a pnpm project to use the dependency scanning analyzer.
 
 ### sbt
 
@@ -594,8 +917,12 @@ This analyzer may provide remediation data to [resolve a vulnerability via merge
 This analyzer may scan JavaScript files vendored in a Yarn project using the `Retire.JS` scanner.
 
 **New behavior**: The new dependency scanning analyzer also extracts the project dependencies by parsing the `yarn.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
-This analyzer does not provide remediations data for Yarn dependencies. Support for a replacement feature is proposed in [epic 759](https://gitlab.com/groups/gitlab-org/-/epics/759).
-This analyzer does not scan vendored JavaScript files. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/epics/7186).
+This analyzer does not provide remediation data for Yarn dependencies. For more information, see the
+[Resolve a vulnerability for dependency scanning on Yarn projects deprecation announcement](../../../update/deprecations.md#resolve-a-vulnerability-for-dependency-scanning-on-yarn-projects).
+Support for a replacement feature is proposed in [epic 759](https://gitlab.com/groups/gitlab-org/-/epics/759).
+This analyzer does not scan vendored JavaScript files. For more information, see the
+[Dependency Scanning for JavaScript vendored libraries deprecation announcement](../../../update/deprecations.md#dependency-scanning-for-javascript-vendored-libraries)
+for context and available actions. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/epics/7186).
 
 #### Migrate a Yarn project
 
@@ -606,7 +933,7 @@ Prerequisites:
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
 - The Developer, Maintainer, or Owner role for the project.
 
-There are no additional steps to migrate a Yarn project to use the dependency scanning analyzer. If you use the Resolve a vulnerability via merge request feature check [the deprecation announcement](../../../update/deprecations.md#resolve-a-vulnerability-for-dependency-scanning-on-yarn-projects) for available actions. If you use the JavaScript vendored files scan feature, check the [deprecation announcement](../../../update/deprecations.md#dependency-scanning-for-javascript-vendored-libraries) for available actions.
+There are no additional steps to migrate a Yarn project to use the dependency scanning analyzer. If you previously relied on the Resolve a vulnerability through merge request feature or on vendored JavaScript scanning, see the deprecation announcements linked under **New behavior** above for context and available actions.
 
 ## Changes to CI/CD variables
 

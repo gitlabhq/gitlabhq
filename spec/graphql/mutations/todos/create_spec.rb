@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Todos::Create do
+RSpec.describe Mutations::Todos::Create, feature_category: :notifications do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 

@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Editor Extensions
+stage: AI Clients
+group: Developer Clients
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use the GitLab for VS Code extension to perform and review security scans.
 title: Secure your application in GitLab for VS Code
@@ -21,11 +21,9 @@ security findings and run static application security testing (SAST) for files d
 Prerequisites:
 
 - GitLab for VS Code 3.74.0 or later.
-- A project that includes [Security Risk Management](https://about.gitlab.com/features/?stage=secure)
-  features, such as static application security testing (SAST), dynamic application security testing
+- A project that has [security risk management](../../user/application_security/secure_your_application.md)
+  configured, such as static application security testing (SAST), dynamic application security testing
   (DAST), container scanning, or dependency scanning.
-- Configured [security risk management](../../user/application_security/secure_your_application.md)
-  features.
 
 To view security findings:
 

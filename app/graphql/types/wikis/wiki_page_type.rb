@@ -21,6 +21,9 @@ module Types
       field :id, Types::GlobalIDType[::WikiPage::Meta],
         null: false, description: 'Global ID of the wiki page metadata record.'
 
+      field :slug, GraphQL::Types::String,
+        null: true, description: 'URL slug of the wiki page.', method: :canonical_slug
+
       field :title, GraphQL::Types::String,
         null: false, description: 'Wiki page title.'
 

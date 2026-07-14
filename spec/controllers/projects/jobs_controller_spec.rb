@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, feature_category: :continuous_integration, factory_default: :keep do
@@ -7,7 +8,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
   include Ci::PipelineVariableHelpers
 
   let_it_be(:namespace) { create_default(:namespace) }
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:owner) { create(:owner) }
   let_it_be(:admin) { create(:admin) }
@@ -248,7 +249,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
 
       context 'when job has artifacts' do
-        let_it_be(:job, freeze: false) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+        let_it_be_with_reload(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
         context 'with not expiry date' do
           context 'when artifacts are unlocked' do
@@ -306,9 +307,9 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
               expect(json_response['artifact']).not_to have_key('download_path')
               expect(json_response['artifact']).not_to have_key('browse_path')
               expect(json_response['artifact']).not_to have_key('keep_path')
-              expect(json_response['artifact']['expired']).to eq(true)
+              expect(json_response['artifact']['expired']).to be(true)
               expect(json_response['artifact']['expire_at']).not_to be_empty
-              expect(json_response['artifact']['locked']).to eq(false)
+              expect(json_response['artifact']['locked']).to be(false)
             end
           end
 
@@ -325,9 +326,9 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
               expect(json_response['artifact']).to have_key('download_path')
               expect(json_response['artifact']).to have_key('browse_path')
               expect(json_response['artifact']).to have_key('keep_path')
-              expect(json_response['artifact']['expired']).to eq(true)
+              expect(json_response['artifact']['expired']).to be(true)
               expect(json_response['artifact']['expire_at']).not_to be_empty
-              expect(json_response['artifact']['locked']).to eq(true)
+              expect(json_response['artifact']['locked']).to be(true)
             end
           end
         end
@@ -552,7 +553,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     context 'when requesting triggered job JSON' do
       let_it_be(:trigger) { create(:ci_trigger, project: project) }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project, trigger: trigger) }
-      let_it_be(:job, freeze: false) { create(:ci_build, pipeline: pipeline) }
+      let_it_be_with_reload(:job) { create(:ci_build, pipeline: pipeline) }
       let(:user) { developer }
 
       before do
@@ -601,7 +602,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
             expect(first_variable['key']).to eq "TRIGGER_KEY_1"
             expect(first_variable['value']).to eq "TRIGGER_VALUE_1"
-            expect(first_variable['public']).to eq false
+            expect(first_variable['public']).to be false
           end
         end
 
@@ -625,7 +626,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
             expect(first_variable['key']).to eq "TRIGGER_KEY_1"
             expect(first_variable['value']).to be_nil
-            expect(first_variable['public']).to eq false
+            expect(first_variable['public']).to be false
           end
         end
       end

@@ -58,7 +58,7 @@ module Banzai
       # whenever the application settings are changed
       def self.initialize_settings
         application_settings           = Gitlab::CurrentSettings.current_application_settings
-        Gitlab.config['asset_proxy'] ||= GitlabSettings::Options.build({})
+        Gitlab.config['asset_proxy'] ||= Gitlab::Configs.build_options({})
 
         if application_settings.respond_to?(:asset_proxy_enabled)
           Gitlab.config.asset_proxy['enabled']        = application_settings.asset_proxy_enabled

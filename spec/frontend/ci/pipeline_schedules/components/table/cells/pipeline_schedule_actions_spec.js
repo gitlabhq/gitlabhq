@@ -46,17 +46,17 @@ describe('Pipeline schedule actions', () => {
     expect(findAllButtons()).toHaveLength(0);
   });
 
-  it('delete button emits showDeleteModal event and schedule id', () => {
+  it('delete button emits show-delete-modal event and schedule id', () => {
     createComponent();
 
     findDeleteBtn().vm.$emit('click');
 
     expect(wrapper.emitted()).toEqual({
-      showDeleteModal: [[mockPipelineScheduleNodes[0].id]],
+      'show-delete-modal': [[mockPipelineScheduleNodes[0].id]],
     });
   });
 
-  it('take ownership button emits showTakeOwnershipModal event and schedule id', () => {
+  it('take ownership button emits show-take-ownership-modal event and schedule id', () => {
     createComponent({
       schedule: mockTakeOwnershipNodes[0],
       currentUser: mockPipelineScheduleCurrentUser,
@@ -65,17 +65,17 @@ describe('Pipeline schedule actions', () => {
     findTakeOwnershipBtn().vm.$emit('click');
 
     expect(wrapper.emitted()).toEqual({
-      showTakeOwnershipModal: [[mockTakeOwnershipNodes[0].id]],
+      'show-take-ownership-modal': [[mockTakeOwnershipNodes[0].id]],
     });
   });
 
-  it('play button emits playPipelineSchedule event and schedule id', () => {
+  it('play button emits play-pipeline-schedule event and schedule id', () => {
     createComponent();
 
     findPlayScheduleBtn().vm.$emit('click');
 
     expect(wrapper.emitted()).toEqual({
-      playPipelineSchedule: [[mockPipelineScheduleNodes[0].id]],
+      'play-pipeline-schedule': [[mockPipelineScheduleNodes[0].id]],
     });
   });
 

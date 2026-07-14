@@ -48,7 +48,6 @@ describe('WorkItemLinkChild', () => {
       (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
     );
   const getChildrenNodes = () => getWidgetHierarchy().children.nodes;
-  const findFirstItem = () => getChildrenNodes()[0];
   const findWorkItemLinkChildContentsContainer = () =>
     wrapper.findByTestId('child-contents-container');
 
@@ -210,14 +209,6 @@ describe('WorkItemLinkChild', () => {
       expect(wrapper.emitted('toggleDrawer')).toEqual([['event']]);
     });
 
-    it('emits event on removing child item', () => {
-      createComponent({ isExpanded: true });
-
-      findTreeChildren().vm.$emit('removeChild', findFirstItem());
-
-      expect(wrapper.emitted('removeChild')).toEqual([[workItemObjectiveWithChild]]);
-    });
-
     describe('renders WorkItemLinkChildContents', () => {
       it('with default props', () => {
         createComponent();
@@ -230,6 +221,14 @@ describe('WorkItemLinkChild', () => {
           workItemFullPath,
           contextualViewEnabled: false,
         });
+      });
+
+      it('re-emits `removeChild` event', () => {
+        createComponent();
+
+        findWorkItemLinkChildContents().vm.$emit('removeChild');
+
+        expect(wrapper.emitted('removeChild')).toEqual([[workItemObjectiveWithChild]]);
       });
     });
 

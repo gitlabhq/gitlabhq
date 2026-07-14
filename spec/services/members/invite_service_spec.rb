@@ -474,7 +474,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     context 'when email is already a member with a user on the project' do
-      let!(:existing_member) { create(:project_member, :guest, project: project) }
+      let_it_be_with_reload(:existing_member) { create(:project_member, :guest, project: project) }
       let(:params) { { email: existing_member.user.email.to_s, access_level: ProjectMember::MAINTAINER } }
 
       it 'allows re-invite of an already invited email and updates the access_level' do

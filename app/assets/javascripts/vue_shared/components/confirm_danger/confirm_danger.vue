@@ -42,6 +42,7 @@ export default {
       default: 'danger',
     },
   },
+  emits: ['confirm'],
   modalId: CONFIRM_DANGER_MODAL_ID,
 };
 </script>

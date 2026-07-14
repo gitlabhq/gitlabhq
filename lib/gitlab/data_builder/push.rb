@@ -102,24 +102,37 @@ module Gitlab
       )
         commits = Array(commits)
 
-        # Total commits count
         commits_count ||= commits.size
 
-        # Get latest 20 commits ASC
         commits_limited = commits.last(20)
 
-        # For performance purposes maximum 20 latest commits
-        # will be passed as post receive hook data.
-        # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/38259
-        commit_attrs = Gitlab::GitalyClient.allow_n_plus_1_calls do
-          commits_limited.map do |commit|
-            commit.hook_attrs(with_changed_files: with_changed_files)
+        use_batched_paths = with_changed_files &&
+          Feature.enabled?(:batch_push_webhook_changed_paths, project)
+
+        changed_paths_by_commit_id = changed_paths_by_commit(project.repository, commits_limited) if use_batched_paths
+
+        commit_attrs =
+          if changed_paths_by_commit_id
+            commits_limited.map do |commit|
+              commit.hook_attrs(
+                with_changed_files: with_changed_files,
+                changed_paths: changed_paths_by_commit_id.fetch(commit.id, [])
+              )
+            end
+          else
+            # Legacy per-commit raw_deltas (CommitDelta) path - reachable while
+            # batch_push_webhook_changed_paths is disabled. Guard against Gitaly's
+            # request-limit enforcement (n+1). Remove with the FF.
+            # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/38259
+            Gitlab::GitalyClient.allow_n_plus_1_calls do
+              commits_limited.map do |commit|
+                commit.hook_attrs(with_changed_files: with_changed_files)
+              end
+            end
           end
-        end
 
         type = Gitlab::Git.tag_ref?(ref) ? 'tag_push' : 'push'
 
-        # Hash to be passed as post_receive_data
         {
           object_kind: type,
           event_name: type,
@@ -204,6 +217,29 @@ module Gitlab
 
       def sample_tag_name(project)
         project.repository.tags_sorted_by(:name_desc, limit: 1).first&.name
+      end
+
+      private
+
+      def changed_paths_by_commit(repository, commits)
+        merge_commits, non_merge_commits = commits.partition(&:merge_commit?)
+        paths_by_commit = repository
+          .find_changed_paths!(non_merge_commits, find_renames: true)
+          .group_by(&:commit_id)
+
+        merge_commits.each do |commit|
+          paths_by_commit[commit.id] = merge_commit_changed_paths(repository, commit)
+        end
+
+        paths_by_commit
+      end
+
+      def merge_commit_changed_paths(repository, commit)
+        # merge_commit? guarantees parent_ids has the mainline parent; diff against it to match legacy
+        # CommitDelta semantics.
+        diff_tree = Gitlab::Git::DiffTree.new(commit.parent_ids.first, commit.id)
+
+        repository.find_changed_paths!([diff_tree], find_renames: true)
       end
     end
   end

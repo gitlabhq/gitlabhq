@@ -140,12 +140,6 @@ export default {
     };
   },
   computed: {
-    controlsCollapseClass() {
-      const breakpoint = this.glFeatures.repositoryFileTreeBrowser
-        ? '@md/panel:gl-inline-flex'
-        : '@sm/panel:gl-inline-flex';
-      return `gl-hidden ${breakpoint}`;
-    },
     isLoadingRepositoryBlob() {
       return this.$apollo.queries.project.loading;
     },
@@ -289,7 +283,8 @@ export default {
       :title="findFileTooltip"
       :aria-keyshortcuts="shortcuts.findFile"
       data-testid="find"
-      :class="[$options.buttonClassList, controlsCollapseClass]"
+      class="gl-hidden @md/panel:gl-inline-flex"
+      :class="$options.buttonClassList"
       @click="handleFindFile"
     >
       {{ $options.i18n.findFile }}
@@ -298,8 +293,8 @@ export default {
       v-if="showBlameButton"
       data-testid="blame"
       :href="blobInfo.blamePath"
-      :class="[$options.buttonClassList, controlsCollapseClass]"
-      class="js-blob-blame-link"
+      class="js-blob-blame-link gl-hidden @md/panel:gl-inline-flex"
+      :class="$options.buttonClassList"
       @click="handleBlameClick"
     >
       {{ $options.i18n.blame }}

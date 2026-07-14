@@ -69,11 +69,6 @@ describe('Test reports app', () => {
 
     wrapper = extendedWrapper(
       shallowMount(TestReports, {
-        provide: {
-          blobPath: '/blob/path',
-          summaryEndpoint: '/summary.json',
-          suiteEndpoint: '/suite.json',
-        },
         store,
       }),
     );

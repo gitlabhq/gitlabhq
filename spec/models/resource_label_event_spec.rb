@@ -196,6 +196,11 @@ RSpec.describe ResourceLabelEvent, feature_category: :team_planning, type: :mode
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }
     let_it_be(:work_item) { create(:work_item, :task, project: project, author: user) }
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:events, freeze: false) { create_pair(:resource_label_event, issue: work_item) }
 
     it 'builds synthetic note' do

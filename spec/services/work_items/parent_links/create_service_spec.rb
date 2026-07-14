@@ -10,7 +10,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
     let_it_be(:task, freeze: false) { create(:work_item, :task, project: project) }
     let_it_be_with_reload(:task1) { create(:work_item, :task, project: project) }
     let_it_be_with_reload(:task2) { create(:work_item, :task, project: project) }
-    let_it_be(:invalid_task, freeze: false) { build_stubbed(:work_item, :task, id: non_existing_record_id) }
+    let_it_be(:invalid_task) { build_stubbed(:work_item, :task, id: non_existing_record_id) }
     let_it_be(:another_project, freeze: false) { (create :project) }
     let_it_be(:other_project_task, freeze: false) { create(:work_item, :task, iid: 100, project: another_project) }
     let_it_be(:existing_parent_link, freeze: false) do

@@ -152,6 +152,9 @@ RSpec.shared_examples 'an editable mentionable' do
         expect(subject).to receive(:latest_cached_markdown_version).at_least(:once) do
           Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_SHIFTED + 1
         end
+        expect(subject).to receive(:cached_markdown_version_for_write).at_least(:once) do
+          Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION_SHIFTED + 1
+        end
       end
 
       it 'persists the refreshed cache so that it does not have to be refreshed every time' do
@@ -314,9 +317,8 @@ RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
         user_mention.update!(mention_ids)
       end
 
-      it 'filters out inexistent mentions' do
+      it 'filters out inexistent mentions', :aggregate_failures do
         expect(mentionable.referenced_users).to match_array([mentioned_user])
-        expect(mentionable.referenced_projects(user)).to be_empty
         expect(mentionable.referenced_groups(user)).to match_array([group])
       end
     end
@@ -341,17 +343,14 @@ RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
       end
     end
 
-    context 'when private projects and groups are mentioned' do
+    context 'when private groups are mentioned' do
       let(:mega_user) { create(:user) }
-      let(:private_project) { create(:project, :private) }
-      let(:project_member) { create(:project_member, user: create(:user), project: private_project) }
       let(:private_group) { create(:group, :private) }
       let(:group_member) { create(:group_member, user: create(:user), group: private_group) }
 
       before do
         user_mention = note.user_mentions.first
         mention_ids = {
-          mentioned_projects_ids: user_mention.mentioned_projects_ids.to_a << private_project.id,
           mentioned_groups_ids: user_mention.mentioned_groups_ids.to_a << private_group.id
         }
         user_mention.update!(mention_ids)
@@ -359,22 +358,19 @@ RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
 
       context 'when user has no access to some mentions' do
         it 'filters out inaccessible mentions' do
-          expect(mentionable.referenced_projects(user)).to be_empty
           expect(mentionable.referenced_groups(user)).to match_array([group])
         end
       end
 
-      context 'when user has access to the private project and group mentions' do
+      context 'when user has access to the private group mentions' do
         let(:user) { mega_user }
 
         before do
           add_member(user)
-          private_project.add_developer(user)
           private_group.add_developer(user)
         end
 
         it 'returns all mentions' do
-          expect(mentionable.referenced_projects(user)).to match_array([private_project])
           expect(mentionable.referenced_groups(user)).to match_array([group, private_group])
         end
       end

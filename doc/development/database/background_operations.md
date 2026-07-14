@@ -6,8 +6,8 @@ title: Background operations
 ---
 
 > [!warning]
-> This framework is experimental and subject to changes or bugs.
-> Reach out to `#g_database_architecture` on Slack before adopting it.
+> This framework is in the initial rollout phase, please reach out to
+> `#g_database_architecture` Slack channel while adopting it.
 
 Background operations provide a framework for performing large-scale
 data operations on GitLab databases. Unlike
@@ -32,9 +32,32 @@ Background operations are appropriate when:
 - Operating on [high-traffic tables](../migration_style_guide.md#high-traffic-tables)
   where a single pass would exceed safe execution time.
 
-Do **not** use background operations for schema changes or operations
+Do not use background operations for schema changes or operations
 that can complete within
 [regular migration time limits](../migration_style_guide.md#how-long-a-migration-should-take).
+
+### Decision tree
+
+```mermaid
+flowchart TD
+    A["Need to perform a data operation"] --> B{"Does it take more than 20 minutes?"}
+    B -->|No| C["Use a regular or post-deployment Rails migration"]
+    B -->|Yes| D{"What is the job urgency?"}
+    D -->|High urgency| E["Use a Sidekiq worker with high urgency"]
+    D -->|Low urgency| F{"Do you need full control over completion, tied to a release?"}
+    F -->|Yes| G["Use a batched background migration"]
+    F -->|No| S{"What is the 'gitlab_schema' of the 'target' table?"}
+    S -->|Cell-local| I["Use background_operation_workers_cell_local"]
+    S -->|Organization-based| T{"Is the operation a recurring cron job?"}
+    T -->|Yes| V["Use background_operation_workers_cell_local"]
+    T -->|No, on-demand| U["Use background_operation_workers.<br>Do not use background_operation_workers_cell_local: the enqueued row is not migrated when the organization moves cells &mdash; data loss."]
+
+    click C "query_performance.md" "Query performance guidelines"
+    click E "../sidekiq/worker_attributes.md#job-urgency" "Job urgency"
+    click G "batched_background_migrations.md" "Batched background migrations"
+    click U "#organization-specific"
+    click V "#cell-local"
+```
 
 ## How background operations work
 
@@ -66,28 +89,71 @@ The worker tables are list-partitioned for lock-free concurrent execution.
 A partial unique index on unfinished statuses prevents duplicate operations
 with the same configuration.
 
-### Organization-scoped and cell-local tables
+Older partitions (> 14 days) get dropped automatically once all its workers in them get completed.
 
-Two table variants exist:
+### Cells compatibility
 
-- `background_operation_workers` stores organization-scoped operations. These
-  records require `organization_id` and `user_id` and are created when a user
-  triggers an action (for example, via `.enqueue` with a `user:` parameter).
-- `background_operation_workers_cell_local` stores cell-local operations without
-  organization context. These records are typically created by cron jobs that
-  perform system-wide maintenance tasks.
+Background operations are stored in 2 different tables to have appropriate sharding keys for [organization isolation](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/isolation/).
+
+#### Organization specific
+
+Organization specific operations should be enqueued to `background_operation_workers`.
+It requires `organization_id` and `user_id` and are created on-demand only by `non-admin` users.
+
+The organization sharding key can be set using `Current.organization` while [enqueuing](https://gitlab.com/gitlab-org/gitlab/blob/5a25a0d0f7f151fe5e523dd0465f9447a6676ab4/lib/gitlab/database/background_operation/queueable.rb).
+
+User triggered actions performing large data operations within their organization are good candidates for this.
+
+Example:
+
+- [Todos::DeleteAllDoneWorker](https://gitlab.com/gitlab-org/gitlab/blob/f29a31bda387e8f8758d787a43b018943bdc3a3f/app/workers/todos/delete_all_done_worker.rb)
+
+#### Cell local
+
+`background_operation_workers_cell_local` stores cell-local operations without
+organization context. Since these are not associated to an organization, it has `gitlab_shared_cell_local` schema and
+will not be transferred while migrating organizations to new cells.
+
+These records are created only by recurring cron jobs.
+
+Operations (eg: recurring cron jobs) dealing with large data across organizations are good candidates for cell local workers.
+
+Examples:
+
+- [Projects::InactiveProjectsDeletionCronWorker](https://gitlab.com/gitlab-org/gitlab/blob/e9daa41235e394a727fb5c05d51f8d918e3df037/app/workers/projects/inactive_projects_deletion_cron_worker.rb) (can be ported)
+- [BackgroundOperation::EnvironmentsAutoDelete](https://gitlab.com/gitlab-org/gitlab/blob/80c2c1cacebeb0961c5f8e307d4321fb017f3d06/lib/gitlab/background_operation/environments_auto_delete.rb)
+- [BackgroundOperation::UsersDeleteUnconfirmedSecondaryEmails](https://gitlab.com/gitlab-org/gitlab/blob/80c2c1cacebeb0961c5f8e307d4321fb017f3d06/lib/gitlab/background_operation/users_delete_unconfirmed_secondary_emails.rb)
 
 The same split applies to the jobs tables (`background_operation_jobs` and
 `background_operation_jobs_cell_local`).
 
-### What happens when organizations move
+Please see [how-to](#how-to) sections for more details on how to create these BO workers.
 
-When an organization moves to a different cell, the records in
-`background_operation_workers` move with it because they are scoped by
-`organization_id`. Any in-progress operation resumes on the new cell from its
-stored cursor position. Cell-local records in
-`background_operation_workers_cell_local` are not affected by organization
-moves — they remain on the cell where they were created.
+#### What happens when organizations migrate to a new cell
+
+**Organization specific:**
+
+- Workers specific to the organization getting moved will be [stopped](https://gitlab.com/gitlab-org/gitlab/blob/b81c166a3113c618ab9eefafdc370371ce089e72/lib/gitlab/database/background_operation/common_worker.rb#L124)
+in the source cell, moved (since they have the corresponding sharding key) and then restarted from the target cell.
+- Also these workers will skip processing while the organization is in read-only mode. This will be implemented once
+  Organization [read-only mode](https://gitlab.com/groups/gitlab-org/-/work_items/20404) gets shipped.
+- The data related to these workers will be migrated to the target cell. Execution of these workers will continue on the target once the organization is fully migrated.
+
+**Cell local:**
+
+When the organization enters the read-only mode, background operations scheduler will be paused (using the [FF](https://gitlab.com/gitlab-org/gitlab/blob/c90095a440e72fbf6801f44c1a5cdfbad991cb9a/app/workers/database/background_operation/base_scheduler_worker.rb#L14)) and the queue will be drained in the source cell.
+It will be resumed post migration in both source and the target cell.
+
+Since cell-local workers are created only from recurring cronjobs ([work_items/603423](https://gitlab.com/gitlab-org/gitlab/-/work_items/603423)), upcoming cronjobs will handle the unprocessed data in the target cell.
+
+#### Group transferring into an organization
+
+Org-specific background workers have to handled while a group getting [transferred](https://gitlab.com/groups/gitlab-org/-/work_items/19841) to an organization.
+
+[Restrict org-specific background operations only for non-administrators](https://gitlab.com/gitlab-org/gitlab/-/work_items/603316) ensures `background_operation_workers` has only
+`non-admin` users, those users background_operation_workers will be updated with the new `organization_id` while the TLG is transferred to an organization.
+
+Reference: [work_items/603315](https://gitlab.com/gitlab-org/gitlab/-/work_items/603315)
 
 ### Resume from previous progress
 

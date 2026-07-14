@@ -21,7 +21,21 @@ module Gitlab
 
         private
 
-        attr_reader :project_id, :project_slug, :project_path, :incoming_email_token
+        def project_id
+          identification&.project_id
+        end
+
+        def project_slug
+          identification&.project_slug
+        end
+
+        def project_path
+          identification&.project_path
+        end
+
+        def incoming_email_token
+          identification&.incoming_email_token
+        end
 
         def author
           raise NotImplementedError

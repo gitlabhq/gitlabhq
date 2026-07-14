@@ -163,7 +163,7 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
 
   describe 'PUT #transfer' do
     context 'when namespace does not exist' do
-      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be(:user) { create(:user) }
       let_it_be_with_reload(:project) { create(:project) }
 
       before_all do
@@ -185,7 +185,7 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
     end
 
     context 'when groups_and_projects_async_transfer feature flag is enabled' do
-      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be(:user) { create(:user) }
       let_it_be_with_reload(:project) { create(:project) }
       let_it_be(:new_namespace) { create(:group) }
 
@@ -236,7 +236,7 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
     end
 
     context 'when groups_and_projects_async_transfer feature flag is disabled' do
-      let_it_be(:user, freeze: false) { create(:user) }
+      let_it_be(:user) { create(:user) }
       let_it_be_with_reload(:project) { create(:project) }
       let_it_be(:new_namespace) { create(:group) }
 

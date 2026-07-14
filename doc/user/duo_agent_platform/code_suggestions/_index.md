@@ -57,8 +57,9 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 ## Prerequisites
 
 - If you have GitLab Duo Core, [IDE features are on](../turn_on_off.md#turn-gitlab-duo-core-on-or-off).
-- [Code Suggestions is set up](../../project/repository/code_suggestions/set_up.md).
-- You have a GitLab project.
+- [Code Suggestions is set up](../../project/repository/code_suggestions/set_up.md) in your IDE.
+- You have a [default GitLab Duo namespace](../../../user/profile/preferences.md#namespace-resolution-in-your-local-environment)
+  set, or have a project open that has GitLab Duo access.
 
 > [!note]
 > GitLab Duo requires GitLab 17.2 or later. For GitLab Duo Core access, and for the best user experience and results,
@@ -69,7 +70,6 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 To use Code Suggestions:
 
 1. Open a project in your IDE.
-   The local project must have a Git remote configured that points to a repository on GitLab.
 1. Author your code.
    As you type, suggestions are displayed. Code Suggestions provides code snippets
    or completes the current line, depending on the cursor position.

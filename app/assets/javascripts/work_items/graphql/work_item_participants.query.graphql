@@ -1,13 +1,24 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 
 # @feature_category: team_planning
-query workItemParticipants($fullPath: ID!, $iid: String!) {
+query workItemParticipants($fullPath: ID!, $iid: String!, $useWorkItemFeatures: Boolean = false) {
   namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id
-      widgets {
+      widgets @skip(if: $useWorkItemFeatures) {
         ... on WorkItemWidgetParticipants {
+          type
+          participants {
+            count
+            nodes {
+              ...User
+            }
+          }
+        }
+      }
+      features @include(if: $useWorkItemFeatures) {
+        participants {
           type
           participants {
             count

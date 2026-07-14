@@ -6,7 +6,7 @@ RSpec.describe Issues::ExportCsvService, :with_license, feature_category: :team_
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :public, group: group) }
-  let_it_be(:issue, freeze: false) { create(:issue, project: project, author: user) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project, author: user) }
   let_it_be(:bad_issue) { create(:issue, project: project, author: user) }
 
   subject { described_class.new(Issue.all, project) }
@@ -86,7 +86,7 @@ RSpec.describe Issues::ExportCsvService, :with_license, feature_category: :team_
 
       specify 'description' do
         expect(csv[0]['Description']).to eq issue.description
-        expect(csv[1]['Description']).to eq nil
+        expect(csv[1]['Description']).to be_nil
       end
 
       specify 'author name' do
@@ -113,17 +113,17 @@ RSpec.describe Issues::ExportCsvService, :with_license, feature_category: :team_
 
       specify 'milestone' do
         expect(csv[0]['Milestone']).to eq issue.milestone.title
-        expect(csv[1]['Milestone']).to eq nil
+        expect(csv[1]['Milestone']).to be_nil
       end
 
       specify 'labels' do
         expect(csv[0]['Labels']).to eq 'Feature,Idea'
-        expect(csv[1]['Labels']).to eq nil
+        expect(csv[1]['Labels']).to be_nil
       end
 
       specify 'due_date' do
         expect(csv[0]['Due Date']).to eq '2014-03-02'
-        expect(csv[1]['Due Date']).to eq nil
+        expect(csv[1]['Due Date']).to be_nil
       end
 
       specify 'created_at' do
@@ -136,7 +136,7 @@ RSpec.describe Issues::ExportCsvService, :with_license, feature_category: :team_
 
       specify 'closed_at' do
         expect(csv[0]['Closed At (UTC)']).to eq '2017-06-05 04:03:02'
-        expect(csv[1]['Closed At (UTC)']).to eq nil
+        expect(csv[1]['Closed At (UTC)']).to be_nil
       end
 
       specify 'discussion_locked' do
@@ -208,7 +208,7 @@ RSpec.describe Issues::ExportCsvService, :with_license, feature_category: :team_
 
   context 'with minimal details' do
     it 'renders labels as nil' do
-      expect(csv[0]['Labels']).to eq nil
+      expect(csv[0]['Labels']).to be_nil
     end
   end
 end

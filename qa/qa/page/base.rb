@@ -24,6 +24,7 @@ module QA
       include Capybara::DSL
       include Scenario::Actable
       include Support::WaitForRequests
+      include Page::Component::AriaDisabledButton
 
       extend Validatable
 
@@ -317,7 +318,7 @@ module QA
           if disabled.nil?
             has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass, visible: visible)
           else
-            find_element(name, **original_kwargs).disabled? == disabled
+            element_disabled?(name, **original_kwargs) == disabled
           end
         rescue Capybara::ElementNotFound
           false

@@ -1,0 +1,10 @@
+---
+name: work_items_realtime
+description: Enable realtime updates on work item boards via namespace-scoped GraphQL subscriptions
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/22191
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244516
+rollout_issue_url:
+milestone: '19.2'
+group: group::product planning
+type: wip
+default_enabled: false

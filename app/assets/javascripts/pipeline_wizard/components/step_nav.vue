@@ -23,6 +23,7 @@ export default {
       default: true,
     },
   },
+  emits: ['back', 'next'],
 };
 </script>
 

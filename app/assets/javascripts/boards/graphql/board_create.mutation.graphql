@@ -1,5 +1,6 @@
 #import "ee_else_ce/boards/graphql/board_scope.fragment.graphql"
 
+# @feature_category: portfolio_management
 mutation createBoard($input: CreateBoardInput!) {
   createBoard(input: $input) {
     board {

@@ -26,7 +26,7 @@ The distillation pipeline has two cooperating parts:
    only when the YAML definition has drifted, and ensures an
    `ItemConsumer` exists that binds the flow to the configured project.
 
-   A *Flow* is required (rather than a bare *Agent*) because the Workflow
+   A _Flow_ is required (rather than a bare _Agent_) because the Workflow
    API's `ai_catalog_item_consumer_id` parameter only accepts items of
    type `flow` — see
    [`ee/app/services/ai/catalog/flows/execute_service.rb`][execute_service].
@@ -44,7 +44,6 @@ The distillation pipeline has two cooperating parts:
    script then opens an MR with the diff.
 
 [execute_service]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/ai/catalog/flows/execute_service.rb
-
 [workflow-api]: https://docs.gitlab.com/api/duo_workflows/
 
 The script runs in two contexts:
@@ -56,26 +55,43 @@ The script runs in two contexts:
 
 ### Pipeline schedule
 
-The CI job is gated on:
+The CI job runs from a dedicated pipeline schedule so that triggering it
+does not fire the large set of unrelated jobs gated on the shared
+`weekly` schedule type. The job is gated on:
 
 - `$CI_PROJECT_PATH == "gitlab-org/gitlab"`
 - `$CI_PIPELINE_SOURCE == "schedule"`
-- `$SCHEDULE_TYPE == "weekly"` (the cadence is configurable via the
-  pipeline schedule's `SCHEDULE_TYPE` variable; weekly is the current
-  cadence but the gating rule reuses GitLab's existing
-  `&if-default-branch-schedule-weekly` anchor)
+- `$SCHEDULE_TYPE == "ai-principles-distillation"` (set on the dedicated
+  schedule; the gating rule uses the
+  `&if-default-branch-schedule-ai-principles` anchor)
 - `$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH`
 
 Configured at <https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules>
-with a cron expression matching the chosen cadence (e.g. `0 6 * * 1`
-for Monday 06:00 UTC) and the corresponding `SCHEDULE_TYPE` variable.
+as the "AI principles distillation" schedule, with cron `0 6 * * 1`
+(Monday 06:00 UTC) and the `SCHEDULE_TYPE=ai-principles-distillation`
+variable.
+
+### Run the distillation manually
+
+Because the job has its own schedule, you can trigger a distillation run
+on demand without starting an unrelated pipeline:
+
+1. Go to <https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules>.
+1. Find the "AI principles distillation" schedule.
+1. Select **Run** (the play icon).
+
+The run fires only the `ai-principles-sync` job. When it detects drift,
+it opens one merge request per affected principle rather than committing
+to your branch. The merge request URLs are printed at the end of the job
+log. This is the supported path for filling in a newly seeded principle
+or fence without a personal Duo Agent Platform seat.
 
 ### Required CI variables
 
-| Variable                                    | Purpose                                                                                                                                                                  |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Variable                                    | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN`    | Classic PAT with `api` scope (and `ai_features` per the [External Agents recipe](https://docs.gitlab.com/user/duo_agent_platform/agents/external/#create-a-service-account)) used as both `GITLAB_TOKEN` (Workflow API + GraphQL) and `GITLAB_API_TOKEN` (auto-MR REST). Currently a maintainer's personal token; see [Service account auth](#service-account-auth-why-a-pat-today). Fine-grained PATs cannot drive this job: they do not cover GraphQL, AI Catalog mutations, or the Duo Workflow create/start endpoint. |
-| `AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID` | Numeric ID returned by `aiCatalogItemConsumerCreate` when binding the catalog flow to `gitlab-org/gitlab`. Printed by `gitlab-ai-principles-distiller-provision-flow`.          |
+| `AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID` | Numeric ID returned by `aiCatalogItemConsumerCreate` when binding the catalog flow to `gitlab-org/gitlab`. Printed by `gitlab-ai-principles-distiller-provision-flow`.                                                                                                                                                                                                                                                                                                                                                    |
 
 ### Service account auth: why a PAT today
 
@@ -118,7 +134,7 @@ caller's `user_id` to that SA before issuing a token scoped to
 and
 [`WorkflowContextGenerationService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/ai/duo_workflows/workflow_context_generation_service.rb)).
 
-The deviation from the canonical pattern is on the *caller* side, not
+The deviation from the canonical pattern is on the _caller_ side, not
 on the SA side: the "user" in composite identity is itself a service
 account (the AR-provisioned `AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN`
 holder), not a human. The weekly scheduled CI job has no human invoker
@@ -273,19 +289,28 @@ Each entry under `principles:` in
   per-file CODEOWNERS rule routes the approval to this team. May be a
   group handle (`@gitlab-org/maintainers/database`) or one or more
   individuals (`@abdwdd @alexpooley`) when no group handle exists.
-- `secondary_teams` (optional) — additional CODEOWNERS handles to
-  mention in a "Request a review from" section of the MR description,
-  for SSOT docs whose changes also concern another team. The primary
-  `owner_team` still owns the approval; secondary teams are notified,
-  not required.
-- `team_slug` (optional) — branch/title suffix for the per-team MR.
-  Defaults to the last path segment of `owner_team` (e.g.
+- `secondary_teams` (optional) — additional CODEOWNERS handles listed in
+  a "Request a review from" section of the MR description, for SSOT docs
+  whose changes also concern another team. The primary `owner_team` still
+  owns the approval. Secondary handles are rendered as inline code, so
+  they are surfaced without `@`-mentioning (pinging) the secondary group;
+  only the primary team is pinged.
+- `team_slug` (optional) — branch name and title prefix for the per-team
+  MR. Defaults to the last path segment of `owner_team` (e.g.
   `@gitlab-org/maintainers/database` → `database`). Set it explicitly
   when that segment is generic and would **collide** across teams — for
   example `.../authentication/approvers` and `.../authorization/approvers`
   both end in `approvers`, so they declare `authentication` and
   `authorization` respectively. Also set it for individual-handle owners
-  (e.g. `qa`).
+  (e.g. `qa`). The MR **title** always uses the slug (never the
+  `owner_team` handle), so the title never `@`-mentions anyone.
+- `ping_team` (optional, default `true`) — whether to `@`-mention the
+  `owner_team` in the MR commit subject and description summary. Set it
+  to `false` for large groups (e.g. all of `frontend` / `rails-backend`)
+  so the weekly MR does not notify every member; the summary then shows
+  the `team_slug` instead. CODEOWNERS routing always uses the real
+  handle regardless of `ping_team`. A team is pinged unless **every**
+  principle it owns sets `ping_team: false`.
 - `group` (optional) — display grouping in the routing tables only; it
   does **not** affect approval routing (that is `owner_team`).
 - `prerequisite`, `file_filters`, `baseline` — see existing entries.

@@ -18,11 +18,11 @@ class Admin::HooksController < Admin::ApplicationController
   private
 
   def relation
-    SystemHook
+    Current.organization.system_hooks
   end
 
   def hook
-    @hook ||= SystemHook.find(params.permit(:id)[:id])
+    @hook ||= relation.find(params.permit(:id)[:id])
   end
 
   def trigger_values

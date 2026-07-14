@@ -1,0 +1,9 @@
+---
+name: read_ml_experiment
+description: Grants the ability to read ML experiments
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_ml_experiment

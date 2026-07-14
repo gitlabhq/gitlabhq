@@ -10,6 +10,8 @@ module Types
         graphql_name 'WorkItemWidgetLinkedResources'
         description 'Represents the linked resources widget'
 
+        authorize_granular_token skip_reason: :parent_authorizes
+
         implements ::Types::WorkItems::WidgetInterface
 
         # linked_resources currently exposes zoom_meetings records associated with the work item.

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'gitlab/middleware/strip_cookies'
-require 'gitlab/middleware/js_routes'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb
@@ -110,6 +109,11 @@ Rails.application.configure do
   )
 
   config.log_level = Gitlab::Utils.to_rails_log_level(ENV["GITLAB_LOG_LEVEL"], :debug)
+end
 
-  config.middleware.use(Gitlab::Middleware::JsRoutes)
+begin
+  require_relative '../../tooling/lib/tooling/rake_announcer'
+  Tooling::RakeAnnouncer.run
+rescue StandardError, LoadError
+  # do nothing, so we don't block production rake tasks on failure
 end

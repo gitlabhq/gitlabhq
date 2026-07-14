@@ -5,6 +5,8 @@ export const LEVEL_TYPES = {
   USER: 'user',
   DEPLOY_KEY: 'deploy_key',
   GROUP: 'group',
+  // Must match the backend `humanize_member_role` type string (`:member_role`)
+  MEMBER_ROLE: 'member_role',
 };
 
 export const ACCESS_LEVELS = {

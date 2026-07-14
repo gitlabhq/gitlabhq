@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { GlAlert, GlEmptyState, GlLoadingIcon, GlPopover, GlSprintf } from '@gitlab/ui';
+import VALIDATE_TAB_ILLUSTRATION from '@gitlab/svgs/dist/illustrations/empty-state/empty-devops-md.svg?url';
 import VueApollo from 'vue-apollo';
 
 import mockCiLintMutationResponse from 'test_fixtures/graphql/ci/pipeline_editor/graphql/mutations/ci_lint.mutation.graphql.json';
@@ -34,7 +35,6 @@ const defaultProvide = {
   ciConfigPath: '/path/to/ci-config',
   ciLintPath: mockCiLintPath,
   projectFullPath: '/path/to/project',
-  validateTabIllustrationPath: '/path/to/img',
   simulatePipelineHelpPagePath: mockSimulatePipelineHelpPagePath,
 };
 
@@ -128,6 +128,10 @@ describe('Pipeline Editor Validate Tab', () => {
 
     it('renders lint link in the content note', () => {
       expect(findLintLink().attributes('href')).toBe(mockCiLintPath);
+    });
+
+    it('renders the empty state with the illustration', () => {
+      expect(findEmptyState().props('svgPath')).toBe(VALIDATE_TAB_ILLUSTRATION);
     });
   });
 

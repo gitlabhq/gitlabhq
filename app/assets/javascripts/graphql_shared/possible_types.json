@@ -271,9 +271,11 @@
     "AchievementUploadRegistry",
     "AiVectorizableFileUploadRegistry",
     "AlertManagementMetricImageUploadRegistry",
+    "AppearanceUploadRegistry",
     "BulkImportExportUploadUploadRegistry",
     "CiSecureFileRegistry",
     "ContainerRepositoryRegistry",
+    "DependencyListExportPartUploadRegistry",
     "DependencyListExportUploadRegistry",
     "DependencyProxyBlobRegistry",
     "DependencyProxyManifestRegistry",
@@ -286,6 +288,7 @@
     "JobArtifactRegistry",
     "LfsObjectRegistry",
     "MergeRequestDiffRegistry",
+    "OrganizationDetailUploadRegistry",
     "PackageFileRegistry",
     "PackagesDebianProjectComponentFileRegistry",
     "PackagesHelmMetadataCacheRegistry",
@@ -295,6 +298,7 @@
     "PipelineArtifactRegistry",
     "ProjectImportExportRelationExportUploadUploadRegistry",
     "ProjectRepositoryRegistry",
+    "ProjectTopicUploadRegistry",
     "ProjectUploadRegistry",
     "ProjectWikiRepositoryRegistry",
     "SnippetRepositoryRegistry",
@@ -304,7 +308,8 @@
     "UserUploadRegistry",
     "VulnerabilityArchiveExportUploadRegistry",
     "VulnerabilityExportPartUploadRegistry",
-    "VulnerabilityExportUploadRegistry"
+    "VulnerabilityExportUploadRegistry",
+    "VulnerabilityRemediationUploadRegistry"
   ],
   "RegistryInterface": [
     "ContainerRegistry",

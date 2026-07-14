@@ -1,6 +1,8 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
+import Vue, { nextTick } from 'vue';
 
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 import {
@@ -18,8 +20,9 @@ import {
   fetchOAuthApplicationId,
   fetchOAuthToken,
 } from '~/jira_connect/subscriptions/api';
-import createStore from '~/jira_connect/subscriptions/store';
-import { SET_ACCESS_TOKEN, SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
+import { useJiraConnectSubscriptions } from '~/jira_connect/subscriptions/store';
+
+Vue.use(PiniaVuePlugin);
 
 jest.mock('~/lib/utils/accessor');
 jest.mock('~/jira_connect/subscriptions/utils');
@@ -45,12 +48,11 @@ describe('SignInOauthButton', () => {
   };
 
   const createComponent = ({ slots, props } = {}) => {
-    store = createStore();
-    jest.spyOn(store, 'dispatch').mockImplementation();
-    jest.spyOn(store, 'commit').mockImplementation();
+    const pinia = createTestingPinia();
+    store = useJiraConnectSubscriptions();
 
     wrapper = shallowMount(SignInOauthButton, {
-      store,
+      pinia,
       slots,
       provide: {
         oauthMetadata: mockOauthMetadata,
@@ -133,9 +135,10 @@ describe('SignInOauthButton', () => {
         fetchOAuthApplicationId.mockReturnValue({ data: { application_id: mockClientId } });
         jest.spyOn(window, 'open').mockReturnValue();
 
-        store = createStore();
+        const pinia = createTestingPinia();
+        store = useJiraConnectSubscriptions();
         wrapper = shallowMount(SignInOauthButton, {
-          store,
+          pinia,
           provide: { oauthMetadata },
           propsData: { gitlabBasePath: basePath },
         });
@@ -299,12 +302,12 @@ describe('SignInOauthButton', () => {
             });
           });
 
-          it('dispatches loadCurrentUser action', () => {
-            expect(store.dispatch).toHaveBeenCalledWith('loadCurrentUser', mockAccessToken);
+          it('calls loadCurrentUser action', () => {
+            expect(store.loadCurrentUser).toHaveBeenCalledWith(mockAccessToken);
           });
 
-          it('commits SET_ACCESS_TOKEN mutation with correct access token', () => {
-            expect(store.commit).toHaveBeenCalledWith(SET_ACCESS_TOKEN, mockAccessToken);
+          it('calls setAccessToken action with correct access token', () => {
+            expect(store.setAccessToken).toHaveBeenCalledWith(mockAccessToken);
           });
 
           it('emits `sign-in` event with user data', () => {
@@ -356,8 +359,8 @@ describe('SignInOauthButton', () => {
               await triggerNetworkErrorOnSelfManaged();
             });
 
-            it('commits a Local Network Access alert', () => {
-              expect(store.commit).toHaveBeenCalledWith(SET_ALERT, {
+            it('sets a Local Network Access alert', () => {
+              expect(store.setAlert).toHaveBeenCalledWith({
                 linkUrl: OAUTH_LOCAL_NETWORK_ACCESS_DOC_LINK,
                 title: I18N_OAUTH_LOCAL_NETWORK_ACCESS_TITLE,
                 message: I18N_OAUTH_LOCAL_NETWORK_ACCESS_MESSAGE,
@@ -376,10 +379,9 @@ describe('SignInOauthButton', () => {
               await triggerNetworkErrorOnSelfManaged();
             });
 
-            it('emits the generic `error` event and does not commit the LNA alert', () => {
+            it('emits the generic `error` event and does not set the LNA alert', () => {
               expect(wrapper.emitted('error')[0]).toEqual([]);
-              expect(store.commit).not.toHaveBeenCalledWith(
-                SET_ALERT,
+              expect(store.setAlert).not.toHaveBeenCalledWith(
                 expect.objectContaining({ title: I18N_OAUTH_LOCAL_NETWORK_ACCESS_TITLE }),
               );
             });
@@ -391,10 +393,9 @@ describe('SignInOauthButton', () => {
               await triggerNetworkErrorOnSelfManaged();
             });
 
-            it('emits the generic `error` event and does not commit the LNA alert', () => {
+            it('emits the generic `error` event and does not set the LNA alert', () => {
               expect(wrapper.emitted('error')[0]).toEqual([]);
-              expect(store.commit).not.toHaveBeenCalledWith(
-                SET_ALERT,
+              expect(store.setAlert).not.toHaveBeenCalledWith(
                 expect.objectContaining({ title: I18N_OAUTH_LOCAL_NETWORK_ACCESS_TITLE }),
               );
             });
@@ -410,10 +411,9 @@ describe('SignInOauthButton', () => {
             await waitForPromises();
           });
 
-          it('emits the generic `error` event and does not commit the LNA alert', () => {
+          it('emits the generic `error` event and does not set the LNA alert', () => {
             expect(wrapper.emitted('error')[0]).toEqual([]);
-            expect(store.commit).not.toHaveBeenCalledWith(
-              SET_ALERT,
+            expect(store.setAlert).not.toHaveBeenCalledWith(
               expect.objectContaining({ title: I18N_OAUTH_LOCAL_NETWORK_ACCESS_TITLE }),
             );
           });

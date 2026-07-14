@@ -76,7 +76,7 @@ module MarkupHelper
         %w[
           style data-src data-name data-unicode-version data-html data-fallback-src
           data-reference-type data-project-path data-iid data-mr-title
-          data-user
+          data-user data-lang
         ]
     )
 

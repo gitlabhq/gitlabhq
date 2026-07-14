@@ -15,6 +15,9 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
     end
   end
 
+  # NOTE: No cross-organization isolation test for the admin path (`Query.runners`). It is cell-scoped
+  # by design (admins see every runner on the cell, across all organizations), so a second-organization
+  # runner is expected to be returned here, not filtered out.
   describe 'Query.runners', :freeze_time do
     before_all do
       freeze_time # Freeze time before `let_it_be` runs, so that runner statuses are frozen during execution
@@ -290,7 +293,7 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
       create(:ci_runner, :group, groups: [group], tag_list: tag_list, creator: user)
     end
 
-    let_it_be(:runner3, freeze: false) do
+    let_it_be_with_reload(:runner3) do
       create(:ci_runner, :project, projects: [project], tag_list: tag_list, creator: user)
     end
 
@@ -462,6 +465,33 @@ RSpec.describe 'Group.runners', feature_category: :fleet_visibility do
     end
   end
 
+  context 'with a runner outside the group' do
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:other_org_group) { create(:group, organization: other_organization) }
+    let_it_be(:other_org_runner) { create(:ci_runner, :group, groups: [other_org_group]) }
+
+    let(:query) do
+      %(
+        query($path: ID!) {
+          group(fullPath: $path) {
+            runners {
+              nodes { id }
+            }
+          }
+        }
+      )
+    end
+
+    it 'does not return runners outside the group', :aggregate_failures do
+      post_graphql(query, current_user: group_owner, variables: { path: group.full_path })
+
+      returned_ids = graphql_data_at(:group, :runners, :nodes).pluck('id')
+      expect(returned_ids).to include(group_runner.to_global_id.to_s)
+      expect(returned_ids).not_to include(other_org_runner.to_global_id.to_s)
+    end
+  end
+
   describe 'granular token authorization' do
     let(:query) do
       <<~GRAPHQL
@@ -477,7 +507,7 @@ RSpec.describe 'Group.runners', feature_category: :fleet_visibility do
       GRAPHQL
     end
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_runner do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_group, :read_runner] do
       let(:user) { create(:user, owner_of: group) }
       let(:boundary_object) { group }
       let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
@@ -521,6 +551,34 @@ RSpec.describe 'Project.runners', feature_category: :fleet_visibility do
     end
   end
 
+  context 'with a runner outside the project' do
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:other_org_group) { create(:group, organization: other_organization) }
+    let_it_be(:other_org_project) { create(:project, group: other_org_group) }
+    let_it_be(:other_org_runner) { create(:ci_runner, :project, projects: [other_org_project]) }
+
+    let(:query) do
+      %(
+        query($path: ID!) {
+          project(fullPath: $path) {
+            runners {
+              nodes { id }
+            }
+          }
+        }
+      )
+    end
+
+    it 'does not return runners outside the project', :aggregate_failures do
+      post_graphql(query, current_user: maintainer, variables: { path: project.full_path })
+
+      returned_ids = graphql_data_at(:project, :runners, :nodes).pluck('id')
+      expect(returned_ids).to include(project_runner.to_global_id.to_s)
+      expect(returned_ids).not_to include(other_org_runner.to_global_id.to_s)
+    end
+  end
+
   describe 'granular token authorization' do
     let(:query) do
       <<~GRAPHQL
@@ -536,7 +594,7 @@ RSpec.describe 'Project.runners', feature_category: :fleet_visibility do
       GRAPHQL
     end
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_runner do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_runner] do
       let(:user) { create(:user, maintainer_of: project) }
       let(:boundary_object) { project }
       let(:request) { post_graphql(query, token: { personal_access_token: pat }) }

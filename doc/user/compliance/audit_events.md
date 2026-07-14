@@ -124,6 +124,16 @@ If you don't see the event you want in any of the epics, you can either:
   [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Audit%20Event%20Proposal) to request it.
 - Contribute to GitLab and add the event.
 
+## AI audit events
+
+GitLab Duo agent sessions generate AI audit events that capture inputs,
+model context, the event timeline, and outputs for each session.
+You can
+browse, filter, and download these events from the **Audit events** tab
+on the **Governance** page.
+
+For more information, see [AI audit event report](../duo_agent_platform/ai-audit-events.md).
+
 ## Administer topics
 
 Instance administrators can [administer audit events](../../administration/compliance/audit_event_reports.md) from the **Admin** area.

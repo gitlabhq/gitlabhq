@@ -21,7 +21,8 @@ module API
 
       before { authenticate! }
 
-      desc "Get a commit's statuses" do
+      desc 'List all commit statuses' do
+        detail 'Lists all commit statuses for a specified project.'
         tags ['commit_statuses']
         success code: 200, model: Entities::CommitStatus
         failure [
@@ -52,6 +53,7 @@ module API
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_commit_status, boundary_type: :project
       get ':id/repository/commits/:sha/statuses' do
         authorize!(:read_commit_status, user_project)
 
@@ -69,7 +71,9 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Post status to a commit' do
+      desc 'Create or update a commit pipeline status' do
+        detail 'Creates or updates the status of a commit represented by a job in an `external` stage. ' \
+          'If the commit is associated with a merge request, target the commit in the merge request source branch.'
         tags ['commit_statuses']
         success code: 200, model: Entities::CommitStatus
         failure [
@@ -99,6 +103,7 @@ module API
           documentation: { example: 100.0 }
         optional :pipeline_id,  type: Integer, desc: 'An existing pipeline ID, when multiple pipelines on the same commit SHA have been triggered'
       end
+      route_setting :authorization, permissions: :create_commit_status, boundary_type: :project
       post ':id/statuses/:sha' do
         authorize! :create_commit_status, user_project
 

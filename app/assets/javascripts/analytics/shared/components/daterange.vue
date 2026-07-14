@@ -1,9 +1,9 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlDaterangePicker } from '@gitlab/ui';
 import { MAX_DATE_RANGE_TEXT, NUMBER_OF_DAYS_SELECTED } from '~/analytics/shared/constants';
 
 export default {
+  name: 'AnalyticsDaterange',
   components: {
     GlDaterangePicker,
   },

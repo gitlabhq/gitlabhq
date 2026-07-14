@@ -34,7 +34,7 @@ module Cells
       attr_accessor :cells_current_transaction_record
     end
 
-    TIMEOUT_IN_SECONDS = 0.2
+    TIMEOUT_IN_SECONDS = 0.3
     GRPC_RETRIABLE_ERRORS = [GRPC::DeadlineExceeded, GRPC::Unavailable].freeze
     GRPC_MAX_TRIES = 2
     GRPC_RETRY_BASE_INTERVAL = 0.1

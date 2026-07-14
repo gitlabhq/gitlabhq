@@ -51,12 +51,13 @@ export default {
       :meta-text="options.metaText"
       :meta-icon="options.metaIcon"
       :meta-tooltip="options.metaTooltip"
-      :title-icon="options.titleIcon"
+      :title-icon="options.metricIcon"
       :unit="humanizedUnit"
       :animation-decimal-places="decimalPlaces"
       :should-animate="true"
       :use-delimiters="true"
       :variant="options.variant"
+      :description="options.description"
     />
   </div>
 </template>

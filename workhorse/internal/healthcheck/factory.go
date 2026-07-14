@@ -4,12 +4,12 @@ package healthcheck
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/listener"
@@ -92,7 +92,7 @@ func InitializeAndStart(cfg config.Config, accessLogger *logrus.Logger, errors c
 	}
 
 	go func() {
-		log.WithField("address", cfg.HealthCheckListener.Addr).Info("healthcheck: listening for requests")
+		slog.Info("healthcheck: listening for requests", slog.String("address", cfg.HealthCheckListener.Addr))
 		errors <- healthServer.Serve(healthListener)
 	}()
 

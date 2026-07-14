@@ -30,8 +30,8 @@ module API
           desc: "The ID or URL-encoded path of the #{source_type} owned by the authenticated user."
       end
       resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc "List #{source_type} badges." do
-          detail 'This feature was introduced in GitLab 10.6.'
+        desc "List all badges for a #{source_type}" do
+          detail "Lists all badges for a specified #{source_type}#{', including group badges' if is_project}."
           success Entities::Badge
           is_array true
           tags %w[badges]
@@ -56,8 +56,9 @@ module API
           present_badges(source, paginate(badges))
         end
 
-        desc "Preview a badge from a #{source_type}." do
-          detail 'This feature was introduced in GitLab 10.6.'
+        desc "Retrieve a badge preview for a #{source_type}" do
+          detail "Previews the final `link_url` and `image_url` for a specified #{source_type} " \
+            "after resolving the placeholder interpolation."
           success Entities::BasicBadgeDetails
           tags %w[badges]
         end
@@ -85,8 +86,8 @@ module API
           end
         end
 
-        desc "Get a badge of a #{source_type}." do
-          detail 'This feature was introduced in GitLab 10.6.'
+        desc "Retrieve a badge for a #{source_type}" do
+          detail "Retrieves a specified badge for a #{source_type}."
           success Entities::Badge
           tags %w[badges]
         end
@@ -109,8 +110,8 @@ module API
           present_badges(source, badge)
         end
 
-        desc "Add a badge to a #{source_type}." do
-          detail 'This feature was introduced in GitLab 10.6.'
+        desc "Create a badge for a #{source_type}" do
+          detail "Creates a badge for a specified #{source_type}."
           success Entities::Badge
           tags %w[badges]
         end
@@ -136,8 +137,8 @@ module API
           end
         end
 
-        desc "Update a badge of a #{source_type}." do
-          detail 'This feature was introduced in GitLab 10.6.'
+        desc "Update a badge for a #{source_type}" do
+          detail "Updates a specified badge for a #{source_type}."
           success Entities::Badge
           tags %w[badges]
         end
@@ -165,8 +166,8 @@ module API
           end
         end
 
-        desc "Remove a badge from the #{source_type}." do
-          detail 'This feature was introduced in GitLab 10.6.'
+        desc "Delete a badge from a #{source_type}" do
+          detail "Deletes a specified badge from a #{source_type}."
           success code: 204, message: 'Resource deleted'
           tags %w[badges]
         end

@@ -70,6 +70,12 @@ module API
               documentation: { type: 'Entities::WorkItems::Features::AwardEmoji' },
               expose_nil: true
 
+            expose_feature :development,
+              widget_name: :development,
+              using: ::API::Entities::WorkItems::Features::Development,
+              documentation: { type: 'Entities::WorkItems::Features::Development' },
+              expose_nil: true
+
             expose_feature :notifications,
               widget_name: :notifications,
               using: ::API::Entities::WorkItems::Features::Notifications,

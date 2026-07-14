@@ -6,7 +6,7 @@ RSpec.describe 'Creating a Snippet', :with_current_organization, feature_categor
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   let(:description) { 'Initial description' }
   let(:title) { 'Initial title' }

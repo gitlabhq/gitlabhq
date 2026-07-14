@@ -33,7 +33,11 @@ module API
         end
       end
 
-      desc "Get all custom attributes on a #{attributable_name}" do
+      params do
+        requires :id, types: [String, Integer], desc: "The ID or URL-encoded path of the #{attributable_name}"
+      end
+      desc "List all custom attributes for a #{attributable_name}" do
+        detail "Lists all custom attributes for a specified #{attributable_name}."
         success Entities::CustomAttribute
         tags ['custom_attributes']
       end
@@ -45,7 +49,8 @@ module API
         present resource.custom_attributes, with: Entities::CustomAttribute
       end
 
-      desc "Get a custom attribute on a #{attributable_name}" do
+      desc "Retrieve a custom attribute for a #{attributable_name}" do
+        detail "Retrieves a specified custom attribute for a #{attributable_name}."
         success Entities::CustomAttribute
         tags ['custom_attributes']
       end
@@ -64,7 +69,9 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc "Set a custom attribute on a #{attributable_name}" do
+      desc "Creates or updates a custom attribute for a #{attributable_name}" do
+        detail "Creates or updates a custom attribute for a specified #{attributable_name}. " \
+          "If the attribute already exists, it is updated, otherwise a new attribute is created."
         success Entities::CustomAttribute
         tags ['custom_attributes']
       end
@@ -92,7 +99,8 @@ module API
         present result[:custom_attribute], with: Entities::CustomAttribute
       end
 
-      desc "Delete a custom attribute on a #{attributable_name}" do
+      desc "Delete a custom attribute for a #{attributable_name}" do
+        detail "Deletes a specified custom attribute for a #{attributable_name}."
         success code: 204
         tags ['custom_attributes']
       end

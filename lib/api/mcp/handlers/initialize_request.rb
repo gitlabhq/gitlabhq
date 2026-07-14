@@ -6,6 +6,7 @@ module API
       # See: https://modelcontextprotocol.io/specification/2025-06-18/schema#initializerequest
       class InitializeRequest < Base
         SUPPORTED_PROTOCOL_VERSIONS = %w[
+          2026-07-28
           2025-06-18
           2025-03-26
           2025-11-25

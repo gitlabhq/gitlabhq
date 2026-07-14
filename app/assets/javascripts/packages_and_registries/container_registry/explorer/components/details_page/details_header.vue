@@ -61,6 +61,7 @@ export default {
       required: false,
     },
   },
+  emits: ['delete'],
   data() {
     return {
       containerRepository: {},

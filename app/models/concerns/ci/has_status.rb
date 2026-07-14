@@ -44,6 +44,8 @@ module Ci
     PASSED_WITH_WARNINGS_STATUSES = %w[failed canceled].to_set.freeze
     IGNORED_STATUSES = %w[manual].to_set.freeze
     EXECUTING_STATUSES = %w[running canceling].freeze
+    # Statuses that only occur before a job first transitions to `running`
+    PRE_EXECUTION_STATUSES = (AVAILABLE_STATUSES - EXECUTING_STATUSES - COMPLETED_STATUSES).freeze
     ALIVE_STATUSES = ORDERED_STATUSES - COMPLETED_STATUSES - BLOCKED_STATUS
     CANCELABLE_STATUSES = (ORDERED_STATUSES - COMPLETED_STATUSES - ['canceling']).freeze
     STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,

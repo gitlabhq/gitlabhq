@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI Coding
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Documentation for the REST API for merge request approvals in GitLab.
@@ -8,7 +8,7 @@ title: Merge request approvals API
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -22,6 +22,21 @@ title: Merge request approvals API
 Use this API to manage [merge request approvals](../user/project/merge_requests/approvals/_index.md).
 
 All endpoints require authentication.
+
+The following endpoints are available on all tiers, including Free:
+
+- [Approve merge request](#approve-merge-request)
+- [Unapprove a merge request](#unapprove-a-merge-request)
+- [Reset approvals for a merge request](#reset-approvals-for-a-merge-request)
+- [Retrieve approval state for a merge request](#retrieve-approval-state-for-a-merge-request)
+
+All other endpoints require Premium or Ultimate, and each one shows its tier.
+
+> [!note]
+> The `merge_request_iid` and `id` path parameters must each be a single value.
+> Passing multiple space-separated values (for example, `451 454 458`) is not
+> supported and returns `400 Bad Request`. To act on multiple merge requests,
+> make one request per merge request IID.
 
 ## Approve merge request
 
@@ -141,6 +156,13 @@ curl --request PUT \
 ```
 
 ## Approval rules for projects
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 These endpoints apply to projects and their approval rules. All endpoints require authentication.
 
@@ -768,6 +790,14 @@ regardless of whether those approvals satisfy any approval rule. For more detail
 the approval rules in a merge request, and whether the approvals received satisfy those rules, see
 the [`/approval_state` endpoint](#retrieve-approval-details-for-a-merge-request).
 
+The `approved` field reflects whether the merge request meets its approval requirements, and its
+value depends on the deployed edition:
+
+- On GitLab Enterprise Edition, including without a license, `approved` is `true` when the configured
+  approval rules are satisfied.
+  When no approval rules apply, `approved` is `true` even when `approved_by` is empty.
+- On GitLab Community Edition, `approved` is `true` only when at least one approval exists.
+
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approvals
 ```
@@ -792,6 +822,7 @@ Supported attributes:
   "merge_status": "cannot_be_merged",
   "approvals_required": 2,
   "approvals_left": 1,
+  "approved": true,
   "approved_by": [
     {
       "user": {
@@ -809,6 +840,13 @@ Supported attributes:
 ```
 
 ### Retrieve approval details for a merge request
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Retrieves approval details for a specified merge request.
 
@@ -881,6 +919,13 @@ Supported attributes:
 ```
 
 ### List all approval rules for a merge request
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Lists all approval rules and any associated details for a specified merge request.
 
@@ -1017,6 +1062,13 @@ Supported attributes:
 
 ### Retrieve an approval rule for a specific merge request
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 Retrieves information about an approval rule for a specific merge request.
 
 ```plaintext
@@ -1091,6 +1143,13 @@ Supported attributes:
 ```
 
 ### Create an approval rule for a merge request
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Creates an approval rule for a specific merge request. If `approval_project_rule_id`
 is set with the ID of an existing approval rule from the project, this endpoint:
@@ -1175,6 +1234,13 @@ Supported attributes:
 
 ### Update an approval rule for a merge request
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 Updates a specified approval rule for a merge request. This endpoint removes any approvers and groups
 not included in the `group_ids`, `user_ids`, or `usernames` attributes.
 
@@ -1258,6 +1324,13 @@ Supported attributes:
 
 ### Delete an approval rule for a merge request
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 Deletes an approval rule for a specified merge request.
 
 ```plaintext
@@ -1278,13 +1351,15 @@ Supported attributes:
 
 {{< details >}}
 
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428051) in GitLab 16.7 [with a flag](../administration/feature_flags/_index.md) named `approval_group_rules`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428051) in GitLab 16.7 [with a feature flag](../administration/feature_flags/_index.md) named `approval_group_rules`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
 
 {{< /history >}}
 

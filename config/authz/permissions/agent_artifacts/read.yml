@@ -1,0 +1,3 @@
+---
+name: read_agent_artifacts
+description: Grants the ability to read agent artifacts, including audit events and session metadata, exposed through the agent artifacts dashboard

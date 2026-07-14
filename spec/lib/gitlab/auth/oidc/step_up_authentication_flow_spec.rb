@@ -224,7 +224,7 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthenticationFlow, feature_category: :
     let(:session) { {} }
 
     let(:omniauth_provider_config) do
-      GitlabSettings::Options.new(
+      Gitlab::Configs.build_options(
         name: 'openid_connect',
         **provider_config
       )
@@ -268,7 +268,7 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthenticationFlow, feature_category: :
     end
 
     let(:omniauth_provider_config) do
-      GitlabSettings::Options.new(
+      Gitlab::Configs.build_options(
         name: 'openid_connect',
         **provider_config
       )

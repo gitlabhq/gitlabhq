@@ -1,6 +1,7 @@
 #import "~/work_items/graphql/work_item_parent_fields.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/work_item_metadata_widgets.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/work_item_metadata_widgets_extras.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item_child_metadata_features.fragment.graphql"
 
 # @graphql-eslint/eslint-plugin@4.0.0 reports missing IDs in `FragmentDefinition`. For now, we are
 # ignoring the newly uncovered error on this fragment. Please consider addressing the violation
@@ -54,6 +55,9 @@ fragment WorkItemLinkedItemsFragment on WorkItem {
                   ...WorkItemParentFields
                 }
               }
+            }
+            features @include(if: $useWorkItemFeatures) {
+              ...WorkItemChildMetadataFeatures
             }
           }
         }

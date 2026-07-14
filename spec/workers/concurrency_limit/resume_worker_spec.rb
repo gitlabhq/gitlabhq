@@ -11,6 +11,7 @@ RSpec.describe ConcurrencyLimit::ResumeWorker, feature_category: :scalability do
   describe '#perform' do
     before do
       allow(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:resume_processing!)
+      allow(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:cleanup_stale_trackers)
       allow(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
         .to receive(:concurrent_worker_count).and_return(concurrent_workers)
     end
@@ -220,6 +221,49 @@ RSpec.describe ConcurrencyLimit::ResumeWorker, feature_category: :scalability do
             expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
               .not_to receive(:resume_processing!)
             expect(described_class).not_to receive(:perform_in)
+
+            perform
+          end
+        end
+
+        context 'when stale trackers make the worker appear at capacity' do
+          before do
+            allow(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:current_limit)
+                                                                                              .and_return(5)
+          end
+
+          it 'cleans up stale trackers before checking capacity', :aggregate_failures do
+            expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+              .to receive(:cleanup_stale_trackers)
+                    .with(worker_with_concurrency_limit.name)
+                    .ordered
+            expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+              .to receive(:concurrent_worker_count)
+                    .with(worker_with_concurrency_limit.name)
+                    .ordered
+                    .and_return(4)
+            expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+              .to receive(:resume_processing!)
+                    .with(worker_with_concurrency_limit.name)
+                    .ordered
+
+            perform
+          end
+        end
+
+        context 'when cleanup does not free capacity' do
+          before do
+            allow(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:current_limit)
+                                                                                              .and_return(5)
+            allow(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+              .to receive(:concurrent_worker_count).with(worker_with_concurrency_limit.name).and_return(5)
+          end
+
+          it 'does not resume processing', :aggregate_failures do
+            expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+              .to receive(:cleanup_stale_trackers).with(worker_with_concurrency_limit.name)
+            expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+              .not_to receive(:resume_processing!)
 
             perform
           end

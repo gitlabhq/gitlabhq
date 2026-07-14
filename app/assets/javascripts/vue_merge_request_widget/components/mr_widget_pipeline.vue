@@ -10,6 +10,7 @@ import {
   GlButton,
 } from '@gitlab/ui';
 import MrWidgetPipelineDuoAction from 'ee_component/vue_merge_request_widget/components/mr_duo_fix_pipeline.vue';
+import MrWidgetPipelineDuoResolveDependencyBump from 'ee_component/vue_merge_request_widget/components/mr_duo_resolve_dependency_bump.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { reportToSentry } from '~/ci/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -34,6 +35,11 @@ import {
   PIPELINE_EVENT_TYPE_MERGED_RESULT,
   PIPELINE_EVENT_TYPE_MAP,
 } from '../constants';
+
+// Pipeline creation states
+const IDLE = 'IDLE';
+const CREATING = 'CREATING';
+const CREATED = 'CREATED';
 
 export default {
   name: 'MRWidgetPipeline',
@@ -79,13 +85,15 @@ export default {
           );
 
           if (hasInProgress) {
-            // store snapshot of last pipeline ID
-            this.pipelineIdOnCreation = this.pipelineId;
-            this.hasInProgressPipeline = true;
+            this.creationState = CREATING;
           }
         },
         error(err) {
-          this.hasInProgressPipeline = false;
+          // Fall forward to CREATED rather than back to IDLE so an error mid-creation
+          // does not resurrect the retargeted prompt.
+          if (this.creationState === CREATING) {
+            this.creationState = CREATED;
+          }
           Sentry.captureException(err);
         },
       },
@@ -106,6 +114,7 @@ export default {
     HelpPopover,
     HelpIcon,
     MrWidgetPipelineDuoAction,
+    MrWidgetPipelineDuoResolveDependencyBump,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -174,8 +183,7 @@ export default {
     return {
       isCreatingPipeline: false,
       mergeRequestEventType: null,
-      pipelineIdOnCreation: null,
-      hasInProgressPipeline: false,
+      creationState: IDLE,
     };
   },
   computed: {
@@ -258,17 +266,20 @@ export default {
       return this.pipeline?.id;
     },
     showPipelineCreatingMessage() {
-      if (!this.hasInProgressPipeline) return false;
-
-      // display creating message until new pipeline ID comes in
-      return this.pipelineId === this.pipelineIdOnCreation;
+      return this.creationState === CREATING;
+    },
+    showRetargetedMessage() {
+      // Once creation has started for the retargeted branch, yield to the
+      // creating/live-pipeline states so the widget advances in place without a refresh.
+      return this.retargeted && this.creationState === IDLE;
     },
   },
   watch: {
     pipelineId(newId) {
-      if (this.hasInProgressPipeline && newId !== this.pipelineIdOnCreation) {
-        this.hasInProgressPipeline = false;
-        this.pipelineIdOnCreation = null;
+      // A truthy id means a new pipeline has arrived; Vue only fires this watcher on
+      // change, so we advance out of the creating state without tracking the old id.
+      if (newId && this.creationState === CREATING) {
+        this.creationState = CREATED;
       }
     },
   },
@@ -290,7 +301,7 @@ export default {
         </gl-sprintf>
       </p>
     </template>
-    <template v-else-if="retargeted">
+    <template v-else-if="showRetargetedMessage">
       <gl-icon name="status_canceled" class="gl-mr-3 gl-self-center" />
       <p class="gl-mb-0 gl-ml-3 gl-flex gl-grow gl-text-subtle" data-testid="retargeted-message">
         {{
@@ -440,6 +451,13 @@ export default {
               </gl-tooltip>
             </div>
             <mr-widget-pipeline-duo-action
+              v-if="showDuoWorkflowAction"
+              :pipeline="pipeline"
+              :merge-request-path="mergeRequestPath"
+              :target-project-full-path="targetProjectFullPath"
+              :source-branch="sourceBranch"
+            />
+            <mr-widget-pipeline-duo-resolve-dependency-bump
               v-if="showDuoWorkflowAction"
               :pipeline="pipeline"
               :merge-request-path="mergeRequestPath"

@@ -147,7 +147,10 @@ back into Sidekiq to be retried.
 ## Define an event
 
 > [!warning]
-> New events should only use Cloud Event instead of the legacy events.
+> All new events must inherit from `Gitlab::EventStore::CloudEvent`
+> (or a descendant such as `WorkItems::BaseEvent`) instead of `Gitlab::EventStore::Event`.
+> The `Gitlab/EventStoreCloudEventInheritance` RuboCop cop enforces this requirement.
+> Existing legacy events are tracked in `.rubocop_todo/gitlab/event_store_cloud_event_inheritance.yml`.
 
 An `Event` object represents a domain event that occurred in a [bounded context](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/bounded_contexts.yml).
 Producers can notify other bounded contexts about something that happened by publishing events, so that they can react to it. An event should be named `<domain_object><action>Event`, where the `action` is in past tense, for example, `ReviewerAddedEvent` instead of `AddReviewerEvent`. The `domain_object` may be elided when it is obvious based on the bounded context, for example, `MergeRequest::ApprovedEvent` instead of `MergeRequest::MergeRequestApprovedEvent`.
@@ -285,8 +288,9 @@ the `CloudEvent` class.
 ### Defining the event schema (Legacy)
 
 > [!warning]
-> New events should only use Cloud Event instead of the legacy events. Please refer to this section
-> only for legacy events maintenance.
+> Do not create new events that inherit from `Gitlab::EventStore::Event`.
+> Use `Gitlab::EventStore::CloudEvent` instead.
+> Refer to this section only for legacy event maintenance.
 
 Define new event classes under `app/events/<namespace>/` with a name representing something that happened in the past:
 

@@ -106,7 +106,7 @@ columns:
 - name: traversal_path
   type: String
   default_kind: DEFAULT
-  default_expression: multiIf(coalesce(namespace_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.namespace_traversal_paths_dict',
+  default_expression: multiIf(coalesce(namespace_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict',
     'traversal_path', namespace_id, '0/'), '0/')
   compression_codec: CODEC(ZSTD(3))
   is_in_sorting_key: true
@@ -137,3 +137,8 @@ columns:
   type: Nullable(Int64)
 - name: custom_status_id
   type: Nullable(Int64)
+- name: _siphon_watermark
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))

@@ -24,6 +24,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
 
     @project_members = present_members(non_invited_members.page(pagination_params[:page]))
+
+    @direct_members = direct_members_collection
   end
 
   # MembershipActions concern
@@ -43,6 +45,46 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def non_invited_members
     members.non_invite
+  end
+
+  def direct_members_collection
+    return paginated_direct_members if direct_members_query_requested?
+
+    direct_rows = @project_members.select { |member| member.type == ::ProjectMember.name }
+
+    Kaminari.paginate_array(direct_rows, total_count: direct_members_count)
+      .page(1)
+      .per(@project_members.limit_value)
+  end
+
+  def paginated_direct_members
+    present_members(non_invited_direct_members.page(direct_members_page || 1))
+  end
+
+  def direct_members_query_requested?
+    direct_members_searched? || direct_members_page.present?
+  end
+
+  def direct_members_page
+    params.permit(:direct_members_page)[:direct_members_page]
+  end
+
+  def direct_members_count
+    @project.namespace_members.non_invite.count
+  end
+
+  def direct_members_searched?
+    params.permit(:search_direct_members)[:search_direct_members].present?
+  end
+
+  def direct_members
+    MembersFinder
+      .new(@project, current_user, params: direct_member_filter_params)
+      .execute(include_relations: [:direct])
+  end
+
+  def non_invited_direct_members
+    direct_members.non_invite
   end
 
   def group_member_links
@@ -70,6 +112,12 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def filter_params
     params.permit(:search, :max_role).merge(sort: @sort)
+  end
+
+  def direct_member_filter_params
+    permitted = params.permit(:search_direct_members, :max_role)
+
+    { search: permitted[:search_direct_members], max_role: permitted[:max_role], sort: @sort }
   end
 
   def group_filter_params

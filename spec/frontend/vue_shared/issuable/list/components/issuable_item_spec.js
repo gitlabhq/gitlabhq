@@ -1,8 +1,10 @@
 import { GlBadge, GlLink, GlLabel, GlIcon, GlFormCheckbox, GlSprintf } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { useFakeDate } from 'helpers/fake_date';
 import { TEST_HOST } from 'helpers/test_constants';
 import { shallowMountExtended as shallowMount } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -12,8 +14,11 @@ import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { WORK_ITEM_TYPE_NAME_ISSUE } from '~/work_items/constants';
+import workItemLinkedItemsSlimQuery from '~/work_items/graphql/work_items_linked_items_slim.query.graphql';
 import { mockBlockedByLinkedItem as mockLinkedItems } from 'jest/work_items/mock_data';
 import { mockIssuable, mockDraftIssuable, mockRegularLabel } from '../mock_data';
+
+Vue.use(VueApollo);
 
 const defaultWorkItemConfig = {
   useIssueView: false,
@@ -57,11 +62,9 @@ const createComponent = ({
         template: `<div data-testid="issuable-prefetch-trigger"><slot :prefetchWorkItem="() => {}" :clearPrefetching="() => {}"></slot></div>`,
       },
     },
-    mocks: {
-      $apollo: {
-        queries: { childItemLinkedItems: { loading: false } },
-      },
-    },
+    apolloProvider: createMockApollo([
+      [workItemLinkedItemsSlimQuery, jest.fn().mockResolvedValue({ data: { namespace: null } })],
+    ]),
     provide,
   });
 
@@ -701,7 +704,8 @@ describe('IssuableItem', () => {
       expect(timestampEl.attributes('title')).toBe(
         localeDateFormat.asDateTimeFullWithWeekday.format(mockIssuable.updatedAt),
       );
-      expect(timestampEl.text()).toBe(wrapper.vm.formattedTimestamp);
+      expect(timestampEl.find('time').attributes('datetime')).toBe(mockIssuable.updatedAt);
+      expect(timestampEl.text()).toContain('updated');
     });
 
     describe('when issuable is closed', () => {
@@ -724,7 +728,8 @@ describe('IssuableItem', () => {
         expect(timestampEl.attributes('title')).toBe(
           localeDateFormat.asDateTimeFullWithWeekday.format(closedAt),
         );
-        expect(timestampEl.text()).toBe(wrapper.vm.formattedTimestamp);
+        expect(timestampEl.find('time').attributes('datetime')).toBe(closedAt);
+        expect(timestampEl.text()).toContain('closed');
       });
     });
 

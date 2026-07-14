@@ -33,7 +33,7 @@ use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md).
 
 ## Create a new GKE cluster from GitLab
 
-All GKE clusters provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
+All GKE clusters provisioned by GitLab are [VPC-native](https://docs.cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
 
 To create a new GKE cluster from GitLab, use [Infrastructure as Code with OpenTofu and GitLab](../../infrastructure/iac/_index.md).
 
@@ -47,7 +47,7 @@ To create a new GKE cluster from GitLab, use [Infrastructure as Code with OpenTo
 
 Prerequisites:
 
-- A [Google Cloud billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
+- A [Google Cloud billing account](https://docs.cloud.google.com/billing/docs/how-to/manage-billing-account)
   set up with access.
 - Kubernetes Engine API and related services enabled. It should work immediately but may
   take up to 10 minutes after you create a project. For more information see the
@@ -86,10 +86,10 @@ cluster certificates:
    - **Google Cloud Platform project** - Choose the project you created in your GCP
      console to host the Kubernetes cluster. For more information, see
      [Creating and managing projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
-   - **Zone** - Choose the [region zone](https://cloud.google.com/compute/docs/regions-zones/)
+   - **Zone** - Choose the [region zone](https://docs.cloud.google.com/compute/docs/regions-zones)
      under which to create the cluster.
    - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
-   - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-resource)
+   - **Machine type** - The [machine type](https://docs.cloud.google.com/compute/docs/machine-resource)
      of the Virtual Machine instance to base the cluster on.
    - **Enable Cloud Run for Anthos** - Check this if you want to use Cloud Run for Anthos for this cluster.
      See the [Cloud Run for Anthos section](#cloud-run-for-anthos) for more information.

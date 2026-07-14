@@ -388,6 +388,28 @@ end
 A few exceptions for using a `ProjectPush` would be when your test calls for testing SSH integration or
 using the Git CLI.
 
+## Return to a known page by navigating directly
+
+When a test needs to return to a page it visited earlier, navigate to that page directly rather than
+relying on `page.go_back` or the browser navigation history. The history can change between steps, so
+going back can land on an unexpected page and cause the test to fail.
+
+When a test creates a resource, store the ID or another unique attribute of that resource. The test
+can then build the path and navigate to the resource directly:
+
+```ruby
+issue = create(:issue, project: project)
+
+# Later in the test, return to the issue directly instead of using go_back.
+issue.visit!
+```
+
+## Scroll an element into view before interacting with it
+
+A control that is below the fold might not be clickable, which can cause `element click intercepted`
+or stale element failures. Scroll the control into view with `scroll_to_element` before you interact
+with it.
+
 ## Preferred method to blur elements
 
 To blur an element, the preferred method is to select another element that does not alter the test state.

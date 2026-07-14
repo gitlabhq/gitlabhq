@@ -71,18 +71,18 @@ The cluster cannot assign replica shards to the same node as primary shards.
 
 > [!warning]
 > Support for Elasticsearch 7.x was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/583544)
-> in GitLab 18.10 and is planned for removal in 19.1.
+> in GitLab 18.10 and is planned for removal in 20.0.
 
 Advanced search is compatible with the following versions of Elasticsearch.
 
-| GitLab version | Elasticsearch version |
-|----------------|-----------------------|
-| 18.1 and later | 7.x and later         |
-| 15.0 to 18.0   | 7.x and 8.x           |
-| 14.0 to 14.10  | 6.8 to 7.x            |
+| GitLab version  | Elasticsearch version |
+|-----------------|-----------------------|
+| 19.1 and later  | 8.x and 9.x           |
+| 15.0 to 19.0    | 7.x and 8.x           |
+| 14.0 to 14.10   | 6.8 to 7.x            |
 
 GitLab.com uses Elasticsearch 9.x.
-On GitLab Self-Managed, you should use Elasticsearch 9.x for optimal performance and forward compatibility.
+Use Elasticsearch 9.x for optimal performance, the latest features, and forward compatibility.
 
 Advanced search follows the [Elasticsearch end-of-life policy](https://www.elastic.co/support/eol).
 
@@ -597,9 +597,9 @@ The following Elasticsearch settings are available:
 
 {{< history >}}
 
-- Indexing all project records [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428070) in GitLab 16.7 [with a flag](../../administration/feature_flags/_index.md) named `search_index_all_projects`. Disabled by default.
+- Indexing all project records [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428070) in GitLab 16.7 [with a feature flag](../../administration/feature_flags/_index.md) named `search_index_all_projects`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148111) in GitLab 16.11. Feature flag `search_index_all_projects` removed.
-- Indexing vulnerability records [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536299) on GitLab.com and GitLab Dedicated in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `vulnerability_es_ingestion`. Disabled by default.
+- Indexing vulnerability records [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536299) on GitLab.com and GitLab Dedicated in GitLab 18.1 [with a feature flag](../../administration/feature_flags/_index.md) named `vulnerability_es_ingestion`. Disabled by default.
 - Indexing vulnerability records is [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536299) on GitLab.com and GitLab Dedicated in GitLab 18.2. Feature flag `vulnerability_es_ingestion` removed.
 
 {{< /history >}}
@@ -628,7 +628,7 @@ When you enable this setting:
 
 {{< history >}}
 
-- Global search for limited indexing [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41041) in GitLab 13.4 [with a flag](../../administration/feature_flags/_index.md) named `advanced_global_search_for_limited_indexing`. Disabled by default.
+- Global search for limited indexing [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41041) in GitLab 13.4 [with a feature flag](../../administration/feature_flags/_index.md) named `advanced_global_search_for_limited_indexing`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/244276) in GitLab 14.2.
 - Global search for limited indexing [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186727) in GitLab 17.11 as a UI option, instead of the `advanced_global_search_for_limited_indexing` flag.
 
@@ -865,7 +865,7 @@ To abandon an unfinished reindexing job and resume indexing:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112369) in GitLab 15.10 [with a flag](../../administration/feature_flags/_index.md) named `search_index_integrity`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112369) in GitLab 15.10 [with a feature flag](../../administration/feature_flags/_index.md) named `search_index_integrity`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392981) in GitLab 16.4. Feature flag `search_index_integrity` removed.
 
 {{< /history >}}
@@ -1008,7 +1008,7 @@ The following are some available Rake tasks:
 | Task                                                                                                                                                       | Description |
 |:-----------------------------------------------------------------------------------------------------------------------------------------------------------|:------------|
 | [`sudo gitlab-rake gitlab:elastic:info`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                              | Outputs debugging information for the advanced search integration. |
-| [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                             | In GitLab 17.0 and earlier, turns on indexing for advanced search and runs `gitlab:elastic:recreate_index`, `gitlab:elastic:clear_index_status`, `gitlab:elastic:index_group_entities`, `gitlab:elastic:index_projects`, `gitlab:elastic:index_snippets`, and `gitlab:elastic:index_users`.<br>In GitLab 17.1 and later, queues a Sidekiq job in the background. First, the job turns on indexing for advanced search and pauses indexing to ensure all indices are created. Then, the job re-creates all indices, clears indexing status, and queues additional Sidekiq jobs to index project and group data, snippets, and users. Finally, indexing for advanced search is resumed to complete. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421298) in GitLab 17.1 [with a flag](../../administration/feature_flags/_index.md) named `elastic_index_use_trigger_indexing`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434580) in GitLab 17.3. Feature flag `elastic_index_use_trigger_indexing` removed. |
+| [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                             | In GitLab 17.0 and earlier, turns on indexing for advanced search and runs `gitlab:elastic:recreate_index`, `gitlab:elastic:clear_index_status`, `gitlab:elastic:index_group_entities`, `gitlab:elastic:index_projects`, `gitlab:elastic:index_snippets`, and `gitlab:elastic:index_users`.<br>In GitLab 17.1 and later, queues a Sidekiq job in the background. First, the job turns on indexing for advanced search and pauses indexing to ensure all indices are created. Then, the job re-creates all indices, clears indexing status, and queues additional Sidekiq jobs to index project and group data, snippets, and users. Finally, indexing for advanced search is resumed to complete. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421298) in GitLab 17.1 [with a feature flag](../../administration/feature_flags/_index.md) named `elastic_index_use_trigger_indexing`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434580) in GitLab 17.3. Feature flag `elastic_index_use_trigger_indexing` removed. |
 | [`sudo gitlab-rake gitlab:elastic:pause_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | Pauses indexing for advanced search. Changes are still tracked. Useful for cluster/index migrations. |
 | [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Resumes indexing for advanced search. |
 | [`sudo gitlab-rake gitlab:elastic:index_and_search_validation`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Validates cluster connectivity, index, and search operations for all indices. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200664) in GitLab 18.3. |

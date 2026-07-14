@@ -15,6 +15,7 @@ import { s__, __ } from '~/locale';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 export default {
+  name: 'ConfigureFeatureFlagsModal',
   components: {
     GlFormGroup,
     GlFormInput,
@@ -62,6 +63,7 @@ export default {
       required: true,
     },
   },
+  emits: ['token'],
   translations: {
     cancelActionLabel: __('Close'),
     modalTitle: s__('FeatureFlags|Configure feature flags'),

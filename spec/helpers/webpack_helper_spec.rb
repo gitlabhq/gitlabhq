@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebpackHelper do
+RSpec.describe WebpackHelper, feature_category: :tooling do
   let(:source) { 'foo.js' }
   let(:asset_path) { "/assets/webpack/#{source}" }
 

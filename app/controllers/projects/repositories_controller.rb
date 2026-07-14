@@ -5,6 +5,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
   include StaticObjectExternalStorage
   include HotlinkInterceptor
   include Gitlab::RepositoryArchiveRateLimiter
+  include HandlesGitalyErrors
 
   prepend_before_action(only: [:archive]) { authenticate_sessionless_user!(:archive) }
 
@@ -45,7 +46,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
     end
 
     send_git_archive @repository, **repo_params
-  rescue StandardError => e
+  rescue Gitlab::Workhorse::ArchiveNotFoundError => e
     logger.error("#{self.class.name}: #{e}")
     git_not_found!
   end

@@ -38,7 +38,7 @@ module AdminModeHelper
     click_button _('Enter admin mode')
 
     if with_2fa
-      expect(page).to have_content(_('Enter verification code'))
+      expect(page).to have_button(_('Verify code'))
     else
       expect(page).to have_content(_('Admin mode is active'))
     end

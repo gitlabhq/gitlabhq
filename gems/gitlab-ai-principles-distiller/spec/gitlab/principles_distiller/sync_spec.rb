@@ -311,5 +311,133 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     it 'sets rewrite: true when --rewrite is passed' do
       expect(parse('--rewrite')[:rewrite]).to be true
     end
+
+    it 'sets check_duo_instructions: true when --check-duo-instructions is passed' do
+      expect(parse('--check-duo-instructions')[:check_duo_instructions]).to be true
+    end
+
+    it 'sets reconcile_duo_instructions: true when --reconcile-duo-instructions is passed' do
+      expect(parse('--reconcile-duo-instructions')[:reconcile_duo_instructions]).to be true
+    end
+
+    it 'sets warn_stale: true when --warn-stale is passed' do
+      expect(parse('--check-duo-instructions', '--warn-stale')[:warn_stale]).to be true
+    end
+  end
+
+  describe '.check_duo_instructions' do
+    let(:result) do
+      Gitlab::PrinciplesDistiller::Sync::DuoInstructions::Result.new(
+        stale: stale, malformed: malformed, pending: [], orphaned: orphaned
+      )
+    end
+
+    let(:stale) { [] }
+    let(:malformed) { [] }
+    let(:orphaned) { [] }
+
+    before do
+      allow(sync.manifest).to receive(:load)
+      allow(sync.manifest).to receive(:problematic_duo_review_instructions).and_return(result)
+    end
+
+    context 'without --warn-stale (strict)' do
+      context 'when a fence is stale' do
+        let(:stale) { ['qa'] }
+
+        it 'fails the guard' do
+          expect(sync).to receive(:exit).with(1)
+
+          expect { sync.check_duo_instructions }.to output(/Stale: qa/).to_stderr
+        end
+      end
+    end
+
+    context 'with --warn-stale' do
+      context 'when a fence is only stale' do
+        let(:stale) { ['qa'] }
+
+        it 'warns without failing the guard', :aggregate_failures do
+          expect(sync).not_to receive(:exit)
+
+          expect { sync.check_duo_instructions(warn_stale: true) }
+            .to output(/stale on this ref: qa.*No action needed/m).to_stderr
+        end
+      end
+
+      context 'when a fence is malformed' do
+        let(:malformed) { ['qa'] }
+
+        it 'still fails the guard regardless of the flag' do
+          expect(sync).to receive(:exit).with(1)
+
+          expect { sync.check_duo_instructions(warn_stale: true) }.to output(/Malformed: qa/).to_stderr
+        end
+      end
+
+      context 'when a fence is orphaned' do
+        let(:orphaned) { ['qa'] }
+
+        it 'still fails the guard regardless of the flag' do
+          expect(sync).to receive(:exit).with(1)
+
+          expect { sync.check_duo_instructions(warn_stale: true) }.to output(/Orphaned: qa/).to_stderr
+        end
+      end
+    end
+  end
+
+  describe '.reconcile_duo_instructions' do
+    before do
+      allow(sync).to receive(:banner)
+      allow(sync.manifest).to receive(:load)
+    end
+
+    context 'with --push' do
+      before do
+        allow(sync.manifest).to receive(:auto_mr_config)
+          .and_return({ 'branch_prefix' => 'docs-sync/principles' })
+      end
+
+      # The projection is deferred to the freshly cut branch inside
+      # create_reconcile_mr_from_working_tree (which receives the manifest to
+      # regenerate against the branch's base), so reconcile_duo_instructions
+      # must NOT regenerate on the pipeline-SHA working tree first.
+      it 'defers regeneration to the fresh branch and opens the MR', :aggregate_failures do
+        expect(sync.manifest).not_to receive(:generate_duo_review_instructions)
+        expect(sync).to receive(:create_reconcile_mr_from_working_tree)
+          .with({ 'branch_prefix' => 'docs-sync/principles' }, sync.manifest)
+
+        sync.reconcile_duo_instructions(push: true)
+      end
+    end
+
+    context 'without --push' do
+      context 'when the fences are already up to date' do
+        before do
+          allow(sync.manifest).to receive(:generate_duo_review_instructions).and_return(false)
+        end
+
+        it 'does not open an MR' do
+          expect(sync).not_to receive(:create_reconcile_mr_from_working_tree)
+
+          expect { sync.reconcile_duo_instructions(push: false) }
+            .to output(/already up to date/).to_stdout
+        end
+      end
+
+      context 'when the fences changed' do
+        before do
+          allow(sync.manifest).to receive(:generate_duo_review_instructions).and_return(true)
+        end
+
+        it 'only rewrites on disk (never re-distilling)' do
+          expect(sync).not_to receive(:create_reconcile_mr_from_working_tree)
+
+          expect { sync.reconcile_duo_instructions(push: false) }
+            .to output(/\[LOCAL\].*Pass --push/m).to_stdout
+        end
+      end
+    end
   end
 end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::GroupPackages, feature_category: :package_registry do
-  let_it_be(:group, freeze: false) { create(:group, :public) }
+  let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A', path: 'project-a') }
   let_it_be(:user) { create(:user) }
 

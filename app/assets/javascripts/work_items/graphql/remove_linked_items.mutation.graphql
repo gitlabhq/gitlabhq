@@ -1,3 +1,4 @@
+# @feature_category: portfolio_management
 mutation removeLinkedItems($input: WorkItemRemoveLinkedItemsInput!) {
   workItemRemoveLinkedItems(input: $input) {
     errors

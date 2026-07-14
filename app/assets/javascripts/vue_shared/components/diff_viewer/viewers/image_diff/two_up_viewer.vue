@@ -2,6 +2,7 @@
 import ImageViewer from '../../../content_viewer/viewers/image_viewer.vue';
 
 export default {
+  name: 'TwoUpViewer',
   components: {
     ImageViewer,
   },

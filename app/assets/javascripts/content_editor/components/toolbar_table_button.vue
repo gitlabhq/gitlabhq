@@ -18,6 +18,7 @@ export default {
     GlDisclosureDropdown,
     GlTooltip,
   },
+  emits: ['execute', 'insert-table'],
   data() {
     return {
       toggleId: uniqueId('dropdown-toggle-btn-'),

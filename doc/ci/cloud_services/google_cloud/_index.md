@@ -95,9 +95,9 @@ However, you have no permissions on Google Cloud (authorization).
 
 To grant your GitLab CI/CD job permissions on Google Cloud, you must:
 
-1. [Create a Google Cloud Service Account](https://cloud.google.com/iam/docs/service-accounts-create).
+1. [Create a Google Cloud Service Account](https://docs.cloud.google.com/iam/docs/service-accounts-create).
    You can use whatever name and ID you prefer.
-1. [Grant IAM permissions](https://cloud.google.com/iam/docs/granting-changing-revoking-access) to your
+1. [Grant IAM permissions](https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access) to your
    service account on Google Cloud resources. These permissions vary significantly based on
    your use case. In general, grant this service account the permissions on your Google Cloud
    project and resources you want your GitLab CI/CD job to be able to use. For example, if you needed to upload a file to a Google Cloud Storage bucket in your GitLab CI/CD job, you would grant this Service Account the `roles/storage.objectCreator` role on your Cloud Storage bucket.
@@ -126,7 +126,7 @@ the assertion in the previous section.
 ## Retrieve a temporary credential
 
 After you configure the OIDC and role, the GitLab CI/CD job can retrieve a temporary credential from the
-[Google Cloud Security Token Service (STS)](https://cloud.google.com/iam/docs/reference/sts/rest).
+[Google Cloud Security Token Service (STS)](https://docs.cloud.google.com/iam/docs/reference/sts/rest).
 
 Add `id_tokens` to your CI/CD job:
 
@@ -203,4 +203,4 @@ for provisioning OIDC in GCP using Terraform and a sample script to retrieve tem
 - When debugging `curl` responses, install the latest version of curl. Use `--fail-with-body`
   instead of `-f`. This command prints the entire body, which can contain helpful error messages.
 
-- For more information, see [Troubleshoot Workload Identity Federation](https://cloud.google.com/iam/docs/troubleshooting-workload-identity-federation).
+- For more information, see [Troubleshoot Workload Identity Federation](https://docs.cloud.google.com/iam/docs/troubleshooting-workload-identity-federation).

@@ -30,6 +30,7 @@ module API
               desc: 'The name of the database',
               default: 'main'
           end
+          route_setting :authorization, permissions: :read_database_migration, boundary_type: :instance
           get 'pending' do
             response = Database::ListMigrationsService.new(
               connection: base_model.connection,
@@ -46,6 +47,9 @@ module API
           end
         end
 
+        params do
+          requires :timestamp, type: Integer, desc: 'The migration version timestamp'
+        end
         resources 'migrations/:timestamp/mark' do
           desc 'Update status of a migration' do
             detail 'Updates the status of a migration to indicate a successful execution. This prevent them from ' \

@@ -174,7 +174,7 @@ describe('Details Page', () => {
 
         await waitForApolloRequestRender();
 
-        findDeleteModal().vm.$emit('cancel');
+        findDeleteModal().vm.$emit('cancel-delete');
 
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'cancel_delete', {
           label: 'registry_image_delete',

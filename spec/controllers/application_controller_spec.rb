@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe ApplicationController, feature_category: :shared do
@@ -1119,7 +1120,7 @@ RSpec.describe ApplicationController, feature_category: :shared do
       it 'does not set the Permissions-Policy header' do
         get :index
 
-        expect(response.headers['Permissions-Policy']).to eq(nil)
+        expect(response.headers['Permissions-Policy']).to be_nil
       end
     end
 

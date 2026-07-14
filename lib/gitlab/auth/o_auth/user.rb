@@ -27,6 +27,11 @@ module Gitlab
         SigninDisabledForProviderError = Class.new(StandardError)
         IdentityWithUntrustedExternUidError = Class.new(StandardError)
         UnknownAttributeMappingError = Class.new(StandardError)
+        # Raised when a new-user INSERT would be attempted while the owning
+        # Organization is in read_only_initialization or read_only state.
+        # Existing-user sign-ins (timestamp updates) are not affected.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/604050.
+        NewUserOrganizationReadOnlyError = Class.new(StandardError)
 
         attr_reader :auth_hash
 
@@ -58,6 +63,7 @@ module Gitlab
 
           raise SigninDisabledForProviderError if oauth_provider_disabled?
           raise SignupDisabledError unless gl_user
+          raise NewUserOrganizationReadOnlyError if new_user_blocked_by_read_only_organization?
 
           block_after_save = needs_blocking?
 
@@ -120,6 +126,26 @@ module Gitlab
 
         def should_save?
           true
+        end
+
+        # Returns true when all of the following hold:
+        #   1. The user does not yet exist in the database (new record / INSERT).
+        #   2. The owning organization is in read_only_initialization or read_only state.
+        #   3. The organization_read_only_enforcement feature flag is enabled.
+        #
+        # Existing-user sign-ins only update timestamp columns and are not blocked.
+        # When the feature flag is disabled the method is a no-op, preserving the
+        # pre-enforcement behaviour.
+        def new_user_blocked_by_read_only_organization?
+          return false unless new?
+
+          organization_id = user_params[:organization_id]
+          return false unless organization_id
+
+          organization = ::Organizations::Organization.find_by_id(organization_id)
+          return false unless organization
+
+          organization.read_only_enforced?
         end
 
         def add_or_update_user_identities

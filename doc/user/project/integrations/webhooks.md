@@ -88,7 +88,7 @@ Use these features to set up webhooks that meet your specific requirements.
 {{< history >}}
 
 - **Name** and **Description** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141977) in GitLab 16.9.
-- **Signing token** text box [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0 [with a flag](../../../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
+- **Signing token** text box [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
 - Feature flag `webhook_signing_token` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/596374) in GitLab 19.1.
 
 {{< /history >}}
@@ -128,7 +128,7 @@ To create a webhook:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0 [with a flag](../../../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/596374) in GitLab 19.1. Feature flag `webhook_signing_token` removed.
 
 {{< /history >}}
@@ -245,7 +245,7 @@ https://webhook.example.com/{path}?key={value}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146702) in GitLab 16.11 [with a flag](../../../administration/feature_flags/_index.md) named `custom_webhook_headers`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146702) in GitLab 16.11 [with a feature flag](../../../administration/feature_flags/_index.md) named `custom_webhook_headers`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/448604) in GitLab 17.0. Feature flag `custom_webhook_headers` removed.
 
 {{< /history >}}
@@ -266,9 +266,9 @@ Custom headers show in **Recent events** with masked values.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738) in GitLab 16.10 [with a flag](../../../administration/feature_flags/_index.md) named `custom_webhook_template`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738) in GitLab 16.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `custom_webhook_template`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439610) in GitLab 17.0. Feature flag `custom_webhook_template` removed.
-- JSON serialization of interpolated field values [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197992) in GitLab 18.4 [with a flag](../../../administration/feature_flags/_index.md) named `custom_webhook_template_serialization`. Disabled by default.
+- JSON serialization of interpolated field values [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197992) in GitLab 18.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `custom_webhook_template_serialization`. Disabled by default.
 - JSON serialization of interpolated field values made [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212407) in GitLab 18.6. Feature flag `custom_webhook_template_serialization` enabled by default.
 - Feature flag `custom_webhook_template_serialization` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/580460) in GitLab 18.10.
 
@@ -577,7 +577,7 @@ To optimize your webhook receivers:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385902) for group webhooks in GitLab 15.10.
-- [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/390157) for project webhooks in GitLab 15.10 [with a flag](../../../administration/feature_flags/_index.md) named `auto_disabling_web_hooks`.
+- [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/390157) for project webhooks in GitLab 15.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `auto_disabling_web_hooks`.
 - **Fails to connect** and **Failing to connect** [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166329) to **Disabled** and **Temporarily disabled** in GitLab 17.11.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166329) to become permanently disabled after 40 consecutive failures in GitLab 17.11.
 
@@ -637,7 +637,7 @@ The webhook is re-enabled if the test request returns a response code in the `2x
 - `X-Gitlab-Webhook-UUID` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230830) in GitLab 16.2.
 - `Idempotency-Key` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388692) in GitLab 17.4.
 - `webhook-id` and `webhook-timestamp` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0.
-- `webhook-signature` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0 [with a flag](../../../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
+- `webhook-signature` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19367) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
 - Feature flag `webhook_signing_token` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/596374) in GitLab 19.1.
 
 {{< /history >}}

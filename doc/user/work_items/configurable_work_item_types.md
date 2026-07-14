@@ -15,7 +15,7 @@ title: Configurable work item types
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/7897) in GitLab 19.0 [with a flag](../../administration/feature_flags/_index.md) named `work_item_configurable_types`. Enabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/7897) in GitLab 19.0 [with a feature flag](../../administration/feature_flags/_index.md) named `work_item_configurable_types`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/600185) in GitLab 19.1. Feature flag `work_item_configurable_types` removed.
 
 {{< /history >}}

@@ -24,6 +24,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['close', 'save'],
   data() {
     return {
       localRules: '',

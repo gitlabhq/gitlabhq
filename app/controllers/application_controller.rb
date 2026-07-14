@@ -30,6 +30,7 @@ class ApplicationController < BaseActionController
   include Gitlab::HttpRouter::RuleContext
   include Gitlab::HttpRouter::RuleMetrics
   include CookiesHelper
+  include EnforcesReadOnlyOrganization
 
   content_security_policy do |p|
     next if p.directives.blank?
@@ -45,6 +46,7 @@ class ApplicationController < BaseActionController
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :set_current_organization
+  before_action :enforce_read_only_organization
   before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :check_password_expiration, if: :html_request?
   before_action :ldap_security_check
@@ -103,19 +105,12 @@ class ApplicationController < BaseActionController
   end
 
   rescue_from Gitlab::Auth::IpBlocked do |e|
-    Gitlab::AuthLogger.error(
-      message: 'Rack_Attack',
-      env: :blocklist,
-      remote_ip: request.ip,
-      request_method: request.request_method,
-      path: request.filtered_path
-    )
-
+    log_ip_blocked
     render plain: e.message, status: :forbidden
   end
 
   rescue_from Gitlab::Auth::TooManyIps do |_e|
-    head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
+    head :forbidden, retry_after: too_many_ips_retry_after
   end
 
   rescue_from RateLimitedService::RateLimitedError do |e|
@@ -209,6 +204,20 @@ class ApplicationController < BaseActionController
     application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
     application_trace.map! { |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
+  end
+
+  def log_ip_blocked
+    Gitlab::AuthLogger.error(
+      message: 'Rack_Attack',
+      env: :blocklist,
+      remote_ip: request.ip,
+      request_method: request.request_method,
+      path: request.filtered_path
+    )
+  end
+
+  def too_many_ips_retry_after
+    Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 
   def after_sign_in_path_for(resource)

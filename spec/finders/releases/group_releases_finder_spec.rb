@@ -3,15 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_projects do
-  let(:user)  { create(:user) }
-  let(:group) { create(:group) }
-  let(:project) { create(:project, :repository, group: group) }
+  let_it_be(:user)  { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_refind(:project) { create(:project, :small_repo, group: group) }
   let(:params) { {} }
   let(:args) { {} }
-  let(:repository) { project.repository }
-  let(:v1_0_0) { create(:release, project: project, tag: 'v1.0.0') }
-  let(:v1_1_0) { create(:release, project: project, tag: 'v1.1.0') }
-  let(:v1_1_1) { create(:release, project: project, tag: 'v1.1.1') }
+  let_it_be_with_reload(:v1_0_0) { create(:release, project: project, tag: 'v1.0.0') }
+  let_it_be_with_reload(:v1_1_0) { create(:release, project: project, tag: 'v1.1.0') }
+  let_it_be_with_reload(:v1_1_1) { create(:release, project: project, tag: 'v1.1.1') }
 
   before do
     v1_0_0.update_attribute(:released_at, 2.days.ago)
@@ -59,8 +58,8 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
 
   describe 'when parent is a group' do
     context 'without subgroups' do
-      let(:project2) { create(:project, :repository, namespace: group) }
-      let!(:v6) { create(:release, project: project2, tag: 'v6') }
+      let_it_be_with_refind(:project2) { create(:project, :small_repo, namespace: group) }
+      let_it_be_with_reload(:v6) { create(:release, project: project2, tag: 'v6') }
 
       subject(:releases) { described_class.new(group, user, params).execute(**args) }
 
@@ -68,7 +67,7 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
       it_behaves_like 'when the user is not part of the group'
 
       context 'when the user is a project guest on one sibling project' do
-        before do
+        before_all do
           project.add_guest(user)
         end
 
@@ -79,8 +78,9 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
       end
 
       context 'when the user is a guest on the group' do
+        before_all { group.add_guest(user) }
+
         before do
-          group.add_guest(user)
           v1_0_0.update_attribute(:released_at, 3.days.ago)
           v6.update_attribute(:released_at, 2.days.ago)
           v1_1_0.update_attribute(:released_at, 1.day.ago)
@@ -98,14 +98,14 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
       subject(:releases) { described_class.new(group, user, params).execute(**args) }
 
       context 'with a single-level subgroup' do
-        let(:subgroup) { create(:group, parent: group) }
-        let(:project2) { create(:project, :repository, namespace: subgroup) }
-        let!(:v6)      { create(:release, project: project2, tag: 'v6') }
+        let_it_be(:subgroup) { create(:group, parent: group) }
+        let_it_be_with_refind(:project2) { create(:project, :small_repo, namespace: subgroup) }
+        let_it_be_with_reload(:v6) { create(:release, project: project2, tag: 'v6') }
 
         it_behaves_like 'when the user is not part of the group'
 
         context 'when the user a project guest in the subgroup project' do
-          before do
+          before_all do
             project2.add_guest(user)
           end
 
@@ -115,8 +115,9 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
         end
 
         context 'when the user is a guest on the group' do
+          before_all { group.add_guest(user) }
+
           before do
-            group.add_guest(user)
             v6.update_attribute(:released_at, 2.days.ago)
           end
 
@@ -127,12 +128,12 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
       end
 
       context 'with a multi-level subgroup' do
-        let(:subgroup) { create(:group, parent: group) }
-        let(:subsubgroup) { create(:group, parent: subgroup) }
-        let(:project2) { create(:project, :repository, namespace: subgroup) }
-        let(:project3) { create(:project, :repository, namespace: subsubgroup) }
-        let!(:v6) { create(:release, project: project2, tag: 'v6') }
-        let!(:p3) { create(:release, project: project3, tag: 'p3') }
+        let_it_be(:subgroup) { create(:group, parent: group) }
+        let_it_be(:subsubgroup) { create(:group, parent: subgroup) }
+        let_it_be_with_refind(:project2) { create(:project, :small_repo, namespace: subgroup) }
+        let_it_be_with_refind(:project3) { create(:project, :small_repo, namespace: subsubgroup) }
+        let_it_be_with_reload(:v6) { create(:release, project: project2, tag: 'v6') }
+        let_it_be_with_reload(:p3) { create(:release, project: project3, tag: 'p3') }
 
         before do
           v6.update_attribute(:released_at, 2.days.ago)
@@ -142,7 +143,7 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
         it_behaves_like 'when the user is not part of the group'
 
         context 'when the user a project guest in the subgroup and subsubgroup project' do
-          before do
+          before_all do
             project2.add_guest(user)
             project3.add_guest(user)
           end
@@ -153,7 +154,7 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
         end
 
         context 'when the user a project guest in the subsubgroup project' do
-          before do
+          before_all do
             project3.add_guest(user)
           end
 

@@ -7,8 +7,10 @@ module Tasks
         module SkipReasons
           REASON_LABELS = {
             ai_workflows_oauth_auth: 'AI workflows OAuth token',
+            catch_all: 'Catch-all fallback',
             compliance_external_auth: 'Compliance external control token',
             container_registry_event_auth: 'Container registry event token',
+            deprecated_endpoint: 'Deprecated endpoint',
             error_tracking_token_auth: 'Error tracking token',
             geo_jwt_auth: 'Geo node JWT',
             geo_proxy_auth: 'Geo proxy',
@@ -16,6 +18,7 @@ module Tasks
             gitlab_shell_token_auth: 'GitLab Shell token',
             integration_token_auth: 'Project integration token',
             internal_testing: 'Internal testing',
+            jira_forge_app_auth: 'GitLab for Jira (Forge) app token',
             job_token_auth: 'CI job token',
             kas_jwt_auth: 'Kubernetes agent JWT',
             mailroom_token_auth: 'Mailroom token',

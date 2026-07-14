@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User edits Release', :js, feature_category: :continuous_delivery do
   include MobileHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
   let(:release) { create(:release, :with_milestones, milestones_count: 1, project: project, name: 'The first release', tag: "v1.1.0") }

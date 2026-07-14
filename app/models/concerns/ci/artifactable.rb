@@ -44,17 +44,54 @@ module Ci
         raise NotSupportedAdapterError, 'This file format requires a dedicated adapter'
       end
 
-      ::Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator
-        .new(file: file, file_format: file_format.to_sym, max_bytes: max_size_for_file_type).validate!
+      if parse_remote_artifact_from_local_copy?
+        each_blob_from_local_copy(&blk)
+      else
+        validate_decompressed_size!
+        log_artifacts_filesize(file.model)
 
-      log_artifacts_filesize(file.model)
-
-      file.open do |stream|
-        file_format_adapter_class.new(stream).each_blob(&blk)
+        file.open do |stream|
+          file_format_adapter_class.new(stream).each_blob(&blk)
+        end
       end
     end
 
     private
+
+    # Downloads the remote file once and reuses the local copy for both
+    # decompressed-size validation and parsing. The default path downloads
+    # the file twice: once inside DecompressedArtifactSizeValidator and
+    # again through file.open.
+    def each_blob_from_local_copy(&blk)
+      file.use_open_file(unlink_early: false) do |open_file|
+        validate_decompressed_size!(local_archive_path: open_file.file_path)
+        log_artifacts_filesize(file.model)
+
+        File.open(open_file.file_path, 'rb') do |stream|
+          file_format_adapter_class.new(stream).each_blob(&blk)
+        end
+      end
+    end
+
+    def parse_remote_artifact_from_local_copy?
+      file.respond_to?(:object_store) &&
+        file.object_store == ObjectStorage::Store::REMOTE &&
+        optimize_artifact_parsing_enabled?
+    end
+
+    def optimize_artifact_parsing_enabled?
+      Feature.enabled?(:ci_optimize_artifact_parsing, project)
+    end
+
+    def validate_decompressed_size!(local_archive_path: nil)
+      ::Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator.new(
+        file: file,
+        file_format: file_format.to_sym,
+        max_bytes: max_size_for_file_type,
+        local_archive_path: local_archive_path,
+        limit_output: optimize_artifact_parsing_enabled?
+      ).validate!
+    end
 
     def file_format_adapter_class
       FILE_FORMAT_ADAPTERS[file_format.to_sym]

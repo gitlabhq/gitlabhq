@@ -1,0 +1,3 @@
+---
+name: read_cd_artifact_source
+description: Grants the ability to read continuous deployment artifact sources

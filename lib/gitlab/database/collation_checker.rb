@@ -19,7 +19,9 @@ module Gitlab
             pg_collation
           WHERE
             collprovider IN ('c', 'd')
-          AND (collversion IS DISTINCT FROM pg_collation_actual_version(oid));
+          AND (collversion IS DISTINCT FROM pg_collation_actual_version(oid))
+          AND (collencoding = -1
+            OR collencoding = pg_char_to_encoding(current_setting('server_encoding')));
       SQL
 
       # Few Tables/indexes prone to corruption issues for spot check

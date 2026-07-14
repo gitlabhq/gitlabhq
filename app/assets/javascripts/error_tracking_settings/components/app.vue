@@ -20,6 +20,7 @@ import ErrorTrackingForm from './error_tracking_form.vue';
 import ProjectDropdown from './project_dropdown.vue';
 
 export default {
+  name: 'ErrorTrackingSettingsApp',
   i18n: I18N_ERROR_TRACKING_SETTINGS,
   components: {
     ErrorTrackingForm,

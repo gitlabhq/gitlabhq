@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'ContentTransition',
   props: {
     currentSlot: {
       type: String,

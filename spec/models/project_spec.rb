@@ -1503,7 +1503,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'returns true' do
-        expect(group_project.self_or_ancestors_archived?).to eq(true)
+        expect(group_project.self_or_ancestors_archived?).to be(true)
       end
     end
 
@@ -1513,7 +1513,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'returns true' do
-        expect(group_project.self_or_ancestors_archived?).to eq(true)
+        expect(group_project.self_or_ancestors_archived?).to be(true)
       end
     end
 
@@ -1523,19 +1523,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'returns true' do
-        expect(subgroup_project.self_or_ancestors_archived?).to eq(true)
+        expect(subgroup_project.self_or_ancestors_archived?).to be(true)
       end
     end
 
     context 'when neither project nor any ancestor group is archived' do
       it 'returns false' do
-        expect(subgroup_project.self_or_ancestors_archived?).to eq(false)
+        expect(subgroup_project.self_or_ancestors_archived?).to be(false)
       end
     end
 
     context 'when project and any its ancestor are not archived' do
       it 'returns false' do
-        expect(user_namespace_project.self_or_ancestors_archived?).to eq(false)
+        expect(user_namespace_project.self_or_ancestors_archived?).to be(false)
       end
     end
 
@@ -1548,7 +1548,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
 
         it 'returns true' do
-          expect(group_project.self_or_ancestors_archived?).to eq(true)
+          expect(group_project.self_or_ancestors_archived?).to be(true)
         end
       end
 
@@ -1560,7 +1560,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
 
         it 'returns true' do
-          expect(group_project.self_or_ancestors_archived?).to eq(true)
+          expect(group_project.self_or_ancestors_archived?).to be(true)
         end
       end
 
@@ -1572,7 +1572,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
 
         it 'returns true' do
-          expect(subgroup_project.self_or_ancestors_archived?).to eq(true)
+          expect(subgroup_project.self_or_ancestors_archived?).to be(true)
         end
       end
 
@@ -1583,7 +1583,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
 
         it 'returns false' do
-          expect(subgroup_project.self_or_ancestors_archived?).to eq(false)
+          expect(subgroup_project.self_or_ancestors_archived?).to be(false)
         end
       end
     end
@@ -1601,7 +1601,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'returns false' do
         group_project.update!(archived: true)
 
-        expect(group_project.ancestors_archived?).to eq(false)
+        expect(group_project.ancestors_archived?).to be(false)
       end
     end
 
@@ -1609,7 +1609,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'returns true' do
         group.namespace_settings.update!(archived: true)
 
-        expect(group_project.ancestors_archived?).to eq(true)
+        expect(group_project.ancestors_archived?).to be(true)
       end
     end
 
@@ -1617,20 +1617,58 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'returns true' do
         subgroup.namespace_settings.update!(archived: true)
 
-        expect(subgroup_project.ancestors_archived?).to eq(true)
+        expect(subgroup_project.ancestors_archived?).to be(true)
       end
     end
 
     context 'when neither project nor any ancestor group is archived' do
       it 'returns false' do
-        expect(subgroup_project.ancestors_archived?).to eq(false)
+        expect(subgroup_project.ancestors_archived?).to be(false)
       end
     end
 
     context 'when project and any its ancestor are not archived' do
       it 'returns false' do
-        expect(user_namespace_project.ancestors_archived?).to eq(false)
+        expect(user_namespace_project.ancestors_archived?).to be(false)
       end
+    end
+  end
+
+  describe '#self_and_ancestors_active?' do
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project, group: group) }
+
+    context 'when the project and its ancestors are active' do
+      specify { expect(project.self_and_ancestors_active?).to be(true) }
+    end
+
+    context 'when the project is archived' do
+      before do
+        project.update!(archived: true)
+      end
+
+      specify { expect(project.self_and_ancestors_active?).to be(false) }
+    end
+
+    context 'when the project is aimed for deletion' do
+      let_it_be(:project) { create(:project, :aimed_for_deletion, group: group) }
+
+      specify { expect(project.self_and_ancestors_active?).to be(false) }
+    end
+
+    context 'when an ancestor group is archived' do
+      before do
+        group.namespace_settings.update!(archived: true)
+      end
+
+      specify { expect(project.self_and_ancestors_active?).to be(false) }
+    end
+
+    context 'when an ancestor group is scheduled for deletion' do
+      let_it_be(:group) { create(:group_with_deletion_schedule) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      specify { expect(project.self_and_ancestors_active?).to be(false) }
     end
   end
 
@@ -1642,7 +1680,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be_with_reload(:subgroup_project) { create(:project, group: subgroup) }
 
     it 'returns false when neither project nor ancestors are transfer_scheduled' do
-      expect(group_project.self_or_ancestors_transfer_scheduled?).to eq(false)
+      expect(group_project.self_or_ancestors_transfer_scheduled?).to be(false)
     end
 
     context 'when project_namespace is transfer_scheduled' do
@@ -1651,7 +1689,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'returns true' do
-        expect(group_project.self_or_ancestors_transfer_scheduled?).to eq(true)
+        expect(group_project.self_or_ancestors_transfer_scheduled?).to be(true)
       end
     end
 
@@ -1661,7 +1699,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'returns true' do
-        expect(group_project.self_or_ancestors_transfer_scheduled?).to eq(true)
+        expect(group_project.self_or_ancestors_transfer_scheduled?).to be(true)
       end
     end
 
@@ -1671,13 +1709,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'returns true' do
-        expect(subgroup_project.self_or_ancestors_transfer_scheduled?).to eq(true)
+        expect(subgroup_project.self_or_ancestors_transfer_scheduled?).to be(true)
       end
     end
 
     context 'when neither project nor any ancestor is transfer_scheduled' do
       it 'returns false' do
-        expect(subgroup_project.self_or_ancestors_transfer_scheduled?).to eq(false)
+        expect(subgroup_project.self_or_ancestors_transfer_scheduled?).to be(false)
       end
     end
   end
@@ -1690,7 +1728,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be_with_reload(:subgroup_project) { create(:project, group: subgroup) }
 
     it 'returns false when neither project nor ancestors are transfer_in_progress' do
-      expect(group_project.self_or_ancestors_transfer_in_progress?).to eq(false)
+      expect(group_project.self_or_ancestors_transfer_in_progress?).to be(false)
     end
 
     context 'when project_namespace is transfer_in_progress' do
@@ -1700,7 +1738,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'returns true' do
-        expect(group_project.self_or_ancestors_transfer_in_progress?).to eq(true)
+        expect(group_project.self_or_ancestors_transfer_in_progress?).to be(true)
       end
     end
 
@@ -1711,7 +1749,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'returns true' do
-        expect(group_project.self_or_ancestors_transfer_in_progress?).to eq(true)
+        expect(group_project.self_or_ancestors_transfer_in_progress?).to be(true)
       end
     end
 
@@ -1722,13 +1760,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'returns true' do
-        expect(subgroup_project.self_or_ancestors_transfer_in_progress?).to eq(true)
+        expect(subgroup_project.self_or_ancestors_transfer_in_progress?).to be(true)
       end
     end
 
     context 'when neither project nor any ancestor is transfer_in_progress' do
       it 'returns false' do
-        expect(subgroup_project.self_or_ancestors_transfer_in_progress?).to eq(false)
+        expect(subgroup_project.self_or_ancestors_transfer_in_progress?).to be(false)
       end
     end
   end
@@ -2015,6 +2053,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           'id_token_sub_claim_components' => 'ci_',
           'delete_pipelines_in_seconds' => 'ci_',
           'display_pipeline_variables' => 'ci_',
+          'skip_branch_pipelines_for_mrs' => 'ci_',
           'resource_group_default_process_mode' => ''
         }
       end
@@ -2026,6 +2065,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           merge_trains_enabled
           auto_rollback_enabled
           merge_trains_skip_train_allowed
+          merge_train_enforcement
           max_pipelines_per_merge_train
           restrict_pipeline_cancellation_role
           max_pipelines_per_merge_train
@@ -2109,6 +2149,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     describe '#ci_display_pipeline_variables?' do
       it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
         let(:delegated_method) { :display_pipeline_variables? }
+      end
+    end
+
+    describe '#ci_skip_branch_pipelines_for_mrs?' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+        let(:delegated_method) { :skip_branch_pipelines_for_mrs? }
       end
     end
 
@@ -2363,7 +2409,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
         expect(match[:namespace]).to eq project.namespace.full_path
         expect(match[:project]).to eq project.path
-        expect(match[:absolute_path]).to eq nil
+        expect(match[:absolute_path]).to be_nil
       end
 
       it 'matches an absolute reference' do
@@ -2555,14 +2601,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#get_issue' do
-    let_it_be_with_reload(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, developers: user) }
 
-    let!(:issue) { create(:issue, project: project) }
-
-    before_all do
-      project.add_developer(user)
-    end
+    let_it_be(:issue) { create(:issue, project: project) }
 
     context 'with default issues tracker' do
       it 'returns an issue' do
@@ -2579,12 +2621,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it "returns nil when user doesn't have access" do
         user = create(:user)
-        expect(project.get_issue(issue.iid, user)).to eq nil
+        expect(project.get_issue(issue.iid, user)).to be_nil
       end
     end
 
     context 'with external issues tracker' do
-      let!(:internal_issue) { create(:issue, project: project) }
+      let_it_be(:internal_issue) { create(:issue, project: project) }
 
       before do
         allow(project).to receive(:external_issue_tracker).and_return(true)
@@ -2776,7 +2818,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       project = create(:project)
 
       expect(project).not_to receive(:integrations)
-      expect(project.external_issue_tracker).to eq(nil)
+      expect(project.external_issue_tracker).to be_nil
     end
 
     it 'retrieves external_issue_tracker querying services and cache it when there is external issue tracker' do
@@ -2797,13 +2839,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'is false when external issue tracker integration is not active' do
       create(:integration, project: project, category: 'issue_tracker', active: false)
 
-      is_expected.to eq(false)
+      is_expected.to be(false)
     end
 
     it 'is false when other integration is active' do
       create(:integration, project: project, category: 'not_issue_tracker', active: true)
 
-      is_expected.to eq(false)
+      is_expected.to be(false)
     end
 
     context 'when there is an active external issue tracker integration' do
@@ -2811,7 +2853,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         create(:jira_integration, project: project, category: 'issue_tracker')
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
 
       it 'becomes false when external issue tracker integration is destroyed' do
         expect do
@@ -2861,7 +2903,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'does not return an inactive external wiki' do
       create(:external_wiki_integration, project: project, active: false)
 
-      is_expected.to eq(nil)
+      is_expected.to be_nil
     end
 
     it 'sets Project#has_external_wiki when it is nil' do
@@ -2879,7 +2921,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       project.reload.has_external_wiki
     end
 
-    specify { expect(has_external_wiki).to eq(false) }
+    specify { expect(has_external_wiki).to be(false) }
 
     context 'when there is an active external wiki integration' do
       let(:active) { true }
@@ -2888,7 +2930,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         create(:external_wiki_integration, project: project, active: active)
       end
 
-      specify { expect(has_external_wiki).to eq(true) }
+      specify { expect(has_external_wiki).to be(true) }
 
       it 'becomes false if the external wiki integration is destroyed' do
         expect do
@@ -2906,7 +2948,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         let(:active) { false }
 
         it 'is false' do
-          expect(has_external_wiki).to eq(false)
+          expect(has_external_wiki).to be(false)
         end
       end
     end
@@ -3020,7 +3062,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       context 'when git repo is empty' do
         let(:project) { create(:project) }
 
-        it { is_expected.to eq nil }
+        it { is_expected.to be_nil }
       end
     end
   end
@@ -3354,8 +3396,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '.visible_to_user' do
-    let!(:project) { create(:project, :private) }
-    let!(:user)    { create(:user) }
+    let_it_be(:project) { create(:project, :private) }
+    let_it_be(:user)    { create(:user) }
 
     subject { described_class.visible_to_user(user) }
 
@@ -4205,19 +4247,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'using a regular repository' do
       it 'creates the repository' do
         expect(project.repository).to receive(:create_repository)
-        expect(project.create_repository).to eq(true)
+        expect(project.create_repository).to be(true)
       end
 
       it 'adds an error if the repository could not be created' do
         expect(project.repository).to receive(:create_repository) { raise 'Fail in test' }
-        expect(project.create_repository).to eq(false)
+        expect(project.create_repository).to be(false)
         expect(project.errors).not_to be_empty
       end
 
       it 'passes through default branch' do
         expect(project.repository).to receive(:create_repository).with('pineapple', object_format: nil)
 
-        expect(project.create_repository(default_branch: 'pineapple')).to eq(true)
+        expect(project.create_repository(default_branch: 'pineapple')).to be(true)
       end
     end
 
@@ -4233,7 +4275,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'using a SHA256 repository' do
       it 'creates the repository' do
         expect(project.repository).to receive(:create_repository).with(nil, object_format: Repository::FORMAT_SHA256)
-        expect(project.create_repository(object_format: Repository::FORMAT_SHA256)).to eq(true)
+        expect(project.create_repository(object_format: Repository::FORMAT_SHA256)).to be(true)
       end
     end
   end
@@ -4391,8 +4433,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'delegates to project_feature', :aggregate_failures do
       project.project_feature.update_column(:container_registry_access_level, ProjectFeature::DISABLED)
 
-      expect(project.container_registry_enabled).to eq(false)
-      expect(project.container_registry_enabled?).to eq(false)
+      expect(project.container_registry_enabled).to be(false)
+      expect(project.container_registry_enabled?).to be(false)
     end
   end
 
@@ -4608,6 +4650,40 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it 'always returns nil despite a pipeline exists' do
         expect(subject).to be_nil
+      end
+    end
+
+    describe 'latest pipeline ref first lookup' do
+      context 'when the newest pipeline on the ref already matches the sha' do
+        it 'returns it via the ref-first lookup without a sha-filtered query', :aggregate_failures do
+          expect(project).not_to receive(:latest_pipelines)
+
+          expect(project.latest_pipeline(project.default_branch, project.commit.parent.id))
+            .to eq(other_pipeline_for_default_branch)
+        end
+      end
+
+      context 'when the newest pipeline on the ref is a different sha' do
+        it 'falls back to the sha-filtered lookup' do
+          # The newest pipeline on the default branch is other_pipeline_for_default_branch
+          # (parent sha), but HEAD is project.commit.id, so it must fall back to find the
+          # pipeline matching HEAD.
+          expect(project.latest_pipeline(project.default_branch, project.commit.id))
+            .to eq(pipeline_for_default_branch)
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(latest_pipeline_ref_first_lookup: false)
+        end
+
+        it 'uses the sha-filtered lookup even when the newest pipeline matches the sha', :aggregate_failures do
+          expect(project).to receive(:latest_pipelines).and_call_original
+
+          expect(project.latest_pipeline(project.default_branch, project.commit.parent.id))
+            .to eq(other_pipeline_for_default_branch)
+        end
       end
     end
   end
@@ -5111,6 +5187,40 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { expect(project.github_import?).to be true }
   end
 
+  describe '#offline_transfer?' do
+    let_it_be(:project) { build(:project, import_type: Import::SOURCE_OFFLINE_TRANSFER.to_s) }
+
+    it { expect(project.offline_transfer?).to be true }
+    it { expect(project.import?).to be true }
+  end
+
+  describe '#transfer_import?' do
+    where(:import_type, :expected) do
+      'gitlab_project_migration'             | true
+      ::Import::SOURCE_OFFLINE_TRANSFER.to_s | true
+      'github'                               | false
+      nil                                    | false
+    end
+
+    with_them do
+      let(:project) { build(:project, import_type: import_type) }
+
+      it { expect(project.transfer_import?).to eq(expected) }
+    end
+  end
+
+  describe 'import_state creation' do
+    %w[gitlab_project_migration offline_transfer].each do |type|
+      context "when import_type is #{type}" do
+        it 'does not create an import_state' do
+          project = create(:project, import_type: type)
+
+          expect(project.import_state).to be_nil
+        end
+      end
+    end
+  end
+
   describe '#github_enterprise_import?' do
     let_it_be(:github_com_project) do
       build(
@@ -5443,7 +5553,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let(:project) { build(:project, extended_prat_expiry_webhooks_execute: true) }
 
     it "is the value of extended_prat_expiry_webhooks_execute" do
-      expect(project.extended_prat_expiry_webhooks_execute?).to eq(true)
+      expect(project.extended_prat_expiry_webhooks_execute?).to be(true)
     end
   end
 
@@ -6175,21 +6285,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         stub_pages_setting(host: 'example.com')
         create(:project_setting, pages_unique_domain: 'some-unique-domain')
 
-        expect(project.update(path: 'some-unique-domain.example.com')).to eq(false)
+        expect(project.update(path: 'some-unique-domain.example.com')).to be(false)
         expect(project.errors.full_messages_for(:path)).to match(['Path already in use'])
       end
 
       it 'accepts path when the host does not match' do
         create(:project_setting, pages_unique_domain: 'some-unique-domain')
 
-        expect(project.update(path: 'some-unique-domain.another-example.com')).to eq(true)
+        expect(project.update(path: 'some-unique-domain.another-example.com')).to be(true)
       end
 
       it 'accepts path when the domain does not match' do
         stub_pages_setting(host: 'example.com')
         create(:project_setting, pages_unique_domain: 'another-unique-domain')
 
-        expect(project.update(path: 'some-unique-domain.example.com')).to eq(true)
+        expect(project.update(path: 'some-unique-domain.example.com')).to be(true)
       end
     end
 
@@ -6514,13 +6624,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '.wrap_with_cte' do
-    let!(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
-    let!(:private_project) do
+    let_it_be(:private_project) do
       create(:project, :private, creator: user, namespace: user.namespace)
     end
 
-    let!(:public_project) { create(:project, :public) }
+    let_it_be(:public_project) { create(:project, :public) }
 
     let(:projects) { described_class.all.public_or_visible_to_user(user) }
 
@@ -6781,6 +6891,43 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           expect(project).not_to have_ci
         end
       end
+    end
+
+    context 'when the CI configuration is in an external location' do
+      where(:ci_config_path) do
+        [
+          '.gitlab-ci.yml@another-group/another-project',
+          'https://example.com/.gitlab-ci.yml'
+        ]
+      end
+
+      with_them do
+        let(:project) { create(:project, ci_config_path: ci_config_path) }
+
+        before do
+          allow(project).to receive(:has_ci_config_file?).and_return(false)
+          stub_application_setting(auto_devops_enabled: false)
+        end
+
+        it 'CI is available' do
+          expect(project).to have_ci
+        end
+      end
+    end
+  end
+
+  describe '#uses_external_ci_config?' do
+    where(:ci_config_path, :result) do
+      '.gitlab-ci.yml@another-group/another-project' | true
+      'https://example.com/.gitlab-ci.yml'           | true
+      'custom/path/.gitlab-ci.yml'                   | false
+      nil                                            | false
+    end
+
+    with_them do
+      let(:project) { create(:project, ci_config_path: ci_config_path) }
+
+      it { expect(project.uses_external_ci_config?).to be(result) }
     end
   end
 
@@ -7609,8 +7756,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when resource access token hooks for expiry notification' do
       let_it_be_with_reload(:project) { create(:project) }
-      let!(:hook) { create(:project_hook, project: project, resource_access_token_events: true) }
-      let!(:hook_scope) { :resource_access_token_hooks }
+      let_it_be(:hook) { create(:project_hook, project: project, resource_access_token_events: true) }
+      let(:hook_scope) { :resource_access_token_hooks }
 
       context 'when interval is seven days' do
         let(:data) { { interval: :seven_days } }
@@ -7665,8 +7812,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when resource deploy token hooks for expiry notification' do
       let_it_be_with_reload(:project) { create(:project) }
-      let!(:hook) { create(:project_hook, project: project, resource_deploy_token_events: true) }
-      let!(:hook_scope) { :resource_deploy_token_hooks }
+      let_it_be(:hook) { create(:project_hook, project: project, resource_deploy_token_events: true) }
+      let(:hook_scope) { :resource_deploy_token_hooks }
 
       context 'when interval is seven days' do
         let(:data) { { interval: :seven_days } }
@@ -7788,34 +7935,34 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#has_active_hooks?' do
     let_it_be_with_refind(:project) { create(:project) }
 
-    it { expect(project.has_active_hooks?).to eq(false) }
+    it { expect(project.has_active_hooks?).to be(false) }
 
     it 'returns true when a matching push hook exists' do
       create(:project_hook, push_events: true, project: project)
 
-      expect(project.has_active_hooks?(:merge_request_hooks)).to eq(false)
-      expect(project.has_active_hooks?).to eq(true)
+      expect(project.has_active_hooks?(:merge_request_hooks)).to be(false)
+      expect(project.has_active_hooks?).to be(true)
     end
 
     it 'returns true when a matching system hook exists' do
       create(:system_hook, push_events: true)
 
-      expect(project.has_active_hooks?(:merge_request_hooks)).to eq(false)
-      expect(project.has_active_hooks?).to eq(true)
+      expect(project.has_active_hooks?(:merge_request_hooks)).to be(false)
+      expect(project.has_active_hooks?).to be(true)
     end
 
     it 'returns true when a plugin exists' do
       expect(Gitlab::FileHook).to receive(:any?).twice.and_return(true)
 
-      expect(project.has_active_hooks?(:merge_request_hooks)).to eq(true)
-      expect(project.has_active_hooks?).to eq(true)
+      expect(project.has_active_hooks?(:merge_request_hooks)).to be(true)
+      expect(project.has_active_hooks?).to be(true)
     end
 
     context 'with :emoji_hooks scope' do
       it 'returns true when a matching emoji hook exists' do
         create(:project_hook, emoji_events: true, project: project)
 
-        expect(project.has_active_hooks?(:emoji_hooks)).to eq(true)
+        expect(project.has_active_hooks?(:emoji_hooks)).to be(true)
       end
     end
 
@@ -7823,7 +7970,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'returns true when a matching access token hook exists' do
         create(:project_hook, resource_access_token_events: true, project: project)
 
-        expect(project.has_active_hooks?(:resource_access_token_hooks)).to eq(true)
+        expect(project.has_active_hooks?(:resource_access_token_hooks)).to be(true)
       end
     end
   end
@@ -7831,24 +7978,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#has_active_integrations?' do
     let_it_be_with_refind(:project) { create(:project) }
 
-    it { expect(project.has_active_integrations?).to eq(false) }
+    it { expect(project.has_active_integrations?).to be(false) }
 
     it 'returns true when a matching service exists' do
       create(:custom_issue_tracker_integration, push_events: true, merge_requests_events: false, project: project)
 
-      expect(project.has_active_integrations?(:merge_request_hooks)).to eq(false)
-      expect(project.has_active_integrations?).to eq(true)
+      expect(project.has_active_integrations?(:merge_request_hooks)).to be(false)
+      expect(project.has_active_integrations?).to be(true)
     end
 
     it 'caches matching integrations' do
       create(:custom_issue_tracker_integration, push_events: true, merge_requests_events: false, project: project)
 
-      expect(project.has_active_integrations?(:merge_request_hooks)).to eq(false)
-      expect(project.has_active_integrations?).to eq(true)
+      expect(project.has_active_integrations?(:merge_request_hooks)).to be(false)
+      expect(project.has_active_integrations?).to be(true)
 
       count = ActiveRecord::QueryRecorder.new do
-        expect(project.has_active_integrations?(:merge_request_hooks)).to eq(false)
-        expect(project.has_active_integrations?).to eq(true)
+        expect(project.has_active_integrations?(:merge_request_hooks)).to be(false)
+        expect(project.has_active_integrations?).to be(true)
       end.count
 
       expect(count).to eq(0)
@@ -8549,20 +8696,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       project = create(:project, :public)
       user = create(:user)
 
-      expect(project.snippets_visible?(user)).to eq(true)
+      expect(project.snippets_visible?(user)).to be(true)
     end
 
     it 'returns true when an anonymous user can read snippets' do
       project = create(:project, :public)
 
-      expect(project.snippets_visible?).to eq(true)
+      expect(project.snippets_visible?).to be(true)
     end
 
     it 'returns false when a user can not read snippets' do
       project = create(:project, :private)
       user = create(:user)
 
-      expect(project.snippets_visible?(user)).to eq(false)
+      expect(project.snippets_visible?(user)).to be(false)
     end
   end
 
@@ -8879,7 +9026,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it "creates new record and sets onboarding_complete to true if none exists yet" do
       project.mark_pages_onboarding_complete
 
-      expect(project.pages_metadatum.reload.onboarding_complete).to eq(true)
+      expect(project.pages_metadatum.reload.onboarding_complete).to be(true)
     end
 
     it "overrides an existing setting" do
@@ -9079,7 +9226,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'jira connect subscription exists' do
       let!(:jira_connect_subscription) { create(:jira_connect_subscription, namespace: project.namespace) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -9471,15 +9618,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#bots' do
     subject { project.bots }
 
-    let_it_be(:project) { create(:project) }
     let_it_be(:project_bot) { create(:user, :project_bot) }
     let_it_be(:user) { create(:user) }
-
-    before_all do
-      [project_bot, user].each do |member|
-        project.add_maintainer(member)
-      end
-    end
+    let_it_be(:project) { create(:project, maintainers: [project_bot, user]) }
 
     it { is_expected.to contain_exactly(project_bot) }
     it { is_expected.not_to include(user) }
@@ -10274,7 +10415,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
             .and_return(false)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'and refresh has started' do
@@ -10284,7 +10425,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
             .and_return(true)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
   end
@@ -10314,7 +10455,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject { build(:project) }
 
     it 'returns false' do
-      expect(subject.security_training_available?).to eq false
+      expect(subject.security_training_available?).to be false
     end
   end
 
@@ -10524,14 +10665,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'delegates the attributes to project feature' do
         project = Project.new(project_attr => false)
 
-        expect(project.public_send(project_method)).to eq(false)
+        expect(project.public_send(project_method)).to be(false)
         expect(project.project_feature.public_send(project_feature_attr)).to eq(ProjectFeature::DISABLED)
       end
 
       it 'sets the default value' do
         project = Project.new
 
-        expect(project.public_send(project_method)).to eq(true)
+        expect(project.public_send(project_method)).to be(true)
         expect(project.project_feature.public_send(project_feature_attr)).to eq(ProjectFeature::ENABLED)
       end
     end
@@ -10652,7 +10793,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     subject(:allows_multiple_merge_request_assignees?) { project.allows_multiple_merge_request_assignees? }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
   end
 
   describe '#allows_multiple_merge_request_reviewers?' do
@@ -10660,7 +10801,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     subject(:allows_multiple_merge_request_reviewers?) { project.allows_multiple_merge_request_reviewers? }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
   end
 
   describe '#on_demand_dast_available?' do
@@ -10767,13 +10908,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#supports_saved_replies?' do
     let_it_be(:project) { create(:project) }
 
-    it { expect(project.supports_saved_replies?).to eq(false) }
+    it { expect(project.supports_saved_replies?).to be(false) }
   end
 
   describe '#merge_trains_enabled?' do
     let_it_be(:project) { create(:project) }
 
-    it { expect(project.merge_trains_enabled?).to eq(false) }
+    it { expect(project.merge_trains_enabled?).to be(false) }
   end
 
   describe '#lfs_file_locks_changed_epoch', :clean_gitlab_redis_cache do
@@ -10912,7 +11053,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         minimum_access_level_for_delete: :maintainer
       )
 
-      expect(subject).to eq(false)
+      expect(subject).to be(false)
     end
 
     it 'returns true when there is a matching tag protection rule' do
@@ -10923,7 +11064,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         minimum_access_level_for_delete: Gitlab::Access::ADMIN
       )
 
-      expect(subject).to eq(true)
+      expect(subject).to be(true)
     end
 
     it 'memoizes calls with the same parameters' do

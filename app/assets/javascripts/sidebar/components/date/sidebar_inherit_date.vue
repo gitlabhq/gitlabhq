@@ -27,6 +27,7 @@ export default {
       required: true,
     },
   },
+  emits: ['reset-date', 'set-date'],
   computed: {
     dateIsFixed: {
       get() {

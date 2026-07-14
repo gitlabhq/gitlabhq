@@ -112,6 +112,29 @@ describe('DiscussionNotes', () => {
       expect(wrapper.findComponent(component).exists()).toBe(true);
     });
 
+    it.each([
+      {
+        case: 'duo_session_status is present (duo_mention_started note)',
+        note: { id: 4, system: true, note: 'started session', duo_session_status: 'running' },
+      },
+      {
+        case: 'author is the duo_code_review_bot',
+        note: {
+          id: 5,
+          system: true,
+          note: 'started session',
+          author: { user_type: 'duo_code_review_bot' },
+        },
+      },
+    ])('does not render a plain SystemNote when $case', ({ note }) => {
+      createComponent({
+        discussion: { ...discussionMock, notes: [note] },
+      });
+
+      // Routed to DuoCodeReviewSystemNote (stubbed via ee_component in CE) instead.
+      expect(wrapper.findComponent(SystemNote).exists()).toBe(false);
+    });
+
     it('renders footer scoped slot with showReplies === true when expanded', () => {
       createComponent({ isExpanded: true });
       expect(wrapper.text()).toMatch('showReplies:true');

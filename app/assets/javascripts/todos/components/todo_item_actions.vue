@@ -11,6 +11,7 @@ import markAsPendingMutation from './mutations/mark_as_pending.mutation.graphql'
 import ToggleSnoozedStatus from './toggle_snoozed_status.vue';
 
 export default {
+  name: 'TodoItemActions',
   components: {
     ToggleSnoozedStatus,
     GlButton,

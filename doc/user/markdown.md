@@ -133,12 +133,13 @@ Don't use `image of` or `video of` in the description. For more information, see
 Titles of issues, merge requests, epics, and other work items do not support full GitLab Flavored Markdown.
 Titles support only:
 
+- Code spans (`` `code` ``), without support for [using additional backticks](#use-additional-backticks) or escaping.
 - Emoji (`:emoji:` shortcodes and custom emoji).
 - Auto-linked URLs.
 - [GitLab-specific references](#gitlab-specific-references) like `#123`,
   `@user`, and `!456`.
 
-Standard Markdown syntax like bold, italic, code spans, links, headings, lists, and other block-level formatting is not processed in titles.
+Standard Markdown syntax like bold, italic, links, headings, lists, and other block-level formatting is not processed in titles.
 For example, the title `` **Merge request title** `` is not displayed in bold and is displayed with the asterisks.
 
 ## Headings
@@ -777,9 +778,12 @@ When rendered, the example looks similar to:
 - Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
 - Option to reference labels from groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) in GitLab 17.1.
 - Option to reference issues, epics, and work items with `[work_item:123]` syntax:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a feature flag](../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
 - Option to reference epics with `[epic:123]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352864) in GitLab 18.4.
+- Ability to reference personal snippets:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/217306) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `personal_snippet_reference_filters`. Disabled by default.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241935) in GitLab 19.2. Feature flag `personal_snippet_reference_filters` removed.
 
 {{< /history >}}
 
@@ -805,7 +809,8 @@ GitLab Flavored Markdown recognizes the following:
 | Issue                                                                                | ``#123``, `GL-123`, or `[issue:123]`                  | `namespace/project#123` or `[issue:namespace/project/123]` | `project#123` or `[issue:project/123]` |
 | [Work item](work_items/_index.md)                                                    | `[work_item:123]`                                     | `[work_item:namespace/project/123]`            | `[work_item:project/123]`          |
 | Merge request                                                                        | `!123`                                                | `namespace/project!123`                        | `project!123`                      |
-| Snippet                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
+| Snippet <sup>3</sup>                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
+| Personal snippet <sup>3</sup>                                                                     | `$123`                                                |                                                |                                    |
 | [Epic](group/epics/_index.md)                                                        | `#123`, `&123`, `[work_item:123]`, or `[epic:123]`    | `group1/subgroup#123`, `group1/subgroup&123`, `[work_item:group1/subgroup/123]`, or `[epic:group1/subgroup/123]` |  |
 | [Iteration](group/iterations/_index.md)                                              | `*iteration:"iteration title"`                        |                                                |                                    |
 | [Iteration cadence](group/iterations/_index.md) by ID<sup>1</sup>                    | `[cadence:123]`                                       |                                                |                                    |
@@ -837,6 +842,8 @@ GitLab Flavored Markdown recognizes the following:
    iterations cadence's ID is `1`.
 1. For labels or milestones, prepend a `/` before `namespace/project` to specify the exact label
    or milestone, removing any possible ambiguity.
+1. Snippet IDs are unique across personal and project snippets, so a given ID always identifies
+   a single snippet.
 
 For example, referencing an issue by using `#123` formats the output as a link
 to issue number 123 with text `#123`. Likewise, a link to issue number 123 is
@@ -897,7 +904,7 @@ To update the rendered references if the assignee, milestone, or health status c
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29663) in GitLab 17.3 [with a flag](../administration/feature_flags/_index.md) named `comment_tooltips`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29663) in GitLab 17.3 [with a feature flag](../administration/feature_flags/_index.md) named `comment_tooltips`. Disabled by default.
 - Feature flag removed in GitLab 17.6
 
 {{< /history >}}
@@ -2078,7 +2085,7 @@ When rendered, the example looks similar to:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14389) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `markdown_placeholders`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14389) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `markdown_placeholders`. Disabled by default.
 
 {{< /history >}}
 
@@ -2313,8 +2320,8 @@ Markdown is fine in GitLab.
 
 ### Collapsible section
 
-Content can be collapsed using HTML's [`<details>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details)
-and [`<summary>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary)
+Content can be collapsed using HTML's [`<details>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details)
+and [`<summary>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/summary)
 tags. For example, collapse a long log file so it takes up less screen space.
 
 ```html

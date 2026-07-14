@@ -5,6 +5,7 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import { __, s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
+import { VARIANT_AVATAR } from '~/contribution_events/constants';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import ContributionEvents from '~/contribution_events/components/contribution_events.vue';
@@ -125,6 +126,7 @@ export default {
   EMPTY_STATE_SVG_URL,
   RECENT_SEARCHES_STORAGE_KEY,
   FILTERED_SEARCH_NAMESPACE,
+  VARIANT_AVATAR,
 };
 </script>
 
@@ -139,7 +141,7 @@ export default {
     />
 
     <template v-if="!showEmptyState">
-      <contribution-events :events="events" />
+      <contribution-events :events="events" :variant="$options.VARIANT_AVATAR" class="gl-mt-5" />
       <gl-loading-icon v-if="eventsLoading" size="md" class="gl-mb-3" />
       <gl-keyset-pagination
         v-else

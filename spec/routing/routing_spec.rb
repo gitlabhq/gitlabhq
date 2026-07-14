@@ -62,6 +62,56 @@ RSpec.describe UsersController, "routing" do
   end
 end
 
+# Guards User::USERNAME_SHADOWING_TOP_LEVEL_ROUTES against the real route table.
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/594444.
+RSpec.describe 'username route shadowing', "routing", feature_category: :user_profile do
+  def resolves_to_profile?(username)
+    params = Rails.application.routes.recognize_path("/#{username}", method: :get)
+    params[:controller] == 'users' && params[:action] == 'show'
+  end
+
+  def rejected_as_username?(route, username)
+    error = format(
+      "cannot start with '%{prefix}.' because the profile URL would be intercepted by an existing route. " \
+        "Please choose a different name.", prefix: route)
+
+    user = build(:user, username: username)
+    user.valid?
+    user.errors.added?(:username, error)
+  end
+
+  before do
+    allow_any_instance_of(::Users::UserUrlConstraint).to receive(:matches?).and_return(true)
+  end
+
+  # Every top-level route must either resolve `<route>.<name>` to the profile or
+  # reject it as a username, so a newly added shadowing route can't silently
+  # break profiles.
+  Gitlab::PathRegex::TOP_LEVEL_ROUTES.each do |route|
+    next if route.start_with?('-') # usernames can't begin with `-`, so `/-/` is unreachable
+
+    it "resolves to the profile or rejects #{route.inspect} followed by a dot" do
+      username = "#{route}.example123"
+
+      expect(resolves_to_profile?(username) || rejected_as_username?(route, username)).to be(true),
+        "Username #{username.inspect} neither resolves to a profile nor is rejected by validation. " \
+          "Add #{route.inspect} to User::USERNAME_SHADOWING_TOP_LEVEL_ROUTES."
+    end
+  end
+
+  # And every entry in the constant must actually shadow, otherwise it would
+  # over-reject usernames that would in fact resolve to the profile.
+  User::USERNAME_SHADOWING_TOP_LEVEL_ROUTES.each do |route|
+    it "confirms #{route.inspect} still shadows the profile" do
+      username = "#{route}.example123"
+
+      expect(resolves_to_profile?(username)).to be(false),
+        "Username #{username.inspect} resolves to the profile, so #{route.inspect} no longer shadows it. " \
+          "Remove it from User::USERNAME_SHADOWING_TOP_LEVEL_ROUTES."
+    end
+  end
+end
+
 # search GET    /search(.:format) search#show
 RSpec.describe SearchController, "routing" do
   specify "to #show" do
@@ -363,6 +413,20 @@ RSpec.describe SentNotificationsController, 'routing' do
   specify 'to #unsubscribe' do
     expect(get("/-/sent_notifications/4bee17d4a63ed60cf5db53417e9aeb4c/unsubscribe"))
       .to route_to('sent_notifications#unsubscribe', id: '4bee17d4a63ed60cf5db53417e9aeb4c')
+  end
+
+  specify 'to #unsubscribe with a namespace scope' do
+    expect(get("/-/namespace/13/sent_notifications/4bee17d4a63ed60cf5db53417e9aeb4c/unsubscribe"))
+      .to route_to(
+        'sent_notifications#unsubscribe',
+        id: '4bee17d4a63ed60cf5db53417e9aeb4c',
+        namespace_id: '13'
+      )
+  end
+
+  specify 'does not route a non-numeric namespace_id' do
+    expect(get("/-/namespace/foo/sent_notifications/4bee17d4a63ed60cf5db53417e9aeb4c/unsubscribe"))
+      .not_to route_to('sent_notifications#unsubscribe')
   end
 end
 

@@ -67,7 +67,7 @@ RSpec.describe 'Query.project(fullPath).commitReferences(commitSha)', feature_ca
 
       it 'commitReferences returns nil' do
         post_query
-        expect(data).to eq(nil)
+        expect(data).to be_nil
       end
     end
 
@@ -76,7 +76,7 @@ RSpec.describe 'Query.project(fullPath).commitReferences(commitSha)', feature_ca
 
       it 'commitReferences returns nil' do
         post_query
-        expect(data).to eq(nil)
+        expect(data).to be_nil
       end
     end
 
@@ -86,7 +86,7 @@ RSpec.describe 'Query.project(fullPath).commitReferences(commitSha)', feature_ca
 
       it 'commitReferences returns nil' do
         post_query
-        expect(data).to eq(nil)
+        expect(data).to be_nil
       end
     end
   end

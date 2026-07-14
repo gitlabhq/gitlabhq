@@ -56,6 +56,10 @@ For additional information for Helm chart installations, see
 
 ## Required upgrade stops
 
+> [!note]
+> Some of these versions might not be released yet. To check which versions are available, see the
+> [GitLab 19 release notes](../releases/19/_index.md).
+
 To provide a predictable upgrade schedule for instance administrators,
 required upgrade stops occur at versions:
 

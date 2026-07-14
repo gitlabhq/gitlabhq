@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Environments Deployments query', feature_category: :continuous_delivery do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :private, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :private, :repository) }
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:guest) { create(:user, guest_of: project) }
@@ -555,6 +555,53 @@ RSpec.describe 'Environments Deployments query', feature_category: :continuous_d
           let(:all_records) { [finished_deployment_new.iid, finished_deployment_old.iid] }
         end
       end
+    end
+  end
+
+  describe 'avoiding N+1 Gitaly calls when resolving deployment commits', :request_store, :use_sql_query_cache do
+    let_it_be(:n_plus_one_project, freeze: false) { create(:project, :repository, :private) }
+    let_it_be(:n_plus_one_user, freeze: false) { create(:user, developer_of: n_plus_one_project) }
+    let_it_be(:n_plus_one_environment) { create(:environment, project: n_plus_one_project) }
+
+    let(:commit_query) do
+      %(
+        query {
+          project(fullPath: "#{n_plus_one_project.full_path}") {
+            environment(name: "#{n_plus_one_environment.name}") {
+              deployments {
+                nodes {
+                  commit { sha }
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    def create_deployment_at(commit, finished_days_ago)
+      create(:deployment, :success, environment: n_plus_one_environment, project: n_plus_one_project,
+        ref: 'master', sha: commit.id, finished_at: finished_days_ago.days.ago)
+    end
+
+    it 'does not issue an additional Gitaly call per deployment' do
+      commits = n_plus_one_project.repository.commits('master', limit: 3)
+
+      create_deployment_at(commits.first, 1)
+
+      post_graphql(commit_query, current_user: n_plus_one_user)
+
+      control = Gitlab::GitalyClient.get_request_count
+      post_graphql(commit_query, current_user: n_plus_one_user)
+      single_deployment_calls = Gitlab::GitalyClient.get_request_count - control
+
+      commits.drop(1).each_with_index { |commit, index| create_deployment_at(commit, index + 2) }
+
+      control = Gitlab::GitalyClient.get_request_count
+      post_graphql(commit_query, current_user: n_plus_one_user)
+      multiple_deployment_calls = Gitlab::GitalyClient.get_request_count - control
+
+      expect(multiple_deployment_calls).to eq(single_deployment_calls)
     end
   end
 end

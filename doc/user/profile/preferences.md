@@ -132,9 +132,9 @@ You can change the default editor for editing content in GitLab.
 
 {{< history >}}
 
-- [Homepage options changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
+- [Homepage options changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
 - [Homepage option changes generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
-- [Personal homepage introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/546151) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `personal_homepage`. Disabled by default.
+- [Personal homepage introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/546151) in GitLab 18.1 [with a feature flag](../../administration/feature_flags/_index.md) named `personal_homepage`. Disabled by default.
 - [Personal homepage enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/554048) in GitLab 18.4 for a subset of users.
 - [Personal homepage enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/groups/gitlab-org/-/epics/17932) in GitLab 18.5.
 
@@ -507,7 +507,7 @@ You must be the administrator of the GitLab instance to configure GitLab with So
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags/_index.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with feature flags](../../administration/feature_flags/_index.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
 - `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
 - `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
 - `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.

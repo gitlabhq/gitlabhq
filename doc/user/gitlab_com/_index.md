@@ -332,7 +332,7 @@ Merge requests enforce these maximums:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `merge_requests_diffs_limit`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10 [with a feature flag](../../administration/feature_flags/_index.md) named `merge_requests_diffs_limit`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/537447) in GitLab 19.0. Feature flag `merge_requests_diffs_limit` removed.
 
@@ -346,7 +346,7 @@ close the affected merge request and create a new merge request.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/527036) in GitLab 17.11 [with a flag](../../administration/feature_flags/_index.md) named `merge_requests_diff_commits_limit`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/527036) in GitLab 17.11 [with a feature flag](../../administration/feature_flags/_index.md) named `merge_requests_diff_commits_limit`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/537446) in GitLab 19.0. Feature flag `merge_requests_diff_commits_limit` removed.
 
 {{< /history >}}

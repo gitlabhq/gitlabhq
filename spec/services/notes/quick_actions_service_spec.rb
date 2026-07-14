@@ -364,7 +364,9 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
       it_behaves_like 'adds child work items'
 
       context 'when using work item full reference' do
-        let_it_be(:note_text) { "/add_child #{child.to_reference(full: true)}, #{second_child.to_reference(full: true)}" }
+        let_it_be(:note_text) do
+          "/add_child #{child.to_reference(full: true)}, #{second_child.to_reference(full: true)}"
+        end
 
         it_behaves_like 'adds child work items'
       end
@@ -477,7 +479,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
         execute(note)
 
         expect(noteable.valid?).to be_truthy
-        expect(noteable.work_item_parent).to eq(nil)
+        expect(noteable.work_item_parent).to be_nil
       end
 
       context 'when user has no access to the work_item' do
@@ -639,7 +641,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
       let(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
 
       context 'when noteable is a work item' do
-        let_it_be(:noteable, freeze: false) { create(:work_item, project: project) }
+        let_it_be_with_reload(:noteable) { create(:work_item, project: project) }
 
         context 'when no branch name is provided' do
           let(:note_text) { '/create_merge_request' }

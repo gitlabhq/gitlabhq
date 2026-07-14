@@ -260,8 +260,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
     end
 
     context 'when a merge request comes from a fork' do
-      let(:author) { create(:user) }
-      let(:fork_user) { create(:user) }
+      let_it_be(:author) { create(:user) }
+      let_it_be(:fork_user) { create(:user) }
       let(:target_project) { create(:project, :test_repo, :public) }
       let(:source_project) { fork_project(target_project, fork_user, repository: true) }
       let(:merge_request) do

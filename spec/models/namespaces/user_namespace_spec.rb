@@ -79,7 +79,7 @@ RSpec.describe Namespaces::UserNamespace, type: :model do
     context 'when organization owner' do
       let_it_be(:organization) { create(:organization) }
       let_it_be(:group) { create(:group, organization: organization) }
-      let_it_be(:org_owner, freeze: false) do
+      let_it_be_with_reload(:org_owner) do
         create(:organization_owner, organization: organization).user
       end
 

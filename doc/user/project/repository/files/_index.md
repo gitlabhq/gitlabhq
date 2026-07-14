@@ -37,7 +37,7 @@ If your file has one of the these file extensions, GitLab renders the contents o
 | Markup language                                              | Extensions |
 |--------------------------------------------------------------|------------|
 | Plain text                                                   | `txt`      |
-| [Markdown](../../../markdown.md)                             | `mdown`, `mkd`, `mkdn`, `md`, `markdown` |
+| [Markdown](../../../markdown.md)                             | `mdown`, `mkd`, `mkdn`, `md`, `markdown`, `rmd` |
 | [reStructuredText](https://docutils.sourceforge.io/rst.html) | `rst`      |
 | [AsciiDoc](../../../asciidoc.md)                             | `adoc`, `ad`, `asciidoc` |
 | [Textile](https://textile-lang.com/)                         | `textile`  |
@@ -45,6 +45,26 @@ If your file has one of the these file extensions, GitLab renders the contents o
 | [Org mode](https://orgmode.org/)                             | `org`      |
 | [creole](http://www.wikicreole.org/)                         | `creole`   |
 | [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki)        | `wiki`, `mediawiki` |
+
+### Supported diagram formats
+
+If your file has one of these file extensions, GitLab renders the contents of the file as a diagram
+in the UI:
+
+| Diagram format                                  | Extensions                                                              | Availability |
+|-------------------------------------------------|-------------------------------------------------------------------------|--------------|
+| [Mermaid](https://mermaid.js.org/) <sup>1</sup> | `mermaid`                                                               | Always available. |
+| [PlantUML](https://plantuml.com/) <sup>2</sup>  | `plantuml`, `pu`, `puml`, `iuml`                                        | Requires an administrator to [enable the PlantUML integration](../../../../administration/integration/plantuml.md). |
+| [Kroki](https://kroki.io/) <sup>2</sup>         | `d2`, `dot`, `gv`, `noml`, `plantuml`, `pu`, `puml`, `iuml`, `vg`, `vl` | Requires an administrator to [enable the Kroki integration](../../../../administration/integration/kroki.md). |
+
+**Footnotes**:
+
+1. For Mermaid diagrams, only the `mermaid` extension is rendered. The `mmd` extension is not supported.
+1. If both the PlantUML and Kroki integrations are enabled, GitLab uses PlantUML to render files with
+   the `plantuml`, `pu`, `puml`, and `iuml` extensions.
+
+For information about diagram syntax, see [diagrams in Markdown](../../../markdown.md#diagrams-and-flowcharts) and
+[diagrams in AsciiDoc](../../../asciidoc.md#diagrams-and-flowcharts).
 
 ### README and index files
 
@@ -146,7 +166,7 @@ To create a permalink:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/448868) in GitLab 17.10 [with a flag](../../../../administration/feature_flags/_index.md) named `filter_blob_path`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/448868) in GitLab 17.10 [with a feature flag](../../../../administration/feature_flags/_index.md) named `filter_blob_path`.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/505449) in GitLab 17.11.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/505449) in GitLab 18.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/539215) in GitLab 18.2. Feature flag `filter_blob_path` removed.

@@ -308,3 +308,59 @@ To automatically format your files with Prettier, add the following properties t
   },
 }
 ```
+
+## Trace unused Vue provides
+
+Vue [dependency injection](vue.md#provide-and-inject) decays over time.
+When a component that uses `inject` is refactored or removed, the matching `provide` entry often
+stays behind, along with the `el.dataset` read, the HAML `data:` attribute, and the Ruby helper
+that feed it.
+The `scripts/frontend/trace_provide_inject_usage.mjs` script finds the provided keys that no
+descendant injects, so you can remove the dead plumbing.
+For examples of this cleanup, see merge requests
+[!242664](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242664) and
+[!242662](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242662).
+
+To trace a provider file or a set of files, run the script with one or more file paths or globs.
+The script requires [ripgrep](https://github.com/BurntSushi/ripgrep#installation) (`rg`) on your
+`PATH` and analyzes only `.vue` and `.js` files:
+
+```shell
+node scripts/frontend/trace_provide_inject_usage.mjs <file|glob> [<file|glob>...]
+```
+
+For example, to trace a single entry point and then a whole directory (quote globs so the shell
+does not expand them):
+
+```shell
+node scripts/frontend/trace_provide_inject_usage.mjs app/assets/javascripts/ci/pipeline_details/pipeline_header.js
+
+node scripts/frontend/trace_provide_inject_usage.mjs 'app/assets/javascripts/ci/**/*.js'
+```
+
+The script prints a breakdown for each traced file and a final list of removal candidates.
+Each provided key gets one of the following verdicts:
+
+| Verdict | Action | Description |
+|---------|--------|-------------|
+| `REMOVABLE` | Remove it | No component injects the key anywhere, so the provide is dead. |
+| `LIKELY-REMOVABLE` | Remove it, then confirm | Injectors exist, but none are reachable from this provider in the module import graph. Reachability is a heuristic that misses some dynamic imports, so confirm with the component specs or by loading the page. |
+| `IN USE` | Keep it | An injector is reachable from this provider. This result is a possibility of use, not proof, because shared modules can link unrelated components. |
+| `INCONCLUSIVE` | Investigate manually | A dynamic boundary, such as a `Vue.component()` global registration or an unresolved dynamic import, prevents a reliable verdict. |
+
+To remove a key the script reports as `REMOVABLE` or `LIKELY-REMOVABLE`, work through the layers
+that feed it, and stop at any layer that another consumer still uses:
+
+1. Remove the `provide:` entry.
+1. Remove the `el.dataset` read and any derived constants or imports, but only when they are
+   unused elsewhere in the entry point. Keep them when the value also feeds a store, a router,
+   props, or a sibling application.
+1. Remove the HAML `data:` attribute, after you confirm that no other entry point reads the same
+   mount element.
+1. Remove the Ruby helper that builds the attribute value, after you check for other callers in
+   both `app/` and `ee/app/`.
+1. Update the RSpec and Jest specs that assert the removed key.
+
+A removed provide that a descendant still injects throws an `injection not found` error at
+runtime, so load the affected page or run its feature spec to confirm the removal is safe.
+Scope each change to a single provider file.

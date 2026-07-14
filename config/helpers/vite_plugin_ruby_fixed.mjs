@@ -1,6 +1,6 @@
 import RubyPlugin from 'vite-plugin-ruby';
 
-const [rubyPlugin, ...rest] = RubyPlugin();
+const [rubyPlugin, ...rest] = RubyPlugin.default();
 
 /**
  * A fixed version of vite-plugin-ruby

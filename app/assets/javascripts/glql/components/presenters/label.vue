@@ -1,7 +1,8 @@
 <script>
 import { GlLabel } from '@gitlab/ui';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { projectIssuesPath } from '~/lib/utils/path_helpers/issues';
+import { issuesGroupPath } from '~/lib/utils/path_helpers/group';
 import { extractGroupOrProject } from '../../utils/common';
 
 export default {
@@ -26,12 +27,11 @@ export default {
     labelUrl() {
       const { group, project } = extractGroupOrProject();
 
-      return joinPaths(
-        window.location.origin,
-        gon.relative_url_root,
-        project || `groups/${group}`,
-        `/-/issues?label=${encodeURIComponent(this.data.title)}`,
-      );
+      if (project) {
+        return projectIssuesPath(project, { label: this.data.title });
+      }
+
+      return issuesGroupPath(group, { label: this.data.title });
     },
   },
 };

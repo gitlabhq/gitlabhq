@@ -78,7 +78,9 @@ module API
           present_members_with_invited_private_group_accessibility(members, source)
         end
 
-        desc 'Gets a member of a group or project.' do
+        desc "Retrieve a direct #{source_type} member" do
+          detail "Retrieves a specified member of a #{source_type}. Returns only direct members and not inherited " \
+            "members through ancestor groups."
           success Entities::Member
           tags %w[members]
         end
@@ -99,7 +101,9 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        desc 'Gets a member of a group or project, including those who gained membership through ancestor group' do
+        desc "Retrieve a #{source_type} member" do
+          detail "Retrieves a specified member of a #{source_type}. Returns direct members and members inherited " \
+            "or invited through ancestor groups."
           success Entities::Member
           tags %w[members]
         end
@@ -120,7 +124,8 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        desc 'Adds a member to a group or project.' do
+        desc "Add a member to a #{source_type}" do
+          detail "Adds a member to a specified #{source_type}."
           success Entities::Member
           tags %w[members]
         end
@@ -147,7 +152,8 @@ module API
           end
         end
 
-        desc 'Updates a member of a group or project.' do
+        desc "Update a #{source_type} member" do
+          detail "Updates a specified member of a #{source_type}."
           success Entities::Member
           tags %w[members]
         end
@@ -173,16 +179,17 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        desc 'Removes a user from a group or project.' do
+        desc "Remove a member from a #{source_type}" do
+          detail "Removes a specified user from a #{source_type}. The user must be a direct member."
           success code: 204, message: 'Resource deleted'
           tags %w[members]
         end
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the member'
           optional :skip_subresources, type: Boolean, default: false,
-            desc: 'Flag indicating if the deletion of direct memberships of the removed member in subgroups and projects should be skipped'
+            desc: 'If `true`, the member retains any direct memberships in subgroups or projects.'
           optional :unassign_issuables, type: Boolean, default: false,
-            desc: 'Flag indicating if the removed member should be unassigned from any issues or merge requests within given group or project'
+            desc: "If `true`, unassigns the member from any issues or merge requests in the #{source_type}."
         end
         # rubocop: disable CodeReuse/ActiveRecord
         route_setting :authorization, permissions: :delete_member, boundary_type: boundary

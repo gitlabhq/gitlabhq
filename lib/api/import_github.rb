@@ -2,7 +2,10 @@
 
 module API
   class ImportGithub < ::API::Base
-    before { authenticate! }
+    before do
+      authenticate!
+      set_current_organization
+    end
 
     feature_category :importers
     urgency :low
@@ -40,7 +43,11 @@ module API
     route_setting :authorization, permissions: :create_github_import,
       boundaries: [{ boundary_type: :group, boundary_param: :target_namespace }, { boundary_type: :user }]
     post 'import/github' do
-      result = Import::GithubService.new(client, current_user, params).execute(access_params, provider)
+      Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21041')
+
+      import_params = declared(params, include_parent_namespaces: false).merge(organization_id: Current.organization.id)
+      result = Import::GithubService.new(client, current_user, import_params).execute(access_params, provider)
+
       if result[:status] == :success
         present ProjectSerializer.new.represent(result[:project], { serializer: :import, warning: result[:warning] })
       else

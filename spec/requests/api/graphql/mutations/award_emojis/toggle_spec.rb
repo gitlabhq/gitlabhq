@@ -113,7 +113,7 @@ RSpec.describe 'Toggling an AwardEmoji', feature_category: :shared do
         it 'returns toggledOn as true' do
           post_graphql_mutation(mutation, current_user: current_user)
 
-          expect(mutation_response['toggledOn']).to eq(true)
+          expect(mutation_response['toggledOn']).to be(true)
         end
 
         describe 'marking Todos as done' do
@@ -170,7 +170,7 @@ RSpec.describe 'Toggling an AwardEmoji', feature_category: :shared do
         it 'returns toggledOn as false' do
           post_graphql_mutation(mutation, current_user: current_user)
 
-          expect(mutation_response['toggledOn']).to eq(false)
+          expect(mutation_response['toggledOn']).to be(false)
         end
       end
     end

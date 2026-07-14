@@ -77,7 +77,7 @@ module Users
 
     def show_email_otp_enrollment_callout?
       return false unless current_user
-      return false unless current_user.email_otp_available?
+      return false unless Gitlab::CurrentSettings.email_otp_enabled?
       return false if user_dismissed?(EMAIL_OTP_ENROLLMENT_CALLOUT)
       return false unless current_user.email_otp_required_after.present?
 

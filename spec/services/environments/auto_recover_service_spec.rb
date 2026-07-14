@@ -77,7 +77,7 @@ RSpec.describe Environments::AutoRecoverService, :clean_gitlab_redis_shared_stat
       end
 
       it 'returns false and does not continue the process' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
 

@@ -35,7 +35,7 @@ RSpec.describe EventsFinder do
     create(:event, :created, project: project1, author: other_user, target: opened_merge_request3)
   end
 
-  let_it_be(:public_project, freeze: false) do
+  let_it_be_with_reload(:public_project) do
     create(:project, :public, creator_id: user.id, namespace: user.namespace)
   end
 
@@ -87,7 +87,7 @@ RSpec.describe EventsFinder do
   end
 
   describe 'wiki events' do
-    let_it_be(:events, freeze: false) { create_list(:wiki_page_event, 3, project: public_project) }
+    let_it_be(:events) { create_list(:wiki_page_event, 3, project: public_project) }
 
     subject(:finder) { described_class.new(source: public_project, target_type: 'wiki', current_user: user) }
 

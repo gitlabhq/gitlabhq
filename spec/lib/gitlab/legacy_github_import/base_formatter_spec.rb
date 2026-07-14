@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::BaseFormatter, feature_category: :importers do
-  let_it_be(:project, freeze: false) do
+  let_it_be_with_reload(:project) do
     create(:project, import_type: 'gitea', namespace: create(:namespace, path: 'octocat'))
   end
 

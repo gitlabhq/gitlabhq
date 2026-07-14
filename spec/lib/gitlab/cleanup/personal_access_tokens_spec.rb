@@ -6,40 +6,41 @@ RSpec.describe Gitlab::Cleanup::PersonalAccessTokens do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project_bot) { create(:user, :project_bot) }
+  let_it_be(:last_used_at) { 1.month.ago.beginning_of_hour }
 
   let(:group_full_path) { group.full_path }
   let(:logger) { instance_double(Gitlab::AppJsonLogger, info: nil, warn: nil) }
-  let(:last_used_at) { 1.month.ago.beginning_of_hour }
-  let!(:unused_token)  { create(:personal_access_token) }
 
-  let!(:old_unused_token) do
+  let_it_be(:unused_token) { create(:personal_access_token) }
+
+  let_it_be_with_reload(:old_unused_token) do
     create(:personal_access_token, created_at: last_used_at - 1.minute)
   end
 
-  let!(:old_actively_used_token) do
+  let_it_be(:old_actively_used_token) do
     create(:personal_access_token, created_at: last_used_at - 1.minute, last_used_at: 1.day.ago)
   end
 
-  let!(:old_unused_token_for_non_group_member) do
+  let_it_be(:old_unused_token_for_non_group_member) do
     create(:personal_access_token, created_at: last_used_at - 1.minute)
   end
 
-  let!(:old_unused_token_for_subgroup_member) do
+  let_it_be(:old_unused_token_for_subgroup_member) do
     create(:personal_access_token, created_at: last_used_at - 1.minute)
   end
 
-  let!(:old_unused_project_access_token) do
+  let_it_be(:old_unused_project_access_token) do
     create(:personal_access_token, user: project_bot, created_at: last_used_at - 1.minute)
   end
 
-  let!(:old_formerly_used_token) do
+  let_it_be(:old_formerly_used_token) do
     create(:personal_access_token,
       created_at: last_used_at - 1.minute,
       last_used_at: last_used_at - 1.minute
     )
   end
 
-  before do
+  before_all do
     group.add_member(old_formerly_used_token.user, Gitlab::Access::DEVELOPER)
     group.add_member(old_actively_used_token.user, Gitlab::Access::DEVELOPER)
     group.add_member(unused_token.user, Gitlab::Access::DEVELOPER)

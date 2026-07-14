@@ -27,6 +27,7 @@ module WorkItemsCollections
       .execute
       .preload_namespace_routables
       .preload_routables
+      .preload_dates_source
       .non_archived
       .with_due_date
       .limit(100)

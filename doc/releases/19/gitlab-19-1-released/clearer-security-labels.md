@@ -9,8 +9,6 @@ work_item: "https://gitlab.com/groups/gitlab-org/-/work_items/21978"
 categories: [ Vulnerability Management ]
 ---
 
-<!-- categories: Vulnerability Management -->
-
 In GitLab 19.1, the vulnerability results details page uses consistent, descriptive, and security industry-standard terminology for scan results:
 
 - **Scanner** is now **Detected by**

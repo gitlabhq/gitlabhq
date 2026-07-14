@@ -173,6 +173,31 @@ export const designCollectionResponse = (mockDesigns = [mockDesign]) => ({
   },
 });
 
+export const designCollectionFeaturesResponse = (mockDesigns = [mockDesign]) => ({
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/1',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/1',
+        name: 'Issue',
+        __typename: 'WorkItemType',
+      },
+      features: {
+        __typename: 'WorkItemFeatures',
+        designs: {
+          __typename: 'WorkItemWidgetDesigns',
+          type: 'DESIGNS',
+          designCollection: {
+            copyState: 'READY',
+            designs: { nodes: mockDesigns },
+            versions: { nodes: mockAllVersions },
+          },
+        },
+      },
+    },
+  },
+});
+
 export const designDescriptionFactory = ({
   updateDesign = true,
   description = 'Description test',

@@ -39,11 +39,12 @@
 - Due to data tooling limitations, we should only utilize category, action and label.
   i.e. try to keep from using property and value. Be aware if adding the experiment context to existing events that
   use property or value that some concessions will need to be made in order for it to show up in the experiment dashboard.
+- The `category` is automatically set to the experiment name for every experiment event, so it is not listed per row below.
 - **Frontend/Backend**: set `FE` for frontend events (visible in the Snowplow Chrome browser extension) and `BE` for backend events (not visible in the extension).
 
-| sequence | activity | category | action | label | FE/BE |
-| -------- | -------- | ------ | ----- | ------- | ----- |
-|  |  |  |  |  |  |
+| sequence | activity | action | label | FE/BE |
+| -------- | -------- | ----- | ------- | ----- |
+|  |  |  |  |  |
 
 /label ~"growth experiment"
 /label ~"experiment::implementation"

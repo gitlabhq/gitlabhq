@@ -243,10 +243,11 @@ Feature.enabled?(:feature_ice_cold_projects, Feature.current_request)
 
 Feature gates can also be actor based, for example a feature could first be
 enabled for only the `gitlab` project. The project is passed by supplying a
-`--project` flag:
+`--project` flag with either the full project path or the numeric project ID:
 
 ```shell
 /chatops gitlab run feature set --project=gitlab-org/gitlab some_feature true
+/chatops gitlab run feature set --project=278964 some_feature true
 ```
 
 You can use the `--user` option to enable a feature flag for a specific user:
@@ -295,10 +296,11 @@ actors.
 Feature.enabled?(:some_feature, group)
 ```
 
-Multiple actors can be passed together in a comma-separated form:
+Multiple actors can be passed together in a comma-separated form.
+You can mix project paths and numeric project IDs:
 
 ```shell
-/chatops gitlab run feature set --project=gitlab-org/gitlab,example-org/example-project some_feature true
+/chatops gitlab run feature set --project=gitlab-org/gitlab,12345 some_feature true
 
 /chatops gitlab run feature set --group=gitlab-org,example-org some_feature true
 

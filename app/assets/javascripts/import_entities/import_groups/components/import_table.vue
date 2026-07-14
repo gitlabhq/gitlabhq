@@ -55,6 +55,7 @@ const PAGE_SIZES = [20, 50, 100];
 const DEFAULT_PAGE_SIZE = PAGE_SIZES[0];
 
 export default {
+  name: 'ImportTable',
   components: {
     GlAlert,
     GlButton,

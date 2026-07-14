@@ -259,6 +259,37 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
     end
   end
 
+  describe '#mask_variables_from' do
+    let(:variables) do
+      Gitlab::Ci::Variables::Collection.new([
+        { key: 'TOKEN', value: 'my-secret-value', masked: true }
+      ])
+    end
+
+    context 'with a String' do
+      it 'masks masked variables in the string', :aggregate_failures do
+        result = subject.mask_variables_from('prefix-my-secret-value-suffix')
+
+        expect(result).not_to include('my-secret-value')
+        expect(result).to start_with('prefix-')
+      end
+    end
+
+    context 'with a non-String value' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:input) do
+        [:my_component, 1.5, 123, true, false, nil, { some: 'mapping' }]
+      end
+
+      with_them do
+        it 'returns the input unchanged' do
+          expect(subject.mask_variables_from(input)).to eq(input)
+        end
+      end
+    end
+  end
+
   describe '#execute_remote_parallel_request' do
     let(:lazy_response1) { double('lazy_response', wait: true, complete?: complete1) }
     let(:lazy_response2) { double('lazy_response') }

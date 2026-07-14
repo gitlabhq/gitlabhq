@@ -214,20 +214,45 @@ Example error message in Patroni logs (located at `/var/log/gitlab/patroni/curre
 
 The workaround is to increase the memory available to the secondary site's PostgreSQL nodes to match the memory requirements of the primary site's PostgreSQL nodes.
 
-## Message: `could not open certificate file "/root/.postgresql/postgresql.crt"`
+## Error: `could not open certificate file "/root/.postgresql/postgresql.crt"`
 
-If you see this error:
+When you run `gitlab-ctl replicate-geo-database`,
+you might get one of the following errors:
 
 ```plaintext
-sql: error: connection to server at "x.x.x.x", port 5432 failed:
-could not open certificate file "/root/.postgresql/postgresql.crt": Permission denied...
+could not open certificate file "/root/.postgresql/postgresql.crt": Permission denied
 ```
 
-This error happens because PostgreSQL clients, such as `psql` or applications using `libpq`,
-look for client SSL certificates in specific default locations like `/root/.postgresql/postgresql.crt`.
-However, this error message can be misleading. It often appears when authentication fails for other
-reasons, such as using an incorrect password for the GitLab replicator user. Before you troubleshoot
-SSL certificate issues, first confirm your authentication credentials are correct.
+```plaintext
+could not open certificate file "/root/.postgresql/postgresql.crt": No such file or directory
+```
+
+This issue occurs because `gitlab-ctl replicate-geo-database` runs as root, and
+`pg_basebackup`, which `gitlab-ctl replicate-geo-database` calls internally,
+looks for the SSL CA certificate in `/root/.postgresql/root.crt`.
+This certificate is required when you use `sslmode=verify-ca` or `sslmode=verify-full`.
+
+To resolve this issue:
+
+1. Install the certificate also for the root user on the secondary site.
+   Use the same `server.crt` file you copied from the primary site:
+
+   ```shell
+   install \
+      -D \
+      -o root \
+      -g root \
+      -m 0400 \
+      -T server.crt /root/.postgresql/root.crt
+   ```
+
+1. Run the replication command again.
+
+> [!note]
+> This issue might also occur when authentication fails for other reasons,
+> such as an incorrect password for the `gitlab_replicator` user.
+> If installing the certificate for root does not resolve the issue,
+> confirm your replication credentials are correct.
 
 ## Investigate causes of database replication lag
 

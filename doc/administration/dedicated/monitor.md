@@ -46,7 +46,7 @@ Prerequisites:
 To manage log access:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
-1. At the top of the page, select **Configuration**.
+1. In the left sidebar, select **Configuration**.
 1. Expand **Resource access**.
 1. Under **Application logs**, in the **Log access ARNs** section:
 

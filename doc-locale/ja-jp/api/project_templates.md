@@ -12,7 +12,7 @@ title: プロジェクトテンプレートAPI
 
 {{< /details >}}
 
-このAPIを使用して、これらのエンドポイントのプロジェクト固有のバージョンを取得します:
+このAPIを使用して、これらのエンドポイントのプロジェクト固有のバージョンを取得することができます:
 
 - [Dockerfileテンプレート](templates/dockerfiles.md)
 - [Gitignoreテンプレート](templates/gitignores.md)
@@ -26,9 +26,9 @@ title: プロジェクトテンプレートAPI
 
 [グループのファイルテンプレート](../user/group/manage.md#group-file-templates)のサポートも利用できます。
 
-## 特定の種類のテンプレートをすべてリスト表示 {#list-all-templates-of-a-particular-type}
+## 特定の種類のすべてのテンプレートをリストする {#list-all-templates-of-a-particular-type}
 
-プロジェクトの指定された種類のテンプレートをすべてリスト表示します。
+プロジェクトの指定された種類のすべてのテンプレートをリストします。
 
 ```plaintext
 GET /projects/:id/templates/:type
@@ -112,7 +112,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## 特定の種類のテンプレートを取得する {#retrieve-a-template-of-a-particular-type}
 
-プロジェクトの指定された種類のテンプレートを取得します。
+プロジェクトの指定された種類のテンプレートを取得する。
 
 ```plaintext
 GET /projects/:id/templates/:type/:name

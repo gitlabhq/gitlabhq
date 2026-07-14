@@ -12,6 +12,7 @@ module MailScheduler
     include MailSchedulerQueue
 
     feature_category :team_planning
+    prefer_calling_context_feature_category true
     worker_resource_boundary :cpu
     loggable_arguments 0
 

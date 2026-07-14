@@ -18,7 +18,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:has_access) { access_level != GroupMember::NO_ACCESS }
 
   condition(:guest) { access_level >= GroupMember::GUEST }
-  condition(:owner) { access_level >= GroupMember::OWNER }
 
   condition(:has_parent, scope: :subject) { @subject.has_parent? }
   condition(:is_root_namespace, scope: :subject) { @subject.root? }
@@ -27,7 +26,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:can_read_group_member) { can_read_group_member? }
 
   desc "User is a project bot"
-  condition(:project_bot) { user.project_bot? && access_level >= GroupMember::GUEST }
+  condition(:project_bot) { user&.project_bot? && access_level >= GroupMember::GUEST }
 
   condition(:has_projects) do
     # GUEST routes Users through the fast auth-only path

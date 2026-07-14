@@ -1,0 +1,3 @@
+---
+name: AI tool rule
+description: Grants the ability to <actions> AI tool rules, which control per-tool approval (Allow, Ask, Deny) for the Duo Agent Platform.

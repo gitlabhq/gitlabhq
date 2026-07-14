@@ -55,6 +55,52 @@ RSpec.describe 'getting notes for a merge request', feature_category: :code_revi
         .to eq(note.note)
     end
 
+    context 'with a suggestion on the note' do
+      let!(:suggestion) { create(:suggestion, note: note) }
+
+      let(:query) do
+        noteable_query(
+          <<~NOTES
+          notes {
+            nodes {
+              suggestions {
+                nodes { id applied fromLine toLine fromContent toContent }
+              }
+            }
+          }
+          NOTES
+        )
+      end
+
+      it 'exposes the suggestion content' do
+        post_graphql(query, current_user: user)
+
+        suggestion_data = noteable_data['notes']['nodes'].last['suggestions']['nodes'].first
+
+        expect(suggestion_data).to include(
+          'id' => suggestion.to_global_id.to_s,
+          'fromLine' => suggestion.from_line,
+          'toLine' => suggestion.to_line,
+          'fromContent' => suggestion.from_content,
+          'toContent' => suggestion.to_content,
+          'applied' => suggestion.applied
+        )
+      end
+
+      it 'avoids N+1 queries when resolving suggestions across notes', :request_store, :use_sql_query_cache do
+        post_graphql(query, current_user: user)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          post_graphql(query, current_user: user)
+        end
+
+        create_list(:diff_note_on_merge_request, 2, noteable: noteable, project: project, author: user)
+          .each { |note| create(:suggestion, note: note) }
+
+        expect { post_graphql(query, current_user: user) }.to issue_same_number_of_queries_as(control)
+      end
+    end
+
     context 'the truncated diff lines of the diff discussion' do
       let(:query) do
         noteable_query(

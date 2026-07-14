@@ -99,7 +99,7 @@ module API
 
       expose :shared_runners_enabled, documentation: { type: 'Boolean' }
       expose :lfs_enabled?, as: :lfs_enabled, documentation: { type: 'Boolean' }
-      expose :creator_id, documentation: { type: 'Integer', example: 1 }
+      expose :creator_id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :mr_default_target_self, if: ->(project) { project.forked? }, documentation: { type: 'Boolean' }
 
       expose :import_url, documentation: { type: 'String', example: 'https://gitlab.com/gitlab/gitlab.git' }, if: ->(project, options) { Ability.allowed?(options[:current_user], :admin_project, project) } do |project|

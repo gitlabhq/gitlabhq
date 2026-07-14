@@ -4,6 +4,13 @@ module Mcp
   module Tools
     class GraphqlTool
       include Mcp::Tools::Concerns::Versionable
+      include Mcp::Tools::Concerns::Constants
+
+      QUERIES_ROOT = Rails.root.join('app/graphql/queries/mcp').freeze
+
+      def self.load_graphql(relative_path)
+        File.read(QUERIES_ROOT.join(relative_path)).freeze
+      end
 
       attr_reader :current_user, :params
 
@@ -89,3 +96,5 @@ module Mcp
     end
   end
 end
+
+Mcp::Tools::GraphqlTool.prepend_mod

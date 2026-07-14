@@ -64,7 +64,8 @@ If push rules were never configured for the project, returns HTTP `200 OK` with 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/3/push_rule"
 ```
 

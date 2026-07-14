@@ -95,6 +95,13 @@ RSpec.describe Gitlab::I18n::PoLinter do
 
         expect(errors[message_id]).to include(expected_message)
       end
+
+      it 'has an error for source string with multiple spaces' do
+        message_id = "Hello there  world"
+        expected_message = "contains multiple consecutive spaces. Remove the extra space(s)"
+
+        expect(errors[message_id]).to include(expected_message)
+      end
     end
 
     context 'for a translations with newlines' do

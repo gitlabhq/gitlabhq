@@ -18,7 +18,7 @@ RSpec.describe Board do
   end
 
   describe 'validations' do
-    let_it_be(:board, freeze: false) { build(:board, project: project) }
+    let(:board) { build(:board, project: project) }
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:project) }

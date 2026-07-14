@@ -93,7 +93,7 @@ RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_stat
     let(:provider_oidc) { 'openid_connect' }
 
     let(:provider_oidc_config_with_step_up_auth) do
-      GitlabSettings::Options.new(
+      Gitlab::Configs.build_options(
         name: provider_oidc,
         step_up_auth: {
           admin_mode: {

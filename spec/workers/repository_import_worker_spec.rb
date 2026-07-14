@@ -38,6 +38,24 @@ RSpec.describe RepositoryImportWorker, feature_category: :importers do
         expect(project).to have_received(:after_import)
         expect(import_state).to have_received(:start)
       end
+
+      context 'when the import cannot be started' do
+        before do
+          allow(import_state).to receive(:start).and_return(false)
+        end
+
+        it 'logs the organization id and does not import the project' do
+          expect(::Import::Framework::Logger).to receive(:info).with(
+            message: 'Project was in inconsistent state while importing',
+            Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
+            project_full_path: project.full_path,
+            project_import_status: project.import_status
+          )
+          expect(Projects::ImportService).not_to receive(:new)
+
+          subject.perform(project.id)
+        end
+      end
     end
 
     context 'when worker was reset without cleanup (import_state is started)' do

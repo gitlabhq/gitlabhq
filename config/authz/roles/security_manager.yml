@@ -25,6 +25,7 @@ project:
   - enable_container_scanning_for_registry
   - enable_secret_push_protection
   - manage_project_security_exclusions
+  - read_agent_artifacts
   - read_any_audit_event
   - read_audit_event
   - read_compliance_adherence_report
@@ -51,6 +52,7 @@ project:
   - update_on_demand_dast_scan
   - update_sec_ai_workflow_settings
   - update_security_setting
+  - update_storage_ai_audit_events
 group:
   permissions: []
   raw_permissions:
@@ -62,6 +64,7 @@ group:
   - apply_security_scan_profiles
   - create_vulnerability_export
   - enable_secret_push_protection
+  - read_agent_artifacts
   - read_any_audit_event
   - read_audit_event
   - read_compliance_adherence_report
@@ -80,3 +83,4 @@ group:
   - read_vulnerability
   - read_vulnerability_statistics
   - update_compliance_violations_report
+  - update_storage_ai_audit_events

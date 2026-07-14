@@ -171,7 +171,9 @@ class Project < ApplicationRecord
 
   after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_namespace_id? }
 
-  after_save :create_import_state, if: ->(project) { project.import? && project.import_state.nil? }
+  after_save :create_import_state, if: ->(project) do
+    project.import? && project.import_state.nil? && (!project.transfer_import? || project.mirror?)
+  end
 
   after_save :save_topics
 
@@ -605,6 +607,7 @@ class Project < ApplicationRecord
       delegate :id_token_sub_claim_components, :id_token_sub_claim_components=
       delegate :delete_pipelines_in_seconds, :delete_pipelines_in_seconds=
       delegate :display_pipeline_variables, :display_pipeline_variables=
+      delegate :skip_branch_pipelines_for_mrs, :skip_branch_pipelines_for_mrs=
     end
   end
 
@@ -1260,6 +1263,10 @@ class Project < ApplicationRecord
       non_archived.fuzzy_search(query, [:name])
     end
 
+    def ids_by_project_namespace_id(project_namespace_ids)
+      by_project_namespace(project_namespace_ids).pluck(:project_namespace_id, :id).to_h
+    end
+
     def visibility_levels
       Gitlab::VisibilityLevel.options
     end
@@ -1717,6 +1724,19 @@ class Project < ApplicationRecord
   end
 
   def latest_pipeline(ref = default_branch, sha = nil, source = nil)
+    return latest_pipelines(ref: ref, sha: sha, source: source).take unless
+      Feature.enabled?(:latest_pipeline_ref_first_lookup, self)
+
+    ref = ref.presence || default_branch
+    sha ||= commit(ref)&.sha
+    return unless sha
+
+    # A single commit can have a huge number of pipelines, so filtering on the sha
+    # can time out. Use the (project_id, ref, id DESC) index and only fall back to the sha
+    # filter when the newest pipeline is a different sha.
+    newest = ci_pipelines.newest_first(ref: ref, source: source).take
+    return newest if newest.nil? || newest.sha == sha
+
     latest_pipelines(ref: ref, sha: sha, source: source).take
   end
 
@@ -1871,7 +1891,7 @@ class Project < ApplicationRecord
   end
 
   def import?
-    external_import? || forked? || gitlab_project_import? || jira_import? || gitlab_project_migration? || Gitlab::ImportSources.template?(import_type)
+    external_import? || forked? || gitlab_project_import? || jira_import? || gitlab_project_migration? || offline_transfer? || Gitlab::ImportSources.template?(import_type)
   end
 
   def external_import?
@@ -1894,6 +1914,16 @@ class Project < ApplicationRecord
 
   def gitlab_project_migration?
     import_type == 'gitlab_project_migration'
+  end
+
+  def offline_transfer?
+    import_type == Import::SOURCE_OFFLINE_TRANSFER.to_s
+  end
+
+  # Direct Transfer and Offline Transfer imports are driven by the BulkImports
+  # framework, which manages its own progress and does not use ProjectImportState.
+  def transfer_import?
+    gitlab_project_migration? || offline_transfer?
   end
 
   def gitea_import?
@@ -2875,8 +2905,15 @@ class Project < ApplicationRecord
   end
 
   def has_ci?
-    has_ci_config_file? || auto_devops_enabled?
+    has_ci_config_file? || auto_devops_enabled? || uses_external_ci_config?
   end
+
+  # ci_config_path can point at another project or a remote URL, so a project
+  # can have CI even with nothing committed in this repository.
+  def uses_external_ci_config?
+    Gitlab::Ci::ProjectConfig.new(project: self, sha: nil).external?
+  end
+  strong_memoize_attr :uses_external_ci_config?
 
   def has_ci_config_file?
     strong_memoize(:has_ci_config_file) do
@@ -3134,6 +3171,10 @@ class Project < ApplicationRecord
 
   def ancestors_archived?
     ancestors.archived.exists?
+  end
+
+  def self_and_ancestors_active?
+    self.class.where(id: id).self_and_ancestors_active.exists?
   end
 
   def self_or_ancestors_transfer_scheduled?
@@ -3444,6 +3485,12 @@ class Project < ApplicationRecord
     return false unless ci_cd_settings
 
     ci_cd_settings.display_pipeline_variables?
+  end
+
+  def ci_skip_branch_pipelines_for_mrs?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.skip_branch_pipelines_for_mrs?
   end
 
   def ci_forward_deployment_enabled?

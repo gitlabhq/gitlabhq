@@ -1,0 +1,9 @@
+fragment DuoAgentPlatformAgentFlowsUsersCountMetricItem on Analytics {
+  agentPlatformSessions(createdEventAtFrom: $startDate, createdEventAtTo: $endDate) {
+    aggregated {
+      nodes {
+        usersCount
+      }
+    }
+  }
+}

@@ -3,19 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::PipelineScopeCounts do
-  let(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
 
-  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:project) { create(:project, :private, developers: current_user) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:failed_pipeline) { create(:ci_pipeline, :failed, project: project) }
   let_it_be(:success_pipeline) { create(:ci_pipeline, :success, project: project) }
   let_it_be(:ref_pipeline) { create(:ci_pipeline, project: project, ref: 'awesome-feature') }
   let_it_be(:sha_pipeline) { create(:ci_pipeline, :running, project: project, sha: 'deadbeef') }
   let_it_be(:on_demand_dast_scan) { create(:ci_pipeline, :success, project: project, source: 'ondemand_dast_scan') }
-
-  before do
-    project.add_developer(current_user)
-  end
 
   it 'has policy class' do
     expect(described_class.declarative_policy_class).to be("Ci::ProjectPipelinesPolicy")

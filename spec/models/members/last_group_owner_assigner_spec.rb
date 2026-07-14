@@ -77,7 +77,7 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
     end
 
     context "when there are blocked owners" do
-      before do
+      before_all do
         user.block!
       end
 
@@ -124,7 +124,7 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
         end
 
         context 'when subgroup' do
-          let!(:subgroup) { create(:group, :nested) }
+          let_it_be(:subgroup) { create(:group, :nested) }
 
           let!(:group_member) { subgroup.add_owner(user) }
 

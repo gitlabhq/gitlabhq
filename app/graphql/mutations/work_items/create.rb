@@ -41,6 +41,10 @@ module Mutations
         required: false,
         description: copy_field_description(::Types::WorkItemType, :description),
         deprecated: { milestone: '16.9', reason: 'use description widget instead' }
+      argument :development_widget,
+        ::Types::WorkItems::Widgets::DevelopmentCreateInputType,
+        required: false,
+        description: 'Input for development widget.'
       argument :discussions_to_resolve,
         ::Types::WorkItems::ResolveDiscussionsInputType,
         required: false,

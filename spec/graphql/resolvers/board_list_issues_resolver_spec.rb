@@ -103,7 +103,7 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
 
   describe '#resolve' do
     context 'when project boards' do
-      let_it_be(:label, freeze: false) { create(:label, project: user_project) }
+      let_it_be(:label) { create(:label, project: user_project) }
       let_it_be(:label2) { create(:label, project: user_project) }
       let_it_be(:label3) { create(:label, project: user_project) }
       let_it_be(:board) { create(:board, resource_parent: user_project) }
@@ -119,7 +119,7 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
     end
 
     context 'when group boards' do
-      let_it_be(:label, freeze: false) { create(:group_label, group: group) }
+      let_it_be(:label) { create(:group_label, group: group) }
       let_it_be(:label2) { create(:group_label, group: group) }
       let_it_be(:label3) { create(:group_label, group: group) }
       let_it_be(:board) { create(:board, resource_parent: group) }

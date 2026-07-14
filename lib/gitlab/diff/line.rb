@@ -86,6 +86,14 @@ module Gitlab
         %w[old old-nonewline old-nomappinginraw].include?(type)
       end
 
+      def added_content?
+        %w[new new-nomappinginraw].include?(type)
+      end
+
+      def removed_content?
+        %w[old old-nomappinginraw].include?(type)
+      end
+
       def meta?
         %w[match new-nonewline old-nonewline].include?(type)
       end

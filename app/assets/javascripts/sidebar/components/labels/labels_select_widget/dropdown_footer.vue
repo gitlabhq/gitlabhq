@@ -18,6 +18,7 @@ export default {
       default: '',
     },
   },
+  emits: ['toggleDropdownContentsCreateView'],
   computed: {
     showManageLabelsItem() {
       return this.footerManageLabelTitle && this.labelsManagePath;

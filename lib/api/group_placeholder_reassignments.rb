@@ -18,9 +18,9 @@ module API
       requires :id, type: String, desc: 'The ID of a group'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Download the list of pending placeholder assignments for a group' do
-        detail 'Downloads a CSV file of pending placeholder assignments for a group.
-          This feature was added in GitLab 17.10'
+      desc 'Retrieve pending reassignments' do
+        detail 'Retrieves a CSV file with a list of pending reassignments. ' \
+          'This feature was introduced in GitLab 17.10.'
         success code: 200
         tags ['groups']
       end

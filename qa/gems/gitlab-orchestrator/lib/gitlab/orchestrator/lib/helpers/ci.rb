@@ -57,6 +57,12 @@ module Gitlab
         def registry_version
           @registry_version ||= ENV["GITLAB_CONTAINER_REGISTRY_TAG"].presence || commit_sha
         end
+
+        def openbao_version
+          @openbao_version ||= ENV["GITLAB_OPENBAO_TAG"].presence || File.read(
+            File.join(ci_project_dir, "GITLAB_OPENBAO_VERSION")
+          ).strip
+        end
       end
     end
   end

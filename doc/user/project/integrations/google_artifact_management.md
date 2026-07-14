@@ -15,15 +15,15 @@ description: Connect a Google Artifact Registry to your GitLab project to view, 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../../../administration/feature_flags/_index.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../../policy/development_stages_support.md).
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 
 {{< /history >}}
 
 You can use the Google Artifact Management integration to
-configure and connect a [Google Artifact Registry](https://cloud.google.com/artifact-registry) repository to your GitLab project.
+configure and connect a [Google Artifact Registry](https://docs.cloud.google.com/artifact-registry/docs) repository to your GitLab project.
 
-After you connect the Google Artifact Registry to your project, you can view, push, and pull Docker and [OCI](https://opencontainers.org/) images in a [Google Artifact Registry](https://cloud.google.com/artifact-registry) repository.
+After you connect the Google Artifact Registry to your project, you can view, push, and pull Docker and [OCI](https://opencontainers.org/) images in a [Google Artifact Registry](https://docs.cloud.google.com/artifact-registry/docs) repository.
 
 ## Set up the Google Artifact Registry in a GitLab project
 
@@ -32,9 +32,9 @@ Prerequisites:
 - You must have the Maintainer or Owner role for the GitLab project.
 - You must have the [permissions needed](https://cloud.google.com/iam/docs/granting-changing-revoking-access#required-permissions) to manage access to the Google Cloud project with the Artifact Registry repository.
 - A [workload identity federation](../../../integration/google_cloud_iam.md) (WLIF) pool and provider must be configured to authenticate to Google Cloud.
-- A [Google Artifact Registry repository](https://cloud.google.com/artifact-registry/docs/repositories) with the following configuration:
-  - [Docker](https://cloud.google.com/artifact-registry/docs/supported-formats) format.
-  - [Standard](https://cloud.google.com/artifact-registry/docs/repositories/create-repos) mode. Other repository formats and modes are not supported.
+- A [Google Artifact Registry repository](https://docs.cloud.google.com/artifact-registry/docs/repositories) with the following configuration:
+  - [Docker](https://docs.cloud.google.com/artifact-registry/docs/supported-formats) format.
+  - [Standard](https://docs.cloud.google.com/artifact-registry/docs/repositories/create-repos) mode. Other repository formats and modes are not supported.
 
 To connect a Google Artifact Registry repository to a GitLab project:
 
@@ -83,7 +83,7 @@ You can configure a pipeline to authenticate with the Google Artifact Registry d
 execution. GitLab uses the configured [workload identity pool](../../../integration/google_cloud_iam.md) IAM policies
 and populates the `GOOGLE_APPLICATION_CREDENTIALS` and `CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE`
 environment credentials. These environment credentials are automatically detected by client tools,
-like [gcloud CLI](https://cloud.google.com/sdk/gcloud) and [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md).
+like [gcloud CLI](https://docs.cloud.google.com/sdk/gcloud) and [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md).
 
 To authenticate with the Google Artifact Registry, in the project's `.gitlab-ci.yml` file, use the [`identity`](../../../ci/yaml/_index.md#identity) keyword set to `google_cloud`.
 

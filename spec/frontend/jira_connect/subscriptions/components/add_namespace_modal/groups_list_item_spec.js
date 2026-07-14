@@ -1,13 +1,18 @@
 import { GlButton } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
+import Vue from 'vue';
 
 import waitForPromises from 'helpers/wait_for_promises';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import GroupItemName from '~/jira_connect/subscriptions/components/group_item_name.vue';
 import GroupsListItem from '~/jira_connect/subscriptions/components/add_namespace_modal/groups_list_item.vue';
 import { I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE } from '~/jira_connect/subscriptions/constants';
-import createStore from '~/jira_connect/subscriptions/store';
+import { useJiraConnectSubscriptions } from '~/jira_connect/subscriptions/store';
 import { mockGroup1 } from '../../mock_data';
+
+Vue.use(PiniaVuePlugin);
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 
@@ -16,12 +21,11 @@ describe('GroupsListItem', () => {
   let store;
 
   const createComponent = ({ mountFn = shallowMount, provide } = {}) => {
-    store = createStore();
-
-    jest.spyOn(store, 'dispatch').mockImplementation();
+    const pinia = createTestingPinia();
+    store = useJiraConnectSubscriptions();
 
     wrapper = mountFn(GroupsListItem, {
-      store,
+      pinia,
       propsData: {
         group: mockGroup1,
       },
@@ -63,11 +67,11 @@ describe('GroupsListItem', () => {
       });
     });
 
-    it('dispatches `addSubscription` action', () => {
+    it('calls `addSubscription` action', () => {
       clickLinkButton();
 
-      expect(store.dispatch).toHaveBeenCalledTimes(1);
-      expect(store.dispatch).toHaveBeenCalledWith('addSubscription', {
+      expect(store.addSubscription).toHaveBeenCalledTimes(1);
+      expect(store.addSubscription).toHaveBeenCalledWith({
         namespacePath: mockGroup1.full_path,
         subscriptionsPath: mockSubscriptionsPath,
       });
@@ -82,7 +86,7 @@ describe('GroupsListItem', () => {
         ${'falls back to the generic message'}         | ${{ response: { data: {} } }}                                                  | ${I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE}
         ${'falls back when no response is present'}    | ${new Error('network')}                                                        | ${I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE}
       `('emits `error` with $scenario', async ({ error, expectedMessage }) => {
-        store.dispatch.mockRejectedValue(error);
+        store.addSubscription.mockRejectedValue(error);
 
         await clickLinkButton();
         await waitForPromises();
@@ -92,7 +96,7 @@ describe('GroupsListItem', () => {
 
       it('reports the error to Sentry', async () => {
         const error = new Error('network');
-        store.dispatch.mockRejectedValue(error);
+        store.addSubscription.mockRejectedValue(error);
 
         await clickLinkButton();
         await waitForPromises();

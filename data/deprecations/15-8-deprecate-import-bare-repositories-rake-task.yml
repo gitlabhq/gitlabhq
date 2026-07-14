@@ -21,7 +21,7 @@
      - Migrating projects using either [an export file](https://docs.gitlab.com/user/project/settings/import_export/) or
        [direct transfer](https://docs.gitlab.com/user/group/import/#migrate-groups-by-direct-transfer-recommended) migrate repositories as well.
      - Importing a [repository by URL](https://docs.gitlab.com/user/project/import/repo_by_url/).
-     - Importing [repositories from a non-GitLab source](https://docs.gitlab.com/user/project/import/).
+     - Importing [repositories from a non-GitLab source](https://docs.gitlab.com/user/import/).
   stage: Foundations
   tiers:
-  documentation_url: https://docs.gitlab.com/user/project/import/
+  documentation_url: https://docs.gitlab.com/user/import/

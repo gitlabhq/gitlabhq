@@ -144,6 +144,8 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
         subject { serializer.represent(resource, preload: true) }
 
         let(:resource) { Ci::Pipeline.all }
+        let_it_be(:production) { create(:environment, :production, project: project) }
+        let_it_be(:staging) { create(:environment, :staging, project: project) }
 
         # Create pipelines only once and change their attributes if needed.
         before_all do
@@ -224,9 +226,6 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
         end
 
         context 'with build environments' do
-          let_it_be(:production) { create(:environment, :production, project: project) }
-          let_it_be(:staging) { create(:environment, :staging, project: project) }
-
           it 'executes one query to fetch all related environments', :request_store do
             pipeline = create(:ci_pipeline, project: project)
             create(:ci_build, :manual, pipeline: pipeline, environment: production.name)
@@ -238,6 +237,30 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
           end
         end
 
+        context 'with builds that have job environments' do
+          it 'does not cause N+1 queries on job_environments', :request_store do
+            pipeline1 = create(:ci_pipeline, project: project)
+            manual1 = create(:ci_build, :manual, pipeline: pipeline1, environment: production.name)
+            scheduled1 = create(:ci_build, :scheduled, pipeline: pipeline1, environment: staging.name)
+            create(:job_environment, job: manual1, pipeline: pipeline1, project: project, environment: production)
+            create(:job_environment, job: scheduled1, pipeline: pipeline1, project: project, environment: staging)
+
+            control = ActiveRecord::QueryRecorder.new do
+              serializer.represent(Ci::Pipeline.all, preload: true)
+            end
+
+            pipeline2 = create(:ci_pipeline, project: project)
+            manual2 = create(:ci_build, :manual, pipeline: pipeline2, environment: production.name)
+            scheduled2 = create(:ci_build, :scheduled, pipeline: pipeline2, environment: staging.name)
+            create(:job_environment, job: manual2, pipeline: pipeline2, project: project, environment: production)
+            create(:job_environment, job: scheduled2, pipeline: pipeline2, project: project, environment: staging)
+
+            expect do
+              serializer.represent(Ci::Pipeline.all, preload: true)
+            end.not_to exceed_query_limit(control)
+          end
+        end
+
         context 'with scheduled and manual builds' do
           before do
             create(:ci_build, :scheduled, pipeline: resource.first)
@@ -246,9 +269,10 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
             create(:ci_build, :manual, pipeline: resource.second)
           end
 
-          it 'sends at most one metadata query for each type of build', :request_store do
-            # 1 for the existing failed builds and 2 for the added scheduled and manual builds
-            expect { subject }.not_to exceed_query_limit(1 + 2).for_query(/SELECT "ci_builds_metadata".*/)
+          it 'does not query CI build metadata', :request_store do
+            recorded = ActiveRecord::QueryRecorder.new { subject }
+
+            expect(recorded.log).not_to include(/ci_builds_metadata/)
           end
         end
 
@@ -262,7 +286,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
           ).tap do |pipeline|
             Ci::Build::AVAILABLE_STATUSES.each do |build_status|
               create_build(pipeline, status, build_status)
-              # create multiple failed builds to verify no N+1 for failed builds or metadata
+              # create multiple failed builds to verify no N+1 for failed builds or job definitions
               create_list(:ci_build, 3,
                 :tags, :triggered, :artifacts,
                 pipeline: pipeline, stage: 'test',
@@ -314,19 +338,25 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
 
     let(:options) { {} }
 
-    it 'includes manual_actions and scheduled_actions by default' do
+    it 'includes manual_actions and scheduled_actions with job_environment by default' do
       hash_relation = preloaded_relations_result.find { |r| r.is_a?(Hash) }
 
-      expect(hash_relation).to include(:manual_actions, :scheduled_actions)
+      expect(hash_relation).to include(
+        manual_actions: array_including(:job_environment),
+        scheduled_actions: array_including(:job_environment)
+      )
     end
 
     context 'when disable_manual_and_scheduled_actions option is true' do
       let(:options) { { disable_manual_and_scheduled_actions: true } }
 
-      it 'does not include manual_actions and scheduled_actions metadata' do
+      it 'preloads only job_environment for manual_actions and scheduled_actions' do
         hash_relation = preloaded_relations_result.find { |r| r.is_a?(Hash) }
 
-        expect(hash_relation).to include(manual_actions: [], scheduled_actions: [])
+        expect(hash_relation).to include(
+          manual_actions: [:job_environment],
+          scheduled_actions: [:job_environment]
+        )
       end
     end
   end

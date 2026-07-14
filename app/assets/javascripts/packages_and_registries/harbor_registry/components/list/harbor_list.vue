@@ -23,6 +23,7 @@ export default {
       required: true,
     },
   },
+  emits: ['next-page', 'prev-page'],
 };
 </script>
 

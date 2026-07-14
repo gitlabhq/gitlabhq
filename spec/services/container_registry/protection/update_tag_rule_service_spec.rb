@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ContainerRegistry::Protection::UpdateTagRuleService, '#execute', feature_category: :container_registry do
   include ContainerRegistryHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user, maintainer_of: project) }
   let_it_be_with_reload(:container_protection_tag_rule) do
     create(:container_registry_protection_tag_rule, project: project)

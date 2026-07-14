@@ -2,6 +2,10 @@
 #   scripts/lint/unused_methods.rb, however subsequent research shows
 #   them to be false positives, and should be ignored when running that script.
 #
+ee/app/models/cloud_connector/keys.rb:
+  - create_new_key!: Called from ee/lib/tasks/cloud_connector/keys.rake (cloud_connector:keys:create task)
+  - trim!: Called from ee/lib/tasks/cloud_connector/keys.rake (cloud_connector:keys:trim task)
+  - truncated_pem: Called from ee/lib/tasks/cloud_connector/keys.rake (cloud_connector:keys:list and create tasks)
 ee/app/helpers/secrets_management/enrollment_helper.rb:
   - allow_secrets_manager_namespace_enrollment?: Called from HAML views and controllers via EE::ApplicationHelper
   - allow_secrets_manager_instance_enrollment?: Called from HAML views and controllers via EE::ApplicationHelper
@@ -77,8 +81,8 @@ ee/app/models/security/scan_profile_project_status.rb:
   - profile_failed?: Will be used in follow-up MR to expose profile statuses via GraphQL (Task 4, #593133)
 app/models/work_item.rb:
   - descendant_ids_for: will be used in follow-up MR
-ee/app/models/concerns/security/pipeline_execution_policy_bot_access.rb:
-  - allows_pipeline_execution_policy_bot_access?: Will be called from CI config file access integration in a follow-up MR
+ee/app/models/ee/user.rb:
+  - security_policy_bot_project: Returns the bot's associated project; preserved for backward compatibility with bot-specific access flows
 ee/app/models/ai/catalog/item.rb:
   - starred_by?: Will be used in follow-up MR adding GraphQL mutation for starring AI catalog items
 ee/app/models/ee/application_setting.rb:
@@ -97,3 +101,5 @@ ee/app/models/ee/organizations/organization_setting.rb:
   - security_tracked_context_quota_explicitly_set?: Will be used in #598087 for quota enforcement service
 ee/app/models/cd/application_flow_definition.rb:
   - revert_to_previous_version: Will be called from the CD application flow definition revert API/mutation in a follow-up MR
+ee/app/models/ee/group.rb:
+  - policy_store_experiment_active?: Called from the Policy Store navigation and GraphQL in a follow-up MR

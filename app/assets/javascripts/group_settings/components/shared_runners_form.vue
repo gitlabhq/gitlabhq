@@ -13,6 +13,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'SharedRunnersForm',
   components: {
     GlAlert,
     GlLink,

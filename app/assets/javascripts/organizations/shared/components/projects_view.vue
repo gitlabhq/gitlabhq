@@ -12,6 +12,7 @@ import NewProjectButton from './new_project_button.vue';
 import GroupsAndProjectsEmptyState from './groups_and_projects_empty_state.vue';
 
 export default {
+  name: 'ProjectsView',
   projectsEmptyStateSvgPath,
   i18n: {
     errorMessage: s__(
@@ -79,6 +80,7 @@ export default {
       default: SORT_DIRECTION_ASC,
     },
   },
+  emits: ['page-change'],
   data() {
     return {
       projects: {},

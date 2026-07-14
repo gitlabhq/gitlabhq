@@ -136,6 +136,92 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Changes, feature_category
         end
       end
     end
+
+    context 'with regexp' do
+      context 'when regexp is a valid pattern' do
+        let(:config) { { regexp: '^src/.*' } }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when regexp uses a negative lookahead for negation' do
+        let(:config) { { regexp: '^(?!docs/)' } }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when regexp uses alternation for negation' do
+        let(:config) { { regexp: '^(?:src|lib|spec)/' } }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when regexp is an invalid pattern' do
+        let(:config) { { regexp: '[invalid' } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns information about errors' do
+          expect(entry.errors).to include(/regexp is invalid/)
+        end
+      end
+
+      context 'when regexp exceeds the maximum length' do
+        let(:config) { { regexp: 'a' * 256 } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns information about errors' do
+          expect(entry.errors).to include(/regexp is too long/)
+        end
+      end
+
+      context 'when regexp is not a string' do
+        let(:config) { { regexp: 123 } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns information about errors' do
+          expect(entry.errors).to include(/should be a string/)
+        end
+      end
+
+      context 'when both paths and regexp are provided' do
+        let(:config) { { paths: %w[app/ lib/], regexp: '^docs/.*' } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns information about errors' do
+          expect(entry.errors).to include(/must use exactly one of these keys: paths, regexp/)
+        end
+      end
+
+      context 'when neither paths nor regexp is provided' do
+        let(:config) { { compare_to: 'main' } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns information about errors' do
+          expect(entry.errors).to include(/must use exactly one of these keys: paths, regexp/)
+        end
+      end
+    end
+
+    context 'with regexp and compare_to' do
+      let(:config) { { regexp: '^src/.*', compare_to: 'branch1' } }
+
+      it { is_expected.to be_valid }
+
+      context 'when compare_to is not a string' do
+        let(:config) { { regexp: '^src/.*', compare_to: 1 } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns information about errors' do
+          expect(entry.errors).to include(/should be a string/)
+        end
+      end
+    end
   end
 
   describe '#value' do
@@ -159,6 +245,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Changes, feature_category
       let(:config) do
         { paths: ['app/', 'lib/'], compare_to: 'branch1' }
       end
+
+      it { is_expected.to eq(config) }
+    end
+
+    context 'with regexp' do
+      let(:config) { { regexp: '^src/.*' } }
 
       it { is_expected.to eq(config) }
     end

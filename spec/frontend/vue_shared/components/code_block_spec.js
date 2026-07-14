@@ -18,7 +18,7 @@ describe('Code Block', () => {
 
     expect(wrapper.element).toMatchInlineSnapshot(`
 <pre
-  class="code code-block code-syntax-highlight-theme rounded"
+  class="!gl-rounded-base code code-block code-syntax-highlight-theme"
 >
   DEFAULT SLOT
 </pre>
@@ -30,7 +30,7 @@ describe('Code Block', () => {
 
     expect(wrapper.element).toMatchInlineSnapshot(`
 <pre
-  class="code code-block code-syntax-highlight-theme rounded"
+  class="!gl-rounded-base code code-block code-syntax-highlight-theme"
 >
   <code
     class="gl-block"
@@ -44,7 +44,7 @@ describe('Code Block', () => {
 
     expect(wrapper.element).toMatchInlineSnapshot(`
 <pre
-  class="code code-block code-syntax-highlight-theme rounded"
+  class="!gl-rounded-base code code-block code-syntax-highlight-theme"
 >
   <code
     class="gl-block"
@@ -60,7 +60,7 @@ describe('Code Block', () => {
 
     expect(wrapper.element).toMatchInlineSnapshot(`
 <pre
-  class="code code-block code-syntax-highlight-theme rounded"
+  class="!gl-rounded-base code code-block code-syntax-highlight-theme"
   style="max-height: 200px; overflow-y: auto;"
 >
   <code

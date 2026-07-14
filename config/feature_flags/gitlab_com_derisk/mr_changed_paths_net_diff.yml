@@ -1,0 +1,12 @@
+---
+name: mr_changed_paths_net_diff
+description: Compute MergeRequest#changed_paths (used by rules:changes in MR pipelines)
+  as a net base..head tree diff instead of a per-commit union, so files changed then
+  reverted within the MR no longer trigger jobs
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/597640
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242122
+rollout_issue_url:
+milestone: '19.2'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

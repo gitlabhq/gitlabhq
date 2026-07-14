@@ -297,7 +297,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
       it 'restricts commit associated with the release' do
         post_query
 
-        expect(data).to eq(nil)
+        expect(data).to be_nil
       end
     end
 
@@ -410,7 +410,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
       end
 
       it 'returns nil' do
-        expect(data).to eq(nil)
+        expect(data).to be_nil
       end
     end
   end

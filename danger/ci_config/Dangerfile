@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 
+YAML_REVIEW_GUIDE_MESSAGE = <<~MSG
+  ## CI/CD YAML Syntax Changes
+
+  This merge request modifies CI/CD YAML parsing or keyword behavior.
+
+  Please review the [YAML Syntax Change Review Guide](https://docs.gitlab.com/development/cicd/keyword_reviews/)
+  to ensure all considerations are addressed.
+MSG
+
 all_changed_files = helper.all_changed_files
 
 def get_ci_config_files(files)
@@ -11,11 +20,14 @@ end
 schema_path = 'app/assets/javascripts/editor/schema/ci.json'
 schema_docs_path = 'https://docs.gitlab.com/development/cicd/schema/#write-specs'
 has_schema_update = all_changed_files.include?(schema_path)
-return if has_schema_update
 
 ci_config_files = get_ci_config_files(all_changed_files)
 return if ci_config_files.empty?
 
-file_list = "- #{ci_config_files.map { |path| "`#{path}`" }.join("\n- ")}"
+markdown(YAML_REVIEW_GUIDE_MESSAGE)
 
-warn "This merge request changed CI config files but did not update the schema. Please consider updating [the schema](#{schema_path}) to reflect these changes:\n#{file_list}.\n\nRefer to the [docs](#{schema_docs_path}) for help on how to run and write specs for the CI schema."
+unless has_schema_update
+  file_list = "- #{ci_config_files.map { |path| "`#{path}`" }.join("\n- ")}"
+
+  warn "This merge request changed CI config files but did not update the schema. Please consider updating [the schema](#{schema_path}) to reflect these changes:\n#{file_list}.\n\nRefer to the [docs](#{schema_docs_path}) for help on how to run and write specs for the CI schema."
+end

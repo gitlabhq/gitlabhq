@@ -7,10 +7,12 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { n__, __ } from '~/locale';
+import { designsProjectWorkItemPath } from '~/lib/utils/path_helpers/project';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import { ROUTES } from '../../constants';
 
 export default {
+  name: 'DesignItem',
   components: {
     GlCard,
     GlLoadingIcon,
@@ -71,7 +73,7 @@ export default {
       required: false,
       default: false,
     },
-    workItemWebUrl: {
+    workItemFullPath: {
       type: String,
       required: true,
     },
@@ -129,7 +131,10 @@ export default {
       };
     },
     nonRouterHref() {
-      return `${this.workItemWebUrl}/designs/${this.filename}`;
+      return designsProjectWorkItemPath(this.workItemFullPath, {
+        iid: this.workItemIid,
+        vueroute: this.filename,
+      });
     },
     linkComponent() {
       return this.useRouter ? 'router-link' : 'a';

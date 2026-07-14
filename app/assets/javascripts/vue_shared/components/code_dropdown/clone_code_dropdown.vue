@@ -5,6 +5,7 @@ import { __, sprintf } from '~/locale';
 import CodeDropdownCloneItem from '~/repository/components/code_dropdown/code_dropdown_clone_item.vue';
 
 export default {
+  name: 'CloneCodeDropdown',
   components: {
     GlDisclosureDropdown,
     CodeDropdownCloneItem,

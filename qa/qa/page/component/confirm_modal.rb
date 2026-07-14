@@ -26,7 +26,7 @@ module QA
 
         def wait_for_confirm_button_enabled
           wait_until(reload: false) do
-            !find_element('confirm-danger-modal-button').disabled?
+            !element_disabled?('confirm-danger-modal-button')
           end
         end
 

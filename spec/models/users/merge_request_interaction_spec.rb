@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Users::MergeRequestInteraction do
+RSpec.describe ::Users::MergeRequestInteraction, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
@@ -91,6 +91,24 @@ RSpec.describe ::Users::MergeRequestInteraction do
       end
 
       it { is_expected.to be_approved }
+    end
+  end
+
+  describe '#updated_at' do
+    subject { interaction.updated_at }
+
+    context 'when the user is not a reviewer' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the user has been asked to review the MR' do
+      before do
+        merge_request.reviewers << user
+      end
+
+      it 'returns the reviewer record timestamp' do
+        is_expected.to be_like_time(merge_request.merge_request_reviewers.find_by(user_id: user.id).updated_at)
+      end
     end
   end
 end

@@ -1,3 +1,4 @@
 ---
 name: _read_public_pipeline_schedule
 description: Grants the ability to read pipeline schedules when the project has public builds enabled. Does not apply when builds are private.
+conditionally_enables: read_pipeline_schedule

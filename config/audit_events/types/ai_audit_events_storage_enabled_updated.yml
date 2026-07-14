@@ -1,0 +1,10 @@
+---
+name: ai_audit_events_storage_enabled_updated
+description: Added when ai_audit_events_storage_enabled is changed on a group or project.
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/604014
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242767
+feature_category: audit_events
+milestone: '19.2'
+saved_to_database: true
+streamed: true
+scope: [Group, Project]

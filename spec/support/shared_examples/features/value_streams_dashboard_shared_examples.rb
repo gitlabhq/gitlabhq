@@ -1,21 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'renders usage overview metrics' do
-  let(:usage_overview) { find_by_testid('panel-usage-overview') }
+  let(:namespace_metadata) { find_by_testid('panel-namespace-metadata') }
 
-  it 'renders the metrics panel' do
-    expect(usage_overview).to be_visible
-    expect(usage_overview).to have_content format(_("Usage overview for the %{title}"), title: panel_title)
+  it 'renders the namespace metadata panel' do
+    expect(namespace_metadata).to be_visible
+    expect(namespace_metadata).to have_content format(_("Usage overview for the %{title}"), title: panel_title)
   end
 
   it 'renders each of the available metrics with the correct values' do
-    within usage_overview do
-      usage_overview_metrics.each do |id, name, value|
-        stat = find_by_testid("usage-overview-metric-#{id}")
-        expect(stat).to be_visible
-        expect(stat).to have_content name
-        expect(stat).to have_content value
-      end
+    usage_overview_metrics.each do |id, name, value|
+      stat = find_by_testid("panel-#{id.tr('_', '-')}-count")
+      expect(stat).to be_visible
+      expect(stat).to have_content name
+      expect(stat).to have_content value
     end
   end
 end
@@ -26,14 +24,6 @@ end
 
 RSpec.shared_examples 'renders usage overview metrics with empty values' do
   it_behaves_like 'renders usage overview metrics'
-end
-
-RSpec.shared_examples 'does not render usage overview metrics' do
-  let(:usage_overview_testid) { "[data-testid='panel-usage-overview']" }
-
-  it 'does not render the usage overview panel' do
-    expect(page).not_to have_selector usage_overview_testid
-  end
 end
 
 RSpec.shared_examples 'does not render usage overview background aggregation not enabled alert' do

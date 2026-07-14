@@ -6,6 +6,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { MLFLOW_USAGE_MODAL_ID } from '../constants';
 
 export default {
+  name: 'ModelRegistryMlflowUsageModal',
   components: {
     GlModal,
   },

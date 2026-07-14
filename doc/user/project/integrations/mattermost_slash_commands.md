@@ -21,47 +21,18 @@ separately configured [Mattermost notifications](mattermost.md).
 
 For a list of available slash commands, see [Slash commands](gitlab_slack_application.md#slash-commands).
 
-## Configuration options
+## Configure slash commands
 
-GitLab provides different ways to configure Mattermost slash commands. For any of these options,
-you must have [Mattermost 3.4 or later](https://mattermost.com/blog/category/platform/releases/).
-
-- Linux package installations: Mattermost is bundled with
-  [Linux package](https://docs.gitlab.com/omnibus/). To configure Mattermost for Linux package
-  installations, read the [Linux package Mattermost documentation](../../../integration/mattermost/_index.md).
-- If Mattermost is installed on the same server as GitLab: Use the
-  [automated configuration](#configure-automatically).
-- For all other installations: Use the [manual configuration](#configure-manually).
-
-## Configure automatically
-
-If Mattermost is installed on the same server as GitLab,
-you can automatically configure Mattermost slash commands:
-
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **Integrations**.
-1. Select **Mattermost slash commands**.
-1. Under **Enable integration**, ensure the **Active** checkbox is selected.
-1. Select **Add to Mattermost**, and select **Save changes**.
-
-## Configure manually
-
-To manually configure slash commands in Mattermost, you must:
-
-1. [Enable custom slash commands in Mattermost](#enable-custom-slash-commands-in-mattermost).
-   This step is required only for self-compiled installations.
-1. [Get configuration values from GitLab](#get-configuration-values-from-gitlab).
-1. [Create a slash command in Mattermost](#create-a-slash-command-in-mattermost).
-1. [Provide the Mattermost token to GitLab](#provide-the-mattermost-token-to-gitlab).
+To configure slash commands in Mattermost, you must perform the following steps.
 
 ### Enable custom slash commands in Mattermost
 
 To enable custom slash commands from the Mattermost administrator console:
 
 1. Sign in to Mattermost as a user with administrator privileges.
-1. Next to your username, select the {{< icon name="ellipsis_v" >}} **Settings** icon, and
+1. In the upper left corner, select the Mattermost logo, and then
    select **System Console**.
-1. Select **Integration Management**, and set these values to `TRUE`:
+1. Select **Integration Management**, and set these values to `True`:
    - **Enable Custom Slash Commands**
    - **Enable integrations to override usernames**
    - **Enable integrations to override profile picture icons**
@@ -86,7 +57,7 @@ To create a slash command in Mattermost:
 
 1. [In the Mattermost browser tab](#enable-custom-slash-commands-in-mattermost),
    go to your team page.
-1. Select the {{< icon name="ellipsis_v" >}} **Settings** icon, and select **Integrations**.
+1. In the upper left corner, select the Mattermost logo, and then **Integrations**.
 1. In the left sidebar, select **Slash commands**.
 1. Select **Add Slash Command**.
 1. Provide a **Display Name** and **Description** for your new command.
@@ -130,7 +101,6 @@ You can see all authorized chat accounts in your Mattermost profile page under *
 
 ## Related topics
 
-- [Mattermost Linux package](../../../integration/mattermost/_index.md)
 - [Slash commands at Mattermost](https://developers.mattermost.com/integrate/slash-commands/)
 
 ## Troubleshooting

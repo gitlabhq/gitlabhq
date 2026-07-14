@@ -92,6 +92,7 @@ module Banzai
       def allow_tasklists(allowlist)
         allowlist[:elements].push('input')
         allowlist[:attributes]['input'].push('data-inapplicable')
+        allowlist[:attributes]['input'].push('data-indeterminate')
         allowlist[:attributes]['input'].push('data-checkbox-sourcepos')
         allowlist[:transformers].push(self.class.method(:remove_non_tasklist_inputs))
       end

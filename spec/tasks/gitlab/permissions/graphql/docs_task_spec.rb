@@ -108,6 +108,93 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::DocsTask, :silence_stdout, f
       end
     end
 
+    context 'when resource names differ only in letter case' do
+      let(:cd_application_assignable) do
+        instance_double(::Authz::PermissionGroups::Assignable,
+          category_name: 'CI/CD',
+          resource_name: 'CD Application',
+          resource_description: 'Grants the ability to read continuous deployment applications',
+          action: 'read'
+        )
+      end
+
+      let(:catalog_resource_assignable) do
+        instance_double(::Authz::PermissionGroups::Assignable,
+          category_name: 'CI/CD',
+          resource_name: 'Catalog Resource',
+          resource_description: 'Grants the ability to read CI catalog resources',
+          action: 'read'
+        )
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return(
+          'CdApplication' => mock_type('CdApplication', directive: directive(:read_cd_application)),
+          'CatalogResource' => mock_type('CatalogResource', directive: directive(:read_catalog_resource)),
+          'Mutation' => mutation_type_with_fields({})
+        )
+        allow(::Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:read_cd_application).and_return([cd_application_assignable])
+        allow(::Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:read_catalog_resource).and_return([catalog_resource_assignable])
+      end
+
+      it 'sorts resources case-insensitively' do
+        output = task.allowed_fields
+
+        expect(output.index('#### Catalog Resource')).to be < output.index('#### CD Application')
+      end
+    end
+
+    context 'when two resource names downcase identically' do
+      let(:glql_upper_assignable) do
+        instance_double(::Authz::PermissionGroups::Assignable,
+          category_name: 'Monitoring',
+          resource_name: 'GLQL',
+          resource_description: 'Grants the ability to read GLQL queries',
+          action: 'read'
+        )
+      end
+
+      let(:glql_title_assignable) do
+        instance_double(::Authz::PermissionGroups::Assignable,
+          category_name: 'Monitoring',
+          resource_name: 'Glql',
+          resource_description: 'Grants the ability to read Glql queries',
+          action: 'read'
+        )
+      end
+
+      let(:glql_upper_type) { mock_type('GlqlUpper', directive: directive(:read_glql_upper)) }
+      let(:glql_title_type) { mock_type('GlqlTitle', directive: directive(:read_glql_title)) }
+
+      before do
+        allow(::Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:read_glql_upper).and_return([glql_upper_assignable])
+        allow(::Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:read_glql_title).and_return([glql_title_assignable])
+      end
+
+      it 'orders them deterministically regardless of input order' do
+        allow(GitlabSchema).to receive(:types).and_return(
+          'GlqlUpper' => glql_upper_type,
+          'GlqlTitle' => glql_title_type,
+          'Mutation' => mutation_type_with_fields({})
+        )
+        upper_first = described_class.new.allowed_fields
+
+        allow(GitlabSchema).to receive(:types).and_return(
+          'GlqlTitle' => glql_title_type,
+          'GlqlUpper' => glql_upper_type,
+          'Mutation' => mutation_type_with_fields({})
+        )
+        title_first = described_class.new.allowed_fields
+
+        expect(upper_first).to eq(title_first)
+        expect(upper_first.index('#### GLQL')).to be < upper_first.index('#### Glql')
+      end
+    end
+
     context 'when a permission has no assignable group' do
       before do
         allow(::Authz::PermissionGroups::Assignable).to receive(:available_for_permission)

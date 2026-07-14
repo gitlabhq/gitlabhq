@@ -6,7 +6,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create_default(:project, :public) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:issue, freeze: false) { create(:issue, project: project) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
   describe 'modules' do
     context 'with a project' do
@@ -159,7 +159,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
   end
 
   describe '.predefined_id?' do
-    let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
+    let_it_be_with_reload(:milestone) { create(:milestone, project: project) }
 
     it 'returns true for a predefined Milestone ID' do
       expect(described_class.predefined_id?(described_class::Upcoming.id)).to be true
@@ -605,7 +605,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
   end
 
   describe '.sort_with_expired_last' do
-    let_it_be(:milestone, freeze: false) { create(:milestone, title: 'Due today', due_date: Date.current) }
+    let_it_be_with_reload(:milestone) { create(:milestone, title: 'Due today', due_date: Date.current) }
     let_it_be(:milestone_1) { create(:milestone, title: 'Current 1',  due_date: Date.current + 1.day) }
     let_it_be(:milestone_2) { create(:milestone, title: 'Current 2',  due_date: Date.current + 2.days) }
     let_it_be(:milestone_3) { create(:milestone, title: 'Without due date') }
@@ -828,7 +828,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
   end
 
   describe '#lock_version' do
-    let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
+    let_it_be_with_reload(:milestone) { create(:milestone, project: project) }
 
     it 'ensures that lock_version and optimistic locking is enabled' do
       expect(milestone.lock_version).to be_present

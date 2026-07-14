@@ -16,6 +16,7 @@ import UserAvatar from './user_avatar.vue';
 import UserMainSettings from './user_main_settings.vue';
 
 export default {
+  name: 'ProfileEditApp',
   components: {
     UserAvatar,
     UserMainSettings,

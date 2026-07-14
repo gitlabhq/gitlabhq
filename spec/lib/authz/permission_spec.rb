@@ -50,5 +50,14 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
         [:push_code, :create_merge_request_from, :create_merge_request_in]
       )
     end
+
+    it 'returns nil when declared as null' do
+      permission = described_class.new(
+        { name: '_foo', description: 'test', conditionally_enables: nil },
+        source_file
+      )
+
+      expect(permission.conditionally_enables).to be_nil
+    end
   end
 end

@@ -11,6 +11,7 @@ import IssuableEditForm from './issuable_edit_form.vue';
 import IssuableTitle from './issuable_title.vue';
 
 export default {
+  name: 'IssuableBody',
   components: {
     GlLink,
     TimeAgoTooltip,

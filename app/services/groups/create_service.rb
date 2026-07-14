@@ -52,11 +52,12 @@ module Groups
 
       set_visibility_level
 
-      except_keys = ::NamespaceSetting.allowed_namespace_settings_params + [:organization_id, :import_export_upload]
+      except_keys = ::NamespaceSetting.allowed_namespace_settings_params + [:organization_id, :import_export_upload, :crm_enabled, :crm_source_group_id]
       @group = Group.new(params.except(*except_keys))
 
       set_organization
       set_jwt_ci_cd_job_token_enabled
+      set_require_sha_for_merge_default
 
       @group.import_export_uploads << params[:import_export_upload] if params[:import_export_upload]
       @group.build_namespace_settings
@@ -70,7 +71,15 @@ module Groups
       ) do
         Group.transaction do
           if @group.save
-            @group.add_owner(current_user)
+            # A brand-new group has no projects, so recalculating the owner's
+            # authorized projects here is a no-op. Skip the high-urgency refresh
+            # to keep it off the AuthorizedProjectsWorker 10s-target path.
+            @group.add_owner(
+              current_user,
+              skip_authorized_projects_refresh: Feature.enabled?(
+                :skip_authorized_projects_refresh_for_new_group, current_user
+              )
+            )
             Integration.create_from_default_integrations(@group, :group_id)
           end
         end
@@ -82,7 +91,7 @@ module Groups
     end
 
     def after_successful_creation_hook
-      # overridden in EE
+      handle_crm_settings_update
     end
 
     def remove_unallowed_params
@@ -94,6 +103,8 @@ module Groups
       params.delete(:allow_mfa_for_subgroups)
       params.delete(:math_rendering_limits_enabled)
       params.delete(:lock_math_rendering_limits_enabled)
+      params.delete(:require_sha_for_merge)
+      params.delete(:lock_require_sha_for_merge)
     end
 
     def valid_to_create_chat_team?
@@ -179,6 +190,18 @@ module Groups
       return unless @group.root?
 
       params[:jwt_ci_cd_job_token_enabled] = true
+    end
+
+    def set_require_sha_for_merge_default
+      return if require_sha_for_merge_locked_for_new_group?
+
+      params[:require_sha_for_merge] = true
+    end
+
+    def require_sha_for_merge_locked_for_new_group?
+      return true if Gitlab::CurrentSettings.lock_require_sha_for_merge
+
+      @group.parent&.namespace_settings&.require_sha_for_merge_locked?(include_self: true) || false
     end
 
     def inherit_group_shared_runners_settings

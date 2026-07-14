@@ -1,0 +1,10 @@
+---
+name: job_analytics_siphon
+description: Read CI job analytics from siphon_p_ci_builds via SiphonFinishedBuildsFinder instead of the ci_finished_builds finders.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/601321
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243195
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/604585
+milestone: '19.2'
+group: group::ci platform
+type: beta
+default_enabled: false

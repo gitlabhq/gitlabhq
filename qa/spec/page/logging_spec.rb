@@ -48,26 +48,31 @@ RSpec.describe QA::Support::Page::Logging do
   end
 
   it 'logs find_element with text' do
-    expect { subject.find_element(:element, text: 'foo') }
-      .to output(/finding :element with args {:text=>"foo"}/).to_stdout_from_any_process
-    expect { subject.find_element(:element, text: 'foo') }
+    args = { text: 'foo' }
+    expect { subject.find_element(:element, **args) }
+      .to output(/finding :element with args #{Regexp.escape(args.to_s)}/).to_stdout_from_any_process
+    expect { subject.find_element(:element, **args) }
       .to output(/found :element/).to_stdout_from_any_process
   end
 
   it 'logs find_element with wait' do
-    expect { subject.find_element(:element, wait: 0) }
-      .to output(/finding :element with args {:wait=>0}/).to_stdout_from_any_process
+    args = { wait: 0 }
+    expect { subject.find_element(:element, **args) }
+      .to output(/finding :element with args #{Regexp.escape(args.to_s)}/).to_stdout_from_any_process
   end
 
   it 'logs find_element with class' do
-    expect { subject.find_element(:element, class: 'active') }
-      .to output(/finding :element with args {:class=>"active"}/).to_stdout_from_any_process
+    args = { class: 'active' }
+    expect { subject.find_element(:element, **args) }
+      .to output(/finding :element with args #{Regexp.escape(args.to_s)}/).to_stdout_from_any_process
   end
 
   it 'logs a warning if find_element is slow' do
     starting = Time.now
     ending = starting + 1.4
-    expected_msg = /Potentially Slow Code 'find_element element' took 1.4s/
+    # Ruby 3.4 changed caller_locations(...).label to include the class name
+    # (e.g. QA::Support::Page::Logging#find_element), so allow an optional prefix.
+    expected_msg = %r{Potentially Slow Code '(?:.*#)?find_element element' took 1.4s}
 
     # verify logs a warning message to indicate potentially slow code lookups
     expect { subject.find_element(:element, starting_time: starting, ending_time: ending) }

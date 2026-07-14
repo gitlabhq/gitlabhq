@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Coding
+stage: AI Coding
+group: DAP Repository Flows
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Set up Code Suggestions in your IDE.
 title: Set up Code Suggestions
@@ -13,7 +13,9 @@ To set up Code Suggestions, follow the instructions for your IDE.
 ## Prerequisites
 
 - If you have GitLab Duo Core, [IDE features are on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
-- You have a project in a language that Code Suggestions [supports](supported_extensions.md).
+- You use a [supported language and IDE](supported_extensions.md).
+- You have a [default GitLab Duo namespace](../../../profile/preferences.md#namespace-resolution-in-your-local-environment)
+  set, or have a project open that has GitLab Duo access.
 
 ## Configure editor extension
 
@@ -21,7 +23,7 @@ Code Suggestions is part of an editor extension. To use Code Suggestions:
 
 1. Install the extension in your IDE.
 1. Authenticate with GitLab from the IDE. You can use either OAuth or a personal access token.
-1. Configure the extension.
+1. Configure the extension for use with GitLab and GitLab Duo.
 
 Follow these steps for your IDE:
 

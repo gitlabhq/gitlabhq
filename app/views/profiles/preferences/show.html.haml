@@ -23,10 +23,7 @@
     - c.with_description do
       = s_('Preferences|Choose a color mode.')
     - c.with_body do
-      - Gitlab::ColorModes.each do |mode|
-        = f.gitlab_ui_radio_component :color_mode_id, mode.id,
-          mode.name,
-          radio_options: { checked: user_color_mode_id == mode.id }
+      #js-color-mode-selector{ data: { color_modes: @color_modes, initial_color_mode_id: user_color_mode_id } }
 
   = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Theme'),
     id: 'application-theme',
@@ -37,7 +34,8 @@
       .application-theme.gl-grid.gl-grid-cols-2.gl-gap-5{ class: '@sm/panel:gl-grid-cols-3 @lg/panel:gl-grid-cols-6' }
         - Gitlab::Themes.each do |theme|
           %label
-            .preview{ class: theme.css_class }
+            .preview{ class: "#{theme.css_class}-scope" }
+              = custom_icon('theme')
             = f.gitlab_ui_radio_component :theme_id, theme.id,
               theme.name,
               radio_options: { checked: user_theme_id == theme.id }
@@ -54,7 +52,7 @@
         .gl-grid.gl-gap-5.gl-grid-cols-2.gl-mb-5{ class: '@sm/panel:gl-grid-cols-3 @md/panel:gl-grid-cols-4 @lg/panel:gl-grid-cols-6', data: { testid: 'syntax-highlighting-light-color-scheme' } }
           - Gitlab::ColorSchemes.each do |scheme|
             %label
-              .gl-mb-3= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview", class: 'gl-rounded-base gl-max-w-full'
+              .gl-mb-3= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview", class: 'gl-border gl-rounded-lg gl-max-w-full'
               = f.gitlab_ui_radio_component :color_scheme_id, scheme.id,
                 scheme.name,
                 radio_options: { checked: user_light_color_schema_id == scheme.id }
@@ -64,7 +62,7 @@
         .gl-grid.gl-gap-5.gl-grid-cols-2.gl-mb-5{ class: '@sm/panel:gl-grid-cols-3 @md/panel:gl-grid-cols-4 @lg/panel:gl-grid-cols-6', data: { testid: 'syntax-highlighting-dark-color-scheme' } }
           - Gitlab::ColorSchemes.each do |scheme|
             %label
-              .gl-mb-3= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview", class: 'gl-rounded-base gl-max-w-full'
+              .gl-mb-3= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview", class: 'gl-border gl-rounded-lg gl-max-w-full'
               = f.gitlab_ui_radio_component :dark_color_scheme_id, scheme.id,
                 scheme.name,
                 radio_options: { checked: user_dark_color_scheme_id == scheme.id }
@@ -170,7 +168,7 @@
     - c.with_body do
       .js-listbox-input{ data: { label: _('Language'), description: s_('Preferences|This feature is experimental and translations are not yet complete.'), name: 'user[preferred_language]', items: language_choices.to_json, value: current_user.preferred_language, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
       %p.-gl-mt-5
-        = link_to help_page_url('development/i18n/translation.md'), class: 'text-nowrap gl-link-inline', target: '_blank', rel: 'noopener noreferrer' do
+        = link_to help_page_url('development/i18n/translation.md'), class: '!gl-whitespace-nowrap gl-link-inline', target: '_blank', rel: 'noopener noreferrer' do
           = _("Help translate GitLab into your language")
           %span{ aria: { label: _('Open new window') } }
             = sprite_icon('external-link')

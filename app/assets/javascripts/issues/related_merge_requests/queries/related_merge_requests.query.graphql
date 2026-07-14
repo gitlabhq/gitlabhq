@@ -3,6 +3,7 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/milestone.fragment.graphql"
 
+# @feature_category: team_planning
 query fetchRelatedMergeRequests($projectPath: ID!, $iid: String!, $after: String = "") {
   project(fullPath: $projectPath) {
     id

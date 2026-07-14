@@ -35,7 +35,12 @@ const pdfJsCopyFilesPatterns = [
       'build',
       PDF_JS_WORKER_FILE_NAME,
     ),
-    to: PDF_JS_WORKER_OUTPUT_PATH,
+    // Explicit file destination (not just the directory): rspack's CopyRspackPlugin
+    // does not copy a single-file `from` into a directory-style `to` the way webpack's
+    // copy-plugin does, so the worker silently went missing and pdf.js fell back to a
+    // (broken) fake worker. This full path matches PDF_JS_WORKER_PUBLIC_PATH and works
+    // identically for webpack and vite.
+    to: path.join(PDF_JS_WORKER_OUTPUT_PATH, PDF_JS_WORKER_FILE_NAME),
   },
 ];
 

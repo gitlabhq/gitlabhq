@@ -1,0 +1,17 @@
+# @feature_category: product_analytics
+#import "./duo_agent_platform_chats_metric_item.fragment.graphql"
+
+query duoAgentPlatformChatsQuery($fullPath: ID!, $startDate: Date!, $endDate: Date!) {
+  project(fullPath: $fullPath) {
+    id
+    aiMetrics(startDate: $startDate, endDate: $endDate) {
+      ...DuoAgentPlatformChatsMetricItem
+    }
+  }
+  group(fullPath: $fullPath) {
+    id
+    aiMetrics(startDate: $startDate, endDate: $endDate) {
+      ...DuoAgentPlatformChatsMetricItem
+    }
+  }
+}

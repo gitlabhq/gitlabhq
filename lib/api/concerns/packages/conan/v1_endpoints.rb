@@ -23,13 +23,13 @@ module API
               end
             end
 
-            desc 'Ping the Conan API' do
-              detail 'This feature was introduced in GitLab 12.2'
+            desc 'Verify availability of a Conan repository' do
+              detail 'Verifies availability of a Conan repository.'
               success code: 200
               failure [
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_conan]
             end
 
             route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -61,15 +61,16 @@ module API
               # the snapshot is a hash of { filename: md5 hash }
               # md5 hash is the hash of that file. This hash is used to diff the files existing on the client
               # to determine which client files need to be uploaded if no recipe exists the snapshot is empty
-              desc 'Package Snapshot' do
-                detail 'This feature was introduced in GitLab 12.5'
+              desc 'Retrieve a package snapshot' do
+                detail 'Retrieves a snapshot of the files for a specified Conan package and reference. The snapshot ' \
+                  'is a list of filenames with their associated MD5 hash.'
                 success code: 200, model: ::API::Entities::Packages::Conan::PackageSnapshot
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_conan]
               end
 
               params do
@@ -95,15 +96,16 @@ module API
                 present presenter, with: ::API::Entities::Packages::Conan::PackageSnapshot
               end
 
-              desc 'Recipe Snapshot' do
-                detail 'This feature was introduced in GitLab 12.5'
+              desc 'Retrieve a recipe snapshot' do
+                detail 'Retrieves a snapshot of the files for a specified Conan recipe. The snapshot is a list of ' \
+                  'filenames with their associated MD5 hash.'
                 success code: 200, model: ::API::Entities::Packages::Conan::RecipeSnapshot
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_conan]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -124,15 +126,16 @@ module API
               #
               # the manifest is a hash of { filename: url }
               # where the url is the download url for the file
-              desc 'Package Digest' do
-                detail 'This feature was introduced in GitLab 12.5'
+              desc 'Retrieve a package manifest' do
+                detail 'Retrieves a manifest that includes a list of files and associated download URLs for a ' \
+                  'specified package.'
                 success code: 200, model: ::API::Entities::Packages::Conan::PackageManifest
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_conan]
               end
               params do
                 requires :conan_package_reference, type: String, desc: 'Conan package ID',
@@ -148,15 +151,16 @@ module API
                 present_package_download_urls
               end
 
-              desc 'Recipe Digest' do
-                detail 'This feature was introduced in GitLab 12.5'
+              desc 'Retrieve a recipe manifest' do
+                detail 'Retrieves a manifest that includes a list of files and associated download URLs for a ' \
+                  'specified recipe.'
                 success code: 200, model: ::API::Entities::Packages::Conan::RecipeManifest
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_conan]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -174,15 +178,16 @@ module API
               #
               # the manifest is a hash of { filename: url }
               # where the url is the download url for the file
-              desc 'Package Download Urls' do
-                detail 'This feature was introduced in GitLab 12.5'
+              desc 'List all package download URLs' do
+                detail 'Lists all files and associated download URLs for a specified package in the package ' \
+                  'registry. Returns the same payload as the package manifest endpoint.'
                 success code: 200, model: ::API::Entities::Packages::Conan::PackageManifest
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_conan]
               end
 
               params do
@@ -199,15 +204,16 @@ module API
                 present_package_download_urls
               end
 
-              desc 'Recipe Download Urls' do
-                detail 'This feature was introduced in GitLab 12.5'
+              desc 'List all recipe download URLs' do
+                detail 'Lists all files and associated download URLs for a specified recipe in the package ' \
+                  'registry. Returns the same payload as the recipe manifest endpoint.'
                 success code: 200, model: ::API::Entities::Packages::Conan::RecipeManifest
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_conan]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -226,15 +232,16 @@ module API
               #
               # returns { filename: url }
               # where the url is the upload url for the file that the conan client will use
-              desc 'Package Upload Urls' do
-                detail 'This feature was introduced in GitLab 12.4'
+              desc 'List all package upload URLs' do
+                detail 'Lists all the upload URLs for a specified collection of package files. The request must ' \
+                  'include a JSON object with the name and size of the individual files.'
                 success code: 200, model: ::API::Entities::Packages::Conan::UploadUrls
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_conan]
               end
 
               params do
@@ -254,15 +261,16 @@ module API
                 present package_upload_urls, with: ::API::Entities::Packages::Conan::UploadUrls
               end
 
-              desc 'Recipe Upload Urls' do
-                detail 'This feature was introduced in GitLab 12.4'
+              desc 'List all recipe upload URLs' do
+                detail 'Lists all the upload URLs for a specified collection of recipe files. The request must ' \
+                  'include a JSON object with the name and size of the individual files.'
                 success code: 200, model: ::API::Entities::Packages::Conan::UploadUrls
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_conan]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -277,15 +285,16 @@ module API
                 present recipe_upload_urls, with: ::API::Entities::Packages::Conan::UploadUrls
               end
 
-              desc 'Delete Package' do
-                detail 'This feature was introduced in GitLab 12.5'
+              desc 'Delete a recipe and package' do
+                detail 'Deletes a specified Conan recipe and associated package files from the package ' \
+                  'registry.'
                 success code: 200
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_conan]
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -331,15 +340,16 @@ module API
 
               namespace 'export/:file_name',
                 requirements: SharedEndpoints::FILE_NAME_REQUIREMENTS do
-                desc 'Download recipe files' do
-                  detail 'This feature was introduced in GitLab 12.6'
+                desc 'Retrieve a recipe file' do
+                  detail 'Retrieves a specified recipe file from the package registry. You must use the download URL ' \
+                    'returned from the recipe download URLs endpoint.'
                   success code: 200
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_conan]
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -351,8 +361,9 @@ module API
                   download_package_file(:recipe_file)
                 end
 
-                desc 'Upload recipe package files' do
-                  detail 'This feature was introduced in GitLab 12.6'
+                desc 'Upload a recipe file' do
+                  detail 'Uploads a specified recipe file to the package registry. You must use the upload URL ' \
+                    'returned from the recipe upload URLs endpoint.'
                   success code: 200
                   failure [
                     { code: 400, message: 'Bad Request' },
@@ -360,7 +371,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_conan]
                 end
 
                 params do
@@ -377,8 +388,8 @@ module API
                   upload_package_file(:recipe_file)
                 end
 
-                desc 'Workhorse authorize the conan recipe file' do
-                  detail 'This feature was introduced in GitLab 12.6'
+                desc 'Workhorse authorize the Conan recipe file' do
+                  detail 'Authorizes the Conan recipe file.'
                   success code: 200
                   failure [
                     { code: 400, message: 'Bad Request' },
@@ -386,7 +397,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_conan]
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -410,14 +421,15 @@ module API
               end
               namespace 'package/:conan_package_reference/:package_revision/:file_name',
                 requirements: SharedEndpoints::FILE_NAME_REQUIREMENTS do
-                desc 'Download package files' do
-                  detail 'This feature was introduced in GitLab 12.5'
+                desc 'Retrieve a package file' do
+                  detail 'Retrieves a specified package file from the package registry. You must use the download ' \
+                    'URL returned from the package download URLs endpoint.'
                   success code: 200
                   failure [
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_conan]
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -429,8 +441,8 @@ module API
                   download_package_file(:package_file)
                 end
 
-                desc 'Workhorse authorize the conan package file' do
-                  detail 'This feature was introduced in GitLab 12.6'
+                desc 'Workhorse authorize the Conan package file' do
+                  detail 'Authorizes the Conan package file.'
                   success code: 200
                   failure [
                     { code: 400, message: 'Bad Request' },
@@ -438,7 +450,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_conan]
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -451,8 +463,9 @@ module API
                   authorize_workhorse!(subject: project, maximum_size: project.actual_limits.conan_max_file_size)
                 end
 
-                desc 'Upload package files' do
-                  detail 'This feature was introduced in GitLab 12.6'
+                desc 'Upload a package file' do
+                  detail 'Uploads a specified package file to the package registry. You must use the upload URL ' \
+                    'returned from the package upload URLs endpoint.'
                   success code: 200
                   failure [
                     { code: 400, message: 'Bad Request' },
@@ -460,7 +473,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_conan]
                 end
 
                 params do

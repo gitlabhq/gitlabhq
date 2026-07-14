@@ -107,7 +107,11 @@ class BulkImport < ApplicationRecord
 
   def send_completion_notification
     run_after_commit do
-      Notify.bulk_import_complete(user.id, id).deliver_later
+      if offline?
+        Notify.bulk_import_offline_complete(user.id, id).deliver_later
+      else
+        Notify.bulk_import_complete(user.id, id).deliver_later
+      end
     end
   end
 

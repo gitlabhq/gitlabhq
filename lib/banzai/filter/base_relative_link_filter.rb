@@ -6,6 +6,7 @@ module Banzai
   module Filter
     class BaseRelativeLinkFilter < HTML::Pipeline::Filter
       include Gitlab::Utils::StrongMemoize
+      include Concerns::ContextAccessors
 
       CSS   = 'a:not(.gfm), img:not(.gfm), video:not(.gfm), audio:not(.gfm)'
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
@@ -23,10 +24,6 @@ module Banzai
 
       def relative_url_root
         Gitlab.config.gitlab.relative_url_root.presence || '/'
-      end
-
-      def project
-        context[:project]
       end
 
       private

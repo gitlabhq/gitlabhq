@@ -12,7 +12,16 @@ module Gitlab
           download_service = Projects::LfsPointers::LfsObjectDownloadListService.new(project)
 
           begin
-            queue_workers(download_service) if project.lfs_enabled?
+            if project.lfs_enabled?
+              # Proactively refresh the token before reading the import URL so the download
+              # service (which bypasses the Bitbucket client's auto-refresh) uses a fresh token.
+              client.refresh_if_expired!
+
+              queue_workers(download_service)
+            end
+          rescue Projects::LfsPointers::LfsObjectDownloadListService::LfsObjectDownloadListUnauthorizedError
+            # Let the error propagate so Sidekiq retries the stage.
+            raise
           rescue StandardError => e
             track_import_failure!(project, exception: e)
           end

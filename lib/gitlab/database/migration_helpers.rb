@@ -668,12 +668,16 @@ module Gitlab
         limit_name_quoted = quote_column_name(limit_name)
         plan_name_quoted = quote(plan_name)
         limit_value_quoted = quote(limit_value)
+        plan_name_uid = Plan::PLAN_NAME_UID_LIST.fetch(plan_name.to_sym) do
+          raise ArgumentError, "Unknown plan_name #{plan_name.inspect}; expected one of #{Plan::PLAN_NAME_UID_LIST.keys}"
+        end
+        plan_name_uid_quoted = quote(plan_name_uid)
 
         ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/519892') do
           execute <<~SQL
-            INSERT INTO plan_limits (plan_id, #{limit_name_quoted})
-            SELECT id, #{limit_value_quoted} FROM plans WHERE name = #{plan_name_quoted} LIMIT 1
-            ON CONFLICT (plan_id) DO UPDATE SET #{limit_name_quoted} = EXCLUDED.#{limit_name_quoted};
+            INSERT INTO plan_limits (plan_id, plan_name_uid, #{limit_name_quoted})
+            SELECT id, #{plan_name_uid_quoted}, #{limit_value_quoted} FROM plans WHERE name = #{plan_name_quoted} LIMIT 1
+            ON CONFLICT (plan_id) DO UPDATE SET #{limit_name_quoted} = EXCLUDED.#{limit_name_quoted}, plan_name_uid = EXCLUDED.plan_name_uid;
           SQL
         end
       end

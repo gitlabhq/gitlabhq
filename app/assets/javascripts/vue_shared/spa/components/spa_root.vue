@@ -1,5 +1,7 @@
 <script>
-export default {};
+export default {
+  name: 'SpaRoot',
+};
 </script>
 <template>
   <div id="single-page-app">

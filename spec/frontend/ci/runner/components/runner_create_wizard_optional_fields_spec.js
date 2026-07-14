@@ -1,11 +1,12 @@
-import { GlForm, GlMultiStepFormTemplate } from '@gitlab/ui';
+import { GlForm, GlFormGroup, GlLink, GlMultiStepFormTemplate, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerCreateWizardOptionalFields from '~/ci/runner/components/runner_create_wizard_optional_fields.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 describe('Create Runner Optional Fields', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const createComponent = ({ stubs } = {}) => {
     wrapper = shallowMountExtended(RunnerCreateWizardOptionalFields, {
       propsData: {
         currentStep: 2,
@@ -14,6 +15,7 @@ describe('Create Runner Optional Fields', () => {
         runUntagged: false,
         runnerType: 'INSTANCE_TYPE',
       },
+      stubs,
     });
   };
 
@@ -53,6 +55,21 @@ describe('Create Runner Optional Fields', () => {
     it(`emits the "back" event when the back button is clicked`, () => {
       findBackButton().vm.$emit('click');
       expect(wrapper.emitted('back')).toHaveLength(1);
+    });
+  });
+
+  describe('maximum job timeout field', () => {
+    it('links to the job timeout documentation in a new tab', () => {
+      createComponent({ stubs: { GlSprintf, GlFormGroup } });
+
+      const link = wrapper.findComponent(GlLink);
+
+      expect(link.attributes('href')).toBe(
+        helpPagePath('ci/pipelines/settings', {
+          anchor: 'set-a-limit-for-how-long-jobs-can-run',
+        }),
+      );
+      expect(link.attributes('target')).toBe('_blank');
     });
   });
 });

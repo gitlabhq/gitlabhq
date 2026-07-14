@@ -12,6 +12,8 @@ module Gitlab
       def initialize(pipeline)
         @pipeline = pipeline
 
+        trace_correlation_enabled = trace_correlation_enabled?(pipeline)
+
         attrs = {
           object_kind: 'pipeline',
           object_attributes: hook_attrs(pipeline),
@@ -25,8 +27,24 @@ module Gitlab
           end
         }
 
+        if trace_correlation_enabled
+          attrs[:object_attributes][:root_pipeline_id] = pipeline.root_ancestor.id
+          attrs[:bridges] = Gitlab::Lazy.new do
+            preload_bridges(pipeline, :latest_bridges)
+            pipeline.latest_bridges.map { |bridge| build_hook_attrs(bridge, skip_artifacts: true).merge(bridge: true) }
+          end
+        end
+
         if pipeline.source_pipeline.present?
-          attrs[:source_pipeline] = source_pipeline_attrs(pipeline.source_pipeline)
+          if trace_correlation_enabled
+            ActiveRecord::Associations::Preloader.new(
+              records: [pipeline.source_pipeline],
+              associations: :source_bridge
+            ).call
+          end
+
+          attrs[:source_pipeline] =
+            source_pipeline_attrs(pipeline.source_pipeline, trace_correlation_enabled)
         end
 
         super(attrs)
@@ -43,6 +61,28 @@ module Gitlab
 
       private
 
+      def trace_correlation_enabled?(pipeline)
+        Feature.enabled?(:ci_pipeline_otlp_trace_correlation, pipeline.project)
+      end
+
+      # Unlike preload_builds, this omits runner: :tags and
+      # job_artifacts_archive: []. Ci::Bridge overrides #runner to return nil,
+      # and bridges are serialized with skip_artifacts: true, so build_hook_attrs
+      # never triggers those queries for bridges.
+      def preload_bridges(pipeline, association)
+        ActiveRecord::Associations::Preloader.new(
+          records: [pipeline],
+          associations: {
+            association => {
+              **::Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
+              user: [],
+              job_definition: [],
+              ci_stage: []
+            }
+          }
+        ).call
+      end
+
       def preload_builds(pipeline, association)
         ActiveRecord::Associations::Preloader.new(
           records: [pipeline],
@@ -53,7 +93,6 @@ module Gitlab
               job_environment: [],
               job_artifacts_archive: [],
               user: [],
-              metadata: [],
               job_definition: [],
               ci_stage: []
             }
@@ -85,10 +124,10 @@ module Gitlab
         }
       end
 
-      def source_pipeline_attrs(source_pipeline)
+      def source_pipeline_attrs(source_pipeline, trace_correlation_enabled = false)
         project = source_pipeline.source_project
 
-        {
+        attrs = {
           project: {
             id: project.id,
             web_url: project.web_url,
@@ -97,6 +136,10 @@ module Gitlab
           job_id: source_pipeline.source_job_id,
           pipeline_id: source_pipeline.source_pipeline_id
         }
+
+        attrs[:bridge_id] = source_pipeline.source_bridge&.id if trace_correlation_enabled
+
+        attrs
       end
 
       def merge_request_attrs(merge_request)
@@ -115,7 +158,7 @@ module Gitlab
         }
       end
 
-      def build_hook_attrs(build)
+      def build_hook_attrs(build, skip_artifacts: false)
         {
           id: build.id,
           stage: build.stage_name,
@@ -132,11 +175,19 @@ module Gitlab
           allow_failure: build.allow_failure,
           user: build.user.try(:hook_attrs),
           runner: build.runner && runner_hook_attrs(build.runner),
+          **artifacts_file_hook_attrs(build, skip_artifacts),
+          environment: environment_hook_attrs(build)
+        }
+      end
+
+      def artifacts_file_hook_attrs(build, skip_artifacts)
+        return {} if skip_artifacts
+
+        {
           artifacts_file: {
             filename: build.artifacts_file&.filename,
             size: build.artifacts_size
-          },
-          environment: environment_hook_attrs(build)
+          }
         }
       end
 

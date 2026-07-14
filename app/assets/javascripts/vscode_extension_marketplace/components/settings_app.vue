@@ -8,6 +8,7 @@ import toast from '~/vue_shared/plugins/global_toast';
 import SettingsForm from './settings_form.vue';
 
 export default {
+  name: 'SettingsApp',
   components: {
     GlAccordion,
     GlAccordionItem,

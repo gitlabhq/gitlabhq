@@ -6,14 +6,12 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { useWhatsNew } from '../store';
 import OtherUpdates from './other_updates.vue';
-import TranscendPromoCard from './transcend_promo_card.vue';
 
 export default {
   name: 'WhatsNewApp',
   components: {
     GlDrawer,
     OtherUpdates,
-    TranscendPromoCard,
   },
   mixins: [Tracking.mixin({ experiment: 'whats_new_placement' }), glFeatureFlagsMixin()],
   props: {
@@ -40,11 +38,6 @@ export default {
       type: Function,
       required: false,
       default: () => {},
-    },
-    showTranscendPromo: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     placement: {
       type: String,
@@ -134,8 +127,6 @@ export default {
       </template>
 
       <div>
-        <transcend-promo-card v-if="showTranscendPromo" />
-
         <other-updates
           :features="features"
           :read-articles="readArticles"

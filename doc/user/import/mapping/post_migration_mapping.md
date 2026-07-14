@@ -14,17 +14,17 @@ title: Post-migration contribution and membership mapping
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) in GitLab 17.4 for direct transfer [with flags](../../../administration/feature_flags/_index.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
-- Introduced in GitLab 17.6 for [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) [with flags](../../../administration/feature_flags/_index.md) named `importer_user_mapping` and `gitea_user_mapping`, and for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) with flags named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466356) in GitLab 17.7 for Bitbucket Server [with flags](../../../administration/feature_flags/_index.md) named `importer_user_mapping` and `bitbucket_server_user_mapping`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) in GitLab 17.4 for direct transfer [with feature flags](../../../administration/feature_flags/_index.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
+- Introduced in GitLab 17.6 for [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) [with feature flags](../../../administration/feature_flags/_index.md) named `importer_user_mapping` and `gitea_user_mapping`, and for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) with flags named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466356) in GitLab 17.7 for Bitbucket Server [with feature flags](../../../administration/feature_flags/_index.md) named `importer_user_mapping` and `bitbucket_server_user_mapping`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/472735) in GitLab 17.7 for direct transfer.
 - Enabled on GitLab.com in GitLab 17.7 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
 - Enabled on GitLab Self-Managed in GitLab 17.8 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
-- Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
+- Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508945) in GitLab 18.4 for direct transfer. Feature flag `bulk_import_importer_user_mapping` removed.
 - Reassigning contributions to service accounts, project bots, and group
   bots [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573124) in GitLab
-  18.5 [with a flag](../../../administration/feature_flags/_index.md) named `user_mapping_service_account_and_bots`.
+  18.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `user_mapping_service_account_and_bots`.
   Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512211) in GitLab 18.6 for Gitea. Feature flag
   `gitea_user_mapping` removed.

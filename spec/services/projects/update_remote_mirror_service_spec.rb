@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Projects::UpdateRemoteMirrorService, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository, lfs_enabled: true) }
+  let_it_be(:project) { create(:project, :small_repo, lfs_enabled: true) }
   let_it_be(:remote_project) { create(:forked_project_with_submodules) }
-  let_it_be(:remote_mirror, freeze: false) { create(:remote_mirror, project: project, enabled: true) }
+  let_it_be_with_reload(:remote_mirror) { create(:remote_mirror, project: project, enabled: true) }
 
   subject(:service) { described_class.new(project, project.creator) }
 
@@ -277,20 +277,19 @@ RSpec.describe Projects::UpdateRemoteMirrorService, feature_category: :source_co
       end
 
       context 'with SSH repository' do
-        let(:ssh_mirror) { create(:remote_mirror, project: project, enabled: true) }
+        let(:mirror) { create(:remote_mirror, project: project, enabled: true, url: mirror_url) }
+        let(:mirror_url) { 'ssh://git@example.com/foo/bar.git' }
 
         before do
-          allow(ssh_mirror)
+          allow(mirror)
             .to receive(:update_repository)
             .and_return(double(divergent_refs: []))
         end
 
         it 'does nothing to an SSH repository' do
-          ssh_mirror.update!(url: 'ssh://example.com')
-
           expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
 
-          service.execute(ssh_mirror, retries)
+          service.execute(mirror, retries)
         end
 
         it 'does nothing if LFS is disabled' do
@@ -298,15 +297,16 @@ RSpec.describe Projects::UpdateRemoteMirrorService, feature_category: :source_co
 
           expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
 
-          service.execute(ssh_mirror, retries)
+          service.execute(mirror, retries)
         end
 
-        it 'does nothing if non-password auth is specified' do
-          ssh_mirror.update!(auth_method: 'ssh_public_key')
+        it 'does nothing if non-password auth is specified', :aggregate_failures do
+          mirror.update!(url: 'https://example.com/other.git', auth_method: 'ssh_public_key')
 
+          expect(mirror).to receive(:password_auth?).and_call_original
           expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
 
-          service.execute(ssh_mirror, retries)
+          service.execute(mirror, retries)
         end
       end
     end

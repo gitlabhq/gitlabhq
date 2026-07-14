@@ -29,7 +29,7 @@ export default {
 </script>
 <template>
   <pre
-    class="code-block rounded code code-syntax-highlight-theme"
+    class="code-block code code-syntax-highlight-theme !gl-rounded-base"
     :style="styleObject"
   ><slot><code class="gl-block">{{ code }}</code></slot></pre>
 </template>

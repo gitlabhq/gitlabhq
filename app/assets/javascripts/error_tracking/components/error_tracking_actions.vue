@@ -9,6 +9,7 @@ const UNRESOLVED = 'unresolved';
 const statusValidation = [IGNORED, RESOLVED, UNRESOLVED];
 
 export default {
+  name: 'ErrorTrackingActions',
   components: {
     GlButton,
 
@@ -24,6 +25,7 @@ export default {
       validator: ({ status }) => statusValidation.includes(status),
     },
   },
+  emits: ['update-issue-status'],
   computed: {
     ignoreBtn() {
       return this.error.status !== IGNORED

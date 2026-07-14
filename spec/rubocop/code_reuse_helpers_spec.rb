@@ -27,13 +27,13 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true when sending to a constant' do
       node = build_and_parse_source('Foo.bar')
 
-      expect(cop.send_to_constant?(node)).to eq(true)
+      expect(cop.send_to_constant?(node)).to be(true)
     end
 
     it 'returns false when sending to something other than a constant' do
       node = build_and_parse_source('10')
 
-      expect(cop.send_to_constant?(node)).to eq(false)
+      expect(cop.send_to_constant?(node)).to be(false)
     end
   end
 
@@ -41,13 +41,13 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true when the receiver ends with a suffix' do
       node = build_and_parse_source('FooFinder.new')
 
-      expect(cop.send_receiver_name_ends_with?(node, 'Finder')).to eq(true)
+      expect(cop.send_receiver_name_ends_with?(node, 'Finder')).to be(true)
     end
 
     it 'returns false when the receiver is the same as a suffix' do
       node = build_and_parse_source('Finder.new')
 
-      expect(cop.send_receiver_name_ends_with?(node, 'Finder')).to eq(false)
+      expect(cop.send_receiver_name_ends_with?(node, 'Finder')).to be(false)
     end
   end
 
@@ -72,13 +72,13 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true for a node in the finders directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'finders', 'foo.rb'))
 
-      expect(cop.in_finder?(node)).to eq(true)
+      expect(cop.in_finder?(node)).to be(true)
     end
 
     it 'returns false for a node outside the finders directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
-      expect(cop.in_finder?(node)).to eq(false)
+      expect(cop.in_finder?(node)).to be(false)
     end
   end
 
@@ -86,13 +86,13 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true for a node in the models directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'models', 'foo.rb'))
 
-      expect(cop.in_model?(node)).to eq(true)
+      expect(cop.in_model?(node)).to be(true)
     end
 
     it 'returns false for a node outside the models directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
-      expect(cop.in_model?(node)).to eq(false)
+      expect(cop.in_model?(node)).to be(false)
     end
   end
 
@@ -100,13 +100,13 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true for a node in the services directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'services', 'foo.rb'))
 
-      expect(cop.in_service_class?(node)).to eq(true)
+      expect(cop.in_service_class?(node)).to be(true)
     end
 
     it 'returns false for a node outside the services directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
-      expect(cop.in_service_class?(node)).to eq(false)
+      expect(cop.in_service_class?(node)).to be(false)
     end
   end
 
@@ -114,13 +114,13 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true for a node in the presenters directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'presenters', 'foo.rb'))
 
-      expect(cop.in_presenter?(node)).to eq(true)
+      expect(cop.in_presenter?(node)).to be(true)
     end
 
     it 'returns false for a node outside the presenters directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
-      expect(cop.in_presenter?(node)).to eq(false)
+      expect(cop.in_presenter?(node)).to be(false)
     end
   end
 
@@ -128,13 +128,13 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true for a node in the serializers directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'serializers', 'foo.rb'))
 
-      expect(cop.in_serializer?(node)).to eq(true)
+      expect(cop.in_serializer?(node)).to be(true)
     end
 
     it 'returns false for a node outside the serializers directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
-      expect(cop.in_serializer?(node)).to eq(false)
+      expect(cop.in_serializer?(node)).to be(false)
     end
   end
 
@@ -142,13 +142,13 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true for a node in the workers directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'workers', 'foo.rb'))
 
-      expect(cop.in_worker?(node)).to eq(true)
+      expect(cop.in_worker?(node)).to be(true)
     end
 
     it 'returns false for a node outside the workers directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
-      expect(cop.in_worker?(node)).to eq(false)
+      expect(cop.in_worker?(node)).to be(false)
     end
   end
 
@@ -156,19 +156,19 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true for a node in the FOSS GraphQL directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'graphql', 'foo.rb'))
 
-      expect(cop.in_graphql?(node)).to eq(true)
+      expect(cop.in_graphql?(node)).to be(true)
     end
 
     it 'returns true for a node in the EE GraphQL directory' do
       node = build_and_parse_source('10', rails_root_join('ee', 'app', 'graphql', 'foo.rb'))
 
-      expect(cop.in_graphql?(node)).to eq(true)
+      expect(cop.in_graphql?(node)).to be(true)
     end
 
     it 'returns false for a node outside the GraphQL directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
-      expect(cop.in_graphql?(node)).to eq(false)
+      expect(cop.in_graphql?(node)).to be(false)
     end
   end
 
@@ -176,13 +176,13 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true for a node in the API directory' do
       node = build_and_parse_source('10', rails_root_join('lib', 'api', 'foo.rb'))
 
-      expect(cop.in_api?(node)).to eq(true)
+      expect(cop.in_api?(node)).to be(true)
     end
 
     it 'returns false for a node outside the API directory' do
       node = build_and_parse_source('10', rails_root_join('lib', 'foo', 'foo.rb'))
 
-      expect(cop.in_api?(node)).to eq(false)
+      expect(cop.in_api?(node)).to be(false)
     end
   end
 
@@ -190,19 +190,19 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true for a node in the spec directory' do
       node = build_and_parse_source('10', rails_root_join('spec', 'foo.rb'))
 
-      expect(cop.in_spec?(node)).to eq(true)
+      expect(cop.in_spec?(node)).to be(true)
     end
 
     it 'returns true for a node in the ee/spec directory' do
       node = build_and_parse_source('10', rails_root_join('ee', 'spec', 'foo.rb'))
 
-      expect(cop.in_spec?(node)).to eq(true)
+      expect(cop.in_spec?(node)).to be(true)
     end
 
     it 'returns false for a node outside the spec directory' do
       node = build_and_parse_source('10', rails_root_join('lib', 'foo.rb'))
 
-      expect(cop.in_spec?(node)).to eq(false)
+      expect(cop.in_spec?(node)).to be(false)
     end
   end
 
@@ -210,21 +210,21 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true for a directory in the CE app/ directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'models', 'foo.rb'))
 
-      expect(cop.in_app_directory?(node, 'models')).to eq(true)
+      expect(cop.in_app_directory?(node, 'models')).to be(true)
     end
 
     it 'returns true for a directory in the EE app/ directory' do
       node =
         build_and_parse_source('10', rails_root_join('ee', 'app', 'models', 'foo.rb'))
 
-      expect(cop.in_app_directory?(node, 'models')).to eq(true)
+      expect(cop.in_app_directory?(node, 'models')).to be(true)
     end
 
     it 'returns false for a directory in the lib/ directory' do
       node =
         build_and_parse_source('10', rails_root_join('lib', 'models', 'foo.rb'))
 
-      expect(cop.in_app_directory?(node, 'models')).to eq(false)
+      expect(cop.in_app_directory?(node, 'models')).to be(false)
     end
   end
 
@@ -232,21 +232,21 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true for a directory in the CE lib/ directory' do
       node = build_and_parse_source('10', rails_root_join('lib', 'models', 'foo.rb'))
 
-      expect(cop.in_lib_directory?(node, 'models')).to eq(true)
+      expect(cop.in_lib_directory?(node, 'models')).to be(true)
     end
 
     it 'returns true for a directory in the EE lib/ directory' do
       node =
         build_and_parse_source('10', rails_root_join('ee', 'lib', 'models', 'foo.rb'))
 
-      expect(cop.in_lib_directory?(node, 'models')).to eq(true)
+      expect(cop.in_lib_directory?(node, 'models')).to be(true)
     end
 
     it 'returns false for a directory in the app/ directory' do
       node =
         build_and_parse_source('10', rails_root_join('app', 'models', 'foo.rb'))
 
-      expect(cop.in_lib_directory?(node, 'models')).to eq(false)
+      expect(cop.in_lib_directory?(node, 'models')).to be(false)
     end
   end
 
@@ -254,37 +254,37 @@ RSpec.describe RuboCop::CodeReuseHelpers, feature_category: :tooling do
     it 'returns true for a directory in the FOSS app/graphql directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'graphql', 'subdir', 'foo.rb'))
 
-      expect(cop.in_graphql_directory?(node, 'subdir')).to eq(true)
+      expect(cop.in_graphql_directory?(node, 'subdir')).to be(true)
     end
 
     it 'returns true for a directory in the EE app/graphql directory' do
       node = build_and_parse_source('10', rails_root_join('ee', 'app', 'graphql', 'subdir', 'foo.rb'))
 
-      expect(cop.in_graphql_directory?(node, 'subdir')).to eq(true)
+      expect(cop.in_graphql_directory?(node, 'subdir')).to be(true)
     end
 
     it 'returns true for a directory in the EE app/graphql/ee directory' do
       node = build_and_parse_source('10', rails_root_join('ee', 'app', 'graphql', 'ee', 'subdir', 'foo.rb'))
 
-      expect(cop.in_graphql_directory?(node, 'subdir')).to eq(true)
+      expect(cop.in_graphql_directory?(node, 'subdir')).to be(true)
     end
 
     it 'returns false for a directory in the FOSS app/graphql directory' do
       node = build_and_parse_source('10', rails_root_join('app', 'graphql', 'anotherdir', 'foo.rb'))
 
-      expect(cop.in_graphql_directory?(node, 'subdir')).to eq(false)
+      expect(cop.in_graphql_directory?(node, 'subdir')).to be(false)
     end
 
     it 'returns false for a directory in the EE app/graphql directory' do
       node = build_and_parse_source('10', rails_root_join('ee', 'app', 'graphql', 'anotherdir', 'foo.rb'))
 
-      expect(cop.in_graphql_directory?(node, 'subdir')).to eq(false)
+      expect(cop.in_graphql_directory?(node, 'subdir')).to be(false)
     end
 
     it 'returns false for a directory in the EE app/graphql/ee directory' do
       node = build_and_parse_source('10', rails_root_join('ee', 'app', 'graphql', 'ee', 'anotherdir', 'foo.rb'))
 
-      expect(cop.in_graphql_directory?(node, 'subdir')).to eq(false)
+      expect(cop.in_graphql_directory?(node, 'subdir')).to be(false)
     end
   end
 

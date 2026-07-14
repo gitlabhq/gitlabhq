@@ -8,7 +8,7 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
   let_it_be(:commit_sha) { '7b5160f9bb23a3d58a0accdbe89da13b96b1ece9' }
   let_it_be(:project) { create(:project, :repository, path: 'sample-project') }
   let_it_be(:user) { create(:user) }
-  let_it_be(:commit, freeze: false) { create(:commit, project: project, sha: commit_sha) }
+  let_it_be_with_reload(:commit) { create(:commit, project: project, sha: commit_sha) }
   let_it_be(:ssh_key) { create(:ed25519_key_256, user: user) }
   let_it_be(:key_fingerprint) { ssh_key.fingerprint_sha256 }
 

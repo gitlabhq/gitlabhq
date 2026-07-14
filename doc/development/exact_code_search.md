@@ -29,10 +29,9 @@ To set up your development environment:
 
 ## Rake tasks
 
-- `gitlab:zoekt:info`: outputs information about exact code search, Zoekt nodes, indexing status,
-  and feature flag status. Use this task to debug issues with nodes or indexing.
-- `bin/rake "gitlab:zoekt:info[10]"`: runs the task in watch mode. Use this task during initial indexing to monitor
-  progress.
+For the `gitlab:zoekt:info` and `gitlab:zoekt:health` Rake tasks, including watch mode and exit
+codes, see [Check indexing status](../integration/zoekt/_index.md#check-indexing-status) and
+[Run a health check](../integration/zoekt/_index.md#run-a-health-check).
 
 ## Debugging and troubleshooting
 

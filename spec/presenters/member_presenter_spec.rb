@@ -6,11 +6,11 @@ require 'spec_helper'
 #
 # rubocop:disable RSpec/FactoryBot/AvoidCreate
 RSpec.describe MemberPresenter, feature_category: :groups_and_projects do
-  let_it_be(:root_group, freeze: false) { create(:group) }
+  let_it_be(:root_group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: root_group) }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
-  let_it_be(:root_member, freeze: false) { create(:group_member, :reporter, group: root_group, user: user) }
+  let_it_be(:root_member) { create(:group_member, :reporter, group: root_group, user: user) }
   let_it_be(:subgroup_member) { create(:group_member, :reporter, group: subgroup, user: user) }
 
   let(:presenter) { described_class.new(root_member) }

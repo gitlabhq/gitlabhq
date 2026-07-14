@@ -40,6 +40,7 @@ export default {
       default: null,
     },
   },
+  emits: ['cancel', 'submit'],
   i18n: {
     protectionRuleSavedErrorMessage: s__(
       'ContainerRegistry|Something went wrong while saving the protection rule.',

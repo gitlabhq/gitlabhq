@@ -83,7 +83,28 @@ class GroupMember < Member
     # will happen behind the scenes via DB foreign keys anyway.
     return if destroyed_by_association.present?
 
+    # skip_authorized_projects_refresh transient attribute is currently
+    # only set by Groups::CreateService when adding an owner to the
+    # newly created group. In this case doing a refresh can't possibly
+    # grant new project access to the owner either through inheritance
+    # or through group/project shares. This is verified by the
+    # group_grants_project_access? call below which checks the same
+    # sources Gitlab::ProjectAuthorizations#calculate reads for a group
+    # membership.
+    #
+    # For now, this optimization is only applied to new records behind
+    # the skip_authorized_projects_refresh_for_new_group feature flag.
+    return if previously_new_record? && skip_authorized_projects_refresh? && !group_grants_project_access?
+
     super
+  end
+
+  def group_grants_project_access?
+    group_and_descendant_ids = group.self_and_descendant_ids
+
+    group.all_projects.any? ||
+      GroupGroupLink.for_shared_with_groups(group_and_descendant_ids).any? ||
+      ProjectGroupLink.in_group(group_and_descendant_ids).any?
   end
 end
 

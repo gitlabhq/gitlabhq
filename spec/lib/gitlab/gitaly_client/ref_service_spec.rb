@@ -15,7 +15,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_all_branches)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return([])
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.branches
     end
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_all_remote_branches)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return([])
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       subject
     end
@@ -46,7 +46,8 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       ]
 
       expect_any_instance_of(Gitaly::RefService::Stub)
-        .to receive(:find_all_remote_branches).and_return(response)
+        .to receive(:find_all_remote_branches).and_return(instance_double(GRPC::ActiveCall::Operation,
+          execute: response, trailing_metadata: {}))
 
       expect(subject.length).to be(response_branches.length)
 
@@ -65,7 +66,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_all_branches)
         .with(gitaly_request_with_params(merged_only: true, merged_branches: ['test']), kind_of(Hash))
-        .and_return([])
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.merged_branches(%w[test])
     end
@@ -76,7 +77,9 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_branch)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(branch: Gitaly::Branch.new(name: 'name', target_commit: build(:gitaly_commit))))
+        .and_return(instance_double(GRPC::ActiveCall::Operation,
+          execute: double(branch: Gitaly::Branch.new(name: 'name', target_commit: build(:gitaly_commit))),
+          trailing_metadata: {}))
 
       client.find_branch('name')
     end
@@ -97,7 +100,8 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_tag)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(tag: Gitaly::Tag.new))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(tag: Gitaly::Tag.new),
+          trailing_metadata: {}))
 
       client.find_tag('name')
     end
@@ -139,7 +143,8 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_default_branch_name)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(name: 'refs/heads/main'))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(name: 'refs/heads/main'),
+          trailing_metadata: {}))
 
       response = client.default_branch_name
 
@@ -165,7 +170,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_local_branches)
               .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-              .and_return(response)
+              .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       subject = client.local_branches
 
@@ -176,7 +181,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_local_branches)
               .with(gitaly_request_with_params(sort_by: :UPDATED_DESC), kind_of(Hash))
-              .and_return([])
+              .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.local_branches(sort_by: 'updated_desc')
     end
@@ -185,7 +190,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_local_branches)
               .with(gitaly_request_with_params(sort_by: :NAME), kind_of(Hash))
-              .and_return([])
+              .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.local_branches(sort_by: 'name_asc')
     end
@@ -194,7 +199,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_local_branches)
               .with(gitaly_request_with_params(sort_by: :NAME), kind_of(Hash))
-              .and_return([])
+              .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.local_branches(sort_by: 'invalid')
     end
@@ -204,7 +209,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
     it 'sends a find_all_tags message' do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_all_tags)
-        .and_return([])
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.tags
     end
@@ -219,7 +224,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
         expect_any_instance_of(Gitaly::RefService::Stub)
           .to receive(:find_all_tags)
           .with(gitaly_request_with_params(sort_by: expected_sort_by), kind_of(Hash))
-          .and_return([])
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
         client.tags(sort_by: 'name_asc')
       end
@@ -234,7 +239,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
           expect_any_instance_of(Gitaly::RefService::Stub)
             .to receive(:find_all_tags)
             .with(gitaly_request_with_params(sort_by: expected_sort_by), kind_of(Hash))
-            .and_return([])
+            .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
           client.tags(sort_by: 'version_asc')
         end
@@ -245,7 +250,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
           expect_any_instance_of(Gitaly::RefService::Stub)
             .to receive(:find_all_tags)
                   .with(gitaly_request_with_params(sort_by: nil), kind_of(Hash))
-                  .and_return([])
+                  .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
           client.tags(sort_by: 'invalid')
         end
@@ -262,7 +267,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
         expect_any_instance_of(Gitaly::RefService::Stub)
           .to receive(:find_all_tags)
           .with(gitaly_request_with_params(pagination_params: expected_pagination), kind_of(Hash))
-          .and_return([])
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
         client.tags(pagination_params: { limit: 5, page_token: 'refs/tags/v1.0.0' })
       end
@@ -274,7 +279,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:list_branch_names_containing_commit)
         .with(gitaly_request_with_params(commit_id: '123', limit: 0), kind_of(Hash))
-        .and_return([])
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.branch_names_contains_sha('123')
     end
@@ -285,7 +290,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:get_tag_messages)
         .with(gitaly_request_with_params(tag_ids: ['some_tag_id']), kind_of(Hash))
-        .and_return([])
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.get_tag_messages(['some_tag_id'])
     end
@@ -296,7 +301,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:get_tag_signatures)
         .with(gitaly_request_with_params(tag_revisions: ['some_tag_id']), kind_of(Hash))
-        .and_return([])
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.get_tag_signatures(['some_tag_id'])
     end
@@ -309,7 +314,8 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:ref_exists)
         .with(gitaly_request_with_params(ref: ref), kind_of(Hash))
-        .and_return(double('ref_exists_response', value: true))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double('ref_exists_response', value: true),
+          trailing_metadata: {}))
 
       expect(client.ref_exists?(ref)).to be true
     end
@@ -343,7 +349,8 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:update_references)
         .with(array_including(gitaly_request_with_params(updates: [expected_param])), kind_of(Hash))
-        .and_return(double('update_refs_response', git_error: ""))
+        .and_return(instance_double(GRPC::ActiveCall::Operation,
+          execute: double('update_refs_response', git_error: ""), trailing_metadata: {}))
 
       update_refs
     end
@@ -434,7 +441,8 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:delete_refs)
         .with(gitaly_request_with_params(except_with_prefix: prefixes), kind_of(Hash))
-        .and_return(double('delete_refs_response', git_error: ""))
+        .and_return(instance_double(GRPC::ActiveCall::Operation,
+          execute: double('delete_refs_response', git_error: ""), trailing_metadata: {}))
 
       delete_refs
     end
@@ -531,7 +539,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
         expect_any_instance_of(Gitaly::RefService::Stub)
           .to receive(:list_refs)
           .with(gitaly_request_with_params(sort_by: expected_sort_by), kind_of(Hash))
-          .and_return([])
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
         client.list_refs(sort_by: 'name_desc')
       end
@@ -546,7 +554,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
           expect_any_instance_of(Gitaly::RefService::Stub)
             .to receive(:list_refs)
                   .with(gitaly_request_with_params(sort_by: expected_sort_by), kind_of(Hash))
-                  .and_return([])
+                  .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
           client.list_refs(sort_by: 'invalid')
         end
@@ -563,7 +571,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
         expect_any_instance_of(Gitaly::RefService::Stub)
           .to receive(:list_refs)
           .with(gitaly_request_with_params(pagination_params: expected_pagination), kind_of(Hash))
-          .and_return([])
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
         client.list_refs(pagination_params: { limit: 5, page_token: 'refs/tags/v1.0.0' })
       end

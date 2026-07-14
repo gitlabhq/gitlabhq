@@ -76,15 +76,13 @@ describe('PromoMenu', () => {
           allowSignUp: true,
           signInVisible: true,
           sidebarData: {
-            new_user_registration_path: '/register',
             trial_registration_path: '/trial_registrations/new',
-            sign_in_path: '/sign-in',
           },
         },
         { isSaas: true },
       );
 
-      expect(findSigninButton().props('href')).toBe('/sign-in');
+      expect(findSigninButton().props('href')).toBe('/users/sign_in?redirect_to_referer=yes');
       expect(findSignupButton().props('href')).toBe('/trial_registrations/new');
       expect(findSignupButton().text()).toBe('Get free trial');
     });
@@ -93,14 +91,10 @@ describe('PromoMenu', () => {
       createComponent({
         allowSignUp: true,
         signInVisible: true,
-        sidebarData: {
-          new_user_registration_path: '/register',
-          sign_in_path: '/sign-in',
-        },
       });
 
-      expect(findSigninButton().props('href')).toBe('/sign-in');
-      expect(findSignupButton().props('href')).toBe('/register');
+      expect(findSigninButton().props('href')).toBe('/users/sign_in?redirect_to_referer=yes');
+      expect(findSignupButton().props('href')).toBe('/users/sign_up');
       expect(findSignupButton().text()).toBe('Register');
     });
 
@@ -109,15 +103,11 @@ describe('PromoMenu', () => {
         {
           allowSignUp: true,
           signInVisible: true,
-          sidebarData: {
-            new_user_registration_path: '/register',
-            sign_in_path: '/sign-in',
-          },
         },
         { isSaas: true },
       );
 
-      expect(findSignupButton().props('href')).toBe('/register');
+      expect(findSignupButton().props('href')).toBe('/users/sign_up');
       expect(findSignupButton().text()).toBe('Get free trial');
     });
 
@@ -125,9 +115,6 @@ describe('PromoMenu', () => {
       createComponent({
         allowSignUp: false,
         signInVisible: true,
-        sidebarData: {
-          sign_in_path: '/sign-in',
-        },
       });
 
       expect(findSignupButton().exists()).toBe(false);

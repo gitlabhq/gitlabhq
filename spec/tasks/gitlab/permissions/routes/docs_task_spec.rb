@@ -258,6 +258,52 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, :silence_stdout, fe
         expect(descending_input).to eq(ascending_input)
       end
     end
+
+    context 'when resource names differ only in letter case' do
+      let(:cd_application_assignable) do
+        instance_double(::Authz::PermissionGroups::Assignable,
+          category_name: 'CI/CD',
+          resource_name: 'CD Application',
+          resource_description: 'Grants the ability to read continuous deployment applications',
+          action: 'read',
+          permissions: %i[read_cd_application],
+          deprecated?: false
+        )
+      end
+
+      let(:catalog_resource_assignable) do
+        instance_double(::Authz::PermissionGroups::Assignable,
+          category_name: 'CI/CD',
+          resource_name: 'Catalog Resource',
+          resource_description: 'Grants the ability to read CI catalog resources',
+          action: 'read',
+          permissions: %i[read_catalog_resource],
+          deprecated?: false
+        )
+      end
+
+      let(:routes) do
+        [
+          create_route_double(%i[read_cd_application], :project, 'GET', '/api/:version/path/to/cd_application'),
+          create_route_double(%i[read_catalog_resource], :project, 'GET', '/api/:version/path/to/catalog_resource')
+        ]
+      end
+
+      before do
+        allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return({
+          read_cd_application: cd_application_assignable,
+          read_catalog_resource: catalog_resource_assignable
+        })
+      end
+
+      it 'sorts resources case-insensitively' do
+        # Build a fresh task so the route structs resolve against the stubbed
+        # assignables in this context, not the ones memoized by the outer before.
+        output = described_class.new.allowed_endpoints
+
+        expect(output.index('#### Catalog Resource')).to be < output.index('#### CD Application')
+      end
+    end
   end
 
   describe '#publicly_accessible_endpoints' do

@@ -15,6 +15,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { I18N_WORK_ITEM_ERROR_UPDATING, TRACKING_CATEGORY_SHOW, VIEW_CONTEXT } from '../constants';
 
 export default {
+  name: 'WorkItemMilestone',
   i18n: {
     milestone: s__('WorkItem|Milestone'),
     none: s__('WorkItem|None'),
@@ -61,6 +62,7 @@ export default {
       default: false,
     },
   },
+  emits: ['error', 'milestoneUpdated', 'parentMilestone', 'update-widget-draft'],
   data() {
     return {
       searchTerm: '',
@@ -169,7 +171,7 @@ export default {
       this.updateInProgress = true;
 
       if (this.workItemId === newWorkItemId(this.workItemType)) {
-        this.$emit('updateWidgetDraft', {
+        this.$emit('update-widget-draft', {
           milestone: this.localMilestone
             ? {
                 ...this.localMilestone,

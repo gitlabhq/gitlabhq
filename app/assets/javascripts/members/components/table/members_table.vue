@@ -37,6 +37,7 @@ import MembersPagination from './members_pagination.vue';
 import RoleDetailsDrawer from './drawer/role_details_drawer.vue';
 
 export default {
+  name: 'MembersTable',
   components: {
     GlTable,
     GlBadge,

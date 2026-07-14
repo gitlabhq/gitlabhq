@@ -21,7 +21,7 @@ export default {
     FailedJobsList,
     CrudComponent,
   },
-  inject: ['fullPath', 'graphqlPath'],
+  inject: ['graphqlPath'],
   props: {
     pipelineIid: {
       required: true,
@@ -36,6 +36,7 @@ export default {
       type: String,
     },
   },
+  emits: ['retried'],
   apollo: {
     failedJobsCount: {
       context() {
@@ -110,6 +111,10 @@ export default {
       this.isExpanded = !this.isExpanded;
     },
     async refetchCount() {
+      // Emitted before the local refetch so the parent refreshes the pipeline (collapsing
+      // the widget) even if that refetch throws.
+      this.$emit('retried');
+
       try {
         // "pause" polling during manual refetch of count
         // to avoid redundant calls

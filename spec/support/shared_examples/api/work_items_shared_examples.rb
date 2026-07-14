@@ -64,16 +64,8 @@ RSpec.shared_examples 'work item pagination' do
 end
 
 RSpec.shared_examples 'work item authorization' do
-  it 'returns forbidden when both feature flags are disabled' do
-    stub_feature_flags(work_item_rest_api: false, work_item_rest_api_index: false)
-
-    get api(api_request_path, user)
-
-    expect(response).to have_gitlab_http_status(:forbidden)
-  end
-
-  it 'returns success when only the index feature flag is enabled' do
-    stub_feature_flags(work_item_rest_api: false, work_item_rest_api_index: true)
+  it 'returns success regardless of the state of work_item_rest_api' do
+    stub_feature_flags(work_item_rest_api: false)
 
     get api(api_request_path, user)
 
@@ -251,8 +243,17 @@ RSpec.shared_examples 'work item N+1 query prevention' do
 
   before do
     # Settle one-time lazy writes before the baseline so they don't skew the N+1 count.
-    user.create_user_preference! unless user.user_preference
-    user.update_column(:last_activity_on, Time.zone.today) unless user.last_activity_on == Time.zone.today
+    # Sync the shared let_it_be user with the DB first: its in-memory attributes can be
+    # stale (e.g. last_activity_on carried over from a prior example whose DB write rolled
+    # back), which would make the guards below skip settling and leak the write into baseline.
+    user.reset
+
+    # `user.user_preference` auto-builds an unsaved record, so guard on persistence, not presence.
+    user.user_preference.save! unless user.user_preference.persisted?
+
+    # Must match Users::ActivityService, which compares against and writes Date.today (not zone-aware);
+    # using Time.zone.today could differ near a day boundary and let the activity write leak into baseline.
+    user.update_column(:last_activity_on, Date.today) unless user.last_activity_on == Date.today # rubocop:disable Rails/Date -- intentional parity with Users::ActivityService
 
     2.times do
       work_item_label = create_label_for_namespace(namespace_record)
@@ -370,8 +371,8 @@ RSpec.shared_examples 'work item show endpoint' do
     expect(response).to have_gitlab_http_status(:forbidden)
   end
 
-  it 'returns forbidden when only the index feature flag is enabled' do
-    stub_feature_flags(work_item_rest_api: false, work_item_rest_api_index: true)
+  it 'returns forbidden when the work_item_rest_api feature flag is disabled' do
+    stub_feature_flags(work_item_rest_api: false)
 
     get api(show_request_path, user)
 

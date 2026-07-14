@@ -42,6 +42,8 @@ class PersonalAccessToken < ApplicationRecord
   MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED = 400
   MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS = 365
 
+  MAX_DESCRIPTION_LENGTH = 255
+
   serialize :scopes, type: Array # rubocop:disable Cop/ActiveRecordSerialize
 
   enum :user_type, HasUserType::USER_TYPES
@@ -82,6 +84,11 @@ class PersonalAccessToken < ApplicationRecord
   scope :for_group, ->(group) { where(group: group) }
   scope :preload_users, -> { preload(:user) }
   scope :preload_granular_scopes, -> { preload(granular_scopes: [:namespace]) }
+  scope :preload_last_used_ips, -> { preload(:last_used_ips) }
+  scope :preload_bot_user_associations_for_group, -> { preload(user: [:members, { user_detail: :bot_namespace }]) }
+  scope :preload_bot_user_associations_for_project, -> {
+    preload(user: [:members, { user_detail: { bot_namespace: :project } }])
+  }
   scope :order_name_asc_id_asc, -> { reorder(name: :asc, id: :asc) }
   scope :order_name_desc_id_desc, -> { reorder(name: :desc, id: :desc) }
   scope :order_created_at_asc_id_asc, -> { reorder(created_at: :asc, id: :asc) }
@@ -99,12 +106,30 @@ class PersonalAccessToken < ApplicationRecord
   scope :with_token_digests, ->(digests) { where(token_digest: digests) }
 
   validates :name, :scopes, presence: true
+  validates :description, length: { maximum: MAX_DESCRIPTION_LENGTH }, allow_blank: true
   validates :expires_at, presence: true, on: :create, unless: :allow_expires_at_to_be_empty?
 
   validate :validate_scopes
   validate :expires_at_before_instance_max_expiry_date, on: :create
+  validate :sudo_only_for_admins
 
-  delegate :permitted_for_boundary?, to: :granular_scopes
+  def permitted_for_boundary?(boundary, permissions)
+    return false if legacy?
+
+    unless granular_scopes.loaded?
+      ActiveRecord::Associations::Preloader.new(
+        records: [self],
+        associations: :granular_scopes
+      ).call
+    end
+
+    required_permissions = Array(permissions).map(&:to_sym)
+    token_permissions = granular_scopes
+      .select { |granular_scope| granular_scope.applicable_to_boundary?(boundary) }
+      .flat_map(&:expanded_permissions)
+
+    (required_permissions - token_permissions).empty?
+  end
 
   def revoke!
     return true if revoked?
@@ -209,6 +234,13 @@ class PersonalAccessToken < ApplicationRecord
     unless revoked || scopes.all? { |scope| Gitlab::Auth.all_available_scopes.include?(scope.to_sym) }
       errors.add :scopes, "can only contain available scopes"
     end
+  end
+
+  def sudo_only_for_admins
+    return unless sudo?
+    return if user&.can_admin_all_resources?
+
+    errors.add :sudo, _('can only be enabled for administrators')
   end
 
   def set_default_scopes

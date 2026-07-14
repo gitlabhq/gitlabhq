@@ -136,7 +136,7 @@ describe('DateRangeFilter', () => {
     expect(findDatetimeRangesPicker().props('defaultEndDate')).toBe(timeRange.endDate);
   });
 
-  it('emits the onDateRangeSelected event when the time range is selected', async () => {
+  it('emits the on-date-range-selected event when the time range is selected', async () => {
     const timeRange = {
       value: '24h',
       startDate: new Date('2022-01-01'),
@@ -144,10 +144,10 @@ describe('DateRangeFilter', () => {
     };
     await findDateRangesDropdown().vm.$emit('selected', timeRange);
 
-    expect(wrapper.emitted('onDateRangeSelected')).toEqual([[{ ...timeRange }]]);
+    expect(wrapper.emitted('on-date-range-selected')).toEqual([[{ ...timeRange }]]);
   });
 
-  it('emits the onDateRangeSelected event when a custom time range is selected', async () => {
+  it('emits the on-date-range-selected event when a custom time range is selected', async () => {
     const timeRange = {
       startDate: new Date('2021-01-01'),
       endDate: new Date('2021-01-02'),
@@ -155,11 +155,11 @@ describe('DateRangeFilter', () => {
     await findDateRangesDropdown().vm.$emit('custom-date-range-selected');
 
     expect(findDatetimeRangesPicker().props('startOpened')).toBe(true);
-    expect(wrapper.emitted('onDateRangeSelected')).toBeUndefined();
+    expect(wrapper.emitted('on-date-range-selected')).toBeUndefined();
 
     await findDatetimeRangesPicker().vm.$emit('input', timeRange);
 
-    expect(wrapper.emitted('onDateRangeSelected')).toEqual([
+    expect(wrapper.emitted('on-date-range-selected')).toEqual([
       [
         {
           ...timeRange,

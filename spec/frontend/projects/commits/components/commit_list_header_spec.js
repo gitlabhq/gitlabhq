@@ -31,7 +31,6 @@ describe('CommitListHeader', () => {
   } = {}) => {
     wrapper = shallowMountExtended(CommitListHeader, {
       provide: {
-        projectRootPath: 'gitlab-org/gitlab',
         projectFullPath: 'gitlab-org/gitlab',
         projectId: '1',
         escapedRef: 'feature',

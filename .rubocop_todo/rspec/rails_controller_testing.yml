@@ -115,7 +115,6 @@ RSpec/RailsControllerTesting:
     - 'ee/spec/requests/projects/security/compliance_violations_controller_spec.rb'
     - 'ee/spec/requests/projects/security/dast_scanner_profiles_controller_spec.rb'
     - 'ee/spec/requests/projects/security/policies_controller_spec.rb'
-    - 'ee/spec/requests/projects/settings/analytics_controller_spec.rb'
     - 'ee/spec/requests/projects/settings/repository_controller_spec.rb'
     - 'ee/spec/requests/users/identity_verification_controller_spec.rb'
     - 'ee/spec/requests/users/registrations_identity_verification_controller_spec.rb'

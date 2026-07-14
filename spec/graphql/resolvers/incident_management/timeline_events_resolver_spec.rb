@@ -7,7 +7,7 @@ RSpec.describe 'Resolvers::IncidentManagement::TimelineEventsResolver' do
 
   let_it_be(:described_class) { Resolvers::IncidentManagement::TimelineEventsResolver }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, guests: current_user) }
+  let_it_be_with_reload(:project) { create(:project, guests: current_user) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:first_timeline_event) do
     create(:incident_management_timeline_event, project: project, incident: incident)

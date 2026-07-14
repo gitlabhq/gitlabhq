@@ -5,10 +5,6 @@ module Gitlab
     module Aggregation
       module ClickHouse
         class Quantile < MetricDefinition
-          include ParameterizedDefinition
-
-          self.supported_parameters = %i[quantile]
-
           DEFAULT_QUANTILE = 0.5
 
           def initialize(name, type = :float, expression = nil, **kwargs)

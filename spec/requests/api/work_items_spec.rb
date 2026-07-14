@@ -76,6 +76,11 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
         let(:request_params) { { features: 'notifications', fields: 'web_url' } }
 
         before do
+          # Users::ActivityService (API after-hook) issues a one-time write to last_activity_on that
+          # cascades to namespace / user_preference autosaves. Pin it so execute early-returns on
+          # every request and the baseline is not skewed by where the write lands.
+          user.update_column(:last_activity_on, Date.current)
+
           create(:subscription, user: user, subscribable: project_work_item, project: nil, subscribed: true)
         end
 
@@ -100,7 +105,11 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
           unrelated = create(:work_item, project: project)
           create(:subscription, user: user, subscribable: unrelated, project: nil, subscribed: false)
 
-          expect { get api(api_path, user), params: request_params }.to issue_same_number_of_queries_as(baseline)
+          # Threshold absorbs once-per-process schema-memoization queries (e.g. postgres_constraints)
+          # that can land on the baseline in isolated runs; a real per-item N+1 adds one query per
+          # added work item, well above the threshold.
+          expect { get api(api_path, user), params: request_params }
+            .to issue_same_number_of_queries_as(baseline).with_threshold(1)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(features_json_for(project_work_item)).to include('notifications' => { 'subscribed' => true })
@@ -119,6 +128,11 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
         let(:request_params) { { features: 'hierarchy', fields: 'web_url' } }
 
         before do
+          # Users::ActivityService (API after-hook) issues a one-time write to last_activity_on that
+          # cascades to namespace/user_preference autosaves. Pin it so execute early-returns on
+          # every request and the baseline is not skewed by where the write lands.
+          user.update_column(:last_activity_on, Date.current)
+
           create(:parent_link, work_item: child_task, work_item_parent: hierarchy_parent)
         end
 
@@ -136,11 +150,88 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
           extra_child = create(:work_item, :task, project: project)
           create(:parent_link, work_item: extra_child, work_item_parent: extra_parent)
 
-          expect { get api(api_path, user), params: request_params }.to issue_same_number_of_queries_as(baseline)
+          # Threshold absorbs once-per-process schema-memoization queries (e.g. postgres_constraints)
+          # that can land on the baseline in isolated runs; a real per-item N+1 adds one query per
+          # added work item, well above the threshold.
+          expect { get api(api_path, user), params: request_params }
+            .to issue_same_number_of_queries_as(baseline).with_threshold(1)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(features_json_for(child_task)).to include(
             'hierarchy' => a_hash_including('parent' => a_hash_including('id' => hierarchy_parent.id))
+          )
+        end
+      end
+
+      describe 'development feature N+1 prevention' do
+        let_it_be(:closing_work_item, freeze: false) { create(:work_item, project: project) }
+        let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
+        let_it_be(:other_closing_work_item, freeze: false) { create(:work_item, project: project) }
+        let_it_be(:other_merge_request, freeze: false) do
+          create(:merge_request, source_project: project, source_branch: 'other')
+        end
+
+        let(:request_params) { { features: 'development' } }
+
+        before do
+          create(:merge_requests_closing_issues, issue: closing_work_item, merge_request: merge_request)
+          create(:merge_requests_closing_issues, issue: other_closing_work_item, merge_request: other_merge_request)
+        end
+
+        it 'loads the closing merge requests count for the whole page in a single query', :aggregate_failures do
+          api_path = "/namespaces/#{CGI.escape(namespace_record.full_path)}/-/work_items"
+
+          recorder = ActiveRecord::QueryRecorder.new do
+            get api(api_path, user), params: request_params
+          end
+
+          closing_mr_count_queries = recorder.log.grep(
+            /SELECT "merge_requests_closing_issues"\."issue_id", COUNT\(\*\)/
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(closing_mr_count_queries.size).to eq(1)
+          expect(features_json_for(closing_work_item)).to eq('development' => { 'closing_merge_requests_count' => 1 })
+          expect(features_json_for(other_closing_work_item)).to eq(
+            'development' => { 'closing_merge_requests_count' => 1 }
+          )
+        end
+      end
+
+      describe 'development feature' do
+        let_it_be(:closing_work_item, freeze: false) { create(:work_item, project: project) }
+        let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
+
+        let(:request_params) { { features: 'development' } }
+        let(:api_path) { "/namespaces/#{CGI.escape(namespace_record.full_path)}/-/work_items" }
+
+        before do
+          create(:merge_requests_closing_issues, issue: closing_work_item, merge_request: merge_request)
+        end
+
+        it 'exposes the visibility-aware closing merge requests count', :aggregate_failures do
+          get api(api_path, user), params: request_params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(features_json_for(closing_work_item)).to eq(
+            'development' => { 'closing_merge_requests_count' => 1 }
+          )
+          expect(features_json_for(project_work_item)).to eq(
+            'development' => { 'closing_merge_requests_count' => 0 }
+          )
+        end
+
+        it 'excludes closing merge requests the user cannot read', :aggregate_failures do
+          inaccessible_project = create(:project, :private)
+          inaccessible_project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
+          inaccessible_mr = create(:merge_request, source_project: inaccessible_project)
+          create(:merge_requests_closing_issues, issue: closing_work_item, merge_request: inaccessible_mr)
+
+          get api(api_path, user), params: request_params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(features_json_for(closing_work_item)).to eq(
+            'development' => { 'closing_merge_requests_count' => 1 }
           )
         end
       end
@@ -230,26 +321,14 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
       let_it_be(:public_project, freeze: false) { create(:project, :public) }
       let_it_be(:public_work_item, freeze: false) { create(:work_item, project: public_project) }
 
-      it 'lists work items in a public project when the flag is enabled', :aggregate_failures do
-        stub_feature_flags(work_item_rest_api: true)
-
+      it 'lists work items in a public project', :aggregate_failures do
         get api("/projects/#{public_project.id}/-/work_items")
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.pluck('id')).to include(public_work_item.id)
       end
 
-      it 'returns forbidden while the flag is only rolled out to specific users' do
-        stub_feature_flags(work_item_rest_api: user, work_item_rest_api_index: user)
-
-        get api("/projects/#{public_project.id}/-/work_items")
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-
       it 'does not expose work items in a private project' do
-        stub_feature_flags(work_item_rest_api: true)
-
         get api("/projects/#{project.id}/-/work_items")
 
         expect(response).to have_gitlab_http_status(:not_found)

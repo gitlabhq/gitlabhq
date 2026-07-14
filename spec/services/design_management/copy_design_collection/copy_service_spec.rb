@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitlab_redis_shared_state, feature_category: :portfolio_management do

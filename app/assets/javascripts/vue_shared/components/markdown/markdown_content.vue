@@ -5,6 +5,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getMarkdown } from '~/rest_api';
 
 export default {
+  name: 'MarkdownContent',
   components: { GlAlert, GlSkeletonLoader },
   directives: {
     SafeHtml,

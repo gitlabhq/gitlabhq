@@ -43,6 +43,7 @@ export default {
       default: null,
     },
   },
+  emits: ['change', 'rollback'],
   computed: {
     modalTitle() {
       const title = this.isLastDeployment

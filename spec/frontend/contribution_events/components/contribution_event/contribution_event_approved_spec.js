@@ -1,6 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContributionEventApproved from '~/contribution_events/components/contribution_event/contribution_event_approved.vue';
 import ContributionEventBase from '~/contribution_events/components/contribution_event/contribution_event_base.vue';
+import { VARIANT_DEFAULT } from '~/contribution_events/constants';
 import { eventApproved } from '../../utils';
 
 const defaultPropsData = {
@@ -24,6 +25,7 @@ describe('ContributionEventApproved', () => {
     expect(wrapper.findComponent(ContributionEventBase).props()).toEqual({
       event: defaultPropsData.event,
       iconName: 'approval-solid',
+      variant: VARIANT_DEFAULT,
       message: ContributionEventApproved.i18n.message,
     });
   });

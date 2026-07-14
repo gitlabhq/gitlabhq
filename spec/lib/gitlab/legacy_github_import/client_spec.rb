@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::Client, feature_category: :importers do
   let(:token) { '123456' }
-  let(:github_provider) { GitlabSettings::Options.build('app_id' => 'asd123', 'app_secret' => 'asd123', 'name' => 'github', 'args' => { 'client_options' => client_options }) }
+  let(:github_provider) { Gitlab::Configs.build_options('app_id' => 'asd123', 'app_secret' => 'asd123', 'name' => 'github', 'args' => { 'client_options' => client_options }) }
   let(:client_options) { {} }
   let(:wait_for_rate_limit_reset) { true }
 
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Client, feature_category: :importers 
     end
   end
 
-  it 'does not crash (e.g. GitlabSettings::MissingSetting) when verify_ssl config is not present' do
+  it 'does not crash (e.g. Gitlab::Configs::MissingConfig) when verify_ssl config is not present' do
     expect { client.api }.not_to raise_error
   end
 

@@ -24,7 +24,7 @@ Prerequisites:
 {{< history >}}
 
 - `vulnerability_events` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131831) in GitLab 16.4.
-- `inherited` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154915) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `inherited` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154915) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `inherited` field [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -94,7 +94,7 @@ Example response:
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -138,7 +138,7 @@ GET /projects/:id/integrations/apple_app_store
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -179,7 +179,7 @@ GET /projects/:id/integrations/asana
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -220,7 +220,7 @@ GET /projects/:id/integrations/assembla
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -266,7 +266,7 @@ GET /projects/:id/integrations/bamboo
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -308,7 +308,7 @@ GET /projects/:id/integrations/bugzilla
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -353,7 +353,7 @@ GET /projects/:id/integrations/buildkite
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -399,7 +399,7 @@ GET /projects/:id/integrations/campfire
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120732) in GitLab 16.1.
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -440,7 +440,7 @@ GET /projects/:id/integrations/clickup
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -482,7 +482,7 @@ GET /projects/:id/integrations/confluence
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -524,7 +524,7 @@ GET /projects/:id/integrations/custom-issue-tracker
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -571,7 +571,7 @@ GET /projects/:id/integrations/datadog
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -614,7 +614,7 @@ GET /projects/:id/integrations/diffblue-cover
 {{< history >}}
 
 - `_channel` parameters [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125621) in GitLab 16.3.
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -681,7 +681,7 @@ GET /projects/:id/integrations/discord
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -726,7 +726,7 @@ GET /projects/:id/integrations/drone-ci
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -771,7 +771,7 @@ GET /projects/:id/integrations/emails-on-push
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -813,7 +813,7 @@ GET /projects/:id/integrations/ewm
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -860,10 +860,10 @@ GET /projects/:id/integrations/external-wiki
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435706) in GitLab 16.9 [with a flag](../administration/feature_flags/_index.md) named `git_guardian_integration`. Enabled by default. Disabled on GitLab.com.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435706) in GitLab 16.9 [with a feature flag](../administration/feature_flags/_index.md) named `git_guardian_integration`. Enabled by default. Disabled on GitLab.com.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/438695#note_2226917025) in GitLab 17.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176391) in GitLab 17.8. Feature flag `git_guardian_integration` removed.
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 - `api_url` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/599742) in GitLab 19.1.
 
@@ -921,7 +921,7 @@ GET /projects/:id/integrations/git-guardian
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -991,7 +991,7 @@ GET /projects/:id/integrations/jira-cloud-app
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1068,7 +1068,7 @@ GET /projects/:id/integrations/gitlab-slack-application
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1129,9 +1129,9 @@ GET /projects/:id/integrations/hangouts-chat
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425066) in GitLab 16.9 as a [beta](../policy/development_stages_support.md) feature [with a flag](../administration/feature_flags/_index.md) named `google_cloud_support_feature_flag`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425066) in GitLab 16.9 as a [beta](../policy/development_stages_support.md) feature [with a feature flag](../administration/feature_flags/_index.md) named `google_cloud_support_feature_flag`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1183,9 +1183,9 @@ GET /projects/:id/integrations/google-cloud-platform-artifact-registry
 
 {{< history >}}
 
-- Introduced in GitLab 16.10 as a [beta](../policy/development_stages_support.md) feature [with a flag](../administration/feature_flags/_index.md) named `google_cloud_support_feature_flag`. Disabled by default.
+- Introduced in GitLab 16.10 as a [beta](../policy/development_stages_support.md) feature [with a feature flag](../administration/feature_flags/_index.md) named `google_cloud_support_feature_flag`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1230,7 +1230,7 @@ GET /projects/:id/integration/google-cloud-platform-workload-identity-federation
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1273,7 +1273,7 @@ GET /projects/:id/integrations/google-play
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1316,7 +1316,7 @@ GET /projects/:id/integrations/harbor
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1360,7 +1360,7 @@ GET /projects/:id/integrations/irker
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1407,7 +1407,7 @@ GET /projects/:id/integrations/jenkins
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1456,7 +1456,7 @@ GET /projects/:id/integrations/teamcity
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1476,8 +1476,8 @@ Parameters:
 | `url`           | string | yes | The URL to the Jira project which is being linked to this GitLab project (for example, `https://jira.example.com`). |
 | `api_url`   | string | no | The base URL to the Jira instance API. Web URL value is used if not set (for example, `https://jira-api.example.com`). |
 | `username`      | string | no   | The email or username to use with Jira. Use an email for Jira Cloud, and a username for Jira Data Center and Jira Server. Required when using Basic Authentication (`jira_auth_type` is `0`). |
-| `password`      | string | yes  | The Jira API token, password, or personal access token to use with Jira. When using Basic Authentication (`jira_auth_type` is `0`), use an API token for Jira Cloud, and a password for Jira Data Center or Jira Server. For a Jira personal access token (`jira_auth_type` is `1`), use the personal access token. |
-| `jira_auth_type`| integer | no  | The authentication method to use with Jira. Use `0` for Basic Authentication, and `1` for Jira personal access token. Defaults to `0`. |
+| `password`      | string | yes  | The Jira API token, password, or personal access token to use with Jira. For basic authentication (`jira_auth_type` is `0`), use an API token for Jira Cloud or a password for Jira Data Center or Jira Server. For Jira personal access token authentication (`jira_auth_type` is `1`), use the personal access token. For Jira Cloud Service Account authentication, use an API token. |
+| `jira_auth_type`| integer | no  | The authentication method to use with Jira. Use `0` for Basic Authentication, `1` for Jira personal access token, and `2` for Jira Cloud service accounts. Defaults to `0`. |
 | `jira_issue_prefix` | string | no | Prefix to match Jira issue keys. |
 | `jira_issue_regex` | string | no | Regular expression to match Jira issue keys. |
 | `jira_issue_transition_automatic` | boolean | no | Enable [automatic issue transitions](../integration/jira/issues.md#automatic-issue-transitions). Takes precedence over `jira_issue_transition_id` if enabled. Defaults to `false`. |
@@ -1552,7 +1552,7 @@ GET /projects/:id/integrations/linear
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1606,7 +1606,7 @@ GET /projects/:id/integrations/matrix
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1672,7 +1672,7 @@ GET /projects/:id/integrations/mattermost
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1712,7 +1712,7 @@ GET /projects/:id/integrations/mattermost-slash-commands
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1765,7 +1765,7 @@ GET /projects/:id/integrations/microsoft-teams
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1809,7 +1809,7 @@ GET /projects/:id/integrations/mock-ci
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1855,7 +1855,7 @@ GET /projects/:id/integrations/packagist
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145863) in GitLab 16.11.
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1896,7 +1896,7 @@ GET /projects/:id/integrations/phorge
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1940,7 +1940,7 @@ GET /projects/:id/integrations/pipelines-email
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -1981,7 +1981,7 @@ GET /projects/:id/integrations/pivotaltracker
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -2032,7 +2032,7 @@ GET /projects/:id/integrations/pumble
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -2076,7 +2076,7 @@ GET /projects/:id/integrations/pushover
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -2118,7 +2118,7 @@ GET /projects/:id/integrations/redmine
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -2193,7 +2193,7 @@ GET /projects/:id/integrations/slack
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337855) in GitLab 15.10.
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -2234,7 +2234,7 @@ GET /projects/:id/integrations/squash-tm
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -2289,7 +2289,7 @@ GET /projects/:id/integrations/telegram
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -2341,7 +2341,7 @@ GET /projects/:id/integrations/unify-circuit
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}
@@ -2392,7 +2392,7 @@ GET /projects/:id/integrations/webex-teams
 
 {{< history >}}
 
-- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
+- `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a feature flag](../administration/feature_flags/_index.md) named `integration_api_inheritance`. Disabled by default.
 - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
 {{< /history >}}

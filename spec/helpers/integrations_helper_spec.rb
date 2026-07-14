@@ -410,29 +410,6 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     end
   end
 
-  describe '#integration_issue_type' do
-    using RSpec::Parameterized::TableSyntax
-    let_it_be(:issue, freeze: false) { create(:issue) }
-
-    where(:issue_type, :expected_i18n_issue_type) do
-      "issue"           | _('Issue')
-      "incident"        | _('Incident')
-      "task"            | _('Task')
-      "ticket"          | _('Service Desk Ticket')
-    end
-
-    with_them do
-      before do
-        issue.assign_attributes(work_item_type_id: build(:work_item_system_defined_type, issue_type).id)
-        issue.save!(validate: false)
-      end
-
-      it "return the correct i18n issue type" do
-        expect(described_class.integration_issue_type(issue.work_item_type.base_type)).to eq(expected_i18n_issue_type)
-      end
-    end
-  end
-
   describe '#integration_todo_target_type' do
     using RSpec::Parameterized::TableSyntax
     let!(:todo) { create(:todo, commit_id: '123') }

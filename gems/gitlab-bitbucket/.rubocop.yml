@@ -1,0 +1,15 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+Gemfile/MissingFeatureCategory:
+  Enabled: false
+
+# These specs mirror monolith specs with naturally high helper counts inherited
+# from nested contexts. Disabling rather than restructuring faithful ports.
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+# Verified doubles are not practical for Faraday internal objects that don't
+# expose all methods in their public interface (e.g. Faraday::Response#on_complete).
+RSpec/VerifiedDoubles:
+  Enabled: false

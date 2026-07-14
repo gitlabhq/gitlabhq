@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::Rubygems::ExtractionWorker, type: :worker, feature_category: :package_registry do
   describe '#perform' do
-    let_it_be(:package, freeze: false) { create(:rubygems_package, :processing) }
+    let_it_be(:package) { create(:rubygems_package, :processing) }
 
     let(:package_file) { package.package_files.first }
     let(:package_file_id) { package_file.id }
@@ -15,7 +15,7 @@ RSpec.describe Packages::Rubygems::ExtractionWorker, type: :worker, feature_cate
     subject { described_class.new.perform(*job_args) }
 
     context 'without errors' do
-      let_it_be(:package_for_processing, freeze: false) { create(:rubygems_package, :processing) }
+      let_it_be(:package_for_processing) { create(:rubygems_package, :processing) }
       let(:package_file) { package_for_processing.package_files.first }
 
       it 'processes the gem', :aggregate_failures do

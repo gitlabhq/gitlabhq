@@ -8,6 +8,7 @@ query getSourcePersonalAccessToken($userId: UserID, $id: PersonalAccessTokenID!)
         name
         description
         granular
+        sudo
         scopes {
           ... on AccessTokenGranularScope {
             access
@@ -15,6 +16,13 @@ query getSourcePersonalAccessToken($userId: UserID, $id: PersonalAccessTokenID!)
               id
               name
               fullPath
+            }
+            group @gl_introduced(version: "19.2.0") {
+              id
+              name
+              fullPath
+              projectsCount
+              descendantGroupsCount
             }
             project {
               id

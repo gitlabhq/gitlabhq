@@ -84,21 +84,7 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 			return
 		}
 
-		var content *os.File
-		var fi os.FileInfo
-
-		// Serve pre-gzipped assets
-		if acceptEncoding := r.Header.Get("Accept-Encoding"); strings.Contains(acceptEncoding, "gzip") {
-			content, fi, err = helper.OpenFile(file + ".gz")
-			if err == nil {
-				w.Header().Set("Content-Encoding", "gzip")
-			}
-		}
-
-		// If not found, open the original file
-		if content == nil || err != nil {
-			content, fi, err = helper.OpenFile(file)
-		}
+		content, fi, err := openServableFile(w, r, file)
 		if err != nil {
 			notFoundHandler.ServeHTTP(w, r)
 			return
@@ -117,6 +103,30 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 
 		http.ServeContent(w, r, filepath.Base(file), fi.ModTime(), content)
 	})
+}
+
+// openServableFile opens the file to serve, preferring a pre-gzipped variant
+// when the client accepts gzip encoding and falling back to the original file.
+// On success it sets the Content-Encoding response header for gzipped assets.
+func openServableFile(w http.ResponseWriter, r *http.Request, file string) (*os.File, os.FileInfo, error) {
+	var content *os.File
+	var fi os.FileInfo
+	var err error
+
+	// Serve pre-gzipped assets
+	if acceptEncoding := r.Header.Get("Accept-Encoding"); strings.Contains(acceptEncoding, "gzip") {
+		content, fi, err = helper.OpenFile(file + ".gz")
+		if err == nil {
+			w.Header().Set("Content-Encoding", "gzip")
+		}
+	}
+
+	// If not found, open the original file
+	if content == nil || err != nil {
+		content, fi, err = helper.OpenFile(file)
+	}
+
+	return content, fi, err
 }
 
 // setAuthorizationHeaders sets authorization headers from the auth result

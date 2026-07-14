@@ -10,9 +10,9 @@ module Organizations
     desc 'Organization is public'
     condition(:public_organization, scope: :subject, score: 0) { @subject.public? }
 
-    desc 'Organization admin area feature flag is enabled'
+    desc 'Organization admin area is enabled'
     condition(:organization_admin_area_enabled, scope: :subject) do
-      Feature.enabled?(:org_admin_area, @subject)
+      Organizations::Release.enabled?(:org_admin_area, @subject)
     end
 
     desc "Organization is the default"
@@ -29,14 +29,18 @@ module Organizations
 
     rule { organization_owner }.policy do
       enable :access_organization_admin_area
+      enable :delete_organization
       enable :read_organization_user
       enable :transfer_group
       enable :update_organization
     end
 
-    rule { (admin | organization_owner) & ~default_organization }.enable :delete_organization
+    rule { default_organization }.prevent :delete_organization
 
-    rule { blocked | deactivated | inactive }.prevent :delete_organization
+    rule { blocked | deactivated | inactive }.policy do
+      prevent :delete_organization
+      prevent :restore_organization
+    end
 
     rule { ~organization_admin_area_enabled }.policy do
       prevent :access_organization_admin_area

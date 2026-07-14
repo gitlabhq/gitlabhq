@@ -21,6 +21,10 @@ module Gitlab
         scopes = permitted.map { |s| API::Scope.new(s) }
         @request_authenticator.valid_access_token?(scopes: scopes)
       end
+
+      def ai_workflow_request?
+        request_authenticator.current_token_scopes.include?(AI_WORKFLOW.to_s)
+      end
     end
   end
 end

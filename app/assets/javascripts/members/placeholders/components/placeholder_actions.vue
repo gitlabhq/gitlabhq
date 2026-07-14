@@ -61,6 +61,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['confirm'],
 
   data() {
     return {

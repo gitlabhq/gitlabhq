@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :portfolio_management do
-  let_it_be(:namespace, freeze: false) { create(:namespace) }
-  let_it_be(:saved_view, freeze: false) { create(:saved_view, namespace: namespace) }
+  let_it_be_with_reload(:namespace) { create(:namespace) }
+  let_it_be_with_reload(:saved_view) { create(:saved_view, namespace: namespace) }
   let_it_be(:user) { create(:user) }
   let_it_be(:other_user) { create(:user) }
   let_it_be(:group) { create(:group) }

@@ -59,7 +59,7 @@ function getNewLineContent(row, side) {
   // the highlighter's line terminator, and any internal ones are control
   // characters the browser converted — they break text_markdown.js which
   // splits on \n to detect multi-line selections.
-  return pre.textContent.replace(/[\r\n]/g, '');
+  return pre.textContent.replace(/[\r\n]/g, '').replace(/\\n/g, '\uE000');
 }
 
 export function isRangeBoundary(row) {

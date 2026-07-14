@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to integrate your self-hosted models with your GitLab instance
 title: Configure GitLab to use self-hosted models
@@ -15,7 +15,7 @@ title: Configure GitLab to use self-hosted models
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a feature flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Feature flag `ai_custom_model` removed in GitLab 17.8
@@ -85,7 +85,33 @@ To determine the timeout value:
 - Consider your infrastructure. Model performance depends on available GPU resources, network latency between the AI Gateway and model endpoint, and the model's processing capabilities.
 - Increase incrementally. If you experience timeouts, increase the value gradually (for example, by 30-60 seconds) and monitor the results.
 
-For more information on troubleshooting timeout errors, see [Error A1000](troubleshooting.md#error-a1000).
+For more information about troubleshooting timeout errors, see [`Error A1000`](troubleshooting.md#error-a1000).
+If responses are cut off without an error even with higher timeout values, see
+[responses are truncated without an error](troubleshooting.md#responses-are-truncated-without-an-error).
+
+### Configure the chat model request timeout
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6086) in GitLab 19.2.
+
+{{< /history >}}
+
+The AI Gateway request timeout controls how long GitLab waits for the AI Gateway.
+A separate timeout controls how long the AI Gateway waits for a chat response from your self-hosted model.
+By default, the AI Gateway ends a single chat model request after 30 seconds.
+
+Large context windows or complex agentic prompts against slower self-hosted models can take longer than 30 seconds.
+To increase this timeout, set the `AIGW_DUO_CHAT__MODEL_REQUEST_TIMEOUT` environment variable, in seconds, on the AI Gateway container:
+
+```shell
+docker run -e AIGW_GITLAB_URL=<your_gitlab_instance> \
+  -e AIGW_DUO_CHAT__MODEL_REQUEST_TIMEOUT=600 \
+  <ai_gateway_image>
+```
+
+The value must be greater than `0`.
+If a model has its own timeout in `MODEL_SPECIFICATIONS`, that value takes precedence over this default.
 
 ## Configure access to the GitLab Duo Agent Platform
 

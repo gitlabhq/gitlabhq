@@ -99,6 +99,98 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
       end
     end
 
+    context 'when the job is read in a pre-execution status', :request_store do
+      let(:session) do
+        ::Gitlab::Database::LoadBalancing::SessionMap.current(::Ci::Build.load_balancer)
+      end
+
+      before do
+        allow(finder).to receive(:find_job_by_token).and_return(job)
+        job.update_column(:status, :pending)
+
+        # The setup write above already pinned the session to the primary;
+        # start the example from a clean session.
+        ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
+      end
+
+      context 'when the primary shows the job as executing' do
+        before do
+          # Simulate a stale replica read: primary has `running`, while the
+          # in-memory instance still has stale `pending`. `update_all` bypasses
+          # the instance; clear the session again because the write pinned it.
+          Ci::Build.where(id: job.id).update_all(status: 'running')
+          ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
+        end
+
+        it 'retries on the primary and returns the job with fresh attributes', :aggregate_failures do
+          expect(execute).to eq(job)
+          expect(job.status).to eq('running')
+        end
+
+        it 'pins the CI database session to the primary' do
+          expect { execute }.to change { session.use_primary? }.from(false).to(true)
+        end
+
+        it 'logs the recovered retry' do
+          allow(::Gitlab::AppLogger).to receive(:info)
+
+          execute
+
+          expect(::Gitlab::AppLogger).to have_received(:info).with(
+            a_hash_including(
+              message: 'job token auth retried on primary after stale status read',
+              job_id: job.id,
+              job_status: 'running',
+              job_recovered: true
+            )
+          )
+        end
+      end
+
+      context 'when the job is still in a pre-execution status on the primary' do
+        it 'raises NotRunningJobError' do
+          expect { execute }.to raise_error(described_class::NotRunningJobError)
+        end
+
+        it 'logs the unrecovered retry' do
+          allow(::Gitlab::AppLogger).to receive(:info)
+
+          expect { execute }.to raise_error(described_class::NotRunningJobError)
+
+          expect(::Gitlab::AppLogger).to have_received(:info).with(
+            a_hash_including(
+              message: 'job token auth retried on primary after stale status read',
+              job_id: job.id,
+              job_status: 'pending',
+              job_recovered: false
+            )
+          )
+        end
+      end
+
+      context 'when the job is deleted between the replica read and the retry' do
+        before do
+          job.delete
+        end
+
+        it 'raises NotRunningJobError' do
+          expect { execute }.to raise_error(described_class::NotRunningJobError)
+        end
+      end
+
+      context 'when the ci_job_token_auth_stale_read_retry feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_job_token_auth_stale_read_retry: false)
+        end
+
+        it 'raises NotRunningJobError without retrying' do
+          expect(job).not_to receive(:reset)
+
+          expect { execute }.to raise_error(described_class::NotRunningJobError)
+        end
+      end
+    end
+
     it 'raises error if the job is erased' do
       expect(finder).to receive(:find_job_by_token).and_return(job)
       expect(job).to receive(:erased?).and_return(true)

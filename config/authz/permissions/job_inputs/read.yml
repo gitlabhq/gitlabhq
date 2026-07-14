@@ -1,0 +1,6 @@
+---
+name: read_job_inputs
+description: Grants the ability to view input values that were used when a CI
+  job was created or retried. Inputs are user-provided values that customize
+  how a CI/CD job runs, restricted to match the authorization applied to
+  manually set variables.

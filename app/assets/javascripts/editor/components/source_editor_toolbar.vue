@@ -9,6 +9,7 @@ export default {
   components: {
     SourceEditorToolbarButton,
   },
+  emits: ['click'],
   data() {
     return {
       items: [],

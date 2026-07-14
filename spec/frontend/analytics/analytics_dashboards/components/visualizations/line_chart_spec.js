@@ -60,6 +60,26 @@ describe('LineChart Visualization', () => {
       });
     });
 
+    describe('with a y-axis valueUnit', () => {
+      beforeEach(() => {
+        createWrapper({
+          props: {
+            options: { yAxis: { name: 'Retention', type: 'value', valueUnit: UNITS.PERCENT } },
+          },
+        });
+      });
+
+      it('formats the y-axis labels with the unit, matching the tooltip', () => {
+        const { formatter } = findLineChart().props().option.yAxis.axisLabel;
+
+        expect(formatter(0.75)).toBe('75.0%');
+      });
+
+      it('does not pass `valueUnit` through as an ECharts option', () => {
+        expect(findLineChart().props().option.yAxis).not.toHaveProperty('valueUnit');
+      });
+    });
+
     it('can toggle the average / max values', () => {
       createWrapper({ props: { options: { includeLegendAvgMax: true } } });
 

@@ -27,6 +27,7 @@ export default {
       default: DEFAULT_CI_CONFIG_PATH,
     },
   },
+  emits: ['done'],
   computed: {
     parsedTemplate() {
       return this.template ? parseDocument(this.template) : null;

@@ -184,7 +184,7 @@ describe('SuperSidebar component', () => {
           },
         });
 
-        expect(trackContextAccess).toHaveBeenCalledWith('root', currentContext, '/-/track_visits');
+        expect(trackContextAccess).toHaveBeenCalledWith('root', currentContext);
       });
     });
   });

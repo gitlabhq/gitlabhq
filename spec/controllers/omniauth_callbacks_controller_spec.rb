@@ -18,7 +18,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       it "sets the session variable for provider 2FA" do
         post :saml, params: { SAMLResponse: mock_saml_response }
 
-        expect(session[:provider_2FA]).to eq(true)
+        expect(session[:provider_2FA]).to be(true)
       end
     end
 
@@ -851,7 +851,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         ]
       end
 
-      let(:provider_settings) { oidc_providers.map { |provider| GitlabSettings::Options.new(provider) } }
+      let(:provider_settings) { oidc_providers.map { |provider| Gitlab::Configs.build_options(provider) } }
       let(:provider_names) { provider_settings.map(&:name).map(&:to_s) }
 
       context 'when a non-default provider is used', :aggregate_failures do

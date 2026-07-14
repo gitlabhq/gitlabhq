@@ -7,8 +7,9 @@ RSpec.describe BulkImports::UploadsExportService, feature_category: :importers d
   let(:project) { create(:project, avatar: fixture_file_upload('spec/fixtures/rails_sample.png', 'image/png')) }
   let!(:upload) { create(:upload, :with_file, :issuable_upload, uploader: FileUploader, model: project) }
   let(:exported_filepath) { File.join(export_path, upload.secret, upload.retrieve_uploader.filename) }
+  let(:offline_export_id) { nil }
 
-  subject(:service) { described_class.new(project, export_path) }
+  subject(:service) { described_class.new(project, export_path, offline_export_id) }
 
   after do
     FileUtils.rm_rf(export_path)
@@ -48,7 +49,7 @@ RSpec.describe BulkImports::UploadsExportService, feature_category: :importers d
           stub_uploads_object_storage(FileUploader)
         end
 
-        shared_examples 'export with invalid upload' do
+        shared_examples 'export with invalid upload' do |importer_type|
           it 'ignores problematic upload and logs exception' do
             allow(service).to receive(:download_or_copy_upload).and_raise(exception)
 
@@ -58,7 +59,9 @@ RSpec.describe BulkImports::UploadsExportService, feature_category: :importers d
                 instance_of(exception), {
                   portable_id: project.id,
                   portable_class: 'Project',
-                  upload_id: upload.id
+                  upload_id: upload.id,
+                  offline_export_id: offline_export_id,
+                  importer: importer_type
                 }
               )
 
@@ -68,7 +71,9 @@ RSpec.describe BulkImports::UploadsExportService, feature_category: :importers d
                 instance_of(exception), {
                   portable_id: project.id,
                   portable_class: 'Project',
-                  upload_id: project.avatar.upload.id
+                  upload_id: project.avatar.upload.id,
+                  offline_export_id: offline_export_id,
+                  importer: importer_type
                 }
               )
 
@@ -81,13 +86,20 @@ RSpec.describe BulkImports::UploadsExportService, feature_category: :importers d
         context 'when filename is too long' do
           let(:exception) { Errno::ENAMETOOLONG }
 
-          include_examples 'export with invalid upload'
+          include_examples 'export with invalid upload', ::Import::SOURCE_DIRECT_TRANSFER
         end
 
         context 'when network exception occurs' do
           let(:exception) { Net::OpenTimeout }
 
-          include_examples 'export with invalid upload'
+          include_examples 'export with invalid upload', ::Import::SOURCE_DIRECT_TRANSFER
+        end
+
+        context 'when the export is associated with an offline transfer' do
+          let(:offline_export_id) { build_stubbed(:offline_export).id }
+          let(:exception) { Errno::ENAMETOOLONG }
+
+          include_examples 'export with invalid upload', ::Import::SOURCE_OFFLINE_TRANSFER
         end
       end
     end

@@ -18,6 +18,7 @@ import GroupSelect from '~/vue_shared/components/entity_select/group_select.vue'
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
 export default {
+  name: 'ImportManifestFileApp',
   components: {
     GlFormGroup,
     GlLink,

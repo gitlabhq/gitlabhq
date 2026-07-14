@@ -42,6 +42,7 @@ export default {
       default: false,
     },
   },
+  emits: ['submit'],
   data() {
     return {
       selected: DEFAULT_RADIO_OPTION,

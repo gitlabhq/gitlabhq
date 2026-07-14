@@ -7,8 +7,8 @@ RSpec.describe Boards::Issues::ListService, feature_category: :portfolio_managem
     let_it_be(:user) { create(:user) }
 
     context 'when parent is a project' do
-      let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
-      let_it_be(:board)   { create(:board, project: project) }
+      let_it_be_with_reload(:project) { create(:project, :empty_repo) }
+      let_it_be(:board) { create(:board, project: project) }
 
       let_it_be(:m1) { create(:milestone, project: project) }
       let_it_be(:m2) { create(:milestone, project: project) }
@@ -216,7 +216,7 @@ RSpec.describe Boards::Issues::ListService, feature_category: :portfolio_managem
 
   describe '.initialize_relative_positions' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
+    let_it_be_with_reload(:project) { create(:project, :empty_repo) }
     let_it_be(:board) { create(:board, project: project) }
 
     let(:issue) { create(:issue, project: project, relative_position: nil) }
@@ -230,7 +230,7 @@ RSpec.describe Boards::Issues::ListService, feature_category: :portfolio_managem
         it 'does not initialize the relative positions of issues' do
           described_class.initialize_relative_positions(board, user, [issue])
 
-          expect(issue.relative_position).to eq nil
+          expect(issue.relative_position).to be_nil
         end
       end
 
@@ -242,7 +242,7 @@ RSpec.describe Boards::Issues::ListService, feature_category: :portfolio_managem
         it 'initializes the relative positions of issues' do
           described_class.initialize_relative_positions(board, user, [issue])
 
-          expect(issue.relative_position).not_to eq nil
+          expect(issue.relative_position).not_to be_nil
         end
       end
     end
@@ -255,7 +255,7 @@ RSpec.describe Boards::Issues::ListService, feature_category: :portfolio_managem
       it 'does not initialize the relative positions of issues' do
         described_class.initialize_relative_positions(board, user, [issue])
 
-        expect(issue.relative_position).to eq nil
+        expect(issue.relative_position).to be_nil
       end
     end
   end

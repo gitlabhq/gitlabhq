@@ -448,9 +448,15 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def bulk_import_complete
-    bulk_import = BulkImport.last
+    bulk_import = BulkImport.gitlab.last
 
     Notify.bulk_import_complete(user.id, bulk_import.id)
+  end
+
+  def bulk_import_offline_complete
+    bulk_import = BulkImport.offline_export.last
+
+    Notify.bulk_import_offline_complete(user.id, bulk_import.id)
   end
 
   # To generate the appropriate test record via the Rails console:

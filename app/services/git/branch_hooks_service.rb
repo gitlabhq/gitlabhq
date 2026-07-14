@@ -21,6 +21,16 @@ module Git
 
     alias_method :removing_branch?, :removing_ref?
 
+    override :create_pipeline?
+    def create_pipeline?
+      super && !skip_branch_pipeline?
+    end
+
+    def skip_branch_pipeline?
+      project.ci_skip_branch_pipelines_for_mrs? &&
+        params[:merge_request_source_branches]&.include?(Gitlab::Git.ref_name(ref))
+    end
+
     def hook_name
       :push_hooks
     end

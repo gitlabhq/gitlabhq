@@ -9,6 +9,7 @@ import CloseButton from './close_button.vue';
 import DesignNavigation from './design_navigation.vue';
 
 export default {
+  name: 'DesignToolbar',
   i18n: {
     downloadButtonLabel: s__('DesignManagement|Download design'),
     hideCommentsButtonLabel: s__('DesignManagement|Hide comments'),

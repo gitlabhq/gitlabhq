@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :pipeline_composition do
-  let(:parent_pipeline) { create(:ci_pipeline) }
+  let_it_be(:parent_pipeline) { create(:ci_pipeline) }
   let(:project) { parent_pipeline.project }
   let(:variables) { nil }
   let(:context) do
@@ -12,6 +12,12 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
   end
 
   let(:external_file) { described_class.new(params, context) }
+
+  before do
+    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
+      .with(:ci_interpolation_split_function)
+      .and_return(false)
+  end
 
   describe '#matching?' do
     context 'when params contain artifact location' do
@@ -57,8 +63,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
     end
 
     context 'when used in child pipeline context' do
-      let(:parent_pipeline) { create(:ci_pipeline) }
-
       context 'when job is not provided' do
         let(:params) { { artifact: 'generated.yml' } }
 
@@ -81,7 +85,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
         end
 
         context 'when job exists in the parent pipeline' do
-          let!(:generator_job) { create(:ci_build, name: 'generator', pipeline: parent_pipeline) }
+          let_it_be(:generator_job) { create(:ci_build, name: 'generator', pipeline: parent_pipeline) }
 
           context 'when job does not have artifacts' do
             let(:expected_error) do

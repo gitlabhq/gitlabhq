@@ -5,3 +5,4 @@ description: Grants the ability to read a project snippet whose visibility is
   snippets when accessed by an external user). Used by the project snippet
   policy to gate access for snippets the viewer would not otherwise see based
   on visibility alone.
+conditionally_enables: null

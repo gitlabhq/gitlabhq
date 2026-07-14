@@ -15,6 +15,17 @@ RSpec.shared_examples 'raw snippet blob' do
     it 'responds with status 200' do
       expect(response).to have_gitlab_http_status(:ok)
     end
+
+    it 'forces both browser and shared caches to revalidate via ETag', :aggregate_failures do
+      # Snippet blobs are mutable user content served from a stable branch URL,
+      # so any positive max-age, s-maxage, stale-while-revalidate, or
+      # stale-if-error would let the edit form serve pre-save content from
+      # either the browser or the CDN.
+      expect(response.header['Cache-Control']).to include(
+        'max-age=0', 's-maxage=0', 'must-revalidate', 'stale-if-error=0', 'stale-while-revalidate=0'
+      )
+      expect(response.header['ETag']).to be_present
+    end
   end
 
   context 'Content Disposition' do

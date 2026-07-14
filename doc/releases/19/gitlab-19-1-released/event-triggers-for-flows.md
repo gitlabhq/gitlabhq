@@ -9,8 +9,6 @@ work_item: https://gitlab.com/groups/gitlab-org/-/work_items/21997
 stage: ai-powered
 ---
 
-<!-- categories: Duo Agent Platform -->
-
 In previous versions of GitLab, you could only run flows and external agents when the service account was mentioned, assigned, or added as a reviewer. Coordinating automation around the
 rest of the merge request lifecycle, or around work item creation, required external glue.
 

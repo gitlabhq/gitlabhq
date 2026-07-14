@@ -276,7 +276,7 @@ To delete a **group** label:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4233) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `labels_archive`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4233) in GitLab 18.3 [with a feature flag](../../administration/feature_flags/_index.md) named `labels_archive`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211744) flag `labels_archive` so it can be turned on and off for a group in GitLab 18.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556700) in GitLab 18.11. Feature flag `labels_archive` removed.
 
@@ -604,7 +604,7 @@ To learn what happens when you sort by priority or label priority, see
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags/_index.md) named `enforce_locked_labels_on_merge`. This feature is [beta](../../policy/development_stages_support.md). Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a feature flag](../../administration/feature_flags/_index.md) named `enforce_locked_labels_on_merge`. This feature is [beta](../../policy/development_stages_support.md). Disabled by default.
 - Minimum role to lock labels [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}

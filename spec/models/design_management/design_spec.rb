@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe DesignManagement::Design, feature_category: :design_management do
   include DesignManagementTestHelpers
 
-  let_it_be(:issue, freeze: false) { create(:issue) }
-  let_it_be(:design1, freeze: false) { create(:design, :with_versions, issue: issue, versions_count: 1) }
-  let_it_be(:design2, freeze: false) { create(:design, :with_versions, issue: issue, versions_count: 1) }
-  let_it_be(:design3, freeze: false) { create(:design, :with_versions, issue: issue, versions_count: 1) }
-  let_it_be(:deleted_design, freeze: false) { create(:design, :with_versions, deleted: true) }
+  let_it_be(:issue) { create(:issue) }
+  let_it_be_with_reload(:design1) { create(:design, :with_versions, issue: issue, versions_count: 1) }
+  let_it_be_with_reload(:design2) { create(:design, :with_versions, issue: issue, versions_count: 1) }
+  let_it_be_with_reload(:design3) { create(:design, :with_versions, issue: issue, versions_count: 1) }
+  let_it_be_with_reload(:deleted_design) { create(:design, :with_versions, deleted: true) }
 
   it_behaves_like 'AtomicInternalId', validate_presence: true do
     let(:internal_id_attribute) { :iid }
@@ -20,7 +20,7 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
   end
 
   it_behaves_like 'a class that supports relative positioning' do
-    let_it_be(:relative_parent, freeze: false) { create(:issue) }
+    let_it_be(:relative_parent) { create(:issue) }
 
     let(:factory) { :design }
     let(:default_params) { { issue: relative_parent } }
@@ -238,7 +238,7 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
   end
 
   describe '#visible_in?' do
-    let_it_be(:issue, freeze: false) { create(:issue, project: issue.project) }
+    let_it_be(:issue) { create(:issue, project: issue.project) }
 
     # It is expensive to re-create complex histories, so we do it once, and then
     # assert that we can establish visibility at any given version.
@@ -350,15 +350,15 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
 
   describe '#participants' do
     let_it_be_with_refind(:design) { create(:design, issue: issue) }
-    let_it_be(:current_user, freeze: false) { create(:user) }
-    let_it_be(:version_author, freeze: false) { create(:user) }
-    let_it_be(:note_author, freeze: false) { create(:user) }
-    let_it_be(:mentioned_user, freeze: false) { create(:user) }
-    let_it_be(:design_version, freeze: false) do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:version_author) { create(:user) }
+    let_it_be(:note_author) { create(:user) }
+    let_it_be(:mentioned_user) { create(:user) }
+    let_it_be(:design_version) do
       create(:design_version, :committed, designs: [design], author: version_author)
     end
 
-    let_it_be(:note, freeze: false) do
+    let_it_be(:note) do
       create(:diff_note_on_design,
         noteable: design,
         issue: issue,
@@ -496,8 +496,8 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
   end
 
   describe '.for_reference' do
-    let_it_be(:design_a, freeze: false) { create(:design) }
-    let_it_be(:design_b, freeze: false) { create(:design) }
+    let_it_be(:design_a) { create(:design) }
+    let_it_be(:design_b) { create(:design) }
 
     it 'avoids extra queries when calling to_reference' do
       designs = described_class.for_reference.where(id: [design_a.id, design_b.id]).to_a
@@ -605,13 +605,13 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
   end
 
   describe '.by_issue_id_and_filename' do
-    let_it_be(:issue_a, freeze: false) { create(:issue) }
-    let_it_be(:issue_b, freeze: false) { create(:issue) }
+    let_it_be(:issue_a) { create(:issue) }
+    let_it_be(:issue_b) { create(:issue) }
 
-    let_it_be(:design_a, freeze: false) { create(:design, issue: issue_a) }
-    let_it_be(:design_b, freeze: false) { create(:design, issue: issue_a) }
-    let_it_be(:design_c, freeze: false) { create(:design, issue: issue_b, filename: design_a.filename) }
-    let_it_be(:design_d, freeze: false) { create(:design, issue: issue_b, filename: design_b.filename) }
+    let_it_be(:design_a) { create(:design, issue: issue_a) }
+    let_it_be(:design_b) { create(:design, issue: issue_a) }
+    let_it_be(:design_c) { create(:design, issue: issue_b, filename: design_a.filename) }
+    let_it_be(:design_d) { create(:design, issue: issue_b, filename: design_b.filename) }
 
     it_behaves_like 'a where_composite scope', :by_issue_id_and_filename do
       let(:all_results) { [design_a, design_b, design_c, design_d] }

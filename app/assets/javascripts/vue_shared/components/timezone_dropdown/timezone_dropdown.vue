@@ -44,6 +44,7 @@ export default {
       default: false,
     },
   },
+  emits: ['input'],
   data() {
     return {
       searchTerm: '',

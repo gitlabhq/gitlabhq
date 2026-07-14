@@ -37,6 +37,14 @@ module GraphqlTriggers
       { project_id: pipeline.project.to_gid },
       pipeline
     )
+
+    return unless Feature.enabled?(:commit_pipelines_tab_graphql, pipeline.project)
+
+    GitlabSchema.subscriptions.trigger(
+      :ci_pipeline_statuses_updated,
+      { project_id: pipeline.project.to_gid, sha: pipeline.sha },
+      pipeline
+    )
   end
 
   def self.ci_pipeline_schedule_status_updated(schedule)

@@ -1,6 +1,7 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { n__, sprintf } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { LINKED_CATEGORIES_MAP, STATE_OPEN } from '../../constants';
 import workItemLinkedItemsSlimQuery from '../../graphql/work_items_linked_items_slim.query.graphql';
 import { findLinkedItemsWidget } from '../../utils';
@@ -12,6 +13,7 @@ export default {
     GlIcon,
     WorkItemRelationshipPopover,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     workItemType: {
       type: String,
@@ -64,6 +66,7 @@ export default {
         return {
           fullPath: this.workItemFullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       update({ namespace }) {

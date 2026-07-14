@@ -5,7 +5,7 @@ module API
     class Trigger < Grape::Entity
       include ::API::Helpers::Presentable
 
-      expose :id, documentation: { type: 'Integer', example: 10 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 10 }
       expose :token, documentation: { type: 'String', example: '6d056f63e50fe6f8c5f8f4aa10edb7' }
       expose :description, documentation: { type: 'String', example: 'test' }
       expose :created_at, documentation: { type: 'DateTime', example: '2015-12-24T15:51:21.880Z' }

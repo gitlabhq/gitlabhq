@@ -182,6 +182,25 @@ This error occurs when a query has more clauses than defined in the `indices.que
 
 To resolve this issue, increase the value or upgrade Elasticsearch 8.1 or later. Increasing the value may lead to performance degradation.
 
+## Search results contain duplicates across multiple pages
+
+When you use advanced search, search results that span
+multiple pages might contain duplicates.
+When duplicates appear, some matching results are not returned.
+
+GitLab paginates results based on the number of
+unique matching results from Elasticsearch.
+However, due to how Elasticsearch orders results,
+the same result might appear on multiple pages.
+This issue is more likely to occur when you sort results by relevance.
+
+As a workaround, consider the following:
+
+- A more specific search query to narrow down results.
+- A different sorting option when possible.
+
+For more information, see [issue 416286](https://gitlab.com/gitlab-org/gitlab/-/work_items/416286).
+
 ## Error: `disk usage exceeded flood-stage watermark, index has read-only-allow-delete block`
 
 This error occurs when your Elasticsearch cluster has

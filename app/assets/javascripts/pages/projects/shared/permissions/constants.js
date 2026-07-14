@@ -69,3 +69,5 @@ export const pipelineExecutionPoliciesHelpPath = helpPagePath(
 // Vulnerability Resolution setting).
 export const ALL_SETTINGS = 'all';
 export const DUO_SAST_VR_WORKFLOW_ENABLED = 'duoSastVrWorkflowEnabled';
+export const DUO_SAST_FP_DETECTION_ENABLED = 'duoSastFpDetectionEnabled';
+export const DUO_SECRET_DETECTION_FP_ENABLED = 'duoSecretDetectionFpEnabled';

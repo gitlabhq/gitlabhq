@@ -3,6 +3,7 @@ import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
+  name: 'ClustersDeprecationAlert',
   components: {
     GlAlert,
     GlSprintf,

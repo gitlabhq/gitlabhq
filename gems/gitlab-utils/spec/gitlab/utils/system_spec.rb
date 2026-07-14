@@ -352,6 +352,19 @@ RSpec.describe Gitlab::Utils::System do
 
       expect(described_class.thread_cpu_duration(start_time)).to be_nil
     end
+
+    it 'returns 0 when end time is less than start time' do
+      stub_const("Process::CLOCK_THREAD_CPUTIME_ID", 16)
+
+      expect(Process).to receive(:clock_gettime)
+        .with(16, kind_of(Symbol))
+        .and_return(
+          0.222333833,
+          0.111222333
+        )
+
+      expect(described_class.thread_cpu_duration(start_time)).to eq(0)
+    end
   end
 
   def mock_existing_proc_file(path, content)

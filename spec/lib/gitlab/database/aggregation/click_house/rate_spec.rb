@@ -10,10 +10,10 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Rate, :click_house, fe
       self.table_name = 'agent_platform_sessions'
 
       metrics do
-        rate :completion, numerator_if: -> { Arel.sql('anyIfMerge(finished_event_at) IS NOT NULL') }
+        rate :completion, numerator_if: ->(_params) { Arel.sql('anyIfMerge(finished_event_at) IS NOT NULL') }
         rate :finished_to_dropped,
-          denominator_if: -> { Arel.sql('anyIfMerge(dropped_event_at) IS NOT NULL') },
-          numerator_if: -> { Arel.sql('anyIfMerge(finished_event_at) IS NOT NULL') }
+          denominator_if: ->(_params) { Arel.sql('anyIfMerge(dropped_event_at) IS NOT NULL') },
+          numerator_if: ->(_params) { Arel.sql('anyIfMerge(finished_event_at) IS NOT NULL') }
       end
     end
   end
@@ -50,6 +50,45 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Rate, :click_house, fe
 
   let(:all_data_rows) do
     [session1, session2, session3]
+  end
+
+  describe "parameterized rate" do
+    let(:engine_definition) do
+      Gitlab::Database::Aggregation::ClickHouse::Engine.build do
+        self.table_name = 'agent_platform_sessions'
+
+        metrics do
+          rate :by_flow,
+            numerator_if: ->(params) { Arel.sql("flow_type = '#{params[:flow_type]}'") },
+            parameters: {
+              flow_type: { type: :string }
+            }
+        end
+      end
+    end
+
+    it 'passes parameter values as hash to numerator_if' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        metrics: [{ identifier: :by_flow_rate, parameters: { flow_type: 'chat' } }]
+      )
+
+      expect(engine).to execute_aggregation(request).and_return([
+        { by_flow_rate_chat: 2.0 / 3 }
+      ])
+    end
+
+    it 'generates a unique result key per parameter combination' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        metrics: [
+          { identifier: :by_flow_rate, parameters: { flow_type: 'chat' } },
+          { identifier: :by_flow_rate, parameters: { flow_type: 'code_review' } }
+        ]
+      )
+
+      expect(engine).to execute_aggregation(request).and_return([
+        { by_flow_rate_chat: 2.0 / 3, by_flow_rate_code_review: 1.0 / 3 }
+      ])
+    end
   end
 
   describe "rate with numerator only" do

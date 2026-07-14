@@ -50,8 +50,8 @@ RSpec.describe 'Cancel an reassignment of an import source user', feature_catego
 
       import_source_user = mutation_response['importSourceUser']
 
-      expect(import_source_user['reassignedToUser']).to eq(nil)
-      expect(import_source_user['reassignedByUser']).to eq(nil)
+      expect(import_source_user['reassignedToUser']).to be_nil
+      expect(import_source_user['reassignedByUser']).to be_nil
       expect(import_source_user['status']).to eq('PENDING_REASSIGNMENT')
     end
 

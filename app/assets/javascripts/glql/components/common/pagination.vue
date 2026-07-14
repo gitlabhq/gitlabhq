@@ -30,6 +30,7 @@ export default {
       default: DEFAULT_PAGE_SIZE,
     },
   },
+  emits: ['load-more'],
   computed: {
     hasNextPage() {
       return this.count < this.totalCount;
@@ -57,7 +58,7 @@ export default {
       variant="default"
       :aria-label="loadMoreLabel"
       :loading="Boolean(loading)"
-      @click="$emit('loadMore', actualPageSize)"
+      @click="$emit('load-more', actualPageSize)"
     >
       {{ loadMoreLabel }}
     </gl-button>

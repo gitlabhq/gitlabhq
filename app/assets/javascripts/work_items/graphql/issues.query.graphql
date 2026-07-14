@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 query issueSuggestion($fullPath: ID!, $search: String) {
   project(fullPath: $fullPath) {
     id

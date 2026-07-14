@@ -29,7 +29,7 @@ RSpec.describe Resolvers::MergeRequestsCountResolver do
     end
 
     context "when user can view an issue's closing merge requests that are both public and private" do
-      before do
+      before_all do
         project2.add_reporter(user)
       end
 

@@ -133,7 +133,7 @@ columns:
 - name: traversal_path
   type: String
   default_kind: DEFAULT
-  default_expression: multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
+  default_expression: multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict',
     'traversal_path', target_project_id, '0/'), '0/')
   compression_codec: CODEC(ZSTD(3))
   is_in_sorting_key: true
@@ -200,3 +200,8 @@ columns:
   type: Array(Tuple(label_id UInt64, created_at DateTime64(6, 'UTC')))
 - name: award_emojis
   type: Array(Tuple(name String, user_id UInt64, created_at DateTime64(6, 'UTC')))
+- name: _siphon_watermark
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))

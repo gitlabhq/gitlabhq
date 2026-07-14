@@ -6,6 +6,11 @@ require 'spec_helper'
 require 'mime/types'
 
 RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:project, freeze: false) { create(:project, :private) }
   let_it_be(:experiment, freeze: false) do
     create(:ml_experiments, :with_model, user: project.creator, project: project)
@@ -36,7 +41,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
     end
   end
 
-  let_it_be(:candidates, freeze: false) { [candidate0, candidate1] }
+  let(:candidates) { [candidate0, candidate1] }
 
   describe '#candidates_table_items' do
     subject { Gitlab::Json.parse(helper.candidates_table_items(candidates, project.creator)) }
@@ -126,9 +131,9 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
   end
 
   describe '#experiment_as_data when experiment does not have a model' do
-    let(:experiment) { create(:ml_experiments, user: project.creator, project: project) }
-
     subject { Gitlab::Json.parse(helper.experiment_as_data(project, experiment)) }
+
+    let(:experiment) { create(:ml_experiments, user: project.creator, project: project) }
 
     it do
       is_expected.to include({
@@ -152,12 +157,17 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
       experiment.candidates.keyset_paginate(cursor: cursor, per_page: 1)
     end
 
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
+    subject { helper.page_info(page) }
+
     let_it_be(:first_page, freeze: false) { paginator }
     let_it_be(:second_page, freeze: false) { paginator(first_page.cursor_for_next_page) }
 
     let(:page) { nil }
-
-    subject { helper.page_info(page) }
 
     context 'when is first page' do
       let(:page) { first_page }

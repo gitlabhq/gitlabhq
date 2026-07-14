@@ -15,6 +15,7 @@ import {
 } from './constants';
 
 export default {
+  name: 'BlobHeaderViewerSwitcher',
   components: {
     GlButtonGroup,
     GlButton,

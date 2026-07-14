@@ -16,70 +16,6 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesTool, feature_category: :m
     project.add_developer(user)
   end
 
-  describe 'class methods' do
-    describe '.build_query' do
-      it 'returns the GraphQL query string' do
-        query = described_class.build_query
-
-        expect(query).to include('query GetWorkItemNotes')
-        expect(query).to include('$id: WorkItemID!')
-        expect(query).to include('$after: String')
-        expect(query).to include('$before: String')
-        expect(query).to include('$first: Int')
-        expect(query).to include('$last: Int')
-        expect(query).to include('workItem(id: $id)')
-        expect(query).to include('widgets')
-        expect(query).to include('WorkItemWidgetNotes')
-        expect(query).to include('notes(')
-      end
-
-      it 'includes count field' do
-        query = described_class.build_query
-
-        expect(query).to include('count')
-      end
-
-      it 'includes pagination fields' do
-        query = described_class.build_query
-
-        expect(query).to include('pageInfo')
-        expect(query).to include('hasNextPage')
-        expect(query).to include('hasPreviousPage')
-        expect(query).to include('startCursor')
-        expect(query).to include('endCursor')
-      end
-
-      it 'includes note fields' do
-        query = described_class.build_query
-
-        expect(query).to include('nodes')
-        expect(query).to include('id')
-        expect(query).to include('body')
-        expect(query).to include('internal')
-        expect(query).to include('createdAt')
-        expect(query).to include('updatedAt')
-        expect(query).to include('system')
-        expect(query).to include('systemNoteIconName')
-      end
-
-      it 'includes author fields' do
-        query = described_class.build_query
-
-        expect(query).to include('author')
-        expect(query).to include('name')
-        expect(query).to include('username')
-        expect(query).to include('avatarUrl')
-        expect(query).to include('webUrl')
-      end
-
-      it 'includes discussion field' do
-        query = described_class.build_query
-
-        expect(query).to include('discussion')
-      end
-    end
-  end
-
   describe 'versioning' do
     it 'registers version 0.1.0' do
       expect(tool.version).to eq(Mcp::Tools::Concerns::Constants::VERSIONS[:v0_1_0])
@@ -92,7 +28,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesTool, feature_category: :m
     it 'has correct GraphQL operation for version 0.1.0' do
       operation = tool.graphql_operation
 
-      expect(operation).to include('query GetWorkItemNotes')
+      expect(operation).to include('query getWorkItemNotes')
       expect(operation).to include('workItem(id: $id)')
     end
   end
@@ -330,16 +266,25 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesTool, feature_category: :m
       )
     end
 
-    it 'returns notes data with proper formatting including count' do
+    it 'returns notes data with the full payload shape the tool promises' do
       result = tool.execute
 
       expect(result[:isError]).to be(false)
       expect(result[:content]).to be_an(Array)
       expect(result[:content].first[:type]).to eq('text')
       expect(result[:structuredContent]).to be_a(Hash)
-      expect(result[:structuredContent]).to have_key('count')
-      expect(result[:structuredContent]).to have_key('pageInfo')
-      expect(result[:structuredContent]).to have_key('nodes')
+      expect(result[:structuredContent].keys).to match_array(%w[pageInfo nodes count])
+      expect(result[:structuredContent]['pageInfo'].keys).to match_array(
+        %w[hasNextPage hasPreviousPage startCursor endCursor]
+      )
+
+      node = result[:structuredContent]['nodes'].find { |n| n['body'] == 'First comment' }
+      expect(node.keys).to match_array(
+        %w[id body internal createdAt updatedAt system systemNoteIconName author discussion]
+      )
+      expect(node['author'].keys).to match_array(%w[id name username avatarUrl webUrl])
+      expect(node['author']['username']).to eq(user.username)
+      expect(node['discussion'].keys).to match_array(%w[id])
     end
 
     context 'with pagination parameters' do

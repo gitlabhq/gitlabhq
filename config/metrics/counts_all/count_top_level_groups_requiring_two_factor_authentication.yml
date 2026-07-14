@@ -1,0 +1,20 @@
+---
+key_path: counts.top_level_groups_requiring_two_factor_authentication
+description: Count of top-level groups that have 2FA enforcement enabled
+product_group: authentication
+product_categories:
+- system_access
+value_type: number
+status: active
+milestone: "19.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238911
+time_frame: all
+data_source: database
+data_category: optional
+instrumentation_class: CountTopLevelGroupsRequiringTwoFactorAuthenticationMetric
+performance_indicator_type:
+- lighthouse
+tiers:
+- free
+- premium
+- ultimate

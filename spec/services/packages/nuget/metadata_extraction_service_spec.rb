@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :package_registry do
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:package_file, freeze: false) { build(:package_file, :nuget) }
   let(:package_zip_file) { Zip::File.new(package_file.file) }
   let(:service) { described_class.new(package_zip_file) }

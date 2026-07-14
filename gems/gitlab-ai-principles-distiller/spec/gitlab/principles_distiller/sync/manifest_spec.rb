@@ -10,6 +10,15 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
   let(:tmpdir) { mktmpdir }
   let(:manifest) { described_class.new }
 
+  describe 'TOOLING_PATHS' do
+    it 'excludes the Duo review-instructions file (fences are reconciled separately)' do
+      # The Duo fences are reconciled from merged-master content by the
+      # scheduled reconcile job, not regenerated inside the distillation
+      # tooling branch, so this file must NOT ride along in the tooling MR.
+      expect(described_class::TOOLING_PATHS).not_to include(described_class::DUO_REVIEW_INSTRUCTIONS_PATH)
+    end
+  end
+
   describe '.load_frontmatter_data' do
     subject(:frontmatter_data) { manifest.load_frontmatter_data }
 
@@ -209,6 +218,106 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
     end
   end
 
+  describe '.source_file_exists?' do
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+    end
+
+    context 'when the file exists on disk' do
+      before do
+        FileUtils.mkdir_p(File.join(tmpdir, 'doc'))
+        File.write(File.join(tmpdir, 'doc', 'backend.md'), 'content')
+      end
+
+      it { expect(manifest.source_file_exists?('doc/backend.md')).to be(true) }
+    end
+
+    context 'when the file was converted to a directory with an _index.md' do
+      before do
+        FileUtils.mkdir_p(File.join(tmpdir, 'doc', 'backend'))
+        File.write(File.join(tmpdir, 'doc', 'backend', '_index.md'), 'content')
+      end
+
+      it 'resolves via the _index.md fallback' do
+        expect(manifest.source_file_exists?('doc/backend.md')).to be(true)
+      end
+    end
+
+    context 'when neither the file nor an _index.md exists' do
+      it { expect(manifest.source_file_exists?('doc/missing.md')).to be(false) }
+    end
+  end
+
+  describe '.missing_source_files' do
+    subject(:missing) { manifest.missing_source_files }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      FileUtils.mkdir_p(File.join(tmpdir, 'doc'))
+      FileUtils.mkdir_p(File.join(tmpdir, '.ai'))
+      manifest.data = manifest_data
+    end
+
+    let(:manifest_data) do
+      {
+        'principles' => {
+          'backend' => {
+            'baseline' => '.ai/principles/baselines/backend.md',
+            'sources' => [
+              { 'path' => 'doc/present.md' },
+              { 'path' => 'doc/missing.md' }
+            ]
+          },
+          'qa' => {
+            'sources' => [{ 'path' => 'doc/present.md' }]
+          }
+        },
+        'static_entries' => [
+          { 'path' => '.ai/present-static.md' },
+          { 'path' => '.ai/missing-static.md' }
+        ]
+      }
+    end
+
+    context 'when some referenced paths are missing' do
+      before do
+        File.write(File.join(tmpdir, 'doc', 'present.md'), 'content')
+        File.write(File.join(tmpdir, '.ai', 'present-static.md'), 'content')
+      end
+
+      it 'returns the sorted, de-duplicated list of missing paths including baselines and static entries' do
+        expect(missing).to eq(
+          [
+            '.ai/missing-static.md',
+            '.ai/principles/baselines/backend.md',
+            'doc/missing.md'
+          ]
+        )
+      end
+
+      it 'does not include a path that is shared by multiple principles and exists' do
+        expect(missing).not_to include('doc/present.md')
+      end
+
+      it 'does not include a static entry that exists' do
+        expect(missing).not_to include('.ai/present-static.md')
+      end
+    end
+
+    context 'when every referenced path resolves on disk' do
+      before do
+        File.write(File.join(tmpdir, 'doc', 'present.md'), 'content')
+        File.write(File.join(tmpdir, 'doc', 'missing.md'), 'content')
+        File.write(File.join(tmpdir, '.ai', 'present-static.md'), 'content')
+        File.write(File.join(tmpdir, '.ai', 'missing-static.md'), 'content')
+        FileUtils.mkdir_p(File.join(tmpdir, '.ai', 'principles', 'baselines'))
+        File.write(File.join(tmpdir, '.ai', 'principles', 'baselines', 'backend.md'), 'content')
+      end
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe '.sources_footer' do
     subject(:footer) { manifest.sources_footer(config) }
 
@@ -270,7 +379,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
       content = File.read(claude_skill_path)
 
       expect(content).to include('name: gitlab-coding-principles')
-      expect(content).to include('description: Load all relevant GitLab development principles')
+      expect(content).to include('description: "MUST USE before planning, implementing, refactoring')
     end
 
     it 'includes principle entries from manifest', :aggregate_failures do
@@ -718,6 +827,61 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
     end
   end
 
+  describe '.principle_ping_team?' do
+    before do
+      manifest.data = {
+        'principles' => {
+          'small' => { 'owner_team' => '@a/small' },
+          'large' => { 'owner_team' => '@a/large', 'ping_team' => false }
+        }
+      }
+    end
+
+    it 'defaults to true when ping_team is absent' do
+      expect(manifest.principle_ping_team?('small')).to be(true)
+    end
+
+    it 'returns false when ping_team is explicitly false' do
+      expect(manifest.principle_ping_team?('large')).to be(false)
+    end
+  end
+
+  describe '.team_pings? and .team_display' do
+    before do
+      manifest.data = {
+        'principles' => {
+          'be-a' => { 'owner_team' => '@gitlab-org/maintainers/rails-backend', 'ping_team' => false },
+          'be-b' => { 'owner_team' => '@gitlab-org/maintainers/rails-backend', 'ping_team' => false },
+          'db' => { 'owner_team' => '@gitlab-org/maintainers/database' },
+          'mixed-a' => { 'owner_team' => '@a/mixed', 'ping_team' => false },
+          'mixed-b' => { 'owner_team' => '@a/mixed' }
+        }
+      }
+    end
+
+    context 'when every principle owned by the handle opts out' do
+      it 'does not ping and displays the team_slug', :aggregate_failures do
+        expect(manifest.team_pings?('@gitlab-org/maintainers/rails-backend')).to be(false)
+        expect(manifest.team_display('@gitlab-org/maintainers/rails-backend')).to eq('rails-backend')
+      end
+    end
+
+    context 'when the handle has no opt-out' do
+      it 'pings and displays the raw handle', :aggregate_failures do
+        expect(manifest.team_pings?('@gitlab-org/maintainers/database')).to be(true)
+        expect(manifest.team_display('@gitlab-org/maintainers/database'))
+          .to eq('@gitlab-org/maintainers/database')
+      end
+    end
+
+    context 'when only some principles owned by the handle opt out' do
+      it 'still pings (any opt-in wins)', :aggregate_failures do
+        expect(manifest.team_pings?('@a/mixed')).to be(true)
+        expect(manifest.team_display('@a/mixed')).to eq('@a/mixed')
+      end
+    end
+  end
+
   describe '.group_principles_by_team' do
     before do
       manifest.data = {
@@ -848,6 +1012,287 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
       it 'skips generation without raising' do
         expect { manifest.generate_codeowners }.not_to raise_error
       end
+    end
+  end
+
+  describe '.extract_checklist_body' do
+    it 'returns the section headers and bullets, dropping frontmatter and footer' do
+      content = <<~MD
+        ---
+        source_checksum: abc
+        ---
+        <!-- Auto-generated -->
+
+        # Title
+
+        ## Checklist
+
+        ### Voice and Tone
+
+        - Write in US English.
+
+        ## Authoritative sources
+
+        - doc/development/documentation/styleguide/_index.md
+      MD
+
+      expect(manifest.extract_checklist_body(content)).to eq(
+        "### Voice and Tone\n\n- Write in US English."
+      )
+    end
+
+    it 'returns an empty string when there is no section header' do
+      expect(manifest.extract_checklist_body("---\nx: y\n---\n# Title\n")).to eq('')
+    end
+  end
+
+  describe '.build_duo_fences' do
+    let(:principles_dir) { File.join(tmpdir, '.ai', 'principles', 'distilled') }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      FileUtils.mkdir_p(principles_dir)
+      File.write(File.join(principles_dir, 'documentation.md'), <<~MD)
+        ---
+        source_checksum: sum123
+        distilled_at_sha: sha456
+        ---
+        # Documentation
+
+        ### Voice and Tone
+
+        - Write in US English.
+
+        ## Authoritative sources
+
+        - doc/development/documentation/styleguide/_index.md
+      MD
+
+      manifest.data = {
+        'principles' => {
+          'documentation' => {
+            'group' => 'Documentation',
+            'file_filters' => ['doc/**/*.md'],
+            'sources' => [
+              { 'path' => 'a.md', 'url' => 'https://docs.gitlab.com/a/' },
+              { 'path' => 'b.md', 'url' => 'https://docs.gitlab.com/b/' }
+            ]
+          }
+        }
+      }
+    end
+
+    it 'assembles fence data from the distilled frontmatter and manifest config' do
+      fences = manifest.build_duo_fences(['documentation'])
+
+      expect(fences['documentation']).to eq(
+        name: 'Documentation',
+        file_filters: ['doc/**/*.md'],
+        distilled_body: "### Voice and Tone\n\n- Write in US English.",
+        distilled_at_sha: 'sha456',
+        source_checksum: 'sum123',
+        references: ['a.md', 'b.md']
+      )
+    end
+
+    it 'skips a principle whose distilled file is missing' do
+      expect(manifest.build_duo_fences(['nonexistent'])).to eq({})
+    end
+
+    it 'projects the fence purely from the committed on-disk distilled file' do
+      # Reconciliation is a pure projection of merged master: the fence data
+      # comes only from the committed distilled file's frontmatter and body,
+      # never from any in-memory content.
+      fences = manifest.build_duo_fences(['documentation'])
+
+      expect(fences['documentation']).to include(
+        distilled_at_sha: 'sha456',
+        source_checksum: 'sum123'
+      )
+    end
+  end
+
+  describe '.generate_duo_review_instructions' do
+    let(:duo_dir) { File.join(tmpdir, '.gitlab', 'duo') }
+    let(:duo_path) { File.join(duo_dir, 'mr-review-instructions.yaml') }
+    let(:principles_dir) { File.join(tmpdir, '.ai', 'principles', 'distilled') }
+
+    let(:duo_content) do
+      <<~YAML
+        instructions:
+          # >>> generated: documentation — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
+          # distilled_at_sha: stale
+          # source_checksum: stale
+          - name: Documentation
+            fileFilters:
+              - "doc/**/*.md"
+            instructions: |
+              old body
+          # <<< end generated: documentation
+      YAML
+    end
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      FileUtils.mkdir_p(duo_dir)
+      FileUtils.mkdir_p(principles_dir)
+      File.write(duo_path, duo_content)
+      File.write(File.join(principles_dir, 'documentation.md'), <<~MD)
+        ---
+        source_checksum: fresh
+        distilled_at_sha: fresh
+        ---
+        # Documentation
+
+        ### Voice and Tone
+
+        - Write in US English.
+
+        ## Authoritative sources
+
+        - doc/development/documentation/styleguide/_index.md
+      MD
+
+      manifest.data = {
+        'principles' => {
+          'documentation' => {
+            'group' => 'Documentation',
+            'file_filters' => ['doc/**/*.md'],
+            'sources' => [{ 'path' => 'a.md', 'url' => 'https://docs.gitlab.com/a/' }]
+          }
+        }
+      }
+    end
+
+    it 'refreshes the fenced region from the distilled file and reports the change' do
+      expect(manifest.generate_duo_review_instructions).to be(true)
+
+      content = File.read(duo_path)
+      expect(content).to include('  # distilled_at_sha: fresh')
+      expect(content).to include('      - Write in US English.')
+      expect(content).not_to include('old body')
+    end
+
+    it 'is idempotent and reports no change on the second run' do
+      manifest.generate_duo_review_instructions
+      first = File.read(duo_path)
+
+      expect(manifest.generate_duo_review_instructions).to be(false)
+
+      expect(File.read(duo_path)).to eq(first)
+    end
+
+    it 'skips generation without raising when the file is absent' do
+      FileUtils.rm_f(duo_path)
+      expect(manifest.generate_duo_review_instructions).to be(false)
+    end
+
+    it 'projects the fence purely from the committed distilled file (no overrides accepted)' do
+      # The reconcile job derives fences only from merged-master content, so
+      # the method takes no in-memory overrides and the fence mirrors the
+      # committed distilled file's frontmatter.
+      manifest.generate_duo_review_instructions
+
+      content = File.read(duo_path)
+      expect(content).to include('  # distilled_at_sha: fresh')
+      expect(content).to include('      - Write in US English.')
+      expect(content).not_to include('old body')
+      # The on-disk distilled file is left untouched; only the fence changed.
+      expect(File.read(File.join(principles_dir, 'documentation.md'))).to include('source_checksum: fresh')
+    end
+  end
+
+  describe '.problematic_duo_review_instructions' do
+    let(:duo_dir) { File.join(tmpdir, '.gitlab', 'duo') }
+    let(:duo_path) { File.join(duo_dir, 'mr-review-instructions.yaml') }
+    let(:principles_dir) { File.join(tmpdir, '.ai', 'principles', 'distilled') }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      FileUtils.mkdir_p(duo_dir)
+      FileUtils.mkdir_p(principles_dir)
+      File.write(duo_path, <<~YAML)
+        instructions:
+          # >>> generated: documentation — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
+          # distilled_at_sha: recorded
+          # source_checksum: recorded
+          - name: Documentation
+            fileFilters:
+              - "doc/**/*.md"
+            instructions: |
+              body
+          # <<< end generated: documentation
+      YAML
+
+      manifest.data = {
+        'principles' => {
+          'documentation' => {
+            'group' => 'Documentation',
+            'file_filters' => ['doc/**/*.md'],
+            'sources' => [{ 'path' => 'a.md', 'url' => 'https://docs.gitlab.com/a/' }]
+          }
+        }
+      }
+    end
+
+    def write_distilled(sha:, checksum:)
+      File.write(File.join(principles_dir, 'documentation.md'), <<~MD)
+        ---
+        source_checksum: #{checksum}
+        distilled_at_sha: #{sha}
+        ---
+        ### Voice and Tone
+
+        - x.
+
+        ## Authoritative sources
+
+        - a.md
+      MD
+    end
+
+    it 'reports the principle under stale when the distilled file has drifted' do
+      write_distilled(sha: 'newer', checksum: 'newer')
+
+      result = manifest.problematic_duo_review_instructions
+      expect(result.stale).to eq(['documentation'])
+      expect(result.failing).to eq(['documentation'])
+    end
+
+    it 'reports nothing when the recorded directives match the distilled file' do
+      write_distilled(sha: 'recorded', checksum: 'recorded')
+
+      result = manifest.problematic_duo_review_instructions
+      expect(result.failing).to eq([])
+      expect(result.pending).to eq([])
+      expect(result).to be_clean
+    end
+
+    it 'classifies a fence as pending (not failing) when it is seeded but not yet distilled' do
+      # No distilled file written: the manifest entry exists but distillation
+      # has not run, so the fence is a valid pending seed rather than an orphan.
+      result = manifest.problematic_duo_review_instructions
+      expect(result.pending).to eq(['documentation'])
+      expect(result.orphaned).to eq([])
+      expect(result.failing).to eq([])
+    end
+
+    it 'classifies a fence as orphaned (failing) when it has no manifest entry and no distilled file' do
+      manifest.data = { 'principles' => {} }
+
+      result = manifest.problematic_duo_review_instructions
+      expect(result.orphaned).to eq(['documentation'])
+      expect(result.pending).to eq([])
+      expect(result.failing).to eq(['documentation'])
+    end
+
+    it 'returns an empty result when the file is absent' do
+      FileUtils.rm_f(duo_path)
+
+      result = manifest.problematic_duo_review_instructions
+      expect(result.failing).to eq([])
+      expect(result.pending).to eq([])
+      expect(result).to be_clean
     end
   end
 end

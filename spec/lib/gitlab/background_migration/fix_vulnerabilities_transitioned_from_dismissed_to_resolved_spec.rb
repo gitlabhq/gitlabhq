@@ -234,7 +234,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixVulnerabilitiesTransitionedFromDi
         ].each do |vulnerability|
           expect(latest_note(vulnerability)).to have_attributes(
             project_id: vulnerability.project_id,
-            namespace_id: projects.find(vulnerability.project_id).project_namespace_id,
+            namespace_id: nil,
             system: true,
             note: described_class::COMMENT,
             author_id: security_policy_bot.id
@@ -301,7 +301,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixVulnerabilitiesTransitionedFromDi
         ].each do |vulnerability|
           expect(latest_note(vulnerability)).to have_attributes(
             project_id: vulnerability.project_id,
-            namespace_id: projects.find(vulnerability.project_id).project_namespace_id,
+            namespace_id: nil,
             system: true,
             note: described_class::COMMENT,
             author_id: security_policy_bot.id

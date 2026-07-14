@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'with CI job analytics test data' do |with_pipelines: true|
+RSpec.shared_context 'with CI job analytics test data' do |with_pipelines: true, with_siphon: false|
   let_it_be(:project, freeze: true) { create(:project) }
   let_it_be(:project2, freeze: true) { create(:project) }
   let_it_be(:pipeline, freeze: true) do
@@ -68,14 +68,30 @@ RSpec.shared_context 'with CI job analytics test data' do |with_pipelines: true|
   end
 
   before do
-    insert_ci_builds_to_click_house(
-      successful_fast_builds + successful_slow_builds + failed_builds +
+    all_builds = successful_fast_builds + successful_slow_builds + failed_builds +
       canceled_builds + skipped_builds + other_project_builds
-    )
+
+    insert_ci_builds_to_click_house(all_builds)
 
     if with_pipelines
       insert_ci_builds_to_click_house(ref_builds + source_builds)
       insert_ci_pipelines_to_click_house([ref_pipeline, source_pipeline, pipeline, pipeline1])
+    end
+
+    if with_siphon
+      siphon_builds = all_builds
+      siphon_stages = [stage1, stage2, stage3]
+      siphon_pipelines = [pipeline, pipeline1]
+
+      if with_pipelines
+        siphon_builds += ref_builds + source_builds
+        siphon_stages += [ref_stage, source_stage]
+        siphon_pipelines += [ref_pipeline, source_pipeline]
+      end
+
+      insert_ci_builds_to_siphon(siphon_builds)
+      insert_ci_stages_to_siphon(siphon_stages)
+      insert_ci_pipelines_to_siphon(siphon_pipelines)
     end
   end
 

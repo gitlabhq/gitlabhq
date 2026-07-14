@@ -172,7 +172,7 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
 
       context "when current user does not have access to one of the TODO's target" do
         it 'filters out unauthorized todos' do
-          no_access_project = create(:project, :repository, group: group)
+          no_access_project = create(:project, group: group)
           no_access_merge_request = create(:merge_request, source_project: no_access_project)
           no_access_todo = create(:todo, project: no_access_project, author: author_2, user: john_doe, target: no_access_merge_request)
 

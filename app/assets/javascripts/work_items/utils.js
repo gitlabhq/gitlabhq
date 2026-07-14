@@ -33,11 +33,14 @@ import {
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_NOTIFICATIONS,
   WIDGET_TYPE_NOTES,
+  WIDGET_TYPE_PARTICIPANTS,
+  WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_STATUS,
   WIDGET_TYPE_TIME_TRACKING,
   WIDGET_TYPE_VULNERABILITIES,
   WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_BY_FEATURE_KEY,
 } from './constants';
 import {
   CLOSED_AT_ASC,
@@ -75,6 +78,7 @@ export const findAwardEmojiWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_AWARD_EMOJI);
 
 export const findColorWidget = (workItem) =>
+  workItem?.features?.color ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_COLOR);
 
 export const findCrmContactsWidget = (workItem) =>
@@ -82,15 +86,18 @@ export const findCrmContactsWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_CRM_CONTACTS);
 
 export const findCurrentUserTodosWidget = (workItem) =>
+  workItem?.features?.currentUserTodos ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_CURRENT_USER_TODOS);
 
 export const findCustomFieldsWidget = (workItem) =>
+  workItem?.features?.customFields ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_CUSTOM_FIELDS);
 
 export const findDescriptionWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
 
 export const findDesignsWidget = (workItem) =>
+  workItem?.features?.designs ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESIGNS);
 
 export const findDevelopmentWidget = (workItem) =>
@@ -105,6 +112,7 @@ export const findErrorTrackingWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ERROR_TRACKING);
 
 export const findHealthStatusWidget = (workItem) =>
+  workItem?.features?.healthStatus ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HEALTH_STATUS);
 
 export const findHierarchyWidget = (workItem) =>
@@ -112,6 +120,7 @@ export const findHierarchyWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
 
 export const findIterationWidget = (workItem) =>
+  workItem?.features?.iteration ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ITERATION);
 
 export const findLabelsWidget = (workItem) =>
@@ -119,6 +128,7 @@ export const findLabelsWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
 
 export const findLinkedItemsWidget = (workItem) =>
+  workItem?.features?.linkedItems ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS);
 
 export const findBlockerLinkedItems = (workItem) =>
@@ -145,11 +155,20 @@ export const findNotesWidget = (workItem) =>
   workItem?.features?.notes ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_NOTES);
 
+export const findParticipantsWidget = (workItem) =>
+  workItem?.features?.participants ||
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_PARTICIPANTS);
+
+export const findProgressWidget = (workItem) =>
+  workItem?.features?.progress ||
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_PROGRESS);
+
 export const findStartAndDueDateWidget = (workItem) =>
   workItem?.features?.startAndDueDate ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE);
 
 export const findStatusWidget = (workItem) =>
+  workItem?.features?.status ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_STATUS);
 
 export const findTimeTrackingWidget = (workItem) =>
@@ -157,10 +176,36 @@ export const findTimeTrackingWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_TIME_TRACKING);
 
 export const findVulnerabilitiesWidget = (workItem) =>
+  workItem?.features?.vulnerabilities ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_VULNERABILITIES);
 
 export const findWeightWidget = (workItem) =>
+  workItem?.features?.weight ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
+
+// Builds a widget-type-keyed metadata map from a work item, overlaying migrated `features`
+// over the `widgets[]`-derived map (falls back to `widgets[]` when `features` is absent).
+export const getMetadataWidgetsFromWorkItem = (workItem) => {
+  const metadataWidgets =
+    workItem?.widgets?.reduce((acc, widget) => {
+      if (widget.type) {
+        acc[widget.type] = widget;
+      }
+      return acc;
+    }, {}) || {};
+
+  const { features } = workItem || {};
+  if (!features) {
+    return metadataWidgets;
+  }
+
+  return Object.entries(WIDGET_TYPE_BY_FEATURE_KEY).reduce((acc, [featureKey, widgetType]) => {
+    if (!isEmpty(features[featureKey])) {
+      acc[widgetType] = { type: widgetType, ...features[featureKey] };
+    }
+    return acc;
+  }, metadataWidgets);
+};
 
 export const findHierarchyWidgetChildren = (workItem) =>
   findHierarchyWidget(workItem)?.children?.nodes || [];
@@ -756,5 +801,3 @@ export function sortWorkItems(workItems, sortKey, resolveWorkItemSortValue) {
 export function getSortedWorkItems(workItems, sortKey) {
   return sortWorkItems(workItems, sortKey, getSortValue);
 }
-
-export const isWorkplanTemplate = (name) => Boolean(name?.endsWith('.plan'));

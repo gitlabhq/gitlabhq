@@ -7,12 +7,18 @@ module Gitlab
   module Email
     module Handler
       class ServiceDeskHandler < BaseHandler
-        include ReplyProcessing
-        include Gitlab::Utils::StrongMemoize
+        extend ::Gitlab::Utils::Override
 
-        HANDLER_REGEX        = /\A#{HANDLER_ACTION_BASE_REGEX}-issue-\z/
-        HANDLER_REGEX_LEGACY = /\A(?<project_path>[^\+]*)\z/
-        PROJECT_KEY_PATTERN  = /\A(?<slug>.+)-(?<key>[a-z0-9_]+)\z/
+        include ReplyProcessing
+
+        # Parses an opaque service desk key of the form `<slug>-<key>`. Owned by
+        # the gitlab-email_handler gem so all email key parsing lives in one
+        # place.
+        PROJECT_KEY_PATTERN = ::Gitlab::EmailHandler::Matchers::ServiceDesk::PROJECT_KEY_PATTERN
+
+        def self.gem_handler
+          :service_desk
+        end
 
         def initialize(mail, mail_key, service_desk_key: nil)
           if service_desk_key
@@ -21,12 +27,11 @@ module Gitlab
           end
 
           super(mail, mail_key)
-
-          match_project_slug || match_legacy_project_slug
         end
 
+        override :can_handle?
         def can_handle?
-          ::ServiceDesk.supported? && (project_id || can_handle_legacy_format? || service_desk_key)
+          ::ServiceDesk.supported? && (project_id || project_path || service_desk_key)
         end
 
         def execute
@@ -44,20 +49,6 @@ module Gitlab
           send_thank_you_email unless reply_email?
         end
 
-        def match_project_slug
-          return if mail_key&.include?('/')
-          return unless matched = HANDLER_REGEX.match(mail_key.to_s)
-
-          @project_slug = matched[:project_slug]
-          @project_id   = matched[:project_id]&.to_i
-        end
-
-        def match_legacy_project_slug
-          return unless matched = HANDLER_REGEX_LEGACY.match(mail_key.to_s)
-
-          @project_path = matched[:project_path]
-        end
-
         def metrics_event
           :receive_email_service_desk
         end
@@ -71,7 +62,7 @@ module Gitlab
 
         private
 
-        attr_reader :project_id, :project_path, :service_desk_key
+        attr_reader :service_desk_key
 
         def parent_namespace
           project.project_namespace
@@ -235,10 +226,6 @@ module Gitlab
 
         def cc_addresses
           mail.cc || []
-        end
-
-        def can_handle_legacy_format?
-          project_path && project_path.include?('/') && mail_key.exclude?('+')
         end
 
         def author

@@ -5,11 +5,10 @@ require 'spec_helper'
 RSpec.describe FeatureFlags::HookService, feature_category: :feature_flags do
   describe '#execute_hooks' do
     let_it_be(:namespace) { create(:namespace) }
-    let_it_be(:project) { create(:project, :repository, namespace: namespace) }
+    let_it_be(:project) { create(:project, namespace: namespace) }
     let_it_be(:feature_flag) { create(:operations_feature_flag, project: project) }
     let_it_be(:user) { namespace.first_owner }
 
-    let!(:hook) { create(:project_hook, project: project) }
     let(:hook_data) { double }
 
     subject(:service) { described_class.new(feature_flag, user) }

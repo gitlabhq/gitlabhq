@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProgrammingLanguagesHelper do
+RSpec.describe ProgrammingLanguagesHelper, feature_category: :source_code_management do
   describe '.search_language_placeholder' do
     let(:programming_language) { build(:programming_language, id: 1, name: 'Ruby') }
 

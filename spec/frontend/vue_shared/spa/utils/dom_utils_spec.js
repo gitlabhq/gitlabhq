@@ -2,7 +2,7 @@ import { updateActiveNavigation } from '~/vue_shared/spa/utils/dom_utils';
 
 // Test constants
 const CSS_CLASSES = {
-  activeClass: 'super-sidebar-nav-item-current',
+  activeClass: 'selected',
   hiddenClass: 'gl-hidden',
 };
 

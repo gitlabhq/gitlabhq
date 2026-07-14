@@ -301,7 +301,7 @@ To change this limit on your GitLab Self-Managed instance:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0 [with a flag](../feature_flags/_index.md) named `ci_enforce_throttle_pipelines_creation`. Disabled by default. Enabled on GitLab.com
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0 [with a feature flag](../feature_flags/_index.md) named `ci_enforce_throttle_pipelines_creation`. Disabled by default. Enabled on GitLab.com
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196545) in 18.3.
 
 {{< /history >}}
@@ -408,11 +408,12 @@ To set the maximum number of included files per pipeline:
 
 ## Maximum number of caches per job
 
-{{< details >}}
+{{< history >}}
 
-- Status: Beta
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237685) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 18.10.8, 18.11.5, 19.0.2, and 19.1.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242691) in GitLab 19.2.
 
-{{< /details >}}
+{{< /history >}}
 
 Limit how many [`cache`](../../ci/yaml/_index.md#cache) entries a single CI/CD job can define.
 This limit caps the number of Gitaly calls a job can trigger during pipeline creation when caches use `cache:key:files`.

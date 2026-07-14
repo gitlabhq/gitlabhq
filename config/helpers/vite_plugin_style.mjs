@@ -29,7 +29,6 @@ export function StylePlugin({ shouldWatch = false } = {}) {
 
   const entrypoints = {
     'styles/tailwind.css': path.join(ROOT_PATH, 'app/assets/builds/tailwind.css'),
-    'styles/tailwind_cqs.css': path.join(ROOT_PATH, 'app/assets/builds/tailwind_cqs.css'),
     ...Object.fromEntries(
       Object.entries(resolveCompilationTargetsForVite()).map(([key, value]) => {
         // we must add `styles/` because ViteRuby prepends assets folder to the request if `/` is missing

@@ -277,7 +277,7 @@ The breakdown of spent time displayed is limited to a maximum of 100 entries.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344002) in GitLab 15.11 [with a flag](../../administration/feature_flags/_index.md) named `global_time_tracking_report`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344002) in GitLab 15.11 [with a feature flag](../../administration/feature_flags/_index.md) named `global_time_tracking_report`. Disabled by default.
 - Enabled on GitLab.com in GitLab 16.5.
 
 {{< /history >}}

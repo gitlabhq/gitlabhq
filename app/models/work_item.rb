@@ -455,6 +455,7 @@ class WorkItem < Issue
     track_internal_event(
       'users_creating_work_items',
       user: author,
+      namespace: namespace,
       project: project,
       additional_properties: {
         label: work_item_type.base_type

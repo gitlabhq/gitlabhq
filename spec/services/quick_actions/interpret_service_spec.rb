@@ -1092,7 +1092,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
     # CE does not have multiple assignees
     context 'assign command with multiple assignees' do
-      before do
+      before_all do
         project.add_developer(developer2)
       end
 
@@ -1241,7 +1241,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       # CE does not have multiple reviewers
       context 'assign command with multiple reviewers' do
-        before do
+        before_all do
           project.add_developer(developer2)
         end
 
@@ -1411,12 +1411,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     context 'only group milestones available' do
       let_it_be(:ancestor_group) { create(:group) }
       let_it_be(:group) { create(:group, parent: ancestor_group) }
-      let_it_be(:project, freeze: false) { create(:project, :public, namespace: group) }
+      let_it_be(:project, freeze: false) { create(:project, :public, namespace: group, developers: developer) }
       let_it_be(:milestone) { create(:milestone, group: ancestor_group, title: '10.0') }
-
-      before_all do
-        project.add_developer(developer)
-      end
 
       it_behaves_like 'milestone command' do
         let(:content) { "/milestone %#{milestone.title}" }
@@ -4322,7 +4318,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
     describe '/set_parent command' do
       let_it_be(:parent) { create(:work_item, :issue, project: project) }
-      let_it_be(:work_item) { create(:work_item, :task, project: project) }
+      let_it_be(:work_item) { create(:work_item, :task, :confidential, project: project) }
       let_it_be(:parent_ref) { parent.to_reference(project) }
 
       let(:command) { "/set_parent #{parent_ref}" }
@@ -4480,17 +4476,13 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
   describe '#available_commands' do
     context 'when Guest is creating a new issue' do
-      let_it_be(:guest) { create(:user) }
+      let_it_be(:guest) { create(:user, guest_of: public_project) }
       let_it_be(:developer, freeze: false) { create(:user) }
 
       let(:current_user) { guest }
 
       let(:issue) { build(:issue, project: public_project) }
       let(:service) { described_class.new(container: project, current_user: guest) }
-
-      before_all do
-        public_project.add_guest(guest)
-      end
 
       it 'includes commands to set metadata' do
         # milestone action is only available when project has a milestone

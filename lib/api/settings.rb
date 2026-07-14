@@ -93,6 +93,7 @@ module API
       optional :domain_denylist_enabled, type: Boolean, desc: 'Enable domain denylist for sign ups'
       optional :domain_denylist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com'
       optional :domain_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com'
+      optional :outbound_local_requests_whitelist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'List of trusted domains or IP addresses to which local requests are allowed when local requests for webhooks and integrations are disabled.'
       optional :email_otp_enabled, type: Boolean, desc: 'Enable Email-based one-time passwords (OTP) as a multi-factor authentication method.'
       optional :iframe_rendering_enabled, type: Boolean, desc: 'Allow rendering of iframes in Markdown.'
       optional :iframe_rendering_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Allowed iframe src host[:port] entries. Enter multiple entries separated by commas or on separate lines.'
@@ -244,9 +245,11 @@ module API
       optional :project_runner_token_expiration_interval, type: Integer, desc: 'Token expiration interval for project runners, in seconds'
       optional :pipeline_limit_per_project_user_sha, type: Integer, desc: "Maximum number of pipeline creation requests allowed per minute per user and commit. Set to 0 for unlimited requests per minute."
       optional :pipeline_limit_per_user, type: Integer, desc: "Maximum number of pipeline creation requests allowed per minute per user. Set to 0 for unlimited requests per minute."
+      optional :ci_lint_limit_per_user, type: Integer, desc: "Maximum number of CI Lint requests allowed per minute per user. Set to 0 for unlimited requests per minute."
       optional :jira_connect_application_key, type: String, desc: "ID of the OAuth application used to authenticate with the GitLab for Jira Cloud app."
       optional :jira_connect_public_key_storage_enabled, type: Boolean, desc: 'Enable public key storage for the GitLab for Jira Cloud app.'
       optional :jira_connect_proxy_url, type: String, desc: "URL of the GitLab instance used as a proxy for the GitLab for Jira Cloud app."
+      optional :jira_forge_app_id, type: String, desc: "Atlassian Forge app ID (ARI) of the GitLab for Jira Cloud app, used to verify inbound Forge Invocation Tokens."
       optional :bulk_import_concurrent_pipeline_batch_limit, type: Integer, desc: 'Maximum simultaneous direct transfer batch exports to process.'
       optional :concurrent_relation_batch_export_limit, type: Integer, desc: 'Maximum number of simultaneous batch export jobs to process.'
       optional :bulk_import_enabled, type: Boolean, desc: 'Enable migrating GitLab groups and projects by direct transfer'
@@ -284,6 +287,13 @@ module API
       optional :enable_language_server_restrictions, type: Boolean, desc: 'Enables enforcing language server restrictions'
       optional :minimum_language_server_version, type: String, desc: 'The minimum language server version to accept requests from'
       optional :terraform_state_encryption_enabled, type: Boolean, desc: 'Enable encryption for Terraform state files'
+      optional :logging_field_schema_version, type: Integer,
+        values: ApplicationSetting::LOGGING_FIELD_SCHEMA_VERSIONS,
+        desc: 'Logging field schema version (v0, v1, …). Cannot be downgraded.'
+      optional :logging_field_dual_emit_target, type: Integer,
+        values: ApplicationSetting::LOGGING_FIELD_SCHEMA_VERSIONS.reject(&:zero?),
+        allow_blank: true,
+        desc: 'Version to dual-emit alongside schema_version. Must be strictly greater than schema_version, or omit/null to disable.'
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",
@@ -294,7 +304,7 @@ module API
 
       use :optional_params_ee
 
-      optional(*Helpers::SettingsHelpers.optional_attributes)
+      optional(*Helpers::SettingsHelpers.optional_attributes) # rubocop:disable API/ParameterDescription -- dynamic splat of optional_attributes, cannot add static desc
       at_least_one_of(*Helpers::SettingsHelpers.optional_attributes)
     end
     route_setting :authorization, permissions: :update_application_setting, boundary_type: :instance
@@ -348,6 +358,11 @@ module API
       attrs.delete(:hashed_storage_enabled) if attrs.has_key?(:hashed_storage_enabled)
 
       attrs = filter_attributes_using_license(attrs)
+
+      unless Feature.enabled?(:logging_field_variant_versioning, :instance)
+        attrs.delete(:logging_field_schema_version)
+        attrs.delete(:logging_field_dual_emit_target)
+      end
 
       if ApplicationSettings::UpdateService.new(current_settings, current_user, attrs).execute
         present current_settings, with: Entities::ApplicationSetting

@@ -1,10 +1,10 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { n__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
+  name: 'ShowEdited',
   components: {
     TimeAgoTooltip,
     GlLink,

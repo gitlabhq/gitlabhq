@@ -5,18 +5,18 @@ require 'spec_helper'
 RSpec.describe 'Timelogs', feature_category: :team_planning do
   include GraphqlHelpers
 
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:group, freeze: false) { create(:group, reporters: user) }
-  let_it_be(:project, freeze: false) { create(:project, group: group) }
-  let_it_be(:user_project, freeze: false) { create(:project, reporters: user) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be(:group) { create(:group, reporters: user) }
+  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:user_project) { create(:project, reporters: user) }
 
-  let_it_be(:user_issue, freeze: false) { create(:issue, project: user_project) }
-  let_it_be(:group_issue, freeze: false) { create(:issue, project: create(:project, group: group)) }
-  let_it_be(:project_issue, freeze: false) { create(:issue, project: project) }
+  let_it_be_with_reload(:user_issue) { create(:issue, project: user_project) }
+  let_it_be_with_reload(:group_issue) { create(:issue, project: create(:project, group: group)) }
+  let_it_be_with_reload(:project_issue) { create(:issue, project: project) }
 
-  let_it_be(:user_timelog, freeze: false) { create(:timelog, user: user, issue: user_issue) }
-  let_it_be(:group_timelog, freeze: false) { create(:timelog, issue: group_issue) }
-  let_it_be(:project_timelog, freeze: false) { create(:timelog, issue: project_issue) }
+  let_it_be_with_reload(:user_timelog) { create(:timelog, user: user, issue: user_issue) }
+  let_it_be_with_reload(:group_timelog) { create(:timelog, issue: group_issue) }
+  let_it_be_with_reload(:project_timelog) { create(:timelog, issue: project_issue) }
 
   let(:params) { {} }
   let(:group_id) { "gid://gitlab/Group/#{group.id}" }

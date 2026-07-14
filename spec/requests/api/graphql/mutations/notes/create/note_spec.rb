@@ -31,6 +31,16 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
 
   it_behaves_like 'a Note mutation when the user does not have permission'
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_note do
+    let(:user) { developer }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql_mutation(
+        graphql_mutation(:create_note, { noteable_id: global_id_of(noteable).to_s, body: 'a note' }, 'errors'),
+        token: { personal_access_token: pat })
+    end
+  end
+
   context 'when the user has permission' do
     let(:current_user) { developer }
 

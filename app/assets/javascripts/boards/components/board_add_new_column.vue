@@ -16,6 +16,7 @@ import { setError } from '../graphql/cache_updates';
 import { getListByTypeId } from '../boards_util';
 
 export default {
+  name: 'BoardAddNewColumn',
   i18n: {
     value: __('Value'),
     noResults: __('No matching results'),
@@ -29,7 +30,7 @@ export default {
   directives: {
     GlTooltip,
   },
-  inject: ['scopedLabelsAvailable', 'issuableType', 'fullPath', 'boardType'],
+  inject: ['issuableType', 'fullPath', 'boardType'],
   props: {
     listQueryVariables: {
       type: Object,
@@ -49,6 +50,7 @@ export default {
       default: null,
     },
   },
+  emits: ['filter-items', 'hide', 'highlight-list', 'setAddColumnFormVisibility'],
   data() {
     return {
       selectedId: null,

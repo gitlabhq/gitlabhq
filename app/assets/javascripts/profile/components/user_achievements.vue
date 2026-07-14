@@ -52,6 +52,7 @@ export default {
         return {
           id: `user-achievement-${id}`,
           name,
+          createdAt,
           timeAgo: this.timeFormatted(createdAt),
           avatarUrl: avatarUrl || gon.gitlab_logo,
           description,
@@ -124,7 +125,7 @@ export default {
           <div>
             <gl-sprintf :message="achievementAwardedMessage(userAchievement)">
               <template #timeAgo>
-                <span>{{ userAchievement.timeAgo }}</span>
+                <time :datetime="userAchievement.createdAt">{{ userAchievement.timeAgo }}</time>
               </template>
               <template v-if="userAchievement.namespace" #namespace>
                 <a :href="userAchievement.namespace.webUrl">{{

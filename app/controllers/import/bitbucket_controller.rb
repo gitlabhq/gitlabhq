@@ -58,15 +58,13 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def create
-    bitbucket_client = Bitbucket::Client.new(credentials)
-
     repo_id = params[:repo_id].to_s
     name = repo_id.gsub('___', '/')
-    repo = bitbucket_client.repo(name)
+    repo = client.repo(name)
     project_name = params[:new_name].presence || repo.name
 
     repo_owner = repo.owner
-    repo_owner = current_user.username if repo_owner == bitbucket_client.user.username
+    repo_owner = current_user.username if repo_owner == client.user.username
     namespace_path = params[:new_namespace].presence || repo_owner
     target_namespace = find_or_create_namespace(namespace_path, current_user)
 
@@ -81,7 +79,7 @@ class Import::BitbucketController < Import::BaseController
     if current_user.can?(:import_projects, target_namespace)
       # The token in a session can be expired, we need to get most recent one because
       # Bitbucket::Connection class refreshes it.
-      session[:bitbucket_token] = bitbucket_client.connection.token
+      session[:bitbucket_token] = client.connection.token
 
       project = Gitlab::BitbucketImport::ProjectCreator.new(
         repo,
@@ -157,7 +155,7 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def client
-    @client ||= Bitbucket::Client.new(credentials)
+    @client ||= Bitbucket::Client.new(credentials.merge(client_options), http_client: Import::Clients::HTTP)
   end
 
   def bitbucket_repos
@@ -207,6 +205,15 @@ class Import::BitbucketController < Import::BaseController
 
   def options
     OmniAuth::Strategies::Bitbucket.default_options[:client_options].to_h.deep_symbolize_keys
+  end
+
+  # DI options for Bitbucket::Client - not persisted with credentials.
+  def client_options
+    {
+      logger: Gitlab::BitbucketImport::Logger,
+      app_id: provider.app_id,
+      app_secret: provider.app_secret
+    }
   end
 
   def verify_bitbucket_import_enabled

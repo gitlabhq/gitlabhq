@@ -29,17 +29,16 @@ module Gitlab
 
       # project_id - The ID of the GitLab project to import the data into.
       def perform(project_id)
-        info(project_id, message: 'starting stage')
-
         project = find_project(project_id)
+        info(project_id, message: 'starting stage', Labkit::Fields::GL_ORGANIZATION_ID => project&.organization_id)
 
-        return unless project
+        return unless project&.import_state&.status == 'started'
 
         Import::RefreshImportJidWorker.perform_in_the_future(project_id, jid)
 
         import(project)
 
-        info(project_id, message: 'stage finished')
+        info(project_id, message: 'stage finished', Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id)
       rescue OAuth2::Error => e
         fail_import_for_non_retryable_error(project_id, e)
       rescue StandardError => e
@@ -54,11 +53,7 @@ module Gitlab
       end
 
       def find_project(id)
-        # If the project has been marked as failed we want to bail out
-        # automatically.
-        # rubocop: disable CodeReuse/ActiveRecord
-        Project.joins_import_state.where(import_state: { status: :started }).find_by_id(id)
-        # rubocop: enable CodeReuse/ActiveRecord
+        Project.find_by_id(id)
       end
 
       GONE_MESSAGE = 'The requested resource is no longer available. The repository may have been deleted ' \
@@ -103,7 +98,7 @@ module Gitlab
         extra.merge(
           project_id: project_id,
           import_stage: self.class.name
-        )
+        ).compact
       end
     end
   end

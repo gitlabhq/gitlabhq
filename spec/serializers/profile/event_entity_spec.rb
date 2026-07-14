@@ -3,10 +3,35 @@
 require 'spec_helper'
 
 RSpec.describe Profile::EventEntity, feature_category: :user_profile do
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:group, freeze: false) { create(:group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needs a persisted record for the serializer
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:project, freeze: false) { build(:project_empty_repo, group: group) }
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:user, freeze: false) { create(:user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needs persisted user for merge_request author and event ownership
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project, target_project: project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needs persisted merge request for note association
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:note, freeze: false) { build(:note_on_merge_request, noteable: merge_request, project: project) }
 
   let(:target_user) { user }
@@ -16,7 +41,7 @@ RSpec.describe Profile::EventEntity, feature_category: :user_profile do
 
   subject { entity.as_json }
 
-  before do
+  before_all do
     group.add_maintainer(user)
   end
 

@@ -1,7 +1,7 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: リソースグループAPI
 ---
 
@@ -12,9 +12,11 @@ title: リソースグループAPI
 
 {{< /details >}}
 
-このAPIを使用して、[resource groups](../ci/resource_groups/_index.md)を操作します。
+APIを使用して[リソースグループ](../ci/resource_groups/_index.md)を操作します。
 
-## プロジェクトのすべてのresource groupsを取得します {#get-all-resource-groups-for-a-project}
+## すべてのリソースグループを一覧表示 {#list-all-resource-groups}
+
+指定されたプロジェクトのすべてのリソースグループを一覧表示します。
 
 ```plaintext
 GET /projects/:id/resource_groups
@@ -25,11 +27,12 @@ GET /projects/:id/resource_groups
 | `id`      | 整数または文字列     | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://gitlab.example.com/api/v4/projects/1/resource_groups"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/resource_groups"
 ```
 
-レスポンス例
+応答の例
 
 ```json
 [
@@ -43,7 +46,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 特定のリソースグループを取得します {#get-a-specific-resource-group}
+## リソースグループを取得する {#retrieve-a-resource-group}
+
+プロジェクトの指定されたリソースグループを取得します。
 
 ```plaintext
 GET /projects/:id/resource_groups/:key
@@ -52,11 +57,12 @@ GET /projects/:id/resource_groups/:key
 | 属性 | 型    | 必須 | 説明         |
 |-----------|---------|----------|---------------------|
 | `id`      | 整数または文字列     | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `key`     | 文字列  | はい      | URLエンコードされたキーのリソースグループ。たとえば、`resource%5Fa`の代わりに`resource_a`を使用します。 |
+| `key`     | 文字列  | はい      | リソースグループのURLエンコードされたキー。例えば、`resource%5Fa`の代わりに`resource_a`を使用します。 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://gitlab.example.com/api/v4/projects/1/resource_groups/production"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/resource_groups/production"
 ```
 
 レスポンス例
@@ -71,13 +77,15 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## 特定のリソースグループの現在のジョブを取得します {#get-current-job-for-a-specific-resource-group}
+## リソースグループの現在のジョブを取得する {#retrieve-current-job-for-a-resource-group}
 
 {{< history >}}
 
-- [導入](https://gitlab.com/gitlab-org/gitlab/-/issues/572135) GitLab 18.6。
+- GitLab 18.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/572135)されました。
 
 {{< /history >}}
+
+プロジェクト内の指定されたリソースグループの現在のジョブを取得します。
 
 ```plaintext
 GET /projects/:id/resource_groups/:key/current_job
@@ -86,10 +94,12 @@ GET /projects/:id/resource_groups/:key/current_job
 | 属性 | 型    | 必須 | 説明         |
 |-----------|---------|----------|---------------------|
 | `id`      | 整数または文字列     | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `key`     | 文字列  | はい      | URLエンコードされたキーのリソースグループ。たとえば、`resource%5Fa`の代わりに`resource_a`を使用します。 |
+| `key`     | 文字列  | はい      | リソースグループのURLエンコードされたキー。例えば、`resource%5Fa`の代わりに`resource_a`を使用します。 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/current_job"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/current_job"
 ```
 
 レスポンス例
@@ -169,7 +179,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 }
 ```
 
-## 特定のリソースグループの今後のジョブを一覧表示します {#list-upcoming-jobs-for-a-specific-resource-group}
+## 特定のリソースグループの今後のジョブを一覧表示する {#list-upcoming-jobs-for-a-specific-resource-group}
 
 ```plaintext
 GET /projects/:id/resource_groups/:key/upcoming_jobs
@@ -178,11 +188,12 @@ GET /projects/:id/resource_groups/:key/upcoming_jobs
 | 属性 | 型    | 必須 | 説明         |
 |-----------|---------|----------|---------------------|
 | `id`      | 整数または文字列     | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `key`     | 文字列  | はい      | URLエンコードされたキーのリソースグループ。たとえば、`resource%5Fa`の代わりに`resource_a`を使用します。 |
+| `key`     | 文字列  | はい      | リソースグループのURLエンコードされたキー。例えば、`resource%5Fa`の代わりに`resource_a`を使用します。 |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/upcoming_jobs"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/upcoming_jobs"
 ```
 
 レスポンス例
@@ -264,11 +275,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 既存のresource groupsを編集します {#edit-an-existing-resource-group}
+## リソースグループを更新する {#update-a-resource-group}
 
-既存のresource groupsのプロパティを更新します。
+既存のリソースグループのプロパティを更新します。
 
-resource groupsが正常に更新された場合は、`200`が返されます。エラーが発生した場合は、ステータスコード`400`が返されます。
+リソースグループが正常に更新された場合、`200`が返されます。エラーが発生した場合は、ステータスコードが`400`として返されます。
 
 ```plaintext
 PUT /projects/:id/resource_groups/:key
@@ -277,8 +288,8 @@ PUT /projects/:id/resource_groups/:key
 | 属性      | 型              | 必須 | 説明 |
 |----------------|-------------------|----------|-------------|
 | `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
-| `key`          | 文字列            | はい      | URLエンコードされたキーのリソースグループ。たとえば、`resource%5Fa`の代わりに`resource_a`を使用します。 |
-| `process_mode` | 文字列            | いいえ       | resource groupsの処理モード。`unordered`、`oldest_first`、`newest_first`、`newest_ready_first`のいずれかです。詳細については、[process modes](../ci/resource_groups/_index.md#process-modes)をお読みください。 |
+| `key`          | 文字列            | はい      | リソースグループのURLエンコードされたキー。例えば、`resource%5Fa`の代わりに`resource_a`を使用します。 |
+| `process_mode` | 文字列            | いいえ       | リソースグループの処理モード。`unordered`、`oldest_first`、`newest_first`、`newest_ready_first`のいずれかです。詳細については、[処理モード](../ci/resource_groups/_index.md#process-modes)を参照してください。 |
 
 ```shell
 curl --request PUT \
@@ -287,7 +298,7 @@ curl --request PUT \
      --url "https://gitlab.example.com/api/v4/projects/1/resource_groups/production"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

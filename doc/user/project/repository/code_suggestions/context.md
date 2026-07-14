@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: AI Coding
+group: DAP Repository Flows
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Code Suggestions contextual awareness
 ---
@@ -55,8 +55,8 @@ You can change whether or not Code Suggestions uses other files as context.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.1 [with a flag](../../../../administration/feature_flags/_index.md) named `advanced_context_resolver`. Disabled by default.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_context`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.1 [with a feature flag](../../../../administration/feature_flags/_index.md) named `advanced_context_resolver`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a feature flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_context`. Disabled by default.
 - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab for VS Code 4.20.0.
 - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/462) in GitLab Duo for JetBrains 2.7.0.
 - [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/merge_requests/152) to the GitLab Neovim plugin on July 16, 2024.
@@ -108,7 +108,7 @@ To change open files being used as context:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.9 [with a flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_include_context_imports`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.9 [with a feature flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_include_context_imports`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.11.
 - Feature flag `code_suggestions_include_context_imports` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/536129) in GitLab 18.0.
 

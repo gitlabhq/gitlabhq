@@ -50,7 +50,6 @@ describe('wikis/components/wiki_header', () => {
         showEditButton: true,
         showRestoreVersionButton: false,
         wikiUrl: 'http://wiki.url',
-        editButtonUrl: 'http://edit.url',
         lastVersion: '2024-06-03T01:53:28.000Z',
         pageVersion: {
           author_name: 'Test author',

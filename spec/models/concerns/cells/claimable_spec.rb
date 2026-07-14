@@ -506,6 +506,20 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         source: a_hash_including(type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS)
       ))
     end
+
+    context 'when an attribute value is blank' do
+      it 'excludes nil values' do
+        instance.path = nil
+
+        expect(instance.cells_claims_metadata).to be_empty
+      end
+
+      it 'excludes empty string values' do
+        instance.path = ''
+
+        expect(instance.cells_claims_metadata).to be_empty
+      end
+    end
   end
 
   describe '#cells_claims_default_metadata' do
@@ -736,6 +750,20 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         expect(conditional_instance.build_destroy_metadata_for_worker(:path)).to be_nil
       end
     end
+
+    context 'when the attribute value is blank' do
+      it 'returns nil for nil' do
+        instance.path = nil
+
+        expect(instance.build_destroy_metadata_for_worker(:path)).to be_nil
+      end
+
+      it 'returns nil for empty string' do
+        instance.path = ''
+
+        expect(instance.build_destroy_metadata_for_worker(:path)).to be_nil
+      end
+    end
   end
 
   describe '#cells_claims_metadata_for_attribute' do
@@ -781,6 +809,20 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
           bucket: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: instance.path },
           subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id }
         )
+      end
+    end
+
+    context 'when the attribute value is blank' do
+      it 'returns nil for nil' do
+        instance.path = nil
+
+        expect(instance.cells_claims_metadata_for_attribute(:path)).to be_nil
+      end
+
+      it 'returns nil for empty string' do
+        instance.path = ''
+
+        expect(instance.cells_claims_metadata_for_attribute(:path)).to be_nil
       end
     end
   end

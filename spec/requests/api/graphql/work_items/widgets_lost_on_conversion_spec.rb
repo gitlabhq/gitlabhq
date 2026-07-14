@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Query.project.workItemTypes.unavailableWidgetsOnConversion', feature_category: :team_planning do
   include GraphqlHelpers
 
-  let_it_be(:group, freeze: false) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, group: group) }
-  let_it_be(:current_user, freeze: false) { create(:user, developer_of: group) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:current_user) { create(:user, developer_of: group) }
 
   let_it_be(:source_type) { build(:work_item_system_defined_type, :ticket) }
   let_it_be(:target_type) { build(:work_item_system_defined_type, :incident) }

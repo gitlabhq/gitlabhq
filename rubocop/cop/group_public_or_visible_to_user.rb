@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-#
+
 module RuboCop
   module Cop
     # Cop that denylists the usage of Group.public_or_visible_to_user

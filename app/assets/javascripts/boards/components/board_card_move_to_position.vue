@@ -32,6 +32,7 @@ export default {
       required: true,
     },
   },
+  emits: ['moveToPosition'],
   computed: {
     // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
     tracking() {

@@ -5,18 +5,35 @@ module Gitlab
     module Handler
       class BaseHandler
         include ::Gitlab::Loggable
+        include ::Gitlab::Utils::StrongMemoize
 
         attr_reader :mail, :mail_key
 
-        HANDLER_ACTION_BASE_REGEX = /(?<project_slug>.+)-(?<project_id>\d+)/
+        # The gitlab-email_handler matcher name for this handler. Subclasses
+        # that delegate parsing to the gem override this.
+        def self.gem_handler
+          nil
+        end
 
         def initialize(mail, mail_key)
           @mail = mail
           @mail_key = mail_key
         end
 
+        # Parses the mail key using the gitlab-email_handler gem matcher for
+        # this handler. Returns a Gitlab::EmailHandler::Identification or nil.
+        # Subclasses declare their matcher via `gem_handler`.
+        def identification
+          return unless self.class.gem_handler
+
+          ::Gitlab::EmailHandler::Identifier.for_handler(self.class.gem_handler, mail_key.to_s)
+        end
+        strong_memoize_attr :identification
+
+        # A handler can handle the mail when its gem matcher successfully
+        # identifies the key. Handlers with different criteria override this.
         def can_handle?
-          raise NotImplementedError
+          !identification.nil?
         end
 
         def execute

@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration do
   let_it_be_with_reload(:project) { create_default(:project, :repository) }
-  let_it_be(:repository, freeze: false) { project.repository }
+
+  let(:repository) { project.repository }
 
   subject(:schedule) { build(:ci_pipeline_schedule, project: project) }
 
@@ -145,6 +146,11 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
   end
 
   describe '.owned_by' do
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:user, freeze: false) { create(:user) }
     let_it_be(:owned_pipeline_schedule, freeze: false) { create(:ci_pipeline_schedule, owner: user, project: project) }
     let_it_be(:other_pipeline_schedule, freeze: false) { create(:ci_pipeline_schedule, project: project) }
@@ -157,6 +163,11 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
   end
 
   describe '.for_project' do
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:project_pipeline_schedule, freeze: false) { create(:ci_pipeline_schedule, project: project) }
     let_it_be(:other_pipeline_schedule, freeze: false) { create(:ci_pipeline_schedule) }
 
@@ -299,6 +310,11 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
   end
 
   describe '#job_variables' do
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:pipeline_schedule, freeze: false) { create(:ci_pipeline_schedule, project: project) }
 
     let_it_be(:pipeline_schedule_variables, freeze: false) do
@@ -409,6 +425,11 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
 
   context 'loose foreign key on ci_pipeline_schedules.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:parent, freeze: false) { create(:project, :repository) }
       let!(:model) { create(:ci_pipeline_schedule, project: parent) }
     end
@@ -545,6 +566,11 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
   end
 
   describe '.grouped_by_active' do
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:active_schedule_1, freeze: false)   { create(:ci_pipeline_schedule, active: true, project: project) }
     let_it_be(:active_schedule_2, freeze: false)   { create(:ci_pipeline_schedule, active: true, project: project) }
     let_it_be(:inactive_schedule_1, freeze: false) { create(:ci_pipeline_schedule, active: false, project: project) }

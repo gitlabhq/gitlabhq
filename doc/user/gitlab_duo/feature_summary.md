@@ -3,7 +3,7 @@ stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: AI-native features and functionality.
-title: GitLab Duo features
+title: GitLab Duo Non-Agentic features
 ---
 
 {{< details >}}
@@ -32,10 +32,10 @@ are available on GitLab Self-Managed only.
 |---------|----------|---------|----------------|--------------------------|
 | [Code Suggestions](../project/repository/code_suggestions/_index.md) | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [GitLab Duo Non-Agentic Chat](../gitlab_duo_chat/_index.md) | {{< no >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| [Code Explanation](../gitlab_duo_chat/examples.md#explain-selected-code) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Code Explanation](../gitlab_duo_chat/examples.md#explain-selected-code) in IDEs | {{< no >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) in IDEs | {{< no >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide) in IDEs | {{< no >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide) in IDEs | {{< no >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Code Explanation](../project/repository/code_explain.md) in GitLab UI | {{< no >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-gitlab-duo-chat) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Code Review<br>](code_review.md) <sup>1</sup> | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |

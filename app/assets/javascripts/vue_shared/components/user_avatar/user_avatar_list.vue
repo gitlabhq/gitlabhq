@@ -39,6 +39,7 @@ export default {
       default: false,
     },
   },
+  emits: ['collapsed', 'expanded', 'load-more'],
   data() {
     return {
       isExpanded: false,

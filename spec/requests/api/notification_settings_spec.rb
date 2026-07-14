@@ -63,7 +63,7 @@ RSpec.describe API::NotificationSettings, feature_category: :team_planning do
     end
 
     it_behaves_like 'authorizing granular token permissions', :read_notification_setting do
-      let(:boundary_object) { group }
+      let(:boundary_object) { :user }
       let(:request) do
         get api("/groups/#{group.id}/notification_settings", personal_access_token: pat)
       end
@@ -83,7 +83,7 @@ RSpec.describe API::NotificationSettings, feature_category: :team_planning do
     end
 
     it_behaves_like 'authorizing granular token permissions', :update_notification_setting do
-      let(:boundary_object) { group }
+      let(:boundary_object) { :user }
       let(:request) do
         put api("/groups/#{group.id}/notification_settings", personal_access_token: pat), params: { level: 'watch' }
       end
@@ -104,7 +104,7 @@ RSpec.describe API::NotificationSettings, feature_category: :team_planning do
     end
 
     it_behaves_like 'authorizing granular token permissions', :read_notification_setting do
-      let(:boundary_object) { project }
+      let(:boundary_object) { :user }
       let(:request) do
         get api("/projects/#{project.id}/notification_settings", personal_access_token: pat)
       end
@@ -127,7 +127,7 @@ RSpec.describe API::NotificationSettings, feature_category: :team_planning do
     end
 
     it_behaves_like 'authorizing granular token permissions', :update_notification_setting do
-      let(:boundary_object) { project }
+      let(:boundary_object) { :user }
       let(:request) do
         put api("/projects/#{project.id}/notification_settings", personal_access_token: pat)
       end

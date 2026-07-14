@@ -25,7 +25,7 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
     def edit_and_commit(commit_changes: true, is_diff: false)
       if is_diff
         first('.js-diff-more-actions').click
-        click_link('Edit in single-file editor')
+        click_link('Edit single file')
       else
         edit_in_single_file_editor
       end

@@ -65,4 +65,36 @@ RSpec.describe Banzai::Filter::AsciiDocSanitizationFilter, feature_category: :wi
     result = filter('<div id="toc" class="toc">foo</div>').to_html
     expect(result).to eq('<div class="toc">foo</div>')
   end
+
+  describe '#customize_allowlist' do
+    let(:filter) { described_class.new('') }
+
+    it 'customizes the allowlist with required elements and attributes' do
+      allowlist = {
+        elements: [],
+        attributes: {
+          'pre' => ['existing-attr'],
+          'div' => ['existing-div-attr'],
+          'a' => ['href']
+        },
+        transformers: []
+      }
+
+      result = filter.send(:customize_allowlist, allowlist)
+
+      expect(result[:elements]).to include('mark')
+      expect(result[:attributes]['pre']).to include('data-lang')
+      expect(result[:attributes]['span']).to eq(%w[class])
+      expect(result[:attributes]['a']).to include('id', 'class')
+      expect(result[:attributes]['div']).to include('id', 'class')
+
+      # Test the actual headers that are present (h2-h6, not h1)
+      expect(result[:attributes]).to have_key('h2')
+      expect(result[:attributes]).to have_key('h3')
+      expect(result[:attributes]['h2']).to eq(%w[id])
+      expect(result[:attributes]['h3']).to eq(%w[id])
+
+      expect(result[:transformers].length).to eq(2)
+    end
+  end
 end

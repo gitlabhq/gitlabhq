@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Admin::BatchedBackgroundOperations, feature_category: :database do
-  let(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin) }
 
   describe 'GET /admin/batched_background_operations/:id' do
     let_it_be(:operation) { create(:background_operation_worker_cell_local) }
@@ -195,6 +195,160 @@ RSpec.describe API::Admin::BatchedBackgroundOperations, feature_category: :datab
 
           expect(json_response.count).to eq(1)
           expect(json_response.first['id']).to eq(my_job.external_id)
+        end
+      end
+    end
+  end
+
+  describe 'PUT /admin/batched_background_operations/:id/stop' do
+    let(:operation) { create(:background_operation_worker_cell_local, :active) }
+    let(:params) { {} }
+    let(:path) { "/admin/batched_background_operations/#{operation.id}/stop" }
+
+    it_behaves_like "PUT request permissions for admin mode"
+
+    it_behaves_like 'authorizing granular token permissions', :stop_batched_background_operation do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        put api(path, personal_access_token: pat), params: params
+      end
+    end
+
+    subject(:stop) do
+      put api(path, admin, admin_mode: true), params: params
+    end
+
+    context 'when is an admin user' do
+      it 'stops the batched background operation' do
+        stop
+
+        aggregate_failures "testing response" do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['id']).to eq(operation.external_id)
+          expect(json_response['status']).to eq('stopped')
+        end
+      end
+
+      context 'when the operation does not exist' do
+        it 'returns not found' do
+          put api("/admin/batched_background_operations/#{non_existing_record_id}/stop", admin, admin_mode: true)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when the operation cannot be stopped' do
+        let(:operation) { create(:background_operation_worker_cell_local, :finished) }
+
+        it 'returns 422', :aggregate_failures do
+          stop
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to include('You can stop only')
+        end
+      end
+
+      context 'when multiple databases are enabled' do
+        let(:ci_model) { Ci::ApplicationRecord }
+        let(:params) { { database: :ci } }
+
+        before do
+          skip_if_multiple_databases_not_setup(:ci)
+        end
+
+        it 'uses the correct connection' do
+          expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(ci_model.connection).and_yield
+
+          stop
+        end
+      end
+
+      context 'when the database name does not exist' do
+        let(:params) { { database: :wrong_database } }
+
+        it 'returns bad request', :aggregate_failures do
+          stop
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(response.body).to include('database does not have a valid value')
+        end
+      end
+    end
+  end
+
+  describe 'PUT /admin/batched_background_operations/:id/restart' do
+    let(:operation) { create(:background_operation_worker_cell_local, :stopped) }
+    let(:params) { {} }
+    let(:path) { "/admin/batched_background_operations/#{operation.id}/restart" }
+
+    it_behaves_like "PUT request permissions for admin mode"
+
+    it_behaves_like 'authorizing granular token permissions', :restart_batched_background_operation do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        put api(path, personal_access_token: pat), params: params
+      end
+    end
+
+    subject(:restart) do
+      put api(path, admin, admin_mode: true), params: params
+    end
+
+    context 'when is an admin user' do
+      it 'restarts the batched background operation' do
+        restart
+
+        aggregate_failures "testing response" do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['id']).to eq(operation.external_id)
+          expect(json_response['status']).to eq('active')
+        end
+      end
+
+      context 'when the operation does not exist' do
+        it 'returns not found' do
+          put api("/admin/batched_background_operations/#{non_existing_record_id}/restart", admin, admin_mode: true)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when the operation is not stopped' do
+        let(:operation) { create(:background_operation_worker_cell_local, :active) }
+
+        it 'returns 422', :aggregate_failures do
+          restart
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to include('You can restart only')
+        end
+      end
+
+      context 'when multiple databases are enabled' do
+        let(:ci_model) { Ci::ApplicationRecord }
+        let(:params) { { database: :ci } }
+
+        before do
+          skip_if_multiple_databases_not_setup(:ci)
+        end
+
+        it 'uses the correct connection' do
+          expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(ci_model.connection).and_yield
+
+          restart
+        end
+      end
+
+      context 'when the database name does not exist' do
+        let(:params) { { database: :wrong_database } }
+
+        it 'returns bad request', :aggregate_failures do
+          restart
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(response.body).to include('database does not have a valid value')
         end
       end
     end

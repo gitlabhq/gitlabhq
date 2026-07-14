@@ -74,6 +74,8 @@ Prerequisites:
   with the `repo` scope. If 2FA is enabled, this personal access
   token serves as your GitHub password.
 - [GitLab Silent Mode](../../../../administration/silent_mode/_index.md) is not enabled.
+- The upstream repository and your GitLab repository use the same object format.
+  You cannot mirror between SHA-1 and SHA-256 repositories.
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Repository**.

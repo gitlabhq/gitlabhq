@@ -7,6 +7,7 @@ import namespaceGroupsForLinksWidgetQuery from '../../graphql/namespace_groups_f
 import { SEARCH_DEBOUNCE } from '../../constants';
 
 export default {
+  name: 'WorkItemGroupsListbox',
   components: {
     GlCollapsibleListbox,
     ProjectAvatar,
@@ -31,6 +32,7 @@ export default {
       default: null,
     },
   },
+  emits: ['error', 'selectGroup'],
   data() {
     return {
       group: {},

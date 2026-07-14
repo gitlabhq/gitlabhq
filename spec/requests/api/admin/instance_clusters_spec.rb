@@ -222,7 +222,7 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :deployment_man
           expect(cluster_result.managed).to be_falsy
           expect(cluster_result.enabled).to be_falsy
           expect(platform_kubernetes.authorization_type).to eq('rbac')
-          expect(cluster_result.namespace_per_environment).to eq(false)
+          expect(cluster_result.namespace_per_environment).to be(false)
           expect(platform_kubernetes.api_url).to eq("https://example.com")
           expect(platform_kubernetes.token).to eq('sample-token')
         end

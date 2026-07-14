@@ -72,6 +72,86 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
         service.execute
       end
 
+      context 'when new organization has lower visibility than group' do
+        let_it_be(:private_organization) do
+          create(:organization, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        end
+
+        let_it_be_with_refind(:public_group) do
+          create(:group, :public, organization: old_organization, owners: user)
+        end
+
+        let_it_be_with_refind(:internal_group) do
+          create(:group, :internal, organization: old_organization, owners: user)
+        end
+
+        let_it_be_with_refind(:private_group) do
+          create(:group, :private, organization: old_organization, owners: user)
+        end
+
+        let(:groups_param) { [public_group, internal_group, private_group] }
+        let(:organization_param) { private_organization }
+
+        before_all do
+          private_organization.add_owner(user)
+        end
+
+        it 'clamps public groups to private but keeps internal groups as internal' do
+          result = service.execute
+
+          expect(result).to be_success
+          expect(public_group.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+          expect(internal_group.reload.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+          expect(private_group.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+        end
+      end
+
+      context 'when new organization is public' do
+        let_it_be(:public_organization) do
+          create(:organization, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        end
+
+        let_it_be_with_refind(:private_group_for_public_org) do
+          create(:group, :private, organization: old_organization, owners: user)
+        end
+
+        let_it_be_with_refind(:internal_group_for_public_org) do
+          create(:group, :internal, organization: old_organization, owners: user)
+        end
+
+        let_it_be_with_refind(:public_group_for_public_org) do
+          create(:group, :public, organization: old_organization, owners: user)
+        end
+
+        let(:groups_param) do
+          [private_group_for_public_org, internal_group_for_public_org, public_group_for_public_org]
+        end
+
+        let(:organization_param) { public_organization }
+
+        before_all do
+          public_organization.add_owner(user)
+        end
+
+        it 'preserves visibility for all groups' do
+          result = service.execute
+
+          expect(result).to be_success
+          expect(private_group_for_public_org.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+          expect(internal_group_for_public_org.reload.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+          expect(public_group_for_public_org.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+        end
+      end
+
+      describe 'visibility clamping assumptions' do
+        it 'assumes organizations can only be public or private' do
+          internal_org = build(:organization, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+
+          expect(internal_org).not_to be_valid
+          expect(internal_org.errors[:visibility_level]).to include(_("must be private or public"))
+        end
+      end
+
       context 'with multiple groups' do
         let_it_be_with_refind(:group2) { create(:group, organization: old_organization) }
         let_it_be_with_refind(:group3) { create(:group, organization: old_organization) }
@@ -195,6 +275,160 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
               s_('TransferOrganization|You must be an owner of both the group and new organization.')
             )
             expect(another_group.reload.organization_id).to eq(old_organization.id)
+          end
+        end
+
+        context 'when target organization is unconfirmed with existing TLGs' do
+          let_it_be(:unconfirmed_organization) { create(:organization, :unconfirmed) }
+          let_it_be_with_reload(:existing_tlg) { create(:group, organization: unconfirmed_organization) }
+          let_it_be_with_reload(:group_to_transfer) { create(:group, organization: old_organization) }
+
+          let(:groups_param) { group_to_transfer }
+          let(:organization_param) { unconfirmed_organization }
+
+          context 'when user owns all existing TLGs in the unconfirmed org' do
+            before_all do
+              existing_tlg.add_owner(user)
+              group_to_transfer.add_owner(user)
+            end
+
+            it 'authorizes based on group ownership and transfers successfully' do
+              result = service.execute
+
+              expect(result).to be_success
+              expect(group_to_transfer.reload.organization_id).to eq(unconfirmed_organization.id)
+            end
+          end
+
+          context 'when user does not own all existing TLGs in the unconfirmed org' do
+            let_it_be(:other_user) { create(:user) }
+
+            before_all do
+              existing_tlg.add_owner(other_user)
+              group_to_transfer.add_owner(user)
+            end
+
+            it 'returns error ServiceResponse' do
+              result = service.execute
+
+              expect(result).to be_error
+              expect(result.message).to eq(
+                s_('TransferOrganization|You must be an owner of both the group and new organization.')
+              )
+              expect(group_to_transfer.reload.organization_id).to eq(old_organization.id)
+            end
+          end
+
+          context 'when unconfirmed org has multiple existing TLGs' do
+            let_it_be_with_reload(:existing_tlg2) { create(:group, organization: unconfirmed_organization) }
+            let_it_be_with_reload(:existing_tlg3) { create(:group, organization: unconfirmed_organization) }
+
+            context 'when user owns all existing TLGs' do
+              before_all do
+                existing_tlg.add_owner(user)
+                existing_tlg2.add_owner(user)
+                existing_tlg3.add_owner(user)
+                group_to_transfer.add_owner(user)
+              end
+
+              it 'authorizes and transfers successfully' do
+                result = service.execute
+
+                expect(result).to be_success
+                expect(group_to_transfer.reload.organization_id).to eq(unconfirmed_organization.id)
+              end
+
+              it 'avoids N+1 queries when checking existing TLG permissions' do
+                unconfirmed_org_for_control = create(:organization, :unconfirmed)
+                [existing_tlg, existing_tlg2, existing_tlg3].each do |group|
+                  group.update!(organization: unconfirmed_org_for_control)
+                end
+
+                control = ActiveRecord::QueryRecorder.new do
+                  described_class.new(
+                    groups: group_to_transfer, new_organization: unconfirmed_org_for_control, current_user: user
+                  ).execute
+                end
+
+                unconfirmed_org_for_test = create(:organization, :unconfirmed)
+                create(:group, organization: unconfirmed_org_for_test, owners: user)
+                [existing_tlg, existing_tlg2, existing_tlg3].each do |group|
+                  group.update!(organization: unconfirmed_org_for_test)
+                end
+                group_to_transfer.update!(organization: old_organization)
+
+                expect do
+                  described_class.new(
+                    groups: group_to_transfer, new_organization: unconfirmed_org_for_test, current_user: user
+                  ).execute
+                end.not_to exceed_query_limit(control)
+
+                [existing_tlg, existing_tlg2, existing_tlg3].each do |group|
+                  group.update!(organization: unconfirmed_organization)
+                end
+              end
+            end
+
+            context 'when user owns only some existing TLGs' do
+              let_it_be(:other_user) { create(:user) }
+
+              before_all do
+                existing_tlg.add_owner(user)
+                existing_tlg2.add_owner(other_user)
+                group_to_transfer.add_owner(user)
+              end
+
+              it 'returns error ServiceResponse' do
+                result = service.execute
+
+                expect(result).to be_error
+                expect(result.message).to eq(
+                  s_('TransferOrganization|You must be an owner of both the group and new organization.')
+                )
+              end
+            end
+          end
+        end
+
+        context 'when target organization is unconfirmed with no existing TLGs' do
+          context 'when user is org owner' do
+            let_it_be(:empty_unconfirmed_org_with_owner) { create(:organization, :unconfirmed) }
+            let_it_be_with_reload(:group_for_empty_org_with_owner) do
+              create(:group, organization: old_organization, owners: user)
+            end
+
+            let(:groups_param) { group_for_empty_org_with_owner }
+            let(:organization_param) { empty_unconfirmed_org_with_owner }
+
+            before_all do
+              empty_unconfirmed_org_with_owner.add_owner(user)
+            end
+
+            it 'authorizes based on org ownership and transfers successfully' do
+              result = service.execute
+
+              expect(result).to be_success
+              expect(group_for_empty_org_with_owner.reload.organization_id).to eq(empty_unconfirmed_org_with_owner.id)
+            end
+          end
+
+          context 'when user is not org owner' do
+            let_it_be(:empty_unconfirmed_org_no_owner) { create(:organization, :unconfirmed) }
+            let_it_be_with_reload(:group_for_empty_org_no_owner) do
+              create(:group, organization: old_organization, owners: user)
+            end
+
+            let(:groups_param) { group_for_empty_org_no_owner }
+            let(:organization_param) { empty_unconfirmed_org_no_owner }
+
+            it 'returns error ServiceResponse' do
+              result = service.execute
+
+              expect(result).to be_error
+              expect(result.message).to eq(
+                s_('TransferOrganization|You must be an owner of both the group and new organization.')
+              )
+            end
           end
         end
       end

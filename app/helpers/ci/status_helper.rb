@@ -100,20 +100,18 @@ module Ci
     def ci_label_for_status(status)
       return status.label if detailed_status?(status)
 
-      label = case status
-              when 'success'
-                'passed'
-              when 'success-with-warnings'
-                'passed with warnings'
-              when 'manual'
-                'waiting for manual action'
-              when 'scheduled'
-                'waiting for delayed job'
-              else
-                status
-              end
-      translation = "CiStatusLabel|#{label}"
-      s_(translation)
+      case status
+      when 'success'
+        s_('CiStatusLabel|passed')
+      when 'success-with-warnings'
+        s_('CiStatusLabel|passed with warnings')
+      when 'manual'
+        s_('CiStatusLabel|waiting for manual action')
+      when 'scheduled'
+        s_('CiStatusLabel|waiting for delayed job')
+      else
+        status
+      end
     end
 
     def badge_variant(status)

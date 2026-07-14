@@ -253,7 +253,7 @@ documentation in the **same** MR as their feature code, at all times.
 
 A workflow that has documentation separated into its own MR has many downsides.
 
-If the documentation merges **before** the feature:
+If the documentation merges before the feature:
 
 - GitLab.com users might try to use the feature before it's released, driving
   support tickets.
@@ -261,7 +261,7 @@ If the documentation merges **before** the feature:
   time and could be accidentally included on GitLab Self-Managed for that
   release.
 
-If the documentation merges **after** the feature:
+If the documentation merges after the feature:
 
 - The feature might be included on GitLab Self-Managed, but without any
   documentation if the documentation MR misses the cutoff.
@@ -330,7 +330,7 @@ changes might need to happen to a team's current workflow:
 - Reviewers and maintainers must also review the documentation during code
   reviews to ensure the described processes match the expected use of the
   feature and that examples are correct.
-  They do **not** need to worry about style or grammar.
+  They do not need to worry about style or grammar.
 - The technical writer must be assigned as a reviewer on the MR directly and not only pinged.
   This can be done at any time, but must be before the code maintainer review.
   It's common to have both the documentation and code reviews happening at the

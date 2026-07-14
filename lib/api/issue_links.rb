@@ -16,9 +16,9 @@ module API
       requires :issue_iid, type: Integer, desc: 'The internal ID of a project’s issue'
     end
     resource :projects, requirements: { id: %r{[^/]+} } do
-      desc 'List issue relations' do
-        detail 'Get a list of a given issue’s linked issues, sorted by the relationship creation datetime (ascending).'\
-          'Issues are filtered according to the user authorizations.'
+      desc 'List all issue links' do
+        detail 'Lists all linked issues for a specified issue, sorted by the relationship creation datetime ' \
+          '(ascending). Issues are filtered according to the user authorizations.'
         success Entities::RelatedIssue
         is_array true
         failure [
@@ -42,8 +42,8 @@ module API
       end
 
       desc 'Create an issue link' do
-        detail 'Creates a two-way relation between two issues.'\
-          'The user must be allowed to update both issues to succeed.'
+        detail 'Creates a two-way relationship between two issues. The user must be allowed to update both issues to ' \
+          'succeed.'
         success Entities::IssueLink
         failure [
           { code: 400, message: 'Bad Request' },
@@ -77,8 +77,8 @@ module API
           render_api_error!(result[:message], result[:http_status])
         end
       end
-      desc 'Get an issue link' do
-        detail 'Gets details about an issue link. This feature was introduced in GitLab 15.1.'
+      desc 'Retrieve an issue link' do
+        detail 'Retrieves a specified issue link.'
         success Entities::IssueLink
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -101,7 +101,7 @@ module API
       end
 
       desc 'Delete an issue link' do
-        detail 'Deletes an issue link, thus removes the two-way relationship.'
+        detail 'Deletes a specified issue link, removing the two-way relationship.'
         success Entities::IssueLink
         failure [
           { code: 401, message: 'Unauthorized' },

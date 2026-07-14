@@ -9,24 +9,14 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
     subject_key: :id,
     source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
-    claiming_attributes: [:path]
+    claiming_attributes: [:path, :id]
 
   describe 'associations' do
     it { is_expected.to have_one(:organization_detail).inverse_of(:organization).autosave(true) }
 
     it { is_expected.to have_many :namespaces }
     it { is_expected.to have_many :groups }
-    it { is_expected.to have_many :root_groups }
     it { is_expected.to have_many :integrations }
-
-    describe '.root_groups' do
-      let_it_be(:group) { create(:group, organization: organization) }
-      let_it_be(:subgroup) { create(:group, parent: group) }
-
-      it 'returns only root groups' do
-        expect(organization.root_groups).to contain_exactly(group)
-      end
-    end
 
     it { is_expected.to have_many(:users).through(:organization_users).inverse_of(:organizations) }
     it { is_expected.to have_many(:organization_users).inverse_of(:organization) }
@@ -167,8 +157,8 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
           let(:organization) { build(:organization, visibility_level: visibility_level) }
 
           it 'validates visibility level' do
-            allow(organization.root_groups).to receive(:maximum)
-              .with(:visibility_level).and_return(max_group_visibility)
+            allow(organization).to receive(:max_group_visibility_level)
+              .and_return(max_group_visibility)
 
             expect(organization.valid?).to eq(valid)
 
@@ -401,8 +391,8 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
 
     describe '.with_user' do
-      let_it_be(:user, freeze: false) { create(:user, organization: organization) }
-      let_it_be(:second_organization, freeze: false) { create(:organization, users: [user]) }
+      let_it_be_with_reload(:user) { create(:user, organization: organization) }
+      let_it_be_with_reload(:second_organization) { create(:organization, users: [user]) }
 
       subject(:organizations_for_user) { described_class.with_user(user) }
 
@@ -536,8 +526,43 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
   end
 
+  describe '#read_only_enforced?' do
+    subject(:read_only_enforced?) { organization.read_only_enforced? }
+
+    context 'when the organization is read-only' do
+      before do
+        organization.update_column(:state, described_class.states[:read_only])
+      end
+
+      context 'when the enforcement feature flag is enabled' do
+        before do
+          stub_feature_flags(organization_read_only_enforcement: organization)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when the enforcement feature flag is disabled' do
+        before do
+          stub_feature_flags(organization_read_only_enforcement: false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when the organization is active' do
+      before do
+        organization.update_column(:state, described_class.states[:active])
+        stub_feature_flags(organization_read_only_enforcement: organization)
+      end
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe 'invalid state transitions' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     it 'cannot soft_delete! from soft_deleted state' do
       organization.update_column(:state, described_class.states['soft_deleted'])
@@ -574,7 +599,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   end
 
   describe '#owner?' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     subject { organization.owner?(user) }
 
@@ -600,7 +625,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   end
 
   describe '#add_owner' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     before_all do
       organization.add_owner(user)
@@ -630,6 +655,22 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
 
   describe '#full_path' do
     it { expect(organization.full_path).to eq("/o/#{organization.path}") }
+  end
+
+  describe '#max_group_visibility_level' do
+    context 'when the organization has root groups' do
+      let_it_be(:organization) { create(:organization, :public) }
+      let_it_be(:private_group) { create(:group, :private, organization: organization) }
+      let_it_be(:internal_group) { create(:group, :internal, organization: organization) }
+
+      it 'returns the highest visibility level among its root groups' do
+        expect(organization.max_group_visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+      end
+    end
+
+    context 'when the organization has no root groups' do
+      it { expect(organization.max_group_visibility_level).to be_nil }
+    end
   end
 
   describe '.search' do

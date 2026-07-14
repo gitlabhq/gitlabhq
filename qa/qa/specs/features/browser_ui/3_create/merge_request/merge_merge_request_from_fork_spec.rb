@@ -12,7 +12,11 @@ module QA
       end
 
       it 'can merge source branch from fork into upstream repository',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347818' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347818',
+        quarantine: {
+          type: :flaky,
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43197'
+        } do
         merge_request.visit!
 
         Page::MergeRequest::Show.perform do |merge_request|

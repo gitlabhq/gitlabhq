@@ -5,6 +5,8 @@ module Mutations
     class DeleteMany < BaseMany
       graphql_name 'TodoDeleteMany'
 
+      authorize_granular_token permissions: :delete_todo, boundary: :user, boundary_type: :user
+
       def resolve(ids:)
         verify_rate_limit!
         check_update_limit!(amount: ids.size)

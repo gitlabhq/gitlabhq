@@ -1,0 +1,10 @@
+---
+name: expose_last_used_ips_for_access_tokens
+description: Exposes last_used_ips field in personal, project, and group access token API responses.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600347
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236381
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/603636
+milestone: '19.2'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

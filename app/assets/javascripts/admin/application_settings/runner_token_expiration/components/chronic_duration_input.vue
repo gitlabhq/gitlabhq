@@ -9,6 +9,7 @@ import {
 import { __ } from '~/locale';
 
 export default {
+  name: 'ChronicDurationInput',
   components: {
     GlFormInput,
   },

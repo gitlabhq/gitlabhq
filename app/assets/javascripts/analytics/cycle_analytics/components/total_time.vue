@@ -2,6 +2,7 @@
 import { n__, s__ } from '~/locale';
 
 export default {
+  name: 'TotalTime',
   props: {
     time: {
       type: Object,

@@ -67,8 +67,8 @@ RSpec.describe RepositoryArchiveCleanUpService, feature_category: :source_code_m
           in_directory_with_files(dirname, extensions, mtime) do |dir, files|
             service.execute
 
-            files.each { |file| expect(File.exist?(file)).to eq true }
-            expect(File.directory?(dir)).to eq true
+            files.each { |file| expect(File.exist?(file)).to be true }
+            expect(File.directory?(dir)).to be true
           end
         end
       end
@@ -79,8 +79,8 @@ RSpec.describe RepositoryArchiveCleanUpService, feature_category: :source_code_m
         in_directory_with_files('sample.git', %w[tar tar.bz2 tar.gz zip], 121.minutes) do |dir, files|
           service.execute
 
-          files.each { |file| expect(File.exist?(file)).to eq false }
-          expect(File.directory?(dir)).to eq false
+          files.each { |file| expect(File.exist?(file)).to be false }
+          expect(File.directory?(dir)).to be false
         end
       end
 

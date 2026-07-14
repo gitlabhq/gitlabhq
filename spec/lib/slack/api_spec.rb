@@ -153,6 +153,40 @@ RSpec.describe Slack::API, feature_category: :integrations do
 
       subject { api.post_ephemeral(**payload) }
     end
+
+    context 'with thread_ts' do
+      let(:slack_installation) { build(:slack_integration) }
+      let(:api) { described_class.new(slack_installation) }
+      let(:api_url) { "#{described_class::BASE_URL}/chat.postEphemeral" }
+
+      before do
+        stub_request(:post, api_url).to_return(
+          status: 200, body: { ok: true }.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+      end
+
+      it 'includes thread_ts in the payload when provided' do
+        api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello', thread_ts: '123.456')
+
+        expect(WebMock).to have_requested(:post, api_url)
+          .with(body: hash_including('thread_ts' => '123.456'))
+      end
+
+      it 'omits thread_ts from the payload when not provided' do
+        api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello')
+
+        expect(WebMock).to have_requested(:post, api_url)
+          .with { |req| req.body.exclude?('thread_ts') }
+      end
+
+      it 'omits thread_ts from the payload when nil' do
+        api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello', thread_ts: nil)
+
+        expect(WebMock).to have_requested(:post, api_url)
+          .with { |req| req.body.exclude?('thread_ts') }
+      end
+    end
   end
 
   describe '#post_message' do

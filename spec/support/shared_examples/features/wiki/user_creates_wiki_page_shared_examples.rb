@@ -19,6 +19,7 @@ RSpec.shared_examples 'User creates wiki page' do
     end
 
     it 'shows all available formats in the dropdown' do
+      click_on("Edit page options")
       Wiki::VALID_USER_MARKUPS.each do |key, markup|
         expect(page).to have_css("#wiki_format option[value=#{key}]", text: markup[:name])
       end
@@ -34,9 +35,9 @@ RSpec.shared_examples 'User creates wiki page' do
     it "makes sure links to unknown pages work correctly", :js do
       page.within(".wiki-form") do
         fill_in(:wiki_content, with: "[link test](test)")
-
-        click_on("Create page")
       end
+
+      create_page
 
       expect(page).to have_content("Home").and have_content("link test")
 
@@ -50,9 +51,9 @@ RSpec.shared_examples 'User creates wiki page' do
 
       page.within(".wiki-form") do
         fill_in(:wiki_content, with: "wiki content")
-
-        click_on("Create page")
       end
+
+      create_page
 
       expect(page).to have_current_path(%r{one/two/three-test}, ignore_query: true)
       expect(page).to have_link(href: wiki_page_path(wiki, 'one/two/three-test'))
@@ -61,16 +62,15 @@ RSpec.shared_examples 'User creates wiki page' do
     it "has `Create home` as a commit message", :js do
       wait_for_requests
 
-      expect(page).to have_field("wiki[message]", with: "Create home")
+      click_on "Create page"
+
+      expect(page).to have_field("wiki[message]", with: "Create home", type: "hidden")
     end
 
     it "creates a page from the home page", :js do
       fill_in(:wiki_content, with: "[test](test)\n[GitLab API doc](api)\n[Rake tasks](raketasks)\n# Wiki header\n")
-      fill_in(:wiki_message, with: "Adding links to wiki")
 
-      page.within(".wiki-form") do
-        click_button("Create page")
-      end
+      create_page(commit_message: "Adding links to wiki")
 
       expect(page).to have_current_path(wiki_page_path(wiki, "home"), ignore_query: true)
       expect(page).to have_content("test GitLab API doc Rake tasks Wiki header")
@@ -157,12 +157,18 @@ RSpec.shared_examples 'User creates wiki page' do
     it 'saves page content in local storage if the user navigates away', :js do
       fill_in(:wiki_title, with: "Test title")
       fill_in(:wiki_content, with: "This is a test")
+
+      click_on "Create page"
+
       fill_in(:wiki_message, with: "Test commit message")
 
       refresh
 
       expect(page).to have_field(:wiki_title, with: "Test title")
       expect(page).to have_field(:wiki_content, with: "This is a test")
+
+      click_on "Create page"
+
       expect(page).to have_field(:wiki_message, with: "Test commit message")
     end
 
@@ -174,12 +180,15 @@ RSpec.shared_examples 'User creates wiki page' do
       ORG
 
       page.within('.wiki-form') do
+        click_on "Edit page options"
+
         find('#wiki_format option[value=org]').select_option
 
         # use `clear: nil` to avoid extra list `*` chars from being added
         fill_in(:wiki_content, with: org_content, fill_options: { clear: nil })
-        click_button('Create page')
       end
+
+      create_page
 
       expect(page).to have_selector('h1', text: 'Heading')
       expect(page).to have_selector('h2', text: 'Subheading')
@@ -207,10 +216,14 @@ RSpec.shared_examples 'User creates wiki page' do
           fill_in(:wiki_content, with: "My awesome wiki!")
         end
 
-        # Commit message field should have correct value.
-        expect(page).to have_field("wiki[message]", with: "Create foo")
+        click_on "Create page"
 
-        click_button("Create page")
+        # Commit message field should have correct value.
+        expect(page).to have_field("wiki[message]", with: "Create foo", type: "hidden")
+
+        within_testid('commit-message-modal') do
+          click_button("Create page")
+        end
 
         expect(page).to have_content("foo")
                     .and have_content("Last edited by #{user.name}")
@@ -226,10 +239,14 @@ RSpec.shared_examples 'User creates wiki page' do
           fill_in(:wiki_content, with: "My awesome wiki!")
         end
 
-        # Commit message field should have correct value.
-        expect(page).to have_field("wiki[message]", with: "Create Spaces in the name")
+        click_on "Create page"
 
-        click_button("Create page")
+        # Commit message field should have correct value.
+        expect(page).to have_field("wiki[message]", with: "Create Spaces in the name", type: "hidden")
+
+        within_testid('commit-message-modal') do
+          click_on "Create page"
+        end
 
         expect(page).to have_content("Spaces in the name")
                     .and have_content("Last edited by #{user.name}")
@@ -246,15 +263,15 @@ RSpec.shared_examples 'User creates wiki page' do
         end
 
         # Commit message field should have correct value.
-        expect(page).to have_field("wiki[message]", with: "Create hyphens in the name")
+        expect(page).to have_field("wiki[message]", with: "Create hyphens in the name", type: "hidden")
 
         page.within(".wiki-form") do
           fill_in(:wiki_content, with: "My awesome wiki!")
-
-          click_button("Create page")
         end
 
-        expect(page).to have_content("hyphens in the name")
+        create_page
+
+        expect(page).to have_content("hyphens-in-the-name")
                     .and have_content("Last edited by #{user.name}")
                     .and have_content("My awesome wiki!")
       end
@@ -272,8 +289,9 @@ RSpec.shared_examples 'User creates wiki page' do
         page.within('.wiki-form') do
           fill_in(:wiki_title, with: 'foo')
           fill_in(:wiki_content, with: 'testing redirects')
-          click_button('Create page')
         end
+
+        create_page
 
         expect(page).to have_content('foo')
 

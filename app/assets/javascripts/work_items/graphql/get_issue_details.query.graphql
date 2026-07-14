@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 query issuableDetails($id: IssueID!) {
   issue(id: $id) {
     id

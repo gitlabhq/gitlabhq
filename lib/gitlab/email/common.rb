@@ -4,8 +4,8 @@ module Gitlab
   module Email
     # Contains common methods which must be present in all email classes
     module Common
-      UNSUBSCRIBE_SUFFIX        = '-unsubscribe'
-      UNSUBSCRIBE_SUFFIX_LEGACY = '+unsubscribe'
+      UNSUBSCRIBE_SUFFIX        = Gitlab::EmailHandler::ReplyKey::UNSUBSCRIBE_SUFFIX
+      UNSUBSCRIBE_SUFFIX_LEGACY = Gitlab::EmailHandler::ReplyKey::UNSUBSCRIBE_SUFFIX_LEGACY
       WILDCARD_PLACEHOLDER      = '%{key}'
 
       # This can be overridden for a custom config
@@ -47,14 +47,11 @@ module Gitlab
       end
 
       def key_from_fallback_message_id(mail_id)
-        message_id_regexp = /\Areply-(.+)@#{Gitlab.config.gitlab.host}\z/
-
-        mail_id[message_id_regexp, 1]
+        ::Gitlab::EmailHandler::MailKey.key_from_fallback_message_id(mail_id, Gitlab.config.gitlab.host)
       end
 
       def scan_fallback_references(references)
-        # It's looking for each <...>
-        references.scan(/(?!<)[^<>]+(?=>)/)
+        ::Gitlab::EmailHandler::MailKey.scan_fallback_references(references)
       end
 
       def encrypted_secrets

@@ -58,7 +58,7 @@ try {
 }
 
 const aliasArr = Object.entries(webpackConfig.resolve.alias).map(([find, replacement]) => ({
-  find: find.includes('$') ? new RegExp(find) : find,
+  find: find.includes('$') ? new RegExp(`^${find}`) : find,
   replacement,
 }));
 
@@ -137,7 +137,6 @@ export default defineConfig({
     ImagesPlugin(),
     StylePlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
     viteTailwindCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
-    viteTailwindCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null, buildCQs: true }),
     CopyPlugin({
       patterns: copyFilesPatterns,
     }),

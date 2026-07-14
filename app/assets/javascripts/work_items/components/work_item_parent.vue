@@ -77,7 +77,7 @@ export default {
       default: false,
     },
   },
-  emits: ['error', 'parentMilestone', 'updateWidgetDraft'],
+  emits: ['error', 'parentMilestone', 'update-widget-draft'],
   data() {
     return {
       searchTerm: '',
@@ -261,7 +261,7 @@ export default {
         this.updateInProgress = true;
 
         if (this.workItemId === newWorkItemId(this.workItemType)) {
-          this.$emit('updateWidgetDraft', {
+          this.$emit('update-widget-draft', {
             parent: this.isSelectedParentAvailable
               ? {
                   ...this.visibleWorkItems.find(({ id }) => id === this.localSelectedItem),

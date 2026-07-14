@@ -3,6 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { STATUS_PAGE_PUBLISHED, JOIN_ZOOM_MEETING } from '../constants';
 
 export default {
+  name: 'PinnedLinks',
   components: {
     GlButton,
   },

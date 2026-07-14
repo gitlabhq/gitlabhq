@@ -52,7 +52,7 @@ the CI container itself.
 ## How services are linked to the job
 
 To better understand how container linking works, read
-[Linking containers together](https://docs.docker.com/network/links/).
+[Linking containers together](https://docs.docker.com/engine/network/links/).
 
 If you add `mysql` as service to your application, the image is
 used to create a container that's linked to the job container.

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe AlertManagement::AlertsFinder, '#execute' do
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:resolved_alert) { create(:alert_management_alert, :all_fields, :resolved, project: project, ended_at: 1.year.ago, events: 2, severity: :high) }
   let_it_be(:ignored_alert) { create(:alert_management_alert, :all_fields, :ignored, project: project, events: 1, severity: :critical) }
   let_it_be(:triggered_alert) { create(:alert_management_alert, :all_fields) }
@@ -221,7 +221,7 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
       end
 
       context 'search query given' do
-        let_it_be(:alert, freeze: false) do
+        let_it_be_with_reload(:alert) do
           create(
             :alert_management_alert,
             :with_fingerprint,
@@ -265,8 +265,8 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
       end
 
       context 'assignee username given' do
-        let_it_be(:assignee, freeze: false) { create(:user) }
-        let_it_be(:alert, freeze: false) { create(:alert_management_alert, project: project, assignees: [assignee]) }
+        let_it_be_with_reload(:assignee) { create(:user) }
+        let_it_be_with_reload(:alert) { create(:alert_management_alert, project: project, assignees: [assignee]) }
 
         let(:params) { { assignee_username: username } }
 

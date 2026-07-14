@@ -24,6 +24,7 @@ import {
 } from './constants';
 
 export default {
+  name: 'SetStatusForm',
   components: {
     GlButton,
     GlIcon,
@@ -68,6 +69,7 @@ export default {
       default: '',
     },
   },
+  emits: ['availability-input', 'clear-status-after-click', 'emoji-click', 'message-input'],
   data() {
     return {
       defaultEmojiTag: '',

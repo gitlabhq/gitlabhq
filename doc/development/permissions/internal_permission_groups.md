@@ -113,7 +113,7 @@ Use internal permission groups when:
 - You want a single source of truth for which permissions a condition affects,
   rather than scattering `prevent` calls throughout policy files.
 
-Do **not** use internal permission groups for:
+Do not use internal permission groups for:
 
 - Role-based permission assignment. Use
   [role definitions](role_definitions.md) or

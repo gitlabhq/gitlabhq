@@ -38,6 +38,7 @@ export default {
       default: false,
     },
   },
+  emits: ['click-avatar', 'hover-stat', 'hover-visibility', 'load-children', 'refetch'],
 };
 </script>
 

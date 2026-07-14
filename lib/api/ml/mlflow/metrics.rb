@@ -28,6 +28,7 @@ module API
               default: 1_000
             optional :page_token, type: String, desc: 'Token for pagination'
           end
+          route_setting :authorization, permissions: :read_ml_experiment, boundary_type: :project
           get 'get-history', urgency: :low do
             max_results = [params[:max_results], 1_000].min
 

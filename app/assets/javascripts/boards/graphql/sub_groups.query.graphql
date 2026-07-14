@@ -7,6 +7,7 @@ fragment Group on Group {
   fullPath
 }
 
+# @feature_category: portfolio_management
 query getSubGroups($fullPath: ID!, $search: String, $after: String) {
   group(fullPath: $fullPath) {
     ...Group

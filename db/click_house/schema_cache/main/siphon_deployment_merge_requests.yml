@@ -26,7 +26,7 @@ columns:
 - name: traversal_path
   type: String
   default_kind: DEFAULT
-  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.project_traversal_paths_dict',
+  default_expression: multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict',
     'traversal_path', project_id, '0/'), '0/')
   is_in_sorting_key: true
   is_in_primary_key: true
@@ -38,3 +38,8 @@ columns:
   type: Bool
   default_kind: DEFAULT
   default_expression: 'false'
+- name: _siphon_watermark
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))

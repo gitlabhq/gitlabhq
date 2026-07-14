@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::HookData::MergeRequestBuilder, feature_category: :code_review_workflow do
-  let_it_be(:merge_request, freeze: false) { create(:merge_request) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request) }
 
   let(:builder) { described_class.new(merge_request) }
 
@@ -48,12 +48,35 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder, feature_category: :code_re
         state
         blocking_discussions_resolved
         target_branch
+        target_branch_protected
         first_contribution
         detailed_merge_status
         merged_at
       ].freeze
 
       expect(data).to include(*expected_additional_attributes)
+    end
+
+    describe 'target_branch_protected' do
+      before do
+        allow(ProtectedBranch).to receive(:protected?).and_return(target_branch_protected)
+      end
+
+      context 'when the target branch is protected' do
+        let(:target_branch_protected) { true }
+
+        it 'is true' do
+          expect(data[:target_branch_protected]).to be(true)
+        end
+      end
+
+      context 'when the target branch is not protected' do
+        let(:target_branch_protected) { false }
+
+        it 'is false' do
+          expect(data[:target_branch_protected]).to be(false)
+        end
+      end
     end
 
     context 'when the MR is merged' do

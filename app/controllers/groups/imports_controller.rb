@@ -6,6 +6,8 @@ class Groups::ImportsController < Groups::ApplicationController
   feature_category :importers
   urgency :low
 
+  before_action :ensure_group_in_current_organization!
+
   def show
     if @group.import_state.nil? || @group.import_state.finished?
       if continue_params[:to]
@@ -19,5 +21,11 @@ class Groups::ImportsController < Groups::ApplicationController
     else
       flash.now[:notice] = continue_params[:notice_now]
     end
+  end
+
+  private
+
+  def ensure_group_in_current_organization!
+    render_404 unless @group&.organization_id == Current.organization.id
   end
 end

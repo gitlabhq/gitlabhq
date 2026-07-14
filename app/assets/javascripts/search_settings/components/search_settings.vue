@@ -128,6 +128,7 @@ const search = (root, searchTerm) => {
 };
 
 export default {
+  name: 'SearchSettings',
   components: {
     EmptyResult,
     GlSearchBoxByType,
@@ -153,6 +154,7 @@ export default {
       default: () => () => false,
     },
   },
+  emits: ['collapse', 'expand'],
   data() {
     return {
       searchTerm: '',

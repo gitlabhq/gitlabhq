@@ -144,7 +144,7 @@ Keep your configuration files and backup archives in a separate location to ensu
 
 You can restore a backup only to the exact same version and type (Community Edition or Enterprise Edition) of GitLab on which it was created.
 
-- Review the [Linux package (Omnibus) backup and restore documentation](https://docs.gitlab.com/omnibus/settings/backups).
+- Review the [Linux package (Omnibus) backup and restore documentation](https://docs.gitlab.com/omnibus/settings/backups/).
 - Review the [Helm Chart backup and restore documentation](https://docs.gitlab.com/charts/backup-restore/).
 
 ### Alternative backup strategies
@@ -229,7 +229,7 @@ You can learn more about how to administer GitLab.
 
 ### Paid GitLab training
 
-- GitLab education services: Learn more about [GitLab and DevOps best practices](https://about.gitlab.com/services/education/) through our specialized training courses. See our full course catalog.
+- GitLab education services: Learn more about [GitLab and DevOps best practices](https://about.gitlab.com/professional-services/education/) through our specialized training courses. See our full course catalog.
 
 ### Free GitLab training
 

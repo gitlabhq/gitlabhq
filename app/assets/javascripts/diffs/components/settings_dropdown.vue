@@ -33,6 +33,7 @@ export default {
       default: true,
     },
   },
+  emits: ['toggleFileByFile', 'toggleWhitespace', 'updateDiffViewType'],
   methods: {
     tooltipTarget() {
       return document.querySelector(`.${this.$options.toggleId}`);

@@ -118,6 +118,7 @@ export default {
       type: Number,
     },
   },
+  emits: ['kas-disabled', 'on-agents-load', 'register-agent'],
   data() {
     return {
       feedbackBannerDismissed: false,

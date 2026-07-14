@@ -58,7 +58,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
 
       it 'logs and re-raises the error' do
         expect(ActiveContext::Logger).to receive(:exception).with(an_instance_of(PG::Error),
-          class: described_class.name, message: 'Database error occurred')
+          class_name: described_class.name, message: 'Database error occurred')
 
         expect do
           client.with_raw_connection { |conn| conn.exec('SELECT 1') }
@@ -85,7 +85,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
 
       it 'logs and re-raises PG::Error' do
         expect(ActiveContext::Logger).to receive(:exception).with(an_instance_of(PG::Error),
-          class: described_class.name, message: 'Database error occurred')
+          class_name: described_class.name, message: 'Database error occurred')
 
         expect do
           client.with_connection { raise PG::Error, 'query failed' }
@@ -94,7 +94,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
 
       it 'logs and re-raises ActiveRecord::StatementInvalid' do
         expect(ActiveContext::Logger).to receive(:exception).with(an_instance_of(ActiveRecord::StatementInvalid),
-          class: described_class.name, message: 'Database error occurred')
+          class_name: described_class.name, message: 'Database error occurred')
 
         expect do
           client.with_connection { raise ActiveRecord::StatementInvalid, 'invalid SQL' }
@@ -198,7 +198,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
           result = client.bulk_process(operations)
 
           expect(ActiveContext::Logger).to have_received(:exception).with(an_instance_of(StandardError),
-            class: described_class.name, message: "Error with upsert operation for #{collection_name}")
+            class_name: described_class.name, message: "Error with upsert operation for #{collection_name}")
           expect(result).to eq(['ref1'])
         end
       end
@@ -258,7 +258,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
           result = client.bulk_process(operations)
 
           expect(ActiveContext::Logger).to have_received(:exception).with(an_instance_of(StandardError),
-            class: described_class.name, message: "Error with delete operation for #{collection_name}")
+            class_name: described_class.name, message: "Error with delete operation for #{collection_name}")
           expect(result).to eq(['ref1'])
         end
       end

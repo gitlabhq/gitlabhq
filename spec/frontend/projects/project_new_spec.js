@@ -11,7 +11,6 @@ describe('New Project', () => {
   let $projectPath;
   let $projectName;
   let $projectNameError;
-  let $projectNameDescription;
 
   const mockKeyup = (el) => el.dispatchEvent(new KeyboardEvent('keyup'));
   const mockChange = (el) => el.dispatchEvent(new Event('change'));
@@ -35,14 +34,18 @@ describe('New Project', () => {
                   <input id="project_import_url_password" />
                 </div>
               </div>
-              <input id="project_name" aria-invalid="false" aria-describedby="js-project-name-description" />
-              <small id="js-project-name-description" />
-              <div class="gl-field-error gl-hidden" id="js-project-name-error" />
+              <input id="project_name" aria-invalid="false" />
+              <div class="gl-field-error gl-hidden" id="js-project-name-error" role="alert"></div>
+              <div class="js-group-namespace-dropdown">
+                <div class="gl-new-dropdown-custom-toggle"><button type="button"></button></div>
+              </div>
+              <button class="js-group-namespace-button" type="button"></button>
+              <div class="js-group-namespace-error gl-hidden"></div>
               <input id="project_path" />
               <div class="js-import-url-error hide"></div>
             </div>
             <div class="js-user-readme-repo"></div>
-            <button class="js-create-project-button"/>
+            <button class="js-create-project-button" type="button"></button>
           </form>
         </div>
       </div>
@@ -52,7 +55,6 @@ describe('New Project', () => {
     $projectPath = document.querySelector('#project_path');
     $projectName = document.querySelector('#project_name');
     $projectNameError = document.querySelector('#js-project-name-error');
-    $projectNameDescription = document.querySelector('#js-project-name-description');
   });
 
   afterEach(() => {
@@ -107,9 +109,8 @@ describe('New Project', () => {
 
     it('no error message by default', () => {
       expect($projectNameError.classList.contains('gl-hidden')).toBe(true);
-      expect($projectNameDescription.classList.contains('gl-hidden')).toBe(false);
       expect($projectName.getAttribute('aria-invalid')).toBe('false');
-      expect($projectName.getAttribute('aria-describedby')).toBe($projectNameDescription.id);
+      expect($projectName.getAttribute('aria-describedby')).toBe(null);
     });
 
     it('shows error message if name is invalid', () => {
@@ -117,18 +118,57 @@ describe('New Project', () => {
       triggerEvent($projectName, 'change');
 
       expect($projectNameError.innerText).toBe(
-        'Project name must start with a letter, digit, emoji, or underscore.',
+        'Project name must start with a letter, digit, basic emoji, or underscore.',
       );
       expect($projectNameError.classList.contains('gl-hidden')).toBe(false);
-      expect($projectNameDescription.classList.contains('gl-hidden')).toBe(true);
       expect($projectName.getAttribute('aria-invalid')).toBe('true');
       expect($projectName.getAttribute('aria-describedby')).toBe($projectNameError.id);
+    });
+
+    it('runs name validation when the create project button is clicked', () => {
+      $projectName.value = '.validate!Name';
+
+      document.querySelector('.js-create-project-button').click();
+
+      expect($projectNameError.innerText).toBe(
+        'Project name must start with a letter, digit, basic emoji, or underscore.',
+      );
+      expect($projectNameError.classList.contains('gl-hidden')).toBe(false);
+      expect($projectName.getAttribute('aria-invalid')).toBe('true');
+    });
+
+    it('prevents the default click action when the project name is invalid', () => {
+      $projectName.value = '.validate!Name';
+
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+      document.querySelector('.js-create-project-button').dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(true);
+    });
+
+    it('does not prevent the default click action when the project name is valid', () => {
+      $projectName.value = 'valid-name';
+
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+      document.querySelector('.js-create-project-button').dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(false);
     });
   });
 
   describe('project name rule', () => {
-    describe("Project name must start with a letter, digit, emoji, or '_'", () => {
-      const errormsg = 'Project name must start with a letter, digit, emoji, or underscore.';
+    describe('Project name is required', () => {
+      const errormsg = 'Project name is required.';
+      it("'' should error", () => {
+        expect(checkRules('')).toBe(errormsg);
+      });
+      it("'   ' should error", () => {
+        expect(checkRules('   ')).toBe(errormsg);
+      });
+    });
+
+    describe("Project name must start with a letter, digit, basic emoji, or '_'", () => {
+      const errormsg = 'Project name must start with a letter, digit, basic emoji, or underscore.';
       it("'.foo' should error", () => {
         const text = '.foo';
         expect(checkRules(text)).toBe(errormsg);
@@ -141,7 +181,7 @@ describe('New Project', () => {
 
     describe("Name can contain only letters, digits, emoji, '_', '.', '+', dashes, or spaces", () => {
       const errormsg =
-        'Project name can contain only lowercase or uppercase letters, digits, emoji, spaces, dots, underscores, dashes, or pluses.';
+        'Project name can contain only lowercase or uppercase letters, digits, basic emoji, spaces, dots, underscores, dashes, or pluses.';
       it("'foo(#^.^#)foo' should error", () => {
         const text = 'foo(#^.^#)foo';
         expect(checkRules(text)).toBe(errormsg);

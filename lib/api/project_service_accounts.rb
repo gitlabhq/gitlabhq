@@ -30,7 +30,7 @@ module API
     resource 'projects/:id', requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource :service_accounts do
         desc 'Create a project service account' do
-          detail 'Creates a service account in the specified project'
+          detail 'Creates a service account in a specified project.'
           success Entities::ServiceAccount
           failure [
             { code: 400, message: '400 Bad request' },
@@ -69,7 +69,8 @@ module API
         end
 
         desc 'List all project service accounts' do
-          detail 'Lists all service accounts for a specified project'
+          detail 'Lists all service accounts in a specified project. Use the `page` and `per_page` pagination ' \
+            'parameters to filter the results.'
           success Entities::ServiceAccount
           failure [
             { code: 400, message: '400 Bad request' },
@@ -99,8 +100,8 @@ module API
         # rubocop: enable CodeReuse/ActiveRecord
 
         desc 'Delete a project service account' do
-          detail 'Deletes a service account from a specified project.
-            Available only for project Owners or Maintainers, and administrators.'
+          detail 'Deletes a specified project service account. Available only for project Owners, Maintainers, ' \
+            'and administrators.'
           failure [
             { code: 400, message: '400 Bad request' },
             { code: 401, message: '401 Unauthorized' },
@@ -194,9 +195,9 @@ module API
             present paginate_with_strategies(service_account_pats), with: Entities::PersonalAccessToken
           end
 
-          desc 'Create a personal access token for a project service account.' do
-            detail 'Creates a personal access token for a specified project service account.
-              Available only for project Owners or Maintainers.'
+          desc 'Create a personal access token for a project service account' do
+            detail 'Creates a personal access token for a specified project service account. ' \
+              'Available only for project Owners, Maintainers, and administrators.'
             success Entities::PersonalAccessTokenWithToken
             tags %w[access_tokens service_accounts]
           end
@@ -256,7 +257,8 @@ module API
           end
 
           desc 'Rotate a personal access token for a project service account' do
-            detail 'Rotates a specified personal access token for a project service account.'
+            detail 'Rotates a specified personal access token for a project service account. This revokes the ' \
+              'existing token and creates a token with the same name, description, and scopes.'
             success Entities::PersonalAccessTokenWithToken
             tags %w[access_tokens service_accounts]
           end

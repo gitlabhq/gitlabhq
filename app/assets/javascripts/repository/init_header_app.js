@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { pinia } from '~/pinia/instance';
 import apolloProvider from './graphql';
 import projectShortPathQuery from './queries/project_short_path.query.graphql';
 import projectPathQuery from './queries/project_path.query.graphql';
@@ -93,6 +94,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
     new Vue({
       el: headerEl,
       name: 'RepositoryHeaderAreaRoot',
+      pinia,
       provide: {
         canCollaborate: parseBoolean(breadcrumbsCanCollaborate),
         canEditTree: parseBoolean(breadcrumbsCanEditTree),

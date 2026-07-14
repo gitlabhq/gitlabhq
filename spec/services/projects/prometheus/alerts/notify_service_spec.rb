@@ -215,12 +215,12 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :i
     context 'with valid payload' do
       let(:payload) { valid_payload }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
 
       context 'containing unrelated keys' do
         let(:payload) { valid_payload.merge('unrelated' => 'key') }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -232,14 +232,14 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :i
       with_them do
         let(:payload) { valid_payload.except(missing_key) }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
     context 'with unsupported version' do
       let(:payload) { valid_payload.merge('version' => '5') }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

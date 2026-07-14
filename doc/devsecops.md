@@ -68,4 +68,4 @@ If your organization is facing any of the following challenges, a DevSecOps appr
   It's a great time to make processes faster and more secure, and DevSecOps could make that a lot easier.
 
 To get started with DevSecOps,
-[learn more, and try GitLab Ultimate for free](https://about.gitlab.com/solutions/security-compliance/).
+[learn more, and try GitLab Ultimate for free](https://about.gitlab.com/solutions/application-security-testing/).

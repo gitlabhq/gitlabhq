@@ -21,6 +21,7 @@ const ROLLUP_TYPE_FIXED = 'fixed';
 const ROLLUP_TYPE_INHERITED = 'inherited';
 
 export default {
+  name: 'WorkItemDates',
   dueDateInputId: 'due-date-input',
   startDateInputId: 'start-date-input',
   components: {
@@ -67,6 +68,7 @@ export default {
       default: false,
     },
   },
+  emits: ['error', 'update-widget-draft'],
   data() {
     return {
       localDueDate: null,
@@ -193,7 +195,7 @@ export default {
       this.rollupType = ROLLUP_TYPE_FIXED;
 
       if (this.workItemId === newWorkItemId(this.workItemType)) {
-        this.$emit('updateWidgetDraft', {
+        this.$emit('update-widget-draft', {
           rolledUpDates: {
             isFixed: true,
             dueDate: this.localDueDate ? toISODateFormat(this.localDueDate) : null,

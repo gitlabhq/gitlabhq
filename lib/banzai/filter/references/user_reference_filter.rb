@@ -115,16 +115,6 @@ module Banzai
           [reference_class(:project_member, tooltip: false), "js-user-link"].join(" ")
         end
 
-        def link_to_all(match_text:, link_content_html:)
-          author = context[:author]
-
-          if author && !team_member?(author)
-            link_content_html
-          else
-            parent_url(author, match_text:, link_content_html:)
-          end
-        end
-
         def link_to_namespace(namespace, match_text:, link_content_html:)
           if namespace.is_a?(Group)
             link_to_group(namespace.full_path, namespace, match_text:, link_content_html:)
@@ -171,13 +161,13 @@ module Banzai
 
         def organization
           parent&.organization ||
-            context[:author]&.organizations&.first ||
+            author&.organizations&.first ||
             Organizations::Organization.first
         end
         strong_memoize_attr :organization
 
         def parent
-          context[:project] || context[:group]
+          project || group
         end
 
         def parent_group?

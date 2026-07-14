@@ -39,6 +39,8 @@ module MergeRequests
       result = maybe_rebase!(**result)
       result = maybe_merge!(**result)
 
+      reject_rebase_collapse!(result[:commit_sha])
+
       # Store generated ref commits if conditions are met
       store_generated_ref_commits_if_needed(result[:commit_sha])
 
@@ -48,6 +50,19 @@ module MergeRequests
     end
 
     private
+
+    # When the source is rebased onto the target tip but carries no unique
+    # commits (e.g. it was branched off another MR whose changes are now in the
+    # target), the generated ref collapses back to the target tip. Recording
+    # that as a merge would write no commit yet still delete the source branch,
+    # silently losing the merge request's work. Reject the collapse here so both
+    # the auto-rebase and merge-train paths fail loudly instead of producing a
+    # no-op merge. See https://gitlab.com/gitlab-org/gitlab/-/work_items/598820.
+    def reject_rebase_collapse!(final_commit_sha)
+      return if final_commit_sha.present? && final_commit_sha != first_parent_sha
+
+      raise CreateRefError, 'The merge request has no changes to merge after rebasing onto the target branch'
+    end
 
     def store_generated_ref_commits_if_needed(final_commit_sha)
       return unless should_store_generated_ref_commits?

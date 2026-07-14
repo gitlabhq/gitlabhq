@@ -131,7 +131,7 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
       let_it_be(:integration) { create(:jira_cloud_app_integration, :group, :inactive, group: group) }
 
       it 'activates the integration' do
-        expect { subject }.to change { integration.reload.active }.to eq(true)
+        expect { subject }.to change { integration.reload.active }.to be(true)
       end
     end
 
@@ -161,7 +161,7 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
       end
 
       it 'activates the integration, but keeps it as non-inheriting' do
-        expect { subject }.to change { project_integration.reload.active }.to eq(true)
+        expect { subject }.to change { project_integration.reload.active }.to be(true)
         expect(project_integration.inherit_from_id).to be_nil
       end
     end

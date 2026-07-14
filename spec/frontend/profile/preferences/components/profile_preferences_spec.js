@@ -38,7 +38,6 @@ describe('ProfilePreferences component', () => {
     bodyClasses,
     colorModes,
     themes,
-    profilePreferencesPath: '/update-profile',
     formEl: document.createElement('form'),
   };
   const showToast = jest.fn();

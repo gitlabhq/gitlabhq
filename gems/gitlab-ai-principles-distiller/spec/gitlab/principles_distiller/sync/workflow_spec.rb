@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require_relative '../../../support/tmpdir'
 require_relative '../../../../lib/gitlab/principles_distiller/sync'
 
 RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
+  include TmpdirHelper
+
   # rubocop:disable RSpec/EnvAssignment -- ENV assignment is necessary in `around` blocks; stub_env requires `allow` which is not available outside `before`
   around do |example|
     original_branch = ENV['CI_DEFAULT_BRANCH']
@@ -330,6 +333,58 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
       expect(payload['distilled_path']).to eq('.ai/principles/distilled/foo.md')
       expect(payload['sources']).to eq([{ 'path' => 'doc/foo.md', 'url' => 'https://example.com/foo' }])
       expect(payload['baseline_path']).to eq('.ai/principles/baselines/foo.md')
+    end
+  end
+
+  describe '.validate_sources!' do
+    subject(:validate) { workflow.validate_sources!(config) }
+
+    let(:tmpdir) { mktmpdir }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      FileUtils.mkdir_p(File.join(tmpdir, 'doc'))
+      FileUtils.mkdir_p(File.join(tmpdir, '.ai', 'principles', 'baselines'))
+      File.write(File.join(tmpdir, 'doc', 'present.md'), 'content')
+    end
+
+    context 'when every source path and the baseline exist' do
+      let(:config) do
+        {
+          'sources' => [{ 'path' => 'doc/present.md' }],
+          'baseline' => '.ai/principles/baselines/present.md'
+        }
+      end
+
+      before do
+        File.write(File.join(tmpdir, '.ai', 'principles', 'baselines', 'present.md'), 'content')
+      end
+
+      it 'does not raise' do
+        expect { validate }.not_to raise_error
+      end
+    end
+
+    context 'when a source path is missing' do
+      let(:config) { { 'sources' => [{ 'path' => 'doc/missing.md' }] } }
+
+      it 'raises naming the missing source path' do
+        expect { validate }.to raise_error(%r{SSOT source file not found: doc/missing\.md})
+      end
+    end
+
+    context 'when the baseline path is missing' do
+      let(:config) do
+        {
+          'sources' => [{ 'path' => 'doc/present.md' }],
+          'baseline' => '.ai/principles/baselines/missing.md'
+        }
+      end
+
+      it 'raises naming the missing baseline path' do
+        expect { validate }
+          .to raise_error(%r{SSOT source file not found: \.ai/principles/baselines/missing\.md})
+      end
     end
   end
 

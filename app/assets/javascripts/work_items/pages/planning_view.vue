@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlAlert, GlFilteredSearchToken, GlIntersectionObserver } from '@gitlab/ui';
-import { isEmpty, isEqual, sortBy } from 'lodash-es';
-import produce from 'immer';
+import { isEmpty, isEqual } from 'lodash-es';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __, n__, formatNumber, sprintf } from '~/locale';
@@ -24,6 +23,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
 import { setPageFullWidth, setPageDefaultWidth, isLoggedIn } from '~/lib/utils/common_utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 
 import {
@@ -33,6 +33,8 @@ import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
   OPERATORS_IS_NOT_OR,
+  OPTIONS_NONE_ANY,
+  OPTIONS_NONE_ANY_ME,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CLOSED,
@@ -76,7 +78,6 @@ import {
 import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
-import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_view.query.graphql';
 import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
@@ -102,6 +103,7 @@ import {
   saveSavedView,
   getSavedViewFilterTokens,
   convertToSearchQuery,
+  updateNamespaceDisplaySettings,
 } from 'ee_else_ce/work_items/list/utils';
 
 import {
@@ -119,10 +121,24 @@ import {
 } from '~/work_items/list/constants';
 import {
   planningViewAllItemsFilters,
-  planningViewSavedViewFilterTokens,
   setPlanningViewAllItemsFilters,
-  setPlanningViewSavedViewFilterTokens,
+  getSavedViewSessionFilters,
+  setSavedViewSessionFilters,
 } from '~/work_items/pages/planning_view_state';
+import {
+  getSavedViewDraft,
+  saveSavedViewDraft,
+  clearSavedViewDraft,
+} from '~/work_items/list/saved_view_draft';
+import {
+  ALL_ITEMS_DEFAULT_FILTER_TOKENS,
+  filtersChanged,
+  sortChanged,
+  viewModeChanged,
+  preferencesChanged,
+} from '~/work_items/list/view_change_detection';
+import { persistSortPreference } from '~/work_items/list/display_settings_preferences';
+import { buildInitialViewState } from '~/work_items/list/saved_view_config';
 
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
 
@@ -131,7 +147,6 @@ import SavedViewsLimitWarningModal from '../list/components/work_items_saved_vie
 import SavedViewsSelectors from '../list/components/work_items_saved_views_selectors.vue';
 import ListActions from '../list/components/work_item_list_actions.vue';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
-import UserPreferences from '../list/components/work_item_user_preferences.vue';
 import EmptyStateWithAnyIssues from '../list/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from '../list/components/empty_state_without_any_issues.vue';
 import EmptyStateWithAnyTickets from '../list/components/empty_state_with_any_tickets.vue';
@@ -152,6 +167,8 @@ import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
   DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME,
   VIEW_CONTEXT,
+  VIEW_MODE_LIST,
+  VIEW_MODE_BOARD,
 } from '../constants';
 
 const ListView = () => import('ee_else_ce/work_items/list/list_view.vue');
@@ -182,6 +199,8 @@ export default {
   WORK_ITEM_CREATE_SOURCES,
   CREATION_CONTEXT_LIST_ROUTE,
   VIEW_CONTEXT,
+  VIEW_MODE_LIST,
+  VIEW_MODE_BOARD,
   searchProjectsQuery,
   name: 'PlanningView',
   components: {
@@ -195,7 +214,6 @@ export default {
     ListActions,
     CreateWorkItemModal,
     FilteredSearchBar,
-    UserPreferences,
     WorkItemDisplaySettingsDrawer,
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
@@ -263,14 +281,17 @@ export default {
 
   data() {
     const loggedIn = isLoggedIn();
+    const isSavedViewRoute = this.$route.name === ROUTES.savedView;
+    const persistedViewMode = !isSavedViewRoute && planningViewAllItemsFilters.value?.viewMode;
     return {
       namespaceId: null,
-      viewMode: 'list',
+      viewMode: persistedViewMode || VIEW_MODE_LIST,
       activeItem: null,
       sortKey: CREATED_DESC,
       error: undefined,
       initialSortKey: CREATED_DESC,
       initialViewSortKey: null,
+      initialViewMode: VIEW_MODE_LIST,
       filterTokens: [],
       workItemsCount: 0,
       hasWorkItems: false,
@@ -298,6 +319,7 @@ export default {
       currentWorkItemsCount: 0,
       currentWorkItemIds: [],
       isDisplayDrawerOpen: false,
+      drawerTopOffset: '0px',
     };
   },
 
@@ -359,60 +381,19 @@ export default {
           const savedView = data?.namespace?.savedViews?.nodes[0];
           const limit = data?.namespace?.subscribedSavedViewLimit;
           const count = data?.namespace?.currentSavedViews?.nodes.length;
+
           if (!savedView) {
-            this.$router.push({ name: ROUTES.index, query: { sv_not_found: true } });
+            this.handleSavedViewNotFound();
             return;
           }
+
           if (!savedView.subscribed) {
-            if (count >= limit) {
-              this.$router.push({
-                name: ROUTES.index,
-                query: { sv_limit_id: savedView.id, sv_source_modal: this.subscribeFromModal },
-              });
-            } else {
-              const success = await this.attemptSubscription(savedView);
-              if (success) {
-                this.$toast.show(s__('WorkItem|View added to your list.'));
-                // simple way to just restart the flow once we're subscribed.
-                this.$apollo.queries.savedView.refetch();
-                this.$apollo.queries.subscribedSavedViews.refetch();
-              } else {
-                throw new Error(
-                  `Unable to subscribe to view with id ${this.savedViewId} in ${this.rootPageFullPath}`,
-                );
-              }
-            }
-          } else {
-            if (this.lastTrackedSavedViewId !== this.savedViewId) {
-              this.lastTrackedSavedViewId = this.savedViewId;
-              this.trackEvent('saved_view_view');
-            }
-            const draft = localStorage.getItem(this.savedViewDraftStorageKey);
-            const tokens = this.getFilterTokensFromSavedView(savedView?.filters || {});
-            this.initialViewTokens = tokens;
-            this.initialViewSortKey = savedView?.sort;
-            this.initialViewDisplaySettings = {
-              commonPreferences: { ...this.displaySettings.commonPreferences },
-              namespacePreferences: savedView.displaySettings,
-            };
-
-            const sessionFilters =
-              planningViewSavedViewFilterTokens.value[this.$route.params.view_id];
-            this.filterTokens = sessionFilters ?? tokens;
-            this.updateState(this.filterTokens);
-
-            if (draft) {
-              this.restoreViewDraft();
-            } else {
-              this.sortKey = savedView?.sort;
-              this.localDisplaySettings = {
-                commonPreferences: { ...this.displaySettings.commonPreferences },
-                namespacePreferences: savedView.displaySettings,
-              };
-            }
-
-            this.updateDocumentTitle();
+            await this.handleUnsubscribedSavedView(savedView, { count, limit });
+            return;
           }
+
+          this.trackSavedViewVisit();
+          this.applySavedViewState(savedView);
         } catch (error) {
           Sentry.captureException(error);
         }
@@ -495,17 +476,34 @@ export default {
   },
 
   computed: {
-    isDisplaySettingsDrawerEnabled() {
-      return Boolean(this.glFeatures.workItemListDisplaySettingsDrawer);
-    },
     isPlanningViewBoardEnabled() {
       return Boolean(this.glFeatures.planningViewBoards);
     },
-    useRestApi() {
-      return Boolean(
-        this.glFeatures.workItemRestApiFrontendUsers &&
-          (this.glFeatures.workItemRestApiIndex || this.glFeatures.workItemRestApi),
+    isBoardView() {
+      return this.viewMode === VIEW_MODE_BOARD && this.isPlanningViewBoardEnabled;
+    },
+    detailPanelViewContext() {
+      return this.isBoardView ? VIEW_CONTEXT.drawerBoard : VIEW_CONTEXT.drawerList;
+    },
+    // The board only supports Manual ordering, so it always reads/displays Manual sort
+    // regardless of the list's sort. We override here rather than mutating sortKey, so the
+    // list restores the user's sort on return and their preference is never overwritten.
+    effectiveSortKey() {
+      return this.isBoardView ? RELATIVE_POSITION_ASC : this.sortKey;
+    },
+    manualSortOption() {
+      return this.sortOptions.find(
+        (option) => option.sortDirection?.ascending === RELATIVE_POSITION_ASC,
       );
+    },
+    boardSortOptions() {
+      return this.manualSortOption ? [this.manualSortOption] : [];
+    },
+    drawerSortOptions() {
+      return this.isBoardView ? this.boardSortOptions : this.sortOptions;
+    },
+    useRestApi() {
+      return Boolean(this.glFeatures.workItemRestApiFrontendUsers);
     },
     workItemDetailPanelEnabled() {
       return this.displaySettings?.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
@@ -550,62 +548,36 @@ export default {
     preferencesChanged() {
       if (!this.initialPreferences) return false;
 
-      const currentPreferences = {
-        hiddenMetadataKeys: this.displaySettingsSoT?.namespacePreferences?.hiddenMetadataKeys ?? [],
-      };
-      const viewPreferences = {
-        hiddenMetadataKeys:
-          this.initialViewDisplaySettings?.namespacePreferences?.hiddenMetadataKeys ?? [],
-      };
-      const comparePreferences = this.isSavedView ? viewPreferences : this.initialPreferences;
-
-      return !isEqual(currentPreferences, comparePreferences);
-    },
-    allItemsDefaultFilterTokens() {
-      return [
-        {
-          type: TOKEN_TYPE_STATE,
-          value: {
-            data: STATUS_OPEN,
-            operator: OPERATOR_IS,
-          },
-        },
-      ];
+      return preferencesChanged({
+        currentPreferences: this.namespacePreferences,
+        baselinePreferences: this.isSavedView
+          ? this.initialViewDisplaySettings?.namespacePreferences
+          : this.initialPreferences,
+      });
     },
     filtersChanged() {
-      const filteredTokens = this.filterTokens
-        .filter((token) => {
-          if (token.type === FILTERED_SEARCH_TERM) {
-            return Boolean(token.value?.data);
-          }
-
-          return true;
-        })
-        .map(({ id, ...rest }) => {
-          // Explicitly set undefined operator in filtered-search-term operator
-          if (rest.type === FILTERED_SEARCH_TERM) {
-            return {
-              ...rest,
-              value: { ...rest.value, operator: undefined },
-            };
-          }
-          return rest;
-        });
-
-      const compareFilters = !this.isSavedView
-        ? this.allItemsDefaultFilterTokens
-        : this.initialViewTokens;
-
-      // The sequence of the object can be changed so setting sortBy before comparing
-      return !isEqual(sortBy(filteredTokens, ['type']), sortBy(compareFilters, ['type']));
+      return filtersChanged({
+        filterTokens: this.filterTokens,
+        baselineTokens: this.isSavedView ? this.initialViewTokens : ALL_ITEMS_DEFAULT_FILTER_TOKENS,
+      });
     },
     sortChanged() {
-      const compareSort = !this.isSavedView ? this.initialSortKey : this.initialViewSortKey;
-      return this.sortKey !== compareSort;
+      return sortChanged({
+        sortKey: this.sortKey,
+        baselineSortKey: this.isSavedView ? this.initialViewSortKey : this.initialSortKey,
+      });
+    },
+    viewModeChanged() {
+      return viewModeChanged({
+        viewMode: this.viewMode,
+        baselineViewMode: this.initialViewMode,
+      });
     },
     viewConfigChanged() {
       if (this.isSavedView) {
-        return this.filtersChanged || this.sortChanged || this.preferencesChanged;
+        return (
+          this.filtersChanged || this.sortChanged || this.preferencesChanged || this.viewModeChanged
+        );
       }
       return this.filtersChanged;
     },
@@ -659,7 +631,7 @@ export default {
       const isIidSearch = ISSUE_REFERENCE.test(this.searchQuery);
       return {
         fullPath: this.rootPageFullPath,
-        sort: this.sortKey,
+        sort: this.effectiveSortKey,
         state: this.state,
         ...this.apiFilterParams,
         ...this.apiTypesArgument,
@@ -715,6 +687,7 @@ export default {
           isProject: !this.isGroup,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-assignee`,
           preloadedUsers,
+          defaultUsers: this.isLoggedIn ? OPTIONS_NONE_ANY_ME : OPTIONS_NONE_ANY,
           multiSelect: true,
         },
         {
@@ -984,6 +957,21 @@ export default {
           }
         : this.displaySettings;
     },
+    namespacePreferences() {
+      return this.displaySettingsSoT?.namespacePreferences || {};
+    },
+    displaySettingsToSave() {
+      return { ...this.namespacePreferences, viewMode: this.viewMode };
+    },
+    collapsedGroups() {
+      return this.namespacePreferences.collapsedGroups ?? [];
+    },
+    visibleGroups() {
+      return this.namespacePreferences.visibleGroups ?? null;
+    },
+    hiddenMetadataKeys() {
+      return this.namespacePreferences.hiddenMetadataKeys ?? [];
+    },
     savedViewId() {
       return convertToGraphQLId('WorkItems::SavedViews::SavedView', this.$route.params.view_id);
     },
@@ -1047,9 +1035,6 @@ export default {
         hasWeight: !this.isEpicsList,
       });
     },
-    filteredSearchSortOptions() {
-      return this.isDisplaySettingsDrawerEnabled ? [] : this.sortOptions;
-    },
     preselectedWorkItemType() {
       return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : WORK_ITEM_TYPE_NAME_ISSUE;
     },
@@ -1079,10 +1064,11 @@ export default {
       return {
         sortKey: this.sortKey,
         displaySettings: this.localDisplaySettings,
+        viewMode: this.viewMode,
       };
     },
-    savedViewDraftStorageKey() {
-      return `${this.rootPageFullPath}-saved-view-${this.$route.params.view_id}`;
+    draftStorageContext() {
+      return { rootPageFullPath: this.rootPageFullPath, viewId: this.$route.params.view_id };
     },
   },
 
@@ -1124,15 +1110,7 @@ export default {
     },
     eeSearchTokens() {
       if (this.isSavedView && Boolean(this.savedView)) {
-        const tokens = this.getFilterTokensFromSavedView(this.savedView.filters);
-        this.initialViewTokens = tokens;
-        const sessionFilters = planningViewSavedViewFilterTokens.value[this.$route.params.view_id];
-        this.filterTokens = sessionFilters ?? tokens;
-        this.updateState(this.filterTokens);
-        const draft = localStorage.getItem(this.savedViewDraftStorageKey);
-        if (draft) {
-          this.restoreViewDraft();
-        }
+        this.applySavedViewState(this.savedView);
       }
     },
     displaySettings: {
@@ -1145,6 +1123,7 @@ export default {
             },
             namespacePreferences: {
               hiddenMetadataKeys: value.namespacePreferences?.hiddenMetadataKeys ?? [],
+              visibleGroups: value.namespacePreferences?.visibleGroups ?? null,
             },
           };
         }
@@ -1152,6 +1131,21 @@ export default {
           this.localDisplaySettings = { ...value };
         }
       },
+    },
+    isDisplayDrawerOpen(isOpen) {
+      // The drawer is fixed, we need to keep its top edge aligned with the bottom of the
+      // search bar (which scrolls in-flow, then becomes the sticky filter bar) while it is open.
+      if (isOpen) {
+        this.updateDrawerTopOffset();
+        this.bindDrawerOffsetListeners();
+      } else {
+        this.unbindDrawerOffsetListeners();
+      }
+    },
+    isStickyHeaderVisible() {
+      if (this.isDisplayDrawerOpen) {
+        this.$nextTick(() => this.updateDrawerTopOffset());
+      }
     },
     workItemTypesConfiguration(workItemTypesConfiguration) {
       // When workItemTypesConfiguration becomes available and isSortKeyInitialized is still false,
@@ -1166,6 +1160,24 @@ export default {
         this.handleFilter(tokens);
       }
     },
+    hasCustomFieldsFeature(hasCustomFieldsFeature) {
+      // The flag loads async, so it's undefined when created() first parses the URL.
+      // Re-parse once it resolves so custom-field filters aren't dropped, but only
+      // when the URL actually carries a custom-field param. Re-parsing unconditionally
+      // reassigns filterTokens and re-renders the filtered-search bar as the flag
+      // resolves, which drops the other tokens' suggestions.
+      if (!hasCustomFieldsFeature || this.isSavedView) {
+        return;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const hasCustomFieldParam = Array.from(params.keys()).some((key) =>
+        key.startsWith('custom-field['),
+      );
+      if (hasCustomFieldParam) {
+        this.updateData(getParameterByName(PARAM_SORT));
+      }
+    },
   },
 
   mounted() {
@@ -1177,6 +1189,7 @@ export default {
   },
   beforeDestroy() {
     setPageDefaultWidth();
+    this.unbindDrawerOffsetListeners();
   },
 
   created() {
@@ -1194,21 +1207,28 @@ export default {
     this.autocompleteCache = new AutocompleteCache();
     this.releasesCache = [];
     this.areReleasesFetched = false;
+    this.drawerOffsetFrameId = null;
   },
 
   methods: {
     saveSessionFilters(tokens) {
       if (this.isSavedView) {
-        setPlanningViewSavedViewFilterTokens({
-          ...planningViewSavedViewFilterTokens.value,
-          [this.$route.params.view_id]: [...tokens],
-        });
+        setSavedViewSessionFilters(this.$route.params.view_id, tokens);
       } else {
         setPlanningViewAllItemsFilters({
           filterTokens: [...tokens],
           sortKey: this.sortKey,
           state: this.state,
+          viewMode: this.viewMode,
         });
+      }
+    },
+    handleToggleViewMode(newViewMode) {
+      this.viewMode = newViewMode;
+      if (this.isSavedView) {
+        this.persistSavedViewDraft();
+      } else {
+        this.saveSessionFilters(this.filterTokens);
       }
     },
     handleSetActiveItem(item) {
@@ -1239,6 +1259,68 @@ export default {
     toggleStickyHeader(isVisible) {
       this.isStickyHeaderVisible = isVisible;
     },
+    toggleDisplayDrawer() {
+      this.isDisplayDrawerOpen = !this.isDisplayDrawerOpen;
+    },
+    updateDrawerTopOffset() {
+      // Keep the drawer in its original position on mobile
+      if (PanelBreakpointInstance.getBreakpointSize() === 'xs') {
+        this.drawerTopOffset = '';
+        return;
+      }
+      // Anchor the fixed drawer to the bottom of the search bar that is on screen (either sticky or not)
+      const el = this.isStickyHeaderVisible
+        ? this.$refs.stickyFilteredSearchBar?.$el
+        : this.$refs.filteredSearchBar?.$el;
+      if (!el) {
+        return;
+      }
+      // While the sticky search bar slides in it has a transform applied, which skews
+      // getBoundingClientRect and makes the drawer overlap it. `top` and offsetHeight are layout
+      // values unaffected by the transform, so measure the resting bottom from those instead. The
+      // sticky bar is fixed relative to `.panel-content` (same containing block as the drawer), so
+      // its `top` is already panel-relative and needs no further adjustment.
+      if (this.isStickyHeaderVisible) {
+        const stickyEl = el.closest('.sticky-filter') || el;
+        const stickyBottom =
+          (parseFloat(getComputedStyle(stickyEl).top) || 0) + stickyEl.offsetHeight;
+        this.drawerTopOffset = `${Math.max(Math.round(stickyBottom) + 8, 0)}px`;
+        return;
+      }
+      // Need to measure drawer's position based on the `.panel-content`, not the whole viewport.
+      // Here we subtract the difference so the drawer's top edge lines up with the
+      // search bar's bottom regardless of the containing block.
+      const containingBlock = el.closest('.panel-content');
+      const offsetTop = containingBlock ? containingBlock.getBoundingClientRect().top : 0;
+      const scroller = el.closest('.panel-content-inner');
+      const bottom = el.getBoundingClientRect().bottom + (scroller ? scroller.scrollTop : 0);
+
+      this.drawerTopOffset = `${Math.max(Math.round(bottom - offsetTop) + 8, 0)}px`;
+    },
+    scheduleDrawerOffsetUpdate() {
+      if (this.drawerOffsetFrameId) {
+        return;
+      }
+      this.drawerOffsetFrameId = window.requestAnimationFrame(() => {
+        this.drawerOffsetFrameId = null;
+        this.updateDrawerTopOffset();
+      });
+    },
+    bindDrawerOffsetListeners() {
+      // The offset is anchored to the bar's resting position, so scrolling never changes it.
+      // Only resize and the mobile/desktop breakpoint move the bar, so we listen for those.
+      // (The sticky handoff is handled separately by the `isStickyHeaderVisible` watcher.)
+      window.addEventListener('resize', this.scheduleDrawerOffsetUpdate, { passive: true });
+      PanelBreakpointInstance.addBreakpointListener(this.scheduleDrawerOffsetUpdate);
+    },
+    unbindDrawerOffsetListeners() {
+      window.removeEventListener('resize', this.scheduleDrawerOffsetUpdate);
+      PanelBreakpointInstance.removeBreakpointListener(this.scheduleDrawerOffsetUpdate);
+      if (this.drawerOffsetFrameId) {
+        window.cancelAnimationFrame(this.drawerOffsetFrameId);
+        this.drawerOffsetFrameId = null;
+      }
+    },
     getFilterTokensFromSavedView(savedViewFilters) {
       const tokens = getSavedViewFilterTokens(savedViewFilters, {
         includeStateToken: true,
@@ -1251,14 +1333,71 @@ export default {
       );
       return convertLegacyTypeFormat(filteredTokens, this.getWorkItemTypeConfiguration);
     },
+    handleSavedViewNotFound() {
+      this.$router.push({ name: ROUTES.index, query: { sv_not_found: true } });
+    },
+    async handleUnsubscribedSavedView(savedView, { count, limit }) {
+      if (count >= limit) {
+        this.$router.push({
+          name: ROUTES.index,
+          query: { sv_limit_id: savedView.id, sv_source_modal: this.subscribeFromModal },
+        });
+        return;
+      }
+
+      const success = await this.attemptSubscription(savedView);
+      if (!success) {
+        throw new Error(
+          `Unable to subscribe to view with id ${this.savedViewId} in ${this.rootPageFullPath}`,
+        );
+      }
+
+      this.$toast.show(s__('WorkItem|View added to your list.'));
+      // simple way to just restart the flow once we're subscribed.
+      this.$apollo.queries.savedView.refetch();
+      this.$apollo.queries.subscribedSavedViews.refetch();
+    },
+    trackSavedViewVisit() {
+      if (this.lastTrackedSavedViewId !== this.savedViewId) {
+        this.lastTrackedSavedViewId = this.savedViewId;
+        this.trackEvent('saved_view_view');
+      }
+    },
+    applySavedViewState(savedView) {
+      const draft = getSavedViewDraft(this.draftStorageContext);
+      const tokens = this.getFilterTokensFromSavedView(savedView?.filters || {});
+
+      this.initialViewTokens = tokens;
+      const { initialViewSortKey, initialViewMode, initialViewDisplaySettings } =
+        buildInitialViewState({
+          savedView,
+          commonPreferences: this.displaySettings.commonPreferences,
+        });
+      this.initialViewSortKey = initialViewSortKey;
+      this.initialViewMode = initialViewMode;
+      this.initialViewDisplaySettings = initialViewDisplaySettings;
+
+      const sessionFilters = getSavedViewSessionFilters(this.$route.params.view_id);
+      this.filterTokens = sessionFilters ?? tokens;
+      this.updateState(this.filterTokens);
+
+      if (draft) {
+        this.restoreViewDraft();
+      } else {
+        this.sortKey = initialViewSortKey;
+        this.localDisplaySettings = initialViewDisplaySettings;
+        this.viewMode = initialViewMode;
+      }
+
+      this.updateDocumentTitle();
+    },
     restoreViewDraft() {
-      const draft = localStorage.getItem(this.savedViewDraftStorageKey);
+      const draft = getSavedViewDraft(this.draftStorageContext);
       if (!draft) return;
 
-      const parsedData = JSON.parse(draft);
-
-      this.sortKey = parsedData.sortKey;
-      this.localDisplaySettings = parsedData.displaySettings;
+      this.sortKey = draft.sortKey;
+      this.localDisplaySettings = draft.displaySettings;
+      this.viewMode = draft.viewMode;
     },
     handleClickTab(state) {
       if (this.state === state) {
@@ -1301,9 +1440,6 @@ export default {
         document.title = `${prefix} · ${middleCrumb} · GitLab`;
       }
     },
-    clearLocalSavedViewsConfig() {
-      localStorage.removeItem(this.savedViewDraftStorageKey);
-    },
     async updateView() {
       const mutationKey = 'workItemSavedViewUpdate';
       try {
@@ -1316,7 +1452,7 @@ export default {
           description: this.savedView?.description,
           isPrivate: this.savedView?.isPrivate,
           filters: this.apiFilterParams,
-          displaySettings: this.displaySettingsSoT?.namespacePreferences || {},
+          displaySettings: this.displaySettingsToSave,
           sort: this.sortKey,
           userPermissions: this.savedView?.userPermissions,
           subscribed: this.savedView?.subscribed,
@@ -1330,7 +1466,7 @@ export default {
         }
 
         this.$toast.show(s__('WorkItem|View has been saved.'));
-        this.clearLocalSavedViewsConfig();
+        clearSavedViewDraft(this.draftStorageContext);
       } catch (e) {
         Sentry.captureException(e);
         this.error = s__('WorkItem|Something went wrong while saving the view');
@@ -1366,7 +1502,8 @@ export default {
       this.filterTokens = [...this.initialViewTokens];
       this.sortKey = this.initialViewSortKey;
       this.localDisplaySettings = this.initialViewDisplaySettings;
-      this.clearLocalSavedViewsConfig();
+      this.viewMode = this.initialViewMode;
+      clearSavedViewDraft(this.draftStorageContext);
     },
     addStateToken() {
       this.hasStateToken = this.checkIfStateTokenExists();
@@ -1522,11 +1659,11 @@ export default {
     },
     persistSavedViewDraft() {
       if (!this.viewConfigChanged) {
-        this.clearLocalSavedViewsConfig();
+        clearSavedViewDraft(this.draftStorageContext);
         return;
       }
 
-      localStorage.setItem(this.savedViewDraftStorageKey, JSON.stringify(this.viewDraftData));
+      saveSavedViewDraft(this.draftStorageContext, this.viewDraftData);
     },
     handleAllIssuablesCheckedInput(value) {
       if (value) {
@@ -1536,13 +1673,52 @@ export default {
       }
     },
     async handleLocalDisplayPreferencesUpdate(newSettings) {
+      // Merge incoming keys so independent settings (hidden metadata fields and
+      // collapsed board columns) don't clobber each other on a saved view draft.
       this.localDisplaySettings = {
         ...this.localDisplaySettings,
         namespacePreferences: {
-          hiddenMetadataKeys: [...newSettings.hiddenMetadataKeys],
+          ...this.localDisplaySettings.namespacePreferences,
+          ...newSettings,
         },
       };
       this.persistSavedViewDraft();
+    },
+    handleToggleGroupCollapse(groupId) {
+      const current = this.namespacePreferences.collapsedGroups ?? [];
+      const collapsedGroups = current.includes(groupId)
+        ? current.filter((id) => id !== groupId)
+        : [...current, groupId];
+      const newSettings = { ...this.namespacePreferences, collapsedGroups };
+
+      if (this.isSavedView) {
+        this.handleLocalDisplayPreferencesUpdate(newSettings);
+        return;
+      }
+
+      this.persistNamespaceDisplaySettings(newSettings);
+    },
+    async persistNamespaceDisplaySettings(displaySettings) {
+      if (!this.isLoggedIn) {
+        return;
+      }
+
+      try {
+        await updateNamespaceDisplaySettings({
+          apolloClient: this.$apollo,
+          namespacePath: this.rootPageFullPath,
+          workItemTypeId: this.workItemTypeId,
+          isSavedView: this.isSavedView,
+          sort: this.sortKey,
+          displaySettings,
+        });
+      } catch (error) {
+        createAlert({
+          message: __('Something went wrong while saving the preference.'),
+          captureError: true,
+          error,
+        });
+      }
     },
     updateRouterQueryParams() {
       if (this.isSavedView) {
@@ -1570,6 +1746,8 @@ export default {
       });
     },
     handleFilter(tokens) {
+      const previousQueryVariables = this.queryVariables;
+
       this.filterTokens = tokens;
       this.hasStateToken = this.checkIfStateTokenExists();
       this.updateState(tokens);
@@ -1581,13 +1759,20 @@ export default {
       if (this.isSavedView) {
         this.persistSavedViewDraft();
       }
+
+      // onFilter fires on every search submit (search icon / Enter). When the
+      // variables change, Apollo re-runs the list query on its own. When they
+      // don't, force a reload so the query still re-runs on every submit.
+      if (isEqual(previousQueryVariables, this.queryVariables)) {
+        this.refetchItems({ refetchCounts: true });
+      }
     },
     handleSetPageParams(pageParams) {
       this.pageParams = pageParams;
       this.updateRouterQueryParams();
     },
     handleSort(sortKey) {
-      if (this.sortKey === sortKey) {
+      if (this.effectiveSortKey === sortKey) {
         return;
       }
 
@@ -1609,38 +1794,11 @@ export default {
     },
     async saveSortPreference(sortKey) {
       try {
-        const { data } = await this.$apollo.mutate({
-          mutation: updateWorkItemListUserPreference,
-          variables: {
-            namespace: this.rootPageFullPath,
-            workItemTypeId: this.workItemTypeId,
-            sort: sortKey,
-          },
-          update: (
-            cache,
-            {
-              data: {
-                workItemUserPreferenceUpdate: { userPreferences },
-              },
-            },
-          ) => {
-            if (!userPreferences) {
-              return;
-            }
-            cache.updateQuery(
-              {
-                query: getUserWorkItemsPreferences,
-                variables: {
-                  namespace: this.rootPageFullPath,
-                  workItemTypeId: this.workItemTypeId,
-                },
-              },
-              (existingData) =>
-                produce(existingData, (draftData) => {
-                  draftData.currentUser.workItemPreferencesWithType.sort = userPreferences.sort;
-                }),
-            );
-          },
+        const { data } = await persistSortPreference({
+          apolloClient: this.$apollo,
+          namespace: this.rootPageFullPath,
+          workItemTypeId: this.workItemTypeId,
+          sort: sortKey,
         });
         if (data?.workItemUserPreferenceUpdate?.errors?.length) {
           throw new Error(data.workItemUserPreferenceUpdate.errors);
@@ -1746,7 +1904,8 @@ export default {
       :active-item="activeItem"
       :open="isItemSelected"
       :issuable-type="activeWorkItemType"
-      :view-context="$options.VIEW_CONTEXT.drawerList"
+      :is-board="isBoardView"
+      :view-context="detailPanelViewContext"
       click-outside-exclude-selector=".issuable-list"
       @close="activeItem = null"
       @add-child="refetchItems"
@@ -1810,7 +1969,7 @@ export default {
           :saved-views="subscribedSavedViews"
           :sort-key="sortKey"
           :filters="apiFilterParams"
-          :display-settings="displaySettingsSoT.namespacePreferences"
+          :display-settings="displaySettingsToSave"
           @navigate-to-all-items="navigateToAllItems"
           @reset-to-default-view="resetToDefaultView"
           @subscribe-from-modal="subscribeFromModal = true"
@@ -1838,29 +1997,18 @@ export default {
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @work-item-created="handleWorkItemCreated"
             />
-            <gl-button
-              v-if="isPlanningViewBoardEnabled"
-              data-testid="toggle-view-mode-button"
-              @click="viewMode = viewMode === 'list' ? 'board' : 'list'"
-            >
-              {{
-                viewMode === 'list'
-                  ? s__('WorkItemBoard|Show Board')
-                  : s__('WorkItemBoard|Show List')
-              }}
-            </gl-button>
           </template>
         </saved-views-selectors>
       </template>
       <!-- eslint-disable vue/v-on-event-hyphenation -->
       <filtered-search-bar
+        ref="filteredSearchBar"
         :namespace="rootPageFullPath"
         recent-searches-storage-key="issues"
         :search-input-placeholder="__('Search or filter results…')"
         :tokens="searchTokens"
-        :sort-options="filteredSearchSortOptions"
         :initial-filter-value="filterTokens"
-        :initial-sort-by="sortKey"
+        :initial-sort-by="effectiveSortKey"
         sync-filter-and-sort
         :show-checkbox="showBulkEditSidebar"
         :checkbox-checked="allIssuablesChecked"
@@ -1875,25 +2023,13 @@ export default {
         <!-- eslint-enable vue/v-on-event-hyphenation -->
         <template #user-preference>
           <gl-button
-            v-if="isDisplaySettingsDrawerEnabled"
             icon="preferences"
+            :selected="isDisplayDrawerOpen"
             data-testid="display-settings-button"
-            @click="isDisplayDrawerOpen = true"
+            @click="toggleDisplayDrawer"
           >
             {{ __('Display') }}
           </gl-button>
-          <user-preferences
-            v-else
-            :namespace-preferences="displaySettingsSoT.namespacePreferences"
-            :common-preferences="displaySettings.commonPreferences"
-            :full-path="rootPageFullPath"
-            :is-group="isGroup"
-            :is-service-desk-list="isServiceDeskList"
-            :work-item-type-id="workItemTypeId"
-            :sort-key="sortKey"
-            :prevent-auto-submit="isSavedView"
-            @local-update="handleLocalDisplayPreferencesUpdate"
-          />
         </template>
       </filtered-search-bar>
       <gl-intersection-observer
@@ -1903,17 +2039,17 @@ export default {
         <transition name="issuable-header-slide">
           <div
             v-if="isStickyHeaderVisible"
-            class="sticky-filter gl-fixed gl-left-auto gl-right-auto gl-z-3 gl-hidden @md/panel:gl-block"
+            class="sticky-filter gl-fixed gl-left-auto gl-right-auto gl-z-3 gl-hidden @sm/panel:gl-block"
           >
             <!-- eslint-disable vue/v-on-event-hyphenation -->
             <filtered-search-bar
+              ref="stickyFilteredSearchBar"
               :namespace="rootPageFullPath"
               recent-searches-storage-key="issues"
               :search-input-placeholder="__('Search or filter results…')"
               :tokens="searchTokens"
-              :sort-options="filteredSearchSortOptions"
               :initial-filter-value="filterTokens"
-              :initial-sort-by="sortKey"
+              :initial-sort-by="effectiveSortKey"
               sync-filter-and-sort
               :show-checkbox="showBulkEditSidebar"
               :checkbox-checked="allIssuablesChecked"
@@ -1928,25 +2064,13 @@ export default {
               <!-- eslint-enable vue/v-on-event-hyphenation -->
               <template #user-preference>
                 <gl-button
-                  v-if="isDisplaySettingsDrawerEnabled"
                   icon="preferences"
+                  :selected="isDisplayDrawerOpen"
                   data-testid="display-settings-button"
-                  @click="isDisplayDrawerOpen = true"
+                  @click="toggleDisplayDrawer"
                 >
                   {{ __('Display') }}
                 </gl-button>
-                <user-preferences
-                  v-else
-                  :namespace-preferences="displaySettingsSoT.namespacePreferences"
-                  :common-preferences="displaySettings.commonPreferences"
-                  :full-path="rootPageFullPath"
-                  :is-group="isGroup"
-                  :is-service-desk-list="isServiceDeskList"
-                  :work-item-type-id="workItemTypeId"
-                  :sort-key="sortKey"
-                  :prevent-auto-submit="isSavedView"
-                  @local-update="handleLocalDisplayPreferencesUpdate"
-                />
               </template>
             </filtered-search-bar>
           </div>
@@ -1955,7 +2079,9 @@ export default {
     </div>
     <template v-if="!isServiceDeskList">
       <!-- state-count -->
-      <div class="gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3">
+      <div
+        class="gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3 sm:gl-flex-nowrap"
+      >
         <div class="gl-flex gl-items-center">
           <span data-testid="work-item-count" class="gl-mr-3">{{ workItemTotalStateCount }}</span>
           <gl-button
@@ -1988,7 +2114,7 @@ export default {
             :title="s__('WorkItem|Save view')"
             :sort-key="sortKey"
             :filters="apiFilterParams"
-            :display-settings="displaySettings.namespacePreferences"
+            :display-settings="displaySettingsToSave"
             :show-subscription-limit-warning="isSubscriptionLimitReached"
             @hide="isNewViewModalVisible = false"
           />
@@ -2026,7 +2152,7 @@ export default {
       </div>
     </template>
     <list-view
-      v-if="viewMode === 'list'"
+      v-if="viewMode !== $options.VIEW_MODE_BOARD"
       data-testid="list-view"
       :root-page-full-path="rootPageFullPath"
       :with-tabs="withTabs"
@@ -2125,25 +2251,35 @@ export default {
       </template>
     </list-view>
     <board-view
-      v-if="viewMode === 'board' && isPlanningViewBoardEnabled"
+      v-if="viewMode === $options.VIEW_MODE_BOARD && isPlanningViewBoardEnabled"
       :root-page-full-path="rootPageFullPath"
       :query-variables="queryVariables"
+      :collapsed-groups="collapsedGroups"
+      :visible-groups="visibleGroups"
+      :hidden-metadata-keys="hiddenMetadataKeys"
+      :active-item="activeItem"
+      :detail-panel-enabled="workItemDetailPanelEnabled"
       @set-error="($evt) => (error = $evt)"
+      @set-active-item="handleSetActiveItem"
+      @toggle-collapse="handleToggleGroupCollapse"
     />
     <work-item-display-settings-drawer
-      v-if="isDisplaySettingsDrawerEnabled"
       :open="isDisplayDrawerOpen"
-      :sort-options="sortOptions"
-      :sort-key="sortKey"
-      :namespace-preferences="displaySettingsSoT.namespacePreferences"
+      :header-height="drawerTopOffset"
+      :view-mode="viewMode"
+      :sort-options="drawerSortOptions"
+      :sort-key="effectiveSortKey"
+      :namespace-preferences="namespacePreferences"
       :common-preferences="displaySettings.commonPreferences"
       :full-path="rootPageFullPath"
       :is-group="isGroup"
       :is-service-desk-list="isServiceDeskList"
+      :is-saved-view="isSavedView"
       :work-item-type-id="workItemTypeId"
       @close="isDisplayDrawerOpen = false"
       @sort="handleSort"
       @update-settings="handleLocalDisplayPreferencesUpdate"
+      @toggle-view-mode="handleToggleViewMode"
     />
   </div>
 </template>

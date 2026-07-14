@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'DocLine',
   props: {
     language: {
       type: String,

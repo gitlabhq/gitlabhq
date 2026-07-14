@@ -90,7 +90,7 @@ For more information, see the [CI/CD YAML syntax reference](../yaml/_index.md#en
 
 {{< history >}}
 
-- Kubernetes watch API integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422945) in GitLab 16.6 [with a flag](../../administration/feature_flags/_index.md) named `k8s_watch_api`. Disabled by default.
+- Kubernetes watch API integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422945) in GitLab 16.6 [with a feature flag](../../administration/feature_flags/_index.md) named `k8s_watch_api`. Disabled by default.
 - Kubernetes watch API integration [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136831) in GitLab 16.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427762) in GitLab 17.1. Feature flag `k8s_watch_api` removed.
 
@@ -194,7 +194,7 @@ You can also delete a pod from the pod details.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11351) in GitLab 16.4, [with a flag](../../administration/feature_flags/_index.md) named `k8s_dashboard`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11351) in GitLab 16.4, [with a feature flag](../../administration/feature_flags/_index.md) named `k8s_dashboard`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/424237) in GitLab 16.7 for a subset of users.
 
 {{< /history >}}

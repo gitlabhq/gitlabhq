@@ -205,6 +205,23 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
       end
     end
 
+    context 'when source branch no longer exists' do
+      before do
+        allow(merge_request).to receive(:source_branch_exists?).and_return(false)
+      end
+
+      it 'returns an error without calling Gitaly or tracking an exception', :aggregate_failures do
+        expect(repository).not_to receive(:gitaly_operation_client)
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        result = service.execute(merge_request)
+
+        expect(result).to match(status: :error, message: 'Source branch does not exist')
+        expect(merge_request.reload.merge_error).to eq('Source branch does not exist')
+        expect(merge_request.rebase_jid).to be_nil
+      end
+    end
+
     context 'valid params' do
       shared_examples_for 'a service that can execute a successful rebase' do
         before do

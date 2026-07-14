@@ -84,7 +84,7 @@ RSpec.describe Namespaces::UpdateDenormalizedDescendantsService, feature_categor
       run_service(namespace_id)
 
       record = Namespaces::Descendants.find_by(namespace_id: namespace_id)
-      expect(record).to eq(nil)
+      expect(record).to be_nil
     end
   end
 

@@ -44,13 +44,7 @@ RSpec.describe Groups::AcceptingProjectCreationsFinder, feature_category: :group
     create(:group, parent: shared_with_group_where_direct_owner_as_maintainer)
   end
 
-  before do
-    group_where_direct_owner.add_owner(user)
-    group_where_direct_owner_with_admin_project_creation_level.add_owner(user)
-    group_where_direct_maintainer.add_maintainer(user)
-    group_where_direct_developer_but_developers_cannot_create_projects.add_developer(user)
-    group_where_direct_developer.add_developer(user)
-
+  before_all do
     create(:group_group_link, :owner,
       shared_with_group: group_where_direct_owner,
       shared_group: shared_with_group_where_direct_owner_as_owner
@@ -85,6 +79,14 @@ RSpec.describe Groups::AcceptingProjectCreationsFinder, feature_category: :group
       shared_with_group: group_where_direct_developer_but_developers_cannot_create_projects,
       shared_group: shared_with_group_where_direct_developer_as_owner
     )
+  end
+
+  before do
+    group_where_direct_owner.add_owner(user)
+    group_where_direct_owner_with_admin_project_creation_level.add_owner(user)
+    group_where_direct_maintainer.add_maintainer(user)
+    group_where_direct_developer_but_developers_cannot_create_projects.add_developer(user)
+    group_where_direct_developer.add_developer(user)
   end
 
   describe '#execute' do

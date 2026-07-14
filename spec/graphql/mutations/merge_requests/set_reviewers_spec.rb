@@ -143,4 +143,10 @@ RSpec.describe Mutations::MergeRequests::SetReviewers, feature_category: :api do
       end
     end
   end
+
+  describe '.authorization_scopes' do
+    it 'includes the ai_workflows scope' do
+      expect(described_class.authorization_scopes).to include(:ai_workflows)
+    end
+  end
 end

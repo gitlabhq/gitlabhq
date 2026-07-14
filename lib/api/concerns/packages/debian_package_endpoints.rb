@@ -108,7 +108,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_debian]
             end
             route_setting :authorization, permissions: :download_debian_distribution_release, boundary_type: resource_type
             get 'Release.gpg' do
@@ -126,7 +126,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_debian]
             end
             route_setting :authorization, permissions: :download_debian_distribution_release, boundary_type: resource_type
             get 'Release' do
@@ -145,7 +145,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_debian]
             end
             route_setting :authorization, permissions: :download_debian_distribution_release, boundary_type: resource_type
             get 'InRelease' do
@@ -177,7 +177,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_debian]
                 end
                 route_setting :authorization, permissions: :download_debian_distribution_packages_index, boundary_type: resource_type
                 get 'Packages' do
@@ -198,7 +198,10 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_debian]
+                end
+                params do
+                  requires :file_sha256, type: String, desc: 'The SHA256 checksum of the index file'
                 end
                 route_setting :authorization, permissions: :download_debian_distribution_packages_index, boundary_type: resource_type
                 get 'by-hash/SHA256/:file_sha256' do
@@ -221,7 +224,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_debian]
                 end
                 route_setting :authorization, permissions: :download_debian_distribution_packages_index, boundary_type: resource_type
                 get 'Sources' do
@@ -242,7 +245,10 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_debian]
+                end
+                params do
+                  requires :file_sha256, type: String, desc: 'The SHA256 checksum of the index file'
                 end
                 route_setting :authorization, permissions: :download_debian_distribution_packages_index, boundary_type: resource_type
                 get 'by-hash/SHA256/:file_sha256' do
@@ -269,7 +275,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_debian]
                 end
                 route_setting :authorization, permissions: :download_debian_distribution_packages_index, boundary_type: resource_type
                 get 'Packages' do
@@ -290,7 +296,10 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[packages]
+                  tags %w[packages_debian]
+                end
+                params do
+                  requires :file_sha256, type: String, desc: 'The SHA256 checksum of the index file'
                 end
                 route_setting :authorization, permissions: :download_debian_distribution_packages_index, boundary_type: resource_type
                 get 'by-hash/SHA256/:file_sha256' do

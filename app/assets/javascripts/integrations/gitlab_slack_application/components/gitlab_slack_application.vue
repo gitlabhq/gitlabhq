@@ -10,6 +10,7 @@ import { addProjectToSlack } from '../api';
 import ProjectsDropdown from './projects_dropdown.vue';
 
 export default {
+  name: 'GitlabSlackApplication',
   components: {
     GlButton,
     GlIcon,

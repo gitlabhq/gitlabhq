@@ -51,11 +51,7 @@ module Tasks
           end
 
           def allowed_fields
-            items_by_category = items.group_by(&:category).sort.to_h
-
-            build_section(nil, nil, items_by_category) do |category, category_items|
-              build_category_section(category, category_items)
-            end
+            build_category_sections(items)
           end
 
           private
@@ -97,15 +93,6 @@ module Tasks
 
           def boundary_for(directive)
             directive.arguments[:boundary_type].to_s.downcase.presence || 'unknown'
-          end
-
-          def build_category_section(category, category_items)
-            title = "### #{category} resources\n"
-            items_by_resource = category_items.group_by(&:resource).sort.to_h
-
-            build_section(title, nil, items_by_resource) do |resource, resource_items|
-              build_resource_section(resource, resource_items)
-            end
           end
 
           def build_resource_section(resource, resource_items)

@@ -125,8 +125,8 @@ RSpec.describe Gitlab::Pagination::Offset::PaginationWithIndexOnlyScan, feature_
   end
 
   context 'when STI scope is used' do
-    let!(:build1) { create(:ci_build) }
-    let!(:build2) { create(:ci_build) }
+    let_it_be(:build1) { create(:ci_build) }
+    let_it_be(:build2) { create(:ci_build) }
 
     let!(:scope) { Ci::Build.where({}).order(:id) }
 

@@ -36,6 +36,7 @@ export default {
       required: true,
     },
   },
+  emits: ['click'],
   data() {
     return {
       topicsPopoverTarget: uniqueId('project-topics-popover-'),

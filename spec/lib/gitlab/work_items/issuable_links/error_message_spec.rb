@@ -4,8 +4,7 @@ require 'fast_spec_helper'
 
 RSpec.describe Gitlab::WorkItems::IssuableLinks::ErrorMessage, feature_category: :team_planning do
   let(:target_type) { 'issue' }
-  let(:container_type) { 'project' }
-  let(:error_message) { described_class.new(target_type: target_type, container_type: container_type) }
+  let(:error_message) { described_class.new(target_type: target_type) }
 
   describe '#for_http_status' do
     context 'when status is 404' do
@@ -42,16 +41,16 @@ RSpec.describe Gitlab::WorkItems::IssuableLinks::ErrorMessage, feature_category:
   describe '#no_permission_error' do
     it 'returns the correct message' do
       expect(error_message.no_permission_error).to eq(
-        "Couldn't link issues. You must have at least the Guest role in both issue's projects."
+        "Could not link issues. You must be a member of the project or group of both issues."
       )
     end
 
-    context 'when container_type is group' do
-      let(:container_type) { 'group' }
+    context 'with a different target_type' do
+      let(:target_type) { 'work item' }
 
-      it 'pluralizes group correctly' do
+      it 'returns the correct message' do
         expect(error_message.no_permission_error).to eq(
-          "Couldn't link issues. You must have at least the Guest role in both issue's groups."
+          "Could not link work items. You must be a member of the project or group of both work items."
         )
       end
     end

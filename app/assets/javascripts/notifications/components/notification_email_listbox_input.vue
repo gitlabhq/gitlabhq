@@ -2,6 +2,7 @@
 import ListboxInput from '~/vue_shared/components/listbox_input/listbox_input.vue';
 
 export default {
+  name: 'NotificationEmailListboxInput',
   components: {
     ListboxInput,
   },

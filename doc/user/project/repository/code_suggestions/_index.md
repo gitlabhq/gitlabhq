@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Coding
+stage: AI Coding
+group: DAP Repository Flows
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Code Suggestions helps you write code in GitLab more efficiently by using AI to suggest code as you type.
 title: Code Suggestions
@@ -57,8 +57,9 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 ## Prerequisites
 
 - If you have GitLab Duo Core, [IDE features are on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
-- [Code Suggestions is set up](set_up.md).
-- You have a GitLab project.
+- [Code Suggestions is set up](set_up.md) in your IDE.
+- You have a [default GitLab Duo namespace](../../../profile/preferences.md#namespace-resolution-in-your-local-environment)
+  set, or have a project open that has GitLab Duo access.
 
 > [!note]
 > GitLab Duo requires GitLab 17.2 or later. For GitLab Duo Core access, and for the best user experience and results,
@@ -69,7 +70,6 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 To use Code Suggestions:
 
 1. Open a project in your IDE.
-   The local project must have a Git remote configured that points to a repository on GitLab.
 1. Author your code.
    As you type, suggestions are displayed. Code Suggestions provides code snippets
    or completes the current line, depending on the cursor position.
@@ -212,7 +212,7 @@ This setting applies to all GitLab Duo Agent Platform features.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_direct_access`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a feature flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_direct_access`. Disabled by default.
 
 {{< /history >}}
 

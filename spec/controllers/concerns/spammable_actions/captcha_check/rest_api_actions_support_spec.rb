@@ -2,11 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe SpammableActions::CaptchaCheck::RestApiActionsSupport do
+RSpec.describe SpammableActions::CaptchaCheck::RestApiActionsSupport, feature_category: :instance_resiliency do
   include Rack::Test::Methods
 
   subject do
     Class.new(Grape::API) do
+      format :json
+      formatter :json, Gitlab::Json::GrapeFormatter
+
       helpers API::Helpers
       helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
 

@@ -20,7 +20,7 @@ description: "Configure the GitLab for Slack app to use slash commands, receive 
 {{< /history >}}
 
 > [!note]
-> This page contains user documentation for the GitLab for Slack app. For administrator documentation, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md).
+> For administrator documentation, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md).
 
 The GitLab for Slack app is a native Slack app that provides [slash commands](#slash-commands), [notifications](#slack-notifications),
 and the [GitLab Duo integration](#gitlab-duo) in your Slack workspace. GitLab links your Slack user
@@ -41,7 +41,7 @@ Although functionality has not changed, you should [reinstall the app](#reinstal
 
 {{< history >}}
 
-- Installation at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../../../administration/feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
+- Installation at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175803) in GitLab 17.8. Feature flag `gitlab_for_slack_app_instance_and_group_level` removed.
 
@@ -59,6 +59,13 @@ To install the GitLab for Slack app from the project or group settings:
       On GitLab Self-Managed and GitLab Dedicated, an administrator must first
       [enable support for multiple workspaces](../../../administration/settings/slack_app.md#enable-support-for-multiple-workspaces) for the dropdown list to appear.
    1. Select **Allow**.
+
+When you install the app at the group level, the integration is also enabled for all subgroups and
+projects in the group that don't already have the integration configured. Subgroups and projects
+that already have the integration configured are not affected, but can choose to use the inherited
+settings at any time. For more information, see [group-level integration management](_index.md#manage-group-default-settings-for-a-project-integration).
+Each project gets a project-specific alias based on its project path, which you can use in
+[slash commands](#slash-commands).
 
 ### From the Slack App Directory
 
@@ -110,7 +117,7 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590434) in GitLab 19.1 [with a flag](../../../administration/feature_flags/_index.md) named `slack_duo_agent`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590434) in GitLab 19.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `slack_duo_agent`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 
 {{< /history >}}
 
@@ -323,7 +330,7 @@ The following GitLab events can trigger notifications in Slack:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../../../administration/feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175803) in GitLab 17.8. Feature flag `gitlab_for_slack_app_instance_and_group_level` removed.
 

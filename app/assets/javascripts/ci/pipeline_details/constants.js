@@ -1,6 +1,5 @@
 import { __, s__ } from '~/locale';
 
-export const CANCEL_REQUEST = 'CANCEL_REQUEST';
 export const SUPPORTED_FILTER_PARAMETERS = ['username', 'ref', 'status', 'source'];
 
 // The `needs` field of a job, should match the GraphQL field. This is needed to build the dependency arrows in the pipeline graph.
@@ -45,7 +44,7 @@ export const validPipelineTabNames = [
   manualVariablesTabName,
 ];
 
-export const TOAST_MESSAGE = s__('Pipeline|Creating pipeline.');
+export const CREATING_PIPELINE_TOAST_MESSAGE = s__('Pipeline|Creating pipeline.');
 
 export const DEFAULT_FIELDS = [
   {

@@ -106,8 +106,9 @@ module API
         status :ok
       end
 
-      desc 'Track multiple gitlab internal events' do
-        detail 'This feature was introduced in GitLab 17.3.'
+      desc 'Track multiple internal GitLab events' do
+        detail 'Tracks one or more GitLab internal events in a single request. Each event increments Service Ping ' \
+          'counters in Redis and is optionally sent to Snowplow. This feature was introduced in GitLab 17.3.'
         success code: 200
         failure [
           { code: 400, message: 'Validation error' },
@@ -147,8 +148,8 @@ module API
         end
       end
 
-      desc 'Get a list of all metric definitions' do
-        detail 'This feature was introduced in GitLab 13.11.'
+      desc 'Download metric definitions' do
+        detail 'Downloads all metric definitions as a single YAML file.'
         success code: 200
         failure [
           { code: 401, message: 'Unauthorized' },

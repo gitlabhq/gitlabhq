@@ -53,7 +53,7 @@ RSpec.describe Support::AbilityCheck, feature_category: :system_access do # rubo
   shared_examples 'ability found' do
     it 'policy ability is found' do
       expect_no_deprecation_warning do
-        expect_allowed(user, ability, subject).to eq(true)
+        expect_allowed(user, ability, subject).to be(true)
       end
     end
   end
@@ -63,7 +63,7 @@ RSpec.describe Support::AbilityCheck, feature_category: :system_access do # rubo
     description += warning ? ' and emits a warning' : ' without warning'
 
     it description do
-      check = -> { expect_allowed(user, ability, subject).to eq(false) }
+      check = -> { expect_allowed(user, ability, subject).to be(false) }
 
       if warning
         expect_deprecation_warning(warning, ability, &check)

@@ -6,7 +6,7 @@ RSpec.describe 'Merge Request button', feature_category: :groups_and_projects do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
 
   let(:forked_project) { fork_project(project, user, repository: true) }
 

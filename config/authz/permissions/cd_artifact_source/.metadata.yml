@@ -1,0 +1,4 @@
+---
+name: Continuous Deployment Artifact Source
+description: A source of deployable artifacts for a continuous deployment service
+feature_category: continuous_delivery

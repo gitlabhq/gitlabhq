@@ -67,6 +67,11 @@ describe('HeaderArea', () => {
       rootRef: mockRootRef,
     },
   } = {}) => {
+    // HeaderArea binds a global (singleton) Mousetrap shortcut on mount.
+    // Clear any existing bindings before mounting so a shortcut bound by a
+    // previously created component doesn't leak into this one.
+    Mousetrap.reset();
+
     return shallowMountExtended(HeaderArea, {
       provide: {
         ...headerAppInjected,
@@ -109,35 +114,26 @@ describe('HeaderArea', () => {
   });
 
   describe('File tree browser toggle', () => {
-    describe('when repositoryFileTreeBrowser is enabled', () => {
-      it.each`
-        isProjectOverview | isExpanded | isPeekOn | expectedToggleVisible
-        ${false}          | ${false}   | ${false} | ${true}
-        ${false}          | ${true}    | ${false} | ${false}
-        ${false}          | ${false}   | ${true}  | ${true}
-        ${true}           | ${false}   | ${false} | ${false}
-      `(
-        'toggles file tree visibility',
-        ({ isExpanded, isPeekOn, isProjectOverview, expectedToggleVisible }) => {
-          pinia = createTestingPinia({ stubActions: false });
-          fileTreeBrowserStore = useFileTreeBrowserVisibility();
-          fileTreeBrowserStore.setFileTreeBrowserIsExpanded(isExpanded);
-          fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(isPeekOn);
+    it.each`
+      isProjectOverview | isExpanded | isPeekOn | expectedToggleVisible
+      ${false}          | ${false}   | ${false} | ${true}
+      ${false}          | ${true}    | ${false} | ${false}
+      ${false}          | ${false}   | ${true}  | ${true}
+      ${true}           | ${false}   | ${false} | ${false}
+    `(
+      'toggles file tree visibility',
+      ({ isExpanded, isPeekOn, isProjectOverview, expectedToggleVisible }) => {
+        pinia = createTestingPinia({ stubActions: false });
+        fileTreeBrowserStore = useFileTreeBrowserVisibility();
+        fileTreeBrowserStore.setFileTreeBrowserIsExpanded(isExpanded);
+        fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(isPeekOn);
 
-          const route = isProjectOverview ? { name: 'projectRoot' } : { name: 'blobPathDecoded' };
-          wrapper = createComponent({
-            route,
-            provided: {
-              glFeatures: {
-                repositoryFileTreeBrowser: true,
-              },
-            },
-          });
+        const route = isProjectOverview ? { name: 'projectRoot' } : { name: 'blobPathDecoded' };
+        wrapper = createComponent({ route });
 
-          expect(findFileTreeToggle().isVisible()).toBe(expectedToggleVisible);
-        },
-      );
-    });
+        expect(findFileTreeToggle().isVisible()).toBe(expectedToggleVisible);
+      },
+    );
 
     it('initializes file tree browser store on mount', () => {
       pinia = createTestingPinia({ stubActions: false });
@@ -146,11 +142,6 @@ describe('HeaderArea', () => {
 
       wrapper = createComponent({
         route: { name: 'treePathDecoded' },
-        provided: {
-          glFeatures: {
-            repositoryFileTreeBrowser: true,
-          },
-        },
       });
 
       expect(fileTreeBrowserStore.initializeFileTreeBrowser).toHaveBeenCalled();
@@ -159,13 +150,7 @@ describe('HeaderArea', () => {
     describe('shortcuts', () => {
       describe('toggle visibility', () => {
         beforeEach(() => {
-          wrapper = createComponent({
-            provided: {
-              glFeatures: {
-                repositoryFileTreeBrowser: true,
-              },
-            },
-          });
+          wrapper = createComponent();
         });
 
         it('toggles visibility on shortcut trigger', () => {
@@ -199,7 +184,7 @@ describe('HeaderArea', () => {
 
         it('does not toggle visibility on shortcut trigger after component is destroyed', () => {
           shouldDisableShortcuts.mockReturnValue(false);
-          createComponent();
+          wrapper = createComponent();
           wrapper.destroy();
           Mousetrap.trigger(toggleHotkeys[0]);
           expect(
@@ -211,36 +196,13 @@ describe('HeaderArea', () => {
       describe('toggle visibility when shortcuts are disabled', () => {
         it('does not toggle visibility on shortcut trigger', () => {
           shouldDisableShortcuts.mockReturnValue(true);
-          wrapper = createComponent({
-            provided: {
-              glFeatures: {
-                repositoryFileTreeBrowser: true,
-              },
-            },
-          });
-          createComponent();
+          wrapper = createComponent();
           Mousetrap.trigger(toggleHotkeys[0]);
           expect(
             useFileTreeBrowserVisibility().toggleFileTreeBrowserIsExpanded,
           ).not.toHaveBeenCalled();
         });
       });
-    });
-  });
-
-  describe('when repositoryFileTreeBrowser is disabled', () => {
-    it('does not render the toggle', () => {
-      fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
-
-      wrapper = createComponent({
-        provided: {
-          glFeatures: {
-            repositoryFileTreeBrowser: false,
-          },
-        },
-      });
-
-      expect(findFileTreeToggle().isVisible()).toBe(false);
     });
   });
 
@@ -434,9 +396,6 @@ describe('HeaderArea', () => {
           newWorkspacePath: '/workspaces/new',
           organizationId: '1',
           isReadmeView: true,
-          glFeatures: {
-            repositoryFileTreeBrowser: true,
-          },
         },
       });
     });
@@ -489,7 +448,7 @@ describe('HeaderArea', () => {
       expect(wrapper.find('section').classes()).toEqual([
         'gl-items-center',
         'gl-justify-between',
-        '@sm/panel:gl-flex',
+        '@md/panel:gl-flex',
       ]);
     });
   });

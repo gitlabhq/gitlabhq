@@ -10,6 +10,7 @@ import {
   GlEmptyState,
   GlSprintf,
 } from '@gitlab/ui';
+import ARTIFACTS_EXPIRED_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
@@ -41,11 +42,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModalDirective,
   },
-  inject: {
-    artifactsExpiredImagePath: {
-      default: '',
-    },
-  },
   props: {
     heading: {
       type: String,
@@ -72,6 +68,7 @@ export default {
   learnMorePath: helpPagePath('ci/testing/unit_test_reports', {
     anchor: 'view-test-results-in-pipelines',
   }),
+  ARTIFACTS_EXPIRED_SVG,
 };
 </script>
 
@@ -179,7 +176,7 @@ export default {
       <gl-empty-state
         v-if="getSuiteArtifactsExpired"
         :title="$options.i18n.expiredArtifactsTitle"
-        :svg-path="artifactsExpiredImagePath"
+        :svg-path="$options.ARTIFACTS_EXPIRED_SVG"
         :svg-height="100"
         data-testid="artifacts-expired"
       >

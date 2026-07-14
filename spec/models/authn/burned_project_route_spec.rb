@@ -12,9 +12,16 @@ RSpec.describe Authn::BurnedProjectRoute, feature_category: :continuous_integrat
 
     it { is_expected.to validate_presence_of(:organization_id) }
     it { is_expected.to validate_presence_of(:path) }
-    it { is_expected.to validate_length_of(:path).is_at_most(255) }
     it { is_expected.to validate_presence_of(:project_id) }
     it { is_expected.to validate_presence_of(:burned_at) }
+
+    it 'accepts and persists a path longer than 255 characters' do
+      # routes.path is unbounded and can exceed 255 chars via descendant
+      # rewrites (parent-group rename / mark-for-deletion). Neither the model
+      # nor the table must re-introduce a 255-char ceiling that would drop
+      # burn protection. Uses create to exercise the DB constraint removal.
+      expect(create(:burned_project_route, path: 'a' * 256)).to be_persisted
+    end
   end
 
   describe 'scopes' do

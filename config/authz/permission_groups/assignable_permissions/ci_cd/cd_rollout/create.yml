@@ -1,0 +1,9 @@
+---
+name: create_cd_rollout
+description: Grants the ability to create continuous deployment rollouts
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_cd_rollout

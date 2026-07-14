@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category: :system_access do
   include LdapHelpers
 
-  let_it_be(:organization) { create(:organization) }
+  let_it_be_with_reload(:organization) { create(:organization) }
   let(:oauth_user) { described_class.new(auth_hash, organization_id: organization.id) }
   let(:oauth_user_2) { described_class.new(auth_hash_2, organization_id: organization.id) }
   let(:gl_user) { oauth_user.gl_user }
@@ -775,6 +775,106 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
                 expect(gl_user.read_only_attribute?(:email)).to be_truthy
               end
             end
+          end
+        end
+      end
+    end
+
+    describe 'organization read-only enforcement' do
+      let(:provider) { 'twitter' }
+
+      before do
+        stub_omniauth_config(allow_single_sign_on: [provider])
+      end
+
+      context 'when the organization is in read-only state' do
+        before do
+          organization.start_read_only!(read_only_reason: 'migration')
+        end
+
+        context 'when the organization_read_only_enforcement feature flag is enabled' do
+          before do
+            stub_feature_flags(organization_read_only_enforcement: organization)
+          end
+
+          context 'when the user does not yet exist (new-user INSERT)' do
+            it 'raises NewUserOrganizationReadOnlyError and does not persist the user' do
+              expect { oauth_user.save }.to raise_error( # rubocop:disable Rails/SaveBang -- not an ActiveRecord object
+                Gitlab::Auth::OAuth::User::NewUserOrganizationReadOnlyError
+              )
+
+              expect(oauth_user.gl_user).not_to be_persisted
+            end
+          end
+
+          context 'when the user already exists (existing-user sign-in)' do
+            let!(:existing_user) { create(:omniauth_user, extern_uid: uid, provider: provider) }
+
+            it 'does not raise and saves the user' do
+              expect { oauth_user.save }.not_to raise_error # rubocop:disable Rails/SaveBang -- not an ActiveRecord object
+            end
+
+            it 'keeps the user persisted' do
+              oauth_user.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord object
+
+              expect(oauth_user.gl_user).to be_persisted
+            end
+          end
+        end
+
+        context 'when the organization_read_only_enforcement feature flag is disabled' do
+          before do
+            stub_feature_flags(organization_read_only_enforcement: false)
+          end
+
+          it 'does not raise and creates the user' do
+            expect { oauth_user.save }.not_to raise_error # rubocop:disable Rails/SaveBang -- not an ActiveRecord object
+
+            expect(oauth_user.gl_user).to be_persisted
+          end
+        end
+      end
+
+      context 'when the organization is active (not read-only)' do
+        it 'does not raise and creates the user' do
+          expect { oauth_user.save }.not_to raise_error # rubocop:disable Rails/SaveBang -- not an ActiveRecord object
+
+          expect(oauth_user.gl_user).to be_persisted
+        end
+      end
+
+      describe '#new_user_blocked_by_read_only_organization?' do
+        subject(:blocked?) { oauth_user.send(:new_user_blocked_by_read_only_organization?) }
+
+        context 'when no organization_id is provided' do
+          let(:oauth_user) { described_class.new(auth_hash) }
+
+          it 'returns false without looking up an organization' do
+            # Force user construction first: building the user itself calls
+            # Organizations::Organization.find_by_id, so the expectation below must
+            # only cover the guard invocation, not construction.
+            oauth_user.gl_user
+
+            expect(::Organizations::Organization).not_to receive(:find_by_id)
+
+            expect(blocked?).to be(false)
+          end
+        end
+
+        context 'when the organization cannot be found' do
+          let(:oauth_user) { described_class.new(auth_hash, organization_id: non_existing_record_id) }
+
+          it 'returns false without checking the feature flag' do
+            # Force user construction first: building the user itself calls
+            # Organizations::Organization.find_by_id, so the expectations below must
+            # only cover the guard invocation, not construction.
+            oauth_user.gl_user
+
+            expect(::Organizations::Organization)
+              .to receive(:find_by_id).with(non_existing_record_id).and_return(nil)
+            expect(Feature).not_to receive(:enabled?).with(:organization_read_only_enforcement, anything)
+
+            expect(blocked?).to be(false)
           end
         end
       end

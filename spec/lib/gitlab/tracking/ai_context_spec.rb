@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Tracking::AiContext, feature_category: :product_analytics
     end
 
     it 'uses the correct schema URL' do
-      expect(context_instance.to_json[:schema]).to eq('iglu:com.gitlab/ai_context/jsonschema/1-0-0')
+      expect(context_instance.to_json[:schema]).to eq('iglu:com.gitlab/ai_context/jsonschema/1-0-2')
     end
   end
 
@@ -44,7 +44,14 @@ RSpec.describe Gitlab::Tracking::AiContext, feature_category: :product_analytics
         agent_name: 'code-assistant',
         model_name: 'gpt-4',
         input_tokens: 100,
-        output_tokens: 50
+        output_tokens: 50,
+        item_type: 'custom_agent',
+        item_version: '1.0.0',
+        item_schema_version: 'v1',
+        flow_name: 'developer',
+        component_name: 'planner',
+        custom_item_id: 123,
+        cache_creation: 42
       }
     end
 
@@ -58,7 +65,14 @@ RSpec.describe Gitlab::Tracking::AiContext, feature_category: :product_analytics
         agent_name: 'code-assistant',
         model_name: 'gpt-4',
         input_tokens: 100,
-        output_tokens: 50
+        output_tokens: 50,
+        item_type: 'custom_agent',
+        item_version: '1.0.0',
+        item_schema_version: 'v1',
+        flow_name: 'developer',
+        component_name: 'planner',
+        custom_item_id: 123,
+        cache_creation: 42
       )
     end
 
@@ -69,20 +83,27 @@ RSpec.describe Gitlab::Tracking::AiContext, feature_category: :product_analytics
         expect(context_hash).to eq(
           session_id: nil,
           workflow_id: nil,
-          flow_type: nil,
+          item_type: nil,
+          item_version: nil,
+          item_schema_version: nil,
+          flow_name: nil,
+          component_name: nil,
           agent_name: nil,
-          agent_type: nil,
+          custom_item_id: nil,
           input_tokens: nil,
           output_tokens: nil,
           total_tokens: nil,
           ephemeral_5m_input_tokens: nil,
           ephemeral_1h_input_tokens: nil,
           cache_read: nil,
+          cache_creation: nil,
           model_engine: nil,
           model_name: nil,
           model_provider: nil,
           flow_version: nil,
-          flow_registry_version: nil
+          flow_registry_version: nil,
+          flow_type: nil,
+          agent_type: nil
         )
       end
     end

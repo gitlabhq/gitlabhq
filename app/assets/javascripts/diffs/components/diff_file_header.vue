@@ -102,6 +102,7 @@ export default {
       default: false,
     },
   },
+  emits: ['showForkMessage', 'toggleFile'],
   computed: {
     ...mapState(useLegacyDiffs, ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
     ...mapState(useNotes, ['getNoteableData']),
@@ -213,7 +214,7 @@ export default {
     },
     editInSingleFileEditorDropdownItem() {
       return {
-        text: __('Edit in single-file editor'),
+        text: __('Edit single file'),
         action: this.showForkMessage,
         href: this.diffFile.can_modify_blob ? this.diffFile.edit_path : undefined,
         extraAttrs: {

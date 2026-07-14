@@ -5,6 +5,7 @@ import CiCdAnalyticsAreaChart from './ci_cd_analytics_area_chart.vue';
 import { DEFAULT_SELECTED_CHART } from './constants';
 
 export default {
+  name: 'CiCdAnalyticsCharts',
   components: {
     CiCdAnalyticsAreaChart,
     GlSegmentedControl,

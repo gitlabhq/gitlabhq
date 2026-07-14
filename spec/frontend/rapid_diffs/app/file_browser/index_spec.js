@@ -10,6 +10,7 @@ import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { useApp } from '~/rapid_diffs/stores/app';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
 jest.mock('~/rapid_diffs/app/file_browser/file_browser.vue', () => ({
@@ -133,6 +134,7 @@ describe('Init file browser', () => {
     useMainContainer()._setCurrentBreakpoint('md');
     useApp().$reset();
     useDiffsList().$reset();
+    useDiffsView().$reset();
 
     mockAxios = new MockAdapter(axios);
     mockAxios
@@ -191,6 +193,25 @@ describe('Init file browser', () => {
 
         expect(spy).toHaveBeenCalledWith('first');
         expect(selectFile).toHaveBeenCalled();
+      });
+
+      it('navigates via goToFile in single-file mode', async () => {
+        mockAxios.onGet(appData.diffFilesEndpoint).reply(HTTP_STATUS_OK, {
+          diff_files: [{ ...createDiffFiles()[0], file_hash: 'first' }, ...createDiffFiles()],
+        });
+
+        const selectFile = jest.fn();
+        jest.spyOn(DiffFile, 'findByFileHash').mockReturnValue({ selectFile });
+        useDiffsView().$patch({ singleFileMode: true, diffFileEndpoint: '/diff_file' });
+        const goToFileSpy = jest.spyOn(useDiffsView(), 'goToFile').mockImplementation(() => {});
+
+        await init();
+
+        const fileBrowser = getBrowserElement();
+        fileBrowser.click();
+
+        expect(selectFile).not.toHaveBeenCalled();
+        expect(goToFileSpy).toHaveBeenCalledWith(0);
       });
 
       it('passes sorting configuration to components', async () => {

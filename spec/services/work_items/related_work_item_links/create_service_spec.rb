@@ -10,6 +10,8 @@ RSpec.describe WorkItems::RelatedWorkItemLinks::CreateService, feature_category:
     let_it_be(:issuable) { create(:work_item, project: project) }
     let_it_be(:issuable2) { create(:work_item, project: project) }
     let_it_be(:restricted_issuable) { create(:work_item) }
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:readonly_issuable) { create(:work_item, project: public_project) }
     let_it_be(:another_project) { create(:project, group: group) }
     let_it_be(:issuable3) { create(:work_item, project: another_project) }
     let_it_be(:issuable_a) { create(:work_item, project: project) }

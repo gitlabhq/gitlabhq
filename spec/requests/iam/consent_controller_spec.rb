@@ -25,7 +25,7 @@ RSpec.describe Iam::ConsentController, :use_clean_rails_memory_store_caching,
   let(:created_at_timestamp) { Google::Protobuf::Timestamp.new(seconds: created_at_time.to_i) }
 
   let(:client_message) do
-    ::Auth::V1::Client.new(
+    ::Gitlab::Iam::Auth::V1::Client.new(
       client_id: client_id,
       client_name: client_name,
       client_owner: 'GitLab User',
@@ -35,7 +35,7 @@ RSpec.describe Iam::ConsentController, :use_clean_rails_memory_store_caching,
   end
 
   let(:get_consent_response) do
-    ::Auth::V1::ConsentServiceGetResponse.new(
+    ::Gitlab::Iam::Auth::V1::ConsentServiceGetResponse.new(
       skip: false,
       subject: user.id.to_s,
       requested_scopes: requested_scopes,
@@ -44,11 +44,11 @@ RSpec.describe Iam::ConsentController, :use_clean_rails_memory_store_caching,
   end
 
   let(:accept_consent_response) do
-    ::Auth::V1::ConsentServiceAcceptResponse.new(redirect_to: redirect_url)
+    ::Gitlab::Iam::Auth::V1::ConsentServiceAcceptResponse.new(redirect_to: redirect_url)
   end
 
   let(:reject_consent_response) do
-    ::Auth::V1::ConsentServiceRejectResponse.new(redirect_to: reject_redirect_url)
+    ::Gitlab::Iam::Auth::V1::ConsentServiceRejectResponse.new(redirect_to: reject_redirect_url)
   end
 
   shared_examples 'controller renders failed service result' do |service_class|
@@ -170,7 +170,7 @@ RSpec.describe Iam::ConsentController, :use_clean_rails_memory_store_caching,
 
     context 'when the IAM subject does not match the current user' do
       let(:get_consent_response) do
-        ::Auth::V1::ConsentServiceGetResponse.new(
+        ::Gitlab::Iam::Auth::V1::ConsentServiceGetResponse.new(
           skip: false,
           subject: 'someone-else',
           requested_scopes: requested_scopes,
@@ -198,7 +198,7 @@ RSpec.describe Iam::ConsentController, :use_clean_rails_memory_store_caching,
 
     context 'when skip_consent is true' do
       let(:get_consent_response) do
-        ::Auth::V1::ConsentServiceGetResponse.new(
+        ::Gitlab::Iam::Auth::V1::ConsentServiceGetResponse.new(
           skip: true,
           subject: user.id.to_s,
           requested_scopes: requested_scopes,
@@ -291,7 +291,7 @@ RSpec.describe Iam::ConsentController, :use_clean_rails_memory_store_caching,
 
       context 'when the IAM accept response has an invalid redirect URL' do
         let(:accept_consent_response) do
-          ::Auth::V1::ConsentServiceAcceptResponse.new(redirect_to: 'https://untrusted.example.com/oauth2/authorize')
+          ::Gitlab::Iam::Auth::V1::ConsentServiceAcceptResponse.new(redirect_to: 'https://untrusted.example.com/oauth2/authorize')
         end
 
         it 'returns 400', :aggregate_failures do

@@ -107,7 +107,7 @@ are blocked. Access to the endpoint resumes after one minute.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../feature_flags/_index.md) named `archive_group`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a feature flag](../feature_flags/_index.md) named `archive_group`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/526771) in GitLab 18.9. Feature flag `archive_group` removed.
 
 {{< /history >}}

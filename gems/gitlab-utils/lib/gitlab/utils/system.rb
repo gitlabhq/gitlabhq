@@ -105,7 +105,7 @@ module Gitlab
         end_time = thread_cpu_time
         return unless start_time && end_time
 
-        end_time - start_time
+        [end_time - start_time, 0].max
       end
 
       # Returns the total time the current process has been running in seconds.

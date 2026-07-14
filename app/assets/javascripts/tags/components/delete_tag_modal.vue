@@ -7,6 +7,7 @@ import eventHub from '../event_hub';
 import { I18N_DELETE_TAG_MODAL } from '../constants';
 
 export default {
+  name: 'DeleteTagModal',
   csrf,
   components: {
     GlModal,

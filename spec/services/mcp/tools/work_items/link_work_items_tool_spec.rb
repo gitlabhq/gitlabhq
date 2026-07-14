@@ -23,23 +23,6 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
     project.add_developer(user)
   end
 
-  describe 'class methods' do
-    describe '.build_mutation' do
-      it 'returns the GraphQL mutation string' do
-        mutation = described_class.build_mutation
-
-        expect(mutation).to include('mutation LinkWorkItems($input: WorkItemAddLinkedItemsInput!)')
-        expect(mutation).to include('workItemAddLinkedItems(input: $input)')
-        expect(mutation).to include('workItem {')
-        expect(mutation).to include('id')
-        expect(mutation).to include('iid')
-        expect(mutation).to include('title')
-        expect(mutation).to include('message')
-        expect(mutation).to include('errors')
-      end
-    end
-  end
-
   describe 'versioning' do
     it 'registers version using VERSIONS constant' do
       expect(tool.version).to eq(Mcp::Tools::Concerns::Constants::VERSIONS[:v0_1_0])
@@ -52,7 +35,7 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
     it 'has correct GraphQL operation for version 0.1.0' do
       operation = tool.graphql_operation
 
-      expect(operation).to include('mutation LinkWorkItems')
+      expect(operation).to include('mutation linkWorkItems')
       expect(operation).to include('workItemAddLinkedItems(input: $input)')
     end
   end
@@ -232,12 +215,15 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
       )
     end
 
-    it 'returns linked work item data' do
+    it 'returns linked work item data with the full payload shape the tool promises' do
       result = tool.execute
 
       expect(result[:isError]).to be(false)
-      expect(result[:structuredContent]['workItem']).to be_a(Hash)
-      expect(result[:structuredContent]['workItem']['iid'].to_i).to eq(source_work_item.iid)
+      expect(result[:structuredContent].keys).to match_array(%w[workItem message errors])
+
+      work_item = result[:structuredContent]['workItem']
+      expect(work_item.keys).to match_array(%w[id iid title])
+      expect(work_item['iid'].to_i).to eq(source_work_item.iid)
     end
 
     context 'when source work item does not exist' do

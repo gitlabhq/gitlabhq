@@ -268,7 +268,7 @@ describe('Pipeline schedules form', () => {
         identifier: 'America/New_York',
       });
 
-      findIntervalComponent().vm.$emit('cronValue', '0 16 * * *');
+      findIntervalComponent().vm.$emit('cron-value', '0 16 * * *');
 
       emitInputEvents([{ name: 'input1', value: 'value1' }]);
 
@@ -311,7 +311,7 @@ describe('Pipeline schedules form', () => {
         identifier: 'America/New_York',
       });
 
-      findIntervalComponent().vm.$emit('cronValue', '0 16 * * *');
+      findIntervalComponent().vm.$emit('cron-value', '0 16 * * *');
 
       findPipelineVariables().vm.$emit('update-variables', updatedVariables);
       emitInputEvents(updatedInputs);
@@ -487,7 +487,7 @@ describe('Pipeline schedules form', () => {
 
       findDescription().vm.$emit('input', 'Updated schedule');
 
-      findIntervalComponent().vm.$emit('cronValue', '0 22 16 * *');
+      findIntervalComponent().vm.$emit('cron-value', '0 22 16 * *');
 
       // Ensures variable is sent with destroy property set true
       findPipelineVariables().vm.$emit('update-variables', updatedVariables);

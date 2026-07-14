@@ -122,7 +122,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
     it 'results in failures and logs the error' do
       expect(ActiveContext::Logger).to receive(:retryable_exception) do |error, kwargs|
         expect(error.message).to eq(Test::MockLlmClass::NIL_CONTENTS_ERROR_MESSAGE)
-        expect(kwargs[:class]).to eq('Class')
+        expect(kwargs[:class_name]).to eq('Class')
       end
 
       expect { preprocessed_result }.not_to change { test_reference.documents.count }
@@ -366,54 +366,93 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
     end
   end
 
-  describe 'rate limit error handling' do
+  describe 'infinite retry error handling' do
     let(:rate_limit_error) { Class.new(StandardError) }
 
     before do
-      stub_const('Gitlab::Llm::Concerns::ExponentialBackoff::RateLimitError', rate_limit_error)
+      stub_const('TestRateLimitError', rate_limit_error)
     end
 
-    context 'when RateLimitError is raised' do
-      before do
-        allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(rate_limit_error,
-          '429 Too Many Requests')
+    context 'when an infinite_retry_error_type is set in apply_embeddings' do
+      let(:mock_reference_class) do
+        Class.new(Test::References::MockWithDatabaseRecord) do
+          add_preprocessor :embeddings do |refs|
+            apply_embeddings(
+              refs: refs,
+              content_method: :embedding_content,
+              infinite_retry_error_types: [TestRateLimitError]
+            )
+          end
+
+          def embedding_content
+            'content returned in reference method'
+          end
+        end
       end
 
-      it 'catches RateLimitError and marks refs as retryable' do
-        result = ActiveContext::Reference.preprocess_references([test_reference])
+      context 'when the raised error type is an infinite_retry_error_type' do
+        before do
+          allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(
+            rate_limit_error,
+            '429 Too Many Requests'
+          )
+        end
 
-        expect(result[:successful]).to be_empty
-        expect(result[:failed]).to be_empty
-        expect(result[:retryable]).to eq([test_reference])
+        it 'catches the error and marks refs as retryable' do
+          result = ActiveContext::Reference.preprocess_references([test_reference])
+
+          expect(result[:successful]).to be_empty
+          expect(result[:failed]).to be_empty
+          expect(result[:retryable]).to eq([test_reference])
+        end
+      end
+
+      context 'when the raised error type is not an infinite_retry_error_type' do
+        before do
+          allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(ArgumentError, 'Invalid argument')
+        end
+
+        it 'catches non-infinite-retry errors as failed' do
+          result = ActiveContext::Reference.preprocess_references([test_reference])
+
+          expect(result[:successful]).to be_empty
+          expect(result[:failed]).to eq([test_reference])
+          expect(result[:retryable]).to be_empty
+        end
       end
     end
 
-    context 'when other errors occur' do
-      before do
-        allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(ArgumentError, 'Invalid argument')
+    context 'when no infinite_retry_error_types are set' do
+      let(:mock_reference_class) do
+        Class.new(Test::References::MockWithDatabaseRecord) do
+          add_preprocessor :embeddings do |refs|
+            apply_embeddings(
+              refs: refs,
+              content_method: :embedding_content
+            )
+          end
+
+          def embedding_content
+            'content returned in reference method'
+          end
+        end
       end
 
-      it 'catches non-rate-limit errors as failed' do
-        result = ActiveContext::Reference.preprocess_references([test_reference])
+      context 'when RateLimitError is raised' do
+        before do
+          allow(mock_embedding_models).to receive(:generate_embeddings).and_raise(
+            rate_limit_error,
+            '429 Too Many Requests'
+          )
+        end
 
-        expect(result[:successful]).to be_empty
-        expect(result[:failed]).to eq([test_reference])
-        expect(result[:retryable]).to be_empty
-      end
-    end
+        it 'does not perform infinite retries and marks refs as failed' do
+          result = ActiveContext::Reference.preprocess_references([test_reference])
 
-    context 'when RateLimitError constant is not defined' do
-      before do
-        hide_const('Gitlab::Llm::Concerns::ExponentialBackoff::RateLimitError')
-        allow(mock_embedding_models).to receive(:generate_embeddings).and_return([[1.0, 2.0]])
-      end
-
-      it 'still processes successfully without the constant' do
-        result = ActiveContext::Reference.preprocess_references([test_reference])
-
-        expect(result[:successful]).to eq([test_reference])
-        expect(result[:failed]).to be_empty
-        expect(result[:retryable]).to be_empty
+          expect(result[:successful]).to be_empty
+          expect(result[:failed]).to eq([test_reference])
+          expect(result[:retryable]).to be_empty
+        end
       end
     end
   end

@@ -53,6 +53,7 @@ const initFormField = ({ value, required = true, skipValidation = false }) => ({
 });
 
 export default {
+  name: 'ForkForm',
   components: {
     GlForm,
     GlIcon,
@@ -80,9 +81,6 @@ export default {
     cancelPath: {
       default: '',
     },
-    projectFullPath: {
-      default: '',
-    },
     projectId: {
       default: '',
     },
@@ -103,9 +101,6 @@ export default {
     },
     restrictedVisibilityLevels: {
       default: [],
-    },
-    namespaceId: {
-      default: '',
     },
   },
   data() {
@@ -138,9 +133,7 @@ export default {
         return null;
       }
 
-      return s__(
-        'ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.',
-      );
+      return s__('ProjectsNew|Start with a letter, digit, emoji, or underscore.');
     },
     projectVisibilityLevel() {
       return VISIBILITY_LEVELS_STRING_TO_INTEGER[this.projectVisibility];

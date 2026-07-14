@@ -10,8 +10,6 @@ level: secondary
 weight: 50
 ---
 
-<!-- categories: Security Policy Management -->
-
 Scheduled pipeline execution policies are now available as a beta feature and no longer
 require an experiment flag to enable. You can enforce custom CI/CD jobs on a daily, weekly,
 or monthly cadence across your projects, independent of commit activity. Use scheduled

@@ -107,7 +107,8 @@ module Members
           current_user: args[:current_user],
           expires_at: args[:expires_at],
           ldap: args[:ldap],
-          skip_authorization: args[:skip_authorization]
+          skip_authorization: args[:skip_authorization],
+          skip_authorized_projects_refresh: args[:skip_authorized_projects_refresh]
         }
       end
 
@@ -239,7 +240,8 @@ module Members
         created_by: member.created_by || current_user,
         access_level: access_level,
         expires_at: args[:expires_at],
-        importing: skip_authorization? && source&.importing?
+        importing: skip_authorization? && source&.importing?,
+        skip_authorized_projects_refresh: args[:skip_authorized_projects_refresh]
       }
     end
 

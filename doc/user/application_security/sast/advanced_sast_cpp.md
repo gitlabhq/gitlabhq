@@ -240,7 +240,7 @@ Passthrough configuration is handled as follows:
 
 The following example shows how passthroughs from different sources combine:
 
-File `.gitlab/sastconfig.toml`:
+File `.gitlab/sast-ruleset.toml`:
 
 ```toml
 [gitlab-advanced-sast-cpp]
@@ -282,6 +282,22 @@ analyzer:
   - --enable=core.DivideZero
   - --enable=core.CallAndMessage
 ```
+
+## Offline environment
+
+To run GitLab Advanced SAST C/C++ in an offline environment, mirror the `clangsa`
+analyzer image into your local registry before you run the scan.
+The standard `gitlab-advanced-sast` image does not include
+the `clangsa` image used for other languages.
+You must mirror this image separately.
+
+To mirror the `clangsa` image, use the
+[`Secure-Binaries.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Secure-Binaries.gitlab-ci.yml).
+This template includes a `gitlab-advanced-sast-cpp` job that pulls and pushes
+the `clangsa` image to your registry.
+
+For more information about setting up an offline environment,
+see [offline environments](../offline_deployments/_index.md).
 
 ## Troubleshooting
 

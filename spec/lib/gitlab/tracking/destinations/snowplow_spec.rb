@@ -311,6 +311,78 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
         it { is_expected.to eq('gitlab_sm') }
       end
     end
+
+    context 'with app_id_suffix from destination configuration' do
+      let(:dest_config) do
+        Gitlab::Tracking::Destinations::DestinationConfiguration.new(
+          URI('https://billing.prdsub.gitlab.net'), app_id_suffix: '_billing'
+        )
+      end
+
+      subject { described_class.new(dest_config).app_id }
+
+      context 'when snowplow is enabled' do
+        before do
+          stub_application_setting(snowplow_enabled?: true)
+        end
+
+        it 'appends the suffix to the snowplow app_id setting' do
+          is_expected.to eq('_abc123__billing')
+        end
+      end
+
+      context 'when snowplow is disabled' do
+        before do
+          stub_application_setting(snowplow_enabled?: false)
+        end
+
+        context 'when self-managed instance' do
+          before do
+            stub_application_setting(gitlab_dedicated_instance?: false)
+            allow(Gitlab).to receive(:staging?).and_return(false)
+            stub_config_setting(host: 'example.com')
+          end
+
+          it 'appends the suffix to the base app_id' do
+            is_expected.to eq('gitlab_sm_billing')
+          end
+        end
+
+        context 'when self-managed staging instance' do
+          before do
+            stub_application_setting(gitlab_dedicated_instance?: false)
+            allow(Gitlab).to receive(:staging?).and_return(true)
+          end
+
+          it 'appends the suffix before the staging suffix' do
+            is_expected.to eq('gitlab_sm_billing_staging')
+          end
+        end
+
+        context 'when dedicated instance' do
+          before do
+            stub_application_setting(gitlab_dedicated_instance?: true)
+            allow(Gitlab).to receive(:staging?).and_return(false)
+            stub_config_setting(host: 'example.com')
+          end
+
+          it 'appends the suffix to the base app_id' do
+            is_expected.to eq('gitlab_dedicated_billing')
+          end
+        end
+
+        context 'when dedicated staging instance' do
+          before do
+            stub_application_setting(gitlab_dedicated_instance?: true)
+            allow(Gitlab).to receive(:staging?).and_return(true)
+          end
+
+          it 'appends the suffix before the staging suffix' do
+            is_expected.to eq('gitlab_dedicated_billing_staging')
+          end
+        end
+      end
+    end
   end
 
   context 'when snowplow_sync_emitter flag is enabled' do
@@ -460,6 +532,42 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
         expect(SnowplowTracker::AsyncEmitter).not_to receive(:new)
         expect(Gitlab::Tracking::SnowplowLoggingEmitter).not_to receive(:new)
         subject.send(:emitter)
+      end
+    end
+
+    context 'with a billing destination configuration' do
+      subject(:billing_destination) { described_class.new(billing_configuration) }
+
+      let(:billing_configuration) do
+        Gitlab::Tracking::Destinations::DestinationConfiguration.billing_configuration
+      end
+
+      before do
+        allow(Rails.env).to receive(:test?).and_return(false)
+      end
+
+      context 'when billing_events_oidc_auth flag is enabled' do
+        it 'uses the BillingAuthEmitter with the authenticated collector path' do
+          expect(Gitlab::Tracking::BillingAuthEmitter)
+            .to receive(:new)
+                  .with(endpoint: anything, options: hash_including(path: described_class::BILLING_AUTH_POST_PATH))
+
+          billing_destination.send(:emitter)
+        end
+      end
+
+      context 'when billing_events_oidc_auth flag is disabled' do
+        before do
+          stub_feature_flags(billing_events_oidc_auth: false)
+        end
+
+        it 'does not use the BillingAuthEmitter or the authenticated path' do
+          expect(Gitlab::Tracking::BillingAuthEmitter).not_to receive(:new)
+          expect(SnowplowTracker::AsyncEmitter)
+            .to receive(:new).with(endpoint: anything, options: hash_not_including(:path))
+
+          billing_destination.send(:emitter)
+        end
       end
     end
   end

@@ -34,4 +34,7 @@
 #       description: What the flag gates.
 #       stage: experimental
 ---
-flags: []
+flags:
+  - name: org_admin_area
+    description: Organization admin area for organization owners.
+    stage: experimental

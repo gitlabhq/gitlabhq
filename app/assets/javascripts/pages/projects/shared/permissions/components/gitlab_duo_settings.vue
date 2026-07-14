@@ -1,5 +1,8 @@
 <script>
 import { GlToggle, GlLink, GlButton, GlCard, GlSprintf } from '@gitlab/ui';
+import DuoDependencyBumpProfileModal from 'ee_component/pages/projects/shared/permissions/components/duo_dependency_bump_profile_modal.vue';
+import projectAutoRemediationProfileQuery from 'ee_else_ce/pages/projects/shared/permissions/graphql/project_auto_remediation_profile.query.graphql';
+import attachProfileMutation from 'ee_else_ce/pages/projects/shared/permissions/graphql/auto_remediation_profile_attach.mutation.graphql';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
@@ -10,9 +13,15 @@ import {
   duoHelpPath,
   ALL_SETTINGS,
   DUO_SAST_VR_WORKFLOW_ENABLED,
+  DUO_SAST_FP_DETECTION_ENABLED,
+  DUO_SECRET_DETECTION_FP_ENABLED,
 } from '../constants';
 import ProjectSettingRow from './project_setting_row.vue';
 import ExclusionSettings from './exclusion_settings.vue';
+
+const AUTO_REMEDIATION_PROFILE_SCAN_TYPE = 'DEPENDENCY_SCANNING_POST_PROCESSING';
+const AUTO_REMEDIATION_PROFILE_VIRTUAL_ID =
+  'gid://gitlab/Security::ScanProfile/dependency_scanning_post_processing';
 
 export default {
   name: 'GitlabDuoSettings',
@@ -25,6 +34,7 @@ export default {
     ProjectSettingRow,
     CascadingLockIcon,
     ExclusionSettings,
+    DuoDependencyBumpProfileModal,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -44,6 +54,16 @@ export default {
       default: () => ({}),
     },
     duoFoundationalFlowsCascadingSettings: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    aiAuditEventsStorageEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    aiAuditEventsStorageCascadingSettings: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -99,6 +119,21 @@ export default {
       required: false,
       default: false,
     },
+    initialDuoDependencyBumpBreakingChangesEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    projectFullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    projectGlobalId: {
+      type: String,
+      required: false,
+      default: '',
+    },
     initialDuoSastVrWorkflowEnabled: {
       type: Boolean,
       required: false,
@@ -149,9 +184,13 @@ export default {
       duoFoundationalFlowsAvailability: this.initialDuoFoundationalFlowsAvailability,
       duoSastFpDetectionEnabled: this.initialDuoSastFpDetectionEnabled,
       duoSecretDetectionFpEnabled: this.initialDuoSecretDetectionFpEnabled,
+      duoDependencyBumpBreakingChangesEnabled: this.initialDuoDependencyBumpBreakingChangesEnabled,
       duoSastVrWorkflowEnabled: this.initialDuoSastVrWorkflowEnabled,
       toolApprovalForSessionEnabled: this.initialToolApprovalForSessionEnabled,
       dapSessionTrackingEnabled: this.initialDapSessionTrackingEnabled,
+      auditEventsStorageEnabled: this.aiAuditEventsStorageEnabled,
+      showAutoRemediationModal: false,
+      autoRemediationModalLoading: false,
     };
   },
   computed: {
@@ -199,8 +238,14 @@ export default {
           this.toolApprovalForSessionCascadingSettings?.lockedByApplicationSetting)
       );
     },
+    showAuditEventsStorageCascadingLock() {
+      return (
+        this.aiAuditEventsStorageCascadingSettings?.lockedByAncestor ||
+        this.aiAuditEventsStorageCascadingSettings?.lockedByApplicationSetting
+      );
+    },
     showSastVrWorkflow() {
-      return this.glFeatures.enableVulnerabilityResolution && this.ultimateFeaturesAvailable;
+      return this.ultimateFeaturesAvailable;
     },
     showAllSettings() {
       return this.visibleSettings.includes(ALL_SETTINGS);
@@ -225,9 +270,72 @@ export default {
     isSettingVisible(name) {
       return this.showAllSettings || this.visibleSettings.includes(name);
     },
+    async handleDependencyBumpToggleChange(newValue) {
+      if (!newValue) {
+        this.duoDependencyBumpBreakingChangesEnabled = false;
+        return;
+      }
+
+      if (!this.projectFullPath) {
+        this.duoDependencyBumpBreakingChangesEnabled = true;
+        return;
+      }
+
+      try {
+        const { data } = await this.$apollo.query({
+          query: projectAutoRemediationProfileQuery,
+          variables: { fullPath: this.projectFullPath },
+          fetchPolicy: 'network-only',
+        });
+
+        const profiles = data?.project?.securityScanProfiles ?? [];
+        const profileEnabled = profiles.some(
+          (p) => p.scanType === AUTO_REMEDIATION_PROFILE_SCAN_TYPE,
+        );
+
+        if (profileEnabled) {
+          this.duoDependencyBumpBreakingChangesEnabled = true;
+        } else {
+          this.showAutoRemediationModal = true;
+        }
+      } catch {
+        // If the query fails, enable the toggle without prompting
+        this.duoDependencyBumpBreakingChangesEnabled = true;
+      }
+    },
+    async onAutoRemediationModalConfirm() {
+      this.autoRemediationModalLoading = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: attachProfileMutation,
+          variables: {
+            input: {
+              securityScanProfileId: AUTO_REMEDIATION_PROFILE_VIRTUAL_ID,
+              projectIds: [this.projectGlobalId],
+            },
+          },
+        });
+      } catch {
+        // Non-blocking: profile attach failure should not prevent enabling the toggle
+      } finally {
+        this.autoRemediationModalLoading = false;
+        this.showAutoRemediationModal = false;
+        this.duoDependencyBumpBreakingChangesEnabled = true;
+      }
+    },
+    onAutoRemediationModalCancel() {
+      this.showAutoRemediationModal = false;
+      this.duoDependencyBumpBreakingChangesEnabled = true;
+    },
+    onAutoRemediationModalHide() {
+      this.showAutoRemediationModal = false;
+      this.duoDependencyBumpBreakingChangesEnabled = false;
+    },
   },
   duoFlowHelpPath,
   DUO_SAST_VR_WORKFLOW_ENABLED,
+  DUO_SAST_FP_DETECTION_ENABLED,
+  DUO_SECRET_DETECTION_FP_ENABLED,
   i18n: {
     saveChanges: __('Save changes'),
     saveChangesAriaLabel: __('Save changes for GitLab Duo'),
@@ -419,7 +527,42 @@ export default {
           />
         </project-setting-row>
         <project-setting-row
-          v-if="ultimateFeaturesAvailable && showAllSettings"
+          v-if="glFeatures.agentArtifactsPage && showAllSettings"
+          :label="s__('AiPowered|Store AI audit events')"
+          class="gl-mt-5"
+          :help-text="
+            s__(
+              'AiPowered|When you turn on this setting, GitLab stores new AI audit events to the database or ClickHouse. Real-time streaming of AI audit events is not affected.',
+            )
+          "
+          :locked="showAuditEventsStorageCascadingLock"
+        >
+          <template #label-icon>
+            <cascading-lock-icon
+              v-if="showAuditEventsStorageCascadingLock"
+              data-testid="ai-audit-events-storage-cascading-lock-icon"
+              :is-locked-by-group-ancestor="aiAuditEventsStorageCascadingSettings.lockedByAncestor"
+              :is-locked-by-application-settings="
+                aiAuditEventsStorageCascadingSettings.lockedByApplicationSetting
+              "
+              :ancestor-namespace="aiAuditEventsStorageCascadingSettings.ancestorNamespace"
+              class="gl-ml-1"
+            />
+          </template>
+          <gl-toggle
+            v-model="auditEventsStorageEnabled"
+            class="gl-mt-2"
+            :disabled="showAuditEventsStorageCascadingLock"
+            :label="s__('AiPowered|Store AI audit events')"
+            label-position="hidden"
+            name="project[project_setting_attributes][ai_audit_events_storage_enabled]"
+            data-testid="ai-audit-events-storage-enabled"
+          />
+        </project-setting-row>
+        <project-setting-row
+          v-if="
+            ultimateFeaturesAvailable && isSettingVisible($options.DUO_SAST_FP_DETECTION_ENABLED)
+          "
           :label="s__('DuoSAST|Turn on SAST false positive detection')"
           class="gl-mt-5"
           :help-text="
@@ -437,7 +580,9 @@ export default {
           />
         </project-setting-row>
         <project-setting-row
-          v-if="glFeatures.duoSecretDetectionFalsePositive && showAllSettings"
+          v-if="
+            ultimateFeaturesAvailable && isSettingVisible($options.DUO_SECRET_DETECTION_FP_ENABLED)
+          "
           :label="s__('DuoSecretDetection|Turn on Secret Detection false positive detection')"
           class="gl-mt-5"
           :help-text="
@@ -456,6 +601,38 @@ export default {
             data-testid="duo-secret-detection-fp-enabled"
           />
         </project-setting-row>
+        <project-setting-row
+          v-if="
+            glFeatures.enableDependencyBumpBreakingChanges &&
+            ultimateFeaturesAvailable &&
+            showAllSettings
+          "
+          :label="s__('DuoDependencyBump|Turn on Agentic Breaking Change Resolution')"
+          class="gl-mt-5"
+          :help-text="
+            s__(
+              'DuoDependencyBump|Use AI to analyze and fix breaking changes in failed pipelines for dependency bump merge requests',
+            )
+          "
+        >
+          <gl-toggle
+            :value="duoDependencyBumpBreakingChangesEnabled"
+            class="gl-mt-2"
+            :disabled="!duoEnabled"
+            :label="s__('DuoDependencyBump|Turn on Agentic Breaking Change Resolution')"
+            label-position="hidden"
+            name="project[project_setting_attributes][duo_dependency_bump_breaking_changes_enabled]"
+            data-testid="duo-dependency-bump-breaking-changes-enabled"
+            @change="handleDependencyBumpToggleChange"
+          />
+        </project-setting-row>
+        <duo-dependency-bump-profile-modal
+          :visible="showAutoRemediationModal"
+          :is-loading="autoRemediationModalLoading"
+          @confirm="onAutoRemediationModalConfirm"
+          @cancel="onAutoRemediationModalCancel"
+          @hide="onAutoRemediationModalHide"
+        />
         <project-setting-row
           v-if="showSastVrWorkflow && isSettingVisible($options.DUO_SAST_VR_WORKFLOW_ENABLED)"
           :label="s__('DuoSAST|Turn on SAST vulnerability resolution workflow')"

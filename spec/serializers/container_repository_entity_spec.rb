@@ -36,7 +36,7 @@ RSpec.describe ContainerRepositoryEntity do
   end
 
   context 'when user can manage repositories' do
-    before do
+    before_all do
       project.add_developer(user)
     end
 

@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
 import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
 
 describe('ExpandCollapseButton', () => {
@@ -23,6 +23,8 @@ describe('ExpandCollapseButton', () => {
   });
 
   const findExpandCollapseButton = () => wrapper.findComponent(ExpandCollapseButton);
+  const findButton = () => wrapper.findComponent(GlButton);
+  const findChevron = () => wrapper.findComponent(GlAnimatedChevronLgDownUpIcon);
 
   describe('when isCollapsed is true', () => {
     it('shows expand button', () => {
@@ -53,6 +55,20 @@ describe('ExpandCollapseButton', () => {
     it('emits click event when collapse button is clicked', async () => {
       await findExpandCollapseButton().vm.$emit('click');
       expect(wrapper.emitted()).toEqual({ click: [[]] });
+    });
+  });
+
+  describe('loading', () => {
+    it('is not loading and shows the chevron by default', () => {
+      expect(findButton().props('loading')).toBe(false);
+      expect(findChevron().exists()).toBe(true);
+    });
+
+    it('shows a loading spinner instead of the chevron when loading', () => {
+      createComponent({ loading: true });
+
+      expect(findButton().props('loading')).toBe(true);
+      expect(findChevron().exists()).toBe(false);
     });
   });
 });

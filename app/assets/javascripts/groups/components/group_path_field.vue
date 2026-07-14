@@ -10,6 +10,7 @@ import axios from '~/lib/utils/axios_utils';
 const DEBOUNCE_DURATION = 1000;
 
 export default {
+  name: 'GroupPathField',
   i18n: {
     placeholder: __('my-awesome-group'),
     apiErrorMessage: __(
@@ -47,6 +48,7 @@ export default {
       default: '',
     },
   },
+  emits: ['blur', 'input', 'input-suggested-path', 'invalid', 'loading-change', 'state-change'],
   data() {
     return {
       suggestedPath: '',

@@ -48,7 +48,7 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :markdown do
     end
 
     context 'when project with group, no namespace settings' do
-      let_it_be(:group, freeze: false) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group) }
       let_it_be(:project) { create(:project, :public, group: group) }
       let_it_be(:context) { { project: project } }
 
@@ -58,8 +58,8 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :markdown do
     end
 
     context 'when project with group, default namespace settings' do
-      let_it_be(:namespace_settings, freeze: false) { create(:namespace_settings) }
-      let_it_be(:group, freeze: false) { create(:group, namespace_settings: namespace_settings) }
+      let_it_be_with_reload(:namespace_settings) { create(:namespace_settings) }
+      let_it_be_with_reload(:group) { create(:group, namespace_settings: namespace_settings) }
       let_it_be(:project) { create(:project, :public, group: group) }
       let_it_be(:context) { { project: project } }
 
@@ -69,11 +69,11 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :markdown do
     end
 
     context 'when limits math_rendering_limits_enabled is false' do
-      let_it_be(:namespace_settings, freeze: false) do
+      let_it_be_with_reload(:namespace_settings) do
         create(:namespace_settings, math_rendering_limits_enabled: false)
       end
 
-      let_it_be(:group, freeze: false) { create(:group, namespace_settings: namespace_settings) }
+      let_it_be_with_reload(:group) { create(:group, namespace_settings: namespace_settings) }
       let_it_be(:project) { create(:project, :public, group: group) }
       let_it_be(:context) { { project: project } }
 

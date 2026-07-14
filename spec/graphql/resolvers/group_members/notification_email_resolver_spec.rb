@@ -7,11 +7,7 @@ RSpec.describe Resolvers::GroupMembers::NotificationEmailResolver do
 
   describe '#resolve' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:developer) { create(:user) }
-
-    before do
-      group.add_developer(developer)
-    end
+    let_it_be(:developer) { create(:user, developer_of: group) }
 
     specify do
       expect(described_class).to have_nullable_graphql_type(GraphQL::Types::String)

@@ -24,13 +24,13 @@ RSpec.describe Gitlab::ErrorTracking::StackTraceHighlightDecorator do
             'lineNo' => 14,
             'filename' => 'hello_world.rb',
             'context' => [
-              [10, '<span id="LC1" class="line" lang="ruby"><span class="c1"># Ruby example</span></span>'],
-              [11, '<span id="LC1" class="line" lang="ruby"><span class="k">class</span> <span class="nc">HelloWorld</span></span>'],
-              [12, '<span id="LC1" class="line" lang="ruby">  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">message</span></span>'],
-              [13, '<span id="LC1" class="line" lang="ruby">    <span class="vi">@name</span> <span class="o">=</span> <span class="s1">\'World\'</span></span>'],
-              [14, %(<span id="LC1" class="line" lang="ruby">    <span class="nb">puts</span> <span class="s2">"Hello </span><span class="si">\#{</span><span class="vi">@name</span><span class="si">}</span><span class="s2">"</span></span>)],
-              [15, '<span id="LC1" class="line" lang="ruby">  <span class="k">end</span></span>'],
-              [16, '<span id="LC1" class="line" lang="ruby"><span class="k">end</span></span>']
+              [10, '<span id="LC1" class="line" data-lang="ruby"><span class="c1"># Ruby example</span></span>'],
+              [11, '<span id="LC1" class="line" data-lang="ruby"><span class="k">class</span> <span class="nc">HelloWorld</span></span>'],
+              [12, '<span id="LC1" class="line" data-lang="ruby">  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">message</span></span>'],
+              [13, '<span id="LC1" class="line" data-lang="ruby">    <span class="vi">@name</span> <span class="o">=</span> <span class="s1">\'World\'</span></span>'],
+              [14, %(<span id="LC1" class="line" data-lang="ruby">    <span class="nb">puts</span> <span class="s2">"Hello </span><span class="si">\#{</span><span class="vi">@name</span><span class="si">}</span><span class="s2">"</span></span>)],
+              [15, '<span id="LC1" class="line" data-lang="ruby">  <span class="k">end</span></span>'],
+              [16, '<span id="LC1" class="line" data-lang="ruby"><span class="k">end</span></span>']
             ]
           },
           {
@@ -38,14 +38,14 @@ RSpec.describe Gitlab::ErrorTracking::StackTraceHighlightDecorator do
             'lineNo' => 6,
             'filename' => 'HelloWorld.swift',
             'context' => [
-              [1, '<span id="LC1" class="line" lang="swift"><span class="c1">// Swift example</span></span>'],
-              [2, '<span id="LC1" class="line" lang="swift"><span class="kd">struct</span> <span class="kt">HelloWorld</span> <span class="p">{</span></span>'],
-              [3, '<span id="LC1" class="line" lang="swift">    <span class="k">let</span> <span class="nv">name</span> <span class="o">=</span> <span class="s">"World"</span></span>'],
-              [4, '<span id="LC1" class="line" lang="swift"></span>'],
-              [5, '<span id="LC1" class="line" lang="swift">    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">message</span><span class="p">()</span> <span class="p">{</span></span>'],
-              [6, '<span id="LC1" class="line" lang="swift">        <span class="nf">print</span><span class="p">(</span><span class="s">"Hello, </span><span class="se">\\(</span><span class="k">self</span><span class="o">.</span><span class="n">name</span><span class="se">)</span><span class="s">"</span><span class="p">)</span></span>'],
-              [7, '<span id="LC1" class="line" lang="swift">    <span class="p">}</span></span>'],
-              [8, '<span id="LC1" class="line" lang="swift"><span class="p">}</span></span>']
+              [1, '<span id="LC1" class="line" data-lang="swift"><span class="c1">// Swift example</span></span>'],
+              [2, '<span id="LC1" class="line" data-lang="swift"><span class="kd">struct</span> <span class="kt">HelloWorld</span> <span class="p">{</span></span>'],
+              [3, '<span id="LC1" class="line" data-lang="swift">    <span class="k">let</span> <span class="nv">name</span> <span class="o">=</span> <span class="s">"World"</span></span>'],
+              [4, '<span id="LC1" class="line" data-lang="swift"></span>'],
+              [5, '<span id="LC1" class="line" data-lang="swift">    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">message</span><span class="p">()</span> <span class="p">{</span></span>'],
+              [6, '<span id="LC1" class="line" data-lang="swift">        <span class="nf">print</span><span class="p">(</span><span class="s">"Hello, </span><span class="se">\\(</span><span class="k">self</span><span class="o">.</span><span class="n">name</span><span class="se">)</span><span class="s">"</span><span class="p">)</span></span>'],
+              [7, '<span id="LC1" class="line" data-lang="swift">    <span class="p">}</span></span>'],
+              [8, '<span id="LC1" class="line" data-lang="swift"><span class="p">}</span></span>']
             ]
           },
           {
@@ -53,9 +53,9 @@ RSpec.describe Gitlab::ErrorTracking::StackTraceHighlightDecorator do
             'lineNo' => 3,
             'filename' => 'hello_world.php',
             'context' => [
-              [1, '<span id="LC1" class="line" lang="hack"><span class="c1">// PHP/Hack example</span></span>'],
-              [2, '<span id="LC1" class="line" lang="hack"><span class="cp">&lt;?php</span></span>'],
-              [3, '<span id="LC1" class="line" lang="hack"><span class="k">echo</span> <span class="s1">\'Hello, World!\'</span><span class="p">;</span></span>']
+              [1, '<span id="LC1" class="line" data-lang="hack"><span class="c1">// PHP/Hack example</span></span>'],
+              [2, '<span id="LC1" class="line" data-lang="hack"><span class="cp">&lt;?php</span></span>'],
+              [3, '<span id="LC1" class="line" data-lang="hack"><span class="k">echo</span> <span class="s1">\'Hello, World!\'</span><span class="p">;</span></span>']
             ]
           },
           {

@@ -28,7 +28,7 @@ RSpec.describe Deployments::LinkMergeRequestWorker, feature_category: :continuou
   end
 
   it_behaves_like 'an idempotent worker' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
     let(:environment) { create(:environment, project: project) }
     let(:deployment) { create(:deployment, :success, project: project, environment: environment) }
     let(:job_args) { deployment.id }

@@ -39,7 +39,6 @@ describe('Sidebar Menu', () => {
         isLoggedIn: sidebarData.is_logged_in,
         pinnedItemIds: sidebarData.pinned_items,
         panelType: sidebarData.panel_type,
-        updatePinsUrl: sidebarData.update_pins_url,
         ...extraProps,
       },
       provide: {
@@ -516,6 +515,124 @@ describe('Sidebar Menu', () => {
 
         expect(handler).toHaveBeenCalled();
         expect(findPinnedSection().props('asyncCount')).toEqual({});
+      });
+    });
+  });
+
+  describe('Feature Library modal', () => {
+    const findFeatureLibraryModal = () => wrapper.findComponent({ name: 'FeatureLibraryModal' });
+    const findTrigger = () => wrapper.findByTestId('feature-library-trigger');
+
+    describe('when feature_library_modal FF is off', () => {
+      beforeEach(() => {
+        createWrapper({
+          panelType: PANELS_WITH_PINS[0],
+          provide: { glFeatures: { featureLibraryModal: false } },
+        });
+      });
+
+      it('does not render the trigger button', () => {
+        expect(findTrigger().exists()).toBe(false);
+      });
+
+      it('does not render the modal', () => {
+        expect(findFeatureLibraryModal().exists()).toBe(false);
+      });
+    });
+
+    describe('when feature_library_modal FF is on and panel supports pins', () => {
+      beforeEach(() => {
+        createWrapper({
+          panelType: PANELS_WITH_PINS[0],
+          provide: { glFeatures: { featureLibraryModal: true } },
+        });
+      });
+
+      it('renders the trigger button with the expected label', () => {
+        expect(findTrigger().exists()).toBe(true);
+        expect(findTrigger().text()).toBe('More features');
+      });
+
+      it('renders the applications icon on the trigger', () => {
+        expect(findTrigger().props('icon')).toBe('applications');
+      });
+
+      it('renders the modal', () => {
+        expect(findFeatureLibraryModal().exists()).toBe(true);
+      });
+
+      it('passes the section nav items (those with subitems) to the modal', () => {
+        createWrapper({
+          items: menuItems,
+          panelType: PANELS_WITH_PINS[0],
+          provide: { glFeatures: { featureLibraryModal: true } },
+        });
+        expect(
+          findFeatureLibraryModal()
+            .props('sections')
+            .map((s) => s.id),
+        ).toEqual([2, 4]);
+      });
+    });
+
+    describe('when the sidebar is collapsed to icon-only', () => {
+      beforeEach(() => {
+        createWrapper({
+          panelType: PANELS_WITH_PINS[0],
+          provide: { glFeatures: { featureLibraryModal: true }, isIconOnly: true },
+        });
+      });
+
+      it('hides the trigger label so only the icon remains', () => {
+        expect(findTrigger().props('isIconOnly')).toBe(true);
+      });
+    });
+
+    describe('when feature_library_modal FF is on but panel does not support pins', () => {
+      beforeEach(() => {
+        createWrapper({
+          panelType: 'your_work',
+          isLoggedIn: true,
+          provide: { glFeatures: { featureLibraryModal: true } },
+        });
+      });
+
+      it('does not render the trigger button (panel must support pins)', () => {
+        expect(findTrigger().exists()).toBe(false);
+      });
+
+      it('does not render the modal', () => {
+        expect(findFeatureLibraryModal().exists()).toBe(false);
+      });
+    });
+
+    describe('onModalPinToggle', () => {
+      beforeEach(() => {
+        createWrapper({
+          panelType: PANELS_WITH_PINS[0],
+          provide: { glFeatures: { featureLibraryModal: true } },
+        });
+      });
+
+      // Uses an id absent from MOCK_CATALOG to prove the title comes from the
+      // event payload, not a catalog lookup — the forward-compatible path once
+      // server-driven items (not in the mock) replace the fixture.
+      it('calls createPin with the title from the event when nextState is true', () => {
+        const spy = jest.spyOn(wrapper.vm, 'createPin').mockImplementation(() => {});
+        wrapper.vm.onModalPinToggle('server_only_item', true, 'Server Feature');
+        expect(spy).toHaveBeenCalledWith('server_only_item', 'Server Feature');
+      });
+
+      it('calls destroyPin with the title from the event when nextState is false', () => {
+        const spy = jest.spyOn(wrapper.vm, 'destroyPin').mockImplementation(() => {});
+        wrapper.vm.onModalPinToggle('server_only_item', false, 'Server Feature');
+        expect(spy).toHaveBeenCalledWith('server_only_item', 'Server Feature');
+      });
+
+      it('falls back to itemId when no title is provided', () => {
+        const spy = jest.spyOn(wrapper.vm, 'createPin').mockImplementation(() => {});
+        wrapper.vm.onModalPinToggle('some_item', true);
+        expect(spy).toHaveBeenCalledWith('some_item', 'some_item');
       });
     });
   });

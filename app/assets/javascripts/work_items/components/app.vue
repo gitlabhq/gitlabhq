@@ -2,6 +2,7 @@
 import WorkItemMetadataProvider from '~/work_items/components/work_item_metadata_provider.vue';
 
 export default {
+  name: 'WorkItemsApp',
   components: {
     WorkItemMetadataProvider,
   },

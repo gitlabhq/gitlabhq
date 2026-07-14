@@ -51,6 +51,7 @@ RSpec.describe 'issue move to another project', :js, feature_category: :team_pla
       click_button 'Select project'
       find('[role="option"]', match: :first)
       send_keys :down, :enter
+      select 'Issue', from: 'Type'
       click_button 'Move'
 
       expect(page).to have_content("Text with #{cross_reference}#{mr.to_reference}")

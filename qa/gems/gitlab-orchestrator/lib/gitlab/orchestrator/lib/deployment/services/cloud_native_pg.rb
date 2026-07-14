@@ -24,11 +24,14 @@ module Gitlab
 
           attr_reader :host, :password_secret_name, :password_secret_key
 
-          def initialize(kubeclient:, helm:, namespace:, cluster_name:)
+          # @param additional_databases [Array<Hash>] extra logical databases to bootstrap, each
+          #   { name:, owner:, password: } - created as a role + database in this same cluster
+          def initialize(kubeclient:, helm:, namespace:, cluster_name:, additional_databases: [])
             @kubeclient = kubeclient
             @helm = helm
             @namespace = namespace
             @cluster_name = cluster_name
+            @additional_databases = additional_databases
             @host = "#{cluster_name}-rw.#{namespace}.svc.cluster.local"
             @password_secret_name = "#{cluster_name}-app"
             @password_secret_key = "password"
@@ -120,6 +123,14 @@ module Gitlab
           end
 
           def cluster_manifest
+            initdb = {
+              database: DATABASE_NAME,
+              owner: DATABASE_OWNER,
+              postInitApplicationSQL: PG_EXTENSIONS.map { |ext| "CREATE EXTENSION IF NOT EXISTS #{ext};" }
+            }
+            # postInitSQL runs as superuser, unlike postInitApplicationSQL; needed for CREATE ROLE/DATABASE
+            initdb[:postInitSQL] = additional_databases_sql unless @additional_databases.empty?
+
             {
               apiVersion: "postgresql.cnpg.io/v1",
               kind: "Cluster",
@@ -136,17 +147,22 @@ module Gitlab
                   }
                 },
                 bootstrap: {
-                  initdb: {
-                    database: DATABASE_NAME,
-                    owner: DATABASE_OWNER,
-                    postInitApplicationSQL: PG_EXTENSIONS.map { |ext| "CREATE EXTENSION IF NOT EXISTS #{ext};" }
-                  }
+                  initdb: initdb
                 },
                 storage: {
                   size: "5Gi"
                 }
               }
             }
+          end
+
+          def additional_databases_sql
+            @additional_databases.flat_map do |db|
+              [
+                "CREATE ROLE #{db[:owner]} LOGIN PASSWORD '#{db[:password].gsub("'", "''")}';",
+                "CREATE DATABASE #{db[:name]} OWNER #{db[:owner]};"
+              ]
+            end
           end
         end
       end

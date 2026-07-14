@@ -8,6 +8,7 @@ import {
 } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import { mockTracking } from 'helpers/tracking_helper';
 import NoteActions from '~/rapid_diffs/app/discussions/note_actions.vue';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
@@ -75,6 +76,8 @@ describe('NoteActions', () => {
       .findAllComponents(GlDisclosureDropdownItem)
       .filter((item) => item.text() === 'Copy link')
       .at(0);
+  const findFeedbackButton = () => wrapper.find('[data-testid="amazon-q-feedback-button"]');
+  const findFeedbackModal = () => wrapper.findComponent({ ref: 'feedbackModal' });
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(NoteActions, {
@@ -192,10 +195,10 @@ describe('NoteActions', () => {
       expect(editButton.attributes('title')).toBe('Edit comment');
     });
 
-    it('emits startEditing when the Edit button is clicked', () => {
+    it('emits start-editing when the Edit button is clicked', () => {
       createComponent({ canEdit: true });
       findEditButton().vm.$emit('click');
-      expect(wrapper.emitted('startEditing')).toEqual([[]]);
+      expect(wrapper.emitted('start-editing')).toEqual([[]]);
     });
 
     describe('Delete Button', () => {
@@ -389,6 +392,64 @@ describe('NoteActions', () => {
       await nextTick();
 
       expect(findAbuseDrawer().exists()).toBe(false);
+    });
+  });
+
+  describe('Amazon Q code review feedback', () => {
+    describe('when isAmazonQCodeReview is true', () => {
+      beforeEach(() => {
+        createComponent({ isAmazonQCodeReview: true, canReportAsAbuse: true, noteId: 1 });
+      });
+
+      it('renders the feedback button', () => {
+        expect(findFeedbackButton().exists()).toBe(true);
+      });
+
+      it('renders the feedback modal when feedback has not been received', () => {
+        expect(findFeedbackModal().exists()).toBe(true);
+      });
+
+      it('tracks feedback with the correct parameters when submitted', () => {
+        const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+        const feedbackData = {
+          feedbackOptions: ['helpful'],
+          extendedFeedback: 'Great review!',
+        };
+
+        findFeedbackModal().vm.$emit('feedback-submitted', feedbackData);
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'amazon_q_code_review_feedback', {
+          action: 'amazon_q',
+          label: 'code_review_feedback',
+          property: feedbackData.feedbackOptions,
+          extra: {
+            extendedFeedback: feedbackData.extendedFeedback,
+            note_id: 1,
+          },
+        });
+      });
+
+      it('hides the feedback button and modal after feedback is received', async () => {
+        findFeedbackModal().vm.$emit('feedback-submitted', { feedbackOptions: ['helpful'] });
+        await nextTick();
+
+        expect(findFeedbackButton().exists()).toBe(false);
+        expect(findFeedbackModal().exists()).toBe(false);
+      });
+    });
+
+    describe('when isAmazonQCodeReview is false', () => {
+      beforeEach(() => {
+        createComponent({ isAmazonQCodeReview: false, canReportAsAbuse: true });
+      });
+
+      it('does not render the feedback button', () => {
+        expect(findFeedbackButton().exists()).toBe(false);
+      });
+
+      it('does not render the feedback modal', () => {
+        expect(findFeedbackModal().exists()).toBe(false);
+      });
     });
   });
 });

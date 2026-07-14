@@ -14,56 +14,31 @@ RSpec.shared_examples 'a degenerable job' do
       it { is_expected.to be_degenerated }
     end
 
-    context 'when job metadata record is deleted' do
-      # This would only happen to old jobs that never had execution_config
-      # and whose metadata were not migrated to ci_job_prototypes. See
+    context 'when job definition record is deleted' do
+      # This would only happen to old jobs whose config was not migrated to ci_job_definitions. See
       # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194777#note_2578529419.
       before do
-        job.try(:execution_config)&.delete
-        job.metadata.delete
         job.job_definition_instance.delete
         job.reload
       end
 
       it { is_expected.to be_degenerated }
-
-      context 'when p_ci_builds.options is present' do
-        before do
-          # Very old jobs populated this column instead of metadata
-          job.update_column(:options, { my_config: 'value' })
-        end
-
-        it { is_expected.not_to be_degenerated }
-      end
     end
   end
 
   describe '#degenerate!' do
-    before_all do
-      Ci::ApplicationRecord.connection.execute(<<~SQL)
-        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_100"
-          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (100);
-        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_101"
-          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (101);
-        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_102"
-          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (102);
-      SQL
-    end
-
     before do
-      create(:ci_build_metadata, build: job)
       job.needs.create!(name: 'another-job')
     end
 
-    it 'drops metadata' do
+    it 'drops disposable job data' do
       job.degenerate!
 
       expect(job.reload).to be_degenerated
       expect(job.options).to be_empty
       expect(job.yaml_variables).to be_empty
       expect(job.needs).to be_empty
-      expect(job.metadata).to be_nil
-      expect(job.try(:execution_config)).to be_nil
+      expect(job.job_definition_instance).to be_nil
     end
   end
 end

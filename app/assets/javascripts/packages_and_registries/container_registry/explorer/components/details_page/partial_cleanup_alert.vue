@@ -14,6 +14,7 @@ export default {
     runCleanupPoliciesHelpPagePath: { type: String, required: false, default: '' },
     cleanupPoliciesHelpPagePath: { type: String, required: false, default: '' },
   },
+  emits: ['dismiss'],
   i18n: {
     DELETE_ALERT_TITLE,
     DELETE_ALERT_LINK_TEXT,

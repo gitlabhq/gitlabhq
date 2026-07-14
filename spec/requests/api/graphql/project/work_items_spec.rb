@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'getting a work item list for a project', feature_category: :portfolio_management do
   include_context 'with work items list request'
 
-  let_it_be(:label1, freeze: false) { create(:label, project: project) }
-  let_it_be(:label2, freeze: false) { create(:label, project: project) }
+  let_it_be(:label1) { create(:label, project: project) }
+  let_it_be(:label2) { create(:label, project: project) }
   let_it_be(:milestone1) { create(:milestone, project: project, due_date: 5.days.ago) }
   let_it_be(:milestone2) { create(:milestone, project: project, due_date: 3.days.from_now) }
 
@@ -174,8 +174,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
 
   context 'when querying features.hierarchy' do
     let_it_be(:children) { create_list(:work_item, 4, :task, project: project) }
-    let_it_be(:child_link1, freeze: false) { create(:parent_link, work_item_parent: item1, work_item: children[0]) }
-    let_it_be(:child_link2, freeze: false) { create(:parent_link, work_item_parent: item1, work_item: children[1]) }
+    let_it_be_with_reload(:child_link1) { create(:parent_link, work_item_parent: item1, work_item: children[0]) }
+    let_it_be_with_reload(:child_link2) { create(:parent_link, work_item_parent: item1, work_item: children[1]) }
 
     let(:fields) do
       <<~GRAPHQL
@@ -297,7 +297,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
   end
 
   context 'when the user can see confidential items' do
-    before do
+    before_all do
       project.add_developer(current_user)
     end
 
@@ -539,9 +539,9 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
 
   context 'when fetching work item participants widget' do
     let_it_be(:other_project) { create(:project, group: group) }
-    let_it_be(:project, freeze: false) { other_project }
-    let_it_be(:users, freeze: false) { create_list(:user, 3) }
-    let_it_be(:work_items, freeze: false) { create_list(:work_item, 3, project: project, assignees: users) }
+    let_it_be(:project) { other_project }
+    let_it_be_with_reload(:users) { create_list(:user, 3) }
+    let_it_be_with_reload(:work_items) { create_list(:work_item, 3, project: project, assignees: users) }
 
     let(:fields) do
       <<~GRAPHQL
@@ -561,7 +561,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
       GRAPHQL
     end
 
-    before do
+    before_all do
       project.add_guest(current_user)
     end
 
@@ -765,12 +765,12 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
           "absolutePath" => "test.rb",
           "columnNumber" => nil,
           "context" => [
-            { "line" => "<span id=\"LC1\" class=\"line\" lang=\"ruby\">  <span class=\"k\">end</span></span>",
+            { "line" => "<span id=\"LC1\" class=\"line\" data-lang=\"ruby\">  <span class=\"k\">end</span></span>",
               "lineNumber" => 51 },
-            { "line" => "<span id=\"LC1\" class=\"line\" lang=\"ruby\"><span class=\"k\">end</span></span>",
+            { "line" => "<span id=\"LC1\" class=\"line\" data-lang=\"ruby\"><span class=\"k\">end</span></span>",
               "lineNumber" => 52 },
-            { "line" => "<span id=\"LC1\" class=\"line\" lang=\"ruby\"></span>", "lineNumber" => 53 },
-            { "line" => "<span id=\"LC1\" class=\"line\" lang=\"ruby\"><span class=\"n\">yes</span></span>",
+            { "line" => "<span id=\"LC1\" class=\"line\" data-lang=\"ruby\"></span>", "lineNumber" => 53 },
+            { "line" => "<span id=\"LC1\" class=\"line\" data-lang=\"ruby\"><span class=\"n\">yes</span></span>",
               "lineNumber" => 54 },
             { "line" => "", "lineNumber" => 55 },
             { "line" => "", "lineNumber" => 56 },
@@ -1176,6 +1176,23 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
         end
       end
     end
+  end
+
+  # Exercises the WorkItem type-level granular token authorization through
+  # the Project.workItems connection.
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_work_item] do
+    let(:user) { reporter }
+    let(:boundary_object) { project }
+    # createNoteEmail requires write permissions since it can be used to create issues and notes.
+    let(:fields) do
+      <<~QUERY
+        nodes {
+          #{all_graphql_fields_for('WorkItem', max_depth: 1, excluded: ['createNoteEmail'])}
+        }
+      QUERY
+    end
+
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
   end
 
   context 'when skipping authorization' do

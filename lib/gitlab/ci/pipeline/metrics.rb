@@ -52,6 +52,23 @@ module Gitlab
           ::Gitlab::Metrics.histogram(name, comment, {}, buckets)
         end
 
+        # Wall-clock time from pipeline creation to a finished status
+        # (success/failed/canceled), including queue and Sidekiq processing
+        # time. This is deliberately not the `duration` attribute, which only
+        # sums job running periods and excludes those gaps. A retried pipeline
+        # finishes again and is observed again, anchored on the original
+        # created_at, so the second observation includes the time the user
+        # took to decide to retry.
+        def self.pipeline_time_to_finished_histogram
+          name = :gitlab_ci_pipeline_time_to_finished_seconds
+          comment = 'Wall-clock time from pipeline creation to finished'
+          labels = { source: nil, status: nil }
+          buckets = [300, 1500, 7500]
+          #          5m   25m   125m
+
+          ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
+        end
+
         def self.active_jobs_histogram
           name = :gitlab_ci_active_jobs
           comment = 'Total amount of active jobs'
@@ -80,6 +97,13 @@ module Gitlab
         def self.pipelines_created_counter
           name = :pipelines_created_total
           comment = 'Counter of pipelines created'
+
+          Gitlab::Metrics.counter(name, comment)
+        end
+
+        def self.pipelines_finished_counter
+          name = :pipelines_finished_total
+          comment = 'Counter of pipelines finished (success/failed/canceled)'
 
           Gitlab::Metrics.counter(name, comment)
         end

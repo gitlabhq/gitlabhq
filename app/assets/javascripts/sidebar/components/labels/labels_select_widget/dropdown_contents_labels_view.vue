@@ -40,6 +40,7 @@ export default {
       required: true,
     },
   },
+  emits: ['closeDropdown', 'input'],
   data() {
     return {
       labels: [],

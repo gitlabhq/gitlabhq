@@ -5,7 +5,7 @@ require Rails.root.join('config', 'object_store_settings.rb')
 
 RSpec.describe ObjectStoreSettings, feature_category: :shared do
   describe '#parse!' do
-    let(:settings) { GitlabSettings::Options.build(config) }
+    let(:settings) { Gitlab::Configs.build_options(config) }
 
     subject { described_class.new(settings).parse! }
 
@@ -133,7 +133,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
       context 'when the same section-specified connection is specified' do
         before do
-          config['artifacts'] = GitlabSettings::Options.build(
+          config['artifacts'] = Gitlab::Configs.build_options(
             {
               'enabled' => true,
               'object_store' => {
@@ -148,10 +148,10 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
       end
 
       context 'when a different section-specified connection is specified' do
-        let(:gcs_connection) { GitlabSettings::Options.build("provider" => "GCS") }
+        let(:gcs_connection) { Gitlab::Configs.build_options("provider" => "GCS") }
 
         before do
-          config['artifacts'] = GitlabSettings::Options.build(
+          config['artifacts'] = Gitlab::Configs.build_options(
             {
               'enabled' => true,
               'object_store' => {
@@ -350,7 +350,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
     end
 
     it 'respects original values' do
-      original_settings = GitlabSettings::Options.build({
+      original_settings = Gitlab::Configs.build_options({
         'enabled' => true,
         'remote_directory' => 'artifacts'
       })
@@ -364,7 +364,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
     end
 
     it 'supports bucket prefixes' do
-      original_settings = GitlabSettings::Options.build({
+      original_settings = Gitlab::Configs.build_options({
         'enabled' => true,
         'remote_directory' => 'gitlab/artifacts'
       })

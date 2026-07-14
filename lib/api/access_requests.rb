@@ -16,8 +16,8 @@ module API
           desc: "The ID or URL-encoded path of the #{source_type} owned by the authenticated user"
       end
       resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc "Gets a list of access requests for a #{source_type}." do
-          detail 'This feature was introduced in GitLab 8.11.'
+        desc "List all access requests for a #{source_type}" do
+          detail "Lists all access requests for a specified #{source_type} that are viewable by the authenticated user."
           success Entities::AccessRequester
           tags %w[access_requests]
         end
@@ -36,8 +36,8 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        desc "Requests access for the authenticated user to a #{source_type}." do
-          detail 'This feature was introduced in GitLab 8.11.'
+        desc "Request access to a #{source_type}" do
+          detail "Requests access to a specified #{source_type} for the authenticated user."
           success code: 200, model: Entities::AccessRequester, example: {
             "id" => 1,
             "username" => "raymond_smith",
@@ -60,7 +60,7 @@ module API
         end
 
         desc 'Approve an access request' do
-          detail 'Approves an access request for a specified user in a specified group or project.'
+          detail "Approves an access request for a specified user in a #{source_type}."
           success code: 201, model: Entities::Member, example: {
             "id" => 1,
             "username" => "raymond_smith",
@@ -93,8 +93,8 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        desc 'Denies an access request for the given user.' do
-          detail 'This feature was introduced in GitLab 8.11.'
+        desc 'Deny an access request' do
+          detail "Denies an access request for a specified user in a #{source_type}."
           success code: 204, message: 'Resource deleted'
           tags %w[access_requests]
         end

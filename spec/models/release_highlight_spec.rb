@@ -33,7 +33,7 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
 
         it 'responds with paginated query results and no next_page' do
           expect(subject[:items].first['name']).to eq("It's gonna be a bright")
-          expect(subject[:next_page]).to eq(nil)
+          expect(subject[:next_page]).to be_nil
         end
       end
 

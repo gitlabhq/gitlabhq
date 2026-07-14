@@ -4,6 +4,7 @@ import ImageViewer from './viewers/image_viewer.vue';
 import MarkdownViewer from './viewers/markdown_viewer.vue';
 
 export default {
+  name: 'ContentViewer',
   components: {
     MarkdownViewer,
     ImageViewer,

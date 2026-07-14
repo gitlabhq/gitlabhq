@@ -2,7 +2,10 @@
 
 sharding_key_map = Gitlab::Database::Dictionary.entries.each_with_object({}) do |entry, map|
   sharding_key = entry.sharding_key
-  next unless sharding_key.is_a?(Hash) && sharding_key.any?
+  # Tables with multiple sharding keys are excluded: scoping them requires an
+  # OR condition across the keys, which performs poorly. See
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/594726
+  next unless sharding_key.is_a?(Hash) && sharding_key.size == 1
 
   map[entry.key_name] = sharding_key.transform_values(&:to_sym)
 end

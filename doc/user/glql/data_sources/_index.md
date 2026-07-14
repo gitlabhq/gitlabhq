@@ -7,14 +7,14 @@ title: GLQL data sources
 
 GLQL can query the following data sources:
 
-| Data source | `type` values | Description |
-|---|---|---|
-| [Work items](work_items.md) | `Issue`, `Incident`, `TestCase`, `Requirement`, `Task`, `Ticket`, `Objective`, `KeyResult`, `Epic` | Issues, epics, and other work item types. Default when `type` is omitted. |
-| [Merge requests](merge_requests.md) | `MergeRequest` | Code review and merge workflow. |
-| [Pipelines](pipelines.md) | `Pipeline` | CI/CD pipelines. |
-| [Jobs](jobs.md) | `Job` | CI/CD jobs within pipelines. |
-| [Projects](projects.md) | `Project` | Projects within a namespace. |
-| [Code suggestions](code_suggestions.md) | `CodeSuggestion` | Aggregated Duo Code Suggestions analytics. |
+| Data source | Standard mode | [Analytics mode](../_index.md#analytics-mode) | `type` values | Description |
+|---|---|---|---|---|
+| Work items | {{< yes >}} | {{< no >}} | `Issue`, `Incident`, `TestCase`, `Requirement`, `Task`, `Ticket`, `Objective`, `KeyResult`, `Epic` | Issues, epics, and other work item types. Default when `type` is omitted. |
+| Merge requests | {{< yes >}} | {{< no >}} | `MergeRequest` | Code review and merge workflow. |
+| Pipelines | {{< yes >}} | {{< yes >}} | `Pipeline` | CI/CD pipelines. |
+| Jobs | {{< yes >}} | {{< no >}} | `Job` | CI/CD jobs within pipelines. |
+| Projects | {{< yes >}} | {{< no >}} | `Project` | Projects within a namespace. |
+| Code suggestions | {{< no >}} | {{< yes >}} | `CodeSuggestion` | Aggregated Duo Code Suggestions analytics. |
 
 Each data source has its own set of supported fields for filtering, display, and sorting.
 

@@ -1,0 +1,28 @@
+# frozen_string_literal: true
+
+PUMA_COORDINATION_MESSAGE = <<~MSG
+  ## Puma version change
+
+  This merge request changes the `puma` gem. Puma is the application server that
+  runs the Rails web fleet, so a regression is not contained to a single feature
+  — it can degrade or take down web traffic across GitLab.com.
+
+  Puma version changes have on multiple occasions caused incidents (for example
+  `gitlab-com/gl-infra/production#17372` and `gitlab-com/gl-infra/production#18591`).
+  This warning exists so that release managers and on-call are aware a puma change
+  is shipping and can watch the deployment more closely.
+
+  Please add extra scrutiny and make the rollout visible:
+
+  - [ ] **Deploy coordination required**: please tag `@gitlab-org/release/managers` so release managers are aware of this change before it ships, and coordinate the production rollout.
+  - [ ] **SRE on-call notification**: at merge time, post a heads-up in `#production` tagging the SRE on-call with a link to this MR, so they're aware a puma change is in the pipeline and can monitor for degradation on deploy.
+MSG
+
+changed_lines = helper.changed_lines('Gemfile.lock')
+
+if changed_lines.any? { |line| line =~ /^\+\s+puma \(/ }
+  warn 'Changing the puma gem version can carry additional production deployment risk. ' \
+    'Please coordinate the deploy with `@gitlab-org/release/managers`.'
+
+  markdown(PUMA_COORDINATION_MESSAGE)
+end

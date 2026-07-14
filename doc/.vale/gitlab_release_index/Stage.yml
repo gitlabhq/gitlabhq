@@ -1,0 +1,31 @@
+---
+name: gitlab_release_index.Stage
+description: Ensures the minor release index page sets the Release Notes stage.
+message: "The `stage` metadata is required and must be `Release Notes`."
+link: https://docs.gitlab.com/development/documentation/release_notes/#minor-release-index-metadata
+level: error
+extends: script
+scope: raw
+script: |
+  text := import("text")
+  matches := []
+
+  if text.re_match("^---\\n", scope) {
+    fmEnd := text.index(scope, "\n---")
+    if fmEnd > 0 {
+      fm := scope[0:fmEnd]
+      if !text.re_match("(?m)^stage:", fm) {
+        matches = append(matches, {begin: 0, end: 3})
+      } else {
+        m := text.re_find("(?m)^stage:[ \\t]*(.*)$", fm, 1)
+        if !is_undefined(m) {
+          cap := m[0][1]
+          span := {begin: cap.begin, end: cap.begin + len(cap.text)}
+          v := text.trim_space(text.re_replace("[\"']", cap.text, ""))
+          if v != "Release Notes" {
+            matches = append(matches, span)
+          }
+        }
+      }
+    }
+  }

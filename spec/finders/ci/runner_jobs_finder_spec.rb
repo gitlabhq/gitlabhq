@@ -2,6 +2,9 @@
 
 require 'spec_helper'
 
+# NOTE: No dedicated cross-organization isolation test here. `Ci::RunnerJobsFinder` returns the
+# jobs of a single runner filtered by the user's per-project access (see the cross-project
+# isolation examples below), which is the effective organization boundary for this path.
 RSpec.describe Ci::RunnerJobsFinder, '#execute', factory_default: :keep, feature_category: :fleet_visibility do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create_default(:ci_pipeline, project: project) }

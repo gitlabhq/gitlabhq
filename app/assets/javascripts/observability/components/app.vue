@@ -11,7 +11,7 @@ import {
   POLLING_TIMEOUT,
   PROVISIONING_MESSAGE_INTERVAL,
 } from '../constants';
-import { buildIframeUrl, extractTargetPath } from '../utils/url_helpers';
+import { buildIframeUrl } from '../utils/url_helpers';
 import { AuthManager } from '../utils/auth_manager';
 import iframeNavigator from '../iframe_navigator';
 import ObservabilityLoading from './observability_loading.vue';
@@ -101,7 +101,8 @@ export default {
     },
 
     targetPath() {
-      return extractTargetPath(this.path, this.o11yUrl);
+      const url = new URL(this.iframeUrl);
+      return `${url.pathname}${url.search}`;
     },
 
     needsPolling() {

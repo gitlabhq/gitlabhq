@@ -109,7 +109,8 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
           revoke: '/api/v4/personal_access_tokens',
           rotate: '/api/v4/personal_access_tokens',
           show: '/api/v4/personal_access_tokens?user_id=:id',
-          granular_tokens_enforced: 'false'
+          granular_tokens_enforced: 'false',
+          can_enable_sudo: 'false'
         })
       }))
     end
@@ -147,6 +148,28 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
 
           it { is_expected.to eq('true') }
         end
+      end
+    end
+
+    describe 'can_enable_sudo' do
+      subject(:can_enable_sudo) do
+        helper.personal_access_token_data(token, user).dig(:access_token, :can_enable_sudo)
+      end
+
+      context 'when the user can administer all resources' do
+        before do
+          allow(user).to receive(:can_admin_all_resources?).and_return(true)
+        end
+
+        it { is_expected.to eq('true') }
+      end
+
+      context 'when the user cannot administer all resources' do
+        before do
+          allow(user).to receive(:can_admin_all_resources?).and_return(false)
+        end
+
+        it { is_expected.to eq('false') }
       end
     end
   end

@@ -1,0 +1,20 @@
+fragment DuoPipelinesRateItem on Analytics {
+  duoPipelines: finishedPipelines(
+    source: ["duo_workflow"]
+    startedAtFrom: $startDate
+    startedAtTo: $endDate
+  ) {
+    aggregated {
+      nodes {
+        totalCount
+      }
+    }
+  }
+  allPipelines: finishedPipelines(startedAtFrom: $startDate, startedAtTo: $endDate) {
+    aggregated {
+      nodes {
+        totalCount
+      }
+    }
+  }
+}

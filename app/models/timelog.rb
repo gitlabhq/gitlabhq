@@ -68,6 +68,10 @@ class Timelog < ApplicationRecord
     end
   end
 
+  def self.total_time_spent_by_issue_id(issue_ids)
+    where(issue_id: issue_ids).group(:issue_id).sum(:time_spent)
+  end
+
   private
 
   def check_total_time_spent_is_within_range

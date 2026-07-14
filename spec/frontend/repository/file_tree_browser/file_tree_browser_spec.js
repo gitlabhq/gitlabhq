@@ -27,7 +27,6 @@ describe('FileTreeBrowser', () => {
   const findFileBrowserHeight = () => wrapper.findComponent(FileBrowserHeight);
   const findPanelResizer = () => wrapper.findComponent(PanelResizer);
   const findOverlay = () => wrapper.findByTestId('overlay');
-  const findFeedbackButton = () => wrapper.findByText('Provide feedback');
   const findTreeList = () => wrapper.find('tree-list-stub');
   const findTransition = () => wrapper.find('[name="file-tree-browser-slide"]');
 
@@ -223,17 +222,6 @@ describe('FileTreeBrowser', () => {
           expect(findFileBrowserHeight().attributes('style')).toBe(`--tree-width: 400px;`);
         });
       });
-    });
-
-    it('renders a provide feedback button', () => {
-      const feedbackButton = findFeedbackButton();
-
-      expect(feedbackButton.attributes('target')).toBe('_blank');
-      expect(feedbackButton.attributes('icon')).toBe('comment-dots');
-      expect(feedbackButton.attributes('rel')).toBe('noopener noreferrer');
-      expect(feedbackButton.attributes('href')).toBe(
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/581271',
-      );
     });
 
     describe('isAnimating prop', () => {

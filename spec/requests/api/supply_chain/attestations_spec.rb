@@ -130,6 +130,14 @@ RSpec.describe API::SupplyChain::Attestations, feature_category: :artifact_secur
       get api(url, api_user)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_attestation do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        get api("/projects/#{project.id}/attestations/#{subject_digest}", personal_access_token: pat)
+      end
+    end
+
     shared_examples 'when an attestation exists' do
       it 'returns the right attestations in the response' do
         get_attestations
@@ -207,6 +215,14 @@ RSpec.describe API::SupplyChain::Attestations, feature_category: :artifact_secur
     subject(:download_attestation) do
       url = target_url
       get api(url, api_user)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_attestation do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        get api("/projects/#{project.id}/attestations/#{attestation.iid}/download", personal_access_token: pat)
+      end
     end
 
     it "returns the contents of the attestation" do

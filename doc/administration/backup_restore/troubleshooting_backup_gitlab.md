@@ -462,6 +462,101 @@ Truncate the filenames on the file system. You must manually rename the files in
 
 After following all the previous steps, re-run the backup task.
 
+## Error: `pack-objects died` during server-side backup of a large repository
+
+When you run a server-side backup (with `REPOSITORIES_SERVER_SIDE=true`), and one or more large
+repositories fail consistently, you might see error this error:
+
+```plaintext
+backup repository: manager: write bundle: local repository: create bundle:
+create bundle: exit status 1: stderr: "error: pack-objects died"
+```
+
+You might see this error even when:
+
+- Smaller repositories and wiki repositories for the same project back up successfully.
+- `git fsck --full` and `git bundle create` pass without errors when run manually on Gitaly
+  nodes.
+
+This issue occurs because Gitaly streams the repository bundle directly to object
+storage using multipart upload.
+
+By default, the part size is 5 MB, and AWS S3 (and compatible providers) allow
+a maximum of 10,000 parts per multipart upload.
+
+This default gives an effective maximum bundle size of approximately 50 GB.
+When a repository's bundle exceeds this limit, the object storage provider aborts
+the upload. The abort breaks the pipe back to `git pack-objects`, which reports the misleading
+`pack-objects died` error instead of an upload failure.
+
+To resolve this issue, increase the `buffer_size` in the Gitaly backup configuration.
+Because the effective maximum bundle size is `buffer_size × 10,000`, set `buffer_size` to a value
+that accommodates your largest repository.
+
+1. To identify the largest packfiles on your Gitaly nodes:
+
+   ```shell
+   sudo find /var/opt/gitlab/git-data -name "*.pack" -size +10G -ls
+   ```
+
+1. Set `buffer_size`.
+
+   {{< tabs >}}
+
+   {{< tab title="Linux package (Omnibus)" >}}
+
+   1. Edit `/etc/gitlab/gitlab.rb` on each Gitaly node and add `buffer_size` to your existing backup
+      configuration:
+
+      ```ruby
+      gitaly['configuration'] = {
+        backup: {
+          go_cloud_url: 's3://<bucket>?region=<region>',
+          # Increase part size to raise the S3 multipart upload limit.
+          # buffer_size (bytes) x 10,000 = effective maximum bundle size.
+          # Example: 10485760 (10 MB) supports bundles up to ~100 GB.
+          buffer_size: 10485760,
+        },
+      }
+      ```
+
+   1. Reconfigure and restart Gitaly on each node:
+
+      ```shell
+      sudo gitlab-ctl reconfigure
+      sudo gitlab-ctl restart gitaly
+      ```
+
+   {{< /tab >}}
+
+   {{< tab title="Helm chart (Kubernetes)" >}}
+
+   1. Export the Helm values:
+
+      ```shell
+      helm get values gitlab > gitlab_values.yaml
+      ```
+
+   1. Edit `gitlab_values.yaml` and set the required value:
+
+      ```yaml
+      gitlab:
+        gitaly:
+          configuration:
+            backup:
+              buffer_size: 10485760
+      ```
+
+   1. Save the file and apply the new values:
+
+      ```shell
+      helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+      ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
+
 ## Restoring database backup fails when `pg_stat_statements` was previously enabled
 
 The GitLab backup of the PostgreSQL database includes all SQL statements required to enable extensions that were

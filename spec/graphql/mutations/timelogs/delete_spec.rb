@@ -8,7 +8,7 @@ RSpec.describe Mutations::Timelogs::Delete do
   let_it_be(:author, freeze: false) { create(:user) }
   let_it_be(:maintainer, freeze: false) { create(:user) }
   let_it_be(:administrator, freeze: false) { create(:user, :admin) }
-  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be(:project, freeze: false) { create(:project, :public, maintainers: maintainer) }
   let_it_be(:issue, freeze: false) { create(:issue, project: project) }
   let_it_be_with_reload(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
 
@@ -56,10 +56,6 @@ RSpec.describe Mutations::Timelogs::Delete do
 
     context 'when the current user is not the timelog\'s author but a maintainer of the project' do
       let(:current_user) { maintainer }
-
-      before do
-        project.add_maintainer(maintainer)
-      end
 
       it 'deletes the timelog' do
         expect { subject }.to change { Timelog.count }.by(-1)

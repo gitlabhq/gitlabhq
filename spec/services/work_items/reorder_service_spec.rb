@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe WorkItems::ReorderService, feature_category: :team_planning do
   let_it_be(:user)    { create_default(:user) }
   let_it_be(:group)   { create(:group) }
-  let_it_be_with_reload(:project) { create(:project, namespace: group) }
+  let_it_be(:project) { create(:project, namespace: group) }
 
   describe '#execute' do
     let_it_be_with_reload(:item1) { create(:work_item, :issue, project: project, relative_position: 10) }
@@ -22,7 +22,7 @@ RSpec.describe WorkItems::ReorderService, feature_category: :team_planning do
     end
 
     context 'when ordering work items in a project' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 

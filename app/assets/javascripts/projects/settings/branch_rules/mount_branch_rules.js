@@ -4,7 +4,7 @@ import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import View from 'ee_else_ce/projects/settings/branch_rules/components/index.vue';
 
-export default function mountBranchRules(el, store, allowEditSquashSetting = false) {
+export default function mountBranchRules(el, store, squashOptionsFeatureAvailable = false) {
   if (!el) {
     return null;
   }
@@ -28,9 +28,12 @@ export default function mountBranchRules(el, store, allowEditSquashSetting = fal
     showApprovers,
     showCodeOwners,
     showEnterpriseAccessLevels,
+    customRolesForProtectedBranchesEnabled,
     canAdminProtectedBranches,
     canAdminGroupProtectedBranches,
     groupSettingsRepositoryPath,
+    canReadSquashOption = 'false',
+    canUpdateSquashOption = 'false',
   } = el.dataset;
 
   return new Vue({
@@ -51,10 +54,13 @@ export default function mountBranchRules(el, store, allowEditSquashSetting = fal
       showApprovers: parseBoolean(showApprovers),
       showCodeOwners: parseBoolean(showCodeOwners),
       showEnterpriseAccessLevels: parseBoolean(showEnterpriseAccessLevels),
+      customRolesForProtectedBranchesEnabled: parseBoolean(customRolesForProtectedBranchesEnabled),
       canAdminProtectedBranches: parseBoolean(canAdminProtectedBranches),
       canAdminGroupProtectedBranches: parseBoolean(canAdminGroupProtectedBranches),
       groupSettingsRepositoryPath,
-      allowEditSquashSetting,
+      squashOptionsFeatureAvailable,
+      canReadSquashOption: parseBoolean(canReadSquashOption),
+      canUpdateSquashOption: parseBoolean(canUpdateSquashOption),
     },
     render(h) {
       return h(View);

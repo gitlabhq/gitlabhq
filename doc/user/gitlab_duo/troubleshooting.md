@@ -71,7 +71,7 @@ you can also do the following:
 
    {{< /tabs >}}
 
-1. Verify that the GitLab instance can reach the [required GitLab.com endpoints](../../administration/gitlab_duo/configure/gitlab_self_managed.md).
+1. Verify that the GitLab instance can reach the [required GitLab.com endpoints](../../administration/gitlab_duo/configure/_index.md).
    You can use command-line tools such as `curl` to verify the connectivity.
 
    ```shell

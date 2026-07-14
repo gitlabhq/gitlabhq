@@ -6,7 +6,7 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :repository, maintainers: user) }
+  let_it_be_with_reload(:project) { create(:project, :repository, maintainers: user) }
   let_it_be(:sha) { project.repository.commit.sha }
   let_it_be(:pipeline) { create(:ci_pipeline, sha: sha, project: project, user: user) }
 
@@ -137,6 +137,37 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
 
       expect(mutation_response['job']).to be_nil
       expect(mutation_response['errors']).to match_array(['Job is not retryable'])
+    end
+  end
+
+  context 'when inputs contain sensitive values' do
+    let(:job) { create(:ci_build, :success, pipeline: pipeline, name: 'build') }
+
+    let(:mutation) do
+      graphql_mutation(
+        :job_retry,
+        { id: job.to_global_id.to_s, inputs: [{ name: 'SECRET', value: 'top-secret-value' }] },
+        'errors',
+        [],
+        'retryJobWithVariables'
+      )
+    end
+
+    let(:logger_instance) { instance_double(Gitlab::GraphqlLogger) }
+    let(:logged_payloads) { [] }
+
+    before do
+      allow(Gitlab::GraphqlLogger).to receive(:build).and_return(logger_instance)
+      allow(logger_instance).to receive(:info) { |payload| logged_payloads << payload }
+    end
+
+    it 'does not log input values in plaintext', :aggregate_failures do
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(logged_payloads).not_to be_empty
+      logged_variables = logged_payloads.map { |payload| payload[:variables].to_s }
+      expect(logged_variables).to all(exclude('top-secret-value'))
+      expect(logged_variables).to include(a_string_including('[FILTERED]'))
     end
   end
 

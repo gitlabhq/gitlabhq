@@ -6,7 +6,6 @@ import {
   MOCK_SEARCH_PATH,
   MOCK_ISSUE_PATH,
   MOCK_MR_PATH,
-  MOCK_AUTOCOMPLETE_PATH,
   MOCK_SEARCH_CONTEXT,
   MOCK_GROUP_SEARCH_CONTEXT,
   MOCK_PROJECT_SEARCH_CONTEXT,
@@ -28,10 +27,6 @@ describe('Global Search Store Getters', () => {
 
   const createState = (initialState) => {
     state = initState({
-      searchPath: MOCK_SEARCH_PATH,
-      issuesPath: MOCK_ISSUE_PATH,
-      mrPath: MOCK_MR_PATH,
-      autocompletePath: MOCK_AUTOCOMPLETE_PATH,
       searchContext: MOCK_SEARCH_CONTEXT,
       ...initialState,
     });

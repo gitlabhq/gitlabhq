@@ -489,7 +489,7 @@ RSpec.shared_examples_for "bulk member creation" do
     end
 
     context 'with an array of sources' do
-      let_it_be(:sources, freeze: false) { [source, source2] }
+      let(:sources) { [source, source2] }
 
       it_behaves_like 'supports multiple sources'
     end

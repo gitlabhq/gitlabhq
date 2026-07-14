@@ -10,6 +10,7 @@ const BODY_CLASS =
   'gl-flex gl-justify-center gl-items-center gl-flex-col gl-my-0 gl-p-4 gl-font-bold gl-text-center gl-grow gl-text-lg';
 
 export default {
+  name: 'ErrorDetailsInfo',
   components: {
     GlCard,
     GlLink,

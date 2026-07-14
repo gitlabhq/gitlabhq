@@ -278,10 +278,10 @@ describe('Board list component', () => {
           expect(document.addEventListener).toHaveBeenCalledWith('keyup', expect.any(Function));
         });
 
-        it('emits the `dragStart` event with the item id to the parent', () => {
+        it('emits the `drag-start` event with the item id to the parent', () => {
           startDrag();
 
-          expect(wrapper.emitted('dragStart')[0]).toEqual([
+          expect(wrapper.emitted('drag-start')[0]).toEqual([
             { itemId: 'gid://gitlab/WorkItems::Type/1' },
           ]);
         });

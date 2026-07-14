@@ -40,7 +40,7 @@ RSpec.describe BulkImportWorker, feature_category: :importers do
 
       described_class.sidekiq_retries_exhausted_block.call({ 'args' => job_args }, exception)
 
-      expect(bulk_import.reload.failed?).to eq(true)
+      expect(bulk_import.reload.failed?).to be(true)
     end
   end
 end

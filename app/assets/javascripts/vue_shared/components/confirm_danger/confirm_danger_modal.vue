@@ -67,6 +67,7 @@ export default {
       default: CONFIRM_DANGER_MODAL_TITLE,
     },
   },
+  emits: ['change', 'confirm'],
   data() {
     return { confirmationPhrase: '' };
   },

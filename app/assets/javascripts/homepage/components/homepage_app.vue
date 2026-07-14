@@ -28,6 +28,7 @@ import PickUpWidget from './pick_up_widget.vue';
 import BaseWidget from './base_widget.vue';
 
 export default {
+  name: 'HomepageApp',
   components: {
     IndexLayout,
     GreetingHeader,

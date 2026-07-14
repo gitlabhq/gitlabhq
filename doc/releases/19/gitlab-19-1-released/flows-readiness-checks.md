@@ -3,13 +3,11 @@ title: Foundational flows readiness checks
 offering: [ self_managed, gitlab_dedicated_for_government ]
 tier: [ Premium, Ultimate ]
 stage: ai-powered
-documentation_link: "../../administration/gitlab_duo/configure/#run-a-health-check-for-gitlab-duo"
+documentation_link: "../../../administration/gitlab_duo/configure/#run-a-health-check-for-gitlab-duo"
 work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/599536
 categories: [ Duo Agent Platform ]
 level: secondary
 ---
-
-<!-- categories: Duo Agent Platform  -->
 
 GitLab Duo health checks now include foundational flows readiness checks, which verify:
 

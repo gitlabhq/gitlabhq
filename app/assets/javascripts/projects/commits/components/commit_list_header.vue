@@ -27,7 +27,6 @@ export default {
     GlTooltipDirective,
   },
   inject: [
-    'projectRootPath',
     'projectFullPath',
     'projectId',
     'escapedRef',

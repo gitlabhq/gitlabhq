@@ -398,6 +398,33 @@ To use a remote ruleset stored in a private repository, add the following to the
 
 For more information on the passthrough syntax to use, see [Schema](custom_rulesets_schema.md#schema).
 
+### Turn on beta rules
+
+Beta rules are experimental detection rules that are not part of the default ruleset.
+Use beta rules to detect additional secret types before the rules are promoted to the default ruleset.
+
+> [!warning]
+> Beta rules are experimental. They might produce more false positives than the default rules.
+> They can change or be removed without notice. Review findings from beta rules carefully.
+
+The analyzer image includes a beta ruleset at `/beta.toml`. This ruleset contains all default rules
+plus rules with `beta` maturity. The analyzer does not load the beta ruleset unless you opt in.
+
+To turn on beta rules, use a [`file` passthrough](custom_rulesets_schema.md#passthrough-types) to
+replace the default ruleset with the bundled beta ruleset. Add the following to the
+`.gitlab/secret-detection-ruleset.toml` configuration file stored in the same repository:
+
+```toml
+[secrets]
+  [[secrets.passthrough]]
+    type   = "file"
+    target = "gitleaks.toml"
+    value  = "/beta.toml"
+```
+
+The beta ruleset already includes the default rules, so you do not extend the default ruleset
+separately.
+
 ### Extend the default ruleset
 
 You can also extend the [default ruleset](../detected_secrets.md) configuration with additional

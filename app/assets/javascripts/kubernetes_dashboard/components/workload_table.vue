@@ -9,6 +9,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'WorkloadTable',
   components: {
     GlTable,
     GlBadge,
@@ -35,6 +36,7 @@ export default {
       required: false,
     },
   },
+  emits: ['select-item', 'delete-pod'],
   data() {
     return {
       currentPage: 1,

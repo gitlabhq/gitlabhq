@@ -463,3 +463,58 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
   end
 end
+
+RSpec.describe 'Observability::GroupO11ySetting#observability_export_variable_for', feature_category: :observability do
+  describe '#observability_export_variable_for' do
+    context 'when namespace is a group' do
+      let_it_be(:group) { create(:group) }
+      let(:setting) { create(:observability_group_o11y_setting, group: group) }
+
+      context 'when the group variable exists' do
+        let!(:variable) do
+          create(:ci_group_variable, group: group, key: 'GITLAB_OBSERVABILITY_EXPORT', value: 'metrics,logs,traces')
+        end
+
+        it 'returns the group variable (ignores project argument)' do
+          expect(setting.observability_export_variable_for(nil)).to eq(variable)
+          expect(setting.observability_export_variable_for(create(:project, group: group))).to eq(variable)
+        end
+      end
+
+      context 'when the group variable does not exist' do
+        it 'returns nil' do
+          expect(setting.observability_export_variable_for(nil)).to be_nil
+        end
+      end
+    end
+
+    context 'when namespace is a personal (user) namespace' do
+      let_it_be(:user_namespace) { create(:namespace) }
+      let_it_be(:personal_project) { create(:project, namespace: user_namespace) }
+      let(:setting) { create(:observability_group_o11y_setting, group: user_namespace) }
+
+      context 'when the project variable exists' do
+        let!(:variable) do
+          create(:ci_variable, project: personal_project, key: 'GITLAB_OBSERVABILITY_EXPORT',
+            value: 'metrics,logs,traces')
+        end
+
+        it 'returns the project variable' do
+          expect(setting.observability_export_variable_for(personal_project)).to eq(variable)
+        end
+      end
+
+      context 'when the project variable does not exist' do
+        it 'returns nil' do
+          expect(setting.observability_export_variable_for(personal_project)).to be_nil
+        end
+      end
+
+      context 'when project is nil' do
+        it 'returns nil' do
+          expect(setting.observability_export_variable_for(nil)).to be_nil
+        end
+      end
+    end
+  end
+end

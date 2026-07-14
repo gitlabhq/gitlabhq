@@ -82,7 +82,7 @@ information, see the [relevant documentation](monitoring.md#monitor-gitaly-concu
 
 {{< history >}}
 
-- Introduced in GitLab 18.7 [with a flag](../../operations/feature_flags.md) named `gitaly_limit_unauthenticated`. Disabled by default.
+- Introduced in GitLab 18.7 [with a feature flag](../../operations/feature_flags.md) named `gitaly_limit_unauthenticated`. Disabled by default.
 
 {{< /history >}}
 

@@ -14,6 +14,7 @@ import SearchableTable from './searchable_table.vue';
 import EmptyState from './model_list_empty_state.vue';
 
 export default {
+  name: 'ModelVersionList',
   components: {
     EmptyState,
     SearchableTable,

@@ -4,7 +4,7 @@ const OBSERVABILITY_NAV_SELECTOR = '.js-observability-nav';
 const OBSERVABILITY_PATH_REGEX = /\/-\/observability\/(.+)$/;
 const NAVIGATION_MESSAGE_TYPE = 'NAVIGATE_TO';
 const MESSAGE_SOURCE = 'gitlab-sidebar';
-const NAV_ITEM_ACTIVE_CLASS = 'super-sidebar-nav-item-current';
+const NAV_ITEM_ACTIVE_CLASS = 'selected';
 
 class IframeNavigator {
   constructor() {

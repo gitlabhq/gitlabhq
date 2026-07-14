@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: AI Clients
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use GitLab Duo Chat to ask questions about your code, get help with GitLab, and complete tasks in the GitLab UI or your IDE.
@@ -131,7 +131,7 @@ On the GitLab Duo sidebar, select **GitLab Duo Chat history** ({{< icon name="hi
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16108) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `duo_chat_multi_thread`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16108) in GitLab 17.10 [with a feature flag](../../administration/feature_flags/_index.md) named `duo_chat_multi_thread`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187443) in GitLab 17.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190042) in GitLab 18.1. Feature flag `duo_chat_multi_thread` removed.
 - Search capability for chat history in the GitLab UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/582513) in GitLab 18.9.

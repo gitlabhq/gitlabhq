@@ -99,3 +99,5 @@ module Organizations
     end
   end
 end
+
+Organizations::OrganizationsController.prepend_mod

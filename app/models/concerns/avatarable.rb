@@ -114,7 +114,8 @@ module Avatarable
         params[:model].upload_paths(params[:identifier])
       end
 
-      Upload.where(uploader: AvatarUploader.name, path: paths).find_each do |upload|
+      Upload.where(uploader: AvatarUploader.name, path: paths,
+        model_type: model_class.polymorphic_name).find_each do |upload|
         model = model_class.instantiate('id' => upload.model_id)
 
         loader.call({ model: model, identifier: File.basename(upload.path) }, upload)

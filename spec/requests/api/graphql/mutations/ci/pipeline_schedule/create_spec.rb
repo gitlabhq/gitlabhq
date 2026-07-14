@@ -91,6 +91,47 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
       let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
     end
 
+    context 'when masking sensitive variables in logs' do
+      let(:pipeline_schedule_parameters) do
+        {
+          description: 'log-masking-test',
+          cron: '0 1 * * *',
+          cronTimezone: 'UTC',
+          ref: 'master',
+          active: true,
+          variables: [],
+          inputs: [{ name: 'SECRET_INPUT', value: 'top-secret-value' }]
+        }
+      end
+
+      let(:mutation) do
+        graphql_mutation(
+          :pipeline_schedule_create,
+          { project_path: project.full_path, **pipeline_schedule_parameters },
+          'errors',
+          [],
+          'createPipelineSchedule'
+        )
+      end
+
+      let(:logger_instance) { instance_double(Gitlab::GraphqlLogger) }
+      let(:logged_payloads) { [] }
+
+      before do
+        allow(Gitlab::GraphqlLogger).to receive(:build).and_return(logger_instance)
+        allow(logger_instance).to receive(:info) { |payload| logged_payloads << payload }
+      end
+
+      it 'does not log input values in plaintext', :aggregate_failures do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(logged_payloads).not_to be_empty
+        logged_variables = logged_payloads.map { |payload| payload[:variables].to_s }
+        expect(logged_variables).to all(exclude('top-secret-value'))
+        expect(logged_variables).to include(a_string_including('[FILTERED]'))
+      end
+    end
+
     context 'when success' do
       it 'creates and returns a pipeline schedule' do
         post_graphql_mutation(mutation, current_user: current_user)

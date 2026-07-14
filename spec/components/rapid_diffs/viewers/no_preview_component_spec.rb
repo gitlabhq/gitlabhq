@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, feature_category: :code_review_workflow do
-  let_it_be(:diff_file, freeze: false) { build(:diff_file) }
+  let_it_be_with_reload(:diff_file) { build(:diff_file) }
   let(:instance) { described_class.new(diff_file: diff_file) }
   let(:virtual_rendering_params) { instance.virtual_rendering_params }
 
@@ -155,6 +155,19 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows limit message' do
         render_component
         expect(page).to have_text("Preview size limit exceeded, changes collapsed.")
+        verify_virtual_rendering_params
+      end
+    end
+
+    context 'when file is stored in LFS' do
+      before do
+        allow(diff_file).to receive(:stored_externally?).and_return(true)
+      end
+
+      it 'shows stored in LFS message with docs link', :aggregate_failures do
+        render_component
+        expect(page).to have_text("File stored in LFS. Learn more.")
+        expect(page).to have_link('Learn more', href: %r{topics/git/lfs})
         verify_virtual_rendering_params
       end
     end

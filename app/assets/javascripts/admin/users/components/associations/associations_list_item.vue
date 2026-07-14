@@ -2,6 +2,7 @@
 import { GlSprintf } from '@gitlab/ui';
 
 export default {
+  name: 'AssociationsListItem',
   components: { GlSprintf },
   props: {
     message: {

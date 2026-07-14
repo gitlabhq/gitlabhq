@@ -6,12 +6,22 @@ import (
 	"testing"
 	"time"
 
+	"github.com/sirupsen/logrus"
+	logrustest "github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
+	"gitlab.com/gitlab-org/labkit/v2/fields"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 )
 
 func TestGoCloudObjectUpload(t *testing.T) {
+	oldLevel := logrus.StandardLogger().Level
+	logrus.StandardLogger().SetLevel(logrus.DebugLevel)
+	defer logrus.StandardLogger().SetLevel(oldLevel)
+
+	hook := logrustest.NewLocal(logrus.StandardLogger())
+	defer hook.Reset()
+
 	mux, _ := test.SetupGoCloudFileBucket(t, "azuretest")
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -40,6 +50,23 @@ func TestGoCloudObjectUpload(t *testing.T) {
 	attr, err := bucket.Attributes(ctx, objectName)
 	require.NoError(t, err)
 	require.Empty(t, attr.ContentType)
+
+	for _, phase := range []string{"new_writer", "copy", "close"} {
+		var found bool
+		for _, entry := range hook.AllEntries() {
+			if entry.Level != logrus.DebugLevel {
+				continue
+			}
+			if entry.Data["phase"] != phase {
+				continue
+			}
+			found = true
+			durationS, ok := entry.Data[fields.DurationS].(float64)
+			require.True(t, ok, "duration_s should be a float64 for phase %q", phase)
+			require.GreaterOrEqual(t, durationS, float64(0))
+		}
+		require.True(t, found, "expected a Debug log entry for phase %q", phase)
+	}
 
 	cancel()
 

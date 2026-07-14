@@ -12,6 +12,7 @@ export default {
     GlLink,
     GlButton,
   },
+  emits: ['delete'],
   data() {
     return {
       visible: false,

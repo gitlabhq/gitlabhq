@@ -49,8 +49,6 @@ class Projects::BadgesController < Projects::ApplicationController
   end
 
   def custom
-    return render_404 unless Feature.enabled?(:custom_project_badges, Feature.current_request)
-
     custom_badge = Gitlab::Ci::Badge::Custom::CustomBadge
       .new(project, opts: {
         key_text: params[:key_text],

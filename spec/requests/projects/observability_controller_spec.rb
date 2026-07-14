@@ -127,7 +127,7 @@ RSpec.describe Projects::ObservabilityController, feature_category: :observabili
         expect(json_response).to include(
           'o11y_url' => 'https://observability.example.com',
           'path' => 'services',
-          'title' => 'Observability|Services',
+          'title' => s_('Observability|Services'),
           'query_params' => {}
         )
         expect(json_response).to have_key('auth_tokens')
@@ -151,11 +151,11 @@ RSpec.describe Projects::ObservabilityController, feature_category: :observabili
       end
 
       {
-        'alerts' => 'Observability|Alerts',
-        'alerts/edit' => 'Observability|Alerts',
-        'dashboard/my-dashboard' => 'Observability|Dashboard',
-        'messaging-queues/kafka/detail' => 'Observability|Messaging queues',
-        'services/my-service/top-level-operations' => 'Observability|Services'
+        'alerts' => s_('Observability|Alerts'),
+        'alerts/edit' => s_('Observability|Alerts'),
+        'dashboard/my-dashboard' => s_('Observability|Dashboard'),
+        'messaging-queues/kafka/detail' => s_('Observability|Messaging queues'),
+        'services/my-service/top-level-operations' => s_('Observability|Services')
       }.each do |sub_path, expected_title|
         it "routes #{sub_path} to the controller and resolves the correct title" do
           path = if sub_path.include?('/')

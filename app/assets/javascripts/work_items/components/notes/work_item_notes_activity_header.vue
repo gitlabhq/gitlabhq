@@ -56,6 +56,7 @@ export default {
       required: false,
     },
   },
+  emits: ['changeFilter', 'changeSort'],
   computed: {
     summarizeTracking() {
       return { label: 'work_item_view_summary', property: this.workItemType };

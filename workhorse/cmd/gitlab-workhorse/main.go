@@ -13,8 +13,12 @@ import (
 	"syscall"
 	"time"
 
+	goredis "github.com/redis/go-redis/v9"
+	"github.com/sirupsen/logrus"
+
 	"gitlab.com/gitlab-org/labkit/fips"
-	"gitlab.com/gitlab-org/labkit/log"
+	"gitlab.com/gitlab-org/labkit/v2/log"
+
 	"gitlab.com/gitlab-org/labkit/monitoring"
 	"gitlab.com/gitlab-org/labkit/tracing"
 
@@ -188,6 +192,10 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	return boot, cfg, nil
 }
 
+// initializePprof starts the profiler HTTP listener. The profiler is only
+// activated by HTTP requests, which can only reach it if a listener is started.
+// With no listener address configured (the default), the profiler is
+// effectively disabled.
 func initializePprof(listenerAddress string, errors chan error) (*http.Server, error) {
 	if listenerAddress == "" {
 		return nil, nil
@@ -253,7 +261,9 @@ func gracefulShutdown(
 		// Wait for the graceful shutdown delay to complete before shutting down the server
 		gracefulShutdownDelay := healthCheckServer.GetGracefulShutdownDelay()
 		if gracefulShutdownDelay > 0 {
-			log.WithField("shutdown_delay_s", gracefulShutdownDelay.Seconds()).Info("Waiting for graceful shutdown delay")
+			slog.With(
+				"shutdown_delay_s", gracefulShutdownDelay.Seconds(),
+			).Info("Waiting for graceful shutdown delay")
 
 			go upgradedConnsManager.Shutdown(gracefulShutdownDelay)
 
@@ -290,44 +300,146 @@ func setupMonitoring(cfg config.Config, finalErrors chan<- error) error {
 	return nil
 }
 
+// setupLoadShedding initializes the load shedding service when it is enabled in
+// the configuration, starting it in the background and returning its shedder.
+// It returns a nil shedder (and no error) when load shedding is not configured.
+func setupLoadShedding(cfg config.Config, accessLogger *logrus.Logger) (*loadshedding.LoadShedder, error) {
+	if cfg.LoadSheddingConfig == nil || !cfg.LoadSheddingConfig.Enabled {
+		return nil, nil
+	}
+
+	cfg.ApplyLoadSheddingDefaults()
+
+	loadSheddingService, shedder, err := loadshedding.NewLoadSheddingService(cfg.LoadSheddingConfig, accessLogger)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create load shedding service: %v", err)
+	}
+
+	// Start load shedding service in background
+	go loadSheddingService.Start(context.Background()) // lint:allow context.Background
+
+	return shedder, nil
+}
+
+// setupRedis configures the Redis client and its key watcher, starting the
+// watcher in the background when a client is available. A nil client is not
+// fatal: the key watcher tolerates it and Workhorse continues without Redis.
+func setupRedis(cfg *config.Config) (*goredis.Client, *redis.KeyWatcher) {
+	slog.Info("Using redis/go-redis")
+
+	rdb, err := redis.Configure(cfg)
+	if err != nil {
+		// #nosec G706 -- Log taint false positive due to old golangci version
+		slog.Error("unable to configure redis client", log.Error(err))
+	}
+
+	redisKeyWatcher := redis.NewKeyWatcher(rdb)
+	if rdb != nil {
+		go redisKeyWatcher.Process()
+	}
+
+	return rdb, redisKeyWatcher
+}
+
+// serveAndWait wires up the upstream handler, starts the HTTP server on every
+// listener, and blocks until either a listener fails or a shutdown signal
+// arrives, in which case it performs a graceful shutdown. The shutdown channel
+// and upgraded-connections manager created here are shared between the upstream
+// and the graceful shutdown.
+func serveAndWait(cfg config.Config, accessLogger *logrus.Logger, redisKeyWatcher *redis.KeyWatcher, rdb *goredis.Client, healthCheckServer *healthcheck.Server, loadShedder *loadshedding.LoadShedder, listeners []net.Listener, finalErrors chan error, done chan os.Signal) error {
+	shutdownCh := make(chan struct{})
+	upgradedConnsManager := &upstream.UpgradedConnsManager{}
+	deps := upstream.Dependencies{
+		AccessLogger:         accessLogger,
+		WatchKeyHandler:      redisKeyWatcher.WatchKey,
+		Rdb:                  rdb,
+		HealthCheckServer:    healthCheckServer,
+		ShutdownChan:         shutdownCh,
+		UpgradedConnsManager: upgradedConnsManager,
+		LoadShedder:          loadShedder,
+	}
+
+	srv := startServer(wrapRaven(upstream.NewUpstream(cfg, deps)), listeners, finalErrors)
+
+	select {
+	case err := <-finalErrors:
+		return err
+	case sig := <-done:
+		slog.With(
+			"shutdown_timeout_s", cfg.ShutdownTimeout.Duration.Seconds(),
+			"signal", sig.String(),
+		).Info("shutdown initiated")
+		return gracefulShutdown(srv, cfg, redisKeyWatcher, healthCheckServer, shutdownCh, upgradedConnsManager)
+	}
+}
+
+// startServer builds the HTTP server and starts serving on every listener,
+// funneling serve errors into finalErrors. It returns the server so the caller
+// can shut it down.
+func startServer(handler http.Handler, listeners []net.Listener, finalErrors chan<- error) *http.Server {
+	srv := &http.Server{
+		Handler: handler,
+		// ReadHeaderTimeout bounds the time spent reading request headers to
+		// mitigate Slowloris-style attacks (gosec G112). It does not limit the
+		// time to read the request body, so large uploads are unaffected.
+		ReadHeaderTimeout: 1 * time.Minute,
+	}
+
+	for _, l := range listeners {
+		go func(l net.Listener) { finalErrors <- srv.Serve(l) }(l)
+	}
+
+	return srv
+}
+
+// announceStartup initializes tracing, logs the running version, and runs the
+// FIPS self-check.
+func announceStartup() {
+	tracing.Initialize(tracing.WithServiceName("gitlab-workhorse"))
+	slog.With(
+		"version", Version,
+		"build_time", BuildTime,
+	).Info("Starting")
+	fips.Check()
+}
+
+// unlinkUnixSocket removes a stale Unix socket before binding. Good
+// housekeeping so a previous unclean shutdown does not block the new listener.
+// It is a no-op for non-unix networks.
+func unlinkUnixSocket(network, addr string) error {
+	if network != "unix" {
+		return nil
+	}
+	if err := os.Remove(addr); err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	return nil
+}
+
+// notifyShutdownSignals returns a channel that receives SIGINT and SIGTERM.
+func notifyShutdownSignals() chan os.Signal {
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
+	return done
+}
+
 // run() lets us use normal Go error handling; there is no log.Fatal in run().
 func run(boot bootConfig, cfg config.Config) error {
-	// Set global labkit v1 logrus logger
-	// NOTE: To be removed after all log call sites are modified to use
-	//	 labkit v2 logger
-	v1LogFileCloser, err := configureLoggingV1(boot.logFile, boot.logFormat)
+	logCloser, err := setupLogging(boot.logFile, boot.logFormat)
 	if err != nil {
 		return err
 	}
-	defer v1LogFileCloser.Close() //nolint:errcheck
+	defer logCloser.Close() //nolint:errcheck
 
-	// Configure labkit v2 slog logger
-	v2Logger, v2LogFileCloser, err := configureLoggingV2(boot.logFile, boot.logFormat)
-	if err != nil {
+	announceStartup()
+
+	if err = unlinkUnixSocket(boot.listenNetwork, boot.listenAddr); err != nil {
 		return err
-	}
-	defer v2LogFileCloser.Close() //nolint:errcheck
-	slog.SetDefault(v2Logger)
-
-	tracing.Initialize(tracing.WithServiceName("gitlab-workhorse"))
-	log.WithField("version", Version).WithField("build_time", BuildTime).Print("Starting")
-	fips.Check()
-
-	// Good housekeeping for Unix sockets: unlink before binding
-	if boot.listenNetwork == "unix" {
-		if err = os.Remove(boot.listenAddr); err != nil && !os.IsNotExist(err) {
-			return err
-		}
 	}
 
 	finalErrors := make(chan error)
 
-	// The profiler will only be activated by HTTP requests. HTTP
-	// requests can only reach the profiler if we start a listener. So by
-	// having no profiler HTTP listener by default, the profiler is
-	// effectively disabled by default.
-	_, err = initializePprof(boot.pprofListenAddr, finalErrors)
-	if err != nil {
+	if _, err = initializePprof(boot.pprofListenAddr, finalErrors); err != nil {
 		return err
 	}
 
@@ -337,19 +449,7 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	secret.SetPath(boot.secretPath)
 
-	log.Info("Using redis/go-redis")
-
-	rdb, err := redis.Configure(&cfg)
-	if err != nil {
-		log.WithError(err).Error("unable to configure redis client")
-	}
-	redisKeyWatcher := redis.NewKeyWatcher(rdb)
-
-	if rdb != nil {
-		go redisKeyWatcher.Process()
-	}
-
-	watchKeyFn := redisKeyWatcher.WatchKey
+	rdb, redisKeyWatcher := setupRedis(&cfg)
 
 	if err = cfg.RegisterGoCloudURLOpeners(); err != nil {
 		return fmt.Errorf("register cloud credentials: %v", err)
@@ -372,53 +472,17 @@ func run(boot bootConfig, cfg config.Config) error {
 		defer healthCancel()
 	}
 
-	// Initialize load shedding service if configured
-	var loadShedder *loadshedding.LoadShedder
-	if cfg.LoadSheddingConfig != nil && cfg.LoadSheddingConfig.Enabled {
-		cfg.ApplyLoadSheddingDefaults()
-
-		loadSheddingService, shedder, loadSheddingErr := loadshedding.NewLoadSheddingService(cfg.LoadSheddingConfig, accessLogger)
-		if loadSheddingErr != nil {
-			return fmt.Errorf("failed to create load shedding service: %v", loadSheddingErr)
-		}
-
-		loadShedder = shedder
-
-		// Start load shedding service in background
-		go loadSheddingService.Start(context.Background()) // lint:allow context.Background
+	loadShedder, err := setupLoadShedding(cfg, accessLogger)
+	if err != nil {
+		return err
 	}
 
-	done := make(chan os.Signal, 1)
-	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
+	done := notifyShutdownSignals()
 
 	listeners, err := buildListeners(boot, cfg)
 	if err != nil {
 		return err
 	}
 
-	shutdownCh := make(chan struct{})
-	upgradedConnsManager := &upstream.UpgradedConnsManager{}
-	up := upstream.NewUpstream(cfg, upstream.Dependencies{
-		AccessLogger:         accessLogger,
-		WatchKeyHandler:      watchKeyFn,
-		Rdb:                  rdb,
-		HealthCheckServer:    healthCheckServer,
-		ShutdownChan:         shutdownCh,
-		UpgradedConnsManager: upgradedConnsManager,
-		LoadShedder:          loadShedder,
-	})
-
-	srv := &http.Server{Handler: wrapRaven(up)}
-
-	for _, l := range listeners {
-		go func(l net.Listener) { finalErrors <- srv.Serve(l) }(l)
-	}
-
-	select {
-	case err := <-finalErrors:
-		return err
-	case sig := <-done:
-		log.WithFields(log.Fields{"shutdown_timeout_s": cfg.ShutdownTimeout.Duration.Seconds(), "signal": sig.String()}).Infof("shutdown initiated")
-		return gracefulShutdown(srv, cfg, redisKeyWatcher, healthCheckServer, shutdownCh, upgradedConnsManager)
-	}
+	return serveAndWait(cfg, accessLogger, redisKeyWatcher, rdb, healthCheckServer, loadShedder, listeners, finalErrors, done)
 }

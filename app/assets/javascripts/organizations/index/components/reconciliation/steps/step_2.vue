@@ -155,6 +155,7 @@ export default {
                 v-for="group in organization.groups.nodes"
                 :key="group.id"
                 :group="group"
+                :organization-visibility="organization.visibility"
                 class="gl-select-none hover:gl-cursor-grab hover:gl-shadow-md"
               />
             </draggable>

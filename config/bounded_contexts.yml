@@ -167,6 +167,11 @@ domains:
       - deployment_management
       - feature_flags
 
+  Experiments:
+    description: Experiment framework and forced assignment capabilities for A/B testing
+    feature_categories:
+      - acquisition
+
   Geo:
     description:
     feature_categories:

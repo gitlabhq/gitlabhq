@@ -50,3 +50,7 @@ When you customize the Agent Platform, apply the following best practices:
   [MCP server configuration](../../gitlab_duo/model_context_protocol/mcp_server.md) file.
 - Document your choices in comments to explain why certain instructions exist.
 - Protect customization files with [Code Owners](../../project/codeowners/_index.md) to manage changes.
+
+## Related topics
+
+- [Hooks for GitLab Duo CLI](../../gitlab_duo_cli/_index.md#hooks)

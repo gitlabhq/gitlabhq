@@ -24,6 +24,7 @@ import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { querySelectionClosest } from '~/lib/utils/selection';
 import * as constants from '../constants';
+import { shouldRenderAsDuoSystemNote } from '../utils';
 import eventHub from '../event_hub';
 import noteQuery from '../graphql/note.query.graphql';
 import CommentForm from './comment_form.vue';
@@ -367,8 +368,8 @@ export default {
       const autoSaveKey = getAutoSaveKeyFromDiscussion(discussion);
       return Boolean(getDraft(autoSaveKey));
     },
-    isDuoCodeReviewBotAuthor(discussion) {
-      return discussion.notes[0].author?.user_type === 'duo_code_review_bot';
+    isDuoSystemNoteDiscussion(discussion) {
+      return shouldRenderAsDuoSystemNote(discussion.notes[0]);
     },
   },
   systemNote: constants.SYSTEM_NOTE,
@@ -415,7 +416,7 @@ export default {
             <template v-else-if="discussionIsIndividualNoteAndNotConverted(discussion)">
               <template v-if="discussion.notes[0].system">
                 <duo-code-review-system-note
-                  v-if="isDuoCodeReviewBotAuthor(discussion)"
+                  v-if="isDuoSystemNoteDiscussion(discussion)"
                   :key="discussion.id"
                   :note="discussion.notes[0]"
                 />

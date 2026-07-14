@@ -15,6 +15,7 @@ export default {
       type: String,
     },
   },
+  emits: ['fetch-error'],
   data() {
     return {
       reference: '',

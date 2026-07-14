@@ -1,0 +1,13 @@
+---
+table_name: dependency_firewall_activity_stats
+classes:
+  - Security::DependencyFirewallActivityStat
+feature_categories:
+  - dependency_firewall
+description: Hourly per-rule, per-project counts of dependency firewall block/warn/allow enforcement activity.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241785
+milestone: '19.2'
+gitlab_schema: gitlab_main_org
+table_size: small
+sharding_key:
+  project_id: projects

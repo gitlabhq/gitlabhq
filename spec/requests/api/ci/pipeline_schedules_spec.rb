@@ -569,6 +569,18 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           expect(json_response['message']).to have_key('ref')
         end
       end
+
+      it 'masks input values when logging' do
+        params_with_inputs = params.merge(
+          inputs: [{ name: 'SECRET_INPUT', value: 'super-secret' }]
+        )
+
+        expect(::API::API::LOGGER).to receive(:info).with(
+          include(params: include('inputs' => include(include('value' => '[FILTERED]'))))
+        )
+
+        post api(url, developer), params: params_with_inputs
+      end
     end
 
     context 'authenticated user with invalid permissions' do
@@ -684,6 +696,14 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to have_key('ref')
         end
+      end
+
+      it 'masks input values when logging' do
+        expect(::API::API::LOGGER).to receive(:info).with(
+          include(params: include('inputs' => include(include('value' => '[FILTERED]'))))
+        )
+
+        put api(url, developer), params: { inputs: [{ name: 'SECRET_INPUT', value: 'super-secret' }] }
       end
     end
 

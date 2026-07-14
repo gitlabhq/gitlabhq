@@ -6,6 +6,11 @@ RSpec.describe CloudSeed::GoogleCloud::ServiceAccountsService, feature_category:
   let(:service) { described_class.new(project) }
 
   describe 'find_for_project' do
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:project, freeze: false) { create(:project) }
 
     context 'when a project does not have GCP service account vars' do
@@ -39,18 +44,18 @@ RSpec.describe CloudSeed::GoogleCloud::ServiceAccountsService, feature_category:
 
           expect(list.first[:ref]).to eq('*')
           expect(list.first[:gcp_project]).to eq('prj1')
-          expect(list.first[:service_account_exists]).to eq(false)
-          expect(list.first[:service_account_key_exists]).to eq(true)
+          expect(list.first[:service_account_exists]).to be(false)
+          expect(list.first[:service_account_key_exists]).to be(true)
 
           expect(list.second[:ref]).to eq('staging')
           expect(list.second[:gcp_project]).to eq('prj2')
-          expect(list.second[:service_account_exists]).to eq(true)
-          expect(list.second[:service_account_key_exists]).to eq(false)
+          expect(list.second[:service_account_exists]).to be(true)
+          expect(list.second[:service_account_key_exists]).to be(false)
 
           expect(list.third[:ref]).to eq('production')
           expect(list.third[:gcp_project]).to eq('prj3')
-          expect(list.third[:service_account_exists]).to eq(true)
-          expect(list.third[:service_account_key_exists]).to eq(true)
+          expect(list.third[:service_account_exists]).to be(true)
+          expect(list.third[:service_account_key_exists]).to be(true)
         end
       end
     end
@@ -70,13 +75,13 @@ RSpec.describe CloudSeed::GoogleCloud::ServiceAccountsService, feature_category:
 
         expect(list.first[:ref]).to eq('env_1')
         expect(list.first[:gcp_project]).to eq('gcp_prj_id_1')
-        expect(list.first[:service_account_exists]).to eq(true)
-        expect(list.first[:service_account_key_exists]).to eq(true)
+        expect(list.first[:service_account_exists]).to be(true)
+        expect(list.first[:service_account_key_exists]).to be(true)
 
         expect(list.second[:ref]).to eq('env_2')
         expect(list.second[:gcp_project]).to eq('gcp_prj_id_2')
-        expect(list.second[:service_account_exists]).to eq(true)
-        expect(list.second[:service_account_key_exists]).to eq(true)
+        expect(list.second[:service_account_exists]).to be(true)
+        expect(list.second[:service_account_key_exists]).to be(true)
       end
     end
 
@@ -91,13 +96,13 @@ RSpec.describe CloudSeed::GoogleCloud::ServiceAccountsService, feature_category:
         # asserting that the first service account is replaced
         expect(list.first[:ref]).to eq('env_1')
         expect(list.first[:gcp_project]).to eq('new_project')
-        expect(list.first[:service_account_exists]).to eq(true)
-        expect(list.first[:service_account_key_exists]).to eq(true)
+        expect(list.first[:service_account_exists]).to be(true)
+        expect(list.first[:service_account_key_exists]).to be(true)
 
         expect(list.second[:ref]).to eq('env_2')
         expect(list.second[:gcp_project]).to eq('gcp_prj_id_2')
-        expect(list.second[:service_account_exists]).to eq(true)
-        expect(list.second[:service_account_key_exists]).to eq(true)
+        expect(list.second[:service_account_exists]).to be(true)
+        expect(list.second[:service_account_key_exists]).to be(true)
       end
     end
 
@@ -105,12 +110,12 @@ RSpec.describe CloudSeed::GoogleCloud::ServiceAccountsService, feature_category:
       service.add_for_project('env_1', 'gcp_prj_id_1', 'srv_acc_1', 'srv_acc_key_1', true)
       service.add_for_project('env_2', 'gcp_prj_id_2', 'srv_acc_2', 'srv_acc_key_2', false)
 
-      expect(project.variables[0].protected).to eq(true)
-      expect(project.variables[1].protected).to eq(true)
-      expect(project.variables[2].protected).to eq(true)
-      expect(project.variables[3].protected).to eq(false)
-      expect(project.variables[4].protected).to eq(false)
-      expect(project.variables[5].protected).to eq(false)
+      expect(project.variables[0].protected).to be(true)
+      expect(project.variables[1].protected).to be(true)
+      expect(project.variables[2].protected).to be(true)
+      expect(project.variables[3].protected).to be(false)
+      expect(project.variables[4].protected).to be(false)
+      expect(project.variables[5].protected).to be(false)
     end
   end
 end

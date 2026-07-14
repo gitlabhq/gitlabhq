@@ -5,6 +5,7 @@ import searchTodosProjectsQuery from '../queries/search_todos_projects.query.gra
 import AsyncToken from './async_token.vue';
 
 export default {
+  name: 'ProjectToken',
   i18n: {
     suggestionsFetchError: __('There was a problem fetching projects.'),
   },

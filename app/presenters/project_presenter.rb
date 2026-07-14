@@ -283,14 +283,17 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if can_current_user_push_to_default_branch? && readme_path.nil?
       icon = statistic_icon('plus', 'info')
       label = icon + _('Add README')
-      AnchorData.new(false, label, empty_repo? ? add_readme_ide_path : add_readme_path)
+      AnchorData.new(false, label, empty_repo? ? add_readme_ide_path : add_readme_path, nil, nil, nil,
+        { event_tracking: 'click_readme_on_project_overview', event_label: 'add' })
     elsif readme_path
       AnchorData.new(
         false,
         statistic_icon('doc-text', 'subtle') + _('README'),
         default_view != 'readme' ? readme_path : '#readme',
         'btn-default',
-        'doc-text'
+        'doc-text',
+        nil,
+        { event_tracking: 'click_readme_on_project_overview', event_label: 'view' }
       )
     end
   end
@@ -302,14 +305,21 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       AnchorData.new(
         false,
         label,
-        empty_repo? ? add_changelog_ide_path : add_changelog_path
+        empty_repo? ? add_changelog_ide_path : add_changelog_path,
+        nil,
+        nil,
+        nil,
+        { event_tracking: 'click_changelog_on_project_overview', event_label: 'add' }
       )
     elsif repository.changelog.present?
       AnchorData.new(
         false,
         statistic_icon('doc-text', 'subtle') + _('CHANGELOG'),
         changelog_path,
-        'btn-default'
+        'btn-default',
+        nil,
+        nil,
+        { event_tracking: 'click_changelog_on_project_overview', event_label: 'view' }
       )
     end
   end
@@ -324,7 +334,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         license_path,
         'btn-default',
         nil,
-        'license'
+        'license',
+        { event_tracking: 'click_license_on_project_overview', event_label: 'view' }
       )
     elsif can_current_user_push_to_default_branch?
       icon = statistic_icon('plus', 'info')
@@ -332,7 +343,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       AnchorData.new(
         false,
         content_tag(:span, label, class: 'add-license-link gl-flex'),
-        empty_repo? ? add_license_ide_path : add_license_path
+        empty_repo? ? add_license_ide_path : add_license_path,
+        nil,
+        nil,
+        nil,
+        { event_tracking: 'click_license_on_project_overview', event_label: 'add' }
       )
     end
   end
@@ -344,14 +359,21 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       AnchorData.new(
         false,
         label,
-        empty_repo? ? add_contribution_guide_ide_path : add_contribution_guide_path
+        empty_repo? ? add_contribution_guide_ide_path : add_contribution_guide_path,
+        nil,
+        nil,
+        nil,
+        { event_tracking: 'click_contributing_on_project_overview', event_label: 'add' }
       )
     elsif repository.contribution_guide.present?
       AnchorData.new(
         false,
         statistic_icon('doc-text', 'subtle') + _('CONTRIBUTING'),
         contribution_guide_path,
-        'btn-default'
+        'btn-default',
+        nil,
+        nil,
+        { event_tracking: 'click_contributing_on_project_overview', event_label: 'view' }
       )
     end
   end
@@ -367,13 +389,20 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
           false,
           label,
           project_settings_ci_cd_path(project, anchor: 'autodevops-settings'),
-          'btn-default'
+          'btn-default',
+          nil,
+          nil,
+          { event_tracking: 'click_auto_devops_on_project_overview', event_label: 'view' }
         )
       else
         AnchorData.new(
           false,
           content_tag(:span, statistic_icon('plus', 'info') + _('Enable Auto DevOps')),
-          project_settings_ci_cd_path(project, anchor: 'autodevops-settings')
+          project_settings_ci_cd_path(project, anchor: 'autodevops-settings'),
+          nil,
+          nil,
+          nil,
+          { event_tracking: 'click_auto_devops_on_project_overview', event_label: 'add' }
         )
       end
     elsif auto_devops_enabled?
@@ -401,11 +430,13 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def kubernetes_cluster_anchor_data
     if can_instantiate_cluster?
       if clusters.empty?
-        AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + _('Add Kubernetes cluster')), project_clusters_path(project))
+        AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + _('Add Kubernetes cluster')), project_clusters_path(project), nil, nil, nil,
+          { event_tracking: 'click_kubernetes_cluster_on_project_overview', event_label: 'add' })
       else
         cluster_link = clusters.count == 1 ? project_cluster_path(project, clusters.first) : project_clusters_path(project)
 
-        AnchorData.new(false, _('Kubernetes'), cluster_link, 'btn-default')
+        AnchorData.new(false, _('Kubernetes'), cluster_link, 'btn-default', nil, nil,
+          { event_tracking: 'click_kubernetes_cluster_on_project_overview', event_label: 'view' })
       end
     end
   end
@@ -422,9 +453,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         { title: _('CI/CD is disabled for this project') }
       )
     elsif cicd_missing?
-      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + _('Set up CI/CD')), project_ci_pipeline_editor_path(project))
+      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + _('Set up CI/CD')), project_ci_pipeline_editor_path(project), nil, nil, nil,
+        { event_tracking: 'click_cicd_on_project_overview', event_label: 'add' })
     elsif project.has_ci_config_file?
-      AnchorData.new(false, statistic_icon('rocket', 'subtle') + _('CI/CD configuration'), project_ci_pipeline_editor_path(project), 'btn-default')
+      AnchorData.new(false, statistic_icon('rocket', 'subtle') + _('CI/CD configuration'), project_ci_pipeline_editor_path(project), 'btn-default', nil, nil,
+        { event_tracking: 'click_cicd_on_project_overview', event_label: 'view' })
     end
   end
 
@@ -432,11 +465,13 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     return unless project.wiki_enabled? && can_read_wiki?
 
     if project.wiki.exists?
-      AnchorData.new(false, statistic_icon('book', 'subtle') + _('Wiki'), project_wiki_index_path, 'btn-default', nil, nil)
+      AnchorData.new(false, statistic_icon('book', 'subtle') + _('Wiki'), project_wiki_index_path, 'btn-default', nil, nil,
+        { event_tracking: 'click_wiki_on_project_overview', event_label: 'view' })
     elsif can_create_wiki?
       icon = statistic_icon('plus', 'info')
       label = icon + _('Add Wiki')
-      AnchorData.new(false, label, project_create_wiki_path, nil, nil, nil)
+      AnchorData.new(false, label, project_create_wiki_path, nil, nil, nil,
+        { event_tracking: 'click_wiki_on_project_overview', event_label: 'add' })
     end
   end
 
@@ -480,16 +515,19 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     return unless project.pages_deployed? && can?(current_user, :read_pages_content, project)
 
     pages_url = build_pages_url(project)
-    AnchorData.new(false, statistic_icon('external-link', 'subtle') + _('GitLab Pages'), pages_url, 'btn-default', nil)
+    AnchorData.new(false, statistic_icon('external-link', 'subtle') + _('GitLab Pages'), pages_url, 'btn-default', nil,
+      nil, { event_tracking: 'click_pages_on_project_overview' })
   end
 
   def observability_anchor_data
     return unless project.group.present? && can_read_observability? && observability_feature_enabled?
 
     if observability_settings.present?
-      AnchorData.new(false, statistic_icon('status-health', 'subtle') + s_('Observability|Observability configuration'), group_observability_setup_path(project.group), 'btn-default')
+      AnchorData.new(false, statistic_icon('status-health', 'subtle') + s_('Observability|Observability configuration'), group_observability_setup_path(project.group), 'btn-default', nil, nil,
+        { event_tracking: 'click_observability_on_project_overview', event_label: 'view' })
     else
-      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + s_('Observability|Enable Observability')), group_observability_setup_path(project.group), nil, nil, nil)
+      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + s_('Observability|Enable Observability')), group_observability_setup_path(project.group), nil, nil, nil,
+        { event_tracking: 'click_observability_on_project_overview', event_label: 'add' })
     end
   end
 
@@ -498,7 +536,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def integrations_anchor_data
     return unless can?(current_user, :admin_project, project)
 
-    AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + _('Configure Integrations')), project_settings_integrations_path(project), nil, nil, nil)
+    AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + _('Configure Integrations')), project_settings_integrations_path(project), nil, nil, nil,
+      { event_tracking: 'click_integrations_on_project_overview' })
   end
 
   def cicd_enabled?

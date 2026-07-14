@@ -13,8 +13,8 @@ module Mutations
       authorize :read_work_item
       authorize_granular_token permissions: :update_work_item,
         boundaries: [
-          { boundary_argument: :id, boundary_type: :project },
-          { boundary_argument: :id, boundary_type: :group }
+          { boundary_argument: :id, boundary: :resource_parent, boundary_type: :project },
+          { boundary_argument: :id, boundary: :resource_parent, boundary_type: :group }
         ]
 
       def self.authorization_scopes
@@ -45,6 +45,18 @@ module Mutations
         ::Types::WorkItems::Widgets::LabelsUpdateInputType,
         required: false,
         description: 'Input for labels widget.'
+      argument :move_after_id,
+        ::Types::GlobalIDType[::WorkItem],
+        required: false,
+        experiment: { milestone: '19.2' },
+        description: 'Global ID of a work item that should be placed after the work item.',
+        prepare: ->(id, _ctx) { GitlabSchema.parse_gid(id)&.model_id }
+      argument :move_before_id,
+        ::Types::GlobalIDType[::WorkItem],
+        required: false,
+        experiment: { milestone: '19.2' },
+        description: 'Global ID of a work item that should be placed before the work item.',
+        prepare: ->(id, _ctx) { GitlabSchema.parse_gid(id)&.model_id }
       argument :notes_widget,
         ::Types::WorkItems::Widgets::NotesInputType,
         required: false,
@@ -84,15 +96,22 @@ module Mutations
 
         work_item = authorized_find!(id: id)
 
+        move_between_ids = build_move_between_ids(attributes)
+
         widget_params = extract_widget_params!(work_item.work_item_type, attributes, work_item.resource_parent)
 
-        # Only checks permissions for base attributes because widgets define their own permissions independently
-        raise_resource_not_available_error! unless attributes.empty? || can_update?(work_item)
+        # Treat reordering as a base attribute so it is covered by the permission check below.
+        attributes[:move_between_ids] = move_between_ids if move_between_ids
+
+        # Only checks permissions for base attributes because widgets define their own permissions independently.
+        raise_resource_not_available_error! if attributes.present? && !can_update?(work_item)
+
+        params = attributes.merge(scope_validator: context[:scope_validator])
 
         update_result = ::WorkItems::UpdateService.new(
           container: work_item.resource_parent,
           current_user: current_user,
-          params: attributes.merge(scope_validator: context[:scope_validator]),
+          params: params,
           widget_params: widget_params,
           perform_spam_check: true
         ).execute(work_item)
@@ -106,6 +125,13 @@ module Mutations
       end
 
       private
+
+      def build_move_between_ids(attributes)
+        Gitlab::RelativePositioning.parse_move_between_ids(
+          attributes.delete(:move_before_id),
+          attributes.delete(:move_after_id)
+        )
+      end
 
       def can_update?(work_item)
         current_user.can?(:update_work_item, work_item)

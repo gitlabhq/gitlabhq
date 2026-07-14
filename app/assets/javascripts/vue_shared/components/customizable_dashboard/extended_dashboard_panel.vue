@@ -76,6 +76,11 @@ export default {
       required: false,
       default: '',
     },
+    titleIcon: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -95,6 +100,9 @@ export default {
       }
 
       return '';
+    },
+    displayedTitleIcon() {
+      return this.showAlertState ? this.alertIcon : this.titleIcon;
     },
     showAlertPopover() {
       return this.showAlertState && !this.dropdownOpen;
@@ -126,7 +134,7 @@ export default {
     :title="title"
     :subtitle="subtitle"
     :title-icon-class="alertIconClasses"
-    :title-icon="alertIcon"
+    :title-icon="displayedTitleIcon"
     :title-popover="tooltip"
     :loading="loading"
     :loading-delayed="loadingDelayed"

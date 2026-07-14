@@ -38,6 +38,7 @@ function parseTimelineData(timelineData) {
 }
 
 export default {
+  name: 'TimelineChart',
   components: {
     GlChart,
   },

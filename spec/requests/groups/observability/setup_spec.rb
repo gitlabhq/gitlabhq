@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe "Groups::Observability::Setup", feature_category: :observability do
   let_it_be(:group) { create(:group, :public) }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before_all do
     group.add_developer(user)

@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe ErrorTracking::SentryClient do
+RSpec.describe ErrorTracking::SentryClient, feature_category: :observability do
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
   let(:token) { 'test-token' }
 

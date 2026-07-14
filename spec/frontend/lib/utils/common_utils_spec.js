@@ -544,6 +544,27 @@ describe('common_utils', () => {
     });
   });
 
+  describe('spriteIconElement', () => {
+    beforeEach(() => {
+      window.gon.sprite_icons = 'icons.svg';
+    });
+
+    it('returns an aria-hidden svg element referencing the linked icon', () => {
+      const svg = commonUtils.spriteIconElement('test');
+
+      expect(svg.tagName).toBe('svg');
+      expect(svg.getAttribute('aria-hidden')).toBe('true');
+      expect(svg.hasAttribute('class')).toBe(false);
+      expect(svg.querySelector('use').getAttribute('xlink:href')).toBe('icons.svg#test');
+    });
+
+    it('sets the svg className when passed', () => {
+      const svg = commonUtils.spriteIconElement('test', 'first-icon-class second-icon-class');
+
+      expect(svg.getAttribute('class')).toBe('first-icon-class second-icon-class');
+    });
+  });
+
   describe('convertObjectProps*', () => {
     const mockConversionFunction = (prop) => `${prop}_converted`;
     const isEmptyObject = (obj) =>

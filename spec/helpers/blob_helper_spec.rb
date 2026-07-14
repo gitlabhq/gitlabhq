@@ -607,6 +607,18 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         end
       end
 
+      context 'when last_commit_sha is nil' do
+        before do
+          assign(:last_commit_sha, nil)
+        end
+
+        it 'includes last_commit_sha as nil without raising an error' do
+          expect(helper.edit_blob_app_data(project, id, blob, ref, "update")).to include(
+            last_commit_sha: nil
+          )
+        end
+      end
+
       it 'returns data related to create action' do
         expect(helper.edit_blob_app_data(project, id, blob, ref, "create")).to include({
           action: 'create',

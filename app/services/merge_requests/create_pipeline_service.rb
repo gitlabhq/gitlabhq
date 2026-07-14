@@ -18,11 +18,10 @@ module MergeRequests
       # successful pipeline should not be mergable at this point.
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
 
-      worker_params = params.merge(pipeline_creation_request: pipeline_creation_request)
-
-      if Feature.enabled?(:defer_mr_pipeline_creation_request_completion, merge_request.target_project)
-        worker_params = worker_params.merge(defer_request_completion: true)
-      end
+      worker_params = params.merge(
+        pipeline_creation_request: pipeline_creation_request,
+        defer_request_completion: true
+      )
 
       ::MergeRequests::CreatePipelineWorker.perform_async(
         project.id, current_user.id, merge_request.id,

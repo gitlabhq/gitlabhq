@@ -8,12 +8,12 @@ RSpec.describe Ci::Queue::PendingBuildsStrategy, feature_category: :continuous_i
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
-  let!(:build_1) { create(:ci_build, :created, pipeline: pipeline) }
-  let!(:build_2) { create(:ci_build, :created, pipeline: pipeline) }
-  let!(:build_3) { create(:ci_build, :created, pipeline: pipeline) }
-  let!(:pending_build_1) { create(:ci_pending_build, build: build_2, project: project) }
-  let!(:pending_build_2) { create(:ci_pending_build, build: build_3, project: project) }
-  let!(:pending_build_3) { create(:ci_pending_build, build: build_1, project: project) }
+  let_it_be(:build_1) { create(:ci_build, :created, pipeline: pipeline) }
+  let_it_be(:build_2) { create(:ci_build, :created, pipeline: pipeline) }
+  let_it_be(:build_3) { create(:ci_build, :created, pipeline: pipeline) }
+  let_it_be(:pending_build_1) { create(:ci_pending_build, build: build_2, project: project) }
+  let_it_be(:pending_build_2) { create(:ci_pending_build, build: build_3, project: project) }
+  let_it_be(:pending_build_3) { create(:ci_pending_build, build: build_1, project: project) }
 
   describe 'builds_for_group_runner' do
     it 'returns builds ordered by build ID' do

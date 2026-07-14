@@ -2,6 +2,7 @@
 import { GlFormCheckbox } from '@gitlab/ui';
 
 export default {
+  name: 'BoardConfigurationOptions',
   components: {
     GlFormCheckbox,
   },
@@ -19,6 +20,7 @@ export default {
       required: true,
     },
   },
+  emits: ['update:hideBacklogList', 'update:hideClosedList'],
 };
 </script>
 

@@ -476,6 +476,81 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       end
     end
 
+    context 'with development widget input' do
+      let_it_be(:mr_project) { create(:project, :repository, group: group) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: mr_project) }
+
+      let(:fields) do
+        <<~FIELDS
+        workItem {
+          id
+        }
+        errors
+        FIELDS
+      end
+
+      let(:input) do
+        {
+          title: 'item with mr',
+          workItemTypeId: work_item_type_gid.to_s,
+          developmentWidget: { 'mergeRequestIds' => [merge_request.to_global_id.to_s], 'linkType' => 'RELATED' }
+        }
+      end
+
+      it 'creates the work item and links it to the merge request', :aggregate_failures do
+        expect { post_graphql_mutation(mutation, current_user: current_user) }
+          .to change { WorkItem.count }.by(1)
+          .and change { merge_request.merge_request_issues.count }.by(1)
+
+        relation = merge_request.merge_request_issues.find_by(issue_id: WorkItem.last.id)
+        expect(response).to have_gitlab_http_status(:success)
+        expect(relation.link_type).to eq('related')
+        expect(relation.from_mr_description).to be(false)
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(explicit_mr_work_item_relations: false)
+        end
+
+        it 'creates the work item without linking the merge request' do
+          expect { post_graphql_mutation(mutation, current_user: current_user) }
+            .to change { WorkItem.count }.by(1)
+            .and not_change { merge_request.merge_request_issues.count }
+        end
+      end
+
+      context 'when number of merge requests exceeds maximum allowed' do
+        before do
+          stub_const('Types::WorkItems::Widgets::DevelopmentCreateInputType::MAX_MERGE_REQUESTS', 0)
+        end
+
+        it_behaves_like 'a mutation that returns top-level errors',
+          errors: [Types::WorkItems::Widgets::DevelopmentCreateInputType::ERROR_MESSAGE]
+      end
+
+      context 'when the user cannot manage relations on the merge request' do
+        let_it_be(:unmanageable_mr) { create(:merge_request, source_project: create(:project, :repository, :private)) }
+
+        let(:input) do
+          {
+            title: 'item with mr',
+            workItemTypeId: work_item_type_gid.to_s,
+            developmentWidget: { 'mergeRequestIds' => [unmanageable_mr.to_global_id.to_s], 'linkType' => 'RELATED' }
+          }
+        end
+
+        it 'aborts: does not create the work item and returns an error', :aggregate_failures do
+          expect { post_graphql_mutation(mutation, current_user: current_user) }
+            .to not_change { WorkItem.count }
+            .and not_change { unmanageable_mr.merge_request_issues.count }
+
+          expect(mutation_response['workItem']).to be_nil
+          expect(mutation_response['errors']).to be_present
+        end
+      end
+    end
+
     context 'with due and start date widget input', :freeze_time do
       let(:start_date) { Date.today }
       let(:due_date) { 1.week.from_now.to_date }

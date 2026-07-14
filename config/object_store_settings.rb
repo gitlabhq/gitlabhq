@@ -29,7 +29,7 @@ class ObjectStoreSettings
 
   # Legacy parser
   def self.legacy_parse(object_store, object_store_type)
-    object_store ||= GitlabSettings::Options.build({})
+    object_store ||= Gitlab::Configs.build_options({})
     object_store['enabled'] = false if object_store['enabled'].nil?
     object_store['remote_directory'], object_store['bucket_prefix'] = split_bucket_prefix(
       object_store['remote_directory']
@@ -186,7 +186,7 @@ class ObjectStoreSettings
       )
       target_config['consolidated_settings'] = true
       section['object_store'] = target_config
-      # GitlabSettings::Options internally stores data as a Hash, but it also
+      # Gitlab::Configs::Options internally stores data as a Hash, but it also
       # creates a Settings object for every key. To avoid confusion, we should
       # update both so that Settings.artifacts and Settings['artifacts'] return
       # the same result.

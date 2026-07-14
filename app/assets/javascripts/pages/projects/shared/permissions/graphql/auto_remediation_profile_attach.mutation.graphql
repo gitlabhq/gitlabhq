@@ -1,0 +1,8 @@
+# This is a stub mutation for CE. The actual implementation is in EE.
+# @feature_category: software_composition_analysis
+mutation AutoRemediationProfileAttachCE($input: SecurityScanProfileAttachInput!) {
+  securityScanProfileAttach(input: $input) {
+    clientMutationId
+    errors
+  }
+}

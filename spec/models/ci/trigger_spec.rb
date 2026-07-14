@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
-  let(:project) { create :project }
+  let_it_be(:project) { create(:project) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
@@ -61,7 +61,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
 
   describe 'scopes' do
     describe '.with_last_used' do
-      let_it_be(:ci_trigger) { create(:ci_trigger, project: create(:project)) }
+      let_it_be(:ci_trigger) { create(:ci_trigger, project: project) }
 
       context 'when no pipelines' do
         it 'returns the trigger with last_used as nil' do
@@ -103,7 +103,6 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
 
     describe '.with_token' do
       context 'when looking for ci trigger by token' do
-        let_it_be(:project) { create(:project) }
         let_it_be(:trigger_1) { create(:ci_trigger, project: project) }
         let_it_be(:trigger_2) { create(:ci_trigger, project: project) }
         let_it_be(:trigger_3) { create(:ci_trigger, project: project) }
@@ -168,7 +167,6 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
   end
 
   describe '#last_used' do
-    let_it_be(:project) { create :project }
     let_it_be_with_refind(:trigger) { create(:ci_trigger, project: project) }
 
     subject { trigger.last_used }
@@ -240,13 +238,13 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
   end
 
   describe '#can_access_project?' do
-    let(:owner) { create(:user) }
-    let(:trigger) { create(:ci_trigger, owner: owner, project: project) }
+    let_it_be(:owner) { create(:user) }
+    let_it_be(:trigger) { create(:ci_trigger, owner: owner, project: project) }
 
     subject { trigger.can_access_project? }
 
     context 'and is member of the project' do
-      before do
+      before_all do
         project.add_developer(owner)
       end
 

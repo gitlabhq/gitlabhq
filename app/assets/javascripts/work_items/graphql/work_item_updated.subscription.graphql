@@ -1,5 +1,6 @@
 #import "ee_else_ce/work_items/graphql/work_item.fragment.graphql"
 
+# @feature_category: team_planning
 subscription workItemUpdated($id: WorkItemID!, $useWorkItemFeatures: Boolean = false) {
   workItemUpdated(workItemId: $id) {
     ...WorkItem

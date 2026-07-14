@@ -3,7 +3,7 @@
 RSpec.shared_examples 'milestone empty states' do
   include Devise::Test::ControllerHelpers
 
-  let_it_be(:user, freeze: false) { build(:user) }
+  let_it_be(:user) { build(:user) }
   let(:empty_state) { 'Use milestones to track issues and merge requests over a fixed period of time' }
 
   before do

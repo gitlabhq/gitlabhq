@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::LoopHelpers do
+RSpec.describe Gitlab::LoopHelpers, feature_category: :tooling do
   let(:class_instance) { (Class.new { include ::Gitlab::LoopHelpers }).new }
 
   describe '#loop_until' do

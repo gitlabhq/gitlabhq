@@ -6,6 +6,7 @@ import IssuableDiscussion from './issuable_discussion.vue';
 import IssuableHeader from './issuable_header.vue';
 
 export default {
+  name: 'IssuableShowRoot',
   components: {
     IssuableSidebar,
     IssuableHeader,

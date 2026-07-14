@@ -10,7 +10,8 @@ import {
 import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
 import { __, n__, sprintf } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -81,6 +82,9 @@ export default {
     };
   },
   computed: {
+    currentUserId() {
+      return gon.current_user_id && convertToGraphQLId(TYPENAME_USER, gon.current_user_id);
+    },
     statsAriaLabel() {
       if (!this.diffStats) return null;
 
@@ -111,6 +115,10 @@ export default {
     milestoneNumericId() {
       return getIdFromGraphQLId(this.mergeRequest.milestone?.id);
     },
+    reviewerUpdatedAt() {
+      return this.mergeRequest.reviewers.nodes.find(({ id }) => id === this.currentUserId)
+        ?.mergeRequestInteraction?.updatedAt;
+    },
   },
   methods: {
     isScopedLabel,
@@ -120,8 +128,12 @@ export default {
 
 <template>
   <div :class="{ 'gl-bg-green-50': isNewlyAdded }" role="row">
-    <div role="cell">
+    <div role="cell" class="gl-flex gl-flex-col gl-items-start gl-gap-2">
       <status-badge :merge-request="mergeRequest" :list-id="listId" />
+      <span v-if="reviewerUpdatedAt" class="gl-text-sm gl-text-subtle">
+        <span class="gl-sr-only">{{ __('Review requested') }}</span>
+        <time-ago-tooltip :time="reviewerUpdatedAt" data-testid="reviewer-updated-at" />
+      </span>
     </div>
     <div role="cell" class="gl-flex gl-flex-col gl-items-start gl-gap-2">
       <gl-link

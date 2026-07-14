@@ -1,4 +1,5 @@
 import { nextTick } from 'vue';
+import defaultAvatarUrl from 'images/no_avatar.png';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import CollapsibleCommitInfo from '~/repository/components/collapsible_commit_info.vue';
@@ -81,7 +82,7 @@ describe('CollapsibleCommitInfo', () => {
       expect(findDefaultAvatar().props()).toStrictEqual({
         cssClasses: '',
         imgAlt: 'user avatar',
-        imgSrc: 'file-mock',
+        imgSrc: defaultAvatarUrl,
         pseudo: false,
         size: 32,
         lazy: false,

@@ -33,6 +33,9 @@ export default {
     },
   },
   computed: {
+    currentUserId() {
+      return this.currentUserData?.id ?? null;
+    },
     mappedAwards() {
       return this.awards.map((award) => ({
         ...award,
@@ -45,13 +48,14 @@ export default {
   },
   methods: {
     isEmojiPresentForCurrentUser(name) {
+      if (!this.currentUserId) return false;
+
       return this.awards.some(
-        (emoji) =>
-          emoji.name === name && getIdFromGraphQLId(emoji.user.id) === this.currentUserData.id,
+        (emoji) => emoji.name === name && getIdFromGraphQLId(emoji.user.id) === this.currentUserId,
       );
     },
     addAwardEmoji(name) {
-      if (this.isEmojiPresentForCurrentUser(name)) return this.awards;
+      if (!this.currentUserId || this.isEmojiPresentForCurrentUser(name)) return this.awards;
 
       return [
         ...this.awards,
@@ -67,9 +71,11 @@ export default {
       ];
     },
     removeAwardEmoji(name) {
+      if (!this.currentUserId) return this.awards;
+
       return this.awards.filter(
         (emoji) =>
-          !(emoji.name === name && getIdFromGraphQLId(emoji.user.id) === this.currentUserData.id),
+          !(emoji.name === name && getIdFromGraphQLId(emoji.user.id) === this.currentUserId),
       );
     },
     handleAward(name) {
@@ -134,7 +140,7 @@ export default {
   <awards-list
     :awards="mappedAwards"
     :can-award-emoji="canAwardEmoji"
-    :current-user-id="currentUserData.id"
+    :current-user-id="currentUserId"
     :default-awards="$options.defaultAwards"
     @award="handleAward"
   />

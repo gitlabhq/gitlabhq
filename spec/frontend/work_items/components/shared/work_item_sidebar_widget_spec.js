@@ -71,10 +71,10 @@ describe('WorkItemSidebarWidget component', () => {
         expect(wrapper.text()).not.toContain('Editing');
       });
 
-      it('emits "startEditing" event when edit button is clicked', () => {
+      it('emits "start-editing" event when edit button is clicked', () => {
         findEditButton().vm.$emit('click');
 
-        expect(wrapper.emitted('startEditing')).toEqual([[]]);
+        expect(wrapper.emitted('start-editing')).toEqual([[]]);
       });
 
       it('renders tooltip', () => {

@@ -25,6 +25,7 @@ const Template = (args, { argTypes }) => ({
 export const Default = Template.bind({});
 Default.args = {
   title: s__('ProductAnalytics|Audience'),
+  titleIcon: '',
   tooltip: null,
   loading: false,
   showAlertState: false,
@@ -90,4 +91,10 @@ WithLoadingDelayed.args = {
   ...Default.args,
   loading: true,
   loadingDelayed: true,
+};
+
+export const WithTitleIcon = Template.bind({});
+WithTitleIcon.args = {
+  ...Default.args,
+  titleIcon: 'users',
 };

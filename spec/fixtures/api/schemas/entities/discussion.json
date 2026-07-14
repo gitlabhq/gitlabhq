@@ -222,6 +222,12 @@
               "string",
               "null"
             ]
+          },
+          "duo_session_status": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [

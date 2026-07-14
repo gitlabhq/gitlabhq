@@ -237,7 +237,7 @@ To enable approval permissions for these users without granting them push access
 
 {{< history >}}
 
-- Bot comment for approvals [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411656) in GitLab 16.2 [with a flag](../../../../administration/feature_flags/_index.md) named `security_policy_approval_notification`. Enabled by default.
+- Bot comment for approvals [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411656) in GitLab 16.2 [with a feature flag](../../../../administration/feature_flags/_index.md) named `security_policy_approval_notification`. Enabled by default.
 - Bot comment for approvals [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130827) in GitLab 16.3. Feature flag `security_policy_approval_notification` removed.
 
 {{< /history >}}

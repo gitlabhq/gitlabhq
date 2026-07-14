@@ -27,6 +27,7 @@ import {
 } from '~/work_items/constants';
 
 export default {
+  name: 'IssuableHeader',
   iconId: uniqueId(),
   components: {
     ConfidentialityBadge,

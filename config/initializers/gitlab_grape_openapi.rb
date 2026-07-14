@@ -95,7 +95,19 @@ Gitlab::GrapeOpenapi.configure do |config|
     'Terraform' => 'Terraform',
     'Todos' => 'To-Dos',
     'unleash' => 'Unleash',
-    'Vscode' => 'VSCode'
+    'Vscode' => 'VSCode',
+    # Package Registry: render per-format tags as "Packages: <Format>" so they
+    # cluster together in the API reference sidebar.
+    'Packages cargo' => 'Packages: Cargo',
+    'Packages composer' => 'Packages: Composer',
+    'Packages conan' => 'Packages: Conan',
+    'Packages debian' => 'Packages: Debian',
+    'Packages helm' => 'Packages: Helm',
+    'Packages npm' => 'Packages: NPM',
+    'Packages nuget' => 'Packages: NuGet',
+    'Packages pypi' => 'Packages: PyPi',
+    'Packages rpm' => 'Packages: RPM',
+    'Packages rubygem' => 'Packages: RubyGem'
   }.freeze
 
   # CONFIGURE COERCER MAPPINGS
@@ -147,6 +159,8 @@ Gitlab::GrapeOpenapi.configure do |config|
     'GitlabSubscriptions::API::Internal::AddOnPurchases',
     'GitlabSubscriptions::API::Internal::API',
     'API::Internal::SecretsManager',
+    # Beta endpoint, excluded from OpenAPI until it reaches general availability.
+    'API::SecretsManagement::AccessTokens',
     'API::Internal::Observability',
     'API::Internal::Search::Zoekt',
     'API::Internal::Ci::JobRouter',

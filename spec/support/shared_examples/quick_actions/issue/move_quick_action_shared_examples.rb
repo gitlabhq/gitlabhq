@@ -20,7 +20,7 @@ RSpec.shared_examples 'move quick action' do
         expect(page).to have_content "Moved this item to #{target_project.full_path}."
         expect(issue.reload).to be_closed
 
-        visit project_issue_path(target_project, issue)
+        visit project_issue_path(target_project, issue.moved_to)
 
         expect(page).to have_content issue.title
       end
@@ -64,7 +64,7 @@ RSpec.shared_examples 'move quick action' do
           expect(page).to have_content "Moved this item to #{target_project.full_path}."
           expect(issue.reload).to be_closed
 
-          visit project_issue_path(target_project, issue)
+          visit project_issue_path(target_project, issue.moved_to)
 
           expect(page).to have_content 'bug'
           expect(page).to have_content 'wontfix'
@@ -118,9 +118,13 @@ RSpec.shared_examples 'move quick action' do
         end
 
         expect(page).to have_content 'test note.'
+        # The note is updated optimistically, so wait for the command to be
+        # stripped (the real mutation completed and applied /move) before
+        # asserting on the move, to avoid racing the in-flight request.
+        expect(page).not_to have_content "/move #{target_project.full_path}"
         expect(issue.reload).to be_closed
 
-        visit project_issue_path(target_project, issue)
+        visit project_issue_path(target_project, issue.moved_to)
 
         expect(page).to have_content issue.title
       end
@@ -142,7 +146,7 @@ RSpec.shared_examples 'move quick action' do
         expect(page).not_to have_content "/move #{target_project.full_path}"
         expect(issue.reload).to be_closed
 
-        visit project_issue_path(target_project, issue)
+        visit project_issue_path(target_project, issue.moved_to)
 
         expect(page).to have_content issue.title
       end

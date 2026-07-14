@@ -27,7 +27,7 @@ export default {
     iconClass: {
       required: false,
       type: String,
-      default: 'text-info',
+      default: '!gl-fill-icon-info',
     },
     helpUrl: {
       required: false,

@@ -38,8 +38,8 @@ module API
       end
     end
 
-    desc 'Get the public key for web commits' do
-      detail 'This feature was introduced in GitLab 17.4.'
+    desc 'Retrieve the public signing key' do
+      detail 'Retrieves the GitLab public key for signing web commits. This feature was introduced in GitLab 17.4.'
       success code: 200
       tags ['web_commits']
       failure [

@@ -3,6 +3,18 @@
 require "spec_helper"
 
 RSpec.describe NewNoteWorker, feature_category: :team_planning do
+  describe 'feature category attribution' do
+    it 'defaults to team_planning without a calling context' do
+      expect(described_class.get_feature_category).to eq(:team_planning)
+    end
+
+    it 'attributes to the calling context feature category when present' do
+      Gitlab::ApplicationContext.with_context(feature_category: 'code_review_workflow') do
+        expect(described_class.get_feature_category).to eq('code_review_workflow')
+      end
+    end
+  end
+
   context 'when Note found' do
     let(:note) { create(:note) }
 

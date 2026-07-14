@@ -50,7 +50,7 @@ export default {
       required: true,
     },
   },
-  emits: ['showMore'],
+  emits: ['show-more'],
   apollo: {
     projectPath: {
       query: projectPathQuery,
@@ -134,7 +134,7 @@ export default {
       // This allows the browser to paint the button interaction immediately
       // before processing the new entries. See: https://web.dev/articles/optimize-inp
       setTimeout(() => {
-        this.$emit('showMore');
+        this.$emit('show-more');
         this.isProcessingShowMore = false;
       }, 0);
     },
@@ -188,13 +188,11 @@ export default {
             <template v-for="(entry, index) in val">
               <table-row
                 v-if="appearedItems[itemId(entry, index)]"
-                :id="entry.id"
                 :key="`${itemId(entry, index)}-row`"
                 :data-item-id="itemId(entry, index)"
                 :sha="entry.sha"
                 :project-path="projectPath"
                 :current-path="path"
-                :name="entry.name"
                 :path="entry.flatPath"
                 :type="entry.type"
                 :url="entry.webUrl || entry.webPath"
@@ -202,7 +200,6 @@ export default {
                 :submodule-tree-url="entry.treeUrl"
                 :lfs-oid="entry.lfsOid"
                 :loading-path="loadingPath"
-                :total-entries="totalEntries"
                 :row-number="generateRowNumber(entry, index)"
                 :commit-info="getCommit(entry.name)"
                 v-on="$listeners"

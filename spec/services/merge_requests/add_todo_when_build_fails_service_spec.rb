@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::MergeRequests::AddTodoWhenBuildFailsService, feature_category: :code_review_workflow do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project) }
   let(:sha) { '1234567890abcdef1234567890abcdef12345678' }
   let(:ref) { merge_request.source_branch }
 

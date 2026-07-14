@@ -2,6 +2,9 @@
 
 require 'spec_helper'
 
+# NOTE: No cross-organization isolation test here. `Ci::RunnerManagersFinder` scopes results
+# to the runner managers of a single given runner (passed via `runner:`), not by organization
+# or namespace hierarchy, so there is no cross-organization boundary to assert on this path.
 RSpec.describe Ci::RunnerManagersFinder, '#execute', feature_category: :fleet_visibility do
   subject(:runner_managers) { described_class.new(runner: runner, params: params).execute }
 

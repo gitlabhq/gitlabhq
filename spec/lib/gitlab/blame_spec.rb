@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Blame, feature_category: :source_code_management do
           expect(groups.count).to eq(2)
           expect(groups[0][:lines][0]).to match(/LC1.*fileutils/)
           expect(groups[0][:lines][1]).to match(/LC2.*open3/)
-          expect(groups[0][:lines][2]).to eq("<span id=\"LC3\" class=\"line\" lang=\"ruby\"></span>\n")
+          expect(groups[0][:lines][2]).to eq("<span id=\"LC3\" class=\"line\" data-lang=\"ruby\"></span>\n")
           expect(groups[1][:lines][0]).to match(/LC4.*Popen/)
           expect(groups[1][:lines][1]).to match(/LC5.*extend/)
         end
@@ -97,7 +97,7 @@ RSpec.describe Gitlab::Blame, feature_category: :source_code_management do
         it 'returns the correct lines' do
           expect(groups.count).to eq(2)
           expect(groups[0][:lines][0]).to match(/LC2.*open3/)
-          expect(groups[0][:lines][1]).to eq("<span id=\"LC3\" class=\"line\" lang=\"ruby\"></span>\n")
+          expect(groups[0][:lines][1]).to eq("<span id=\"LC3\" class=\"line\" data-lang=\"ruby\"></span>\n")
           expect(groups[1][:lines][0]).to match(/LC4.*Popen/)
         end
       end

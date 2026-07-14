@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import katex from 'katex';
 import { marked } from 'marked';
@@ -7,7 +6,11 @@ import { sanitize } from '~/lib/dompurify';
 import { hasContent, markdownConfig } from '~/lib/utils/text_utility';
 import Prompt from './prompt.vue';
 
-const renderer = new marked.Renderer();
+const baseRenderer = new marked.Renderer();
+
+// Per-render state set from the component's computed property before each parse call.
+let currentAttachments = null;
+let currentRelativeRawPath = '';
 
 /*
     Regex to match KaTex blocks.
@@ -82,61 +85,63 @@ function renderKatex(t) {
   }
   return [text, numInline > 0];
 }
-renderer.paragraph = (t) => {
-  const [text, inline] = renderKatex(t);
-  return `<p class="${inline ? 'inline-katex' : ''}">${text}</p>`;
-};
-renderer.listitem = (t) => {
-  const [text, inline] = renderKatex(t);
-  return `<li class="${inline ? 'inline-katex' : ''}">${text}</li>`;
-};
-renderer.originalImage = renderer.image;
+marked.use({
+  renderer: {
+    paragraph(t) {
+      const rendered = this.parser.parseInline(t.tokens);
+      const [text, inline] = renderKatex(rendered);
+      return `<p class="${inline ? 'inline-katex' : ''}">${text}</p>`;
+    },
+    listitem(t) {
+      const rendered = this.parser.parse(t.tokens, Boolean(t.loose));
+      const [text, inline] = renderKatex(rendered);
+      return `<li class="${inline ? 'inline-katex' : ''}">${text}</li>`;
+    },
+    image(token) {
+      const { href } = token;
+      const attachmentHeader = `attachment:`; // eslint-disable-line @gitlab/require-i18n-strings
 
-renderer.image = function image(href, title, text) {
-  const attachmentHeader = `attachment:`; // eslint-disable-line @gitlab/require-i18n-strings
+      if (!currentAttachments || !href.startsWith(attachmentHeader)) {
+        let relativeHref = href;
 
-  if (!this.attachments || !href.startsWith(attachmentHeader)) {
-    let relativeHref = href;
+        // eslint-disable-next-line @gitlab/require-i18n-strings
+        if (!(href.startsWith('http') || href.startsWith('data:'))) {
+          // These are images within the repo. This will only work if the image
+          // is relative to the path where the file is located
+          relativeHref = currentRelativeRawPath + href;
+        }
 
-    // eslint-disable-next-line @gitlab/require-i18n-strings
-    if (!(href.startsWith('http') || href.startsWith('data:'))) {
-      // These are images within the repo. This will only work if the image
-      // is relative to the path where the file is located
-      relativeHref = this.relativeRawPath + href;
-    }
-
-    return this.originalImage(relativeHref, title, text);
-  }
-
-  let img = ``;
-  const filename = href.substring(attachmentHeader.length);
-
-  if (hasContent(filename)) {
-    const attachment = this.attachments[filename];
-
-    if (attachment) {
-      const imageType = Object.keys(attachment)[0];
-
-      if (hasContent(imageType)) {
-        const data = attachment[imageType];
-        const inlined = `data:${imageType};base64,${data}"`; // eslint-disable-line @gitlab/require-i18n-strings
-        img = this.originalImage(inlined, title, text);
+        return baseRenderer.image.call(this, { ...token, href: relativeHref });
       }
-    }
-  }
 
-  if (!hasContent(img)) {
-    return this.originalImage(href, title, text);
-  }
+      let img = ``;
+      const filename = href.substring(attachmentHeader.length);
 
-  return sanitize(img);
-};
+      if (hasContent(filename)) {
+        const attachment = currentAttachments[filename];
 
-marked.setOptions({
-  renderer,
+        if (attachment) {
+          const imageType = Object.keys(attachment)[0];
+
+          if (hasContent(imageType)) {
+            const data = attachment[imageType];
+            const inlined = `data:${imageType};base64,${data}"`; // eslint-disable-line @gitlab/require-i18n-strings
+            img = baseRenderer.image.call(this, { ...token, href: inlined });
+          }
+        }
+      }
+
+      if (!hasContent(img)) {
+        return baseRenderer.image.call(this, token);
+      }
+
+      return sanitize(img);
+    },
+  },
 });
 
 export default {
+  name: 'NotebookMarkdown',
   components: {
     Prompt,
   },
@@ -157,8 +162,8 @@ export default {
   },
   computed: {
     markdown() {
-      renderer.attachments = this.cell.attachments;
-      renderer.relativeRawPath = this.relativeRawPath;
+      currentAttachments = this.cell.attachments;
+      currentRelativeRawPath = this.relativeRawPath;
 
       let { source } = this.cell;
 

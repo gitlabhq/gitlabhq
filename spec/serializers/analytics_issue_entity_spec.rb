@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AnalyticsIssueEntity do
+RSpec.describe AnalyticsIssueEntity, feature_category: :value_stream_management do
   let(:user) { create(:user) }
   let(:entity_hash) do
     {

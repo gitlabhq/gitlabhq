@@ -3,6 +3,7 @@ import { GlButton, GlIcon } from '@gitlab/ui';
 import Tracking from '~/tracking';
 
 export default {
+  name: 'BoardAddNewColumnTrigger',
   components: {
     GlButton,
     GlIcon,
@@ -14,6 +15,7 @@ export default {
       required: true,
     },
   },
+  emits: ['setAddColumnFormVisibility'],
   methods: {
     handleClick() {
       this.$emit('setAddColumnFormVisibility', true);

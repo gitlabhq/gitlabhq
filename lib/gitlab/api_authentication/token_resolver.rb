@@ -79,7 +79,11 @@ module Gitlab
           # Ensure that the username matches the token. This check is a subtle
           # departure from the existing behavior of #find_personal_access_token_from_http_basic_auth.
           # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38627#note_435907856
-          raise ::Gitlab::Auth::UnauthorizedError unless pat.user.username == raw.username
+          #
+          # The comparison is case-insensitive because GitLab usernames are
+          # case-insensitively unique, and clients (notably NuGet on Windows)
+          # commonly send the username in a different case than it is stored.
+          raise ::Gitlab::Auth::UnauthorizedError unless pat.user.username.casecmp?(raw.username)
 
           pat
         end

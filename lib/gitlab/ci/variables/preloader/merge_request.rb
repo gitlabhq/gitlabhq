@@ -11,12 +11,14 @@ module Gitlab
 
           def preload
             ActiveRecord::Associations::Preloader.new(
-              records: [@merge_request],
+              records: [merge_request],
               associations: preloads
             ).call
           end
 
           private
+
+          attr_reader :merge_request
 
           def preloads
             []

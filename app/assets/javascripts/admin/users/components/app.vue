@@ -7,6 +7,7 @@ import getUsersMembershipCountsQuery from '../graphql/queries/get_users_membersh
 import UserActions from './user_actions.vue';
 
 export default {
+  name: 'UsersApp',
   components: {
     UsersTable,
     UserActions,

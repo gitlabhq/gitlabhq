@@ -1312,6 +1312,14 @@ describe('Tree List', () => {
     );
   });
 
+  it('does not throw and renders no tree when paginatedTree.nodes is empty', async () => {
+    const response = cloneDeep(mockResponse);
+    response.data.project.repository.paginatedTree.nodes = [];
+
+    await createComponent(response);
+    expect(findTree().exists()).toBe(false);
+  });
+
   it('scrolls element into view on initial load', async () => {
     const scrollIntoViewSpy = jest.fn();
     jest.spyOn(HTMLElement.prototype, 'scrollIntoView').mockImplementation(scrollIntoViewSpy);

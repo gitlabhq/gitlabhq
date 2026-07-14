@@ -74,6 +74,26 @@ in the execution container but are not intended for use in flow configuration.
 | `GITLAB_TOKEN` | OAuth token for GitLab API access. Same value as `DUO_WORKFLOW_GIT_HTTP_PASSWORD`. | *(OAuth token)* |
 | `AGENT_PLATFORM_GITLAB_VERSION` | GitLab version running the flow. | `18.9.0` |
 
+### ID token variables
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224940) in GitLab 19.2.
+
+{{< /history >}}
+
+[ID tokens](../../../ci/secrets/id_token_authentication.md) that you declare are available as
+environment variables in the flow job. Each variable uses the name of the token you declare.
+
+You declare ID tokens in:
+
+- The `agent-config.yml` file, for flows that use CI/CD. For more information, see
+  [configure ID tokens](execution.md#configure-id-tokens).
+- The configuration of a [custom external agent](../agents/external.md#authenticate-with-id-tokens).
+
+For example, when you declare an `id_tokens` block with a `VAULT_ID_TOKEN` token,
+the flow can use `$VAULT_ID_TOKEN`.
+
 ## Not available
 
 The following variables are not available in the jobs that execute your flows.

@@ -262,3 +262,22 @@ different organizations and either organization is marked as isolated.
 To resolve this error, migrate to a destination namespace that belongs to your
 current organization. For more information, see
 [issue 595674](https://gitlab.com/gitlab-org/gitlab/-/issues/595674).
+
+## Direct transfer fails when a downloaded file exceeds the maximum download file size
+
+Direct transfer fails when a file downloaded from the source instance is larger than the
+maximum download file size, which defaults to 5 GiB. Direct transfer exports most data in small
+batches, so most files do not exceed this limit. Only the `repository`, `lfs`, and `uploads`
+relations are likely to exceed it.
+
+On GitLab Self-Managed and GitLab Dedicated, an administrator can increase the
+[maximum download file size](../../../administration/settings/import_and_export_settings.md#maximum-download-file-size-for-imports-by-direct-transfer).
+
+On GitLab.com, the limit is fixed and cannot be raised. To migrate a project that exceeds the
+limit, reduce the size of the affected relation before you migrate:
+
+- `repository`: Rewrite the Git history to remove large files. This action changes all commit SHAs.
+  For more information, see [methods to reduce repository size](../../project/repository/repository_size.md#methods-to-reduce-repository-size).
+- `lfs`: Migrate the project, then manually push the missing LFS objects to the destination.
+  For more information, see [LFS objects are missing on push](../../../topics/git/lfs/troubleshooting.md#lfs-objects-are-missing-on-push).
+- `uploads`: No workaround is available. For more information, see [issue 526344](https://gitlab.com/gitlab-org/gitlab/-/issues/526344).

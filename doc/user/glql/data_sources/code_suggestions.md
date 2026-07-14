@@ -108,6 +108,11 @@ The following metrics are supported:
 | Total count         | `totalCount`        | Total number of suggestions.            |
 | Users count         | `usersCount`        | Number of unique users.                 |
 
+## Sort fields
+
+Sort by any field included in your selected dimensions or metrics. For more
+information, see [analytics mode sorting](../_index.md#sorting).
+
 ## Examples
 
 - Acceptance rate by language for the last 30 days:

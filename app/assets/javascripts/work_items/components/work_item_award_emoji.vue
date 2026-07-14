@@ -16,6 +16,7 @@ import { DEFAULT_PAGE_SIZE_EMOJIS } from '../constants';
 import { findAwardEmojiWidget } from '../utils';
 
 export default {
+  name: 'WorkItemAwardEmoji',
   defaultAwards: [EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN],
   components: {
     AwardsList,
@@ -46,6 +47,7 @@ export default {
       default: null,
     },
   },
+  emits: ['emoji-updated', 'error'],
   data() {
     return {
       newCustomEmojiPath: '',

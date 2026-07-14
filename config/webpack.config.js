@@ -1,23 +1,12 @@
 // eslint-disable-next-line import/order
 const crypto = require('./helpers/patched_crypto');
 
-const { VUE_VERSION = '2', VUE_COMPILER_VERSION = '2' } = process.env;
+// eslint-disable-next-line import/order
+const vueVersion = require('./helpers/vue_version');
 
-if (!['2', '3'].includes(VUE_VERSION)) {
-  throw new Error(`Invalid VUE_VERSION value: ${VUE_VERSION}. Only '2' or '3' are supported`);
-}
-if (!['2', '3'].includes(VUE_COMPILER_VERSION)) {
-  throw new Error(
-    `Invalid VUE_COMPILER_VERSION value: ${VUE_COMPILER_VERSION}. Only '2' or '3' are supported`,
-  );
-}
+const { VUE_VERSION, USE_VUE3, USE_VUE3_COMPILER, VUE_LOADER_MODULE, logVueVersion } = vueVersion;
 
-const USE_VUE3 = VUE_VERSION === '3';
-const USE_VUE3_COMPILER = USE_VUE3 && VUE_COMPILER_VERSION === '3';
-
-console.log(`[V] Using Vue.js ${VUE_VERSION} (compiler ${VUE_COMPILER_VERSION})`);
-
-const VUE_LOADER_MODULE = USE_VUE3_COMPILER ? 'vue-loader-vue3' : 'vue-loader';
+logVueVersion('[V]');
 
 const fs = require('fs');
 const path = require('path');
@@ -45,10 +34,16 @@ const {
   IS_JH,
   ROOT_PATH,
   WEBPACK_OUTPUT_PATH,
-  WEBPACK_PUBLIC_PATH,
   SOURCEGRAPH_PUBLIC_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
   copyFilesPatterns,
+  IS_PRODUCTION,
+  IS_DEV_SERVER,
+  DEV_SERVER_HOST,
+  DEV_SERVER_PUBLIC_ADDR,
+  DEV_SERVER_PORT,
+  DEV_SERVER_ALLOWED_HOSTS,
+  DEV_SERVER_LIVERELOAD,
 } = require('./webpack.constants');
 const { PDF_JS_WORKER_PUBLIC_PATH, PDF_JS_CMAPS_PUBLIC_PATH } = require('./pdfjs.constants');
 const { generateEntries } = require('./webpack.helpers');
@@ -58,24 +53,13 @@ const vendorDllHash = require('./helpers/vendor_dll_hash');
 
 const GraphqlKnownOperationsPlugin = require('./plugins/graphql_known_operations_plugin');
 const WebpackVue3InfectionPlugin = require('./plugins/webpack_vue3_infection_plugin');
-const { CONTEXT_ALIASES } = require('./helpers/context_aliases_shared');
-
-const SUPPORTED_BROWSERS = fs.readFileSync(path.join(ROOT_PATH, '.browserslistrc'), 'utf-8');
-const SUPPORTED_BROWSERS_HASH = crypto
-  .createHash('sha256')
-  .update(SUPPORTED_BROWSERS)
-  .digest('hex');
+const { supportedBrowsersHash } = require('./helpers/supported_browsers');
+const { aliases } = require('./helpers/aliases');
+const { baseEntryPoints } = require('./helpers/entry_points');
+const { buildOutput } = require('./helpers/output');
 
 const VENDOR_DLL = process.env.WEBPACK_VENDOR_DLL && process.env.WEBPACK_VENDOR_DLL !== 'false';
 const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/cache/webpack');
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const IS_DEV_SERVER = process.env.WEBPACK_SERVE === 'true';
-
-const { DEV_SERVER_HOST, DEV_SERVER_PUBLIC_ADDR } = process.env;
-const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10);
-const DEV_SERVER_ALLOWED_HOSTS =
-  process.env.DEV_SERVER_ALLOWED_HOSTS && process.env.DEV_SERVER_ALLOWED_HOSTS.split(',');
-const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
 const INCREMENTAL_COMPILER_ENABLED =
   IS_DEV_SERVER &&
   process.env.DEV_SERVER_INCREMENTAL &&
@@ -110,30 +94,22 @@ const incrementalCompiler = createIncrementalWebpackCompiler(
   INCREMENTAL_COMPILER_TTL,
 );
 
-const alias = {
-  // Map Apollo client to apollo/client/core to prevent react related imports from being loaded
-  '@apollo/client$': '@apollo/client/core',
-  '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
-  emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
-  images: path.join(ROOT_PATH, 'app/assets/images'),
-  vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-  jquery$: 'jquery/dist/jquery.slim.js',
-  lodash$: 'lodash-es',
+const alias = { ...aliases };
 
-  // `raphael/raphael.no-deps` declares `eve` as an external dependency
-  // (the package was renamed to `eve-raphael` years ago, but Raphael's
-  // UMD wrapper still does `require("eve")`). Alias the bare name to
-  // the actual installed package so both webpack and Vite resolve it.
-  eve$: 'eve-raphael',
-  shared_queries: path.join(ROOT_PATH, 'app/graphql/queries'),
-
-  // Mermaid v11's transitive deps use package.json "exports" without "main"
-  // fallbacks. Webpack 4 doesn't support the exports field, so we alias them
-  // to their actual entry files.
+// Mermaid v11's transitive deps use package.json "exports" without "main"
+// fallbacks. Webpack 4 doesn't support the exports field, so we alias them
+// to their actual entry files. (Rspack supports "exports", so it omits these.)
+Object.assign(alias, {
   '@mermaid-js/parser': path.join(
     ROOT_PATH,
     'node_modules/@mermaid-js/parser/dist/mermaid-parser.core.mjs',
   ),
+  '@mermaid-js/layout-elk': path.join(
+    ROOT_PATH,
+    'node_modules/@mermaid-js/layout-elk/dist/mermaid-layout-elk.core.mjs',
+  ),
+  // ELK's lazily loaded chunk imports the bare `mermaid` package; map it to the aliased install.
+  mermaid$: 'mermaid-v11',
   '@chevrotain/cst-dts-gen': path.join(
     ROOT_PATH,
     'node_modules/@chevrotain/cst-dts-gen/lib/src/api.js',
@@ -147,82 +123,7 @@ const alias = {
   chevrotain: path.join(ROOT_PATH, 'node_modules/chevrotain/lib/src/api.js'),
   'chevrotain-allstar': path.join(ROOT_PATH, 'node_modules/chevrotain-allstar/lib/index.js'),
   langium: path.join(ROOT_PATH, 'node_modules/langium/lib/index.js'),
-
-  // the following resolves files which are different between CE and EE
-  ee_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
-
-  // the following resolves files which are different between CE and JH
-  jh_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
-
-  // the following resolves files which are different between CE/EE/JH
-  any_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
-
-  // consume @gitlab-ui from source to allow us to compile in either Vue 2 or Vue 3
-  '@gitlab/ui/dist/charts$': '@gitlab/ui/src/charts',
-  '@gitlab/ui$': '@gitlab/ui/src',
-
-  // override loader path for icons.svg so we do not duplicate this asset
-  '@gitlab/svgs/dist/icons.svg': path.join(
-    ROOT_PATH,
-    'app/assets/javascripts/lib/utils/icons_path.js',
-  ),
-
-  // override loader path for illustrations.svg so we do not duplicate this asset
-  '@gitlab/svgs/dist/illustrations.svg': path.join(
-    ROOT_PATH,
-    'app/assets/javascripts/lib/utils/illustrations_path.js',
-  ),
-
-  // prevent loading of index.js to avoid duplicate instances of classes
-  graphql: path.join(ROOT_PATH, 'node_modules/graphql/index.mjs'),
-
-  // load mjs version instead of cjs
-  'markdown-it': path.join(ROOT_PATH, 'node_modules/markdown-it/index.mjs'),
-
-  // test-environment-only aliases duplicated from Jest config
-  'spec/test_constants$': path.join(ROOT_PATH, 'spec/frontend/__helpers__/test_constants'),
-  ee_else_ce_jest: path.join(ROOT_PATH, 'spec/frontend'),
-  helpers: path.join(ROOT_PATH, 'spec/frontend/__helpers__'),
-  jest: path.join(ROOT_PATH, 'spec/frontend'),
-  test_fixtures: path.join(ROOT_PATH, 'tmp/tests/frontend/fixtures'),
-  test_fixtures_static: path.join(ROOT_PATH, 'spec/frontend/fixtures/static'),
-  test_helpers: path.join(ROOT_PATH, 'spec/frontend_integration/test_helpers'),
-  public: path.join(ROOT_PATH, 'public'),
-  storybook_addons: path.resolve(ROOT_PATH, 'storybook/config/addons'),
-  storybook_helpers: path.resolve(ROOT_PATH, 'storybook/helpers'),
-};
-
-if (IS_EE) {
-  Object.assign(alias, {
-    ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
-    ee_component: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
-    ee_images: path.join(ROOT_PATH, 'ee/app/assets/images'),
-    ee_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
-    jh_else_ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
-    any_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
-    fe_islands: path.join(ROOT_PATH, 'ee/frontend_islands/apps'),
-
-    // test-environment-only aliases duplicated from Jest config
-    ee_else_ce_jest: path.join(ROOT_PATH, 'ee/spec/frontend'),
-    ee_jest: path.join(ROOT_PATH, 'ee/spec/frontend'),
-    test_fixtures: path.join(ROOT_PATH, 'tmp/tests/frontend/fixtures-ee'),
-  });
-}
-
-if (IS_JH) {
-  Object.assign(alias, {
-    jh: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
-    jh_component: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
-    jh_images: path.join(ROOT_PATH, 'jh/app/assets/images'),
-    // jh path alias https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74305#note_732793956
-    jh_else_ce: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
-    jh_else_ee: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
-    any_else_ce: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
-
-    // test-environment-only aliases duplicated from Jest config
-    jh_jest: path.join(ROOT_PATH, 'jh/spec/frontend'),
-  });
-}
+});
 
 let dll;
 
@@ -247,7 +148,7 @@ const defaultJsOptions = {
     BABEL_LOADER_VERSION,
     // Ensure that changing supported browsers will refresh the cache
     // in order to not pull in outdated files that import core-js
-    SUPPORTED_BROWSERS_HASH,
+    supportedBrowsersHash,
     // A VUE_VERSION changes how we alias certain packages
     // use a different cache to prevent issues when switching between versions
     VUE_VERSION,
@@ -304,8 +205,6 @@ const shouldExcludeFromCompiling = (modulePath) => {
 vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/vue2_compiler.js');
 
 if (USE_VUE3) {
-  Object.assign(alias, CONTEXT_ALIASES);
-
   if (USE_VUE3_COMPILER) {
     vueLoaderOptions.compiler = path.join(
       ROOT_PATH,
@@ -325,11 +224,10 @@ if (USE_VUE3) {
   }
 }
 
-const entriesState = {
+let entriesState = {
   autoEntriesCount: 0,
   watchAutoEntries: [],
 };
-const defaultEntries = ['./main'];
 
 module.exports = {
   /*
@@ -351,31 +249,15 @@ module.exports = {
     Note 2: If you are using web-workers, you might need to reset the public path, see:
     https://gitlab.com/gitlab-org/gitlab/-/issues/321656
      */
+    const generated = generateEntries(baseEntryPoints.default);
+    entriesState = generated.entriesState;
     return {
-      default: defaultEntries,
-      sentry: './sentry/index.js',
-      coverage_persistence: './entrypoints/coverage_persistence.js',
-      performance_bar: './entrypoints/performance_bar.js',
-      jira_connect_app: './jira_connect/subscriptions/index.js',
-      sandboxed_mermaid_v11: './lib/mermaid_v11.js',
-      redirect_listbox: './entrypoints/behaviors/redirect_listbox.js',
-      sandboxed_swagger: './lib/swagger.js',
-      super_sidebar: './entrypoints/super_sidebar.js',
-      tracker: './entrypoints/tracker.js',
-      graphql_explorer: './entrypoints/graphql_explorer.js',
-      ...incrementalCompiler.filterEntryPoints(generateEntries({ defaultEntries, entriesState })),
+      ...baseEntryPoints,
+      ...incrementalCompiler.filterEntryPoints(generated.entries),
     };
   },
 
-  output: {
-    path: WEBPACK_OUTPUT_PATH,
-    publicPath: WEBPACK_PUBLIC_PATH,
-    filename:
-      IS_PRODUCTION && !NO_HASHED_CHUNKS ? '[name].[contenthash:8].bundle.js' : '[name].bundle.js',
-    chunkFilename:
-      IS_PRODUCTION && !NO_HASHED_CHUNKS ? '[name].[contenthash:8].chunk.js' : '[name].chunk.js',
-    globalObject: 'this', // allow HMR and web workers to play nice
-  },
+  output: buildOutput({ hashChunks: !NO_HASHED_CHUNKS }),
 
   resolve: {
     extensions: ['.mjs', '.js'],

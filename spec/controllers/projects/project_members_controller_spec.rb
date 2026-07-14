@@ -31,11 +31,14 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
           let_it_be(:user_in_group) { create(:user) }
           let_it_be(:project_in_group) { create(:project, :public, group: group) }
 
-          before do
+          before_all do
             group.add_owner(user_in_group)
             project_in_group.add_maintainer(user)
             shared_group.add_owner(shared_group_user)
             create(:group_group_link, shared_group: group, shared_with_group: shared_group)
+          end
+
+          before do
             sign_in(user)
           end
 
@@ -62,11 +65,14 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
           let_it_be(:user_in_group) { create(:user) }
           let_it_be(:project_in_group) { create(:project, :public, group: sub_group) }
 
-          before do
+          before_all do
             group.add_owner(user_in_group)
             project_in_group.add_maintainer(user)
             shared_group.add_owner(shared_group_user)
             create(:group_group_link, shared_group: sub_group, shared_with_group: shared_group)
+          end
+
+          before do
             sign_in(user)
           end
 

@@ -389,4 +389,35 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
       it_behaves_like 'returning response status', :unauthorized
     end
   end
+
+  describe 'granular token authorization' do
+    let(:boundary_object) { project }
+    let(:user) { maintainer }
+
+    it_behaves_like 'authorizing granular token permissions', :read_package_protection_rule do
+      let(:request) { get api("/projects/#{project.id}/packages/protection/rules", personal_access_token: pat) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_package_protection_rule do
+      let(:request) do
+        post api("/projects/#{project.id}/packages/protection/rules", personal_access_token: pat),
+          params: { package_name_pattern: '@gpat-scope/pkg-*', package_type: 'npm',
+                    minimum_access_level_for_push: 'maintainer' }
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_package_protection_rule do
+      let(:request) do
+        patch api("/projects/#{project.id}/packages/protection/rules/#{protection_rule.id}",
+          personal_access_token: pat), params: { package_name_pattern: '@gpat-scope/updated-*' }
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_package_protection_rule do
+      let(:request) do
+        delete api("/projects/#{project.id}/packages/protection/rules/#{protection_rule.id}",
+          personal_access_token: pat)
+      end
+    end
+  end
 end

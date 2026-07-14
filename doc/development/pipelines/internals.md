@@ -250,9 +250,9 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 
 | `if:` conditions                            | Description | Notes |
 |---------------------------------------------|-------------|-------|
-| `if-not-canonical-namespace`                | Matches if the project isn't in the canonical (`gitlab-org/` and `gitlab-cn/`) or security (`gitlab-org/security`) namespace. | Use to create a job for forks (by using `when: on_success` or `when: manual`), or **not** create a job for forks (by using `when: never`). |
-| `if-not-ee`                                 | Matches if the project isn't EE (that is, project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success` or `when: manual`), or **not** create a job if the project is EE (by using `when: never`). |
-| `if-not-foss`                               | Matches if the project isn't FOSS (that is, project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success` or `when: manual`), or **not** create a job if the project is FOSS (by using `when: never`). |
+| `if-not-canonical-namespace`                | Matches if the project isn't in the canonical (`gitlab-org/` and `gitlab-cn/`) or security (`gitlab-org/security`) namespace. | Use to create a job for forks (by using `when: on_success` or `when: manual`), or not create a job for forks (by using `when: never`). |
+| `if-not-ee`                                 | Matches if the project isn't EE (that is, project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success` or `when: manual`), or not create a job if the project is EE (by using `when: never`). |
+| `if-not-foss`                               | Matches if the project isn't FOSS (that is, project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success` or `when: manual`), or not create a job if the project is FOSS (by using `when: never`). |
 | `if-default-refs`                           | Matches if the pipeline is for `master`, `main`, `/^[\d-]+-stable(-ee)?$/` (stable branches), `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), merge requests, and tags. | Note that jobs aren't created for branches with this default configuration. |
 | `if-master-refs`                            | Matches if the current branch is `master` or `main`. | |
 | `if-master-push`                            | Matches if the current branch is `master` or `main` and pipeline source is `push`. | |
@@ -379,7 +379,7 @@ This applies to the parent sections the job extends from as well.
 
 You can just extend the `.fast-no-clone-job`:
 
-**Before**:
+Before:
 
 ```yaml
   # Note: No `extends:` is present in the job
@@ -389,7 +389,7 @@ You can just extend the `.fast-no-clone-job`:
       - echo "No need for a git clone!"
 ```
 
-**After**:
+After:
 
 ```yaml
   # Note: No `extends:` is present in the job
@@ -412,7 +412,7 @@ For this scenario, you have to:
 1. Extend the `.fast-no-clone-job` as in the first scenario (this will merge the `FILES_TO_DOWNLOAD` variable with the other variables)
 1. Make sure the `before_script` section from `.fast-no-clone-job` is referenced in the `before_script` we use for this job.
 
-**Before**:
+Before:
 
 ```yaml
   .base-job:
@@ -427,7 +427,7 @@ For this scenario, you have to:
       - echo "No need for a git clone!"
 ```
 
-**After**:
+After:
 
 ```yaml
   .base-job:

@@ -90,7 +90,7 @@ export default {
         class="gl-ml-2"
         :title="
           s__(
-            'CiCatalog|The number of unique projects that used a component from this catalog project in a pipeline in the last 30 days.',
+            'CiCatalog|Number of unique projects that used a component from this catalog project in a pipeline in the last 30 days.',
           )
         "
       />

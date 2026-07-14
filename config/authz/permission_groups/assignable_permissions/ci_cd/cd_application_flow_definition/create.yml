@@ -1,0 +1,9 @@
+---
+name: create_cd_application_flow_definition
+description: Grants the ability to create continuous deployment application flow definitions
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_cd_application_flow_definition

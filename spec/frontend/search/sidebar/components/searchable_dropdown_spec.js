@@ -1,4 +1,4 @@
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlAvatar, GlCollapsibleListbox } from '@gitlab/ui';
 import { cloneDeep } from 'lodash-es';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
@@ -60,16 +60,11 @@ describe('Global Search Searchable Dropdown', () => {
 
     const propItems = [
       {
-        text: '',
-        options: [
-          {
-            value: 'Any',
-            text: 'Any',
-            id: null,
-            name: 'Any',
-            name_with_namespace: 'Any',
-          },
-        ],
+        value: 'Any',
+        text: 'Any',
+        id: null,
+        name: 'Any',
+        name_with_namespace: 'Any',
       },
       {
         text: 'Frequently searched',
@@ -110,6 +105,74 @@ describe('Global Search Searchable Dropdown', () => {
       const itemTitle = localWrapper.find('[data-testid="item-title"]');
       expect(itemTitle.exists()).toBe(true);
       expect(itemTitle.text()).toBe(MOCK_GROUPS[0].name);
+    });
+
+    it('renders an avatar for a real item in the list item slot', () => {
+      const store = new Vuex.Store({ state: { query: MOCK_QUERY } });
+
+      const localWrapper = shallowMount(SearchableDropdown, {
+        store,
+        propsData: { ...defaultProps, frequentItems: [MOCK_GROUPS[0]] },
+        stubs: {
+          GlCollapsibleListbox: {
+            props: ['items'],
+            template: '<div><slot name="list-item" :item="items[1].options[0]" /></div>',
+          },
+        },
+      });
+
+      expect(localWrapper.findComponent(GlAvatar).exists()).toBe(true);
+    });
+
+    it('does not render an avatar for the "Any" option', () => {
+      const store = new Vuex.Store({ state: { query: MOCK_QUERY } });
+
+      const localWrapper = shallowMount(SearchableDropdown, {
+        store,
+        propsData: { ...defaultProps, frequentItems: [MOCK_GROUPS[0]] },
+        stubs: {
+          GlCollapsibleListbox: {
+            props: ['items'],
+            template: '<div><slot name="list-item" :item="items[0]" /></div>',
+          },
+        },
+      });
+
+      expect(localWrapper.findComponent(GlAvatar).exists()).toBe(false);
+    });
+
+    it('renders the namespace for a real item in the list item slot', () => {
+      const store = new Vuex.Store({ state: { query: MOCK_QUERY } });
+
+      const localWrapper = shallowMount(SearchableDropdown, {
+        store,
+        propsData: { ...defaultProps, frequentItems: [MOCK_GROUPS[0]] },
+        stubs: {
+          GlCollapsibleListbox: {
+            props: ['items'],
+            template: '<div><slot name="list-item" :item="items[1].options[0]" /></div>',
+          },
+        },
+      });
+
+      expect(localWrapper.find('[data-testid="item-namespace"]').exists()).toBe(true);
+    });
+
+    it('does not render the namespace for the "Any" option', () => {
+      const store = new Vuex.Store({ state: { query: MOCK_QUERY } });
+
+      const localWrapper = shallowMount(SearchableDropdown, {
+        store,
+        propsData: { ...defaultProps, frequentItems: [MOCK_GROUPS[0]] },
+        stubs: {
+          GlCollapsibleListbox: {
+            props: ['items'],
+            template: '<div><slot name="list-item" :item="items[0]" /></div>',
+          },
+        },
+      });
+
+      expect(localWrapper.find('[data-testid="item-namespace"]').exists()).toBe(false);
     });
 
     describe('events', () => {

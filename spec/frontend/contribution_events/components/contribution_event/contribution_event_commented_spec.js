@@ -24,7 +24,7 @@ describe('ContributionEventCommented', () => {
     wrapper.findByRole('link', { name: event.noteable.reference_link_text });
   const findResourceParentLink = () => wrapper.findComponent(ResourceParentLink);
   const findContributionEventBase = () => wrapper.findComponent(ContributionEventBase);
-  const findEventBody = () => wrapper.findByTestId('event-body');
+  const findEventBody = () => wrapper.findByTestId('event-title');
 
   describe.each`
     event                             | expectedMessage

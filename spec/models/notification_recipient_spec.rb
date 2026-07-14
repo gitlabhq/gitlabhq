@@ -54,11 +54,9 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
 
     context 'when recipient email is blocked', :freeze_time, :clean_gitlab_redis_rate_limiting do
       before do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits)
-          .and_return(
-            temporary_email_failure: { threshold: 1, interval: 1.minute },
-            permanent_email_failure: { threshold: 1, interval: 1.minute }
-          )
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:temporary_email_failure).and_return(1)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:permanent_email_failure).and_return(1)
       end
 
       context 'with permanent failures' do

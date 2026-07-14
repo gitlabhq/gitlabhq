@@ -4,6 +4,7 @@ import { isUserBusy, computedClearStatusAfterValue } from './utils';
 import { AVAILABILITY_STATUS } from './constants';
 
 export default {
+  name: 'UserProfileSetStatusWrapper',
   components: { SetStatusForm },
   inject: ['fields'],
   data() {

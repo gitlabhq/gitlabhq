@@ -10,7 +10,6 @@ describe('Pipeline editor empty state', () => {
   const defaultProvide = {
     usesExternalConfig: false,
     newPipelinePath: '',
-    ciCatalogPath: '/explore/catalog',
   };
 
   const createComponent = ({ provide } = {}) => {

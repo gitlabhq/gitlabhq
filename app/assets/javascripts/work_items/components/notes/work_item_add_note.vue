@@ -144,6 +144,19 @@ export default {
       required: false,
     },
   },
+  emits: [
+    'blur',
+    'cancel-editing',
+    'error',
+    'focus',
+    'replied',
+    'replying',
+    'resolve',
+    'start-editing',
+    'start-replying',
+    'stop-editing',
+    'updateCount',
+  ],
   data() {
     return {
       addNoteKey: this.generateUniqueId(),

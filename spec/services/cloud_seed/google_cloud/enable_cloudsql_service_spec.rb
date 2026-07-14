@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe CloudSeed::GoogleCloud::EnableCloudsqlService, feature_category: :deployment_management do
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:params) do
     {

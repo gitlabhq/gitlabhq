@@ -41,6 +41,13 @@ RSpec.describe 'Query current user todos', feature_category: :source_code_manage
 
   it_behaves_like 'a working graphql query that returns data'
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_user, :read_todo] do
+    let(:user) { current_user }
+    let(:boundary_object) { :user }
+    let(:fields) { 'nodes { id }' }
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+  end
+
   it 'contains the expected ids' do
     is_expected.to contain_exactly(
       a_hash_including('id' => commit_todo.to_global_id.to_s),

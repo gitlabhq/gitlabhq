@@ -136,17 +136,21 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
       end
 
       it 'raises RecordNotFound when no items match' do
+        conditions = { category: :c }
+
         expect do
-          TestStaticModel.find_by!(category: :c)
+          TestStaticModel.find_by!(**conditions)
         end.to raise_error(ActiveRecord::FixedItemsModel::RecordNotFound,
-          "Couldn't find TestStaticModel with {:category=>:c}")
+          "Couldn't find TestStaticModel with #{conditions}")
       end
 
       it 'raises RecordNotFound with all conditions in the message' do
+        conditions = { category: :a, name: 'Item 2' }
+
         expect do
-          TestStaticModel.find_by!(category: :a, name: 'Item 2')
+          TestStaticModel.find_by!(**conditions)
         end.to raise_error(ActiveRecord::FixedItemsModel::RecordNotFound,
-          "Couldn't find TestStaticModel with {:category=>:a, :name=>\"Item 2\"}")
+          "Couldn't find TestStaticModel with #{conditions}")
       end
 
       it 'raises error for invalid attribute' do

@@ -72,6 +72,26 @@ describe('PerTestCoverageReporter', () => {
       });
     });
 
+    it('skips generated route helpers under lib/utils/path_helpers', () => {
+      const generatedSrc = `${PROJECT_DIR}/app/assets/javascripts/lib/utils/path_helpers/project.js`;
+      reporter.onTestResult(
+        { path: ABS_TEST },
+        {
+          testFilePath: ABS_TEST,
+          coverage: {
+            [ABS_SRC]: istanbulCoverage({ 1: 1 }),
+            [generatedSrc]: istanbulCoverage({ 1: 1, 2: 1 }),
+          },
+        },
+      );
+
+      expect(reporter.perTest).toEqual({
+        'spec/frontend/foo_spec.js': {
+          'app/assets/javascripts/foo.js': [1],
+        },
+      });
+    });
+
     it('skips when coverageEnabled is false', () => {
       const r = new PerTestCoverageReporter({ collectCoverage: false });
       r.onTestResult(

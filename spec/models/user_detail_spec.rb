@@ -386,6 +386,28 @@ RSpec.describe UserDetail, feature_category: :system_access do
     it { is_expected.to validate_length_of(:email_otp_last_sent_to).is_at_most(511) }
   end
 
+  describe '#banzai_render_context' do
+    let(:user_detail) { build(:user, bio: '**bold**').user_detail }
+
+    it 'specifies the user_bio pipeline for bio' do
+      expect(user_detail.banzai_render_context(:bio)).to include(pipeline: :user_bio)
+    end
+
+    it 'raises for other fields' do
+      expect { user_detail.banzai_render_context(:pronouns) }.to raise_error(ArgumentError)
+    end
+
+    it 'renders the bio through the restricted pipeline' do
+      expect(Banzai.render_field(user_detail, :bio)).to eq('<strong>bold</strong>')
+    end
+
+    it 'sanitizes HTML in the bio #security' do
+      user_detail.bio = '<a href="https://example.com" onclick="alert(1)">link</a> <script>alert(1)</script>'
+
+      expect(Banzai.render_field(user_detail, :bio)).to eq('link')
+    end
+  end
+
   describe '#save' do
     let(:user_detail) do
       attributes = {

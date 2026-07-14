@@ -107,6 +107,23 @@ func TestObjectUpload404(t *testing.T) {
 	require.Contains(t, err.Error(), "404")
 }
 
+func TestObjectUpload404WithLargeBody(t *testing.T) {
+	ts := httptest.NewServer(http.NotFoundHandler())
+	defer ts.Close()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	const objectSize = int64(8 << 20)
+	deadline := time.Now().Add(testTimeout)
+	objectURL := ts.URL + test.ObjectPath
+	object, err := NewObject(objectURL, "", map[string]string{}, objectSize)
+	require.NoError(t, err)
+
+	_, err = object.Consume(ctx, io.LimitReader(&endlessReader{}, objectSize), deadline)
+	require.Error(t, err)
+}
+
 type endlessReader struct{}
 
 func (e *endlessReader) Read(p []byte) (n int, err error) {

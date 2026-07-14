@@ -39,8 +39,8 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
     let(:txt)     { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
 
     context 'snippet uploads' do
-      let(:model)   { 'personal_snippet' }
-      let(:snippet) { create(:personal_snippet, :public) }
+      let(:model) { 'personal_snippet' }
+      let_it_be(:snippet) { create(:personal_snippet, :public) }
 
       context 'when a user does not have permissions to upload a file' do
         it "returns 401 when the user is not logged in" do

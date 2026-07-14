@@ -22,6 +22,7 @@ import TokenAccessTable from './token_access_table.vue';
 
 // Note: This component needs to be removed in the post cleanup after disabling of the feature
 export default {
+  name: 'OutboundTokenAccess',
   i18n: {
     toggleLabelTitle: s__(
       'CICD|Limit access %{italicStart}from%{italicEnd} this project (Deprecated)',

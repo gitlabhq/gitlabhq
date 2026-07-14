@@ -45,7 +45,12 @@ any tool without review, you can configure each tool to one of three modes:
 - **Always Deny**: The tool is blocked entirely and is invisible to the agent.
   The agent never sees the tool and the user is never prompted.
 
-This feature applies across Agentic Chat, IDE extensions, and flows.
+This feature applies to Agentic Chat and IDE extensions. For flows, governance
+enforcement depends on where the flow runs:
+
+- For flows that run in an IDE extension, GitLab enforces governance rules.
+- For flows that run in CI/CD runners, such as the Duo Developer or Duo Code Review foundational flows,
+  GitLab does not enforce governance rules. For more information, see [Known issues](#known-issues).
 
 ## Default governance matrix
 
@@ -89,7 +94,7 @@ override the defaults. If no rule is configured at any level, the tool
 defaults to Always Allow.
 
 The fail-closed principle applies. If the governance service encounters
-a persistent error when resolving rules, the agent receives no tools rather 
+a persistent error when resolving rules, the agent receives no tools rather
 than silently allowing execution.
 
 ## Configure tool governance for a group
@@ -127,6 +132,16 @@ To configure tool governance rules for a project:
 1. Select **Change governance**.
 1. For each tool, select a mode from the dropdown: **Always Allow**, **Always Ask**, or **Always Deny**.
 1. Select **Save changes**.
+
+## Known issues
+
+- Tool governance rules do not apply to flows that run in CI/CD runners, such as the
+  [Duo Developer foundational flow](../flows/foundational_flows/developer.md).
+  When a flow runs in a runner, the runner's permissions override governance
+  enforcement, and the configured Always Allow, Always Ask, or Always Deny
+  modes have no effect.
+- The governance UI has two access categories: Web (browser-based sessions) and
+  Local (IDE and CLI). Flows that run in CI/CD runners do not map to either category.
 
 ## Related topics
 

@@ -5,6 +5,27 @@ module Gitlab
     class ChangedPath
       attr_reader :status, :path, :old_mode, :new_mode, :new_blob_id, :old_blob_id, :old_path, :commit_id
 
+      def self.from_diff(diff)
+        status =
+          if diff.new_file?
+            :ADDED
+          elsif diff.deleted_file?
+            :DELETED
+          elsif diff.renamed_file?
+            :RENAMED
+          else
+            :MODIFIED
+          end
+
+        new(
+          status: status,
+          path: diff.new_path,
+          old_path: diff.old_path,
+          old_mode: diff.a_mode,
+          new_mode: diff.b_mode
+        )
+      end
+
       def initialize(
         status:, path:, old_mode:, new_mode:, new_blob_id: nil, old_blob_id: nil, old_path: nil,
         commit_id: nil)

@@ -19,6 +19,7 @@ export default {
       required: true,
     },
   },
+  emits: ['reconnect'],
   computed: {
     statusBadgeId() {
       return `status-badge-${this.popoverId}`;

@@ -24,6 +24,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['hide-new-incident-timeline-event-form'],
   data() {
     return { eventToEdit: null, editTimelineEventActive: false };
   },

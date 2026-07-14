@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Import::OfflineController, feature_category: :importers do
   describe 'GET show' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     before do
       login_as(user)
@@ -37,9 +37,14 @@ RSpec.describe Import::OfflineController, feature_category: :importers do
         stub_feature_flags(offline_transfer_ui: true, offline_transfer_exports: true, offline_transfer_imports: false)
       end
 
-      it 'renders the template' do
+      it 'renders the template and pushes the flags with exports enabled and imports disabled' do
         get import_offline_path
+
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to have_pushed_frontend_feature_flags(
+          offlineTransferExports: true,
+          offlineTransferImports: false
+        )
       end
     end
 
@@ -48,9 +53,14 @@ RSpec.describe Import::OfflineController, feature_category: :importers do
         stub_feature_flags(offline_transfer_ui: true, offline_transfer_exports: false, offline_transfer_imports: true)
       end
 
-      it 'renders the template' do
+      it 'renders the template and pushes the flags with exports disabled and imports enabled' do
         get import_offline_path
+
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to have_pushed_frontend_feature_flags(
+          offlineTransferExports: false,
+          offlineTransferImports: true
+        )
       end
     end
 
@@ -59,9 +69,14 @@ RSpec.describe Import::OfflineController, feature_category: :importers do
         stub_feature_flags(offline_transfer_ui: true, offline_transfer_exports: true, offline_transfer_imports: true)
       end
 
-      it 'renders the template' do
+      it 'pushes the flags with both exports and imports enabled' do
         get import_offline_path
+
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to have_pushed_frontend_feature_flags(
+          offlineTransferExports: true,
+          offlineTransferImports: true
+        )
       end
     end
   end

@@ -28,6 +28,16 @@ RSpec.describe Ci::Workloads::UpdateWorkloadStatusEventWorker, feature_category:
       end
     end
 
+    context 'when the event carries a partition_id that does not match the pipeline' do
+      let(:data) do
+        { pipeline_id: pipeline.id, status: status, partition_id: pipeline.partition_id + 1 }
+      end
+
+      it 'does not change workload state' do
+        expect { handle_event }.not_to change { workload.reload.status_name }
+      end
+    end
+
     context 'when pipeline is found' do
       context 'when workload cannot be found' do
         let_it_be(:pipeline_without_workload) { create(:ci_pipeline, project: project) }

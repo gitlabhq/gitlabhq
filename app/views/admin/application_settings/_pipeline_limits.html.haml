@@ -11,4 +11,9 @@
       = f.label :pipeline_limit_per_user,  _('Maximum number of requests for a user. Resets after 1 minute.')
       = f.number_field :pipeline_limit_per_user, class: 'form-control gl-form-input'
 
+  %fieldset
+    .form-group
+      = f.label :ci_lint_limit_per_user,  _('Maximum number of CI Lint requests for a user. Resets after 1 minute. Set to 0 for unlimited requests per minute.')
+      = f.number_field :ci_lint_limit_per_user, class: 'form-control gl-form-input'
+
   = f.submit _('Save changes'), pajamas_button: true

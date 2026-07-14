@@ -1,6 +1,7 @@
 <script>
 import { gfm } from '~/vue_shared/directives/gfm';
-import { __ } from '~/locale';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import { __, sprintf } from '~/locale';
 import NoteAttachment from '~/notes/components/note_attachment.vue';
 import NoteEditedText from '~/notes/components/note_edited_text.vue';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
@@ -17,6 +18,7 @@ export default {
     NoteSuggestions,
   },
   directives: {
+    SafeHtml,
     gfm,
   },
   props: {
@@ -52,8 +54,13 @@ export default {
       required: false,
       default: null,
     },
+    isFirstNote: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
-  emits: ['award', 'cancelEditing', 'input'],
+  emits: ['award', 'cancel-editing', 'input'],
   computed: {
     noteBody: {
       get() {
@@ -72,6 +79,32 @@ export default {
     hasSuggestion() {
       return this.note.suggestions?.length > 0;
     },
+    isDuoFirstReviewComment() {
+      if (this.note.author.user_type !== 'duo_code_review_bot') {
+        return false;
+      }
+
+      return this.isFirstNote;
+    },
+    duoFeedbackText() {
+      return sprintf(
+        __(
+          'Rate this response %{emoji} %{separator} Mention %{codeStart}%{botUser}%{codeEnd} to continue the conversation.',
+        ),
+        {
+          separator: '•',
+          codeStart: '<code>',
+          botUser: `@${this.note.author.username}`,
+          codeEnd: '</code>',
+          emoji:
+            '<gl-emoji data-name="thumbsup"></gl-emoji> <gl-emoji data-name="thumbsdown"></gl-emoji>',
+        },
+        false,
+      );
+    },
+  },
+  safeHtmlConfig: {
+    ADD_TAGS: ['gl-emoji'],
   },
 };
 </script>
@@ -96,7 +129,7 @@ export default {
       :save-note="saveNote"
       :save-note-error-messages="saveNoteErrorMessages"
       @input="$emit('input', $event)"
-      @cancel="$emit('cancelEditing', $event)"
+      @cancel="$emit('cancel-editing', $event)"
     />
     <textarea
       v-if="canEdit"
@@ -112,6 +145,12 @@ export default {
       :action-text="__('Edited')"
       class="gl-mt-2"
     />
+    <div
+      v-if="isDuoFirstReviewComment"
+      v-safe-html:[$options.safeHtmlConfig]="duoFeedbackText"
+      class="gl-mt-4 gl-text-md gl-text-subtle"
+      data-testid="duo-review-feedback"
+    ></div>
     <div v-if="note.award_emoji && note.award_emoji.length" class="gl-mt-3">
       <awards-list
         :awards="note.award_emoji"

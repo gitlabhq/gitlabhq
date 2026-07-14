@@ -6,6 +6,7 @@ import { searchInItemsProperties } from '~/lib/utils/search_utils';
 const MIN_ITEMS_COUNT_FOR_SEARCHING = 10;
 
 export default {
+  name: 'ListboxInput',
   i18n: {
     noResultsText: __('No results found'),
   },

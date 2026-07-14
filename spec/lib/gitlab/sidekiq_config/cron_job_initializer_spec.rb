@@ -6,19 +6,6 @@ RSpec.describe Gitlab::SidekiqConfig::CronJobInitializer, feature_category: :bui
   describe '.execute', :allow_unrouted_sidekiq_calls do
     subject(:execute) { described_class.execute }
 
-    let(:cron_jobs_hash) do
-      {
-        'gitlab_service_ping_worker' => {
-          'cron' => nil,
-          'class' => 'GitlabServicePingWorker'
-        },
-        'import_export_project_cleanup_worker' => {
-          'cron' => '0 * * * *',
-          'class' => 'ImportExportProjectCleanupWorker'
-        }
-      }
-    end
-
     around do |example|
       Gitlab::SidekiqConfig::CronJobs.reset!
       example.run
@@ -26,7 +13,6 @@ RSpec.describe Gitlab::SidekiqConfig::CronJobInitializer, feature_category: :bui
     end
 
     before do
-      allow(Gitlab::SidekiqConfig).to receive(:cron_jobs).and_return(cron_jobs_hash)
       allow(Gitlab::CurrentSettings).to receive(:uuid).and_return('d9e2f4e8-db1f-4e51-b03d-f427e1965c4a')
     end
 
@@ -41,37 +27,54 @@ RSpec.describe Gitlab::SidekiqConfig::CronJobInitializer, feature_category: :bui
     end
 
     it 'computes service ping cron from instance UUID' do
-      expect(Sidekiq::Cron::Job).to receive(:load_from_hash!) do |jobs, **|
-        expect(jobs['gitlab_service_ping_worker']['cron']).to eq('44 10 * * 4')
-      end
+      allow(Sidekiq::Cron::Job).to receive(:load_from_hash!)
 
       execute
+
+      expect(Gitlab::SidekiqConfig.cron_jobs['gitlab_service_ping_worker']['cron']).to eq('44 10 * * 4')
     end
 
     it 'produces valid service ping cron when uuid is nil' do
       allow(Gitlab::CurrentSettings).to receive(:uuid).and_return(nil)
-
-      expect(Sidekiq::Cron::Job).to receive(:load_from_hash!) do |jobs, **|
-        expect(jobs['gitlab_service_ping_worker']['cron']).to match(/\A\d+ \d+ \* \* \d\z/)
-      end
+      allow(Sidekiq::Cron::Job).to receive(:load_from_hash!)
 
       execute
+
+      expect(Gitlab::SidekiqConfig.cron_jobs['gitlab_service_ping_worker']['cron'])
+        .to match(/\A\d+ \d+ \* \* \d\z/)
     end
 
-    it 'does not override service ping cron already set in config' do
-      cron_jobs_hash['gitlab_service_ping_worker']['cron'] = '5 3 * * 1'
-
-      expect(Sidekiq::Cron::Job).to receive(:load_from_hash!) do |jobs, **|
-        expect(jobs['gitlab_service_ping_worker']['cron']).to eq('5 3 * * 1')
-      end
+    it 'does not override service ping cron configured in gitlab.yml' do
+      allow(Gitlab.config).to receive(:cron_jobs).and_return(
+        Gitlab::Configs.build_options('gitlab_service_ping_worker' => { 'cron' => '5 3 * * 1' })
+      )
+      allow(Sidekiq::Cron::Job).to receive(:load_from_hash!)
 
       execute
+
+      expect(Gitlab::SidekiqConfig.cron_jobs['gitlab_service_ping_worker']['cron']).to eq('5 3 * * 1')
+    end
+
+    context 'when CronJobs#timezone_override is set' do
+      before do
+        allow_next_instance_of(Gitlab::SidekiqConfig::CronJobs) do |instance|
+          allow(instance).to receive(:timezone_override).and_return('America/Chicago')
+        end
+      end
+
+      it 'appends the timezone to the computed service ping cron' do
+        allow(Sidekiq::Cron::Job).to receive(:load_from_hash!)
+
+        execute
+
+        expect(Gitlab::SidekiqConfig.cron_jobs['gitlab_service_ping_worker']['cron'])
+          .to eq('44 10 * * 4 America/Chicago')
+      end
     end
 
     context 'as integration tests', :allow_unrouted_sidekiq_calls do
       before do
         Sidekiq::Cron::Job.load_from_hash!({}, source: 'schedule')
-        allow(Gitlab::SidekiqConfig).to receive(:cron_jobs).and_call_original
         allow(Gitlab::CurrentSettings).to receive(:uuid).and_return('d9e2f4e8-db1f-4e51-b03d-f427e1965c4a')
       end
 
@@ -107,7 +110,9 @@ RSpec.describe Gitlab::SidekiqConfig::CronJobInitializer, feature_category: :bui
 
         context 'when a cron override is configured in gitlab.yml' do
           before do
-            cron_overrides = GitlabSettings::Options.build('pipeline_schedule_worker' => { 'cron' => '*/1 * * * *' })
+            cron_overrides = Gitlab::Configs.build_options(
+              'pipeline_schedule_worker' => { 'cron' => '*/1 * * * *' }
+            )
             allow(Gitlab.config).to receive(:cron_jobs).and_return(cron_overrides)
           end
 
@@ -120,19 +125,12 @@ RSpec.describe Gitlab::SidekiqConfig::CronJobInitializer, feature_category: :bui
       end
 
       context 'with JH schedule' do
-        let(:jh_schedule) { { 'pipeline_schedule_worker' => { 'status' => 'disabled' } } }
-
         before do
-          allow_next_instance_of(Gitlab::SidekiqConfig::CronJobs) do |instance|
-            allow(instance).to receive(:schedule_paths).and_return([
-              Gitlab::SidekiqConfig::CronJobs::SCHEDULE_PATH,
-              Gitlab::SidekiqConfig::CronJobs::JH_SCHEDULE_PATH
-            ])
-            allow(instance).to receive(:load_schedule_file).and_call_original
-            allow(instance).to receive(:load_schedule_file)
-              .with(Gitlab::SidekiqConfig::CronJobs::JH_SCHEDULE_PATH)
-              .and_return(jh_schedule)
-          end
+          stub_const(
+            "#{Gitlab::SidekiqConfig::CronJobs}::JH_SCHEDULE_PATH",
+            expand_fixture_path('gitlab/sidekiq_config/schedule_jh.yml')
+          )
+          allow(Gitlab).to receive(:jh?).and_return(true)
         end
 
         it 'merges JH overrides on top of the base schedule' do

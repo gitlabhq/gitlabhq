@@ -55,7 +55,7 @@ export default {
       default: '',
     },
   },
-  emits: ['input', 'reset'],
+  emits: ['input', 'reset', 'resize-end'],
   computed: {
     currentSize() {
       // ARIA separator requires valuenow ∈ [valuemin, valuemax]. Clamp at the
@@ -107,6 +107,9 @@ export default {
       this.$emit('reset');
       this.$emit('input', null);
     },
+    onResizeEnd(size) {
+      this.$emit('resize-end', size);
+    },
     onKeyDown(e) {
       const stepPx = e.shiftKey ? this.largeStep : this.step;
       // Derive the widen direction from the visual side, not just `dir`.
@@ -157,5 +160,6 @@ export default {
     :custom-class="resolvedCustomClass"
     @update:size="onChildUpdate"
     @reset-size="onReset"
+    @resize-end="onResizeEnd"
   />
 </template>

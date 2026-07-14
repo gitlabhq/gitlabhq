@@ -3,6 +3,7 @@
 - help_link_prevent_outdated = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'prevent-outdated-deployment-jobs'), target: '_blank', rel: 'noopener noreferrer'
 - help_link_prevent_outdated_allow_rollback = link_to sprite_icon('question-o'), help_page_path('ci/environments/deployment_safety.md', anchor: 'job-retries-for-rollback-deployments'), target: '_blank', rel: 'noopener noreferrer'
 - help_link_separated_caches = link_to sprite_icon('question-o'), help_page_path('ci/caching/_index.md', anchor: 'cache-key-names'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_skip_branch_pipelines_for_mrs = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'skip-branch-pipelines-for-merge-requests'), target: '_blank', rel: 'noopener noreferrer'
 
 .row.gl-mt-3
   .gl-col-lg-12
@@ -20,6 +21,13 @@
             checked_value: 'enabled',
             unchecked_value: 'disabled',
             help_text: (_('Pipelines for new changes cause older pending or running pipelines on the same branch to be cancelled.') + ' ' + help_link_auto_canceling).html_safe
+
+        .form-group
+          - beta_badge = render(Pajamas::ExperimentBadgeComponent.new(type: :beta))
+          = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
+            = form.gitlab_ui_checkbox_component :skip_branch_pipelines_for_mrs,
+              safe_join([s_("CICD|Skip branch pipelines for merge requests"), ' ', beta_badge]),
+              help_text: (s_("CICD|When enabled, pushing to a branch with an open merge request creates only a merge request pipeline. The branch pipeline is skipped.") + ' ' + help_link_skip_branch_pipelines_for_mrs).html_safe
 
         .form-group
           = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|

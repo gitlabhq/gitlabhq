@@ -21,6 +21,11 @@ RSpec.describe Ci::JobArtifactReport, feature_category: :job_artifacts do
   describe 'partitioning' do
     context 'with job_artifact' do
       let_it_be(:job_artifact) { build(:ci_job_artifact, partition_id: ci_testing_partition_id) }
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:job_artifact_report, freeze: false) { build(:ci_job_artifact_report, job_artifact: job_artifact) }
 
       it 'sets partition_id to the current partition value' do

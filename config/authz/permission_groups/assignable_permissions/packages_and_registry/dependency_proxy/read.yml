@@ -1,0 +1,9 @@
+---
+name: read_dependency_proxy
+description: Grants the ability to pull through the dependency proxy
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - read_dependency_proxy

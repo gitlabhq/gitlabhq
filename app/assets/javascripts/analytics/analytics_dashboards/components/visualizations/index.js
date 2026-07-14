@@ -10,6 +10,7 @@
 export default {
   AreaChart: () => import('./area_chart.vue'),
   DataTable: () => import('./data_table/data_table.vue'),
+  Glql: () => import('./glql.vue'),
   LineChart: () => import('./line_chart.vue'),
   SingleStat: () => import('./single_stat.vue'),
 };

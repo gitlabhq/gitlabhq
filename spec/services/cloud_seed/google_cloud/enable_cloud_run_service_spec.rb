@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe CloudSeed::GoogleCloud::EnableCloudRunService, feature_category: :deployment_management do
   describe 'when a project does not have any gcp projects' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     it 'returns error' do
       result = described_class.new(project).execute
@@ -15,7 +15,7 @@ RSpec.describe CloudSeed::GoogleCloud::EnableCloudRunService, feature_category: 
   end
 
   describe 'when a project has 3 gcp projects' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     before do
       project.variables.build(environment_scope: 'production', key: 'GCP_PROJECT_ID', value: 'prj-prod')

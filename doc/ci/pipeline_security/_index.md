@@ -222,4 +222,4 @@ include:
 ### Related topics
 
 1. [CIS Docker Benchmarks](https://www.cisecurity.org/benchmark/docker)
-1. Google Cloud: [Design secure deployment pipelines](https://cloud.google.com/architecture/design-secure-deployment-pipelines-bp)
+1. Google Cloud: [Design secure deployment pipelines](https://docs.cloud.google.com/architecture/design-secure-deployment-pipelines-bp)

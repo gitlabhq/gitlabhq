@@ -2,6 +2,7 @@
 table_name: dependency_list_export_part_uploads
 classes:
 - Dependencies::DependencyListExport::Part
+- Geo::DependencyListExportPartUpload
 - Upload
 feature_categories:
 - dependency_management

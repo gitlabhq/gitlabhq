@@ -81,8 +81,8 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
             click_button 'Add rule'
 
             settings_block = find_by_testid(settings_block_id)
-            expect(page).not_to have_selector 'h2', text: 'Add protection rule'
             expect(page).to have_content('Package protection rule created.')
+            expect(page).not_to have_selector 'h2', text: 'Add protection rule'
             expect(settings_block).to have_content('v.*')
             expect(settings_block).to have_content('PyPI')
             expect(settings_block).to have_content('Owner')
@@ -121,8 +121,8 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
             end
 
             settings_block = find_by_testid(settings_block_id)
-            expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
             expect(page).to have_content('Changes saved.')
+            expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
             expect(settings_block).to have_content('v1.*')
             expect(find_by_testid('package-type')).to have_content('PyPI')
             expect(find_by_testid('minimum-access-level-push-value')).to have_content('Administrator')
@@ -169,8 +169,8 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
             click_button 'Add rule'
           end
 
-          expect(page).not_to have_selector 'h2', text: 'Add protection rule'
           expect(page).to have_content('Protection rule created.')
+          expect(page).not_to have_selector 'h2', text: 'Add protection rule'
 
           settings_block = find_by_testid(settings_block_id)
           expect(settings_block).to have_content("#{project.full_path}/*test*")
@@ -211,8 +211,8 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
             click_button 'Save changes'
           end
 
-          expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
           expect(page).to have_content('Changes saved.')
+          expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
 
           within_testid settings_block_id do |settings_block|
             expect(settings_block).to have_content("#{project.full_path}/*test*-updated")
@@ -262,8 +262,8 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
           click_button 'Add rule'
 
           settings_block = find_by_testid(settings_block_id)
-          expect(page).not_to have_selector 'h2', text: 'Add protection rule'
           expect(page).to have_content('Container protection rule created.')
+          expect(page).not_to have_selector 'h2', text: 'Add protection rule'
           expect(settings_block).to have_content('v.*')
           expect(settings_block).to have_content('Owner')
           expect(settings_block).to have_content('Administrator')
@@ -304,8 +304,8 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
           end
 
           settings_block = find_by_testid(settings_block_id)
-          expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
           expect(page).to have_content('Container protection rule updated.')
+          expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
           expect(settings_block).to have_content('v1.*')
           expect(find_by_testid('minimum-access-level-push-value')).to have_content('Maintainer')
           expect(find_by_testid('minimum-access-level-delete-value')).to have_content('Maintainer')

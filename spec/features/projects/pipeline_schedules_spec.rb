@@ -16,7 +16,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
     project.update!(ci_pipeline_variables_minimum_override_role: :developer)
   end
 
-  context 'logged in as the pipeline schedule owner' do
+  context 'when logged in as the pipeline schedule owner' do
     before do
       project.add_developer(user)
       pipeline_schedule.update!(owner: user)
@@ -27,7 +27,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
       it 'edits the pipeline' do
         visit_pipelines_schedules
 
-        find_by_testid('edit-pipeline-schedule-btn').click
+        click_on 'Edit scheduled pipeline'
 
         expect(page).to have_content(s_('PipelineSchedules|Edit scheduled pipeline'))
         expect(page).to have_button(s_('PipelineSchedules|Save changes'))
@@ -49,20 +49,19 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
     end
 
     describe 'PATCH /projects/pipelines_schedules/:id/edit' do
-      context 'default' do
+      context 'with default state' do
         before do
           edit_pipeline_schedule
         end
 
         it 'displays existing properties' do
-          description = find_field('schedule-description').value
-          expect(description).to eq('pipeline schedule')
+          expect(page).to have_field('Description', with: 'pipeline schedule')
           expect(page).to have_button('master')
-          expect(page).to have_button(_('Select timezone'))
+          expect(page).to have_button('Select timezone')
         end
 
         it 'edits the scheduled pipeline' do
-          fill_in 'schedule-description', with: 'my brand new description'
+          fill_in 'Description', with: 'my brand new description'
 
           save_pipeline_schedule
 
@@ -79,7 +78,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
           edit_pipeline_schedule
 
           page.within('#schedule-target-branch-tag') do
-            expect(first('.gl-button-text').text).to eq('master')
+            expect(page).to have_button('master')
           end
         end
       end
@@ -93,14 +92,14 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
           edit_pipeline_schedule
 
           page.within('#schedule-target-branch-tag') do
-            expect(first('.gl-button-text').text).to eq('master')
+            expect(page).to have_button('master')
           end
         end
       end
     end
   end
 
-  context 'logged in as a project maintainer' do
+  context 'when logged in as a project maintainer' do
     before do
       project.add_maintainer(user)
       pipeline_schedule.update!(owner: maintainer)
@@ -108,7 +107,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
     end
 
     describe 'GET /projects/pipeline_schedules' do
-      context 'default' do
+      context 'with default state' do
         before do
           visit_pipelines_schedules
         end
@@ -137,11 +136,12 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
             expect(page).to have_content('Schedule a new pipeline')
           end
 
-          it 'changes ownership of the pipeline', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9431' do
-            find_by_testid('take-ownership-pipeline-schedule-btn').click
+          it 'changes ownership of the pipeline' do
+            click_on 'Take ownership of pipeline schedule'
 
-            send_keys [:tab, :enter]
-            wait_for_requests
+            within_modal do
+              click_button 'Take ownership'
+            end
 
             within_testid('pipeline-schedule-table-row') do
               expect(page).not_to have_content('No owner')
@@ -150,16 +150,15 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
           end
 
           it 'deletes the pipeline schedule' do
-            row_text = find_by_testid('pipeline-schedule-table-row').text
-
             within_testid('pipeline-schedule-table-row') do
-              find_by_testid('delete-pipeline-schedule-btn').click
+              click_on 'Delete scheduled pipeline'
             end
 
-            accept_gl_confirm(button_text: s_('PipelineSchedules|Delete scheduled pipeline'))
-            wait_for_requests
+            within_modal do
+              click_button 'Delete scheduled pipeline'
+            end
 
-            expect(page).not_to have_css('[data-testid="pipeline-schedule-table-row"]', text: row_text, wait: 10)
+            expect(page).not_to have_testid('pipeline-schedule-table-row', text: pipeline_schedule.description)
           end
         end
       end
@@ -171,10 +170,8 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         end
 
         it 'shows a list of the pipeline schedules with empty ref column' do
-          target = find_by_testid('pipeline-schedule-target')
-
           within_testid('pipeline-schedule-table-row') do
-            expect(target.text).to eq(s_('PipelineSchedules|None'))
+            expect(page).to have_testid('pipeline-schedule-target', text: 'None', exact_text: true)
           end
         end
       end
@@ -186,9 +183,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         end
 
         it 'shows a list of the pipeline schedules with empty ref column' do
-          target = find_by_testid('pipeline-schedule-target')
-
-          expect(target.text).to eq(s_('PipelineSchedules|None'))
+          expect(page).to have_testid('pipeline-schedule-target', text: 'None', exact_text: true)
         end
       end
     end
@@ -211,7 +206,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
       end
 
       it 'prevents an invalid form from being submitted' do
-        fill_in 'schedule-description', with: 'my fancy description'
+        fill_in 'Description', with: 'my fancy description'
         create_pipeline_schedule
 
         expect(page).to have_content("Schedule a new pipeline")
@@ -340,7 +335,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
 
   it_behaves_like 'user without project access'
 
-  context 'logged in as non-member' do
+  context 'when logged in as non-member' do
     before do
       sign_in(user)
     end
@@ -378,7 +373,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
   end
 
   def fill_in_schedule_form
-    fill_in 'schedule-description', with: 'my fancy description'
+    fill_in 'Description', with: 'my fancy description'
     fill_in 'schedule_cron', with: '* 1 2 3 4'
 
     select_timezone

@@ -3,23 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe CustomerRelations::GroupMigrationService, feature_category: :service_desk do
-  let(:old_group) { create(:group) }
-  let(:new_group) { create(:group) }
+  let_it_be(:old_group) { create(:group) }
+  let_it_be(:new_group) { create(:group) }
   let(:was_crm_source) { true }
   let(:service) { described_class.new(old_group.id, new_group.id, was_crm_source) }
 
-  let!(:duplicate_organization) { create(:crm_organization, group: old_group, name: "Organization A") }
-  let!(:unique_organization) { create(:crm_organization, group: old_group, name: "Organization B") }
-  let!(:duplicate_contact) do
+  let_it_be(:duplicate_organization) { create(:crm_organization, group: old_group, name: "Organization A") }
+  let_it_be(:unique_organization) { create(:crm_organization, group: old_group, name: "Organization B") }
+  let_it_be(:duplicate_contact) do
     create(:contact, group: old_group, organization: duplicate_organization, email: "duplicate_contact@example.com")
   end
 
-  let!(:unique_contact) do
+  let_it_be(:unique_contact) do
     create(:contact, group: old_group, organization: unique_organization, email: "unique_contact@example.com")
   end
 
-  let!(:existing_organization) { create(:crm_organization, group: new_group, name: "Organization A") }
-  let!(:existing_contact) do
+  let_it_be(:existing_organization) { create(:crm_organization, group: new_group, name: "Organization A") }
+  let_it_be(:existing_contact) do
     create(:contact, group: new_group, organization: existing_organization, email: "duplicate_contact@example.com")
   end
 

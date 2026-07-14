@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI Coding
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Suggest improvements to the code in a merge request, and commit those improvements to the merge request directly from your browser.
@@ -97,7 +97,7 @@ Multi-line comments display the comment's line numbers above the body of the com
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1 [with a flag](../../../../administration/feature_flags/_index.md) named `content_editor_on_issues`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1 [with a feature flag](../../../../administration/feature_flags/_index.md) named `content_editor_on_issues`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375172) in GitLab 16.2.
 - Feature flag `content_editor_on_issues` removed in GitLab 16.5.
 

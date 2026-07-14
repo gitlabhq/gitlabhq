@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Pajamas
   class ButtonComponentPreview < ViewComponent::Preview
     # Button

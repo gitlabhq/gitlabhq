@@ -43,6 +43,21 @@ module Gitlab
           ephemeral_response(text: message)
         end
 
+        def authorize_for_mention
+          message =
+            if resource
+              ":wave: Hi there! To get started, please [connect your GitLab account](#{resource}).\n\n" \
+                "This links your Slack identity to your own GitLab account — " \
+                "GitLab Duo will act on your behalf using only your personal GitLab permissions, " \
+                "and your data is never shared with other users in this channel.\n\n" \
+                "Once connected, mention me again to continue."
+            else
+              ":sweat_smile: Couldn't identify you, nor can I authorize you!"
+            end
+
+          ephemeral_response(text: message)
+        end
+
         def confirm(url)
           text = [
             _("To ensure the highest security standards, we verify the source of all slash commands."),

@@ -3,6 +3,7 @@ import { GlForm, GlFormInput, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'AddRequest',
   i18n: {
     buttonLabel: __('Add request manually'),
     inputLabel: __('URL or request ID'),
@@ -16,6 +17,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  emits: ['add-request'],
   data() {
     return {
       inputEnabled: false,

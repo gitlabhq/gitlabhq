@@ -4,7 +4,7 @@ require 'spec_helper'
 require './keeps/cleanup_unused_indexes/migration_builder'
 
 RSpec.describe Keeps::CleanupUnusedIndexes::MigrationBuilder, feature_category: :database do
-  let(:migration_file) { 'db/post_migrate/20260601000000_async_remove_unused_index_index_users_on_foo.rb' }
+  let(:migration_file) { 'db/post_migrate/20260601000000_remove_unused_index_index_users_on_foo.rb' }
   let(:generator) { instance_double(::PostDeploymentMigration::PostDeploymentMigrationGenerator) }
   let(:file_helper) { instance_double(::Keeps::Helpers::FileHelper) }
 
@@ -12,7 +12,6 @@ RSpec.describe Keeps::CleanupUnusedIndexes::MigrationBuilder, feature_category: 
     {
       name: 'index_users_on_foo',
       tablename: 'users',
-      gitlab_schema: 'gitlab_main',
       columns: [:foo]
     }
   end
@@ -42,29 +41,20 @@ RSpec.describe Keeps::CleanupUnusedIndexes::MigrationBuilder, feature_category: 
       expect(result.digest_file).to eq('db/schema_migrations/20260601000000')
     end
 
-    it 'rewrites the generated stub with prepare_async_index_removal' do
+    it 'rewrites the generated stub with remove_concurrent_index_by_name' do
       builder.build(ctx)
 
       expect(file_helper).to have_received(:replace_method_content)
-        .with(:change, a_string_matching(/prepare_async_index_removal/), strip_comments_from_file: true)
+        .with(:change, a_string_matching(/remove_concurrent_index_by_name\(TABLE_NAME, INDEX_NAME\)/),
+          strip_comments_from_file: true)
     end
 
-    it 'restricts the migration to the table gitlab_schema for multi-db correctness' do
+    it 're-adds the index with add_concurrent_index in the down block' do
       builder.build(ctx)
 
       expect(file_helper).to have_received(:replace_method_content).with(
         :change,
-        a_string_matching(/restrict_gitlab_migration gitlab_schema: :gitlab_main\b/),
-        strip_comments_from_file: true
-      )
-    end
-
-    it 'uses unprepare_async_index_by_name in the down block (identity is the name)' do
-      builder.build(ctx)
-
-      expect(file_helper).to have_received(:replace_method_content).with(
-        :change,
-        a_string_matching(/unprepare_async_index_by_name\(TABLE_NAME, INDEX_NAME\)/),
+        a_string_matching(/add_concurrent_index\(TABLE_NAME, COLUMN_NAMES, name: INDEX_NAME\)/),
         strip_comments_from_file: true
       )
     end
@@ -88,7 +78,7 @@ RSpec.describe Keeps::CleanupUnusedIndexes::MigrationBuilder, feature_category: 
 
   describe 'unique migration name (private)' do
     it 'returns the base name when short enough' do
-      expect(builder.send(:unique_migration_name_for, 'foo')).to eq('async_remove_unused_index_foo')
+      expect(builder.send(:unique_migration_name_for, 'foo')).to eq('remove_unused_index_foo')
     end
 
     it 'truncates and appends a SHA suffix for long names', :aggregate_failures do

@@ -277,7 +277,8 @@ item in group **Settings** > **SAML Group Links**.
 
 To link the SAML groups:
 
-1. In **SAML Group Name**, enter the value of the relevant `saml:AttributeValue`. The value entered here must exactly match the value sent in the SAML response. For some IdPs, this may be a group ID or object ID (Azure AD) instead of a friendly group name.
+1. In **SAML Group Name**, enter the value of the relevant `saml:AttributeValue`.
+   The SAML Group Name is case-sensitive and must exactly match the value sent in the SAML response.
 1. Choose a [default role](../../permissions.md) or [custom member role](../../custom_roles/_index.md) in **Access Level**.
 1. Select **Save**.
 1. Repeat to add additional group links if required.
@@ -292,7 +293,7 @@ To link the SAML groups:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480766) for GitLab.com in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `saml_groups_duo_pro_add_on_assignment`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480766) for GitLab.com in GitLab 17.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `saml_groups_duo_pro_add_on_assignment`. Disabled by default.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512141) for GitLab Self-Managed in GitLab 18.0.
 
 {{< /history >}}

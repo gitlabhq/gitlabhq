@@ -6,6 +6,7 @@ import EmailParticipantsWarning from './email_participants_warning.vue';
 const ATTACHMENT_REGEXP = /!?\[.*?\]\(\/uploads\/[0-9a-f]{32}\/.*?\)/;
 
 export default {
+  name: 'CommentFieldLayout',
   i18n: {
     attachmentWarning: s__(
       'Notes|Attachments are sent by email. Attachments over 10 MB are sent as links to your GitLab instance, and only accessible to project members.',
@@ -83,7 +84,7 @@ export default {
     ></div>
     <noteable-warning
       v-if="hasWarningAbove"
-      class="-gl-mb-3 gl-rounded-lg gl-rounded-b-none gl-pb-5 gl-pt-4"
+      class="-gl-mb-3 gl-rounded-lg gl-rounded-b-none gl-pb-5 gl-pt-3"
       :is-locked="isLocked"
       :is-confidential="isConfidential"
     />

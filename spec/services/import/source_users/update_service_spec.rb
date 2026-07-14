@@ -53,8 +53,8 @@ RSpec.describe Import::SourceUsers::UpdateService, feature_category: :importers 
 
         import_source_user.reload
 
-        expect(import_source_user.source_name).to eq(nil)
-        expect(import_source_user.reload.source_username).to eq(nil)
+        expect(import_source_user.source_name).to be_nil
+        expect(import_source_user.reload.source_username).to be_nil
       end
 
       it 'converts Users::UpdateService hash error to ServiceResponse' do

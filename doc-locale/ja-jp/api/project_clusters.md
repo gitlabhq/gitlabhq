@@ -263,7 +263,7 @@ curl --request POST \
     "default_branch":null,
     "tag_list":[], //deprecated, use `topics` instead
     "topics":[],
-    "ssh_url_to_repo":"ssh:://gitlab.example.com/root/project-with-clusters-api.git",
+    "ssh_url_to_repo":"ssh://gitlab.example.com/root/project-with-clusters-api.git",
     "http_url_to_repo":"https://gitlab.example.com/root/project-with-clusters-api.git",
     "web_url":"https://gitlab.example.com/root/project-with-clusters-api",
     "readme_url":null,
@@ -374,7 +374,7 @@ curl --request PUT \
     "default_branch":null,
     "tag_list":[], //deprecated, use `topics` instead
     "topics":[],
-    "ssh_url_to_repo":"ssh:://gitlab.example.com/root/project-with-clusters-api.git",
+    "ssh_url_to_repo":"ssh://gitlab.example.com/root/project-with-clusters-api.git",
     "http_url_to_repo":"https://gitlab.example.com/root/project-with-clusters-api.git",
     "web_url":"https://gitlab.example.com/root/project-with-clusters-api",
     "readme_url":null,

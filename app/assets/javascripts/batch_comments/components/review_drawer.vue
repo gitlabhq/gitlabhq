@@ -75,6 +75,7 @@ export default {
     canSummarize: { default: false },
     diffsPath: { default: '' },
   },
+  emits: ['input'],
   data() {
     return {
       isSubmitting: false,

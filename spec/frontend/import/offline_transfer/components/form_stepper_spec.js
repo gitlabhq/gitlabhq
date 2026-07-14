@@ -5,7 +5,10 @@ import {
   FORM_STEPPER_TAB_COLOR,
   FORM_STEPPER_TAB_BORDER_COLOR,
 } from '~/import/offline_transfer/constants';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import waitForPromises from 'helpers/wait_for_promises';
+
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('FormStepper', () => {
   let wrapper;
@@ -110,10 +113,13 @@ describe('FormStepper', () => {
       expect(findAllStepContents().at(0).text()).toContain('Select tab content');
     });
 
-    it('forward movement emits "stepped-forward" event', async () => {
+    it('forward movement emits "stepped-forward" event with the passed step index', async () => {
       await clickContinue();
 
       expect(wrapper.emitted('stepped-forward')).toHaveLength(1);
+      expect(wrapper.emitted('stepped-forward')[0][0]).toEqual({
+        previousTabIndex: 0,
+      });
     });
 
     it('updates tab heading styles after advancing: step 0 becomes completed, step 1 becomes active', async () => {
@@ -196,6 +202,32 @@ describe('FormStepper', () => {
 
       expect(findAllStepContents().at(0).text()).toContain('Authenticate tab content');
       expect(wrapper.emitted('validation-failed')).toHaveLength(1);
+      expect(scrollToElement).toHaveBeenCalled();
+    });
+
+    it('does not scroll when validation passes and the step advances', async () => {
+      const validateStep = jest.fn().mockResolvedValue(true);
+      createComponent({ propsData: { validateStep } });
+
+      await clickContinue();
+
+      expect(scrollToElement).not.toHaveBeenCalled();
+    });
+
+    it('on final step, scrolls to the final step content when completion validation fails', async () => {
+      const validateStep = jest
+        .fn()
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(false);
+      createComponent({ propsData: { validateStep } });
+
+      await clickContinue();
+      await clickContinue();
+      await clickComplete();
+
+      expect(wrapper.emitted('validation-failed')).toHaveLength(1);
+      expect(scrollToElement).toHaveBeenCalledWith(wrapper.findByTestId('step-content-2').element);
     });
 
     it('does not emit "stepped-forward" when validation fails', async () => {

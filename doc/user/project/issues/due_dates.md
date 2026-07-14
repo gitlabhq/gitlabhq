@@ -50,8 +50,9 @@ To view and sort issues containing due dates in your project:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Plan** > **Work items** and filter by **Type** = **Issue**.
-1. To sort by due date, select the current sort method, then select **Due date**.
-1. Optional. To reverse the sort order, select **Sort direction** ({{< icon name="sort-lowest" >}}).
+1. On the right of the filter bar, select **Display** ({{< icon name="preferences" >}}) to open the display preferences drawer.
+1. At the top of the drawer, from the **Sort by** dropdown list, select **Due date**.
+1. Optional. To reverse the sort order, in the display preferences drawer, next to the **Sort by** dropdown list, select **Sort direction** ({{< icon name="sort-lowest" >}}).
 
 ## Set a due date for an issue
 

@@ -1559,6 +1559,29 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
       it { is_expected.to be_truthy }
     end
 
+    context 'when :feature_flag_state_logs is on the recursion stack' do
+      # While :feature_flag_state_logs is mid-resolution it is on the stack, so
+      # the gate must short-circuit instead of re-evaluating it.
+      let(:milestone) { "14.6" }
+
+      # Seed the stack in a nested `before` so it runs after the outer `before`,
+      # whose `enable` calls would otherwise pop the seeded entry off the stack.
+      before do
+        stub_version('14.5.123', 'deadbeef')
+        Thread.current[:feature_flag_recursion_check] = [:feature_flag_state_logs]
+      end
+
+      after do
+        Thread.current[:feature_flag_recursion_check] = nil
+      end
+
+      it 'short-circuits without delegating to Feature::Definition.log_states?', :aggregate_failures do
+        expect(Feature::Definition).not_to receive(:log_states?)
+
+        is_expected.to be(false)
+      end
+    end
+
     context 'when milestone is nil' do
       let(:milestone) { nil }
 
@@ -1777,6 +1800,45 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
         it 'returns all found targets' do
           expect(subject.targets).to be_an(Array)
           expect(subject.targets).to eq(targets.map(&:repository))
+        end
+      end
+
+      context 'when organization target is specified' do
+        let_it_be(:organization) { create(:organization) }
+
+        subject { described_class.new(organization: organization.id.to_s) }
+
+        it 'returns the organization as a target' do
+          expect(subject.targets).to eq([organization])
+        end
+
+        context 'when organization is specified by path' do
+          subject { described_class.new(organization: organization.path) }
+
+          it 'returns the organization as a target' do
+            expect(subject.targets).to eq([organization])
+          end
+        end
+
+        context 'with multiple organizations' do
+          let_it_be(:organization2) { create(:organization) }
+
+          subject { described_class.new(organization: "#{organization.id},#{organization2.path}") }
+
+          it 'returns all organizations as targets' do
+            expect(subject.targets).to match_array([organization, organization2])
+          end
+        end
+
+        context 'when organization does not exist' do
+          subject { described_class.new(organization: '999999') }
+
+          it 'raises UnknownTargetError' do
+            expect { subject.targets }.to raise_error(
+              Feature::Target::UnknownTargetError,
+              '999999 is not found!'
+            )
+          end
         end
       end
     end

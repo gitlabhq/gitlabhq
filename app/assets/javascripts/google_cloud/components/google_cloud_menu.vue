@@ -14,6 +14,7 @@ const i18n = {
 };
 
 export default {
+  name: 'GoogleCloudMenu',
   props: {
     active: {
       type: String,

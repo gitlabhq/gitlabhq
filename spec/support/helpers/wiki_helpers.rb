@@ -2,7 +2,6 @@
 
 module WikiHelpers
   extend self
-
   def stub_group_wikis(enabled)
     stub_licensed_features(group_wikis: enabled)
   end
@@ -18,5 +17,26 @@ module WikiHelpers
       current_user: user,
       params: params
     ).execute.dig(:result, :file_path)
+  end
+
+  def save_changes(commit_message = nil)
+    submit_form("Save changes", commit_message)
+  end
+
+  def create_page(commit_message = nil)
+    submit_form("Create page", commit_message)
+  end
+
+  def create_sidebar(commit_message = nil)
+    submit_form("Create sidebar", commit_message)
+  end
+
+  def submit_form(save_button_text, commit_message = nil)
+    click_on save_button_text
+
+    within_testid('commit-message-modal') do
+      fill_in(:wiki_message, with: commit_message) unless commit_message.nil?
+      click_on save_button_text
+    end
   end
 end

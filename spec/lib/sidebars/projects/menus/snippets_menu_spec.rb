@@ -14,7 +14,9 @@ RSpec.describe Sidebars::Projects::Menus::SnippetsMenu, feature_category: :navig
     let(:extra_attrs) do
       {
         super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
-        item_id: :project_snippets
+        item_id: :project_snippets,
+        description: 'Store and share code snippets',
+        library_icon: 'snippet'
       }
     end
   end

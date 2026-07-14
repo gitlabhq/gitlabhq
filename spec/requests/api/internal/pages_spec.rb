@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe API::Internal::Pages, feature_category: :pages do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:namespace_settings, freeze: false) { create(:namespace_settings) }
-  let_it_be(:group, freeze: false) { create(:group, namespace_settings: namespace_settings) }
+  let_it_be_with_reload(:namespace_settings) { create(:namespace_settings) }
+  let_it_be_with_reload(:group) { create(:group, namespace_settings: namespace_settings) }
   let_it_be_with_reload(:project) { create(:project, group: group) }
 
   let(:auth_header) do

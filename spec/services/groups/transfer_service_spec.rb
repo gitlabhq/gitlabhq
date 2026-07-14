@@ -16,14 +16,13 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
   end
 
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:new_parent_group, freeze: false) { create(:group, :public) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:new_parent_group) { create(:group, :public, owners: user) }
 
-  let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
   let(:transfer_service) { described_class.new(group, user) }
 
   shared_examples 'publishes a GroupTransferedEvent' do
-    it do
+    it 'publishes a GroupTransferedEvent' do
       expect { transfer_service.execute(target) }
         .to publish_event(Groups::GroupTransferedEvent)
         .with(
@@ -34,16 +33,11 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
   end
 
-  context 'handling packages' do
-    let_it_be(:group, freeze: false) { create(:group) }
+  context 'when handling packages' do
+    let_it_be_with_reload(:group) { create(:group, owners: user) }
     let_it_be(:project) { create(:project, namespace: group) }
 
-    let!(:new_group) { create(:group) }
-
-    before do
-      group.add_owner(user)
-      new_group&.add_owner(user)
-    end
+    let!(:new_group) { create(:group, owners: user) }
 
     context 'with an npm package' do
       let_it_be(:npm_package) { create(:npm_package, project: project, name: "@testscope/test") }
@@ -60,34 +54,34 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       it_behaves_like 'transfer allowed'
 
       context 'with a project within subgroup' do
-        let_it_be(:root_group) { create(:group) }
+        let_it_be(:root_group) { create(:group, owners: user) }
         let_it_be_with_reload(:group) { create(:group, parent: root_group) }
         let_it_be(:project) { create(:project, namespace: group) }
-
-        before do
-          root_group.add_owner(user)
-        end
 
         it_behaves_like 'transfer allowed'
 
         context 'without a root namespace change' do
-          let_it_be(:new_group) { create(:group, parent: root_group) }
+          let_it_be(:new_group) { create(:group, parent: root_group, owners: user) }
 
           it_behaves_like 'transfer allowed'
         end
 
         context 'with namespaced packages present' do
-          let_it_be(:package, freeze: false) { create(:npm_package, project: project, name: "@#{project.root_namespace.path}/test") }
+          let_it_be_with_reload(:package) do
+            create(:npm_package, project: project, name: "@#{project.root_namespace.path}/test")
+          end
 
           it 'does not allow transfer' do
             transfer_service.execute(new_group)
 
-            expect(transfer_service.error).to eq('Transfer failed: Group contains projects with NPM packages scoped to the current root level group.')
+            expect(transfer_service.error).to eq(
+              'Transfer failed: Group contains projects with NPM packages scoped to the current root level group.'
+            )
             expect(group.parent).not_to eq(new_group)
           end
 
-          context 'namespaced package is pending destruction' do
-            let!(:group) { create(:group) }
+          context 'when the namespaced package is pending destruction' do
+            let_it_be_with_reload(:group) { create(:group, owners: user) }
 
             before do
               package.pending_destruction!
@@ -98,8 +92,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         end
 
         context 'when transferring a group into a root group' do
-          let_it_be(:root_group) { create(:group) }
-          let_it_be(:group, freeze: false) { create(:group, parent: root_group) }
+          let_it_be(:root_group) { create(:group, owners: user) }
+          let_it_be_with_reload(:group) { create(:group, parent: root_group) }
           let_it_be(:new_group) { nil }
 
           it_behaves_like 'transfer allowed'
@@ -109,7 +103,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
     context 'without an npm package' do
       context 'when transferring a group into a root group' do
-        let(:group) { create(:group, parent: create(:group)) }
+        let(:parent_group) { create(:group) }
+        let(:group) { create(:group, parent: parent_group, owners: user) }
 
         it 'allows transfer' do
           transfer_service.execute(nil)
@@ -125,9 +120,9 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     context "when there's an exception on GitLab shell directories" do
       before do
         allow_next_instance_of(described_class) do |instance|
-          allow(instance).to receive(:update_group_attributes).and_raise(Gitlab::UpdatePathError, 'namespace directory cannot be moved')
+          allow(instance).to receive(:update_group_attributes).and_raise(Gitlab::UpdatePathError,
+            'namespace directory cannot be moved')
         end
-        create(:group_member, :owner, group: new_parent_group, user: user)
       end
 
       it 'returns false' do
@@ -141,17 +136,11 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
   end
 
-  context 'transferring labels' do
-    let(:new_parent_group) { create(:group, :private) }
-    let(:parent_group) { create(:group) }
+  context 'when transferring labels' do
+    let(:new_parent_group) { create(:group, :private, owners: user) }
+    let(:parent_group) { create(:group, owners: user) }
     let(:group) { create(:group, parent: parent_group) }
     let(:project) { create(:project, group: group) }
-
-    before do
-      group.add_owner(user)
-      parent_group.add_owner(user)
-      new_parent_group.add_owner(user)
-    end
 
     it 'delegates transfer to Labels::TransferService' do
       expect_next_instance_of(Labels::TransferService, user, project.group, project) do |labels_transfer_service|
@@ -165,6 +154,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
   describe '#execute' do
     context 'when transforming a group into a root group' do
       let_it_be_with_reload(:group) { create(:group, :public, :nested) }
+      let_it_be_with_reload(:group_member) { create(:group_member, :owner, group: group, user: user) }
 
       it_behaves_like 'ensuring allowed transfer for a group'
 
@@ -178,7 +168,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when the user does not have the right policies' do
-        let_it_be(:group_member, freeze: false) { create(:group_member, :guest, group: group, user: user) }
+        let(:restricted_user) { create(:user) }
+        let(:transfer_service) { described_class.new(group, restricted_user) }
 
         it "returns false" do
           expect(transfer_service.execute(nil)).to be_falsy
@@ -191,7 +182,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when there is a group with the same path' do
-        let_it_be(:group, freeze: false) { create(:group, :public, :nested, path: 'not-unique') }
+        let_it_be_with_reload(:group) { create(:group, :public, :nested, path: 'not-unique', owners: user) }
 
         before_all do
           create(:group, path: 'not-unique')
@@ -203,14 +194,16 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
         it 'adds an error on group' do
           transfer_service.execute(nil)
-          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup or a project with the same path.')
+          expect(transfer_service.error).to eq(
+            'Transfer failed: The parent group already has a subgroup or a project with the same path.'
+          )
         end
       end
 
       context 'when the group is a subgroup and the transfer is valid' do
         let_it_be(:subgroup1) { create(:group, :private, parent: group) }
         let_it_be(:subgroup2) { create(:group, :internal, parent: group) }
-        let_it_be(:project1) { create(:project, :repository, :private, namespace: group) }
+        let_it_be(:project1) { create(:project, :private, namespace: group) }
 
         before do
           transfer_service.execute(nil)
@@ -247,11 +240,12 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
     context 'when transferring a subgroup into another group' do
       let_it_be_with_reload(:group) { create(:group, :public, :nested) }
+      let_it_be_with_reload(:group_member) { create(:group_member, :owner, group: group, user: user) }
 
       it_behaves_like 'ensuring allowed transfer for a group'
 
       context 'when the new parent group is the same as the previous parent group' do
-        let_it_be(:group, freeze: false) { create(:group, :public, :nested, parent: new_parent_group) }
+        let_it_be_with_reload(:group) { create(:group, :public, :nested, parent: new_parent_group) }
 
         it 'returns false' do
           expect(transfer_service.execute(new_parent_group)).to be_falsy
@@ -264,7 +258,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when the user does not have the right policies' do
-        let_it_be(:group_member, freeze: false) { create(:group_member, :guest, group: group, user: user) }
+        let(:restricted_user) { create(:user) }
+        let(:transfer_service) { described_class.new(group, restricted_user) }
 
         it "returns false" do
           expect(transfer_service.execute(new_parent_group)).to be_falsy
@@ -289,7 +284,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
       context 'when the parent has a group with the same path' do
         before do
-          create(:group_member, :owner, group: new_parent_group, user: user)
           group.update_attribute(:path, "not-unique")
           create(:group, path: "not-unique", parent: new_parent_group)
         end
@@ -300,18 +294,21 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
         it 'adds an error on group' do
           transfer_service.execute(new_parent_group)
-          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup or a project with the same path.')
+          expect(transfer_service.error).to eq(
+            'Transfer failed: The parent group already has a subgroup or a project with the same path.'
+          )
         end
       end
 
       context 'when the parent group has a project with the same path' do
-        let_it_be_with_reload(:group) { create(:group, :public, :nested, path: 'foo') }
-        let_it_be(:membership, freeze: false) { create(:group_member, :owner, group: new_parent_group, user: user) }
+        let_it_be_with_reload(:group) { create(:group, :public, :nested, path: 'foo', owners: user) }
         let_it_be(:project) { create(:project, path: 'foo', namespace: new_parent_group) }
 
         it 'adds an error on group' do
           expect(transfer_service.execute(new_parent_group)).to be_falsy
-          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup or a project with the same path.')
+          expect(transfer_service.error).to eq(
+            'Transfer failed: The parent group already has a subgroup or a project with the same path.'
+          )
         end
       end
 
@@ -329,20 +326,20 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when the group is allowed to be transferred' do
-        let_it_be_with_reload(:new_parent_group) { create(:group, :public) }
-        let_it_be(:new_parent_group_integration) { create(:integrations_slack, :group, group: new_parent_group, webhook: 'http://new-group.slack.com') }
+        let_it_be_with_reload(:new_parent_group) { create(:group, :public, owners: user) }
+        let_it_be(:new_parent_group_integration) do
+          create(:integrations_slack, :group, group: new_parent_group, webhook: 'http://new-group.slack.com')
+        end
 
         before do
           allow(PropagateIntegrationWorker).to receive(:perform_async)
-
-          create(:group_member, :owner, group: new_parent_group, user: user)
 
           transfer_service.execute(new_parent_group)
         end
 
         context 'when the group has a lower visibility than the parent group' do
-          let(:new_parent_group) { create(:group, :public) }
-          let(:group) { create(:group, :private, :nested) }
+          let(:new_parent_group) { create(:group, :public, owners: user) }
+          let(:group) { create(:group, :private, :nested, owners: user) }
 
           it 'does not update the visibility for the group' do
             group.reload
@@ -352,8 +349,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         end
 
         context 'when the group has a higher visibility than the parent group' do
-          let(:new_parent_group) { create(:group, :private) }
-          let(:group) { create(:group, :public, :nested) }
+          let(:new_parent_group) { create(:group, :private, owners: user) }
+          let(:group) { create(:group, :public, :nested, owners: user) }
 
           it 'updates visibility level based on the parent group' do
             group.reload
@@ -393,10 +390,14 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
             end
 
             it 'replaces inherited integrations', :aggregate_failures do
-              new_group_instance_specific_integration = Integration.find_by(group: group, type: instance_specific_integration.type)
-              expect(new_group_instance_specific_integration.inherit_from_id).to eq(parent_group_instance_specific_integration.id)
+              new_group_instance_specific_integration = Integration.find_by(group: group,
+                type: instance_specific_integration.type)
+              expect(new_group_instance_specific_integration.inherit_from_id).to eq(
+                parent_group_instance_specific_integration.id
+              )
               expect(new_group_instance_specific_integration.active).to be_falsey
-              expect(PropagateIntegrationWorker).to have_received(:perform_async).with(new_group_instance_specific_integration.id)
+              expect(PropagateIntegrationWorker).to have_received(:perform_async)
+                .with(new_group_instance_specific_integration.id)
               expect(Integration.count).to eq(5)
             end
           end
@@ -429,34 +430,38 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         end
       end
 
-      context 'shared runners configuration' do
-        before do
-          create(:group_member, :owner, group: new_parent_group, user: user)
-        end
-
+      context 'when shared runners are configured' do
         context 'if parent group has disabled shared runners but allows overrides' do
-          let(:new_parent_group) { create(:group, shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: true) }
+          let(:new_parent_group) do
+            create(:group, shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: true,
+              owners: user)
+          end
 
           it 'calls update service' do
-            expect(Groups::UpdateSharedRunnersService).to receive(:new).with(group, user, { shared_runners_setting: Namespace::SR_DISABLED_AND_OVERRIDABLE }).and_call_original
+            expect(Groups::UpdateSharedRunnersService).to receive(:new).with(group, user,
+              { shared_runners_setting: Namespace::SR_DISABLED_AND_OVERRIDABLE }).and_call_original
 
             transfer_service.execute(new_parent_group)
           end
         end
 
         context 'if parent group does not allow shared runners' do
-          let(:new_parent_group) { create(:group, shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: false) }
+          let(:new_parent_group) do
+            create(:group, shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: false,
+              owners: user)
+          end
 
           it 'calls update service' do
-            expect(Groups::UpdateSharedRunnersService).to receive(:new).with(group, user, { shared_runners_setting: Namespace::SR_DISABLED_AND_UNOVERRIDABLE }).and_call_original
+            expect(Groups::UpdateSharedRunnersService).to receive(:new).with(group, user,
+              { shared_runners_setting: Namespace::SR_DISABLED_AND_UNOVERRIDABLE }).and_call_original
 
             transfer_service.execute(new_parent_group)
           end
         end
 
         context 'if parent group allows shared runners' do
-          let(:group) { create(:group, :public, :nested, shared_runners_enabled: false) }
-          let(:new_parent_group) { create(:group, shared_runners_enabled: true) }
+          let(:group) { create(:group, :public, :nested, shared_runners_enabled: false, owners: user) }
+          let(:new_parent_group) { create(:group, shared_runners_enabled: true, owners: user) }
 
           it 'does not call update service and keeps them disabled on the group' do
             expect(Groups::UpdateSharedRunnersService).not_to receive(:new)
@@ -481,7 +486,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         let!(:subgroup2) { create(:group, :internal, parent: group) }
 
         before do
-          create(:group_member, :owner, group: new_parent_group, user: user)
           transfer_service.execute(new_parent_group)
         end
 
@@ -508,7 +512,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         context 'when the new parent has a lower visibility than the children' do
           let!(:subgroup1) { create(:group, :public, parent: group) }
           let!(:subgroup2) { create(:group, :public, parent: group) }
-          let(:new_parent_group) { create(:group, :private) }
+          let(:new_parent_group) { create(:group, :private, owners: user) }
 
           it 'updates children visibility to match the new parent' do
             group.children.each do |subgroup|
@@ -519,12 +523,11 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when transferring a group with project descendants' do
-        let!(:project1) { create(:project, :repository, :private, namespace: group) }
-        let!(:project2) { create(:project, :repository, :internal, namespace: group) }
+        let!(:project1) { create(:project, :private, namespace: group) }
+        let!(:project2) { create(:project, :internal, namespace: group) }
 
         before do
           TestEnv.clean_test_path
-          create(:group_member, :owner, group: new_parent_group, user: user)
           allow(transfer_service).to receive(:update_project_settings)
           transfer_service.execute(new_parent_group)
         end
@@ -555,9 +558,9 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         end
 
         context 'when the new parent has a lower visibility than the projects' do
-          let!(:project1) { create(:project, :repository, :public, namespace: group) }
-          let!(:project2) { create(:project, :repository, :public, namespace: group) }
-          let!(:new_parent_group) { create(:group, :private) }
+          let!(:project1) { create(:project, :public, namespace: group) }
+          let!(:project2) { create(:project, :public, namespace: group) }
+          let!(:new_parent_group) { create(:group, :private, owners: user) }
 
           it 'updates projects visibility to match the new parent' do
             group.projects.each do |project|
@@ -578,14 +581,13 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when transferring a group with subgroups & projects descendants' do
-        let!(:project1) { create(:project, :repository, :private, namespace: group) }
-        let!(:project2) { create(:project, :repository, :internal, namespace: group) }
+        let!(:project1) { create(:project, :private, namespace: group) }
+        let!(:project2) { create(:project, :internal, namespace: group) }
         let!(:subgroup1) { create(:group, :private, parent: group) }
         let!(:subgroup2) { create(:group, :internal, parent: group) }
 
         before do
           TestEnv.clean_test_path
-          create(:group_member, :owner, group: new_parent_group, user: user)
           transfer_service.execute(new_parent_group)
         end
 
@@ -619,17 +621,16 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
       context 'when transferring a group with nested groups and projects' do
         let(:subgroup1) { create(:group, :private, parent: group) }
-        let!(:project1) { create(:project, :repository, :private, namespace: group) }
+        let!(:project1) { create(:project, :private, namespace: group) }
         let!(:nested_subgroup) { create(:group, :private, parent: subgroup1) }
-        let!(:nested_project) { create(:project, :repository, :private, namespace: subgroup1) }
+        let!(:nested_project) { create(:project, :private, namespace: subgroup1) }
 
         before do
           TestEnv.clean_test_path
-          create(:group_member, :owner, group: new_parent_group, user: user)
         end
 
-        context 'updated paths' do
-          let_it_be_with_reload(:group) { create(:group, :public) }
+        context 'with updated paths' do
+          let_it_be_with_reload(:group) { create(:group, :public, owners: user) }
 
           before do
             transfer_service.execute(new_parent_group)
@@ -664,19 +665,21 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
           end
         end
 
-        context 'resets project authorizations' do
-          let_it_be(:old_parent_group) { create(:group) }
-          let_it_be_with_refind(:group) { create(:group, :private, parent: old_parent_group) }
+        context 'when resetting project authorizations' do
           let_it_be(:new_group_member) { create(:user) }
           let_it_be(:old_group_member) { create(:user) }
           let_it_be(:unique_subgroup_member) { create(:user) }
           let_it_be(:direct_project_member) { create(:user) }
+          let_it_be(:old_parent_group) { create(:group, maintainers: old_group_member) }
+          let_it_be_with_refind(:group) { create(:group, :private, parent: old_parent_group, owners: user) }
+          let_it_be_with_reload(:new_parent_group) do
+            create(:group, :public, maintainers: new_group_member, owners: user)
+          end
+
+          let(:subgroup1) { create(:group, :private, parent: group, developers: unique_subgroup_member) }
+          let!(:nested_project) { create(:project, :private, namespace: subgroup1, developers: direct_project_member) }
 
           before do
-            new_parent_group.add_maintainer(new_group_member)
-            old_parent_group.add_maintainer(old_group_member)
-            subgroup1.add_developer(unique_subgroup_member)
-            nested_project.add_developer(direct_project_member)
             group.refresh_members_authorized_projects
             subgroup1.refresh_members_authorized_projects
           end
@@ -695,6 +698,29 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
           it 'performs authorizations job' do
             expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:bulk_perform_async)
+
+            transfer_service.execute(new_parent_group)
+          end
+
+          it 'logs the parent change and the authorization refresh being enqueued' do
+            allow(Gitlab::AppJsonLogger).to receive(:info).and_call_original
+
+            expect(Gitlab::AppJsonLogger).to receive(:info).with(
+              hash_including(
+                event: 'group_transfer_parent_changed',
+                group_id: group.id,
+                new_parent_group_id: new_parent_group.id,
+                project_count: 2
+              )
+            )
+
+            expect(Gitlab::AppJsonLogger).to receive(:info).with(
+              hash_including(
+                event: 'group_transfer_authz_refresh_enqueued',
+                group_id: group.id,
+                project_count: 2
+              )
+            )
 
             transfer_service.execute(new_parent_group)
           end
@@ -727,8 +753,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
             end
           end
 
-          context 'for groups with many projects' do
-            let_it_be(:project_list) { create_list(:project, 11, :repository, :private, namespace: group) }
+          context 'when the group has multiple projects' do
+            let_it_be(:project_list) { create_list(:project, 2, :private, namespace: group) }
 
             it 'adds new project authorizations for the user which makes a transfer' do
               transfer_service.execute(new_parent_group)
@@ -739,13 +765,13 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
             it 'adds project authorizations for users in the new hierarchy' do
               expect { transfer_service.execute(new_parent_group) }.to change {
-                ProjectAuthorization.where(project_id: project_list.map { |project| project.id }, user_id: new_group_member.id).size
+                ProjectAuthorization.where(project_id: project_list.map(&:id), user_id: new_group_member.id).size
               }.from(0).to(project_list.count)
             end
 
             it 'removes project authorizations for users in the old hierarchy' do
               expect { transfer_service.execute(new_parent_group) }.to change {
-                ProjectAuthorization.where(project_id: project_list.map { |project| project.id }, user_id: old_group_member.id).size
+                ProjectAuthorization.where(project_id: project_list.map(&:id), user_id: old_group_member.id).size
               }.from(project_list.count).to(0)
             end
 
@@ -757,7 +783,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
             end
           end
 
-          context 'transferring groups with shared_projects' do
+          context 'when transferring groups with shared_projects' do
             let_it_be_with_reload(:shared_project) { create(:project, :public) }
 
             shared_examples_for 'drops the authorizations of ancestor members from the old hierarchy' do
@@ -815,7 +841,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       context 'when transferring a group with two factor authentication switched on' do
         before do
           TestEnv.clean_test_path
-          create(:group_member, :owner, group: new_parent_group, user: user)
           create(:group, :private, parent: group, require_two_factor_authentication: true)
           group.update!(require_two_factor_authentication: true)
           new_parent_group.reload # make sure traversal_ids are reloaded
@@ -824,7 +849,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         it 'does not update group two factor authentication setting' do
           transfer_service.execute(new_parent_group)
 
-          expect(group.require_two_factor_authentication).to eq(true)
+          expect(group.require_two_factor_authentication).to be(true)
         end
 
         context 'when new parent disallows two factor authentication switched on for descendants' do
@@ -835,7 +860,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
           it 'updates group two factor authentication setting' do
             transfer_service.execute(new_parent_group)
 
-            expect(group.require_two_factor_authentication).to eq(false)
+            expect(group.require_two_factor_authentication).to be(false)
           end
 
           it 'schedules update of group two factor authentication setting for descendants' do
@@ -849,13 +874,12 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       context 'when updating the group goes wrong' do
         let!(:subgroup1) { create(:group, :public, parent: group) }
         let!(:subgroup2) { create(:group, :public, parent: group) }
-        let(:new_parent_group) { create(:group, :private) }
-        let!(:project1) { create(:project, :repository, :public, namespace: group) }
+        let(:new_parent_group) { create(:group, :private, owners: user) }
+        let!(:project1) { create(:project, :public, namespace: group) }
 
         before do
           allow(group).to receive(:save!).and_raise(ActiveRecord::RecordInvalid.new(group))
           TestEnv.clean_test_path
-          create(:group_member, :owner, group: new_parent_group, user: user)
           transfer_service.execute(new_parent_group)
         end
 
@@ -873,11 +897,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         let_it_be(:pending_build) { create(:ci_pending_build, project: project) }
         let_it_be(:unrelated_pending_build) { create(:ci_pending_build, project: other_project) }
 
-        before do
-          group.add_owner(user)
-          new_parent_group.add_owner(user)
-        end
-
         it 'updates pending builds for the group', :aggregate_failures do
           transfer_service.execute(new_parent_group)
 
@@ -893,7 +912,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
 
     context 'when transferring a subgroup into root group' do
-      let(:group) { create(:group, :public, :nested) }
+      let(:group) { create(:group, :public, :nested, owners: user) }
       let(:subgroup) { create(:group, :public, parent: group) }
       let(:transfer_service) { described_class.new(subgroup, user) }
 
@@ -908,7 +927,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
       context 'when group has explicit owner' do
         let(:another_owner) { create(:user) }
-        let!(:another_member) { create(:group_member, :owner, group: subgroup, user: another_owner) }
+        let(:subgroup) { create(:group, :public, parent: group, owners: another_owner) }
 
         it 'does not add additional owner' do
           expect(subgroup.all_owner_members.map(&:user)).to match_array(another_owner)
@@ -922,37 +941,32 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
 
     context 'when a project has container images' do
-      let(:group) { create(:group, :public, :nested) }
+      let(:group) { create(:group, :public, :nested, owners: user) }
       let!(:container_repository) { create(:container_repository, project: project) }
 
-      subject { transfer_service.execute(new_parent_group) }
+      subject(:transfer_result) { transfer_service.execute(new_parent_group) }
 
-      before do
-        group.add_owner(user)
-        new_parent_group.add_owner(user)
-      end
-
-      context 'within group' do
-        let(:project) { create(:project, :repository, :public, namespace: group) }
+      context 'when within group' do
+        let(:project) { create(:project, :public, namespace: group) }
 
         it 'does not transfer' do
-          expect(subject).to be false
+          expect(transfer_result).to be false
           expect(transfer_service.error).to match(/Docker images in their container registry/)
         end
       end
 
-      context 'within subgroup' do
+      context 'when within subgroup' do
         let(:subgroup) { create(:group, parent: group) }
-        let(:project) { create(:project, :repository, :public, namespace: subgroup) }
+        let(:project) { create(:project, :public, namespace: subgroup) }
 
         it 'does not transfer' do
-          expect(subject).to be false
+          expect(transfer_result).to be false
           expect(transfer_service.error).to match(/Docker images in their container registry/)
         end
       end
     end
 
-    context 'crm' do
+    context 'when handling crm' do
       let(:root_group) { create(:group, :public) }
       let(:subgroup) { create(:group, :public, parent: root_group) }
       let(:another_subgroup) { create(:group, :public, parent: root_group) }
@@ -974,7 +988,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         root_group.add_owner(user)
       end
 
-      context 'moving up' do
+      context 'when moving up' do
         let(:group) { subsubgroup }
 
         it 'retains issue contacts' do
@@ -987,7 +1001,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         end
       end
 
-      context 'moving down' do
+      context 'when moving down' do
         let(:group) { subgroup }
 
         it 'retains issue contacts' do
@@ -1000,7 +1014,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         end
       end
 
-      context 'moving sideways' do
+      context 'when moving sideways' do
         let(:group) { subsubgroup }
 
         it 'retains issue contacts' do
@@ -1013,12 +1027,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         end
       end
 
-      context 'moving to new root group' do
+      context 'when moving to a new root group' do
         let(:group) { root_group }
-
-        before do
-          new_parent_group.add_owner(user)
-        end
 
         it 'moves all crm objects' do
           expect { transfer_service.execute(new_parent_group) }
@@ -1036,15 +1046,11 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         end
       end
 
-      context 'moving to a subgroup within a new root group' do
+      context 'when moving to a subgroup within a new root group' do
         let(:group) { root_group }
         let(:subgroup_in_new_parent_group) { create(:group, parent: new_parent_group) }
 
         context 'with permission on the root group' do
-          before do
-            new_parent_group.add_owner(user)
-          end
-
           it 'moves all crm objects' do
             expect { transfer_service.execute(subgroup_in_new_parent_group) }
               .to change { root_group.contacts.count }.by(-4)
@@ -1062,6 +1068,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         end
 
         context 'with permission on the subgroup' do
+          let(:new_parent_group) { create(:group, :public) }
+
           before do
             subgroup_in_new_parent_group.add_owner(user)
           end
@@ -1069,7 +1077,10 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
           it 'raises error' do
             transfer_service.execute(subgroup_in_new_parent_group)
 
-            expect(transfer_service.error).to eq("Transfer failed: Group contains contacts/organizations and you don't have enough permissions to move them to the new root group.")
+            expect(transfer_service.error).to eq(
+              "Transfer failed: Group contains contacts/organizations and you don't have enough " \
+                "permissions to move them to the new root group."
+            )
           end
 
           it 'does not publish a GroupTransferedEvent' do
@@ -1081,13 +1092,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
 
     context 'when transfer succeeds' do
-      let_it_be_with_reload(:group) { create(:group, :nested) }
-      let_it_be(:target) { create(:group) }
-
-      before do
-        group.add_owner(user)
-        target.add_owner(user)
-      end
+      let_it_be_with_reload(:group) { create(:group, :nested, owners: user) }
+      let_it_be(:target) { create(:group, owners: user) }
 
       it 'sends transfer notification email with the old path' do
         old_path = group.full_path
@@ -1113,13 +1119,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
 
     context 'with namespace_commit_emails concerns' do
-      let_it_be_with_reload(:group) { create(:group) }
-      let_it_be(:target) { create(:group) }
-
-      before do
-        group.add_owner(user)
-        target.add_owner(user)
-      end
+      let_it_be_with_reload(:group) { create(:group, owners: user) }
+      let_it_be(:target) { create(:group, owners: user) }
 
       context 'when origin is a root group' do
         before do
@@ -1135,7 +1136,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when origin is not a root group' do
-        let(:group) { create(:group, parent: create(:group)) }
+        let(:group) { create(:group, parent: create(:group), owners: user) }
 
         it 'does not attempt to delete namespace_commit_emails' do
           expect(Users::NamespaceCommitEmail).not_to receive(:delete_for_namespace)
@@ -1147,13 +1148,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
   end
 
   describe 'lock retries in proceed_to_transfer' do
-    let_it_be_with_reload(:group) { create(:group, :public, :nested) }
-    let_it_be(:target) { create(:group) }
-
-    before do
-      group.add_owner(user)
-      target.add_owner(user)
-    end
+    let_it_be_with_reload(:group) { create(:group, :public, :nested, owners: user) }
+    let_it_be(:target) { create(:group, owners: user) }
 
     it 'uses WithLockRetries for the transaction' do
       expect_next_instance_of(Gitlab::Database::WithLockRetries) do |retries|
@@ -1176,10 +1172,9 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
   describe '#schedule_async_transfer' do
     let_it_be(:current_parent_group) { create(:group) }
-    let_it_be(:new_parent_group, freeze: false) { create(:group, :public) }
+    let_it_be_with_reload(:new_parent_group) { create(:group, :public, owners: user) }
 
-    let_it_be_with_reload(:group) { create(:group, :public, parent: current_parent_group) }
-    let_it_be(:new_parent_group_member, freeze: false) { create(:group_member, :owner, group: new_parent_group, user: user) }
+    let_it_be_with_reload(:group) { create(:group, :public, parent: current_parent_group, owners: user) }
 
     subject(:schedule) { transfer_service.schedule_async_transfer(new_parent_group) }
 
@@ -1245,7 +1240,9 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
 
         expect(schedule).to be_error
-        expect(schedule.message).to eq('Unable to initiate transfer. The group may already have a transfer in progress.')
+        expect(schedule.message).to eq(
+          'Unable to initiate transfer. The group may already have a transfer in progress.'
+        )
       end
     end
 
@@ -1301,7 +1298,9 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
 
         expect(schedule).to be_error
-        expect(schedule.message).to eq('Unable to initiate transfer. The group may already have a transfer in progress.')
+        expect(schedule.message).to eq(
+          'Unable to initiate transfer. The group may already have a transfer in progress.'
+        )
       end
     end
   end

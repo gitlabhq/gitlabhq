@@ -24,7 +24,7 @@ RSpec.describe API::Mcp, 'Initialize request', feature_category: :mcp_server do
       let(:params) do
         base_params.merge(
           params: {
-            protocolVersion: '2025-06-18'
+            protocolVersion: '2026-07-28'
           }
         )
       end
@@ -41,7 +41,7 @@ RSpec.describe API::Mcp, 'Initialize request', feature_category: :mcp_server do
       end
 
       it 'returns latest protocol version' do
-        expect(json_response['result']['protocolVersion']).to eq('2025-06-18')
+        expect(json_response['result']['protocolVersion']).to eq('2026-07-28')
       end
 
       it 'returns capabilities' do
@@ -55,6 +55,25 @@ RSpec.describe API::Mcp, 'Initialize request', feature_category: :mcp_server do
           'name' => 'Official GitLab MCP Server',
           'version' => Gitlab::VERSION
         )
+      end
+    end
+
+    context 'when client sends previous stable protocol version' do
+      let(:params) do
+        base_params.merge(
+          params: {
+            protocolVersion: '2025-06-18'
+          }
+        )
+      end
+
+      before do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+      end
+
+      it 'returns success with that version' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['protocolVersion']).to eq('2025-06-18')
       end
     end
 
@@ -95,6 +114,7 @@ RSpec.describe API::Mcp, 'Initialize request', feature_category: :mcp_server do
         expect(json_response['error']['code']).to eq(-32602)
         expect(json_response['error']['message']).to eq('Invalid params')
         expect(json_response['error']['data']['params']).to include('Unsupported protocol version')
+        expect(json_response['error']['data']['params']).to include('2026-07-28')
         expect(json_response['error']['data']['params']).to include('2025-11-25')
         expect(json_response['error']['data']['params']).to include('2025-06-18')
         expect(json_response['error']['data']['params']).to include('2025-03-26')
@@ -115,6 +135,7 @@ RSpec.describe API::Mcp, 'Initialize request', feature_category: :mcp_server do
         expect(json_response['error']['message']).to eq('Invalid params')
         expect(json_response['error']['data']['params']).to include('Missing required parameter')
         expect(json_response['error']['data']['params']).to include('protocolVersion')
+        expect(json_response['error']['data']['params']).to include('2026-07-28')
         expect(json_response['error']['data']['params']).to include('2025-06-18')
         expect(json_response['error']['data']['params']).to include('2025-03-26')
         expect(json_response['error']['data']['params']).to include('2025-11-25')

@@ -32,7 +32,12 @@ module Gitlab
           def remove_unauthorized(nodes)
             nodes
               .map! { |lazy| force(lazy) }
+              .tap { |forced| preload_granular_boundaries(forced) }
               .keep_if { |forced| @type.authorized?(forced, @context) }
+          end
+
+          def preload_granular_boundaries(nodes)
+            ::Gitlab::Graphql::Authz::BoundaryExtractors::Preloader.preload_boundaries(@type, nodes, @context)
           end
         end
 
@@ -57,7 +62,7 @@ module Gitlab
 
         def redact_connection(conn, context)
           type = @field.type.unwrap.node_type
-          return unless has_authorization?(type)
+          return unless has_authorization?(type) || has_granular_authorization?(type)
 
           redactor = Redactor.new(type, context, @field.resolver)
           conn.redactor = redactor if conn.respond_to?(:redactor=)
@@ -78,6 +83,11 @@ module Gitlab
 
           auth = type.try(:authorization)
           auth.nil? || auth.any?
+        end
+
+        def has_granular_authorization?(type)
+          granular_auth = type.try(:granular_scope_authorization)
+          granular_auth.present? && granular_auth.any?
         end
 
         def set_skip_type_authorization(context)

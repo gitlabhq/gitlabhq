@@ -6,7 +6,10 @@ RSpec.describe 'Query.merge_request(id)', feature_category: :code_review_workflo
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :empty_repo) }
-  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+  # freeze: false because creating notes on the merge request touches the
+  # noteable (Note#touch_noteable), which would raise FrozenError on a frozen
+  # let_it_be record once ThrottledTouch's interval has elapsed.
+  let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
   let_it_be(:current_user) { create(:user) }
 
   let(:merge_request_params) { { 'id' => global_id_of(merge_request) } }
@@ -81,6 +84,79 @@ RSpec.describe 'Query.merge_request(id)', feature_category: :code_review_workflo
         expect(merge_request_data['title']).to eq(merge_request.title)
         expect(merge_request_data['description']).to eq(merge_request.description)
         expect(merge_request_data['author']['username']).to eq(merge_request.author.username)
+      end
+    end
+
+    describe 'discussionsWithActivity' do
+      let_it_be(:label) { create(:label, project: project) }
+      let_it_be(:milestone) { create(:milestone, project: project) }
+
+      let_it_be(:user_comment) do
+        create(:note, noteable: merge_request, project: project, note: 'a user comment')
+      end
+
+      let_it_be(:label_event) do
+        create(:resource_label_event, merge_request: merge_request, label: label, action: 'add')
+      end
+
+      let_it_be(:milestone_event) do
+        create(:resource_milestone_event, merge_request: merge_request, milestone: milestone, action: 'add')
+      end
+
+      let_it_be(:state_event) do
+        create(:resource_state_event, merge_request: merge_request, state: :closed)
+      end
+
+      def notes_for(field_selection, field_key)
+        post_graphql(
+          graphql_query_for('mergeRequest', merge_request_params, field_selection),
+          current_user: current_user
+        )
+
+        graphql_dig_at(merge_request_data, field_key, :nodes)
+          .flat_map { |discussion| discussion['notes']['nodes'] }
+      end
+
+      it 'includes synthetic resource-event notes alongside user comments', :aggregate_failures do
+        notes = notes_for(<<~GRAPHQL, :discussions_with_activity)
+          discussionsWithActivity(first: 20) {
+            nodes { notes { nodes { body system } } }
+          }
+        GRAPHQL
+
+        expect(notes).to include(a_hash_including('body' => 'a user comment', 'system' => false))
+
+        system_bodies = notes.select { |note| note['system'] }.map { |note| note['body'] }
+
+        expect(system_bodies).to include(
+          a_string_matching(/added .*label/),
+          a_string_matching(/changed milestone to/),
+          a_string_matching(/\Aclosed/)
+        )
+      end
+
+      it 'excludes synthetic notes when filtering to comments only', :aggregate_failures do
+        notes = notes_for(<<~GRAPHQL, :discussions_with_activity)
+          discussionsWithActivity(first: 20, filter: ONLY_COMMENTS) {
+            nodes { notes { nodes { body system } } }
+          }
+        GRAPHQL
+
+        expect(notes).to all(include('system' => false))
+        expect(notes.map { |note| note['body'] }).to include('a user comment')
+      end
+
+      it 'are absent from the standard discussions field', :aggregate_failures do
+        notes = notes_for(<<~GRAPHQL, :discussions)
+          discussions(first: 20) {
+            nodes { notes { nodes { body system } } }
+          }
+        GRAPHQL
+
+        bodies = notes.map { |note| note['body'] }
+
+        expect(bodies).to include('a user comment')
+        expect(bodies).not_to include(a_string_matching(/added .*label/))
       end
     end
 

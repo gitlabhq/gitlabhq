@@ -6,8 +6,17 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
   include FilterSpecHelper
   using RSpec::Parameterized::TableSyntax
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:ref, freeze: false) { project.repository.root_ref }
+  # `freeze: false` is kept here because this `let_it_be` subject is not an
+  # ActiveRecord record, so freezing gives no cross-example isolation benefit
+  # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+  # gitlab-org/gitlab#602925).
   let_it_be(:text_include, freeze: false) { '::include{file=file.md}' }
   let_it_be(:file_data, freeze: false) { 'included text' }
   let_it_be(:wiki_data, freeze: false) { "---\ntitle: Foo\n---\nincluded text" }
@@ -131,6 +140,10 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
   end
 
   context 'when reading content from a URL' do
+    # `freeze: false` is kept here because this `let_it_be` subject is not an
+    # ActiveRecord record, so freezing gives no cross-example isolation benefit
+    # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+    # gitlab-org/gitlab#602925).
     let_it_be(:http_url, freeze: false) { 'http://example.com' }
     let_it_be(:http_include, freeze: false) { '::include{file=http://example.com}' }
     let_it_be(:https_include, freeze: false) { '::include{file=https://example.com}' }

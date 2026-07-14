@@ -1,0 +1,22 @@
+# @feature_category: mcp_server
+mutation createMergeRequestNote($input: CreateNoteInput!) {
+  createNote(input: $input) {
+    note {
+      id
+      body
+      internal
+      createdAt
+      updatedAt
+      url
+      author {
+        id
+        name
+        username
+      }
+      discussion {
+        id
+      }
+    }
+    errors
+  }
+}

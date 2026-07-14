@@ -18,6 +18,7 @@ export default {
       required: false,
     },
   },
+  emits: ['input'],
   computed: {
     toggle() {
       return this.value === MEMBERSHIP_DESCENDANTS;

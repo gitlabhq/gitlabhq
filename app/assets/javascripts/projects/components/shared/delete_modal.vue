@@ -8,6 +8,7 @@ import { RESOURCE_TYPES } from '~/groups_projects/constants';
 import { InternalEvents } from '~/tracking';
 
 export default {
+  name: 'DeleteModal',
   RESOURCE_TYPES,
   i18n: {
     isForkAlertTitle: __('You are about to delete this forked project containing:'),

@@ -21,7 +21,7 @@ module QA
 
         def wait_for_delete_button_enabled
           wait_until(reload: false) do
-            !find_element('confirm-delete-button').disabled?
+            !element_disabled?('confirm-delete-button')
           end
         end
 

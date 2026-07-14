@@ -78,3 +78,34 @@ WithHumanizedTooltipValues.args = {
     },
   },
 };
+
+export const WithCustomAxisFormatting = Template.bind({});
+WithCustomAxisFormatting.args = {
+  data: [
+    {
+      name: 'Code Suggestions',
+      data: [
+        ['Mon', 0.62],
+        ['Tue', 0.68],
+        ['Wed', 0.71],
+        ['Thu', 0.66],
+        ['Fri', 0.74],
+      ],
+    },
+    {
+      name: 'Duo Chat',
+      data: [
+        ['Mon', 0.81],
+        ['Tue', 0.78],
+        ['Wed', 0.83],
+        ['Thu', 0.85],
+        ['Fri', 0.8],
+      ],
+    },
+  ],
+  options: {
+    xAxis: { type: 'category' },
+    yAxis: { name: '% User retention', type: 'value', valueUnit: UNITS.PERCENT },
+    chartTooltip: { valueUnit: UNITS.PERCENT },
+  },
+};

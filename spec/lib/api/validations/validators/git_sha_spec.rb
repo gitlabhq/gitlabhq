@@ -11,7 +11,7 @@ RSpec.describe API::Validations::Validators::GitSha do
   let(:too_long_sha) { "a" * (Gitlab::Git::Commit::MAX_SHA_LENGTH + 1) }
 
   subject do
-    described_class.new(['test'], {}, false, scope.new)
+    described_class.new(['test'], {}, false, scope.new, {})
   end
 
   context 'valid sha' do

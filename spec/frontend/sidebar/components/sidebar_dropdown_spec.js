@@ -25,11 +25,23 @@ import {
 
 jest.mock('~/alert');
 
+Vue.use(VueApollo);
+
 describe('SidebarDropdown component', () => {
   let wrapper;
 
-  const promiseData = { issuableSetAttribute: { issue: { attribute: { id: '123' } } } };
-  const mutationSuccess = () => jest.fn().mockResolvedValue({ data: promiseData });
+  const buildMilestonesResponse = (nodes = []) => ({
+    data: {
+      namespace: {
+        id: 'gid://gitlab/Project/1',
+        attributes: {
+          nodes,
+        },
+        __typename: 'MilestoneConnection',
+      },
+      __typename: 'Project',
+    },
+  });
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDropdownText = () => wrapper.findComponent(GlDropdownText);
@@ -55,8 +67,6 @@ describe('SidebarDropdown component', () => {
     projectMilestonesSpy = jest.fn().mockResolvedValue(mockProjectMilestonesResponse),
     currentMilestoneSpy = jest.fn().mockResolvedValue(noCurrentMilestoneResponse),
   } = {}) => {
-    Vue.use(VueApollo);
-
     wrapper = mountExtended(SidebarDropdown, {
       apolloProvider: createMockApollo([
         [projectMilestonesQuery, projectMilestonesSpy],
@@ -73,32 +83,22 @@ describe('SidebarDropdown component', () => {
     });
   };
 
-  const createComponent = ({
-    props = {},
-    data = {},
-    mutationPromise = mutationSuccess,
-    queries = {},
-  } = {}) => {
+  const createComponent = ({ props = {}, attributesList = [], loading = false } = {}) => {
+    const projectMilestonesSpy = loading
+      ? jest.fn().mockReturnValue(new Promise(() => {}))
+      : jest.fn().mockResolvedValue(buildMilestonesResponse(attributesList));
+
     wrapper = mountExtended(SidebarDropdown, {
+      apolloProvider: createMockApollo([
+        [projectMilestonesQuery, projectMilestonesSpy],
+        [projectIssueMilestoneQuery, jest.fn().mockResolvedValue(noCurrentMilestoneResponse)],
+      ]),
       propsData: {
         attrWorkspacePath: mockIssue.projectPath,
         currentAttribute: {},
         issuableType: TYPE_ISSUE,
         issuableAttribute: IssuableAttributeType.Milestone,
         ...props,
-      },
-      data() {
-        return data;
-      },
-      mocks: {
-        $apollo: {
-          mutate: mutationPromise(),
-          queries: {
-            currentAttribute: { loading: false },
-            attributesList: { loading: false },
-            ...queries,
-          },
-        },
       },
     });
   };
@@ -108,9 +108,7 @@ describe('SidebarDropdown component', () => {
       describe('when rendering the dropdown', () => {
         it('shows a loading spinner while fetching a list of attributes', async () => {
           createComponent({
-            queries: {
-              attributesList: { loading: true },
-            },
+            loading: true,
           });
 
           await toggleDropdown();
@@ -125,7 +123,17 @@ describe('SidebarDropdown component', () => {
           beforeEach(async () => {
             createComponent({
               props: { currentAttribute: { id, title } },
-              data: { attributesList: [{ id, title }] },
+              attributesList: [
+                {
+                  __typename: 'Milestone',
+                  id,
+                  title,
+                  webUrl: `/milestones/${id}`,
+                  dueDate: null,
+                  expired: false,
+                  state: 'active',
+                },
+              ],
             });
 
             await toggleDropdown();

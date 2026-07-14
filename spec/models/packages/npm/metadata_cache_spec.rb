@@ -14,7 +14,7 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
 
   describe 'loose foreign keys' do
     it_behaves_like 'update by a loose foreign key' do
-      let_it_be(:model, freeze: false) { create(:npm_metadata_cache, status: :default) }
+      let_it_be_with_reload(:model) { create(:npm_metadata_cache, status: :default) }
 
       let!(:parent) { model.project }
     end
@@ -103,7 +103,7 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
     end
 
     it_behaves_like 'object_storage_key readonly attributes' do
-      let_it_be(:model, freeze: false) { create(:npm_metadata_cache, project: project, package_name: package_name) }
+      let_it_be_with_reload(:model) { create(:npm_metadata_cache, project: project, package_name: package_name) }
     end
   end
 end

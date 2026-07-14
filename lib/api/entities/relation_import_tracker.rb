@@ -3,7 +3,7 @@
 module API
   module Entities
     class RelationImportTracker < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :project_path, documentation: { type: 'String', example: 'namespace1/project1' } do |tracker|
         tracker.project.full_path
       end

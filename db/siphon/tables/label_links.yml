@@ -17,8 +17,14 @@ replication_targets:
           - id
         source_keys:
           - target_id
+        filters:
+          - column: target_type
+            value: MergeRequest
       - target_stream_identifier: issues
         target_keys:
           - id
         source_keys:
           - target_id
+        filters:
+          - column: target_type
+            value: Issue

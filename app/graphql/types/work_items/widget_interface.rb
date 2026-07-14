@@ -42,7 +42,7 @@ module Types
         TYPE_MAPPINGS
       end
 
-      def self.resolve_type(object, context)
+      def self.resolve_type(object, _context)
         type_mappings[object.class] || raise("Unknown GraphQL type for widget #{object}")
       end
 

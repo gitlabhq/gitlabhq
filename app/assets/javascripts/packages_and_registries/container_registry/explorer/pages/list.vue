@@ -409,7 +409,7 @@ export default {
             :items-to-be-deleted="itemsToBeDeleted"
             delete-image
             @confirmDelete="doDelete"
-            @cancel="track('cancel_delete')"
+            @cancel-delete="track('cancel_delete')"
           />
         </template>
       </delete-image>

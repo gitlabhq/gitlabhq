@@ -1,5 +1,6 @@
 #import "./work_item_metadata.fragment.graphql"
 
+# @feature_category: team_planning
 query workItemMetadata($fullPath: ID!) {
   namespace(fullPath: $fullPath) {
     id

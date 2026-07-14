@@ -1,4 +1,5 @@
 import { GlTable, GlAvatarLabeled } from '@gitlab/ui';
+import GITLAB_LOGO_SVG_URL from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg?url';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import DashboardsList from '~/vue_shared/components/dashboards_list/dashboards_list.vue';
 import DashboardsListItemActions from 'ee_else_ce/vue_shared/components/dashboards_list/dashboards_list_item_actions.vue';
@@ -164,7 +165,7 @@ describe('DashboardsList', () => {
 
         avatars.wrappers.forEach((avatar) => {
           expect(avatar.props()).toMatchObject({
-            src: 'file-mock',
+            src: GITLAB_LOGO_SVG_URL,
             size: 24,
             shape: 'circle',
             fallbackOnError: true,

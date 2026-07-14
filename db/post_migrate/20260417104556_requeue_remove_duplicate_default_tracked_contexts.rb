@@ -10,19 +10,10 @@ class RequeueRemoveDuplicateDefaultTrackedContexts < Gitlab::Database::Migration
   SUB_BATCH_SIZE = 20
 
   def up
-    delete_batched_background_migration(MIGRATION, :projects, :id, [])
-
-    queue_batched_background_migration(
-      MIGRATION,
-      :projects,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :projects, :id, [])
+    # no-op
   end
 end

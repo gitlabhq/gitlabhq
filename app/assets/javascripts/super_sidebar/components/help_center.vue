@@ -1,8 +1,8 @@
 <script>
 import {
-  GlButton,
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
+  GlNavItem,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import HelpCenterUpgradeSubscription from 'ee_component/super_sidebar/components/help_center_upgrade_subscription.vue';
@@ -20,12 +20,13 @@ const WHATS_NEW_EXPERIMENT = 'whats_new_placement';
 const WHATS_NEW_PLACEMENT = 'help_menu';
 
 export default {
+  name: 'HelpCenter',
   WHATS_NEW_EXPERIMENT,
   components: {
-    GlButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GitlabExperiment,
+    GlNavItem,
     GitlabVersionCheckBadge,
     HelpCenterUpgradeSubscription,
     WhatsNewForYouMenuItem,
@@ -211,18 +212,17 @@ export default {
       @shown="trackDropdownToggle(true)"
       @hidden="trackDropdownToggle(false)"
     >
-      <template #toggle>
-        <gl-button
+      <template #toggle="{ accessibilityAttributes }">
+        <gl-nav-item
           v-gl-tooltip.right="isIconOnly ? $options.i18n.help : ''"
-          category="tertiary"
           icon="question-o"
-          class="application-chrome-nav-item super-sidebar-help-center-toggle super-sidebar-nav-item btn-with-notification gl-w-full !gl-justify-start gl-gap-3 !gl-px-2-5 !gl-py-2"
-          :button-text-classes="{ '!gl-text-default': !isIconOnly, 'gl-hidden': isIconOnly }"
+          :is-icon-only="isIconOnly"
           :aria-label="$options.i18n.help"
           data-testid="sidebar-help-button"
+          v-bind="accessibilityAttributes"
         >
           {{ $options.i18n.help }}
-        </gl-button>
+        </gl-nav-item>
       </template>
 
       <gl-disclosure-dropdown-group

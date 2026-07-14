@@ -10,7 +10,7 @@ export default {
 </script>
 
 <template>
-  <settings-section :heading="__('Comment templates')" class="gl-mt-5">
+  <settings-section :heading="__('Comment templates')">
     <template #description>
       {{
         __(

@@ -3,6 +3,7 @@ import { __, s__ } from '~/locale';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 
 export default {
+  name: 'SnippetDescriptionEdit',
   components: {
     MarkdownEditor,
   },

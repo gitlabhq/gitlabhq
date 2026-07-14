@@ -17,7 +17,6 @@ export default {
   },
   inject: {
     userPermissions: { type: Object },
-    filePaths: { default: null },
   },
   props: {
     discussions: {

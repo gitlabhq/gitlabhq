@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe Projects::IssuesController, feature_category: :team_planning do
   let_it_be(:issue) { create(:issue) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project, freeze: false) { issue.project }
+  let_it_be(:project) { issue.project }
   let_it_be(:user) { issue.author }
 
   shared_context 'group project issue' do
-    let_it_be(:project, freeze: false) { create :project, group: group }
+    let_it_be(:project) { create :project, group: group }
     let_it_be(:issue) { create :issue, project: project }
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:user) { create(:user) }
   end
 
   describe 'GET #show' do
@@ -42,7 +42,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     end
 
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, group: group, developers: [user]) }
+    let_it_be(:project) { create(:project, group: group, developers: [user]) }
     let_it_be(:issues) { create_list(:issue, 5, project: project, due_date: Date.current) }
     let(:params) { {} }
 

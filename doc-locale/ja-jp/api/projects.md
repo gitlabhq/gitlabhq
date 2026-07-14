@@ -28,7 +28,7 @@ title: プロジェクトAPI
 ## 前提条件 {#prerequisites}
 
 - プロジェクトのプロパティを読み取りできる任意の[デフォルトロール](../user/permissions.md#roles)。
-- プロジェクトのプロパティを編集するには、プロジェクトのオーナーまたはメンテナーロールが必要です。
+- プロジェクトのプロパティを編集するには、メンテナーまたはオーナーロールが必要です。
 
 ## プロジェクトの表示レベル {#project-visibility-level}
 
@@ -108,6 +108,13 @@ curl --request PUT \
 | `restrict_user_defined_variables` | GitLab 17.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154510)になりました。代わりに`ci_pipeline_variables_minimum_override_role`を使用してください。 |
 
 ## プロジェクトを取得する {#retrieve-a-project}
+
+{{< history >}}
+
+- `mr_default_title_template`はGitLab 18.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442)され、[機能フラグ](../administration/feature_flags/_index.md) `mr_default_title_template`によって制御されます。デフォルトでは無効になっています。
+- 機能フラグ`mr_default_title_template`はGitLab 19.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642)されました。
+
+{{< /history >}}
 
 指定されたプロジェクトを取得します。プロジェクトが公開されている場合、このエンドポイントには認証なしでアクセスできます。
 
@@ -275,6 +282,7 @@ GET /projects/:id
 | `enforce_auth_checks_on_uploads` | ブール値 | アップロードに対する認証チェックが強制されるかどうか。 |
 | `suggestion_commit_message` | 文字列 | 提案用のカスタムコミットメッセージ。 |
 | `merge_commit_template` | 文字列 | マージコミットメッセージのテンプレート。 |
+| `mr_default_title_template` | 文字列 | マージリクエストのタイトルのテンプレート。 |
 | `squash_commit_template` | 文字列 | スカッシュコミットメッセージのテンプレート。 |
 | `issue_branch_template` | 文字列 | イシューから作成されたブランチ名のテンプレート。 |
 | `warn_about_potentially_unwanted_characters` | ブール値 | 不要な可能性のある文字の使用について警告するかどうか。 |
@@ -295,12 +303,15 @@ GET /projects/:id
 | `merge_pipelines_enabled` | ブール値 | マージパイプラインが有効になっているかどうかを示します。 |
 | `merge_trains_enabled` | ブール値 | マージトレインが有効になっているかどうかを示します。 |
 | `merge_trains_skip_train_allowed` | ブール値 | マージトレインのスキップが許可されているかどうかを示します。 |
+| `max_pipelines_per_merge_train` | 整数 | マージトレインあたりの並列パイプラインの最大数。 |
 | `only_allow_merge_if_all_status_checks_passed` | ブール値 | すべてのステータスチェックが合格した場合にのみマージが許可されるかどうか。Ultimateのみです。 |
 | `allow_pipeline_trigger_approve_deployment` | ブール値 | パイプライントリガーがデプロイを承認できるかどうか。 |
 | `prevent_merge_without_jira_issue` | ブール値 | マージに連携されたJiraイシューが必要かどうかを示します。 |
+| `reviewer_assignment_strategy` | 文字列 | マージリクエストにレビュアーを自動的に割り当てるために使用される戦略。`disabled`、`code_owners`、`dap_powered`のいずれかです。PremiumおよびUltimateのみです。 |
 | `duo_remote_flows_enabled` | ブール値 | GitLab Duoリモートフローが有効になっているかどうかを示します。 |
 | `duo_foundational_flows_enabled` | ブール値 | GitLab Duo基本フローが有効になっているかどうかを示します。 |
 | `duo_sast_fp_detection_enabled` | ブール値 | GitLab DuoSAST誤検出判定が有効になっているかどうかを示します。 |
+| `duo_sast_vr_workflow_enabled` | ブール値 | GitLab Duo SASTの脆弱性の修正ワークフローが有効になっているかを示します。 |
 | `web_based_commit_signing_enabled` | ブール値 | Webベースのコミット署名が有効になっているかどうかを示します。 |
 | `spp_repository_pipeline_access` | ブール値 | セキュリティポリシーのリポジトリパイプラインアクセス。セキュリティオーケストレーションポリシー機能が利用可能な場合にのみ表示されます。 |
 | `permissions` | オブジェクト | プロジェクトのユーザー権限。 |
@@ -492,6 +503,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   "suggestion_commit_message": null,
   "enforce_auth_checks_on_uploads": true,
   "merge_commit_template": null,
+  "mr_default_title_template": null,
   "squash_commit_template": null,
   "issue_branch_template": "gitlab/%{id}-%{title}",
   "marked_for_deletion_at": "2020-04-03", // Deprecated in favor of marked_for_deletion_on. Planned for removal in a future version of the REST API.
@@ -536,11 +548,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 {{< history >}}
 
 - `web_based_commit_signing_enabled`は、GitLab 18.2で`use_web_based_commit_signing_enabled`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194650)されました。デフォルトでは無効になっています。
+- `web_based_commit_signing_enabled`はGitLab 19.1で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/542975)されます。機能フラグ`use_web_based_commit_signing_enabled`は削除されました。
+- `mr_default_title_template`はGitLab 18.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442)され、[機能フラグ](../administration/feature_flags/_index.md) `mr_default_title_template`によって制御されます。デフォルトでは無効になっています。
+- 機能フラグ`mr_default_title_template`はGitLab 19.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642)されました。
 
 {{< /history >}}
-
-> [!flag]
-> `web_based_commit_signing_enabled`属性の利用可能性は機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
 
 認証済みユーザーがアクセスできるインスタンス上のすべてのプロジェクトをリスト表示します。未認証のリクエストは、限定された属性のサブセットを持つ公開プロジェクトのみを返します。
 
@@ -565,8 +577,8 @@ GET /projects
 | `id_after`                    | 整数  | いいえ       | 指定されたIDより大きいIDを持つプロジェクトに結果を制限します。 |
 | `id_before`                   | 整数  | いいえ       | 指定されたIDより小さいIDを持つプロジェクトに結果を制限します。 |
 | `imported`                    | ブール値  | いいえ       | 現在のユーザーによって外部システムからインポートされたプロジェクトに結果を制限します。 |
-| `include_hidden`              | ブール値  | いいえ       | 非表示プロジェクトを含めます。_（管理者のみ）_PremiumおよびUltimateのみ。 |
-| `include_pending_delete`      | ブール値  | いいえ       | 削除保留中のプロジェクトを含めます。_（管理者のみ）_ |
+| `include_hidden`              | ブール値  | いいえ       | 非表示プロジェクトを含めます。_（管理者のみ）_ PremiumおよびUltimateのみ。 |
+| `include_pending_delete`      | ブール値  | いいえ       | 削除保留中のプロジェクトを含めます。_（管理者のみ）_  |
 | `last_activity_after`         | 日時 | いいえ       | 指定された時刻以降に最後のアクティビティが行われたプロジェクトに結果を制限します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`） |
 | `last_activity_before`        | 日時 | いいえ       | 指定された時刻以前に最後のアクティビティが行われたプロジェクトに結果を制限します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`） |
 | `membership`                  | ブール値  | いいえ       | 現在のユーザーがメンバーであるプロジェクトで制限します。 |
@@ -574,7 +586,7 @@ GET /projects
 | `order_by`                    | 文字列   | いいえ       | `id`、`name`、`path`、`created_at`、`updated_at`、`star_count`、`last_activity_at`、または`similarity`フィールドで並べ替えられたプロジェクトを返します。`repository_size`、`storage_size`、`packages_size`、または`wiki_size`フィールドは、管理者のみが使用できます。`similarity`は検索時にのみ使用可能であり、現在のユーザーがメンバーであるプロジェクトに限定されます。デフォルトは`created_at`です。 |
 | `owned`                       | ブール値  | いいえ       | 現在のユーザーが明示的に所有するプロジェクトで制限します。 |
 | `repository_checksum_failed`  | ブール値  | いいえ       | リポジトリチェックサムの計算に失敗したプロジェクトを制限します。PremiumおよびUltimateのみです。 |
-| `repository_storage`          | 文字列   | いいえ       | `repository_storage`に保存されているプロジェクトに結果を制限します。_（管理者のみ）_ |
+| `repository_storage`          | 文字列   | いいえ       | `repository_storage`に保存されているプロジェクトに結果を制限します。_（管理者のみ）_  |
 | `search_namespaces`           | ブール値  | いいえ       | 検索条件に一致するときに、祖先のネームスペースを含めます。デフォルトは`false`です。 |
 | `search`                      | 文字列   | いいえ       | `path`、`name`、または`description`が検索条件（大文字と小文字は区別されない、部分文字列一致）に一致するプロジェクトのリストを返します。複数の用語は、エスケープされたスペース（`+`または`%20`）で区切って指定できます。これらの用語はANDで結合されます。たとえば`one+two`は、部分文字列`one`および`two`（順不同）に一致します。 |
 | `simple`                      | ブール値  | いいえ       | `true`の場合、各プロジェクトに対して限定されたフィールドのみを返します。未認証のリクエストは、`simple`が設定されていなくても、限定されたフィールドを持つ公開プロジェクトのみを返します。 |
@@ -587,7 +599,7 @@ GET /projects
 | `updated_before`              | 日時 | いいえ       | 指定された時刻以前に最終更新が行われたプロジェクトに結果を制限します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）。GitLab 15.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393979)されました。このフィルターを機能させるには、`updated_at`を`order_by`属性として指定する必要もあります。 |
 | `visibility`                  | 文字列   | いいえ       | 表示レベル（`public`、`internal`、`private`）で制限します。 |
 | `wiki_checksum_failed`        | ブール値  | いいえ       | Wikiチェックサムの計算に失敗したプロジェクトを制限します。PremiumおよびUltimateのみです。 |
-| `with_custom_attributes`      | ブール値  | いいえ       | 応答に[カスタム属性](custom_attributes.md)を含めます。_（管理者のみ）_ |
+| `with_custom_attributes`      | ブール値  | いいえ       | 応答に[カスタム属性](custom_attributes.md)を含めます。_（管理者のみ）_  |
 | `with_issues_enabled`         | ブール値  | いいえ       | 有効になっているイシュー機能で制限します。 |
 | `with_merge_requests_enabled` | ブール値  | いいえ       | 有効になっているマージリクエスト機能で制限します。 |
 | `with_programming_language`   | 文字列   | いいえ       | 指定されているプログラミング言語を使用するプロジェクトで制限します。 |
@@ -706,6 +718,7 @@ GET /projects
 | `enforce_auth_checks_on_uploads` | ブール値 | アップロードに対する認証チェックが強制されるかどうか。 |
 | `suggestion_commit_message` | 文字列 | 提案用のカスタムコミットメッセージ。 |
 | `merge_commit_template` | 文字列 | マージコミットメッセージのテンプレート。 |
+| `mr_default_title_template` | 文字列 | マージリクエストのタイトルのテンプレート。 |
 | `squash_commit_template` | 文字列 | スカッシュコミットメッセージのテンプレート。 |
 | `issue_branch_template` | 文字列 | イシューから作成されたブランチ名のテンプレート。 |
 | `warn_about_potentially_unwanted_characters` | ブール値 | 不要な可能性のある文字の使用について警告するかどうか。 |
@@ -723,12 +736,15 @@ GET /projects
 | `merge_pipelines_enabled` | ブール値 | マージパイプラインが有効になっているかどうかを示します。 |
 | `merge_trains_enabled` | ブール値 | マージトレインが有効になっているかどうかを示します。 |
 | `merge_trains_skip_train_allowed` | ブール値 | マージトレインのスキップが許可されているかどうかを示します。 |
+| `max_pipelines_per_merge_train` | 整数 | マージトレインあたりの並列パイプラインの最大数。 |
 | `only_allow_merge_if_all_status_checks_passed` | ブール値 | すべてのステータスチェックが合格した場合にのみマージが許可されるかどうか。Ultimateのみです。 |
 | `allow_pipeline_trigger_approve_deployment` | ブール値 | パイプライントリガーがデプロイを承認できるかどうか。 |
 | `prevent_merge_without_jira_issue` | ブール値 | マージに連携されたJiraイシューが必要かどうかを示します。 |
+| `reviewer_assignment_strategy` | 文字列 | マージリクエストにレビュアーを自動的に割り当てるために使用される戦略。`disabled`、`code_owners`、`dap_powered`のいずれかです。PremiumおよびUltimateのみです。 |
 | `duo_remote_flows_enabled` | ブール値 | GitLab Duoリモートフローが有効になっているかどうかを示します。 |
 | `duo_foundational_flows_enabled` | ブール値 | GitLab Duo基本フローが有効になっているかどうかを示します。 |
 | `duo_sast_fp_detection_enabled` | ブール値 | GitLab DuoSAST誤検出判定が有効になっているかどうかを示します。 |
+| `duo_sast_vr_workflow_enabled` | ブール値 | GitLab Duo SASTの脆弱性の修正ワークフローが有効になっているかを示します。 |
 | `spp_repository_pipeline_access` | ブール値 | セキュリティポリシーのリポジトリパイプラインアクセス。セキュリティオーケストレーションポリシー機能が利用可能な場合にのみ表示されます。 |
 | `permissions` | オブジェクト | プロジェクトのユーザー権限。 |
 | `permissions.project_access` | オブジェクト | ユーザーのプロジェクトアクセス権限。 |
@@ -741,7 +757,7 @@ GET /projects
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Accept: application/json" \
-     --url "https://gitlab.example.com/api/v4/projects
+     --url "https://gitlab.example.com/api/v4/projects"
 ```
 
 レスポンス例: 
@@ -871,6 +887,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "mr_default_title_template": null,
     "squash_commit_template": null,
     "issue_branch_template": "gitlab/%{id}-%{title}",
     "auto_devops_enabled": false,
@@ -896,10 +913,17 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-> [!note] 
-> `last_activity_at`は[プロジェクトアクティビティ](../user/project/working_with_projects.md#view-project-activity)と[プロジェクトイベント](events.md)に基づいて更新されます。データベースパフォーマンスを最適化するため、このフィールドは1時間に1回のみ更新されます。最後の更新から1時間以内に発生したイベントは、タイムスタンプを変更しません。結果として、`last_activity_at`は最大1時間最新ではない可能性があります。`updated_at`は、プロジェクトレコードがデータベースで変更されるたびに更新されます。
+> [!note]
+> `last_activity_at`は、[プロジェクトアクティビティ](../user/project/working_with_projects.md#view-project-activity)と[プロジェクトイベント](events.md)に基づいて更新されます。データベースパフォーマンスを最適化するため、このフィールドは1時間に1回のみ更新されます。最後の更新から1時間以内に発生したイベントは、タイムスタンプを変更しません。結果として、`last_activity_at`は最大1時間最新ではない可能性があります。`updated_at`は、プロジェクトレコードがデータベースで変更されるたびに更新されます。
 
 ### ユーザーの全個人プロジェクトを一覧表示する {#list-all-personal-projects-for-a-user}
+
+{{< history >}}
+
+- `mr_default_title_template`はGitLab 18.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442)され、[機能フラグ](../administration/feature_flags/_index.md) `mr_default_title_template`によって制御されます。デフォルトでは無効になっています。
+- 機能フラグ`mr_default_title_template`はGitLab 19.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642)されました。
+
+{{< /history >}}
 
 指定されたユーザーの全個人プロジェクトを一覧表示します。次の制限が適用されます。
 
@@ -1068,6 +1092,7 @@ GET /users/:user_id/projects
 | `enforce_auth_checks_on_uploads` | ブール値 | アップロードに対する認証チェックが強制されるかどうか。 |
 | `suggestion_commit_message` | 文字列 | 提案用のカスタムコミットメッセージ。 |
 | `merge_commit_template` | 文字列 | マージコミットメッセージのテンプレート。 |
+| `mr_default_title_template` | 文字列 | マージリクエストのタイトルのテンプレート。 |
 | `squash_commit_template` | 文字列 | スカッシュコミットメッセージのテンプレート。 |
 | `issue_branch_template` | 文字列 | イシューから作成されたブランチ名のテンプレート。 |
 | `warn_about_potentially_unwanted_characters` | ブール値 | 不要な可能性のある文字の使用について警告するかどうか。 |
@@ -1085,12 +1110,15 @@ GET /users/:user_id/projects
 | `merge_pipelines_enabled` | ブール値 | マージパイプラインが有効になっているかどうかを示します。 |
 | `merge_trains_enabled` | ブール値 | マージトレインが有効になっているかどうかを示します。 |
 | `merge_trains_skip_train_allowed` | ブール値 | マージトレインのスキップが許可されているかどうかを示します。 |
+| `max_pipelines_per_merge_train` | 整数 | マージトレインあたりの並列パイプラインの最大数。 |
 | `only_allow_merge_if_all_status_checks_passed` | ブール値 | すべてのステータスチェックが合格した場合にのみマージが許可されるかどうか。Ultimateのみです。 |
 | `allow_pipeline_trigger_approve_deployment` | ブール値 | パイプライントリガーがデプロイを承認できるかどうか。 |
 | `prevent_merge_without_jira_issue` | ブール値 | マージに連携されたJiraイシューが必要かどうかを示します。 |
+| `reviewer_assignment_strategy` | 文字列 | マージリクエストにレビュアーを自動的に割り当てるために使用される戦略。`disabled`、`code_owners`、`dap_powered`のいずれかです。PremiumおよびUltimateのみです。 |
 | `duo_remote_flows_enabled` | ブール値 | GitLab Duoリモートフローが有効になっているかどうかを示します。 |
 | `duo_foundational_flows_enabled` | ブール値 | GitLab Duo基本フローが有効になっているかどうかを示します。 |
 | `duo_sast_fp_detection_enabled` | ブール値 | GitLab DuoSAST誤検出判定が有効になっているかどうかを示します。 |
+| `duo_sast_vr_workflow_enabled` | ブール値 | GitLab Duo SASTの脆弱性の修正ワークフローが有効になっているかを示します。 |
 | `spp_repository_pipeline_access` | ブール値 | セキュリティポリシーのリポジトリパイプラインアクセス。セキュリティオーケストレーションポリシー機能が利用可能な場合にのみ表示されます。 |
 | `permissions` | オブジェクト | プロジェクトのユーザー権限。 |
 | `permissions.project_access` | オブジェクト | ユーザーのプロジェクトアクセス権限。 |
@@ -1197,6 +1225,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "mr_default_title_template": null,
     "squash_commit_template": null,
     "secret_push_protection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
@@ -1340,6 +1369,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "mr_default_title_template": null,
     "squash_commit_template": null,
     "secret_push_protection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
@@ -1373,7 +1403,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ### ユーザーのすべてのプロジェクト貢献をリスト表示 {#list-all-projects-contributions-for-a-user}
 
-指定されたユーザーに対する、可視プロジェクトへのすべての貢献をリスト表示します。過去1年間の貢献のみを返します。貢献としてカウントされるものに関する詳細については、[View projects you work with](../user/project/working_with_projects.md#view-projects-you-work-with)を参照してください。
+{{< history >}}
+
+- `mr_default_title_template`はGitLab 18.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442)され、[機能フラグ](../administration/feature_flags/_index.md) `mr_default_title_template`によって制御されます。デフォルトでは無効になっています。
+- 機能フラグ`mr_default_title_template`はGitLab 19.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642)されました。
+
+{{< /history >}}
+
+指定されたユーザーに対する、可視プロジェクトへのすべての貢献をリスト表示します。過去1年間の貢献のみを返します。貢献としてカウントされるものに関する詳細については、[あなたが作業するプロジェクトを表示](../user/project/working_with_projects.md#view-projects-you-work-with)を参照してください。
 
 ```plaintext
 GET /users/:user_id/contributed_projects
@@ -1513,6 +1550,7 @@ GET /users/:user_id/contributed_projects
 | `enforce_auth_checks_on_uploads` | ブール値 | アップロードに対する認証チェックが強制されるかどうか。 |
 | `suggestion_commit_message` | 文字列 | 提案用のカスタムコミットメッセージ。 |
 | `merge_commit_template` | 文字列 | マージコミットメッセージのテンプレート。 |
+| `mr_default_title_template` | 文字列 | マージリクエストのタイトルのテンプレート。 |
 | `squash_commit_template` | 文字列 | スカッシュコミットメッセージのテンプレート。 |
 | `issue_branch_template` | 文字列 | イシューから作成されたブランチ名のテンプレート。 |
 | `warn_about_potentially_unwanted_characters` | ブール値 | 不要な可能性のある文字の使用について警告するかどうか。 |
@@ -1530,12 +1568,15 @@ GET /users/:user_id/contributed_projects
 | `merge_pipelines_enabled` | ブール値 | マージパイプラインが有効になっているかどうかを示します。 |
 | `merge_trains_enabled` | ブール値 | マージトレインが有効になっているかどうかを示します。 |
 | `merge_trains_skip_train_allowed` | ブール値 | マージトレインのスキップが許可されているかどうかを示します。 |
+| `max_pipelines_per_merge_train` | 整数 | マージトレインあたりの並列パイプラインの最大数。 |
 | `only_allow_merge_if_all_status_checks_passed` | ブール値 | すべてのステータスチェックが合格した場合にのみマージが許可されるかどうか。Ultimateのみです。 |
 | `allow_pipeline_trigger_approve_deployment` | ブール値 | パイプライントリガーがデプロイを承認できるかどうか。 |
 | `prevent_merge_without_jira_issue` | ブール値 | マージに連携されたJiraイシューが必要かどうかを示します。 |
+| `reviewer_assignment_strategy` | 文字列 | マージリクエストにレビュアーを自動的に割り当てるために使用される戦略。`disabled`、`code_owners`、`dap_powered`のいずれかです。PremiumおよびUltimateのみです。 |
 | `duo_remote_flows_enabled` | ブール値 | GitLab Duoリモートフローが有効になっているかどうかを示します。 |
 | `duo_foundational_flows_enabled` | ブール値 | GitLab Duo基本フローが有効になっているかどうかを示します。 |
 | `duo_sast_fp_detection_enabled` | ブール値 | GitLab DuoSAST誤検出判定が有効になっているかどうかを示します。 |
+| `duo_sast_vr_workflow_enabled` | ブール値 | GitLab Duo SASTの脆弱性の修正ワークフローが有効になっているかを示します。 |
 | `spp_repository_pipeline_access` | ブール値 | セキュリティポリシーのリポジトリパイプラインアクセス。セキュリティオーケストレーションポリシー機能が利用可能な場合にのみ表示されます。 |
 | `permissions` | オブジェクト | プロジェクトのユーザー権限。 |
 | `permissions.project_access` | オブジェクト | ユーザーのプロジェクトアクセス権限。 |
@@ -1626,6 +1667,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "mr_default_title_template": null,
     "squash_commit_template": null,
     "secret_push_protection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
@@ -1751,6 +1793,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "mr_default_title_template": null,
     "squash_commit_template": null,
     "secret_push_protection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
@@ -2076,6 +2119,9 @@ HTTPリポジトリが公開されていない場合は、URL `https://username:
 POST /projects
 ```
 
+> [!note]
+> `package_registry_access_level`を`disabled`に設定してプロジェクトを作成すると、パッケージレジストリが有効のままになる場合があります。回避策として、同じリクエストで`packages_enabled`も`false`に設定してください。詳細については、[イシュー572010](https://gitlab.com/gitlab-org/gitlab/-/work_items/572010)を参照してください。
+
 サポートされている一般的なプロジェクトの属性:
 
 | 属性                                          | 型    | 必須                       | 説明 |
@@ -2093,24 +2139,25 @@ POST /projects
 | `build_timeout`                                    | 整数 | いいえ                             | ジョブの最大実行可能時間（秒単位）。 |
 | `ci_config_path`                                   | 文字列  | いいえ                             | CI設定ファイルへのパス。 |
 | `container_expiration_policy_attributes`           | ハッシュ    | いいえ                             | このプロジェクト用のイメージのクリーンアップポリシーを更新します。`cadence`（文字列）、`keep_n`（整数）、`older_than`（文字列）、`name_regex`（文字列）、`name_regex_delete`（文字列）、`name_regex_keep`（文字列）、`enabled`（ブール値）を指定できます。`cadence`、`keep_n`、`older_than`の値の詳細については、[コンテナレジストリ](../user/packages/container_registry/reduce_container_registry_storage.md#use-the-cleanup-policy-api)のドキュメントを参照してください。 |
-| `container_registry_enabled`                       | ブール値 | いいえ                             | _（非推奨）_このプロジェクトのコンテナレジストリを有効にします。代わりに`container_registry_access_level`を使用してください。 |
+| `container_registry_enabled`                       | ブール値 | いいえ                             | _（非推奨）_ このプロジェクトのコンテナレジストリを有効にします。代わりに`container_registry_access_level`を使用してください。 |
 | `default_branch`                                   | 文字列  | いいえ                             | [デフォルトブランチ](../user/project/repository/branches/default.md)名。ブランチ名（例: `main`）または完全修飾参照（例: `refs/heads/main`）を受け入れます。完全修飾参照が提供された場合、APIは`refs/heads/`プレフィックスを削除します。`initialize_with_readme`が`true`である必要があります。 |
 | `description`                                      | 文字列  | いいえ                             | プロジェクトの短い説明。 |
-| `emails_disabled`                                  | ブール値 | いいえ                             | _（非推奨）_メール通知を無効にします。代わりに`emails_enabled`を使用してください。 |
+| `emails_disabled`                                  | ブール値 | いいえ                             | _（非推奨）_ メール通知を無効にします。代わりに`emails_enabled`を使用してください。 |
 | `emails_enabled`                                   | ブール値 | いいえ                             | メール通知を有効にします。 |
 | `external_authorization_classification_label`      | 文字列  | いいえ                             | プロジェクトの分類ラベル。PremiumおよびUltimateのみです。 |
 | `group_runners_enabled`                            | ブール値 | いいえ                             | このプロジェクトのグループRunnerを有効にします。 |
 | `group_with_project_templates_id`                  | 整数 | いいえ                             | グループレベルのカスタムテンプレートの場合、すべてのカスタムプロジェクトテンプレートのソースとなるグループのIDを指定します。インスタンスレベルのテンプレートの場合は空のままにします。`use_custom_template`がtrueである必要があります。PremiumおよびUltimateのみです。 |
 | `import_url`                                       | 文字列  | いいえ                             | リポジトリのインポート元のURL。URLの値が空でない場合は、`initialize_with_readme`を`true`に設定しないでください。[エラー](https://gitlab.com/gitlab-org/gitlab/-/issues/360266)（`not a git repository`）が発生する可能性があります。 |
 | `initialize_with_readme`                           | ブール値 | いいえ                             | `README.md`ファイルのみを使用してGitリポジトリを作成するかどうか。デフォルトは`false`です。このブール値がtrueの場合、`import_url`、またはリポジトリの代替コンテンツを指定するこのエンドポイントの他の属性を渡してはなりません。[エラー](https://gitlab.com/gitlab-org/gitlab/-/issues/360266)（`not a git repository`）が発生する可能性があります。 |
-| `issues_enabled`                                   | ブール値 | いいえ                             | _（非推奨）_このプロジェクト用にイシューを有効にします。代わりに`issues_access_level`を使用してください。 |
-| `jobs_enabled`                                     | ブール値 | いいえ                             | _（非推奨）_このプロジェクト用にジョブを有効にします。代わりに`builds_access_level`を使用してください。 |
+| `issues_enabled`                                   | ブール値 | いいえ                             | _（非推奨）_ このプロジェクト用にイシューを有効にします。代わりに`issues_access_level`を使用してください。 |
+| `jobs_enabled`                                     | ブール値 | いいえ                             | _（非推奨）_ このプロジェクト用にジョブを有効にします。代わりに`builds_access_level`を使用してください。 |
 | `lfs_enabled`                                      | ブール値 | いいえ                             | LFSを有効にします。 |
 | `merge_method`                                     | 文字列  | いいえ                             | プロジェクトの[マージ方法](../user/project/merge_requests/methods/_index.md)を設定します。`merge`（マージコミット）、`rebase_merge`（半線形履歴を使用するマージコミット）、または`ff`（早送りマージ）を指定できます。 |
 | `merge_pipelines_enabled`                          | ブール値 | いいえ                             | マージ結果パイプラインを有効または無効にします。 |
-| `merge_requests_enabled`                           | ブール値 | いいえ                             | _（非推奨）_このプロジェクト用にマージリクエストを有効にします。代わりに`merge_requests_access_level`を使用してください。 |
+| `merge_requests_enabled`                           | ブール値 | いいえ                             | _（非推奨）_ このプロジェクト用にマージリクエストを有効にします。代わりに`merge_requests_access_level`を使用してください。 |
 | `merge_trains_enabled`                             | ブール値 | いいえ                             | マージトレインを有効または無効にします。 |
 | `merge_trains_skip_train_allowed`                  | ブール値 | いいえ                             | パイプラインが完了するのを待たずに、マージトレインマージリクエストをマージできるようにします。 |
+| `max_pipelines_per_merge_train`                    | 整数 | いいえ                             | マージトレインあたりの並列パイプラインの最大数。 |
 | `mirror_trigger_builds`                            | ブール値 | いいえ                             | プルミラーリングがビルドをトリガーします。PremiumおよびUltimateのみです。 |
 | `mirror`                                           | ブール値 | いいえ                             | プロジェクトでプルミラーリングを有効にします。PremiumおよびUltimateのみです。 |
 | `namespace_id`                                     | 整数 | いいえ                             | 新しいプロジェクトのネームスペース。グループIDまたはサブグループIDを指定します。指定しない場合、デフォルトで現在のユーザーのパーソナルネームスペースが使用されます。 |
@@ -2120,25 +2167,26 @@ POST /projects
 | `packages_enabled`                                 | ブール値 | いいえ                             | GitLab 17.10で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/454759)になりました。パッケージリポジトリ機能を有効または無効にします。代わりに`package_registry_access_level`を使用してください。 |
 | `package_registry_access_level`                    | 文字列  | いいえ                             | パッケージリポジトリ機能を有効または無効にします。 |
 | `printing_merge_request_link_enabled`              | ブール値 | いいえ                             | コマンドラインからプッシュするときに、マージリクエストを作成/表示するためのリンクを表示します。 |
-| `public_builds`                                    | ブール値 | いいえ                             | _（非推奨）_`true`の場合、プロジェクトメンバー以外のユーザーもジョブを表示できます。代わりに`public_jobs`を使用してください。 |
+| `public_builds`                                    | ブール値 | いいえ                             | _（非推奨）_ `true`の場合、プロジェクトメンバー以外のユーザーもジョブを表示できます。代わりに`public_jobs`を使用してください。 |
 | `public_jobs`                                      | ブール値 | いいえ                             | `true`の場合、プロジェクトメンバー以外のユーザーもジョブを表示できます。 |
 | `repository_object_format`                         | 文字列  | いいえ                             | リポジトリオブジェクト形式。`sha1`がデフォルトです。GitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/419887)されました。 |
 | `remove_source_branch_after_merge`                 | ブール値 | いいえ                             | すべての新しいマージリクエストに対して、デフォルトで`Delete source branch`オプションを有効にします。 |
-| `repository_storage`                               | 文字列  | いいえ                             | リポジトリが存在するストレージシャード。_（管理者のみ）_ |
+| `repository_storage`                               | 文字列  | いいえ                             | リポジトリが存在するストレージシャード。_（管理者のみ）_  |
 | `request_access_enabled`                           | ブール値 | いいえ                             | ユーザーがメンバーアクセスをリクエストできるようにします。 |
 | `resolve_outdated_diff_discussions`                | ブール値 | いいえ                             | プッシュで変更された行に関するマージリクエスト差分ディスカッションを自動的に解決します。 |
+| `reviewer_assignment_strategy`                     | 文字列  | いいえ                             | マージリクエストにレビュアーを自動的に割り当てるために使用される戦略。`disabled`、`code_owners`、`dap_powered`のいずれかです。GitLab 19.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/601621)されました。PremiumおよびUltimateのみです。 |
 | `shared_runners_enabled`                           | ブール値 | いいえ                             | このプロジェクト用にインスタンスRunnerを有効にします。 |
 | `show_default_award_emojis`                        | ブール値 | いいえ                             | デフォルトの絵文字リアクションを表示します。 |
-| `snippets_enabled`                                 | ブール値 | いいえ                             | _（非推奨）_このプロジェクト用にスニペットを有効にします。代わりに`snippets_access_level`を使用してください。 |
+| `snippets_enabled`                                 | ブール値 | いいえ                             | _（非推奨）_ このプロジェクト用にスニペットを有効にします。代わりに`snippets_access_level`を使用してください。 |
 | `squash_option`                                    | 文字列  | いいえ                             | `never`、`always`、`default_on`、`default_off`のいずれかです。 |
 | `tag_list`                                         | 配列   | いいえ                             | プロジェクトのタグのリスト。最終的にプロジェクトに割り当てる必要のあるタグの配列を指定します。GitLab 14.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/328226)になりました。代わりに`topics`を使用してください。 |
 | `template_name`                                    | 文字列  | いいえ                             | `use_custom_template`を指定せずに使用する場合は、[組み込みプロジェクトテンプレート](../user/project/_index.md#create-a-project-from-a-built-in-template)の名前。`use_custom_template`とともに使用する場合は、カスタムプロジェクトテンプレートの名前。 |
 | `template_project_id`                              | 整数 | いいえ                             | `use_custom_template`とともに使用する場合は、カスタムプロジェクトテンプレートのプロジェクトID。プロジェクトIDを使用する方法は、`template_name`を使用する方法よりも推奨されます。これは、`template_name`はあいまいになる可能性があるためです。PremiumおよびUltimateのみです。 |
 | `topics`                                           | 配列   | いいえ                             | プロジェクトのトピックのリスト。最終的にプロジェクトに割り当てる必要のあるトピックの配列を指定します。 |
-| `use_custom_template`                              | ブール値 | いいえ                             | カスタム[インスタンス](../administration/custom_project_templates.md)プロジェクトテンプレートまたは[グループ](../user/group/custom_project_templates.md)（`group_with_project_templates_id`付き）プロジェクトテンプレートのいずれかを使用します。PremiumおよびUltimateのみです。 |
+| `use_custom_template`                              | ブール値 | いいえ                             | カスタム[インスタンス](../administration/project_templates.md)プロジェクトテンプレートまたは[グループ](../user/group/custom_project_templates.md)（`group_with_project_templates_id`付き）プロジェクトテンプレートのいずれかを使用します。PremiumおよびUltimateのみです。 |
 | `visibility`                                       | 文字列  | いいえ                             | [プロジェクトの表示レベル](#project-visibility-level)を参照してください。 |
 | `warn_about_potentially_unwanted_characters`       | ブール値 | いいえ                             | このプロジェクトで不要である可能性がある文字の使用に関する警告を有効にします。 |
-| `wiki_enabled`                                     | ブール値 | いいえ                             | _（非推奨）_このプロジェクト用にWikiを有効にします。代わりに`wiki_access_level`を使用してください。 |
+| `wiki_enabled`                                     | ブール値 | いいえ                             | _（非推奨）_ このプロジェクト用にWikiを有効にします。代わりに`wiki_access_level`を使用してください。 |
 
 リクエスト例: 
 
@@ -2150,7 +2198,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
      --url "https://gitlab.example.com/api/v4/projects/"
 ```
 
-個々のプロジェクト機能の表示レベルを設定するには、[Project feature visibility level](#project-feature-visibility-level)を参照してください。
+個々のプロジェクト機能の表示レベルを設定するには、[プロジェクト機能の表示レベル](#project-feature-visibility-level)を参照してください。
 
 ### ユーザーのプロジェクトを作成する {#create-a-project-for-a-user}
 
@@ -2160,6 +2208,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 - `model_registry_access_level`はGitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/412734)されました。
 - `packages_enabled`はGitLab 17.10で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/454759)になりました。
 - `package_registry_access_level`はGitLab 18.5で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/454759)。
+- `mr_default_title_template`はGitLab 18.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442)され、[機能フラグ](../administration/feature_flags/_index.md) `mr_default_title_template`によって制御されます。デフォルトでは無効になっています。
+- 機能フラグ`mr_default_title_template`はGitLab 19.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642)されました。
 
 {{< /history >}}
 
@@ -2191,10 +2241,10 @@ POST /projects/user/:user_id
 | `build_git_strategy`                               | 文字列  | いいえ       | Git戦略。`fetch`がデフォルトです。 |
 | `build_timeout`                                    | 整数 | いいえ       | ジョブの最大実行可能時間（秒単位）。 |
 | `ci_config_path`                                   | 文字列  | いいえ       | CI設定ファイルへのパス。 |
-| `container_registry_enabled`                       | ブール値 | いいえ       | _（非推奨）_このプロジェクトのコンテナレジストリを有効にします。代わりに`container_registry_access_level`を使用してください。 |
+| `container_registry_enabled`                       | ブール値 | いいえ       | _（非推奨）_ このプロジェクトのコンテナレジストリを有効にします。代わりに`container_registry_access_level`を使用してください。 |
 | `default_branch`                                   | 文字列  | いいえ       | [デフォルトブランチ](../user/project/repository/branches/default.md)名。`initialize_with_readme`が`true`である必要があります。 |
 | `description`                                      | 文字列  | いいえ       | プロジェクトの短い説明。 |
-| `emails_disabled`                                  | ブール値 | いいえ       | _（非推奨）_メール通知を無効にします。代わりに`emails_enabled`を使用してください。 |
+| `emails_disabled`                                  | ブール値 | いいえ       | _（非推奨）_ メール通知を無効にします。代わりに`emails_enabled`を使用してください。 |
 | `emails_enabled`                                   | ブール値 | いいえ       | メール通知を有効にします。 |
 | `enforce_auth_checks_on_uploads`                   | ブール値 | いいえ       | アップロード時に[認証チェック](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files)を強制します。 |
 | `external_authorization_classification_label`      | 文字列  | いいえ       | プロジェクトの分類ラベル。PremiumおよびUltimateのみです。 |
@@ -2202,13 +2252,14 @@ POST /projects/user/:user_id
 | `group_with_project_templates_id`                  | 整数 | いいえ       | グループレベルのカスタムテンプレートの場合、すべてのカスタムプロジェクトテンプレートのソースとなるグループのIDを指定します。インスタンスレベルのテンプレートの場合は空のままにします。`use_custom_template`がtrueである必要があります。PremiumおよびUltimateのみです。 |
 | `import_url`                                       | 文字列  | いいえ       | リポジトリのインポート元のURL。 |
 | `initialize_with_readme`                           | ブール値 | いいえ       | デフォルトでは`false`です。 |
-| `issue_branch_template`                            | 文字列  | いいえ       | [イシューから作成されたブランチ](../user/project/merge_requests/creating_merge_requests.md#from-an-issue)の名前を提案するために使用されるテンプレート。_（GitLab 15.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/21243)されました）_ |
-| `issues_enabled`                                   | ブール値 | いいえ       | _（非推奨）_このプロジェクト用にイシューを有効にします。代わりに`issues_access_level`を使用してください。 |
-| `jobs_enabled`                                     | ブール値 | いいえ       | _（非推奨）_このプロジェクト用にジョブを有効にします。代わりに`builds_access_level`を使用してください。 |
+| `issue_branch_template`                            | 文字列  | いいえ       | [イシューから作成されたブランチ](../user/project/merge_requests/creating_merge_requests.md#from-an-issue)の名前を提案するために使用されるテンプレート。_（GitLab 15.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/21243)されました）_  |
+| `issues_enabled`                                   | ブール値 | いいえ       | _（非推奨）_ このプロジェクト用にイシューを有効にします。代わりに`issues_access_level`を使用してください。 |
+| `jobs_enabled`                                     | ブール値 | いいえ       | _（非推奨）_ このプロジェクト用にジョブを有効にします。代わりに`builds_access_level`を使用してください。 |
 | `lfs_enabled`                                      | ブール値 | いいえ       | LFSを有効にします。 |
 | `merge_commit_template`                            | 文字列  | いいえ       | マージリクエストでマージコミットメッセージを作成するために使用される[テンプレート](../user/project/merge_requests/commit_templates.md)。 |
 | `merge_method`                                     | 文字列  | いいえ       | プロジェクトの[マージ方法](../user/project/merge_requests/methods/_index.md)を設定します。`merge`（マージコミット）、`rebase_merge`（半線形履歴を使用するマージコミット）、または`ff`（早送りマージ）を指定できます。 |
-| `merge_requests_enabled`                           | ブール値 | いいえ       | _（非推奨）_このプロジェクト用にマージリクエストを有効にします。代わりに`merge_requests_access_level`を使用してください。 |
+| `merge_requests_enabled`                           | ブール値 | いいえ       | _（非推奨）_ このプロジェクト用にマージリクエストを有効にします。代わりに`merge_requests_access_level`を使用してください。 |
+| `mr_default_title_template`                        | 文字列  | いいえ       | [テンプレート](../user/project/merge_requests/title_templates.md)はマージリクエストのデフォルトタイトルを設定するために使用されます。 |
 | `mirror_trigger_builds`                            | ブール値 | いいえ       | プルミラーリングがビルドをトリガーします。PremiumおよびUltimateのみです。 |
 | `mirror`                                           | ブール値 | いいえ       | プロジェクトでプルミラーリングを有効にします。PremiumおよびUltimateのみです。 |
 | `namespace_id`                                     | 整数 | いいえ       | 新しいプロジェクトのネームスペース（デフォルトは現在のユーザーのネームスペース）。 |
@@ -2219,28 +2270,28 @@ POST /projects/user/:user_id
 | `package_registry_access_level`                    | 文字列  | いいえ       | パッケージリポジトリ機能を有効または無効にします。 |
 | `path`                                             | 文字列  | いいえ       | 新しいプロジェクトのカスタムリポジトリ名。デフォルトでは、名前に基づいて生成されます。 |
 | `printing_merge_request_link_enabled`              | ブール値 | いいえ       | コマンドラインからプッシュするときに、マージリクエストを作成/表示するためのリンクを表示します。 |
-| `public_builds`                                    | ブール値 | いいえ       | _（非推奨）_`true`の場合、プロジェクトメンバー以外のユーザーもジョブを表示できます。代わりに`public_jobs`を使用してください。 |
+| `public_builds`                                    | ブール値 | いいえ       | _（非推奨）_ `true`の場合、プロジェクトメンバー以外のユーザーもジョブを表示できます。代わりに`public_jobs`を使用してください。 |
 | `public_jobs`                                      | ブール値 | いいえ       | `true`の場合、プロジェクトメンバー以外のユーザーもジョブを表示できます。 |
 | `repository_object_format`                         | 文字列  | いいえ       | リポジトリオブジェクト形式。`sha1`がデフォルトです。GitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/419887)されました。 |
 | `remove_source_branch_after_merge`                 | ブール値 | いいえ       | すべての新しいマージリクエストに対して、デフォルトで`Delete source branch`オプションを有効にします。 |
-| `repository_storage`                               | 文字列  | いいえ       | リポジトリが存在するストレージシャード。_（管理者のみ）_ |
+| `repository_storage`                               | 文字列  | いいえ       | リポジトリが存在するストレージシャード。_（管理者のみ）_  |
 | `request_access_enabled`                           | ブール値 | いいえ       | ユーザーがメンバーアクセスをリクエストできるようにします。 |
 | `resolve_outdated_diff_discussions`                | ブール値 | いいえ       | プッシュで変更された行に関するマージリクエスト差分ディスカッションを自動的に解決します。 |
 | `shared_runners_enabled`                           | ブール値 | いいえ       | このプロジェクト用にインスタンスRunnerを有効にします。 |
 | `show_default_award_emojis`                        | ブール値 | いいえ       | デフォルトの絵文字リアクションを表示します。 |
-| `snippets_enabled`                                 | ブール値 | いいえ       | _（非推奨）_このプロジェクト用にスニペットを有効にします。代わりに`snippets_access_level`を使用してください。 |
+| `snippets_enabled`                                 | ブール値 | いいえ       | _（非推奨）_ このプロジェクト用にスニペットを有効にします。代わりに`snippets_access_level`を使用してください。 |
 | `squash_commit_template`                           | 文字列  | いいえ       | マージリクエストでスカッシュコミットメッセージを作成するために使用される[テンプレート](../user/project/merge_requests/commit_templates.md)。 |
 | `squash_option`                                    | 文字列  | いいえ       | `never`、`always`、`default_on`、`default_off`のいずれかです。 |
 | `suggestion_commit_message`                        | 文字列  | いいえ       | マージリクエストの[提案](../user/project/merge_requests/reviews/suggestions.md)を適用するために使用されるコミットメッセージ。 |
-| `tag_list`                                         | 配列   | いいえ       | _（GitLab 14.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/328226)になりました）_プロジェクトのタグのリスト。最終的にプロジェクトに割り当てる必要があるタグの配列を指定します。代わりに`topics`を使用してください。 |
+| `tag_list`                                         | 配列   | いいえ       | _（GitLab 14.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/328226)になりました）_ プロジェクトのタグのリスト。最終的にプロジェクトに割り当てる必要があるタグの配列を指定します。代わりに`topics`を使用してください。 |
 | `template_name`                                    | 文字列  | いいえ       | `use_custom_template`を指定せずに使用する場合は、[組み込みプロジェクトテンプレート](../user/project/_index.md#create-a-project-from-a-built-in-template)の名前。`use_custom_template`とともに使用する場合は、カスタムプロジェクトテンプレートの名前。 |
 | `topics`                                           | 配列   | いいえ       | プロジェクトのトピックのリスト。 |
-| `use_custom_template`                              | ブール値 | いいえ       | カスタム[インスタンス](../administration/custom_project_templates.md)プロジェクトテンプレートまたは[グループ](../user/group/custom_project_templates.md)（`group_with_project_templates_id`付き）プロジェクトテンプレートのいずれかを使用します。PremiumおよびUltimateのみです。 |
+| `use_custom_template`                              | ブール値 | いいえ       | カスタム[インスタンス](../administration/project_templates.md)プロジェクトテンプレートまたは[グループ](../user/group/custom_project_templates.md)（`group_with_project_templates_id`付き）プロジェクトテンプレートのいずれかを使用します。PremiumおよびUltimateのみです。 |
 | `visibility`                                       | 文字列  | いいえ       | [プロジェクトの表示レベル](#project-visibility-level)を参照してください。 |
 | `warn_about_potentially_unwanted_characters`       | ブール値 | いいえ       | このプロジェクトで不要である可能性がある文字の使用に関する警告を有効にします。 |
-| `wiki_enabled`                                     | ブール値 | いいえ       | _（非推奨）_このプロジェクト用にWikiを有効にします。代わりに`wiki_access_level`を使用してください。 |
+| `wiki_enabled`                                     | ブール値 | いいえ       | _（非推奨）_ このプロジェクト用にWikiを有効にします。代わりに`wiki_access_level`を使用してください。 |
 
-個々のプロジェクト機能の表示レベルを設定するには、[Project feature visibility level](#project-feature-visibility-level)を参照してください。
+個々のプロジェクト機能の表示レベルを設定するには、[プロジェクト機能の表示レベル](#project-feature-visibility-level)を参照してください。
 
 ### プロジェクトを更新する {#update-a-project}
 
@@ -2251,6 +2302,8 @@ POST /projects/user/:user_id
 - `packages_enabled`はGitLab 17.10で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/454759)になりました。
 - `package_registry_access_level`はGitLab 18.5で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/454759)。
 - `protect_merge_request_pipelines`と`ci_display_pipeline_variables`はGitLab 18.10で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/584488)。
+- `mr_default_title_template`はGitLab 18.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442)され、[機能フラグ](../administration/feature_flags/_index.md) `mr_default_title_template`によって制御されます。デフォルトでは無効になっています。
+- 機能フラグ`mr_default_title_template`はGitLab 19.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642)されました。
 
 {{< /history >}}
 
@@ -2274,7 +2327,7 @@ PUT /projects/:id
 | `auto_cancel_pending_pipelines`                    | 文字列            | いいえ       | 保留中のパイプラインを自動的にキャンセルします。このアクションは、有効状態と無効状態を切り替えます。ブール値ではありません。 |
 | `auto_devops_deploy_strategy`                      | 文字列            | いいえ       | 自動デプロイ戦略（`continuous`、`manual`、または`timed_incremental`）。 |
 | `auto_devops_enabled`                              | ブール値           | いいえ       | このプロジェクトに対してAuto DevOpsを有効にします。 |
-| `auto_duo_code_review_enabled`                     | ブール値           | いいえ       | マージリクエストでGitLab Duoによる自動レビューを有効にします。[GitLab Duo in merge requests](../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code)を参照してください。Ultimateのみです。 |
+| `auto_duo_code_review_enabled`                     | ブール値           | いいえ       | マージリクエストでGitLab Duoによる自動レビューを有効にします。[GitLab Duoを使用してコードレビューをする](../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code)を参照してください。Ultimateのみです。 |
 | `autoclose_referenced_issues`                      | ブール値           | いいえ       | デフォルトブランチで参照されているイシューを自動的にクローズするかどうかを設定します。 |
 | `avatar`                                           | 混合             | いいえ       | プロジェクトのアバターの画像ファイル。 |
 | `build_git_strategy`                               | 文字列            | いいえ       | Git戦略。`fetch`がデフォルトです。 |
@@ -2285,39 +2338,43 @@ PUT /projects/:id
 | `ci_display_pipeline_variables`                    | ブール値           | いいえ       | 手動でパイプラインを実行した後、パイプライン詳細ページに手動で定義されたすべての変数を表示します。 |
 | `ci_forward_deployment_enabled`                    | ブール値           | いいえ       | [古いデプロイジョブを防止](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs)を有効または無効にします。 |
 | `ci_forward_deployment_rollback_allowed`           | ブール値           | いいえ       | [ロールバックデプロイのジョブの再試行を許可する](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs)を有効または無効にします。 |
-| `ci_allow_fork_pipelines_to_run_in_parent_project` | ブール値           | いいえ       | [フォークからのマージリクエストに対して親プロジェクトでパイプラインを実行する](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project)を有効または無効にします。_（GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/325189)されました）_ |
-| `ci_id_token_sub_claim_components`                 | 配列             | いいえ       | [IDトークン](../ci/secrets/id_token_authentication.md)の`sub`クレームに含まれるフィールド。`project_path`で始まる配列を指定できます。配列には、`ref_type`、`ref`、`ref_protected`、`environment_protected`、および`deployment_tier`も含まれる場合があります。`["project_path", "ref_type", "ref"]`がデフォルトです。GitLab 17.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/477260)されました。`environment_protected`と`deployment_tier`のサポートはGitLab 18.7で導入されました。 |
+| `ci_allow_fork_pipelines_to_run_in_parent_project` | ブール値           | いいえ       | [フォークからのマージリクエストに対して親プロジェクトでパイプラインを実行する](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project)を有効または無効にします。_（GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/325189)されました）_  |
+| `ci_id_token_sub_claim_components`                 | 配列             | いいえ       | [IDトークン](../ci/secrets/id_token_authentication.md)の`sub`クレームに含まれるフィールド。`project_path`または`project_id`で始まる配列を受け入れます。この配列には、`ref_type`、`ref`、`ref_protected`、`environment_protected`、および`deployment_tier`も含まれる場合があります。`["project_path", "ref_type", "ref"]`がデフォルトです。GitLab 17.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/477260)されました。`environment_protected`および`deployment_tier`のサポートはGitLab 18.7で導入されました。最初のコンポーネントとしての`project_id`のサポートはGitLab 19.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/600358)されました。 |
 | `ci_separated_caches`                              | ブール値           | いいえ       | キャッシュをブランチの保護状態に応じて[分離](../ci/caching/_index.md#cache-key-names)するかどうかを設定します。 |
 | `ci_restrict_pipeline_cancellation_role`           | 文字列            | いいえ       | [パイプラインまたはジョブをキャンセルするために必要なロール](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs)を設定します。`developer`、`maintainer`、`no_one`のいずれかです。GitLab 16.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/429921)されました。PremiumおよびUltimateのみです。 |
 | `ci_pipeline_variables_minimum_override_role`      | 文字列            | いいえ       | 変数をオーバーライドできるロールを指定できます。`owner`、`maintainer`、`developer`、`no_one_allowed`のいずれかです。GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/440338)されました。GitLab 17.1～17.7では、`restrict_user_defined_variables`を有効にする必要があります。 |
 | `ci_push_repository_for_job_token_allowed`         | ブール値           | いいえ       | ジョブトークンを使用してプロジェクトリポジトリにプロジェクトをプッシュする機能を有効または無効にします。GitLab 17.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/389060)されました。 |
 | `container_expiration_policy_attributes`           | ハッシュ              | いいえ       | このプロジェクト用のイメージのクリーンアップポリシーを更新します。`cadence`（文字列）、`keep_n`（整数）、`older_than`（文字列）、`name_regex`（文字列）、`name_regex_delete`（文字列）、`name_regex_keep`（文字列）、`enabled`（ブール値）を指定できます。 |
-| `container_registry_enabled`                       | ブール値           | いいえ       | _（非推奨）_このプロジェクトのコンテナレジストリを有効にします。代わりに`container_registry_access_level`を使用してください。 |
+| `container_registry_enabled`                       | ブール値           | いいえ       | _（非推奨）_ このプロジェクトのコンテナレジストリを有効にします。代わりに`container_registry_access_level`を使用してください。 |
 | `default_branch`                                   | 文字列            | いいえ       | [デフォルトブランチ](../user/project/repository/branches/default.md)名。 |
 | `description`                                      | 文字列            | いいえ       | プロジェクトの短い説明。 |
 | `duo_remote_flows_enabled`                         | ブール値           | いいえ       | プロジェクトで[フロー](../user/duo_agent_platform/flows/_index.md)を実行できるかどうかを決定します。 |
-| `emails_disabled`                                  | ブール値           | いいえ       | _（非推奨）_メール通知を無効にします。代わりに`emails_enabled`を使用してください。 |
+| `duo_sast_fp_detection_enabled` | ブール値 | いいえ | SASTの誤検出判定を有効または無効にします。[SASTの誤検出判定を有効にする](../user/application_security/vulnerabilities/false_positive_detection.md#turn-on-for-a-project)を参照してください。 |
+| `duo_sast_vr_workflow_enabled` | ブール値 | いいえ | SAST脆弱性の修正ワークフローを有効または無効にします。[SAST脆弱性の修正ワークフローを有効にする](../user/application_security/vulnerabilities/agentic_vulnerability_resolution.md#turn-on-for-a-project)を参照してください。 |
+| `emails_disabled`                                  | ブール値           | いいえ       | _（非推奨）_ メール通知を無効にします。代わりに`emails_enabled`を使用してください。 |
 | `emails_enabled`                                   | ブール値           | いいえ       | メール通知を有効にします。 |
 | `enforce_auth_checks_on_uploads`                   | ブール値           | いいえ       | アップロード時に[認証チェック](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files)を強制します。 |
 | `external_authorization_classification_label`      | 文字列            | いいえ       | プロジェクトの分類ラベル。PremiumおよびUltimateのみです。 |
 | `group_runners_enabled`                            | ブール値           | いいえ       | このプロジェクトのグループRunnerを有効にします。 |
 | `import_url`                                       | 文字列            | いいえ       | リポジトリのインポート元URL。 |
-| `issues_enabled`                                   | ブール値           | いいえ       | _（非推奨）_このプロジェクト用にイシューを有効にします。代わりに`issues_access_level`を使用してください。 |
+| `issues_enabled`                                   | ブール値           | いいえ       | _（非推奨）_ このプロジェクト用にイシューを有効にします。代わりに`issues_access_level`を使用してください。 |
 | `issues_template` | 文字列 | いいえ | 新しいイシューのデフォルトの説明。GitLab Flavored Markdownとしてフォーマットされます。PremiumおよびUltimateのみです。 |
 | `merge_requests_template` | 文字列 | いいえ | 新しいマージリクエストのデフォルトの説明。GitLab Flavored Markdownとしてフォーマットされます。PremiumおよびUltimateのみです。 |
-| `jobs_enabled`                                     | ブール値           | いいえ       | _（非推奨）_このプロジェクト用にジョブを有効にします。代わりに`builds_access_level`を使用してください。 |
+| `jobs_enabled`                                     | ブール値           | いいえ       | _（非推奨）_ このプロジェクト用にジョブを有効にします。代わりに`builds_access_level`を使用してください。 |
 | `keep_latest_artifact`                             | ブール値           | いいえ       | このプロジェクトの最新のアーティファクトを保持する機能を無効または有効にします。 |
 | `lfs_enabled`                                      | ブール値           | いいえ       | LFSを有効にします。 |
 | `max_artifacts_size`                               | 整数           | いいえ       | 個々のジョブアーティファクトの最大ファイルサイズ（MB単位）。 |
 | `merge_commit_template`                            | 文字列            | いいえ       | マージリクエストでマージコミットメッセージを作成するために使用される[テンプレート](../user/project/merge_requests/commit_templates.md)。 |
 | `merge_method`                                     | 文字列            | いいえ       | プロジェクトの[マージ方法](../user/project/merge_requests/methods/_index.md)を設定します。`merge`（マージコミット）、`rebase_merge`（半線形履歴を使用するマージコミット）、または`ff`（早送りマージ）を指定できます。 |
 | `merge_pipelines_enabled`                          | ブール値           | いいえ       | マージ結果パイプラインを有効または無効にします。 |
-| `merge_requests_enabled`                           | ブール値           | いいえ       | _（非推奨）_このプロジェクト用にマージリクエストを有効にします。代わりに`merge_requests_access_level`を使用してください。 |
+| `merge_requests_enabled`                           | ブール値           | いいえ       | _（非推奨）_ このプロジェクト用にマージリクエストを有効にします。代わりに`merge_requests_access_level`を使用してください。 |
+| `mr_default_title_template`                        | 文字列            | いいえ       | [テンプレート](../user/project/merge_requests/title_templates.md)はマージリクエストのデフォルトタイトルを設定するために使用されます。 |
 | `merge_trains_enabled`                             | ブール値           | いいえ       | マージトレインを有効または無効にします。 |
 | `merge_trains_skip_train_allowed`                  | ブール値           | いいえ       | パイプラインが完了するのを待たずに、マージトレインマージリクエストをマージできるようにします。 |
+| `max_pipelines_per_merge_train`                    | 整数           | いいえ       | マージトレインあたりの並列パイプラインの最大数。 |
 | `mirror_overwrites_diverged_branches`              | ブール値           | いいえ       | プルミラーが、分岐したブランチを上書きします。PremiumおよびUltimateのみです。 |
 | `mirror_trigger_builds`                            | ブール値           | いいえ       | プルミラーリングがビルドをトリガーします。PremiumおよびUltimateのみです。 |
-| `mirror_user_id`                                   | 整数           | いいえ       | プルミラーイベントに関連するすべてのアクティビティを担当するユーザー。_（管理者のみ）_PremiumとUltimateプランのみ。 |
+| `mirror_user_id`                                   | 整数           | いいえ       | プルミラーイベントに関連するすべてのアクティビティを担当するユーザー。_（管理者のみ）_ PremiumとUltimateプランのみ。 |
 | `mirror`                                           | ブール値           | いいえ       | プロジェクトでプルミラーリングを有効にします。PremiumおよびUltimateのみです。 |
 | `mr_default_target_self`                           | ブール値           | いいえ       | フォークされたプロジェクトの場合、マージリクエストのターゲットをこのプロジェクトに設定します。`false`の場合、ターゲットはアップストリームプロジェクトになります。 |
 | `name`                                             | 文字列            | いいえ       | プロジェクト名。 |
@@ -2330,27 +2387,27 @@ PUT /projects/:id
 | `prevent_merge_without_jira_issue`                 | ブール値           | いいえ       | マージリクエストで、Jiraからの関連イシューを必須にするかどうかを設定します。Ultimateのみです。 |
 | `printing_merge_request_link_enabled`              | ブール値           | いいえ       | コマンドラインからプッシュするときに、マージリクエストを作成/表示するためのリンクを表示します。 |
 | `protect_merge_request_pipelines`                  | ブール値           | いいえ       | [control access to protected variables and runners](../ci/pipelines/merge_request_pipelines.md#control-access-to-protected-variables-and-runners)を有効または無効にします。 |
-| `public_builds`                                    | ブール値           | いいえ       | _（非推奨）_`true`の場合、プロジェクトメンバー以外のユーザーもジョブを表示できます。代わりに`public_jobs`を使用してください。 |
+| `public_builds`                                    | ブール値           | いいえ       | _（非推奨）_ `true`の場合、プロジェクトメンバー以外のユーザーもジョブを表示できます。代わりに`public_jobs`を使用してください。 |
 | `public_jobs`                                      | ブール値           | いいえ       | `true`の場合、プロジェクトメンバー以外のユーザーもジョブを表示できます。 |
 | `remove_source_branch_after_merge`                 | ブール値           | いいえ       | すべての新しいマージリクエストに対して、デフォルトで`Delete source branch`オプションを有効にします。 |
-| `repository_storage`                               | 文字列            | いいえ       | リポジトリが存在するストレージシャード。_（管理者のみ）_ |
+| `repository_storage`                               | 文字列            | いいえ       | リポジトリが存在するストレージシャード。_（管理者のみ）_  |
 | `request_access_enabled`                           | ブール値           | いいえ       | ユーザーがメンバーアクセスをリクエストできるようにします。 |
 | `resolve_outdated_diff_discussions`                | ブール値           | いいえ       | プッシュで変更された行に関するマージリクエスト差分ディスカッションを自動的に解決します。 |
-| `restrict_user_defined_variables`                  | ブール値           | いいえ       | _（GitLab 17.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154510)となり、`ci_pipeline_variables_minimum_override_role`が推奨されます）_パイプラインをトリガーするときに、メンテナーロールを持つユーザーのみがユーザー定義変数を渡せるようにします。たとえば、UIで、APIを使用して、またはトリガートークンにより、パイプラインがトリガーされる場合などです。 |
+| `restrict_user_defined_variables`                  | ブール値           | いいえ       | _（GitLab 17.7で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154510)となり、`ci_pipeline_variables_minimum_override_role`が推奨されます）_ パイプラインをトリガーするときに、メンテナーロールを持つユーザーのみがユーザー定義変数を渡せるようにします。たとえば、UIで、APIを使用して、またはトリガートークンにより、パイプラインがトリガーされる場合などです。 |
 | `service_desk_enabled`                             | ブール値           | いいえ       | サービスデスク機能を有効または無効にします。 |
 | `shared_runners_enabled`                           | ブール値           | いいえ       | このプロジェクト用にインスタンスRunnerを有効にします。 |
 | `show_default_award_emojis`                        | ブール値           | いいえ       | デフォルトの絵文字リアクションを表示します。 |
-| `snippets_enabled`                                 | ブール値           | いいえ       | _（非推奨）_このプロジェクト用にスニペットを有効にします。代わりに`snippets_access_level`を使用してください。 |
-| `issue_branch_template`                            | 文字列            | いいえ       | [イシューから作成されたブランチ](../user/project/merge_requests/creating_merge_requests.md#from-an-issue)の名前を提案するために使用されるテンプレート。_（GitLab 15.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/21243)されました）_ |
+| `snippets_enabled`                                 | ブール値           | いいえ       | _（非推奨）_ このプロジェクト用にスニペットを有効にします。代わりに`snippets_access_level`を使用してください。 |
+| `issue_branch_template`                            | 文字列            | いいえ       | [イシューから作成されたブランチ](../user/project/merge_requests/creating_merge_requests.md#from-an-issue)の名前を提案するために使用されるテンプレート。_（GitLab 15.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/21243)されました）_  |
 | `spp_repository_pipeline_access`                   | ブール値           | いいえ       | ユーザーとトークンに、このプロジェクトからセキュリティポリシーの設定をフェッチするための読み取り専用アクセスを許可します。このプロジェクトをセキュリティポリシーソースとして使用するプロジェクトで、セキュリティポリシーを適用するために必要です。Ultimateのみです。 |
 | `squash_commit_template`                           | 文字列            | いいえ       | マージリクエストでスカッシュコミットメッセージを作成するために使用される[テンプレート](../user/project/merge_requests/commit_templates.md)。 |
 | `squash_option`                                    | 文字列            | いいえ       | `never`、`always`、`default_on`、`default_off`のいずれかです。 |
 | `suggestion_commit_message`                        | 文字列            | いいえ       | マージリクエストの提案を適用するために使用されるコミットメッセージ。 |
-| `tag_list`                                         | 配列             | いいえ       | _（GitLab 14.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/328226)になりました）_プロジェクトのタグのリスト。最終的にプロジェクトに割り当てる必要があるタグの配列を指定します。代わりに`topics`を使用してください。 |
+| `tag_list`                                         | 配列             | いいえ       | _（GitLab 14.0で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/328226)になりました）_ プロジェクトのタグのリスト。最終的にプロジェクトに割り当てる必要があるタグの配列を指定します。代わりに`topics`を使用してください。 |
 | `topics`                                           | 配列             | いいえ       | プロジェクトのトピックのリスト。これにより、プロジェクトにすでに追加されている既存のトピックがすべて置き換えられます。 |
 | `visibility`                                       | 文字列            | いいえ       | [プロジェクトの表示レベル](#project-visibility-level)を参照してください。 |
 | `warn_about_potentially_unwanted_characters`       | ブール値           | いいえ       | このプロジェクトで不要である可能性がある文字の使用に関する警告を有効にします。 |
-| `wiki_enabled`                                     | ブール値           | いいえ       | _（非推奨）_このプロジェクト用にWikiを有効にします。代わりに`wiki_access_level`を使用してください。 |
+| `wiki_enabled`                                     | ブール値           | いいえ       | _（非推奨）_ このプロジェクト用にWikiを有効にします。代わりに`wiki_access_level`を使用してください。 |
 | `web_based_commit_signing_enabled`                 | ブール値           | いいえ       | GitLab UIから作成されたコミットのWebベースのコミット署名を有効にします。GitLab.comでのみ利用可能です。 |
 
 たとえば、[GitLab.comプロジェクトのインスタンスRunner](../ci/runners/_index.md)の設定を切り替えるには、次のようにします。
@@ -2361,7 +2418,27 @@ curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
      --data "shared_runners_enabled=true" # to turn off: "shared_runners_enabled=false"
 ```
 
-個々のプロジェクト機能の表示レベルを設定するには、[Project feature visibility level](#project-feature-visibility-level)を参照してください。
+個々のプロジェクト機能の表示レベルを設定するには、[プロジェクト機能の表示レベル](#project-feature-visibility-level)を参照してください。
+
+#### 複数のプロジェクトでサービスデスクをオフにする {#turn-off-service-desk-for-multiple-projects}
+
+GitLabは各プロジェクトのサービスデスク設定を保存します。新しいプロジェクトでは、サービスデスクがデフォルトでアクティブになっています。あるネームスペース内の複数のプロジェクトでサービスデスクをオフにするには、[プロジェクトを更新](#update-a-project)するエンドポイントを使用して各プロジェクトを更新します。
+
+前提条件: 
+
+- 変更したい各プロジェクトに対して、メンテナーまたはオーナーロールが必要です。
+
+プロジェクトのサービスデスクをオフにするには、`service_desk_enabled`属性を`false`に設定します:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "service_desk_enabled=false" \
+  --url "https://gitlab.example.com/api/v4/projects/<project_id>"
+```
+
+ネームスペース内のプロジェクトを見つけるには、`include_subgroups=true`を指定して[グループプロジェクトをリスト表示](groups.md#list-projects)するエンドポイントを使用するか、個人ネームスペースの場合は[ユーザープロジェクトをリスト表示](#list-all-personal-projects-for-a-user)するエンドポイントを使用します。次に、変更したい各プロジェクトに対して、前のリクエストを実行します。
+
+APIによって返される`service_desk_enabled`フィールドは計算された値です。プロジェクト設定がオンで、インスタンスで受信メールが設定されている場合にのみ、`true`になります。受信メールが設定されていない場合、プロジェクト設定がオンであってもフィールドは`false`と表示されます。
 
 ### メンバーをインポートする {#import-members}
 
@@ -2425,6 +2502,13 @@ curl --request POST \
 ```
 
 ### プロジェクトをアーカイブする {#archive-a-project}
+
+{{< history >}}
+
+- `mr_default_title_template`はGitLab 18.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442)され、[機能フラグ](../administration/feature_flags/_index.md) `mr_default_title_template`によって制御されます。デフォルトでは無効になっています。
+- 機能フラグ`mr_default_title_template`はGitLab 19.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642)されました。
+
+{{< /history >}}
 
 指定されたプロジェクトをアーカイブします。
 
@@ -2558,6 +2642,7 @@ curl --request POST \
   "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
+  "mr_default_title_template": null,
   "secret_push_protection_enabled": false,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
@@ -2574,6 +2659,13 @@ curl --request POST \
 ```
 
 ### プロジェクトのアーカイブを解除する {#unarchive-a-project}
+
+{{< history >}}
+
+- `mr_default_title_template`はGitLab 18.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442)され、[機能フラグ](../administration/feature_flags/_index.md) `mr_default_title_template`によって制御されます。デフォルトでは無効になっています。
+- 機能フラグ`mr_default_title_template`はGitLab 19.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642)されました。
+
+{{< /history >}}
 
 指定されたプロジェクトのアーカイブを解除します。
 
@@ -2707,6 +2799,7 @@ curl --request POST \
   "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
+  "mr_default_title_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "secret_push_protection_enabled": false,
   "_links": {
@@ -2742,8 +2835,8 @@ curl --request POST \
 
 このエンドポイントは、以前に削除対象としてマークされていたプロジェクトを即座に削除することもできます。
 
-> [!warning] 
-> GitLab.comでは、プロジェクトが削除された後、そのデータは30日間保持され、永続的な削除はできません。GitLab.comでプロジェクトを本当に即座に削除する必要がある場合、[サポートチケット](https://about.gitlab.com/support/)を開くことができます。
+> [!warning]
+> GitLab.comでは、プロジェクトが削除された後、そのデータは30日間保持され、永続的な削除はできません。GitLab.comでプロジェクトをすぐに削除する必要がある場合は、[サポートチケット](https://support.gitlab.com/)を開くことができます。
 
 ```plaintext
 DELETE /projects/:id
@@ -2772,6 +2865,13 @@ POST /projects/:id/restore
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
 ### プロジェクトを新しいネームスペースに転送する {#transfer-a-project-to-a-new-namespace}
+
+{{< history >}}
+
+- `mr_default_title_template`はGitLab 18.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442)され、[機能フラグ](../administration/feature_flags/_index.md) `mr_default_title_template`によって制御されます。デフォルトでは無効になっています。
+- 機能フラグ`mr_default_title_template`はGitLab 19.0で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642)されました。
+
+{{< /history >}}
 
 プロジェクトを新しいネームスペースに転送します。
 
@@ -2901,6 +3001,7 @@ curl --request PUT \
   "squash_option": "default_on",
   "suggestion_commit_message": null,
   "merge_commit_template": null,
+  "mr_default_title_template": null,
   "auto_devops_enabled": true,
   "auto_devops_deploy_strategy": "continuous",
   "autoclose_referenced_issues": true,
@@ -3044,7 +3145,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 
 プロジェクトをグループと共有します。
 
-詳細については、[Invite a group to a project](../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project)を参照してください。
+詳細については、[プロジェクトへグループを招待する](../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project)を参照してください。
 
 ### プロジェクトをグループと共有する {#share-a-project-with-a-group}
 
@@ -3061,7 +3162,7 @@ POST /projects/:id/share
 | `group_access` | 整数           | はい      | グループに付与するアクセスレベル。使用可能な値: `5` （最小アクセス）、`10` （ゲスト）、`15` （プランナー）、`20` （レポーター）、`25` （セキュリティマネージャー）、`30` （デベロッパー）、`40` （メンテナー）、または`50` （オーナー）。 |
 | `group_id`     | 整数           | はい      | 共有するグループのID。 |
 | `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `expires_at`   | 文字列            | いいえ       | ISO 8601形式での共有有効期限。例: `2016-09-26`。 |
+| `expires_at`   | 文字列            | いいえ       | ISO 8601形式での共有有効期限。たとえば、`2016-09-26`などです。 |
 
 ### グループ内の共有プロジェクトリンクを削除する {#delete-a-shared-project-link-in-a-group}
 

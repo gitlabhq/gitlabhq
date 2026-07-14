@@ -4,6 +4,7 @@ module Issuables
   class BaseFilter
     FILTER_NONE = 'none'
     FILTER_ANY = 'any'
+    FILTER_ME = 'me'
 
     def initialize(params:, parent: nil, current_user: nil)
       @params = params

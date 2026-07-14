@@ -1,0 +1,13 @@
+# @feature_category: portfolio_management
+# Board-scoped update: returns only `id` so the optimistic response can be
+# satisfied by the lighter work item node the board caches (the full WorkItem
+# fragment is not fetched here). The moved card's display fields come from the
+# cached node, which the board_view cache update reinserts into the column.
+mutation updateBoardWorkItem($input: WorkItemUpdateInput!) {
+  workItemUpdate(input: $input) {
+    workItem {
+      id
+    }
+    errors
+  }
+}

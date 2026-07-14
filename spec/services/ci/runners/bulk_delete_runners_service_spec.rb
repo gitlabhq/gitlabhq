@@ -65,11 +65,11 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute', feature_cate
       let(:runners_arg) { Ci::Runner.all }
 
       context 'when user is not group owner' do
-        before do
+        let_it_be(:user) { create(:user) }
+
+        before_all do
           group.add_developer(user)
         end
-
-        let(:user) { create(:user) }
 
         it 'does not delete any runner and returns error', :aggregate_failures do
           expect { execute }.not_to change { Ci::Runner.count }
@@ -142,8 +142,8 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute', feature_cate
       end
 
       context 'when user is group owner' do
-        before do
-          group.add_owner(user)
+        before_all do
+          group.add_owner(owner_user)
         end
 
         include_examples 'a service deleting runners in bulk' do

@@ -97,6 +97,11 @@ configure IOPS correctly.
 For repository data, only local storage is supported for Gitaly and Gitaly Cluster (Praefect) for performance and consistency reasons.
 Alternatives such as [NFS](../nfs.md) or [cloud-based file systems](../nfs.md#avoid-using-cloud-based-file-systems) are not supported.
 
+Each Gitaly node must use its own dedicated storage disk.
+The IOPS requirements apply independently to each node.
+If multiple Gitaly nodes share a single disk, the I/O load on that disk multiplies
+and can cause severe performance bottlenecks.
+
 ## Gitaly architecture
 
 Gitaly implements a client-server architecture:

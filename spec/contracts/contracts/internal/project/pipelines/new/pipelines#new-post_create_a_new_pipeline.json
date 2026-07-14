@@ -1,0 +1,43 @@
+{
+  "consumer": {
+    "name": "Pipelines#new"
+  },
+  "provider": {
+    "name": "POST create a new pipeline"
+  },
+  "interactions": [
+    {
+      "description": "a request to create a new pipeline",
+      "providerState": "a project with a valid .gitlab-ci.yml configuration exists",
+      "request": {
+        "method": "POST",
+        "path": "/gitlab-org/gitlab-qa/-/pipelines",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": {
+          "ref": "master"
+        }
+      },
+      "response": {
+        "status": 302,
+        "headers": {
+          "Content-Type": "text/html; charset=utf-8"
+        },
+        "body": "<html><body>You are being <a href=\"http://example.org/gitlab-org/gitlab-qa/-/pipelines/5\">redirected</a>.</body></html>",
+        "matchingRules": {
+          "$.body": {
+            "match": "regex",
+            "regex": "You are being <a href=\\\"(.)+\\\">redirected<\\/a>."
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

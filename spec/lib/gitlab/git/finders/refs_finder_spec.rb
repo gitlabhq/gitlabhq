@@ -287,6 +287,10 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
     end
 
     describe 'Pagination' do
+      let(:empty_refs) do
+        [].tap { |refs| allow(refs).to receive(:next_cursor).and_return(nil) }
+      end
+
       context 'with per page limit' do
         let(:params) do
           { ref_type: :tags, per_page: 2 }
@@ -354,6 +358,39 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           refs = subject
 
           expect(refs.length).to eq(3)
+        end
+      end
+
+      context 'with per_page above the default maximum' do
+        let(:params) do
+          { ref_type: :tags, per_page: 200 }
+        end
+
+        it 'passes the default maximum as the Gitaly limit' do
+          expect(repository).to receive(:list_refs)
+            .with(
+              anything,
+              sort_by: nil,
+              pagination_params: hash_including(limit: Gitlab::PaginationDelegate::MAX_PER_PAGE),
+              ignore_case: false
+            )
+            .and_return(empty_refs)
+
+          subject
+        end
+      end
+
+      context 'with max_per_page above the default maximum' do
+        let(:params) do
+          { ref_type: :tags, per_page: 200, max_per_page: 200 }
+        end
+
+        it 'passes the overridden maximum as the Gitaly limit' do
+          expect(repository).to receive(:list_refs)
+            .with(anything, sort_by: nil, pagination_params: hash_including(limit: 200), ignore_case: false)
+            .and_return(empty_refs)
+
+          subject
         end
       end
     end

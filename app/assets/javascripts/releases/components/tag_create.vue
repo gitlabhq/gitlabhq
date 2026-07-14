@@ -22,6 +22,7 @@ export default {
   props: {
     value: { type: String, required: true },
   },
+  emits: ['cancel', 'change', 'create'],
   data() {
     return {
       nameId: uniqueId('tag-name-'),

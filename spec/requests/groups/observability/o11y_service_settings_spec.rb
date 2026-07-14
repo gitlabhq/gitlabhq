@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe "Groups::Observability::O11yServiceSettings", feature_category: :observability do
   let_it_be(:group) { create(:group) }
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:user_without_group_access, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:user_without_group_access) { create(:user) }
 
   before_all do
     group.add_maintainer(user)

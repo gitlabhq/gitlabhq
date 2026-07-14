@@ -20,6 +20,7 @@ Use this API to interact with group access tokens. For more information, see [Gr
 {{< history >}}
 
 - `state` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.2.
+- `last_used_ips` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/600347) in GitLab 19.2.
 
 {{< /history >}}
 
@@ -65,6 +66,7 @@ curl --request GET \
       "description": "Test Token description",
       "revoked" : false,
       "last_used_at": null,
+      "last_used_ips": [],
       "access_level": 40
    },
    {
@@ -80,10 +82,16 @@ curl --request GET \
       "description": "Test Token description",
       "revoked" : true,
       "last_used_at": "2021-02-13T10:34:57.178Z",
+      "last_used_ips": ["192.0.2.10"],
       "access_level": 40
    }
 ]
 ```
+
+> [!note]
+> The `last_used_ips` attribute lists up to five unique IP addresses that have authenticated with
+> this token. When the limit is reached, the oldest IP address is removed. The list updates once
+> per minute per token.
 
 ## Retrieve details on a group access token
 
@@ -117,7 +125,9 @@ curl --request GET \
    "created_at" : "2021-01-20T22:11:48.151Z",
    "description": "Test Token description",
    "revoked" : false,
-   "access_level": 40
+   "access_level": 40,
+   "last_used_at": null,
+   "last_used_ips": []
 }
 ```
 
@@ -144,7 +154,7 @@ POST /groups/:id/access_tokens
 | `id`           | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
 | `name`         | String            | yes      | Name of the token. |
 | `description`  | string            | no       | Description of the group access token. Maximum: 255 characters. |
-| `scopes`       | `Array[String]`   | yes      | List of [scopes](../user/group/settings/group_access_tokens.md#group-access-token-scopes) available to the token. |
+| `scopes`       | `Array[String]`   | yes      | List of [scopes](../security/tokens/access_token_scopes.md) available to the token. |
 | `access_level` | Integer           | no       | Role for the token. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), and `50` (Owner). Default value: `40`. |
 | `expires_at`   | date              | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
@@ -194,8 +204,8 @@ from the same token family are revoked. For more information, see [automatic reu
 
 Prerequisites:
 
-- To rotate another group access token, you must have a personal access token with the [`api` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
-- To [self-rotate](#self-rotate) a group access token, the token must have the [`api` or `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
+- To rotate another group access token, you must have a personal access token with the [`api` scope](../security/tokens/access_token_scopes.md).
+- To [self-rotate](#self-rotate) a group access token, the token must have the [`api` or `self_rotate` scope](../security/tokens/access_token_scopes.md).
 
 ```plaintext
 POST /groups/:id/access_tokens/:token_id/rotate
@@ -225,6 +235,7 @@ Example response:
     "scopes": ["api"],
     "user_id": 1337,
     "last_used_at": null,
+    "last_used_ips": [],
     "active": true,
     "expires_at": "2023-08-15",
     "access_level": 30,
@@ -251,7 +262,7 @@ Other possible responses:
 
 Instead of rotating a specific group access token, you can rotate the same group access token you used to authenticate the request. To self-rotate a group access token, you must:
 
-- Rotate a group access token with the [`api` or `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
+- Rotate a group access token with the [`api` or `self_rotate` scope](../security/tokens/access_token_scopes.md).
 - Use the `self` keyword in the request URL.
 
 Example request:

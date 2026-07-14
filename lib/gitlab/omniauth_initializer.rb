@@ -64,7 +64,7 @@ module Gitlab
         # An Array from the configuration will be expanded
         provider_arguments.concat arguments
         provider_arguments << defaults unless defaults.empty?
-      when Hash, GitlabSettings::Options
+      when Hash, Gitlab::Configs::Options
         verify_saml_cert_arguments!(provider['name'], arguments)
         hash_arguments = merge_hash_defaults_and_args(defaults, arguments)
         normalized = normalize_hash_arguments(hash_arguments)

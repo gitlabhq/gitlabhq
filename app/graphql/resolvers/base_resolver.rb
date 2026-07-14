@@ -5,6 +5,7 @@ module Resolvers
     extend ::Gitlab::Utils::Override
     include ::Gitlab::Utils::StrongMemoize
     include Gitlab::Graphql::Authorize::AuthorizeResource
+    include Gitlab::Graphql::Authz::AuthorizeGranularToken
 
     argument_class ::Types::BaseArgument
 

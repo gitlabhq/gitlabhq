@@ -24,6 +24,7 @@ import TokenAccessTable from './token_access_table.vue';
 import NamespaceForm from './namespace_form.vue';
 
 export default {
+  name: 'InboundTokenAccess',
   i18n: {
     radioGroupDescription: s__(
       `CICD|Select the groups and projects authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}.`,
@@ -68,7 +69,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['enforceAllowlist', 'fullPath', 'projectAllowlistLimit'],
+  inject: ['enforceAllowlist', 'fullPath'],
   apollo: {
     inboundJobTokenScopeEnabled: {
       query: inboundGetCIJobTokenScopeQuery,

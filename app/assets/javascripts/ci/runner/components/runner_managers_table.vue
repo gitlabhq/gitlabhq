@@ -54,12 +54,10 @@ export default {
       </help-popover>
     </template>
     <template #cell(status)="{ item = {} }">
-      <runner-status-badge
-        class="gl-align-middle"
-        :contacted-at="item.contactedAt"
-        :status="item.status"
-      />
-      <runner-job-status-badge class="gl-align-middle" :job-status="item.jobExecutionStatus" />
+      <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-2">
+        <runner-status-badge :contacted-at="item.contactedAt" :status="item.status" />
+        <runner-job-status-badge :job-status="item.jobExecutionStatus" />
+      </div>
     </template>
     <template #cell(version)="{ item = {} }">
       {{ item.version }}

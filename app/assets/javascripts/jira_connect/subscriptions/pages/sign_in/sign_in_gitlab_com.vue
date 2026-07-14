@@ -16,6 +16,7 @@ export default {
       required: true,
     },
   },
+  emits: ['error', 'sign-in-oauth'],
   i18n: {
     signInButtonTextWithSubscriptions: s__('JiraConnect|Sign in to link groups'),
     signInText: s__('JiraConnect|Sign in to GitLab to get started.'),

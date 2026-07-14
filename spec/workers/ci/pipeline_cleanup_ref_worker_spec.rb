@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::PipelineCleanupRefWorker, :sidekiq_inline, feature_category: :continuous_integration do
   include ExclusiveLeaseHelpers
 
-  let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, :success) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :success) }
 
   let(:worker) { described_class.new }
 
@@ -20,7 +20,7 @@ RSpec.describe Ci::PipelineCleanupRefWorker, :sidekiq_inline, feature_category: 
   end
 
   context 'when pipeline is still running' do
-    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, :running) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :running) }
 
     it 'does not remove persistent ref' do
       expect_next_instance_of(Ci::PersistentRef) do |persistent_ref|
@@ -32,7 +32,7 @@ RSpec.describe Ci::PipelineCleanupRefWorker, :sidekiq_inline, feature_category: 
   end
 
   context 'when pipeline status changes while being locked' do
-    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, :success) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :success) }
 
     it 'does not remove persistent ref' do
       expect_next_instance_of(Ci::PersistentRef) do |persistent_ref|

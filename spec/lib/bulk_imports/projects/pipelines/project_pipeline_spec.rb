@@ -37,7 +37,9 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_catego
       end
 
       allow(project_pipeline).to receive(:set_source_objects_counter)
+    end
 
+    before_all do
       group.add_owner(user)
     end
 

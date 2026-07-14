@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::Ml::Mlflow::GetRun, feature_category: :mlops do
-  let_it_be(:candidate, freeze: false) { create(:ml_candidates, :with_metrics_and_params) }
-  let_it_be(:metrics, freeze: false) { candidate.latest_metrics }
+  let_it_be_with_reload(:candidate) { create(:ml_candidates, :with_metrics_and_params) }
+  let_it_be(:metrics) { candidate.latest_metrics }
 
   subject { described_class.new(candidate).as_json }
 

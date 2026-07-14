@@ -26,6 +26,7 @@ export default {
       required: true,
     },
   },
+  emits: ['click'],
   computed: {
     ...mapState(useNotes, ['getDiscussion']),
     iconName() {

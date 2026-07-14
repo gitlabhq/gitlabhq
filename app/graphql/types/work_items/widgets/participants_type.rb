@@ -9,6 +9,8 @@ module Types
         graphql_name 'WorkItemWidgetParticipants'
         description 'Represents a participants widget'
 
+        authorize_granular_token skip_reason: :parent_authorizes
+
         implements ::Types::WorkItems::WidgetInterface
 
         field :participants, ::Types::UserType.connection_type,

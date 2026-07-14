@@ -15,6 +15,7 @@ import (
 )
 
 const redactionEndpointPath = "/api/v4/internal/orbit/redaction"
+const clientIPHeader = "X-Gitlab-Orbit-Client-Ip"
 
 type redactionRequest struct {
 	Resources []redactionResource `json:"resources"`
@@ -37,7 +38,7 @@ type resourceAuth struct {
 
 var authHeaders = []string{"Authorization", "Private-Token", "Cookie", "X-Csrf-Token"}
 
-func (sq *SendQuery) callRedaction(ctx context.Context, originalReq *http.Request, required *gkgpb.RedactionRequired) (*gkgpb.RedactionResponse, error) {
+func (sq *SendQuery) callRedaction(ctx context.Context, originalReq *http.Request, required *gkgpb.RedactionRequired, clientIP string) (*gkgpb.RedactionResponse, error) {
 	reqBody := buildRedactionRequest(required)
 
 	body, err := json.Marshal(reqBody)
@@ -58,6 +59,9 @@ func (sq *SendQuery) callRedaction(ctx context.Context, originalReq *http.Reques
 		if v := originalReq.Header.Get(h); v != "" {
 			httpReq.Header.Set(h, v)
 		}
+	}
+	if clientIP != "" {
+		httpReq.Header.Set(clientIPHeader, clientIP)
 	}
 
 	signingTripper := secret.NewRoundTripper(sq.api.Client.Transport, sq.version)

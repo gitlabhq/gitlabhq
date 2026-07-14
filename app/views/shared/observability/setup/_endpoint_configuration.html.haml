@@ -1,0 +1,257 @@
+-# Shared endpoint configuration partial for both group and project observability setup.
+-# Required locals:
+-#   configuration_settings - the GroupO11ySetting record
+-#   explore_data_path      - path to the observability dashboard
+-#   ci_cd_settings_path    - path to the CI/CD settings page
+-#   export_variable        - the GITLAB_OBSERVABILITY_EXPORT CI variable (or nil)
+-#   ci_cd_owner_label      - "group's" or "project's" for i18n strings
+-# Optional locals:
+-#   has_pipelines_since_setup - boolean, default false
+-#   header_text               - hash with :title and :description, renders above the status banner
+-#   auto_wired_note           - string, renders a note below the status banner
+
+- has_pipelines_since_setup = local_assigns.fetch(:has_pipelines_since_setup, false)
+- header_text = local_assigns[:header_text]
+- auto_wired_note = local_assigns[:auto_wired_note]
+
+- if header_text.present?
+  %h2.gl-heading-2.gl-mb-3.gl-mt-5
+    = header_text[:title]
+  %p.gl-text-subtle.gl-mb-5
+    = header_text[:description]
+
+- if has_pipelines_since_setup
+  .gl-rounded-lg.gl-p-5.gl-mb-6.gl-mt-5.gl-bg-feedback-success.gl-border-feedback-success.gl-border-1.gl-border-solid
+    .gl-flex.gl-items-start.gl-gap-4
+      .gl-shrink-0.gl-mt-1.gl-w-6.gl-h-6
+        = sprite_icon('check-circle-filled', css_class: 'gl-text-success', size: 24)
+      %div
+        %h2.gl-heading-2.gl-mb-2
+          = s_('Observability|Your CI/CD pipelines are sending telemetry')
+        %p.gl-text-subtle.gl-mb-4
+          = s_('Observability|Metrics, logs, and traces from your pipeline runs are being collected automatically.')
+        = link_to s_('Observability|Explore your data'), explore_data_path, class: 'gl-link'
+- elsif export_variable.present?
+  .gl-rounded-lg.gl-p-5.gl-mb-6.gl-mt-5.gl-bg-feedback-info.gl-border-feedback-info.gl-border-1.gl-border-solid
+    .gl-flex.gl-items-start.gl-gap-4
+      .gl-shrink-0.gl-mt-1.gl-w-6.gl-h-6
+        = sprite_icon('clock', css_class: 'gl-fill-icon-info', size: 24)
+      %div
+        %h2.gl-heading-2.gl-mb-2
+          = s_('Observability|Ready to collect telemetry')
+        %p.gl-text-subtle.gl-mb-4
+          = s_('Observability|CI/CD observability is enabled. Run a pipeline and your metrics, logs, and traces will appear here automatically.')
+        = link_to s_('Observability|View CI/CD settings'), ci_cd_settings_path, class: 'gl-link'
+- else
+  .gl-rounded-lg.gl-p-5.gl-mb-6.gl-mt-5.gl-bg-subtle.gl-border
+    .gl-flex.gl-items-start.gl-gap-4
+      .gl-shrink-0.gl-mt-1.gl-w-6.gl-h-6
+        = sprite_icon('information-o', css_class: 'gl-fill-icon-info', size: 24)
+      %div
+        %h2.gl-heading-2.gl-mb-2
+          = s_('Observability|Enable CI/CD observability')
+        %p.gl-text-subtle.gl-mb-4
+          = safe_format(s_('Observability|Set the %{variable_name} CI/CD variable to start collecting pipeline metrics, logs, and traces automatically.'), variable_name: content_tag(:code, 'GITLAB_OBSERVABILITY_EXPORT'))
+        = link_to s_('Observability|Open CI/CD settings'), "#{ci_cd_settings_path}#ci-variables", class: 'gl-link'
+
+- if auto_wired_note.present?
+  .gl-mb-4
+    %p.gl-text-sm.gl-text-subtle
+      = auto_wired_note
+
+.gl-mb-6
+  %h3.gl-heading-3.gl-mb-2
+    = s_('Observability|Connect your application')
+  %p.gl-text-subtle.gl-mb-5
+    = s_('Observability|CI/CD telemetry shows you pipeline health. To see what happens inside your running application — request traces, error rates, latency — add OpenTelemetry to your code.')
+
+  .gl-grid.gl-gap-3{ class: 'gl-grid-cols-[repeat(auto-fit,minmax(130px,1fr))]' }
+    - otel_languages = [{ name: 'Ruby', path: 'ruby' }, { name: 'Go', path: 'go' }, { name: 'Python', path: 'python' }, { name: 'Node.js', path: 'js' }, { name: 'Java', path: 'java' }, { name: '.NET', path: 'net' }]
+    - otel_languages.each do |lang|
+      = link_to "https://opentelemetry.io/docs/languages/#{lang[:path]}/", target: '_blank', rel: 'noopener noreferrer', class: 'gl-border gl-border-subtle gl-rounded-lg gl-p-4 gl-text-center gl-no-underline' do
+        %p.gl-font-bold.gl-mb-1.gl-text-body
+          = lang[:name]
+        %p.gl-text-sm.gl-text-subtle.gl-mb-0
+          = s_('Observability|Setup guide')
+          = sprite_icon('external-link', size: 12, css_class: 'gl-text-subtle gl-ml-1')
+
+  %p.gl-text-sm.gl-text-subtle.gl-mt-3
+    = link_to s_('Observability|View all supported languages'), 'https://opentelemetry.io/docs/languages/', target: '_blank', rel: 'noopener noreferrer'
+
+-# Endpoint details (always visible)
+.gl-border-t.gl-border-subtle.gl-pt-5.gl-mb-6
+  %h3.gl-heading-3.gl-mb-2
+    = s_('Observability|Endpoint details')
+  - if configuration_settings.provisioning?
+    %p.gl-text-subtle.gl-mb-4
+      = s_('Observability|Your endpoints are being provisioned. Once complete, configure your OTel SDK to send to:')
+  - else
+    %p.gl-text-subtle.gl-mb-4
+      = s_('Observability|Point your OTel SDK or collector at these endpoints:')
+
+  .gl-grid.gl-grid-cols-2.gl-gap-3.gl-mb-4
+    .gl-bg-subtle.gl-rounded-lg.gl-p-4
+      %p.gl-text-xs.gl-text-subtle.gl-mb-1
+        = s_('Observability|HTTPS endpoint')
+      .gl-flex.gl-items-center.gl-gap-2
+        %code.gl-text-sm
+          = configuration_settings.otel_https_endpoint
+        = clipboard_button(text: configuration_settings.otel_https_endpoint, title: s_('Observability|Copy HTTPS endpoint'))
+    .gl-bg-subtle.gl-rounded-lg.gl-p-4
+      %p.gl-text-xs.gl-text-subtle.gl-mb-1
+        = s_('Observability|gRPCS endpoint')
+      .gl-flex.gl-items-center.gl-gap-2
+        %code.gl-text-sm
+          = configuration_settings.otel_grpcs_endpoint
+        = clipboard_button(text: configuration_settings.otel_grpcs_endpoint, title: s_('Observability|Copy gRPCS endpoint'))
+
+  %details.gl-mb-2
+    %summary.gl-cursor-pointer.gl-text-sm.gl-text-subtle.gl-py-1
+      = s_('Observability|Non-TLS endpoints and advanced configuration')
+    .gl-pt-3
+      .gl-grid.gl-grid-cols-2.gl-gap-3.gl-mb-4
+        .gl-bg-subtle.gl-rounded-lg.gl-p-4
+          %p.gl-text-xs.gl-text-subtle.gl-mb-1
+            = s_('Observability|HTTP endpoint')
+          .gl-flex.gl-items-center.gl-gap-2
+            %code.gl-text-sm
+              = configuration_settings.otel_http_endpoint
+            = clipboard_button(text: configuration_settings.otel_http_endpoint, title: s_('Observability|Copy HTTP endpoint'))
+        .gl-bg-subtle.gl-rounded-lg.gl-p-4
+          %p.gl-text-xs.gl-text-subtle.gl-mb-1
+            = s_('Observability|gRPC endpoint')
+          .gl-flex.gl-items-center.gl-gap-2
+            %code.gl-text-sm
+              = configuration_settings.otel_grpc_endpoint
+            = clipboard_button(text: configuration_settings.otel_grpc_endpoint, title: s_('Observability|Copy gRPC endpoint'))
+
+      %ul.gl-text-sm.gl-text-subtle
+        %li.gl-mb-2
+          = s_('Observability|TLS endpoints (recommended): HTTPS on port 14318 and gRPCS on port 14317 provide encrypted transport')
+        %li.gl-mb-2
+          = s_('Observability|Non-TLS endpoints: HTTP on port 4318 and gRPC on port 4317 provide unencrypted transport')
+        %li.gl-mb-2
+          = s_('Observability|All endpoints support the full range of OpenTelemetry signal types: traces, metrics, and logs')
+        %li.gl-mb-2
+          = s_('Observability|Network requirements: Allow outbound TCP connections to the endpoints listed above')
+        %li.gl-mb-2
+          = safe_format(s_('Observability|Firewall configuration: Open outbound access to %{endpoint} on ports 4317-4318 and 14317-14318'), endpoint: configuration_settings.otel_address)
+        %li.gl-mb-2
+          = s_('Observability|VPN and proxy: If operating within a VPN or behind a proxy, ensure routing rules permit traffic to these external endpoints. Configure proxy settings in your OpenTelemetry SDK if required')
+
+.gl-border-t.gl-border-subtle.gl-pt-5.gl-mb-6
+  %h3.gl-heading-3.gl-mb-2
+    = s_('Observability|Recommended resource attributes')
+  %p.gl-text-subtle.gl-mb-5
+    = s_('Observability|Configure your OpenTelemetry SDK with these resource attributes to link telemetry data back to your GitLab project and code. This enables features like correlating traces to commits and automated issue creation from exceptions.')
+
+  %table.gl-w-full{ style: 'border-collapse: collapse;' }
+    %thead
+      %tr.gl-border-b.gl-border-subtle
+        %th.gl-py-3.gl-pr-4.gl-text-sm.gl-font-bold.gl-text-left{ scope: 'col' }
+          = s_('Observability|Resource attribute')
+        %th.gl-py-3.gl-pr-4.gl-text-sm.gl-font-bold.gl-text-left{ scope: 'col' }
+          = s_('Observability|GitLab CI/CD variable')
+        %th.gl-py-3.gl-text-sm.gl-font-bold.gl-text-left{ scope: 'col' }
+          = s_('Observability|Description')
+    %tbody
+      %tr.gl-border-b.gl-border-subtle
+        %td.gl-py-3.gl-pr-4
+          %code.gl-text-sm gitlab.project.id
+        %td.gl-py-3.gl-pr-4
+          %code.gl-text-sm CI_PROJECT_ID
+        %td.gl-py-3.gl-text-sm.gl-text-subtle
+          = s_('Observability|Links telemetry to the GitLab project. Required for GitLab Duo integration.')
+      %tr.gl-border-b.gl-border-subtle
+        %td.gl-py-3.gl-pr-4
+          %code.gl-text-sm gitlab.project.name
+        %td.gl-py-3.gl-pr-4
+          %code.gl-text-sm CI_PROJECT_NAME
+        %td.gl-py-3.gl-text-sm.gl-text-subtle
+          = s_('Observability|Human-readable project name for display in dashboards.')
+      %tr.gl-border-b.gl-border-subtle
+        %td.gl-py-3.gl-pr-4
+          %code.gl-text-sm service.version
+        %td.gl-py-3.gl-pr-4
+          %code.gl-text-sm CI_COMMIT_SHA
+        %td.gl-py-3.gl-text-sm.gl-text-subtle
+          = s_('Observability|The commit SHA of the running code. Lets you correlate traces and errors to the exact version deployed.')
+      %tr
+        %td.gl-py-3.gl-pr-4
+          %code.gl-text-sm deployment.environment.name
+        %td.gl-py-3.gl-pr-4
+          %code.gl-text-sm CI_ENVIRONMENT_NAME
+        %td.gl-py-3.gl-text-sm.gl-text-subtle
+          = safe_format(s_('Observability|The environment where the code is running (for example, %{code_start}production%{code_end} or %{code_start}staging%{code_end}).'), tag_pair(tag.code(class: 'gl-text-sm'), :code_start, :code_end))
+
+  %p.gl-text-sm.gl-text-subtle.gl-mt-4
+    = safe_format(s_('Observability|%{code_start}service.version%{code_end} and %{code_start}deployment.environment.name%{code_end} are OpenTelemetry semantic conventions. The %{code_start}gitlab.*%{code_end} attributes use a vendor namespace for GitLab-specific context.'), tag_pair(tag.code, :code_start, :code_end))
+
+#js-observability-quick-start{ data: { endpoint: configuration_settings.otel_https_endpoint } }
+
+.gl-border-t.gl-border-subtle.gl-pt-5
+
+  %details.gl-mb-4
+    %summary.gl-cursor-pointer.gl-font-bold.gl-py-2
+      = s_('Observability|CI/CD export settings')
+    .gl-pt-3
+      - ci_cd_variables_link = link_to('', "#{ci_cd_settings_path}#ci-variables", target: '_blank', rel: 'noopener noreferrer')
+      .gl-bg-subtle.gl-rounded-lg.gl-p-4
+        - if export_variable.present?
+          %p.gl-text-sm.gl-text-subtle.gl-mb-0
+            = safe_format(s_('Observability|Your %{owner_label} %{variable_name} variable is set to %{variable_value}. You can adjust which data types are exported in your %{owner_label} %{settings_link_start}CI/CD settings%{settings_link_end}.'), tag_pair(ci_cd_variables_link, :settings_link_start, :settings_link_end), variable_name: content_tag(:code, 'GITLAB_OBSERVABILITY_EXPORT'), variable_value: content_tag(:code, export_variable.value), owner_label: ci_cd_owner_label)
+        - else
+          %p.gl-text-sm.gl-text-subtle.gl-mb-0
+            = safe_format(s_('Observability|Set the %{variable_name} CI/CD variable in your %{owner_label} %{settings_link_start}CI/CD settings%{settings_link_end} to a comma-separated list of data types to export (e.g., %{all_data_types}).'), tag_pair(ci_cd_variables_link, :settings_link_start, :settings_link_end), variable_name: content_tag(:code, 'GITLAB_OBSERVABILITY_EXPORT'), all_data_types: content_tag(:code, 'metrics,logs,traces'), owner_label: ci_cd_owner_label)
+
+  %details.gl-mb-4
+    %summary.gl-cursor-pointer.gl-font-bold.gl-py-2
+      = s_('Observability|Test your endpoints')
+    .gl-pt-3
+      %p.gl-text-subtle.gl-mb-4
+        = s_('Observability|Send a sample trace to verify your endpoint is accessible:')
+
+      - example_trace_id = "0000000000000000a1b2c3d4e5f67890"
+      - example_span_id = "a1b2c3d4e5f67890"
+      - example_time_nano = (Time.now.to_f * 1_000_000_000).to_i.to_s
+      :ruby
+        json_payload = {
+          resourceSpans: [{
+            resource: {
+              attributes: [{
+                key: "service.name",
+                value: { stringValue: "test-service" }
+              }]
+            },
+            scopeSpans: [{
+              spans: [{
+                traceId: example_trace_id,
+                spanId: example_span_id,
+                name: "test-span",
+                kind: 1,
+                startTimeUnixNano: example_time_nano,
+                endTimeUnixNano: example_time_nano,
+                attributes: []
+              }]
+            }]
+          }]
+        }.to_json
+        curl_command_lines = [
+          "curl -X POST #{configuration_settings.otel_https_endpoint}/v1/traces \\\\",
+          "  -H 'Content-Type: application/json' \\\\",
+          "  -d '#{json_payload}'"
+        ]
+        curl_command_single_line = "curl -X POST #{configuration_settings.otel_https_endpoint}/v1/traces -H 'Content-Type: application/json' -d '#{json_payload}'"
+
+      .gl-flex.gl-gap-2.gl-items-start
+        %pre.gl-p-3.gl-rounded-base.gl-bg-strong.gl-overflow-x-auto.gl-whitespace-pre-wrap.gl-leading-20.gl-flex-1
+          %code
+            = curl_command_lines.join("\n")
+        = clipboard_button(text: curl_command_single_line, title: s_('Observability|Copy curl command'))
+
+.gl-text-sm.gl-text-subtle.gl-mt-8.gl-mb-6.gl-text-center
+  - issue_link_url = 'https://gitlab.com/gitlab-org/embody-team/experimental-observability/gitlab_o11y/-/issues/37'
+  - issue_link = link_to('', issue_link_url, target: '_blank', rel: 'noopener noreferrer')
+  - discord_link_url = 'https://discord.gg/xGJeDSWzq4'
+  - discord_link = link_to('', discord_link_url, target: '_blank', rel: 'noopener noreferrer')
+  = safe_format(s_('Observability|Share feedback in our %{issue_link_start}feedback issue%{issue_link_end} or join the %{discord_link_start}Discord%{discord_link_end}.'), tag_pair(issue_link, :issue_link_start, :issue_link_end), tag_pair(discord_link, :discord_link_start, :discord_link_end))

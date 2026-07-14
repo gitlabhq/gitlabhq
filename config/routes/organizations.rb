@@ -32,9 +32,7 @@ unless @organization_scoped_routes
           get :general
         end
 
-        resource :groups, only: [:new, :create, :destroy], as: :groups_organization
-
-        resources :artifact_registry, only: [:index], as: :artifact_registry_organization
+        resource :groups, only: [:new, :create], as: :groups_organization
 
         scope(
           path: 'groups/*id',

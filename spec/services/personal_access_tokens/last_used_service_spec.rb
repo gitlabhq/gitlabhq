@@ -222,7 +222,7 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
     end
 
     context 'when the last_used_at timestamp is nil' do
-      let_it_be(:personal_access_token, freeze: false) { create(:personal_access_token, last_used_at: nil) }
+      let_it_be_with_reload(:personal_access_token) { create(:personal_access_token, last_used_at: nil) }
 
       it 'updates the last_used_at timestamp' do
         expect { service_execution }.to change { personal_access_token.last_used_at }
@@ -350,7 +350,7 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
     end
 
     context 'when not a personal access token' do
-      let_it_be(:personal_access_token, freeze: false) { create(:oauth_access_token) }
+      let_it_be_with_reload(:personal_access_token) { create(:oauth_access_token) }
 
       it 'does not execute' do
         expect(service_execution).to be_nil
@@ -358,7 +358,7 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
     end
 
     context 'when the exclusive lease is taken' do
-      let_it_be(:personal_access_token, freeze: false) { create(:personal_access_token) }
+      let_it_be_with_reload(:personal_access_token) { create(:personal_access_token) }
       let(:lease_key) { "pat:last_used_update_lock:#{personal_access_token.id}" }
 
       it 'does not update the last_used_at timestamp' do

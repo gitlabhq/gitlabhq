@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::UpsertRecipeRevisionService, feature_category: :package_registry do
-  let_it_be(:package, freeze: false) { create(:conan_package, without_package_files: true) }
+  let_it_be_with_reload(:package) { create(:conan_package, without_package_files: true) }
   let_it_be(:recipe_revision_value) { OpenSSL::Digest.hexdigest('MD5', 'valid_recipe_revision') }
 
   let(:status) { :processing }
@@ -41,7 +41,7 @@ RSpec.describe Packages::Conan::UpsertRecipeRevisionService, feature_category: :
     end
 
     context 'when the recipe revision already exists' do
-      let_it_be(:recipe_revision, freeze: false) do
+      let_it_be_with_reload(:recipe_revision) do
         create(:conan_recipe_revision, :processing, package: package, revision: recipe_revision_value)
       end
 

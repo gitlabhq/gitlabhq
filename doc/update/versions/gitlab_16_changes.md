@@ -19,7 +19,7 @@ Ensure you review these instructions for:
 - All versions between your current version and your target version.
 
 For additional information for Helm chart installations, see
-[the Helm chart 7.0 upgrade notes](https://docs.gitlab.com/charts/releases/7_0/).
+[the Helm chart upgrade notes](https://docs.gitlab.com/charts/releases/).
 
 ## Issues to be aware of when upgrading from 15.11
 

@@ -1,0 +1,20 @@
+---
+description: Clicked the Kubernetes cluster link in the Project information panel on the project overview page.
+internal_events: true
+action: click_kubernetes_cluster_on_project_overview
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Whether the user clicked to add a cluster ("add") or to view the existing clusters ("view").
+product_group: environments
+product_categories:
+- deployment_management
+milestone: '19.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243186
+tiers:
+- free
+- premium
+- ultimate

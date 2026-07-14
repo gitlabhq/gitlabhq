@@ -13,6 +13,7 @@ export default {
   inject: {
     store: { type: Object },
     filePaths: { type: Object },
+    diffRefs: { type: Object, default: undefined },
   },
   props: {
     oldLine: {
@@ -48,7 +49,9 @@ export default {
       return this.positions.length === 1 ? 4 : 2;
     },
     discussionsByPosition() {
-      return this.positions.map((p) => this.store.findLineDiscussionsForPosition(p));
+      return this.positions.map((p) =>
+        this.store.findLineDiscussionsForPosition({ ...p, diffRefs: this.diffRefs }),
+      );
     },
     regularDiscussionsByPosition() {
       return this.discussionsByPosition.map((discussions) => discussions.filter((d) => !d.isDraft));
@@ -71,6 +74,11 @@ export default {
     empty() {
       return this.discussionsByPosition.every((discussions) => discussions.length === 0);
     },
+    editingLineRange() {
+      return this.discussionsByPosition.some((discussions) =>
+        discussions.some((discussion) => discussion.isForm && discussion.editingLineRange),
+      );
+    },
   },
   watch: {
     empty(value) {
@@ -89,7 +97,12 @@ export default {
       const noteId = getNoteIdFromHash();
       if (!noteId) return;
       for (const position of this.positions) {
-        if (discussionsContainNote(this.store.findLineDiscussionsForPosition(position), noteId)) {
+        if (
+          discussionsContainNote(
+            this.store.findLineDiscussionsForPosition({ ...position, diffRefs: this.diffRefs }),
+            noteId,
+          )
+        ) {
           this.toggle(false);
           return;
         }
@@ -115,6 +128,7 @@ export default {
 
 <template>
   <tr
+    v-show="!editingLineRange"
     data-discussion-row="true"
     class="rd-discussion-row"
     :data-collapsed="allHidden && !hasDrafts ? '' : undefined"

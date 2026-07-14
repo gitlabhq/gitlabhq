@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'shared/milestones/_issuable.html.haml' do
+RSpec.describe 'shared/milestones/_issuable.html.haml', feature_category: :portfolio_management do
   let_it_be(:project, freeze: false) { create(:project) }
   let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
@@ -24,6 +24,18 @@ RSpec.describe 'shared/milestones/_issuable.html.haml' do
     it 'links to issues page for user' do
       expect(rendered).to have_css("a[href='#{project_issues_path(project, milestone_title: milestone.title, assignee_id: user.id, state: 'all')}']")
     end
+
+    it 'renders the work item type icon' do
+      expect(rendered).to have_css(%(svg use[href$="#work-item-issue"]))
+    end
+  end
+
+  context 'for task' do
+    let_it_be(:issuable) { create(:work_item, :task, project: project) }
+
+    it 'renders the work item type icon' do
+      expect(rendered).to have_css(%(svg use[href$="#work-item-task"]))
+    end
   end
 
   context 'for merge request' do
@@ -35,6 +47,10 @@ RSpec.describe 'shared/milestones/_issuable.html.haml' do
 
     it 'links to the page for the merge request' do
       expect(rendered).to have_css("a[href$='#{project_merge_request_path(project, issuable)}']", class: 'issue-link')
+    end
+
+    it 'renders the merge request icon' do
+      expect(rendered).to have_css(%(svg use[href$="#merge-request"]))
     end
   end
 end

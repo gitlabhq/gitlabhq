@@ -3,7 +3,7 @@
 module API
   module Entities
     class Hook < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :url, documentation: { type: 'String', example: 'https://webhook.site' }
       expose :name, documentation: { type: 'String', example: 'Hook name' }
       expose :description, documentation: { type: 'String', example: 'Hook description' }

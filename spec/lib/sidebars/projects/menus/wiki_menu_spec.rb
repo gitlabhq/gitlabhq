@@ -40,7 +40,9 @@ RSpec.describe Sidebars::Projects::Menus::WikiMenu, feature_category: :navigatio
     let(:extra_attrs) do
       {
         super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
-        item_id: :project_wiki
+        item_id: :project_wiki,
+        description: 'Create and manage documentation',
+        library_icon: 'book'
       }
     end
   end

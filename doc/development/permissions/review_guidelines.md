@@ -95,7 +95,7 @@ The rules are:
 - Use `scope: :user` only if the condition reads **user data only** — no subject data.
 - Use `scope: :subject` only if the condition reads **subject data only** — no user data.
 - Use `scope: :global` only if the condition doesn't need either user or subject data.
-- Omit `:scope` (the default) if the condition reads **both** user and subject data.
+- Omit `:scope` (the default) if the condition reads both user and subject data.
 
 Reference: [DeclarativePolicy cache sharing scopes](https://gitlab.com/gitlab-org/ruby/gems/declarative-policy/-/blob/main/doc/caching.md#cache-sharing-scopes)
 

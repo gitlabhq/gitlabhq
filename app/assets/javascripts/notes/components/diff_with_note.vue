@@ -16,6 +16,7 @@ import { useNotes } from '~/notes/store/legacy_notes';
 const FIRST_CHAR_REGEX = /^(\+|-| )/;
 
 export default {
+  name: 'DiffWithNote',
   components: {
     DiffFileHeader,
     GlSkeletonLoader,

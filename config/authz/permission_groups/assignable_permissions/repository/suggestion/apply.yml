@@ -1,0 +1,9 @@
+---
+name: apply_suggestion
+description: Grants the ability to apply suggestions
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - apply_suggestion

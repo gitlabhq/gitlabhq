@@ -60,7 +60,7 @@ module ActiveContext
         message: "generate embeddings",
         model: model_key,
         status: "start",
-        class: self.class.name
+        class_name: self.class.name
       )
 
       embeddings = yield
@@ -69,7 +69,7 @@ module ActiveContext
         message: "generate embeddings",
         model: model_key,
         status: "done",
-        class: self.class.name
+        class_name: self.class.name
       )
 
       embeddings

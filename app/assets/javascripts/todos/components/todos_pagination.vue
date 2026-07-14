@@ -7,6 +7,7 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 export const CURSOR_CHANGED_EVENT = 'cursor-changed';
 
 export default {
+  name: 'TodosPagination',
   components: {
     LocalStorageSync,
     GlKeysetPagination,

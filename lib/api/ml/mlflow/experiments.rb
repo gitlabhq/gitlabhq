@@ -25,6 +25,7 @@ module API
           params do
             optional :experiment_id, type: String, default: '', desc: 'Experiment ID, in reference to the project'
           end
+          route_setting :authorization, permissions: :read_ml_experiment, boundary_type: :project
           get 'get', urgency: :low do
             present experiment, with: Entities::Ml::Mlflow::GetExperiment
           end
@@ -37,6 +38,7 @@ module API
           params do
             optional :experiment_name, type: String, default: '', desc: 'Experiment name'
           end
+          route_setting :authorization, permissions: :read_ml_experiment, boundary_type: :project
           get 'get-by-name', urgency: :low do
             present experiment, with: Entities::Ml::Mlflow::GetExperiment
           end
@@ -46,6 +48,7 @@ module API
             detail 'https://www.mlflow.org/docs/2.19.0/rest-api.html#search-experiments'
             tags ['mlops']
           end
+          route_setting :authorization, permissions: :read_ml_experiment, boundary_type: :project
           get 'list', urgency: :low do
             response = { experiments: experiment_repository.all }
 
@@ -73,6 +76,7 @@ module API
               type: String,
               desc: 'This parameter is ignored'
           end
+          route_setting :authorization, permissions: :read_ml_experiment, boundary_type: :project
           post 'search', urgency: :low do
             max_results = [params[:max_results], 1000].min
 
@@ -99,6 +103,7 @@ module API
             optional :tags, type: Array, desc: 'Tags with information about the experiment'
             optional :artifact_location, type: String, desc: 'This will be ignored'
           end
+          route_setting :authorization, permissions: :create_ml_experiment, boundary_type: :project
           post 'create', urgency: :low do
             present experiment_repository.create!(params[:name], params[:tags]),
               with: Entities::Ml::Mlflow::NewExperiment
@@ -116,6 +121,7 @@ module API
             requires :key, type: String, desc: 'Name for the tag.'
             requires :value, type: String, desc: 'Value for the tag.'
           end
+          route_setting :authorization, permissions: :update_ml_experiment, boundary_type: :project
           post 'set-experiment-tag', urgency: :low do
             bad_request! unless experiment_repository.add_tag!(experiment, params[:key], params[:value])
 
@@ -130,6 +136,7 @@ module API
           params do
             requires :experiment_id, type: String, desc: 'ID of the experiment.'
           end
+          route_setting :authorization, permissions: :delete_ml_experiment, boundary_type: :project
           post 'delete', urgency: :low do
             destroy = ::Ml::DestroyExperimentService.new(experiment).execute
             if destroy.success?

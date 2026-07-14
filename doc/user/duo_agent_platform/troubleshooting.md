@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Agent Foundations
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Troubleshoot common issues with the GitLab Duo Agent Platform, including flows, permissions, and push rule configuration.
 title: Troubleshooting the GitLab Duo Agent Platform

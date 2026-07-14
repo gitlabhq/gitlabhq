@@ -17,13 +17,11 @@ describe('CI Editor Header', () => {
     showJobAssistantDrawer = false,
     aiChatAvailable = false,
     aiCiConfigGenerator = false,
-    ciCatalogPath = '/explore/catalog',
   } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(CiEditorHeader, {
         provide: {
           aiChatAvailable,
-          ciCatalogPath,
           glFeatures: {
             aiCiConfigGenerator,
           },
@@ -65,8 +63,8 @@ describe('CI Editor Header', () => {
       unmockTracking();
     });
 
-    it('finds the CI/CD Catalog button', () => {
-      expect(findCatalogRepoLinkButton().exists()).toBe(true);
+    it('links the CI/CD Catalog button to the catalog path', () => {
+      expect(findCatalogRepoLinkButton().attributes('href')).toBe('/explore/catalog');
     });
 
     it('tracks the click on the Catalog button', () => {

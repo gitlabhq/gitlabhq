@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Projects blob controller', feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   before do
     sign_in(user)

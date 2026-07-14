@@ -16,6 +16,7 @@ import WorkItemDevelopmentRelationshipList from './work_item_development_relatio
 import WorkItemCreateBranchMergeRequestModal from './work_item_create_branch_merge_request_modal.vue';
 
 export default {
+  name: 'WorkItemDevelopment',
   components: {
     GlIcon,
     GlAlert,

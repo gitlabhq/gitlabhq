@@ -6,6 +6,7 @@ import { s__, sprintf } from '~/locale';
 import TodoSnoozedTimestamp from './todo_snoozed_timestamp.vue';
 
 export default {
+  name: 'TodoItemTimestamp',
   components: { TodoSnoozedTimestamp },
   mixins: [timeagoMixin],
   props: {
@@ -63,7 +64,7 @@ export default {
         :has-reached-snooze-timestamp="!isSnoozed"
       />
 
-      {{ formattedCreatedAt }}
+      <time :datetime="todo.createdAt">{{ formattedCreatedAt }}</time>
     </span>
     <span v-if="formattedDueDate" class="gl-inline @sm/panel:gl-hidden"> &middot; </span>
     <span

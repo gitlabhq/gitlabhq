@@ -47,8 +47,8 @@ describe('TwoDimensionsColumnChart', () => {
     ]);
   });
 
-  it('labels the axes from the primary dimension and metric', () => {
-    expect(findChart().props('xAxisTitle')).toBe('User');
+  it('labels the axes from both dimensions and the metric', () => {
+    expect(findChart().props('xAxisTitle')).toBe('User by Language');
     expect(findChart().props('yAxisTitle')).toBe('Total count');
   });
 

@@ -61,6 +61,12 @@ RSpec.describe Gitlab::APIAuthentication::TokenResolver, feature_category: :syst
         it_behaves_like 'an authorized request'
       end
 
+      context 'with a username in a different case' do
+        let(:raw) { username_and_password(user.username.upcase, token.token) }
+
+        it_behaves_like 'an authorized request'
+      end
+
       context 'with an invalid username' do
         let(:raw) { username_and_password("not-my-#{user.username}", token.token) }
 

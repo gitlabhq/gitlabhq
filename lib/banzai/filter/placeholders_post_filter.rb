@@ -8,6 +8,7 @@ module Banzai
     class PlaceholdersPostFilter < HTML::Pipeline::Filter
       prepend Concerns::TimeoutFilterHandler
       prepend Concerns::PipelineTimingCheck
+      include Concerns::ContextAccessors
 
       # gitlab-glfm-markdown will detect possible placeholder values, and mark them with a
       # `<span data-placeholder>` for text, or add `data-placeholder` to links or images.
@@ -80,15 +81,17 @@ module Banzai
 
         attr_reader :allowed_uri_context, :uri_encode, :block
 
-        def generate(context, in_uri_component:)
-          return block.call(context) || '' unless in_uri_component
+        # The block is evaluated in the scope of `filter` (the PlaceholdersPostFilter
+        # instance), so it can use the filter's `project`/`group`/`current_user`/`context` helpers.
+        def generate(filter, in_uri_component:)
+          return filter.instance_exec(&block) || '' unless in_uri_component
 
           # Only generate in permissible contexts.
           # If not permitted, we return nil, which signals no replacement is to be made at all
           # (as opposed to '', which replaces with the empty string).
           if allowed_uri_context == ALLOWED_URI_CONTEXT_ALL ||
               (allowed_uri_context == ALLOWED_URI_CONTEXT_ALL_BUT_HOST && in_uri_component != :host)
-            maybe_encode(block.call(context) || '')
+            maybe_encode(filter.instance_exec(&block) || '')
           end
         end
 
@@ -113,59 +116,47 @@ module Banzai
         'gitlab_pages_domain' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL) do
           Gitlab.config.pages.host
         end,
-        'project_path' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST, uri_encode: false) do |context|
+        'project_path' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST, uri_encode: false) do
           # Rationale for `uri_encode: false`: the path is to be explicitly expandable, as many services
           # will generate URLs including a namespaced path for end-users.
-          context[:project]&.full_path if Ability.allowed?(context[:current_user], :read_project, context[:project])
+          project&.full_path if Ability.allowed?(current_user, :read_project, project)
         end,
-        'project_name' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do |context|
-          context[:project]&.path if Ability.allowed?(context[:current_user], :read_project, context[:project])
+        'project_name' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do
+          project&.path if Ability.allowed?(current_user, :read_project, project)
         end,
-        'project_id' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do |context|
-          context[:project]&.id.to_s if Ability.allowed?(context[:current_user], :read_project, context[:project])
+        'project_id' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do
+          project&.id.to_s if Ability.allowed?(current_user, :read_project, project)
         end,
-        'project_namespace' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do |context|
-          if Ability.allowed?(context[:current_user], :read_project, context[:project])
-            context[:project]&.project_namespace&.to_param
-          end
+        'project_namespace' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do
+          project&.project_namespace&.to_param if Ability.allowed?(current_user, :read_project, project)
         end,
-        'project_title' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do |context|
-          context[:project]&.title if Ability.allowed?(context[:current_user], :read_project, context[:project])
+        'project_title' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do
+          project&.title if Ability.allowed?(current_user, :read_project, project)
         end,
-        'group_name' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do |context|
-          group = context[:project]&.group || context[:group]
-          group.name if Ability.allowed?(context[:current_user], :read_group, group)
+        'group_name' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do
+          resolved = project&.group || group
+          resolved&.name if Ability.allowed?(current_user, :read_group, resolved)
         end,
-        'default_branch' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST, uri_encode: false) do |context|
+        'default_branch' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST, uri_encode: false) do
           # Rationale for `uri_encode: false`: GitLab displays URLs like
           #   http://gdk.test:3000/root/comrak/-/tree/kiv/dev
           # where "kiv/dev" is a branch name.  (In practice, as of writing, they generate a 404 when used!)
           # To support this kind of expansion, we must not percent-encode the branch name.
-          if context[:project]&.repository_exists? &&
-              Ability.allowed?(context[:current_user], :read_code, context[:project])
-            context[:project]&.default_branch
-          end
+          project&.default_branch if project&.repository_exists? && Ability.allowed?(current_user, :read_code, project)
         end,
-        'current_ref' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do |context|
-          if context[:project]&.repository_exists? &&
-              Ability.allowed?(context[:current_user], :read_code, context[:project])
-            context[:ref]
-          end
+        'current_ref' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do
+          context[:ref] if project&.repository_exists? && Ability.allowed?(current_user, :read_code, project)
         end,
-        'commit_sha' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do |context|
-          if context[:project]&.repository_exists? &&
-              Ability.allowed?(context[:current_user], :read_code, context[:project])
-            context[:project]&.commit&.sha
-          end
+        'commit_sha' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do
+          project&.commit&.sha if project&.repository_exists? && Ability.allowed?(current_user, :read_code, project)
         end,
-        'latest_tag' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST, uri_encode: false) do |context|
-          if context[:project]&.repository_exists? &&
-              Ability.allowed?(context[:current_user], :read_code, context[:project])
+        'latest_tag' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST, uri_encode: false) do
+          if project&.repository_exists? && Ability.allowed?(current_user, :read_code, project)
             # Rationale for `uri_encode: false`: GitLab uses URLs like
             #   http://gdk.test:3000/root/comrak/-/tree/a/b/c
             # where "a/b/c" is a tag name.  (These actually work, unlike branches.)
             # To support this kind of expansion, we must not percent-encode the tag name.
-            TagsFinder.new(context[:project].repository, per_page: 1, sort: 'updated_desc')
+            TagsFinder.new(project.repository, per_page: 1, sort: 'updated_desc')
               &.execute&.first&.name
           end
         end
@@ -175,8 +166,8 @@ module Banzai
       PLACEHOLDERS_FULL_ANCHORED_REGEX = /\A%\{#{PLACEHOLDERS_REGEX}}\z/
 
       def call
-        return doc unless context[:project]&.markdown_placeholders_feature_flag_enabled? ||
-          context[:group]&.markdown_placeholders_feature_flag_enabled?
+        return doc unless project&.markdown_placeholders_feature_flag_enabled? ||
+          group&.markdown_placeholders_feature_flag_enabled?
 
         return doc if context[:disable_placeholders] || context[:broadcast_message_placeholders]
 
@@ -219,7 +210,7 @@ module Banzai
         replacer = PLACEHOLDER_REPLACERS[placeholder_name]
 
         node['data-placeholder'] = node.content
-        node.content = replacer.generate(context, in_uri_component: false)
+        node.content = replacer.generate(self, in_uri_component: false)
       end
 
       def replace_link_placeholders(node, limit: 0)
@@ -292,7 +283,7 @@ module Banzai
           in_uri: true, limit: limit) do |placeholder_name|
           replacer = PLACEHOLDER_REPLACERS[placeholder_name]
 
-          replacer.generate(context, in_uri_component: component)
+          replacer.generate(self, in_uri_component: component)
         end
       end
 

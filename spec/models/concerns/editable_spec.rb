@@ -7,8 +7,8 @@ RSpec.describe Editable do
     let(:issue) { create(:issue, last_edited_at: nil) }
     let(:edited_issue) { create(:issue, created_at: 3.days.ago, last_edited_at: 2.days.ago) }
 
-    it { expect(issue.edited?).to eq(false) }
-    it { expect(edited_issue.edited?).to eq(true) }
+    it { expect(issue.edited?).to be(false) }
+    it { expect(edited_issue.edited?).to be(true) }
   end
 
   describe '#last_edited_by' do

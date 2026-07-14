@@ -68,6 +68,7 @@ export default {
       default: null,
     },
   },
+  emits: ['clickFile', 'toggleFolder'],
   data() {
     return {
       search: '',

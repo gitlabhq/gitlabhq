@@ -3,6 +3,8 @@
  * for the work items list endpoint: GET /api/:version/namespaces/:full_path/-/work_items
  */
 
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+
 const GRAPHQL_SORT_TO_REST = {
   CREATED_ASC: { order_by: 'created_at', sort: 'asc' },
   CREATED_DESC: { order_by: 'created_at', sort: 'desc' },
@@ -13,10 +15,24 @@ const GRAPHQL_SORT_TO_REST = {
   RELATIVE_POSITION_ASC: { order_by: 'relative_position', sort: 'asc' },
   PRIORITY_ASC: { order_by: 'priority', sort: 'asc' },
   PRIORITY_DESC: { order_by: 'priority', sort: 'desc' },
-  POPULARITY_ASC: { order_by: 'upvotes', sort: 'asc' },
-  POPULARITY_DESC: { order_by: 'upvotes', sort: 'desc' },
+  POPULARITY_ASC: { order_by: 'popularity', sort: 'asc' },
+  POPULARITY_DESC: { order_by: 'popularity', sort: 'desc' },
   CLOSED_AT_ASC: { order_by: 'closed_at', sort: 'asc' },
   CLOSED_AT_DESC: { order_by: 'closed_at', sort: 'desc' },
+  DUE_DATE_ASC: { order_by: 'due_date', sort: 'asc' },
+  DUE_DATE_DESC: { order_by: 'due_date', sort: 'desc' },
+  START_DATE_ASC: { order_by: 'start_date', sort: 'asc' },
+  START_DATE_DESC: { order_by: 'start_date', sort: 'desc' },
+  LABEL_PRIORITY_ASC: { order_by: 'label_priority', sort: 'asc' },
+  LABEL_PRIORITY_DESC: { order_by: 'label_priority', sort: 'desc' },
+  BLOCKING_ISSUES_ASC: { order_by: 'blocking_issues', sort: 'asc' },
+  BLOCKING_ISSUES_DESC: { order_by: 'blocking_issues', sort: 'desc' },
+  HEALTH_STATUS_ASC: { order_by: 'health_status', sort: 'asc' },
+  HEALTH_STATUS_DESC: { order_by: 'health_status', sort: 'desc' },
+  WEIGHT_ASC: { order_by: 'weight', sort: 'asc' },
+  WEIGHT_DESC: { order_by: 'weight', sort: 'desc' },
+  MILESTONE_DUE_ASC: { order_by: 'milestone_due', sort: 'asc' },
+  MILESTONE_DUE_DESC: { order_by: 'milestone_due', sort: 'desc' },
 };
 
 const STATE_MAP = {
@@ -25,8 +41,15 @@ const STATE_MAP = {
   ALL: 'all',
 };
 
-// eslint-disable-next-line @gitlab/require-i18n-strings
-const WILDCARD_MAP = { ANY: 'Any', NONE: 'None', UPCOMING: 'Upcoming', STARTED: 'Started' };
+/* eslint-disable @gitlab/require-i18n-strings -- REST API param values, not user-facing text */
+const WILDCARD_MAP = {
+  ANY: 'Any',
+  NONE: 'None',
+  ME: 'Me',
+  UPCOMING: 'Upcoming',
+  STARTED: 'Started',
+};
+/* eslint-enable @gitlab/require-i18n-strings */
 
 const SEARCH_IN_MAP = {
   TITLE: 'title',
@@ -44,6 +67,14 @@ function appendParam(params, key, value) {
   }
 }
 
+function appendWorkItemTypeIds(params, key, gids) {
+  const values = Array.isArray(gids) ? gids : [gids];
+  values.forEach((gid) => {
+    const numericId = getIdFromGraphQLId(gid);
+    if (numericId) params.append(key, numericId);
+  });
+}
+
 // Appends nested filter params in Rails bracket notation, e.g. not[label_name][], or[author_username]
 function appendNestedFilterParams(params, prefix, filters) {
   if (!filters) return;
@@ -53,14 +84,20 @@ function appendNestedFilterParams(params, prefix, filters) {
 
     const restKey = key.replace(/([A-Z])/g, (letter) => `_${letter.toLowerCase()}`);
 
-    if (Array.isArray(value)) {
-      value.forEach((v) => {
-        const paramValue = restKey === 'types' ? v.toLowerCase() : v;
-        params.append(`${prefix}[${restKey}][]`, paramValue);
-      });
+    // Special handling for fields that need numeric IDs extracted from GIDs
+    if (restKey === 'work_item_type_ids' || restKey === 'parent_ids') {
+      appendWorkItemTypeIds(params, `${prefix}[${restKey}][]`, value);
+    } else if (restKey === 'milestone_wildcard_id') {
+      params.append(`${prefix}[${restKey}]`, WILDCARD_MAP[value] ?? value);
     } else {
-      const paramValue = restKey === 'types' ? value.toLowerCase() : value;
-      params.append(`${prefix}[${restKey}]`, paramValue);
+      const paramKey = Array.isArray(value) ? `${prefix}[${restKey}][]` : `${prefix}[${restKey}]`;
+      if (Array.isArray(value)) {
+        value.forEach((v) => {
+          if (v !== null && v !== undefined) params.append(paramKey, v);
+        });
+      } else {
+        params.append(paramKey, value);
+      }
     }
   });
 }
@@ -80,7 +117,16 @@ export function convertGraphQLVarsToRestParams(vars) {
     }
   }
 
-  appendParam(params, 'cursor', vars.after ?? vars.afterCursor ?? vars.before ?? vars.beforeCursor);
+  // Handle pagination: support both cursor-based and page-based pagination
+  const cursorValue = vars.after ?? vars.afterCursor ?? vars.before ?? vars.beforeCursor;
+  if (cursorValue) {
+    if (/^\d+$/.test(cursorValue)) {
+      appendParam(params, 'page', cursorValue);
+    } else {
+      appendParam(params, 'cursor', cursorValue);
+    }
+  }
+
   appendParam(
     params,
     'per_page',
@@ -118,9 +164,8 @@ export function convertGraphQLVarsToRestParams(vars) {
   appendParam(params, 'due_after', vars.dueAfter);
   appendParam(params, 'due_before', vars.dueBefore);
 
-  if (vars.types?.length) {
-    const typesArray = Array.isArray(vars.types) ? vars.types : [vars.types];
-    typesArray.forEach((t) => appendParam(params, 'types[]', t.toLowerCase()));
+  if (vars.workItemTypeIds) {
+    appendWorkItemTypeIds(params, 'work_item_type_ids[]', vars.workItemTypeIds);
   }
 
   appendParam(params, 'crm_contact_id', vars.crmContactId);
@@ -128,8 +173,20 @@ export function convertGraphQLVarsToRestParams(vars) {
   appendParam(params, 'release_tag', vars.releaseTag);
   appendParam(params, 'release_tag_wildcard_id', WILDCARD_MAP[vars.releaseTagWildcardId]);
 
-  if (vars.hierarchyFilters?.parentId) {
-    appendParam(params, 'parent_ids[]', vars.hierarchyFilters.parentId);
+  if (vars.hierarchyFilters?.parentIds) {
+    appendWorkItemTypeIds(params, 'parent_ids[]', vars.hierarchyFilters.parentIds);
+  }
+
+  if (vars.hierarchyFilters?.parentWildcardId) {
+    appendParam(params, 'parent_wildcard_id', WILDCARD_MAP[vars.hierarchyFilters.parentWildcardId]);
+  }
+
+  if (vars.hierarchyFilters?.includeDescendantWorkItems !== undefined) {
+    appendParam(
+      params,
+      'include_descendant_work_items',
+      vars.hierarchyFilters.includeDescendantWorkItems,
+    );
   }
 
   if (vars.includeDescendants !== undefined) {

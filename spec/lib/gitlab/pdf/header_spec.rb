@@ -69,10 +69,92 @@ RSpec.describe Gitlab::PDF::Header, feature_category: :vulnerability_management 
       end
     end
 
+    shared_examples 'avatar rendering' do |exportable_sym|
+      let(:avatar_path) { Rails.root.join('spec/fixtures/dk.png').to_s }
+      let(:mock_file) { instance_double(CarrierWave::SanitizedFile, present?: true, path: avatar_path) }
+      let(:mock_uploader) { instance_double(AvatarUploader, file_storage?: true, file: mock_file) }
+      let(:exportable) { send(exportable_sym) }
+
+      context 'when the exportable has a local avatar' do
+        before do
+          allow(exportable).to receive(:avatar).and_return(mock_uploader)
+        end
+
+        it 'renders the avatar in the header' do
+          render_header
+
+          expect(pdf).to have_received(:image).with(avatar_path, hash_including(width: described_class::ICON_SIZE))
+        end
+      end
+
+      context 'when the exportable has no avatar file' do
+        let(:mock_file) { instance_double(CarrierWave::SanitizedFile, present?: false) }
+
+        before do
+          allow(exportable).to receive(:avatar).and_return(mock_uploader)
+        end
+
+        it 'does not attempt to render the avatar' do
+          render_header
+
+          expect(pdf).to have_received(:image).with(logo, any_args).once
+        end
+      end
+
+      context 'when the exportable avatar file has no usable path' do
+        let(:mock_file) { instance_double(CarrierWave::SanitizedFile, present?: true, path: nil) }
+
+        before do
+          allow(exportable).to receive(:avatar).and_return(mock_uploader)
+        end
+
+        it 'does not attempt to render the avatar' do
+          render_header
+
+          expect(pdf).to have_received(:image).with(logo, any_args).once
+        end
+      end
+
+      context 'when the exportable avatar is on object storage' do
+        let(:mock_uploader) { instance_double(AvatarUploader, file_storage?: false) }
+
+        before do
+          allow(exportable).to receive(:avatar).and_return(mock_uploader)
+        end
+
+        it 'does not attempt to render the avatar' do
+          render_header
+
+          expect(pdf).to have_received(:image).with(logo, any_args).once
+        end
+      end
+
+      context 'when the exportable avatar fails to render' do
+        before do
+          allow(exportable).to receive(:avatar).and_return(mock_uploader)
+          allow(pdf).to receive(:image).with(avatar_path, any_args).and_raise(StandardError)
+        end
+
+        it 'logs a warning and renders the metadata' do
+          expect(Gitlab::AppLogger).to receive(:warn).with(
+            hash_including(message: 'PDF header: failed to render exportable avatar')
+          )
+
+          render_header
+
+          expect(pdf).to have_received(:formatted_text_box).with(
+            array_including(hash_including(text: exportable.name, styles: [:bold])),
+            any_args
+          )
+        end
+      end
+    end
+
     context 'with a project exportable' do
       subject(:render_header) { described_class.render(pdf, project, page: page_number, height: 123) }
 
       include_examples 'common header elements'
+      include_examples 'avatar rendering', :project
 
       it 'includes the "Project" label' do
         render_header
@@ -97,6 +179,7 @@ RSpec.describe Gitlab::PDF::Header, feature_category: :vulnerability_management 
       subject(:render_header) { described_class.render(pdf, group, page: page_number, height: 123) }
 
       include_examples 'common header elements'
+      include_examples 'avatar rendering', :group
 
       it 'includes the "Group" label' do
         render_header

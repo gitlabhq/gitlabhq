@@ -244,7 +244,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_nuget]
             end
             route_setting :authorization, permissions: :read_nuget_package, boundary_type: :project
             get 'index', format: :json, urgency: :low do
@@ -260,7 +260,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_nuget]
             end
             params do
               requires :package_version, type: String, desc: 'The NuGet package version',
@@ -304,8 +304,8 @@ module API
 
         namespace '/nuget' do
           # https://docs.microsoft.com/en-us/nuget/api/package-publish-resource
-          desc 'The NuGet V3 Feed Package Publish endpoint' do
-            detail 'This feature was introduced in GitLab 12.6'
+          desc 'Upload a NuGet v3 package file for a project' do
+            detail 'Uploads a NuGet v3 package file for a specified project.'
             success code: 201
             failure [
               { code: 400, message: 'Bad Request' },
@@ -313,7 +313,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[packages]
+            tags %w[packages_nuget]
           end
 
           params do
@@ -332,7 +332,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[packages]
+            tags %w[packages_nuget]
           end
           route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
           put 'authorize', urgency: :low do
@@ -340,8 +340,8 @@ module API
           end
 
           # https://docs.microsoft.com/en-us/nuget/api/symbol-package-publish-resource
-          desc 'The NuGet Symbol Package Publish endpoint' do
-            detail 'This feature was introduced in GitLab 14.1'
+          desc 'Upload a NuGet symbol package file' do
+            detail 'Uploads a specified NuGet symbol package file (`.snupkg`) for a project.'
             success code: 201
             failure [
               { code: 400, message: 'Bad Request' },
@@ -349,7 +349,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[packages]
+            tags %w[packages_nuget]
           end
           params do
             use :file_params
@@ -367,7 +367,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[packages]
+            tags %w[packages_nuget]
           end
           route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
           put 'symbolpackage/authorize', urgency: :low do
@@ -382,7 +382,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[packages]
+            tags %w[packages_nuget]
           end
           params do
             requires :package_name, type: String, allow_blank: false, desc: 'The NuGet package name',
@@ -391,7 +391,7 @@ module API
               regexp: Gitlab::Regex.nuget_version_regex, documentation: { example: '1.0.1' }
           end
           route_setting :authorization, permissions: :delete_nuget_package, boundary_type: :project
-          delete '*package_name/*package_version', format: false, urgency: :low do
+          delete '*package_name/*package_version', urgency: :low, requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
             authorize_destroy_package!(project_or_group)
 
             destroy_conditionally!(find_package) do |pkg|
@@ -402,8 +402,8 @@ module API
           end
 
           namespace '/v2' do
-            desc 'The NuGet V2 Feed Package Publish endpoint' do
-              detail 'This feature was introduced in GitLab 16.2'
+            desc 'Upload a NuGet v2 package file for a project' do
+              detail 'Uploads a NuGet v2 package file for a specified project.'
               success code: 201
               failure [
                 { code: 400, message: 'Bad Request' },
@@ -411,7 +411,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_nuget]
             end
 
             params do
@@ -430,7 +430,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_nuget]
             end
 
             route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
@@ -456,7 +456,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 400, message: 'Bad Request' }
           ]
-          tags %w[packages]
+          tags %w[packages_nuget]
         end
 
         params do
@@ -477,7 +477,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 400, message: 'Bad Request' }
           ]
-          tags %w[packages]
+          tags %w[packages_nuget]
         end
 
         params do
@@ -499,7 +499,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 400, message: 'Bad Request' }
           ]
-          tags %w[packages]
+          tags %w[packages_nuget]
         end
         params do
           requires :package_name, type: String, allow_blank: false, desc: 'The NuGet package name',

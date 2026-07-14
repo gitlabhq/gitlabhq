@@ -615,6 +615,10 @@ module ProjectsHelper
     false
   end
 
+  def show_built_in_project_templates_tab?
+    true
+  end
+
   def http_clone_url_to_repo(project)
     project.http_url_to_repo
   end
@@ -771,16 +775,17 @@ module ProjectsHelper
   end
 
   def configure_oauth_import_message(provider, help_url)
-    str = if current_user.can_admin_all_resources?
-            'ImportProjects|To enable importing projects from %{provider}, as administrator you need to ' \
-              'configure %{link_start}OAuth integration%{link_end}'
+    link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_url }
+
+    msg = if current_user.can_admin_all_resources?
+            s_('ImportProjects|To enable importing projects from %{provider}, as administrator you need to ' \
+              'configure %{link_start}OAuth integration%{link_end}')
           else
-            'ImportProjects|To enable importing projects from %{provider}, ask your GitLab administrator to ' \
-              'configure %{link_start}OAuth integration%{link_end}'
+            s_('ImportProjects|To enable importing projects from %{provider}, ask your GitLab administrator to ' \
+              'configure %{link_start}OAuth integration%{link_end}')
           end
 
-    link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_url }
-    safe_format(s_(str), provider: provider, link_start: link_start, link_end: '</a>'.html_safe)
+    safe_format(msg, provider: provider, link_start: link_start, link_end: '</a>'.html_safe)
   end
 
   def project_lfs_status(project)
@@ -1000,6 +1005,11 @@ module ProjectsHelper
       ),
       tool_approval_for_session_cascading_settings: project_cascading_namespace_settings_tooltip_data(
         :tool_approval_for_session_enabled,
+        project,
+        method(:edit_group_path)
+      ),
+      ai_audit_events_storage_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+        :ai_audit_events_storage_enabled,
         project,
         method(:edit_group_path)
       )

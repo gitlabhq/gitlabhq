@@ -46,10 +46,36 @@ module Gitlab
         end
 
         def save_markdown(updates)
+          # If the record has never been saved before, we don't need to call
+          # `update_columns` (the whole record will get saved at once!),
+          # nor do we want to count a version upgrade here.
           return unless persisted? && Gitlab::Database.read_write?
+
+          # `refresh_markdown_cache` writes via `cached_markdown_version_for_write`;
+          # this guard protects against future-version rows from downgrades (i.e.
+          # where persisted > current).
           return if cached_markdown_version.to_i < cached_markdown_version_in_database.to_i
 
+          count_version_upgrade
+
           update_columns(updates)
+        end
+
+        private
+
+        def count_version_upgrade
+          return unless cached_markdown_version.to_i > cached_markdown_version_in_database.to_i
+
+          # Concurrent requests both rolling "current" against the same
+          # previous-version row will each pass the guard in save_markdown against
+          # their load-time snapshot, so a single row can be counted more than
+          # once. The counter therefore is an upper bound on rows upgraded, not
+          # necessarily the exact number.
+          kind = Gitlab::MarkdownCache.upgrade_kind(
+            cached_markdown_version_in_database,
+            local_version: local_markdown_version_for_cache
+          )
+          Gitlab::MarkdownCache.version_upgrade_counter.increment(class: self.class.name, kind: kind)
         end
       end
     end

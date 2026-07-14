@@ -209,10 +209,6 @@ module Banzai
         context[:ref] || project.default_branch
       end
 
-      def current_user
-        context[:current_user]
-      end
-
       def repository
         @repository ||= project&.repository
       end

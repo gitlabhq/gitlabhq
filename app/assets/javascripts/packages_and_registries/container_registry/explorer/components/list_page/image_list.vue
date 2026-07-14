@@ -22,6 +22,7 @@ export default {
       required: false,
     },
   },
+  emits: ['delete'],
 };
 </script>
 

@@ -86,6 +86,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :services,
+            description: s_('Observability|Monitor service health and performance'),
+            library_icon: 'services',
             container_html_options: { class: 'shortcuts-services js-observability-nav' }
           )
         end
@@ -98,6 +100,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :traces_explorer,
+            description: s_('Observability|Explore and analyze distributed traces'),
+            library_icon: 'traces',
             container_html_options: { class: 'shortcuts-traces js-observability-nav' }
           )
         end
@@ -110,6 +114,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :logs_explorer,
+            description: s_('Observability|Search and analyze application logs'),
+            library_icon: 'log',
             container_html_options: { class: 'shortcuts-logs js-observability-nav' }
           )
         end
@@ -122,6 +128,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :metrics_explorer,
+            description: s_('Observability|Visualize and monitor application and infrastructure metrics'),
+            library_icon: 'metrics',
             container_html_options: { class: 'shortcuts-metrics js-observability-nav' }
           )
         end
@@ -134,6 +142,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :infrastructure_monitoring,
+            description: s_('Observability|Monitor infrastructure and hosts'),
+            library_icon: 'infrastructure',
             container_html_options: { class: 'shortcuts-infrastructure js-observability-nav' }
           )
         end
@@ -146,6 +156,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :dashboard,
+            description: s_('Observability|View observability overview'),
+            library_icon: 'dashboard',
             container_html_options: { class: 'shortcuts-dashboard js-observability-nav' }
           )
         end
@@ -158,6 +170,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :messaging_queues,
+            description: s_('Observability|Monitor message queues'),
+            library_icon: 'messaging-queues',
             container_html_options: { class: 'shortcuts-messaging-queues js-observability-nav' }
           )
         end
@@ -170,6 +184,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :api_monitoring,
+            description: s_('Observability|Monitor API performance'),
+            library_icon: 'api',
             container_html_options: { class: 'shortcuts-api-monitoring js-observability-nav' }
           )
         end
@@ -182,6 +198,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :alerts,
+            description: s_('Observability|Manage alerts and notifications'),
+            library_icon: 'warning',
             container_html_options: { class: 'shortcuts-alerts js-observability-nav' }
           )
         end
@@ -194,6 +212,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :exceptions,
+            description: s_('Observability|Track application exceptions'),
+            library_icon: 'exception',
             container_html_options: { class: 'shortcuts-exceptions js-observability-nav' }
           )
         end
@@ -206,6 +226,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :service_map,
+            description: s_('Observability|Visualize service dependencies'),
+            library_icon: 'service-map',
             container_html_options: { class: 'shortcuts-service-map js-observability-nav' }
           )
         end
@@ -218,6 +240,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :notification_channels,
+            description: s_('Observability|Configure notification channels'),
+            library_icon: 'notification-channels',
             container_html_options: { class: 'shortcuts-notification-channels js-observability-nav' }
           )
         end
@@ -230,6 +254,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :api_keys,
+            description: s_('Observability|Manage API keys for observability ingestion'),
+            library_icon: 'key',
             container_html_options: { class: 'shortcuts-api-keys js-observability-nav' }
           )
         end
@@ -242,6 +268,8 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :o11y_settings,
+            description: s_('Observability|Configure observability settings'),
+            library_icon: 'observability-settings',
             container_html_options: { class: 'shortcuts-o11y-settings' }
           )
         end
@@ -253,6 +281,8 @@ module Sidebars
             link: link,
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :setup,
+            description: s_('Observability|Set up observability'),
+            library_icon: 'setup',
             container_html_options: { class: 'shortcuts-request-access' },
             active_routes: { page: link }
           )

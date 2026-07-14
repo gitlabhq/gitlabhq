@@ -9,6 +9,8 @@ module Types
           graphql_name 'WorkItemWidgetTimeTracking'
           description 'Represents the time tracking widget on the work item'
 
+          authorize_granular_token skip_reason: :parent_authorizes
+
           implements ::Types::WorkItems::WidgetInterface
 
           field :human_readable_attributes, ::Types::WorkItems::Widgets::TimeTracking::HumanReadableAttributesType,

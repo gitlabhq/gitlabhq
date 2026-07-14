@@ -1,9 +1,9 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: プロジェクトWebhook API
-description: "REST APIを使用して、プロジェクトのWebhookを設定および管理します。"
+description: "プロジェクトのWebhookをREST APIで設定管理します。"
 ---
 
 {{< details >}}
@@ -13,42 +13,49 @@ description: "REST APIを使用して、プロジェクトのWebhookを設定お
 
 {{< /details >}}
 
-このAPIを使用して、[project webhooks](../user/project/integrations/webhooks.md)を管理します。プロジェクトのWebhookは、インスタンス全体に影響を与える[system hooks](system_hooks.md) 、およびグループ内のすべてのプロジェクトとサブグループに影響を与える[group webhooks](group_webhooks.md)とは異なります。
+このAPIを使用して、[プロジェクトWebhook](../user/project/integrations/webhooks.md)を管理します。プロジェクトWebhookは、インスタンス全体に影響を与える[システムフック](system_hooks.md)や、グループ内のすべてのプロジェクトとサブグループに影響を与える[グループWebhook](group_webhooks.md)とは異なります。
 
-前提要件: 
+前提条件: 
 
-- 管理者であるか、プロジェクトのメンテナーロールを持っている必要があります。
+- 管理者であるか、プロジェクトのメンテナーまたはオーナーのロールを持っている必要があります。
 
-## プロジェクトのWebhookを一覧表示します {#list-webhooks-for-a-project}
+## プロジェクトのWebhookをリスト表示する {#list-webhooks-for-a-project}
 
-プロジェクトのWebhookのリストを取得します。
+プロジェクトWebhookのリストを取得します。
 
 ```plaintext
 GET /projects/:id/hooks
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |:----------|:------------------|:---------|:------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-## プロジェクトのWebhookを取得します {#get-a-project-webhook}
+## プロジェクトWebhookを取得する {#retrieve-a-project-webhook}
 
-プロジェクトの特定のWebhookを取得します。
+{{< history >}}
+
+- `name`および`description`属性はGitLab 17.1で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)。
+- `token_present`および`signing_token_present`属性はGitLab 19.0で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325)。
+
+{{< /history >}}
+
+指定されたプロジェクトのWebhookを取得します。
 
 ```plaintext
 GET /projects/:id/hooks/:hook_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |:----------|:------------------|:---------|:------------|
-| `hook_id` | 整数           | はい      | プロジェクトのWebhookのID。 |
+| `hook_id` | 整数           | はい      | プロジェクトWebhookのID。 |
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -84,11 +91,13 @@ GET /projects/:id/hooks/:hook_id
     {
       "key": "Authorization"
     }
-  ]
+  ],
+  "token_present": false,
+  "signing_token_present": false
 }
 ```
 
-## プロジェクトのWebhookイベントのリストを取得します {#get-a-list-of-project-webhook-events}
+## プロジェクトWebhookイベントをリスト表示する {#list-project-webhook-events}
 
 {{< history >}}
 
@@ -96,23 +105,23 @@ GET /projects/:id/hooks/:hook_id
 
 {{< /history >}}
 
-特定のプロジェクトのWebhookの過去7日間のイベントのリストを開始日から取得します。
+開始日から過去7日間の、指定されたプロジェクトWebhookのすべてのイベントをリスト表示します。
 
 ```plaintext
 GET /projects/:id/hooks/:hook_id/events
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型              | 必須 | 説明 |
 |:-----------|:------------------|:---------|:------------|
-| `hook_id`  | 整数           | はい      | プロジェクトのWebhookのID。 |
+| `hook_id`  | 整数           | はい      | プロジェクトWebhookのID。 |
 | `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `status`   | 整数または文字列 | いいえ       | イベントのレスポンスステータスコード。例：`200`または`500`。ステータスカテゴリで検索できます: `successful`（200～299）、`client_failure`（400～499）、および`server_failure`（500～599）。 |
+| `status`   | 整数または文字列 | いいえ       | イベントの応答ステータスコード。例: `200`または`500`。ステータスカテゴリで検索できます: `successful` (200-299)、`client_failure` (400-499)、および`server_failure` (500-599)。 |
 | `page`     | 整数           | いいえ       | 取得するページ。`1`がデフォルトです。 |
 | `per_page` | 整数           | いいえ       | ページごとに返すレコード数。`20`がデフォルトです。 |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -363,7 +372,7 @@ GET /projects/:id/hooks/:hook_id/events
 ]
 ```
 
-## プロジェクトのWebhookイベントを再送信する {#resend-a-project-webhook-event}
+## プロジェクトWebhookイベントを再送信する {#resend-a-project-webhook-event}
 
 {{< history >}}
 
@@ -371,22 +380,22 @@ GET /projects/:id/hooks/:hook_id/events
 
 {{< /history >}}
 
-特定のプロジェクトのWebhookイベントを再送信します。
+特定のプロジェクトWebhookイベントを再送信します。
 
-このエンドポイントには、プロジェクトのWebhookおよび認証済みユーザーごとに、1分あたり5つのリクエストのレート制限があります。GitLab Self-ManagedおよびGitLab Dedicatedでこの制限を無効にするには、管理者が[機能フラグを無効にする](../administration/feature_flags/_index.md)ことができます。`web_hook_event_resend_api_endpoint_rate_limit`という名前です。
+このエンドポイントには、プロジェクトWebhookおよび認証済みユーザーごとに1分あたり5件のリクエストというレート制限があります。GitLab Self-ManagedおよびGitLab Dedicatedでこの制限を無効にするには、管理者が`web_hook_event_resend_api_endpoint_rate_limit`という名前の[機能フラグ](../administration/feature_flags/_index.md)を無効にできます。
 
 ```plaintext
 POST /projects/:id/hooks/:hook_id/events/:hook_event_id/resend
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性       | 型    | 必須 | 説明 |
 |:----------------|:--------|:---------|:------------|
-| `hook_event_id` | 整数 | はい      | プロジェクトのWebhookイベントのID。 |
-| `hook_id`       | 整数 | はい      | プロジェクトのWebhookのID。 |
+| `hook_event_id` | 整数 | はい      | プロジェクトWebhookイベントのID。 |
+| `hook_id`       | 整数 | はい      | プロジェクトWebhookのID。 |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -398,7 +407,9 @@ POST /projects/:id/hooks/:hook_id/events/:hook_event_id/resend
 
 {{< history >}}
 
-- `name`および`description`の属性は、GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)されました。
+- `name`および`description`属性はGitLab 17.1で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)。
+- `signing_token`属性はGitLab 19.0で`webhook_signing_token`という名前の[フラグ](../administration/feature_flags/_index.md)とともに[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325)。デフォルトでは有効になっています。
+- 機能フラグ`webhook_signing_token`はGitLab 19.1で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/596374)されました。
 
 {{< /history >}}
 
@@ -408,129 +419,135 @@ POST /projects/:id/hooks/:hook_id/events/:hook_event_id/resend
 POST /projects/:id/hooks
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                      | 型              | 必須 | 説明 |
 |:-------------------------------|:------------------|:---------|:------------|
 | `id`                           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `url`                          | 文字列            | はい      | プロジェクトのWebhook URL。 |
-| `branch_filter_strategy`       | 文字列            | いいえ       | ブランチでプッシュイベントをフィルタリングします。使用可能な値は、`wildcard`（デフォルト）、`regex`、および`all_branches`です。 |
-| `confidential_issues_events`   | ブール値           | いいえ       | 機密のイシューイベントでプロジェクトのWebhookをトリガーします。 |
-| `confidential_note_events`     | ブール値           | いいえ       | 機密のメモイベントでプロジェクトのWebhookをトリガーします。 |
-| `custom_headers`               | 配列             | いいえ       | プロジェクトのWebhookのカスタムヘッダー。 |
-| `custom_webhook_template`      | 文字列            | いいえ       | プロジェクトのWebhookのカスタムWebhookテンプレート。 |
-| `deployment_events`            | ブール値           | いいえ       | デプロイイベントでプロジェクトのWebhookをトリガーします。 |
+| `url`                          | 文字列            | はい      | プロジェクトWebhookのURL。 |
+| `branch_filter_strategy`       | 文字列            | いいえ       | ブランチでプッシュイベントをフィルタリングします指定できる値は、`wildcard`（デフォルト）、`regex`、および`all_branches`です。 |
+| `confidential_issues_events`   | ブール値           | いいえ       | 機密イシューイベントでプロジェクトWebhookをトリガーする。 |
+| `confidential_note_events`     | ブール値           | いいえ       | 機密ノートイベントでプロジェクトWebhookをトリガーする。 |
+| `custom_headers`               | 配列             | いいえ       | プロジェクトWebhookのカスタムヘッダー。 |
+| `custom_webhook_template`      | 文字列            | いいえ       | プロジェクトWebhookのカスタムWebhookテンプレート。 |
+| `deployment_events`            | ブール値           | いいえ       | デプロイイベントでプロジェクトWebhookをトリガーする。 |
 | `description`                  | 文字列            | いいえ       | Webhookの説明。 |
-| `enable_ssl_verification`      | ブール値           | いいえ       | Webhookをトリガーするときに、SSL検証を実行します。 |
-| `feature_flag_events`          | ブール値           | いいえ       | 機能フラグイベントでプロジェクトのWebhookをトリガーします。 |
-| `issues_events`                | ブール値           | いいえ       | イシューイベントでプロジェクトのWebhookをトリガーします。 |
-| `job_events`                   | ブール値           | いいえ       | ジョブイベントでプロジェクトのWebhookをトリガーします。 |
-| `merge_requests_events`        | ブール値           | いいえ       | マージリクエストイベントでプロジェクトのWebhookをトリガーします。 |
-| `milestone_events`             | ブール値           | いいえ       | マイルストーンイベントでプロジェクトのWebhookをトリガーします。 |
-| `name`                         | 文字列            | いいえ       | プロジェクトのWebhookの名前。 |
-| `note_events`                  | ブール値           | いいえ       | メモイベントでプロジェクトのWebhookをトリガーします。 |
-| `pipeline_events`              | ブール値           | いいえ       | パイプラインイベントでプロジェクトのWebhookをトリガーします。 |
-| `push_events`                  | ブール値           | いいえ       | プッシュイベントでプロジェクトのWebhookをトリガーします。 |
-| `push_events_branch_filter`    | 文字列            | いいえ       | 一致するブランチのみのプッシュイベントでプロジェクトのWebhookをトリガーします。 |
-| `releases_events`              | ブール値           | いいえ       | リリースイベントでプロジェクトのWebhookをトリガーします。 |
-| `resource_access_token_events` | ブール値           | いいえ       | プロジェクトアクセストークンの有効期限イベントでプロジェクトのWebhookをトリガーします。 |
-| `tag_push_events`              | ブール値           | いいえ       | タグ付けイベントでプロジェクトのWebhookをトリガーします。 |
-| `token`                        | 文字列            | いいえ       | 受信したペイロードを検証するためのシークレットトークン。トークンはレスポンスで返されません。 |
-| `wiki_page_events`             | ブール値           | いいえ       | WikiイベントでプロジェクトのWebhookをトリガーします。 |
+| `enable_ssl_verification`      | ブール値           | いいえ       | WebhookをトリガーするときにSSL検証を実行します。 |
+| `feature_flag_events`          | ブール値           | いいえ       | 機能フラグイベントでプロジェクトWebhookをトリガーする。 |
+| `issues_events`                | ブール値           | いいえ       | イシューイベントでプロジェクトWebhookをトリガーする。 |
+| `job_events`                   | ブール値           | いいえ       | ジョブイベントでプロジェクトWebhookをトリガーする。 |
+| `merge_requests_events`        | ブール値           | いいえ       | マージリクエストイベントでプロジェクトWebhookをトリガーする。 |
+| `milestone_events`             | ブール値           | いいえ       | マイルストーンイベントでプロジェクトWebhookをトリガーする。 |
+| `name`                         | 文字列            | いいえ       | プロジェクトWebhookの名前。 |
+| `note_events`                  | ブール値           | いいえ       | ノートイベントでプロジェクトWebhookをトリガーする。 |
+| `pipeline_events`              | ブール値           | いいえ       | パイプラインイベントでプロジェクトWebhookをトリガーする。 |
+| `push_events`                  | ブール値           | いいえ       | プッシュイベントでプロジェクトWebhookをトリガーする。 |
+| `push_events_branch_filter`    | 文字列            | いいえ       | 一致するブランチのプッシュイベントでのみプロジェクトWebhookをトリガーする。 |
+| `releases_events`              | ブール値           | いいえ       | リリースイベントでプロジェクトWebhookをトリガーする。 |
+| `resource_access_token_events` | ブール値           | いいえ       | プロジェクトアクセストークンの有効期限イベントでプロジェクトWebhookをトリガーする。 |
+| `signing_token`                | 文字列            | いいえ       | `webhook-signature`ヘッダーを計算するために使用されるHMAC署名トークン。32バイトのキーをエンコードする`whsec_<base64>`形式である必要があります。レスポンスでは返されません。 |
+| `tag_push_events`              | ブール値           | いいえ       | タグプッシュイベントでプロジェクトWebhookをトリガーする。 |
+| `token`                        | 文字列            | いいえ       | 受信したペイロードを検証するためのシークレットトークン。レスポンスでは返されません。 |
+| `wiki_page_events`             | ブール値           | いいえ       | WikiイベントでプロジェクトWebhookをトリガーする。 |
+| `resource_deploy_token_events` | ブール値           | いいえ       | プロジェクトデプロイトークンの有効期限イベントでプロジェクトWebhookをトリガーする。 |
 
-## プロジェクトのWebhookを編集する {#edit-a-project-webhook}
+## プロジェクトWebhookを更新する {#update-a-project-webhook}
 
 {{< history >}}
 
-- `name`および`description`の属性は、GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)されました。
+- `name`および`description`属性はGitLab 17.1で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)。
+- `signing_token`属性はGitLab 19.0で`webhook_signing_token`という名前の[フラグ](../administration/feature_flags/_index.md)とともに[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325)。デフォルトでは有効になっています。
+- 機能フラグ`webhook_signing_token`はGitLab 19.1で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/596374)されました。
 
 {{< /history >}}
 
-指定されたプロジェクトのプロジェクトWebhookを編集します。
+指定されたプロジェクトのWebhookを更新します。
 
 ```plaintext
 PUT /projects/:id/hooks/:hook_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                      | 型              | 必須 | 説明 |
 |:-------------------------------|:------------------|:---------|:------------|
-| `hook_id`                      | 整数           | はい      | プロジェクトのWebhookのID。 |
+| `hook_id`                      | 整数           | はい      | プロジェクトWebhookのID。 |
 | `id`                           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `url`                          | 文字列            | はい      | プロジェクトのWebhook URL。 |
-| `branch_filter_strategy`       | 文字列            | いいえ       | ブランチでプッシュイベントをフィルタリングします。使用可能な値は、`wildcard`（デフォルト）、`regex`、および`all_branches`です。 |
-| `custom_headers`               | 配列             | いいえ       | プロジェクトのWebhookのカスタムヘッダー。 |
-| `custom_webhook_template`      | 文字列            | いいえ       | プロジェクトのWebhookのカスタムWebhookテンプレート。 |
+| `url`                          | 文字列            | はい      | プロジェクトWebhookのURL。 |
+| `branch_filter_strategy`       | 文字列            | いいえ       | ブランチでプッシュイベントをフィルタリングします指定できる値は、`wildcard`（デフォルト）、`regex`、および`all_branches`です。 |
+| `custom_headers`               | 配列             | いいえ       | プロジェクトWebhookのカスタムヘッダー。 |
+| `custom_webhook_template`      | 文字列            | いいえ       | プロジェクトWebhookのカスタムWebhookテンプレート。 |
 | `description`                  | 文字列            | いいえ       | プロジェクトWebhookの説明。 |
-| `confidential_issues_events`   | ブール値           | いいえ       | 機密のイシューイベントでプロジェクトのWebhookをトリガーします。 |
-| `confidential_note_events`     | ブール値           | いいえ       | 機密のメモイベントでプロジェクトのWebhookをトリガーします。 |
-| `deployment_events`            | ブール値           | いいえ       | デプロイイベントでプロジェクトのWebhookをトリガーします。 |
-| `enable_ssl_verification`      | ブール値           | いいえ       | フックをトリガーするときに、SSL検証を実行します。 |
-| `feature_flag_events`          | ブール値           | いいえ       | 機能フラグイベントでプロジェクトのWebhookをトリガーします。 |
-| `issues_events`                | ブール値           | いいえ       | イシューイベントでプロジェクトのWebhookをトリガーします。 |
-| `job_events`                   | ブール値           | いいえ       | ジョブイベントでプロジェクトのWebhookをトリガーします。 |
-| `merge_requests_events`        | ブール値           | いいえ       | マージリクエストイベントでプロジェクトのWebhookをトリガーします。 |
-| `milestone_events`             | ブール値           | いいえ       | マイルストーンイベントでプロジェクトのWebhookをトリガーします。 |
-| `name`                         | 文字列            | いいえ       | プロジェクトのWebhookの名前。 |
-| `note_events`                  | ブール値           | いいえ       | メモイベントでプロジェクトのWebhookをトリガーします。 |
-| `pipeline_events`              | ブール値           | いいえ       | パイプラインイベントでプロジェクトのWebhookをトリガーします。 |
-| `push_events`                  | ブール値           | いいえ       | プッシュイベントでプロジェクトのWebhookをトリガーします。 |
-| `push_events_branch_filter`    | 文字列            | いいえ       | 一致するブランチのみのプッシュイベントでプロジェクトのWebhookをトリガーします。 |
-| `releases_events`              | ブール値           | いいえ       | リリースイベントでプロジェクトのWebhookをトリガーします。 |
-| `resource_access_token_events` | ブール値           | いいえ       | プロジェクトアクセストークンの有効期限イベントでプロジェクトのWebhookをトリガーします。 |
-| `tag_push_events`              | ブール値           | いいえ       | タグ付けイベントでプロジェクトのWebhookをトリガーします。 |
-| `token`                        | 文字列            | いいえ       | 受信したペイロードを検証するためのシークレットトークン。レスポンスで返されません。Webhook URLを変更すると、シークレットトークンはリセットされ、保持されません。 |
-| `wiki_page_events`             | ブール値           | いいえ       | WikiページイベントでプロジェクトのWebhookをトリガーします。 |
+| `confidential_issues_events`   | ブール値           | いいえ       | 機密イシューイベントでプロジェクトWebhookをトリガーする。 |
+| `confidential_note_events`     | ブール値           | いいえ       | 機密ノートイベントでプロジェクトWebhookをトリガーする。 |
+| `deployment_events`            | ブール値           | いいえ       | デプロイイベントでプロジェクトWebhookをトリガーする。 |
+| `enable_ssl_verification`      | ブール値           | いいえ       | フックをトリガーするときにSSL検証を実行します。 |
+| `feature_flag_events`          | ブール値           | いいえ       | 機能フラグイベントでプロジェクトWebhookをトリガーする。 |
+| `issues_events`                | ブール値           | いいえ       | イシューイベントでプロジェクトWebhookをトリガーする。 |
+| `job_events`                   | ブール値           | いいえ       | ジョブイベントでプロジェクトWebhookをトリガーする。 |
+| `merge_requests_events`        | ブール値           | いいえ       | マージリクエストイベントでプロジェクトWebhookをトリガーする。 |
+| `milestone_events`             | ブール値           | いいえ       | マイルストーンイベントでプロジェクトWebhookをトリガーする。 |
+| `name`                         | 文字列            | いいえ       | プロジェクトWebhookの名前。 |
+| `note_events`                  | ブール値           | いいえ       | ノートイベントでプロジェクトWebhookをトリガーする。 |
+| `pipeline_events`              | ブール値           | いいえ       | パイプラインイベントでプロジェクトWebhookをトリガーする。 |
+| `push_events`                  | ブール値           | いいえ       | プッシュイベントでプロジェクトWebhookをトリガーする。 |
+| `push_events_branch_filter`    | 文字列            | いいえ       | 一致するブランチのプッシュイベントでのみプロジェクトWebhookをトリガーする。 |
+| `releases_events`              | ブール値           | いいえ       | リリースイベントでプロジェクトWebhookをトリガーする。 |
+| `resource_access_token_events` | ブール値           | いいえ       | プロジェクトアクセストークンの有効期限イベントでプロジェクトWebhookをトリガーする。 |
+| `signing_token`                | 文字列            | いいえ       | `webhook-signature`ヘッダーを計算するために使用されるHMAC署名トークン。32バイトのキーをエンコードする`whsec_<base64>`形式である必要があります。レスポンスでは返されません。 |
+| `tag_push_events`              | ブール値           | いいえ       | タグプッシュイベントでプロジェクトWebhookをトリガーする。 |
+| `token`                        | 文字列            | いいえ       | 受信したペイロードを検証するためのシークレットトークン。レスポンスでは返されません。WebhookのURLを変更すると、シークレットトークンはリセットされ、保持されません。 |
+| `wiki_page_events`             | ブール値           | いいえ       | WikiページイベントでプロジェクトWebhookをトリガーする。 |
+| `resource_deploy_token_events` | ブール値           | いいえ       | プロジェクトデプロイトークンの有効期限イベントでプロジェクトWebhookをトリガーする。 |
 
-## プロジェクトのWebhookを削除する {#delete-project-webhook}
+## プロジェクトWebhookを削除する {#delete-project-webhook}
 
-プロジェクトからWebhookを削除します。このメソッドは冪等であり、複数回呼び出すことができます。プロジェクトのWebhookは利用可能であるか、そうでないかのどちらかです。
+プロジェクトからWebhookを削除します。このメソッドは冪等であり、複数回呼び出すことができます。プロジェクトWebhookは利用可能であるか、そうでないかのいずれかです。
 
 ```plaintext
 DELETE /projects/:id/hooks/:hook_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |:----------|:------------------|:---------|:------------|
-| `hook_id` | 整数           | はい      | プロジェクトのWebhookのID。 |
+| `hook_id` | 整数           | はい      | プロジェクトWebhookのID。 |
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-プロジェクトのWebhookが利用可能かどうかで、JSONレスポンスが異なることに注意してください。プロジェクトのフックがJSONレスポンスで返される前に利用可能な場合、または空のレスポンスが返される場合。
+プロジェクトWebhookが利用可能であるかどうかに応じて、JSON応答が異なることに注意してください。プロジェクトフックが利用可能な場合はJSON応答で返されるか、空の応答が返されます。
 
-## テストプロジェクトのWebhookをトリガーする {#trigger-a-test-project-webhook}
+## テストプロジェクトWebhookをトリガーする {#trigger-a-test-project-webhook}
 
 {{< history >}}
 
 - GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147656)されました。
-- GitLab 17.0で、`web_hook_test_api_endpoint_rate_limit`という名前の[フラグ付き](../administration/feature_flags/_index.md)で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150066)されました。デフォルトでは有効になっています。
+- 特別なレート制限はGitLab 17.0で`web_hook_test_api_endpoint_rate_limit`という名前の[フラグ](../administration/feature_flags/_index.md)とともに[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150066)。デフォルトでは有効になっています。
 
 {{< /history >}}
 
-指定されたプロジェクトのテストプロジェクトWebhookをトリガーします。
+指定されたプロジェクトのテストプロジェクトWebhookをトリガーする。
 
-GitLab 17.0以降、このエンドポイントには特別なレート制限があります:
+GitLab 17.0以降では、このエンドポイントには特別なレート制限があります:
 
-- GitLab 17.0では、レートはプロジェクトのWebhookごとに1分あたり3つのリクエストでした。
-- GitLab 17.1では、これはプロジェクトおよび認証済みユーザーごとに1分あたり5つのリクエストに変更されました。
+- GitLab 17.0では、プロジェクトWebhookごとに1分あたり3件のリクエストでした。
+- GitLab 17.1では、プロジェクトおよび認証済みユーザーごとに1分あたり5件のリクエストに変更されました。
 
-GitLab Self-ManagedおよびGitLab Dedicatedでこの制限を無効にするには、管理者が[機能フラグを無効にする](../administration/feature_flags/_index.md)ことができます。`web_hook_test_api_endpoint_rate_limit`という名前です。
+GitLab Self-ManagedおよびGitLab Dedicatedでこの制限を無効にするには、管理者が`web_hook_test_api_endpoint_rate_limit`という名前の[機能フラグ](../administration/feature_flags/_index.md)を無効にできます。
 
 ```plaintext
 POST /projects/:id/hooks/:hook_id/test/:trigger
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |:----------|:------------------|:---------|:------------|
-| `hook_id` | 整数           | はい      | プロジェクトのWebhookのID。 |
+| `hook_id` | 整数           | はい      | プロジェクトWebhookのID。 |
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `trigger` | 文字列            | はい      | `push_events`、`tag_push_events`、`issues_events`、`confidential_issues_events`、`note_events`、`merge_requests_events`、`job_events`、`pipeline_events`、`wiki_page_events`、`releases_events`、`milestone_events`、`emoji_events`、または`resource_access_token_events`のいずれか。 |
+| `trigger` | 文字列            | はい      | `push_events`、`tag_push_events`、`issues_events`、`confidential_issues_events`、`note_events`、`merge_requests_events`、`job_events`、`pipeline_events`、`wiki_page_events`、`releases_events`、`milestone_events`、`emoji_events`、`resource_access_token_events`、または`resource_deploy_token_events`のいずれか。 |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {"message":"201 Created"}
@@ -548,11 +565,11 @@ POST /projects/:id/hooks/:hook_id/test/:trigger
 PUT /projects/:id/hooks/:hook_id/custom_headers/:key
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |:----------|:------------------|:---------|:------------|
-| `hook_id` | 整数           | はい      | プロジェクトのWebhookのID。 |
+| `hook_id` | 整数           | はい      | プロジェクトWebhookのID。 |
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `key`     | 文字列            | はい      | カスタムヘッダーのキー。 |
 | `value`   | 文字列            | はい      | カスタムヘッダーの値。 |
@@ -571,44 +588,44 @@ PUT /projects/:id/hooks/:hook_id/custom_headers/:key
 DELETE /projects/:id/hooks/:hook_id/custom_headers/:key
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |:----------|:------------------|:---------|:------------|
-| `hook_id` | 整数           | はい      | プロジェクトのWebhookのID。 |
+| `hook_id` | 整数           | はい      | プロジェクトWebhookのID。 |
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `key`     | 文字列            | はい      | カスタムヘッダーのキー。 |
 
 成功すると、このエンドポイントはレスポンスコード`204 No Content`を返します。
 
-## URL変数を設定する {#set-a-url-variable}
+## URL変数を設定 {#set-a-url-variable}
 
 ```plaintext
 PUT /projects/:id/hooks/:hook_id/url_variables/:key
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |:----------|:------------------|:---------|:------------|
-| `hook_id` | 整数           | はい      | プロジェクトのWebhookのID。 |
+| `hook_id` | 整数           | はい      | プロジェクトWebhookのID。 |
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `key`     | 文字列            | はい      | URL変数のキー。 |
 | `value`   | 文字列            | はい      | URL変数の値。 |
 
 成功すると、このエンドポイントはレスポンスコード`204 No Content`を返します。
 
-## URL変数を削除する {#delete-a-url-variable}
+## URL変数を削除 {#delete-a-url-variable}
 
 ```plaintext
 DELETE /projects/:id/hooks/:hook_id/url_variables/:key
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |:----------|:------------------|:---------|:------------|
-| `hook_id` | 整数           | はい      | プロジェクトのWebhookのID。 |
+| `hook_id` | 整数           | はい      | プロジェクトWebhookのID。 |
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `key`     | 文字列            | はい      | URL変数のキー。 |
 

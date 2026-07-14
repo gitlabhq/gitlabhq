@@ -38,6 +38,7 @@ export default {
       default: false,
     },
   },
+  emits: ['hidden', 'received-captcha-response'],
   data() {
     return {
       modalId: uniqueId('captcha-modal-'),
@@ -71,7 +72,7 @@ export default {
   methods: {
     emitReceivedCaptchaResponse(captchaResponse) {
       if (this.showModal) this.$refs.modal.hide();
-      this.$emit('receivedCaptchaResponse', captchaResponse);
+      this.$emit('received-captcha-response', captchaResponse);
     },
     emitNullReceivedCaptchaResponse() {
       this.emitReceivedCaptchaResponse(null);

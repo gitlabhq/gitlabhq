@@ -5,7 +5,7 @@ module Cells
     self.primary_key = :uuid
 
     scope :by_uuid, ->(uuid) { where(uuid: uuid) }
-    scope :updated_before, ->(time) { where(updated_at: ...time) }
+    scope :created_before, ->(time) { where(created_at: ...time) }
 
     def self.claim_service
       ::Gitlab::TopologyServiceClient::ClaimService.instance # rubocop:disable CodeReuse/ServiceClass -- this is a gRPC client

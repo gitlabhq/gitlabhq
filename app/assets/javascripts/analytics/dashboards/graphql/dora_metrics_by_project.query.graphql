@@ -1,0 +1,37 @@
+query doraMetricsByProjectQuery(
+  $fullPath: ID!
+  $startDate: Date!
+  $endDate: Date!
+  $interval: DoraMetricBucketingInterval!
+  $after: String
+) {
+  group(fullPath: $fullPath) {
+    id
+    projects(includeSubgroups: true) {
+      count
+    }
+    dora {
+      projects(after: $after, startDate: $startDate, endDate: $endDate, includeSubgroups: true) {
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+        nodes {
+          id
+          name
+          avatarUrl
+          webUrl
+          dora {
+            metrics(startDate: $startDate, endDate: $endDate, interval: $interval) {
+              date
+              deployment_frequency: deploymentFrequency
+              change_failure_rate: changeFailureRate
+              lead_time_for_changes: leadTimeForChanges
+              time_to_restore_service: timeToRestoreService
+            }
+          }
+        }
+      }
+    }
+  }
+}

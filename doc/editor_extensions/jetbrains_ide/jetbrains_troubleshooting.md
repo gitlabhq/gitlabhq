@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Editor Extensions
+stage: AI Clients
+group: Developer Clients
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Connect and use GitLab Duo in JetBrains IDEs.
 title: Troubleshooting JetBrains
@@ -97,6 +97,8 @@ To enable debug logs in JetBrains:
 1. Add this line: `com.gitlab.plugin`
 1. Select **OK** or **Save**.
 
+After you reproduce the problem, [collect the logs](#get-debug-logs).
+
 If you experience [certificate errors](#certificate-errors) or other connection errors, and
 use an HTTP proxy to connect to your GitLab instance, you must
 [configure the Language Server to use a proxy](../language_server/_index.md#configure-the-language-server-to-use-a-proxy)
@@ -117,7 +119,19 @@ To enable GitLab Language Server debug logs:
 
 ## Get debug logs
 
-The debug logs are available in the `idea.log` log file. To view this file, either:
+Prerequisite:
+
+- GitLab Duo plugin 3.27.0 or later.
+
+To collect debug logs and diagnostics together:
+
+1. Go to **Tools** > **GitLab** > **Export Diagnostics Bundle**.
+1. Run the `GitLab: Export Diagnostics Bundle` quick action.
+
+This saves a single zip file containing GitLab plugin diagnostics, extension logs, and GitLab Language Server logs to
+a location you choose.
+
+To instead access the raw `idea.log` log file, either:
 
 <!-- vale gitlab_base.SubstitutionWarning = NO -->
 
@@ -210,9 +224,8 @@ Gather this information from affected users, and provide it in your bug report:
 
 1. The error message shown to the user.
 1. Diagnostics and logs. Choose one of the following methods:
-   - Automatic (recommended):
-     - Run the `GitLab: Export Diagnostics Bundle` quick action. Available with GitLab Duo plugin 3.27.0 or later.
-     - This downloads a zip file containing IDE logs and diagnostics to a location you specify.
+   - Automatic (recommended): Export a [diagnostics bundle](#get-debug-logs), which packages the
+     logs and diagnostics into a single zip file.
    - Manual:
      - Enable and collect [debug logs](#enable-debug-mode)
      - Enable and collect [Language Server debug logs](#enable-gitlab-language-server-debug-logs)

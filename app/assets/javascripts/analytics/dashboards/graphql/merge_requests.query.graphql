@@ -1,0 +1,31 @@
+query mergeRequests(
+  $fullPath: ID!
+  $startDate: Time!
+  $endDate: Time!
+  $state: MergeRequestState!
+  $labelNames: [String!]
+) {
+  project(fullPath: $fullPath) {
+    id
+    mergeRequests(
+      mergedBefore: $endDate
+      mergedAfter: $startDate
+      state: $state
+      labels: $labelNames
+    ) {
+      merge_request_throughput: count
+    }
+  }
+  group(fullPath: $fullPath) {
+    id
+    mergeRequests(
+      mergedBefore: $endDate
+      mergedAfter: $startDate
+      state: $state
+      labels: $labelNames
+      includeSubgroups: true
+    ) {
+      merge_request_throughput: count
+    }
+  }
+}

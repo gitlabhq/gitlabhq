@@ -3,13 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Projects::RefsController, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, developers: user) }
 
   describe 'GET #switch' do
     before do
       sign_in(user)
-      project.add_developer(user)
     end
 
     context 'with normal parameters' do
@@ -149,7 +148,6 @@ RSpec.describe Projects::RefsController, feature_category: :source_code_manageme
     context 'when user authenticated' do
       before do
         sign_in(user)
-        project.add_developer(user)
       end
 
       it 'never throws MissingTemplate' do

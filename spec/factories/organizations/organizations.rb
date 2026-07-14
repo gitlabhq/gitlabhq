@@ -6,14 +6,27 @@ FactoryBot.define do
   factory :organization, class: 'Organizations::Organization' do
     sequence(:name) { |n| "Organization ##{n}" }
     path { name.parameterize }
+    uuid { Gitlab::Utils.uuid_v7 }
+
     visibility_level { Organizations::Organization::PUBLIC }
     state { :active }
+
+    transient do
+      # rubocop:disable Lint/EmptyBlock -- block is required by factorybot
+      owners {}
+      # rubocop:enable Lint/EmptyBlock
+    end
+
+    after(:create) do |organization, evaluator|
+      Array.wrap(evaluator.owners).each { |user| organization.add_owner(user) }
+    end
 
     # The default organization ID is for specs that specifically target the default organization.
     # Most specs should just create a normal organization.
     trait :default do
       id { Organizations::Organization::DEFAULT_ORGANIZATION_ID }
       name { 'Default' }
+      uuid { '00000000-0000-7000-8000-000000000001' }
       visibility_level { Organizations::Organization::PUBLIC }
 
       initialize_with do
@@ -44,6 +57,17 @@ FactoryBot.define do
 
     trait :confirmed do
       state { :confirmed }
+
+      after(:create) do |organization, evaluator|
+        confirming_user = Array.wrap(evaluator.owners).first
+        next unless confirming_user
+
+        organization.state_metadata.merge!(
+          'confirmed_at' => Time.current.as_json,
+          'confirmed_by_user_id' => confirming_user.id
+        )
+        organization.organization_detail.save!
+      end
     end
   end
 end

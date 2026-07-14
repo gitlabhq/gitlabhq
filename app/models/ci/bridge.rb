@@ -23,11 +23,6 @@ module Ci
 
     validates :ref, presence: true
 
-    # rubocop:disable Cop/ActiveRecordSerialize
-    serialize :options
-    serialize :yaml_variables, coder: ::Gitlab::Serializer::Ci::Variables
-    # rubocop:enable Cop/ActiveRecordSerialize
-
     state_machine :status do
       before_transition [:created, :manual, :waiting_for_resource] => :pending do |bridge|
         bridge.started_at = Time.current
@@ -90,7 +85,6 @@ module Ci
 
     def self.with_preloads
       preload(
-        :metadata,
         :job_definition,
         :error_job_messages,
         user: [:followers, :followees],
@@ -273,19 +267,8 @@ module Ci
 
     def variables
       strong_memoize(:variables) do
-        bridge_variables =
-          if ::Feature.disabled?(:exclude_protected_variables_from_multi_project_pipeline_triggers, project) ||
-              (expose_protected_project_variables? && expose_protected_group_variables?)
-            scoped_variables
-          else
-            unprotected_scoped_variables(
-              expose_project_variables: expose_protected_project_variables?,
-              expose_group_variables: expose_protected_group_variables?
-            )
-          end
-
         Gitlab::Ci::Variables::Collection.new
-         .concat(bridge_variables)
+         .concat(scoped_variables)
          .concat(pipeline.persisted_variables)
       end
     end
@@ -354,20 +337,6 @@ module Ci
       else
         false
       end
-    end
-
-    def expose_protected_group_variables?
-      return true if downstream_project.nil?
-      return true if project.group.present? && project.group == downstream_project.group
-
-      false
-    end
-
-    def expose_protected_project_variables?
-      return true if downstream_project.nil?
-      return true if project.id == downstream_project.id
-
-      false
     end
 
     def cross_project_params

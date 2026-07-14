@@ -4,6 +4,11 @@ require 'spec_helper'
 
 RSpec.describe 'layouts/_published_experiments', :experiment do
   before do
+    # Register the experiment classes so they resolve under strict registration.
+    %w[TestControl TestExcluded TestPublishedOnly TestCandidate TestVariant].each do |name|
+      stub_const("#{name}Experiment", Class.new(ApplicationExperiment) { control { nil } })
+    end
+
     # Stub each experiment to be enabled, otherwise tracking does not happen.
     stub_experiments(
       test_control: :control,

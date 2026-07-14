@@ -7,7 +7,7 @@ RSpec.describe API::Validations::Validators::BulkImports::SourceFullPath, featur
   using RSpec::Parameterized::TableSyntax
 
   subject do
-    described_class.new(['test'], {}, false, scope.new)
+    described_class.new(['test'], {}, false, scope.new, {})
   end
 
   let(:source_type_params) { { 'source_type' => source_type } }

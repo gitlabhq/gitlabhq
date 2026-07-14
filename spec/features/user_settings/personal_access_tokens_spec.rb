@@ -60,12 +60,12 @@ RSpec.describe 'User Settings > Personal access tokens', :with_current_organizat
         click_button 'Add new token'
         fill_in "Token name", with: 'My PAT'
 
-        click_on "Generate token"
-        wait_for_all_requests
+        find('button:not([aria-disabled="true"])', text: 'Generate token').click
 
-        expect(number_tokens_before).to equal(PersonalAccessToken.count)
         expect(page).to have_content(_("At least one scope is required."))
         expect(page).to have_content("No access tokens")
+
+        expect(number_tokens_before).to equal(PersonalAccessToken.count)
       end
     end
   end

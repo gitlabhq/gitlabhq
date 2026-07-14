@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_planning do
   include GraphqlHelpers
 
-  let_it_be(:current_user, freeze: false) { create(:user) }
-  let_it_be(:reporter, freeze: false) { create(:user) }
-
   let_it_be(:group) { create(:group) }
   let_it_be(:project, freeze: false) { create(:project, group: group) }
   let_it_be(:other_project) { create(:project, group: group) }
+
+  let_it_be(:current_user, freeze: false) { create(:user, developer_of: project) }
+  let_it_be(:reporter, freeze: false) { create(:user, reporter_of: project) }
 
   let_it_be(:started_milestone) { create(:milestone, project: project, title: "started milestone", start_date: 1.day.ago) }
   let_it_be(:assignee, freeze: false) { create(:user) }
@@ -28,9 +28,6 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
 
   context "with a project" do
     before_all do
-      project.add_developer(current_user)
-      project.add_reporter(reporter)
-
       create(:crm_settings, group: group, enabled: true)
 
       create(:label_link, label: label1, target: issue1)
@@ -286,7 +283,7 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
         end
 
         context "when user is not allowed to see confidential issues" do
-          before do
+          before_all do
             project.add_guest(current_user)
           end
 
@@ -603,13 +600,13 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
       end
 
       it 'finds a specific issue with iid', :request_store do
-        result = batch_sync(max_queries: 12) { resolve_issues(iid: issue1.iid).to_a }
+        result = batch_sync(max_queries: 15) { resolve_issues(iid: issue1.iid).to_a }
 
         expect(result).to contain_exactly(issue1)
       end
 
       it 'batches queries that only include IIDs', :request_store do
-        result = batch_sync(max_queries: 13) do
+        result = batch_sync(max_queries: 16) do
           [issue1, issue2]
             .map { |issue| resolve_issues(iid: issue.iid.to_s) }
             .flat_map(&:to_a)
@@ -619,7 +616,7 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
       end
 
       it 'finds a specific issue with iids', :request_store do
-        result = batch_sync(max_queries: 12) do
+        result = batch_sync(max_queries: 15) do
           resolve_issues(iids: [issue1.iid]).to_a
         end
 

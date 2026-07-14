@@ -1,3 +1,4 @@
 ---
 name: _update_assigned_work_item
 description: Grants the ability to update work items that are assigned to the user. Does not apply to incidents.
+conditionally_enables: update_work_item

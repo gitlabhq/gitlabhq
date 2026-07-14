@@ -23,6 +23,7 @@ import EmptyState from './empty_state.vue';
 import FeatureFlagsTable from './feature_flags_table.vue';
 
 export default {
+  name: 'FeatureFlags',
   components: {
     ConfigureFeatureFlagsModal,
     EmptyState,

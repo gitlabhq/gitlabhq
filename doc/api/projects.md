@@ -313,6 +313,7 @@ following response attributes:
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
 | `prevent_merge_without_jira_issue` | boolean | Indicates if merges require an associated Jira issue. |
+| `reviewer_assignment_strategy` | string | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. Premium and Ultimate only. |
 | `duo_remote_flows_enabled` | boolean | Indicates if GitLab Duo remote flows are enabled. |
 | `duo_foundational_flows_enabled` | boolean | Indicates if GitLab Duo foundational flows are enabled. |
 | `duo_sast_fp_detection_enabled` | boolean | Indicates if GitLab Duo SAST false positive detection is enabled. |
@@ -552,16 +553,12 @@ List projects and project attributes.
 
 {{< history >}}
 
-- `web_based_commit_signing_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194650) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `use_web_based_commit_signing_enabled`. Disabled by default.
+- `web_based_commit_signing_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194650) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `use_web_based_commit_signing_enabled`. Disabled by default.
+- `web_based_commit_signing_enabled` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542975) in GitLab 19.1. Feature flag `use_web_based_commit_signing_enabled` removed.
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of the `web_based_commit_signing_enabled` attribute is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 Lists all projects on the instance accessible to the authenticated user. Unauthenticated requests return only public projects with a limited subset of attributes.
 
@@ -750,6 +747,7 @@ following response attributes:
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
 | `prevent_merge_without_jira_issue` | boolean | Indicates if merges require an associated Jira issue. |
+| `reviewer_assignment_strategy` | string | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. Premium and Ultimate only. |
 | `duo_remote_flows_enabled` | boolean | Indicates if GitLab Duo remote flows are enabled. |
 | `duo_foundational_flows_enabled` | boolean | Indicates if GitLab Duo foundational flows are enabled. |
 | `duo_sast_fp_detection_enabled` | boolean | Indicates if GitLab Duo SAST false positive detection is enabled. |
@@ -1128,6 +1126,7 @@ following response attributes:
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
 | `prevent_merge_without_jira_issue` | boolean | Indicates if merges require an associated Jira issue. |
+| `reviewer_assignment_strategy` | string | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. Premium and Ultimate only. |
 | `duo_remote_flows_enabled` | boolean | Indicates if GitLab Duo remote flows are enabled. |
 | `duo_foundational_flows_enabled` | boolean | Indicates if GitLab Duo foundational flows are enabled. |
 | `duo_sast_fp_detection_enabled` | boolean | Indicates if GitLab Duo SAST false positive detection is enabled. |
@@ -1588,6 +1587,7 @@ following response attributes:
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
 | `prevent_merge_without_jira_issue` | boolean | Indicates if merges require an associated Jira issue. |
+| `reviewer_assignment_strategy` | string | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. Premium and Ultimate only. |
 | `duo_remote_flows_enabled` | boolean | Indicates if GitLab Duo remote flows are enabled. |
 | `duo_foundational_flows_enabled` | boolean | Indicates if GitLab Duo foundational flows are enabled. |
 | `duo_sast_fp_detection_enabled` | boolean | Indicates if GitLab Duo SAST false positive detection is enabled. |
@@ -2142,6 +2142,11 @@ scope enabled.
 POST /projects
 ```
 
+> [!note]
+> When you create a project with `package_registry_access_level` set to `disabled`, the package registry might remain enabled.
+> As a workaround, also set `packages_enabled` to `false` in the same request.
+> For more information, see [issue 572010](https://gitlab.com/gitlab-org/gitlab/-/work_items/572010).
+
 Supported general project attributes:
 
 | Attribute                                          | Type    | Required                       | Description |
@@ -2194,6 +2199,7 @@ Supported general project attributes:
 | `repository_storage`                               | string  | No                             | Which storage shard the repository is on. _(administrator only)_ |
 | `request_access_enabled`                           | boolean | No                             | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                | boolean | No                             | Automatically resolve merge request diffs discussions on lines changed with a push. |
+| `reviewer_assignment_strategy`                     | string  | No                             | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.1. Premium and Ultimate only. |
 | `shared_runners_enabled`                           | boolean | No                             | Enable instance runners for this project. |
 | `show_default_award_emojis`                        | boolean | No                             | Show default emoji reactions. |
 | `snippets_enabled`                                 | boolean | No                             | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
@@ -2374,8 +2380,9 @@ Supported general project attributes:
 | `default_branch`                                   | string            | No       | The [default branch](../user/project/repository/branches/default.md) name. |
 | `description`                                      | string            | No       | Short project description. |
 | `duo_remote_flows_enabled`                         | boolean           | No       | Determine whether or not [flows](../user/duo_agent_platform/flows/_index.md) can run in your project. |
-| `duo_sast_fp_detection_enabled` | boolean | No | Enable or disable SAST false positive detection. See [turn on SAST false positive detection](../user/application_security/vulnerabilities/false_positive_detection.md#turn-on-for-a-project). |
-| `duo_sast_vr_workflow_enabled` | boolean | No | Enable or disable SAST vulnerability resolution workflow. See [turn on SAST vulnerability resolution workflow](../user/application_security/vulnerabilities/agentic_vulnerability_resolution.md#turn-on-for-a-project). |
+| `duo_sast_fp_detection_enabled` | boolean | No | If `true`, turns on SAST false positive detection. Requires the Security Manager, Maintainer, or Owner role. See [turn on SAST false positive detection](../user/application_security/vulnerabilities/false_positive_detection.md#turn-on-for-a-project). |
+| `duo_secret_detection_fp_enabled` | boolean | No | If `true`, turns on secret detection false positive detection. Requires the Security Manager, Maintainer, or Owner role. See [turn on secret detection false positive detection](../user/application_security/vulnerabilities/secret_false_positive_detection.md#turn-on-for-a-project). |
+| `duo_sast_vr_workflow_enabled` | boolean | No | If `true`, turns on SAST vulnerability resolution workflow. Requires the Security Manager, Maintainer, or Owner role. See [turn on SAST vulnerability resolution workflow](../user/application_security/vulnerabilities/agentic_vulnerability_resolution.md#turn-on-for-a-project). |
 | `emails_disabled`                                  | boolean           | No       | _(Deprecated)_ Disable email notifications. Use `emails_enabled` instead |
 | `emails_enabled`                                   | boolean           | No       | Enable email notifications. |
 | `enforce_auth_checks_on_uploads`                   | boolean           | No       | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
@@ -2445,6 +2452,34 @@ curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
 
 To set the visibility level of individual project features,
 see [Project feature visibility level](#project-feature-visibility-level).
+
+#### Turn off Service Desk for multiple projects
+
+GitLab stores the Service Desk setting for each project. New projects have Service Desk
+active by default. To turn off Service Desk across multiple projects in a namespace, update
+each project with the [update a project](#update-a-project) endpoint.
+
+Prerequisites:
+
+- You must have the Maintainer or Owner role for each project you want to change.
+
+To turn off Service Desk for a project, set the `service_desk_enabled` attribute to `false`:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "service_desk_enabled=false" \
+  --url "https://gitlab.example.com/api/v4/projects/<project_id>"
+```
+
+To find the projects in a namespace, use the
+[list group projects](groups.md#list-projects) endpoint with `include_subgroups=true`,
+or the [list user projects](#list-all-personal-projects-for-a-user) endpoint for a
+personal namespace. Then run the previous request for each project you want to change.
+
+The `service_desk_enabled` field returned by the API is a computed value. It is `true`
+only when the project setting is on and incoming email is configured for the instance.
+If incoming email is not configured, the field reads `false` even when the project
+setting is on.
 
 ### Import members
 

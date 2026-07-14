@@ -95,6 +95,19 @@ export function encodeSaferUrl(potentiallyUnsafePath) {
 }
 
 /**
+ * Encodes the `#` character in a URL string that has otherwise already been
+ * encoded (e.g. by `encodeURI` or a js-routes glob/`*id` param). Those encoders
+ * leave `#` untouched, so an already-encoded path containing it (such as a Git
+ * ref named `C#tag`) would be misread as the start of a URL fragment.
+ *
+ * @param {String} url An already-encoded URL or path
+ * @returns {String}
+ */
+export function encodeUrlHash(url) {
+  return url.replace(/#/g, '%23');
+}
+
+/**
  * @param {string} path
  */
 export function cleanLeadingSeparator(path) {

@@ -11,7 +11,7 @@ export const updateActiveNavigation = (href) => {
     return;
   }
 
-  const activeClass = 'super-sidebar-nav-item-current';
+  const activeClass = 'selected';
   // Strip leading/trailing slashes so callers passing '/flows' don't produce '//flows'
   const normalizedHref = href.replace(/^\/+|\/+$/g, '');
   const escapedHref = CSS.escape(`/${normalizedHref}`);

@@ -14,7 +14,7 @@ title: GLQL display types
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a flag](../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a feature flag](../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/554870) in GitLab 18.3. Feature flag `glql_integration` removed.
 
 {{< /history >}}
@@ -39,7 +39,9 @@ The following display types are available only in analytics mode:
 
 | Display type                  | `display` value | Description |
 | ----------------------------- | --------------- | ----------- |
+| Single stat | `stat`          | A single aggregated metric, displayed as a large value. |
 | Column chart | `columnChart`   | A chart that compares metrics across the categories defined by your dimensions. |
+| Bar chart | `barChart` | A horizontal chart that compares metrics across the categories defined by your dimensions. |
 | Line chart     | `lineChart`     | A chart that plots one or more metrics as lines over a dimension, to show trends. |
 
 ## Table
@@ -106,6 +108,39 @@ query: type = Issue AND project = "gitlab-org/gitlab" AND assignee = currentUser
 ```
 ````
 
+## Single stat
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241395) in GitLab 19.2.
+
+{{< /history >}}
+
+A single stat visualizes one aggregated metric from [analytics mode](_index.md#analytics-mode) as a
+large value. Use a single stat to highlight a key number, such as a total or a rate.
+
+A single stat requires:
+
+- Analytics mode, set with `mode: analytics`.
+- Only one metric, set with the `metrics` parameter.
+- No `dimensions`.
+
+Values format automatically based on the metric. For example, counts use thousands separators and
+rates display as percentages.
+
+### Example
+
+To display the total number of Code Suggestions over the last 30 days as a single stat:
+
+````yaml
+```glql
+display: stat
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+metrics: totalCount
+```
+````
+
 ## Column chart
 
 {{< history >}}
@@ -126,9 +161,9 @@ A column chart requires:
 The number of dimensions and metrics determines how the chart renders:
 
 - One dimension with one or more metrics plots a column for each metric. To stack these columns,
-  set `stacked: true` under `displayConfig`.
+  set `stacked: true` under `displayConfig`. With a single metric, `stacked` has no visible effect.
 - Two dimensions with one metric plots a stacked column chart grouped by the second dimension.
-  With two dimensions, you can use only one metric.
+  With two dimensions, you can use only one metric, and GitLab ignores `displayConfig.stacked`.
 
 ### Example
 
@@ -149,6 +184,59 @@ To stack the metrics into a single column instead of plotting them side by side:
 ````yaml
 ```glql
 display: columnChart
+displayConfig:
+  stacked: true
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: language
+metrics: acceptedCount, rejectedCount
+```
+````
+
+## Bar chart
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21212) in GitLab 19.2.
+
+{{< /history >}}
+
+A bar chart visualizes aggregated data from [analytics mode](_index.md#analytics-mode) as
+horizontal bars. Use a bar chart to compare metrics across the categories defined by your
+dimensions, especially when category labels are long.
+
+A bar chart requires:
+
+- Analytics mode, set with `mode: analytics`.
+- One or two `dimensions` to group results by.
+- At least one metric to plot (using the `metrics` parameter).
+
+The number of dimensions and metrics determines how the chart renders:
+
+- One dimension with one or more metrics plots a bar for each metric. To stack these bars,
+  set `stacked: true` under `displayConfig`. With a single metric, `stacked` has no visible effect.
+- Two dimensions with one metric plots a stacked bar chart grouped by the second dimension.
+  With two dimensions, you can use only one metric, and GitLab ignores `displayConfig.stacked`.
+
+### Example
+
+To display Code Suggestions usage by language over the last 30 days as a bar chart:
+
+````yaml
+```glql
+display: barChart
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: language
+metrics: totalCount
+```
+````
+
+To stack the metrics into a single bar instead of plotting them side by side:
+
+````yaml
+```glql
+display: barChart
 displayConfig:
   stacked: true
 mode: analytics

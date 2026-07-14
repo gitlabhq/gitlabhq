@@ -34,29 +34,34 @@ RSpec.describe "User sorts work items", feature_category: :portfolio_management 
     visit(project_work_items_path(project))
     expect(page).to have_content(issue1.title)
 
+    click_button 'Display'
     pajamas_sort_by 'Milestone due date', from: 'Created date'
     expect(page).to have_content(issue1.title)
 
     visit(issues_dashboard_path(assignee_username: user.username))
     visit(project_work_items_path(project))
 
+    click_button 'Display'
     expect(page).to have_button 'Milestone'
 
     visit(group_work_items_path(group))
     expect(page).to have_content(issue1.title)
 
+    click_button 'Display'
     pajamas_sort_by 'Milestone due date', from: 'Created date'
     expect(page).to have_content(issue1.title)
 
     visit(issues_dashboard_path(assignee_username: user.username))
     visit(group_work_items_path(group))
 
+    click_button 'Display'
     expect(page).to have_button 'Milestone'
   end
 
   it 'sorts by popularity', :js do
     visit(project_work_items_path(project))
 
+    click_button 'Display'
     pajamas_sort_by 'Popularity', from: 'Created date'
 
     page.within(".issues-list") do

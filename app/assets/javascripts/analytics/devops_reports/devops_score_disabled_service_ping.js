@@ -11,14 +11,13 @@ export default () => {
 
   if (!emptyStateContainer) return false;
 
-  const { isAdmin, emptyStateSvgPath, enableServicePingPath } = emptyStateContainer.dataset;
+  const { isAdmin, enableServicePingPath } = emptyStateContainer.dataset;
 
   return new Vue({
     el: emptyStateContainer,
     name: 'ServicePingDisabledRoot',
     provide: {
       isAdmin: parseBoolean(isAdmin),
-      svgPath: emptyStateSvgPath,
       primaryButtonPath: enableServicePingPath,
     },
     render(h) {

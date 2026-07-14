@@ -15,7 +15,7 @@ title: Pipeline execution policies
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags/_index.md) named `pipeline_execution_policy_type`. Enabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `pipeline_execution_policy_type`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454278) in GitLab 17.3. Feature flag `pipeline_execution_policy_type` removed.
 
 {{< /history >}}
@@ -93,7 +93,7 @@ Note the following:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/589650) in GitLab 18.11 [with a flag](../../../administration/feature_flags/_index.md) named `security_policy_pipeline_check`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/589650) in GitLab 18.11 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policy_pipeline_check`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/592205) in GitLab 18.11.
 
 {{< /history >}}
@@ -438,9 +438,18 @@ The project becomes a security policy project, and the setting becomes available
      pipeline_config_strategy: inject_policy
      content:
        include:
-       - project: my-group/my-security-policy-project
-         file: policy-ci.yml
+        - project: my-group/my-security-policy-project
+          file: policy-ci.yml
    ```
+
+### Allow access to private or internal projects
+
+Your policy `include:` value might reference a CI/CD configuration file stored
+in a private or internal project other than the security policy project.
+In this case, you can allow access for users who trigger pipelines in projects
+with enforced pipeline execution policies.
+
+For configuration steps, see [Allow access to private or internal projects](scheduled_pipeline_execution_policies.md#option-2-allow-access-to-private-or-internal-projects).
 
 ## Pipeline configuration strategies
 
@@ -648,7 +657,7 @@ execute.
 {{< history >}}
 
 - Updated handling of workflow rules:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175088) in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `policies_always_override_project_ci`. Enabled by default.
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175088) in GitLab 17.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `policies_always_override_project_ci`. Enabled by default.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512877) in GitLab 17.10. Feature flag `policies_always_override_project_ci` removed.
 - Handling of `override_project_ci` [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/504434) to allow scan execution policies to run together with pipeline execution policies, in GitLab 17.9.
 

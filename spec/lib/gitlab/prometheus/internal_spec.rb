@@ -81,7 +81,7 @@ RSpec.describe Gitlab::Prometheus::Internal do
 
     context 'when prometheus setting is not present in gitlab.yml' do
       before do
-        allow(Gitlab.config).to receive(:prometheus).and_raise(GitlabSettings::MissingSetting)
+        allow(Gitlab.config).to receive(:prometheus).and_raise(Gitlab::Configs::MissingConfig)
       end
 
       it 'does not fail' do
@@ -97,7 +97,7 @@ RSpec.describe Gitlab::Prometheus::Internal do
 
     context 'when prometheus setting is not present in gitlab.yml' do
       before do
-        allow(Gitlab.config).to receive(:prometheus).and_raise(GitlabSettings::MissingSetting)
+        allow(Gitlab.config).to receive(:prometheus).and_raise(Gitlab::Configs::MissingConfig)
       end
 
       it 'does not fail' do

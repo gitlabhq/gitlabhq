@@ -18,6 +18,7 @@ export default {
       default: false,
     },
   },
+  emits: ['dismiss'],
   data() {
     return {
       isDismissed: this.dismissed,

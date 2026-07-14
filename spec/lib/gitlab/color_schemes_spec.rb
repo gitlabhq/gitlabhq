@@ -2,21 +2,23 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ColorSchemes do
+RSpec.describe Gitlab::ColorSchemes, feature_category: :user_profile do
   describe '.body_classes' do
-    it 'returns a space-separated list of class names' do
+    it 'returns a space-separated list of class names', :aggregate_failures do
       css = described_class.body_classes
 
       expect(css).to include('white')
       expect(css).to include(' solarized-light ')
       expect(css).to include(' monokai')
+      expect(css).to include(' dracula')
     end
   end
 
   describe '.by_id' do
-    it 'returns a scheme by its ID' do
+    it 'returns a scheme by its ID', :aggregate_failures do
       expect(described_class.by_id(1).name).to eq 'Light'
       expect(described_class.by_id(4).name).to eq 'Solarized Dark'
+      expect(described_class.by_id(7).name).to eq 'Dracula'
     end
   end
 

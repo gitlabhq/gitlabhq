@@ -35,4 +35,30 @@ var (
 		Name: "gitlab_workhorse_duo_workflow_session_errors_total",
 		Help: "Total number of Duo Workflow gRPC sessions that ended with a non-EOF error, by gRPC status code.",
 	}, []string{"grpc_code"})
+
+	// httpActionsTotal counts HTTP actions executed on behalf of the Duo
+	// Workflow Service, labeled by HTTP method and response status code.
+	// Status code is "0" when the request could not be completed at all
+	// (e.g. timeout, aborted, size limit exceeded).
+	httpActionsTotal = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "gitlab_workhorse_duo_workflow_http_actions_total",
+		Help: "Total number of HTTP actions executed on behalf of the Duo Workflow Service, by method and status code.",
+	}, []string{"method", "status_code"})
+
+	// httpActionDurationSeconds measures the latency of each HTTP action
+	// executed on behalf of the Duo Workflow Service, labeled by HTTP method.
+	httpActionDurationSeconds = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Name:    "gitlab_workhorse_duo_workflow_http_action_duration_seconds",
+		Help:    "Duration in seconds of HTTP actions executed on behalf of the Duo Workflow Service, by method.",
+		Buckets: prometheus.DefBuckets,
+	}, []string{"method"})
+
+	// httpActionErrorsTotal counts HTTP actions that could not be completed
+	// due to a transport-level error (timeout, aborted, size limit exceeded,
+	// or other), labeled by error type. HTTP 4xx/5xx responses are not errors
+	// at this layer and are counted only in httpActionsTotal.
+	httpActionErrorsTotal = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "gitlab_workhorse_duo_workflow_http_action_errors_total",
+		Help: "Total number of Duo Workflow HTTP actions that failed due to a transport-level error, by error type.",
+	}, []string{"error_type"})
 )

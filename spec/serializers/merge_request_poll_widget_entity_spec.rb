@@ -6,6 +6,11 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
   include ProjectForksHelper
   using RSpec::Parameterized::TableSyntax
 
+  # `freeze: false` required: examples mutate `project` and `resource`
+  # in-memory without persisting (e.g. `allow(resource).to receive(...)`,
+  # `resource.mark_as_*`, stubbed `project.project_setting`). `let_it_be_with_reload`
+  # would reload from the DB between examples and discard those in-memory
+  # changes, so these subjects must stay unfrozen (see gitlab-org/gitlab#602925).
   let_it_be(:project, freeze: false)  { create :project, :repository }
   let_it_be(:resource, freeze: false) { create(:merge_request, source_project: project, target_project: project) }
   let_it_be(:user)     { create(:user) }
@@ -77,7 +82,7 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
   end
 
   describe 'auto merge' do
-    before do
+    before_all do
       project.add_maintainer(user)
     end
 

@@ -20,6 +20,8 @@ For example;
 - The `name` subkeyword of the `image` keyword is not represented by an `Entry` class.
 - The `pull_policy` subkeyword of the `image` keyword is represented by the [`Entry::PullPolicy`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/config/entry/pull_policy.rb) class.
 
+Review the [YAML syntax change review guide](keyword_reviews.md) for important things to consider when working on the YAML syntax.
+
 ## Adding New Keywords
 
 > [!note]

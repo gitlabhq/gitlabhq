@@ -8,7 +8,9 @@ module Ci
         'required' => %w[pipeline_id status],
         'properties' => {
           'pipeline_id' => { 'type' => 'integer' },
-          'status' => { 'type' => 'string' }
+          'status' => { 'type' => 'string' },
+          'source' => { 'type' => 'string' },
+          'partition_id' => { 'type' => 'integer' }
         }
       }
     end

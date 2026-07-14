@@ -751,7 +751,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
       service = described_class.new(member, current_user: current_user)
       service.mark_as_recursive_call
 
-      expect(service.send(:recursive_call?)).to eq(true)
+      expect(service.send(:recursive_call?)).to be(true)
     end
   end
 

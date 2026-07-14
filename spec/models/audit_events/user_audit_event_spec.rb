@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe ::AuditEvents::UserAuditEvent, feature_category: :audit_events do
   it_behaves_like 'includes ::AuditEvents::CommonModel concern' do
-    let_it_be(:audit_event_symbol, freeze: false) { :audit_events_user_audit_event }
-    let_it_be(:audit_event_class, freeze: false) { described_class }
+    let_it_be(:audit_event_symbol) { :audit_events_user_audit_event }
+    let_it_be(:audit_event_class) { described_class }
   end
 
   describe 'validations' do
@@ -13,8 +13,8 @@ RSpec.describe ::AuditEvents::UserAuditEvent, feature_category: :audit_events do
   end
 
   describe '.by_user' do
-    let_it_be(:user_audit_event_1, freeze: false) { create(:audit_events_user_audit_event) }
-    let_it_be(:user_audit_event_2, freeze: false) { create(:audit_events_user_audit_event) }
+    let_it_be(:user_audit_event_1) { create(:audit_events_user_audit_event) }
+    let_it_be(:user_audit_event_2) { create(:audit_events_user_audit_event) }
 
     subject(:event) { described_class.by_user(user_audit_event_1.user_id) }
 
@@ -24,8 +24,8 @@ RSpec.describe ::AuditEvents::UserAuditEvent, feature_category: :audit_events do
   end
 
   describe '.by_username' do
-    let_it_be(:user_audit_event_1, freeze: false) { create(:audit_events_user_audit_event) }
-    let_it_be(:user_audit_event_2, freeze: false) { create(:audit_events_user_audit_event) }
+    let_it_be(:user_audit_event_1) { create(:audit_events_user_audit_event) }
+    let_it_be(:user_audit_event_2) { create(:audit_events_user_audit_event) }
 
     subject(:event) { described_class.by_username(user_audit_event_1.user.username) }
 

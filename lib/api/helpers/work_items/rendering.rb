@@ -5,7 +5,6 @@ module API
     module WorkItems
       module Rendering
         def render_work_items_collection_for(resource_parent)
-          check_work_item_rest_api_index_feature_flag!
           check_pagination_param!(params)
 
           authorize! :read_work_item, resource_parent
@@ -15,14 +14,24 @@ module API
           feature_keys = requested_feature_keys(params[:features])
           preloads = preload_associations_for(field_keys, feature_keys, resource_parent)
 
-          work_items_relation = build_work_items_relation(resource_parent, preloads: preloads)
+          work_items_relation = build_work_items_relation(
+            resource_parent, preloads: (preloads + Preloads::WORK_ITEM_POLICY_PRELOADS).uniq
+          )
 
           params[:pagination] = 'keyset' if keyset_supported_for_order?
 
-          work_items = paginate_with_strategies(work_items_relation) do |records|
+          # `without_count` is ignored by the keyset pager and only affects the offset fallback
+          # (e.g. sort=milestone), where it skips the expensive X-Total COUNT query and omits the
+          # X-Total/X-Total-Pages headers entirely. This mirrors GraphQL, which also never returns
+          # an exact total for this list. Next/prev page headers are still emitted for navigation.
+          work_items = paginate_with_strategies(
+            work_items_relation, paginator_params: { without_count: true }
+          ) do |records|
             preload_hierarchy_authorization(records, feature_keys)
             records
           end.to_a
+
+          work_items = filter_readable_work_items(work_items)
 
           present work_items,
             with: Entities::WorkItemBasic,
@@ -97,12 +106,7 @@ module API
             records
           end
 
-          records = Array(paginated)
-          preload_work_item_policies(records)
-
-          visible = DeclarativePolicy.user_scope do
-            records.select { |record| Ability.allowed?(current_user, :read_work_item, record) }
-          end
+          visible = filter_readable_work_items(Array(paginated))
 
           present visible,
             with: entity,
@@ -152,6 +156,14 @@ module API
 
         private
 
+        def filter_readable_work_items(work_items)
+          preload_work_item_policies(work_items)
+
+          DeclarativePolicy.user_scope do
+            work_items.select { |work_item| Ability.allowed?(current_user, :read_work_item, work_item) }
+          end
+        end
+
         def keyset_supported_for_order?
           ::WorkItem.supported_keyset_orderings[params[:order_by].to_sym]&.include?(params[:sort].to_sym)
         end
@@ -180,13 +192,6 @@ module API
           return if Feature.enabled?(:work_item_rest_api, current_user)
 
           forbidden!('work_item_rest_api feature flag is disabled for this user')
-        end
-
-        def check_work_item_rest_api_index_feature_flag!
-          return if Feature.enabled?(:work_item_rest_api_index, current_user) ||
-            Feature.enabled?(:work_item_rest_api, current_user)
-
-          forbidden!('work_item_rest_api_index and work_item_rest_api feature flags are both disabled for this user')
         end
 
         def filter_requested_keys(requested_param, available_keys)

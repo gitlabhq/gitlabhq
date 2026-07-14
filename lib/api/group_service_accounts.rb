@@ -31,7 +31,7 @@ module API
     resource 'groups/:id', requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource :service_accounts do
         desc 'Create a group service account' do
-          detail 'Creates a service account in the specified group'
+          detail 'Creates a service account in a specified group.'
           success Entities::ServiceAccount
           failure [
             { code: 400, message: '400 Bad request' },
@@ -67,7 +67,8 @@ module API
         end
 
         desc 'List all group service accounts' do
-          detail 'Lists all service accounts for a specified group'
+          detail 'Lists all service accounts in a specified group. Use the `page` and `per_page` pagination ' \
+            'parameters to filter the results.'
           success Entities::ServiceAccount
           failure [
             { code: 400, message: '400 Bad request' },
@@ -96,8 +97,8 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        desc 'Delete a group service account.' do
-          detail 'Deletes a service account from a specified group. Available only for group owners and admins.'
+        desc 'Delete a group service account' do
+          detail 'Deletes a specified group service account. Available only for group Owners and administrators.'
           success code: 204, message: 'Resource deleted'
           failure [
             { code: 400, message: '400 Bad request' },
@@ -194,9 +195,10 @@ module API
             present paginate_with_strategies(service_account_pats), with: Entities::PersonalAccessToken
           end
 
-          desc 'Create a personal access token for a group service account.' do
-            detail 'Creates a personal access token for a specified group service account.
-              Requires the group Owner role. This feature was introduced in GitLab 16.1.'
+          desc 'Create a personal access token for a group service account' do
+            detail 'Creates a personal access token for a specified group service account. ' \
+              'Available only for group Owners and administrators. ' \
+              'This feature was introduced in GitLab 16.1.'
             success Entities::PersonalAccessTokenWithToken
             tags %w[access_tokens service_accounts]
           end
@@ -254,8 +256,9 @@ module API
             end
           end
 
-          desc 'Rotate personal access token for group service account' do
-            detail 'Rotates a specified personal access token for a group service account.'
+          desc 'Rotate a personal access token for a group service account' do
+            detail 'Rotates a specified personal access token for a group service account. This revokes the ' \
+              'existing token and creates a token with the same name, description, and scopes.'
             success Entities::PersonalAccessTokenWithToken
             tags %w[access_tokens service_accounts]
           end

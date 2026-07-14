@@ -53,7 +53,7 @@ module VerifiesWithEmail
       # Only send email OTP when they're not locked and the feature is
       # still available.
       if !treat_as_locked?(user)
-        if user.email_otp_available?
+        if Gitlab::CurrentSettings.email_otp_enabled?
           send_otp_with_email(
             user,
             secondary_email: secondary_email,
@@ -234,10 +234,10 @@ module VerifiesWithEmail
   # Checks whether email-based OTP is required for the current sign-in
   # attempt.
   #
-  # Availability is gated by `User#email_otp_available?`.
+  # Availability is gated by the `email_otp_enabled` application setting.
   # Per-user enrollment is tracked by `email_otp_required_after`.
   def require_email_based_otp?(user)
-    return false unless user.email_otp_available?
+    return false unless Gitlab::CurrentSettings.email_otp_enabled?
 
     password_based_login? &&
       # Skip on first log in (which occurs for most during account
@@ -322,7 +322,7 @@ module VerifiesWithEmail
 
   def permitted_to_view_skip_verification_confirmation?
     current_user &&
-      current_user.email_otp_available? &&
+      Gitlab::CurrentSettings.email_otp_enabled? &&
       permitted_to_skip_email_otp_in_warning_period?(current_user) &&
       # User should not be able to visit users_skip_verification_confirmation_path after
       # finishing token verification OR after completing the skip verification workflow

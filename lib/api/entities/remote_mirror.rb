@@ -3,7 +3,7 @@
 module API
   module Entities
     class RemoteMirror < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 101486 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 101486 }
       expose :enabled, documentation: { type: 'Boolean', example: true }
       expose :safe_url, as: :url, documentation: { type: 'String', example: 'https://*****:*****@example.com/gitlab/example.git' }
       expose :update_status, documentation: { type: 'String', example: 'finished' }

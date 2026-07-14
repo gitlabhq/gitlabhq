@@ -33,27 +33,76 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       expect(json_response.keys).to include('result')
     end
 
-    it 'returns all expected tools' do
+    it 'returns tools' do
       post_list_tools
 
-      tools = json_response['result']['tools']
-      tool_names = tools.pluck('name')
+      expect(json_response['result']['tools']).to be_present
+    end
 
-      expect(tool_names).to include(
-        'get_pipeline_jobs',
-        'get_job_log',
-        'search',
-        'get_issue',
-        'create_issue',
-        'create_merge_request',
-        'get_merge_request',
-        'get_merge_request_commits',
-        'get_merge_request_diffs',
-        'get_merge_request_pipelines',
-        'get_mcp_server_version',
-        'create_workitem_note',
-        'get_workitem_notes'
-      )
+    it 'registers and surfaces every MCP tool service defined in the codebase', :eager_load, :aggregate_failures do
+      defined_tools = Mcp::Tools::Base::BaseService.descendants
+        .reject { |klass| klass.superclass == Mcp::Tools::Base::BaseService }
+
+      expect(defined_tools).not_to be_empty, 'No MCP tool services were discovered'
+
+      surfaced_tools = Mcp::Tools::Manager.new.list_tools.values.map(&:class)
+
+      unregistered = defined_tools - surfaced_tools
+
+      expect(unregistered).to be_empty,
+        "Tool services defined but not registered in Mcp::Tools::Manager: #{unregistered.map(&:name).join(', ')}"
+    end
+
+    it 'locks each tool to its publicly-contracted annotations', :aggregate_failures, unless: Gitlab.ee? do
+      post_list_tools
+
+      expected_annotations = {
+        # write, non-destructive
+        'create_issue' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        'create_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        'create_merge_request_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        'create_workitem_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        'link_work_items' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        # write, destructive
+        'manage_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
+        # read-only
+        'get_issue' => { 'readOnlyHint' => true },
+        'get_job_log' => { 'readOnlyHint' => true },
+        'get_mcp_server_version' => { 'readOnlyHint' => true },
+        'get_merge_request' => { 'readOnlyHint' => true },
+        'get_merge_request_commits' => { 'readOnlyHint' => true },
+        'get_merge_request_conflicts' => { 'readOnlyHint' => true },
+        'get_merge_request_diffs' => { 'readOnlyHint' => true },
+        'get_merge_request_notes' => { 'readOnlyHint' => true },
+        'get_merge_request_pipelines' => { 'readOnlyHint' => true },
+        'get_pipeline_jobs' => { 'readOnlyHint' => true },
+        'get_saved_view_work_items' => { 'readOnlyHint' => true },
+        'get_work_item_types' => { 'readOnlyHint' => true },
+        'get_workitem_notes' => { 'readOnlyHint' => true },
+        'search' => { 'readOnlyHint' => true },
+        'search_labels' => { 'readOnlyHint' => true }
+      }
+
+      actual_annotations = json_response['result']['tools'].to_h { |tool| [tool['name'], tool['annotations']] }
+
+      expect(actual_annotations.keys).to match_array(expected_annotations.keys)
+      expect(actual_annotations).to eq(expected_annotations)
+    end
+
+    it 'surfaces every MCP-enabled API endpoint as a tool', :aggregate_failures do
+      post_list_tools
+
+      api_tool_names = ::API::API.routes.filter_map do |route|
+        settings = route.app.route_setting(:mcp)
+        next if settings.blank? || settings[:aggregators].present?
+
+        settings[:tool_name].to_s
+      end.uniq
+
+      surfaced_names = json_response['result']['tools'].pluck('name')
+
+      expect(api_tool_names).not_to be_empty, 'No MCP-enabled API routes were discovered'
+      expect(surfaced_names).to include(*api_tool_names)
     end
 
     it 'validates all array parameters have proper JSON Schema structure with items property' do
@@ -77,6 +126,26 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
             "Tool '#{tool_name}' has array parameter '#{param_name}' with 'items' but missing 'type' in items. " \
               "Current schema: #{param_schema.inspect}"
         end
+      end
+    end
+
+    it 'exposes a well-formed JSON Schema envelope for every tool' do
+      post_list_tools
+
+      tools = json_response['result']['tools']
+      expect(tools).not_to be_empty, 'No tools returned'
+
+      tools.each do |tool|
+        name = tool['name']
+        schema = tool['inputSchema']
+
+        expect(schema['type']).to eq('object'),
+          "Tool '#{name}' inputSchema 'type' must be 'object': #{schema.inspect}"
+        expect(schema['properties']).to be_a(Hash),
+          "Tool '#{name}' inputSchema 'properties' must be an object: #{schema.inspect}"
+
+        expect(schema['required']).to be_an(Array) if schema.key?('required')
+        expect(schema['additionalProperties']).to be_in([true, false]) if schema.key?('additionalProperties')
       end
     end
 
@@ -198,313 +267,6 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         version_tool = tools.find { |tool| tool['name'] == 'get_mcp_server_version' }
 
         expect(version_tool).not_to have_key('icons')
-      end
-    end
-
-    it 'validates read-only tools have readOnlyHint annotation' do
-      post_list_tools
-
-      tools = json_response['result']['tools']
-
-      read_only_tools = %w[
-        get_mcp_server_version get_issue get_merge_request
-        get_merge_request_commits get_merge_request_diffs
-        get_merge_request_pipelines get_pipeline_jobs get_job_log
-        get_workitem_notes search search_labels
-      ]
-
-      read_only_tools.each do |tool_name|
-        tool = tools.find { |t| t['name'] == tool_name }
-        expect(tool).to be_present, "Expected #{tool_name} to be in tools list"
-        expect(tool['annotations']).to be_present, "Expected #{tool_name} to have annotations"
-        expect(tool['annotations']['readOnlyHint']).to(
-          be(true), "Expected #{tool_name} to have readOnlyHint annotation set to true"
-        )
-      end
-    end
-
-    it 'validates write tools have readOnlyHint: false and destructiveHint: false annotations' do
-      post_list_tools
-
-      tools = json_response['result']['tools']
-
-      write_tools = %w[create_issue create_merge_request create_workitem_note]
-
-      write_tools.each do |tool_name|
-        tool = tools.find { |t| t['name'] == tool_name }
-        expect(tool).to be_present, "Expected #{tool_name} to be in tools list"
-        expect(tool['annotations']).to be_present, "Expected #{tool_name} to have annotations"
-        expect(tool['annotations']['readOnlyHint']).to(
-          be(false), "Expected #{tool_name} to have readOnlyHint annotation set to false"
-        )
-        expect(tool['annotations']['destructiveHint']).to(
-          be(false), "Expected #{tool_name} to have destructiveHint annotation set to false"
-        )
-      end
-    end
-
-    context 'when running CE', unless: Gitlab.ee? do
-      before do
-        post_list_tools
-      end
-
-      it 'returns get_pipeline_jobs tool with correct structure including annotations' do
-        tools = json_response['result']['tools']
-        pipeline_jobs_tool = tools.find { |tool| tool['name'] == 'get_pipeline_jobs' }
-
-        expect(pipeline_jobs_tool).to include(
-          'name' => 'get_pipeline_jobs',
-          'description' => 'List all jobs by pipeline',
-          'inputSchema' => {
-            'type' => 'object',
-            'properties' => {
-              'id' => {
-                'type' => 'string',
-                'description' => 'The project ID or URL-encoded path'
-              },
-              'pipeline_id' => {
-                'type' => 'integer',
-                'description' => 'The pipeline ID'
-              },
-              'per_page' => {
-                'type' => 'integer',
-                'description' => 'Number of items per page'
-              },
-              'page' => {
-                'type' => 'integer',
-                'description' => 'Current page number'
-              }
-            },
-            'required' => %w[id pipeline_id],
-            'additionalProperties' => false
-          },
-          'annotations' => {
-            'readOnlyHint' => true
-          }
-        )
-      end
-
-      it 'returns get_issue tool with correct structure including annotations' do
-        tools = json_response['result']['tools']
-        get_issue_tool = tools.find { |tool| tool['name'] == 'get_issue' }
-
-        expect(get_issue_tool).to include(
-          'name' => 'get_issue',
-          'description' => 'Get a single project issue',
-          'inputSchema' => {
-            'type' => 'object',
-            'properties' => {
-              'id' => {
-                'type' => 'string',
-                'description' => 'The ID or URL-encoded path of the project'
-              },
-              'issue_iid' => {
-                'type' => 'integer',
-                'description' => 'The internal ID of a project issue'
-              }
-            },
-            'required' => %w[id issue_iid],
-            'additionalProperties' => false
-          },
-          'annotations' => {
-            'readOnlyHint' => true
-          }
-        )
-      end
-
-      it 'returns create_issue tool with correct structure including annotations' do
-        tools = json_response['result']['tools']
-        create_issue_tool = tools.find { |tool| tool['name'] == 'create_issue' }
-
-        expect(create_issue_tool).to include(
-          'name' => 'create_issue',
-          'description' => 'Create a new project issue',
-          'annotations' => {
-            'readOnlyHint' => false,
-            'destructiveHint' => false
-          }
-        )
-        expect(create_issue_tool['inputSchema']).to include(
-          'type' => 'object',
-          'required' => %w[id title],
-          'additionalProperties' => false
-        )
-        expect(create_issue_tool['inputSchema']['properties']).to include(
-          'id' => { 'type' => 'string', 'description' => 'The ID or URL-encoded path of the project' },
-          'title' => { 'type' => 'string', 'description' => 'The title of an issue' }
-        )
-        properties = create_issue_tool['inputSchema']['properties']
-        expect(properties['milestone_id']).to include(
-          'type' => 'integer',
-          'description' => 'The ID of a milestone to assign issue'
-        )
-        expect(properties['milestone']).to include(
-          'type' => 'string',
-          'description' => 'The title of a project or ancestor-group milestone to assign the issue to. ' \
-            'Mutually exclusive with `milestone_id`.'
-        )
-      end
-
-      it 'returns create_merge_request tool with correct structure including annotations' do
-        tools = json_response['result']['tools']
-        create_mr_tool = tools.find { |tool| tool['name'] == 'create_merge_request' }
-
-        expect(create_mr_tool).to include(
-          'name' => 'create_merge_request',
-          'description' => 'Create merge request',
-          'annotations' => {
-            'readOnlyHint' => false,
-            'destructiveHint' => false
-          }
-        )
-        expect(create_mr_tool['inputSchema']).to include(
-          'type' => 'object',
-          'required' => %w[id title source_branch target_branch],
-          'additionalProperties' => false
-        )
-        expect(create_mr_tool['inputSchema']['properties']).to include(
-          'id' => { 'type' => 'string', 'description' => 'The ID or URL-encoded path of the project.' },
-          'title' => { 'type' => 'string', 'description' => 'The title of the merge request.' },
-          'source_branch' => { 'type' => 'string', 'description' => 'The source branch.' },
-          'target_branch' => { 'type' => 'string', 'description' => 'The target branch.' }
-        )
-        properties = create_mr_tool['inputSchema']['properties']
-        expect(properties['assignee_ids']).to include(
-          'type' => 'array',
-          'description' => 'The IDs of the users to assign the merge request to, as a comma-separated list. ' \
-            'Set to 0 or provide an empty value to unassign all assignees.'
-        )
-        expect(properties['assignee_ids']['items']).to include('type' => 'integer')
-        expect(properties['reviewer_ids']).to include(
-          'type' => 'array',
-          'description' => 'The IDs of the users to review the merge request, as a comma-separated list. ' \
-            'Set to 0 or provide an empty value to unassign all reviewers.'
-        )
-        expect(properties['reviewer_ids']['items']).to include('type' => 'integer')
-        expect(properties['description']).to include(
-          'type' => 'string',
-          'description' => 'Description of the merge request. Limited to 1,048,576 characters.'
-        )
-        expect(properties['labels']).to include({
-          'description' => 'Comma-separated label names for a merge request. ' \
-            'Set to an empty string to unassign all labels.',
-          'type' => 'string'
-        })
-        expect(properties['milestone_id']).to include(
-          'type' => 'integer',
-          'description' => 'The global ID of a milestone to assign the merge request to.'
-        )
-        expect(properties['milestone']).to include(
-          'type' => 'string',
-          'description' => 'The title of a project or ancestor-group milestone to assign the merge request to. ' \
-            'Mutually exclusive with `milestone_id`.'
-        )
-      end
-
-      it 'returns get_merge_request tool with correct structure' do
-        tools = json_response['result']['tools']
-        get_merge_request_tool = tools.find { |tool| tool['name'] == 'get_merge_request' }
-
-        expect(get_merge_request_tool).to include(
-          'name' => 'get_merge_request',
-          'description' => 'Get single merge request',
-          'inputSchema' => {
-            'type' => 'object',
-            'properties' => {
-              'id' => {
-                'type' => 'string',
-                'description' => 'The ID or URL-encoded path of the project.'
-              },
-              'merge_request_iid' => {
-                'type' => 'integer',
-                'description' => 'The internal ID of the merge request.'
-              }
-            },
-            'required' => %w[id merge_request_iid],
-            'additionalProperties' => false
-          }
-        )
-      end
-
-      it 'returns get_merge_request_commits tool with correct structure' do
-        tools = json_response['result']['tools']
-        get_mr_commits_tool = tools.find { |tool| tool['name'] == 'get_merge_request_commits' }
-
-        expect(get_mr_commits_tool).to include(
-          'name' => 'get_merge_request_commits',
-          'description' => 'Get single merge request commits'
-        )
-        expect(get_mr_commits_tool['inputSchema']).to include(
-          'type' => 'object',
-          'required' => %w[id merge_request_iid],
-          'additionalProperties' => false
-        )
-        expect(get_mr_commits_tool['inputSchema']['properties']).to include(
-          'id' => { 'type' => 'string', 'description' => 'The ID or URL-encoded path of the project.' },
-          'merge_request_iid' => { 'type' => 'integer', 'description' => 'The internal ID of the merge request.' }
-        )
-      end
-
-      it 'returns get_merge_request_diffs tool with correct structure' do
-        tools = json_response['result']['tools']
-        get_mr_diffs_tool = tools.find { |tool| tool['name'] == 'get_merge_request_diffs' }
-
-        expect(get_mr_diffs_tool).to include(
-          'name' => 'get_merge_request_diffs',
-          'description' => 'Get the merge request diffs'
-        )
-        expect(get_mr_diffs_tool['inputSchema']).to include(
-          'type' => 'object',
-          'required' => %w[id merge_request_iid],
-          'additionalProperties' => false
-        )
-        expect(get_mr_diffs_tool['inputSchema']['properties']).to include(
-          'id' => { 'type' => 'string', 'description' => 'The ID or URL-encoded path of the project.' },
-          'merge_request_iid' => { 'type' => 'integer', 'description' => 'The internal ID of the merge request.' }
-        )
-      end
-
-      it 'returns get_merge_request_pipelines tool with correct structure' do
-        tools = json_response['result']['tools']
-        get_mr_pipelines_tool = tools.find { |tool| tool['name'] == 'get_merge_request_pipelines' }
-
-        expect(get_mr_pipelines_tool).to include(
-          'name' => 'get_merge_request_pipelines',
-          'description' => 'Get single merge request pipelines',
-          'inputSchema' => {
-            'type' => 'object',
-            'properties' => {
-              'id' => {
-                'type' => 'string',
-                'description' => 'The ID or URL-encoded path of the project.'
-              },
-              'merge_request_iid' => {
-                'type' => 'integer',
-                'description' => 'The internal ID of the merge request.'
-              }
-            },
-            'required' => %w[id merge_request_iid],
-            'additionalProperties' => false
-          }
-        )
-      end
-
-      it 'returns get_mcp_server_version tool with correct structure including annotations' do
-        tools = json_response['result']['tools']
-        version_tool = tools.find { |tool| tool['name'] == 'get_mcp_server_version' }
-
-        expect(version_tool).to include(
-          'name' => 'get_mcp_server_version',
-          'description' => 'Get the current version of MCP server.',
-          'inputSchema' => {
-            'type' => 'object',
-            'properties' => {},
-            'required' => []
-          },
-          'annotations' => {
-            'readOnlyHint' => true
-          }
-        )
       end
     end
   end

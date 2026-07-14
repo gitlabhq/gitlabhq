@@ -54,6 +54,7 @@ const ciCatalogHelpPath = helpPagePath('ci/components/_index', {
 const releasesHelpPath = helpPagePath('user/project/releases/release_cicd_examples');
 
 export default {
+  name: 'CiCatalogSettings',
   components: {
     GlLink,
     GlLoadingIcon,

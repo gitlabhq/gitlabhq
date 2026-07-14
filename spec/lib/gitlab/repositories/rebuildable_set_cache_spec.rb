@@ -465,6 +465,110 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
       end
     end
 
+    context 'when the cache was already rebuilt while waiting for the lock' do
+      let(:cached_members) { %w[main develop] }
+
+      before do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.sadd(cache.cache_key(:branch_names), cached_members)
+          redis.set(cache.trust_key(:branch_names), '1')
+        end
+      end
+
+      it 'skips the rebuild and logs the reason', :aggregate_failures do
+        allow(Gitlab::AppLogger).to receive(:info)
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(
+            message: 'rebuild_skipped',
+            rebuildable_cache: hash_including(
+              event: :rebuild_skipped,
+              reason: 'cache already rebuilt'
+            )
+          )
+        )
+        expect(Gitlab::AppLogger).not_to receive(:info).with(
+          hash_including(message: 'rebuild_started')
+        )
+        expect(Gitlab::AppLogger).not_to receive(:info).with(
+          hash_including(message: 'rebuild_completed')
+        )
+
+        cache.write(:branch_names, %w[overwrite-1 overwrite-2])
+      end
+
+      it 'returns the already-cached members instead of the new value' do
+        result = cache.write(:branch_names, %w[overwrite-1 overwrite-2])
+
+        expect(result).to contain_exactly('main', 'develop')
+      end
+
+      it 'does not overwrite the cache with the new value' do
+        cache.write(:branch_names, %w[overwrite-1 overwrite-2])
+
+        expect(cache.read(:branch_names)).to contain_exactly('main', 'develop')
+      end
+
+      it 'releases the rebuild lock afterwards' do
+        cache.write(:branch_names, %w[overwrite-1 overwrite-2])
+
+        expect(cache.rebuilding?(:branch_names)).to be false
+      end
+    end
+
+    context 'when the post-lock recheck raises' do
+      it 'releases the rebuild lock', :aggregate_failures do
+        allow(cache).to receive(:read_with_trust).and_raise(Redis::BaseError)
+
+        expect { cache.write(:branch_names, %w[a b]) }.to raise_error(Redis::BaseError)
+
+        expect(cache.rebuilding?(:branch_names)).to be false
+      end
+    end
+
+    context 'when the cache is absent or untrusted' do
+      it 'proceeds to rebuild and marks the cache trusted', :aggregate_failures do
+        expect(cache.trusted?(:branch_names)).to be false
+
+        result = cache.write(:branch_names, %w[main feature])
+
+        expect(result).to contain_exactly('main', 'feature')
+        expect(cache.read(:branch_names)).to contain_exactly('main', 'feature')
+        expect(cache.trusted?(:branch_names)).to be true
+      end
+    end
+
+    context 'when the set exists but is not trusted' do
+      before do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.sadd(cache.cache_key(:branch_names), %w[old-1 old-2])
+        end
+      end
+
+      it 'rebuilds and overwrites the stale set', :aggregate_failures do
+        result = cache.write(:branch_names, %w[new-1 new-2])
+
+        expect(result).to contain_exactly('new-1', 'new-2')
+        expect(cache.read(:branch_names)).to contain_exactly('new-1', 'new-2')
+        expect(cache.trusted?(:branch_names)).to be true
+      end
+    end
+
+    context 'when the trust flag is set but the set was evicted' do
+      before do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.trust_key(:branch_names), '1')
+        end
+      end
+
+      it 'rebuilds rather than returning the missing set', :aggregate_failures do
+        result = cache.write(:branch_names, %w[new-1 new-2])
+
+        expect(result).to contain_exactly('new-1', 'new-2')
+        expect(cache.read(:branch_names)).to contain_exactly('new-1', 'new-2')
+        expect(cache.trusted?(:branch_names)).to be true
+      end
+    end
+
     context 'when another rebuild is in progress' do
       before do
         Gitlab::Redis::RepositoryCache.with do |redis|
@@ -717,6 +821,81 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
         expect { write_cache }.to raise_error(::Redis::ConnectionError)
 
         expect(cache.trusted?(:branch_names)).to be false
+      end
+    end
+
+    context 'when a concurrent expire evicts the set before trust is granted' do
+      # grant_trust_if_present re-checks set existence inside an atomic Lua eval,
+      # so injecting the racing UNLINK here reproduces the production incident:
+      # the freshly-populated set is gone the instant before trust is decided.
+      before do
+        allow(cache).to receive(:grant_trust_if_present).and_wrap_original do |original, *args|
+          Gitlab::Redis::RepositoryCache.with do |redis|
+            redis.unlink(cache.cache_key(:branch_names))
+          end
+
+          original.call(*args)
+        end
+      end
+
+      it 'refuses trust and logs that the set was evicted', :aggregate_failures do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(
+            message: 'rebuild_trust_skipped',
+            rebuildable_cache: hash_including(
+              event: :rebuild_trust_skipped,
+              cache_key: :branch_names,
+              reason: 'set evicted before trust'
+            )
+          )
+        )
+        allow(Gitlab::AppLogger).to receive(:info)
+
+        cache.write(:branch_names, %w[main develop])
+
+        expect(cache.trusted?(:branch_names)).to be false
+      end
+
+      it 'lets a subsequent fetch rebuild instead of serving an empty set', :aggregate_failures do
+        cache.write(:branch_names, %w[main develop])
+
+        block_called = false
+        result = cache.fetch(:branch_names) do
+          block_called = true
+          %w[main develop]
+        end
+
+        expect(block_called).to be(true)
+        expect(result).to contain_exactly('main', 'develop')
+      end
+    end
+
+    context 'when the rebuild populates a non-empty set' do
+      it 'grants trust through a same-slot script over the set and trust keys' do
+        full_key = cache.cache_key(:branch_names)
+        trust_key = cache.trust_key(:branch_names)
+
+        eval_keys = nil
+        eval_argv = nil
+        allow(Gitlab::Redis::RepositoryCache).to receive(:with).and_wrap_original do |original, &block|
+          original.call do |redis|
+            allow(redis).to receive(:eval).and_wrap_original do |eval_method, script, keys:, argv:|
+              if script == described_class::TRUST_IF_EXISTS_SCRIPT
+                eval_keys = keys
+                eval_argv = argv
+              end
+
+              eval_method.call(script, keys: keys, argv: argv)
+            end
+
+            block.call(redis)
+          end
+        end
+
+        cache.write(:branch_names, %w[main develop])
+
+        expect(eval_keys).to eq([full_key, trust_key])
+        expect(eval_argv).to eq([described_class::TRUST_TTL.to_i, described_class::FLAG_VALUE])
       end
     end
   end
@@ -1164,6 +1343,240 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
 
       expect(cache.exist?(:branch_names)).to be false
       expect(cache.exist?(:tag_names)).to be false
+    end
+
+    it 'returns the number of set keys deleted', :aggregate_failures do
+      expect(cache.expire(:branch_names)).to eq(1)
+      expect(cache.expire(:branch_names)).to eq(0)
+    end
+
+    it 'sums the deleted count across multiple keys' do
+      expect(cache.expire(:branch_names, :tag_names)).to eq(2)
+    end
+
+    context 'when expiring a key that is not backed by this set cache' do
+      it 'does not log cache_marked_untrusted or cache_expired' do
+        expect(Gitlab::AppLogger).not_to receive(:info).with(
+          hash_including(rebuildable_cache: hash_including(cache_key: :branch_count))
+        )
+
+        cache.expire(:branch_count)
+      end
+
+      it 'logs only for the set-backed key in a mixed batch and still returns the deleted count', :aggregate_failures do
+        allow(Gitlab::AppLogger).to receive(:info)
+        expect(Gitlab::AppLogger).not_to receive(:info).with(
+          hash_including(rebuildable_cache: hash_including(cache_key: :branch_count))
+        )
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(rebuildable_cache: hash_including(event: :cache_expired, cache_key: :branch_names))
+        )
+
+        expect(cache.expire(:branch_names, :branch_count)).to eq(1)
+      end
+
+      it 'expires non-set-backed keys via the parent without touching a trust key', :aggregate_failures do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.sadd(cache.cache_key(:merged_branch_names), %w[a b])
+        end
+
+        expect(cache.expire(:merged_branch_names)).to eq(1)
+        expect(cache.exist?(:merged_branch_names)).to be(false)
+      end
+    end
+
+    # Regression for the production incident where branch_names was served as a
+    # trusted cache_hit with 0 members.
+    #
+    # #expire is inherited from Gitlab::SetCache and only UNLINKs the set key.
+    # It has no knowledge of the RebuildableSetCache trust flag. Legacy callers
+    # such as Repository#expire_branches_cache (invoked by after_create_branch /
+    # before_remove_branch, which are NOT gated by the feature flag) therefore
+    # delete the populated set while leaving the trust flag dangling. The next
+    # #fetch then sees an empty set that is still trusted and serves it as a
+    # cache_hit with 0 members instead of rebuilding.
+    context 'when expiring a trusted key (regression)' do
+      it 'clears the set and trust flag but preserves the rebuild lock and pending queue', :aggregate_failures do
+        cache.write(:branch_names, %w[main develop feature])
+
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.rebuild_flag_key(:branch_names), '1')
+          redis.lpush(cache.pending_key(:branch_names), '+feature')
+        end
+
+        expect(cache.exist?(:branch_names)).to be(true)
+        expect(cache.trusted?(:branch_names)).to be(true)
+
+        cache.expire(:branch_names)
+
+        rebuild_flag_exists, pending_events = Gitlab::Redis::RepositoryCache.with do |redis|
+          [
+            redis.exists?(cache.rebuild_flag_key(:branch_names)),
+            redis.lrange(cache.pending_key(:branch_names), 0, -1)
+          ]
+        end
+
+        # The set key is gone, and the trust flag must not outlive the set it
+        # vouches for. Otherwise the next #fetch serves a trusted-but-empty set.
+        expect(cache.exist?(:branch_names)).to be(false)
+        expect(cache.trusted?(:branch_names)).to be(false)
+        # The rebuild lock and pending events belong to a concurrent #write and
+        # must survive an expire.
+        expect(rebuild_flag_exists).to be(true)
+        expect(pending_events).to eq(['+feature'])
+      end
+
+      it 'causes a subsequent fetch to rebuild instead of serving an empty set', :aggregate_failures do
+        cache.write(:branch_names, %w[main develop feature])
+        cache.expire(:branch_names)
+
+        block_called = false
+        result = cache.fetch(:branch_names) do
+          block_called = true
+          %w[main develop feature]
+        end
+
+        # Because trust was cleared by #expire, fetch misses and rebuilds from
+        # the canonical source rather than serving the empty stranded set.
+        expect(block_called).to be(true)
+        expect(result).to contain_exactly('main', 'develop', 'feature')
+      end
+
+      it 'logs a cache_expired event for the affected key' do
+        cache.write(:branch_names, %w[main develop feature])
+
+        allow(Gitlab::AppLogger).to receive(:info)
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(
+            message: 'cache_expired',
+            rebuildable_cache: hash_including(
+              event: :cache_expired,
+              cache_key: :branch_names
+            )
+          )
+        )
+
+        cache.expire(:branch_names)
+      end
+
+      it 'logs both cache_marked_untrusted and cache_expired for the affected key', :aggregate_failures do
+        cache.write(:branch_names, %w[main develop feature])
+
+        allow(Gitlab::AppLogger).to receive(:info)
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(
+            message: 'cache_marked_untrusted',
+            rebuildable_cache: hash_including(
+              event: :cache_marked_untrusted,
+              cache_key: :branch_names
+            )
+          )
+        )
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(
+            message: 'cache_expired',
+            rebuildable_cache: hash_including(
+              event: :cache_expired,
+              cache_key: :branch_names
+            )
+          )
+        )
+
+        cache.expire(:branch_names)
+      end
+    end
+
+    context 'when expiring with no keys' do
+      it 'returns 0' do
+        expect(cache.expire).to eq(0)
+      end
+    end
+
+    # Regression for the production incident: a concurrent #expire racing the
+    # rebuild's trust grant left a trusted-but-empty cache_hit. Drives the real
+    # #expire and grants trust in the gap between its trust-key DEL and the set
+    # UNLINK. A non-atomic #expire strands a trusted-but-empty cache; the atomic
+    # EXPIRE_KEY_SCRIPT has no such gap, so the hook on the standalone DEL never
+    # fires and the cache ends untrusted-and-empty (safe).
+    context 'when a concurrent rebuild grants trust during the expire (residual race regression)' do
+      before do
+        granting = false
+
+        grant_during_expire = -> do
+          next if granting
+
+          granting = true
+          Gitlab::Redis::RepositoryCache.with do |redis|
+            redis.eval(
+              described_class::TRUST_IF_EXISTS_SCRIPT,
+              keys: [cache.cache_key(:branch_names), cache.trust_key(:branch_names)],
+              argv: [described_class::TRUST_TTL.to_i, described_class::FLAG_VALUE]
+            )
+          end
+          granting = false
+        end
+
+        allow(Gitlab::Redis::RepositoryCache).to receive(:with).and_wrap_original do |original, &block|
+          original.call do |redis|
+            allow(redis).to receive(:del).and_wrap_original do |del_method, *keys|
+              result = del_method.call(*keys)
+              grant_during_expire.call if keys.include?(cache.trust_key(:branch_names))
+              result
+            end
+
+            block.call(redis)
+          end
+        end
+      end
+
+      it 'does not leave the cache trusted-but-empty after the rebuild', :aggregate_failures do
+        cache.write(:branch_names, %w[main develop feature])
+        cache.expire(:branch_names)
+
+        trusted = cache.trusted?(:branch_names)
+        members = cache.read(:branch_names)
+
+        expect(trusted && members.empty?).to be(false)
+      end
+
+      it 'causes a subsequent fetch to rebuild instead of serving an empty set', :aggregate_failures do
+        cache.write(:branch_names, %w[main develop feature])
+        cache.expire(:branch_names)
+
+        block_called = false
+        result = cache.fetch(:branch_names) do
+          block_called = true
+          %w[main develop feature]
+        end
+
+        expect(block_called).to be(true)
+        expect(result).to contain_exactly('main', 'develop', 'feature')
+      end
+    end
+  end
+
+  describe '#initialize' do
+    context 'when the repository has no project' do
+      let(:repository) { instance_double(Repository, full_path: 'group/wiki', project: nil) }
+
+      it 'raises an ArgumentError' do
+        expect { described_class.new(repository) }
+          .to raise_error(ArgumentError, described_class::MISSING_PROJECT_ERROR)
+      end
+    end
+
+    it 'builds a namespace with the {project.id} hash tag' do
+      expect(cache.namespace).to eq("#{repository.full_path}:{#{project.id}}")
+    end
+
+    it 'co-locates the set and trust keys on the same Redis Cluster slot' do
+      hash_tag = ->(key) { key[/\{(.*?)\}/, 1] || key }
+      slot = ->(key) { ::RedisClient::Cluster::KeySlotConverter.convert(hash_tag.call(key)) }
+
+      set_key = cache.cache_key(:branch_names)
+      trust_key = cache.trust_key(:branch_names)
+
+      expect(slot.call(set_key)).to eq(slot.call(trust_key))
     end
   end
 

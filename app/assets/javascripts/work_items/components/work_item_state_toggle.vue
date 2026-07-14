@@ -30,6 +30,7 @@ import workItemLinkedItemsQuery from '../graphql/work_item_linked_items.query.gr
 import workItemOpenChildCountQuery from '../graphql/open_child_count.query.graphql';
 
 export default {
+  name: 'WorkItemStateToggle',
   components: {
     GlIcon,
     GlButton,
@@ -84,6 +85,7 @@ export default {
       default: null,
     },
   },
+  emits: ['error', 'submit-comment', 'workItemStateUpdated'],
   data() {
     return {
       updateInProgress: false,

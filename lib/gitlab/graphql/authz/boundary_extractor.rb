@@ -3,162 +3,102 @@
 module Gitlab
   module Graphql
     module Authz
-      # Extracts authorization boundary (Project/Group) from GraphQL field resolution
-      #
-      # Usage in authorization directives:
-      # - `boundary_argument: 'arg_name'` - Extracts boundary from argument (GlobalID or full_path string)
-      # - `boundary: 'method_name'` - Calls method on resolved object, or falls back to :id argument for query fields
-      # - `boundary: 'user'` or `boundary: 'instance'` - For standalone resources without project/group boundaries
+      # Extracts boundary objects from `authorize_granular_token` directives.
+      # Directives with `boundary_argument` read from the field or mutation
+      # arguments; all other directives read from the resolved object.
       class BoundaryExtractor
-        STANDALONE_BOUNDARIES = %w[user instance].freeze
-        VALID_BOUNDARY_ACCESSOR_METHODS = %w[project group itself owner].freeze
+        STANDALONE_BOUNDARIES = [:user, :instance].freeze
+        ITSELF = :itself
 
-        def initialize(object:, arguments:, context:, directive:)
+        def initialize(directives, object:, arguments:)
+          @directives = directives
           @object = object
           @arguments = arguments
-          @context = context
-          @directive = directive
-          @boundary_accessor = directive.arguments[:boundary]
         end
 
+        # Concrete (project/group) boundaries take precedence over
+        # standalone (:user/:instance) boundaries.
         def extract
-          resource = standalone_boundary? ? @boundary_accessor.to_sym : extract_resource
-          return if resource.nil?
+          concrete = []
+          standalone = []
 
-          ::Authz::Boundary.for(resource)
+          directives.each do |directive|
+            if standalone?(directive)
+              standalone << boundary_type(directive)
+            else
+              resource = concrete_resource(directive)
+              concrete << resource if resource && matches_boundary_type?(directive, resource)
+            end
+          end
+
+          return concrete.uniq if concrete.any?
+
+          standalone.uniq
         end
 
         private
 
-        def standalone_boundary?
-          STANDALONE_BOUNDARIES.include?(@boundary_accessor&.to_s)
-        end
+        attr_reader :directives
 
-        def extract_resource
-          # Extract from argument (for mutations/query fields)
-          boundary_arg = @directive.arguments[:boundary_argument]
-          return extract_from_argument(boundary_arg) if boundary_arg
-
-          # Method-based extraction: may fall back to :id argument for unresolved query fields.
-          if @boundary_accessor
-            return extract_from_id_argument if should_use_id_fallback?
-
-            return extract_from_method
+        def concrete_resource(directive)
+          if directive.arguments[:boundary_argument]
+            resource_from_arguments(directive)
+          else
+            resource_from_object(directive)
           end
-
-          nil
         end
 
-        def extract_from_argument(arg_name)
-          args = @arguments[:input] || @arguments
-          arg_value = args[arg_name.to_sym]
+        def resource_from_arguments(directive)
+          return unless @arguments
 
-          resolve_value(arg_value)
+          record = locate(@arguments[directive.arguments[:boundary_argument].to_sym])
+          return unless record
+          return record if record.is_a?(::Project) || record.is_a?(::Group)
+
+          method_name = boundary_method(directive)
+          return unless method_name
+
+          record.try(method_name)
         end
 
-        def extract_from_method
-          obj = unwrap_object(@object)
+        def resource_from_object(directive)
+          return if @object.nil?
 
-          return obj if object_matches_boundary_type?(obj)
+          method_name = boundary_method(directive)
+          return @object if method_name == ITSELF
+          return unless method_name
 
-          unless VALID_BOUNDARY_ACCESSOR_METHODS.include?(@boundary_accessor.to_s)
-            raise ArgumentError, "Invalid boundary method: '#{@boundary_accessor}'"
-          end
-
-          unless obj.respond_to?(@boundary_accessor.to_sym)
-            raise ArgumentError, "Boundary method '#{@boundary_accessor}' not found on #{obj.class}"
-          end
-
-          obj.public_send(@boundary_accessor.to_sym) # rubocop:disable GitlabSecurity/PublicSend -- Safe: @boundary_accessor from directive config
+          @object.try(method_name)
         end
 
-        def object_matches_boundary_type?(obj)
-          # Check if the object's class name matches the boundary method
-          # E.g., 'project' matches Project, 'group' matches Group
-          obj.class.name.underscore == @boundary_accessor.to_s
-        end
-
-        def resolve_value(value)
+        def locate(value)
           case value
-          when GlobalID
-            resolve_global_id(value)
-          when String
-            resolve_path(value)
+          when GlobalID then ::Gitlab::Graphql::Lazy.force(GitlabSchema.find_by_gid(value))
+          when String then ::Project.find_by_full_path(value) || ::Group.find_by_full_path(value)
           end
-        end
-
-        def resolve_global_id(global_id)
-          return unless global_id
-
-          object = GlobalID::Locator.locate(global_id)
-          extract_boundary_from_object(object)
         rescue ActiveRecord::RecordNotFound
           nil
         end
 
-        def resolve_path(path)
-          ::Project.find_by_full_path(path) || ::Group.find_by_full_path(path)
+        # The same `boundary` method can resolve to different types
+        # (e.g. `runner.owner` is a Project, Group, or User), so skip directives
+        # whose resolved object isn't the declared `boundary_type`.
+        def matches_boundary_type?(directive, resource)
+          return false if resource.nil?
+
+          resource.class.name.underscore == boundary_type(directive).to_s
         end
 
-        def extract_boundary_from_object(object)
-          obj = unwrap_object(object)
-
-          return obj if obj.is_a?(::Project) || obj.is_a?(::Group)
-          return obj.project if obj.respond_to?(:project) && obj.project
-          return obj.group if obj.respond_to?(:group) && obj.group
-          return obj.owner if obj.respond_to?(:owner) && obj.owner
-
-          extract_from_namespace(obj)
+        def standalone?(directive)
+          STANDALONE_BOUNDARIES.include?(boundary_type(directive))
         end
 
-        def extract_from_namespace(obj)
-          return unless obj.respond_to?(:namespace)
-
-          boundary_from_namespace(obj.namespace)
+        def boundary_type(directive)
+          directive.arguments[:boundary_type]&.to_sym
         end
 
-        # A namespace's boundary is decided by its own type. A UserNamespace has no
-        # project/group boundary (and its owner is a User, not a boundary), so deny.
-        def boundary_from_namespace(namespace)
-          return namespace if namespace.is_a?(::Group)
-          return namespace.project if namespace.is_a?(::Namespaces::ProjectNamespace)
-
-          nil
-        end
-
-        def unwrap_object(object)
-          object.is_a?(::Types::BaseObject) ? object.object : object
-        end
-
-        def should_use_id_fallback?
-          # Use ID fallback when:
-          # 1. Object is nil (query field before resolution)
-          # 2. Object doesn't respond to the boundary method
-          # 3. An :id argument is present (GlobalID)
-          return false unless @arguments[:id]
-
-          @object.nil? || !object_responds_to_boundary?
-        end
-
-        def object_responds_to_boundary?
-          obj = unwrap_object(@object)
-          obj.respond_to?(@boundary_accessor.to_sym)
-        end
-
-        def extract_from_id_argument
-          # Extract boundary from :id GlobalID argument
-          # This is used for query fields like issue(id: "gid://gitlab/Issue/123")
-          # where the directive says boundary: 'project' but we don't have an issue yet
-          id_arg = @arguments[:id]
-
-          case id_arg
-          when GlobalID
-            resolve_global_id(id_arg)
-          when String
-            resolve_global_id(GlobalID.parse(id_arg))
-          else
-            raise ArgumentError, "ID argument must be a GlobalID or string"
-          end
+        def boundary_method(directive)
+          directive.arguments[:boundary]&.to_sym
         end
       end
     end

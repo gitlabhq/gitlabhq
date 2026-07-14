@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlTooltipDirective, GlButton, GlAttributeList } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective, GlButton, GlAttributeList, GlBadge } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DynamicPanel from '~/vue_shared/components/dynamic_panel.vue';
@@ -23,6 +23,7 @@ export default {
     GlIcon,
     GlButton,
     GlAttributeList,
+    GlBadge,
     PersonalAccessTokenStatusBadge,
     PersonalAccessTokenGranularScopes,
     PersonalAccessTokenLegacyScopes,
@@ -116,6 +117,7 @@ export default {
     created: s__('AccessTokens|Created on %{date}'),
     scopes: s__('AccessTokens|Scopes'),
     closePanel: __('Close panel'),
+    sudoBadge: s__('AccessTokens|Sudo'),
   },
 };
 </script>
@@ -162,6 +164,9 @@ export default {
       <detail-layout :heading="token.name">
         <template #description>
           <personal-access-token-status-badge :token="token" />
+          <gl-badge v-if="token.sudo" variant="neutral" data-testid="token-sudo-badge">
+            {{ $options.i18n.sudoBadge }}
+          </gl-badge>
           <span v-gl-tooltip="createdTimestamp" data-testid="token-created-on">
             {{ createdOnText }}
           </span>

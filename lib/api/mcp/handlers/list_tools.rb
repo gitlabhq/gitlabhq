@@ -46,10 +46,10 @@ module API
         private
 
         def tool_available?(tool, current_user)
-          # tool does not have an availability check if it does not inherit `Mcp::Tools::BaseService`
-          return true unless tool.is_a?(::Mcp::Tools::BaseService)
+          # tool does not have an availability check if it does not inherit `Mcp::Tools::Base::BaseService`
+          return true unless tool.is_a?(::Mcp::Tools::Base::BaseService)
 
-          tool.set_cred(current_user: current_user) if tool.is_a? ::Mcp::Tools::CustomService
+          tool.set_cred(current_user: current_user) if tool.is_a? ::Mcp::Tools::Base::CustomService
           tool.available?
         end
 

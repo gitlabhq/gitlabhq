@@ -1,0 +1,9 @@
+---
+name: read_ml_model
+description: Grants the ability to read ML models
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_ml_model

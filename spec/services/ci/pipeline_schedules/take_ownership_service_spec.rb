@@ -7,7 +7,7 @@ RSpec.describe Ci::PipelineSchedules::TakeOwnershipService, feature_category: :c
   let_it_be(:owner) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) do
-    create(:project, :public, :repository, maintainers: [user, owner], reporters: reporter)
+    create(:project, :public, maintainers: [user, owner], reporters: reporter)
   end
 
   let_it_be(:pipeline_schedule, freeze: false) { create(:ci_pipeline_schedule, project: project, owner: owner) }

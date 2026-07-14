@@ -37,7 +37,7 @@ The following policy types are available:
 - [Merge request approval policy](merge_request_approval_policies.md). Enforce project-level settings and
   approval rules based on scan results.
 - [Pipeline execution policy](pipeline_execution_policies.md). Enforce CI/CD jobs as part of project pipelines.
-  - [Scheduled pipeline execution policy (experiment)](scheduled_pipeline_execution_policies.md). Enforce custom CI/CD jobs on a scheduled cadence across projects, independent of commit activity.
+  - [Scheduled pipeline execution policy](scheduled_pipeline_execution_policies.md). Enforce custom CI/CD jobs on a scheduled cadence across projects, independent of commit activity.
 - [Vulnerability management policy](vulnerability_management_policy.md). Automatically resolve
   vulnerabilities that are no longer detected in the default branch.
 
@@ -46,7 +46,26 @@ The following policy types are available:
 ## `policy_scope` keyword
 
 Use the `policy_scope` keyword to enforce the policy on only those groups, projects, compliance
-frameworks, or a combination, that you specify.
+frameworks, security attributes, or a combination, that you specify.
+
+To scope a policy by security attributes, enable the `security_attributes_policy_scope` experiment
+in the `.gitlab/security-policies/policy.yml` file for your security policy project:
+
+```yaml
+experiments:
+  security_attributes_policy_scope:
+    enabled: true
+```
+
+You can scope a policy by only the four built-in security attribute categories: `business_impact`,
+`application`, `business_unit`, and `exposure`. You can create custom attribute values in these
+categories and scope by those values, but you cannot scope by custom categories.
+
+> [!note]
+> The `business_impact`, `application`, `business_unit`, and `exposure` fields scope the policy by
+> [security attributes](../attributes/_index.md). Security attribute scoping applies
+> to scan execution, merge request approval, pipeline execution, and vulnerability management
+> policies. It does not apply to dependency firewall policies.
 
 | Field                   | Type     | Possible values          | Description |
 |-------------------------|----------|--------------------------|-------------|
@@ -54,6 +73,10 @@ frameworks, or a combination, that you specify.
 | `compliance_frameworks` | `array`  | Not applicable           | List of IDs of the compliance frameworks in scope for enforcement, in an array of objects with key `id`. |
 | `projects`              | `object` | `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. You can also exclude projects by type using `type: personal` for personal projects or `type: archived` for archived projects. |
 | `groups`                | `object` | `including`              | Use `including:` then list the IDs of the groups you wish to include, in an array of objects with key `id`. Only groups linked to the same security policy project can be listed in the policy. |
+| `business_impact` | `object` | `including`, `excluding` | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227155) in GitLab 18.11 with a flag named `security_attributes_policy_scope` flag. Enabled by default. List the IDs of the Business Impact [security attribute](../attributes/_index.md) values to include or exclude, in an array of objects with key `id`. |
+| `application` | `object` | `including`, `excluding` | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227155) in GitLab 18.11 with a flag named `security_attributes_policy_scope` flag. Enabled by default. List the IDs of the Application [security attribute](../attributes/_index.md) values to include or exclude, in an array of objects with key `id`. |
+| `business_unit` | `object` | `including`, `excluding` | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227155) in GitLab 18.11 with a flag named `security_attributes_policy_scope` flag. Enabled by default. List the IDs of the Business Unit [security attribute](../attributes/_index.md) values to include or exclude, in an array of objects with key `id`. |
+| `exposure` | `object` | `including`, `excluding` | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227155) in GitLab 18.11 with a flag named `security_attributes_policy_scope` flag. Enabled by default. List the IDs of the Exposure [security attribute](../attributes/_index.md) values to include or exclude, in an array of objects with key `id`. |
 
 ### Empty collections in `policy_scope`
 
@@ -211,6 +234,27 @@ groups for the policy to apply.
       including:
         - id: 78   # Security team's group
         - id: 90   # Compliance team's group
+```
+
+In this example, the scan execution policy enforces a SAST scan on the default branch, on every
+project that has the Business Impact security attribute value with ID `5` (for example,
+`Mission Critical`). Projects gain or lose this scope as the attribute is added or removed, with no
+change to the policy.
+
+```yaml
+- name: Enforce SAST on mission-critical projects
+  description: This policy enforces a SAST scan on projects with a Business Impact security attribute
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - main
+  actions:
+  - scan: sast
+  policy_scope:
+    business_impact:
+      including:
+        - id: 5
 ```
 
 ## Separation of duties

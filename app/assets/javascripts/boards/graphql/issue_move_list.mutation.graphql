@@ -1,5 +1,6 @@
 #import "ee_else_ce/boards/graphql/issue.fragment.graphql"
 
+# @feature_category: portfolio_management
 mutation issueMoveList(
   $projectPath: ID!
   $iid: String!

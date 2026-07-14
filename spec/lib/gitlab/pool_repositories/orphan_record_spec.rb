@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::PoolRepositories::OrphanRecord, feature_category: :source_code_management do
-  let_it_be(:project, freeze: false) { create(:project) }
-  let_it_be(:pool_repository, freeze: false) { create(:pool_repository, source_project: project) }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:pool_repository) { create(:pool_repository, source_project: project) }
 
   describe '.from_pool' do
     let(:reasons) { :pool_no_source_project }

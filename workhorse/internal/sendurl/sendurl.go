@@ -2,6 +2,7 @@
 package sendurl
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"io"
@@ -22,6 +23,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/forwardheaders"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/jsonstream"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
@@ -44,6 +46,17 @@ type entryParams struct {
 	ResponseHeaders                  http.Header
 	Method                           string
 	RestrictForwardedResponseHeaders forwardheaders.Params
+	TransformConfig                  *transformConfig
+}
+
+// transformConfig, when set, rewrites string values found at the given object
+// Key in a streamed 2xx JSON response, replacing the From prefix with the To
+// prefix. It is used to rewrite npm packument tarball URLs so downloads route
+// back through GitLab.
+type transformConfig struct {
+	Key  string
+	From string
+	To   string
 }
 
 type cacheKey struct {
@@ -143,12 +156,27 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 		return // Error handling is done in createNewRequest
 	}
 
+	// #nosec G704 -- params.URL is unpacked from the Gitlab-Workhorse-Send-Data
+	// response header set by the trusted GitLab Rails backend. Clients cannot
+	// set response headers, so this is not end-user-controlled input.
 	resp, err := cachedClient(params).Do(newReq) //nolint:errcheck
 	if err != nil {
 		e.handleRequestError(w, r, err, &params)
 		return
 	}
 	params.RestrictForwardedResponseHeaders.ForwardResponseHeaders(w, resp, preserveHeaderKeys, params.ResponseHeaders)
+
+	// Only transform successful responses; error and redirect bodies are
+	// streamed verbatim. A transform changes the body length, so the upstream
+	// Content-Length is dropped and the response is streamed chunked.
+	var transformCfg *transformConfig
+	if resp.StatusCode >= http.StatusOK && resp.StatusCode < http.StatusMultipleChoices {
+		transformCfg = params.TransformConfig
+	}
+	if transformCfg != nil {
+		w.Header().Del("Content-Length")
+	}
+
 	w.WriteHeader(resp.StatusCode)
 
 	defer func() {
@@ -157,7 +185,7 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 		}
 	}()
 
-	if err := e.streamResponse(w, resp.Body); err != nil {
+	if err := e.streamResponse(w, resp.Body, transformCfg); err != nil {
 		sendURLRequestsRequestFailed.Inc()
 		log.WithRequest(r).WithError(fmt.Errorf("SendURL: Copy response: %v", err)).Error()
 		return
@@ -211,10 +239,36 @@ func (e *entry) handleRequestError(w http.ResponseWriter, r *http.Request, err e
 	fail.Request(w, r, fmt.Errorf("SendURL: Do request: %v", err), fail.WithStatus(status))
 }
 
-func (e *entry) streamResponse(w http.ResponseWriter, body io.Reader) error {
-	n, err := io.Copy(newFlushingResponseWriter(w), body)
+func (e *entry) streamResponse(w http.ResponseWriter, body io.Reader, cfg *transformConfig) error {
+	fw := newFlushingResponseWriter(w)
+
+	if cfg != nil {
+		// jsontext writes one token at a time; buffer so the flushing writer
+		// flushes in chunks rather than once per token on large packuments.
+		bw := bufio.NewWriter(fw)
+		cw := &countingWriter{writer: bw}
+		err := jsonstream.Transform(body, cw, cfg.Key, cfg.From, cfg.To)
+		flushErr := bw.Flush()
+		sendURLBytes.Add(float64(cw.written))
+		return errors.Join(err, flushErr)
+	}
+
+	n, err := io.Copy(fw, body)
 	sendURLBytes.Add(float64(n))
 	return err
+}
+
+// countingWriter wraps an io.Writer and records how many bytes were written, so
+// the send-url byte metric stays accurate on the transform path.
+type countingWriter struct {
+	writer  io.Writer
+	written int64
+}
+
+func (c *countingWriter) Write(p []byte) (int, error) {
+	n, err := c.writer.Write(p)
+	c.written += int64(n)
+	return n, err
 }
 
 func cachedClient(params entryParams) *http.Client {

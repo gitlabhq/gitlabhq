@@ -112,8 +112,8 @@ RSpec.describe Boards::Issues::MoveService, feature_category: :portfolio_managem
           expect(issue1.labels).to eq([testing])
           expect(issue2.labels).to eq([testing])
 
-          expect(issue1.relative_position > existing_issue.relative_position).to eq(true)
-          expect(issue2.relative_position > issue1.relative_position).to eq(true)
+          expect(issue1.relative_position > existing_issue.relative_position).to be(true)
+          expect(issue2.relative_position > issue1.relative_position).to be(true)
         end
       end
 
@@ -134,8 +134,8 @@ RSpec.describe Boards::Issues::MoveService, feature_category: :portfolio_managem
           expect(issue1.labels).to eq([testing])
           expect(issue2.labels).to eq([testing])
 
-          expect(issue2.relative_position < existing_issue.relative_position).to eq(true)
-          expect(issue1.relative_position < issue2.relative_position).to eq(true)
+          expect(issue2.relative_position < existing_issue.relative_position).to be(true)
+          expect(issue1.relative_position < issue2.relative_position).to be(true)
         end
       end
     end

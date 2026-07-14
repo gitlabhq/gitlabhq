@@ -1,14 +1,13 @@
 import '~/commons';
 import { shallowMount } from '@vue/test-utils';
-import { GlEmptyState } from '@gitlab/ui';
 import EmptyState from '~/ci/pipelines_page/components/empty_state/no_ci_empty_state.vue';
+import PipelinesEmptyState from '~/ci/common/empty_state/pipelines_empty_state.vue';
 import PipelinesCiTemplates from '~/ci/pipelines_page/components/empty_state/pipelines_ci_templates.vue';
 
 describe('Pipelines Empty State', () => {
   let wrapper;
 
-  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
-  const findButton = () => wrapper.find('a');
+  const findPipelinesEmptyState = () => wrapper.findComponent(PipelinesEmptyState);
   const pipelinesCiTemplates = () => wrapper.findComponent(PipelinesCiTemplates);
 
   const createWrapper = (provide = {}) => {
@@ -19,14 +18,7 @@ describe('Pipelines Empty State', () => {
         anyRunnersAvailable: true,
         ciRunnerSettingsPath: '',
         canCreatePipeline: true,
-        emptyStateIllustrationPath: 'illustrations/empty-state/empty-pipeline-md.svg',
         ...provide,
-      },
-      propsData: {
-        emptyStateSvgPath: 'foo.svg',
-      },
-      stubs: {
-        GlEmptyState,
       },
     });
   };
@@ -46,16 +38,14 @@ describe('Pipelines Empty State', () => {
       createWrapper({ canCreatePipeline: false });
     });
 
-    it('should render empty state SVG', () => {
-      expect(findEmptyState().props('svgPath')).toBe('foo.svg');
+    it('renders the pipelines empty state with the no-CI description', () => {
+      expect(findPipelinesEmptyState().props()).toMatchObject({
+        description: 'This project is not currently set up to run pipelines.',
+      });
     });
 
-    it('should render empty state header', () => {
-      expect(wrapper.text()).toBe('This project is not currently set up to run pipelines.');
-    });
-
-    it('should not render a link', () => {
-      expect(findButton().exists()).toBe(false);
+    it('does not render the CI/CD templates', () => {
+      expect(pipelinesCiTemplates().exists()).toBe(false);
     });
   });
 });

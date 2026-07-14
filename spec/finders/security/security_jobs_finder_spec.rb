@@ -7,16 +7,16 @@ RSpec.describe Security::SecurityJobsFinder, feature_category: :vulnerability_ma
 
   describe "#execute" do
     let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:sast_build) { create(:ci_build, :sast, pipeline: pipeline) }
+    let_it_be(:container_scanning_build) { create(:ci_build, :container_scanning, pipeline: pipeline) }
+    let_it_be(:dast_build) { create(:ci_build, :dast, pipeline: pipeline) }
+    let_it_be(:secret_detection_build) { create(:ci_build, :secret_detection, pipeline: pipeline) }
+
     let(:finder) { described_class.new(pipeline: pipeline) }
 
     subject { finder.execute }
 
     context 'with specific secure job types' do
-      let!(:sast_build) { create(:ci_build, :sast, pipeline: pipeline) }
-      let!(:container_scanning_build) { create(:ci_build, :container_scanning, pipeline: pipeline) }
-      let!(:dast_build) { create(:ci_build, :dast, pipeline: pipeline) }
-      let!(:secret_detection_build) { create(:ci_build, :secret_detection, pipeline: pipeline) }
-
       let(:finder) { described_class.new(pipeline: pipeline, job_types: [:sast, :container_scanning, :secret_detection]) }
 
       it 'returns only those requested' do
@@ -29,11 +29,7 @@ RSpec.describe Security::SecurityJobsFinder, feature_category: :vulnerability_ma
     end
 
     context 'with combination of security jobs and license scanning jobs' do
-      let!(:sast_build) { create(:ci_build, :sast, pipeline: pipeline) }
-      let!(:container_scanning_build) { create(:ci_build, :container_scanning, pipeline: pipeline) }
-      let!(:dast_build) { create(:ci_build, :dast, pipeline: pipeline) }
-      let!(:secret_detection_build) { create(:ci_build, :secret_detection, pipeline: pipeline) }
-      let!(:license_scanning_build) { create(:ci_build, :license_scanning, pipeline: pipeline) }
+      let_it_be(:license_scanning_build) { create(:ci_build, :license_scanning, pipeline: pipeline) }
 
       it 'returns only the security jobs' do
         is_expected.to include(sast_build)

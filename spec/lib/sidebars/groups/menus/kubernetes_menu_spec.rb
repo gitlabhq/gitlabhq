@@ -18,7 +18,9 @@ RSpec.describe Sidebars::Groups::Menus::KubernetesMenu, :request_store, feature_
     let(:extra_attrs) do
       {
         super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::OperationsMenu,
-        item_id: :group_kubernetes_clusters
+        item_id: :group_kubernetes_clusters,
+        description: 'Deploy and manage containerized applications across clusters',
+        library_icon: 'kubernetes'
       }
     end
   end

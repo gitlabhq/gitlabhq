@@ -232,6 +232,9 @@ func (p *Injector) fetchURL(ctx context.Context, params *entryParams) (*http.Res
 func (p *Injector) newUploadRequest(ctx context.Context, params *entryParams, originalRequest *http.Request, body io.Reader) (*http.Request, error) {
 	method := p.uploadMethodFrom(params)
 	uploadURL := p.uploadURLFrom(params, originalRequest)
+	// #nosec G704 -- uploadURL is derived from the Gitlab-Workhorse-Send-Data
+	// response header set by the trusted GitLab Rails backend. Clients cannot
+	// set response headers, so this is not end-user-controlled input.
 	request, err := http.NewRequestWithContext(ctx, method, uploadURL, body)
 	if err != nil {
 		return nil, err

@@ -6,6 +6,7 @@ import ModeChanged from './viewers/mode_changed.vue';
 import RenamedFile from './viewers/renamed.vue';
 
 export default {
+  name: 'DiffViewer',
   props: {
     diffFile: {
       type: Object,

@@ -13,6 +13,8 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
   let_it_be(:design_without_notes) { create(:design, :with_file, issue: issue) }
   let_it_be(:note) { create(:diff_note_on_design, noteable: design, author: user) }
 
+  let(:current_user) { user }
+
   def add_diff_note_emoji(diff_note, emoji_name)
     page.within(first(".image-notes li#note_#{diff_note.id}.design-note")) do
       page.find('[data-testid="note-emoji-button"] .add-reaction-button').click
@@ -43,7 +45,7 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
   before do
     enable_design_management
 
-    sign_in(user)
+    sign_in(current_user)
 
     visit project_issue_path(project, issue)
   end
@@ -127,13 +129,7 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
   it_behaves_like 'design discussion emoji awards'
 
   context 'when user is guest' do
-    before do
-      enable_design_management
-
-      sign_in(guest_user)
-
-      visit project_issue_path(project, issue)
-    end
+    let(:current_user) { guest_user }
 
     it_behaves_like 'design discussion emoji awards'
   end

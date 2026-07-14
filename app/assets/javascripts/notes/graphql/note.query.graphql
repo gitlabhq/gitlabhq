@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 query snakeCaseNote($id: NoteID!) {
   note(id: $id) {
     id

@@ -16,6 +16,7 @@ export default {
       required: true,
     },
   },
+  emits: ['expandSidebar'],
   computed: {
     confidentialIcon() {
       return this.confidential ? 'eye-slash' : 'eye';

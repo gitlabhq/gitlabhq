@@ -9,13 +9,19 @@ module Types
 
     field :blobs, Types::Repository::BlobType.connection_type, null: true, resolver: Resolvers::BlobsResolver, calls_gitaly: true,
       description: 'Blobs contained within the repository'
+    # rubocop:disable GraphQL/ExtractType -- branch_count is a scalar count, not a sub-entity
+    field :branch_count, GraphQL::Types::Int, null: false, calls_gitaly: true,
+      description: 'Number of branches in the repository.'
     field :branch_names, [GraphQL::Types::String], null: true, calls_gitaly: true,
       complexity: 170, description: 'Names of branches available in this repository that match the search pattern.',
       resolver: Resolvers::RepositoryBranchNamesResolver
+    # rubocop:enable GraphQL/ExtractType
     field :commit, Types::Repositories::CommitType, null: true,
       calls_gitaly: true,
       description: 'Commit from the repository.',
       resolver: Resolvers::Repositories::CommitResolver
+    field :commit_count, GraphQL::Types::Int, null: false, calls_gitaly: true,
+      description: 'Number of commits in the default branch of the repository.'
     field :commits, Types::Repositories::CommitType.connection_type,
       null: true,
       calls_gitaly: true,
@@ -40,6 +46,8 @@ module Types
       description: 'Paginated tree of the repository.'
     field :root_ref, GraphQL::Types::String, null: true, calls_gitaly: true,
       description: 'Default branch of the repository.'
+    field :tag_count, GraphQL::Types::Int, null: false, calls_gitaly: true,
+      description: 'Number of tags in the repository.'
     field :tree, Types::Tree::TreeType, null: true, resolver: Resolvers::TreeResolver, calls_gitaly: true,
       description: 'Tree of the repository.'
   end

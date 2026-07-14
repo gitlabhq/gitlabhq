@@ -36,7 +36,7 @@ If the GitLab instance uses Admin Mode, you must
 
 {{< history >}}
 
-- New look [introduced](https://gitlab.com/groups/gitlab-org/-/epics/17782) in GitLab 18.2 [with a flag](feature_flags/_index.md) named `admin_projects_vue`. Disabled by default.
+- New look [introduced](https://gitlab.com/groups/gitlab-org/-/epics/17782) in GitLab 18.2 [with a feature flag](feature_flags/_index.md) named `admin_projects_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/549452) in GitLab 18.3. Feature flag `admin_projects_vue` removed.
 
 {{< /history >}}
@@ -269,7 +269,7 @@ After you turn off this setting:
 
 {{< history >}}
 
-- New look [introduced](https://gitlab.com/groups/gitlab-org/-/epics/17783) in GitLab 18.2 [with a flag](feature_flags/_index.md) named `admin_groups_vue`. Disabled by default.
+- New look [introduced](https://gitlab.com/groups/gitlab-org/-/epics/17783) in GitLab 18.2 [with a feature flag](feature_flags/_index.md) named `admin_groups_vue`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/553229) in GitLab 18.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/574017) in GitLab 18.6. Feature flag `admin_groups_vue` removed.
 
@@ -431,7 +431,7 @@ The page includes this information about each Gitaly server:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419540) in GitLab 16.10 [with a flag](feature_flags/_index.md) named `ui_for_organizations`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419540) in GitLab 16.10 [with a feature flag](feature_flags/_index.md) named `ui_for_organizations`. Disabled by default.
 
 {{< /history >}}
 

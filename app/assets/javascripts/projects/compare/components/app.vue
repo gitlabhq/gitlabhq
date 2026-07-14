@@ -19,6 +19,7 @@ import {
 import RevisionCard from './revision_card.vue';
 
 export default {
+  name: 'CompareApp',
   csrf,
   components: {
     RevisionCard,

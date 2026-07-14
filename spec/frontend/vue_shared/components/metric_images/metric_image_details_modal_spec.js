@@ -1,29 +1,33 @@
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { GlFormGroup, GlFormInput, GlModal } from '@gitlab/ui';
-import createStore from '~/vue_shared/components/metric_images/store';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
+import { useMetricImages } from '~/vue_shared/components/metric_images/store';
 import MetricImageDetailsModal from '~/vue_shared/components/metric_images/metric_image_details_modal.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { fileList } from './mock_data';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 const mockEvent = { preventDefault: jest.fn() };
 
 describe('Metric image details modal', () => {
   let wrapper;
   let store;
+  let pinia;
   const testText = 'test text';
   const testUrl = 'https://valid-url.com';
 
   const mountComponent = (options = {}) => {
-    store = createStore({}, {});
+    pinia = createTestingPinia();
+    store = useMetricImages();
+    store.uploadImage.mockResolvedValue();
+    store.updateImage.mockResolvedValue();
 
     wrapper = shallowMountExtended(MetricImageDetailsModal, {
-      store,
+      pinia,
       stubs: {
         GlFormGroup: stubComponent(GlFormGroup, {
           props: ['state', 'invalidFeedback'],
@@ -101,21 +105,20 @@ describe('Metric image details modal', () => {
     });
 
     describe('and modal is in the add state', () => {
-      it('should not dispatch uploadImage action', async () => {
+      it('should not call uploadImage action', async () => {
         mountComponent({ propsData: { visible: true } });
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
 
         setUrlInputValue('invalid-url');
         submitForm();
 
         await waitForPromises();
 
-        expect(dispatchSpy).not.toHaveBeenCalled();
+        expect(store.uploadImage).not.toHaveBeenCalled();
       });
     });
 
     describe('and modal is in the edit state', () => {
-      it('should not dispatch updateImage action', async () => {
+      it('should not call updateImage action', async () => {
         mountComponent({
           propsData: {
             edit: true,
@@ -126,14 +129,13 @@ describe('Metric image details modal', () => {
             visible: true,
           },
         });
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
 
         setUrlInputValue('invalid-url');
         submitForm();
 
         await waitForPromises();
 
-        expect(dispatchSpy).not.toHaveBeenCalled();
+        expect(store.updateImage).not.toHaveBeenCalled();
       });
     });
   });
@@ -173,8 +175,6 @@ describe('Metric image details modal', () => {
     });
 
     it('should send files, text and url when submitted', async () => {
-      const dispatchSpy = jest.spyOn(store, 'dispatch');
-
       setTextInputValue(testText);
       setUrlInputValue(testUrl);
 
@@ -182,7 +182,7 @@ describe('Metric image details modal', () => {
 
       await waitForPromises();
 
-      expect(dispatchSpy).toHaveBeenCalledWith('uploadImage', {
+      expect(store.uploadImage).toHaveBeenCalledWith({
         files: fileList,
         url: testUrl,
         urlText: testText,
@@ -260,8 +260,6 @@ describe('Metric image details modal', () => {
     });
 
     it('should update text and url when changed', async () => {
-      const dispatchSpy = jest.spyOn(store, 'dispatch');
-
       setTextInputValue(updatedText);
       setUrlInputValue(updatedUrl);
 
@@ -269,7 +267,7 @@ describe('Metric image details modal', () => {
 
       await waitForPromises();
 
-      expect(dispatchSpy).toHaveBeenCalledWith('updateImage', {
+      expect(store.updateImage).toHaveBeenCalledWith({
         imageId: 1,
         url: updatedUrl,
         urlText: updatedText,

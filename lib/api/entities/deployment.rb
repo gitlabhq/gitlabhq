@@ -3,7 +3,7 @@
 module API
   module Entities
     class Deployment < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 41 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 41 }
       expose :iid, documentation: { type: 'Integer', example: 1 }
       expose :ref, documentation: { type: 'String', example: 'main' }
       expose :sha, documentation: { type: 'String', example: '99d03678b90d914dbb1b109132516d71a4a03ea8' }

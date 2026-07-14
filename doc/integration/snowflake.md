@@ -52,8 +52,49 @@ requires both Snowflake and GitLab configuration.
 1. Select **Finalize configurator**.
 1. Select **Configure**.
 
+## Enable projects and groups
+
+After configuring the GitLab Data Connector, you must specify which projects
+or groups have their audit events ingested into Snowflake.
+If you do not add at least one project or group, no data is ingested.
+
+### Enable projects
+
+To add projects whose audit events you want to ingest:
+
+1. Sign in to Snowflake.
+1. Select **Data Products** > **Apps**.
+1. Select **GitLab Data Connector**.
+1. Select the **Enabled Projects** tab.
+1. Enter the path of the project you want to enable. For example, `my-group/my-project`.
+1. Select **Add**.
+1. Repeat for each additional project.
+
+### Enable groups
+
+To add groups whose audit events you want to ingest:
+
+1. Sign in to Snowflake.
+1. Select **Data Products** > **Apps**.
+1. Select **GitLab Data Connector**.
+1. Select the **Enabled Groups** tab.
+1. Enter the path of the group you want to enable. For example, `my-group`.
+1. Select **Add**.
+1. Repeat for each additional group.
+
 ## View data in Snowflake
 
 1. Sign in to Snowflake.
 1. Select **Data** > **Databases**.
 1. Select the warehouse previously configured.
+
+## Troubleshooting
+
+### No data appearing in Snowflake
+
+If no data appears in Snowflake, check the following:
+
+- You have not added at least one project or group in the **Enabled Projects** or **Enabled Groups** tab.
+  For more information, see [Enable projects and groups](#enable-projects-and-groups).
+- The GitLab personal access token does not have the required scopes to read audit events.
+- The Snowflake warehouse configured for the GitLab Data Connector is suspended.

@@ -224,20 +224,13 @@ glab api --method POST \
 
 ### Inline draft note
 
-**⚠️ Do NOT use `-f` flags for inline draft notes** — the nested `position` object will not
-serialize correctly and the comment will silently appear as a general (non-inline) note
-instead of attached to the diff line.
+**⚠️ Do NOT use `-f` flags for inline draft notes** — `-f` builds flat JSON keys, not nested
+objects (see Gotchas at the end of this file for the full explanation).
 
-Use JSON piped with `Content-Type: application/json`:
-
-```bash
-echo '{"note":"your comment","position":{"position_type":"text","base_sha":"BASE_SHA","head_sha":"HEAD_SHA","start_sha":"START_SHA","old_path":"path/to/file.rb","new_path":"path/to/file.rb","new_line":42}}' \
-  | glab api --method POST \
-    "projects/<project_id>/merge_requests/<mr_iid>/draft_notes" \
-    -H "Content-Type: application/json" --input -
-```
-
-For multi-line note bodies, write the JSON to a file first:
+Write the nested JSON body to a `/tmp/` file using a single-quoted
+`<< 'EOF'` heredoc, then pass it with `--input`. This prevents the shell
+from interpolating backticks and `$` that commonly appear in review
+comment bodies:
 
 ```bash
 cat > /tmp/draft.json << 'DRAFT'
@@ -259,7 +252,10 @@ glab api --method POST \
   -H "Content-Type: application/json" --input /tmp/draft.json
 ```
 
-**Do NOT use `<(...)` process substitution** — it is not available in plain `sh`.
+**Do NOT use `<(...)` process substitution** — it is not available in
+plain `sh`. Do NOT pipe inline JSON with `echo '...' | --input -` when
+the note body may contain backticks or `$` — those are interpreted
+before the heredoc is written.
 
 ### Position object — line type rules
 
@@ -278,16 +274,35 @@ For renames (`renamed_file: true`): use the `old_path` and `new_path` from the d
 directly — they will differ. For most files: copy `new_path` into both `old_path` and
 `new_path`.
 
+### Verify before publishing
+
+Always verify that notes you intended as inline actually attached to the
+diff — a dropped position is silent (HTTP 201, valid IDs, but the note
+appears as a general comment). **Run this before `bulk_publish`** — once
+drafts are published, the `draft_notes` endpoint returns an empty array
+and this check produces no output.
+
+```bash
+glab api --paginate \
+  "projects/<project_id>/merge_requests/<mr_iid>/draft_notes" \
+  | jq '.[] | {id, new_line: .position.new_line, note: .note[0:40]}'
+```
+
+Intentional general notes (no `position`) also show `new_line: null` —
+use the `note` preview to distinguish. A `null` on a note you meant to
+be inline means the position was dropped (see Gotchas below).
+
 ### Bulk publish
 
-After creating all draft notes, publish them as one review event:
+After verifying, publish all draft notes as one review event:
 
 ```bash
 glab api --method POST \
   "projects/<project_id>/merge_requests/<mr_iid>/draft_notes/bulk_publish"
 ```
 
-This sends a single notification to MR participants with all your comments grouped together.
+This sends a single notification to MR participants with all your
+comments grouped together.
 
 ---
 
@@ -358,8 +373,14 @@ For non-batched flows, prefer `glab mr note resolve|reopen <id>`.
 
 ### `glab api .../draft_notes` (fallback)
 
-- **`-f` for inline notes → silently broken** — position won't serialize; use `--input -`
-  with JSON and `-H "Content-Type: application/json"`.
+- **`-f` for inline notes → silently broken** — `-f`/`--field` builds a flat JSON body, so
+  `-f "position[new_line]=72"` serializes as the literal key `{"position[new_line]":"72"}`
+  instead of a nested `position` object. The API ignores the unknown flat key (HTTP 201,
+  real IDs) and creates a *general* note — only `new_line: null` reveals it. Build a real
+  nested JSON body and pipe via `--input -` with `-H "Content-Type: application/json"`.
+- **HTTP 415 on piped JSON** — `glab api --input -` does not set `Content-Type` automatically;
+  omitting `-H "Content-Type: application/json"` returns HTTP 415 (Unsupported Media Type).
+  Always include the header when piping a JSON body.
 - **No process substitution** — `<(...)` is bash-only; write JSON to `/tmp/` for multi-line
   bodies.
 - **SHA field name mismatch** — API returns `base_commit_sha` etc.; the position object

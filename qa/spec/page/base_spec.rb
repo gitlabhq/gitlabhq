@@ -110,6 +110,87 @@ RSpec.describe QA::Page::Base do
     end
   end
 
+  describe '#has_element?' do
+    context 'with disabled: keyword' do
+      let(:element) { instance_double(Capybara::Node::Element) }
+
+      before do
+        allow(subject).to receive(:wait_for_requests)
+        allow(subject).to receive(:find_element).and_return(element)
+      end
+
+      context 'when checking disabled: true' do
+        context 'and the element has the native disabled attribute' do
+          before do
+            allow(element).to receive(:disabled?).and_return(true)
+            allow(element).to receive(:[]).with('aria-disabled').and_return(nil)
+          end
+
+          it 'returns true' do
+            expect(subject.has_element?(:foo, disabled: true)).to be(true)
+          end
+        end
+
+        context 'and the element has aria-disabled="true"' do
+          before do
+            allow(element).to receive(:disabled?).and_return(false)
+            allow(element).to receive(:[]).with('aria-disabled').and_return('true')
+          end
+
+          it 'returns true' do
+            expect(subject.has_element?(:foo, disabled: true)).to be(true)
+          end
+        end
+
+        context 'and the element is enabled' do
+          before do
+            allow(element).to receive(:disabled?).and_return(false)
+            allow(element).to receive(:[]).with('aria-disabled').and_return(nil)
+          end
+
+          it 'returns false' do
+            expect(subject.has_element?(:foo, disabled: true)).to be(false)
+          end
+        end
+      end
+
+      context 'when checking disabled: false' do
+        context 'and the element is enabled' do
+          before do
+            allow(element).to receive(:disabled?).and_return(false)
+            allow(element).to receive(:[]).with('aria-disabled').and_return(nil)
+          end
+
+          it 'returns true' do
+            expect(subject.has_element?(:foo, disabled: false)).to be(true)
+          end
+        end
+
+        context 'and the element has the native disabled attribute' do
+          before do
+            allow(element).to receive(:disabled?).and_return(true)
+            allow(element).to receive(:[]).with('aria-disabled').and_return(nil)
+          end
+
+          it 'returns false' do
+            expect(subject.has_element?(:foo, disabled: false)).to be(false)
+          end
+        end
+
+        context 'and the element has aria-disabled="true"' do
+          before do
+            allow(element).to receive(:disabled?).and_return(false)
+            allow(element).to receive(:[]).with('aria-disabled').and_return('true')
+          end
+
+          it 'returns false' do
+            expect(subject.has_element?(:foo, disabled: false)).to be(false)
+          end
+        end
+      end
+    end
+  end
+
   describe 'elements' do
     subject do
       Class.new(described_class) do

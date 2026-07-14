@@ -72,6 +72,16 @@ RSpec.describe Sidebars::Groups::Menus::WorkItemsMenu, feature_category: :naviga
     it { is_expected.to eq 'issues' }
   end
 
+  describe 'Feature Library metadata' do
+    it 'gives every item a description and a unique library_icon', :aggregate_failures do
+      serialized = menu.renderable_items.map(&:serialize_for_super_sidebar)
+
+      expect(serialized).to all(include(:description, :library_icon))
+      icons = serialized.map { |item| item[:library_icon] }
+      expect(icons).to match_array(icons.uniq)
+    end
+  end
+
   it_behaves_like 'serializable as super_sidebar_menu_args' do
     let(:extra_attrs) do
       {
@@ -83,7 +93,9 @@ RSpec.describe Sidebars::Groups::Menus::WorkItemsMenu, feature_category: :naviga
         pill_count: menu.pill_count,
         pill_count_field: menu.pill_count_field,
         has_pill: true,
-        super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::PlanMenu
+        super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::PlanMenu,
+        description: 'Plan, track, and manage work in one place',
+        library_icon: 'work-items'
       }
     end
   end

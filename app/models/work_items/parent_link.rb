@@ -15,6 +15,7 @@ module WorkItems
 
     validates :work_item_parent, presence: true
     validates :work_item, presence: true, uniqueness: true
+    validates_with Organizations::SameOrganizationValidator, left: :work_item_parent, right: :work_item
     validate :validate_hierarchy_restrictions
     validate :validate_cyclic_reference
     validate :validate_max_children

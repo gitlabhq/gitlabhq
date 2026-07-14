@@ -25,6 +25,7 @@ import notesEventHub from '../event_hub';
 import promoteTimelineEvent from '../graphql/promote_timeline_event.mutation.graphql';
 
 import * as constants from '../constants';
+import { findStartedNoteForReply } from '../utils';
 import * as types from './mutation_types';
 import * as utils from './utils';
 
@@ -609,25 +610,10 @@ export const fetchUpdatedNotes = ({ commit, state, getters, dispatch }) => {
   return axios
     .get(endpoint, options)
     .then(({ data }) => {
-      const botNote = data.notes?.find(
-        (note) => note.author.user_type === 'duo_code_review_bot' && !note.system,
-      );
-
-      if (botNote) {
-        let discussions = state.discussions.filter((d) => d.id === botNote.discussion_id);
-
-        if (!discussions.length) {
-          discussions = state.discussions;
-        }
-
-        for (const discussion of discussions) {
-          const systemNote = discussion.notes.find(
-            (note) => note.author.user_type === 'duo_code_review_bot' && note.system,
-          );
-          if (systemNote) {
-            commit(types.DELETE_NOTE, systemNote);
-            break;
-          }
+      if (data.notes?.length) {
+        const startedNote = findStartedNoteForReply(data.notes, state.discussions);
+        if (startedNote) {
+          commit(types.DELETE_NOTE, startedNote);
         }
       }
 

@@ -15,12 +15,13 @@ describe('ColumnHeader', () => {
   const findIconByName = (name) => findIcons().wrappers.find((icon) => icon.props('name') === name);
   const findHeading = () => wrapper.findByTestId('column-header-name');
   const findCount = () => wrapper.findByTestId('column-header-count');
+  const findCollapseToggle = () => wrapper.findByTestId('column-collapse-toggle');
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(ColumnHeader, {
       propsData: {
         value: mockStatus,
-        groupProperty: 'status',
+        decoration: { type: 'icon', name: 'status-waiting', color: '#737278' },
         count: 5,
         ...props,
       },
@@ -44,24 +45,61 @@ describe('ColumnHeader', () => {
     });
   });
 
-  describe('chrome icons', () => {
-    it.each(['chevron-down', 'work-items', 'ellipsis_v', 'plus'])(
-      'renders the "%s" icon',
-      (iconName) => {
-        createComponent();
+  describe('collapse toggle', () => {
+    it('renders a chevron-down toggle when expanded', () => {
+      createComponent();
 
-        expect(findIconByName(iconName)).not.toBeUndefined();
-      },
-    );
+      expect(findCollapseToggle().props('icon')).toBe('chevron-down');
+      expect(findCollapseToggle().attributes('aria-expanded')).toBe('true');
+    });
+
+    it('renders a chevron-right toggle and hides the column actions when collapsed', () => {
+      createComponent({ props: { collapsed: true } });
+
+      expect(findCollapseToggle().props('icon')).toBe('chevron-right');
+      expect(findCollapseToggle().attributes('aria-expanded')).toBe('false');
+      expect(findIconByName('ellipsis_v')).toBeUndefined();
+      expect(findIconByName('plus')).toBeUndefined();
+    });
+
+    it('emits toggle-collapse when clicked', () => {
+      createComponent();
+
+      findCollapseToggle().vm.$emit('click');
+
+      expect(wrapper.emitted('toggle-collapse')).toHaveLength(1);
+    });
+
+    it('points aria-controls at the region it expands and collapses', () => {
+      createComponent({ props: { controlsId: 'board-column-body-42' } });
+
+      expect(findCollapseToggle().attributes('aria-controls')).toBe('board-column-body-42');
+    });
   });
 
-  describe('status icon', () => {
-    describe('when groupProperty is "status" and value.iconName is set', () => {
+  describe('vertical layout when collapsed', () => {
+    beforeEach(() => {
+      createComponent({ props: { collapsed: true } });
+    });
+
+    it('lays the title and count out vertically', () => {
+      expect(findHeading().attributes('style')).toContain('writing-mode: vertical-rl');
+      expect(findCount().attributes('style')).toContain('writing-mode: vertical-rl');
+    });
+
+    it('rotates the status and count icons to match the vertical text', () => {
+      expect(findIconByName('status-waiting').classes()).toContain('gl-rotate-90');
+      expect(findIconByName('work-items').classes()).toContain('gl-rotate-90');
+    });
+  });
+
+  describe('icon decoration', () => {
+    describe('when the decoration is an icon with a name', () => {
       beforeEach(() => {
         createComponent();
       });
 
-      it('renders an icon with the value.iconName', () => {
+      it('renders an icon with the decoration name', () => {
         expect(findIconByName('status-waiting')).not.toBeUndefined();
       });
 
@@ -71,25 +109,27 @@ describe('ColumnHeader', () => {
       });
     });
 
-    describe('when value.color is not set', () => {
+    describe('when the decoration has no color', () => {
       it('renders the icon without an inline color style', () => {
-        createComponent({ props: { value: { ...mockStatus, color: null } } });
+        createComponent({
+          props: { decoration: { type: 'icon', name: 'status-waiting', color: null } },
+        });
 
         expect(findIconByName('status-waiting').element.style.color).toBe('');
       });
     });
 
-    describe('when groupProperty is not "status"', () => {
-      it('does not render the status icon', () => {
-        createComponent({ props: { groupProperty: 'label' } });
+    describe('when the decoration type is not "icon"', () => {
+      it('does not render an icon', () => {
+        createComponent({ props: { decoration: { type: 'none' } } });
 
         expect(findIconByName('status-waiting')).toBeUndefined();
       });
     });
 
-    describe('when value.iconName is empty', () => {
-      it('does not render the status icon', () => {
-        createComponent({ props: { value: { ...mockStatus, iconName: '' } } });
+    describe('when the decoration name is empty', () => {
+      it('does not render an icon', () => {
+        createComponent({ props: { decoration: { type: 'icon', name: '' } } });
 
         expect(findIconByName('status-waiting')).toBeUndefined();
       });

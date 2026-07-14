@@ -82,6 +82,10 @@ module Gitlab
       end
 
       def validate_spaces(errors, entry)
+        if entry.msgid_contains_multiple_spaces?
+          errors << 'contains multiple consecutive spaces. Remove the extra space(s)'
+        end
+
         if entry.translations_contain_leading_space?
           errors << 'has leading space. Remove it from the translation'
         end

@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI Coding
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Automatically assign Code Owners as reviewers when a merge request is ready.
@@ -15,7 +15,7 @@ title: Automatic reviewer assignment
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224175) in GitLab 18.10 [with a flag](../../../../administration/feature_flags/_index.md) named `auto_assign_code_owner_reviewers`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224175) in GitLab 18.10 [with a feature flag](../../../../administration/feature_flags/_index.md) named `auto_assign_code_owner_reviewers`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239965) in GitLab 19.1. Feature flag `auto_assign_code_owner_reviewers` removed.
 
 {{< /history >}}
@@ -57,15 +57,46 @@ GitLab skips auto-assignment when:
 
 ## Reviewer assignment strategy
 
-In projects where [GitLab Duo Agent Platform](../../../../user/duo_agent_platform/_index.md)
-recommends reviewers, the **Automatic reviewer assignment** section shows a
-**Reviewer assignment strategy** with these options:
+{{< history >}}
 
-- **Do not assign reviewers automatically**: GitLab does not change the reviewers.
-- **Assign all code owners as reviewers**: GitLab assigns every Code Owner from the
-  `CODEOWNERS` file that matches the changed files.
-- **Assign reviewers with GitLab Duo Agent Platform**: GitLab Duo Agent Platform recommends
-  the minimum number of reviewers required to satisfy each approval rule.
+- **Assign reviewers with GitLab Duo Agent Platform** strategy [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236211) in GitLab 19.0 [with a feature flag](../../../../administration/feature_flags/_index.md) named `dap_powered_recommend_reviewers`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the **Assign reviewers with GitLab Duo Agent Platform** strategy is
+> controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+When [GitLab Duo Agent Platform](../../../../user/duo_agent_platform/_index.md) is available for
+your project, the **Automatic reviewer assignment** section shows a **Reviewer assignment strategy**
+setting in place of the single checkbox. Select one of these options:
+
+- **Do not assign reviewers automatically**: GitLab does not assign reviewers.
+- **Assign all code owners as reviewers**: GitLab assigns every Code Owner from the `CODEOWNERS`
+  file that matches the changed files.
+- **Assign reviewers with GitLab Duo Agent Platform**: GitLab Duo Agent Platform recommends and
+  assigns the minimum number of reviewers required to satisfy each approval rule.
+
+### Assign reviewers with GitLab Duo Agent Platform
+
+When you select this strategy, GitLab Duo Agent Platform reads the required approval rules on the
+merge request. For each rule, it recommends the minimum number of reviewers needed to satisfy the
+rule, assigns them, and adds a note that explains the choice. This strategy applies to all approval
+rule types, not only Code Owners.
+
+To choose between the eligible approvers for a rule, GitLab Duo Agent Platform considers the
+following for each approver:
+
+- Availability, based on their [status](../../../profile/_index.md#set-your-status).
+- Review workload, based on the number of open merge requests waiting for their review.
+- Local time, based on the time zone in their profile.
+- Most recent activity.
+
+GitLab assigns reviewers when the merge request becomes ready, the same as the code owners strategy.
+The recommendation runs in the background, so the reviewers might take a moment to appear. GitLab
+ignores approval rules that require zero approvals.
 
 ## Related topics
 

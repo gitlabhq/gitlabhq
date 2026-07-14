@@ -8,7 +8,6 @@ import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
-import DraftsCount from '~/batch_comments/components/drafts_count.vue';
 
 Vue.use(PiniaVuePlugin);
 
@@ -80,12 +79,12 @@ describe('SubmitReviewButton', () => {
   it('shows drafts count', () => {
     useBatchComments().drafts = [{}];
     createComponent();
-    expect(wrapper.findComponent(DraftsCount).exists()).toBe(true);
+    expect(findButton().props('count')).toBe(1);
   });
 
   it('hides drafts count', () => {
     createComponent();
-    expect(wrapper.findComponent(DraftsCount).exists()).toBe(false);
+    expect(findButton().props('count')).toBeNull();
   });
 
   it('opens drawer', async () => {

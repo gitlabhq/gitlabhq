@@ -9,6 +9,7 @@ const HELP_TRANSLATE_MSG = __('Help translate to your language');
 const HELP_TRANSLATE_HREF = helpPagePath('/development/i18n/translation.md');
 
 export default {
+  name: 'LanguageSwitcherApp',
   components: {
     GlCollapsibleListbox,
     GlLink,

@@ -6,6 +6,11 @@ import {
   ACCESS_LEVEL_ADMIN_INTEGER,
 } from '~/access_level/constants';
 
+// Synthetic value used only as the key for the custom roles section label
+// Display-only for now; to be swapped for a real value when save/payload
+// support lands in https://gitlab.com/gitlab-org/gitlab/-/work_items/594888
+export const ACCESS_LEVEL_CUSTOM_ROLE_INTEGER = -1;
+
 export const I18N = {
   pageTitle: s__('BranchRules|Branch rule details'),
   deleteRule: s__('BranchRules|Delete rule'),
@@ -110,6 +115,9 @@ export const accessLevelsConfig = {
   },
   [ACCESS_LEVEL_NO_ACCESS_INTEGER]: {
     accessLevelLabel: s__('BranchRules|No one'),
+  },
+  [ACCESS_LEVEL_CUSTOM_ROLE_INTEGER]: {
+    accessLevelLabel: s__('BranchRules|Custom roles'),
   },
 };
 

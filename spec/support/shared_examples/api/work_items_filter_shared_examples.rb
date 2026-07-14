@@ -96,6 +96,17 @@ RSpec.shared_examples 'work item listing filters' do
       it_behaves_like 'does not contain matching work items'
     end
 
+    context 'with assignee_wildcard filter set to Me' do
+      let(:params) { { assignee_wildcard_id: 'Me' } }
+
+      before do
+        work_item_1.update!(assignees: [user])
+        work_item_2.update!(assignees: [editor])
+      end
+
+      it_behaves_like 'contains only matching work items'
+    end
+
     context 'with label_name filter' do
       let(:params) { { label_name: namespace_label.title } }
 

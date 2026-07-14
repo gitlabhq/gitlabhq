@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Users
   class UserFollowUser < ApplicationRecord
     MAX_FOLLOWEE_LIMIT = 500

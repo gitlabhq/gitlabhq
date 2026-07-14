@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::AddSpentTimeService, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public, :small_repo, developers: user) }
   let_it_be_with_reload(:merge_request) { create(:merge_request, :simple, :unique_branches, source_project: project) }
 
   let(:duration) { 1500 }
@@ -12,34 +12,22 @@ RSpec.describe MergeRequests::AddSpentTimeService, feature_category: :code_revie
   let(:service) { described_class.new(project: project, current_user: user, params: params) }
 
   describe '#execute' do
-    before do
-      project.add_developer(user)
-    end
-
-    it 'creates a new timelog with the specified duration and summary' do
-      expect { service.execute(merge_request) }.to change { Timelog.count }.from(0).to(1)
-
-      timelog = merge_request.timelogs.last
-
-      expect(timelog).not_to be_nil
-      expect(timelog.time_spent).to eq(1500)
-      expect(timelog.summary).to eq('summary')
-    end
-
-    it 'creates a system note with the time added' do
-      expect { service.execute(merge_request) }.to change { Note.count }.from(0).to(1)
-
-      system_note = merge_request.notes.last
-
-      expect(system_note).not_to be_nil
-      expect(system_note.note_html).to include('added 25m of time spent')
-    end
-
-    it 'saves usage data' do
+    it 'creates a timelog, system note, and saves usage data', :aggregate_failures do
       expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
         .to receive(:track_time_spent_changed_action).once.with(user: user)
 
-      service.execute(merge_request)
+      expect { service.execute(merge_request) }
+        .to change { Timelog.count }.from(0).to(1)
+        .and change { Note.count }.from(0).to(1)
+
+      timelog = merge_request.timelogs.last
+      expect(timelog).not_to be_nil
+      expect(timelog.time_spent).to eq(1500)
+      expect(timelog.summary).to eq('summary')
+
+      system_note = merge_request.notes.last
+      expect(system_note).not_to be_nil
+      expect(system_note.note_html).to include('added 25m of time spent')
     end
 
     it 'is more efficient than using the full update-service' do

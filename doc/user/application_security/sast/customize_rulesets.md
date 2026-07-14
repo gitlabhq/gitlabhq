@@ -159,8 +159,16 @@ To use a remote ruleset file, do the following:
 - Create a remote ruleset.
 - Reference the remote ruleset from each project.
 
-> [!note]
-> A local `.gitlab/sast-ruleset.toml` file takes precedence over a remote ruleset file.
+A local `.gitlab/sast-ruleset.toml` file takes precedence over a remote ruleset file.
+
+> [!warning]
+> Setting `SAST_RULESET_GIT_REFERENCE` extends your project's trust boundary to the referenced
+> repository. The maintainers of that repository can change the ruleset configuration at any
+> time, including enabling [`interpolate`](#interpolate) to evaluate environment variables in
+> the SAST job. Reference only rulesets from repositories you control or that are managed by a
+> team you trust. Do not point `SAST_RULESET_GIT_REFERENCE` at public or uncontrolled
+> repositories. To prevent silent changes, pin the reference to a specific Git SHA so the
+> ruleset cannot change without an explicit update in your project.
 
 #### Create a remote ruleset file
 
@@ -267,6 +275,12 @@ differ based on the kind of configuration you're making.
 
 > [!warning]
 > To reduce the risk of leaking secrets, use this feature with caution.
+> When `interpolate = true`, any `$VAR` reference in the configuration is expanded against the
+> CI/CD job's environment, including CI/CD variables and protected variables exposed to the job.
+> Expanded values can appear in scan output, artifacts, or any other channel the ruleset writes
+> to. If the configuration file is loaded from a remote location set by
+> [`SAST_RULESET_GIT_REFERENCE`](#reference-the-remote-ruleset-file), the remote author controls
+> whether `interpolate` is enabled. Reference only rulesets from repositories you trust.
 
 The example below shows a configuration that uses the `$GITURL` environment variable to access a
 private repository. The variable contains a username and token (for example `https://user:token@url`), so

@@ -13,8 +13,6 @@
 - ApplicationSetting#rate_limits_unauthenticated_git_http
 - ApplicationSetting#repository_storages_weighted
 - ApplicationSetting#token_prefixes
-- Ci::BuildMetadata#config_options
-- Ci::BuildMetadata#config_variables
 - Integration#event_filters
 - GeoNodeStatus#status
 - Geo::Event#payload

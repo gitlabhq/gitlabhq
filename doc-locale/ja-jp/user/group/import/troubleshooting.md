@@ -214,3 +214,15 @@ Updating milestone title - source title used by existing group or project milest
 ソースと宛先のネームスペースが異なる組織に属し、どちらかの組織が隔離済みとしてマークされている場合、ダイレクト転送による移行は失敗します。
 
 このエラーを解決するには、現在の組織に属する宛先ネームスペースに移行してください。詳細については、[イシュー595674](https://gitlab.com/gitlab-org/gitlab/-/issues/595674)を参照してください。
+
+## ダウンロードされたファイルが最大ダウンロードファイルサイズを超過した場合の直接転送の失敗 {#direct-transfer-fails-when-a-downloaded-file-exceeds-the-maximum-download-file-size}
+
+ソースインスタンスからダウンロードされたファイルが、デフォルトの5 GiBである最大ダウンロードファイルサイズより大きい場合、直接転送は失敗します。直接転送はほとんどのデータを小さなバッチでエクスポートするため、ほとんどのファイルはこの制限を超えません。制限を超える可能性が高いのは、`repository`、`lfs`、`uploads`の各リレーションのみです。
+
+GitLab Self-ManagedおよびGitLab Dedicatedでは、管理者は[最大ダウンロードファイルサイズ](../../../administration/settings/import_and_export_settings.md#maximum-download-file-size-for-imports-by-direct-transfer)を増やすことができます。
+
+GitLab.comでは、制限は固定されており、引き上げることはできません。制限を超えるプロジェクトを移行するには、移行する前に影響を受けるリレーションのサイズを減らしてください:
+
+- `repository`: 大規模ファイルを削除するためにGitの履歴を書き換えます。この操作により、すべてのコミットSHAが変更されます。詳細については、[リポジトリサイズを削減するメソッド](../../project/repository/repository_size.md#methods-to-reduce-repository-size)を参照してください。
+- `lfs`: プロジェクトを移行する際、不足しているLFSオブジェクトを宛先に手動でプッシュする。詳細については、[LFSオブジェクトがプッシュ時に不足](../../../topics/git/lfs/troubleshooting.md#lfs-objects-are-missing-on-push)を参照してください。
+- `uploads`: 回避策はありません。詳細については、[イシュー526344](https://gitlab.com/gitlab-org/gitlab/-/issues/526344)を参照してください。

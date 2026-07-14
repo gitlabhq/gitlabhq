@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Dropdown release', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
 
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:release, freeze: false) { create(:release, tag: 'v1.0', project: project) }
+  let_it_be_with_reload(:release) { create(:release, tag: 'v1.0', project: project) }
   let_it_be(:crazy_release) { create(:release, tag: '☺!/"#%&\'{}+,-.<>;=@]_`{|}🚀', project: project) }
   let_it_be(:issue) { create(:issue, project: project) }
 

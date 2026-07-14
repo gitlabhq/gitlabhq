@@ -6,7 +6,7 @@ RSpec.describe Import::GithubGroupsController, feature_category: :importers do
   describe 'GET status' do
     subject(:status) { get '/import/github_group/status', params: params, headers: headers }
 
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be(:user) { create(:user) }
     let(:headers) { { 'Accept' => 'application/json' } }
     let(:params) { {} }
 

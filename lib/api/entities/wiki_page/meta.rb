@@ -4,7 +4,7 @@ module API
   module Entities
     class WikiPage
       class Meta < Grape::Entity
-        expose :id, documentation: { type: 'Integer', example: 2 }
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 2 }
         expose :canonical_slug, as: :slug, documentation: { type: 'String', example: 'home' }
         expose :title, documentation: { type: 'String', example: 'Page title' }
       end

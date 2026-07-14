@@ -5,12 +5,11 @@ require 'spec_helper'
 RSpec.describe Projects::BlameController, feature_category: :source_code_management do
   include RepoHelpers
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user)    { create(:user) }
+  let_it_be(:user)    { create(:user, maintainer_of: project) }
 
   before do
     sign_in(user)
 
-    project.add_maintainer(user)
     controller.instance_variable_set(:@project, project)
   end
 

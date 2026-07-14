@@ -43,9 +43,9 @@ RSpec.describe CloudSeed::GoogleCloud::CreateServiceAccountsService, feature_cat
       expect(response.status).to eq(:success)
       expect(response.message).to eq('Service account generated successfully')
       expect(project.variables.count).to eq(3)
-      expect(project.variables.first.protected).to eq(false)
-      expect(project.variables.second.protected).to eq(false)
-      expect(project.variables.third.protected).to eq(false)
+      expect(project.variables.first.protected).to be(false)
+      expect(project.variables.second.protected).to be(false)
+      expect(project.variables.third.protected).to be(false)
     end
 
     it 'creates protected vars', :aggregate_failures do
@@ -66,9 +66,9 @@ RSpec.describe CloudSeed::GoogleCloud::CreateServiceAccountsService, feature_cat
       expect(response.status).to eq(:success)
       expect(response.message).to eq('Service account generated successfully')
       expect(project.variables.count).to eq(3)
-      expect(project.variables.first.protected).to eq(true)
-      expect(project.variables.second.protected).to eq(true)
-      expect(project.variables.third.protected).to eq(true)
+      expect(project.variables.first.protected).to be(true)
+      expect(project.variables.second.protected).to be(true)
+      expect(project.variables.third.protected).to be(true)
     end
   end
 end

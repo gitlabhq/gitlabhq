@@ -35,6 +35,15 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
   end
 
   describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/get' do
+    it_behaves_like 'authorizing granular token permissions', :read_ml_model do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        p = "/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/registered-models/get"
+        get api("#{p}?name=#{model.name}", personal_access_token: pat)
+      end
+    end
+
     let(:model_name) { model.name }
     let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/registered-models/get?name=#{model_name}" }
 
@@ -64,6 +73,15 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
   end
 
   describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/alias' do
+    it_behaves_like 'authorizing granular token permissions', :read_ml_model do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        p = "/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/registered-models/alias"
+        get api("#{p}?name=#{model.name}&alias=#{model_version.version}", personal_access_token: pat)
+      end
+    end
+
     let(:model_name) { model_version.model.name }
     let(:version) { model_version.version }
     let(:route) do
@@ -110,6 +128,15 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
   end
 
   describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/create' do
+    it_behaves_like 'authorizing granular token permissions', :create_ml_model do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        p = "/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/registered-models/create"
+        post api(p, personal_access_token: pat), params: { name: "gpat-model-#{SecureRandom.hex(4)}" }
+      end
+    end
+
     let(:route) do
       "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/registered-models/create"
     end
@@ -181,6 +208,15 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
   end
 
   describe 'PATCH /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/update' do
+    it_behaves_like 'authorizing granular token permissions', :update_ml_model do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        p = "/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/registered-models/update"
+        patch api(p, personal_access_token: pat), params: { name: model.name, description: "d" }
+      end
+    end
+
     let(:model_name) { model.name }
     let(:model_description) { 'updated model description' }
     let(:params) { { name: model_name, description: model_description } }
@@ -214,6 +250,15 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
   end
 
   describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/get-latest-versions' do
+    it_behaves_like 'authorizing granular token permissions', :read_ml_model do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        p = "/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/registered-models/get-latest-versions"
+        post api(p, personal_access_token: pat), params: { name: model.name }
+      end
+    end
+
     let_it_be(:version1) { create(:ml_model_versions, model: model, created_at: 1.week.ago) }
     let_it_be(:version2) { create(:ml_model_versions, model: model, created_at: 1.day.ago) }
 
@@ -250,6 +295,15 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
   end
 
   describe 'DELETE /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/delete' do
+    it_behaves_like 'authorizing granular token permissions', :delete_ml_model do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        p = "/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/registered-models/delete"
+        delete api(p, personal_access_token: pat), params: { name: model.name }
+      end
+    end
+
     let(:model_name) { model.name }
     let(:params) { { name: model_name } }
     let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/registered-models/delete" }
@@ -291,6 +345,15 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
   end
 
   describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/search' do
+    it_behaves_like 'authorizing granular token permissions', :read_ml_model do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        base = "/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/registered-models/search"
+        get api(base, personal_access_token: pat)
+      end
+    end
+
     let_it_be(:model2) do
       create(:ml_models, :with_metadata, project: project)
     end

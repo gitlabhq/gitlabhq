@@ -207,33 +207,31 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
     context 'when falling back to email OTP from TOTP', :js do
       let(:user) { create(:user, :two_factor, email_otp_required_after: 1.day.ago) }
+      let(:email_otp_enabled) { false }
 
       before do
         ActionMailer::Base.deliveries.clear
+        stub_application_setting(email_otp_enabled: email_otp_enabled)
         submit_sign_in_form_for(user)
-        expect(page).to have_content('Enter verification code') # rubocop:disable RSpec/ExpectInHook -- this assertion is the Capybara waiter ensuring the OTP form is rendered before the examples run
+        expect(page).to have_button(s_('TwoFactorAuth|Verify code')) # rubocop:disable RSpec/ExpectInHook -- this assertion is the Capybara waiter ensuring the OTP form is rendered before the examples run
       end
 
-      it 'sends email OTP and shows verification form when button clicked' do
-        expect(page).to have_link('Enter recovery code')
-        expect(page).to have_button('send code to email address')
-
-        expect(authentication_metrics)
-          .to increment(:user_authenticated_counter)
-          .and increment(:user_session_override_counter)
-
-        verify_email_otp_fallback_workflow(user)
+      it 'does not show email OTP fallback when feature is disabled' do
+        expect(page).not_to have_button('send code to email address')
       end
 
-      context 'when email_based_mfa ff is disabled' do
-        before do
-          stub_feature_flags(email_based_mfa: false)
-        end
+      context 'when email_otp_enabled application setting is enabled' do
+        let(:email_otp_enabled) { true }
 
-        it 'does not show email OTP fallback when feature is disabled' do
-          visit new_user_session_path
-          submit_sign_in_form_for(user)
-          expect(page).not_to have_button('send code to email address')
+        it 'sends email OTP and shows verification form when button clicked' do
+          expect(page).to have_link('Enter recovery code')
+          expect(page).to have_button('send code to email address')
+
+          expect(authentication_metrics)
+            .to increment(:user_authenticated_counter)
+            .and increment(:user_session_override_counter)
+
+          verify_email_otp_fallback_workflow(user)
         end
       end
     end
@@ -247,38 +245,45 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
         )
       end
 
+      let(:email_otp_enabled) { false }
+
       before do
         ActionMailer::Base.deliveries.clear
+        stub_application_setting(email_otp_enabled: email_otp_enabled)
         visit new_user_session_path
         submit_sign_in_form_for(user)
         click_button 'Sign in via 2FA code'
       end
 
-      it 'allows switching to TOTP and using email OTP fallback' do
-        expect(page).to have_content('Enter verification code')
+      context 'when email_otp_enabled application setting is enabled' do
+        let(:email_otp_enabled) { true }
 
-        # Email OTP fallback should be available
-        expect(page).to have_link('Enter recovery code')
-        expect(page).to have_button('send code to email address')
+        it 'allows switching to TOTP and using email OTP fallback' do
+          expect(page).to have_content('Enter verification code')
 
-        expect(authentication_metrics)
-          .to increment(:user_authenticated_counter)
-          .and increment(:user_session_override_counter)
+          # Email OTP fallback should be available
+          expect(page).to have_link('Enter recovery code')
+          expect(page).to have_button('send code to email address')
 
-        verify_email_otp_fallback_workflow(user)
-      end
+          expect(authentication_metrics)
+            .to increment(:user_authenticated_counter)
+            .and increment(:user_session_override_counter)
 
-      it 'can still use TOTP code after switching from WebAuthn' do
-        expect(authentication_metrics)
-          .to increment(:user_authenticated_counter)
-          .and increment(:user_two_factor_authenticated_counter)
+          verify_email_otp_fallback_workflow(user)
+        end
 
-        # Enter TOTP code
-        fill_in 'user_otp_attempt', with: user.current_otp
-        click_button 'Verify code'
+        it 'can still use TOTP code after switching from WebAuthn' do
+          expect(authentication_metrics)
+            .to increment(:user_authenticated_counter)
+            .and increment(:user_two_factor_authenticated_counter)
 
-        expect(page).to have_content('Welcome to GitLab')
-        expect(page).to have_current_path root_path, ignore_query: true
+          # Enter TOTP code
+          fill_in 'user_otp_attempt', with: user.current_otp
+          click_button 'Verify code'
+
+          expect(page).to have_content('Welcome to GitLab')
+          expect(page).to have_current_path root_path, ignore_query: true
+        end
       end
     end
   end

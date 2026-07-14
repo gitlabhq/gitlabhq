@@ -39,6 +39,7 @@ const i18n = {
 };
 
 export default {
+  name: 'RedactText',
   i18n,
   DRAWER_Z_INDEX,
   components: { GlButton, GlDrawer, GlFormTextarea, GlSprintf, GlLink, WarningModal },

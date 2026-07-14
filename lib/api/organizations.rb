@@ -14,9 +14,9 @@ module API
 
     resource :organizations do
       desc 'Create an organization' do
-        detail 'This feature was introduced in GitLab 17.5. \
-                    This feature is behind the `allow_organization_creation` feature flag. \
-                    In GitLab 18.3, feature flag changed to `organization_switching`.'
+        detail 'Creates an organization. This feature was introduced in GitLab 17.5. ' \
+          'This feature is behind the `allow_organization_creation` feature flag. ' \
+          'In GitLab 18.3, the feature flag changed to `organization_switching`.'
         success Entities::Organizations::Organization
         tags %w[organizations]
       end
@@ -45,6 +45,36 @@ module API
           present response[:organization], with: Entities::Organizations::Organization
         else
           render_api_error!(response.message, :bad_request)
+        end
+      end
+
+      desc 'Soft-delete an organization' do
+        detail 'This feature was introduced in GitLab 19.2.'
+        success code: 202
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[organizations]
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the organization'
+      end
+      route_setting :lifecycle, :experiment
+      route_setting :authorization, permissions: :delete_organization, boundary_type: :instance
+      delete ':id' do
+        organization = find_organization!(params[:id])
+
+        response = ::Organizations::SoftDeleteService
+          .new(organization, current_user: current_user)
+          .execute
+
+        if response.success?
+          accepted!
+        else
+          render_api_error!(response.message, response.cause.access_denied? ? 403 : 400)
         end
       end
     end

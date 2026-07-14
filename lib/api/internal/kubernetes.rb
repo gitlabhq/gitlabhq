@@ -4,6 +4,13 @@ module API
   # Kubernetes Internal API
   module Internal
     class Kubernetes < ::API::Base
+      # KAS endpoints authenticate via JWT / cluster agent tokens with no
+      # associated user. Disable the global Current.organization fallback so
+      # KAS-specific code can resolve the organization from the agent
+      # (follow-up). Until that resolver exists, Current.organization remains
+      # unassigned for these endpoints (same as before the global hook).
+      skip_global_organization_setup!
+
       before do
         authenticate_gitlab_kas_request!
       end

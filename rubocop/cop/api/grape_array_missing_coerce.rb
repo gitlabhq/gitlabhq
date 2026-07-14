@@ -3,8 +3,10 @@
 module RuboCop
   module Cop
     module API
-      # This cop checks that Grape API parameters using an Array type
-      # implement a coerce_with method:
+      # Checks that Grape API parameters using an Array type define `coerce_with`.
+      #
+      # Array-typed parameters need explicit coercion to avoid ambiguous parsing
+      # behavior in Grape.
       #
       # https://github.com/ruby-grape/grape/blob/master/UPGRADING.md#ensure-that-array-types-have-explicit-coercions
       #
@@ -14,9 +16,9 @@ module RuboCop
       #   requires :values, type: Array[String]
       #
       #   # good
-      #   requires :values, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce
-      #
-      #   end
+      #   requires :values,
+      #     type: Array[String],
+      #     coerce_with: Validations::Types::CommaSeparatedToArray.coerce
       class GrapeArrayMissingCoerce < RuboCop::Cop::Base
         MSG = 'This Grape parameter defines an Array but is missing a coerce_with definition. ' \
           'For more details, see https://github.com/ruby-grape/grape/blob/master/UPGRADING.md#ensure-that-array-types-have-explicit-coercions'

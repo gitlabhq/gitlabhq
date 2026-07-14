@@ -134,7 +134,7 @@ Now take a look at your pipeline and the jobs within.
 
    ![The pipeline list shows a running pipeline with 3 stages](img/three_stages_v18_11.png)
 
-1. View a visual representation of your pipeline by selecting the pipeline ID (`#676` in this example):
+1. View a visual representation of your pipeline by selecting the pipeline ID (`#2435445330` in this example):
 
    ![The pipeline graph shows each job, its status, and its dependencies across all stages.](img/pipeline_graph_v18_11.png)
 

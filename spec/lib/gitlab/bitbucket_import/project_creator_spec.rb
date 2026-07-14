@@ -39,6 +39,7 @@ RSpec.describe Gitlab::BitbucketImport::ProjectCreator, feature_category: :impor
 
     expect(project.unsafe_import_url).to eq("https://x-token-auth:asdasd12345@bitbucket.org/repo/repo.git")
     expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+    expect(project.organization_id).to eq(namespace.organization_id)
   end
 
   context 'when API token is used' do

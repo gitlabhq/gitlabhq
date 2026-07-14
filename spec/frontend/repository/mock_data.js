@@ -156,7 +156,6 @@ export const propsForkInfo = {
 
 export const propsConflictsModal = {
   sourceDefaultBranch: 'branch-name',
-  sourceName: 'source-name',
   sourcePath: 'path/to/project',
   selectedBranch: 'my-branch',
 };

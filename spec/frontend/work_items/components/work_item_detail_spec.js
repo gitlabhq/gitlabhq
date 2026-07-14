@@ -9,6 +9,7 @@ import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { useRealDate } from 'helpers/fake_date';
+import BaseLayout from '~/vue_shared/components/base_layout.vue';
 import DetailLayout from '~/vue_shared/components/detail_layout.vue';
 import WorkItemLoading from '~/work_items/components/work_item_loading.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
@@ -203,6 +204,7 @@ describe('WorkItemDetail component', () => {
       },
       stubs: {
         GlSprintf,
+        BaseLayout,
         DetailLayout,
         WorkItemAncestors: true,
         WorkItemWeight: true,

@@ -1466,11 +1466,10 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         end
 
         context 'when project is public with private merge requests' do
-          let(:group_project) do
+          let_it_be(:group_project) do
             create(
               :project,
               :public,
-              :repository,
               group: group,
               merge_requests_access_level: ProjectFeature::DISABLED
             )
@@ -1480,7 +1479,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         end
 
         context 'when project is private' do
-          let(:group_project) { create(:project, :private, :repository, group: group) }
+          let_it_be(:group_project) { create(:project, :private, group: group) }
 
           it_behaves_like 'user cannot view merge requests'
         end
@@ -1566,7 +1565,97 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     context 'caching', :use_clean_rails_memory_store_caching do
-      it_behaves_like 'merge requests list caching'
+      let_it_be(:bot_user) { create(:user, :project_bot) }
+      let(:bot_token) { create(:personal_access_token, user: bot_user) }
+
+      before do
+        group.add_reporter(bot_user)
+      end
+
+      context 'when user is a bot' do
+        before do
+          stub_last_activity_update # prevent bot user updates that would invalidate cache
+          get api(endpoint_path, personal_access_token: bot_token)
+        end
+
+        context 'when it is cached' do
+          it 'uses the cached response' do
+            expect(API::Entities::MergeRequestBasic).not_to receive(:represent)
+
+            get api(endpoint_path, personal_access_token: bot_token)
+          end
+        end
+
+        context 'when it is not cached' do
+          context 'when the status changes' do
+            before do
+              merge_request.mark_as_unchecked!
+            end
+
+            it 'serializes the changed merge request' do
+              expect(API::Entities::MergeRequestBasic).to receive(:represent).once.and_call_original
+
+              get api(endpoint_path, personal_access_token: bot_token)
+            end
+          end
+
+          context 'when the label changes' do
+            before do
+              merge_request.labels << create(:label, project: merge_request.project)
+            end
+
+            it 'serializes the changed merge request' do
+              expect(API::Entities::MergeRequestBasic).to receive(:represent).once.and_call_original
+
+              get api(endpoint_path, personal_access_token: bot_token)
+            end
+          end
+
+          context 'when "with_labels_details" parameter is provided' do
+            it 'skips the cache' do
+              expect(API::Entities::MergeRequestBasic).to receive(:represent).once.and_call_original
+
+              get api(endpoint_path, personal_access_token: bot_token), params: { with_labels_details: true }
+            end
+          end
+
+          context 'when the assignees change' do
+            before do
+              merge_request.assignees << create(:user)
+            end
+
+            it 'serializes the changed merge request' do
+              expect(API::Entities::MergeRequestBasic).to receive(:represent).once.and_call_original
+
+              get api(endpoint_path, personal_access_token: bot_token)
+            end
+          end
+
+          context 'when the reviewers change' do
+            before do
+              merge_request.reviewers << create(:user)
+            end
+
+            it 'serializes the changed merge request' do
+              expect(API::Entities::MergeRequestBasic).to receive(:represent).once.and_call_original
+
+              get api(endpoint_path, personal_access_token: bot_token)
+            end
+          end
+        end
+      end
+
+      context 'when user is not a bot' do
+        before do
+          get api(endpoint_path, user)
+        end
+
+        it 'does not use cached response' do
+          expect(API::Entities::MergeRequestBasic).to receive(:represent).once.and_call_original
+
+          get api(endpoint_path, user)
+        end
+      end
 
       context 'when cache_list_mr_on_group_api_responses is disabled' do
         before do
@@ -1716,6 +1805,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
   describe "GET /projects/:id/merge_requests/:merge_request_iid" do
     let(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], milestone: milestone, source_project: project, source_branch: 'markdown', title: "Test") }
+
+    describe 'mcp route setting' do
+      subject { get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user) }
+
+      it_behaves_like 'an endpoint with mcp route setting', :get_merge_request,
+        expected_params: [:id, :merge_request_iid]
+    end
 
     it_behaves_like 'enforcing job token policies', :read_merge_requests,
       allow_public_access_for_enabled_project_features: [:repository, :merge_requests] do
@@ -2114,6 +2210,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/commits' do
     include_context 'with merge requests'
 
+    describe 'mcp route setting' do
+      subject { get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits", user) }
+
+      it_behaves_like 'an endpoint with mcp route setting', :get_merge_request_commits,
+        expected_params: [:id, :merge_request_iid, :per_page, :page]
+    end
+
     it 'returns a 200 when merge request is valid' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits", user)
       commit = merge_request.merge_request_diff.last_commit
@@ -2328,6 +2431,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       )
     end
 
+    describe 'mcp route setting' do
+      subject { get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user) }
+
+      it_behaves_like 'an endpoint with mcp route setting', :get_merge_request_diffs,
+        expected_params: [:id, :merge_request_iid, :per_page, :page]
+    end
+
     it_behaves_like 'authorizing granular token permissions', :read_merge_request_diff do
       let(:boundary_object) { project }
       let(:request) do
@@ -2394,6 +2504,52 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           expect(json_response.size).to eq(1)
         end
       end
+
+      context 'when diff files exceed safe limits' do
+        before do
+          allow(Commit).to receive_messages(diff_safe_max_files: 1, diff_safe_max_lines: 1)
+        end
+
+        it 'does not collapse diff content on page 1', :aggregate_failures do
+          get(
+            api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user),
+            params: { page: 1, per_page: 30 }
+          )
+
+          expect_successful_response_with_paginated_array
+
+          non_trivial_diffs = json_response.reject { |diff| diff['deleted_file'] || diff['renamed_file'] }
+          expect(non_trivial_diffs).not_to be_empty
+
+          json_response.each do |diff|
+            expect(diff['collapsed']).to be false
+
+            next if diff['deleted_file'] || diff['renamed_file']
+
+            expect(diff['diff']).not_to be_empty, "Expected non-empty diff for #{diff['new_path']}"
+          end
+        end
+
+        it 'does not collapse diff content on subsequent pages', :aggregate_failures do
+          get(
+            api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user),
+            params: { page: 2, per_page: 1 }
+          )
+
+          expect_successful_response_with_paginated_array
+
+          non_trivial_diffs = json_response.reject { |diff| diff['deleted_file'] || diff['renamed_file'] }
+          expect(non_trivial_diffs).not_to be_empty
+
+          json_response.each do |diff|
+            expect(diff['collapsed']).to be false
+
+            next if diff['deleted_file'] || diff['renamed_file']
+
+            expect(diff['diff']).not_to be_empty, "Expected non-empty diff for #{diff['new_path']}"
+          end
+        end
+      end
     end
   end
 
@@ -2450,6 +2606,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     context 'when authorized' do
       let!(:pipeline) { create(:ci_empty_pipeline, project: project, user: user, ref: merge_request.source_branch, sha: merge_request.diff_head_sha) }
       let!(:pipeline2) { create(:ci_empty_pipeline, project: project) }
+
+      describe 'mcp route setting' do
+        subject { get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", user) }
+
+        it_behaves_like 'an endpoint with mcp route setting', :get_merge_request_pipelines,
+          expected_params: [:id, :merge_request_iid, :per_page, :page]
+      end
 
       it_behaves_like 'authorizing granular token permissions', :read_merge_request_pipeline do
         let(:boundary_object) { project }
@@ -2648,6 +2811,16 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   end
 
   describe 'POST /projects/:id/merge_requests' do
+    describe 'mcp route setting' do
+      subject do
+        post api("/projects/#{project.id}/merge_requests", user),
+          params: { title: 'Test merge request', source_branch: 'feature_conflict', target_branch: 'master' }
+      end
+
+      it_behaves_like 'an endpoint with mcp route setting', :create_merge_request,
+        expected_params: API::Helpers::MergeRequestsHelpers.create_merge_request_mcp_params, status: :created
+    end
+
     context 'support for deprecated assignee_id' do
       let(:params) do
         {
@@ -4059,6 +4232,39 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    shared_examples 'enforces presence of SHA parameter' do
+      it 'returns 400 when sha param is not provided' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('SHA must be provided when merging')
+      end
+
+      it 'proceeds with merge when sha param is provided' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user),
+          params: { sha: merge_request.diff_head_sha }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when a namespace requires SHA for merge' do
+      before do
+        project.namespace.namespace_settings.update!(require_sha_for_merge: true)
+      end
+
+      it_behaves_like 'enforces presence of SHA parameter'
+    end
+
+    context 'when the application requires SHA for merge' do
+      before do
+        project.namespace.namespace_settings.update!(require_sha_for_merge: nil)
+        stub_application_setting(require_sha_for_merge: true)
+      end
+
+      it_behaves_like 'enforces presence of SHA parameter'
+    end
+
     it "updates the MR's squash attribute" do
       expect do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { squash: true }
@@ -4840,6 +5046,14 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let(:params) { {} }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :subscribe_merge_request,
+      expected_success_status: :not_modified do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/subscribe", personal_access_token: pat)
+      end
+    end
+
     it 'subscribes to a merge request' do
       post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/subscribe", admin, admin_mode: true)
 
@@ -4876,6 +5090,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   end
 
   describe 'POST :id/merge_requests/:merge_request_iid/unsubscribe' do
+    it_behaves_like 'authorizing granular token permissions', :subscribe_merge_request do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unsubscribe", personal_access_token: pat)
+      end
+    end
+
     it 'unsubscribes from a merge request' do
       post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unsubscribe", user)
 

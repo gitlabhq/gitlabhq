@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketImport::Stage::ImportUsersWorker, feature_category: :importers do
-  let_it_be(:project, freeze: false) do
+  let_it_be(:project) do
     create(:project, :import_started, import_url: 'https://bitbucket.org')
   end
 

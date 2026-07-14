@@ -1,0 +1,9 @@
+---
+name: read_ai_tool_rule
+description: Grants the ability to read AI tool rules
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - read_ai_tool_rule

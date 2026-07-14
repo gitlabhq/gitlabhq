@@ -1,13 +1,24 @@
 # frozen_string_literal: true
 
-require_relative '../lib/gitlab_settings'
+require 'gitlab/configs'
+
+Gitlab::Configs.on_mutation_warning = ->(message, extra) do
+  raise message unless Rails.env.production?
+
+  # `caller` is already captured inside Options#report_mutation_warning
+  # so the frames reflect the real call site, not this dispatch layer.
+  # Gitlab::BacktraceCleaner drops config/initializers, so the gem limits it
+  # to 11 frames (caller[0..10]) before passing it here.
+  payload = { message: message, caller: extra[:caller], method: extra[:method] }
+  Gitlab::AppJsonLogger.warn(payload)
+end
 
 file = ENV.fetch('GITLAB_CONFIG') { Rails.root.join('config/gitlab.yml') }
 
 GITLAB_INSTANCE_UUID_NOT_SET = 'uuid-not-set'
 MultipleDbKeyBaseError = Class.new(StandardError)
 
-Settings = GitlabSettings.load(file, Rails.env) do
+Settings = Gitlab::Configs.load(file, Rails.env) do
   def gitlab_on_standard_port?
     on_standard_port?(gitlab)
   end

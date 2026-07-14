@@ -40,7 +40,7 @@ module CacheMarkdownField
     # Banzai is less strict about authors, so don't always have an author key
     context[:author] = self.author if self.respond_to?(:author)
 
-    context[:user] = self.parent_user if Feature.enabled?(:personal_snippet_reference_filters, context[:author])
+    context[:user] = self.parent_user
 
     context
   end
@@ -62,7 +62,7 @@ module CacheMarkdownField
       ]
     end
 
-    updates['cached_markdown_version'] = latest_cached_markdown_version
+    updates['cached_markdown_version'] = cached_markdown_version_for_write
 
     updates.each { |field, data| write_markdown_field(field, data) }
   end
@@ -85,7 +85,7 @@ module CacheMarkdownField
     markdown_changed = markdown_field_changed?(markdown_field)
     html_changed = markdown_field_changed?(html_field)
 
-    latest_cached_markdown_version == cached_markdown_version &&
+    latest_cached_markdown_version <= (cached_markdown_version || 0) &&
       (html_changed || markdown_changed == html_changed)
   end
 
@@ -128,17 +128,41 @@ module CacheMarkdownField
     cached_html_for(markdown_field)
   end
 
+  # The version we use to decide whether a row's cached HTML is stale.
+  # During a rollout this rolls per the phased-rollout mechanism and may
+  # return the previous (shifted) version; a row whose persisted version
+  # is at least as new as this is treated as fresh, so a "previous" roll
+  # against a "current" row does no work.
+  #
+  # The roll is memoised so it stays stable for the lifetime of this
+  # instance. This is not needed for correctness (the row still converges and
+  # the downgrade guard prevents regressions either way), but it keeps the
+  # several staleness checks one request makes against a record consistent, so
+  # a row's fields don't read at mixed versions on a single page. The
+  # load-shedding comes from different instances rolling independently.
+  #
+  # For writes, refer to `cached_markdown_version_for_write` instead.
   def latest_cached_markdown_version
-    # because local_markdown_version is stored in application_settings which uses
-    # cached_markdown_version too, we check explicitly to avoid an endless loop.
-    local_version = local_markdown_version if respond_to?(:has_attribute?) && has_attribute?(:local_markdown_version)
-
-    # rubocop:disable Gitlab/ModuleWithInstanceVariables -- acceptable use case
-    # See https://docs.gitlab.com/ee/development/module_with_instance_variables.html#acceptable-use
     @latest_cached_markdown_version ||= Gitlab::MarkdownCache.latest_cached_markdown_version(
-      local_version: local_version
+      local_version: local_markdown_version_for_cache
     )
-    # rubocop:enable Gitlab/ModuleWithInstanceVariables
+  end
+
+  # The version every write targets, regardless of the staleness-check roll.
+  # Writes always use the new version; the flag only throttles read-driven
+  # rewrites via `latest_cached_markdown_version`.
+  def cached_markdown_version_for_write
+    Gitlab::MarkdownCache.cached_markdown_version_for_write(
+      local_version: local_markdown_version_for_cache
+    )
+  end
+
+  # because local_markdown_version is stored in application_settings which uses
+  # cached_markdown_version too, we check explicitly to avoid an endless loop.
+  def local_markdown_version_for_cache
+    return unless respond_to?(:has_attribute?) && has_attribute?(:local_markdown_version)
+
+    local_markdown_version
   end
 
   def parent_user

@@ -1,0 +1,3 @@
+---
+name: read_cd_rollout
+description: Grants the ability to read continuous deployment rollouts

@@ -21,7 +21,7 @@ responsibly, and integrating security considerations from the beginning of the d
   as other critical write operations to prevent unauthorized changes or misuse of the system.
 - **Running a pipeline should be an explicit action**: Actions that create a pipeline in the user's context
   should be designed so that it is clear to the user that a pipeline (or single job) is started when performing the action.
-  The user should be aware of the changes executed in the pipeline **before** they are executed.
+  The user should be aware of the changes executed in the pipeline before they are executed.
 - **Remote execution and isolation**: The CI/CD pipeline functions as a remote execution environment where jobs can
   execute scripts performing a wide range of actions. Ensure that jobs are adequately isolated and do not unintentionally
   expose sensitive data or systems.

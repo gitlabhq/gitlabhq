@@ -6,8 +6,8 @@ RSpec.describe Gitlab::UserAccess, feature_category: :system_access do
   include ProjectForksHelper
 
   let(:access) { described_class.new(user, container: project) }
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let(:project) { create(:project, :small_repo) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   describe '#can_push_to_branch?' do
     describe 'push to none protected branch' do
@@ -150,7 +150,7 @@ RSpec.describe Gitlab::UserAccess, feature_category: :system_access do
     end
 
     describe 'allowing pushes to maintainers of forked projects' do
-      let(:canonical_project) { create(:project, :public, :repository) }
+      let(:canonical_project) { create(:project, :public, :small_repo) }
       let(:project) { fork_project(canonical_project, create(:user), repository: true) }
 
       before do

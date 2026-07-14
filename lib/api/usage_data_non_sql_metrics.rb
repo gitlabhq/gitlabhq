@@ -12,8 +12,9 @@ module API
         not_found! unless Feature.enabled?(:usage_data_non_sql_metrics, type: :ops)
       end
 
-      desc 'Get Non SQL usage ping metrics' do
-        detail 'This feature was introduced in GitLab 13.11.'
+      desc 'List all non-SQL metrics' do
+        detail 'Lists all non-SQL metrics data used in the Service ping. This action is behind the ' \
+          '`usage_data_non_sql_metrics` feature flag. Administrators only.'
         success code: 200
         failure [
           { code: 401, message: 'Unauthorized' },

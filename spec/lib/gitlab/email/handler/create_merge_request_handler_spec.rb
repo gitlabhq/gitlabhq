@@ -30,20 +30,20 @@ RSpec.describe Gitlab::Email::Handler::CreateMergeRequestHandler do
   context "when email key" do
     let(:mail) { Mail::Message.new(email_raw) }
 
-    it "matches the new format" do
+    it "matches the new format", :aggregate_failures do
       handler = described_class.new(mail, "gitlabhq-gitlabhq-#{project.project_id}-#{user.incoming_email_token}-merge-request")
 
-      expect(handler.instance_variable_get(:@project_id)).to eq project.project_id
-      expect(handler.instance_variable_get(:@project_slug)).to eq project.full_path_slug
-      expect(handler.instance_variable_get(:@incoming_email_token)).to eq user.incoming_email_token
+      expect(handler.identification.project_id).to eq project.project_id
+      expect(handler.identification.project_slug).to eq project.full_path_slug
+      expect(handler.identification.incoming_email_token).to eq user.incoming_email_token
       expect(handler.can_handle?).to be_truthy
     end
 
-    it "matches the legacy format" do
+    it "matches the legacy format", :aggregate_failures do
       handler = described_class.new(mail, "h5bp/html5-boilerplate+merge-request+#{user.incoming_email_token}")
 
-      expect(handler.instance_variable_get(:@project_path)).to eq 'h5bp/html5-boilerplate'
-      expect(handler.instance_variable_get(:@incoming_email_token)).to eq user.incoming_email_token
+      expect(handler.identification.project_path).to eq 'h5bp/html5-boilerplate'
+      expect(handler.identification.incoming_email_token).to eq user.incoming_email_token
       expect(handler.can_handle?).to be_truthy
     end
 

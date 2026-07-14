@@ -1,0 +1,3 @@
+---
+name: read_cd_version_set
+description: Grants the ability to read continuous deployment version sets

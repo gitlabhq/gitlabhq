@@ -8,6 +8,11 @@ import {
   useCachedUserCounts,
 } from '~/super_sidebar/user_counts_manager';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
+import {
+  issuesDashboardPath,
+  dashboardTodosPath,
+  mergeRequestsDashboardPath,
+} from '~/lib/utils/path_helpers/dashboard';
 import Counter from './counter.vue';
 
 export default {
@@ -22,11 +27,6 @@ export default {
     sidebarData: {
       type: Object,
       required: true,
-    },
-    counterClass: {
-      type: String,
-      required: false,
-      default: '',
     },
   },
   i18n: {
@@ -54,18 +54,26 @@ export default {
   beforeDestroy() {
     destroyUserCountsManager();
   },
+  methods: {
+    issuesPathWithUser() {
+      return issuesDashboardPath({
+        assignee_username: this.sidebarData.username,
+      });
+    },
+    dashboardTodosPath,
+    mergeRequestsDashboardPath,
+  },
 };
 </script>
 
 <template>
-  <div class="gl-flex gl-items-center gl-justify-between gl-gap-0">
+  <div class="gl-flex gl-items-center gl-justify-between">
     <counter
       v-gl-tooltip.bottom="$options.i18n.workItems"
       class="dashboard-shortcuts-issues gl-basis-1/3"
       icon="work-items"
-      :class="counterClass"
       :count="userCounts.assigned_issues"
-      :href="sidebarData.issues_dashboard_path"
+      :href="issuesPathWithUser()"
       :label="$options.i18n.workItems"
       data-testid="issues-shortcut-button"
       data-track-action="click_link"
@@ -76,9 +84,8 @@ export default {
       <counter
         v-gl-tooltip.bottom="$options.i18n.mergeRequests"
         class="js-merge-request-dashboard-shortcut gl-w-full"
-        :class="counterClass"
         icon="merge-request"
-        :href="sidebarData.merge_request_dashboard_path"
+        :href="mergeRequestsDashboardPath()"
         :count="userCounts.total_merge_requests"
         :label="$options.i18n.mergeRequests"
         data-testid="merge-requests-shortcut-button"
@@ -91,9 +98,8 @@ export default {
       v-gl-tooltip.bottom="$options.i18n.todoList"
       class="shortcuts-todos js-todos-count gl-basis-1/3"
       icon="todo-done"
-      :class="counterClass"
       :count="userCounts.todos"
-      :href="sidebarData.todos_dashboard_path"
+      :href="dashboardTodosPath()"
       :label="$options.i18n.todoList"
       data-testid="todos-shortcut-button"
       data-track-action="click_link"

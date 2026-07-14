@@ -26,7 +26,6 @@ RSpec.describe 'profiles/two_factor_auths/show.html.haml', feature_category: :sy
       disable_two_factor_authentication_data: {},
       email_otp_enrollment_restriction_confirm_data: {}
     )
-    stub_feature_flags(email_based_mfa: false)
   end
 
   context 'when user is allowed to use passkeys authentication' do

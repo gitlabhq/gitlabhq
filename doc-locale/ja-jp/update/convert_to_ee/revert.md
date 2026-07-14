@@ -1,33 +1,33 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Enterprise Edition（EE）からCommunity Edition（CE）への変更
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: エンタープライズ版からコミュニティ版に戻す
 ---
 
-GitLab Enterprise Edition（EE）インスタンスをCE（Community Edition）にダウングレードできますが、その前に次のことを行う必要があります:
+EEインスタンスをCEに戻すことができますが、まず以下のことを行う必要があります:
 
-1. EE専用の認証メカニズムを無効にします。
-1. データベースからEE専用のインテグレーションを削除します。
-1. スコープ環境を使用する設定を調整します。
+1. EE専用の認証メカニズムを無効にする。
+1. EE専用のインテグレーションをデータベースから削除する。
+1. 環境スコープを使用する設定を調整する。
 
-## EE専用の認証メカニズムをオフにします {#turn-off-ee-only-authentication-mechanisms}
+## EE専用の認証メカニズムを無効にする {#turn-off-ee-only-authentication-mechanisms}
 
-KerberosはEEインスタンスでのみ利用可能です。これを行うには、次の手順に従います:
+KerberosはEEインスタンスでのみ利用可能です。これを行うには、次の手順に従います。
 
-- ロールバックする前に、これらのメカニズムをオフにします。
-- 別の認証方法をユーザーに提供します。
+- 元に戻す前にこれらのメカニズムをオフにしてください。
+- ユーザーに別の認証方法を提供してください。
 
-## データベースからEE専用のインテグレーションを削除します {#remove-ee-only-integrations-from-the-database}
+## データベースからEE専用のインテグレーションを削除する {#remove-ee-only-integrations-from-the-database}
 
-これらのインテグレーションは、EEのコードベースでのみ利用可能です:
+これらのインテグレーションはEEコードベースでのみ利用可能です:
 
 - [GitHub](../../user/project/integrations/github.md)
 - [Git Guardian](../../user/project/integrations/git_guardian.md)
 - [Google Artifact Management](../../user/project/integrations/google_artifact_management.md)
 - [Google Cloud IAM](../../integration/google_cloud_iam.md)
 
-CEにダウングレードすると、次のようなエラーが発生する可能性があります:
+CEへダウングレードすると、次のようなエラーが発生する可能性があります:
 
 ```plaintext
 Completed 500 Internal Server Error in 497ms (ActiveRecord: 32.2ms)
@@ -38,14 +38,14 @@ column if you didn't intend it to be used for storing the inheritance class or o
 use another column for that information.)
 ```
 
-エラーメッセージの`subclass`は、以下のいずれかになります:
+エラーメッセージ内の`subclass`は、以下のいずれかです:
 
 - `Integrations::Github`
 - `Integrations::GitGuardian`
 - `Integrations::GoogleCloudPlatform::ArtifactRegistry`
 - `Integrations::GoogleCloudPlatform::WorkloadIdentityFederation`
 
-すべてのインテグレーションは、すべてのプロジェクトに対して自動的に作成されます。このエラーが発生しないようにするには、データベースからEE専用のインテグレーションレコードをすべて削除する必要があります。
+すべてのインテグレーションは、すべてのプロジェクトで自動的に作成されます。このエラーを回避するには、EE専用のインテグレーションレコードをすべてデータベースから削除する必要があります。
 
 {{< tabs >}}
 
@@ -73,32 +73,32 @@ bundle exec rails runner "Integration.where(type_new: ['Integrations::GoogleClou
 
 {{< /tabs >}}
 
-## スコープ環境を使用する設定を調整します {#adjust-configuration-that-uses-environment-scopes}
+## 環境スコープを使用する設定を調整する {#adjust-configuration-that-uses-environment-scopes}
 
-[環境スコープ](../../user/group/clusters/_index.md#environment-scopes)を使用している場合は、設定、特に設定変数が同じキーを共有しているが、スコープが異なる場合は、調整が必要になることがあります。環境スコープはCEでは完全に無視されます。
+[environment scopes](../../user/group/clusters/_index.md#environment-scopes)を使用している場合、特に設定変数が同じキーを共有しているが、異なるスコープを持つ場合は、設定を調整する必要があるかもしれません。環境スコープは、CEでは完全に無視されます。
 
-キーは共有しているがスコープが異なる設定変数を使用すると、特定の環境で予期しない変数が誤って取得される可能性があります。この場合は、正しい変数があることを確認してください。
+同じキーを共有しているが異なるスコープを持つ設定変数を使用している場合、特定の環境で予期しない変数を誤って取得してしまう可能性があります。この場合は、適切な変数があることを確認してください。
 
-データは移行時に完全に保持されるため、EEに戻して動作を復元できます。
+移行中にデータは完全に保持されるため、EEに戻して動作を復元することができます。
 
-## CEにロールバック {#revert-to-ce}
+## CEに戻す {#revert-to-ce}
 
-必要な手順を実行したら、GitLabインスタンスをCEにロールバックできます。
+必要な手順を実行した後、GitLabインスタンスをCEに戻すことができます。
 
-すべての依存関係が最新の状態になっていることを確認するには、正しい[更新ガイド](../_index.md)に従ってください。
+すべての依存関係が最新であることを確認するために、正しい[update guides](../_index.md)に従ってください。
 
 {{< tabs >}}
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-[ディストリビューションのインストール手順](../../install/package/_index.md#supported-platforms)に従って、Community Editionパッケージをインストールします。
+[installation instructions for your distribution](../../install/package/_index.md#supported-platforms)に従って、コミュニティ版パッケージをインストールします。
 
 {{< /tab >}}
 
 {{< tab title="自己コンパイル（ソース）" >}}
 
-1. GitLabインストールの現在のGitリモートを、CE Gitリモートに置き換えます。
-1. 最新の変更をフェッチし、最新の安定したブランチをチェックアウトします。次に例を示します: 
+1. GitLabインストールの現在のGitリモートを、CEのGitリモートに置き換えます。
+1. 最新の変更をフェッチし、最新の安定したブランチをチェックアウトする。例: 
 
    ```shell
    git remote set-url origin git@gitlab.com:gitlab-org/gitlab-foss.git
@@ -109,3 +109,30 @@ bundle exec rails runner "Integration.where(type_new: ['Integrations::GoogleClou
 {{< /tab >}}
 
 {{< /tabs >}}
+
+## トラブルシューティング {#troubleshooting}
+
+このセクションには、発生する可能性のある問題に対する解決策が含まれています。
+
+### エラー: `Cookbook gitlab-ee not found` {#error-cookbook-gitlab-ee-not-found}
+
+GitLab EEインスタンスにGitLab CE用のLinuxパッケージをインストールする際に、`Cookbook gitlab-ee not found`エラーが発生する可能性があります。この問題を解決するには、次の手順に従います:
+
+1. `gitlab-ee`Cookbookを削除します:
+
+   ```shell
+   sudo rm -rf /opt/gitlab/embedded/cookbooks/cache/cookbooks/gitlab-ee
+   ```
+
+1. GitLab CEを再インストールします。
+1. すべてのサービスが稼働していることを確認してください:
+
+   ```shell
+   sudo gitlab-ctl status
+   ```
+
+   そうでない場合は、GitLabを再起動してください:
+
+   ```shell
+   sudo gitlab-ctl restart
+   ```

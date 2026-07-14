@@ -40,7 +40,7 @@ RSpec.describe WorkItems::ProcessProjectTransferEventsWorker, feature_category: 
   describe '#handle_event' do
     subject(:handle_event) { worker.handle_event(event) }
 
-    let_it_be(:work_item, freeze: false) { create(:work_item, project: project) }
+    let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
 
     before do
       work_item.update_column(:namespace_traversal_ids, [old_parent.id, project.project_namespace.id])

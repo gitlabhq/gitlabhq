@@ -10,6 +10,7 @@ import { DEFAULT_MILESTONES } from '../constants';
 import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
 
 export default {
+  name: 'MilestoneToken',
   components: {
     BaseToken,
     GlFilteredSearchSuggestion,

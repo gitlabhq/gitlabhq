@@ -1,0 +1,22 @@
+#import "./fragments/contributor_count.fragment.graphql"
+
+query contributorCountQuery($fullPath: ID!, $startDate: Date!, $endDate: Date!) {
+  group(fullPath: $fullPath) {
+    id
+    contributors: valueStreamDashboardUsageOverview(
+      identifier: CONTRIBUTORS
+      timeframe: { start: $startDate, end: $endDate }
+    ) {
+      ...ContributorCountFragment
+    }
+  }
+  project(fullPath: $fullPath) {
+    id
+    contributors: valueStreamDashboardUsageOverview(
+      identifier: CONTRIBUTORS
+      timeframe: { start: $startDate, end: $endDate }
+    ) {
+      ...ContributorCountFragment
+    }
+  }
+}

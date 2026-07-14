@@ -25,7 +25,7 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Create do
       end
 
       context 'when the user does not have permission' do
-        before do
+        before_all do
           group.add_reporter(current_user)
         end
 

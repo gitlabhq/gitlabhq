@@ -11,12 +11,24 @@ module Cells
       # | **Stale**          | Commit     | Commit     | Delete local |
       # | **Missing**        | No-op      | Roll back  | Ignore       |
 
-      # A lease is considered stale if not updated in the last 5 minutes
+      # A lease is considered stale if it was created more than 5 minutes ago
       LEASE_STALENESS_THRESHOLD = 5.minutes
       # Number of leases to process per batch when paginating through remote leases
       LIMIT = 100
       # Local leases older than 1 hour are forcibly deleted as orphaned
       ORPHANED_LEASE_CLEANUP_THRESHOLD = 1.hour
+      # Only ask the Topology Service for leases created within this window. Outstanding leases
+      # are short-lived (committed quickly, or rolled back once past LEASE_STALENESS_THRESHOLD),
+      # so this returns the full outstanding set while letting Spanner seek past the large
+      # backlog of deleted-row tombstones. Must be >= ORPHANED_LEASE_CLEANUP_THRESHOLD so a lease
+      # old enough to be orphan-cleaned locally is still returned by TS and reconciled normally.
+      # The periodic full-scan run (full_scan: true) is the backstop for anything older.
+      # created_at is used (not updated_at) because both the TS claim_leases table and the local
+      # Cells::OutstandingLease table are insert/delete-only - rows are never updated after
+      # creation, so created_at is the immutable, stable key and matches the created_after window
+      # used to fetch leases. Staleness of an outstanding lease is inherently measured from when
+      # it was created, so created_at remains the correct anchor even if that invariant changes.
+      LEASE_LIST_WINDOW = 2.hours
 
       TIMEOUT_IN_SECONDS = 1
 
@@ -30,9 +42,13 @@ module Cells
         @ts_lease_uuids = Set.new
       end
 
-      def execute
-        reconcile_leases
-        cleanup_orphaned_leases
+      # full_scan: false (default) bounds the TS query to LEASE_LIST_WINDOW, which is cheap but
+      # only sees recent leases. full_scan: true lists every lease (slower, scans the tombstone
+      # backlog) and is the only mode that can safely clean up orphaned local leases, because
+      # orphan detection needs a complete view of what exists on TS. Run it on a slower schedule.
+      def execute(full_scan: false)
+        reconcile_leases(full_scan: full_scan)
+        cleanup_orphaned_leases if full_scan
 
         {
           processed: @processed_count,
@@ -50,11 +66,13 @@ module Cells
       # Fetches all remote leases from the Topology Service and reconciles them with local state.
       # Uses cursor-based pagination to handle large numbers of leases efficiently.
       # Tracks all Topology Service lease UUIDs for orphaned cleanup.
-      def reconcile_leases
+      def reconcile_leases(full_scan: false)
         cursor = nil
+        created_after = full_scan ? nil : LEASE_LIST_WINDOW.ago
 
         loop do
-          response = claim_service.list_leases(cursor: cursor, limit: LIMIT, deadline: grpc_deadline)
+          response = claim_service.list_leases(
+            cursor: cursor, limit: LIMIT, created_after: created_after, deadline: grpc_deadline)
           ts_leases = response.leases
           break if ts_leases.empty?
 
@@ -69,8 +87,8 @@ module Cells
 
           # Further categorize leases by staleness
           lease_staleness_threshold = LEASE_STALENESS_THRESHOLD.ago
-          ts_stale_leases = ts_only_leases.select { |lease| lease.updated_at.to_time < lease_staleness_threshold }
-          rails_stale_leases = rails_leases.each_value.select { |lease| lease.updated_at < lease_staleness_threshold }
+          ts_stale_leases = ts_only_leases.select { |lease| lease.created_at.to_time < lease_staleness_threshold }
+          rails_stale_leases = rails_leases.each_value.select { |lease| lease.created_at < lease_staleness_threshold }
 
           # Reconcile each category
           @committed_count += commit_rails_leases(rails_stale_leases)
@@ -115,7 +133,7 @@ module Cells
       # Deletes local leases that are stale and don't exist in the Topology service.
       def cleanup_orphaned_leases
         cutoff_time = ORPHANED_LEASE_CLEANUP_THRESHOLD.ago
-        Cells::OutstandingLease.updated_before(cutoff_time).each_batch(of: LIMIT) do |batch|
+        Cells::OutstandingLease.created_before(cutoff_time).each_batch(of: LIMIT) do |batch|
           # Only delete leases that don't exist on Topology service
           orphaned_leases = batch.reject { |lease| @ts_lease_uuids.include?(lease.uuid) }
 
@@ -142,8 +160,8 @@ module Cells
         Gitlab::AppLogger.info(
           message: message,
           lease_uuid: lease.uuid.value,
-          lease_updated_at: lease.updated_at.to_time,
-          staleness_duration: Time.current - lease.updated_at.to_time,
+          lease_created_at: lease.created_at.to_time,
+          staleness_duration: Time.current - lease.created_at.to_time,
           cell_id: claim_service.cell_id,
           feature_category: :cell
         )

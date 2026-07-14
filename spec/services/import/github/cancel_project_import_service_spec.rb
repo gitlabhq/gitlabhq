@@ -55,7 +55,7 @@ RSpec.describe Import::Github::CancelProjectImportService, feature_category: :im
     end
 
     context 'when user is not allowed to cancel project' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 

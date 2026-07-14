@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project) }
-  let_it_be(:issue, freeze: false) { create(:issue, project: project) }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project) }
   let_it_be(:current_user) { create(:user) }
 
   let(:issue_params) { { 'id' => global_id_of(issue) } }
@@ -48,16 +48,12 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
   end
 
   context 'when the user does have access' do
-    before_all do
-      project.add_guest(current_user)
+    let(:issue_email) do
+      "p+#{project.full_path_slug}-#{project.project_id}-#{current_user.incoming_email_token}-issue-#{issue.iid}@gl.ab"
     end
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL',
-      [:read_issue, :update_issue, :create_issue_note] do
-      let(:user) { current_user }
-      let(:boundary_object) { project }
-      let(:issue_fields) { all_graphql_fields_for('Issue', max_depth: 1) }
-      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    before_all do
+      project.add_guest(current_user)
     end
 
     it_behaves_like 'authorizing granular token permissions for GraphQL', :read_issue do
@@ -66,6 +62,48 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
       # createNoteEmail requires write permissions since it can be used to create issues and notes.
       let(:issue_fields) { all_graphql_fields_for('Issue', max_depth: 1, excluded: ["createNoteEmail"]) }
       let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+
+    # Exercises the granular scope directive on the Issue.createNoteEmail field.
+    # The token also needs read_issue to authorize the enclosing Issue type.
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_issue, :create_issue_note] do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:issue_fields) { 'id createNoteEmail' }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+
+    context 'when using a granular personal access token' do
+      let(:issue_fields) { 'id createNoteEmail' }
+
+      before do
+        stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
+        post_graphql(query, token: { personal_access_token: pat })
+      end
+
+      context 'with only read_work_item permission' do
+        let(:pat) do
+          create(:granular_pat, user: current_user, boundary: ::Authz::Boundary.for(project),
+            permissions: [:read_work_item])
+        end
+
+        it 'returns the issue but redacts createNoteEmail' do
+          expect(graphql_errors).to be_nil
+          expect(issue_data).to include('id' => issue.to_gid.to_s, 'createNoteEmail' => nil)
+        end
+      end
+
+      context 'with create_work_item permission' do
+        let(:pat) do
+          create(:granular_pat, user: current_user, boundary: ::Authz::Boundary.for(project),
+            permissions: [:read_work_item, :create_work_item])
+        end
+
+        it 'returns createNoteEmail' do
+          expect(graphql_errors).to be_nil
+          expect(issue_data).to include('id' => issue.to_gid.to_s, 'createNoteEmail' => issue_email)
+        end
+      end
     end
 
     it 'returns the issue' do
@@ -115,7 +153,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
     context 'when issue got moved' do
       let_it_be(:issue_fields) { ['moved', 'movedTo { title }'] }
       let_it_be(:new_issue) { create(:issue) }
-      let_it_be(:issue, freeze: false) { create(:issue, project: project, moved_to: new_issue) }
+      let_it_be_with_reload(:issue) { create(:issue, project: project, moved_to: new_issue) }
 
       let(:issue_params) { { 'id' => global_id_of(issue) } }
 
@@ -127,7 +165,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
         post_graphql(query, current_user: current_user)
 
         expect(issue_data.keys).to eq %w[moved movedTo]
-        expect(issue_data['moved']).to eq(true)
+        expect(issue_data['moved']).to be(true)
         expect(issue_data['movedTo']['title']).to eq(new_issue.title)
       end
     end
@@ -164,7 +202,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
         let(:duplicate_issue) { create(:issue) }
 
         it 'does not return the related issue' do
-          expect(issue_data['closedAsDuplicateOf']).to eq(nil)
+          expect(issue_data['closedAsDuplicateOf']).to be_nil
         end
       end
     end

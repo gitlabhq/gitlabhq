@@ -11,7 +11,8 @@ import Api from '~/api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { setupQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
-import { DEFAULT_MANUAL_ACTIONS_LIMIT } from '~/ci/constants';
+import PipelinesEmptyState from '~/ci/common/empty_state/pipelines_empty_state.vue';
+import PipelinesErrorState from '~/ci/common/empty_state/pipelines_error_state.vue';
 import PipelinesTableWrapper from '~/ci/merge_requests/components/pipelines_table_wrapper.vue';
 import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import {
@@ -19,7 +20,7 @@ import {
   MR_PIPELINE_TYPE_MERGED_RESULT,
 } from '~/ci/merge_requests/constants';
 import getMergeRequestsPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
-import getSinglePipeline from '~/ci/pipelines_page/graphql/queries/get_single_pipeline.query.graphql';
+import getMergeRequestSinglePipeline from '~/ci/merge_requests/graphql/queries/get_merge_request_single_pipeline.query.graphql';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
 import mrPipelineStatusesUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/mr_pipeline_statuses_updated.subscription.graphql';
@@ -73,18 +74,14 @@ let apolloMock;
 const showMock = jest.fn();
 
 const defaultProvide = {
-  graphqlPath: '/api/graphql/',
-  mergeRequestId: 1,
-  targetProjectFullPath: '/group/project',
   newPipelinePath: '/group/project/-/pipelines/new',
 };
 
 const defaultProps = {
   canRunPipeline: true,
   projectId: '5',
-  mergeRequestId: 3,
-  errorStateSvgPath: 'error-svg',
-  emptyStateSvgPath: 'empty-svg',
+  mergeRequestId: 1,
+  targetProjectFullPath: '/group/project',
 };
 
 const createResponseWithPageInfo = ({ hasNextPage, hasPreviousPage }) => {
@@ -112,7 +109,7 @@ const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) =>
 
   const handlers = [
     [getMergeRequestsPipelines, mergeRequestPipelinesRequest],
-    [getSinglePipeline, getSinglePipelineRequest],
+    [getMergeRequestSinglePipeline, getSinglePipelineRequest],
     [getPipelinesDownstream, getPipelinesDownstreamRequest],
     [cancelPipelineMutation, cancelPipelineMutationRequest],
     [retryPipelineMutation, retryPipelineMutationRequest],
@@ -134,7 +131,6 @@ const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) =>
     apolloProvider: apolloMock,
     provide: {
       ...defaultProvide,
-      manualActionsLimit: DEFAULT_MANUAL_ACTIONS_LIMIT,
     },
     propsData: {
       ...defaultProps,
@@ -154,8 +150,8 @@ const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) =>
   return waitForPromises();
 };
 
-const findEmptyState = () => wrapper.findByTestId('pipeline-empty-state');
-const findErrorEmptyState = () => wrapper.findByTestId('pipeline-error-empty-state');
+const findEmptyState = () => wrapper.findComponent(PipelinesEmptyState);
+const findErrorEmptyState = () => wrapper.findComponent(PipelinesErrorState);
 const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 const findModal = () => wrapper.findComponent(GlModal);
 const findMrPipelinesDocsLink = () => wrapper.findByTestId('mr-pipelines-docs-link');
@@ -221,9 +217,7 @@ describe('PipelinesTableWrapper component', () => {
     });
 
     it('should render error state', () => {
-      expect(findErrorEmptyState().text()).toBe(
-        'There was an error fetching the pipelines. Try again in a few moments or contact your support team.',
-      );
+      expect(findErrorEmptyState().exists()).toBe(true);
     });
 
     it('does not render pagination', () => {
@@ -678,7 +672,7 @@ describe('PipelinesTableWrapper component', () => {
 
         it('refetches the single pipeline', () => {
           expect(getSinglePipelineRequest).toHaveBeenCalledWith({
-            fullPath: defaultProvide.targetProjectFullPath,
+            fullPath: defaultProps.targetProjectFullPath,
             id: pipeline.graphqlId,
           });
         });
@@ -969,6 +963,22 @@ describe('PipelinesTableWrapper component', () => {
         });
       });
 
+      it('subscribes to a terminal parent pipeline after a job action on it', async () => {
+        const response = generateMRPipelinesResponse({ count: 1, status: 'FAILED' });
+        mergeRequestPipelinesRequest.mockResolvedValue(response);
+        await createComponent();
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+
+        const pipeline = findPipelinesList().props('pipelines')[0];
+        findPipelinesList().vm.$emit('job-action-executed', pipeline);
+        await waitForPromises();
+
+        expect(subscriptionHandler).toHaveBeenCalledWith({
+          pipelineId: 'gid://gitlab/Ci::Pipeline/1',
+        });
+      });
+
       it('subscribes to a terminal downstream after a job action on its parent', async () => {
         const downstream = generateMockDownstreamPipeline({ id: '100', status: 'SUCCESS' });
         const response = generateMRPipelinesResponse({ count: 0 });
@@ -1112,8 +1122,8 @@ describe('PipelinesTableWrapper component', () => {
         expect(getPipelinesDownstreamRequest).toHaveBeenCalledTimes(1);
         expect(getPipelinesDownstreamRequest).toHaveBeenCalledWith(
           expect.objectContaining({
-            fullPath: defaultProvide.targetProjectFullPath,
-            mergeRequestIid: String(defaultProvide.mergeRequestId),
+            fullPath: defaultProps.targetProjectFullPath,
+            mergeRequestIid: String(defaultProps.mergeRequestId),
           }),
         );
       });

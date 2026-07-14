@@ -12,7 +12,7 @@ RSpec.describe ActiveRecord::QueryRecorder do
   end
 
   describe 'printing to the log' do
-    let(:backtrace) { %r{QueryRecorder backtrace:  --> (\w+/)*\w+\.rb:\d+:in `.*'} }
+    let(:backtrace) { %r{QueryRecorder backtrace:  --> (\w+/)*\w+\.rb:\d+:in ['`].*'} }
     let(:duration_line) { %r{QueryRecorder DURATION:  --> \d+\.\d+} }
 
     def expect_section(query, lines)

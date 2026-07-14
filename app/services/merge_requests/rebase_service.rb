@@ -4,6 +4,8 @@ module MergeRequests
   class RebaseService < MergeRequests::BaseService
     REBASE_ERROR = 'Rebase failed: Rebase locally, resolve all conflicts, then push the branch.'
 
+    SourceBranchMissingError = Class.new(Gitlab::Git::Repository::GitError)
+
     attr_reader :merge_request, :rebase_error
 
     def validate(merge_request)
@@ -31,6 +33,9 @@ module MergeRequests
     end
 
     def rebase
+      raise SourceBranchMissingError, _('Source branch does not exist') unless
+        merge_request.source_branch_exists?
+
       repository.rebase(current_user, merge_request, skip_ci: @skip_ci)
 
       true
@@ -53,6 +58,8 @@ module MergeRequests
     def set_rebase_error(exception)
       @rebase_error =
         case exception
+        when SourceBranchMissingError
+          exception.message
         when Gitlab::Git::PreReceiveError
           "The rebase pre-receive hook failed: #{exception.message}."
         when Gitlab::Git::CommandError

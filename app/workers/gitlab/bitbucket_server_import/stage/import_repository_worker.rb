@@ -52,7 +52,12 @@ module Gitlab
 
         def fetch_max_pull_request_iid(project)
           import_data = project.import_data
-          client = BitbucketServer::Client.new(import_data.credentials)
+          client = BitbucketServer::Client.new(
+            import_data.credentials.merge(
+              logger: Gitlab::BitbucketServerImport::Logger
+            ),
+            http_client: ::Import::Clients::HTTP
+          )
           project_key = import_data.data['project_key']
           repository_slug = import_data.data['repo_slug']
 

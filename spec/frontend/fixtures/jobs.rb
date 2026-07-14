@@ -50,12 +50,12 @@ RSpec.describe 'Jobs (JavaScript fixtures)', feature_category: :continuous_integ
     let!(:with_coverage_zero) { create(:ci_build, :success, name: 'with_coverage_zero', coverage: 0, pipeline: pipeline) }
 
     shared_examples 'graphql queries' do |path, jobs_query, skip_non_defaults = false|
-      let_it_be(:variables, freeze: false) { {} }
-      let_it_be(:success_path, freeze: false) { '' }
-
       let_it_be(:query, freeze: false) do
         get_graphql_query_as_string("#{path}/#{jobs_query}")
       end
+
+      let(:success_path) { '' }
+      let(:variables) { {} }
 
       fixtures_path = 'graphql/jobs/'
 

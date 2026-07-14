@@ -9,6 +9,7 @@ import {
 } from '../custom_email_constants';
 
 export default {
+  name: 'CustomEmailConfirmModal',
   components: {
     GlModal,
     GlSprintf,

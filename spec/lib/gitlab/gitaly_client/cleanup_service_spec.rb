@@ -17,7 +17,7 @@ RSpec.describe Gitlab::GitalyClient::CleanupService, feature_category: :gitaly d
       expect_next_instance_of(Gitaly::CleanupService::Stub) do |instance|
         expect(instance).to receive(:apply_bfg_object_map_stream)
           .with(kind_of(Enumerator), kind_of(Hash))
-          .and_return([])
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
       end
 
       client.apply_bfg_object_map_stream(StringIO.new)
@@ -41,7 +41,8 @@ RSpec.describe Gitlab::GitalyClient::CleanupService, feature_category: :gitaly d
             gitaly_request_with_params(blobs: blobs),
             gitaly_request_with_params(redactions: redactions)
           ), kind_of(Hash))
-          .and_return(Gitaly::RewriteHistoryResponse.new)
+          .and_return(instance_double(GRPC::ActiveCall::Operation,
+            execute: Gitaly::RewriteHistoryResponse.new, trailing_metadata: {}))
       end
 
       rewrite_history

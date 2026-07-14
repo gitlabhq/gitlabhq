@@ -150,86 +150,111 @@ func validateIPAddress(allowLocalhost bool, allowedEndpoints []string) func(netw
 
 		ipAddress := net.ParseIP(host)
 
-		for _, allowedEndpoint := range allowedEndpoints {
-			var hostname string
-
-			switch {
-			case strings.Contains(allowedEndpoint, "://"):
-				// It's already a URL
-				uri := helper.URLMustParse(allowedEndpoint)
-				hostname = uri.Hostname()
-			case strings.Contains(allowedEndpoint, ":"):
-				// It's a host:port format
-				hostPart, _, err := net.SplitHostPort(allowedEndpoint)
-				if err != nil {
-					return fmt.Errorf("invalid host:port format: %v", err)
-				}
-
-				hostname = hostPart
-			default:
-				// It's a hostname
-				hostname = allowedEndpoint
-			}
-
-			// Check if it's an IP address itself
-			if ip := net.ParseIP(hostname); ip != nil {
-				if ip.Equal(ipAddress) {
-					return nil
-				}
-				continue // Skip DNS lookup for IP addresses
-			}
-
-			// Check if it's an IP range
-			if _, network, err := net.ParseCIDR(hostname); err == nil {
-				if network.Contains(ipAddress) {
-					return nil
-				}
-				continue // Skip DNS lookup for IP addresses
-			}
-
-			// Perform DNS lookup
-			ips, err := lookupIPFunc(hostname)
-			if err != nil {
-				return fmt.Errorf("error resolving IP address for %s: %v", hostname, err)
-			}
-
-			for _, ip := range ips {
-				if ip.Equal(ipAddress) {
-					return nil
-				}
-			}
+		allowed, err := ipMatchesAllowedEndpoints(ipAddress, allowedEndpoints)
+		if err != nil {
+			return err
+		}
+		if allowed {
+			return nil
 		}
 
-		if ipAddress.Equal(net.IPv4bcast) {
-			return &AllowedIPError{IP: ipAddress, Message: "limited broadcast IPs are not allowed"}
-		}
-
-		for _, network := range privateNetworks {
-			if network.Contains(ipAddress) {
-				return &AllowedIPError{IP: ipAddress, Message: "private IPs are not allowed"}
-			}
-		}
-
-		if !allowLocalhost {
-			for _, network := range loopbackNetworks {
-				if network.Contains(ipAddress) {
-					return &AllowedIPError{IP: ipAddress, Message: "loopback IPs are not allowed"}
-				}
-			}
-
-			for _, network := range unspecifiedNetworks {
-				if network.Contains(ipAddress) {
-					return &AllowedIPError{IP: ipAddress, Message: "unspecified IPs are not allowed"}
-				}
-			}
-		}
-
-		if ipAddress.IsLinkLocalMulticast() || ipAddress.IsLinkLocalUnicast() {
-			return &AllowedIPError{IP: ipAddress, Message: "link-local unicast and multicast IPs are not allowed"}
-		}
-
-		return nil
+		return checkRestrictedIP(ipAddress, allowLocalhost)
 	}
+}
+
+// ipMatchesAllowedEndpoints reports whether ipAddress matches any of the
+// configured allowed endpoints, resolving hostnames via DNS when necessary.
+func ipMatchesAllowedEndpoints(ipAddress net.IP, allowedEndpoints []string) (bool, error) {
+	for _, allowedEndpoint := range allowedEndpoints {
+		hostname, err := allowedEndpointHostname(allowedEndpoint)
+		if err != nil {
+			return false, err
+		}
+
+		// Check if it's an IP address itself
+		if ip := net.ParseIP(hostname); ip != nil {
+			if ip.Equal(ipAddress) {
+				return true, nil
+			}
+			continue // Skip DNS lookup for IP addresses
+		}
+
+		// Check if it's an IP range
+		if _, network, cidrErr := net.ParseCIDR(hostname); cidrErr == nil {
+			if network.Contains(ipAddress) {
+				return true, nil
+			}
+			continue // Skip DNS lookup for IP addresses
+		}
+
+		// Perform DNS lookup
+		ips, err := lookupIPFunc(hostname)
+		if err != nil {
+			return false, fmt.Errorf("error resolving IP address for %s: %v", hostname, err)
+		}
+
+		for _, ip := range ips {
+			if ip.Equal(ipAddress) {
+				return true, nil
+			}
+		}
+	}
+
+	return false, nil
+}
+
+// allowedEndpointHostname extracts the hostname (or IP/CIDR) portion from a
+// configured endpoint, which may be a URL, a host:port pair or a bare host.
+func allowedEndpointHostname(allowedEndpoint string) (string, error) {
+	switch {
+	case strings.Contains(allowedEndpoint, "://"):
+		// It's already a URL
+		return helper.URLMustParse(allowedEndpoint).Hostname(), nil
+	case strings.Contains(allowedEndpoint, ":"):
+		// It's a host:port format
+		hostPart, _, err := net.SplitHostPort(allowedEndpoint)
+		if err != nil {
+			return "", fmt.Errorf("invalid host:port format: %v", err)
+		}
+		return hostPart, nil
+	default:
+		// It's a hostname
+		return allowedEndpoint, nil
+	}
+}
+
+// checkRestrictedIP returns an AllowedIPError when ipAddress falls into a
+// network range that is not permitted for outbound connections.
+func checkRestrictedIP(ipAddress net.IP, allowLocalhost bool) error {
+	if ipAddress.Equal(net.IPv4bcast) {
+		return &AllowedIPError{IP: ipAddress, Message: "limited broadcast IPs are not allowed"}
+	}
+
+	for _, network := range privateNetworks {
+		if network.Contains(ipAddress) {
+			return &AllowedIPError{IP: ipAddress, Message: "private IPs are not allowed"}
+		}
+	}
+
+	if !allowLocalhost {
+		for _, network := range loopbackNetworks {
+			if network.Contains(ipAddress) {
+				return &AllowedIPError{IP: ipAddress, Message: "loopback IPs are not allowed"}
+			}
+		}
+
+		for _, network := range unspecifiedNetworks {
+			if network.Contains(ipAddress) {
+				return &AllowedIPError{IP: ipAddress, Message: "unspecified IPs are not allowed"}
+			}
+		}
+	}
+
+	if ipAddress.IsLinkLocalMulticast() || ipAddress.IsLinkLocalUnicast() {
+		return &AllowedIPError{IP: ipAddress, Message: "link-local unicast and multicast IPs are not allowed"}
+	}
+
+	return nil
 }
 
 func parseCIDR(s string) net.IPNet {

@@ -21,7 +21,7 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
   end
 
   describe '#execute' do
-    let(:project) { create(:project, :repository, skip_disk_validation: true) }
+    let(:project) { create(:project, :small_repo, skip_disk_validation: true) }
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
     let(:hashed_prefix) { File.join('@hashed', hash[0..1], hash[2..3]) }
@@ -130,7 +130,7 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
       end
 
       context 'when not rolled out' do
-        let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
+        let(:project) { create(:project, :small_repo, storage_version: 1, skip_disk_validation: true) }
 
         it 'moves attachments folder to hashed storage' do
           expect(File.directory?(legacy_storage_path)).to be_truthy
@@ -161,7 +161,7 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
     end
 
     context 'EventStore' do
-      let(:project) { create(:project, :repository, skip_disk_validation: true) }
+      let(:project) { create(:project, :small_repo, skip_disk_validation: true) }
 
       it 'publishes a ProjectPathChangedEvent' do
         expect { service_execute }

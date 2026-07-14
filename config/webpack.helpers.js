@@ -2,18 +2,15 @@ const path = require('path');
 const glob = require('glob');
 const { IS_EE, IS_JH, ROOT_PATH } = require('./webpack.constants');
 
-function generateEntries({ defaultEntries, entriesState } = { defaultEntries: [] }) {
+function generateEntries(defaultEntries = []) {
   // generate automatic entry points
   const autoEntries = {};
   const autoEntriesMap = {};
+  const watchAutoEntries = [path.join(ROOT_PATH, 'app/assets/javascripts/pages/')];
+
   const pageEntries = glob.sync('pages/**/index.js', {
     cwd: path.join(ROOT_PATH, 'app/assets/javascripts'),
   });
-  if (entriesState) {
-    Object.assign(entriesState, {
-      watchAutoEntries: [path.join(ROOT_PATH, 'app/assets/javascripts/pages/')],
-    });
-  }
 
   function generateAutoEntries(entryPath, prefix = '.') {
     const chunkPath = entryPath.replace(/\/index\.js$/, '');
@@ -28,27 +25,18 @@ function generateEntries({ defaultEntries, entriesState } = { defaultEntries: []
       cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
     });
     eePageEntries.forEach((entryPath) => generateAutoEntries(entryPath, 'ee'));
-    if (entriesState) {
-      entriesState.watchAutoEntries.push(path.join(ROOT_PATH, 'ee/app/assets/javascripts/pages/'));
-    }
+    watchAutoEntries.push(path.join(ROOT_PATH, 'ee/app/assets/javascripts/pages/'));
   }
 
   if (IS_JH) {
-    const eePageEntries = glob.sync('pages/**/index.js', {
+    const jhPageEntries = glob.sync('pages/**/index.js', {
       cwd: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
     });
-    eePageEntries.forEach((entryPath) => generateAutoEntries(entryPath, 'jh'));
-    if (entriesState) {
-      entriesState.watchAutoEntries.push(path.join(ROOT_PATH, 'jh/app/assets/javascripts/pages/'));
-    }
+    jhPageEntries.forEach((entryPath) => generateAutoEntries(entryPath, 'jh'));
+    watchAutoEntries.push(path.join(ROOT_PATH, 'jh/app/assets/javascripts/pages/'));
   }
 
   const autoEntryKeys = Object.keys(autoEntriesMap);
-  if (entriesState) {
-    Object.assign(entriesState, {
-      autoEntriesCount: autoEntryKeys.length,
-    });
-  }
 
   // import ancestor entrypoints within their children
   autoEntryKeys.forEach((entry) => {
@@ -63,7 +51,13 @@ function generateEntries({ defaultEntries, entriesState } = { defaultEntries: []
     autoEntries[entry] = defaultEntries.concat(entryPaths);
   });
 
-  return autoEntries;
+  return {
+    entries: autoEntries,
+    entriesState: {
+      autoEntriesCount: autoEntryKeys.length,
+      watchAutoEntries,
+    },
+  };
 }
 
 module.exports = { generateEntries };

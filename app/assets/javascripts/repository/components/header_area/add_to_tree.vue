@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown, GlModalDirective } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
@@ -27,6 +27,7 @@ export default {
   },
   directives: {
     GlModal: GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
   props: {
@@ -272,6 +273,7 @@ export default {
   <div>
     <gl-disclosure-dropdown
       v-if="renderAddToTreeDropdown"
+      v-gl-tooltip="__('Add to tree')"
       :toggle-text="__('Add to tree')"
       toggle-class="add-to-tree"
       data-testid="add-to-tree"

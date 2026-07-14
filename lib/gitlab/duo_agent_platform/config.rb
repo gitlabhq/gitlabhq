@@ -18,6 +18,15 @@ module Gitlab
         @config = load_and_cache_config
       end
 
+      def id_tokens
+        return unless config_present?
+
+        tokens = @config['id_tokens']
+        return unless tokens.is_a?(Hash)
+
+        tokens
+      end
+
       def default_image
         return unless config_present?
 

@@ -347,6 +347,11 @@ module Gitlab
       Gitlab::GitalyClient::Call.new(storage, service, rpc, request, remote_storage, timeout, gitaly_context: gitaly_context).call(&block)
     end
 
+    # Executes a Gitaly RPC and returns an operation. The
+    # operation handle exposes trailing_metadata once the RPC is complete,
+    # which is how callers read the x-gitaly-cost trailer. For streaming
+    # responses the trailer is only available after the stream is fully
+    # consumed.
     def self.execute(storage, service, rpc, request, remote_storage:, timeout:, gitaly_context: {})
       enforce_gitaly_request_limits(:call)
       Gitlab::RequestContext.instance.ensure_deadline_not_exceeded!
@@ -355,7 +360,7 @@ module Gitlab
       kwargs = request_kwargs(storage, timeout: timeout.to_f, remote_storage: remote_storage, gitaly_context: gitaly_context)
       kwargs = yield(kwargs) if block_given?
 
-      stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
+      stub(service, storage).__send__(rpc, request, kwargs.merge(return_op: true)) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def self.query_time
@@ -435,7 +440,6 @@ module Gitlab
       metadata['remote_ip'] = context_data['meta.remote_ip'] if context_data['meta.remote_ip']
       metadata
     end
-    private_class_method :application_context_metadata
 
     # Forward the in-flight MVCC manifest sha (set by Gitaly's pre-receive
     # hook handler after it uploaded the new state to durable storage) so the

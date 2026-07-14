@@ -601,3 +601,53 @@ func TestInjectHeaders(t *testing.T) {
 	require.Equal(t, []string{"gkg_verbose_logs"}, capturedMD.Get("x-gitlab-enabled-feature-flags"))
 	require.Equal(t, []string{"true"}, capturedMD.Get("x-gitlab-enabled-instance-verbose-ai-logs"))
 }
+
+func TestInjectQueryTypeSelection(t *testing.T) {
+	tests := []struct {
+		name      string
+		address   string
+		queryType string
+		want      gkgpb.QueryType
+	}{
+		{name: "defaults to json", address: "test-query-type-json:50051", queryType: "", want: gkgpb.QueryType_QUERY_TYPE_JSON},
+		{name: "named selects the named query type", address: "test-query-type-named:50051", queryType: "named", want: gkgpb.QueryType_QUERY_TYPE_NAMED},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got := make(chan gkgpb.QueryType, 1)
+			lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[gkgpb.ExecuteQueryMessage, gkgpb.ExecuteQueryMessage]) error {
+				msg, err := stream.Recv()
+				if err != nil {
+					return err
+				}
+				got <- msg.GetRequest().GetQueryType()
+
+				return stream.Send(&gkgpb.ExecuteQueryMessage{
+					Content: &gkgpb.ExecuteQueryMessage_Result{
+						Result: &gkgpb.ExecuteQueryResult{
+							Content:  &gkgpb.ExecuteQueryResult_ResultJson{ResultJson: `{}`},
+							Metadata: &gkgpb.QueryMetadata{QueryType: "neighbors"},
+						},
+					},
+				})
+			})
+			injectTestClient(t, lis, tc.address)
+
+			sq := NewSendQuery(newTestAPI(t, "http://localhost"), "test-version")
+			sendData := buildSendData(t, sendQueryParams{
+				GkgServer: GkgServer{Address: tc.address},
+				Query:     `{"name":"my_neighbors"}`,
+				QueryType: tc.queryType,
+				Format:    "raw",
+			})
+
+			recorder := httptest.NewRecorder()
+			req := httptest.NewRequest(http.MethodPost, "/api/v4/orbit/query/my_neighbors", nil)
+			sq.Inject(recorder, req, sendData)
+
+			require.Equal(t, http.StatusOK, recorder.Code)
+			require.Equal(t, tc.want, <-got)
+		})
+	}
+}

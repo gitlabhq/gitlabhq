@@ -219,12 +219,19 @@ While tests can sometimes address these issues through improved synchronization,
 **Difficulty to reproduce**: Moderate. It can be reproduced, for example, in feature tests by attempting to reference an
 element on a page that is not yet rendered, or in unit tests by failing to wait for an asynchronous operation to complete.
 
-**Resolution**: In the end-to-end test suite, using [an eventually matcher](end_to_end/best_practices/_index.md#use-eventually_-matchers-for-expectations-that-require-waiting).
+**Resolution**: In the end-to-end test suite (`qa/`), use [an eventually matcher](end_to_end/best_practices/_index.md#use-eventually_-matchers-for-expectations-that-require-waiting).
+In feature (`:js`) specs, prefer waiting matchers over reading a value, text, or
+count directly, and use the `wait_for` helper only as a last resort to poll for
+browser side-effects. See
+[Prefer waiting matchers over reading element values](best_practices.md#prefer-waiting-matchers-over-reading-element-values)
+and [Poll for browser side-effects with `wait_for`](best_practices.md#poll-for-browser-side-effects-with-wait_for).
 
 **Examples**:
 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/502844): Text was not appearing on a page in time.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/496393): Text was not appearing on a page in time.
+- [Example 3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241119): A browser-initiated download returns before the request is logged. Reading the result immediately produces a `nil` artifact request.
+- [Example 4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234933): Reading `all_by_testid(...).count` returns as soon as one match exists, racing the expected count; a waiting matcher (`have_selector(..., count:)`) waits for the DOM to settle.
 
 </details>
 

@@ -6,7 +6,8 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
   include FilterSpecHelper
 
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:commit, freeze: false) { project.commit }
+
+  let(:commit) { project.commit }
 
   it 'requires project context' do
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)

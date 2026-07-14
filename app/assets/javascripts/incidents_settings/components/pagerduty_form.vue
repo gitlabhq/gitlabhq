@@ -16,6 +16,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { I18N_PAGERDUTY_SETTINGS_FORM, CONFIGURE_PAGERDUTY_WEBHOOK_DOCS_LINK } from '../constants';
 
 export default {
+  name: 'PagerdutyForm',
   components: {
     GlAlert,
     GlButton,

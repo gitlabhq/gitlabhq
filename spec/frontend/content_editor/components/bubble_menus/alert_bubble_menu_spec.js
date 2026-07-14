@@ -18,13 +18,11 @@ import {
 describe('content_editor/components/bubble_menus/alert_bubble_menu', () => {
   let wrapper;
   let tiptapEditor;
-  let contentEditor;
   let eventHub;
   let commands;
 
   const buildEditor = () => {
     tiptapEditor = createTestEditor({ extensions: [Alert, AlertTitle] });
-    contentEditor = {};
     eventHub = eventHubFactory();
   };
 
@@ -32,7 +30,6 @@ describe('content_editor/components/bubble_menus/alert_bubble_menu', () => {
     wrapper = mountExtended(AlertBubbleMenu, {
       provide: {
         tiptapEditor,
-        contentEditor,
         eventHub,
       },
       stubs: {

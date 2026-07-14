@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlIcon } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
@@ -8,6 +7,7 @@ import FileIcon from '../file_icon.vue';
 const MAX_PATH_LENGTH = 60;
 
 export default {
+  name: 'FileFinderItem',
   components: {
     GlIcon,
     ChangedFileIcon,
@@ -36,6 +36,7 @@ export default {
       default: false,
     },
   },
+  emits: ['click', 'mousemove', 'mouseover'],
   computed: {
     pathWithEllipsis() {
       const { path } = this.file;

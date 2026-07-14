@@ -3,6 +3,7 @@ import { GlIcon, GlToggle } from '@gitlab/ui';
 import { featureAccessLevelNone } from '../constants';
 
 export default {
+  name: 'ProjectFeatureSetting',
   components: {
     GlIcon,
     GlToggle,
@@ -53,6 +54,7 @@ export default {
       default: true,
     },
   },
+  emits: ['change'],
   data() {
     return {
       valueWhenFeatureLastEnabled:

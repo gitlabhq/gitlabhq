@@ -1,0 +1,9 @@
+---
+name: batch_push_webhook_changed_paths
+description: Batch push webhook changed-path lookups into one Gitaly FindChangedPaths call instead of per-commit CommitDelta calls.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243797
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605226
+milestone: '19.2'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

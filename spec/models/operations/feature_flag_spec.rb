@@ -8,10 +8,14 @@ RSpec.describe Operations::FeatureFlag do
   subject { create(:operations_feature_flag) }
 
   it_behaves_like 'includes Limitable concern' do
-    subject { build(:operations_feature_flag, project: create(:project)) }
+    let_it_be(:project) { create(:project) }
+
+    subject { build(:operations_feature_flag, project: project) }
   end
 
   describe 'associations' do
+    subject { build_stubbed(:operations_feature_flag) }
+
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:strategies) }
   end
@@ -118,11 +122,11 @@ RSpec.describe Operations::FeatureFlag do
   describe '.for_unleash_client' do
     let_it_be(:project) { create(:project) }
 
-    let!(:feature_flag) do
+    let_it_be(:feature_flag) do
       create(:operations_feature_flag, project: project, name: 'feature1', active: true, version: 2)
     end
 
-    let!(:strategy) do
+    let_it_be(:strategy) do
       create(:operations_strategy, feature_flag: feature_flag, name: 'default', parameters: {})
     end
 
@@ -165,6 +169,8 @@ RSpec.describe Operations::FeatureFlag do
   end
 
   describe '#hook_attrs' do
+    subject { build_stubbed(:operations_feature_flag) }
+
     it 'includes expected attributes' do
       hook_attrs = {
         id: subject.id,

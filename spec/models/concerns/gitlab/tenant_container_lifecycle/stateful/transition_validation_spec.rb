@@ -14,6 +14,7 @@ RSpec.describe Gitlab::TenantContainerLifecycle::Stateful::TransitionValidation,
         :soft_delete         | :active                | :soft_deleted
         :hard_delete         | :soft_deleted          | :deletion_in_progress
         :abort_hard_deletion | :deletion_in_progress  | :soft_deleted
+        :restore             | :soft_deleted          | :active
       end
 
       with_them do
@@ -38,7 +39,7 @@ RSpec.describe Gitlab::TenantContainerLifecycle::Stateful::TransitionValidation,
 
     describe 'events not requiring transition_user' do
       where(:event, :from_state, :to_state) do
-        :restore | :soft_deleted | :active
+        :activate | :confirmed | :active
       end
 
       with_them do

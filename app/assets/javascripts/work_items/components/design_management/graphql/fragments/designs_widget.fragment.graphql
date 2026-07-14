@@ -1,0 +1,35 @@
+#import "./version.fragment.graphql"
+#import "./diff_refs.fragment.graphql"
+
+fragment DesignsWidgetFragment on WorkItemWidgetDesigns {
+  type
+  designCollection {
+    copyState
+    designs(atVersion: $atVersion) {
+      nodes {
+        id
+        event
+        filename
+        notesCount
+        image
+        imageV432x230
+        description
+        descriptionHtml
+        fullPath
+        currentUserTodos(state: pending) {
+          nodes {
+            id
+          }
+        }
+        diffRefs {
+          ...DesignDiffRefs
+        }
+      }
+    }
+    versions {
+      nodes {
+        ...VersionListItem
+      }
+    }
+  }
+}

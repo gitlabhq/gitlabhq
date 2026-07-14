@@ -216,11 +216,20 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
     end
   end
 
+  # `freeze: false` is kept here because this `let_it_be` subject is not an
+  # ActiveRecord record, so freezing gives no cross-example isolation benefit
+  # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+  # gitlab-org/gitlab#602925).
   let_it_be(:context, freeze: false) do
     # Ensure CI contention doesn't cause Banzai timeouts in this relatively heavy test case.
     { disable_banzai_timeout: true }
   end
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:feat, freeze: false) { MarkdownFeature.new }
   let_it_be(:html, freeze: false) do
     # `markdown` helper expects a `@project` and `@group` variable
@@ -326,6 +335,11 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
   end
 
   context 'wiki pipeline' do
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:wiki, freeze: false) { feat.wiki }
     let_it_be(:wiki_page, freeze: false) { feat.wiki_page }
 
@@ -366,7 +380,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
       expect(doc).to create_toc
     end
 
-    it 'includes AutolinkFilter' do
+    it 'autolinks' do
       expect(doc).to create_autolinks
     end
 

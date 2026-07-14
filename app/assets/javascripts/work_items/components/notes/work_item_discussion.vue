@@ -106,6 +106,7 @@ export default {
       required: true,
     },
   },
+  emits: ['cancel-editing', 'delete-note', 'error', 'report-abuse', 'start-editing'],
   data() {
     return {
       isExpanded: this.isExpandedOnLoad,

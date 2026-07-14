@@ -16,7 +16,7 @@ RSpec.describe CustomUniquenessValidator, feature_category: :shared do
     )
   end
 
-  let_it_be(:existing_record_name, freeze: false) { 'Some Name' }
+  let_it_be(:existing_record_name) { 'Some Name' }
 
   shared_examples 'custom uniqueness validator' do
     subject { test_model.new(**new_record_attributes) }
@@ -93,7 +93,7 @@ RSpec.describe CustomUniquenessValidator, feature_category: :shared do
   end
 
   context 'when validation is not scoped to another column' do
-    let_it_be(:test_model, freeze: false) do
+    let_it_be(:test_model) do
       Class.new(ApplicationRecord) do
         self.table_name = :_test_custom_uniqueness
 
@@ -113,7 +113,7 @@ RSpec.describe CustomUniquenessValidator, feature_category: :shared do
   end
 
   context 'when validation is scoped to another column' do
-    let_it_be(:test_model, freeze: false) do
+    let_it_be(:test_model) do
       Class.new(ApplicationRecord) do
         self.table_name = :_test_custom_uniqueness
 
@@ -211,7 +211,7 @@ RSpec.describe CustomUniquenessValidator, feature_category: :shared do
   end
 
   context 'when validation is scoped to multiple columns' do
-    let_it_be(:test_model, freeze: false) do
+    let_it_be(:test_model) do
       Class.new(ApplicationRecord) do
         self.table_name = :_test_custom_uniqueness
 

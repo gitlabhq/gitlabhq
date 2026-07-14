@@ -18,5 +18,6 @@ permissions:
   - upload_npm_package
   - upload_nuget_package
   - upload_pypi_package
+  - upload_rpm_package
   - upload_ruby_gem
   - upload_terraform_module

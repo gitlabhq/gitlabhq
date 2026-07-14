@@ -65,10 +65,8 @@ describe('~/notes/components/notes_activity_header.vue', () => {
     expect(wrapper.findComponent(DiscussionFilter).props('selectedValue')).toBe(1);
   });
 
-  it('with showTimelineViewToggle injected, renders timeline toggle asynchronously', async () => {
+  it('with showTimelineViewToggle injected, renders timeline toggle', async () => {
     createComponent({ provide: { showTimelineViewToggle: () => true } });
-
-    expect(wrapper.findComponent(TimelineToggle).exists()).toBe(false);
 
     await waitForPromises();
 

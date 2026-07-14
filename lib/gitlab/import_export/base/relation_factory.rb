@@ -14,6 +14,8 @@ module Gitlab
 
         # This represents all relations that have unique key on `project_id` or `group_id`
         UNIQUE_RELATIONS = %i[].freeze
+        DIFF_NOTE_POSITION_ATTRIBUTES = %w[position original_position change_position].freeze
+        IMAGE_DIFF_NOTE_POSITION_ATTRIBUTES = %w[width height x y].freeze
 
         USER_REFERENCES = %w[
           author_id
@@ -311,9 +313,10 @@ module Gitlab
         def setup_diff_note
           return unless @relation_hash['type'] == 'DiffNote'
 
-          update_diff_note_position('position')
-          update_diff_note_position('original_position')
-          update_diff_note_position('change_position')
+          DIFF_NOTE_POSITION_ATTRIBUTES.each do |position|
+            update_diff_note_position(position)
+            coerce_image_diff_note_position_to_integer(position)
+          end
         end
 
         def update_diff_note_position(position)
@@ -338,6 +341,19 @@ module Gitlab
               'new_line' => end_lines[2] == 0 ? nil : end_lines[2].to_i
             }
           }
+        end
+
+        def coerce_image_diff_note_position_to_integer(position)
+          position_hash = @relation_hash[position]
+          return unless position_hash
+          return unless position_hash['position_type'] == 'image'
+
+          IMAGE_DIFF_NOTE_POSITION_ATTRIBUTES.each do |attribute|
+            value = position_hash[attribute]
+            next unless value.is_a?(Float)
+
+            position_hash[attribute] = value.round
+          end
         end
 
         # Sets the author for a note. If the user importing the project

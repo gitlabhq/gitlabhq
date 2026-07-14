@@ -14,6 +14,7 @@ import NoteEditedText from './note_edited_text.vue';
 import NoteForm from './note_form.vue';
 
 export default {
+  name: 'NoteBody',
   components: {
     NoteEditedText,
     NoteAwardsList,

@@ -524,6 +524,34 @@ RSpec.describe Gitlab::I18n::TranslationEntry do
     end
   end
 
+  describe '#msgid_contains_multiple_spaces' do
+    it 'is true when the msgid contains multiple spaces' do
+      data = { msgid: 'Collaborate with AI agents to accomplish  tasks and answer questions.' }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.msgid_contains_multiple_spaces?).to be_truthy
+    end
+
+    it 'is true when the msgid contains multiple spaces and namespace' do
+      data = { msgid: 'DuoAgenticChat|Collaborate with AI agents to accomplish  tasks and answer questions.' }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.msgid_contains_multiple_spaces?).to be_truthy
+    end
+
+    it 'is false when msgid contains only single spaces' do
+      entry = described_class.new(
+        entry_data: { msgid: 'Hello world', msgstr: '' }, nplurals: 2)
+      expect(entry.msgid_contains_multiple_spaces?).to be_falsy
+    end
+
+    it 'is false when msgid contains only single spaces and namespace' do
+      entry = described_class.new(
+        entry_data: { msgid: 'Foo Bar|Hello world', msgstr: '' }, nplurals: 2)
+      expect(entry.msgid_contains_multiple_spaces?).to be_falsy
+    end
+  end
+
   describe '#msgid_contains_unescaped_chars' do
     it 'is true when the msgid contains a `%`' do
       data = { msgid: '「100%確定」' }

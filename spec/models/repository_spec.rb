@@ -9,7 +9,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     stub_const('TestBlob', Struct.new(:path))
   end
 
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let_it_be_with_refind(:project) { create(:project, :repository) }
 
   let(:repository) { project.repository }
@@ -279,7 +279,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it { is_expected.to be_falsey }
 
       context 'when the ref is a branch' do
-        let_it_be(:project, freeze: false) { create(:project, :repository) }
+        let_it_be(:project) { create(:project, :repository) }
 
         before do
           repository.add_branch(user, 'refs/remotes/origin/master', 'master')
@@ -289,7 +289,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       context 'when the naked ref is a branch' do
-        let_it_be(:project, freeze: false) { create(:project, :repository) }
+        let_it_be(:project) { create(:project, :repository) }
 
         before do
           repository.add_branch(user, 'origin/master', 'master')
@@ -369,10 +369,15 @@ RSpec.describe Repository, feature_category: :source_code_management do
     context 'with a commit with invalid UTF-8 path' do
       let(:project) { create(:project, :empty_repo) }
 
-      it 'does not raise an error' do
+      it 'returns hash keys with valid UTF-8 encoding', :aggregate_failures do
         response = create_file_in_repo(project, 'master', 'master', "hello\x80world", 'some contents')
 
-        expect { repository.list_last_commits_for_tree(response[:result], '.', offset: 0) }.not_to raise_error
+        result = repository.list_last_commits_for_tree(response[:result], '.', offset: 0)
+
+        result.each_key do |key|
+          expect(key.encoding).to eq(Encoding::UTF_8)
+          expect(key).to be_valid_encoding
+        end
       end
     end
   end
@@ -448,7 +453,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#commits' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     let(:ref) { nil }
     let(:kwargs) { { limit: 60 } }
@@ -701,7 +706,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#commits_by' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     let(:oids) { TestEnv::BRANCH_SHA.values }
 
@@ -739,7 +744,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#commits_between' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     let(:commit) { project.commit }
 
@@ -925,7 +930,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#expand_author_with_user_emails' do
-    let_it_be(:gitlab_user, freeze: false) { create(:user, name: 'Test User', email: 'test@example.com') }
+    let_it_be(:gitlab_user) { create(:user, name: 'Test User', email: 'test@example.com') }
 
     before_all do
       create(:email, :confirmed, user: gitlab_user, email: 'secondary@example.com')
@@ -1013,7 +1018,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#merged_to_root_ref?' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     context 'merged branch without ff' do
       subject { repository.merged_to_root_ref?('branch-merged') }
@@ -1283,7 +1288,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe "#create_dir" do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     it "commits a change that creates a new directory" do
       expect do
@@ -1475,7 +1480,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe "search_files_by_content" do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     let(:results) { repository.search_files_by_content('feature', 'master') }
 
@@ -1717,7 +1722,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#fork_from' do
-    let_it_be(:source_project, freeze: false) { create(:project, :repository) }
+    let_it_be(:source_project) { create(:project, :repository) }
     let(:target_project) { create(:project) }
 
     it 'creates a fork of the source repository' do
@@ -1945,7 +1950,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe "#jenkinsfile?" do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     it 'returns valid file' do
       files = [TestBlob.new('file'), TestBlob.new('Jenkinsfile'), TestBlob.new('copying')]
@@ -1979,7 +1984,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       it 'is true' do
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
     end
 
@@ -1991,7 +1996,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       it 'is false' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
   end
@@ -2221,14 +2226,14 @@ RSpec.describe Repository, feature_category: :source_code_management do
       expect(repository.raw_repository).to receive(:has_visible_content?)
         .and_return(true)
 
-      expect(repository.has_visible_content?).to eq(true)
+      expect(repository.has_visible_content?).to be(true)
     end
 
     it 'delegates to raw_repository when false' do
       expect(repository.raw_repository).to receive(:has_visible_content?)
         .and_return(false)
 
-      expect(repository.has_visible_content?).to eq(false)
+      expect(repository.has_visible_content?).to be(false)
     end
 
     it_behaves_like 'asymmetric cached method', :has_visible_content?
@@ -2242,7 +2247,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     it 'batch loads requested refs' do
       expect(repository).to receive(:list_refs).with(["refs/heads/#{branch}"]).and_call_original
 
-      is_expected.to eq(true)
+      is_expected.to be(true)
     end
 
     context 'when default branch is provided' do
@@ -2251,12 +2256,12 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it 'does not make list_refs query and rely on root_ref cache' do
         expect(repository).not_to receive(:list_refs).with(["refs/heads/#{branch}"])
 
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
     end
 
     context 'when the branch name is in Japanise' do
-      let_it_be(:project, freeze: false) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
       let(:branch) { '日本' }
 
       before do
@@ -2275,7 +2280,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
         repository.expire_branches_cache
 
         expect(repository).to receive(:branch_names).and_call_original
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
 
       it 'uses redis set caching when the cache is filled' do
@@ -2286,7 +2291,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
                 .with(branch)
                 .and_call_original
 
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
     end
   end
@@ -2299,7 +2304,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     it 'batch loads requested refs' do
       expect(repository).to receive(:list_refs).with(["refs/tags/#{tag}"]).and_call_original
 
-      is_expected.to eq(true)
+      is_expected.to be(true)
     end
 
     context 'when "ref_existence_check_gitaly" is disabled' do
@@ -2311,7 +2316,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
         repository.expire_tags_cache
 
         expect(repository).to receive(:tag_names).and_call_original
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
 
       it 'uses redis set caching when the cache is filled' do
@@ -2322,13 +2327,13 @@ RSpec.describe Repository, feature_category: :source_code_management do
                 .with(tag)
                 .and_call_original
 
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
     end
   end
 
   describe '#branch_names', :clean_gitlab_redis_cache do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
     let(:repository) { project.repository }
     let(:branch_names) { %w[main develop] }
 
@@ -2389,7 +2394,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   context 'branch_names_include? method' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
     let(:repository) { project.repository }
     let(:branch_names) { %w[main develop] }
 
@@ -2429,7 +2434,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#tag_names', :clean_gitlab_redis_cache do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
     let(:repository) { project.repository }
     let(:tag_names) { %w[v1.0.0 v1.1.0] }
 
@@ -2489,7 +2494,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   context 'tag_names_include? method' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
     let(:repository) { project.repository }
     let(:tag_names) { %w[v1.0.0 v1.1.0] }
 
@@ -2634,7 +2639,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#expire_branch_cache' do
     # This method is private but we need it for testing purposes. Sadly there's
     # no other proper way of testing caching operations.
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     let(:cache) { repository.send(:cache) }
 
@@ -2909,7 +2914,9 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
           expect_any_instance_of(
             Gitaly::OperationService::Stub
-          ).to receive(:user_rebase_confirmable).and_return(responses.each)
+          ).to receive(:user_rebase_confirmable).and_return(
+            instance_double(GRPC::ActiveCall::Operation, execute: responses.each, trailing_metadata: {})
+          )
         end
 
         it 'does not rollback when there are no errors' do
@@ -2930,7 +2937,9 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
           expect_any_instance_of(
             Gitaly::OperationService::Stub
-          ).to receive(:user_rebase_confirmable).and_return(first_response)
+          ).to receive(:user_rebase_confirmable).and_return(
+            instance_double(GRPC::ActiveCall::Operation, execute: first_response, trailing_metadata: {})
+          )
 
           # Faking second request failure
           allow(request_enum).to receive(:push)
@@ -3574,7 +3583,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#find_tag' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     before do
       allow(Gitlab::GitalyClient).to receive(:call).and_call_original
@@ -3607,6 +3616,14 @@ RSpec.describe Repository, feature_category: :source_code_management do
       allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
 
       expect(repository.avatar).to be_nil
+    end
+
+    context 'when the repository is corrupt or headless and raises a Gitaly error (https://gitlab.com/gitlab-org/gitlab/-/issues/604218)' do
+      it 'returns nil instead of propagating the error' do
+        allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::CommandError)
+
+        expect(repository.avatar).to be_nil
+      end
     end
 
     it 'returns the first avatar file found in the repository' do
@@ -3912,8 +3929,8 @@ RSpec.describe Repository, feature_category: :source_code_management do
       create_remote_branch('joe', 'remote_branch', masterrev)
       repository.add_branch(user, 'local_branch', masterrev.id)
 
-      expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
-      expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
+      expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to be(false)
+      expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to be(true)
     end
   end
 
@@ -4026,22 +4043,22 @@ RSpec.describe Repository, feature_category: :source_code_management do
     let(:ancestor) { commit.parents.first }
 
     it 'is an ancestor' do
-      expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
+      expect(repository.ancestor?(ancestor.id, commit.id)).to be(true)
     end
 
     it 'is not an ancestor' do
-      expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
+      expect(repository.ancestor?(commit.id, ancestor.id)).to be(false)
     end
 
     it 'returns false on nil-values' do
-      expect(repository.ancestor?(nil, commit.id)).to eq(false)
-      expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
-      expect(repository.ancestor?(nil, nil)).to eq(false)
+      expect(repository.ancestor?(nil, commit.id)).to be(false)
+      expect(repository.ancestor?(ancestor.id, nil)).to be(false)
+      expect(repository.ancestor?(nil, nil)).to be(false)
     end
 
     it 'returns false for invalid commit IDs' do
-      expect(repository.ancestor?(commit.id, Gitlab::Git::SHA1_BLANK_SHA)).to eq(false)
-      expect(repository.ancestor?(Gitlab::Git::SHA1_BLANK_SHA, commit.id)).to eq(false)
+      expect(repository.ancestor?(commit.id, Gitlab::Git::SHA1_BLANK_SHA)).to be(false)
+      expect(repository.ancestor?(Gitlab::Git::SHA1_BLANK_SHA, commit.id)).to be(false)
     end
   end
 
@@ -4112,7 +4129,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe 'commit cache' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     it 'caches based on SHA' do
       # Gets the commit oid, and warms the cache
@@ -4280,7 +4297,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#merge_base' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     subject(:repository) { project.repository }
 
@@ -4299,7 +4316,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     it 'returns true' do
-      expect(repository.create_if_not_exists).to eq(true)
+      expect(repository.create_if_not_exists).to be(true)
     end
 
     it 'calls out to the repository client to create a repo' do
@@ -4421,7 +4438,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#lfs_enabled?' do
-    let_it_be(:project, freeze: false) { create(:project, :repository, :design_repo, lfs_enabled: true) }
+    let_it_be(:project) { create(:project, :repository, :design_repo, lfs_enabled: true) }
 
     subject { repository.lfs_enabled? }
 
@@ -4563,7 +4580,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#change_head' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     let(:branch) { repository.container.default_branch }
 
@@ -4842,8 +4859,8 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#object_pool' do
-    let_it_be(:primary_project, freeze: false) { create(:project, :empty_repo) }
-    let_it_be(:forked_project, freeze: false) { create(:project, :fork_repository, forked_from_project: primary_project) }
+    let_it_be_with_reload(:primary_project) { create(:project, :empty_repo) }
+    let_it_be_with_reload(:forked_project) { create(:project, :fork_repository, forked_from_project: primary_project) }
 
     let(:repository) { primary_project.repository }
 
@@ -4938,7 +4955,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'for SHA256 repository' do
-      let_it_be(:project, freeze: false) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+      let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
 
       it { is_expected.to eq('sha256') }
     end
@@ -4988,7 +5005,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       context 'for SHA256 repository' do
-        let_it_be(:project, freeze: false) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+        let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
 
         it { is_expected.to eq(::Gitlab::Git::SHA256_BLANK_SHA) }
       end
@@ -5012,7 +5029,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       context 'for SHA256 repository' do
-        let_it_be(:project, freeze: false) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+        let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
 
         it { is_expected.to eq(::Gitlab::Git::SHA256_EMPTY_TREE_ID) }
       end
@@ -5130,7 +5147,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'with an empty branch' do
-      let_it_be(:project, freeze: false) { create(:project, :empty_repo) }
+      let_it_be(:project) { create(:project, :empty_repo) }
 
       context 'when feature flag is enabled' do
         before do
@@ -5218,6 +5235,14 @@ RSpec.describe Repository, feature_category: :source_code_management do
     context 'when ref_cache_with_rebuild_queue is disabled' do
       before do
         stub_feature_flags(ref_cache_with_rebuild_queue: false)
+      end
+
+      it { is_expected.to be_kind_of(Gitlab::RepositorySetCache) }
+    end
+
+    context 'when the repository has no project' do
+      before do
+        allow(repository).to receive(:project).and_return(nil)
       end
 
       it { is_expected.to be_kind_of(Gitlab::RepositorySetCache) }

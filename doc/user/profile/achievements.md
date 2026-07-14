@@ -9,19 +9,19 @@ title: Achievements
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113156) in GitLab 15.10 [with a flag](../../administration/feature_flags/_index.md) named `achievements`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113156) in GitLab 15.10 [with a feature flag](../../administration/feature_flags/_index.md) named `achievements`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200774) in GitLab 19.2.
 
 {{< /history >}}
 
 > [!flag]
-> On GitLab Self-Managed, by default this feature is not available. To make it available,
-> an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `achievements`.
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Achievements are a way to reward users for their activity on GitLab.
 As a namespace maintainer or owner, you can create custom achievements for specific contributions. You can award these
@@ -34,7 +34,6 @@ An achievement consists of a name, a description, and an avatar.
 
 Achievements are considered to be owned by the user. They are visible regardless of the visibility setting of the namespace that created the Achievement.
 
-This feature is an experiment.
 For more information about planned work, see [epic 9429](https://gitlab.com/groups/gitlab-org/-/epics/9429).
 Tell us about your use cases by leaving comments in the epic.
 

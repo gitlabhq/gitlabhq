@@ -14,6 +14,7 @@ import NewEnvironmentsDropdown from './new_environments_dropdown.vue';
 import StrategyParameters from './strategy_parameters.vue';
 
 export default {
+  name: 'FeatureFlagsStrategy',
   components: {
     GlAlert,
     GlButton,
@@ -48,6 +49,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['change', 'delete'],
 
   i18n: {
     allEnvironments: __('All environments'),
@@ -165,7 +167,7 @@ export default {
         </div>
 
         <div
-          class="order-first gl-offset-md-0 gl-order-md-0 gl-ml-auto !gl-self-end @md/panel:!gl-self-stretch"
+          class="gl-offset-md-0 gl-order-md-0 !gl-order-first gl-ml-auto !gl-self-end @md/panel:!gl-self-stretch"
         >
           <gl-button
             data-testid="delete-strategy-button"
@@ -197,7 +199,7 @@ export default {
             <gl-token
               v-for="environment in filteredEnvironments"
               :key="environment.id"
-              class="rounded-pill gl-mb-3 gl-mr-3 gl-mt-3 @md/panel:!gl-ml-3 @md/panel:!gl-mr-0 @md/panel:!gl-mt-0"
+              class="gl-mb-3 gl-mr-3 gl-mt-3 !gl-rounded-full @md/panel:!gl-ml-3 @md/panel:!gl-mr-0 @md/panel:!gl-mt-0"
               @close="removeScope(environment)"
             >
               {{ environment.environmentScope }}

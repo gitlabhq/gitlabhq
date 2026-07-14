@@ -16,7 +16,7 @@ if (!REVEAL_ESLINT_TODO || REVEAL_ESLINT_TODO === 'false' || REVEAL_ESLINT_TODO 
 
 const NO_HARDCODED_URLS_OPTIONS = {
   allowedKeys: ['path', 'redirect'],
-  allowedFunctions: ['helpPagePath'],
+  allowedFunctions: ['helpPagePath', 'dispatch', 'commit'],
   allowedInterpolationVariables: ['FORUM_URL', 'DOCS_URL', 'PROMO_URL', 'CONTRIBUTE_URL'],
   allowedPatterns: ['\\/api\\/:version'],
   disallowedObjectProperties: ['relative_url_root'],
@@ -591,6 +591,7 @@ export default [
       '@gitlab/no-max-width-media-queries': 'off',
       '@gitlab/vue-tailwind-no-max-width-media-queries': 'off',
       'require-await': 'error',
+      'import/no-extraneous-dependencies': 'off',
       'import/no-dynamic-require': 'off',
       'no-import-assign': 'off',
 
@@ -639,6 +640,38 @@ export default [
           patterns: restrictedImportsPatterns,
         },
       ],
+    },
+  },
+  // Frontend test guardrails (WS1 Guardrail 2).
+  // Scoped to .js/.vue so the `local-rules` plugin and the rule live in the
+  // same config object (flat config requires co-location for non-`off`
+  // rules). New tests must not stub Apollo via `mocks: { $apollo }`; use
+  // createMockApollo instead. Existing offenders are grandfathered in
+  // `.eslint_todo/local-rules-no-apollo-mock.mjs` and surfaced non-blocking
+  // by the `eslint-todo` CI job (REVEAL_ESLINT_TODO=true).
+  // See https://gitlab.com/groups/gitlab-org/plan-stage/-/work_items/477
+  {
+    files: ['{,ee/,jh/}spec/frontend*/**/*.{js,vue}'],
+    plugins: {
+      'local-rules': eslintLocalRules,
+    },
+    rules: {
+      'local-rules/no-apollo-mock': 'error',
+    },
+  },
+  // Flag unused `inject` declarations in Vue components, mirroring
+  // `vue/no-unused-properties` for props/data/computed/methods/setup. Scoped to
+  // `*.vue` (the `local-rules` plugin must be co-located with the non-`off` rule
+  // in flat config). Existing offenders are grandfathered in
+  // `.eslint_todo/local-rules-vue-no-unused-injects.mjs` and surfaced non-blocking
+  // by the `eslint-todo` CI job (REVEAL_ESLINT_TODO=true).
+  {
+    files: ['*.vue', '**/*.vue'],
+    plugins: {
+      'local-rules': eslintLocalRules,
+    },
+    rules: {
+      'local-rules/vue-no-unused-injects': 'error',
     },
   },
   // Storybook stories
@@ -867,8 +900,7 @@ export default [
             'Do not use router.push. Simulate user behaviours and assert the resulting HTML.',
         },
         {
-          selector:
-            'MemberExpression[object.name=/[Rr]outer/][property.name="currentRoute"]',
+          selector: 'MemberExpression[object.name=/[Rr]outer/][property.name="currentRoute"]',
           message:
             'Do not access the router properties directly. Simulate user behaviours and assert the resulting HTML.',
         },

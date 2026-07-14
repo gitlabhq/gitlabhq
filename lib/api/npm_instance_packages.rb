@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module API
   class NpmInstancePackages < ::API::Base
     feature_category :package_registry

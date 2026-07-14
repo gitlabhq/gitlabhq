@@ -30,6 +30,7 @@ export default {
       default: true,
     },
   },
+  emits: ['reset-date'],
 };
 </script>
 

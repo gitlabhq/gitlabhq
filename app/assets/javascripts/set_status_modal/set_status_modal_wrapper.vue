@@ -50,6 +50,7 @@ export default {
       default: '',
     },
   },
+  emits: ['mounted'],
   data() {
     return {
       emoji: this.currentEmoji,

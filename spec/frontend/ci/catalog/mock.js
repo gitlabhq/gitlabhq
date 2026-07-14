@@ -566,7 +566,7 @@ export const catalogSinglePageResponse = {
                   username: 'author-username',
                   webPath: '/user/1',
                 },
-                createdAt: '2024-01-26T19:40:03Z',
+                releasedAt: '2024-01-27T19:40:03Z',
                 name: '1.0.0',
                 path: '/root/catalog-component-test/-/tags/1.0.2',
                 components: {
@@ -643,7 +643,7 @@ export const catalogSharedDataMock = {
             id: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
             name: '1.1.0',
             path: 'path/to/release',
-            createdAt: '2026-02-15T00:00:00Z',
+            releasedAt: '2026-02-15T00:00:00Z',
             author: {
               __typename: 'UserCore',
               id: 'gid://gitlab/User/1',
@@ -660,48 +660,6 @@ export const catalogSharedDataMock = {
     },
   },
 };
-
-const generateResourcesNodes = (count = 20, startId = 0) => {
-  const nodes = [];
-  for (let i = startId; i < startId + count; i += 1) {
-    nodes.push({
-      __typename: 'CiCatalogResource',
-      id: `gid://gitlab/CiCatalogResource/${i}`,
-      description: `This is a component that does a bunch of stuff and is really just a number: ${i}`,
-      icon: 'my-icon',
-      name: `My component #${i}`,
-      starCount: 10,
-      last30DayUsageCount: 4,
-      versions: {
-        __typename: 'CiCatalogResourceVersionConnection',
-        nodes: [
-          {
-            __typename: 'CiCatalogResourceVersion',
-            id: '3',
-            components: {
-              ...componentsListMockData,
-            },
-            name: '1.0.0',
-            path: 'path/to/release',
-            createdAt: Date.now(),
-            author: {
-              __typename: 'UserCore',
-              id: 1,
-              webPath: 'profile/1',
-              name: 'username',
-            },
-          },
-        ],
-      },
-      webPath: 'path/to/project',
-      fullPath: 'namespace/path/to/project',
-    });
-  }
-
-  return nodes;
-};
-
-export const mockCatalogResourceItem = generateResourcesNodes(1)[0];
 
 export const mockComponents = {
   data: {
@@ -758,12 +716,12 @@ export const mockVersionsResponse = {
           {
             id: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
             name: '1.1.0',
-            createdAt: '2026-02-15T00:00:00Z',
+            releasedAt: '2026-02-15T00:00:00Z',
           },
           {
             id: 'gid://gitlab/Ci::Catalog::Resources::Version/1',
             name: '1.0.0',
-            createdAt: '2024-02-15T00:00:00Z',
+            releasedAt: '2024-02-15T00:00:00Z',
           },
         ],
       },

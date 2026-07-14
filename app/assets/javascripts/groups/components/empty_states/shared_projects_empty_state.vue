@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
 import { SEARCH_MINIMUM_LENGTH } from '../../constants';
 
 export default {
+  name: 'SharedProjectsEmptyState',
   components: { ResourceListsEmptyState, HelpPageLink, GlSprintf },
   SEARCH_MINIMUM_LENGTH,
   i18n: {

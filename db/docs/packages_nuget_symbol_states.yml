@@ -8,15 +8,6 @@ feature_categories:
 classes:
   - Geo::PackagesNugetSymbolState
 gitlab_schema: gitlab_main_org
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: packages_nuget_symbol_id
-        table: packages_nuget_symbols
-        sharding_key: project_id
-        belongs_to: packages_nuget_symbol
-desired_sharding_key_migration_job_name: BackfillPackagesNugetSymbolStatesProjectId
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/587558
+sharding_key:
+  project_id: projects
 table_size: small

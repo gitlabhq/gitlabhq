@@ -38,6 +38,7 @@ const initFormField = ({ value = null, required = true } = {}) => ({
 });
 
 export default {
+  name: 'ImportFromGitlabExportApp',
   components: {
     GlButton,
     GlFormGroup,
@@ -162,11 +163,7 @@ export default {
         <gl-form-group
           :label="__('Project name')"
           label-for="name"
-          :description="
-            s__(
-              'ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.',
-            )
-          "
+          :description="s__('ProjectsNew|Start with a letter, digit, emoji, or underscore.')"
           :invalid-feedback="form.fields.name.feedback"
           data-testid="project-name-form-group"
         >

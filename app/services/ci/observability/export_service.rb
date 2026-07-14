@@ -62,6 +62,7 @@ module Ci
 
       def export_data
         pipeline_data = Gitlab::DataBuilder::Pipeline.build(pipeline)
+        pipeline_data[:trace_correlation_enabled] = trace_correlation_enabled?
 
         export_types.each do |export_type|
           case export_type
@@ -88,6 +89,10 @@ module Ci
       def export_logs(pipeline_data)
         logs_data = Gitlab::Observability::PipelineToLogs.new(integration, pipeline_data).convert
         exporter.export_logs(logs_data) if logs_data.present?
+      end
+
+      def trace_correlation_enabled?
+        Feature.enabled?(:ci_pipeline_otlp_trace_correlation, pipeline.project)
       end
 
       def integration

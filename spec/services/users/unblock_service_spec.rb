@@ -13,7 +13,7 @@ RSpec.describe Users::UnblockService, feature_category: :user_management do
     context 'when successful' do
       let(:user) { create(:user, :blocked) }
 
-      it { expect(operation.success?).to eq(true) }
+      it { expect(operation.success?).to be(true) }
 
       it "change the user's state" do
         expect { operation }.to change { user.active? }.to(true)
@@ -33,7 +33,7 @@ RSpec.describe Users::UnblockService, feature_category: :user_management do
       let(:user) { create(:user) }
 
       it 'returns error result', :aggregate_failures do
-        expect(operation.error?).to eq(true)
+        expect(operation.error?).to be(true)
         expect(operation[:message]).to include(/State cannot transition/)
       end
 

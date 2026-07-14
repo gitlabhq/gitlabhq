@@ -8,11 +8,11 @@ RSpec.describe Groups::ApplicationController, feature_category: :groups_and_proj
 
   describe '#respond_to_missing?' do
     it 'returns true if the method matches the name structure' do
-      expect(controller.respond_to?(:authorize_read_usage_quotas!)).to eq(true)
+      expect(controller.respond_to?(:authorize_read_usage_quotas!)).to be(true)
     end
 
     it 'returns false if the method does not match the name structure' do
-      expect(controller.respond_to?(:does_not_exist)).to eq(false)
+      expect(controller.respond_to?(:does_not_exist)).to be(false)
     end
   end
 

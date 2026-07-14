@@ -5,18 +5,16 @@ require 'spec_helper'
 RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
 
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   describe '#index' do
     context 'user logged in' do
-      let_it_be(:project, freeze: false) { create(:project, name: 'Project 1') }
-      let_it_be(:project2, freeze: false) { create(:project, name: 'Project Two') }
+      let_it_be_with_reload(:project) { create(:project, name: 'Project 1', developers: user) }
+      let_it_be_with_reload(:project2) { create(:project, name: 'Project Two', developers: user) }
 
       let(:projects) { [project, project2] }
 
       before_all do
-        project.add_developer(user)
-        project2.add_developer(user)
         user.toggle_star(project2)
       end
 
@@ -56,15 +54,11 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
     end
 
     describe '#index' do
-      let_it_be(:projects, freeze: false) { create_list(:project, 2, creator: user) }
+      let_it_be_with_reload(:projects) { create_list(:project, 2, developers: user) }
 
       context 'project pagination' do
         before do
           allow(Kaminari.config).to receive(:default_per_page).and_return(1)
-
-          projects.each do |project|
-            project.add_developer(user)
-          end
         end
 
         it 'does not paginate projects, even if normally restricted by pagination' do
@@ -94,7 +88,6 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
 
         before do
           enable_design_management
-          project.add_developer(user)
         end
 
         it 'renders all kinds of event without error' do
@@ -112,11 +105,7 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
         end
 
         context 'with deleted project' do
-          let(:pending_deleted_project) { projects.last.tap { |p| p.update!(pending_delete: true) } }
-
-          before do
-            pending_deleted_project.add_developer(user)
-          end
+          let_it_be_with_refind(:pending_deleted_project) { create(:project, developers: user, pending_delete: true) }
 
           it 'does not display deleted project' do
             get :index, format: :atom

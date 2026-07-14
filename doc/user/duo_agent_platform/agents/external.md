@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Agent Foundations
+stage: Agent Foundations
+group: AI Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: External agents
 ---
@@ -20,17 +20,18 @@ title: External agents
 
 {{< history >}}
 
-- Introduced on GitLab.com in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `ai_flow_triggers`. Enabled by default.
+- Introduced on GitLab.com in GitLab 18.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_flow_triggers`. Enabled by default.
 - Renamed from CLI agents in GitLab 18.6
 - Claude Code Agent and Codex Agent enabled on GitLab Self-Managed and GitLab Dedicated in GitLab 18.6.
-- Enabling in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578318) in GitLab 18.7 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_agents`. Enabled on GitLab.com.
-- Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
+- Enabling in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578318) in GitLab 18.7 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_agents`. Enabled on GitLab.com.
+- Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
 - Feature flag `ai_catalog_project_level_enablement` removed in GitLab 18.11.
 - **Merge request ready** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592454) in GitLab 19.0 with a [flag](../../../administration/feature_flags/_index.md) named `merge_request_ready_flow_trigger`. Disabled by default.
 - **Merge request code conflict** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592455) in GitLab 19.1.
-- **Merge request approved** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592456) in GitLab 19.1.
+- **Merge request** trigger event type with the **Approved** action [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237081) in GitLab 19.1.
 - **Work item created** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599985) in GitLab 19.1.
 - **Merge request ready** trigger event type [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/598421) in GitLab 19.1. Feature flag `merge_request_ready_flow_trigger` removed.
+- **Work item status changed** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599983) in GitLab 19.2.
 
 {{< /history >}}
 
@@ -287,7 +288,55 @@ The following CI/CD variables are available:
 | Google Gemini CLI          | `GOOGLE_CLOUD_PROJECT`       | Google Cloud project ID. |
 | Google Gemini CLI          | `GOOGLE_CLOUD_LOCATION`      | Google Cloud project location. |
 
+## Authenticate with ID tokens
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224940) in GitLab 19.2.
+
+{{< /history >}}
+
+To authenticate a custom external agent with third-party OpenID Connect (OIDC) services,
+declare [ID tokens](../../../ci/secrets/id_token_authentication.md) in the agent configuration.
+GitLab CI/CD generates a signed JSON web token (JWT) and injects it into the agent job.
+
+Use ID tokens to authenticate without storing long-lived credentials.
+For example, you can retrieve secrets from a secrets manager or sign artifacts.
+
+To configure ID tokens, add an `id_tokens` block to the external agent configuration.
+Each token requires an `aud` (audience) claim:
+
+```yaml
+injectGatewayToken: true
+image: node:22-slim
+commands:
+  - my-authentication-script.sh "$VAULT_ID_TOKEN"
+id_tokens:
+  VAULT_ID_TOKEN:
+    aud: https://vault.example.com
+```
+
+The `aud` claim can be a single string or a list of strings.
+Each token is available in the agent job as an environment variable that uses the name of the token.
+
+> [!warning]
+> An ID token is a credential that grants access to any service that trusts its `aud` claim.
+> Set the narrowest possible `aud` value for each token.
+
+For more information about the token payload, see
+[OpenID Connect (OIDC) authentication using ID tokens](../../../ci/secrets/id_token_authentication.md).
+
 ## Enable the agent
+
+{{< history >}}
+
+- Enabling a public agent for multiple projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/600526) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_bulk_item_consumer_create`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Enable an agent to trigger it from an issue, merge request, or discussion.
 
@@ -308,17 +357,9 @@ To enable an external agent:
 1. Select the **Managed** tab, then select the agent you want to enable.
 1. In the upper-right corner, select **Enable**.
 1. Under **Project**, select the project you want to enable the agent in.
-1. For **Add triggers**, select which event types trigger the external agent:
-   - **Mention**: When the service account user is mentioned
-     in a comment on an issue or merge request.
-   - **Assign**: When the service account user is assigned
-     to an issue or merge request.
-   - **Assign reviewer**: When the service account user is assigned
-     as a reviewer to a merge request.
-   - **Merge request ready**: When a draft merge request is marked as ready for review.
-   - **Merge request code conflict**: When a merge request can no longer be merged due to a code conflict.
-   - **Merge request approved**: When a merge request receives all required approvals.
-   - **Work item created**: When a work item is created in the project.
+1. For **Add triggers**, select:
+   - One or more [trigger event types](../triggers/_index.md#trigger-event-types).
+   - If needed for the trigger event type, a trigger event action.
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -332,17 +373,13 @@ To enable an external agent:
 1. Select the agent you want to enable.
 1. In the upper-right corner, select **Enable**.
 1. Under **Project**, select the project you want to enable the agent in.
-1. For **Add triggers**, select which event types trigger the external agent:
-   - **Mention**: When the service account user is mentioned
-     in a comment on an issue or merge request.
-   - **Assign**: When the service account user is assigned
-     to an issue or merge request.
-   - **Assign reviewer**: When the service account user is assigned
-     as a reviewer to a merge request.
-   - **Merge request ready**: When a draft merge request is marked as ready for review.
-   - **Merge request code conflict**: When a merge request can no longer be merged due to a code conflict.
-   - **Merge request approved**: When a merge request receives all required approvals.
-   - **Work item created**: When a work item is created in the project.
+
+   To enable a public agent for multiple projects, from the **Project** dropdown list,
+   select the relevant projects. You can select up to 100 projects.
+
+1. For **Add triggers**, select:
+   - One or more [trigger event types](../triggers/_index.md#trigger-event-types).
+   - If needed for the trigger event type, a trigger event action.
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -370,17 +407,9 @@ To enable an external agent in a project:
 1. In the left sidebar, select **AI** > **Agents**.
 1. In the upper-right corner, select **Enable agent from group**.
 1. From the dropdown list, select the external agent you want to enable.
-1. For **Add triggers**, select which event types trigger the external agent:
-   - **Mention**: When the service account user is mentioned
-     in a comment on an issue or merge request.
-   - **Assign**: When the service account user is assigned
-     to an issue or merge request.
-   - **Assign reviewer**: When the service account user is assigned
-     as a reviewer to a merge request.
-   - **Merge request ready**: When a draft merge request is marked as ready for review.
-   - **Merge request code conflict**: When a merge request can no longer be merged due to a code conflict.
-   - **Merge request approved**: When a merge request receives all required approvals.
-   - **Work item created**: When a work item is created in the project.
+1. For **Add triggers**, select:
+   - One or more [trigger event types](../triggers/_index.md#trigger-event-types).
+   - If needed for the trigger event type, a trigger event action.
 1. Select **Enable**.
 
 The external agent appears in the project's **AI** > **Agents** list.
@@ -549,7 +578,7 @@ permissions, ask your instance administrator or top-level group Owner for help.
    > no personal access tokens can be associated with that account.
    > This behavior is meant to keep service accounts secure.
 
-1. [Create a personal access token for the service account](../../profile/service_accounts.md#create-a-personal-access-token-for-a-service-account) with the following [scopes](../../profile/personal_access_tokens.md#personal-access-token-scopes):
+1. [Create a personal access token for the service account](../../profile/service_accounts.md#create-a-personal-access-token-for-a-service-account) with the following [scopes](../../../security/tokens/access_token_scopes.md):
    - `write_repository`
    - `api`
    - `ai_features`

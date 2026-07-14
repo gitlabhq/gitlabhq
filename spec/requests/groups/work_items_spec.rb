@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Work Items', feature_category: :team_planning do
   let_it_be(:work_item) { create(:work_item) }
-  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
   let_it_be(:group) { create(:group) }
 
   describe 'GET /:namespace/-/work_items.ics' do

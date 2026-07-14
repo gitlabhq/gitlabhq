@@ -19,9 +19,12 @@ permissions:
   - download_maven_package_file
   - download_npm_package
   - download_nuget_package
+  - download_package
   - download_pypi_package
+  - download_rpm_package
   - download_ruby_gem
   - download_terraform_module
+  - read_cargo_package
   - read_composer_package
   - read_conan_package
   - read_go_module
@@ -30,7 +33,9 @@ permissions:
   - read_nuget_package
   - read_package
   - read_package_pipeline
+  - read_package_protection_rule
   - read_pypi_package
+  - read_rpm_package
   - read_ruby_gem
   - read_terraform_module
   - search_conan_package

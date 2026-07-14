@@ -1,0 +1,9 @@
+---
+name: delete_knowledge_graph_enabled_namespace
+description: Grants the ability to disable Knowledge Graph for a namespace
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_knowledge_graph_enabled_namespace

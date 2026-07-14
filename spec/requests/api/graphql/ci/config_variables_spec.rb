@@ -88,6 +88,12 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(ref)', feature_categor
 
         it_behaves_like 'returns CI variables'
       end
+
+      context 'when ref is a commit SHA reachable from a project branch' do
+        let(:ref) { project.commit(project.default_branch).sha }
+
+        it_behaves_like 'returns CI variables'
+      end
     end
 
     context 'when the cache is empty' do
@@ -109,6 +115,30 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(ref)', feature_categor
             )
           )
         end
+      end
+    end
+
+    context 'when ref is a commit SHA not reachable from any project ref' do
+      include ProjectForksHelper
+
+      let_it_be(:forked_project) { fork_project(project, user, repository: true) }
+      let(:ref) { forked_commit_sha }
+      let_it_be(:forked_commit_sha) do
+        forked_project.repository.create_file(
+          user, 'test-file.txt', 'test', message: 'test commit', branch_name: 'master'
+        )
+      end
+
+      before_all do
+        create(:merge_request, source_project: forked_project, target_project: project)
+      end
+
+      it 'returns nothing without invoking the service' do
+        expect(service).not_to receive(:execute)
+
+        post_graphql(query, current_user: user)
+
+        expect(graphql_data.dig('project', 'ciConfigVariables')).to be_nil
       end
     end
   end

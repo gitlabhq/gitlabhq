@@ -159,7 +159,7 @@ module API
         end
 
         desc "Delete a wiki page for a #{boundary_type}" do
-          detail "Deletes a specified wiki page for a #{boundary_type}."
+          detail "Deletes a specified wiki page from a #{boundary_type}."
           success code: 204
           failure [
             { code: 400, message: 'Validation error' },

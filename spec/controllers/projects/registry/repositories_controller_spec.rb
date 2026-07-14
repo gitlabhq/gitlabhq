@@ -13,7 +13,7 @@ RSpec.describe Projects::Registry::RepositoriesController, feature_category: :co
   end
 
   context 'when user has access to registry' do
-    before do
+    before_all do
       project.add_developer(user)
     end
 

@@ -9,21 +9,15 @@ module Gitlab
   module Email
     module Handler
       class UnsubscribeHandler < BaseHandler
+        extend ::Gitlab::Utils::Override
+
         delegate :project, to: :sent_notification, allow_nil: true
 
-        HANDLER_REGEX_FOR = ->(suffix) {
-          /\A(?<reply_token>#{::SentNotification::FULL_REPLY_KEY_REGEX})#{Regexp.escape(suffix)}\z/
-        }.freeze
-        HANDLER_REGEX = HANDLER_REGEX_FOR.call(Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX).freeze
-        HANDLER_REGEX_LEGACY = HANDLER_REGEX_FOR.call(Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX_LEGACY).freeze
-
-        def initialize(mail, mail_key)
-          super(mail, mail_key)
-
-          matched = HANDLER_REGEX.match(mail_key.to_s) || HANDLER_REGEX_LEGACY.match(mail_key.to_s)
-          @reply_token = matched[:reply_token] if matched
+        def self.gem_handler
+          :unsubscribe
         end
 
+        override :can_handle?
         def can_handle?
           reply_token.present?
         end
@@ -46,7 +40,11 @@ module Gitlab
 
         private
 
-        attr_reader :reply_token
+        def reply_token
+          return unless identification
+
+          identification[:reply_token]
+        end
 
         def parent_namespace
           sent_notification.namespace

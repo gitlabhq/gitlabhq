@@ -12,6 +12,12 @@ module Organizations
         def instance
           @instance ||= new
         end
+
+        # Drops the memoized instance so the docs generator reads the config file
+        # fresh (see lib/tasks/gitlab/organizations.rake).
+        def reset!
+          @instance = nil
+        end
       end
 
       def initialize(path = Rails.root.join(DEFAULT_PATH))

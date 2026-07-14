@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_composition do
   let(:default_context) { Gitlab::Ci::Config::Yaml::Context.new }
 
+  before do
+    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
+      .with(:ci_interpolation_split_function)
+      .and_return(false)
+  end
+
   describe '.load!' do
     context 'with basic YAML' do
       let(:yaml) do

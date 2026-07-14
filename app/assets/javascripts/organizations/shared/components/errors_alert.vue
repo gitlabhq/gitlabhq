@@ -3,6 +3,7 @@ import { GlAlert } from '@gitlab/ui';
 import { n__ } from '~/locale';
 
 export default {
+  name: 'OrganizationsErrorsAlert',
   components: { GlAlert },
   model: {
     prop: 'errors',
@@ -18,6 +19,7 @@ export default {
       default: false,
     },
   },
+  emits: ['input'],
   computed: {
     title() {
       return n__(

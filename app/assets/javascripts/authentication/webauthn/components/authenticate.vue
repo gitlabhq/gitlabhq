@@ -182,6 +182,7 @@ export default {
         category="primary"
         variant="confirm"
         :block="true"
+        data-testid="authenticator-app-button"
         @click="switchToFallbackUI"
       >
         {{ __('Sign in via 2FA code') }}

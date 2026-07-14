@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
-  let_it_be(:user2, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user2) { create(:user) }
 
   let(:merge_request) { create(:merge_request, :simple, author: user2, assignees: [user2]) }
   let(:project) { merge_request.project }
@@ -174,7 +174,7 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
 
   describe '#execute_git_merge!' do
     let(:create_ref_service_response) do
-      instance_double(ServiceResponse, payload: { commit_sha: '11' })
+      instance_double(ServiceResponse, error?: false, payload: { commit_sha: '11' })
     end
 
     let(:target_branch_sha) { project.repository.commit(merge_request.target_branch).sha }
@@ -207,6 +207,23 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
           expect(merge_request).to receive(:schedule_cleanup_refs).with(only: [:rebase_on_merge_path])
 
           expect(strategy.execute_git_merge!).to eq({ commit_sha: '1234' })
+        end
+
+        context 'and the create ref service returns an error' do
+          let(:create_ref_service_response) do
+            instance_double(ServiceResponse, error?: true, message: 'rebase collapsed', payload: { commit_sha: '11' })
+          end
+
+          it 'raises a strategy error and does not attempt the fast-forward merge' do
+            expect_next_instance_of(MergeRequests::CreateRefService) do |instance|
+              expect(instance).to receive(:execute).and_return(create_ref_service_response)
+            end
+
+            expect(merge_request.target_project.repository).not_to receive(:ff_merge)
+
+            expect { strategy.execute_git_merge! }
+              .to raise_error(MergeRequests::MergeStrategies::StrategyError, 'rebase collapsed')
+          end
         end
 
         context 'when automatic_rebase_enabled is false' do
@@ -367,25 +384,6 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
             MergeRequests::MergeStrategies::StrategyError,
             'Fast-forward merge did not advance the target branch'
           )
-      end
-    end
-
-    context 'when the verify_ff_merge_advancement feature flag is disabled' do
-      before do
-        stub_feature_flags(verify_ff_merge_advancement: false)
-        project.merge_method = :ff
-        project.save!
-      end
-
-      it 'records the merge without guarding advancement (legacy behavior)' do
-        # The legacy call must be byte-for-byte identical to the pre-fix code:
-        # no target_sha: keyword is forwarded to ff_merge when the flag is off.
-        expect(merge_request.target_project.repository)
-          .to receive(:ff_merge)
-          .with(user, anything, merge_request.target_branch, { merge_request: merge_request })
-          .and_return(target_branch_sha)
-
-        expect(strategy.execute_git_merge!).to eq({ commit_sha: target_branch_sha })
       end
     end
   end

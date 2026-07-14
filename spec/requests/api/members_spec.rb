@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe API::Members, feature_category: :groups_and_projects do
-  let_it_be(:maintainer, freeze: false) { create(:user, username: 'maintainer_user') }
+  let_it_be(:maintainer) { create(:user, username: 'maintainer_user') }
   let_it_be(:maintainer2) { create(:user, username: 'user-with-maintainer-role') }
-  let_it_be(:developer, freeze: false) { create(:user) }
-  let_it_be(:access_requester, freeze: false) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:access_requester) { create(:user) }
   let_it_be(:stranger) { create(:user) }
-  let_it_be(:user_with_minimal_access, freeze: false) { create(:user) }
+  let_it_be(:user_with_minimal_access) { create(:user) }
 
   let_it_be_with_refind(:project) do
     create(:project, :public, creator_id: maintainer.id, group: create(:group, :public)) do |project|
@@ -417,7 +417,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
     end
 
     it_behaves_like 'GET /:source_type/:id/members/(all/):user_id', 'project', true do
-      let_it_be(:source, freeze: false) { create(:project, :public, group: group) }
+      let_it_be_with_reload(:source) { create(:project, :public, group: group) }
     end
 
     it_behaves_like 'GET /:source_type/:id/members/(all/):user_id', 'group', false do
@@ -425,7 +425,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
     end
 
     it_behaves_like 'GET /:source_type/:id/members/(all/):user_id', 'group', true do
-      let_it_be(:source, freeze: false) { create(:group, parent: group) }
+      let_it_be_with_reload(:source) { create(:group, parent: group) }
     end
 
     context 'when invited groups have public visibility' do

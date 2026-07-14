@@ -7,6 +7,7 @@ import { s__ } from '~/locale';
 import { SEARCH_MINIMUM_LENGTH } from '../../constants';
 
 export default {
+  name: 'SharedGroupsEmptyState',
   components: { ResourceListsEmptyState, GlSprintf, HelpPageLink },
   SEARCH_MINIMUM_LENGTH,
   groupsEmptyStateIllustration,

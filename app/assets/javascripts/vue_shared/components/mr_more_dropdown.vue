@@ -42,11 +42,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: {
-    reportAbusePath: {
-      default: '',
-    },
-  },
   props: {
     mr: {
       type: Object,

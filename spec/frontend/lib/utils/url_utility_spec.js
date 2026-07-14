@@ -1387,6 +1387,21 @@ describe('URL utility', () => {
     });
   });
 
+  describe('encodeUrlHash', () => {
+    it.each`
+      input                              | output
+      ${'/some/project/-/commits/C#tag'} | ${'/some/project/-/commits/C%23tag'}
+      ${'/foo#a#b'}                      | ${'/foo%23a%23b'}
+    `('encodes `#` in `$input`', ({ input, output }) => {
+      expect(urlUtils.encodeUrlHash(input)).toBe(output);
+    });
+
+    it('leaves urls without `#` unchanged', () => {
+      const input = '/some/project/-/commits/main?ref_type=heads';
+      expect(urlUtils.encodeUrlHash(input)).toBe(input);
+    });
+  });
+
   describe('isSameOriginUrl', () => {
     // eslint-disable-next-line no-script-url
     const javascriptUrl = 'javascript:alert(1)';

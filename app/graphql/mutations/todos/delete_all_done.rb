@@ -5,6 +5,8 @@ module Mutations
     class DeleteAllDone < ::Mutations::BaseMutation
       graphql_name 'TodoDeleteAllDone'
 
+      authorize_granular_token permissions: :delete_todo, boundary: :user, boundary_type: :user
+
       argument :updated_before,
         ::Types::TimeType,
         required: false,

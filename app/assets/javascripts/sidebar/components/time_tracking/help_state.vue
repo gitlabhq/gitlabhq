@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { helpPagePath } from '~/lib/utils/path_helpers/help';
 import { sprintf, s__ } from '~/locale';
 
 export default {
@@ -14,7 +14,7 @@ export default {
   },
   computed: {
     href() {
-      return joinPaths(gon.relative_url_root || '', '/help/user/project/time_tracking.md');
+      return helpPagePath('user/project/time_tracking.md');
     },
     estimateText() {
       return sprintf(

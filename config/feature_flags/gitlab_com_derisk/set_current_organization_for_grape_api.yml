@@ -1,0 +1,10 @@
+---
+name: set_current_organization_for_grape_api
+description: Gate the global before_validation hook in API::API that resolves Current.organization for every Grape REST API request.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/558544
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241027
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/604127
+milestone: '19.2'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

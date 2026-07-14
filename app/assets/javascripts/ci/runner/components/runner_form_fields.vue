@@ -50,6 +50,7 @@ export default {
       required: false,
     },
   },
+  emits: ['input'],
   data() {
     return {
       model: null,
@@ -79,6 +80,9 @@ export default {
   },
   HELP_LABELS_PAGE_PATH: helpPagePath('ci/runners/configure_runners', {
     anchor: 'control-jobs-that-a-runner-can-run',
+  }),
+  HELP_JOB_TIMEOUT_PAGE_PATH: helpPagePath('ci/pipelines/settings', {
+    anchor: 'set-a-limit-for-how-long-jobs-can-run',
   }),
   ACCESS_LEVEL_NOT_PROTECTED,
   ACCESS_LEVEL_REF_PROTECTED,
@@ -177,14 +181,26 @@ export default {
           :label="__('Maximum job timeout')"
           :label-description="
             s__(
-              'Runners|Maximum amount of time the runner can run before it terminates. If a project has a shorter job timeout period, the job timeout period of the instance runner is used instead.',
+              'Runners|Maximum amount of time the runner can run before it terminates. The job timeout of the runner is used if it is shorter than the project job timeout. For example, if the maximum job timeout for a runner is 30 minutes, but the CI/CD timeout for a project is 2 hours, the job running in that project times out after 30 minutes.',
             )
           "
           label-for="runner-max-timeout"
-          :description="
-            s__('Runners|Enter the job timeout in seconds. Must be a minimum of 600 seconds.')
-          "
         >
+          <template #description>
+            <gl-sprintf
+              :message="
+                s__(
+                  'Runners|Enter number of seconds. Must be 600 seconds or more. If not defined, the runner uses the project %{linkStart}job timeout value%{linkEnd}.',
+                )
+              "
+            >
+              <template #link="{ content }">
+                <gl-link :href="$options.HELP_JOB_TIMEOUT_PAGE_PATH" target="_blank">{{
+                  content
+                }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </template>
           <gl-form-input
             id="runner-max-timeout"
             v-model.number="model.maximumTimeout"

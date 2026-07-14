@@ -110,73 +110,6 @@ RSpec.describe Event, feature_category: :user_profile do
   end
 
   describe 'scopes' do
-    describe '.in_organization' do
-      let_it_be(:organization) { create(:organization) }
-      let_it_be(:other_organization) { create(:organization) }
-
-      # Projects and groups in different organizations
-      let_it_be(:project_in_org) { create(:project, organization: organization) }
-      let_it_be(:project_other_org) { create(:project, organization: other_organization) }
-      let_it_be(:group_in_org) { create(:group, organization: organization) }
-      let_it_be(:group_other_org) { create(:group, organization: other_organization) }
-
-      # User with personal namespace in organization
-      let_it_be(:user_in_org) { create(:user, organization: organization) }
-      let_it_be(:user_other_org) { create(:user, organization: other_organization) }
-
-      # Events in the target organization
-      let_it_be(:project_event_in_org) { create(:event, :for_issue, project: project_in_org) }
-      let_it_be(:group_event_in_org) { create(:event, :created, group: group_in_org, project: nil) }
-      let_it_be(:personal_event_in_org) do
-        create(:event, :joined, project: nil, group: nil, personal_namespace: user_in_org.namespace)
-      end
-
-      # Events in other organization
-      let_it_be(:project_event_other_org) { create(:event, :for_issue, project: project_other_org) }
-      let_it_be(:group_event_other_org) { create(:event, :created, group: group_other_org, project: nil) }
-      let_it_be(:personal_event_other_org) do
-        create(:event, :joined, project: nil, group: nil, personal_namespace: user_other_org.namespace)
-      end
-
-      subject(:events_in_organization) { described_class.in_organization(organization) }
-
-      it 'returns project events for the specified organization' do
-        expect(events_in_organization).to include(project_event_in_org)
-      end
-
-      it 'does not return project events from other organizations' do
-        expect(events_in_organization).not_to include(project_event_other_org)
-      end
-
-      it 'returns group events for the specified organization' do
-        expect(events_in_organization).to include(group_event_in_org)
-      end
-
-      it 'does not return group events from other organizations' do
-        expect(events_in_organization).not_to include(group_event_other_org)
-      end
-
-      it 'returns personal namespace events for the specified organization' do
-        expect(events_in_organization).to include(personal_event_in_org)
-      end
-
-      it 'does not return personal namespace events from other organizations' do
-        expect(events_in_organization).not_to include(personal_event_other_org)
-      end
-
-      it 'returns only events belonging to the organization' do
-        expect(events_in_organization).to contain_exactly(
-          project_event_in_org,
-          group_event_in_org,
-          personal_event_in_org
-        )
-      end
-
-      it 'returns none when nil is passed' do
-        expect(described_class.in_organization(nil)).to be_empty
-      end
-    end
-
     describe '.for_issue' do
       let(:issue_event) { create(:event, :for_issue, project: project) }
       let(:work_item_event) { create(:event, :for_work_item, project: project) }
@@ -1118,7 +1051,7 @@ RSpec.describe Event, feature_category: :user_profile do
 
   describe 'categorization' do
     let_it_be(:project, freeze: false) { create(:project, :repository) }
-    let_it_be(:all_valid_events, freeze: false) do
+    let_it_be(:all_valid_events) do
       # mapping from factory name to whether we need to supply the project
       valid_target_factories = {
         issue: true,

@@ -218,7 +218,7 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
 
     let_it_be(:direction) { :inbound }
     let_it_be(:root_group) { create(:group) }
-    let_it_be(:subgroup, freeze: false) { create(:group, parent: root_group) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: root_group) }
     let_it_be(:target_project) { create(:project, group: subgroup) }
 
     let!(:scope_by_project) do

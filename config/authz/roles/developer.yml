@@ -79,6 +79,7 @@ project:
   - read_cluster_agent
   - read_compliance_framework
   - read_coverage_fuzzing
+  - read_duo_agent_platform
   - read_feature_flag
   - read_merge_request_status_check_url
   - read_on_demand_dast_scan
@@ -150,6 +151,7 @@ group:
   - read_cluster
   - read_cluster_agent
   - read_dependency
+  - read_duo_agent_platform
   - read_group_security_dashboard
   - read_licenses
   - read_observability_portal

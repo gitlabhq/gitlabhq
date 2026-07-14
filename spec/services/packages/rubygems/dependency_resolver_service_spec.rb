@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Rubygems::DependencyResolverService, feature_category: :package_registry do
@@ -20,7 +21,7 @@ RSpec.describe Packages::Rubygems::DependencyResolverService, feature_category: 
     end
 
     context 'user with access' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 

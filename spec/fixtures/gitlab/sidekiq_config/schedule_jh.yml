@@ -1,0 +1,2 @@
+pipeline_schedule_worker:
+  status: 'disabled'

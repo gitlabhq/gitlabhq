@@ -149,6 +149,7 @@ export default {
       default: __('You cannot edit this file'),
     },
   },
+  emits: ['edit', 'hidden', 'shown'],
   data() {
     return {
       showForkModal: false,

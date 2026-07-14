@@ -40,11 +40,17 @@ Use this guide when:
 
 | Field             | Type          | Description                                                                                       | Example             |
 |-------------------|---------------|---------------------------------------------------------------------------------------------------|---------------------|
-| `flow_type`       | string, null  | Type of DAP flow (more custom flows to be included in the future). | `"chat"`, `"software_development"`, `"convert_to_gitlab_ci"` |
-| `flow_version`    | string, null  | Version of the AI feature implementation for the flow (maximum length: 64 characters). | `"2.1.0"`, `"3.0.1"` |
-| `flow_registry_version` | string, null | Flow Registry framework version used to build the flow (maximum length: 64 characters). | `"1.0.0"`, `"1.1.0"` |
-| `agent_name`      | string, null  | Which agent within the flow is executing. | `"duo_chat"`, `"code_agent"`, `"planning_agent"` |
-| `agent_type`      | string, null  | Which agent type within the flow is executing. | `"foundational"`, `"custom"` |
+| `item_type`             | string, null  | Type of item being executed/tracked (maximum length: 32 characters). | One of: `"foundational_flow"`, `"foundational_agent"`, `"foundational_external_agent"`, `"custom_flow"`, `"custom_agent"`, `"custom_external_agent"` |
+| `item_version`          | string, null  | Semantic version of the foundational or custom item (maximum length: 32 characters). | `"1.0.0"`, `"1.1.0"` |
+| `item_schema_version`   | string, null  | Flow Registry framework version used to build the item (maximum length: 32 characters). | `"experimental"`, `"v1"` |
+| `flow_name`             | string, null  | Name of the flow (maximum length: 64 characters). | `"chat"`, `"software_development"`, `"convert_to_gitlab_ci"` |
+| `component_name`        | string, null  | Name of the individual component within the flow (maximum length: 64 characters). | The agent component's name. |
+| `agent_name`            | string, null  | Which agent within the flow is executing. | `"duo_chat"`, `"code_agent"`, `"planning_agent"` |
+| `custom_item_id`        | integer, null | Custom item ID (only populated for custom items) | `123` |
+| `flow_registry_version` | string, null  | Flow Registry framework version used to build the flow (maximum length: 64 characters). **Deprecated in favor of `item_schema_version`**. | `"experimental"`, `"v1"` |
+| `flow_type`             | string, null  | Type of DAP flow (more custom flows to be included in the future). **Deprecated in favor of `flow_name`**.| `"chat"`, `"software_development"`, `"convert_to_gitlab_ci"` |
+| `flow_version`          | string, null  | Version of the AI feature implementation for the flow (maximum length: 64 characters). **Deprecated in favor of `item_version`**. | `"2.1.0"`, `"3.0.1"` |
+| `agent_type`            | string, null  | Which agent type within the flow is executing. **Deprecated in favor of `item_type`**. | `"foundational"`, `"custom"` |
 
 ### Model Information
 
@@ -85,11 +91,19 @@ track_internal_event(
     workflow_id: session.id + instance.id,
 
     # Flow and agent information
-    flow_type: "software_development",
-    flow_version: "2.1.0",
-    flow_registry_version: "1.0.0",
     agent_name: "code_generator",
-    agent_type: "code_agent",
+    flow_name: "chat",
+    component_name: "AgentComponent",
+    custom_item_id: nil,
+    item_type: "foundational_agent",
+    item_version: "2.1.0",
+    item_schema_version: "v1",
+
+    # Deprecated flow and agent information
+    agent_type: "foundational",
+    flow_type: "chat",
+    flow_registry_version: "v1",
+    flow_version: "2.1.0",
 
     # Model information (AI Context)
     model_provider: "anthropic",

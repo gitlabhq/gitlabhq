@@ -1,0 +1,9 @@
+---
+name: revoke_runner_controller_token
+description: Grants the ability to revoke runner controller tokens
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - revoke_runner_controller_token

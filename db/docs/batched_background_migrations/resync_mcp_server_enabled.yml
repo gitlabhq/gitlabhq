@@ -1,0 +1,7 @@
+---
+migration_job_name: ResyncMcpServerEnabled
+description: Resync mcp_server_enabled on namespace_settings for stale root groups based on current effective MCP availability
+feature_category: mcp_server
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241093
+milestone: '19.2'
+queued_migration_version: 20260615100001

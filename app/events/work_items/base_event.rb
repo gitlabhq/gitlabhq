@@ -9,10 +9,10 @@ module WorkItems
 
       def build_for_work_item(work_item:, current_user:, extra_event_data: {})
         build_cloud_event(
-          source: "projects/#{work_item.project.id}",
+          source: work_item.project ? "projects/#{work_item.project.id}" : "namespaces/#{work_item.namespace_id}",
           subject: "work_items/#{work_item.id}",
           current_user: current_user,
-          organization: work_item.project.organization,
+          organization: work_item.project&.organization || work_item.namespace&.organization,
           event_data: work_item_event_data(work_item).merge(extra_event_data)
         )
       end
@@ -46,14 +46,14 @@ module WorkItems
         'work_item_id' => { 'type' => 'integer' },
         'work_item_iid' => { 'type' => 'integer' },
         'namespace_id' => { 'type' => 'integer' },
-        'project_id' => { 'type' => 'integer' },
+        'project_id' => { 'type' => %w[integer null] },
         'work_item_type' => { 'type' => 'string' },
         'confidential' => { 'type' => 'boolean' }
       }
     end
 
     def base_required
-      %w[work_item_id work_item_iid namespace_id project_id work_item_type confidential]
+      %w[work_item_id work_item_iid namespace_id work_item_type confidential]
     end
 
     # Override in subclasses to add event specific schema properties

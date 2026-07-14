@@ -10,13 +10,13 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
   let_it_be(:project) { create(:project, namespace: group) }
 
   describe '.declarative_policy_class' do
-    subject { described_class::Base.declarative_policy_class }
+    subject(:declarative_policy_class) { described_class::Base.declarative_policy_class }
 
-    it { is_expected.to eq('Authz::BoundaryPolicy') }
+    it { expect(declarative_policy_class).to eq('Authz::BoundaryPolicy') }
   end
 
   describe '.for' do
-    subject { described_class.for(boundary) }
+    subject(:strategy) { described_class.for(boundary) }
 
     where(:boundary, :result) do
       ref(:group)      | described_class::GroupBoundary
@@ -29,100 +29,110 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
     end
 
     with_them do
-      it { is_expected.to be_a(result) }
+      it { expect(strategy).to be_a(result) }
+    end
+  end
+
+  describe '.strategy_for_type' do
+    subject(:strategy_for_type) { described_class.strategy_for_type(type) }
+
+    where(:type, :result) do
+      :project  | described_class::ProjectBoundary
+      :group    | described_class::GroupBoundary
+      :user     | nil
+      nil       | nil
+    end
+
+    with_them do
+      it { expect(strategy_for_type).to eq(result) }
+    end
+  end
+
+  describe '.record_class' do
+    subject(:record_class) { strategy.record_class }
+
+    where(:strategy, :result) do
+      described_class::ProjectBoundary | ::Project
+      described_class::GroupBoundary   | ::Group
+    end
+
+    with_them do
+      it { expect(record_class).to eq(result) }
+    end
+  end
+
+  describe '.namespace_association' do
+    subject(:namespace_association) { strategy.namespace_association }
+
+    where(:strategy, :result) do
+      described_class::ProjectBoundary | :project_namespace
+      described_class::GroupBoundary   | nil
+    end
+
+    with_them do
+      it { expect(namespace_association).to eq(result) }
+    end
+  end
+
+  describe '#root_namespace_id' do
+    subject(:root_namespace_id) { described_class.for(boundary).root_namespace_id }
+
+    where(:boundary, :result) do
+      ref(:group)   | lazy { group.id }
+      ref(:project) | lazy { group.id }
+      :instance     | nil
+    end
+
+    with_them do
+      it { expect(root_namespace_id).to eq(result) }
     end
   end
 
   describe '#namespace' do
-    subject { described_class.for(boundary).namespace }
+    subject(:namespace) { described_class.for(boundary).namespace }
 
-    context 'when boundary is a group' do
-      let(:boundary) { group }
-
-      it { is_expected.to eq(group) }
+    where(:boundary, :result) do
+      ref(:group)      | ref(:group)
+      ref(:project)    | lazy { project.project_namespace }
+      ref(:user)       | lazy { user.namespace }
+      :all_memberships | nil
+      :user            | nil
+      :instance        | nil
     end
 
-    context 'when boundary is a project' do
-      let(:boundary) { project }
-
-      it { is_expected.to eq(project.project_namespace) }
-    end
-
-    context 'when boundary is a user' do
-      let(:boundary) { user }
-
-      it { is_expected.to eq(user.namespace) }
-    end
-
-    context 'when boundary is :all_memberships' do
-      let(:boundary) { :all_memberships }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when boundary is :user' do
-      let(:boundary) { :user }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when boundary is :instance' do
-      let(:boundary) { :instance }
-
-      it { is_expected.to be_nil }
+    with_them do
+      it { expect(namespace).to eq(result) }
     end
   end
 
-  describe 'path' do
-    subject { described_class.for(boundary).path }
+  describe '#path' do
+    subject(:path) { described_class.for(boundary).path }
 
-    context 'when boundary is a group' do
-      let(:boundary) { group }
-
-      it { is_expected.to eq(group.full_path) }
+    where(:boundary, :result) do
+      ref(:group)      | lazy { group.full_path }
+      ref(:project)    | lazy { project.project_namespace.full_path }
+      ref(:user)       | lazy { user.namespace.full_path }
+      :all_memberships | nil
+      :user            | nil
+      :instance        | nil
     end
 
-    context 'when boundary is a project' do
-      let(:boundary) { project }
-
-      it { is_expected.to eq(project.project_namespace.full_path) }
+    with_them do
+      it { expect(path).to eq(result) }
     end
 
-    context 'when boundary is a user' do
+    context 'when a user boundary has no namespace' do
+      let(:user) { create(:user) }
       let(:boundary) { user }
 
-      it { is_expected.to eq(user.namespace.full_path) }
-
-      context 'when the user has no namespace' do
-        let(:user) { create(:user) }
-
-        it { is_expected.to be_nil }
-      end
-    end
-
-    context 'when boundary is :all_memberships' do
-      let(:boundary) { :all_memberships }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when boundary is :user' do
-      let(:boundary) { :user }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when boundary is :instance' do
-      let(:boundary) { :instance }
-
-      it { is_expected.to be_nil }
+      it { expect(path).to be_nil }
     end
   end
 
   describe '#member?' do
     let_it_be(:other_user) { create(:user) }
 
-    subject { described_class.for(boundary).member?(member_user) }
+    subject(:member) { described_class.for(boundary).member?(member_user) }
 
     where(:boundary, :member_user, :result) do
       ref(:group)      | ref(:user)       | true
@@ -137,12 +147,12 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
     end
 
     with_them do
-      it { is_expected.to be(result) }
+      it { expect(member).to be(result) }
     end
   end
 
   describe '#access' do
-    subject { described_class.for(boundary).access }
+    subject(:access) { described_class.for(boundary).access }
 
     where(:boundary, :result) do
       ref(:group)      | :selected_memberships
@@ -154,7 +164,7 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
     end
 
     with_them do
-      it { is_expected.to be(result) }
+      it { expect(access).to be(result) }
     end
   end
 
@@ -168,7 +178,7 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
     let_it_be(:internal_project) { create(:project, :internal) }
     let_it_be(:public_project) { create(:project, :public) }
 
-    subject { described_class.for(boundary).visible_to?(visibility_user) }
+    subject(:visible_to) { described_class.for(boundary).visible_to?(visibility_user) }
 
     where(:boundary, :visibility_user, :result) do
       ref(:private_group)    | ref(:other_user)    | false
@@ -193,7 +203,7 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
     end
 
     with_them do
-      it { is_expected.to be(result) }
+      it { expect(visible_to).to be(result) }
     end
 
     context 'when the user is an admin', :enable_admin_mode do
@@ -207,7 +217,7 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
   end
 
   describe '#type_label' do
-    subject { described_class.for(boundary).type_label }
+    subject(:type_label) { described_class.for(boundary).type_label }
 
     where(:boundary, :result) do
       ref(:group)      | 'group'
@@ -219,7 +229,7 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
     end
 
     with_them do
-      it { is_expected.to eq(result) }
+      it { expect(type_label).to eq(result) }
     end
   end
 end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # This patch updates SawyerResource class to not allow Ruby methods to be overridden and accessed.
 # Any attempt to access a Ruby method will result in an exception.

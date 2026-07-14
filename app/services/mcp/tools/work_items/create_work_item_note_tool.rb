@@ -4,38 +4,9 @@ module Mcp
   module Tools
     module WorkItems
       class CreateWorkItemNoteTool < BaseTool
-        class << self
-          def build_mutation
-            <<~GRAPHQL
-              mutation CreateNote($input: CreateNoteInput!) {
-                createNote(input: $input) {
-                  note {
-                    id
-                    body
-                    internal
-                    createdAt
-                    updatedAt
-                    author {
-                      id
-                      name
-                      username
-                      avatarUrl
-                      webUrl
-                    }
-                    discussion {
-                      id
-                    }
-                  }
-                  errors
-                }
-              }
-            GRAPHQL
-          end
-        end
-
         register_version VERSIONS[:v0_1_0], {
           operation_name: 'createNote',
-          graphql_operation: build_mutation
+          graphql_operation: load_graphql('work_items/create_note.mutation.graphql')
         }
 
         def build_variables

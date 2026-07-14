@@ -68,7 +68,7 @@ RSpec.shared_examples 'work items comments' do
         expect(page).to have_text 'Test comment'
       end
 
-      page.within('.timeline-entry.note.note-wrapper.note-comment:last-child') do
+      page.within('.main-notes-list .note.note-comment', text: 'Test comment') do
         click_button _('More actions')
 
         expect(page).to have_button _('Copy link')
@@ -252,6 +252,8 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
   it 'creates, auto-selects, and adds new label' do
     within_testid 'work-item-labels' do
       click_button 'Edit'
+      expect(page).to have_selector('.gl-new-dropdown-item[role="option"]', minimum: 1)
+
       click_button "Create #{namespace_type} label"
       send_keys 'Quintessence'
       click_button 'Create'
@@ -339,14 +341,13 @@ RSpec.shared_examples 'work items description' do
 
     it 'shows conflict message when description changes', :aggregate_failures do
       click_button 'Edit', match: :first
+      expect(page).to have_field _('Description'), with: ''
 
       ::WorkItems::UpdateService.new(
         container: work_item.project,
         current_user: other_user,
         params: { description: "oh no!" }
       ).execute(work_item)
-
-      wait_for_requests
 
       fill_in _('Description'), with: 'oh yeah!'
 
@@ -523,6 +524,8 @@ end
 
 RSpec.shared_examples 'work items todos' do
   it 'adds item to to-do list', :aggregate_failures do
+    wait_for_all_requests
+
     expect(page).to have_button s_('WorkItem|Add a to-do item')
 
     click_button s_('WorkItem|Add a to-do item')
@@ -535,6 +538,8 @@ RSpec.shared_examples 'work items todos' do
   end
 
   it 'marks to-do item as done', :aggregate_failures do
+    wait_for_all_requests
+
     click_button s_('WorkItem|Add a to-do item')
     click_button s_('WorkItem|Mark to-do items done')
 
@@ -650,18 +655,18 @@ RSpec.shared_examples 'work items weight' do
   it 'updates and clears a weight', :aggregate_failures do
     within_testid 'work-item-weight' do
       click_button 'Edit'
-      send_keys(3, :enter)
+      find_field('weight-widget-input').native.send_keys(3, :enter)
 
       expect(page).to have_text(3)
 
       click_button 'Edit'
-      send_keys(:backspace, 0, :enter)
+      find_field('weight-widget-input').native.send_keys(:backspace, 0, :enter)
 
       expect(page).to have_text(0)
       expect(page).not_to have_text('None')
 
       click_button 'Edit'
-      send_keys(:backspace, :enter)
+      find_field('weight-widget-input').native.send_keys(:backspace, :enter)
 
       expect(page).to have_text('None')
     end
@@ -834,8 +839,7 @@ RSpec.shared_examples 'work items time tracking' do
     expect(page).to have_button 'estimate'
   end
 
-  it 'adds and deletes time entries and view report',
-    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/570667' do
+  it 'adds and deletes time entries and view report', :aggregate_failures do
     add_time_entry('1d', 'First summary')
     add_time_entry('2d', 'Second summary')
     wait_for_all_requests
@@ -879,7 +883,8 @@ RSpec.shared_examples 'work items time tracking' do
     end
   end
 
-  it 'using quick actions', :aggregate_failures do
+  it 'using quick actions', :aggregate_failures,
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/556967' do
     add_estimate('5d')
 
     expect(page).to have_text 'Estimate 5d'

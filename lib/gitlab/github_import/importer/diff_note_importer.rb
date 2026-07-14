@@ -66,7 +66,6 @@ module Gitlab
             discussion_id: note.discussion_id,
             noteable_id: merge_request_id,
             project_id: project.id,
-            namespace_id: project.project_namespace_id,
             author_id: author_id,
             note: note_body,
             commit_id: note.original_commit_id,

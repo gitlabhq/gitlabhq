@@ -5,10 +5,14 @@
 # Controller concern to handle PAT, RSS, and static objects token authentication methods
 #
 module SessionlessAuthentication
+  include GranularTokenAuthorization
+
   # This filter handles personal access tokens, atom requests with rss tokens, and static object tokens
-  def authenticate_sessionless_user!(request_format)
+  def authenticate_sessionless_user!(request_format, permission: nil)
     user = request_authenticator.find_sessionless_user(request_format)
     sessionless_sign_in(user) if user
+
+    authorize_granular_token!(request_format, permission:)
   end
 
   def request_authenticator

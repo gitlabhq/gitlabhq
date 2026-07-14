@@ -7,6 +7,7 @@ query reviewRequests(
   $reviewStates: [MergeRequestReviewState!]
   $mergedAfter: Time
   $not: MergeRequestsResolverNegatedParams
+  $updatedAt: Boolean = false
   $perPage: Int!
   $afterCursor: String
   $sort: MergeRequestSort = UPDATED_DESC

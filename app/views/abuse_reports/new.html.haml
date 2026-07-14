@@ -13,7 +13,8 @@
   .form-group.row
     .gl-col-lg-8
       = f.label :category
-      = f.text_field :category, class: "form-control gl-form-input", readonly: true
+      = text_field_tag nil, @abuse_report.category&.humanize, id: 'abuse_report_category', class: "form-control gl-form-input", readonly: true
+      = f.hidden_field :category, id: nil
   .form-group.row
     .gl-col-lg-8
       = f.label :user_name, for: 'user_name'

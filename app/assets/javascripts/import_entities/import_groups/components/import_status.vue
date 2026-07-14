@@ -3,6 +3,7 @@ import { GlBadge, GlLink } from '@gitlab/ui';
 import { STATUSES, STATUS_ICON_MAP } from '~/import_entities/constants';
 
 export default {
+  name: 'ImportStatus',
   components: {
     GlBadge,
     GlLink,

@@ -4,3 +4,4 @@ description: Grants the ability to update the project's pipeline variable
   override setting when it is in a privileged state. Privileged states
   represent stricter security postures and require elevated authority
   to change.
+conditionally_enables: null

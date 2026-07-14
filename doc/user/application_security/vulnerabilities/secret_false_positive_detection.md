@@ -85,6 +85,10 @@ To allow false positive detection for all projects in a group:
 
 #### Turn on for a project
 
+Prerequisites:
+
+- The Security Manager, Maintainer, or Owner role for the project.
+
 To turn on false positive detection for a specific project:
 
 1. In the left sidebar, select **Search or go to** and find your project.

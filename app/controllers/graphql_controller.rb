@@ -26,6 +26,7 @@ class GraphqlController < ApplicationController
     Gitlab::Auth::TooManyIps => { status: :forbidden },
     RateLimitedService::RateLimitedError => { status: :too_many_requests },
     Gitlab::Git::ResourceExhaustedError => { status: :service_unavailable },
+    Gitlab::Graphql::Errors::OrganizationReadOnlyError => { status: :service_unavailable },
     ActiveRecord::QueryAborted => { status: :service_unavailable },
     ActiveRecord::QueryCanceled => {
       status: :service_unavailable,
@@ -44,12 +45,21 @@ class GraphqlController < ApplicationController
     current_user.nil? || sessionless_user? || !any_mutating_query?
   }
   skip_before_action :check_two_factor_requirement, if: -> { sessionless_user? }
+  # GraphQL handles read-only enforcement per-operation in
+  # #disallow_mutations_for_organization_read_only: all GraphQL traffic is POST,
+  # so the generic write-method check from EnforcesReadOnlyOrganization would
+  # block read queries too.
+  skip_before_action :enforce_read_only_organization
 
   # Header can be passed by tests to disable SQL query limits.
   DISABLE_SQL_QUERY_LIMIT_HEADER = 'HTTP_X_GITLAB_DISABLE_SQL_QUERY_LIMIT'
 
   # Max size of the query text in characters
   MAX_QUERY_SIZE = 10_000
+
+  # Cap the operation-name label so a multiplex batch with many named operations
+  # can't produce an unbounded string for the use_pat event's `label` field.
+  GRAPHQL_OPERATION_NAME_LABEL_LIMIT = 255
 
   # Operations temporarily allowed to exceed MAX_QUERY_SIZE during the
   # work-item widgets => features migration. Remove entries as the migration
@@ -91,12 +101,14 @@ class GraphqlController < ApplicationController
   before_action :enforce_language_server_restrictions
 
   before_action :disallow_mutations_for_get
+  before_action :disallow_mutations_for_organization_read_only
 
   # Since we deactivate authentication from the main ApplicationController and
   # defer it to :authorize_access_api!, we need to override the bypass session
   # callback execution order here
   around_action :sessionless_bypass_admin_mode!, if: :sessionless_user?
   around_action :track_user_experience_sli_by_operation_name
+  around_action :track_pat_usage, only: [:execute]
 
   # The default feature category is overridden to read from request
   feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
@@ -208,6 +220,17 @@ class GraphqlController < ApplicationController
     raise ::Gitlab::Graphql::Errors::ArgumentError, "Mutations are forbidden in #{request.request_method} requests"
   end
 
+  def disallow_mutations_for_organization_read_only
+    return unless any_mutating_query?
+
+    organization = ::Current.organization
+    return unless organization&.read_only?
+    return unless Feature.enabled?(:organization_read_only_enforcement, organization)
+
+    raise ::Gitlab::Graphql::Errors::OrganizationReadOnlyError,
+      "Mutations are forbidden because the organization is in read-only mode"
+  end
+
   def limit_query_size
     if multiplex?
       total_size = multiplex_param.sum { |query_info| query_info[:query].size }
@@ -301,6 +324,44 @@ class GraphqlController < ApplicationController
   def track_user_experience_sli_by_operation_name
     ::Gitlab::Graphql::UxSliByOperationName
       .new(permitted_params[:operationName]).track { yield }
+  end
+
+  def track_pat_usage
+    yield
+  ensure
+    emit_pat_usage_event
+  end
+
+  def emit_pat_usage_event
+    token_info = ::Current.token_info
+    return unless token_info.is_a?(Hash) && token_info[:token_type] == 'PersonalAccessToken'
+    return unless current_user
+    return unless Feature.enabled?(:track_api_request_from_personal_access_token, current_user)
+
+    additional_properties = {
+      label: graphql_operation_name,
+      pat_type: token_info[:pat_type],
+      response_code: response.status
+    }
+
+    denied_permissions = ::Current.formatted_granular_denied_permissions
+    additional_properties[:denied_permissions] = denied_permissions if denied_permissions
+
+    ::Gitlab::InternalEvents.track_event(
+      'use_pat',
+      user: current_user,
+      additional_properties: additional_properties
+    )
+  end
+
+  def graphql_operation_name
+    name = if multiplex?
+             multiplex_param.filter_map { |q| q[:operationName] }.join(',')
+           else
+             permitted_params[:operationName].to_s
+           end
+
+    name.presence&.truncate(GRAPHQL_OPERATION_NAME_LABEL_LIMIT) || 'unknown'
   end
 
   def execute_multiplex

@@ -49,6 +49,21 @@ RSpec.describe Resolvers::Ci::GroupRunnersResolver, feature_category: :fleet_vis
           expect(resolve_scope.items.to_a).to contain_exactly(group_runner)
         end
       end
+
+      context 'with a runner in another organization' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:other_org_group) { create(:group, organization: other_organization) }
+        let_it_be(:other_org_runner) { create(:ci_runner, :group, groups: [other_org_group]) }
+
+        it 'does not return runners from another organization', :aggregate_failures do
+          runners = resolve_scope.items.to_a
+
+          expect(runners).to contain_exactly(
+            inactive_project_runner, offline_project_runner, group_runner, subgroup_runner
+          )
+          expect(runners).not_to include(other_org_runner)
+        end
+      end
     end
 
     # Then, we can check specific edge cases for this resolver

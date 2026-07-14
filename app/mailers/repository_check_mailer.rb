@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 class RepositoryCheckMailer < ApplicationMailer
-  # rubocop: disable CodeReuse/ActiveRecord
   layout 'mailer'
 
   helper EmailsHelper
 
-  def notify(failed_count)
+  def notify(failed_count, recipient)
     @message =
       if failed_count == 1
         "One project failed its last repository check"
@@ -15,9 +14,8 @@ class RepositoryCheckMailer < ApplicationMailer
       end
 
     mail_with_locale(
-      to: User.admins.active.pluck(:email),
+      to: recipient,
       subject: "GitLab Admin | #{@message}"
     )
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end

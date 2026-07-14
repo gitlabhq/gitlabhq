@@ -1,7 +1,5 @@
 <script>
-import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
-import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-job-failed-md.svg?url';
-import { GlCollapsibleListbox, GlEmptyState, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { debounce } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -25,6 +23,8 @@ import {
 import { etagQueryHeaders, setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
+import PipelinesEmptyState from '~/ci/common/empty_state/pipelines_empty_state.vue';
+import PipelinesErrorState from '~/ci/common/empty_state/pipelines_error_state.vue';
 import { getInitialFilterParams } from '~/ci/pipeline_details/utils';
 import PipelinesFilteredSearch from './components/pipelines_filtered_search.vue';
 import NoCiEmptyState from './components/empty_state/no_ci_empty_state.vue';
@@ -50,8 +50,6 @@ const POLL_INTERVAL = 60000;
 
 export default {
   name: 'PipelinesAppRoot',
-  errorStateSvgPath: ERROR_STATE_SVG,
-  noPipelinesSvgPath: NO_PIPELINES_SVG,
   scopes: {
     all: 'all',
     finished: 'finished',
@@ -72,7 +70,6 @@ export default {
   ],
   components: {
     GlCollapsibleListbox,
-    GlEmptyState,
     GlKeysetPagination,
     GlLoadingIcon,
     NavigationControls,
@@ -81,6 +78,8 @@ export default {
     PipelinesTable,
     PipelinesFilteredSearch,
     ExternalConfigEmptyState,
+    PipelinesEmptyState,
+    PipelinesErrorState,
     PipelineAccountVerificationAlert: () =>
       import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
@@ -680,12 +679,7 @@ export default {
       />
 
       <!-- Error state -->
-      <gl-empty-state
-        v-else-if="pipelinesError"
-        :svg-path="$options.errorStateSvgPath"
-        :title="s__('Pipelines|There was an error fetching the pipelines.')"
-        :description="s__('Pipelines|Try again in a few moments or contact your support team.')"
-      />
+      <pipelines-error-state v-else-if="pipelinesError" />
 
       <!-- Empty states -->
       <external-config-empty-state
@@ -693,17 +687,9 @@ export default {
         :new-pipeline-path="newPipelinePath"
       />
 
-      <no-ci-empty-state
-        v-else-if="showEmptyState"
-        :empty-state-svg-path="$options.noPipelinesSvgPath"
-      />
+      <no-ci-empty-state v-else-if="showEmptyState" />
 
-      <gl-empty-state
-        v-else-if="showEmptyTab"
-        :svg-path="$options.noPipelinesSvgPath"
-        :title="emptyTabMessage"
-        data-testid="empty-state-tab"
-      />
+      <pipelines-empty-state v-else-if="showEmptyTab" :title="emptyTabMessage" />
 
       <!-- Pipelines table -->
       <pipelines-table

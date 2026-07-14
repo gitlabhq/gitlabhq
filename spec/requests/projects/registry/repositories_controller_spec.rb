@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::Registry::RepositoriesController, feature_category: :container_registry do
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:user, freeze: false) { create(:user, developer_of: project) }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   before do
     stub_container_registry_config(enabled: true, key: 'spec/fixtures/x509_certificate_pk.key')
@@ -20,7 +20,6 @@ RSpec.describe Projects::Registry::RepositoriesController, feature_category: :co
       response
     end
 
-    it_behaves_like 'pushed feature flag', :container_registry_display_supported_platforms
     it { is_expected.to have_gitlab_http_status(:ok) }
   end
 
@@ -32,7 +31,6 @@ RSpec.describe Projects::Registry::RepositoriesController, feature_category: :co
       response
     end
 
-    it_behaves_like 'pushed feature flag', :container_registry_display_supported_platforms
     it { is_expected.to have_gitlab_http_status(:ok) }
   end
 end

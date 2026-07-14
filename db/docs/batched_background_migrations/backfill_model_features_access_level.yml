@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillModelFeaturesAccessLevel
+description: Sets model_registry/experiments access levels to PRIVATE on existing non-public projects where they are ENABLED
+feature_category: mlops
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241182
+milestone: '19.2'
+queued_migration_version: 20260617140000
+finalized_by: # version of the migration that finalized this BBM
+gitlab_schema: gitlab_main_org

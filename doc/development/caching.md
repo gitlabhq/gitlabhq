@@ -276,6 +276,70 @@ All the time!
 - As the lookup is similar to a cache lookup (in the GitLab implementation), we can use
   the same key for both. This is how `Gitlab::Cache.fetch_once` works.
 
+`Gitlab::SafeRequestStore.fetch(key) { ... }` returns the same value for a key for the
+duration of one request, Sidekiq job, or ActionCable work unit.
+The store is a plain in-memory hash on `Thread.current`, so it is isolated per thread and
+holds no serialized data.
+Middleware clears it at the end of each unit of work.
+Outside an active request, the store falls back to executing the block on every call.
+Prefer `Gitlab::SafeRequestStore` over `RequestStore` to skip manual `RequestStore.active?`
+checks.
+
+#### Cache a finder result to avoid N+1 queries
+
+The most common use is to cache a finder or query result that a collection of records
+resolves identically, so the finder runs once per request instead of once per record.
+
+The status widget uses this to resolve a work item lifecycle. The key combines the root
+namespace ID and the work item type ID, and the block wraps the finder:
+
+```ruby
+def find_lifecycle
+  root_namespace_id = namespace&.traversal_ids&.first
+  return work_item_type.system_defined_lifecycle unless root_namespace_id
+
+  cache_key = "work_item_custom_lifecycle_#{root_namespace_id}_#{work_item_type_id}"
+
+  custom_lifecycle = Gitlab::SafeRequestStore.fetch(cache_key) do
+    work_item_type.custom_lifecycle_for(root_namespace_id)
+  end
+
+  custom_lifecycle || work_item_type.system_defined_lifecycle
+end
+```
+
+For the full example, see
+[`WorkItems::HasStatus#find_lifecycle`](https://gitlab.com/gitlab-org/gitlab/-/blob/12b7a9d430783623764e3bf04c24ce854db13cc9/ee/app/models/concerns/work_items/has_status.rb#L249).
+
+This works because records across the namespace subtree share the cached value.
+Two records of the same type in the same root namespace resolve to the same value, so the
+root namespace ID and type ID make a correct key.
+
+#### Key conventions
+
+- Derive the root namespace from `namespace.traversal_ids.first`, not `namespace.root_ancestor`.
+  The `traversal_ids` column is already loaded on the record, so it avoids the extra query that
+  `root_ancestor` triggers for each record, which would defeat the purpose of the cache.
+- Keep keys low-cardinality. Key on a shared scope such as the root namespace, not on a
+  per-record ID. A per-record key accumulates one entry per record and provides no reduction
+  in queries. To resolve a distinct value per record, use batch loading instead:
+  `BatchLoader::GraphQL` in GraphQL resolvers, or `Gitlab::SafeRequestLoader` on the REST API.
+
+#### Combine with StrongMemoize for hot access
+
+When one object calls the cached method many times in a single request, wrap the store lookup
+in `StrongMemoize`. The two layers do different work:
+
+- The instance variable returns the value directly on repeat calls, skipping the
+  `RequestStore.active?` check and the key lookup that `Gitlab::SafeRequestStore.fetch` runs
+  every time.
+- The request store still shares the built value across different objects in the same request,
+  which the per-object instance variable cannot do.
+
+The combination is a micro-optimization for hot paths, not the default.
+For an example, see
+[`EE::WorkItems::TypesFramework::Provider#indexed_cache`](https://gitlab.com/gitlab-org/gitlab/-/blob/12b7a9d430783623764e3bf04c24ce854db13cc9/ee/app/models/ee/work_items/types_framework/provider.rb#L96).
+
 #### Possible downsides
 
 - Adding new attributes to a cached object using `Gitlab::Cache::JsonCache`

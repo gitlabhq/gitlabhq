@@ -170,11 +170,12 @@ RSpec.describe Import::Offline::Imports::ObjectStorageFileDownloadStrategy, feat
   describe '#log_and_raise_error' do
     let(:import_logger) { instance_double(BulkImports::Logger) }
 
-    it 'includes provider and object key in logs', :aggregate_failures do
+    it 'includes the offline transfer importer tag, provider, and object key in logs', :aggregate_failures do
       message = 'something went wrong'
 
       expect(import_logger).to receive(:warn).with({
         message: message,
+        importer: Import::SOURCE_OFFLINE_TRANSFER.to_s,
         provider: configuration.provider,
         object_key: object_key
       })

@@ -6,15 +6,13 @@ export default () => {
 
   if (!el) return false;
 
-  const { devopsScoreMetrics, noDataImagePath, devopsScoreIntroImagePath } = el.dataset;
+  const { devopsScoreMetrics } = el.dataset;
 
   return new Vue({
     el,
     name: 'DevopsScoreRoot',
     provide: {
       devopsScoreMetrics: JSON.parse(devopsScoreMetrics),
-      noDataImagePath,
-      devopsScoreIntroImagePath,
     },
     render(h) {
       return h(DevopsScore);

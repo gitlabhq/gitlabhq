@@ -651,9 +651,8 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
             end
           end
 
-          it 'does not restore jobs metadata' do
+          it 'restores jobs' do
             expect(Ci::Build.for_project(@project).count).to eq(7)
-            expect(Ci::BuildMetadata.count).to eq(0)
           end
         end
 
@@ -720,10 +719,6 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
             expect(CommitStatus.all).to all(have_attributes(pipeline_id: a_value > 0))
           end
 
-          it 'restores a Hash for CommitStatus options' do
-            expect(CommitStatus.all.map(&:options).compact).to all(be_a(Hash))
-          end
-
           it 'restores external pull request for the restored pipeline' do
             pipeline_with_external_pr = @project.ci_pipelines.find_by(source: 'external_pull_request_event')
 
@@ -759,7 +754,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
     context 'when expect tree structure is not present in the export path' do
       let(:user) { create(:user) }
-      let_it_be(:project, freeze: false) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
+      let_it_be_with_reload(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
 
       it 'fails to restore the project' do
         result = described_class.new(user: user, shared: shared, project: project).restore
@@ -1254,9 +1249,9 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
     end
 
     context 'JSON with design management data' do
-      let_it_be(:user, freeze: false) { create(:admin, email: 'user_1@gitlabexample.com') }
-      let_it_be(:second_user, freeze: false) { create(:user, email: 'user_2@gitlabexample.com') }
-      let_it_be(:project, freeze: false) do
+      let_it_be_with_reload(:user) { create(:admin, email: 'user_1@gitlabexample.com') }
+      let_it_be_with_reload(:second_user) { create(:user, email: 'user_2@gitlabexample.com') }
+      let_it_be_with_reload(:project) do
         create(:project, :builds_disabled, :issues_disabled, { name: 'project', path: 'project' })
       end
 

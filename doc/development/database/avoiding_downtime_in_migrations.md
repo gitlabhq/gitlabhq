@@ -474,19 +474,17 @@ Example migration:
 
 ## Changing column defaults
 
-Changing column defaults is difficult because of how Rails handles values
-that are equal to the default.
+Changing or removing a column default is difficult because of how Rails handles values that are equal to the default.
 
 > [!note]
-> Rails ignores sending the default values to PostgreSQL when inserting records, if the [partial_inserts](https://gitlab.com/gitlab-org/gitlab/-/blob/55ac06c9083434e6c18e0a2aaf8be5f189ef34eb/config/application.rb#L40) config has been enabled. It leaves this task to
-> the database. When migrations change the default values of the columns, the running application is unaware
-> of this change due to the schema cache. The application is then under the risk of accidentally writing
-> wrong data to the database, especially when deploying the new version of the code
-> long after we run database migrations.
+> With the [`partial_inserts`](https://gitlab.com/gitlab-org/gitlab/-/blob/55ac06c9083434e6c18e0a2aaf8be5f189ef34eb/config/application.rb#L40) configuration enabled, Rails omits a column from an `INSERT` when its in-memory value equals the column default, and lets the database supply the value.
+> When a migration changes a column default, running processes are unaware of the change because of the schema cache.
 
-If running code ever explicitly writes the old default value of a column, you must follow a multi-step
-process to prevent Rails replacing the old default with the new default in INSERT queries that explicitly
-specify the old default.
+During a zero-downtime deployment, a post-deployment migration runs while older processes still serve traffic, and each process can hold a stale schema cache for the duration of the window.
+A process that relies on the database default then writes the wrong value.
+If the column has a `NOT NULL` constraint and the migration removes its default, the omitted column has no value to fall back to and the `INSERT` fails.
+
+To change or remove a column default safely, force the application to write the column explicitly instead of relying on the database default.
 
 Doing this requires steps in two minor releases:
 
@@ -498,7 +496,7 @@ releases bundle an entire minor release into a single zero-downtime deployment.
 
 ### Add the `SafelyChangeColumnDefault` concern to the model and change the default in a post-migration
 
-The first step is to mark the column as safe to change in application code.
+The first step is to mark the column so the application always writes it into every `INSERT`:
 
 ```ruby
 class Ci::Build < ApplicationRecord
@@ -507,6 +505,41 @@ class Ci::Build < ApplicationRecord
   columns_changing_default :partition_id
 end
 ```
+
+`SafelyChangeColumnDefault` forces the listed columns into every `INSERT`, but the value written still comes from the model.
+That value must not depend on the schema cache.
+
+For a constant default, declare it with a Rails `attribute` default, which is owned by the code and never stale:
+
+```ruby
+class Ci::Build < ApplicationRecord
+  include SafelyChangeColumnDefault
+
+  attribute :partition_id, default: 101
+  columns_changing_default :partition_id
+end
+```
+
+A Rails `attribute` default cannot compute a value from the record, because Rails evaluates the default without the record as context.
+For a default that depends on the record, such as an association, compute it in an `after_initialize` callback and assign it only when the value did not come from the user:
+
+```ruby
+class ProjectFeature < ApplicationRecord
+  include SafelyChangeColumnDefault
+
+  columns_changing_default :model_experiments_access_level
+
+  after_initialize(if: :new_record?) do
+    unless @attributes['model_experiments_access_level'].came_from_user?
+      self.model_experiments_access_level = project&.public? ? ENABLED : PRIVATE
+    end
+  end
+end
+```
+
+Do not guard the assignment with `||=`.
+On a process with a stale schema cache, the attribute already holds the cached default, so `||=` skips the assignment and the concern writes the stale value instead of the computed one.
+The `came_from_user?` check is true only when the value was set explicitly, regardless of the schema cache.
 
 Then create a **post-deployment migration** to change the default:
 

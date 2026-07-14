@@ -1,0 +1,17 @@
+# @feature_category: custom_dashboards_foundation
+#import "./code_suggestions_acceptance_by_language_item.fragment.graphql"
+
+query codeSuggestionsAcceptanceByLanguageQuery($fullPath: ID!, $startDate: Time!, $endDate: Time!) {
+  project(fullPath: $fullPath) {
+    id
+    analytics {
+      ...CodeSuggestionsAcceptanceByLanguageItem
+    }
+  }
+  group(fullPath: $fullPath) {
+    id
+    analytics {
+      ...CodeSuggestionsAcceptanceByLanguageItem
+    }
+  }
+}

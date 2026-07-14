@@ -12,3 +12,4 @@ sharding_key:
   project_id: projects
   group_id: namespaces
 table_size: small
+desired_sharding_key_migration_job_name: BackfillBulkImportExportsOrganizationId

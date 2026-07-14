@@ -16,6 +16,10 @@ module API
         ]
         tags ['hooks']
       end
+      params do
+        requires :hook_id, type: Integer, desc: 'The ID of the hook'
+        requires :hook_log_id, type: Integer, desc: 'The ID of the hook log entry'
+      end
       route_setting :authorization, permissions: :resend_webhook_event, boundary_type: configuration[:boundary_type]
       post ":hook_id/events/:hook_log_id/resend" do
         hook = find_hook
@@ -24,6 +28,17 @@ module API
         end
 
         web_hook_log = hook.web_hook_logs.find(params[:hook_log_id])
+
+        if web_hook_log.outside_recent_window?
+          Gitlab::WebHooks::Logger.log_stale_access(
+            hook: hook,
+            web_hook_log: web_hook_log,
+            action: 'retry',
+            interface: 'api',
+            user: current_user
+          )
+        end
+
         result = WebHooks::Events::ResendService.new(web_hook_log, current_user: current_user).execute
 
         if result.success?

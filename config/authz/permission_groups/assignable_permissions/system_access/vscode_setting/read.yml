@@ -1,0 +1,9 @@
+---
+name: read_vscode_setting
+description: Grants the ability to read VS Code settings
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_vscode_setting

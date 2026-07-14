@@ -189,9 +189,9 @@ for further guidance.
 
 ### Cloud provider services
 
-For all the previously described strategies, you can run select GitLab components on equivalent cloud provider services such as the PostgreSQL database or Redis.
+For all the previously described strategies, you can run select GitLab components on equivalent cloud provider services such as the PostgreSQL database or Redis/Valkey.
 
-For more information, see the [recommended cloud providers and services](#recommended-cloud-providers-and-services).
+For more information, see [Infrastructure and services](#infrastructure-and-services).
 
 ### Decision Tree
 
@@ -289,7 +289,7 @@ their services, or self-managed (ESXi) that meet both:
 
 However, this does not guarantee compatibility with every potential permutation.
 
-See [Recommended cloud providers and services](#recommended-cloud-providers-and-services) for more information.
+See [Infrastructure and services](#infrastructure-and-services) for more information.
 
 ### Networking (High Availability)
 
@@ -396,37 +396,26 @@ can be set up using the Linux package as the specifications reflect. For more de
 - [`omnibus-gitlab#7292`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
 - [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398).
 
-## Recommended cloud providers and services
+## Infrastructure and services
 
-> [!note]
-> The following lists are non-exhaustive. Other cloud providers not listed
-> here may work with the same specifications, but they have not been validated.
-> For the cloud provider services not listed here,
-> use caution because each implementation can be notably different.
-> Test thoroughly before using them in production.
+These architectures run on any infrastructure that meets the specifications, whether on a cloud provider or on-premises. GCP and AWS are used for examples and internal testing throughout this documentation, but other providers that meet the requirements are expected to work equally well.
 
-The following architectures are recommended for the following cloud providers based on testing and real life usage:
+For Cloud Native and Cloud Native Hybrid deployments, any Kubernetes distribution meeting the [GitLab Charts prerequisites](https://docs.gitlab.com/charts/installation/tools/) is supported. Kubernetes platform-specific behavior (networking, storage classes, authentication) is outside the scope of GitLab support.
 
-| Reference Architecture | GCP         | AWS         | Azure                    | Bare Metal  |
-|------------------------|-------------|-------------|--------------------------|-------------|
-| [Linux package](#linux-package-omnibus)          | {{< Yes >}} | {{< Yes >}} | {{< Yes >}} <sup>1</sup> | {{< Yes >}} |
-| [Cloud Native Hybrid](#cloud-native-hybrid)    | {{< Yes >}} | {{< Yes >}} |                          |             |
-| [Cloud Native](cloud_native.md) | {{< Yes >}} | {{< Yes >}} | | |
+The following are example services for each service type, used in testing and documentation. Other services meeting the requirements described in the sections below are expected to work:
 
-Additionally, the following cloud provider services are recommended for use as part of the architectures:
-
-| Cloud Service  | GCP                                                    | AWS                                                | Azure                                                                                                   | Bare Metal               |
-|----------------|--------------------------------------------------------|----------------------------------------------------|---------------------------------------------------------------------------------------------------------|--------------------------|
-| Object Storage | [Cloud Storage](https://cloud.google.com/storage)      | [S3](https://aws.amazon.com/s3/)                   | [Azure Blob Storage](https://azure.microsoft.com/en-gb/products/storage/blobs)                          | S3-compatible object storage |
-| Database       | [Cloud SQL](https://cloud.google.com/sql) <sup>2</sup> | [RDS](https://aws.amazon.com/rds/)                 | [Azure Database for PostgreSQL Flexible Server](https://azure.microsoft.com/en-gb/products/postgresql/) |                          |
-| Redis          | [Memorystore](https://cloud.google.com/memorystore)    | [ElastiCache](https://aws.amazon.com/elasticache/) | [Azure Cache for Redis (Premium)](https://azure.microsoft.com/en-gb/products/cache)                     |                          |
+| Cloud Service  | GCP                                                    | AWS                                                                                                  | Azure                                                                                                   | Bare Metal               |
+|----------------|--------------------------------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|--------------------------|
+| Object Storage | [Cloud Storage](https://cloud.google.com/storage)      | [S3](https://aws.amazon.com/s3/)                                                                     | [Azure Blob Storage](https://azure.microsoft.com/en-gb/products/storage/blobs)                          | S3-compatible object storage |
+| Database       | [Cloud SQL](https://cloud.google.com/sql) <sup>1</sup> | [RDS](https://aws.amazon.com/rds/)                                                                   | [Azure Database for PostgreSQL Flexible Server](https://azure.microsoft.com/en-gb/products/postgresql/) |                          |
+| Redis          | [Memorystore](https://cloud.google.com/memorystore)    | [ElastiCache for Valkey](https://aws.amazon.com/elasticache/valkey/) <sup>2</sup>                    |                                                                                                         |                          |
 
 <!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
-1. To ensure good performance, deploy the [Premium tier of Azure Cache for Redis](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview#service-tiers).
-2. For optimal performance, especially in larger environments (500 RPS / 25k users or higher),
-   use the [Enterprise Plus edition](https://cloud.google.com/sql/docs/editions-intro) for GCP Cloud SQL.
+1. For optimal performance, especially in larger environments (500 RPS / 25k users or higher),
+   use the [Enterprise Plus edition](https://docs.cloud.google.com/sql/docs/mysql/editions-intro) for GCP Cloud SQL.
    You might have to adjust the maximum connections higher than the service's defaults, depending on your workload.
+2. Use ElastiCache for Valkey 7.2. ElastiCache for Redis 7.2 is not available on AWS. ElastiCache for Redis 7.1 is known to work but is built on Redis 7.0 OSS and is not recommended for new deployments.
 <!-- markdownlint-enable MD029 -->
 
 ### Best practices for the database services
@@ -434,7 +423,7 @@ Additionally, the following cloud provider services are recommended for use as p
 Instead of the Linux package-bundled PostgreSQL, PgBouncer, and Consul service discovery components, you can use a
 [third-party external service for PostgreSQL](../postgresql/external.md).
 
-Use a reputable provider that runs a [supported PostgreSQL version](../../install/requirements.md#postgresql). These services are known to work well:
+Use a reputable provider that runs a [supported PostgreSQL version](../../install/requirements.md#postgresql). The following are examples of services known to work:
 
 - [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal).
 - [Amazon RDS](https://aws.amazon.com/rds/).
@@ -471,9 +460,9 @@ The following database cloud provider services are either incompatible or not re
 - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) are not tested and are not recommended. Both solutions are not expected to work with GitLab Geo.
   - [Amazon RDS Multi-AZ DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html) is a separate product and is supported.
 
-### Best practices for Redis services
+### Best practices for Redis and Valkey services
 
-Use an [external Redis service](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) that runs a standard, performant, and supported version. The service must support:
+Use an [external Redis or Valkey service](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) that runs a standard, performant, and supported version. The service must support:
 
 - Redis Standalone (Primary x Replica) mode - Redis Cluster mode is specifically not supported
 - High availability through replication
@@ -482,7 +471,7 @@ Use an [external Redis service](../redis/replication_and_failover_external.md#re
 Redis is primarily single threaded. For environments targeting the 200 RPS / 10,000 users class or larger, separate the instances into cache & persistent data to achieve optimum performance.
 
 > [!note]
-> Serverless variants of Redis services are not supported at this time.
+> Serverless Redis and Valkey variants are not supported.
 
 ### Best practices for object storage
 

@@ -75,14 +75,14 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[packages]
+              tags %w[packages_npm]
             end
             route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true,
               authenticate_non_public: true
             route_setting :authorization, permissions: :read_npm_package_tag,
               **authorization_boundary_options, job_token_policies: :read_packages,
               allow_public_access_for_enabled_project_features: :package_registry
-            get 'dist-tags', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
+            get 'dist-tags', requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
               package_name = params[:package_name]
 
               bad_request_missing_attribute!('Package Name') if package_name.blank?
@@ -103,7 +103,9 @@ module API
             params do
               requires :tag, type: String, desc: "Package dist-tag"
             end
-            namespace 'dist-tags/:tag', requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
+            namespace 'dist-tags/:tag',
+              requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS
+                .merge(API::NO_FORMAT_SUFFIX_REQUIREMENT) do
               desc 'Create or Update the given tag for the given NPM package and version' do
                 detail 'This feature was introduced in GitLab 12.7'
                 success code: 204
@@ -113,12 +115,12 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_npm]
               end
               route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
               route_setting :authorization, permissions: :create_npm_package_tag,
                 **authorization_boundary_options, job_token_policies: :admin_packages
-              put format: false do
+              put do
                 package_name = params[:package_name]
                 version = env['api.request.body']
                 tag = params[:tag]
@@ -152,12 +154,12 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[packages]
+                tags %w[packages_npm]
               end
               route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
               route_setting :authorization, permissions: :delete_npm_package_tag,
                 **authorization_boundary_options, job_token_policies: :admin_packages
-              delete format: false do
+              delete do
                 package_name = params[:package_name]
                 tag = params[:tag]
 
@@ -195,7 +197,7 @@ module API
               { code: 404, message: 'Not Found' }
             ]
             is_array true
-            tags %w[packages]
+            tags %w[packages_npm]
           end
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
           # Granular token authorization is skipped because:
@@ -220,7 +222,7 @@ module API
               { code: 404, message: 'Not Found' }
             ]
             is_array true
-            tags %w[packages]
+            tags %w[packages_npm]
           end
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
           # Granular token authorization is skipped because:

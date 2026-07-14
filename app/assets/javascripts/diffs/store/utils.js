@@ -57,7 +57,7 @@ export const parallelizeDiffLines = (diffLines, inline) => {
   // `chunk` is used for dragging to select diff lines
   // we are restricting commenting to only lines that appear between
   // "expansion rows". Here equal chunks are lines grouped together
-  // inbetween expansion rows.
+  // in between expansion rows.
   let chunk = 0;
 
   for (let i = 0, diffLinesLength = diffLines.length, index = 0; i < diffLinesLength; i += 1) {

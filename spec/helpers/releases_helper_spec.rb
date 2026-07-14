@@ -95,6 +95,11 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
 
     describe '#data_for_show_page' do
       let_it_be(:user) { create(:user) }
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:project, freeze: false) { create(:project, :repository) }
       let_it_be(:commit, freeze: false) do
         create(:commit, project: project, id: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')

@@ -39,7 +39,7 @@ describe('UserMenuProfileItem component', () => {
     expect(findGlDisclosureDropdownItem().props('item')).toEqual(
       expect.objectContaining({
         text: userMenuMockData.name,
-        href: userMenuMockData.link_to_profile,
+        href: '/thefox',
       }),
     );
   });

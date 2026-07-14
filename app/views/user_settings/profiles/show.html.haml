@@ -172,7 +172,8 @@
             %legend.col-form-label
               = s_("Profiles|Achievements")
             = f.gitlab_ui_checkbox_component :achievements_enabled,
-              s_('Profiles|Display achievements on your profile')
+              s_('Profiles|Notify me when I am awarded an achievement'),
+              help_text: s_('Profiles|Achievements you are awarded stay hidden until you accept them. Uncheck to stop receiving award notification emails.')
 
     .js-hide-when-nothing-matches-search.settings-sticky-footer
       = f.submit s_("Profiles|Update profile settings"), class: 'gl-mr-3 js-password-prompt-btn', pajamas_button: true

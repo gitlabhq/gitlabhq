@@ -60,7 +60,7 @@ GEM
     amatch (0.4.2)
       mize
       tins (~> 1.0)
-    ast (2.4.2)
+    ast (2.4.3)
     base64 (0.3.0)
     benchmark (0.5.0)
     bigdecimal (3.3.1)
@@ -346,7 +346,7 @@ GEM
       rubocop-ast (>= 1.28.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.32.3)
+    rubocop-ast (1.40.0)
       parser (>= 3.3.1.0)
     rubocop-capybara (2.21.0)
       rubocop (~> 1.41)
@@ -421,7 +421,7 @@ CHECKSUMS
   activesupport (7.2.3.1) sha256=11ebed516a43a0bb47346227a35ebae4d9427465a7c9eb197a03d5c8d283cb34
   addressable (2.8.7) sha256=462986537cf3735ab5f3c0f557f14155d778f4b43ea4f485a9deb9c8f7c58232
   amatch (0.4.2) sha256=5a7c8c08882864621b81bf3bbc0447bb638afe6066ceeead6b9d11f34cf0d911
-  ast (2.4.2) sha256=1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12
+  ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
   benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c
   bigdecimal (3.3.1) sha256=eaa01e228be54c4f9f53bf3cc34fe3d5e845c31963e7fcc5bedb05a4e7d52218
@@ -548,7 +548,7 @@ CHECKSUMS
   rspec-parameterized-table_syntax (2.0.1) sha256=a5d3effa92fc01542b031a80acafd1b96de55f937517017f618488aa74f1c6d1
   rspec-support (3.13.1) sha256=48877d4f15b772b7538f3693c22225f2eda490ba65a0515c4e7cf6f2f17de70f
   rubocop (1.57.2) sha256=8f679dfe42d7821dc61dafb17d14b1294343157a197b9f8a23720ca17fb9161b
-  rubocop-ast (1.32.3) sha256=40201e861c73a3c2d59428c7627828ef81fb2f8a306bc4a1c1801452afe3fe0f
+  rubocop-ast (1.40.0) sha256=17fa0e4b08517cdfc4d3b8541380f475856485d37caa1300dbba802f11dbb2e5
   rubocop-capybara (2.21.0) sha256=5d264efdd8b6c7081a3d4889decf1451a1cfaaec204d81534e236bc825b280ab
   rubocop-factory_bot (2.25.1) sha256=62751bde7af789878b8a31cbd2a82e69515ce7b23a2ad1820cb0fcc3e0150134
   rubocop-graphql (0.19.0) sha256=ba4b2fc91c9f0fda47e0870a6ae15a1e5525d6caffcb150dc88b00caaacc3e43

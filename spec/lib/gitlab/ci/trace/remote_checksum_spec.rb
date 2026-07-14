@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Trace::RemoteChecksum do
+RSpec.describe Gitlab::Ci::Trace::RemoteChecksum, feature_category: :continuous_integration do
   let_it_be(:job) { create(:ci_build, :success) }
 
   let(:file_store) { JobArtifactUploader::Store::LOCAL }

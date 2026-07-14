@@ -1,9 +1,0 @@
----
-name: loose_foreign_keys_lateral_query
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/577552
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235721
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/602766
-milestone: '19.1'
-group: group::database frameworks
-type: gitlab_com_derisk
-default_enabled: false

@@ -2,7 +2,9 @@ import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BlameCommitInfo from '~/vue_shared/components/source_viewer/components/blame_commit_info.vue';
 import BlameInfo from '~/vue_shared/components/source_viewer/components/blame_info.vue';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import * as utils from '~/vue_shared/components/source_viewer/utils';
+import AccessiblePanelResizer from '~/vue_shared/components/accessible_panel_resizer.vue';
 import { BLAME_DATA_MOCK } from '../mock_data';
 
 describe('BlameInfo component', () => {
@@ -22,10 +24,14 @@ describe('BlameInfo component', () => {
   const findBlameWrappers = () => wrapper.findAll('.blame-commit-wrapper');
   const findIndicatorHeight = (index) =>
     findBlameWrappers().at(index).element.style.getPropertyValue('--blame-indicator-height');
+  const findPanelResizer = () => wrapper.findComponent(AccessiblePanelResizer);
 
   beforeEach(() => createComponent());
 
-  afterEach(() => jest.restoreAllMocks());
+  afterEach(() => {
+    localStorage.clear();
+    jest.restoreAllMocks();
+  });
 
   it('renders a BlameCommitInfo component for each blame entry', () => {
     expect(findBlameCommitInfoComponents()).toHaveLength(BLAME_DATA_MOCK.length);
@@ -151,6 +157,106 @@ describe('BlameInfo component', () => {
         await nextTick();
 
         expect(findBlameWrappers()).toHaveLength(4);
+      });
+    });
+  });
+
+  describe('panel resizer', () => {
+    it('updates width when resizer emits update:size', async () => {
+      createComponent();
+
+      expect(wrapper.attributes('style')).toContain('width: 400px');
+
+      findPanelResizer().vm.$emit('input', 520);
+      await nextTick();
+
+      expect(wrapper.attributes('style')).toContain('width: 520px');
+    });
+
+    it('restores width from localStorage on mount and saves new width to localStorage', async () => {
+      localStorage.setItem('blame-column-width', '505');
+      createComponent();
+      await nextTick();
+
+      expect(wrapper.attributes('style')).toContain('width: 505px');
+
+      findPanelResizer().vm.$emit('resize-end', 600);
+      await nextTick();
+
+      expect(localStorage.getItem('blame-column-width')).toBe('600');
+    });
+
+    it('uses default width on non desktop view', async () => {
+      jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(true);
+      createComponent();
+      await nextTick();
+
+      expect(wrapper.attributes('style')).toContain('width: 400px');
+    });
+
+    it('uses minimum width on non desktop view', async () => {
+      jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
+      createComponent();
+      await nextTick();
+
+      expect(wrapper.attributes('style')).toContain('width: 250px');
+    });
+
+    describe('resize listener', () => {
+      it('registers a resize listener on mount', () => {
+        jest.spyOn(PanelBreakpointInstance, 'addResizeListener');
+        createComponent();
+
+        expect(PanelBreakpointInstance.addResizeListener).toHaveBeenCalledWith(
+          wrapper.vm.handlePanelResize,
+        );
+      });
+
+      it('removes the resize listener on destroy', () => {
+        jest.spyOn(PanelBreakpointInstance, 'removeResizeListener');
+        createComponent();
+        wrapper.destroy();
+
+        expect(PanelBreakpointInstance.removeResizeListener).toHaveBeenCalledWith(
+          wrapper.vm.handlePanelResize,
+        );
+      });
+
+      it('updates isDesktop and restores width when panel is resized to desktop', async () => {
+        jest.spyOn(PanelBreakpointInstance, 'addResizeListener');
+        jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
+        createComponent();
+        await nextTick();
+
+        expect(wrapper.attributes('style')).toContain('width: 250px');
+        expect(findPanelResizer().exists()).toBe(false);
+
+        jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(true);
+        localStorage.setItem('blame-column-width', '520');
+
+        const handler = PanelBreakpointInstance.addResizeListener.mock.calls[0][0];
+        handler();
+        await nextTick();
+
+        expect(wrapper.attributes('style')).toContain('width: 520px');
+        expect(findPanelResizer().exists()).toBe(true);
+      });
+
+      it('sets minimum width and hides resizer when panel is resized to mobile', async () => {
+        jest.spyOn(PanelBreakpointInstance, 'addResizeListener');
+        jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(true);
+        createComponent();
+
+        expect(wrapper.attributes('style')).toContain('width: 400px');
+        expect(findPanelResizer().exists()).toBe(true);
+
+        PanelBreakpointInstance.isDesktop.mockReturnValue(false);
+        const handler = PanelBreakpointInstance.addResizeListener.mock.calls[0][0];
+        handler();
+        await nextTick();
+
+        expect(wrapper.attributes('style')).toContain('width: 250px');
+        expect(findPanelResizer().exists()).toBe(false);
       });
     });
   });

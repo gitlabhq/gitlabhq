@@ -34,8 +34,9 @@ RSpec.shared_examples 'User views a wiki page' do
 
       page.within('.wiki-form') do
         fill_in(:wiki_content, with: 'wiki content')
-        click_on('Create page')
       end
+
+      create_page
 
       wait_for_requests
     end
@@ -77,7 +78,8 @@ RSpec.shared_examples 'User views a wiki page' do
       expect(page).to have_css('#wiki_title')
 
       fill_in('Content', with: 'Updated Wiki Content')
-      click_on('Save changes')
+
+      save_changes
 
       expect(page).to have_content('Updated Wiki Content')
 

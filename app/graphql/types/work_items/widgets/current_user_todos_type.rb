@@ -10,6 +10,8 @@ module Types
         graphql_name 'WorkItemWidgetCurrentUserTodos'
         description 'Represents a todos widget'
 
+        authorize_granular_token skip_reason: :parent_authorizes
+
         implements ::Types::WorkItems::WidgetInterface
         implements ::Types::CurrentUserTodos
 

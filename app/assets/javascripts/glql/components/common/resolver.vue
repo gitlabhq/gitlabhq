@@ -31,6 +31,7 @@ export default {
       default: '',
     },
   },
+  emits: ['change'],
   data() {
     return {
       loading: false,
@@ -41,6 +42,7 @@ export default {
       variables: undefined,
       fields: undefined,
       mode: undefined,
+      source: undefined,
       error: undefined,
     };
   },
@@ -76,6 +78,7 @@ export default {
       this.variables = undefined;
       this.fields = undefined;
       this.mode = undefined;
+      this.source = undefined;
       this.error = undefined;
     },
 
@@ -89,6 +92,7 @@ export default {
           'variables',
           'fields',
           'mode',
+          'source',
           'error',
           'loading',
           'hasNextPage',
@@ -110,13 +114,14 @@ export default {
       this.emitChange();
 
       try {
-        const { query, config, variables, fields, mode } = await parse(this.glqlQuery);
+        const { query, config, variables, fields, mode, source } = await parse(this.glqlQuery);
 
         this.query = query;
         this.config = config;
         this.variables = variables;
         this.fields = fields;
         this.mode = mode;
+        this.source = source;
 
         // Honor an explicit `limit:` from the user. Otherwise, only paginated
         // display types (lists, tables) get the default page size; aggregated
@@ -132,6 +137,7 @@ export default {
         this.data = await transform(executionResult, {
           fields: this.fields,
           mode: this.mode,
+          source: this.source,
         });
 
         this.trackRender();
@@ -155,6 +161,7 @@ export default {
         const data = await transform(executionResult, {
           fields: this.fields,
           mode: this.mode,
+          source: this.source,
         });
 
         this.data = {
@@ -204,7 +211,7 @@ export default {
         :total-count="data.count"
         :page-size="variables.limit.value"
         :loading="loading"
-        @loadMore="loadMore"
+        @load-more="loadMore"
       />
     </div>
   </div>

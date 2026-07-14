@@ -21,7 +21,7 @@ the permission this narrowly, reconsider the design before introducing it.
 
 Permissions are referenced by [role definition YAML files](role_definitions.md) (for default roles),
 [custom ability YAML files](custom_roles.md) (for custom roles), and
-[assignable permission groups](granular_access/rest_api_implementation_guide.md#step-4-create-assignable-permissions)
+[assignable permission groups](granular_access/rest_api_implementation_guide.md#step-4-create-or-update-assignable-permissions)
 (for granular PAT scoping).
 
 ## Naming Permissions
@@ -181,12 +181,10 @@ condition(:is_author) { @subject.author == @user }
 condition(:is_assignee) { @subject.assignees.include?(@user) }
 condition(:is_confidential) { @subject.confidential? }
 
-rule { is_author & can?(:_read_authored_issue) }.policy do
-  enable :read_issue
-  enable :_read_confidential_issue
-end
+rule { ~is_author }.prevent :_read_authored_issue
+rule { ~is_assignee }.prevent :_read_assigned_issue
 
-rule { is_assignee & can?(:_read_assigned_issue) }.policy do
+rule { can?(:_read_authored_issue) | can?(:_read_assigned_issue) }.policy do
   enable :read_issue
   enable :_read_confidential_issue
 end
@@ -216,7 +214,7 @@ Use a private permission when:
 1. The distinction matters for **privilege escalation checks** or
    **custom role composition**.
 
-Do **not** use private permissions for:
+Do not use private permissions for:
 
 - Feature flag or license checks. Use `prevent` rules instead.
 - Settings-based restrictions. Use `prevent` rules instead.
@@ -239,3 +237,46 @@ For example:
 name: _read_authored_issue
 description: Allows users to read issues they authored when they would not otherwise have access
 ```
+
+### Declare broader permissions with conditionally_enables
+
+Every private permission must declare a `conditionally_enables` field. It lists the broader
+public permission, or permissions, that already grant the capability this private permission
+scopes down. Role expansion reads this field: a role that holds every listed permission
+implicitly holds the private permission, so you do not list the private permission on roles
+that already hold the broader one.
+
+Use a single broader permission when one public permission supersedes the private one:
+
+```yaml
+# config/authz/permissions/work_item/_read_authored.yml
+---
+name: _read_authored_work_item
+description: Grants the ability to read work items that were authored by the user.
+conditionally_enables: read_work_item
+```
+
+A role that grants `read_work_item` then also grants `_read_authored_work_item` through
+expansion. A role that does not grant `read_work_item` is unaffected, so a Guest can still
+receive `_read_authored_work_item` directly through its role definition.
+
+List several permissions when the role must hold all of them to imply the private permission:
+
+```yaml
+conditionally_enables:
+  - push_code
+  - create_merge_request_from
+  - create_merge_request_in
+```
+
+Use `null` when no public permission supersedes the private one. This generally applies when the private permission conditionally prevents versus conditionally enables:
+
+```yaml
+# config/authz/permissions/job/_update_protected.yml
+---
+name: _update_protected_job
+description: Private permission to enable/prevent job update and write abilities
+conditionally_enables: null
+```
+
+The validation task fails if a private permission omits `conditionally_enables`.

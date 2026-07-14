@@ -153,19 +153,19 @@ RSpec.describe Issues::ZoomLinkService, feature_category: :team_planning do
     subject { service.can_add_link? }
 
     context 'without "added" zoom meeting' do
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
 
       context 'with insufficient issue update permissions' do
         include_context 'insufficient issue update permissions'
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
     context 'with Zoom meeting in the issue description' do
       include_context  '"added" Zoom meeting'
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -192,7 +192,7 @@ RSpec.describe Issues::ZoomLinkService, feature_category: :team_planning do
 
       it 'can remove the meeting' do
         expect(result).to be_success
-        expect(ZoomMeeting.canonical_meeting_url(issue)).to eq(nil)
+        expect(ZoomMeeting.canonical_meeting_url(issue)).to be_nil
       end
 
       it 'tracks the remove event', :snowplow do
@@ -247,26 +247,26 @@ RSpec.describe Issues::ZoomLinkService, feature_category: :team_planning do
     subject { service.can_remove_link? }
 
     context 'without Zoom meeting' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with only "removed" zoom meetings' do
       include_context '"removed" zoom meetings'
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with "added" Zoom meeting' do
       include_context '"added" Zoom meeting'
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
 
       context 'with "removed" zoom meetings' do
         include_context '"removed" zoom meetings'
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'with insufficient issue update permissions' do
         include_context 'insufficient issue update permissions'
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end
@@ -300,7 +300,7 @@ RSpec.describe Issues::ZoomLinkService, feature_category: :team_planning do
       end
 
       with_them do
-        it { is_expected.to eq(nil) }
+        it { is_expected.to be_nil }
       end
     end
   end

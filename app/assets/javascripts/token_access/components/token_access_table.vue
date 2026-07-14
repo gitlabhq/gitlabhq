@@ -15,6 +15,7 @@ import { s__, __ } from '~/locale';
 import { JOB_TOKEN_POLICIES } from '../constants';
 
 export default {
+  name: 'TokenAccessTable',
   components: {
     GlBadge,
     GlButton,

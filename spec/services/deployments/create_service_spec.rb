@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Deployments::CreateService, feature_category: :continuous_delivery do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   describe '#execute' do
-    let(:project) { create(:project, :repository) }
-    let(:environment) { create(:environment, project: project) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be_with_reload(:environment) { create(:environment, project: project) }
 
     it 'creates a deployment' do
       service = described_class.new(

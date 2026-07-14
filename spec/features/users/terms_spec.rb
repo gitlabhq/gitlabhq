@@ -56,7 +56,7 @@ RSpec.describe 'Users > Terms', :js, feature_category: :user_profile do
     end
   end
 
-  context 'when signed in', :with_organization_url_helpers do
+  context 'when signed in' do
     let(:user) { create(:user) }
     let(:current_organization) { user.organization }
 

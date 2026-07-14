@@ -3,11 +3,12 @@
 module Gitlab
   module Database
     module Partitioning
-      # Export integer and date range partition definitions for a given connection
+      # Export integer range, date range, and single list partition definitions for a given connection
       # so they can be imported into another cell prior to PG replication,
       # to avoid insertion errors.
       class PartitionExporter
         include PartitionKeyColumnTypes
+        include EnsureUtcSession
 
         SUPPORTED_PARTITION_TYPES = Set.new(INTEGER_TYPES + DATE_TYPES).freeze
 
@@ -17,14 +18,18 @@ module Gitlab
         end
 
         # @return [Array<Hash>]
-        #   Array of { table_name: String, partition_type: String, partitions: Array<Hash> } where
-        #   integer partition hashes are { partition_name: String, from: Integer, to: Integer } and
-        #   date partition hashes are { partition_name: String, from: String|nil, to: String }.
+        #   Array of { table_name: String, partition_type: String, partition_strategy: String, partitions: Array<Hash> }
+        #   where integer partition hashes are { partition_name: String, from: Integer, to: Integer } and
+        #   date partition hashes are { partition_name: String, from: String|nil, to: String }
+        #   single list partition hashes are { partition_name: String, values: Array<Integer> }.
         def export
+          ensure_utc_session!
+
           results = []
 
           Gitlab::Database::SharedModel.using_connection(@connection) do
-            tables = Gitlab::Database::PostgresPartitionedTable.where(strategy: 'range').where.not(key_columns: [])
+            tables = Gitlab::Database::PostgresPartitionedTable
+              .where(strategy: %w[range list]).where.not(key_columns: [])
             key_types = partition_key_types(tables)
 
             tables.each do |table|
@@ -32,7 +37,13 @@ module Gitlab
               next unless SUPPORTED_PARTITION_TYPES.include?(partition_type)
 
               partitions = export_partitions_for_type(table, partition_type)
-              results << { table_name: table.name, partition_type: partition_type, partitions: partitions }
+
+              results << {
+                table_name: table.name,
+                partition_type: partition_type,
+                partition_strategy: table.strategy,
+                partitions: partitions
+              }
             end
           end
 
@@ -40,6 +51,8 @@ module Gitlab
         end
 
         private
+
+        attr_reader :connection
 
         def partition_key_types(tables)
           pairs = tables.map { |table| [table.key_columns.first, table.identifier] }
@@ -59,7 +72,10 @@ module Gitlab
         end
 
         def export_partitions_for_type(table, partition_type)
-          if INTEGER_TYPES.include?(partition_type)
+          if table.strategy == 'list' && INTEGER_TYPES.include?(partition_type)
+            # TODO: Can be replaced with MultipleNumericListPartition when multi value support is implemented
+            export_partitions_for(table, SingleNumericListPartition)
+          elsif INTEGER_TYPES.include?(partition_type)
             export_partitions_for(table, IntRangePartition)
           elsif DATE_TYPES.include?(partition_type)
             export_partitions_for(table, TimePartition)

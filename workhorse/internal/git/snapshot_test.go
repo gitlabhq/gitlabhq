@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/stretchr/testify/require"
@@ -18,10 +20,20 @@ import (
 type mockRepositoryServer struct {
 	gitalypb.UnimplementedRepositoryServiceServer
 	getSnapshotFunc func(*gitalypb.GetSnapshotRequest, gitalypb.RepositoryService_GetSnapshotServer) error
+	getArchiveFunc  func(*gitalypb.GetArchiveRequest, gitalypb.RepositoryService_GetArchiveServer) error
 }
 
 func (s *mockRepositoryServer) GetSnapshot(req *gitalypb.GetSnapshotRequest, stream gitalypb.RepositoryService_GetSnapshotServer) error {
 	return s.getSnapshotFunc(req, stream)
+}
+
+func (s *mockRepositoryServer) GetArchive(req *gitalypb.GetArchiveRequest, stream gitalypb.RepositoryService_GetArchiveServer) error {
+	if s.getArchiveFunc == nil {
+		// The mock is shared with snapshot tests, which only set getSnapshotFunc.
+		// Return a clear gRPC error instead of a nil dereference panic.
+		return status.Error(codes.Unimplemented, "GetArchive not configured on mock")
+	}
+	return s.getArchiveFunc(req, stream)
 }
 
 func TestSnapshotInject(t *testing.T) {

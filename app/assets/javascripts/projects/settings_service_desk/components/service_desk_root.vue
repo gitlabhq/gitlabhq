@@ -9,6 +9,7 @@ import ServiceDeskSetting from './service_desk_setting.vue';
 const CustomEmailWrapper = () => import('./custom_email_wrapper.vue');
 
 export default {
+  name: 'ServiceDeskRoot',
   serviceDeskEmailHelpPath: helpPagePath('/user/project/service_desk/configure.html', {
     anchor: 'use-an-additional-service-desk-alias-email',
   }),

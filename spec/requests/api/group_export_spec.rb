@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::GroupExport, feature_category: :importers do
-  let_it_be(:group, freeze: false) { create(:group) }
+  let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
 
   let(:path) { "/groups/#{group.id}/export" }
@@ -100,11 +100,8 @@ RSpec.describe API::GroupExport, feature_category: :importers do
 
     context 'when the requests have exceeded the rate limit' do
       before do
-        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-          allow(strategy)
-            .to receive(:increment)
-            .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_download_export][:threshold].call + 1)
-        end
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+          .with(:group_download_export, scope: anything).and_return(true)
       end
 
       it 'throttles the endpoint' do
@@ -192,11 +189,8 @@ RSpec.describe API::GroupExport, feature_category: :importers do
       before do
         group.add_owner(user)
 
-        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-          allow(strategy)
-            .to receive(:increment)
-            .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_export][:threshold].call + 1)
-        end
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+          .with(:group_export, scope: anything).and_return(true)
       end
 
       it 'throttles the endpoint' do
@@ -222,6 +216,11 @@ RSpec.describe API::GroupExport, feature_category: :importers do
     end
 
     describe 'POST /groups/:id/export_relations' do
+      it_behaves_like 'authorizing granular token permissions', :create_project_relation_export do
+        let(:boundary_object) { group }
+        let(:request) { post api(path, personal_access_token: pat) }
+      end
+
       it 'accepts the request' do
         post api(path, user)
 
@@ -276,6 +275,17 @@ RSpec.describe API::GroupExport, feature_category: :importers do
     end
 
     describe 'GET /groups/:id/export_relations/download' do
+      it_behaves_like 'authorizing granular token permissions', :download_project_relation_export do
+        let(:boundary_object) { group }
+        let(:request) { get api(download_path, personal_access_token: pat) }
+
+        before do
+          export = create(:bulk_import_export, group: group, relation: 'labels', user: user)
+          upload = create(:bulk_import_export_upload, export: export)
+          upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
+        end
+      end
+
       context 'when export request is not batched' do
         let(:export) { create(:bulk_import_export, group: group, relation: 'labels', user: user) }
         let(:upload) { create(:bulk_import_export_upload, export: export) }
@@ -319,7 +329,7 @@ RSpec.describe API::GroupExport, feature_category: :importers do
         context 'when export is batched' do
           let(:relation) { 'milestones' }
 
-          let_it_be(:export, freeze: false) do
+          let_it_be_with_reload(:export) do
             create(:bulk_import_export, :batched, group: group, relation: 'milestones', user: user)
           end
 
@@ -395,7 +405,7 @@ RSpec.describe API::GroupExport, feature_category: :importers do
       end
 
       context 'when export is from an offline transfer export' do
-        let_it_be(:export, freeze: false) do
+        let_it_be_with_reload(:export) do
           create(:bulk_import_export, :offline, group: group, relation: 'labels', user: user)
         end
 
@@ -408,6 +418,11 @@ RSpec.describe API::GroupExport, feature_category: :importers do
     end
 
     describe 'GET /groups/:id/export_relations/status' do
+      it_behaves_like 'authorizing granular token permissions', :read_project_relation_export do
+        let(:boundary_object) { group }
+        let(:request) { get api(status_path, personal_access_token: pat) }
+      end
+
       let_it_be(:started_export) { create(:bulk_import_export, :started, group: group, relation: 'labels', user: user) }
       let_it_be(:finished_export) do
         create(:bulk_import_export, :finished, group: group, relation: 'milestones', user: user)
@@ -520,28 +535,10 @@ RSpec.describe API::GroupExport, feature_category: :importers do
 
       before do
         stub_application_setting(bulk_import_enabled: false)
-        stub_feature_flags(override_bulk_import_disabled: false)
       end
 
       it_behaves_like '404 response' do
         let(:message) { '404 Not Found' }
-      end
-
-      it 'enables the feature when override flag is enabled for the user' do
-        stub_feature_flags(override_bulk_import_disabled: user)
-
-        request
-
-        expect(response).to have_gitlab_http_status(:accepted)
-      end
-
-      it 'does not enable the feature when override flag is enabled for another user' do
-        other_user = create(:user)
-        stub_feature_flags(override_bulk_import_disabled: other_user)
-
-        request
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

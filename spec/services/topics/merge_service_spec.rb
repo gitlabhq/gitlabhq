@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Topics::MergeService, :with_current_organization, feature_category: :shared do
   let_it_be(:namespace) { create(:namespace, organization: current_organization) }
 
-  let_it_be(:source_topic, freeze: false) { create(:topic, name: 'source_topic', organization: current_organization) }
-  let_it_be(:target_topic, freeze: false) { create(:topic, name: 'target_topic', organization: current_organization) }
+  let_it_be_with_reload(:source_topic) { create(:topic, name: 'source_topic', organization: current_organization) }
+  let_it_be_with_reload(:target_topic) { create(:topic, name: 'target_topic', organization: current_organization) }
 
   let_it_be(:project_1) { create(:project, :public, topic_list: source_topic.name, namespace: namespace) }
   let_it_be(:project_2) { create(:project, :private, topic_list: source_topic.name, namespace: namespace) }

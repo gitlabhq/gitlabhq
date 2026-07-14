@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Projects::SnippetsController, feature_category: :source_code_management do
   include Gitlab::Routing
 
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:other_user, freeze: false) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project_empty_repo, :public) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:other_user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project_empty_repo, :public) }
 
   before do
     project.add_maintainer(user)
@@ -51,7 +51,7 @@ RSpec.describe Projects::SnippetsController, feature_category: :source_code_mana
     end
 
     context 'when the project snippet is private' do
-      let_it_be(:project_snippet, freeze: false) { create(:project_snippet, :private, project: project, author: user) }
+      let_it_be(:project_snippet) { create(:project_snippet, :private, project: project, author: user) }
 
       context 'when anonymous' do
         it 'does not include the private snippet' do
@@ -87,7 +87,7 @@ RSpec.describe Projects::SnippetsController, feature_category: :source_code_mana
   end
 
   describe 'POST #mark_as_spam' do
-    let_it_be(:snippet, freeze: false) { create(:project_snippet, :private, project: project, author: user) }
+    let_it_be(:snippet) { create(:project_snippet, :private, project: project, author: user) }
 
     before do
       allow_next_instance_of(Spam::AkismetService) do |instance|
@@ -128,7 +128,7 @@ RSpec.describe Projects::SnippetsController, feature_category: :source_code_mana
   %w[show raw].each do |action|
     describe "GET ##{action}" do
       context 'when the project snippet is private' do
-        let_it_be(:project_snippet, freeze: false) { create(:project_snippet, :private, :repository, project: project, author: user) }
+        let_it_be(:project_snippet) { create(:project_snippet, :private, :repository, project: project, author: user) }
 
         subject { get action, params: { namespace_id: project.namespace, project_id: project, id: project_snippet.to_param } }
 
@@ -182,7 +182,7 @@ RSpec.describe Projects::SnippetsController, feature_category: :source_code_mana
       end
 
       context 'when the project snippet is public' do
-        let_it_be(:project_snippet_public, freeze: false) { create(:project_snippet, :public, :repository, project: project, author: user) }
+        let_it_be(:project_snippet_public) { create(:project_snippet, :public, :repository, project: project, author: user) }
 
         context 'when attempting to access from a different project route' do
           subject { get action, params: { namespace_id: project.namespace, project_id: 42, id: project_snippet_public.to_param } }
@@ -281,8 +281,8 @@ RSpec.describe Projects::SnippetsController, feature_category: :source_code_mana
     subject { get :raw, params: params }
 
     context 'when repository is empty' do
-      let_it_be(:content, freeze: false) { "first line\r\nsecond line\r\nthird line" }
-      let_it_be(:project_snippet, freeze: false) do
+      let_it_be(:content) { "first line\r\nsecond line\r\nthird line" }
+      let_it_be(:project_snippet) do
         create(
           :project_snippet, :public, :empty_repo,
           project: project,
@@ -319,7 +319,7 @@ RSpec.describe Projects::SnippetsController, feature_category: :source_code_mana
     end
 
     context 'when repository is not empty' do
-      let_it_be(:project_snippet, freeze: false) do
+      let_it_be(:project_snippet) do
         create(
           :project_snippet, :public, :repository,
           project: project,

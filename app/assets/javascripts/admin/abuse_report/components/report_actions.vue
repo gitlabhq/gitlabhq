@@ -52,6 +52,7 @@ export default {
       required: true,
     },
   },
+  emits: ['close-report', 'show-alert'],
   data() {
     return {
       showActionsDrawer: false,

@@ -1,7 +1,6 @@
 ---
 table_name: p_ci_builds_execution_configs
-classes:
-- Ci::BuildExecutionConfig
+classes: []
 feature_categories:
 - pipeline_composition
 description: Represents execution config for a group of builds

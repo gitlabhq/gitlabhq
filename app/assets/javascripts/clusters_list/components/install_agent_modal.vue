@@ -69,6 +69,7 @@ export default {
       default: false,
     },
   },
+  emits: ['clusterAgentCreated'],
   data() {
     return {
       registering: false,

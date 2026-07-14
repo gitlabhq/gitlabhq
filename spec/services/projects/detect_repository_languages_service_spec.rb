@@ -90,7 +90,7 @@ RSpec.describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_s
     end
 
     context 'when no repository exists' do
-      let_it_be(:project, freeze: false) { create(:project) }
+      let_it_be_with_reload(:project) { create(:project) }
 
       it 'has no languages' do
         expect(subject.execute).to be_empty

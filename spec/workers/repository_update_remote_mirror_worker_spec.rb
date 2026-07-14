@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_state, feature_category: :source_code_management do
-  let_it_be(:remote_mirror, freeze: false) { create(:remote_mirror) }
+  let_it_be_with_reload(:remote_mirror) { create(:remote_mirror) }
 
   let(:scheduled_time) { Time.current - 5.minutes }
   let(:retry_time) { Time.current + 1.second }

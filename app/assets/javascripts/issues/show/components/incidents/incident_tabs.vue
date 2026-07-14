@@ -25,6 +25,7 @@ export const TAB_NAMES = Object.freeze({
 });
 
 export default {
+  name: 'IncidentTabs',
   components: {
     DescriptionComponent,
     GlTab,

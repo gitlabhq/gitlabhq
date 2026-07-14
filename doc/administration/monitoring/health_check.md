@@ -176,7 +176,7 @@ This check is being exempt from Rack Attack.
 ## Liveness
 
 > [!warning]
-> In GitLab [12.4](https://about.gitlab.com/upcoming-releases/)
+> In GitLab [12.4](https://about.gitlab.com/whats-new/)
 > the response body of the Liveness check was changed
 > to match the example below.
 

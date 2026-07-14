@@ -21,5 +21,23 @@ module RapidDiffs
         target: merge_request.target_branch
       )
     end
+
+    def no_changes_description
+      helpers.safe_format(
+        _('No changes between %{source} and %{target}'),
+        source: helpers.tag.span(merge_request.source_branch, class: 'ref-name'),
+        target: helpers.tag.span(merge_request.target_branch, class: 'ref-name')
+      )
+    end
+
+    # Mirrors MergeRequestNoteableEntity/MergeRequestPollWidgetEntity: the
+    # "Create commit" link is only offered when the user can push to the
+    # source branch. When they cannot, no link (and therefore no button) is
+    # rendered.
+    def new_blob_path
+      return unless merge_request.present(current_user: helpers.current_user).can_push_to_source_branch?
+
+      helpers.project_new_blob_path(merge_request.source_project, merge_request.source_branch)
+    end
   end
 end

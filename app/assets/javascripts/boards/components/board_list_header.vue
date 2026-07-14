@@ -30,6 +30,7 @@ import { setError } from '../graphql/cache_updates';
 import ItemCount from './item_count.vue';
 
 export default {
+  name: 'BoardListHeader',
   i18n: {
     newIssue: s__('Boards|Create new issue'),
     newEpic: s__('Boards|Create new epic'),
@@ -99,6 +100,7 @@ export default {
       required: true,
     },
   },
+  emits: ['openUnassignedLane', 'setActiveList', 'toggleNewForm'],
   data() {
     return {
       showMilestonePopover: false,

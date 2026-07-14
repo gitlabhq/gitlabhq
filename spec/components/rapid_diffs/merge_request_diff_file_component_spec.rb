@@ -37,7 +37,7 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
 
         options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
 
-        expect(options_menu_items[1]['text']).to eq('Edit in single-file editor')
+        expect(options_menu_items[1]['text']).to eq('Edit single file')
         expect(options_menu_items[1]['href']).to include("#{edit_path_base}#{merge_request.iid}")
       end
 
@@ -55,6 +55,34 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
           options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
 
           expect(options_menu_items[1]['href']).to include(source_project.full_path)
+        end
+      end
+
+      context 'when the source project no longer exists' do
+        before do
+          allow(merge_request).to receive(:source_project).and_return(nil)
+        end
+
+        it 'renders without raising and omits the edit option', :aggregate_failures do
+          expect { render_component }.not_to raise_error
+
+          options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+
+          expect(options_menu_items.pluck('text')).not_to include('Edit in single-file editor')
+        end
+      end
+
+      context 'when the file is stored externally' do
+        before do
+          allow(diff_file).to receive(:stored_externally?).and_return(true)
+        end
+
+        it 'omits the edit option' do
+          render_component
+
+          options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+
+          expect(options_menu_items.pluck('text')).not_to include('Edit in single-file editor')
         end
       end
     end
@@ -87,6 +115,32 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
       expect(file_data['show_whitespace']).to be(true)
       expect(file_data['custom_key']).to eq('custom_value')
       expect(file_data['code_review_id']).to eq(diff_file.code_review_id)
+    end
+
+    it 'includes the diff file refs in file_data' do
+      allow(diff_file).to receive(:diff_refs).and_return(
+        Gitlab::Diff::DiffRefs.new(base_sha: 'base123', start_sha: 'start456', head_sha: 'head789')
+      )
+
+      render_component
+
+      diff_file_element = page.find('diff-file')
+      file_data = Gitlab::Json.parse(diff_file_element['data-file-data'])
+      expect(file_data['diff_refs']).to eq(
+        'base_sha' => 'base123',
+        'start_sha' => 'start456',
+        'head_sha' => 'head789'
+      )
+    end
+
+    it 'omits diff_refs when the diff file has none' do
+      allow(diff_file).to receive(:diff_refs).and_return(nil)
+
+      render_component
+
+      diff_file_element = page.find('diff-file')
+      file_data = Gitlab::Json.parse(diff_file_element['data-file-data'])
+      expect(file_data).not_to have_key('diff_refs')
     end
   end
 

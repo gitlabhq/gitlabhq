@@ -1,5 +1,5 @@
 import { __ } from '~/locale';
-import { FIELD_TYPES } from '../constants';
+import { FIELD_TYPES, DISPLAY_TYPES } from '../constants';
 
 export const dimensionsOf = (fields) => fields.filter((f) => f.type === FIELD_TYPES.DIMENSION);
 export const metricsOf = (fields) => fields.filter((f) => f.type === FIELD_TYPES.METRIC);
@@ -32,6 +32,21 @@ export const buildSeries = (nodes, dimension, metric) => {
       data: nodes.map((node) => [dimensionValue(node, dimension), node[metric.key] ?? 0]),
     },
   ];
+};
+
+// GlBarChart takes `data: { [seriesName]: points }` directly (no array-of-series
+// wrapper), and — because the chart is horizontal — a point's value comes first
+// and its category label second: `[metricValue, dimensionValue]`. This is the
+// reverse of buildSeries' `[dimensionValue, metricValue]` tuples used by the
+// (vertical) column and line charts.
+export const buildBarSeriesData = (nodes, dimension, metrics) => {
+  if (!nodes?.length || !dimension || !metrics?.length) return {};
+  return Object.fromEntries(
+    metrics.map((metric) => [
+      metric.label,
+      nodes.map((node) => [node[metric.key] ?? 0, dimensionValue(node, dimension)]),
+    ]),
+  );
 };
 
 export const buildStackedByDimension = ({ nodes, primaryDim, secondaryDim, metric }) => {
@@ -81,14 +96,20 @@ export const buildStackedByMetric = (nodes, dimension, metrics) => {
 // `value[metricIndex]`, which yields `undefined` for stacked-column data (where
 // `value` is a scalar, not a tuple) and surfaces as NaN once formatters run.
 // Reading `params.seriesData` directly sidesteps that, and works for both
-// `[label, num]` tuples and scalar data points.
-export const tooltipContentFromParams = (params) => {
+// tuples and scalar data points.
+//
+// Column/line chart tuples are `[label, value]`; bar chart's are flipped to
+// `[value, label]` because its value axis is x instead of y (see
+// buildBarSeriesData). Callers pass their displayType rather than the tuple
+// index directly, so this detail stays private to this function.
+export const tooltipContentFromParams = (params, displayType = DISPLAY_TYPES.COLUMN_CHART) => {
   if (!params?.seriesData) return {};
+  const valueIndex = displayType === DISPLAY_TYPES.BAR_CHART ? 0 : 1;
   return Object.fromEntries(
     params.seriesData.map(({ seriesName, value, color, borderColor }) => [
       seriesName,
       {
-        value: (Array.isArray(value) ? value[1] : value) ?? 0,
+        value: (Array.isArray(value) ? value[valueIndex] : value) ?? 0,
         color: borderColor ?? color,
       },
     ]),

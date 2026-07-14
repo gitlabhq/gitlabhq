@@ -11,9 +11,9 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
   end
 
   describe '.find_or_create' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:commit_author, freeze: false) { create(:merge_request_diff_commit_user) }
-    let_it_be(:committer, freeze: false) { create(:merge_request_diff_commit_user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:commit_author) { create(:merge_request_diff_commit_user) }
+    let_it_be(:committer) { create(:merge_request_diff_commit_user) }
 
     let(:metadata) do
       {
@@ -103,9 +103,9 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
   end
 
   describe '.bulk_find_or_create' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
-    let_it_be(:existing_commit_metadata, freeze: false) do
+    let_it_be(:existing_commit_metadata) do
       create(
         :merge_request_commits_metadata,
         project_id: project.id,
@@ -255,42 +255,42 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
   end
 
   describe '.oldest_merge_request_id_per_commit' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:other_project, freeze: false) { create(:project) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:other_project) { create(:project) }
 
-    let_it_be(:commit_sha_1, freeze: false) { OpenSSL::Digest::SHA256.hexdigest('abc') }
-    let_it_be(:commit_sha_2, freeze: false) { OpenSSL::Digest::SHA256.hexdigest('def') }
-    let_it_be(:commit_sha_3, freeze: false) { OpenSSL::Digest::SHA256.hexdigest('ghi') }
-    let_it_be(:commit_sha_4, freeze: false) { OpenSSL::Digest::SHA256.hexdigest('jkl') }
+    let_it_be(:commit_sha_1) { OpenSSL::Digest::SHA256.hexdigest('abc') }
+    let_it_be(:commit_sha_2) { OpenSSL::Digest::SHA256.hexdigest('def') }
+    let_it_be(:commit_sha_3) { OpenSSL::Digest::SHA256.hexdigest('ghi') }
+    let_it_be(:commit_sha_4) { OpenSSL::Digest::SHA256.hexdigest('jkl') }
 
-    let_it_be(:commits_metadata_1, freeze: false) do
+    let_it_be(:commits_metadata_1) do
       create(:merge_request_commits_metadata, project: project, sha: commit_sha_1)
     end
 
-    let_it_be(:commits_metadata_2, freeze: false) do
+    let_it_be(:commits_metadata_2) do
       create(:merge_request_commits_metadata, project: project, sha: commit_sha_2)
     end
 
-    let_it_be(:commits_metadata_3, freeze: false) do
+    let_it_be(:commits_metadata_3) do
       create(:merge_request_commits_metadata, project: project, sha: commit_sha_3)
     end
 
-    let_it_be(:commits_metadata_4, freeze: false) do
+    let_it_be(:commits_metadata_4) do
       create(:merge_request_commits_metadata, project: project, sha: commit_sha_4)
     end
 
     subject(:result) { described_class.oldest_merge_request_id_per_commit(project.id, shas) }
 
     context 'when there are merged merge requests' do
-      let_it_be(:mr_1, freeze: false) { create(:merge_request, :merged, target_project: project, id: 100) }
-      let_it_be(:mr_2, freeze: false) { create(:merge_request, :merged, target_project: project, id: 200) }
-      let_it_be(:mr_3, freeze: false) { create(:merge_request, :merged, target_project: project, id: 150) }
-      let_it_be(:mr_4, freeze: false) { create(:merge_request, :merged, target_project: project, id: 300) }
+      let_it_be_with_reload(:mr_1) { create(:merge_request, :merged, target_project: project, id: 100) }
+      let_it_be_with_reload(:mr_2) { create(:merge_request, :merged, target_project: project, id: 200) }
+      let_it_be_with_reload(:mr_3) { create(:merge_request, :merged, target_project: project, id: 150) }
+      let_it_be_with_reload(:mr_4) { create(:merge_request, :merged, target_project: project, id: 300) }
 
-      let_it_be(:mr_diff_1, freeze: false) { create(:merge_request_diff, merge_request: mr_1) }
-      let_it_be(:mr_diff_2, freeze: false) { create(:merge_request_diff, merge_request: mr_2) }
-      let_it_be(:mr_diff_3, freeze: false) { create(:merge_request_diff, merge_request: mr_3) }
-      let_it_be(:mr_diff_4, freeze: false) { create(:merge_request_diff, merge_request: mr_4) }
+      let_it_be(:mr_diff_1) { create(:merge_request_diff, merge_request: mr_1) }
+      let_it_be(:mr_diff_2) { create(:merge_request_diff, merge_request: mr_2) }
+      let_it_be(:mr_diff_3) { create(:merge_request_diff, merge_request: mr_3) }
+      let_it_be(:mr_diff_4) { create(:merge_request_diff, merge_request: mr_4) }
 
       before_all do
         mr_1.update!(latest_merge_request_diff_id: mr_diff_1.id)
@@ -340,21 +340,70 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
           expect(result).to be_empty
         end
       end
+
+      context 'when querying for a commit in the metadata table' do
+        let(:shas) { [commit_sha_1] }
+
+        it 'returns the merge request ID for that commit' do
+          expect(result.pluck(:sha, :merge_request_id)).to contain_exactly([commit_sha_1, mr_1.id])
+        end
+
+        it 'does not fall back to querying merge_request_diff_commits directly' do
+          recorder = ActiveRecord::QueryRecorder.new { result.to_a }
+
+          expect(recorder.log.size).to eq(1)
+          expect(recorder.log.first).to match(/"merge_request_commits_metadata"."sha" =/)
+          expect(recorder.log.first).not_to match(/"merge_request_diff_commits"."sha" =/)
+        end
+
+        context 'when mr_diff_commits_read_new_table is disabled' do
+          before do
+            stub_feature_flags(mr_diff_commits_read_new_table: false)
+          end
+
+          it 'returns the merge request ID for that commit' do
+            expect(result.pluck(:sha, :merge_request_id)).to contain_exactly([commit_sha_1, mr_1.id])
+          end
+
+          context 'when data exists in old table only' do
+            let_it_be(:old_commit_sha) { OpenSSL::Digest::SHA256.hexdigest('old_sha') }
+            let_it_be(:old_table_commit) do
+              create(:diff_commit_without_metadata,
+                merge_request_diff: mr_diff_1,
+                sha: old_commit_sha,
+                relative_order: mr_diff_1.merge_request_diff_commits.reload.size)
+            end
+
+            let(:shas) { [old_commit_sha] }
+
+            it 'returns the merge request ID for that commit' do
+              expect(result.pluck(:sha, :merge_request_id)).to contain_exactly([old_commit_sha, mr_1.id])
+            end
+
+            it 'falls back to querying merge_request_diff_commits directly' do
+              recorder = ActiveRecord::QueryRecorder.new { result.to_a }
+
+              expect(recorder.log.first).to match(/"merge_request_commits_metadata"."sha" =/)
+              expect(recorder.log.second).to match(/"merge_request_diff_commits"."sha" =/)
+            end
+          end
+        end
+      end
     end
 
     context 'when merge requests are not merged' do
-      let_it_be(:mr_open, freeze: false) do
+      let_it_be_with_reload(:mr_open) do
         create(:merge_request, :opened, source_project: project, target_project: project)
       end
 
       let(:shas) { [commit_sha_1, commit_sha_2] }
 
-      let_it_be(:mr_closed, freeze: false) do
+      let_it_be_with_reload(:mr_closed) do
         create(:merge_request, :closed, source_project: project, target_project: project)
       end
 
-      let_it_be(:mr_diff_open, freeze: false) { create(:merge_request_diff, merge_request: mr_open) }
-      let_it_be(:mr_diff_closed, freeze: false) { create(:merge_request_diff, merge_request: mr_closed) }
+      let_it_be(:mr_diff_open) { create(:merge_request_diff, merge_request: mr_open) }
+      let_it_be(:mr_diff_closed) { create(:merge_request_diff, merge_request: mr_closed) }
 
       before do
         mr_open.update!(latest_merge_request_diff_id: mr_diff_open.id)
@@ -372,17 +421,17 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
     end
 
     context 'when merge requests belong to different projects' do
-      let_it_be(:other_commits_metadata, freeze: false) do
+      let_it_be(:other_commits_metadata) do
         create(:merge_request_commits_metadata, project: other_project, sha: commit_sha_1)
       end
 
       let(:shas) { [commit_sha_1] }
 
-      let_it_be(:other_mr, freeze: false) do
+      let_it_be_with_reload(:other_mr) do
         create(:merge_request, :merged, target_project: other_project, id: 50)
       end
 
-      let_it_be(:other_mr_diff, freeze: false) { create(:merge_request_diff, merge_request: other_mr) }
+      let_it_be(:other_mr_diff) { create(:merge_request_diff, merge_request: other_mr) }
 
       before_all do
         other_mr.update!(latest_merge_request_diff_id: other_mr_diff.id)
@@ -393,6 +442,85 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
 
       it 'only returns results for the specified project' do
         expect(result).to be_empty
+      end
+    end
+  end
+
+  describe '.oldest_merge_requests_commits_from_metadata' do
+    let_it_be(:project) { create(:project) }
+    let(:shas) { [sha_a] }
+    let_it_be(:sha_a) { OpenSSL::Digest::SHA256.hexdigest('sha_a') }
+    let_it_be(:sha_b) { OpenSSL::Digest::SHA256.hexdigest('sha_b') }
+    let_it_be(:metadata_a) { create(:merge_request_commits_metadata, project: project, sha: sha_a) }
+    let_it_be(:mr_1) { create(:merge_request, :merged, target_project: project) }
+    let_it_be(:mr_2) { create(:merge_request, :merged, target_project: project) }
+
+    before_all do
+      create(:merge_request_diff_commit, merge_request_diff: mr_1.merge_request_diff,
+        merge_request_commits_metadata: metadata_a)
+      create(:merge_request_diff_commit, merge_request_diff: mr_2.merge_request_diff,
+        merge_request_commits_metadata: metadata_a)
+    end
+
+    subject(:result) { described_class.oldest_merge_requests_commits_from_metadata(project.id, shas) }
+
+    it 'returns the sha and the minimum merge_request_id across merged MRs' do
+      expect(result.to_a.pluck(:sha, :merge_request_id)).to contain_exactly([sha_a, mr_1.id])
+    end
+
+    it 'includes a project_id filter on merge_request_diff_commits for partition pruning' do
+      expect { result.load }.not_to query_diff_commits_without_project_id
+    end
+
+    it 'excludes SHAs not in the provided list' do
+      expect(described_class.oldest_merge_requests_commits_from_metadata(project.id, [sha_b])).to be_empty
+    end
+
+    context 'when the commit has no merge_request_diff_commits link' do
+      let_it_be(:metadata_b) { create(:merge_request_commits_metadata, project: project, sha: sha_b) }
+
+      let(:shas) { [sha_b] }
+
+      it 'excludes it via the INNER JOIN on merge_request_diff_commits' do
+        expect(result).to be_empty
+      end
+    end
+
+    context 'when the commit is linked only to non-merged MRs' do
+      let_it_be(:open_sha) { OpenSSL::Digest::SHA256.hexdigest('open_sha') }
+      let(:shas) { [open_sha] }
+      let_it_be(:open_metadata) { create(:merge_request_commits_metadata, project: project, sha: open_sha) }
+      let_it_be(:mr_open) { create(:merge_request, :opened, source_project: project, target_project: project) }
+
+      before_all do
+        create(:merge_request_diff_commit, merge_request_diff: mr_open.merge_request_diff,
+          merge_request_commits_metadata: open_metadata)
+      end
+
+      it 'returns empty results' do
+        expect(result).to be_empty
+      end
+    end
+
+    context 'when the commit belongs to a different project' do
+      let_it_be(:other_project) { create(:project) }
+
+      it 'returns empty results for the other project' do
+        expect(described_class.oldest_merge_requests_commits_from_metadata(other_project.id, shas)).to be_empty
+      end
+    end
+
+    context 'when mr_diff_commits_project_id_pruning is disabled' do
+      before do
+        stub_feature_flags(mr_diff_commits_project_id_pruning: false)
+      end
+
+      it 'returns correct results' do
+        expect(result.to_a.pluck(:sha, :merge_request_id)).to contain_exactly([sha_a, mr_1.id])
+      end
+
+      it 'omits the project_id filter on merge_request_diff_commits' do
+        expect { result.load }.to query_diff_commits_without_project_id
       end
     end
   end

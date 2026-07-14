@@ -1,0 +1,9 @@
+---
+name: read_active_context_connection
+description: Grants the ability to read ActiveContext connections
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_active_context_connection

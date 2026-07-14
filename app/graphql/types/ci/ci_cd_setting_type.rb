@@ -71,6 +71,12 @@ module Types
         null: true,
         description: 'Default process mode for resource groups.',
         authorize: :admin_project
+      field :skip_branch_pipelines_for_mrs,
+        GraphQL::Types::Boolean,
+        null: true,
+        description: 'Indicates whether branch pipelines are skipped if a merge request is open.',
+        method: :skip_branch_pipelines_for_mrs?,
+        authorize: :admin_project
     end
   end
 end

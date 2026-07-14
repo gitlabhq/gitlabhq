@@ -40,4 +40,81 @@ RSpec.describe Keys::CreateService, feature_category: :source_code_management do
       expect(key.organization_id).to eq(other_organization.id)
     end
   end
+
+  context 'internal event tracking' do
+    it 'tracks create_ssh_key event when key is persisted' do
+      expect { subject.execute }.to trigger_internal_events('create_ssh_key')
+        .with(
+          user: user,
+          additional_properties: {
+            creation_source: 'unknown',
+            usage_type: 'auth_and_signing'
+          }
+        )
+        .and increment_usage_metrics(
+          'counts.count_total_ssh_key_created',
+          'counts.count_total_ssh_key_created_28d',
+          'counts.count_total_ssh_key_created_7d',
+          'redis_hll_counters.count_distinct_user_id_from_create_ssh_key_28d',
+          'redis_hll_counters.count_distinct_user_id_from_create_ssh_key_7d'
+        )
+    end
+
+    context 'when creation_source is ui' do
+      subject { described_class.new(user, params.merge(creation_source: 'ui')) }
+
+      it 'tracks the specified creation_source' do
+        expect { subject.execute }.to trigger_internal_events('create_ssh_key')
+          .with(
+            user: user,
+            additional_properties: {
+              creation_source: 'ui',
+              usage_type: 'auth_and_signing'
+            }
+          )
+      end
+    end
+
+    context 'when usage_type is auth' do
+      subject { described_class.new(user, params.merge(usage_type: 'auth')) }
+
+      it 'tracks the correct usage_type' do
+        expect { subject.execute }.to trigger_internal_events('create_ssh_key')
+          .with(
+            user: user,
+            additional_properties: {
+              creation_source: 'unknown',
+              usage_type: 'auth'
+            }
+          )
+      end
+    end
+
+    context 'when usage_type is signing' do
+      subject { described_class.new(user, params.merge(usage_type: 'signing')) }
+
+      it 'tracks the correct usage_type' do
+        expect { subject.execute }.to trigger_internal_events('create_ssh_key')
+          .with(
+            user: user,
+            additional_properties: {
+              creation_source: 'unknown',
+              usage_type: 'signing'
+            }
+          )
+      end
+    end
+
+    context 'when key is invalid' do
+      before do
+        allow_next_instance_of(Key) do |key|
+          allow(key).to receive(:persisted?).and_return(false)
+        end
+      end
+
+      it 'does not track the event' do
+        expect { subject.execute }.not_to trigger_internal_events('create_ssh_key')
+      end
+    end
+  end
 end

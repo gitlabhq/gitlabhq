@@ -59,28 +59,30 @@ func TestExitStatus(t *testing.T) {
 
 func TestKillProcessGroup(t *testing.T) {
 	tests := []struct {
-		name  string
-		cmd   *exec.Cmd
-		start bool
-		err   error
+		name       string
+		cmd        *exec.Cmd
+		start      bool
+		wantErr    bool
+		wantExeErr bool
 	}{
 		{
-			name:  "command is nil",
-			cmd:   nil,
-			start: false,
-			err:   nil,
+			name:    "command is nil",
+			cmd:     nil,
+			start:   false,
+			wantErr: false,
 		},
 		{
-			name:  "command not started",
-			cmd:   exec.Command("sleep"),
-			start: false,
-			err:   errors.New(""),
+			name:    "command not started",
+			cmd:     exec.Command("sleep"),
+			start:   false,
+			wantErr: true,
 		},
 		{
-			name:  "command started",
-			cmd:   exec.Command("sleep"),
-			start: true,
-			err:   &exec.ExitError{},
+			name:       "command started",
+			cmd:        exec.Command("sleep"),
+			start:      true,
+			wantErr:    true,
+			wantExeErr: true,
 		},
 	}
 
@@ -91,7 +93,15 @@ func TestKillProcessGroup(t *testing.T) {
 			}
 
 			err := KillProcessGroup(tt.cmd)
-			require.IsType(t, tt.err, err)
+			switch {
+			case !tt.wantErr:
+				require.NoError(t, err)
+			case tt.wantExeErr:
+				var exitErr *exec.ExitError
+				require.ErrorAs(t, err, &exitErr)
+			default:
+				require.Error(t, err)
+			}
 		})
 	}
 }

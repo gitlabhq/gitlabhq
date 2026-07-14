@@ -25,6 +25,37 @@
         ]
       },
       "uniqueItems": true
+    },
+    "collapsedGroups": {
+      "description": "Array of group identifiers (for example status IDs) that should be rendered collapsed",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 256
+      },
+      "uniqueItems": true,
+      "maxItems": 100
+    },
+    "visibleGroups": {
+      "description": "Array of group identifiers (for example status IDs) that should be visible on the board. null or absent means all groups are visible",
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "maxLength": 256
+      },
+      "uniqueItems": true,
+      "maxItems": 100
+    },
+    "viewMode": {
+      "description": "Which view mode (list or board) the saved view should open in",
+      "type": "string",
+      "enum": [
+        "list",
+        "board"
+      ]
     }
   },
   "additionalProperties": false

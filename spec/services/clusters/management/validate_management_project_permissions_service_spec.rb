@@ -24,7 +24,7 @@ RSpec.describe Clusters::Management::ValidateManagementProjectPermissionsService
         let(:management_project_id) { 0 }
 
         it 'adds errors to the cluster and returns false' do
-          is_expected.to eq false
+          is_expected.to be false
 
           expect(cluster.errors[:management_project_id]).to include('Project does not exist or you don\'t have permission to perform this action')
         end
@@ -37,7 +37,7 @@ RSpec.describe Clusters::Management::ValidateManagementProjectPermissionsService
           end
 
           it 'adds no error and returns true' do
-            is_expected.to eq true
+            is_expected.to be true
 
             expect(cluster.errors).to be_empty
           end
@@ -45,7 +45,7 @@ RSpec.describe Clusters::Management::ValidateManagementProjectPermissionsService
 
         context 'when user is not authorized to adminster manangement_project' do
           it 'adds an error and returns false' do
-            is_expected.to eq false
+            is_expected.to be false
 
             expect(cluster.errors[:management_project_id]).to include('Project does not exist or you don\'t have permission to perform this action')
           end
@@ -57,7 +57,7 @@ RSpec.describe Clusters::Management::ValidateManagementProjectPermissionsService
           let(:management_project_namespace) { create(:group) }
 
           it 'adds an error and returns false' do
-            is_expected.to eq false
+            is_expected.to be false
 
             expect(cluster.errors[:management_project_id]).to include('Project does not exist or you don\'t have permission to perform this action')
           end

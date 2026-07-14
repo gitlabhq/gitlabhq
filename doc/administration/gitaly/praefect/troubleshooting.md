@@ -86,6 +86,26 @@ If this check fails:
 1. Check if there is a high load on the Praefect database. If the Praefect database is slow to respond, it can lead health checks failing to persist
    to the database, leading Praefect to think nodes are unhealthy.
 
+## Error: `authoritative repository does not exist`
+
+If your Praefect configuration uses TLS to connect to Gitaly nodes (addresses beginning with `tls://`),
+Praefect subcommands run manually as the `git` user do not automatically inherit the `SSL_CERT_DIR`
+environment variable that the runit service wrapper sets.
+
+Without this environment variable, commands that connect to Gitaly fail with errors like
+`authoritative repository does not exist` even when the repository is present on disk.
+
+To avoid this error, switch to a shell as the `git` user and set `SSL_CERT_DIR` explicitly before running any
+Praefect subcommand:
+
+```shell
+sudo -u git -- env SSL_CERT_DIR=/opt/gitlab/embedded/ssl/certs/ \
+  /opt/gitlab/embedded/bin/praefect \
+  -config /var/opt/gitlab/praefect/config.toml <subcommand> [options]
+```
+
+On Linux package (Omnibus) installations, this path matches the one configured in the runit service wrapper for Praefect.
+
 ## Praefect errors in logs
 
 If you receive an error, check `/var/log/gitlab/gitlab-rails/production.log`.

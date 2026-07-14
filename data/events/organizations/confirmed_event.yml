@@ -1,0 +1,6 @@
+---
+event: Organizations::ConfirmedEvent
+description: Published when an organization transitions from `unconfirmed` to `confirmed`.
+  Emitted by Organizations::ConfirmService after the state transition is committed.
+  Not published if the confirmation fails or is rolled back.
+feature_category: organization

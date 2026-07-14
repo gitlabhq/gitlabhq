@@ -7,6 +7,11 @@ RSpec.describe Members::InvitationReminderEmailService, feature_category: :group
     subject { described_class.new(invitation).execute }
 
     let_it_be(:frozen_time) { Date.today.beginning_of_day }
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:invitation, freeze: false) { build(:group_member, :invited, created_at: frozen_time) }
 
     before do

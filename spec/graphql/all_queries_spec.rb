@@ -17,6 +17,7 @@ RSpec.describe 'graphql queries', feature_category: :api do
     end
   end
 
+  # rubocop:disable Layout/LineLength -- GraphQL query paths can exceed the line length limit
   foss_queries_using_ee_fields = %w[
     app/assets/javascripts/work_items/graphql/ai_permissions_for_project.query.graphql
     app/assets/javascripts/security_configuration/graphql/set_validity_checks.graphql
@@ -64,7 +65,26 @@ RSpec.describe 'graphql queries', feature_category: :api do
     app/assets/javascripts/explore/analytics_dashboards/graphql/get_dashboards.query.graphql
     app/assets/javascripts/explore/analytics_dashboards/graphql/get_dashboard.query.graphql
     app/assets/javascripts/explore/analytics_dashboards/graphql/get_system_dashboard.query.graphql
+    app/assets/javascripts/analytics/dashboards/graphql/dora_metrics_by_project.query.graphql
+    app/assets/javascripts/analytics/dashboards/graphql/vulnerabilities.query.graphql
+    app/assets/javascripts/analytics/dashboards/graphql/contributor_count.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/ai_agent_platform_flow_metrics.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/ai_agent_platform_flows_usage_by_user.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/ai_metrics.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/code_suggestions_acceptance_by_ide.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/code_suggestions_acceptance_by_language.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/code_suggestions_acceptance_rate.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/code_suggestions_users_count.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/duo_agent_platform_agent_flows_users_count.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/duo_agent_platform_chats.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/duo_feature_usage.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/duo_power_users_count.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/duo_used_count.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/duo_pipelines_rate.query.graphql
+    app/assets/javascripts/analytics/dashboards/ai_impact/graphql/finished_pipelines_using_dap.query.graphql
+    app/assets/javascripts/pages/projects/shared/permissions/graphql/auto_remediation_profile_attach.mutation.graphql
   ]
+  # rubocop:enable Layout/LineLength
 
   Gitlab::Graphql::Queries.all.each do |definition| # rubocop:disable Rails/FindEach -- Not an ActiveRecord relation
     relative_path = definition.file.delete_prefix("#{Rails.root}/") # rubocop:disable Rails/FilePath -- Can't be used to append '/'

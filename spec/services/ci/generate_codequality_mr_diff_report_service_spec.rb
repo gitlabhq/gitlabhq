@@ -4,16 +4,16 @@ require 'spec_helper'
 
 RSpec.describe Ci::GenerateCodequalityMrDiffReportService, feature_category: :code_review_workflow do
   let(:service) { described_class.new(project) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
 
   describe '#execute' do
     subject { service.execute(base_pipeline, head_pipeline) }
 
     context 'when head pipeline has codequality mr diff report' do
-      let!(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports, source_project: project, id: 12345678) }
-      let!(:service) { described_class.new(project, nil, id: merge_request.id) }
-      let!(:head_pipeline) { merge_request.head_pipeline }
-      let!(:base_pipeline) { nil }
+      let_it_be_with_reload(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports, source_project: project, id: 12345678) }
+      let(:service) { described_class.new(project, nil, id: merge_request.id) }
+      let(:head_pipeline) { merge_request.head_pipeline }
+      let(:base_pipeline) { nil }
 
       it 'returns status and data', :aggregate_failures do
         expect_any_instance_of(Ci::PipelineArtifact) do |instance|
@@ -27,10 +27,10 @@ RSpec.describe Ci::GenerateCodequalityMrDiffReportService, feature_category: :co
     end
 
     context 'when head pipeline does not have a codequality mr diff report' do
-      let!(:merge_request) { create(:merge_request, source_project: project) }
-      let!(:service) { described_class.new(project, nil, id: merge_request.id) }
-      let!(:head_pipeline) { merge_request.head_pipeline }
-      let!(:base_pipeline) { nil }
+      let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project) }
+      let(:service) { described_class.new(project, nil, id: merge_request.id) }
+      let(:head_pipeline) { merge_request.head_pipeline }
+      let(:base_pipeline) { nil }
 
       it 'returns status and error message' do
         expect(subject[:status]).to eq(:error)
@@ -39,8 +39,8 @@ RSpec.describe Ci::GenerateCodequalityMrDiffReportService, feature_category: :co
     end
 
     context 'when head pipeline has codequality mr diff report and no merge request associated' do
-      let!(:head_pipeline) { create(:ci_pipeline, :with_codequality_mr_diff_report, project: project) }
-      let!(:base_pipeline) { nil }
+      let_it_be(:head_pipeline) { create(:ci_pipeline, :with_codequality_mr_diff_report, project: project) }
+      let(:base_pipeline) { nil }
 
       it 'returns status and error message' do
         expect(subject[:status]).to eq(:error)

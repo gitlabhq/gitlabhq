@@ -1,0 +1,27 @@
+#import "~/work_items/graphql/work_item_hierarchy_fields.fragment.graphql"
+
+fragment WorkItemHierarchySlim on WorkItem {
+  id
+  workItemType {
+    id
+    name
+    iconName
+  }
+  title
+  confidential
+  userPermissions {
+    updateWorkItem
+    adminParentLink
+    setWorkItemMetadata
+  }
+  widgets(onlyTypes: [HIERARCHY]) @skip(if: $useWorkItemFeatures) {
+    ... on WorkItemWidgetHierarchy {
+      ...WorkItemHierarchyFields
+    }
+  }
+  features @include(if: $useWorkItemFeatures) {
+    hierarchy {
+      ...WorkItemHierarchyFields
+    }
+  }
+}

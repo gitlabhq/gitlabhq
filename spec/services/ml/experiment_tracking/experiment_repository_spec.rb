@@ -30,7 +30,7 @@ RSpec.describe ::Ml::ExperimentTracking::ExperimentRepository, feature_category:
       context 'and does not exist' do
         let(:iid) { non_existing_record_iid }
 
-        it { is_expected.to eq(nil) }
+        it { is_expected.to be_nil }
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe ::Ml::ExperimentTracking::ExperimentRepository, feature_category:
       context 'when name does not exist' do
         let(:name) { non_existing_record_iid }
 
-        it { is_expected.to eq(nil) }
+        it { is_expected.to be_nil }
       end
     end
   end

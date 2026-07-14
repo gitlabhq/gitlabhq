@@ -53,6 +53,7 @@ export default {
       default: null,
     },
   },
+  emits: ['done'],
   data() {
     return {
       highlightPath: null,

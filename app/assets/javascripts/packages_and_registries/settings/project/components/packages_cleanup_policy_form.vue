@@ -36,6 +36,7 @@ export default {
       default: false,
     },
   },
+  emits: ['input'],
   formOptions: formOptionsGenerator(),
   i18n: {
     KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL,

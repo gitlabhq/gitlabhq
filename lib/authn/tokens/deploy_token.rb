@@ -28,6 +28,8 @@ module Authn
 
         service = service_by_type
 
+        return ServiceResponse.error(message: 'Unsupported deploy token type') if service.nil?
+
         service.source = source
         service.execute
       end
@@ -41,8 +43,6 @@ module Authn
           group_revoke_service
         elsif revocable.project
           project_revoke_service
-        else
-          raise ::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported deploy token type'
         end
       end
 

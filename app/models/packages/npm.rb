@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Packages
   module Npm
     # from "@scope/package-name" return "scope" or nil

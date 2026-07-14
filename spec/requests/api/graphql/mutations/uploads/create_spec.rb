@@ -78,6 +78,23 @@ RSpec.describe 'Create an upload', feature_category: :team_planning do
     let(:extra_params) { { project_path: project.full_path } }
 
     it_behaves_like 'upload creation'
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_markdown_upload do
+      let(:user) { developer }
+      let(:boundary_object) { project }
+      # Scalar payload fields only: the `upload` field resolves to `FileUpload`,
+      # which has no granular token directive of its own
+      let(:mutation) { graphql_mutation(:uploadCreate, params, 'markdown url errors') }
+      let(:request) do
+        upload_params = mutation_to_apollo_uploads_param(mutation, files: file_paths_in_mutation(mutation))
+
+        workhorse_post_with_file(
+          api('/', version: 'graphql', personal_access_token: pat),
+          params: upload_params,
+          file_key: '1'
+        )
+      end
+    end
   end
 
   context 'when uploading to a group' do
@@ -88,6 +105,23 @@ RSpec.describe 'Create an upload', feature_category: :team_planning do
     end
 
     it_behaves_like 'upload creation'
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_markdown_upload do
+      let(:user) { developer }
+      let(:boundary_object) { group }
+      # Scalar payload fields only: the `upload` field resolves to `FileUpload`,
+      # which has no granular token directive of its own
+      let(:mutation) { graphql_mutation(:uploadCreate, params, 'markdown url errors') }
+      let(:request) do
+        upload_params = mutation_to_apollo_uploads_param(mutation, files: file_paths_in_mutation(mutation))
+
+        workhorse_post_with_file(
+          api('/', version: 'graphql', personal_access_token: pat),
+          params: upload_params,
+          file_key: '1'
+        )
+      end
+    end
 
     context 'when feature flag is disabled' do
       let(:current_user) { guest }

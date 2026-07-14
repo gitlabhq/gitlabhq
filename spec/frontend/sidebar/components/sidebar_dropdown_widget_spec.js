@@ -1,5 +1,5 @@
 import { GlCollapsibleListbox, GlLink } from '@gitlab/ui';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -25,21 +25,60 @@ import {
 
 jest.mock('~/alert');
 
+// The component ships query definitions for Milestone only, and reads them
+// from the module-level `issuableAttributesQueries` (including a subscription
+// lookup that throws for unknown attribute types). Tests that exercise a
+// non-Milestone attribute (e.g. labels) register it here, reusing the
+// milestone query documents, so the real Apollo client can resolve the
+// current-attribute query instead of the old `mocks: { $apollo }` stub.
+jest.mock('ee_else_ce/sidebar/queries/constants', () => {
+  const actual = jest.requireActual('~/sidebar/queries/constants');
+
+  return {
+    ...actual,
+    issuableAttributesQueries: {
+      ...actual.issuableAttributesQueries,
+      labels: {
+        current: actual.issuableMilestoneQueries,
+        list: actual.milestonesQueries,
+      },
+    },
+  };
+});
+
+Vue.use(VueApollo);
+
 describe('SidebarDropdownWidget', () => {
   let wrapper;
   let mockApollo;
 
-  const promiseData = { issuableSetAttribute: { issue: { attribute: { id: '123' } } } };
-  const firstErrorMsg = 'first error';
-  const promiseWithErrors = {
-    ...promiseData,
-    issuableSetAttribute: { ...promiseData.issuableSetAttribute, errors: [firstErrorMsg] },
-  };
+  const mutationPayload = (errors = []) => ({
+    data: {
+      issuableSetAttribute: {
+        __typename: 'UpdateIssuePayload',
+        errors,
+        issuable: {
+          __typename: 'Issue',
+          id: 'gid://gitlab/Issue/1',
+          attribute: {
+            __typename: 'Milestone',
+            id: '123',
+            title: 'title',
+            state: 'active',
+            expired: false,
+          },
+        },
+      },
+    },
+  });
 
-  const mutationSuccess = () => jest.fn().mockResolvedValue({ data: promiseData });
+  const firstErrorMsg = 'first error';
+
+  const mutationSuccess = () => jest.fn().mockResolvedValue(mutationPayload());
   const mutationError = () =>
     jest.fn().mockRejectedValue('Failed to set milestone on this issue. Please try again.');
-  const mutationSuccessWithErrors = () => jest.fn().mockResolvedValue({ data: promiseWithErrors });
+  const mutationSuccessWithErrors = () =>
+    jest.fn().mockResolvedValue(mutationPayload([firstErrorMsg]));
 
   const findGlLink = () => wrapper.findComponent(GlLink);
   const findDateTooltip = () => getBinding(findGlLink().element, 'gl-tooltip');
@@ -66,8 +105,6 @@ describe('SidebarDropdownWidget', () => {
     currentMilestoneSpy = jest.fn().mockResolvedValue(noCurrentMilestoneResponse),
     canUpdate = true,
   } = {}) => {
-    Vue.use(VueApollo);
-
     mockApollo = createMockApollo([
       [projectMilestonesQuery, projectMilestonesSpy],
       [projectIssueMilestoneQuery, currentMilestoneSpy],
@@ -90,15 +127,54 @@ describe('SidebarDropdownWidget', () => {
     await waitForApollo();
   };
 
-  const createComponent = ({
+  const issuableQueryResponse = (issuable = {}) => ({
+    data: {
+      namespace: {
+        id: 'gid://gitlab/Project/1',
+        __typename: 'Project',
+        issuable: {
+          __typename: 'Issue',
+          id: 'gid://gitlab/Issue/1',
+          attribute: issuable.attribute
+            ? {
+                __typename: 'Milestone',
+                id: null,
+                title: null,
+                webUrl: null,
+                dueDate: null,
+                expired: false,
+                ...issuable.attribute,
+              }
+            : null,
+        },
+      },
+    },
+  });
+
+  const createComponent = async ({
     data = {},
     mutationPromise = mutationSuccess,
-    queries = {},
+    // When `loading` is true the current-attribute query is left pending so
+    // that `$apollo.queries.issuable.loading` stays true, mirroring the old
+    // `queries: { issuable: { loading: true } }` stub.
+    loading = false,
+    issuable,
     issuableAttribute = IssuableAttributeType.Milestone,
     canUpdate = true,
   } = {}) => {
+    const issuableSpy = loading
+      ? jest.fn().mockReturnValue(new Promise(() => {}))
+      : jest.fn().mockResolvedValue(issuableQueryResponse(issuable));
+
+    mockApollo = createMockApollo([
+      [projectIssueMilestoneQuery, issuableSpy],
+      [projectIssueMilestoneMutation, mutationPromise()],
+      [projectMilestonesQuery, jest.fn().mockResolvedValue(mockProjectMilestonesResponse)],
+    ]);
+
     wrapper = shallowMountExtended(SidebarDropdownWidget, {
       provide: { canUpdate },
+      apolloProvider: mockApollo,
       data() {
         return data;
       },
@@ -109,33 +185,25 @@ describe('SidebarDropdownWidget', () => {
         issuableType: TYPE_ISSUE,
         issuableAttribute,
       },
-      mocks: {
-        $apollo: {
-          mutate: mutationPromise(),
-          queries: {
-            issuable: { loading: false },
-            attributesList: { loading: false },
-            ...queries,
-          },
-        },
-      },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
+
+    if (!loading) {
+      await waitForPromises();
+    }
   };
 
   describe('when not editing', () => {
-    beforeEach(() => {
-      createComponent({
-        data: {
-          issuable: {
-            attribute: {
-              id: 'gid://gitlab/Milestone/1',
-              title: 'title',
-              webUrl: 'webUrl',
-              dueDate: '2021-09-09',
-            },
+    beforeEach(async () => {
+      await createComponent({
+        issuable: {
+          attribute: {
+            id: 'gid://gitlab/Milestone/1',
+            title: 'title',
+            webUrl: 'webUrl',
+            dueDate: '2021-09-09',
           },
         },
       });
@@ -153,24 +221,19 @@ describe('SidebarDropdownWidget', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
-    it('shows a loading spinner while fetching the current attribute', () => {
-      createComponent({
-        queries: {
-          issuable: { loading: true },
-        },
+    it('shows a loading spinner while fetching the current attribute', async () => {
+      await createComponent({
+        loading: true,
       });
 
       expect(findLoadingIcon().exists()).toBe(true);
     });
 
-    it('shows the title of the selected attribute while updating', () => {
-      createComponent({
+    it('shows the title of the selected attribute while updating', async () => {
+      await createComponent({
         data: {
           updating: true,
           selectedTitle: 'Some milestone title',
-        },
-        queries: {
-          issuable: { loading: false },
         },
       });
 
@@ -192,14 +255,12 @@ describe('SidebarDropdownWidget', () => {
     });
 
     describe('when popover is not supported', () => {
-      beforeEach(() => {
-        createComponent({
+      beforeEach(async () => {
+        await createComponent({
           issuableAttribute: 'labels',
-          data: {
-            issuable: {
-              attribute: {
-                id: 'gid://gitlab/Label/1',
-              },
+          issuable: {
+            attribute: {
+              id: 'gid://gitlab/Label/1',
             },
           },
         });
@@ -216,8 +277,8 @@ describe('SidebarDropdownWidget', () => {
     });
 
     describe('when current attribute does not exist', () => {
-      it('renders "None" as the selected attribute title', () => {
-        createComponent();
+      it('renders "None" as the selected attribute title', async () => {
+        await createComponent();
 
         expect(findSelectedAttribute().text()).toBe('None');
       });
@@ -225,8 +286,8 @@ describe('SidebarDropdownWidget', () => {
   });
 
   describe('edit toggle button', () => {
-    beforeEach(() => {
-      createComponent();
+    beforeEach(async () => {
+      await createComponent();
     });
 
     it('preserves the shortcut-sidebar-dropdown-toggle class for keyboard shortcuts', () => {
@@ -243,8 +304,8 @@ describe('SidebarDropdownWidget', () => {
   });
 
   describe('when a user cannot edit', () => {
-    beforeEach(() => {
-      createComponent({ canUpdate: false });
+    beforeEach(async () => {
+      await createComponent({ canUpdate: false });
     });
 
     it('does not render the edit button', () => {
@@ -263,37 +324,38 @@ describe('SidebarDropdownWidget', () => {
           describe('when currentAttribute is not equal to attribute id', () => {
             describe('when error', () => {
               const bootstrapComponent = (mutationResp) => {
-                createComponent({
+                return createComponent({
                   data: {
                     attributesList: [
                       { id: '123', title: '123' },
                       { id: 'id', title: 'title' },
                     ],
-                    issuable: {
-                      attribute: { id: '123' },
-                    },
+                  },
+                  issuable: {
+                    attribute: { id: '123' },
                   },
                   mutationPromise: mutationResp,
                 });
               };
 
               describe.each`
-                description                 | mutationResp                 | expectedMsg
-                ${'top-level error'}        | ${mutationError}             | ${'Failed to set milestone on this issue. Please try again.'}
-                ${'user-recoverable error'} | ${mutationSuccessWithErrors} | ${firstErrorMsg}
-              `(`$description`, ({ mutationResp, expectedMsg }) => {
-                beforeEach(() => {
-                  bootstrapComponent(mutationResp);
+                description                 | mutationResp                 | expectedMsg                                                   | expectedError
+                ${'top-level error'}        | ${mutationError}             | ${'Failed to set milestone on this issue. Please try again.'} | ${expect.any(Error)}
+                ${'user-recoverable error'} | ${mutationSuccessWithErrors} | ${firstErrorMsg}                                              | ${firstErrorMsg}
+              `(`$description`, ({ mutationResp, expectedMsg, expectedError }) => {
+                beforeEach(async () => {
+                  await bootstrapComponent(mutationResp);
 
                   findListbox().vm.$emit('select', 'id');
+
+                  await waitForPromises();
                 });
 
-                it(`calls createAlert with "${expectedMsg}"`, async () => {
-                  await nextTick();
+                it(`calls createAlert with "${expectedMsg}"`, () => {
                   expect(createAlert).toHaveBeenCalledWith({
                     message: expectedMsg,
                     captureError: true,
-                    error: expectedMsg,
+                    error: expectedError,
                   });
                 });
               });

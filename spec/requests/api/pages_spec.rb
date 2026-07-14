@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe API::Pages, feature_category: :pages do
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
 

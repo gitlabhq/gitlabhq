@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Pages::DeleteGroupPagesDeploymentsWorker, feature_category: :pages do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
-  let_it_be(:project_1, freeze: false) { create(:project, group: group) }
-  let_it_be(:project_2, freeze: false) { create(:project, group: group) }
-  let_it_be(:project_3, freeze: false) { create(:project, group: subgroup) }
+  let_it_be_with_reload(:project_1) { create(:project, group: group) }
+  let_it_be_with_reload(:project_2) { create(:project, group: group) }
+  let_it_be_with_reload(:project_3) { create(:project, group: subgroup) }
   let_it_be(:project_without_pages) { create(:project, group: group) }
 
   let!(:pages_deployment_1) { create(:pages_deployment, project: project_1) }

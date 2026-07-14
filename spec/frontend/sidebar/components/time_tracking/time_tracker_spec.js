@@ -1,14 +1,22 @@
 import { mount } from '@vue/test-utils';
 
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 import SidebarEventHub from '~/sidebar/event_hub';
+import issueTimeTrackingQuery from '~/sidebar/queries/issue_time_tracking.query.graphql';
 
 import { issuableTimeTrackingResponse } from '../../mock_data';
 
+Vue.use(VueApollo);
+
 describe('Issuable Time Tracker', () => {
   let wrapper;
+
+  const issuableTimeTrackingHandler = jest.fn().mockResolvedValue(issuableTimeTrackingResponse);
 
   const findByTestId = (testId) => wrapper.find(`[data-testid=${testId}]`);
   const findComparisonMeter = () => findByTestId('compareMeter').attributes('title');
@@ -26,25 +34,17 @@ describe('Issuable Time Tracker', () => {
     },
   };
 
-  const issuableTimeTrackingRefetchSpy = jest.fn();
+  const mountComponent = ({ props = {}, issuableType = 'issue' } = {}) => {
+    const apolloProvider = createMockApollo([
+      [issueTimeTrackingQuery, issuableTimeTrackingHandler],
+    ]);
 
-  const mountComponent = ({ props = {}, issuableType = 'issue', loading = false } = {}) => {
     return mount(TimeTracker, {
+      apolloProvider,
       propsData: { ...defaultProps, ...props },
       directives: { GlTooltip: createMockDirective('gl-tooltip') },
       provide: {
         issuableType,
-      },
-      mocks: {
-        $apollo: {
-          queries: {
-            issuableTimeTracking: {
-              loading,
-              refetch: issuableTimeTrackingRefetchSpy,
-              query: jest.fn().mockResolvedValue(issuableTimeTrackingResponse),
-            },
-          },
-        },
       },
     });
   };
@@ -353,11 +353,17 @@ describe('Issuable Time Tracker', () => {
 
   describe('Event listeners', () => {
     it('refetches issuableTimeTracking query when eventHub emits `timeTracker:refresh` event', async () => {
+      // `initialTimeTracking: null` allows the smart query to run (and be refetchable)
+      // instead of being skipped when time tracking data is provided via prop.
+      wrapper = mountComponent({ props: { initialTimeTracking: null } });
+      await waitForPromises();
+      issuableTimeTrackingHandler.mockClear();
+
       SidebarEventHub.$emit('timeTracker:refresh');
 
-      await nextTick();
+      await waitForPromises();
 
-      expect(issuableTimeTrackingRefetchSpy).toHaveBeenCalled();
+      expect(issuableTimeTrackingHandler).toHaveBeenCalled();
     });
   });
 });

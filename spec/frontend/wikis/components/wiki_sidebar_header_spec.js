@@ -9,7 +9,6 @@ describe('WikiSidebar', () => {
   const defaultProps = {};
   const defaultProvide = {
     hasCustomSidebar: false,
-    hasWikiPages: false,
     editSidebarUrl: '/gitlab-test/-/wikis/_sidebar/edit',
     canCreate: false,
     isEditingSidebar: false,

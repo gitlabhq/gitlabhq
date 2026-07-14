@@ -36,18 +36,18 @@
 
   - if user_application_dark_mode?
     %meta{ name: 'color-scheme', content: 'dark light' }
-    = universal_stylesheet_link_tag "application_dark"
+    = universal_stylesheet_link_tag application_stylesheet_name("application_dark")
     = yield :page_specific_styles
   - elsif user_application_system_mode?
     %meta{ name: 'color-scheme', content: 'light dark' }
-    = universal_stylesheet_link_tag "application", media: "(prefers-color-scheme: light)"
-    = universal_stylesheet_link_tag "application_dark", media: "(prefers-color-scheme: dark)"
+    = universal_stylesheet_link_tag application_stylesheet_name, media: "(prefers-color-scheme: light)"
+    = universal_stylesheet_link_tag application_stylesheet_name("application_dark"), media: "(prefers-color-scheme: dark)"
     = yield :page_specific_styles
   - else
-    = universal_stylesheet_link_tag "application"
+    = universal_stylesheet_link_tag application_stylesheet_name
     = yield :page_specific_styles
 
-  = universal_stylesheet_link_tag 'tailwind_cqs'
+  = universal_stylesheet_link_tag 'tailwind'
   = universal_stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
   = universal_stylesheet_link_tag "test_environment", media: "all" if Rails.env.test?
   = universal_stylesheet_link_tag "fonts"

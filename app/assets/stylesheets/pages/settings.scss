@@ -42,7 +42,7 @@
 
 // Fix for sticky header when there is no search bar.
 .flash-container + .settings-section {
-  @apply gl-pt-3;
+  @apply gl-pt-1;
 }
 
 .settings-section:not(.settings-section-no-bottom) ~ .settings-section {

@@ -222,7 +222,7 @@ RSpec.describe Tooling::Mappings::GraphqlBaseTypeMappings, feature_category: :to
       end
 
       it 'returns nil' do
-        expect(subject).to eq(nil)
+        expect(subject).to be_nil
       end
     end
   end

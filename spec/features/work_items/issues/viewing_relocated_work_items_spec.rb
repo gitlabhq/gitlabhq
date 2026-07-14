@@ -6,7 +6,7 @@ RSpec.describe 'work items canonical link', feature_category: :team_planning do
   include Features::CanonicalLinkHelpers
 
   let_it_be(:original_project) { create(:project, :public) }
-  let_it_be(:original_issue, freeze: false) { create(:issue, project: original_project) }
+  let_it_be_with_reload(:original_issue) { create(:issue, project: original_project) }
   let_it_be(:canonical_issue) { create(:issue) }
   let(:canonical_url) { issue_url(canonical_issue, Gitlab::Application.routes.default_url_options) }
 

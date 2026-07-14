@@ -30,13 +30,7 @@ module Resolvers
       private
 
       def available_types
-        issues_or_work_items = if ::Feature.enabled?(:work_items_autocomplete, current_user)
-                                 ::Gitlab::Search::RecentWorkItems
-                               else
-                                 ::Gitlab::Search::RecentIssues
-                               end
-
-        [issues_or_work_items, ::Gitlab::Search::RecentMergeRequests, ::Gitlab::Search::RecentWikiPages]
+        [::Gitlab::Search::RecentWorkItems, ::Gitlab::Search::RecentMergeRequests, ::Gitlab::Search::RecentWikiPages]
       end
 
       # This method is overridden in EE to add Epic authorization.

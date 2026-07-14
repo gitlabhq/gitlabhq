@@ -5,14 +5,14 @@ require 'spec_helper'
 RSpec.describe 'Unlink alert from an incident', feature_category: :incident_management do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:planner) { create(:user, planner_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:another_project) { create(:project) }
-  let_it_be(:internal_alert, freeze: false) { create(:alert_management_alert, project: project) }
-  let_it_be(:external_alert, freeze: false) { create(:alert_management_alert, project: another_project) }
-  let_it_be(:incident, freeze: false) do
+  let_it_be_with_reload(:internal_alert) { create(:alert_management_alert, project: project) }
+  let_it_be_with_reload(:external_alert) { create(:alert_management_alert, project: another_project) }
+  let_it_be_with_reload(:incident) do
     create(:incident, project: project, alert_management_alerts: [internal_alert, external_alert])
   end
 

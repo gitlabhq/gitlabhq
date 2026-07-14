@@ -36,34 +36,26 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonStagesFinder, :click_house, :freez
       end
     end
 
-    describe '.for_project' do
-      let(:project_path) { project.project_namespace.traversal_path(with_organization: true) }
-      let(:query) { described_class.for_project(project) }
+    describe '.for_container' do
+      context 'with a project' do
+        let(:project_path) { project.project_namespace.traversal_path(with_organization: true) }
+        let(:query) { described_class.for_container(project) }
 
-      it 'pushes traversal_path into the inner WHERE' do
-        is_expected.to include("WHERE `siphon_p_ci_stages`.`traversal_path` = '#{project_path}'")
-      end
-    end
-
-    describe '#for_ids' do
-      let(:query) { instance.for_ids(ids) }
-
-      context 'with a populated array' do
-        let(:ids) { [10, 20] }
-
-        it { is_expected.to include('`siphon_p_ci_stages`.`id` IN (10, 20)') }
+        it 'matches the exact traversal_path' do
+          is_expected.to include("WHERE `siphon_p_ci_stages`.`traversal_path` = '#{project_path}'")
+        end
       end
 
-      context 'with an empty array' do
-        let(:ids) { [] }
+      context 'with a group' do
+        let_it_be(:group) { create(:group) }
+        let(:group_path) { group.traversal_path(with_organization: true) }
+        let(:query) { described_class.for_container(group) }
 
-        it { is_expected.to eq(instance.to_sql) }
-      end
-
-      context 'with nils filtered out' do
-        let(:ids) { [nil, 5] }
-
-        it { is_expected.to include('`siphon_p_ci_stages`.`id` IN (5)') }
+        it 'matches the traversal_path prefix' do
+          is_expected.to include(
+            "WHERE startsWith(`siphon_p_ci_stages`.`traversal_path`, '#{group_path}')"
+          )
+        end
       end
     end
 
@@ -82,7 +74,7 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonStagesFinder, :click_house, :freez
     let_it_be(:stage_deploy) { create(:ci_stage, project: project, name: 'deploy') }
     let_it_be(:other_project) { create(:project) }
 
-    let(:rows) { ::ClickHouse::Client.select(described_class.for_project(project), :main) }
+    let(:rows) { ::ClickHouse::Client.select(described_class.for_container(project), :main) }
 
     subject(:names) { rows.map { |r| r['name'] } }
 
@@ -143,19 +135,9 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonStagesFinder, :click_house, :freez
       end
     end
 
-    context 'when for_ids is applied' do
-      let(:rows) do
-        ::ClickHouse::Client.select(described_class.for_project(project).for_ids([stage_build.id]), :main)
-      end
-
-      it 'narrows to the specific id' do
-        expect(names).to contain_exactly('build')
-      end
-    end
-
     context 'when the queried project has no stages' do
       let(:rows) do
-        ::ClickHouse::Client.select(described_class.for_project(other_project), :main)
+        ::ClickHouse::Client.select(described_class.for_container(other_project), :main)
       end
 
       it { is_expected.to be_empty }

@@ -11,9 +11,16 @@ module Tasks
           BOUNDARIES = ::Authz::Validation::BOUNDARIES
 
           # Raw permissions consumed by gPATs through paths the validator cannot statically detect.
-          # Today this is `Gitlab::GitAccess#check_granular_pat_permissions!`, which calls
-          # `Authz::Tokens::AuthorizeGranularScopesService` directly for git protocol commands.
-          GRANULAR_TOKEN_NON_API_CONSUMERS = Set[:download_code].freeze
+          # These call `Authz::Tokens::AuthorizeGranularScopesService` directly rather than through a
+          # REST route or GraphQL directive:
+          #   - `download_code` via `Gitlab::GitAccess` (git protocol commands)
+          #   - `create_editor_telemetry` via `EventForwardController`
+          #   - `read_dependency_proxy` via `Auth::ContainerProxyAuthenticationService` (dependency proxy JWT flow)
+          GRANULAR_TOKEN_NON_API_CONSUMERS = Set[
+            :download_code,
+            :create_editor_telemetry,
+            :read_dependency_proxy
+          ].freeze
 
           def initialize
             @violations = {
@@ -394,7 +401,7 @@ module Tasks
                 "of their raw permissions are referenced by any REST authorization or GraphQL granular scope " \
                 "directive.\nEither remove `granular_access_token` from `available_for`, or reference one of " \
                 "the raw permissions in a route/directive." \
-                "\n#{assignable_permissions_link(anchor: 'available-for-consumers')}"
+                "\n#{assignable_permissions_link(anchor: 'assignable-permission-file-fields')}"
             }
           end
 

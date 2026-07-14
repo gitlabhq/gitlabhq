@@ -1,5 +1,6 @@
 import { HIGHLIGHT_LINES, CLEAR_HIGHLIGHT } from '~/rapid_diffs/adapter_events';
-import { findLineRow, getRowPosition, isRangeBoundary } from '~/rapid_diffs/utils/line_utils';
+import { findLineRow, getRowPosition } from '~/rapid_diffs/utils/line_utils';
+import { getDragRange, isCommentable } from '~/rapid_diffs/utils/line_range_selection';
 import { moveToggle } from '~/rapid_diffs/utils/new_discussion_toggle';
 
 function getToggleSide(toggle) {
@@ -9,23 +10,6 @@ function getToggleSide(toggle) {
     .closest('tr')
     .querySelector('[data-position="old"]:first-child + [data-position="new"]');
   return isInline ? undefined : cell.dataset.position;
-}
-
-function isCommentable(row, side) {
-  const selector = side ? `[data-position="${side}"] [data-line-number]` : '[data-line-number]';
-  return row.dataset.hunkLines != null && Boolean(row.querySelector(selector));
-}
-
-function getSelectionRange(rows, { startIdx, hoverIdx, side }) {
-  const step = startIdx <= hoverIdx ? 1 : -1;
-  let first = rows[startIdx];
-  let last = first;
-  for (let i = startIdx + step; i !== hoverIdx + step; i += step) {
-    if (isRangeBoundary(rows[i])) break;
-    if (isCommentable(rows[i], side)) last = rows[i];
-  }
-  if (step === -1) [first, last] = [last, first];
-  return { start: getRowPosition(first, side), end: getRowPosition(last, side) };
 }
 
 export function initLineRangeSelection(appElement) {
@@ -58,17 +42,14 @@ export function initLineRangeSelection(appElement) {
     event.preventDefault();
     if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy'; // eslint-disable-line no-param-reassign
 
-    const target = document.elementFromPoint(event.clientX, event.clientY);
-    if (!target) return;
-    const row = target.closest('tr');
-    if (!row || !drag.diffFile.contains(row)) return;
-
-    const lineRange = getSelectionRange(drag.rows, {
-      startIdx: drag.startRow.rowIndex,
-      hoverIdx: row.rowIndex,
+    const lineRange = getDragRange(drag.diffFile, {
+      rows: drag.rows,
+      anchorRow: drag.startRow,
       side: drag.side,
+      clientX: event.clientX,
+      clientY: event.clientY,
     });
-
+    if (!lineRange) return;
     drag.lineRange = lineRange;
     drag.diffFile.trigger(HIGHLIGHT_LINES, lineRange);
   }

@@ -26,6 +26,8 @@
       (
         $CI_PIPELINE_SOURCE != "merge_request_event"
         && $SCHEDULE_TYPE != "weekly"
+        && $SCHEDULE_TYPE != "ai-principles-distillation"
+        && $SCHEDULE_TYPE != "ai-principles-fence-reconcile"
         && $TRIGGERED_BY_AI_GATEWAY_PROJECT != "true"
         &&
         (
@@ -46,9 +48,9 @@
       || $FORCE_GITLAB_CI
       '
 
-# weekly pipeline is opt-in and should not automatically run every job
+# weekly and ai-principles-* pipelines are opt-in and should not automatically run every job
 .if-default-branch-refs: &if-default-branch-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly"'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile"'
 
 .if-default-branch-push: &if-default-branch-push
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
@@ -225,17 +227,24 @@
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
 # Non-default PG versions run nightly in their own schedules, gated per role relative to the current default (PG17).
-# PREVIOUS = previous still-supported version (PG16); NEXT = upcoming version (PG18). Each schedule sets only its own
-# variable, so each PG version runs in an independent nightly pipeline and stays under the 2000-job limit. On the yearly
-# bump, update the literal here and the *-base-pgXX the job families extend.
+# PREVIOUS = previous still-supported version; NEXT = upcoming version. Each schedule
+# sets a stable role flag (NIGHTLY_PG_ROLE=previous|next), NOT a version number, so the schedule never changes across
+# the yearly PG bump. The actual version each role tests lives in the repo: the *-base-pgXX the job families extend
+# (.gitlab/ci/rails.gitlab-ci.yml). To bump versions, repoint those bases in an MR — no schedule edit needed.
 .if-default-branch-schedule-nightly-pg-previous: &if-default-branch-schedule-nightly-pg-previous
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly" && $PREVIOUS_NIGHTLY_PG_VERSION == "16"'
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly" && $NIGHTLY_PG_ROLE == "previous"'
 
 .if-default-branch-schedule-nightly-pg-next: &if-default-branch-schedule-nightly-pg-next
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly" && $NEXT_NIGHTLY_PG_VERSION == "18"'
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly" && $NIGHTLY_PG_ROLE == "next"'
 
 .if-default-branch-schedule-weekly: &if-default-branch-schedule-weekly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "weekly"'
+
+.if-default-branch-schedule-ai-principles: &if-default-branch-schedule-ai-principles
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "ai-principles-distillation"'
+
+.if-default-branch-schedule-ai-principles-fence-reconcile: &if-default-branch-schedule-ai-principles-fence-reconcile
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "ai-principles-fence-reconcile"'
 
 .if-ruby-branch-schedule: &if-ruby-branch-schedule
   if: '$CI_COMMIT_BRANCH == "ruby-next" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
@@ -259,7 +268,7 @@
   if: '($CI_SERVER_HOST != "gitlab.com" || $CI_PROJECT_NAMESPACE != "gitlab-org") && ($CI_SERVER_HOST != "jihulab.com" || $CI_PROJECT_NAMESPACE != "gitlab-cn")'
 
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile"'
 
 .if-dot-com-ee-schedule-default-branch-maintenance: &if-dot-com-ee-schedule-default-branch-maintenance
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
@@ -377,6 +386,31 @@
   - "scripts/frontend/lint_docs_links.mjs"
   - "tooling/eslint-config/eslint-local-rules/**/*"
 
+.ai-principles-manifest-patterns: &ai-principles-manifest-patterns
+  # See the `ai-principles-manifest` job in docs.gitlab-ci.yml for why this
+  # trigger is intentionally broad. gitlab-org/gitlab#604077
+  - ".ai/*.md"
+  - ".ai/principles/**/*"
+  - ".gitlab/ci/docs.gitlab-ci.yml"
+  - ".gitlab/ci/rules.gitlab-ci.yml"
+  - ".gitlab/duo/mr-review-instructions.yaml"
+  - "doc/**/*.md"
+  - "gems/gitlab-ai-principles-distiller/**/*"
+  - "scripts/lint-ai-principles-manifest.sh"
+  - "scripts/lint-duo-review-instructions.sh"
+
+# The narrow set of files the Duo review-instructions fence guard actually
+# owns — a change to any of these can break the fences on its own ref, so the
+# STRICT `ai-duo-review-instructions` job (where staleness blocks) triggers on
+# these. Distilled files are deliberately NOT here: a team's distilled MR
+# cannot fix a fence on its own ref (the fence catches up via the daily
+# reconcile job), so those MRs fall through to the warn-stale job.
+# gitlab-org/gitlab#604890
+.ai-duo-review-instructions-owned-patterns: &ai-duo-review-instructions-owned-patterns
+  - ".gitlab/duo/mr-review-instructions.yaml"
+  - "gems/gitlab-ai-principles-distiller/**/*"
+  - "scripts/lint-duo-review-instructions.sh"
+
 .docs-i18n-patterns: &docs-i18n-patterns
   - ".gitlab/ci/docs.gitlab-ci.yml"
   - ".gitlab/ci/rules.gitlab-ci.yml"
@@ -442,6 +476,11 @@
   - "doc/development/events/_index.md"
   - "data/events/**/*"
   - "lib/tasks/gitlab/docs/compile_events.rake"
+  # organizations release status table
+  - "doc/development/organizations/release_status.md"
+  - "config/organizations_release.yml"
+  - "lib/organizations/release/**/*"
+  - "lib/tasks/gitlab/organizations.rake"
 
 .docs-release-note-categories-patterns: &docs-release-note-categories-patterns
   - "doc/releases/**/*"
@@ -544,6 +583,15 @@
 .spec-only-patterns: &spec-only-patterns
   - "{,ee/,jh/}spec/**/*"
 
+# Frontend GraphQL query documents.
+# A query change should re-run backend unit/integration specs (e.g. the N+1
+# request specs added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224202),
+# but it must NOT trigger migration specs. Keep this out of `.backend-patterns`
+# so the `*-background-migration` rules (which key off `.backend-patterns`) are
+# not triggered by query-only changes.
+.frontend-graphql-patterns: &frontend-graphql-patterns
+  - "{,ee/,jh/}app/assets/javascripts/**/*.graphql"
+
 # Backend patterns + .ci-patterns
 .backend-patterns: &backend-patterns
   - "{,jh/}Gemfile{,.lock}"
@@ -554,8 +602,6 @@
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
-  # GraphQL query files
-  - "{,ee/,jh/}app/assets/javascripts/**/*.graphql"
   # Spec support files
   - "{,ee/,jh/}spec/{support,factories,fixtures,tooling/fixtures}/**/*"
   - "{,ee/,jh/}spec/{*.rb,.rspec}"
@@ -568,6 +614,10 @@
   - "data/whats_new/*.yml"
   - "doc/_index.md"
   - "doc/api/settings.md"
+
+.siphon-tables-patterns: &siphon-tables-patterns
+  - "db/siphon/tables/**/*"
+  - "scripts/build_siphon_tables_image"
 
 # .backend-patterns + .ci-patterns + .spec-only-patterns
 .backend-spec-patterns: &backend-spec-patterns
@@ -1103,6 +1153,9 @@
   - "doc/ci/jobs/fine_grained_permissions.md"
   - "tooling/ci/job_tokens/docs/templates/fine_grained_permissions.md.erb"
 
+.skills-patterns: &skills-patterns
+  - ".claude/skills/**/*"
+
 .gitlab-orchestrator-patterns: &gitlab-orchestrator-patterns
   - "qa/gems/gitlab-orchestrator/**/*.rb"
   - "qa/gems/gitlab-orchestrator/{Gemfile,Gemfile.lock}"
@@ -1155,13 +1208,7 @@
   - "**/AGENTS.local.md"
   - "CLAUDE.local.md"
   - "**/CLAUDE.local.md"
-  - ".claude/rules/**"
-  - ".claude/skills/**"
-  - ".claude/agents/**"
-  - ".claude/commands/**"
-  - ".claude/settings.json"
-  - ".claude/settings.local.json"
-  - ".claude/settings.local.jsonc"
+  - ".claude/**"
   - ".opencode/**"
   - ".gitlab/duo/chat-rules.md"
   - ".gitlab/duo/mcp.json"
@@ -1174,6 +1221,19 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-jh
+      when: never
+
+# Single source of truth for excluding a job from the dedicated ai-principles-*
+# schedules (distillation and fence-reconcile). Those schedules should run only
+# their own ai-principles jobs; because rules:changes is always-true on
+# scheduled pipelines, default-branch jobs would otherwise be pulled in.
+# `!reference` this from any job (including those in other CI files) whose rules
+# would otherwise match a schedule, so the guard has one canonical phrasing.
+.ai-principles-schedule:rules:skip:
+  rules:
+    - <<: *if-default-branch-schedule-ai-principles
+      when: never
+    - <<: *if-default-branch-schedule-ai-principles-fence-reconcile
       when: never
 
 .rails:rules:run-search-tests:
@@ -1415,6 +1475,18 @@
     # to avoid the side effect of "never" rules
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
+.build-images:rules:build-siphon-tables-image:
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-tag
+    - <<: *if-default-branch-refs
+    - <<: *if-merge-request
+      changes: *siphon-tables-patterns
+    - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
+
 #################
 # Caching rules #
 #################
@@ -1506,6 +1578,38 @@
     - <<: *if-default-refs
       changes: *docs-patterns
 
+.docs:rules:ai-principles-manifest:
+  rules:
+    - <<: *if-default-refs
+      changes: *ai-principles-manifest-patterns
+
+# Strict Duo-fence guard: fires only on MRs that touch the fence's OWNED files
+# (the reconcile MR, the gem, or the guard script). On those refs a stale fence
+# is real, ref-fixable drift, so the guard runs WITHOUT WARN_STALE and staleness
+# blocks. Master and ordinary MRs are handled by the warn-stale job below.
+# gitlab-org/gitlab#604890
+.docs:rules:ai-duo-review-instructions-strict:
+  rules:
+    - <<: *if-merge-request
+      changes: *ai-duo-review-instructions-owned-patterns
+
+# Warn-stale Duo-fence guard: fires on the default branch and on ordinary MRs
+# caught by the broad manifest trigger (including team distilled MRs), but NOT
+# on the owned-path MRs already covered by the strict job. It runs with
+# WARN_STALE=1, so fence staleness — expected transient state until the daily
+# reconcile job catches master up — only warns, while malformed and orphaned
+# fences still fail (hence this job is not allow_failure). The owned-path
+# `when: never` prevents a duplicate run alongside the strict job.
+# gitlab-org/gitlab#604890
+.docs:rules:ai-duo-review-instructions-warn:
+  rules:
+    - <<: *if-default-branch-refs
+    - <<: *if-merge-request
+      changes: *ai-duo-review-instructions-owned-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *ai-principles-manifest-patterns
+
 .docs:rules:docs-i18n-lint:
   rules:
     - <<: *if-tech-docs-localization
@@ -1542,7 +1646,7 @@
   rules:
     - <<: *if-merge-request-labels-skip-release-note-categories
       when: never
-    - <<: *if-default-refs
+    - <<: *if-merge-request
       changes: *docs-release-note-categories-patterns
 
 .docs:rules:rubocop-docs-site:
@@ -1613,6 +1717,14 @@
     - <<: *if-default-refs
       changes: *ci-job-token-policies-patterns
 
+################
+# Skills rules #
+################
+.skills:rules:skills-version-bump:
+  rules:
+    - <<: *if-merge-request
+      changes: *skills-patterns
+
 ##################
 # Frontend rules #
 ##################
@@ -1672,14 +1784,6 @@
     # Do not refer directly to .release-environments:rules:start-release-environments-security-pipeline
     # to avoid the side effect of "never" rules
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
-
-.frontend:rules:generate-js-routes:
-  rules:
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-merge-train
-      when: never
-    - when: on_success
 
 .frontend:rules:compile-test-assets:
   rules:
@@ -1988,6 +2092,7 @@
 
 .frontend:rules:test-infection-scanner:
   rules:
+    - !reference ['.ai-principles-schedule:rules:skip', rules]
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-not-foss
       changes: ["scripts/frontend/infection_scanner/**/*", "spec/frontend/scripts/infection_scanner/**/*"]
@@ -2688,6 +2793,8 @@
     - <<: *if-default-refs
       changes: *backend-patterns
     - <<: *if-default-refs
+      changes: *frontend-graphql-patterns
+    - <<: *if-default-refs
       changes: *backstage-patterns
 
 .rails:rules:clickhouse-changes:
@@ -2698,6 +2805,20 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
+
+.rails:rules:partition-tz-changes:
+  rules:
+    # Deliberately fork-runnable: unlike the ClickHouse rule this is copied from,
+    # we do NOT start with `if-fork-merge-request: when: never`. The community
+    # fork (gitlab-community/gitlab-org) is classified as a fork, and this MR is
+    # the one introducing the test, so the fork's MR pipeline must be able to run
+    # it. `if-merge-request` matches ANY MR event (no namespace restriction).
+    - <<: *if-merge-request
+      changes:
+        - "lib/gitlab/database/partitioning/**/*"
+        - "spec/lib/gitlab/database/partitioning/**/*"
+        - "spec/support/database/partition_tz.rb"
+        - "spec/support/helpers/database/multiple_databases_helpers.rb"
 
 .rails:rules:clickhouse-migration-changes:
   rules:
@@ -2740,6 +2861,8 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
+    - <<: *if-default-refs
+      changes: *frontend-graphql-patterns
 
 .rails:rules:only-run-system-if-medium-runners-available:
   rules:
@@ -2835,6 +2958,8 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
+    - <<: *if-default-refs
+      changes: *frontend-graphql-patterns
 
 .rails:rules:ee-only-integration:
   rules:
@@ -2845,6 +2970,8 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
+    - <<: *if-default-refs
+      changes: *frontend-graphql-patterns
 
 .rails:rules:ee-only-system:
   rules:
@@ -3033,33 +3160,25 @@
       when: never
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-default-rules", rules]
 
-.rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-default-rules:
-  rules:
-    - <<: *if-default-branch-schedule-nightly-pg-previous
-
 .rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage:
   rules:
-    - !reference [".rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-default-rules", rules]
+    - <<: *if-default-branch-schedule-nightly-pg-previous
 
 .rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-ee-only:
   rules:
     - <<: *if-not-ee
       when: never
-    - !reference [".rails:rules:default-branch-schedule-nightly-pg-previous--code-backstage-default-rules", rules]
-
-.rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-default-rules:
-  rules:
-    - <<: *if-default-branch-schedule-nightly-pg-next
+    - <<: *if-default-branch-schedule-nightly-pg-previous
 
 .rails:rules:default-branch-schedule-nightly-pg-next--code-backstage:
   rules:
-    - !reference [".rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-default-rules", rules]
+    - <<: *if-default-branch-schedule-nightly-pg-next
 
 .rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-ee-only:
   rules:
     - <<: *if-not-ee
       when: never
-    - !reference [".rails:rules:default-branch-schedule-nightly-pg-next--code-backstage-default-rules", rules]
+    - <<: *if-default-branch-schedule-nightly-pg-next
 
 .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only:
   rules:
@@ -3355,6 +3474,7 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
+    - !reference ['.ai-principles-schedule:rules:skip', rules]
     - <<: *if-default-branch-or-tag
       changes: *code-backstage-qa-patterns
 
@@ -3746,13 +3866,30 @@
 ####################################
 # AI principles sync rules #
 ####################################
-.ai-principles-sync:rules:weekly:
+.ai-principles-sync:rules:scheduled:
   rules:
     - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
       when: never
     - if: '$AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == null || $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == ""'
       when: never
-    - <<: *if-default-branch-schedule-weekly
+    - <<: *if-default-branch-schedule-ai-principles
+
+.ai-principles-sync:rules:scheduled-on-failure:
+  rules:
+    - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
+      when: never
+    - if: '$AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == null || $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == ""'
+      when: never
+    - <<: *if-default-branch-schedule-ai-principles
+      when: on_failure
+
+.ai-principles-reconcile:rules:scheduled:
+  rules:
+    - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
+      when: never
+    - if: '$AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == null || $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == ""'
+      when: never
+    - <<: *if-default-branch-schedule-ai-principles-fence-reconcile
 
 ###################
 # Benchmark rules #
@@ -3906,4 +4043,6 @@
 ###############################
 .per-test-coverage:rules:delta:
   rules:
+    - <<: *if-missing-clickhouse-coverage-credentials
+      when: never
     - <<: *if-per-test-coverage-delta

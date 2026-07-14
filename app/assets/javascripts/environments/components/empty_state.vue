@@ -25,6 +25,7 @@ export default {
       default: false,
     },
   },
+  emits: ['enable-review'],
   i18n: {
     title: s__('Environments|Get started with environments'),
     content: s__(

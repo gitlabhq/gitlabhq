@@ -88,7 +88,11 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
           body: hash_including('name' => 'lock', 'channel' => channel_id, 'timestamp' => message_ts)
         )
         expect(WebMock).to have_requested(:post, post_ephemeral_url).with(
-          body: hash_including('channel' => channel_id, 'user' => slack_user_id)
+          body: hash_including(
+            'channel' => channel_id,
+            'user' => slack_user_id,
+            'text' => a_string_including('mention me again')
+          )
         )
       end
 

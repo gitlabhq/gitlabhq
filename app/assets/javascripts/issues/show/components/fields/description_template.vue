@@ -4,6 +4,7 @@ import $ from 'jquery';
 import IssuableTemplateSelectors from '~/issuable/issuable_template_selectors';
 
 export default {
+  name: 'DescriptionTemplate',
   components: {
     GlIcon,
   },
@@ -30,6 +31,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input'],
   computed: {
     issuableTemplatesJson() {
       return JSON.stringify(this.issuableTemplates);

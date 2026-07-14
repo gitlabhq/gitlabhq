@@ -7,8 +7,6 @@ module Tasks
     module Permissions
       module Routes
         class ValidateTask < ::Tasks::Gitlab::Permissions::BaseValidateTask
-          TODO_FILE = Rails.root.join('config/authz/routes/authorization_todo.txt')
-
           VALID_SKIP_REASONS = SkipReasons::VALID_SKIP_REASONS
 
           def initialize
@@ -29,8 +27,6 @@ module Tasks
           attr_reader :violations
 
           def validate!
-            @todo_entries = load_todo_entries
-
             routes.each { |route| validate_route(route) }
 
             violations[:insufficient_tests] = spec_permission_scanner.insufficient_test_coverage
@@ -60,7 +56,7 @@ module Tasks
             if has_authorization?(authorization)
               validate_authorization(route, authorization)
             else
-              violations[:missing_authorization] << base_error(route) unless @todo_entries.include?(route_id(route))
+              violations[:missing_authorization] << base_error(route)
             end
           end
 
@@ -72,20 +68,13 @@ module Tasks
               validate_permission_defined(route, permission)
               validate_boundary_defined(route, permission, boundary_types)
               validate_assignable_permission(route, permission, boundary_types)
-              register_test_coverage(route, permission) unless authorization[:skip_granular_token_authorization]
+
+              unless authorization[:skip_granular_token_authorization]
+                register_test_coverage(route, permission, boundary_types)
+              end
             end
 
             validate_skip_reason(route, authorization)
-          end
-
-          def current_todo_entries
-            routes.each_with_object(Set.new) do |route, set|
-              set << route_id(route) unless has_authorization?(route.settings[:authorization])
-            end
-          end
-
-          def todo_file_label
-            'REST'
           end
 
           def has_authorization?(authorization)
@@ -160,17 +149,21 @@ module Tasks
             )
           end
 
-          def register_test_coverage(route, permission)
+          # Routes generated from the same endpoint declaration (for example a shared
+          # concern mounted at both instance and project level, or an endpoint defined
+          # in a loop) share one decorator and one code path, so they are counted as a
+          # single endpoint per boundary type.
+          def register_test_coverage(route, permission, boundary_types)
             location = @source_locations[route]
             return unless location
 
             source_file = relative_path(location.first)
             scanner = spec_permission_scanner
 
-            scanner.add_route(
-              route_id: route_id(route),
+            scanner.add_endpoint(
+              endpoint_id: "#{source_file}:#{location.last} #{boundary_types.sort.join(',')}",
               permission: permission,
-              route_info: base_error(route).merge(
+              details: base_error(route).merge(
                 permission: permission,
                 spec_file: scanner.derive_spec_path(source_file)
               )
@@ -237,8 +230,8 @@ module Tasks
             out = "#{error_messages[:insufficient_tests]}\n\n"
 
             violations[:insufficient_tests].each do |v|
-              out += "  - #{v[:permission]}: #{v[:route_count]} routes, #{v[:test_count]} tests\n"
-              v[:routes].each do |route|
+              out += "  - #{v[:permission]}: #{v[:endpoint_count]} endpoints, #{v[:test_count]} tests\n"
+              v[:endpoints].each do |route|
                 out += "      #{route[:method]} #{route[:path]} (#{route[:source]})\n"
                 out += "        Suggested spec: #{route[:spec_file]}\n"
               end
@@ -279,10 +272,10 @@ module Tasks
                 Use one of: #{VALID_SKIP_REASONS.map { |r| ":#{r}" }.join(', ')}
               MSG
               insufficient_tests: <<~MSG.chomp
-                The following permissions have fewer tests than routes using them.
-                Each route should have its own `it_behaves_like 'authorizing granular token permissions'` test.
-                Add test coverage.
-                #{implementation_guide_link(anchor: 'step-6-add-request-specs-for-the-endpoint')}
+                The following permissions have fewer tests than endpoints using them.
+                Each endpoint declaration should have its own `it_behaves_like 'authorizing granular token permissions'`
+                test per boundary type. Add test coverage.
+                #{implementation_guide_link(anchor: 'step-6-add-authorization-tests')}
               MSG
             }
           end

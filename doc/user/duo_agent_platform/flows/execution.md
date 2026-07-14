@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Agent Foundations
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Configure flow execution
 ---
@@ -17,7 +17,7 @@ Flows use agents to execute tasks.
 - Flows executed in an IDE run locally.
 
 You can configure the environment where flows use CI/CD to execute.
-You can also choose to [use your own runners](#configure-runners), and
+You can also choose to [use your own runners](#configure-runners-to-execute-flows), and
 [specify variables in your jobs](execution_variables.md).
 
 ## Flow security
@@ -91,10 +91,6 @@ When a flow runs in CI/CD, the runner:
 1. Executes tools (file operations, Git commands) as directed by the AI model.
 
 The executor version is managed by GitLab and updated as part of regular releases.
-
-> [!note]
-> The `@gitlab/duo-cli` npm package is labeled "Experimental" for standalone CLI usage.
-> When used within flows, the relevant capabilities are covered by the same support level as flows.
 
 ## Configure CI/CD execution
 
@@ -443,6 +439,65 @@ In this example, if the job name is `test` and the SHA checksum is `abc123`, the
 - The cache `paths` field is required. A cache configuration without paths has no effect.
 - Cache keys support CI/CD variables in the `prefix` field.
 
+### Configure ID tokens
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224940) in GitLab 19.2.
+
+{{< /history >}}
+
+To authenticate with third-party services from a flow, configure
+[ID tokens](../../../ci/secrets/id_token_authentication.md).
+
+ID tokens are JSON web tokens (JWT) that GitLab CI/CD generates and injects into the job that runs the flow
+for keyless OpenID Connect (OIDC) authentication without storing long-lived credentials.
+For example, you can use ID tokens to retrieve secrets from a secrets manager or sign binaries and Git commits.
+
+To configure ID tokens, in the `agent-config.yml` file, add an `id_tokens` block.
+Each token requires an `aud` (audience) claim:
+
+```yaml
+id_tokens:
+  VAULT_ID_TOKEN:
+    aud: https://vault.example.com
+
+network_policy:
+  allowed_domains:
+    - vault.example.com
+```
+
+The `aud` claim can be a single string or a list of strings:
+
+```yaml
+id_tokens:
+  MY_ID_TOKEN:
+    aud:
+      - https://first.service.example.com
+      - https://second.service.example.com
+
+network_policy:
+  allowed_domains:
+    - first.service.example.com
+    - second.service.example.com
+```
+
+Each token is available in the flow job as an environment variable that uses the name of the token.
+For the previous examples, the flow can use `$VAULT_ID_TOKEN` and `$MY_ID_TOKEN`.
+
+If a token name matches a variable name declared elsewhere in your configuration, the ID token
+takes precedence.
+
+> [!warning]
+> An ID token is a credential that grants access to any service that trusts its `aud` claim.
+> Set the narrowest possible `aud` value for each token so that a compromised token can
+> authenticate with as few services as possible. Because the configuration file is read from
+> the default branch, apply the [recommended protections](#recommended-protections) to control
+> who can change which tokens a flow can request.
+
+For more information about the token payload and how to configure trust with third-party services,
+see [OpenID Connect (OIDC) authentication using ID tokens](../../../ci/secrets/id_token_authentication.md).
+
 ### Complete configuration example
 
 Here's an example `agent-config.yml` file that uses all available options:
@@ -473,9 +528,14 @@ network_policy:
   include_recommended_allowed: true
   allow_all_unix_sockets: true
   allowed_domains:
-    - my-own-site.com
+    - vault.example.com
   denied_domains:
     - malicious.com
+
+# ID tokens for OIDC authentication
+id_tokens:
+  VAULT_ID_TOKEN:
+    aud: https://vault.example.com
 ```
 
 This configuration:
@@ -484,63 +544,76 @@ This configuration:
 - Installs build tools and Python dependencies before running the flow.
 - Caches pip and virtual environment directories.
 - Creates a new cache when `requirements.txt` or `Pipfile.lock` changes, with a prefix of `python-deps`.
+- Provides a `VAULT_ID_TOKEN` ID token for OIDC authentication with HashiCorp Vault.
 
-## Configure runners
+## Configure runners to execute flows
 
-Flows that use CI/CD are executed on runners. These runners must:
+Flows that use CI/CD run on runners.
 
-- Use an [executor](https://docs.gitlab.com/runner/executors/) that supports Docker images.
-  For example, `docker`, `docker-autoscaler`, `kubernetes`, or others.
-  The `shell` executor is not supported.
-- Have the `gitlab--duo` tag, so the runner knows to pick up the correct jobs.
-- Be instance runners or assigned to the top-level group. Flows cannot use runners configured for a subgroup or project. On GitLab Self-Managed this restriction can be disabled by disabling the `duo_runner_restrictions` feature flag.
+On GitLab.com, flows can use [hosted runners](../../../ci/runners/hosted_runners/_index.md), which GitLab provides. These are enabled by default. 
 
-In addition, the following requirements apply to runners on GitLab Self-Managed:
-
-- Runners must allow network traffic to the GitLab Duo Agent Platform Service configured for the GitLab instance.
-  - The GitLab Duo Agent Platform Service ships with the [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist). If you self-host the AI Gateway and don't set a local URL for the Agent Platform, agentic features route traffic to `duo-workflow-svc.runway.gitlab.net` on port `443`.
-- Runners must be able to download the default image from `registry.gitlab.com`
-  or be able to access [the Docker image you specified](#change-the-default-docker-image).
-
-For GitLab instances with self-signed certificates in the certificate chain, the GitLab Duo CLI requires [additional configuration](../../gitlab_duo_cli/_index.md#custom-ssl-certificates).
-
-> [!note]
-> The runner's connection to the GitLab Duo Agent Platform Service is routed through the
-> GitLab instance. Runners do not connect directly to
-> `duo-workflow-svc.runway.gitlab.net`. The firewall requirement for
-> `duo-workflow-svc.runway.gitlab.net` on port `443` applies to the GitLab
-> instance, not the runner. Your runner network configuration must allow
-> outbound HTTPS traffic to the GitLab instance.
-
-On GitLab.com, flows can use:
-
-- [Hosted runners](../../../ci/runners/hosted_runners/_index.md), which GitLab provides.
+You also have the option to configure your own runner for flows.
 
 > [!note]
 > If your top-level group has [IP address restrictions](../../group/access_and_permissions.md#restrict-group-access-by-ip-address)
 > enabled, hosted runners cannot be used for flows. Hosted runners use dynamic IP addresses
 > from cloud provider pools that cannot be added to your group's IP allowlist. Instead,
-> configure your own group runner with the `gitlab--duo` tag at the top-level group level,
-> and ensure its IP address is included in your group's allowlist.
+> configure your own group runner at the top-level group.
 
-Flows executed on runners can be secured with runtime sandboxing offering network and file system isolation. To benefit
-from sandboxing you must:
+To configure your own runner for flows:
 
-1. Turn on [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers)
-   mode by setting `privileged = true` in your [runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
-1. Use either:
-   - The default Docker base image for GitLab Duo Agent Platform
-   - A [custom image with SRT installed](../environment_sandbox.md#install-anthropic-sandbox-runtime-srt-on-a-custom-image)
+1. Create an [instance runner](../../../ci/runners/runners_scope.md) or a group runner assigned to the top-level group. If you want flows to use project runners or group runners assigned to a subgroup, turn off the `duo_runner_restrictions` feature flag (GitLab Self-Managed only).
+1. Add the `gitlab--duo` tag to the runner so that it picks up jobs for flows. If the runner does not have this tag, jobs with flows remain queued indefinitely.
+   Use any of the following methods:
+   - When you create the runner, in the **Tags** field, enter `gitlab--duo`.
+   - For an existing runner, [edit the jobs the runner can run](../../../ci/runners/configure_runners.md#control-jobs-that-a-runner-can-run)
+     and enter `gitlab--duo` in the **Tags** field.
+   - If you configure runners with a `config.toml` file, add the tag to the `[[runners]]` section:
 
-### Runner privileged mode
+     <!-- markdownlint-disable MD044 -->
+     ```toml
+     [[runners]]
+       executor = "docker"
+       tags = ["gitlab--duo"]
+     ```
+     <!-- markdownlint-enable MD044 -->
 
-Privileged mode is required for [environment sandbox](../environment_sandbox.md) protection.
-This requirement applies when you use either the default GitLab-provided image or a custom image with SRT installed.
-If you use a custom Docker image without SRT, privileged mode is not required because the sandbox cannot be applied.
+1. Configure the runner to use an [executor](https://docs.gitlab.com/runner/executors/) that
+   supports Docker images, like `docker`, `docker-autoscaler`, or `kubernetes`.
+   The `shell` executor is not supported.
+1. If your top-level group has turned on [IP address restrictions](../../group/access_and_permissions.md#restrict-group-access-by-ip-address),
+   add the runner's IP address to your group's IP allowlist so the runner can access the group.
+1. GitLab Self-Managed only. Ensure the runner can reach the services that flows require:
+   - [Allow outbound connections from the GitLab instance](../../../administration/gitlab_duo/configure/_index.md#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo) to the Agent Platform.
+   - [Allow outbound connections from the runner](../../../administration/gitlab_duo/configure/_index.md#allow-connections-from-the-runner) to the Agent Platform.
+   - For instances with self-signed certificates in the certificate chain, complete the
+     [additional GitLab Duo CLI configuration](../../gitlab_duo_cli/_index.md#custom-ssl-certificates).
 
-| Configuration | Privileged mode required | Sandbox active |
-|---------------|-------------------------|----------------|
-| Default image | Yes | Yes |
-| [Custom image with SRT](../environment_sandbox.md#install-anthropic-sandbox-runtime-srt-on-a-custom-image) | Yes | Yes |
-| Custom image without SRT | No | No |
-| [Hardened UBI 9 Minimal image](#hardened-ubi-9-minimal-image) | No | No |
+### Use the execution environment sandbox to secure flows
+
+For network and file system isolation, use the [execution environment sandbox](../environment_sandbox.md)
+to secure flows executed on runners.
+
+To use the sandbox, you must use one of the following images:
+
+- Default Docker base image for the Agent Platform
+- A [custom image with SRT installed](../environment_sandbox.md#install-anthropic-sandbox-runtime-srt-on-a-custom-image)
+
+To configure runners to use the sandbox, set `privileged = true` in your [runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
+
+For example:
+
+<!-- markdownlint-disable MD044 -->
+```toml
+[[runners]]
+  executor = "docker"
+  tags = ["gitlab--duo"]
+  [runners.docker]
+    privileged = true
+```
+<!-- markdownlint-enable MD044 -->
+
+You cannot use the sandbox with the following images:
+
+- Custom images without SRT installed
+- Hardened UBI 9 Minimal image

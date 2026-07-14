@@ -252,7 +252,7 @@ of these methods:
 
 #### Preparation when adding foreign keys to existing tables
 
-- Include a migration to remove orphaned rows in the source table **before** adding the foreign key.
+- Include a migration to remove orphaned rows in the source table before adding the foreign key.
 - Remove any instances of `dependent: ...` that may no longer be necessary.
 
 #### Preparation when adding tables

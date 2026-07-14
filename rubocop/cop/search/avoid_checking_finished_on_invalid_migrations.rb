@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'digest/sha2'
 require 'yaml'
 
 module RuboCop
@@ -53,6 +54,17 @@ module RuboCop
         end
 
         alias_method :on_csend, :on_send
+
+        def external_dependency_checksum
+          @external_dependency_checksum ||= begin
+            root = File.expand_path('../../..', __dir__)
+            digest = Digest::SHA256.new
+            files = Dir.glob(File.join(root, DOCS_PATH, '*.yml')) +
+              Dir.glob(File.join(root, MIGRATIONS_PATH, '*.rb'))
+            files.sort.each { |f| digest.file(f) }
+            digest.hexdigest
+          end
+        end
 
         private
 

@@ -12,20 +12,20 @@ RSpec.describe RuboCop::Cop::API::EntityExposureGrowth, feature_category: :api d
 
   shared_examples 'flags expose calls not in the allowlist' do
     context 'when a field is not in the allowlist' do
-      let(:allowlist) { { file_path => %w[id name] } }
+      let(:allowlist) { { file_path => { 'usage_radius' => 200, 'fields' => %w[id name] } } }
 
-      it 'registers an offense only for the unlisted field' do
+      it 'registers an offense reporting the usage radius only for the unlisted field' do
         expect_offense(<<~RUBY)
           expose :id, documentation: { type: 'Integer', example: 1 }
           expose :new_field, documentation: { type: 'String' }
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not add `expose` calls to high-impact entities. [...]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not add `expose` calls to high-impact entities. This field would be exposed on ~200 API endpoints. [...]
           expose :name, documentation: { type: 'String', example: 'test' }
         RUBY
       end
     end
 
     context 'when an expose call with a block is not in the allowlist' do
-      let(:allowlist) { { file_path => %w[id] } }
+      let(:allowlist) { { file_path => { 'usage_radius' => 200, 'fields' => %w[id] } } }
 
       it 'registers an offense on the expose call' do
         expect_offense(<<~RUBY)
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::API::EntityExposureGrowth, feature_category: :api d
     end
 
     context 'when all fields are in the allowlist' do
-      let(:allowlist) { { file_path => %w[id name state] } }
+      let(:allowlist) { { file_path => { 'usage_radius' => 200, 'fields' => %w[id name state] } } }
 
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::API::EntityExposureGrowth, feature_category: :api d
     end
 
     context 'when a field is exposed multiple times with different aliases' do
-      let(:allowlist) { { file_path => %w[id topic_names topic_names] } }
+      let(:allowlist) { { file_path => { 'usage_radius' => 200, 'fields' => %w[id topic_names topic_names] } } }
 
       it 'does not register an offense when count matches' do
         expect_no_offenses(<<~RUBY)
@@ -118,7 +118,7 @@ RSpec.describe RuboCop::Cop::API::EntityExposureGrowth, feature_category: :api d
 
   context 'when expose is called with a non-symbol first argument' do
     let(:file_path) { 'lib/api/entities/user_basic.rb' }
-    let(:allowlist) { { file_path => %w[id] } }
+    let(:allowlist) { { file_path => { 'usage_radius' => 200, 'fields' => %w[id] } } }
 
     before do
       allow(cop).to receive(:file_path_for_node).and_return(file_path)
@@ -139,6 +139,38 @@ RSpec.describe RuboCop::Cop::API::EntityExposureGrowth, feature_category: :api d
     it 'does not register an offense when expose has no arguments' do
       expect_no_offenses(<<~RUBY)
         expose
+      RUBY
+    end
+  end
+
+  context 'when the allowlist entry has no usage_radius' do
+    let(:file_path) { 'lib/api/entities/user_basic.rb' }
+    let(:allowlist) { { file_path => { 'fields' => %w[id] } } }
+
+    before do
+      allow(cop).to receive(:file_path_for_node).and_return(file_path)
+    end
+
+    it 'falls back to the base message without an endpoint count' do
+      expect_offense(<<~RUBY)
+        expose :new_field, documentation: { type: 'String' }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not add `expose` calls to high-impact entities. Create a new, feature-bounded entity instead. [...]
+      RUBY
+    end
+  end
+
+  context 'when the allowlist entry has a usage_radius of 0' do
+    let(:file_path) { 'lib/api/entities/user_basic.rb' }
+    let(:allowlist) { { file_path => { 'usage_radius' => 0, 'fields' => %w[id] } } }
+
+    before do
+      allow(cop).to receive(:file_path_for_node).and_return(file_path)
+    end
+
+    it 'falls back to the base message without an endpoint count' do
+      expect_offense(<<~RUBY)
+        expose :new_field, documentation: { type: 'String' }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not add `expose` calls to high-impact entities. Create a new, feature-bounded entity instead. [...]
       RUBY
     end
   end
@@ -180,7 +212,7 @@ RSpec.describe RuboCop::Cop::API::EntityExposureGrowth, feature_category: :api d
 
       expect(result).to be_a(Hash)
       expect(result.keys).to all(be_a(String))
-      expect(result.values).to all(be_an(Array))
+      expect(result.values).to all(include('usage_radius', 'fields'))
     end
   end
 

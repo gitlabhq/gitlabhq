@@ -13,12 +13,6 @@ RSpec.describe 'layouts/profile' do
     allow(view).to receive(:enable_search_settings).and_call_original
   end
 
-  it 'calls enable_search_settings helper with a custom container class' do
-    render
-    expect(view).to have_received(:enable_search_settings)
-                      .with({ locals: { container_class: 'gl-my-5' } })
-  end
-
   it 'displays the search settings entry point' do
     render
     expect(rendered).to include('js-search-settings-app')

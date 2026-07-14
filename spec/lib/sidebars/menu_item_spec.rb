@@ -68,6 +68,20 @@ RSpec.describe Sidebars::MenuItem, feature_category: :navigation do
         expect(subject).not_to have_key(:library_icon)
       end
     end
+
+    context 'with badge data' do
+      let(:extra) { { badge: { label: 'New' } } }
+
+      it 'includes the badge data' do
+        expect(subject[:badge]).to eq({ label: 'New' })
+      end
+    end
+
+    context 'without badge data' do
+      it 'omits the badge key entirely' do
+        expect(subject).not_to have_key(:badge)
+      end
+    end
   end
 
   describe '#render?' do

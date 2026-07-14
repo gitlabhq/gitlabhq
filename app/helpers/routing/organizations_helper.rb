@@ -79,8 +79,10 @@ module Routing
       def self.extract_global_route_name(org_route_name)
         return if org_route_name.nil?
 
-        # Handle organization patterns with proper underscore preservation
-        org_route_name.gsub(ORGANIZATION_PATH_REGEX, '')
+        # Strip only the first `organization_` token (the `as: :organization`
+        # scope prefix); `gsub` would also remove a legitimate `organization_`
+        # in the global name, e.g. the admin `organization_dashboard`.
+        org_route_name.sub(ORGANIZATION_PATH_REGEX, '')
       end
 
       # Build a module that overrides URL helpers with organization-aware versions

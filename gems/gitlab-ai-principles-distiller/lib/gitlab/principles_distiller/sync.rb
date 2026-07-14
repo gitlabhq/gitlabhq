@@ -15,9 +15,12 @@ require_relative 'env'
 require_relative 'graphql_client'
 require_relative 'workspace'
 require_relative 'sync/diff'
+require_relative 'sync/links'
+require_relative 'sync/duo_instructions'
 require_relative 'sync/workflow'
 require_relative 'sync/auto_mr'
 require_relative 'sync/manifest'
+require_relative 'sync/validator'
 
 module Gitlab
   module PrinciplesDistiller
@@ -38,6 +41,12 @@ module Gitlab
       # immediately would hit the same overloaded node.
       DISTILL_RETRY_BACKOFF_SECONDS = [300, 900, 1800].freeze
 
+      # Documentation pointer shown on failure so an author who trips the
+      # --check-duo-instructions guard (it also runs on doc/**/*.md changes)
+      # knows where to get context. Links the published docs page rather than a
+      # repo path, since it renders as a clickable URL in the CI log.
+      DUO_INSTRUCTIONS_DOC = 'https://docs.gitlab.com/development/documentation/ai-instruction-files-documentation/'
+
       def self.run
         new.run
       end
@@ -52,6 +61,9 @@ module Gitlab
 
       def run
         options = parse_options
+
+        return check_duo_instructions(warn_stale: options[:warn_stale]) if options[:check_duo_instructions]
+        return reconcile_duo_instructions(push: options[:push]) if options[:reconcile_duo_instructions]
 
         workflow.validate_config! unless options[:dry_run]
 
@@ -132,9 +144,155 @@ module Gitlab
           opts.on('--rewrite', 'Drop rule 9 (preserve wording) so Duo rewrites all items from scratch') do
             options[:rewrite] = true
           end
+
+          opts.on('--check-duo-instructions', 'Report Duo Code Review fences that are stale ' \
+            'relative to their distilled files, then exit (read-only; non-zero on drift)') do
+            options[:check_duo_instructions] = true
+          end
+
+          opts.on('--warn-stale', 'With --check-duo-instructions, treat stale fences as a ' \
+            'non-blocking warning (exit 0); malformed and orphaned fences still fail (exit 1). ' \
+            'Used on refs where fence staleness is expected transient state reconciled by the ' \
+            'daily fence-reconcile job') do
+            options[:warn_stale] = true
+          end
+
+          opts.on('--reconcile-duo-instructions', 'Regenerate the Duo Code Review fences from the ' \
+            'committed (master) distilled files via pure projection — never re-distilling — then ' \
+            'exit. With --push, open/update a dedicated reconcile MR carrying only the fence update') do
+            options[:reconcile_duo_instructions] = true
+          end
         end.parse!
 
         options
+      end
+
+      # Read-only guard for the Duo Code Review instruction fences in
+      # .gitlab/duo/mr-review-instructions.yaml. Loads the manifest (for
+      # sources/filters) but performs no distillation or writes.
+      #
+      # A freshly seeded fence (manifest entry present, distilled file pending)
+      # only warns: seeding a fence before its first distillation is the
+      # documented flow, so it must not fail the pipeline. Malformed and
+      # orphaned fences always fail the guard (exit 1) so real, ref-fixable
+      # breakage cannot land silently. The failure message is self-service: it
+      # names the exact fix per category and links the developer docs, because
+      # this job also runs on doc/**/*.md changes and can surface to authors who
+      # never touched a fence.
+      #
+      # `warn_stale` downgrades STALE drift to a non-blocking warning (exit 0).
+      # Since fence regeneration is decoupled from distillation (a team's
+      # distilled MR merges independently and the daily fence-reconcile job
+      # catches the fence up from merged master afterwards), fence staleness is
+      # expected transient state on ordinary MRs and on master, not something
+      # those refs can fix. On the owned-path/reconcile refs the flag is left
+      # off, so staleness there still blocks. Malformed and orphaned fences fail
+      # regardless of the flag.
+      def check_duo_instructions(warn_stale: false)
+        manifest.load
+        result = manifest.problematic_duo_review_instructions
+
+        result.pending.each do |principle|
+          warn Rainbow("Duo review instruction fence '#{principle}' is seeded but not yet " \
+            'distilled; the next principles sync will populate it. No action needed.').yellow
+        end
+
+        blocking = warn_stale ? (result.malformed + result.orphaned).uniq : result.failing
+
+        if blocking.empty?
+          warn_stale_fences(result.stale) if warn_stale && result.stale.any?
+          puts Rainbow('Duo review instruction fences are up to date.').green
+          return
+        end
+
+        report_failing_fences(result, warn_stale: warn_stale)
+        exit 1
+      end
+
+      # Prints the stale fences as a non-blocking warning (used under
+      # --warn-stale, where staleness does not fail the guard). The daily
+      # fence-reconcile job projects these onto master; nothing on the current
+      # ref needs to act.
+      def warn_stale_fences(stale)
+        warn Rainbow("Duo review instruction fences are stale on this ref: #{stale.join(', ')}.").yellow
+        warn '  This is expected between a distilled MR merging and the daily fence-reconcile'
+        warn '  job catching the fences up from master. No action needed on this ref.'
+      end
+
+      # Prints per-category guidance for the fences that fail the guard, so the
+      # author knows exactly what to do rather than seeing a bare principle list.
+      #
+      # Under `warn_stale` the stale category is non-blocking, so it is surfaced
+      # as a warning (via warn_stale_fences) rather than a blocking failure and
+      # is omitted from the per-category failure guidance here.
+      def report_failing_fences(result, warn_stale: false)
+        warn_stale_fences(result.stale) if warn_stale && result.stale.any?
+
+        warn Rainbow('Duo review instruction fences need attention ' \
+          "(#{DuoInstructions::DUO_PATH}):").red
+
+        if result.stale.any? && !warn_stale
+          warn Rainbow("  Stale: #{result.stale.join(', ')}").red
+          warn '    The distilled file changed after the fence was generated. Regenerate the'
+          warn '    fences by running the principles sync from the repo root:'
+          warn Rainbow('      scripts/lint-duo-review-instructions.sh   # to re-check').faint
+          warn '    then commit the updated file. If you did not mean to change these fences'
+          warn "    (for example, you only edited docs), revert your change to #{DuoInstructions::DUO_PATH}."
+        end
+
+        if result.malformed.any?
+          warn Rainbow("  Malformed: #{result.malformed.join(', ')}").red
+          warn '    A BEGIN marker has no matching END, or a key is duplicated. Fix the'
+          warn '    markers so each fence is exactly one BEGIN/END pair, or remove the fence.'
+        end
+
+        if result.orphaned.any?
+          warn Rainbow("  Orphaned: #{result.orphaned.join(', ')}").red
+          warn '    The fence has no manifest entry and no distilled file, so it has no source'
+          warn '    of truth. Remove the fence, or add the matching principle to'
+          warn '    .ai/principles/manifest.yml if the fence should stay.'
+        end
+
+        warn "See #{DUO_INSTRUCTIONS_DOC} for how these fences are generated and kept in sync."
+      end
+
+      # Reconciles the Duo Code Review instruction fences from the committed
+      # (master) distilled files by pure projection: it regenerates each fence's
+      # directives and body from the on-disk distilled file's frontmatter and
+      # checklist, and NEVER re-runs distillation. This is what keeps the
+      # reconcile idempotent and its own MR guard-green: a fence only changes
+      # when the distilled file it mirrors already changed on master.
+      #
+      # Decoupled from the distillation --push path (which no longer touches the
+      # fences at all): a team MR merges its distilled file independently, and
+      # this scheduled job catches the fence up from merged master afterwards.
+      # Because the projection reads the same ref the reconcile MR targets
+      # (the branch is cut from origin/<default_branch> and the fences are
+      # projected afterwards, inside create_reconcile_mr_from_working_tree), a
+      # team MR merging mid-run does not reopen a stale window.
+      #
+      # Without --push it only rewrites the file on disk from the current
+      # working tree (local/dry use). With --push the on-disk projection is
+      # deferred to the freshly cut branch, so it is skipped here.
+      def reconcile_duo_instructions(push: false)
+        banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
+        manifest.load
+
+        unless push
+          banner("\nReconciling Duo Code Review instruction fences from committed distilled files...")
+          changed = manifest.generate_duo_review_instructions
+
+          unless changed
+            puts "\n#{Rainbow('Duo review instruction fences are already up to date.').green}"
+            return
+          end
+
+          puts "\n#{Rainbow('[LOCAL]').cyan} Fences reconciled on disk. Pass --push to open a reconcile MR."
+          return
+        end
+
+        banner("\nReconciling Duo Code Review instruction fences on a fresh branch from master...")
+        create_reconcile_mr_from_working_tree(manifest.auto_mr_config, manifest)
       end
 
       # Informational only; the Duo agent reads the file itself via the
@@ -183,6 +341,16 @@ module Gitlab
         puts Rainbow(message).bold
       end
 
+      # The AGENTS.md/CLAUDE.md/SKILL.md/CODEOWNERS generators are
+      # manifest-driven (they do not read distilled bodies), so they can be
+      # regenerated straight from the manifest here.
+      #
+      # The Duo Code Review fences are deliberately NOT regenerated in this
+      # path: they are reconciled from merged-master content by the separate
+      # scheduled reconcile job (see #reconcile_duo_instructions), so a team's
+      # distilled MR and the fence update are independently mergeable and a
+      # retried, non-deterministic distillation can never leave the fences out
+      # of sync with what actually ships.
       def regenerate_static_artifacts
         banner("\nUpdating AGENTS.md context loading section...")
         manifest.generate_agents_md_context_loading
@@ -255,9 +423,29 @@ module Gitlab
       def assemble_distilled_body(updated, config, name, header)
         note = manifest.prerequisite_note(name)
 
+        updated = absolutize_links(updated, config, name)
         updated = "#{header}#{updated}" unless updated.start_with?('<!-- Auto-generated')
         updated = updated.sub(/^(<!-- Auto-generated.*-->)\n\n*/, "\\1\n\n#{note}") if note
         "#{updated.rstrip}\n\n#{manifest.sources_footer(config)}"
+      end
+
+      # Rewrites source-relative Markdown links to absolute docs.gitlab.com URLs.
+      # The agent copies links verbatim from the SSOT docs, where they resolve
+      # correctly; from `.ai/principles/distilled/` the relative base differs, so
+      # we resolve each link against its source directory and emit the canonical
+      # published URL instead. Unresolved relatives are left intact and logged.
+      def absolutize_links(updated, config, name)
+        exist = ->(repo_path) { File.exist?(Workspace.safe_join(repo_path)) }
+        warn_unresolved = ->(rel_path) do
+          warn Rainbow("  WARNING: #{name}: could not absolutize relative link #{rel_path}").yellow
+        end
+
+        Links.absolutize(
+          updated,
+          sources: config.fetch('sources', []),
+          exist: exist,
+          warn_unresolved: warn_unresolved
+        )
       end
 
       # `mutex` serialises log output and writes to `results`.

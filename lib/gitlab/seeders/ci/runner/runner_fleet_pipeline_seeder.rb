@@ -162,6 +162,8 @@ module Gitlab
             #  See Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder#additional_runner_args
             tags = runner.tags.offset(2).sample(Random.rand(1..5)) # rubocop: disable CodeReuse/ActiveRecord
 
+            job_definition = find_or_create_job_definition(pipeline, tags)
+
             build_attrs = {
               name: "Mock job #{index}",
               scheduling_type: 'dag',
@@ -181,7 +183,15 @@ module Gitlab
             build = nil
 
             ::Ci::Build.transaction do
-              build = ::Ci::Build.new(importing: true, **build_attrs).tap(&:save!)
+              build = ::Ci::Build.new(
+                importing: true,
+                **build_attrs.except(:tag_list),
+                job_definition_instance_attributes: {
+                  project_id: pipeline.project_id,
+                  job_definition: job_definition,
+                  partition_id: pipeline.partition_id
+                }
+              ).tap(&:save!)
               ::Ci::RunningBuild.upsert_build!(build) if build.running?
             end
 
@@ -190,6 +200,16 @@ module Gitlab
             # Trigger build finished worker to sync build data to ClickHouse,
             # similar to pipeline sync on the create_pipeline method
             ::Ci::BuildFinishedWorker.perform_async(build.id) if build&.complete?
+          end
+
+          def find_or_create_job_definition(pipeline, tags)
+            definition = ::Ci::JobDefinition.fabricate(
+              config: { tag_list: tags },
+              project_id: pipeline.project_id,
+              partition_id: pipeline.partition_id
+            )
+
+            ::Gitlab::Ci::JobDefinitions::FindOrCreate.new(pipeline, definitions: [definition]).execute.first
           end
 
           def random_pipeline_status

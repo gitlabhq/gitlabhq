@@ -509,6 +509,7 @@ RSpec.describe 'Filter work items', :js, feature_category: :portfolio_management
         submit_search_term 'days ago'
 
         expect(page).to have_work_item_count(2)
+        click_button 'Display'
         expect(page).to have_button 'Created date'
         expect(page).to have_css('.issue:first-of-type .issue-title', text: new_issue.title)
       end

@@ -99,6 +99,7 @@ curl --request GET \
   "container_registry_expiration_policies_caching": true,
   "container_registry_expiration_policies_worker_capacity": 4,
   "container_registry_token_expire_delay": 5,
+  "oauth_access_token_expires_in": 7200,
   "decompress_archive_file_timeout": 210,
   "repository_storages_weighted": {"default": 100},
   "plantuml_enabled": false,
@@ -321,6 +322,7 @@ curl --request PUT \
   "container_registry_expiration_policies_caching": true,
   "container_registry_expiration_policies_worker_capacity": 4,
   "container_registry_token_expire_delay": 5,
+  "oauth_access_token_expires_in": 7200,
   "decompress_archive_file_timeout": 210,
   "package_registry_cleanup_policies_worker_capacity": 2,
   "plantuml_enabled": false,
@@ -454,7 +456,8 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `housekeeping_full_repack_period`、`housekeeping_gc_period`、および`housekeeping_incremental_repack_period`はGitLab 15.8で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106963)になりました。代わりに`housekeeping_optimize_repository_period`を使用してください。
 - `allow_account_deletion`はGitLab 16.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/412411)されました。
 - `allow_project_creation_for_guest_and_below`はGitLab 16.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134625)されました。
-- `silent_admin_exports_enabled`はGitLab 17.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148918)されました。
+- GitLab 17.0で`silent_admin_exports_enabled`が[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148918)。
+- `ai_action_api_rate_limit`はGitLab 17.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149945)されました。
 - `require_personal_access_token_expiry`はGitLab 17.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/470192)されました。
 - `receptive_cluster_agents_enabled`はGitLab 17.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/463427)されました。
 - `allow_all_integrations`および`allowed_integrations`はGitLab 17.6で[追加](https://gitlab.com/gitlab-org/gitlab/-/issues/500610)されました。
@@ -475,8 +478,9 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `email_restrictions_enabled`             | ブール値          | いいえ                                   | 新規ユーザーがメールでアカウントを作成することを防ぎます。 |
 | `email_restrictions`                     | 文字列           | `email_restrictions_enabled`で必要 | 登録時に使用されたメールアドレスに対して確認される正規表現。 |
 | `after_sign_up_text`                     | 文字列           | いいえ                                   | 登録後にユーザーに表示されるテキスト。 |
+| `ai_action_api_rate_limit`               | 整数          | いいえ                                   | `aiAction` GraphQLミューテーションに対して、ユーザーごとに8時間あたりに許可されるリクエストの最大数。デフォルトは`160`です。`0`に設定すると、レート制限を無効にできます。 |
 | `akismet_api_key`                        | 文字列           | `akismet_enabled`で必要       | Akismetスパム保護のAPIキー。 |
-| `akismet_enabled`                        | ブール値          | いいえ                                   | (**If enabled, requires**: `akismet_api_key`) Akismetスパム保護を有効または無効にします。 |
+| `akismet_enabled`                        | ブール値          | いいえ                                   | (**有効な場合、次が必須**: `akismet_api_key`) Akismetスパム保護を有効または無効にします。 |
 | `allow_all_integrations`                 | ブール値          | いいえ                                   | `false`の場合、`allowed_integrations`に含まれるインテグレーションのみがインスタンスで許可されます。Ultimateのみ。 |
 | `allowed_integrations`                   | 文字列の配列 | いいえ                                   | `allow_all_integrations`が`false`の場合、このリストに含まれるインテグレーションのみがインスタンスで許可されます。Ultimateのみ。 |
 | `allow_account_deletion`                 | ブール値          | いいえ                                   | ユーザーがアカウントを削除できるように`true`に設定します。PremiumおよびUltimateのみです。 |
@@ -487,7 +491,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `allow_project_creation_for_guest_and_below` | ブール値      | いいえ                                   | ゲストロール以下の権限が割り当てられたユーザーがグループおよび個人プロジェクトを作成できるかどうかを示します。`true`がデフォルトです。 |
 | `allow_runner_registration_token`        | ブール値          | いいえ                                   | 登録トークンを使用してRunnerを作成することを許可します。`true`がデフォルトです。 |
 | `archive_builds_in_human_readable`       | 文字列           | いいえ                                   | ジョブが古いと見なされ、期限切れになる期間を設定します。その時間が経過すると、ジョブはアーカイブされ、再試行できなくなります。ジョブが期限切れにならないようにするには、値を空にしてください。例えば、`15 days`、`1 month`、`2 years`など、1日以上である必要があります。 |
-| `asset_proxy_enabled`                    | ブール値          | いいえ                                   | (**If enabled, requires**: `asset_proxy_url`) アセットのプロキシを有効にします。変更を適用するにはGitLabの再起動が必要です。 |
+| `asset_proxy_enabled`                    | ブール値          | いいえ                                   | (**有効な場合、次が必須**: `asset_proxy_url`) アセットのプロキシを有効にします。変更を適用するにはGitLabの再起動が必要です。 |
 | `asset_proxy_secret_key`                 | 文字列           | いいえ                                   | アセットプロキシサーバーとの共有シークレット。変更を適用するにはGitLabの再起動が必要です。 |
 | `asset_proxy_url`                        | 文字列           | いいえ                                   | アセットプロキシサーバーのURL。変更を適用するにはGitLabの再起動が必要です。 |
 | `asset_proxy_whitelist`                  | 文字列または文字列の配列 | いいえ                         | (非推奨: `asset_proxy_allowlist`を使用してください) これらのドメインに一致するアセットはプロキシされません。ワイルドカードが許可されます。あなたのGitLabインストールURLは自動的に許可リストに追加されます。変更を適用するにはGitLabの再起動が必要です。 |
@@ -503,6 +507,8 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `bulk_import_max_download_file_size`     | 整数          | いいえ                                   | ダイレクト転送でソースGitLabインスタンスからインポートする場合の最大ダウンロードファイルサイズ。GitLab 16.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/384976)されました。 |
 | `allow_bypass_placeholder_confirmation`  | ブール値          | いいえ                                   | 管理者がプレースホルダーユーザーを再割り当てする際の確認をスキップします。GitLab 18.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/534330)されました。 |
 | `allow_s3_compatible_storage_for_offline_transfer` | ブール値 | いいえ                                   | オフライン転送にS3互換のオブジェクトストレージを許可します。GitLab 18.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/579705)されました。 |
+| `built_in_project_templates_enabled`     | ブール値          | いいえ                                   | ユーザーがプロジェクトを作成する際に、組み込みプロジェクトテンプレートを有効にします。PremiumおよびUltimateのみです。GitLab 19.0で`use_built_in_project_templates_enabled`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235284)されました。デフォルトでは無効になっています。 |
+| `lock_built_in_project_templates_enabled` | ブール値         | いいえ                                   | すべてのグループに`built_in_project_templates_enabled`設定を適用します。PremiumおよびUltimateのみです。GitLab 19.0で`use_built_in_project_templates_enabled`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235284)されました。デフォルトでは無効になっています。 |
 | `can_create_group`                       | ブール値          | いいえ                                   | ユーザーがトップレベルグループを作成できるかどうかを示します。`true`がデフォルトです。 |
 | `check_namespace_plan`                   | ブール値          | いいえ                                   | これを有効にすると、プロジェクトのネームスペースのプランに機能が含まれている場合、またはプロジェクトが公開されている場合にのみ、ライセンスされたEE機能がプロジェクトで利用可能になります。PremiumおよびUltimateのみです。 |
 | `ci_delete_pipelines_in_seconds_limit_human_readable` | 文字列 | いいえ                                | パイプライン保持を設定するために許可される最大値。`1 year`がデフォルトです。 |
@@ -511,7 +517,8 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `ci_max_total_yaml_size_bytes`           | 整数          | いいえ                                   | 含まれるすべてのYAML設定ファイルを含むパイプライン設定に割り当てることができる最大メモリ量（バイト単位）。 |
 | `ci_max_includes`                        | 整数          | いいえ                                   | パイプラインごとの[最大インクルード数](../administration/cicd/limits.md#maximum-number-of-includes)。デフォルトは`150`です。 |
 | `ci_partitions_size_limit`               | 整数          | いいえ                                   | 新しいパーティションを作成する前に、CIテーブルのデータベースパーティションが使用できる最大ディスク容量（バイト単位）。デフォルトは`100 GB`です。GitLab 18.11で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/429675)されました。|
-| `ci_partitions_in_seconds_limit`         | 整数          | いいえ                                   | 新しいCIパーティションが作成され、システムが次のパーティションセットに切り替わるまでの時間枠（秒単位）。1ヶ月から6ヶ月の間である必要があります。デフォルトは1ヶ月（`2592000`）です。 |
+| `ci_partitions_in_seconds_limit_human_readable` | 文字列    | いいえ                                   | 新しいCIパーティションが作成され、システムが次のパーティションセットに切り替わるまでの時間枠。`1 month`から`6 months`の間である必要があります。`1 month`がデフォルトです。 |
+| `ci_partitions_in_seconds_limit`         | 整数          | いいえ                                   | 新しいCIパーティションが作成され、システムが次のパーティションセットに切り替わるまでの時間枠（秒単位）。1ヶ月から6ヶ月の間である必要があります。デフォルトは1ヶ月（`2592000`）です。書き込み専用。GET応答では返されません。`ci_partitions_in_seconds_limit_human_readable`のために非推奨となり、API v5で削除される予定です。 |
 | `concurrent_github_import_jobs_limit`    | 整数          | いいえ                                   | GitHubインポーターの同時インポートジョブの最大数。デフォルトは1000です。GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875)されました。 |
 | `concurrent_bitbucket_import_jobs_limit` | 整数          | いいえ                                   | Bitbucket Cloudインポーターの同時インポートジョブの最大数。デフォルトは100です。GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875)されました。 |
 | `concurrent_bitbucket_server_import_jobs_limit` | 整数   | いいえ                                   | Bitbucket Serverインポーターの同時インポートジョブの最大数。デフォルトは100です。GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875)されました。 |
@@ -544,6 +551,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `default_project_deletion_protection`    | ブール値          | いいえ                                   | デフォルトプロジェクト削除保護を有効にして、管理者のみがプロジェクトを削除できるようにします。デフォルトは`false`です。GitLab Self-Managed、Premium、およびUltimateのみです。 |
 | `delete_unconfirmed_users`               | ブール値          | いいえ                                   | メールアドレスを確認していないユーザーを削除すべきかどうかを指定します。デフォルトは`false`です。`true`に設定すると、未確認のユーザーは`unconfirmed_users_delete_after_days`日後に削除されます。GitLab 16.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/352514)されました。GitLab Self-Managed、Premium、およびUltimateのみです。 |
 | `deletion_adjourned_period`              | 整数          | いいえ                                   | 削除対象としてマークされたプロジェクトまたはグループを削除するまでに待機する日数。値は`1`から`90`の間である必要があります。`30`がデフォルトです。 |
+| `dependency_management_settings`         | ハッシュ             | いいえ                                   | 依存関係管理設定。Sidekiqフリート全体で同時に実行されるセキュリティ更新スケジューラジョブの数を制限するには、`security_update_scheduler_max_concurrency` (整数) を設定します。デフォルトは`30`です。`200`に制限されています。`0`に設定すると、スケジュールを一時停止します。Ultimateのみ。GitLab 19.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239173)されました。 |
 | `description_and_note_max_size`          | 整数          | いいえ                                   | 作業アイテム、マージリクエスト、および脆弱性の説明とコメントの内容の最大サイズ（バイト単位）。デフォルトは`1048576`です。 |
 | `diagramsnet_enabled`                    | ブール値          | いいえ                                   | (有効な場合、`diagramsnet_url`が必要) [Diagrams.netインテグレーション](../administration/integration/diagrams_net.md)を有効にします。デフォルトは`true`です。 |
 | `diagramsnet_url`                        | 文字列           | `diagramsnet_enabled`で必要   | インテグレーション用のDiagrams.netインスタンスURL。 |
@@ -558,8 +566,8 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `disabled_oauth_sign_in_sources`         | 文字列の配列 | いいえ                                   | 無効化されたOAuthサインイン元。 |
 | `disable_password_authentication_for_users_with_sso_identities` | ブール値 | いいえ                     | SSO IDを持つユーザーのウェブインターフェースでのパスワード認証を無効にします。これはGit操作には影響しません。デフォルトは`false`です。 |
 | `dns_rebinding_protection_enabled`       | ブール値          | いいえ                                   | DNSリバインディング攻撃保護を強制します。 |
-| `domain_denylist_enabled`                | ブール値          | いいえ                                   | (**If enabled, requires**: `domain_denylist`) 特定のドメインからのメールを持つ新規ユーザーアカウントをブロックすることを許可します。 |
-| `domain_denylist`                        | 文字列の配列 | いいえ                                   | これらのドメインに一致するメールアドレスを持つユーザーは**不可能**します。ワイルドカードが許可されます。複数のエントリを改行で入力してください。例: `domain.com`、`*.domain.com`。 |
+| `domain_denylist_enabled`                | ブール値          | いいえ                                   | (**有効な場合、次が必須**: `domain_denylist`) 特定のドメインからのメールを持つ新規ユーザーアカウントをブロックすることを許可します。 |
+| `domain_denylist`                        | 文字列の配列 | いいえ                                   | これらのドメインに一致するメールアドレスを持つユーザーは**サインアップできません**。ワイルドカードが許可されます。複数のエントリを改行で入力してください。例: `domain.com`、`*.domain.com`。 |
 | `domain_allowlist`                       | 文字列の配列 | いいえ                                   | アカウント作成時にユーザーに会社のメールのみを使用することを強制します。デフォルトは`null`であり、制限がないことを意味します。 |
 | `downstream_pipeline_trigger_limit_per_project_user_sha` | 整数 | いいえ                            | [ダウンストリームパイプライントリガーレートの最大値](../administration/cicd/limits.md#limit-downstream-pipeline-trigger-rate)。デフォルト: `0`（制限なし）。GitLab 16.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077)されました。 |
 | `dsa_key_restriction`                    | 整数          | いいえ                                   | アップロードされたDSAキーの最小許容ビット長。デフォルトは`0`（制限なし）です。`-1`はDSAキーを無効にします。 |
@@ -602,12 +610,12 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `custom_http_clone_url_root`             | 文字列           | いいえ                                   | HTTP(S)用のカスタムGitクローンURLを設定します。 |
 | `enabled_git_access_protocol`            | 文字列           | いいえ                                   | Gitアクセスで有効になっているプロトコル。許可される値は`ssh`、`http`、および両方のプロトコルを許可する`all`です。`all`値はGitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/12944)されました。 |
 | `enforce_namespace_storage_limit`        | ブール値          | いいえ                                   | これを有効にすると、ネームスペースストレージ制限の適用が許可されます。 |
-| `enforce_terms`                          | ブール値          | いいえ                                   | (**If enabled, requires**: `terms`) すべてのユーザーにアプリケーション利用規約を強制します。 |
-| `external_auth_client_cert`              | 文字列           | いいえ                                   | (**If enabled, requires**: `external_auth_client_key`) 外部認可サービスで認証するために使用する証明書。 |
+| `enforce_terms`                          | ブール値          | いいえ                                   | (**有効な場合、次が必須**: `terms`) すべてのユーザーにアプリケーション利用規約を強制します。 |
+| `external_auth_client_cert`              | 文字列           | いいえ                                   | (**有効な場合、次が必須**: `external_auth_client_key`) 外部認可サービスで認証するために使用する証明書。 |
 | `external_auth_client_key_pass`          | 文字列           | いいえ                                   | 外部サービスで認証する際にプライベートキーで使用するパスフレーズ。これは保存時に暗号化されます。 |
 | `external_auth_client_key`               | 文字列           | `external_auth_client_cert`で必要 | 外部認可サービスで認証が必要な場合の証明書のプライベートキー。これは保存時に暗号化されます。 |
 | `external_authorization_service_default_label` | 文字列     | 必須:<br>`external_authorization_service_enabled` | 認可をリクエストする際に使用するデフォルトの分類ラベルで、プロジェクトに分類ラベルが指定されていない場合に使用されます。 |
-| `external_authorization_service_enabled`       | ブール値    | いいえ                                   | (**If enabled, requires**: `external_authorization_service_default_label`、`external_authorization_service_timeout`、および`external_authorization_service_url`) プロジェクトへのアクセスに外部認可サービスを使用することを有効にします。 |
+| `external_authorization_service_enabled`       | ブール値    | いいえ                                   | (**有効な場合、次が必須**: `external_authorization_service_default_label`、`external_authorization_service_timeout`、および`external_authorization_service_url`) プロジェクトへのアクセスに外部認可サービスを使用することを有効にします。 |
 | `external_authorization_service_timeout`       | 浮動小数点数      | 必須:<br>`external_authorization_service_enabled` | 認可リクエストが中断されるまでのタイムアウト（秒単位）。リクエストがタイムアウトした場合、ユーザーへのアクセスは拒否されます（最小: 0.001、最大: 10、ステップ: 0.001）。 |
 | `external_authorization_service_url`           | 文字列     | 必須:<br>`external_authorization_service_enabled` | 認可リクエストが送信されるURL。 |
 | `external_pipeline_validation_service_url`     | 文字列     | いいえ                                   | パイプライン検証リクエストに使用するURL。 |
@@ -693,6 +701,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `maven_package_requests_forwarding`      | ブール値          | いいえ                                   | Maven用のGitLabパッケージレジストリでパッケージが見つからない場合、repo.maven.apache.orgをデフォルトリモートリポジトリとして使用します。PremiumおよびUltimateのみです。 |
 | `npm_package_requests_forwarding`        | ブール値          | いいえ                                   | npm用のGitLabパッケージレジストリでパッケージが見つからない場合、npmjs.orgをデフォルトリモートリポジトリとして使用します。PremiumおよびUltimateのみです。 |
 | `pypi_package_requests_forwarding`       | ブール値          | いいえ                                   | PyPI用のGitLabパッケージレジストリでパッケージが見つからない場合、pypi.orgをデフォルトリモートリポジトリとして使用します。PremiumおよびUltimateのみです。 |
+| `oauth_access_token_expires_in`          | 整数          | いいえ                                   | インスタンスによって発行されるすべての新しいOAuthアクセストークンの最大ライフタイム (秒単位)。最小値: `300` (5分)。デフォルト値: `7200` (2時間)。空白または`null`の場合、デフォルト値を使用します。既存のOAuthアクセストークンには影響しません。 |
 | `outbound_local_requests_whitelist`      | 文字列の配列 | いいえ                                   | Webhookおよびインテグレーションのローカルリクエストが無効になっている場合に、ローカルリクエストが許可される信頼済みドメインまたはIPアドレスのリストを定義します。現在、この属性は更新できません。詳細については、[イシュー569729](https://gitlab.com/gitlab-org/gitlab/-/issues/569729)を参照してください。 |
 | `package_registry_allow_anyone_to_pull_option` | ブール値    | いいえ                                   | [パッケージレジストリからのプルを誰でも許可](../user/packages/package_registry/_index.md#allow-anyone-to-pull-from-package-registry)することを有効にし、表示および変更可能にします。 |
 | `package_metadata_purl_types`            | 整数の配列 | いいえ                                  | [パッケージレジストリのメタデータを同期](../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync)するリスト。利用可能な値の[リスト](https://gitlab.com/gitlab-org/gitlab/-/blob/ace16c20d5da7c4928dd03fb139692638b557fe3/app/models/concerns/enums/package_metadata.rb#L5)を参照してください。GitLab Self-Managed、Ultimateのみ。 |
@@ -711,14 +720,15 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `personal_access_token_prefix`           | 文字列           | いいえ                                   | 生成されたすべてのパーソナルアクセストークンのプレフィックス。 |
 | `pipeline_limit_per_project_user_sha`    | 整数          | いいえ                                   | ユーザーおよびコミットごとの1分あたりのパイプライン作成リクエストの最大数。デフォルトでは無効になっています。 |
 | `pipeline_limit_per_user`                | 整数          | いいえ                                   | ユーザーごとの1分あたりのパイプライン作成リクエストの最大数。 |
-| `gitpod_enabled`                         | ブール値          | いいえ                                   | (**If enabled, requires**: `gitpod_url`) [Onaインテグレーション](../integration/gitpod.md)を有効にします。デフォルトは`false`です。 |
+| `ci_lint_limit_per_user`                 | 整数          | いいえ                                   | ユーザーごとに1分あたりのCI Lintリクエストの最大数。デフォルトでは無効になっています。 |
+| `gitpod_enabled`                         | ブール値          | いいえ                                   | (**有効な場合、次が必須**: `gitpod_url`) [Onaインテグレーション](../integration/gitpod.md)を有効にします。デフォルトは`false`です。 |
 | `gitpod_url`                             | 文字列           | `gitpod_enabled`で必要        | インテグレーション用のOnaインスタンスURL。 |
 | `inactive_resource_access_tokens_delete_after_days`| 整数 | いいえ                                   | 非アクティブなプロジェクトおよびグループアクセストークンの保持期間を指定します。デフォルトは`30`です。 |
-| `kroki_enabled`                          | ブール値          | いいえ                                   | (**If enabled, requires**: `kroki_url`) [Krokiインテグレーション](../administration/integration/kroki.md)を有効にします。デフォルトは`false`です。 |
+| `kroki_enabled`                          | ブール値          | いいえ                                   | (**有効な場合、次が必須**: `kroki_url`) [Krokiインテグレーション](../administration/integration/kroki.md)を有効にします。デフォルトは`false`です。 |
 | `kroki_url`                              | 文字列           | `kroki_enabled`で必要         | インテグレーション用のKrokiインスタンスURL。 |
 | `kroki_formats`                          | オブジェクト           | いいえ                                   | Krokiインスタンスでサポートされている追加のフォーマット。可能な値は`true`または`false`で、`bpmn`、`blockdiag`、`excalidraw`、および`mermaid`フォーマットの形式は`<format>: true`または`<format>: false`です。 |
 | `kroki_diagram_proxy_enabled`            | ブール値          | いいえ                                   | [Krokiダイアグラムプロキシ](../administration/integration/diagram_proxy.md)を有効にします。デフォルトは`false`です。 |
-| `plantuml_enabled`                       | ブール値          | いいえ                                   | (**If enabled, requires**: `plantuml_url`) [PlantUMLインテグレーション](../administration/integration/plantuml.md)を有効にします。デフォルトは`false`です。 |
+| `plantuml_enabled`                       | ブール値          | いいえ                                   | (**有効な場合、次が必須**: `plantuml_url`) [PlantUMLインテグレーション](../administration/integration/plantuml.md)を有効にします。デフォルトは`false`です。 |
 | `plantuml_url`                           | 文字列           | `plantuml_enabled`で必要      | インテグレーション用のPlantUMLインスタンスURL。 |
 | `plantuml_diagram_proxy_enabled`         | ブール値          | いいえ                                   | [PlantUMLダイアグラムプロキシ](../administration/integration/diagram_proxy.md)を有効にします。デフォルトは`false`です。 |
 | `polling_interval_multiplier`            | 浮動小数点数            | いいえ                                   | ポーリングを実行するエンドポイントで使用される乗数の間隔。ポーリングを無効にするには`0`に設定します。 |
@@ -750,7 +760,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `raw_blob_request_limit_unauthenticated` | 整数          | いいえ                                   | プロジェクト内のすべてのrawパスを横断する1分あたりの未認証リクエストの最大数（デフォルトは`800`）。スロットリングを無効にするには`0`に設定します。|
 | `search_rate_limit`                      | 整数          | いいえ                                   | 認証済みで検索を実行する際の1分あたりのリクエストの最大数。デフォルト: 30。スロットリングを無効にするには0に設定します。|
 | `search_rate_limit_unauthenticated`      | 整数          | いいえ                                   | 未認証で検索を実行する際の1分あたりのリクエストの最大数。デフォルト: 10。スロットリングを無効にするには0に設定します。|
-| `recaptcha_enabled`                      | ブール値          | いいえ                                   | (**If enabled, requires**: `recaptcha_private_key`および`recaptcha_site_key`) reCAPTCHAを有効にします。 |
+| `recaptcha_enabled`                      | ブール値          | いいえ                                   | (**有効な場合、次が必須**: `recaptcha_private_key`および`recaptcha_site_key`) reCAPTCHAを有効にします。 |
 | `login_recaptcha_protection_enabled`     | ブール値          | いいえ                                   | ログイン用のreCAPTCHAを有効にします。 |
 | `recaptcha_private_key`                  | 文字列           | `recaptcha_enabled`で必要     | reCAPTCHAのプライベートキー。 |
 | `recaptcha_site_key`                     | 文字列           | `recaptcha_enabled`で必要     | reCAPTCHAのサイトキー。 |
@@ -764,7 +774,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `require_admin_approval_after_user_signup` | ブール値        | いいえ                                   | 有効にすると、登録フォームを使用してアカウントにサインアップしたユーザーはすべて**承認保留中**状態になり、管理者によって明示的に[承認](../administration/moderate_users.md)される必要があります。 |
 | `require_email_verification_on_account_locked` | ブール値    | いいえ                                   | `true`の場合、不審なサインインアクティビティが検出された後、インスタンス上のすべてのユーザーが自身のIDを検証する必要があります。 |
 | `require_personal_access_token_expiry`   | ブール値          | いいえ                                   | 有効にすると、ユーザーはグループアクセストークンまたはプロジェクトアクセストークン、あるいは非サービスアカウントが所有するパーソナルアクセストークンを作成する際に有効期限を設定する必要があります。 |
-| `require_two_factor_authentication`      | ブール値          | いいえ                                   | (**If enabled, requires**: `two_factor_grace_period`) すべてのユーザーに2要素認証のセットアップを要求します。 |
+| `require_two_factor_authentication`      | ブール値          | いいえ                                   | (**有効な場合、次が必須**: `two_factor_grace_period`) すべてのユーザーに2要素認証のセットアップを要求します。 |
 | `resource_usage_limits`                | ハッシュ             | いいえ                                   | Sidekiqワーカーで適用されるリソース使用量制限の定義。この設定はGitLab.comでのみ利用可能です。 |
 | `restricted_visibility_levels`           | 文字列の配列 | いいえ                                   | 選択されたレベルは、グループ、プロジェクト、またはスニペットに対して管理者以外のユーザーは使用できません。`private`、`internal`、および`public`をパラメータとして受け取ることができます。デフォルトは`null`であり、これは制限がないことを意味します。[GitLab 16.4で変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203): `default_project_visibility`および`default_group_visibility`に設定されているレベルは選択できません。 |
 | `rsa_key_restriction`                    | 整数          | いいえ                                   | アップロードされたRSAキーの最小許容ビット長。デフォルトは`0`（制限なし）です。`-1`はRSAキーを無効にします。 |
@@ -778,7 +788,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `security_mr_report_cache_lifetime_minutes` | 整数       | いいえ                                   | マージリクエストのセキュリティレポートをキャッシュする時間（分）（10～60）。デフォルト: 10。PremiumおよびUltimateのみです。GitLab 18.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223399)されました。 |
 | `security_scan_stale_after_days`          | 整数          | いいえ                                   | スキャンデータをパージする前の保持日数。7日から90日の間でなければなりません。デフォルト: GitLab.comの場合は30日、セルフマネージドの場合は90日。PremiumおよびUltimateのみです。GitLab 18.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222998)されました。 |
 | `service_access_tokens_expiration_enforced` | ブール値       | いいえ                                   | サービスアカウントユーザーの場合、トークンの有効期限がオプションになるかどうかを示すフラグ。 |
-| `shared_runners_enabled`                 | ブール値          | いいえ                                   | (**If enabled, requires**: `shared_runners_text`および`shared_runners_minutes`) 新しいプロジェクトでインスタンスRunnerを有効にします。 |
+| `shared_runners_enabled`                 | ブール値          | いいえ                                   | (**有効な場合、次が必須**: `shared_runners_text`および`shared_runners_minutes`) 新しいプロジェクトでインスタンスRunnerを有効にします。 |
 | `shared_runners_minutes`                 | 整数          | `shared_runners_enabled`で必要 | グループがインスタンスRunnerで1か月あたりに使用できる最大コンピューティング時間を設定します。PremiumおよびUltimateのみです。 |
 | `shared_runners_text`                    | 文字列           | `shared_runners_enabled`で必要 | インスタンスRunnerのテキスト。 |
 | `runner_token_expiration_interval`         | 整数        | いいえ                                   | 新しく登録されたインスタンスRunnerの認証トークンの有効期限（秒単位）を設定します。最小値は7200秒です。詳細については、[自動的に認証トークンをローテーションする](../ci/runners/configure_runners.md#automatically-rotate-runner-authentication-tokens)を参照してください。 |
@@ -792,18 +802,18 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `signup_enabled`                         | ブール値          | いいえ                                   | 登録を有効にします。デフォルトは`true`です。 |
 | `silent_admin_exports_enabled`           | ブール値          | いいえ                                   | [サイレント管理者エクスポート](../administration/settings/import_and_export_settings.md#enable-silent-admin-exports)を有効にします。デフォルトは`false`です。 |
 | `silent_mode_enabled`                    | ブール値          | いいえ                                   | [サイレントモード](../administration/silent_mode/_index.md)を有効にします。デフォルトは`false`です。 |
-| `slack_app_enabled`                      | ブール値          | いいえ                                   | (**If enabled, requires**: `slack_app_id`、`slack_app_secret`、`slack_app_signing_secret`、および`slack_app_verification_token`) GitLab for Slackアプリを有効にします。 |
+| `slack_app_enabled`                      | ブール値          | いいえ                                   | (**有効な場合、次が必須**: `slack_app_id`、`slack_app_secret`、`slack_app_signing_secret`、および`slack_app_verification_token`) GitLab for Slackアプリを有効にします。 |
 | `slack_app_id`                           | 文字列           | `slack_app_enabled`で必要     | GitLab for SlackアプリのクライアントID。 |
 | `slack_app_secret`                       | 文字列           | `slack_app_enabled`で必要     | GitLab for Slackアプリのクライアントシークレット。アプリからのOAuthリクエストを認証するために使用されます。 |
 | `slack_app_signing_secret`               | 文字列           | `slack_app_enabled`で必要     | GitLab for Slackアプリの署名シークレット。アプリからのAPIリクエストを認証するために使用されます。 |
 | `slack_app_verification_token`           | 文字列           | `slack_app_enabled`で必要     | GitLab for Slackアプリの検証トークン。この認証方法はSlackによって非推奨とされており、アプリからのスラッシュコマンドを認証するためにのみ使用されます。 |
-| `snippet_size_limit`                     | 整数          | いいえ                                   | スニペットコンテンツの最大サイズ（**bytes**単位）。デフォルト: 52428800バイト (50 MB)。|
+| `snippet_size_limit`                     | 整数          | いいえ                                   | スニペットコンテンツの最大サイズ（**バイト**単位）。デフォルト: 52428800バイト (50 MB)。|
 | `snowplow_app_id`                        | 文字列           | いいえ                                   | Snowplowサイト名 / アプリケーションID。`gitlab`など）。 |
 | `snowplow_collector_hostname`            | 文字列           | `snowplow_enabled`で必要      | Snowplowコレクターのホスト名。`snowplowprd.trx.gitlab.net`など）。 |
 | `snowplow_database_collector_hostname`   | 文字列           | いいえ                                   | データベースイベント用のSnowplowコレクターのホスト名。`db-snowplow.trx.gitlab.net`など）。 |
 | `snowplow_cookie_domain`                 | 文字列           | いいえ                                   | Snowplowのクッキードメイン。`.gitlab.com`など）。 |
 | `snowplow_enabled`                       | ブール値          | いいえ                                   | Snowplowの追跡を有効にする。 |
-| `sourcegraph_enabled`                    | ブール値          | いいえ                                   | Sourcegraphインテグレーションを有効にします。デフォルトは`false`です。**If enabled, requires** `sourcegraph_url`。 |
+| `sourcegraph_enabled`                    | ブール値          | いいえ                                   | Sourcegraphインテグレーションを有効にします。デフォルトは`false`です。**有効な場合、次が必須** `sourcegraph_url`。 |
 | `sourcegraph_public_only`                | ブール値          | いいえ                                   | プライベートおよび内部プロジェクトでのSourcegraphの読み込みをブロックします。デフォルトは`true`です。 |
 | `sourcegraph_url`                        | 文字列           | `sourcegraph_enabled`で必要   | SourcegraphインスタンスのインテグレーションURL。 |
 | `spam_check_endpoint_enabled`            | ブール値          | いいえ                                   | 外部のSpam Check APIエンドポイントを使用したスパムチェックを有効にします。デフォルトは`false`です。 |
@@ -812,39 +822,39 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `suggest_pipeline_enabled`               | ブール値          | いいえ                                   | パイプラインの提案バナーを有効にします。 |
 | `enable_artifact_external_redirect_warning_page` | ブール値  | いいえ                                   | GitLab Pagesのユーザー生成コンテンツについて警告する外部リダイレクトページを表示します。 |
 | `terminal_max_session_time`              | 整数          | いいえ                                   | WebターミナルのWebSocket接続の最大時間（秒単位）。無制限にするには`0`に設定します。 |
-| `terms`                                  | text             | `enforce_terms`で必要         | (**Required by**: `enforce_terms`) ToSのMarkdownコンテンツ。 |
-| `throttle_authenticated_api_enabled`                      | ブール値 | いいえ                                                              | (**If enabled, requires**: `throttle_authenticated_api_period_in_seconds`および`throttle_authenticated_api_requests_per_period`) 認証済みAPIリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。 |
+| `terms`                                  | text             | `enforce_terms`で必要         | (**次のパラメータで必要**: `enforce_terms`) ToSのMarkdownコンテンツ。 |
+| `throttle_authenticated_api_enabled`                      | ブール値 | いいえ                                                              | (**有効な場合、次が必須**: `throttle_authenticated_api_period_in_seconds`および`throttle_authenticated_api_requests_per_period`) 認証済みAPIリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。 |
 | `throttle_authenticated_api_period_in_seconds`            | 整数 | 必須:<br>`throttle_authenticated_api_enabled`            | レート制限期間（秒単位）。 |
 | `throttle_authenticated_api_requests_per_period`          | 整数 | 必須:<br>`throttle_authenticated_api_enabled`            | ユーザーごとの期間あたりの最大リクエスト数。 |
 | `throttle_authenticated_git_http_enabled`             | ブール値 | 条件付き | `true`の場合、認証済みGit HTTPリクエストのレート制限を適用します。デフォルト値: `false`。 |
 | `throttle_authenticated_git_http_period_in_seconds`   | 整数 | いいえ            | レート制限期間（秒単位）。`throttle_authenticated_git_http_enabled`は`true`である必要があります。デフォルト値: `3600`。 |
 | `throttle_authenticated_git_http_requests_per_period` | 整数 | いいえ            | ユーザーごとの期間あたりの最大リクエスト数。`throttle_authenticated_git_http_enabled`は`true`である必要があります。デフォルト値: `3600`。 |
-| `throttle_authenticated_packages_api_enabled`             | ブール値 | いいえ                                                              | (**If enabled, requires**: `throttle_authenticated_packages_api_period_in_seconds`および`throttle_authenticated_packages_api_requests_per_period`) 認証済みAPIリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。詳細については、[パッケージレジストリのレート制限](../administration/settings/package_registry_rate_limits.md)を参照してください。 |
+| `throttle_authenticated_packages_api_enabled`             | ブール値 | いいえ                                                              | (**有効な場合、次が必須**: `throttle_authenticated_packages_api_period_in_seconds`および`throttle_authenticated_packages_api_requests_per_period`) 認証済みAPIリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。詳細については、[パッケージレジストリのレート制限](../administration/settings/package_registry_rate_limits.md)を参照してください。 |
 | `throttle_authenticated_packages_api_period_in_seconds`   | 整数 | 必須:<br>`throttle_authenticated_packages_api_enabled`   | レート制限期間（秒単位）。詳細については、[パッケージレジストリのレート制限](../administration/settings/package_registry_rate_limits.md)を参照してください。 |
 | `throttle_authenticated_packages_api_requests_per_period` | 整数 | 必須:<br>`throttle_authenticated_packages_api_enabled`   | ユーザーごとの期間あたりの最大リクエスト数。詳細については、[パッケージレジストリのレート制限](../administration/settings/package_registry_rate_limits.md)を参照してください。 |
-| `throttle_authenticated_web_enabled`                      | ブール値 | いいえ                                                              | (**If enabled, requires**: `throttle_authenticated_web_period_in_seconds`および`throttle_authenticated_web_requests_per_period`) 認証済みWebリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。 |
+| `throttle_authenticated_web_enabled`                      | ブール値 | いいえ                                                              | (**有効な場合、次が必須**: `throttle_authenticated_web_period_in_seconds`および`throttle_authenticated_web_requests_per_period`) 認証済みWebリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。 |
 | `throttle_authenticated_web_period_in_seconds`            | 整数 | 必須:<br>`throttle_authenticated_web_enabled`            | レート制限期間（秒単位）。 |
 | `throttle_authenticated_web_requests_per_period`          | 整数 | 必須:<br>`throttle_authenticated_web_enabled`            | ユーザーごとの期間あたりの最大リクエスト数。 |
-| `throttle_unauthenticated_enabled`                        | ブール値 | いいえ                                                              | ([非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/335300) \- GitLab 14.3で。代わりに`throttle_unauthenticated_web_enabled`または`throttle_unauthenticated_api_enabled`を使用してください。）(**If enabled, requires**: `throttle_unauthenticated_period_in_seconds`および`throttle_unauthenticated_requests_per_period`) 認証されていないWebリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。 |
+| `throttle_unauthenticated_enabled`                        | ブール値 | いいえ                                                              | ([非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/335300) \- GitLab 14.3で。代わりに`throttle_unauthenticated_web_enabled`または`throttle_unauthenticated_api_enabled`を使用してください。）(**有効な場合、次が必須**: `throttle_unauthenticated_period_in_seconds`および`throttle_unauthenticated_requests_per_period`) 認証されていないWebリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。 |
 | `throttle_unauthenticated_period_in_seconds`              | 整数 | 必須:<br>`throttle_unauthenticated_enabled`              | ([非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/335300) \- GitLab 14.3で。代わりに`throttle_unauthenticated_web_period_in_seconds`または`throttle_unauthenticated_api_period_in_seconds`を使用してください。）レート制限期間（秒単位）。 |
 | `throttle_unauthenticated_requests_per_period`            | 整数 | 必須:<br>`throttle_unauthenticated_enabled`              | ([非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/335300) \- GitLab 14.3で。代わりに`throttle_unauthenticated_web_requests_per_period`または`throttle_unauthenticated_api_requests_per_period`を使用してください。）IPアドレスごとの期間あたりの最大リクエスト数。 |
-| `throttle_unauthenticated_api_enabled`                    | ブール値 | いいえ                                                              | (**If enabled, requires**: `throttle_unauthenticated_api_period_in_seconds`および`throttle_unauthenticated_api_requests_per_period`) 認証されていないAPIリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。 |
+| `throttle_unauthenticated_api_enabled`                    | ブール値 | いいえ                                                              | (**有効な場合、次が必須**: `throttle_unauthenticated_api_period_in_seconds`および`throttle_unauthenticated_api_requests_per_period`) 認証されていないAPIリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。 |
 | `throttle_unauthenticated_api_period_in_seconds`          | 整数 | 必須:<br>`throttle_unauthenticated_api_enabled`          | レート制限期間（秒単位）。 |
 | `throttle_unauthenticated_api_requests_per_period`        | 整数 | 必須:<br>`throttle_unauthenticated_api_enabled`          | IPアドレスごとの期間あたりの最大リクエスト数。 |
 | `throttle_unauthenticated_git_http_enabled`             | ブール値 | 条件付き | `true`の場合、認証されていないGit HTTPリクエストのレート制限を適用します。デフォルト値: `false`。 |
 | `throttle_unauthenticated_git_http_period_in_seconds`   | 整数 | いいえ            | レート制限期間（秒単位）。`throttle_unauthenticated_git_http_enabled`は`true`である必要があります。デフォルト値: `3600`。 |
 | `throttle_unauthenticated_git_http_requests_per_period` | 整数 | いいえ            | IPアドレスごとの期間あたりの最大リクエスト数。`throttle_unauthenticated_git_http_enabled`は`true`である必要があります。デフォルト値: `3600`。 |
-| `throttle_unauthenticated_packages_api_enabled`           | ブール値 | いいえ                                                              | (**If enabled, requires**: `throttle_unauthenticated_packages_api_period_in_seconds`および`throttle_unauthenticated_packages_api_requests_per_period`) 認証されていないAPIリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。詳細については、[パッケージレジストリのレート制限](../administration/settings/package_registry_rate_limits.md)を参照してください。 |
+| `throttle_unauthenticated_packages_api_enabled`           | ブール値 | いいえ                                                              | (**有効な場合、次が必須**: `throttle_unauthenticated_packages_api_period_in_seconds`および`throttle_unauthenticated_packages_api_requests_per_period`) 認証されていないAPIリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。詳細については、[パッケージレジストリのレート制限](../administration/settings/package_registry_rate_limits.md)を参照してください。 |
 | `throttle_unauthenticated_packages_api_period_in_seconds` | 整数 | 必須:<br>`throttle_unauthenticated_packages_api_enabled` | レート制限期間（秒単位）。詳細については、[パッケージレジストリのレート制限](../administration/settings/package_registry_rate_limits.md)を参照してください。 |
 | `throttle_unauthenticated_packages_api_requests_per_period` | 整数 | 必須:<br>`throttle_unauthenticated_packages_api_enabled` | ユーザーごとの期間あたりの最大リクエスト数。詳細については、[パッケージレジストリのレート制限](../administration/settings/package_registry_rate_limits.md)を参照してください。 |
-| `throttle_unauthenticated_web_enabled`                    | ブール値 | いいえ                                                              | (**If enabled, requires**: `throttle_unauthenticated_web_period_in_seconds`および`throttle_unauthenticated_web_requests_per_period`) 認証されていないWebリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。 |
+| `throttle_unauthenticated_web_enabled`                    | ブール値 | いいえ                                                              | (**有効な場合、次が必須**: `throttle_unauthenticated_web_period_in_seconds`および`throttle_unauthenticated_web_requests_per_period`) 認証されていないWebリクエストのレート制限を有効にします。リクエスト量（クローラーや悪意のあるボットなどからの）を減らすのに役立ちます。 |
 | `throttle_unauthenticated_web_period_in_seconds`          | 整数 | 必須:<br>`throttle_unauthenticated_web_enabled`          | レート制限期間（秒単位）。 |
 | `throttle_unauthenticated_web_requests_per_period`        | 整数 | 必須:<br>`throttle_unauthenticated_web_enabled`          | IPアドレスごとの期間あたりの最大リクエスト数。 |
 | `time_tracking_limit_to_hours`           | ブール値          | いいえ                                   | タイムトラッキング単位の表示を時間単位に制限します。デフォルトは`false`です。 |
 | `top_level_group_creation_enabled`           | ブール値          | いいえ                                   | ユーザーがトップレベルグループを作成できるようにします。デフォルトは`true`です。 |
 | `two_factor_grace_period`                | 整数          | `require_two_factor_authentication`で必要 | ユーザーが2要素認証の強制設定をスキップできる期間（時間単位）。 |
 | `unconfirmed_users_delete_after_days`    | 整数          | いいえ                                   | アカウント作成後、メールアドレスを確認していないユーザーを削除するまでの日数を指定します。`delete_unconfirmed_users`が`true`に設定されている場合にのみ適用されます。`1`以上である必要があります。デフォルトは`7`です。GitLab 16.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/352514)されました。GitLab Self-Managed、Premium、およびUltimateのみです。 |
-| `unique_ips_limit_enabled`               | ブール値          | いいえ                                   | (**If enabled, requires**: `unique_ips_limit_per_user`および`unique_ips_limit_time_window`) 複数のIPアドレスからのサインインを制限します。 |
+| `unique_ips_limit_enabled`               | ブール値          | いいえ                                   | (**有効な場合、次が必須**: `unique_ips_limit_per_user`および`unique_ips_limit_time_window`) 複数のIPアドレスからのサインインを制限します。 |
 | `unique_ips_limit_per_user`              | 整数          | `unique_ips_limit_enabled`で必要 | ユーザーごとの最大IPアドレス数。 |
 | `unique_ips_limit_time_window`           | 整数          | `unique_ips_limit_enabled`で必要 | IPアドレスが制限にカウントされる秒数。 |
 | `update_runner_versions_enabled`         | ブール値          | いいえ                                   | GitLab.comからGitLab Runnerのリリースバージョンデータをフェッチします。詳細については、[アップグレードが必要なRunnerを特定する](../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded)方法を参照してください。 |
@@ -858,12 +868,12 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 | `user_default_internal_regex`            | 文字列           | いいえ                                   | デフォルトの内部ユーザーを識別するためのメールアドレスの正規表現パターンを指定します。 |
 | `user_defaults_to_private_profile`       | ブール値          | いいえ                                   | 新規作成されたユーザーはデフォルトでプライベートプロフィールを持ちます。`false`がデフォルトです。 |
 | `user_oauth_applications`                | ブール値          | いいえ                                   | ユーザーがGitLabをOAuthプロバイダーとして使用するために、任意のアプリケーションを登録できるようにします。この設定はグループレベルのOAuthアプリケーションには影響しません。 |
-| `user_show_add_ssh_key_message`          | ブール値          | いいえ                                   | `false`に設定すると、SSHキーがアップロードされていないユーザーに表示される`You won't be able to pull or push project code via SSH`警告を無効にします。 |
+| `user_show_add_ssh_key_message`          | ブール値          | いいえ                                   | `false`に設定すると、SSHキーがアップロードされていないユーザーに表示される`You won't be able to pull or push repositories via SSH until you add an SSH key to your profile`警告を無効にします。 |
 | `version_check_enabled`                  | ブール値          | いいえ                                   | アップデートが利用可能な場合にGitLabに通知させます。 |
 | `valid_runner_registrars`                | 文字列の配列 | いいえ                                   | GitLab Runnerを登録できるタイプのリスト。`[]`、`['group']`、`['project']`、または`['group', 'project']`のいずれかです。 |
 | `vscode_extension_marketplace`           | ハッシュ             | いいえ                                   | VS Code拡張機能マーケットプレースの設定。[Web IDE](../user/project/web_ide/_index.md)および[ワークスペース](../user/workspace/_index.md)で使用されます。 |
 | `whats_new_variant`                      | 文字列           | いいえ                                   | 新機能のバリアント、可能な値: `all_tiers`、`current_tier`、および`disabled`。 |
-| `wiki_page_max_content_bytes`            | 整数          | いいえ                                   | Wikiページのコンテンツの最大サイズ（**bytes**単位）。デフォルト: 5242880バイト (5 MB)。最小値は1024バイトです。 |
+| `wiki_page_max_content_bytes`            | 整数          | いいえ                                   | Wikiページのコンテンツの最大サイズ（**バイト**単位）。デフォルト: 5242880バイト (5 MB)。最小値は1024バイトです。 |
 | `bulk_import_concurrent_pipeline_batch_limit` | 整数     | いいえ                                   | 処理する同時ダイレクト転送バッチエクスポートの最大数。 |
 | `concurrent_relation_batch_export_limit` | 整数          | いいえ                                   | 処理する同時バッチエクスポートジョブの最大数。GitLab 17.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169122)されました。 |
 | `asciidoc_max_includes`                  | 整数          | いいえ                                   | いずれかのドキュメントで処理されるAsciiDocインクルードディレクティブの最大制限。デフォルト: 32。最大: 64。 |

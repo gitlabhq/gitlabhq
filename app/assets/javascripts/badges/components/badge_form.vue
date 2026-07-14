@@ -34,6 +34,7 @@ export default {
       required: true,
     },
   },
+  emits: ['close-add-form'],
   computed: {
     ...mapState(['badgeInAddForm', 'badgeInEditForm', 'isRendering', 'isSaving', 'renderedBadge']),
     badge() {

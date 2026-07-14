@@ -1,0 +1,10 @@
+---
+name: two_factor_vue
+description: Migrate the two-factor authentication from HAML to Vue
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/19820
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210334
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578575
+milestone: '19.2'
+group: group::authentication
+type: wip
+default_enabled: false

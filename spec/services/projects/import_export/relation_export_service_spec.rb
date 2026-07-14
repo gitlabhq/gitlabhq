@@ -65,6 +65,7 @@ RSpec.describe Projects::ImportExport::RelationExportService, feature_category: 
         Projects::ImportExport::RelationExport::DESIGN_REPOSITORY_RELATION | Gitlab::ImportExport::DesignRepoSaver
         Projects::ImportExport::RelationExport::ROOT_RELATION | Gitlab::ImportExport::Project::RelationSaver
         'labels' | Gitlab::ImportExport::Project::RelationSaver
+        Projects::ImportExport::RelationExport::COMMIT_NOTES_RELATION | Import::Export::Project::CommitNotesSaver
       end
 
       with_them do
@@ -79,7 +80,7 @@ RSpec.describe Projects::ImportExport::RelationExportService, feature_category: 
         it 'assigns finished status and relation file' do
           service.execute
 
-          expect(relation_export.finished?).to eq(true)
+          expect(relation_export.finished?).to be(true)
           expect(relation_export.upload.export_file.filename).to eq("#{relation}.tar.gz")
         end
 
@@ -102,6 +103,36 @@ RSpec.describe Projects::ImportExport::RelationExportService, feature_category: 
             expect(relation_export.upload.project_relation_export_id).to eq(relation_export.id)
           end
         end
+      end
+    end
+
+    context 'when relation is commit_notes and commit_notes_export_via_repo is disabled' do
+      let(:relation) { Projects::ImportExport::RelationExport::COMMIT_NOTES_RELATION }
+
+      before do
+        stub_feature_flags(commit_notes_export_via_repo: false)
+      end
+
+      it 'falls back to the default RelationSaver' do
+        expect(Import::Export::Project::CommitNotesSaver).not_to receive(:new)
+        expect(Gitlab::ImportExport::Project::RelationSaver).to receive(:new).and_call_original
+
+        service.execute
+      end
+    end
+
+    context 'when relation is commit_notes' do
+      let(:relation) { Projects::ImportExport::RelationExport::COMMIT_NOTES_RELATION }
+
+      it 'checks the feature flag against the project root ancestor' do
+        expect(Feature)
+          .to receive(:enabled?)
+          .with(:commit_notes_export_via_repo, project_export_job.project.root_ancestor)
+          .at_least(:once)
+          .and_return(true)
+        allow(Feature).to receive(:enabled?).and_call_original
+
+        service.execute
       end
     end
   end

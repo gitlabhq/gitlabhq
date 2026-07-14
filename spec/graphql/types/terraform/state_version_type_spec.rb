@@ -23,8 +23,8 @@ RSpec.describe GitlabSchema.types['TerraformStateVersion'] do
   end
 
   describe 'query' do
-    let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, developers: user) }
     let_it_be(:terraform_state) { create(:terraform_state, :with_version, :locked, project: project) }
 
     let(:query) do
@@ -42,10 +42,6 @@ RSpec.describe GitlabSchema.types['TerraformStateVersion'] do
           }
         }
       GRAPHQL
-    end
-
-    before do
-      project.add_developer(user)
     end
 
     subject(:execute) { GitlabSchema.execute(query, context: { current_user: user }).as_json }

@@ -17,6 +17,19 @@ RSpec.describe 'Gitlab::Experiment configuration', feature_category: :acquisitio
     end
   end
 
+  describe 'strict_registration setting' do
+    it 'enables strict registration' do
+      expect(Gitlab::Experiment::Configuration.strict_registration).to be(true)
+    end
+
+    it 'raises an error when running an anonymous experiment without a registered class' do
+      dsl = Class.new { include Gitlab::Experiment::Dsl }.new
+
+      expect { dsl.experiment(:this_experiment_is_not_registered) }
+        .to raise_error(Gitlab::Experiment::UnregisteredExperiment)
+    end
+  end
+
   def load_initializer
     load Rails.root.join('config/initializers/gitlab_experiment.rb')
   end

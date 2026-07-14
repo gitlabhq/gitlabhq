@@ -15,7 +15,8 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         :http_router_rule_action,
         :http_router_rule_type,
         :auth_fail_token_type,
-        :auth_fail_auth_header_type
+        :auth_fail_auth_header_type,
+        :duo_workflow_id
       )
     end
   end
@@ -304,6 +305,20 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         context = described_class.new(project: project)
 
         expect(result(context)).not_to have_key(:mvcc_manifest)
+      end
+    end
+
+    context 'when using the Duo Workflow ID context' do
+      it 'sets the duo_workflow_id value' do
+        context = described_class.new(duo_workflow_id: 'wf-abc-123')
+
+        expect(result(context)).to include(duo_workflow_id: 'wf-abc-123')
+      end
+
+      it 'does not set the duo_workflow_id value when absent' do
+        context = described_class.new(project: project)
+
+        expect(result(context)).not_to have_key(:duo_workflow_id)
       end
     end
   end

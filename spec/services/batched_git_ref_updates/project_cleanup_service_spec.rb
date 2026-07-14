@@ -4,22 +4,22 @@ require 'spec_helper'
 
 RSpec.describe BatchedGitRefUpdates::ProjectCleanupService, feature_category: :gitaly do
   let(:service) { described_class.new(project1.id) }
-  let_it_be(:project1) { create(:project, :repository) }
-  let_it_be(:project2) { create(:project, :repository) }
-  let!(:project1_ref1) do
+  let_it_be(:project1) { create(:project, :small_repo) }
+  let_it_be(:project2) { create(:project, :small_repo) }
+  let_it_be(:project1_ref1) do
     BatchedGitRefUpdates::Deletion.create!(project_id: project1.id, ref: 'refs/test/project1-ref1')
   end
 
-  let!(:project1_ref2) do
+  let_it_be(:project1_ref2) do
     BatchedGitRefUpdates::Deletion.create!(project_id: project1.id, ref: 'refs/test/project1-ref2')
   end
 
-  let!(:project1_ref3) do
+  let_it_be(:project1_ref3) do
     BatchedGitRefUpdates::Deletion.create!(project_id: project1.id, ref: 'refs/test/already-processed',
       status: :processed)
   end
 
-  let!(:project2_ref1) do
+  let_it_be(:project2_ref1) do
     BatchedGitRefUpdates::Deletion.create!(project_id: project2.id, ref: 'refs/test/project2-ref1')
   end
 

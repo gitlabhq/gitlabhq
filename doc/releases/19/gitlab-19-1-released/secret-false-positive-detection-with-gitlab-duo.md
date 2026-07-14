@@ -10,8 +10,6 @@ categories: [ Vulnerability Management ]
 weight: 10
 ---
 
-<!-- categories: Vulnerability Management -->
-
 Secret false positive detection with the GitLab Duo Agent Platform is now generally available.
 
 Security teams spend significant time investigating secret detection findings that are incorrectly flagged as actual secrets.

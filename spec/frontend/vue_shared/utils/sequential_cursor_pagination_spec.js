@@ -1,4 +1,6 @@
-import SequentialCursorPaginator from '~/vue_shared/utils/sequential_cursor_pagination';
+import SequentialCursorPaginator, {
+  computeCachedPageInfo,
+} from '~/vue_shared/utils/sequential_cursor_pagination';
 import { fetchPolicies } from '~/lib/graphql';
 
 describe('SequentialCursorPaginator', () => {
@@ -37,6 +39,9 @@ describe('SequentialCursorPaginator', () => {
       mockApollo.query.mockResolvedValueOnce(createMockQueryResult([], createEmptyPageInfo()));
     }
   };
+
+  const createMockItems = (count, startId = 1) =>
+    Array.from({ length: count }, (_, index) => ({ id: startId + index }));
 
   beforeEach(() => {
     mockApollo = {
@@ -171,6 +176,58 @@ describe('SequentialCursorPaginator', () => {
     });
   });
 
+  describe('computeCachedPageInfo', () => {
+    it('trusts the pageInfo from the result when not a probe', () => {
+      const pageInfo = {
+        hasNextPage: true,
+        hasPreviousPage: false,
+        endCursor: 'end1',
+        startCursor: 'start1',
+      };
+      const getPageInfo = jest.fn(() => pageInfo);
+
+      const cachedPageInfo = computeCachedPageInfo({
+        metadataDirection: null,
+        nodes: [{ id: 1 }],
+        result: { data: {} },
+        getPageInfo,
+        previousPageInfo: { hasNextPage: false, endCursor: 'stale' },
+      });
+
+      expect(cachedPageInfo).toBe(pageInfo);
+      expect(getPageInfo).toHaveBeenCalledWith({ data: {} });
+    });
+
+    // Both flags start true so we can see the off-direction flag survive the probe
+    const previousPageInfo = {
+      hasNextPage: true,
+      hasPreviousPage: true,
+      startCursor: 'real-start',
+      endCursor: 'real-end',
+    };
+
+    it.each`
+      metadataDirection | nodes          | expected
+      ${'NEXT'}         | ${[{ id: 1 }]} | ${{ ...previousPageInfo, hasNextPage: true }}
+      ${'NEXT'}         | ${[]}          | ${{ ...previousPageInfo, hasNextPage: false }}
+      ${'PREVIOUS'}     | ${[{ id: 1 }]} | ${{ ...previousPageInfo, hasPreviousPage: true }}
+      ${'PREVIOUS'}     | ${[]}          | ${{ ...previousPageInfo, hasPreviousPage: false }}
+    `(
+      'on a $metadataDirection probe, derives the probed flag from node presence and preserves cursors and the off-direction flag',
+      ({ metadataDirection, nodes, expected }) => {
+        const cachedPageInfo = computeCachedPageInfo({
+          metadataDirection,
+          nodes,
+          result: { data: {} },
+          getPageInfo: jest.fn(),
+          previousPageInfo,
+        });
+
+        expect(cachedPageInfo).toEqual(expected);
+      },
+    );
+  });
+
   describe('getPageFromResource', () => {
     beforeEach(() => {
       paginator = new SequentialCursorPaginator(mockApollo, mockResources, 5);
@@ -188,7 +245,7 @@ describe('SequentialCursorPaginator', () => {
 
       const resource = mockResources[0];
       const variables = { first: 5, after: null };
-      const result = await paginator.getPageFromResource(resource, 0, variables);
+      const result = await paginator.getPageFromResource({ resource, index: 0, variables });
 
       expect(mockApollo.query).toHaveBeenCalledWith({
         query: resource.query,
@@ -211,7 +268,7 @@ describe('SequentialCursorPaginator', () => {
 
       mockApollo.query.mockResolvedValue(createMockQueryResult([{ id: 1 }], createEmptyPageInfo()));
 
-      await paginator.getPageFromResource(resource, 0, { first: 5 });
+      await paginator.getPageFromResource({ resource, index: 0, variables: { first: 5 } });
 
       expect(mockApollo.query).toHaveBeenCalledWith({
         query: resource.query,
@@ -226,7 +283,11 @@ describe('SequentialCursorPaginator', () => {
       const resource = createMockResource({ timeout: 1000 });
       mockApollo.query.mockReturnValue(new Promise(() => {}));
 
-      const promise = paginator.getPageFromResource(resource, 0, { first: 5 });
+      const promise = paginator.getPageFromResource({
+        resource,
+        index: 0,
+        variables: { first: 5 },
+      });
       jest.advanceTimersByTime(1000);
 
       await expect(promise).rejects.toThrow('Request timed out after 1000ms');
@@ -262,7 +323,7 @@ describe('SequentialCursorPaginator', () => {
     it('combines items from multiple resources to fill page', async () => {
       // Mock for main query (resource 0)
       mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([{ id: 1 }, { id: 2 }], {
+        createMockQueryResult(createMockItems(2), {
           hasNextPage: false,
           hasPreviousPage: false,
           endCursor: 'end1',
@@ -271,7 +332,7 @@ describe('SequentialCursorPaginator', () => {
       );
       // Mock for main query (resource 1)
       mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([{ id: 3 }, { id: 4 }, { id: 5 }], {
+        createMockQueryResult(createMockItems(3, 3), {
           hasNextPage: true,
           hasPreviousPage: false,
           endCursor: 'end2',
@@ -284,7 +345,7 @@ describe('SequentialCursorPaginator', () => {
       const result = await paginator.getNextCombinedPage({ projectId: '123' });
 
       expect(result).toHaveLength(5);
-      expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]);
+      expect(result).toEqual(createMockItems(5));
       expect(paginator.resourceStartIndex).toBe(0);
       expect(paginator.resourceEndIndex).toBe(1);
     });
@@ -432,7 +493,7 @@ describe('SequentialCursorPaginator', () => {
       mockEmptyMetadataQueries(1);
       // Mock for main query (resource 1)
       mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([{ id: 3 }, { id: 4 }, { id: 5 }], {
+        createMockQueryResult(createMockItems(3, 3), {
           hasNextPage: true,
           hasPreviousPage: true,
           endCursor: 'end1',
@@ -441,7 +502,7 @@ describe('SequentialCursorPaginator', () => {
       );
       // Mock for main query (resource 0)
       mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([{ id: 1 }, { id: 2 }], {
+        createMockQueryResult(createMockItems(2), {
           hasNextPage: false,
           hasPreviousPage: false,
           endCursor: 'end0',
@@ -452,7 +513,7 @@ describe('SequentialCursorPaginator', () => {
       const result = await paginator.getPreviousCombinedPage({ projectId: '123' });
 
       expect(result).toHaveLength(5);
-      expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]);
+      expect(result).toEqual(createMockItems(5));
       expect(paginator.resourceStartIndex).toBe(0);
       expect(paginator.resourceEndIndex).toBe(1);
     });
@@ -553,61 +614,31 @@ describe('SequentialCursorPaginator', () => {
       paginator = new SequentialCursorPaginator(mockApollo, mockResources, 5);
     });
 
-    it('fetches metadata for adjacent resource in NEXT direction', async () => {
-      mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([], {
-          hasNextPage: true,
-          hasPreviousPage: false,
-          endCursor: null,
-          startCursor: null,
-        }),
-      );
+    it.each`
+      direction     | limit      | cursor
+      ${'NEXT'}     | ${'first'} | ${'after'}
+      ${'PREVIOUS'} | ${'last'}  | ${'before'}
+    `(
+      'probes the adjacent resource with a single item in the $direction direction',
+      async ({ direction, limit, cursor }) => {
+        jest.spyOn(paginator, 'getPageFromResource');
+        mockApollo.query.mockResolvedValueOnce(createMockQueryResult([], createEmptyPageInfo()));
 
-      await paginator.checkIfAdjacentResourceHasMorePages('NEXT', 1, { projectId: '123' });
+        await paginator.checkIfAdjacentResourceHasMorePages(direction, 1, { projectId: '123' });
 
-      expect(mockApollo.query).toHaveBeenCalledWith(
-        expect.objectContaining({
-          variables: expect.objectContaining({
-            first: 1,
-            after: null,
+        expect(mockApollo.query).toHaveBeenCalledWith(
+          expect.objectContaining({
+            variables: expect.objectContaining({
+              [limit]: 1,
+              [cursor]: null,
+            }),
           }),
-        }),
-      );
-      expect(paginator.resources[1].cachedPageInfo).toEqual({
-        hasNextPage: true,
-        hasPreviousPage: false,
-        endCursor: null,
-        startCursor: null,
-      });
-    });
-
-    it('fetches metadata for adjacent resource in PREVIOUS direction', async () => {
-      mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([], {
-          hasNextPage: false,
-          hasPreviousPage: true,
-          endCursor: null,
-          startCursor: null,
-        }),
-      );
-
-      await paginator.checkIfAdjacentResourceHasMorePages('PREVIOUS', 0, { projectId: '123' });
-
-      expect(mockApollo.query).toHaveBeenCalledWith(
-        expect.objectContaining({
-          variables: expect.objectContaining({
-            last: 1,
-            before: null,
-          }),
-        }),
-      );
-      expect(paginator.resources[0].cachedPageInfo).toEqual({
-        hasNextPage: false,
-        hasPreviousPage: true,
-        endCursor: null,
-        startCursor: null,
-      });
-    });
+        );
+        expect(paginator.getPageFromResource).toHaveBeenCalledWith(
+          expect.objectContaining({ metadataDirection: direction }),
+        );
+      },
+    );
 
     it('does nothing when resource does not exist', async () => {
       await paginator.checkIfAdjacentResourceHasMorePages('NEXT', 10, { projectId: '123' });
@@ -755,7 +786,7 @@ describe('SequentialCursorPaginator', () => {
     it('skips resources when skip function returns true in getNextCombinedPage', async () => {
       // Mock for main query (resource 0)
       mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([{ id: 1 }, { id: 2 }], {
+        createMockQueryResult(createMockItems(2), {
           hasNextPage: false,
           hasPreviousPage: false,
           endCursor: 'end1',
@@ -764,7 +795,7 @@ describe('SequentialCursorPaginator', () => {
       );
       // Mock for main query (resource 2, skipping resource 1)
       mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([{ id: 3 }, { id: 4 }, { id: 5 }], {
+        createMockQueryResult(createMockItems(3, 3), {
           hasNextPage: false,
           hasPreviousPage: false,
           endCursor: 'end3',
@@ -775,7 +806,7 @@ describe('SequentialCursorPaginator', () => {
       const result = await paginator.getNextCombinedPage({ projectId: '123' });
 
       expect(mockApollo.query).toHaveBeenCalledTimes(2);
-      expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]);
+      expect(result).toEqual(createMockItems(5));
     });
 
     it('skips resources when skip function returns true in getPreviousCombinedPage', async () => {
@@ -787,7 +818,7 @@ describe('SequentialCursorPaginator', () => {
 
       // Mock for main query (resource 2)
       mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([{ id: 3 }, { id: 4 }, { id: 5 }], {
+        createMockQueryResult(createMockItems(3, 3), {
           hasNextPage: false,
           hasPreviousPage: true,
           endCursor: 'end3',
@@ -796,7 +827,7 @@ describe('SequentialCursorPaginator', () => {
       );
       // Mock for main query (resource 0, skipping resource 1)
       mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([{ id: 1 }, { id: 2 }], {
+        createMockQueryResult(createMockItems(2), {
           hasNextPage: false,
           hasPreviousPage: false,
           endCursor: 'end1',
@@ -807,7 +838,7 @@ describe('SequentialCursorPaginator', () => {
       const result = await paginator.getPreviousCombinedPage({ projectId: '123' });
 
       expect(mockApollo.query).toHaveBeenCalledTimes(2);
-      expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]);
+      expect(result).toEqual(createMockItems(5));
     });
 
     it('skips resources in checkIfAdjacentResourceHasMorePages', async () => {
@@ -859,7 +890,7 @@ describe('SequentialCursorPaginator', () => {
       // First call - resource 1 is not skipped
       // Mock for main query (resource 0)
       mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([{ id: 1 }, { id: 2 }], {
+        createMockQueryResult(createMockItems(2), {
           hasNextPage: false,
           hasPreviousPage: false,
           endCursor: 'end1',
@@ -868,7 +899,7 @@ describe('SequentialCursorPaginator', () => {
       );
       // Mock for main query (resource 1)
       mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([{ id: 3 }, { id: 4 }, { id: 5 }], {
+        createMockQueryResult(createMockItems(3, 3), {
           hasNextPage: false,
           hasPreviousPage: false,
           endCursor: 'end2',
@@ -881,7 +912,7 @@ describe('SequentialCursorPaginator', () => {
       let result = await paginator.getNextCombinedPage({ projectId: '123' });
 
       expect(mockApollo.query).toHaveBeenCalledTimes(3);
-      expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]);
+      expect(result).toEqual(createMockItems(5));
 
       // Reset for second call
       mockApollo.query.mockClear();
@@ -892,7 +923,7 @@ describe('SequentialCursorPaginator', () => {
       shouldSkipResource1 = true;
       // Mock for main query (resource 0)
       mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([{ id: 1 }, { id: 2 }], {
+        createMockQueryResult(createMockItems(2), {
           hasNextPage: false,
           hasPreviousPage: false,
           endCursor: 'end1',
@@ -901,7 +932,7 @@ describe('SequentialCursorPaginator', () => {
       );
       // Mock for main query (resource 2, skipping resource 1)
       mockApollo.query.mockResolvedValueOnce(
-        createMockQueryResult([{ id: 6 }, { id: 7 }, { id: 8 }], {
+        createMockQueryResult(createMockItems(3, 6), {
           hasNextPage: false,
           hasPreviousPage: false,
           endCursor: 'end3',
@@ -912,7 +943,7 @@ describe('SequentialCursorPaginator', () => {
       result = await paginator.getNextCombinedPage({ projectId: '123' });
 
       expect(mockApollo.query).toHaveBeenCalledTimes(2);
-      expect(result).toEqual([{ id: 1 }, { id: 2 }, { id: 6 }, { id: 7 }, { id: 8 }]);
+      expect(result).toEqual([...createMockItems(2), ...createMockItems(3, 6)]);
     });
   });
 });

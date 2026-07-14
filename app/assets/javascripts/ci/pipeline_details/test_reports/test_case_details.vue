@@ -84,6 +84,7 @@ export default {
     :title="testCase.classname"
     :action-primary="$options.modalCloseButton"
     :visible="visible"
+    size="lg"
     @hidden="$emit('hidden')"
   >
     <div class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap">

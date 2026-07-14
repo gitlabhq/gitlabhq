@@ -421,4 +421,14 @@ RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisi
       end
     end
   end
+
+  describe '#external_dependency_checksum' do
+    let(:file_path) { 'app/experiments/experiment_name_experiment.rb' }
+    let(:test_file_path) { 'spec/experiments/experiment_name_experiment_spec.rb' }
+    let(:tests_code) { '' }
+
+    it 'returns a SHA256 digest used by RuboCop to invalidate cache' do
+      expect(cop.external_dependency_checksum).to match(/^\h{64}$/)
+    end
+  end
 end

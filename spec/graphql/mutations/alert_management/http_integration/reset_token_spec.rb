@@ -17,7 +17,7 @@ RSpec.describe Mutations::AlertManagement::HttpIntegration::ResetToken, feature_
     subject(:resolve) { mutation_for(project, current_user).resolve(**args) }
 
     context 'user has sufficient access to project' do
-      before do
+      before_all do
         project.add_maintainer(current_user)
       end
 

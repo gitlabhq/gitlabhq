@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module API
   class NpmProjectPackages < ::API::Base
     ERROR_REASON_TO_HTTP_STATUS_MAPPTING = {
@@ -50,6 +51,10 @@ module API
         headers['Npm-Command'] == 'deprecate'
       end
       strong_memoize_attr :npm_command_deprecate?
+
+      # Overridden in EE to enforce the Dependency Firewall before a locally
+      # hosted package tarball is served. CE intentionally does nothing.
+      def enforce_dependency_firewall_on_download!(_package); end
     end
 
     def self.authorization_boundary_options
@@ -69,7 +74,7 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[packages]
+        tags %w[packages_npm]
       end
       params do
         requires :package_name, type: String, desc: 'Package name'
@@ -79,7 +84,7 @@ module API
       route_setting :authorization, permissions: :download_npm_package, boundary_type: :project,
         job_token_policies: :read_packages,
         allow_public_access_for_enabled_project_features: :package_registry
-      get '*package_name/-/*file_name', format: false do
+      get '*package_name/-/*file_name', requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
         authorize_read_package!(project)
 
         package = ::Packages::Npm::Package
@@ -90,6 +95,8 @@ module API
 
         package_file = ::Packages::PackageFileFinder
           .new(package, params[:file_name]).execute!
+
+        enforce_dependency_firewall_on_download!(package)
 
         track_package_event('pull_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
 
@@ -105,7 +112,7 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[packages]
+        tags %w[packages_npm]
         hidden true
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
@@ -129,7 +136,7 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[packages]
+        tags %w[packages_npm]
       end
       params do
         requires :package_name, type: String, desc: 'Package name'
@@ -178,7 +185,7 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[packages]
+        tags %w[packages_npm]
       end
       params do
         use :package_name
@@ -188,7 +195,9 @@ module API
       route_setting :authorization, permissions: :read_npm_package, boundary_type: :project,
         job_token_policies: :read_packages,
         allow_public_access_for_enabled_project_features: :package_registry
-      get '*package_name', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
+      get '*package_name',
+        requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS
+          .merge(API::NO_FORMAT_SUFFIX_REQUIREMENT) do
         package_name = declared_params[:package_name]
         packages = ::Packages::Npm::PackageFinder.new(project: project_or_nil, params: { package_name: package_name }).execute
 
@@ -221,3 +230,5 @@ module API
     end
   end
 end
+
+API::NpmProjectPackages.prepend_mod

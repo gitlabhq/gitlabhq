@@ -1,0 +1,8 @@
+---
+name: billing_events_oidc_auth
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243234
+rollout_issue_url:
+milestone: '19.2'
+type: development
+group: group::analytics instrumentation
+default_enabled: false

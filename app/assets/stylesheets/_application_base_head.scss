@@ -1,0 +1,10 @@
+// Welcome to GitLab css!
+// If you need to add or modify UI component that is common for many pages
+// like a table or typography then make changes in the framework/ directory.
+// If you need to add unique style that should affect only one page - use pages/
+// directory.
+@import '@gitlab/at.js/dist/css/jquery.atwho';
+@import 'dropzone/dist/basic';
+
+// GitLab project specific custom property definitions
+@import 'root';

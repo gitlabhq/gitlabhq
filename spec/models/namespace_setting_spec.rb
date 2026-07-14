@@ -636,6 +636,11 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
       settings_attribute_name: :web_based_commit_signing_enabled
   end
 
+  describe '#require_sha_for_merge' do
+    it_behaves_like 'a cascading namespace setting boolean attribute',
+      settings_attribute_name: :require_sha_for_merge
+  end
+
   describe '#default_branch_protection_defaults' do
     subject(:setting) { described_class.new }
 
@@ -750,10 +755,10 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
     end
 
     context 'with omniauth providers configured for step-up authentication' do
-      let(:provider_oidc_no_step_up) { GitlabSettings::Options.new(name: 'openid_connect_no_step_up') }
+      let(:provider_oidc_no_step_up) { Gitlab::Configs.build_options(name: 'openid_connect_no_step_up') }
 
       let(:provider_oidc_step_up) do
-        GitlabSettings::Options.new(
+        Gitlab::Configs.build_options(
           name: 'openid_connect',
           step_up_auth: {
             namespace: {
@@ -766,14 +771,14 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
       end
 
       let(:provider_oidc_empty_step_up) do
-        GitlabSettings::Options.new(
+        Gitlab::Configs.build_options(
           name: 'openid_connect_empty',
           step_up_auth: {}
         )
       end
 
       let(:provider_oidc_incomplete_step_up) do
-        GitlabSettings::Options.new(
+        Gitlab::Configs.build_options(
           name: 'openid_connect_incomplete',
           step_up_auth: {
             namespace: {}
@@ -848,7 +853,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
     let_it_be_with_reload(:subsubgroup) { create(:group, parent: subgroup) }
 
     let(:step_up_provider_oidc) do
-      GitlabSettings::Options.new(
+      Gitlab::Configs.build_options(
         name: 'oidc',
         step_up_auth: {
           namespace: {
@@ -861,7 +866,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
     end
 
     let(:step_up_provider_oidc_aad) do
-      GitlabSettings::Options.new(
+      Gitlab::Configs.build_options(
         name: 'oidc_aad',
         step_up_auth: {
           namespace: {

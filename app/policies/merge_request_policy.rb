@@ -44,6 +44,8 @@ class MergeRequestPolicy < IssuablePolicy
 
   rule { can?(:admin_merge_request) }.policy do
     enable :set_merge_request_metadata
+    enable :create_merge_request_work_item_relation
+    enable :delete_merge_request_work_item_relation
   end
 
   private

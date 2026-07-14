@@ -31,8 +31,8 @@ Administrators can add two types of Switchboard users to manage and view their G
 To add a new user to Switchboard for your GitLab Dedicated instance:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
-1. From the top of the page, select **Users**.
-1. Select **New user**.
+1. In the left sidebar, select **Switchboard users**.
+1. Select **Add user**.
 1. Enter the **Email** and select a **Role** for the user.
 1. Select **Create**.
 
@@ -82,7 +82,7 @@ Add multiple email addresses or a distribution list as operational contacts.
 To manage email addresses for operational contacts:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
-1. At the top of the page, select **Configuration**.
+1. In the left sidebar, select **Configuration**.
 1. Expand **Contact information**.
 1. Under **Operational email addresses**:
    - To add a new address:
@@ -108,8 +108,8 @@ To receive notifications, you must first:
 
 To turn your personal notifications on or off:
 
-1. Select the dropdown list next to your user name.
-1. Select **Toggle email notifications off** or **Toggle email notifications on**.
+1. In the upper-right corner, select the user icon.
+1. Select **Turn off email notifications** or **Turn on email notifications**.
 
 ## SMTP email service
 

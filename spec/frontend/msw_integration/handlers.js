@@ -1,6 +1,6 @@
 import { rest } from 'msw';
 import { handleWorkItemOperation, workItemRestEndpoints } from './work_items/handlers';
-import { captureMissingOperation, captureRequest } from './test_helpers';
+import { captureMissingOperation, captureRequest } from './operation_helpers';
 
 // CE-only endpoints and handlers should be added here
 export const featureHandlers = [handleWorkItemOperation];
@@ -29,7 +29,10 @@ export function buildHandlers(allFeatureHandlers, allRestEndpoints) {
 
       for (const handler of allFeatureHandlers) {
         const result = handler({ operationName, variables, res, ctx });
-        if (result) return result;
+        if (result) {
+          captureRequest(operationName, req);
+          return result;
+        }
       }
 
       captureMissingOperation(operationName);

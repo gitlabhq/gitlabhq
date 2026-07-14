@@ -4,6 +4,7 @@ import csrf from '~/lib/utils/csrf';
 import { __, s__ } from '~/locale';
 
 export default {
+  name: 'DeleteAccountModal',
   components: {
     GlModal,
     GlSprintf,

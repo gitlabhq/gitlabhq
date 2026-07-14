@@ -5,6 +5,7 @@ module Banzai
   module Filter
     class SuggestionFilter < HTML::Pipeline::Filter
       prepend Concerns::PipelineTimingCheck
+      include Concerns::ContextAccessors
 
       # Class used for tagging elements that should be rendered
       TAG_CLASS = 'js-render-suggestion'
@@ -24,12 +25,6 @@ module Banzai
 
       def suggestions_filter_enabled?
         context[:suggestions_filter_enabled]
-      end
-
-      private
-
-      def project
-        context[:project]
       end
     end
   end

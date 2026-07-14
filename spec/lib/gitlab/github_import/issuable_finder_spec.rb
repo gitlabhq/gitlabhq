@@ -55,7 +55,7 @@ RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_shared_
         it 'reads cache value with longer timeout' do
           expect(Gitlab::Cache::Import::Caching)
             .to receive(:read)
-            .with(anything, timeout: Gitlab::Cache::Import::Caching::LONGER_TIMEOUT)
+            .with(anything, timeout: Gitlab::Cache::Import::Caching::LONGER_TIMEOUT, refresh: true)
 
           described_class.new(project, issue).database_id
         end
@@ -65,7 +65,7 @@ RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_shared_
         it 'reads cache value with default timeout' do
           expect(Gitlab::Cache::Import::Caching)
             .to receive(:read)
-            .with(anything, timeout: Gitlab::Cache::Import::Caching::TIMEOUT)
+            .with(anything, timeout: Gitlab::Cache::Import::Caching::TIMEOUT, refresh: true)
 
           described_class.new(project, issue).database_id
         end

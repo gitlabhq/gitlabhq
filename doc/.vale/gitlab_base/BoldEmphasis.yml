@@ -1,0 +1,13 @@
+---
+name: gitlab_docs.BoldEmphasis
+description: |
+  Avoid bold for simple emphasis.
+extends: existence
+message: "Avoid bold for simple emphasis."
+link: https://docs.gitlab.com/development/documentation/styleguide/#bold
+vocab: false
+level: error
+nonword: true
+scope: raw
+tokens:
+  - '\*\*(not|does not|after|before|both|have not yet)\*\*'

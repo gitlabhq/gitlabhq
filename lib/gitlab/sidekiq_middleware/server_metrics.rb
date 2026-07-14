@@ -29,6 +29,7 @@ module Gitlab
             sidekiq_jobs_interrupted_total: ::Gitlab::Metrics.counter(:sidekiq_jobs_interrupted_total, 'Sidekiq jobs interrupted'),
             sidekiq_redis_requests_total: ::Gitlab::Metrics.counter(:sidekiq_redis_requests_total, 'Redis requests during a Sidekiq job execution'),
             sidekiq_elasticsearch_requests_total: ::Gitlab::Metrics.counter(:sidekiq_elasticsearch_requests_total, 'Elasticsearch requests during a Sidekiq job execution'),
+            sidekiq_zoekt_requests_total: ::Gitlab::Metrics.counter(:sidekiq_zoekt_requests_total, 'Zoekt requests during a Sidekiq job execution'),
             sidekiq_running_jobs: ::Gitlab::Metrics.gauge(:sidekiq_running_jobs, 'Number of Sidekiq jobs running', {}, :all),
             sidekiq_concurrency: ::Gitlab::Metrics.gauge(:sidekiq_concurrency, 'Maximum number of Sidekiq jobs', {}, :all),
             sidekiq_mem_total_bytes: ::Gitlab::Metrics.gauge(:sidekiq_mem_total_bytes, 'Number of bytes allocated for both objects consuming an object slot and objects that required a malloc', {}, :all),
@@ -46,6 +47,7 @@ module Gitlab
             metrics[:sidekiq_jobs_gitaly_seconds] = ::Gitlab::Metrics.histogram(:sidekiq_jobs_gitaly_seconds, 'Seconds of Gitaly time to run Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS)
             metrics[:sidekiq_redis_requests_duration_seconds] = ::Gitlab::Metrics.histogram(:sidekiq_redis_requests_duration_seconds, 'Duration in seconds that a Sidekiq job spent in requests to a Redis server', {}, Gitlab::Instrumentation::Redis::QUERY_TIME_BUCKETS)
             metrics[:sidekiq_elasticsearch_requests_duration_seconds] = ::Gitlab::Metrics.histogram(:sidekiq_elasticsearch_requests_duration_seconds, 'Duration in seconds that a Sidekiq job spent in requests to an Elasticsearch server', {}, SIDEKIQ_LATENCY_BUCKETS)
+            metrics[:sidekiq_zoekt_requests_duration_seconds] = ::Gitlab::Metrics.histogram(:sidekiq_zoekt_requests_duration_seconds, 'Duration in seconds that a Sidekiq job spent in requests to a Zoekt server', {}, SIDEKIQ_LATENCY_BUCKETS)
           else
             # These metrics are used in GitLab.com dashboards
             metrics[:sidekiq_jobs_completion_seconds_sum] = ::Gitlab::Metrics.counter(:sidekiq_jobs_completion_seconds_sum, 'Total of seconds to complete Sidekiq job')
@@ -57,6 +59,7 @@ module Gitlab
             metrics[:sidekiq_jobs_gitaly_seconds_sum] = ::Gitlab::Metrics.counter(:sidekiq_jobs_gitaly_seconds_sum, 'Total seconds Gitaly time to run Sidekiq job')
             metrics[:sidekiq_redis_requests_duration_seconds_sum] = ::Gitlab::Metrics.counter(:sidekiq_redis_requests_duration_seconds_sum, 'Total duration in seconds that a Sidekiq job spent in requests to a Redis server')
             metrics[:sidekiq_elasticsearch_requests_duration_seconds_sum] = ::Gitlab::Metrics.counter(:sidekiq_elasticsearch_requests_duration_seconds_sum, 'Total duration in seconds that a Sidekiq job spent in requests to an Elasticsearch server')
+            metrics[:sidekiq_zoekt_requests_duration_seconds_sum] = ::Gitlab::Metrics.counter(:sidekiq_zoekt_requests_duration_seconds_sum, 'Total duration in seconds that a Sidekiq job spent in requests to a Zoekt server')
           end
 
           metrics
@@ -162,6 +165,7 @@ module Gitlab
 
           @metrics[:sidekiq_redis_requests_total].increment(labels, get_redis_calls(instrumentation))
           @metrics[:sidekiq_elasticsearch_requests_total].increment(labels, get_elasticsearch_calls(instrumentation))
+          @metrics[:sidekiq_zoekt_requests_total].increment(labels, get_zoekt_calls(instrumentation))
           @metrics[:sidekiq_mem_total_bytes].set(labels, get_thread_memory_total_allocations(instrumentation))
 
           with_load_balancing_settings(job) do |settings|
@@ -196,6 +200,7 @@ module Gitlab
           @metrics[:sidekiq_jobs_gitaly_seconds_sum].increment(labels, get_gitaly_time(instrumentation))
           @metrics[:sidekiq_redis_requests_duration_seconds_sum].increment(labels, get_redis_time(instrumentation))
           @metrics[:sidekiq_elasticsearch_requests_duration_seconds_sum].increment(labels, get_elasticsearch_time(instrumentation))
+          @metrics[:sidekiq_zoekt_requests_duration_seconds_sum].increment(labels, get_zoekt_time(instrumentation))
         end
       end
 
@@ -208,6 +213,7 @@ module Gitlab
         @metrics[:sidekiq_jobs_gitaly_seconds]&.observe(labels, get_gitaly_time(instrumentation))
         @metrics[:sidekiq_redis_requests_duration_seconds]&.observe(labels, get_redis_time(instrumentation))
         @metrics[:sidekiq_elasticsearch_requests_duration_seconds]&.observe(labels, get_elasticsearch_time(instrumentation))
+        @metrics[:sidekiq_zoekt_requests_duration_seconds]&.observe(labels, get_zoekt_time(instrumentation))
       end
 
       def record_queueing_sli
@@ -283,6 +289,14 @@ module Gitlab
 
       def get_elasticsearch_calls(payload)
         payload.fetch(:elasticsearch_calls, 0)
+      end
+
+      def get_zoekt_time(payload)
+        payload.fetch(:zoekt_duration_s, 0)
+      end
+
+      def get_zoekt_calls(payload)
+        payload.fetch(:zoekt_calls, 0)
       end
 
       def get_gitaly_time(payload)

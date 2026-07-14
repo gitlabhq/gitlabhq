@@ -9,7 +9,7 @@
   image_url: https://img.youtube.com/vi/FlHqfMMfbzQ/hqdefault.jpg
   published_at: 2025-03-20
   release: "17.10"
-- name: Root Cause Analysis available on Gitlab Duo Self-Hosted
+- name: Root Cause Analysis available on GitLab Duo Self-Hosted
   description: |
     You can now use [GitLab Duo Root Cause Analysis](https://about.gitlab.com/blog/2024/06/06/developing-gitlab-duo-blending-ai-and-root-cause-analysis-to-fix-ci-cd/) on GitLab Duo Self-Hosted. This feature is in beta for GitLab Self-Managed instances using GitLab Duo Self-Hosted, with support for Mistral, Anthropic, and OpenAI GPT model families. With Root Cause Analysis on GitLab Duo Self-Hosted, you can troubleshoot failed jobs in CI/CD pipelines faster without compromising data sovereignty. Root Cause Analysis analyzes the failed job log, quickly determines the root cause of the job failure, and suggests a fix for you.
   stage: ai-powered

@@ -75,8 +75,9 @@ To turn Agent Platform on or off for an instance:
 
 When Agent Platform is turned off, the following features are hidden:
 
-- Related settings for flows and
-  [foundational agents](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off).
+- Related settings for flows,
+  [foundational agents](agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off),
+  and the GitLab Duo CLI.
 - The AI Catalog.
 
 ## Lock GitLab Duo on
@@ -370,7 +371,7 @@ To turn on GitLab Duo experiment and beta features for an instance:
 Prerequisites:
 
 - Administrator access.
-- [Network connectivity](../../administration/gitlab_duo/configure/gitlab_self_managed.md) enabled.
+- [Network connectivity](../../administration/gitlab_duo/configure/_index.md) enabled.
 - [Silent Mode](../../administration/silent_mode/_index.md) turned off.
 
 To turn on GitLab Duo experiment and beta features for an instance:

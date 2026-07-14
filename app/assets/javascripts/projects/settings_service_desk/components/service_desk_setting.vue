@@ -17,6 +17,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ServiceDeskTemplateDropdown from './service_desk_template_dropdown.vue';
 
 export default {
+  name: 'ServiceDeskSetting',
   i18n: {
     toggleLabel: __('Activate Service Desk'),
     headlines: {

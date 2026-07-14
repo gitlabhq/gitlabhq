@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Projects > Show > Code button', feature_category: :groups_and_projects do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:guest) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :private, :in_group, :repository) }
+  let_it_be(:project) { create(:project, :private, :in_group, :repository) }
 
   describe 'when checking project main page user' do
     context 'with an admin role' do

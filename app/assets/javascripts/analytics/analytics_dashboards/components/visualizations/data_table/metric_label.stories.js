@@ -9,7 +9,7 @@ export default {
 const Template = (args, { argTypes }) => ({
   components: { MetricLabel },
   props: Object.keys(argTypes),
-  template: `<metric-label :identifier="identifier" :requestPath="requestPath" :is-project="isProject" :tracking-property="trackingProperty" />`,
+  template: `<metric-label :identifier="identifier" :link="link" :tracking-property="trackingProperty" />`,
 });
 
 const TableTemplate = (args, { argTypes }) => ({
@@ -18,7 +18,10 @@ const TableTemplate = (args, { argTypes }) => ({
   template: `<data-table :data="data" :options="options" />`,
 });
 
-const metric = { identifier: 'cycle_time', requestPath: 'some/path/for/request', isProject: false };
+const metric = {
+  identifier: 'cycle_time',
+  link: '/groups/some/path/-/analytics/dashboards/value_streams_dashboard',
+};
 
 export const Default = Template.bind({});
 Default.args = { ...metric };

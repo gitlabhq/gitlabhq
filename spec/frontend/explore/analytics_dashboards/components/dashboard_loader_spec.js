@@ -9,6 +9,7 @@ import getDashboardQuery from '~/explore/analytics_dashboards/graphql/get_dashbo
 import getSystemDashboardQuery from '~/explore/analytics_dashboards/graphql/get_system_dashboard.query.graphql';
 import * as sentryBrowserWrapper from '~/sentry/sentry_browser_wrapper';
 import {
+  mockCustomDashboard,
   mockDashboardResponse,
   mockDashboardCompactGridResponse,
   mockSystemDashboardResponse,
@@ -44,7 +45,6 @@ describe('DashboardLoader', () => {
             <div data-testid="slot-config">{{ JSON.stringify(props.config) }}</div>
             <div data-testid="slot-cellHeight">{{ props.cellHeight }}</div>
             <div data-testid="slot-minCellHeight">{{ props.minCellHeight }}</div>
-            <div data-testid="slot-hasPanels">{{ props.hasPanels }}</div>
             <div data-testid="slot-isSystemDashboard">{{ props.isSystemDashboard }}</div>
           </div>
         `,
@@ -75,6 +75,10 @@ describe('DashboardLoader', () => {
 
     it('does not render the dashboard slot', () => {
       expect(findDashboardSlot().exists()).toBe(false);
+    });
+
+    it('does not emit the loaded event', () => {
+      expect(wrapper.emitted('loaded')).toBeUndefined();
     });
   });
 
@@ -122,12 +126,21 @@ describe('DashboardLoader', () => {
       expect(getSlotProp('minCellHeight')).toBe('');
     });
 
-    it('passes hasPanels as true to the slot when dashboard has panels', () => {
-      expect(getSlotProp('hasPanels')).toBe('true');
-    });
-
     it('passes isSystemDashboard as false to the slot for a custom dashboard', () => {
       expect(getSlotProp('isSystemDashboard')).toBe('false');
+    });
+
+    it('emits the loaded event once with the loaded dashboard', () => {
+      expect(wrapper.emitted('loaded')).toHaveLength(1);
+      expect(wrapper.emitted('loaded')[0][0]).toMatchObject({
+        id: mockCustomDashboard.id,
+        name: mockCustomDashboard.name,
+        config: expect.objectContaining({ title: mockCustomDashboard.config.title }),
+      });
+    });
+
+    it('emits the loaded event with a copy of the dashboard, not the original object', () => {
+      expect(wrapper.emitted('loaded')[0][0]).not.toBe(wrapper.vm.dashboard);
     });
   });
 
@@ -246,27 +259,6 @@ describe('DashboardLoader', () => {
     it('renders the dashboard slot with an empty config', () => {
       expect(findDashboardSlot().exists()).toBe(true);
       expect(getSlotProp('config')).toEqual({});
-    });
-  });
-
-  describe('empty dashboard', () => {
-    beforeEach(async () => {
-      const emptyDashboardResponse = {
-        customDashboard: {
-          ...mockDashboardResponse.customDashboard,
-          config: {
-            ...mockDashboardResponse.customDashboard.config,
-            panels: [],
-          },
-        },
-      };
-
-      createComponent({ requestHandlers: mockResolvedQuery(emptyDashboardResponse) });
-      await waitForPromises();
-    });
-
-    it('passes hasPanels as false to the slot when dashboard has no panels', () => {
-      expect(getSlotProp('hasPanels')).toBe('false');
     });
   });
 });

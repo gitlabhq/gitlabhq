@@ -90,7 +90,7 @@ columns:
 - name: traversal_path
   type: String
   default_kind: DEFAULT
-  default_expression: multiIf(coalesce(namespace_id, 0) != 0, dictGetOrDefault('gitlab_clickhouse_development.namespace_traversal_paths_dict',
+  default_expression: multiIf(coalesce(namespace_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict',
     'traversal_path', namespace_id, '0/'), '0/')
 - name: _siphon_replicated_at
   type: DateTime64(6, 'UTC')

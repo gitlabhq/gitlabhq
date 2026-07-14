@@ -42,7 +42,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::ManageMenu,
             active_routes: { path: 'projects#activity' },
             item_id: :activity,
-            container_html_options: { class: 'shortcuts-project-activity' }
+            container_html_options: { class: 'shortcuts-project-activity' },
+            description: _('Track what your team is working on and stay informed of changes'),
+            library_icon: 'history'
           )
         end
 
@@ -56,7 +58,9 @@ module Sidebars
             link: project_labels_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::ManageMenu,
             active_routes: { controller: :labels },
-            item_id: :labels
+            item_id: :labels,
+            description: _('Organize and categorize work across your project with consistent labels'),
+            library_icon: 'labels'
           )
         end
 
@@ -70,7 +74,9 @@ module Sidebars
             link: project_project_members_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::ManageMenu,
             active_routes: { controller: :project_members },
-            item_id: :members
+            item_id: :members,
+            description: _('Control who has access to your project and what they can do'),
+            library_icon: 'users'
           )
         end
       end

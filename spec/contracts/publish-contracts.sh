@@ -9,7 +9,7 @@ function catch() {
 }
 
 function publish_contract () {
-    CONTRACTS=$(find ./contracts -name "*.json")
+    CONTRACTS=$(find ./contracts/internal -name "*.json")
     ERROR=0
 
     trap 'catch' ERR

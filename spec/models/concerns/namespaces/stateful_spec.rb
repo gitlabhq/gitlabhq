@@ -15,6 +15,35 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
     it { is_expected.to define_enum_for(:state).with_values(**states).without_instance_methods }
   end
 
+  describe 'state classification constants' do
+    it 'partitions all enum states between PROPAGATED_STATES and NON_PROPAGATED_STATES' do
+      classified = described_class::PROPAGATED_STATES + described_class::NON_PROPAGATED_STATES
+
+      expect(classified.sort).to eq(states.keys.map(&:to_sym).sort)
+    end
+
+    it 'has no overlap between PROPAGATED_STATES and NON_PROPAGATED_STATES' do
+      overlap = described_class::PROPAGATED_STATES & described_class::NON_PROPAGATED_STATES
+
+      expect(overlap).to be_empty
+    end
+  end
+
+  describe '.with_state' do
+    let_it_be(:archived_namespace) { create(:namespace, state: :archived) }
+    let_it_be(:deletion_scheduled_namespace) { create(:namespace, state: :deletion_scheduled) }
+    let_it_be(:ancestor_inherited_namespace) { create(:namespace, state: :ancestor_inherited) }
+
+    it 'filters namespaces by a single state' do
+      expect(Namespace.with_state(:archived)).to contain_exactly(archived_namespace)
+    end
+
+    it 'filters namespaces by multiple states' do
+      expect(Namespace.with_state([:archived, :deletion_scheduled]))
+        .to contain_exactly(archived_namespace, deletion_scheduled_namespace)
+    end
+  end
+
   describe 'zero handling' do
     describe 'state reading' do
       it 'treats 0 state as ancestor_inherited' do
@@ -224,6 +253,11 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
 
       context 'when namespace is a project namespace' do
         let_it_be_with_reload(:project) { create(:project) }
+        # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+        # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+        # subject, or an in-memory mutation that survives reload/refind). Do not
+        # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+        # (see gitlab-org/gitlab#602925).
         let_it_be(:project_namespace, freeze: false) { project.project_namespace }
 
         it 'expires namespace descendants cache for the parent when archiving' do

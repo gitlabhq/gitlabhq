@@ -336,7 +336,7 @@ When `CI_DEBUG_SERVICES` is enabled, the variable value might be revealed. For m
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4 [with a flag](../../administration/feature_flags/_index.md) named `ci_hidden_variables`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_hidden_variables`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165843) in GitLab 17.6. Feature flag `ci_hidden_variables` removed.
 
 {{< /history >}}

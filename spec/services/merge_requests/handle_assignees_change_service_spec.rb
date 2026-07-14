@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::HandleAssigneesChangeService, feature_category: :code_review_workflow do
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:assignee, freeze: false) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:assignee) { create(:user) }
   let_it_be_with_reload(:merge_request) { create(:merge_request, author: user, source_project: project, assignees: [assignee]) }
-  let_it_be(:old_assignees, freeze: false) { create_list(:user, 3) }
+  let_it_be_with_reload(:old_assignees) { create_list(:user, 3) }
 
   let(:options) { {} }
   let(:service) { described_class.new(project: project, current_user: user) }

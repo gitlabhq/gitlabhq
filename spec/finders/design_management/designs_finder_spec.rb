@@ -24,7 +24,7 @@ RSpec.describe DesignManagement::DesignsFinder do
     end
 
     context 'when user can read designs of an issue' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 

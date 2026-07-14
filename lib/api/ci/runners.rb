@@ -15,6 +15,8 @@ module API
       urgency :low
 
       helpers do
+        include Gitlab::Utils::StrongMemoize
+
         params :deprecated_filter_params do
           optional :scope, type: String, values: ::Ci::Runner::AVAILABLE_SCOPES,
             desc: 'Deprecated: Use `type` or `status` instead. The scope of runners to return'
@@ -60,9 +62,26 @@ module API
         end
 
         def get_runner(id)
-          runner = ::Ci::Runner.find(id)
+          runner = find_runner(id)
           not_found!('Runner') unless runner
           runner
+        end
+
+        # Memoized by id so the runner is loaded once across authorization and
+        # the endpoint body.
+        def find_runner(id)
+          strong_memoize_with(:find_runner, id) { ::Ci::Runner.find_by_id(id) }
+        end
+
+        # Authorizes against the runner's own boundary: the instance for instance
+        # runners, otherwise its owning group/project. Returns nil when the runner
+        # is missing so the authorization service 404s.
+        def runner_authz_boundary
+          runner = find_runner(params[:id])
+          return unless runner
+          return :instance if runner.instance_type?
+
+          runner.owner
         end
 
         def authenticate_show_runner!(runner)
@@ -133,6 +152,7 @@ module API
           use :deprecated_filter_params
           use :filter_params
         end
+        route_setting :authorization, permissions: :read_runner, boundary_type: :user
         get do
           runners = current_user.ci_available_runners.with_api_entity_associations
           runners = filter_runners(runners, params[:scope], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES_INCL_DEPRECATED)
@@ -152,6 +172,7 @@ module API
           use :deprecated_filter_params
           use :filter_params
         end
+        route_setting :authorization, permissions: :read_runner, boundary_type: :instance
         get 'all' do
           authenticated_with_can_read_all_resources!
 
@@ -174,6 +195,10 @@ module API
           requires :id, type: Integer, desc: 'The ID of a runner'
           optional :include_projects, type: Boolean, desc: 'Include projects in the response. Set to false to improve performance for runners with many projects.', default: true
         end
+        route_setting :authorization,
+          permissions: :read_runner,
+          boundary: -> { runner_authz_boundary },
+          boundaries: [{ boundary_type: :instance }, { boundary_type: :group }, { boundary_type: :project }]
         get ':id' do
           runner = get_runner(params[:id])
           authenticate_show_runner!(runner)
@@ -190,6 +215,10 @@ module API
         params do
           requires :id, type: Integer, desc: 'The ID of a runner'
         end
+        route_setting :authorization,
+          permissions: :read_runner,
+          boundary: -> { runner_authz_boundary },
+          boundaries: [{ boundary_type: :instance }, { boundary_type: :group }, { boundary_type: :project }]
         get ':id/managers' do
           runner = get_runner(params[:id])
           authenticate_show_runner!(runner)
@@ -209,6 +238,10 @@ module API
           requires :id, type: Integer, desc: 'The ID of a runner'
           use :pagination
         end
+        route_setting :authorization,
+          permissions: :read_runner,
+          boundary: -> { runner_authz_boundary },
+          boundaries: [{ boundary_type: :instance }, { boundary_type: :group }, { boundary_type: :project }]
         get ':id/projects' do
           runner = get_runner(params[:id])
           authenticate_show_runner!(runner)
@@ -247,6 +280,10 @@ module API
           at_least_one_of :description, :active, :paused, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout, :maintenance_note
           mutually_exclusive :active, :paused
         end
+        route_setting :authorization,
+          permissions: :update_runner,
+          boundary: -> { runner_authz_boundary },
+          boundaries: [{ boundary_type: :instance }, { boundary_type: :group }, { boundary_type: :project }]
         put ':id' do
           runner = get_runner(params.delete(:id))
           authenticate_update_runner!(runner)
@@ -272,6 +309,10 @@ module API
         params do
           requires :id, type: Integer, desc: 'The ID of a runner'
         end
+        route_setting :authorization,
+          permissions: :delete_runner,
+          boundary: -> { runner_authz_boundary },
+          boundaries: [{ boundary_type: :instance }, { boundary_type: :group }, { boundary_type: :project }]
         delete ':id' do
           runner = get_runner(params[:id])
 
@@ -297,6 +338,10 @@ module API
           optional :cursor, type: String, desc: 'Cursor for obtaining the next set of records'
           use :pagination
         end
+        route_setting :authorization,
+          permissions: :read_runner,
+          boundary: -> { runner_authz_boundary },
+          boundaries: [{ boundary_type: :instance }, { boundary_type: :group }, { boundary_type: :project }]
         get ':id/jobs' do
           runner = get_runner(params[:id])
           authenticate_list_runners_jobs!(runner)
@@ -322,6 +367,10 @@ module API
         params do
           requires :id, type: Integer, desc: 'The ID of the runner'
         end
+        route_setting :authorization,
+          permissions: :update_runner,
+          boundary: -> { runner_authz_boundary },
+          boundaries: [{ boundary_type: :instance }, { boundary_type: :group }, { boundary_type: :project }]
         post ':id/reset_authentication_token' do
           runner = get_runner(params[:id])
           authenticate_update_runner!(runner)
@@ -451,6 +500,7 @@ module API
           failure [[403, 'Forbidden']]
           tags %w[runners groups]
         end
+        route_setting :authorization, permissions: :reset_runner_registration_token, boundary_type: :instance
         post 'reset_registration_token' do
           authorize! :update_runners_registration_token, ApplicationSetting.current
 

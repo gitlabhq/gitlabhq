@@ -58,9 +58,11 @@ RSpec.describe Resolvers::GroupLabelsResolver, feature_category: :team_planning 
         }
       end
 
-      before do
+      before_all do
         group.add_developer(current_user)
+      end
 
+      before do
         # warmup
         resolve_labels(group, params).to_a
       end

@@ -1,0 +1,10 @@
+---
+name: accessible_disabled_button
+description: Make GlButton accessible while disabled
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/merge_requests/5912
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236906
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600158
+milestone: '19.1'
+group: group::design system
+type: gitlab_com_derisk
+default_enabled: false

@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Editor Extensions
+stage: AI Clients
+group: Developer Clients
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use the GitLab for VS Code extension to handle common GitLab tasks directly in VS Code.
 title: Install and set up the GitLab for VS Code extension
@@ -254,7 +254,13 @@ GitLab Duo features are enabled by default in VS Code when you meet the prerequi
 - Your project is in a [group namespace](../../user/namespace/_index.md).
 - You have a [default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment)
   set or have a project open that has GitLab Duo access.
-- For GitLab Duo Code Suggestions, you [meet the additional prerequisites](../../user/project/repository/code_suggestions/set_up.md#prerequisites).
+- For GitLab Duo Code Suggestions:
+  - You use a [supported language and IDE](../../user/project/repository/code_suggestions/supported_extensions.md).
+  - Optional. To use outside of a GitLab project:
+    1. In VS Code, open the Settings editor:
+       - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+       - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+    1. Select **Extensions** > **GitLab** > **GitLab Duo** > **GitLab › Duo: Enabled Without GitLab Project**.
 
 To approve Agentic Chat tools once per session instead of individually,
 see [tool approvals](../../user/gitlab_duo_chat/agentic_chat.md#tool-approvals).

@@ -1,5 +1,5 @@
 ---
-stage: none
+stage: Tutorials
 group: Tutorials
 description: GitLab Duoを使用してPythonでショップアプリケーションを作成するチュートリアル。
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
@@ -17,14 +17,14 @@ title: 'チュートリアル: GitLab Duoを使用してPythonでショップア
 
 このチュートリアルはシリーズの第1部であり、これらの要件を満たすデータベースバックエンドを備えた[Python](https://www.python.org/) Webアプリケーションの作成とデバッグについて説明します。
 
-お客様は、[GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md)と[GitLab Duoコード提案](../../duo_agent_platform/code_suggestions/_index.md)を利用して以下を行うことができます:
+以下のために、[GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md)と[GitLab Duoコード提案](../../duo_agent_platform/code_suggestions/_index.md)を使用します:
 
 - 標準ディレクトリと必須ファイルを使用して、整理されたPythonプロジェクトをセットアップする。
 - Pythonの仮想環境を設定する。
 - Webアプリケーションの基盤として、[Flask](https://flask.palletsprojects.com/en/stable/)フレームワークをインストールする。
 - 必要な依存関係をインストールし、開発用にプロジェクトを準備する。
 - Flaskアプリケーション開発用のPython設定ファイルと環境変数をセットアップする。
-- 記事モデル、データベース操作、APIルート、在庫管理機能などの主要な機能を実装する。
+- Articleモデル、データベース操作、APIルート、在庫管理機能などの主要な機能を実装する。
 - アプリケーションが意図したとおりに動作することをテストし、作成したコードとサンプルコードファイルを比較する。
 
 ## はじめる前 {#before-you-begin}
@@ -107,8 +107,8 @@ IDEでのChatの使用方法は、使用するIDEによって異なります。
 コード提案を使用するには、以下の手順に従います:
 
 1. [サポートされているIDE](../../project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions)でGitプロジェクトを開きます。
-1. [`git remote add`](../../../topics/git/commands.md#git-remote-add)を使用して、ローカルリポジトリのリモートとしてプロジェクトを追加します。
-1. 隠し`.git/`フォルダーを含むプロジェクトディレクトリを、IDEワークスペースまたはプロジェクトに追加します。
+
+   ローカルプロジェクトは、GitLab上のリポジトリを指すGitリモートが設定されている必要があります。まだ設定されていない場合は、[`git remote add`](../../../topics/git/commands.md#git-remote-add)を使用してプロジェクトをリンクします。
 1. コードを作成します。入力すると、提案が表示されます。コード提案は、カーソルの位置に応じてコードスニペットを提示するか、現在の行を補完します。
 
 1. 要件を自然言語で記述します。コード提案は、提供されたコンテキストに基づいて関数やコードスニペットを生成します。
@@ -776,7 +776,7 @@ MAX_QUANTITY=1000
 
 {{< tab title="`app/models/article.py`" >}}
 
-完全な検証を備えたArticleクラス。
+完全な検証を備えたarticleクラス。
 
 ```python
 class Article:

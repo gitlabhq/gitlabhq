@@ -23,8 +23,12 @@ module Import
           BulkImportWorker.perform_async(bulk_import.id)
 
           ServiceResponse.success
-        rescue ValidationError, MetadataFileReader::MetadataParseError, MetadataFileReader::UnsupportedVersionError => e
-          logger.error(message: e.message, bulk_import_id: bulk_import.id)
+        rescue ValidationError, MetadataFileReader::MetadataError => e
+          logger.error(
+            message: e.message,
+            bulk_import_id: bulk_import.id,
+            importer: Import::SOURCE_OFFLINE_TRANSFER.to_s
+          )
           bulk_import.fail_op!
           ServiceResponse.error(message: e.message)
         end

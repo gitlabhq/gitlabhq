@@ -100,6 +100,63 @@ RSpec.describe Admin::IntegrationsController, feature_category: :integrations do
     end
   end
 
+  describe '#overrides' do
+    let_it_be(:instance_integration) { create(:jira_integration, :instance) }
+
+    context 'with JSON format' do
+      subject(:get_overrides) do
+        get :overrides, params: { id: instance_integration.class.to_param }, format: :json
+      end
+
+      context 'when a project has an explicit custom integration (inherit_from_id: nil)' do
+        let_it_be(:project) { create(:project) }
+        let_it_be(:custom_integration) do
+          create(:jira_integration, project: project, inherit_from_id: nil)
+        end
+
+        it 'includes the project in the response', :aggregate_failures do
+          get_overrides
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.map { |p| p['id'] }).to include(project.id)
+        end
+      end
+
+      context 'when a project inherits from a group integration (not the instance)' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project) { create(:project, group: group) }
+        let_it_be(:group_integration) do
+          create(:jira_integration, :group, group: group, inherit_from_id: nil)
+        end
+
+        let_it_be(:inherited_integration) do
+          create(:jira_integration, project: project, inherit_from_id: group_integration.id)
+        end
+
+        it 'includes the project in the response', :aggregate_failures do
+          get_overrides
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.map { |p| p['id'] }).to include(project.id)
+        end
+      end
+
+      context 'when a project inherits directly from the instance integration' do
+        let_it_be(:project) { create(:project) }
+        let_it_be(:instance_inherited_integration) do
+          create(:jira_integration, project: project, inherit_from_id: instance_integration.id)
+        end
+
+        it 'does not include the project in the response', :aggregate_failures do
+          get_overrides
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
+      end
+    end
+  end
+
   describe '#reset' do
     let_it_be(:integration) { create(:jira_integration, :instance) }
     let_it_be(:inheriting_integration) { create(:jira_integration, inherit_from_id: integration.id) }

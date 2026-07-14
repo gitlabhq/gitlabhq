@@ -4,6 +4,7 @@ module WorkItems
   module RelatedWorkItemLinks
     class CreateService < IssuableLinks::CreateService
       extend ::Gitlab::Utils::Override
+      include Gitlab::Utils::StrongMemoize
 
       def execute
         return error(_('No matching work item found.'), 404) unless can_admin_work_item_link?(issuable)
@@ -21,13 +22,17 @@ module WorkItems
         response
       end
 
-      def linkable_issuables(work_items)
-        @linkable_issuables ||= work_items.select { |work_item| can_link_item?(work_item) }
+      override :linkable_issuables
+      def linkable_issuables
+        referenced_issuables.select { |work_item| can_link_item?(work_item) }
       end
+      strong_memoize_attr :linkable_issuables
 
+      override :previous_related_issuables
       def previous_related_issuables
-        @related_issues ||= issuable.linked_work_items(authorize: false).to_a
+        issuable.linked_work_items(authorize: false).to_a
       end
+      strong_memoize_attr :previous_related_issuables
 
       private
 
@@ -62,6 +67,12 @@ module WorkItems
         false
       end
 
+      override :readonly_issuables
+      def readonly_issuables
+        referenced_issuables.select { |work_item| work_item.readable_by?(current_user) }
+      end
+      strong_memoize_attr :readonly_issuables
+
       def linked_ids(created_links)
         created_links.collect(&:target_id)
       end
@@ -78,6 +89,11 @@ module WorkItems
         }
 
         Issuable::RelatedLinksCreateWorker.perform_async(worker_params)
+      end
+
+      override :target_issuable_type
+      def target_issuable_type
+        'work item'
       end
 
       override :issuables_already_assigned_message

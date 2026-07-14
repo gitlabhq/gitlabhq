@@ -1,16 +1,8 @@
 /**
- * Webpack 4 uses md4 internally because it is fast.
- * Some loaders also use md5 directly.
- * It is not available systems with FIPS enabled node.
- *
- * This is a hack to monkey patch the crypto function to use
- * another algorithm if md4 or md5 is expected.
- *
+ * OpenSSL 3 (Node 20+) and FIPS builds reject md4/md5, which Webpack and some
+ * loaders/plugins still request for cache keys. Patches createHash to substitute
+ * sha256. Imported for this side effect by webpack.config.js and rspack.config.mjs.
  * https://github.com/webpack/webpack/issues/13572#issuecomment-923736472
- *
- * This hack can be removed once we upgrade to webpack v5 as
- * it includes native support for configuring hash options:
- * https://github.com/webpack/webpack/pull/14306
  */
 const crypto = require('crypto');
 

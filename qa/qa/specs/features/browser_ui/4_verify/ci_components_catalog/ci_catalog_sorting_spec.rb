@@ -64,18 +64,6 @@ module QA
           it_behaves_like 'ascending order',
             'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/441477'
         end
-
-        context 'with created at' do
-          before do
-            Page::Explore::CiCdCatalog.perform(&:sort_by_created_at)
-          end
-
-          it_behaves_like 'descending order by default',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/441479'
-
-          it_behaves_like 'ascending order',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/441475'
-        end
       end
 
       private

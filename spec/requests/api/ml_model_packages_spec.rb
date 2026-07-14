@@ -174,6 +174,24 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
   describe 'PUT /api/v4/projects/:id/packages/ml_models/:model_version_id/(*path)/files/:file_name' do
     include_context 'ml model authorize permissions table'
 
+    it_behaves_like 'authorizing granular token permissions', :create_model_version do
+      let(:boundary_object) { project }
+      let(:user) { personal_access_token.user }
+
+      before_all do
+        project.add_developer(personal_access_token.user)
+      end
+
+      let(:request) do
+        url = "/projects/#{project.id}/packages/ml_models/#{model_version.id}/files/gpat-model.md5"
+        workhorse_finalize(
+          api(url),
+          method: :put, file_key: :file, params: { file: temp_file('gpat-model.md5') },
+          headers: workhorse_headers.merge('Authorization' => "Bearer #{pat.token}"), send_rewritten_field: true
+        )
+      end
+    end
+
     let_it_be(:file_name) { 'model.md5' }
 
     let(:token) { tokens[:personal_access_token] }
@@ -270,6 +288,21 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
 
   describe 'GET /api/v4/projects/:project_id/packages/ml_models/:model_version_id/files/(*path)/:file_name' do
     include_context 'ml model authorize permissions table'
+
+    it_behaves_like 'authorizing granular token permissions', :read_model_version do
+      let_it_be(:gt_file) { create(:package_file, :generic, package: model_version.package, file_name: 'gpat.md5') }
+      let(:boundary_object) { project }
+      let(:user) { personal_access_token.user }
+
+      before_all do
+        project.add_developer(personal_access_token.user)
+      end
+
+      let(:request) do
+        url = "/projects/#{project.id}/packages/ml_models/#{model_version.id}/files/gpat.md5"
+        get api(url), headers: workhorse_headers.merge('Authorization' => "Bearer #{pat.token}")
+      end
+    end
 
     let_it_be(:file_name) { Addressable::URI.escape('Mo_de-l v12.md5') }
     let_it_be(:package) { model_version.package }

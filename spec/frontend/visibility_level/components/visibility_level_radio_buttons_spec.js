@@ -2,6 +2,7 @@ import { GlIcon, GlFormRadio, GlFormRadioGroup } from '@gitlab/ui';
 
 import {
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
+  VISIBILITY_LEVEL_INTERNAL_INTEGER,
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
   VISIBILITY_LEVELS_STRING_TO_INTEGER,
   GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
@@ -18,16 +19,23 @@ describe('VisibilityLevelRadioButtons', () => {
     visibilityLevelDescriptions: GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
   };
 
+  const disabledMessage = 'Some visibility levels are disabled.';
+
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = mountExtended(VisibilityLevelRadioButtons, {
       propsData: {
         ...defaultPropsData,
         ...propsData,
       },
+      slots: {
+        'disabled-message': `<div data-testid="disabled-message">${disabledMessage}</div>`,
+      },
     });
   };
 
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
+  const findRadioButtons = () => wrapper.findAllComponents(GlFormRadio);
+  const findDisabledMessage = () => wrapper.findByTestId('disabled-message');
 
   it('renders radio group with `checked` prop correctly set', () => {
     createComponent();
@@ -65,5 +73,59 @@ describe('VisibilityLevelRadioButtons', () => {
       'Public The group and any public projects can be viewed without any authentication.',
     );
     expect(radioButtons.at(2).findComponent(GlIcon).props('name')).toBe('earth');
+  });
+
+  describe('when `minVisibilityLevel` prop is not set', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('does not disable any visibility level', () => {
+      expect(findRadioButtons().wrappers.map((radio) => radio.props('disabled'))).toEqual([
+        false,
+        false,
+        false,
+      ]);
+    });
+
+    it('does not render the `disabled-message` slot', () => {
+      expect(findDisabledMessage().exists()).toBe(false);
+    });
+  });
+
+  describe('when `minVisibilityLevel` prop is null', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { minVisibilityLevel: null } });
+    });
+
+    it('does not disable any visibility level', () => {
+      expect(findRadioButtons().wrappers.map((radio) => radio.props('disabled'))).toEqual([
+        false,
+        false,
+        false,
+      ]);
+    });
+
+    it('does not render the `disabled-message` slot', () => {
+      expect(findDisabledMessage().exists()).toBe(false);
+    });
+  });
+
+  describe('when `minVisibilityLevel` prop is set', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { minVisibilityLevel: VISIBILITY_LEVEL_INTERNAL_INTEGER } });
+    });
+
+    it('disables visibility levels lower than the minimum', () => {
+      expect(findRadioButtons().wrappers.map((radio) => radio.props('disabled'))).toEqual([
+        true,
+        false,
+        false,
+      ]);
+    });
+
+    it('renders the `disabled-message` slot', () => {
+      expect(findDisabledMessage().text()).toBe(disabledMessage);
+    });
   });
 });

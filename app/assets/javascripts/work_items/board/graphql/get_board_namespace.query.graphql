@@ -1,0 +1,9 @@
+# @feature_category: portfolio_management
+query getBoardNamespace($fullPath: ID!) {
+  namespace(fullPath: $fullPath) {
+    id
+    rootNamespace {
+      id
+    }
+  }
+}

@@ -12,7 +12,7 @@ exports[`Merge request dashboard assigned users component as reviewer list rende
     role="img"
   >
     <use
-      href="file-mock#error"
+      href="file-mock-icons.svg#error"
     />
   </svg>
 </span>

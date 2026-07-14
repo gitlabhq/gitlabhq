@@ -416,6 +416,12 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
         allow(store).to receive(:empty?).and_return(false, false, false, false, true)
 
         expect(Kernel).to receive(:sleep).with(0.01).exactly(4).times
+        expect(::Import::Framework::Logger).to receive(:info).with(
+          message: 'Placeholder references finished loading to database after 0.04 seconds.',
+          Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
+          import_source: project.import_type,
+          import_uid: project.import_state.id
+        )
 
         importer.execute
 

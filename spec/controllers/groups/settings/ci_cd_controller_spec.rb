@@ -136,7 +136,7 @@ RSpec.describe Groups::Settings::CiCdController, feature_category: :continuous_i
 
         context 'when explicitly enabling auto devops' do
           it 'updates group attribute' do
-            expect(group.auto_devops_enabled).to eq(true)
+            expect(group.auto_devops_enabled).to be(true)
           end
         end
 
@@ -144,7 +144,7 @@ RSpec.describe Groups::Settings::CiCdController, feature_category: :continuous_i
           let(:auto_devops_param) { '0' }
 
           it 'updates group attribute' do
-            expect(group.auto_devops_enabled).to eq(false)
+            expect(group.auto_devops_enabled).to be(false)
           end
         end
       end

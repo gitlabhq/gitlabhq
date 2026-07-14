@@ -7,7 +7,7 @@ RSpec.describe 'Slack application', :js, feature_category: :integrations do
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, maintainer_of: project) }
-  let_it_be(:integration, freeze: false) { create(:gitlab_slack_application_integration, project: project) }
+  let_it_be_with_reload(:integration) { create(:gitlab_slack_application_integration, project: project) }
   let(:slack_application_form_path) { edit_project_settings_integration_path(project, integration) }
 
   before do

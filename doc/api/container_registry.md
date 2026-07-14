@@ -359,7 +359,7 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags
 | `name_regex_keep`   | string         | no       | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to keep. This value overrides any matches from `name_regex_delete`. This field is validated. Note: setting to `.*` results in a no-op. |
 | `older_than`        | string         | no       | Tags to delete that are older than the given time, written in human readable form `1h`, `1d`, `1month`. |
 
-This API returns [HTTP response status code 202](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/202)
+This API returns [HTTP response status code 202](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/202)
 if successful, and performs the following operations:
 
 - It orders all tags by creation date. The creation date is the time of the

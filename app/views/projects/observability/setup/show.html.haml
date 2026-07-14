@@ -1,0 +1,5 @@
+-# Project-level setup page -- delegates to the shared partial.
+- scope_label = s_('Observability|this project')
+- personal_ns_note = s_('Observability|Enabling observability applies to all projects in your personal namespace.')
+
+= render 'shared/observability/setup/setup_page', namespace: @namespace, access_requests_path: project_observability_access_requests_path(@project), enable_scope_label: scope_label, scope_note: personal_ns_note, endpoint_configuration_partial: 'projects/observability/setup/endpoint_configuration', endpoint_configuration_locals: { configuration_settings: @namespace.observability_group_o11y_setting, has_pipelines_since_setup: @has_pipelines_since_setup, project: @project, export_variable: @export_variable }

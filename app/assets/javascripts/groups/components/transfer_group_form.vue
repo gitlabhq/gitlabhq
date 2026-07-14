@@ -32,6 +32,7 @@ export default {
       required: true,
     },
   },
+  emits: ['confirm'],
   data() {
     return {
       selectedTransferLocation: null,

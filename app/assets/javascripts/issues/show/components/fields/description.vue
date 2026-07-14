@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { __ } from '~/locale';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -7,6 +6,7 @@ import { ISSUE_NOTEABLE_TYPE } from '~/notes/constants';
 import updateMixin from '../../mixins/update';
 
 export default {
+  name: 'FieldsDescription',
   components: {
     MarkdownEditor,
   },
@@ -30,6 +30,7 @@ export default {
       default: true,
     },
   },
+  emits: ['input'],
   data() {
     return {
       formFieldProps: {

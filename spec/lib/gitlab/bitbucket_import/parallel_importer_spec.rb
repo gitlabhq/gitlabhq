@@ -20,7 +20,7 @@ RSpec.describe Gitlab::BitbucketImport::ParallelImporter, feature_category: :imp
   end
 
   describe '#execute', :clean_gitlab_redis_shared_state do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
     let(:importer) { subject.new(project) }
 
     before do

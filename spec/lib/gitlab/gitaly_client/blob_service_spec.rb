@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::BlobService do
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :small_repo) }
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
   let(:repository) { project.repository }
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
       expect_any_instance_of(Gitaly::BlobService::Stub)
         .to receive(:list_lfs_pointers)
         .with(gitaly_request_with_params(expected_params), kind_of(Hash))
-        .and_return([])
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       subject
     end
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
         expect_any_instance_of(Gitaly::BlobService::Stub)
           .to receive(:list_lfs_pointers)
           .with(gitaly_request_with_params(expected_params), kind_of(Hash))
-          .and_return([])
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
         subject
       end
@@ -65,7 +65,7 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
         expect_any_instance_of(Gitaly::BlobService::Stub)
           .to receive(:list_all_lfs_pointers)
           .with(gitaly_request_with_params(expected_params), kind_of(Hash))
-          .and_return([])
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
         subject
       end
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
       expect_any_instance_of(Gitaly::BlobService::Stub)
         .to receive(:list_lfs_pointers)
         .with(gitaly_request_with_params(expected_params), kind_of(Hash))
-        .and_return([])
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       subject
     end
@@ -109,7 +109,7 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
           expect(service)
             .to receive(:list_blobs)
             .with(gitaly_request_with_params(expected_params), kind_of(Hash))
-            .and_return([])
+            .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
         end
 
         subject
@@ -124,7 +124,7 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
           expect(service)
             .to receive(:list_blobs)
             .with(gitaly_request_with_params(expected_params), kind_of(Hash))
-            .and_return([])
+            .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
         end
 
         subject
@@ -141,7 +141,7 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
           expect(service)
             .to receive(:list_blobs)
             .with(gitaly_request_with_params(expected_params), kind_of(Hash))
-            .and_return([])
+            .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
         end
 
         subject
@@ -159,7 +159,7 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
           expect(service)
             .to receive(:list_blobs)
             .with(gitaly_request_with_params(expected_params), kind_of(Hash))
-            .and_return([])
+            .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
         end
 
         subject
@@ -174,8 +174,8 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
           expect(service)
             .to receive(:list_blobs)
             .with(gitaly_request_with_params(expected_params), kind_of(Hash))
-            .and_return(
-              [
+            .and_return(instance_double(GRPC::ActiveCall::Operation,
+              execute: [
                 Gitaly::ListBlobsResponse.new(
                   blobs: [
                     Gitaly::ListBlobsResponse::Blob.new(oid: "012345", size: 8, data: "0x01"),
@@ -189,7 +189,8 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
                   ]),
                 Gitaly::ListBlobsResponse.new(
                   blobs: [Gitaly::ListBlobsResponse::Blob.new(oid: "78", size: 4, data: "0x78")])
-              ])
+              ],
+              trailing_metadata: {}))
         end
 
         blobs = subject.to_a
@@ -222,7 +223,8 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
     it 'sends a list all blobs message' do
       expect_next_instance_of(Gitaly::BlobService::Stub) do |service|
         expect(service).to receive(:list_all_blobs)
-        .with(gitaly_request_with_params(expected_params), kind_of(Hash))
+          .with(gitaly_request_with_params(expected_params), kind_of(Hash))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
       end
 
       subject
@@ -279,16 +281,18 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
     it 'sends a list all blobs message' do
       expect_next_instance_of(Gitaly::BlobService::Stub) do |service|
         expect(service).to receive(:list_all_blobs)
-        .with(gitaly_request_with_params(expected_params), kind_of(Hash)).and_return(
-          [
-            Gitaly::ListBlobsResponse.new(
-              blobs: [
-                Gitaly::ListBlobsResponse::Blob.new(oid: '678909', size: 114857600, data: "0x01"),
-                Gitaly::ListBlobsResponse::Blob.new(oid: '678910', size: 2, data: "0x02"),
-                Gitaly::ListBlobsResponse::Blob.new(size: 114857600, data: ""),
-                Gitaly::ListBlobsResponse::Blob.new(oid: '678910', data: "0x03")
-              ])
-          ])
+          .with(gitaly_request_with_params(expected_params), kind_of(Hash))
+          .and_return(instance_double(GRPC::ActiveCall::Operation,
+            execute: [
+              Gitaly::ListBlobsResponse.new(
+                blobs: [
+                  Gitaly::ListBlobsResponse::Blob.new(oid: '678909', size: 114857600, data: "0x01"),
+                  Gitaly::ListBlobsResponse::Blob.new(oid: '678910', size: 2, data: "0x02"),
+                  Gitaly::ListBlobsResponse::Blob.new(size: 114857600, data: ""),
+                  Gitaly::ListBlobsResponse::Blob.new(oid: '678910', data: "0x03")
+                ])
+            ],
+            trailing_metadata: {}))
       end
 
       blobs = subject.to_a

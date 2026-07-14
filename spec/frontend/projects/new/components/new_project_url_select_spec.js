@@ -174,7 +174,7 @@ describe('NewProjectUrlSelect component', () => {
     });
 
     it("renders a dropdown with the user's namespace full path as the text", () => {
-      expect(findSelectedPath().props('text')).toBe('Pick a group or namespace');
+      expect(findSelectedPath().props('text')).toBe('Select a group or namespace');
     });
 
     it('renders a dropdown with the class', () => {

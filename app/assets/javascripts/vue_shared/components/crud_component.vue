@@ -126,6 +126,7 @@ export default {
       default: false,
     },
   },
+  emits: ['click-collapsed', 'click-expanded', 'collapsed', 'expanded', 'hideForm', 'showForm'],
   data() {
     return {
       isCollapsed:

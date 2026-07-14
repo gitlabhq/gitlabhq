@@ -66,6 +66,33 @@ if workers are being restarted too often (once or more per minute).
 
 A higher `per_worker_max_memory_mb` value could be beneficial if the server has free memory.
 
+## Worker and thread sizing
+
+Use the following as a guide when planning capacity or verifying auto-detected values.
+
+A node must never have fewer than two Puma workers.
+For example, a node should have:
+
+- Two workers for 2 CPU cores and 8 GB of memory.
+- Two workers for 4 CPU cores and 4 GB of memory.
+- Four workers for 4 CPU cores and 8 GB of memory.
+- Six workers for 8 CPU cores and 8 GB of memory.
+- Eight workers for 8 CPU cores and 16 GB of memory.
+
+You can also increase the number of Puma workers, provided enough CPU and memory capacity is available.
+More workers reduce response times and improve the ability to handle parallel requests.
+Run tests to verify the optimal number of workers for your installation.
+
+### Threads
+
+The recommended number of Puma threads depends on total system memory.
+A node should use:
+
+- One thread for an operating system with a maximum of 2 GB of memory.
+- Four threads for an operating system with more than 2 GB of memory.
+
+More threads lead to excessive swapping and lower performance.
+
 ## Plan the database connections
 
 Before increasing Puma workers or threads, consider the database connection impact on your PostgreSQL `max_connections` setting.

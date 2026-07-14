@@ -28,9 +28,9 @@ RSpec.describe 'User activates Jira', :js, feature_category: :integrations do
         it 'adds Jira link to sidebar menu' do
           within_testid('super-sidebar') do
             click_button 'Plan'
+            expect(page).to have_link(exact_text: 'Jira', href: url)
             expect(page).not_to have_link('Jira issues')
             expect(page).not_to have_link('Open Jira')
-            expect(page).to have_link(exact_text: 'Jira', href: url)
           end
         end
       end

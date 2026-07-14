@@ -4,6 +4,7 @@ import { launchDrawioEditor } from '~/drawio/drawio_editor';
 import { create } from '~/drawio/markdown_field_editor_facade';
 
 export default {
+  name: 'DrawioToolbarButton',
   components: {
     GlButton,
   },

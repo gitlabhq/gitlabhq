@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'digest/sha2'
+
 module RuboCop
   module Cop
     # Check for test coverage for GitLab experiments.
@@ -30,6 +32,13 @@ module RuboCop
       end
 
       alias_method :on_numblock, :on_block
+
+      def external_dependency_checksum
+        @external_dependency_checksum ||= begin
+          paths = Dir.glob(File.expand_path('../../{,ee/}spec/support/shared_examples/**/*.rb', __dir__))
+          Digest::SHA256.hexdigest(paths.join("\n"))
+        end
+      end
 
       private
 

@@ -3,7 +3,7 @@
 module API
   module Entities
     class Application < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :uid, as: :application_id,
         documentation: { type: 'String',
                          example: '5832fc6e14300a0d962240a8144466eef4ee93ef0d218477e55f11cf12fc3737' }

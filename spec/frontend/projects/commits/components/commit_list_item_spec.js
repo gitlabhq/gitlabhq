@@ -1,3 +1,4 @@
+import { GlCollapse } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -62,6 +63,8 @@ describe('CommitListItem', () => {
   const findDescription = () => wrapper.findComponent(CommitListItemDescription);
   const findOverflowMenu = () => wrapper.findByTestId('overflow-menu');
   const findCommitRow = () => wrapper.findByTestId('commit-row');
+  const findCollapse = () => wrapper.findComponent(GlCollapse);
+  const emitDescriptionLoaded = () => findDescription().vm.$emit('loaded');
 
   describe('avatar rendering', () => {
     describe('when commit has author', () => {
@@ -234,11 +237,47 @@ describe('CommitListItem', () => {
         expect(findCommitRow().attributes('tabindex')).toBe('0');
       });
 
-      it('sets aria-expanded to false initially and true after click', async () => {
+      it('sets aria-expanded to false initially and true immediately on click', async () => {
         expect(findCommitRow().attributes('aria-expanded')).toBe('false');
 
         await findCommitRow().trigger('click');
         expect(findCommitRow().attributes('aria-expanded')).toBe('true');
+      });
+    });
+
+    describe('open animation waiting for the description to load', () => {
+      it('keeps the collapse closed until the description has loaded on first expand', async () => {
+        await findActionButtons().vm.$emit('click');
+
+        expect(findDescription().exists()).toBe(true);
+        expect(findCollapse().props('visible')).toBe(false);
+
+        emitDescriptionLoaded();
+        await nextTick();
+        expect(findCollapse().props('visible')).toBe(true);
+      });
+
+      it('opens immediately on re-expand once the description has already loaded', async () => {
+        await findActionButtons().vm.$emit('click');
+        emitDescriptionLoaded();
+        await nextTick();
+
+        await findActionButtons().vm.$emit('click');
+        expect(findCollapse().props('visible')).toBe(false);
+
+        await findActionButtons().vm.$emit('click');
+        expect(findCollapse().props('visible')).toBe(true);
+      });
+
+      it('surfaces a loading state on the action buttons until the description has loaded', async () => {
+        expect(findActionButtons().props('isLoading')).toBe(false);
+
+        await findActionButtons().vm.$emit('click');
+        expect(findActionButtons().props('isLoading')).toBe(true);
+
+        emitDescriptionLoaded();
+        await nextTick();
+        expect(findActionButtons().props('isLoading')).toBe(false);
       });
     });
 
@@ -314,6 +353,14 @@ describe('CommitListItem', () => {
     it('passes commit sha to description component', async () => {
       await findActionButtons().vm.$emit('click');
       expect(findDescription().props('commitSha')).toBe(mockCommit.sha);
+    });
+
+    it('keeps the description mounted after collapsing so GlCollapse animates over real content', async () => {
+      await findActionButtons().vm.$emit('click');
+      expect(findDescription().exists()).toBe(true);
+
+      await findActionButtons().vm.$emit('click');
+      expect(findDescription().exists()).toBe(true);
     });
   });
 

@@ -10,6 +10,8 @@ module Types
         graphql_name 'WorkItemWidgetLabels'
         description 'Represents the labels widget'
 
+        authorize_granular_token skip_reason: :parent_authorizes
+
         implements ::Types::WorkItems::WidgetInterface
 
         def self.authorization_scopes

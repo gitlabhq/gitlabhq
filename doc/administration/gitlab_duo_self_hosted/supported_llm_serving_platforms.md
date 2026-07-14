@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Supported LLM Serving Platforms.
 title: Configure LLM platforms
@@ -15,7 +15,7 @@ title: Configure LLM platforms
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a feature flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Feature flag `ai_custom_model` removed in GitLab 17.8.
@@ -160,7 +160,7 @@ GitLab has validated and tested the following providers. The AI Gateway supports
 
 - [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
 - [Gemini Enterprise Agent Platform](https://cloud.google.com/products/gemini-enterprise-agent-platform)
-- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
+- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard&pivots=azure-openai)
 - [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)
 - [OpenAI](https://developers.openai.com/api/docs/models)
 
@@ -445,4 +445,4 @@ To use models from Gemini Enterprise Agent Platform, you must authenticate your 
 - For configuration information, see the following documentation:
   - [Anthropic API overview](https://platform.claude.com/docs/en/api/overview)
   - [OpenAI API overview](https://developers.openai.com/api/docs)
-  - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
+  - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/working-with-models?tabs=powershell)

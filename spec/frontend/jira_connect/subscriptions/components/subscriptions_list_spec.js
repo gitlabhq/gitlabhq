@@ -1,31 +1,34 @@
 import { GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
+import Vue, { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import * as JiraConnectApi from '~/jira_connect/subscriptions/api';
 import GroupItemName from '~/jira_connect/subscriptions/components/group_item_name.vue';
 
 import SubscriptionsList from '~/jira_connect/subscriptions/components/subscriptions_list.vue';
-import createStore from '~/jira_connect/subscriptions/store';
-import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
+import { useJiraConnectSubscriptions } from '~/jira_connect/subscriptions/store';
 import { reloadPage } from '~/jira_connect/subscriptions/utils';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { mockSubscription } from '../mock_data';
 
 jest.mock('~/jira_connect/subscriptions/utils');
 
+Vue.use(PiniaVuePlugin);
+
 describe('SubscriptionsList', () => {
   let wrapper;
   let store;
 
   const createComponent = () => {
-    store = createStore({
-      subscriptions: [mockSubscription],
-    });
+    const pinia = createTestingPinia({ stubActions: false });
+    store = useJiraConnectSubscriptions();
+    store.$patch({ subscriptions: [mockSubscription] });
 
     wrapper = mount(SubscriptionsList, {
-      store,
+      pinia,
     });
   };
 
@@ -92,26 +95,19 @@ describe('SubscriptionsList', () => {
 
       beforeEach(() => {
         jest.spyOn(JiraConnectApi, 'removeSubscription').mockRejectedValue(mockError);
-        jest.spyOn(store, 'commit');
       });
 
       it('sets alert', async () => {
+        const setAlertSpy = jest.spyOn(store, 'setAlert');
         clickUnlinkButton();
 
         await waitForPromises();
 
         expect(reloadPage).not.toHaveBeenCalled();
-        expect(store.commit.mock.calls).toEqual(
-          expect.arrayContaining([
-            [
-              SET_ALERT,
-              {
-                message: mockErrorMessage,
-                variant: 'danger',
-              },
-            ],
-          ]),
-        );
+        expect(setAlertSpy).toHaveBeenCalledWith({
+          message: mockErrorMessage,
+          variant: 'danger',
+        });
       });
     });
   });

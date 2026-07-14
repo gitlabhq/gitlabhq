@@ -22,11 +22,11 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
 
   describe 'scopes' do
     describe '.ordered_by_name' do
-      let(:names) { %w[agent-d agent-b agent-a agent-c] }
+      let_it_be(:names) { %w[agent-d agent-b agent-a agent-c] }
 
       subject { described_class.ordered_by_name }
 
-      before do
+      before_all do
         names.each do |name|
           create(:cluster_agent, name: name)
         end
@@ -36,8 +36,8 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
     end
 
     describe '.with_name' do
-      let!(:matching_name) { create(:cluster_agent, name: 'matching-name') }
-      let!(:other_name) { create(:cluster_agent, name: 'other-name') }
+      let_it_be(:matching_name) { create(:cluster_agent, name: 'matching-name') }
+      let_it_be(:other_name) { create(:cluster_agent, name: 'other-name') }
 
       subject { described_class.with_name(matching_name.name) }
 
@@ -156,7 +156,7 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
     end
 
     context 'agent has multiple tokens' do
-      let!(:inactive_token) { create(:cluster_agent_token, agent: agent, last_used_at: 2.hours.ago) }
+      let_it_be(:inactive_token) { create(:cluster_agent_token, agent: agent, last_used_at: 2.hours.ago) }
       let(:last_used_at) { 2.minutes.ago }
 
       it { is_expected.to be_truthy }
@@ -186,14 +186,14 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
     let_it_be(:agent) { create(:cluster_agent, project: agent_management_project) }
     let_it_be(:deployment_project) { create(:project, group: organization) }
 
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     subject { agent.ci_access_authorized_for?(user) }
 
     it { is_expected.to eq(false) }
 
     context 'with project-level authorization' do
-      let!(:authorization) { create(:agent_ci_access_project_authorization, agent: agent, project: deployment_project) }
+      let_it_be(:authorization) { create(:agent_ci_access_project_authorization, agent: agent, project: deployment_project) }
 
       where(:user_role, :allowed) do
         :guest       | false
@@ -213,7 +213,7 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
     end
 
     context 'with group-level authorization' do
-      let!(:authorization) { create(:agent_ci_access_group_authorization, agent: agent, group: organization) }
+      let_it_be(:authorization) { create(:agent_ci_access_group_authorization, agent: agent, group: organization) }
 
       where(:user_role, :allowed) do
         :guest       | false
@@ -241,14 +241,14 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
     let_it_be(:agent) { create(:cluster_agent, project: agent_management_project) }
     let_it_be(:deployment_project) { create(:project, group: organization) }
 
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     subject { agent.user_access_authorized_for?(user) }
 
     it { is_expected.to eq(false) }
 
     context 'with project-level authorization' do
-      let!(:authorization) { create(:agent_user_access_project_authorization, agent: agent, project: deployment_project) }
+      let_it_be(:authorization) { create(:agent_user_access_project_authorization, agent: agent, project: deployment_project) }
 
       where(:user_role, :allowed) do
         :guest       | false
@@ -268,7 +268,7 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
     end
 
     context 'with group-level authorization' do
-      let!(:authorization) { create(:agent_user_access_group_authorization, agent: agent, group: organization) }
+      let_it_be(:authorization) { create(:agent_user_access_group_authorization, agent: agent, group: organization) }
 
       where(:user_role, :allowed) do
         :guest       | false

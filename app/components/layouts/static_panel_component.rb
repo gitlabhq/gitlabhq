@@ -18,7 +18,6 @@ module Layouts
       @page_breadcrumbs_in_top_bar_feature_flag = page_breadcrumbs_in_top_bar_feature_flag
     end
 
-    renders_one :broadcasts
     renders_one :header
     renders_one :actions
     renders_one :before_body

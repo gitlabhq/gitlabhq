@@ -7,12 +7,10 @@ RSpec.describe Projects::ClustersController, feature_category: :deployment_manag
   include GoogleApi::CloudPlatformHelpers
   include KubernetesHelpers
 
-  let_it_be_with_reload(:project) { create(:project) }
-
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, maintainers: user) }
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -23,8 +21,8 @@ RSpec.describe Projects::ClustersController, feature_category: :deployment_manag
 
     describe 'functionality' do
       context 'when project has one or more clusters' do
-        let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, projects: [project]) }
+        let_it_be(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+        let_it_be(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, projects: [project]) }
 
         include_examples ':certificate_based_clusters feature flag index responses' do
           let(:subject) { go }
@@ -230,7 +228,7 @@ RSpec.describe Projects::ClustersController, feature_category: :deployment_manag
   end
 
   describe 'PUT update_migration' do
-    let(:cluster) { create(:cluster, :project, projects: [project]) }
+    let_it_be(:cluster) { create(:cluster, :project, projects: [project]) }
     let(:redirect_path) { project_cluster_path(project, cluster, tab: 'migrate') }
 
     def go
@@ -259,7 +257,7 @@ RSpec.describe Projects::ClustersController, feature_category: :deployment_manag
   end
 
   describe 'DELETE clear cluster cache' do
-    let(:cluster) { create(:cluster, :project, projects: [project]) }
+    let_it_be(:cluster) { create(:cluster, :project, projects: [project]) }
     let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster) }
 
     def go
@@ -368,7 +366,7 @@ RSpec.describe Projects::ClustersController, feature_category: :deployment_manag
   end
 
   describe 'GET cluster_status' do
-    let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
+    let_it_be(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
 
     def go
       get :cluster_status,
@@ -413,7 +411,7 @@ RSpec.describe Projects::ClustersController, feature_category: :deployment_manag
   end
 
   describe 'GET show' do
-    let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+    let_it_be(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
     def go(tab: nil)
       get :show,

@@ -32,6 +32,7 @@ export default {
       default: false,
     },
   },
+  emits: ['cancel', 'confirm'],
   computed: {
     itemToBeDeleted() {
       return this.itemsToBeDeleted.length === 1 ? this.itemsToBeDeleted[0] : null;

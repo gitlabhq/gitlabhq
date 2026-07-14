@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::ArtifactFileReader, feature_category: :pipeline_composition do
-  let(:job) { create(:ci_build) }
+  let_it_be_with_reload(:job) { create(:ci_build) }
   let(:max_archive_size) { 5.megabytes }
   let(:max_file_size) { 5.megabytes }
 
@@ -86,8 +86,8 @@ RSpec.describe Gitlab::Ci::ArtifactFileReader, feature_category: :pipeline_compo
       end
 
       context 'when job artifact is on local storage' do
-        let!(:artifacts) { create(:ci_job_artifact, :archive, job: job) }
-        let!(:metadata) { create(:ci_job_artifact, :metadata, job: job) }
+        let_it_be(:artifacts) { create(:ci_job_artifact, :archive, job: job) }
+        let_it_be(:metadata) { create(:ci_job_artifact, :metadata, job: job) }
 
         it_behaves_like 'extracting job artifact archive'
       end

@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe Banzai::Pipeline::WikiPipeline, feature_category: :wiki do
   let_it_be(:namespace) { create(:namespace) }
   let_it_be(:project)   { create(:project, :public, namespace: namespace) }
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:wiki, freeze: false) { ProjectWiki.new(project, nil) }
   let_it_be(:page) { build(:wiki_page, wiki: wiki, title: 'nested/twice/start-page') }
 

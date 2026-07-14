@@ -245,7 +245,7 @@ module API
       end
       route_setting :authorization, permissions: :use_global_search, boundary_type: :user
       route_setting :mcp, tool_name: :gitlab_search_in_instance,
-        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
+        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::Search::SearchService]
       get do
         verify_search_scope_for_ee!(search_type)
         verify_ee_blob_search_params!(search_type)
@@ -279,7 +279,7 @@ module API
       end
       route_setting :authorization, permissions: :use_global_search, boundary_type: :group
       route_setting :mcp, tool_name: :gitlab_search_in_group,
-        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService],
+        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::Search::SearchService],
         resource_name: "group"
       get ':id/(-/)search' do
         additional_params = { group_id: user_group.id }
@@ -317,7 +317,7 @@ module API
       end
       route_setting :authorization, permissions: :use_global_search, boundary_type: :project
       route_setting :mcp, tool_name: :gitlab_search_in_project,
-        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService],
+        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::Search::SearchService],
         resource_name: "project"
       get ':id/(-/)search' do
         additional_params = { project_id: user_project.id, repository_ref: params[:ref] }

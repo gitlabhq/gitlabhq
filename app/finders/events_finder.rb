@@ -69,9 +69,7 @@ class EventsFinder
 
   # Filter events by organization. Since by_current_user_access already joins
   # on projects (filtering out group and personal namespace events), we can
-  # simply filter by projects.organization_id directly. This is more efficient
-  # than using Event.in_organization which builds a UNION query with branches
-  # for group and personal namespace events that would always return 0 rows.
+  # simply filter by projects.organization_id directly.
   #
   # rubocop: disable CodeReuse/ActiveRecord -- Finder pattern, query composition
   def by_organization(events)

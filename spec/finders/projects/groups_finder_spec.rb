@@ -11,7 +11,7 @@ RSpec.describe Projects::GroupsFinder do
     let_it_be(:shared_group_with_reporter_access) { create(:group, :public) }
 
     let_it_be(:public_project) { create(:project, :public, group: project_group) }
-    let_it_be(:private_project) { create(:project, :private, group: project_group) }
+    let_it_be(:private_project) { create(:project, :private, group: project_group, developers: user) }
 
     let(:params) { {} }
     let(:current_user) { user }
@@ -62,8 +62,8 @@ RSpec.describe Projects::GroupsFinder do
           end
 
           context 'when user has access to the private shared group' do
-            before do
-              shared_group_with_dev_access.add_guest(current_user)
+            before_all do
+              shared_group_with_dev_access.add_guest(user)
             end
 
             it 'returns ancestor and shared groups user has access to' do
@@ -112,10 +112,6 @@ RSpec.describe Projects::GroupsFinder do
     context 'Private project' do
       it_behaves_like 'finding related groups' do
         let(:project) { private_project }
-
-        before do
-          project.add_developer(user)
-        end
 
         context 'when user is not authorized' do
           let(:current_user) { nil }

@@ -18,7 +18,7 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
     click_link 'Create blank project'
     fill_in(:project_name, with: 'Empty')
 
-    click_on 'Pick a group or namespace'
+    click_on 'Select a group or namespace'
     select_listbox_item user.username
 
     expect(page).to have_checked_field 'Initialize repository with a README'
@@ -47,7 +47,7 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
     click_link 'Create blank project'
     fill_in(:project_name, with: 'With initial commits')
 
-    click_on 'Pick a group or namespace'
+    click_on 'Select a group or namespace'
     select_listbox_item user.username
 
     expect(page).to have_checked_field 'Initialize repository with a README'
@@ -81,7 +81,7 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
       click_button 'Experimental settings'
       fill_in(:project_name, with: 'With initial commits')
 
-      click_on 'Pick a group or namespace'
+      click_on 'Select a group or namespace'
       select_listbox_item user.username
 
       expect(page).to have_checked_field 'Initialize repository with a README'
@@ -133,7 +133,7 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
       fill_in :project_name, with: 'A Subgroup Project'
       fill_in :project_path, with: 'a-subgroup-project'
 
-      click_on 'Pick a group or namespace'
+      click_on 'Select a group or namespace'
       select_listbox_item subgroup.full_path
 
       click_button('Create project')
@@ -162,7 +162,7 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
       fill_in :project_name, with: 'a-new-project'
       fill_in :project_path, with: 'a-new-project'
 
-      click_on 'Pick a group or namespace'
+      click_on 'Select a group or namespace'
       select_listbox_item group.full_path
 
       page.within('#content-body') do
@@ -190,7 +190,7 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
       click_link 'Create blank project'
       fill_in(:project_name, with: 'With Default Integration')
 
-      click_on 'Pick a group or namespace'
+      click_on 'Select a group or namespace'
       select_listbox_item user.username
 
       page.within('#content-body') do

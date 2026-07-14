@@ -12,11 +12,7 @@ RSpec.describe Resolvers::NestedGroupsResolver, feature_category: :groups_and_pr
     let_it_be(:subgroup2) { create(:group, parent: subgroup1, name: 'Test Subgroup 2') }
     let_it_be(:private_subgroup1) { create(:group, :private, parent: private_group, name: 'Subgroup1') }
     let_it_be(:private_subgroup2) { create(:group, :private, parent: private_subgroup1, name: 'Subgroup2') }
-    let_it_be(:user) { create(:user) }
-
-    before_all do
-      private_group.add_developer(user)
-    end
+    let_it_be(:user) { create(:user, developer_of: private_group) }
 
     shared_examples 'access to all public descendant groups' do
       it 'returns all public descendant groups of the parent group ordered by ASC name' do
@@ -70,8 +66,11 @@ RSpec.describe Resolvers::NestedGroupsResolver, feature_category: :groups_and_pr
           it_behaves_like 'access to all public descendant groups'
 
           context 'with owned argument set as true' do
+            before_all do
+              subgroup1.add_owner(user)
+            end
+
             before do
-              subgroup1.add_owner(current_user)
               params[:owned] = true
             end
 

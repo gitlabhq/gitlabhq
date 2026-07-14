@@ -153,7 +153,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
 
       context 'when user signed in initially with another omniauth provider (github)' do
         let(:provider_github) { 'github' }
-        let(:provider_github_config) { GitlabSettings::Options.new(name: provider_github) }
+        let(:provider_github_config) { Gitlab::Configs.build_options(name: provider_github) }
         let(:provider_github_extern_uid) { 'github_user_uid' }
 
         before do

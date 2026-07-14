@@ -36,6 +36,12 @@ class ProjectCiCdSetting < ApplicationRecord
 
   enum :resource_group_default_process_mode, ::Ci::ResourceGroup::RESOURCE_GROUP_PROCESS_MODES, prefix: true
 
+  enum :merge_train_enforcement, {
+    allow_bypass: 0,
+    enforce_for_all_users: 1,
+    enforce_with_owner_override: 2
+  }, prefix: true
+
   before_validation :set_pipeline_variables_secure_defaults, on: :create
   before_create :set_default_git_depth
 
@@ -65,6 +71,7 @@ class ProjectCiCdSetting < ApplicationRecord
 
   attribute :display_pipeline_variables, default: false
   attribute :forward_deployment_enabled, default: true
+  attribute :skip_branch_pipelines_for_mrs, default: false
   attribute :separated_caches, default: true
   validates :merge_trains_skip_train_allowed, inclusion: { in: [true, false] }
   validates :max_pipelines_per_merge_train,
@@ -142,6 +149,8 @@ class ProjectCiCdSetting < ApplicationRecord
   private
 
   def set_pipeline_variables_secure_defaults
+    return unless project.namespace
+
     self.pipeline_variables_minimum_override_role = project.root_namespace.pipeline_variables_default_role
   end
 

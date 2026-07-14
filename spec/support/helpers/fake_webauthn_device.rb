@@ -13,6 +13,7 @@ class FakeWebauthnDevice
 
   def respond_to_webauthn_registration
     app_id = @page.evaluate_script('window.location.origin')
+    wait_for_webauthn_options
     challenge = @page.evaluate_script('gon.webauthn.options.challenge')
 
     options = {
@@ -31,8 +32,9 @@ class FakeWebauthnDevice
     JS
   end
 
-  def respond_to_webauthn_authentication(passkey: nil)
+  def respond_to_webauthn_authentication
     app_id = @page.evaluate_script('window.location.origin')
+    wait_for_webauthn_options
     challenge = @page.evaluate_script('JSON.parse(gon.webauthn.options).challenge')
 
     options = {
@@ -59,11 +61,10 @@ class FakeWebauthnDevice
       };
     JS
 
-    if passkey
-      @page.click_button(_('Try again'))
-    else
-      @page.click_button(_('Try again?'))
-    end
+    # Each retry affordance renders a "Try again" button (the legacy 2FA screen labels it
+    # "Try again?", which Capybara substring-matches). click_button auto-waits, so this drives
+    # whichever screen rendered (Vue 2FA, legacy 2FA, or passkey sign-in) without a racy probe.
+    @page.click_button(_('Try again'))
   end
 
   def fake_webauthn_authentication
@@ -85,6 +86,16 @@ class FakeWebauthnDevice
   end
 
   private
+
+  # Submitting the sign-in form navigates to the 2FA page, which is what
+  # populates `gon.webauthn`. Wait for it before reading the challenge,
+  # otherwise this can run before the new page has loaded and
+  # `gon.webauthn` is still undefined.
+  def wait_for_webauthn_options
+    WaitHelpers.wait_for('gon.webauthn to be populated') do
+      @page.evaluate_script('Boolean(window.gon && gon.webauthn && gon.webauthn.options)')
+    end
+  end
 
   def webauthn_device(app_id)
     @webauthn_device ||= WebAuthn::FakeClient.new(app_id)

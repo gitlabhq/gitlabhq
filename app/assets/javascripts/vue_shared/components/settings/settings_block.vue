@@ -25,6 +25,7 @@ export default {
       required: false,
     },
   },
+  emits: ['toggle-expand'],
   data() {
     return {
       localExpanded: window.location.hash?.replace('#', '') === this.id || this.expanded,

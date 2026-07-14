@@ -33,6 +33,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         )
 
         expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}))
 
         client.diff_from_parent(commit)
       end
@@ -58,6 +59,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         )
 
         expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}))
 
         client.diff_from_parent(initial_commit)
       end
@@ -72,6 +74,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
             .with(hash_including(whitespace_changes: Gitaly::CommitDiffRequest::WhitespaceChanges::WHITESPACE_CHANGES_IGNORE_ALL)).and_return(request)
 
           expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
+            .and_return(instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}))
 
           client.diff_from_parent(commit, ignore_whitespace_change: true)
         end
@@ -85,6 +88,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
             .with(hash_not_including(:whitespace_changes)).and_return(request)
 
           expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
+            .and_return(instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}))
 
           client.diff_from_parent(commit, ignore_whitespace_change: false)
         end
@@ -99,6 +103,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           .with(hash_not_including(:whitespace_changes)).and_return(request)
 
         expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: nil, trailing_metadata: {}))
 
         client.diff_from_parent(commit)
       end
@@ -124,7 +129,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           right_commit_id: commit.id
         )
 
-        expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_delta).with(request, kind_of(Hash)).and_return([])
+        expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_delta).with(request, kind_of(Hash)).and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
         client.commit_deltas(commit)
       end
@@ -139,7 +144,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           right_commit_id: initial_commit.id
         )
 
-        expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_delta).with(request, kind_of(Hash)).and_return([])
+        expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_delta).with(request, kind_of(Hash)).and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
         client.commit_deltas(initial_commit)
       end
@@ -159,7 +164,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         stats: [{ additions: 1, deletions: 2, path: 'test' }])
 
       expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:diff_stats)
-        .with(request, kind_of(Hash)).and_return([diff_stat_response])
+        .with(request, kind_of(Hash)).and_return(instance_double(GRPC::ActiveCall::Operation, execute: [diff_stat_response], trailing_metadata: {}))
 
       returned_value = described_class.new(repository).diff_stats(left_commit_id, right_commit_id)
 
@@ -530,7 +535,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         expect_any_instance_of(Gitaly::DiffService::Stub)
           .to receive(:find_changed_paths)
           .with(request, kind_of(Hash))
-          .and_return([response])
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [response], trailing_metadata: {}))
 
         result = described_class.new(repository)
           .find_changed_paths([tree_object])
@@ -591,7 +596,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::CommitService::Stub)
         .to receive(:get_tree_entries)
         .with(gitaly_request_with_params({ pagination_params: expected_pagination_params }), kind_of(Hash))
-        .and_return([])
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       is_expected.to eq([[], nil])
     end
@@ -603,7 +608,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         expect_any_instance_of(Gitaly::CommitService::Stub)
           .to receive(:get_tree_entries)
                 .with(gitaly_request_with_params({ pagination_params: nil }), kind_of(Hash))
-                .and_return([])
+                .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
         is_expected.to eq([[], nil])
       end
@@ -617,7 +622,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         expect_any_instance_of(Gitaly::CommitService::Stub)
           .to receive(:get_tree_entries)
           .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-          .and_return([])
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
         is_expected.to eq([[], nil])
       end
@@ -637,7 +642,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         expect_any_instance_of(Gitaly::CommitService::Stub)
           .to receive(:get_tree_entries)
           .with(gitaly_request_with_params({ pagination_params: expected_pagination_params }), kind_of(Hash))
-          .and_return([response])
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [response], trailing_metadata: {}))
 
         is_expected.to eq([[], pagination_cursor])
       end
@@ -778,7 +783,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           revisions: [revision.b],
           first_parent: false
         ), kind_of(Hash))
-        .and_return(response)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       expect(client.commit_count(revision)).to eq(42)
     end
@@ -791,7 +796,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           revisions: ['master'.b],
           first_parent: false
         ), kind_of(Hash))
-        .and_return(response)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       expect(client.commit_count(['master'])).to eq(42)
     end
@@ -804,7 +809,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           revisions: ['--all'.b],
           first_parent: false
         ), kind_of(Hash))
-        .and_return(response)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       expect(client.commit_count('--all')).to eq(42)
     end
@@ -817,7 +822,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           revisions: ['master'.b, 'feature'.b],
           first_parent: false
         ), kind_of(Hash))
-        .and_return(response)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       expect(client.commit_count(%w[master feature])).to eq(42)
     end
@@ -830,7 +835,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           revisions: ['master..feature'.b],
           first_parent: false
         ), kind_of(Hash))
-        .and_return(response)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       expect(client.commit_count('master..feature')).to eq(42)
     end
@@ -843,7 +848,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           revisions: ['branch-2'.b, '--not'.b, 'branch-1'.b],
           first_parent: false
         ), kind_of(Hash))
-        .and_return(response)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       expect(client.commit_count(['branch-2', '--not', 'branch-1'])).to eq(42)
     end
@@ -862,7 +867,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           before: Google::Protobuf::Timestamp.new(seconds: before_time.to_i),
           path: 'app/'.b
         ), kind_of(Hash))
-        .and_return(response)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       expect(client.commit_count('master', path: 'app/', after: after_time, before: before_time)).to eq(42)
     end
@@ -888,7 +893,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
             first_parent: false,
             path: path.b
           ), kind_of(Hash))
-          .and_return(double(count: 0))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(count: 0), trailing_metadata: {}))
 
         client.commit_count(revision, path: path)
       end
@@ -904,7 +909,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
             first_parent: false,
             path: ' '.b
           ), kind_of(Hash))
-          .and_return(double(count: 1))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(count: 1), trailing_metadata: {}))
 
         expect(client.commit_count(revision, path: ' ')).to eq(1)
       end
@@ -920,7 +925,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       )
 
       expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit)
-        .with(request, kind_of(Hash)).and_return(double(commit: nil))
+        .with(request, kind_of(Hash)).and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(commit: nil), trailing_metadata: {}))
 
       described_class.new(repository).find_commit(revision)
     end
@@ -930,7 +935,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
       context 'when passed revision is a branch name' do
         it 'calls Gitaly' do
-          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).twice.and_return(double(commit: commit_dbl))
+          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).twice.and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(commit: commit_dbl), trailing_metadata: {}))
 
           commit = nil
           2.times { commit = described_class.new(repository).find_commit('master') }
@@ -941,7 +946,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
       context 'when passed revision is a commit ID' do
         it 'returns a cached commit' do
-          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).once.and_return(double(commit: commit_dbl))
+          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).once.and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(commit: commit_dbl), trailing_metadata: {}))
 
           commit = nil
           2.times { commit = described_class.new(repository).find_commit('f01b' * 10) }
@@ -952,7 +957,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
       context 'when caching of the ref name is enabled' do
         it 'caches negative entries' do
-          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).once.and_return(double(commit: nil))
+          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).once.and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(commit: nil), trailing_metadata: {}))
 
           commit = nil
           2.times do
@@ -965,7 +970,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         end
 
         it 'returns a cached commit' do
-          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).once.and_return(double(commit: commit_dbl))
+          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).once.and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(commit: commit_dbl), trailing_metadata: {}))
 
           commit = nil
           2.times do
@@ -1013,7 +1018,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
             skip: 100
           )
 
-          expect(service).to receive(:list_commits).with(expected_request, kind_of(Hash)).and_return([])
+          expect(service).to receive(:list_commits).with(expected_request, kind_of(Hash)).and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
         end
 
         client.list_commits(revisions, { reverse: reverse, author: author, ignore_case: ignore_case, commit_message_patterns: commit_message_patterns, before: before, after: after, pagination_params: pagination_params })
@@ -1054,7 +1059,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
           expect(service).to receive(:list_commits) do |request, _options|
             expect(request.paths).to eq([Gitlab::EncodingHelper.encode_binary('files/ruby/popen.rb')])
-          end.and_return([])
+          end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
         end
 
         client.list_commits('master', { path: 'files/ruby/popen.rb' })
@@ -1064,7 +1069,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
           expect(service).to receive(:list_commits) do |request, _options|
             expect(request.paths).to be_empty
-          end.and_return([])
+          end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
         end
 
         client.list_commits('master', { path: '' })
@@ -1080,7 +1085,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
           expect(service).to receive(:list_commits) do |request, _options|
             expect(request.global_options).to eq(Gitaly::GlobalOptions.new(literal_pathspecs: true))
-          end.and_return([])
+          end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
         end
 
         client.list_commits('master', { literal_pathspec: true })
@@ -1132,7 +1137,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
           expect(service).to receive(:list_all_commits)
             .with(gitaly_request_with_params(repository: expected_repository), kind_of(Hash))
-            .and_return([Gitaly::ListAllCommitsResponse.new(commits: gitaly_commits)])
+            .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [Gitaly::ListAllCommitsResponse.new(commits: gitaly_commits)], trailing_metadata: {}))
 
           objects_exist_response = Gitaly::CheckObjectsExistResponse.new(revisions: revision_existence.map do
             |rev, exists| Gitaly::CheckObjectsExistResponse::RevisionExistence.new(name: rev, exists: exists)
@@ -1140,7 +1145,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
           expect(service).to receive(:check_objects_exist)
             .with(expected_object_exist_requests, kind_of(Hash))
-            .and_return([objects_exist_response])
+            .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [objects_exist_response], trailing_metadata: {}))
         end
 
         expect(subject).to eq(expected_commits)
@@ -1152,7 +1157,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
           expect(service).to receive(:list_commits)
             .with(gitaly_request_with_params(revisions: revisions + %w[--not --all]), kind_of(Hash))
-            .and_return([Gitaly::ListCommitsResponse.new(commits: gitaly_commits)])
+            .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [Gitaly::ListCommitsResponse.new(commits: gitaly_commits)], trailing_metadata: {}))
         end
 
         expect(subject).to eq(expected_commits)
@@ -1249,7 +1254,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
     it 'sends an RPC request' do
       expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:commit_stats)
-        .with(request, kind_of(Hash)).and_return(response)
+        .with(request, kind_of(Hash)).and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
 
       expect(subject.additions).to eq(11)
       expect(subject.deletions).to eq(15)
@@ -1266,7 +1271,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       )
 
       expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commits)
-        .with(request, kind_of(Hash)).and_return([])
+        .with(request, kind_of(Hash)).and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.find_commits(order: 'default')
     end
@@ -1280,7 +1285,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       )
 
       expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commits)
-        .with(request, kind_of(Hash)).and_return([])
+        .with(request, kind_of(Hash)).and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.find_commits(order: 'topo')
     end
@@ -1295,7 +1300,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       )
 
       expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commits)
-        .with(request, kind_of(Hash)).and_return([])
+        .with(request, kind_of(Hash)).and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.find_commits(order: 'default', author: "Billy Baggins <bilbo@shire.com>")
     end
@@ -1311,7 +1316,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
       expect_any_instance_of(Gitaly::CommitService::Stub)
         .to receive(:find_commits).with(request, kind_of(Hash))
-        .and_return([])
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.find_commits(message_regex: '^foo')
     end
@@ -1326,7 +1331,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       )
 
       expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commits)
-        .with(request, kind_of(Hash)).and_return([])
+        .with(request, kind_of(Hash)).and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.find_commits(order: 'default', path: ' ')
     end
@@ -1407,7 +1412,9 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         allow_any_instance_of(Gitaly::CommitService::Stub)
           .to receive(:commits_by_message)
           .with(request, kind_of(Hash))
-          .and_return([Gitaly::CommitsByMessageResponse.new(commits: commits)])
+          .and_return(instance_double(GRPC::ActiveCall::Operation,
+            execute: [Gitaly::CommitsByMessageResponse.new(commits: commits)],
+            trailing_metadata: {}))
       end
 
       it 'sends an RPC request with the correct payload' do
@@ -1626,16 +1633,18 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       it 'includes committer email in the signature' do
         # Mock Gitaly response with committer email
         allow_any_instance_of(Gitaly::CommitService::Stub).to receive(:get_commit_signatures) do
-          [
-            Gitaly::GetCommitSignaturesResponse.new(
-              commit_id: signed_by_user.first,
-              signature: 'test-signature',
-              signed_text: 'test-signed-text',
-              signer: :SIGNER_USER,
-              author: Gitaly::CommitAuthor.new(email: 'author@example.com'),
-              committer: Gitaly::CommitAuthor.new(email: 'committer@example.com')
-            )
-          ]
+          instance_double(GRPC::ActiveCall::Operation,
+            execute: [
+              Gitaly::GetCommitSignaturesResponse.new(
+                commit_id: signed_by_user.first,
+                signature: 'test-signature',
+                signed_text: 'test-signed-text',
+                signer: :SIGNER_USER,
+                author: Gitaly::CommitAuthor.new(email: 'author@example.com'),
+                committer: Gitaly::CommitAuthor.new(email: 'committer@example.com')
+              )
+            ],
+            trailing_metadata: {})
         end
 
         signatures = client.get_commit_signatures([signed_by_user.first])
@@ -1647,16 +1656,18 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
     describe 'presence logic edge cases' do
       before do
         allow_any_instance_of(Gitaly::CommitService::Stub).to receive(:get_commit_signatures) do
-          [
-            Gitaly::GetCommitSignaturesResponse.new(
-              commit_id: signed_by_user.first,
-              signature: 'test-signature',
-              signed_text: 'test-signed-text',
-              signer: :SIGNER_USER,
-              author: Gitaly::CommitAuthor.new(email: 'author@example.com'),
-              committer: committer
-            )
-          ]
+          instance_double(GRPC::ActiveCall::Operation,
+            execute: [
+              Gitaly::GetCommitSignaturesResponse.new(
+                commit_id: signed_by_user.first,
+                signature: 'test-signature',
+                signed_text: 'test-signed-text',
+                signer: :SIGNER_USER,
+                author: Gitaly::CommitAuthor.new(email: 'author@example.com'),
+                committer: committer
+              )
+            ],
+            trailing_metadata: {})
         end
       end
 
@@ -1709,7 +1720,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::CommitService::Stub)
         .to receive(:commit_languages)
         .with(kind_of(Gitaly::CommitLanguagesRequest), kind_of(Hash))
-        .and_return(response)
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {}))
     end
 
     context 'when language_id is zero' do

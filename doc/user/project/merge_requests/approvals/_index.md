@@ -17,6 +17,9 @@ To set up a review process for changes in your project, configure merge request 
 They help to ensure that changes are reviewed before they're merged into your project.
 You can configure approvals to be optional or required, depending on your project's needs and GitLab tier.
 
+For information on how approvals relate to assignees and reviewers, see
+[assignees and reviewers](../_index.md#assignees-and-reviewers).
+
 - [GitLab Free](https://about.gitlab.com/pricing/) allows
   all users with at least the Developer [role](../../../permissions.md) to
   approve merge requests. These approvals are optional and don't prevent merging without approval.

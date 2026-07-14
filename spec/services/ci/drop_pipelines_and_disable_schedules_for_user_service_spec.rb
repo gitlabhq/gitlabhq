@@ -6,7 +6,7 @@ RSpec.describe Ci::DropPipelinesAndDisableSchedulesForUserService, feature_categ
   describe '#execute' do
     let_it_be(:user) { create(:user) }
 
-    let_it_be(:user_personal_projects) { create_list(:project, 2, :repository, namespace: user.namespace) }
+    let_it_be(:user_personal_projects) { create_list(:project, 2, namespace: user.namespace) }
 
     let_it_be(:group) do
       create(:group) do |group|
@@ -27,12 +27,12 @@ RSpec.describe Ci::DropPipelinesAndDisableSchedulesForUserService, feature_categ
       end
     end
 
-    let_it_be(:group_projects) { create_list(:project, 2, :repository, namespace: group) }
+    let_it_be(:group_projects) { create_list(:project, 2, namespace: group) }
     let_it_be(:subgroup_projects) do
-      create_list(:project, 2, :repository, namespace: subgroup)
+      create_list(:project, 2, namespace: subgroup)
     end
 
-    let_it_be(:other_user_personal_projects) { create_list(:project, 2, :repository, namespace: other_user.namespace) }
+    let_it_be(:other_user_personal_projects) { create_list(:project, 2, namespace: other_user.namespace) }
 
     subject(:service) { described_class.new.execute(user) }
 
@@ -164,7 +164,7 @@ RSpec.describe Ci::DropPipelinesAndDisableSchedulesForUserService, feature_categ
           described_class.new.execute(user)
         end.count
 
-        extra_projects = create_list(:project, 2, :repository, namespace: group)
+        extra_projects = create_list(:project, 2, namespace: group)
 
         [extra_projects, user_personal_projects, group_projects, subgroup_projects].flat_map do |projects|
           projects.flat_map do |project|
@@ -230,7 +230,7 @@ RSpec.describe Ci::DropPipelinesAndDisableSchedulesForUserService, feature_categ
             described_class.new.execute(user, include_owned_projects_and_groups: true)
           end.count
 
-          extra_projects = create_list(:project, 2, :repository, namespace: group)
+          extra_projects = create_list(:project, 2, namespace: group)
 
           [user_personal_projects, extra_projects, group_projects, subgroup_projects].flat_map do |projects|
             projects.flat_map do |project|

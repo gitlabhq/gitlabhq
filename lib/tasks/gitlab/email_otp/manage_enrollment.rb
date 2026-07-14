@@ -149,7 +149,6 @@ module Tasks
           puts "Applying to existing enrollment date (target cohort): #{@existing_enrol_at}"
           puts "Batch Size: #{@batch_size}"
           puts "Sleep between batches: #{@batch_sleep}s"
-          puts "Feature Flag (:email_based_mfa) enabled: #{::Feature.enabled?(:email_based_mfa) ? 'Yes' : 'No'}" # rubocop:disable Gitlab/FeatureFlagWithoutActor -- We explicitly want to validate it is enabled for all actors
           puts "Application Setting (email_otp_enabled) enabled: " \
             "#{::Gitlab::CurrentSettings.email_otp_enabled? ? 'Yes' : 'No'}"
 

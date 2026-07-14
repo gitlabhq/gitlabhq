@@ -16,7 +16,7 @@ module BulkImports
     def perform
       Gitlab::Pagination::Keyset::Iterator.new(scope: bulk_import_scope).each_batch do |imports|
         imports.each do |import|
-          logger.error(message: 'BulkImport stale', bulk_import_id: import.id)
+          logger.with_bulk_import(import).error(message: 'BulkImport stale', bulk_import_id: import.id)
           import.cleanup_stale
         end
       end

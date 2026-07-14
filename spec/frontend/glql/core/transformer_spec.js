@@ -11,12 +11,25 @@ describe('transform', () => {
   const mockData = { project: { workItems: { nodes: [] } } };
   const mockFields = 'title, state';
   const mockMode = 'analytics';
+  const mockSource = 'WorkItems';
 
   afterEach(() => {
     jest.resetAllMocks();
   });
 
-  it('passes fields and mode to glql.transform', async () => {
+  it('passes fields, mode, and source to glql.transform', async () => {
+    glql.transform.mockResolvedValue({ success: true, data: { nodes: [] } });
+
+    await transform(mockData, { fields: mockFields, mode: mockMode, source: mockSource });
+
+    expect(glql.transform).toHaveBeenCalledWith(mockData, {
+      fields: mockFields,
+      mode: mockMode,
+      source: mockSource,
+    });
+  });
+
+  it('passes undefined source when not provided', async () => {
     glql.transform.mockResolvedValue({ success: true, data: { nodes: [] } });
 
     await transform(mockData, { fields: mockFields, mode: mockMode });
@@ -24,6 +37,7 @@ describe('transform', () => {
     expect(glql.transform).toHaveBeenCalledWith(mockData, {
       fields: mockFields,
       mode: mockMode,
+      source: undefined,
     });
   });
 
@@ -31,7 +45,11 @@ describe('transform', () => {
     const expectedData = { nodes: [{ title: 'Issue 1' }], pageInfo: { hasNextPage: false } };
     glql.transform.mockResolvedValue({ success: true, data: expectedData });
 
-    const result = await transform(mockData, { fields: mockFields, mode: mockMode });
+    const result = await transform(mockData, {
+      fields: mockFields,
+      mode: mockMode,
+      source: mockSource,
+    });
 
     expect(result).toEqual(expectedData);
   });
@@ -39,8 +57,8 @@ describe('transform', () => {
   it('throws an error when result is not successful', async () => {
     glql.transform.mockResolvedValue({ success: false, error: 'Transform failed' });
 
-    await expect(transform(mockData, { fields: mockFields, mode: mockMode })).rejects.toThrow(
-      'Transform failed',
-    );
+    await expect(
+      transform(mockData, { fields: mockFields, mode: mockMode, source: mockSource }),
+    ).rejects.toThrow('Transform failed');
   });
 });

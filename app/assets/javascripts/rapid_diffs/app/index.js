@@ -48,8 +48,14 @@ export class RapidDiffsFacade {
     this.#initHeader();
     this.#initSidebar()
       .then(() => {
-        if (useDiffsView(pinia).singleFileMode && this.#lazy) {
-          useDiffsView(pinia).loadCurrentFile();
+        if (useDiffsView(pinia).singleFileMode) {
+          useDiffsView(pinia).resolveInitialFileIndex({
+            linkedFileData: this.appData.linkedFileData,
+          });
+
+          if (this.#lazy) {
+            useDiffsView(pinia).loadCurrentFile();
+          }
         }
       })
       .catch(() => {});

@@ -21,7 +21,7 @@ RSpec.describe Import::SourceUsers::ResendNotificationService, feature_category:
         result = service.execute
 
         expect(result).to be_success
-        expect(result.payload.awaiting_approval?).to eq(true)
+        expect(result.payload.awaiting_approval?).to be(true)
       end
     end
 

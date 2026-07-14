@@ -28,6 +28,7 @@ module Banzai
     #
     class WikiLinkGollumFilter < HTML::Pipeline::Filter
       prepend Concerns::PipelineTimingCheck
+      include Concerns::ContextAccessors
 
       # Pattern to match allowed image extensions
       ALLOWED_IMAGE_EXTENSIONS = /(jpg|png|gif|svg|bmp)\z/i
@@ -89,8 +90,8 @@ module Banzai
           node.add_class('gfm-gollum-wiki-page')
 
           node['data-reference-type'] = 'wiki_page'
-          node['data-project'] = context[:project].id if context[:project]
-          node['data-group'] = context[:group]&.id if context[:group]
+          node['data-project'] = project.id if project
+          node['data-group'] = group&.id if group
         end
       end
 
@@ -102,7 +103,7 @@ module Banzai
       end
 
       def wiki
-        context[:wiki] || context[:project]&.wiki || context[:group]&.wiki
+        context[:wiki] || project&.wiki || group&.wiki
       end
 
       def wiki_base_path

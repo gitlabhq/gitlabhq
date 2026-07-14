@@ -3,7 +3,13 @@ import { nextTick } from 'vue';
 import Api from '~/api';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { visitUrl, setUrlParams, getNormalizedURL, updateHistory } from '~/lib/utils/url_utility';
+import {
+  visitUrl,
+  setUrlParams,
+  getNormalizedURL,
+  updateHistory,
+  queryToObject,
+} from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import { SCOPE_BLOB, SEARCH_TYPE_ZOEKT, LABEL_FILTER_PARAM } from '~/search/sidebar/constants';
@@ -14,13 +20,13 @@ import {
   REGEX_PARAM,
   LS_REGEX_HANDLE,
 } from '~/search/store/constants';
+import { searchAggregationsPath } from '~/lib/utils/path_helpers/routes';
 import * as types from './mutation_types';
 import {
   loadDataFromLS,
   setFrequentItemToLS,
   mergeById,
   isSidebarDirty,
-  getAggregationsUrl,
   prepareSearchAggregations,
   setDataToLS,
   buildDocumentTitle,
@@ -233,7 +239,7 @@ export const setLabelFilterSearch = ({ commit }, { value }) => {
 export const fetchAllAggregation = ({ commit, state }) => {
   commit(types.REQUEST_AGGREGATIONS);
   return axios
-    .get(getAggregationsUrl())
+    .get(searchAggregationsPath(queryToObject(window.location.search, { gatherArrays: true })))
     .then(({ data }) => {
       commit(types.RECEIVE_AGGREGATIONS_SUCCESS, prepareSearchAggregations(state, data));
     })

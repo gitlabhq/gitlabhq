@@ -2,9 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespace::AdminNote, type: :model do
-  let!(:namespace) { create(:namespace) }
-
+RSpec.describe Namespace::AdminNote, type: :model, feature_category: :groups_and_projects do
   describe 'associations' do
     it { is_expected.to belong_to :namespace }
   end

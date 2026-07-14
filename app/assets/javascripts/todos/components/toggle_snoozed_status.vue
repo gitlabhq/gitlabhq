@@ -10,6 +10,7 @@ import unSnoozeTodoMutation from './mutations/un_snooze_todo.mutation.graphql';
 import SnoozeTimePicker from './todo_snooze_until_picker.vue';
 
 export default {
+  name: 'ToggleSnoozedStatus',
   components: {
     GlButton,
     SnoozeTimePicker,

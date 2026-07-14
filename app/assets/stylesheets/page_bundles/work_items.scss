@@ -23,9 +23,9 @@ $work-item-overview-gap-width: 2rem;
 }
 
 .work-item-detail-panel {
-  @apply gl-pt-0;
   // a slight padding is added to the panel itself so that scrollbar does not get covered by the rounded edge of the panel
   // we're using padding instead of margin so that fixed elements connect with the bottom edge of the panel
+  @apply gl-pt-0;
   @apply gl-pb-3;
   @apply gl-h-full;
   @apply gl-bg-default;
@@ -46,6 +46,7 @@ $work-item-overview-gap-width: 2rem;
   @apply gl-relative;
   @apply gl-pl-[--container-padding-x];
   @apply gl-pr-3;
+  @apply gl-py-2;
   @apply gl-border-b;
   z-index: $panel-header-inner-z-index;
   min-height: $panel-header-inner-height;
@@ -404,9 +405,10 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   .sticky-filter {
     @apply gl-bg-default;
     @apply gl-left-0;
+    @apply gl-pt-2;
+    @apply gl-pb-3;
+    @apply gl-px-[--container-padding-x];
     @apply gl-border-b;
-    @apply gl-py-3;
-    @apply gl-px-5;
   }
 }
 
@@ -554,4 +556,11 @@ ul.content-list {
   .gl-avatar-labeled-sublabel {
     color: var(--gl-text-color-disabled);
   }
+}
+
+// GlDrawer's default max-height uses the viewport (100vh), which is too tall here and cuts
+// off the bottom of the drawer. Size it to the panel instead so it scrolls fully.
+// stylelint-disable-next-line gitlab/no-gl-class -- overriding GlDrawer's inline max-height
+.work-item-display-settings-drawer.gl-drawer {
+  max-height: calc(100% - var(--drawer-top-offset, 0px)) !important;
 }

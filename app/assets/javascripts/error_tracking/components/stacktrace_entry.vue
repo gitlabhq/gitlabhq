@@ -5,6 +5,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 
 export default {
+  name: 'StacktraceEntry',
   components: {
     ClipboardButton,
     FileIcon,

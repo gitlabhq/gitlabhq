@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Admin::Registrations::GroupsController, feature_category: :onboarding do
-  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be(:admin) { create(:admin) }
   let_it_be(:regular_user) { create(:user) }
 
   describe 'GET /admin/registrations/groups/new' do

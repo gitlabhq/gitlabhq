@@ -8,7 +8,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   include SortingPreference
   include FiltersEvents
 
-  prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
+  prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss, permission: :read_project) }
   before_action :set_non_archived_param, only: [:index]
   before_action :set_sorting
   skip_cross_project_access_check :index

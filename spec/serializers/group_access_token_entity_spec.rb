@@ -24,7 +24,7 @@ RSpec.describe GroupAccessTokenEntity do
   subject(:json) {  described_class.new(token, group: group).as_json }
 
   context 'when bot is a member of the group' do
-    before do
+    before_all do
       group.add_developer(bot)
     end
 

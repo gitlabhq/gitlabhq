@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::HookData::WikiPageBuilder, feature_category: :wiki do
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let(:content) { 'test content' }
   let(:wiki_page) { create(:wiki_page, container: project, content: content) }
   let(:builder) { described_class.new(wiki_page) }

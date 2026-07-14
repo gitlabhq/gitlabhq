@@ -16,6 +16,7 @@ import { getGitLabUrl } from './get_gitlab_url';
  * @returns
  */
 const buildBaseAssetsPath = (extensionHostDomainChanged) => {
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Assets path, not a Rails route
   const assetsRoot = extensionHostDomainChanged ? '/assets/webpack' : '/';
 
   return joinPaths(assetsRoot, `gitlab-web-ide-vscode-workbench-${packageJSON.version}`);

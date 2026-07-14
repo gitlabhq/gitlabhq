@@ -32,7 +32,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
-  it { is_expected.to have_many(:build_execution_configs).class_name('Ci::BuildExecutionConfig').inverse_of(:pipeline) }
 
   it do
     is_expected.to have_many(:statuses_order_id_desc)
@@ -328,7 +327,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     describe 'to completed' do
       # need pre-created object to avoid another InternalEvent being triggers in the models create hook
-      let!(:pipeline) { create(:ci_empty_pipeline, user: user, project: project) }
+      let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, user: user, project: project) }
 
       {
         succeed!: 'success',
@@ -638,6 +637,82 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe 'pipelines finished metrics', :prometheus do
+    let(:pipeline) { create(:ci_pipeline, :running, created_at: 2.minutes.ago) }
+
+    let(:finished_counter) { ::Gitlab::Ci::Pipeline::Metrics.pipelines_finished_counter }
+    let(:time_to_finished_histogram) { ::Gitlab::Ci::Pipeline::Metrics.pipeline_time_to_finished_histogram }
+
+    around do |example|
+      freeze_time { example.run }
+    end
+
+    where(:event, :status) do
+      [
+        [:succeed, 'success'],
+        [:drop, 'failed'],
+        [:cancel, 'canceled']
+      ]
+    end
+
+    with_them do
+      it 'increments the finished counter' do
+        expect { pipeline.public_send(event) }
+          .to change {
+            finished_counter.get(source: pipeline.source, status: status, partition_id: pipeline.partition_id)
+          }.by(1)
+      end
+
+      it 'observes the wall-clock time from creation to finished' do
+        expect(time_to_finished_histogram)
+          .to receive(:observe).with({ source: pipeline.source, status: status }, 120.0)
+
+        pipeline.public_send(event)
+      end
+
+      it 'records the run_pipeline user experience' do
+        expect(Labkit::UserExperienceSli).to receive(:observed).with(
+          :run_pipeline,
+          start_time: pipeline.created_at,
+          Labkit::Fields::GL_PIPELINE_ID.to_sym => pipeline.id,
+          Labkit::Fields::GL_PROJECT_ID.to_sym => pipeline.project_id,
+          pipeline_source: pipeline.source,
+          pipeline_status: status
+        )
+
+        pipeline.public_send(event)
+      end
+    end
+
+    context 'when transitioning to skipped' do
+      it 'does not emit the metrics' do
+        expect(time_to_finished_histogram).not_to receive(:observe)
+        expect(Labkit::UserExperienceSli).not_to receive(:observed)
+
+        expect { pipeline.skip }
+          .not_to change {
+            finished_counter.get(source: pipeline.source, status: 'skipped', partition_id: pipeline.partition_id)
+          }
+      end
+    end
+
+    context 'when ci_observe_pipelines_finished is disabled' do
+      before do
+        stub_feature_flags(ci_observe_pipelines_finished: false)
+      end
+
+      it 'does not emit the metrics' do
+        expect(time_to_finished_histogram).not_to receive(:observe)
+        expect(Labkit::UserExperienceSli).not_to receive(:observed)
+
+        expect { pipeline.succeed }
+          .not_to change {
+            finished_counter.get(source: pipeline.source, status: 'success', partition_id: pipeline.partition_id)
+          }
+      end
+    end
+  end
+
   describe '#set_status' do
     let(:pipeline) { build(:ci_empty_pipeline, :created) }
 
@@ -793,6 +868,26 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       expect(recorder.log).to include(a_string_matching(/ORDER BY.*p_ci_pipelines.*id.*DESC/i))
+    end
+  end
+
+  describe '.find_by_id_and_partition' do
+    let_it_be(:pipeline) { create(:ci_pipeline, partition_id: 100) }
+
+    context 'when partition_id is present' do
+      it 'scopes the lookup to the given partition' do
+        expect(described_class.find_by_id_and_partition(pipeline.id, 100)).to eq(pipeline)
+      end
+
+      it 'returns nil when the pipeline exists in a different partition' do
+        expect(described_class.find_by_id_and_partition(pipeline.id, 101)).to be_nil
+      end
+    end
+
+    context 'when partition_id is nil' do
+      it 'falls back to find_by_id' do
+        expect(described_class.find_by_id_and_partition(pipeline.id, nil)).to eq(pipeline)
+      end
     end
   end
 
@@ -1234,6 +1329,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     it 'returns pipelines sorted by created_at ascending and id ascending' do
       expect(pipelines_ordered_by_created_at_id).to eq([pipeline1, pipeline2, pipeline3])
+    end
+  end
+
+  describe '.order_updated_at_asc_id_asc', :freeze_time do
+    subject(:pipelines_ordered_by_updated_at_id) { described_class.order_updated_at_asc_id_asc }
+
+    let_it_be(:pipeline1) { create(:ci_pipeline, project: project, updated_at: 1.week.ago) }
+    let_it_be(:pipeline2) { create(:ci_pipeline, project: project, updated_at: 1.day.ago) }
+    let_it_be(:pipeline3) { create(:ci_pipeline, project: project, updated_at: 1.day.ago) }
+
+    it 'returns pipelines sorted by updated_at ascending and id ascending' do
+      expect(pipelines_ordered_by_updated_at_id).to eq([pipeline1, pipeline2, pipeline3])
     end
   end
 
@@ -1704,6 +1811,64 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it 'does not select the pipeline' do
         is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '.without_active_builds' do
+    subject { described_class.without_active_builds(pipeline_with_completed_build.partition_id) }
+
+    let_it_be(:pipeline_with_completed_build) do
+      create(:ci_pipeline, project: project).tap do |pipeline|
+        create(:ci_build, :success, pipeline: pipeline)
+      end
+    end
+
+    context 'with a pipeline that still has pending builds' do
+      let_it_be(:pipeline_with_pending_build) do
+        create(:ci_pipeline, project: project).tap do |pipeline|
+          pending_build = create(:ci_build, :pending, pipeline: pipeline)
+          Ci::PendingBuild.upsert_from_build!(pending_build)
+        end
+      end
+
+      it { is_expected.to contain_exactly(pipeline_with_completed_build) }
+    end
+
+    context 'with a pipeline that still has running builds' do
+      let_it_be(:pipeline_with_running_build) do
+        create(:ci_pipeline, project: project).tap do |pipeline|
+          running_build = create(:ci_build, :picked, pipeline: pipeline)
+          Ci::RunningBuild.upsert_build!(running_build)
+        end
+      end
+
+      it { is_expected.to contain_exactly(pipeline_with_completed_build) }
+    end
+
+    context 'with a pipeline that has an active build alongside a finished one' do
+      let_it_be(:pipeline_with_mixed_builds) do
+        create(:ci_pipeline, project: project).tap do |pipeline|
+          create(:ci_build, :success, pipeline: pipeline)
+          running_build = create(:ci_build, :picked, pipeline: pipeline)
+          Ci::RunningBuild.upsert_build!(running_build)
+        end
+      end
+
+      it 'excludes the pipeline that still has an active build' do
+        is_expected.to contain_exactly(pipeline_with_completed_build)
+      end
+    end
+
+    context 'with a pipeline that has multiple finished builds' do
+      let_it_be(:pipeline_with_multiple_finished_builds) do
+        create(:ci_pipeline, project: project).tap do |pipeline|
+          create_list(:ci_build, 2, :success, pipeline: pipeline)
+        end
+      end
+
+      it 'returns the pipeline once' do
+        is_expected.to contain_exactly(pipeline_with_completed_build, pipeline_with_multiple_finished_builds)
       end
     end
   end
@@ -3290,30 +3455,48 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#ensure_persistent_ref', :use_clean_rails_memory_store_caching do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
-    it 'creates persistent ref' do
-      expect { pipeline.ensure_persistent_ref }
-        .to change { pipeline.persistent_ref.exist? }.from(false).to(true)
-        .and not_change { pipeline.status }
-    end
-
-    context 'when persistent ref is already created' do
+    context 'when stop_ci_persistent_ref_creation is enabled for the project' do
       before do
-        pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang -- not ActiveRecord
+        stub_feature_flags(stop_ci_persistent_ref_creation_override: false)
       end
 
       it 'does not create persistent ref' do
         expect { pipeline.ensure_persistent_ref }
-          .to not_change { pipeline.persistent_ref.exist? }.from(true)
+          .to not_change { pipeline.persistent_ref.exist? }.from(false)
           .and not_change { pipeline.status }
       end
     end
 
-    context 'when persistent ref creation raises error' do
-      it 'drops the pipeline' do
-        expect(pipeline.persistent_ref).to receive(:create_ref).and_raise('Error')
+    context 'when stop_ci_persistent_ref_creation is disabled' do
+      before do
+        stub_feature_flags(stop_ci_persistent_ref_creation: false)
+      end
+
+      it 'creates persistent ref' do
         expect { pipeline.ensure_persistent_ref }
-          .to not_change { pipeline.persistent_ref.exist? }.from(false)
-          .and change { pipeline.status }.to('failed')
+          .to change { pipeline.persistent_ref.exist? }.from(false).to(true)
+          .and not_change { pipeline.status }
+      end
+
+      context 'when persistent ref is already created' do
+        before do
+          pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang -- not ActiveRecord
+        end
+
+        it 'does not create persistent ref' do
+          expect { pipeline.ensure_persistent_ref }
+            .to not_change { pipeline.persistent_ref.exist? }.from(true)
+            .and not_change { pipeline.status }
+        end
+      end
+
+      context 'when persistent ref creation raises error' do
+        it 'drops the pipeline' do
+          expect(pipeline.persistent_ref).to receive(:create_ref).and_raise('Error')
+          expect { pipeline.ensure_persistent_ref }
+            .to not_change { pipeline.persistent_ref.exist? }.from(false)
+            .and change { pipeline.status }.to('failed')
+        end
       end
     end
   end
@@ -3620,7 +3803,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#manual_actions' do
     subject { pipeline.manual_actions }
 
-    let(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, :created) }
 
     it 'when none defined' do
       is_expected.to be_empty
@@ -4203,7 +4386,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '.latest_pipeline_per_commit' do
-    let!(:commit_123_ref_master) do
+    let_it_be(:commit_123_ref_master) do
       create(
         :ci_empty_pipeline,
         status: 'success',
@@ -4212,7 +4395,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       )
     end
 
-    let!(:commit_123_ref_develop) do
+    let_it_be(:commit_123_ref_develop) do
       create(
         :ci_empty_pipeline,
         status: 'success',
@@ -4221,7 +4404,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       )
     end
 
-    let!(:commit_456_ref_test) do
+    let_it_be(:commit_456_ref_test) do
       create(
         :ci_empty_pipeline,
         status: 'success',
@@ -4305,6 +4488,97 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         expect(result).to match(
           '123' => commit_123_ref_master_parent_pipeline
         )
+      end
+    end
+
+    context 'with in_current_partition: true' do
+      let(:current_partition) { 101 }
+
+      # Only in the previous partition, so it can only be found via the fallback.
+      let_it_be(:old_only) do
+        create(:ci_empty_pipeline, sha: 'aaa', ref: 'master', project: project, partition_id: 100)
+      end
+
+      # Only in the current partition.
+      let_it_be(:current_only) do
+        create(:ci_empty_pipeline, sha: 'bbb', ref: 'master', project: project, partition_id: 101)
+      end
+
+      # Present in both partitions; the one in the current partition is newer and must win.
+      let_it_be(:both_previous) do
+        create(:ci_empty_pipeline, sha: 'ccc', ref: 'master', project: project, partition_id: 100)
+      end
+
+      let_it_be(:both_current) do
+        create(:ci_empty_pipeline, sha: 'ccc', ref: 'master', project: project, partition_id: 101)
+      end
+
+      before do
+        allow(described_class).to receive(:current_partition_value).and_return(current_partition)
+      end
+
+      it 'resolves the latest pipeline across partitions' do
+        result = described_class.latest_pipeline_per_commit(%w[aaa bbb ccc], in_current_partition: true)
+
+        expect(result).to match(
+          'aaa' => old_only,
+          'bbb' => current_only,
+          'ccc' => both_current
+        )
+      end
+
+      it 'does not run the cross-partition fallback when every SHA is found in the current partition' do
+        expect(described_class)
+          .to receive(:latest_pipeline_per_commit_in_partition)
+          .with(%w[bbb ccc], nil, current_partition)
+          .and_call_original
+
+        expect(described_class)
+          .not_to receive(:latest_pipeline_per_commit_in_partition)
+          .with(anything, anything, nil)
+
+        result = described_class.latest_pipeline_per_commit(%w[bbb ccc], in_current_partition: true)
+
+        expect(result).to match(
+          'bbb' => current_only,
+          'ccc' => both_current
+        )
+      end
+
+      it 'queries the current partition first and falls back only for the missing SHAs' do
+        expect(described_class)
+          .to receive(:latest_pipeline_per_commit_in_partition)
+          .with(%w[aaa bbb], nil, current_partition)
+          .and_call_original
+          .ordered
+
+        expect(described_class)
+          .to receive(:latest_pipeline_per_commit_in_partition)
+          .with(%w[aaa], nil, nil)
+          .and_call_original
+          .ordered
+
+        result = described_class.latest_pipeline_per_commit(%w[aaa bbb], in_current_partition: true)
+
+        expect(result).to match(
+          'aaa' => old_only,
+          'bbb' => current_only
+        )
+      end
+    end
+
+    context 'with in_current_partition: false (default)' do
+      it 'does a single cross-partition query and skips the current-partition lookup' do
+        expect(described_class).not_to receive(:current_partition_value)
+
+        expect(described_class)
+          .to receive(:latest_pipeline_per_commit_in_partition)
+          .with(%w[123], nil, nil)
+          .and_call_original
+
+        result = described_class.latest_pipeline_per_commit(%w[123])
+
+        expect(result).to match('123' => commit_123_ref_develop)
       end
     end
   end
@@ -5120,17 +5394,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#environments_in_self_and_project_descendants' do
     subject { pipeline.environments_in_self_and_project_descendants }
 
-    before_all do
-      Ci::ApplicationRecord.connection.execute(<<~SQL)
-        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_100"
-          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (100);
-        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_101"
-          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (101);
-        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_102"
-          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (102);
-      SQL
-    end
-
     shared_examples_for 'fetches environments in self and project descendant pipelines' do |factory_type|
       context 'when pipeline is not child nor parent' do
         let_it_be(:pipeline) { create(:ci_pipeline, :created) }
@@ -5150,26 +5413,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           end
         end
 
-        context 'when the environment is linked via Environments::Job instead of CI metadata' do
-          before do
-            job.metadata&.destroy!
-          end
-
-          it 'returns the environment' do
-            expect(subject).to contain_exactly(job.deployment.environment)
-          end
-        end
-
-        context 'when there are environments linked via both Environments::Job and CI metadata' do
-          let_it_be_with_refind(:staging_job) { create(factory_type, :with_deployment, :start_staging, pipeline: pipeline) }
-
+        context 'when the environment is not linked via Environments::Job' do
           before do
             job.job_environment.destroy!
-            create(:ci_build_metadata, build: job, expanded_environment_name: job.expanded_environment_name)
           end
 
-          it 'includes environments from both sources' do
-            expect(subject).to contain_exactly(job.deployment.environment, staging_job.deployment.environment)
+          it 'does not return environments' do
+            expect(subject).to be_empty
           end
         end
       end
@@ -5724,76 +5974,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '#jobs_in_self_and_project_descendants' do
-    subject(:jobs) { pipeline.jobs_in_self_and_project_descendants }
-
-    let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
-
-    shared_examples_for 'fetches jobs in self and project descendant pipelines' do |factory_type|
-      let!(:job) { create(factory_type, pipeline: pipeline) }
-
-      context 'when pipeline is standalone' do
-        it 'returns the list of jobs' do
-          expect(jobs).to contain_exactly(job)
-        end
-      end
-
-      context 'when pipeline is parent of another pipeline' do
-        let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
-        let(:child_source_bridge) { child_pipeline.source_pipeline.source_job }
-        let!(:child_job) { create(factory_type, pipeline: child_pipeline) }
-
-        it 'returns the list of jobs' do
-          expect(jobs).to contain_exactly(job, child_job, child_source_bridge)
-        end
-      end
-
-      context 'when pipeline is parent of another parent pipeline' do
-        let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
-        let(:child_source_bridge) { child_pipeline.source_pipeline.source_job }
-        let!(:child_job) { create(factory_type, pipeline: child_pipeline) }
-        let(:child_of_child_pipeline) { create(:ci_pipeline, child_of: child_pipeline) }
-        let(:child_of_child_source_bridge) { child_of_child_pipeline.source_pipeline.source_job }
-        let!(:child_of_child_job) { create(factory_type, pipeline: child_of_child_pipeline) }
-
-        it 'returns the list of jobs' do
-          expect(jobs).to contain_exactly(job, child_job, child_of_child_job, child_source_bridge, child_of_child_source_bridge)
-        end
-      end
-
-      it 'includes partition_id filter' do
-        expect(jobs.where_values_hash).to match(a_hash_including('partition_id' => pipeline.partition_id))
-      end
-    end
-
-    context 'when job is build' do
-      it_behaves_like 'fetches jobs in self and project descendant pipelines', :ci_build
-    end
-
-    context 'when job is bridge' do
-      it_behaves_like 'fetches jobs in self and project descendant pipelines', :ci_bridge
-    end
-
-    context 'when pipelines span multiple partitions' do
-      let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
-      let_it_be(:cross_partition_pipeline) { create(:ci_pipeline, partition_id: 101, child_of: child_pipeline) }
-
-      it 'returns jobs from all partitions' do
-        job = create(:ci_build, pipeline: pipeline)
-        child_job = create(:ci_build, pipeline: child_pipeline)
-        cross_partition_job = create(:ci_build, pipeline: cross_partition_pipeline)
-
-        expect(jobs).to include(job, child_job, cross_partition_job)
-      end
-    end
-  end
-
   describe '#find_job_with_archive_artifacts' do
-    let(:pipeline) { create(:ci_pipeline) }
-    let!(:old_job) { create(:ci_build, name: 'rspec', retried: true, pipeline: pipeline) }
-    let!(:job_without_artifacts) { create(:ci_build, name: 'rspec', pipeline: pipeline) }
-    let!(:expected_job) { create(:ci_build, :artifacts, name: 'rspec', pipeline: pipeline) }
-    let!(:different_job) { create(:ci_build, name: 'deploy', pipeline: pipeline) }
+    let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:old_job) { create(:ci_build, name: 'rspec', retried: true, pipeline: pipeline) }
+    let_it_be(:job_without_artifacts) { create(:ci_build, name: 'rspec', pipeline: pipeline) }
+    let_it_be(:expected_job) { create(:ci_build, :artifacts, name: 'rspec', pipeline: pipeline) }
+    let_it_be(:different_job) { create(:ci_build, name: 'deploy', pipeline: pipeline) }
 
     subject { pipeline.find_job_with_archive_artifacts('rspec') }
 
@@ -6579,12 +6765,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#total_size' do
-    let(:pipeline) { create(:ci_pipeline) }
-    let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
-    let!(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
-    let!(:test_job_failed_and_retried) { create(:ci_build, :failed, :retried, pipeline: pipeline, stage_idx: 1) }
-    let!(:second_test_job) { create(:ci_build, pipeline: pipeline, stage_idx: 1) }
-    let!(:deploy_job) { create(:ci_build, pipeline: pipeline, stage_idx: 2) }
+    let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+    let_it_be(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+    let_it_be(:test_job_failed_and_retried) { create(:ci_build, :failed, :retried, pipeline: pipeline, stage_idx: 1) }
+    let_it_be(:second_test_job) { create(:ci_build, pipeline: pipeline, stage_idx: 1) }
+    let_it_be(:deploy_job) { create(:ci_build, pipeline: pipeline, stage_idx: 2) }
 
     it 'returns all jobs (including failed and retried)' do
       expect(pipeline.total_size).to eq(5)
@@ -8421,7 +8607,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'publishes a PipelineFinishedEvent' do
         expect(::Gitlab::EventStore).to receive(:publish) do |event|
           expect(event).to be_an_instance_of(::Ci::PipelineFinishedEvent)
-          expect(event.data).to eq({ 'pipeline_id' => pipeline.id, 'status' => pipeline.status })
+          expect(event.data).to eq({
+            'pipeline_id' => pipeline.id,
+            'status' => pipeline.status,
+            'source' => pipeline.source,
+            'partition_id' => pipeline.partition_id
+          })
         end
 
         pipeline.public_send(transition)

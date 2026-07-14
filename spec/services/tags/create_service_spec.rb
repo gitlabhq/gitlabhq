@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Tags::CreateService, feature_category: :source_code_management do
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :small_repo) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }
   let(:service) { described_class.new(project, user) }

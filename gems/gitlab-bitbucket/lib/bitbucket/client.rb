@@ -1,0 +1,244 @@
+# frozen_string_literal: true
+
+module Bitbucket
+  class Client
+    attr_reader :connection
+
+    PULL_REQUEST_VALUES = %w[
+      pagelen
+      size
+      page
+      next
+      previous
+      values.comment_count
+      values.task_count
+      values.type
+      values.id
+      values.title
+      values.description
+      values.state
+      values.merge_commit
+      values.close_source_branch
+      values.closed_by
+      values.author
+      values.reason
+      values.created_on
+      values.updated_on
+      values.destination
+      values.source
+      values.links
+      values.summary
+      values.reviewers
+      next
+    ].freeze
+
+    WORKSPACE_PAGE_LENGTH = 100
+
+    def initialize(options = {}, http_client:, refresh_strategy: nil)
+      @connection = Connection.new(options, http_client: http_client, refresh_strategy: refresh_strategy)
+    end
+
+    def refresh_if_expired!
+      connection.refresh_if_expired!
+    end
+
+    # Fetches data from the Bitbucket API and yields a Page object for every page
+    # of data, without loading all of them into memory.
+    #
+    # method - The method name used for getting the data.
+    # representation_type - The representation type name used to wrap the result
+    # args - Arguments to pass to the method.
+    def each_page(method, representation_type, *args)
+      options =
+        if args.last.is_a?(Hash)
+          args.last
+        else
+          {}
+        end
+
+      loop do
+        parsed_response = fetch_data(method, *args)
+        object = Page.new(parsed_response, representation_type)
+
+        yield object
+
+        break unless object.next?
+
+        options[:next_url] = object.next
+
+        if args.last.is_a?(Hash)
+          args[-1] = options
+        else
+          args.push(options)
+        end
+      end
+    end
+
+    def issues_available?(repo)
+      [404, 410].exclude?(connection.get_response_code("/repositories/#{repo}/issues?pagelen=1"))
+    end
+
+    def last_issue(repo)
+      parsed_response = connection.get("/repositories/#{repo}/issues?pagelen=1&sort=-created_on&state=ALL")
+      return unless parsed_response['values']&.first
+
+      Bitbucket::Representation::Issue.new(parsed_response['values'].first)
+    end
+
+    def last_pull_request(repo)
+      parsed_response = connection.get("/repositories/#{repo}/pullrequests?pagelen=1&sort=-created_on&state=ALL")
+      return unless parsed_response['values']&.first
+
+      Bitbucket::Representation::PullRequest.new(parsed_response['values'].first)
+    end
+
+    def issues(repo, options = {})
+      path = "/repositories/#{repo}/issues?sort=created_on"
+
+      if options[:raw]
+        path = options[:next_url] if options[:next_url]
+        connection.get(path)
+      else
+        get_collection(path, :issue)
+      end
+    end
+
+    def issue_comments(repo, issue_id)
+      path = "/repositories/#{repo}/issues/#{issue_id}/comments?sort=created_on"
+      get_collection(path, :comment)
+    end
+
+    def pull_requests(repo, options = {})
+      path = "/repositories/#{repo}/pullrequests?state=ALL&sort=created_on&fields=#{pull_request_values}"
+
+      if options[:raw]
+        path = options[:next_url] if options[:next_url]
+        connection.get(path)
+      else
+        get_collection(path, :pull_request)
+      end
+    end
+
+    def pull_request_comments(repo, pull_request)
+      path = "/repositories/#{repo}/pullrequests/#{pull_request}/comments?sort=created_on"
+      get_collection(path, :pull_request_comment)
+    end
+
+    def pull_request_diff(repo, pull_request)
+      path = "/repositories/#{repo}/pullrequests/#{pull_request}/diff"
+      connection.get(path)
+    end
+
+    def repo(name)
+      parsed_response = connection.get("/repositories/#{name}")
+      Representation::Repo.new(parsed_response)
+    end
+
+    def repos(filter: nil, limit: nil, after_cursor: nil)
+      path = "/repositories?role=member&sort=created_on"
+      path += "&q=name~\"#{filter}\"" if filter
+
+      get_collection(path, :repo, page_number: nil, limit: limit, after_cursor: after_cursor)
+    end
+
+    def multi_workspace_repos(filter: nil, limit: nil, workspace_paging_info: [])
+      # On initial request (empty workspace_paging_info), fetch all workspaces
+      # On subsequent requests, only process workspaces provided
+      workspace_configs = if workspace_paging_info.empty?
+                            all_workspaces.map do |workspace|
+                              path = build_repos_path(workspace.slug, filter)
+                              build_workspace_config(workspace.slug, path, nil, :repo)
+                            end
+                          else
+                            workspace_paging_info.map do |config|
+                              path = build_repos_path(config[:workspace], filter)
+                              build_workspace_config(
+                                config[:workspace],
+                                path,
+                                config[:page_info],
+                                :repo
+                              )
+                            end
+                          end
+
+      MultiWorkspaceCollection.new(workspace_configs, connection, limit: limit)
+    end
+
+    def user
+      @user ||= begin
+        parsed_response = connection.get('/user')
+        Representation::User.new(parsed_response)
+      end
+    end
+
+    def users(workspace_key, page_number: nil, limit: nil)
+      path = "/workspaces/#{workspace_key}/members"
+      get_collection(path, :user, page_number: page_number, limit: limit)
+    end
+
+    private
+
+    def workspaces(page_number: nil, limit: WORKSPACE_PAGE_LENGTH, after_cursor: nil)
+      path = "/user/workspaces"
+      get_collection(path, :workspace, page_number: page_number, limit: limit, after_cursor: after_cursor)
+    end
+
+    def build_workspace_config(workspace_slug, path, page_info, type)
+      {
+        workspace: workspace_slug,
+        path: path,
+        type: type,
+        page_number: page_info&.dig(:next_page),
+        has_next_page: page_info&.dig(:has_next_page)
+      }
+    end
+
+    def build_repos_path(workspace_slug, filter)
+      path = "/repositories/#{workspace_slug}?role=member&sort=created_on"
+      path += "&q=name~\"#{filter}\"" if filter
+      path
+    end
+
+    def all_workspaces
+      page_number = nil
+      all_workspaces = []
+      has_next_page = true
+
+      while has_next_page
+        collection = workspaces(page_number: page_number, limit: WORKSPACE_PAGE_LENGTH)
+        all_workspaces.concat(collection.to_a)
+
+        has_next_page = collection.page_info[:has_next_page]
+        page_number = collection.page_info[:next_page]
+      end
+
+      all_workspaces
+    end
+
+    def fetch_data(method, *args)
+      case method
+      when :pull_requests then pull_requests(*args)
+      when :issues then issues(*args)
+      else
+        raise ArgumentError, "Unknown data method #{method}"
+      end
+    end
+
+    def get_collection(path, type, page_number: nil, limit: nil, after_cursor: nil)
+      paginator = Paginator.new(
+        connection,
+        path,
+        type,
+        page_number: page_number,
+        limit: limit,
+        after_cursor: after_cursor
+      )
+
+      Collection.new(paginator)
+    end
+
+    def pull_request_values
+      PULL_REQUEST_VALUES.join(',')
+    end
+  end
+end

@@ -1,0 +1,10 @@
+---
+name: run_batched_background_operation
+description: Grants the ability to run batched background operations
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - stop_batched_background_operation
+  - restart_batched_background_operation

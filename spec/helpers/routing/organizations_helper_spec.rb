@@ -220,4 +220,13 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
 
     it_behaves_like 'organization aware route helper'
   end
+
+  # Regression: the global name itself contains `organization_`, so the scoped
+  # twin must map back to it by stripping only the leading scope prefix.
+  describe '#admin_organization_dashboard_path' do
+    let(:helper) { :admin_organization_dashboard }
+    let(:organization_helper) { :organization_admin_organization_dashboard }
+
+    it_behaves_like 'organization aware route helper'
+  end
 end

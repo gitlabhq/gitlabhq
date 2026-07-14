@@ -844,7 +844,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#set_delete_failed_status', :freeze_time do
-    let_it_be(:repository, freeze: false) { create(:container_repository, :status_delete_ongoing, delete_started_at: 3.minutes.ago) }
+    let_it_be_with_reload(:repository) { create(:container_repository, :status_delete_ongoing, delete_started_at: 3.minutes.ago) }
 
     subject { repository.set_delete_failed_status }
 
@@ -1186,7 +1186,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '.with_enabled_policy' do
-    let_it_be(:repository, freeze: false) { create(:container_repository) }
+    let_it_be_with_reload(:repository) { create(:container_repository) }
     let_it_be(:repository2) { create(:container_repository) }
 
     subject { described_class.with_enabled_policy }

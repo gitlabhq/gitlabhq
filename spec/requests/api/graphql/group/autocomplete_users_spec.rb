@@ -45,4 +45,25 @@ RSpec.describe 'autocomplete users for a group', feature_category: :team_plannin
       expect(response_user_ids).to contain_exactly(group_member.to_global_id.to_s)
     end
   end
+
+  describe 'granular PAT authorization' do
+    # A public group lets the token pass the parent GroupType authorization via
+    # the public-access bypass, so the test gates on AutocompletedUser's
+    # `read_user` permission at the user boundary.
+    let_it_be(:public_group) { create(:group, :public, guests: group_member) }
+
+    let(:query) do
+      graphql_query_for(
+        'group',
+        { 'fullPath' => public_group.full_path },
+        query_graphql_field('autocompleteUsers', {}, 'id')
+      )
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_user do
+      let(:user) { group_member }
+      let(:boundary_object) { :user }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+  end
 end

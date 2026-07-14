@@ -7,18 +7,14 @@ RSpec.describe Resolvers::Users::SnippetsResolver, feature_category: :source_cod
 
   describe '#resolve' do
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:other_user, freeze: false) { create(:user) }
-    let_it_be(:project) { create(:project) }
+    let_it_be_with_reload(:other_user) { create(:user) }
+    let_it_be(:project) { create(:project, developers: current_user) }
 
     let_it_be(:private_personal_snippet) { create(:personal_snippet, :private, author: current_user) }
     let_it_be(:public_personal_snippet) { create(:personal_snippet, :public, author: current_user) }
     let_it_be(:other_personal_snippet) { create(:personal_snippet, :internal, author: other_user) }
     let_it_be(:internal_project_snippet) { create(:project_snippet, :internal, author: current_user, project: project) }
     let_it_be(:other_project_snippet) { create(:project_snippet, :public, author: other_user, project: project) }
-
-    before do
-      project.add_developer(current_user)
-    end
 
     it 'calls SnippetsFinder' do
       expect_next_instance_of(SnippetsFinder) do |finder|

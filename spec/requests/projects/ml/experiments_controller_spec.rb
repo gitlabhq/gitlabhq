@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
-  let_it_be(:user, freeze: false) { project.first_owner }
-  let_it_be(:experiment, freeze: false) do
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be(:user) { project.first_owner }
+  let_it_be_with_reload(:experiment) do
     create(:ml_experiments, project: project, user: user).tap do |e|
       create(:ml_candidates, experiment: e, user: user)
     end
@@ -79,7 +79,7 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
       end
 
       describe 'pagination' do
-        let_it_be(:candidates, freeze: false) do
+        let_it_be_with_reload(:candidates) do
           create_list(:ml_candidates, 5, experiment: experiment).tap do |c|
             c.first.metrics.create!(name: 'metric1', value: 0.3)
             c[1].metrics.create!(name: 'metric1', value: 0.2)
@@ -213,13 +213,13 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
   end
 
   describe 'DELETE #destroy' do
-    let_it_be(:experiment_for_deletion, freeze: false) do
+    let_it_be_with_reload(:experiment_for_deletion) do
       create(:ml_experiments, project: project, user: user).tap do |e|
         create(:ml_candidates, experiment: e, user: user)
       end
     end
 
-    let_it_be(:candidate_for_deletion, freeze: false) { experiment_for_deletion.candidates.first }
+    let_it_be(:candidate_for_deletion) { experiment_for_deletion.candidates.first }
 
     let(:params) { basic_params.merge(id: experiment.iid) }
 

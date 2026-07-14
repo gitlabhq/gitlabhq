@@ -17,6 +17,7 @@ class Current < ActiveSupport::CurrentAttributes
   # watch background jobs need to reset on each job if using
   attribute :organization, :organization_assigned
   attribute :token_info
+  attribute :granular_denied_permissions
 
   attribute :cells_claims_leases
 
@@ -56,6 +57,16 @@ class Current < ActiveSupport::CurrentAttributes
     Gitlab::Organizations::FallbackOrganizationTracker.trigger
 
     super
+  end
+
+  def add_granular_denied_permissions(permissions)
+    self.granular_denied_permissions = Array(granular_denied_permissions).union(Array(permissions))
+  end
+
+  def formatted_granular_denied_permissions
+    return if granular_denied_permissions.blank?
+
+    granular_denied_permissions.map(&:to_s).uniq.sort.join(',')
   end
 
   private

@@ -5,18 +5,16 @@ require 'spec_helper'
 RSpec.describe 'new tables missing sharding_key', feature_category: :organization do
   include ShardingKeySpecHelpers
 
-  # Specific tables can be temporarily exempt from this requirement. You must add an issue link in a comment next to
-  # the table name to remove this once a decision has been made.
+  # Existing tables can be temporarily exempt from this requirement.
+  # You must add an issue link as sharding_key_issue_url in the db/docs
   let(:allowed_to_be_missing_sharding_key) do
-    [
-      'ai_settings', # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
-      'group_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/work_items/589058
-      'merge_request_diff_files_99208b8fac', # https://gitlab.com/gitlab-org/gitlab/-/issues/422767
-      'project_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/work_items/589058
-      'p_ci_pipeline_artifact_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587555
-      'packages_nuget_symbol_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587558
-      'packages_package_file_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587559
-      'snippet_repository_states' # https://gitlab.com/gitlab-org/gitlab/-/work_items/587561
+    %w[
+      audit_events
+      ai_settings
+      merge_request_diff_commits
+      merge_request_diff_files
+      merge_request_diff_files_99208b8fac
+      push_rules
     ]
   end
 
@@ -34,7 +32,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   let(:allowed_to_have_loose_multi_column_sharding_constraint) do
     [
       'events', # has `(group_id IS NOT NULL) OR (project_id IS NOT NULL) OR (personal_namespace_id IS NOT NULL)`
-      'labels', # constraint exists as `num_nonnulls(...) = 1` but is NOT VALID; tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/558353
       'notes', # has `num_nonnulls(namespace_id, organization_id, project_id) >= 1`
       'scan_result_policies' # has `num_nonnulls(namespace_id, project_id) >= 1`
     ]
@@ -74,6 +71,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # LFK already present on vulnerability_occurrence with cascade delete.
       'ldap_group_links.group_id',
       'namespace_descendants.namespace_id',
+      # FK removed as table is soon to be dropped. https://gitlab.com/gitlab-org/gitlab/-/work_items/600951
+      'work_item_descriptions.namespace_id',
       'p_batched_git_ref_updates_deletions.project_id',
       'p_catalog_resource_sync_events.project_id',
       'project_data_transfers.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439201
@@ -101,6 +100,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'sbom_vulnerability_scan_results.project_id',
       'p_duo_workflows_checkpoints.project_id',
       'p_duo_workflows_checkpoints.namespace_id',
+      # No LFK needed: daily partitions are dropped after 30 days via retain_for
+      'p_duo_workflows_checkpoint_blobs.project_id',
+      'p_duo_workflows_checkpoint_blobs.namespace_id',
       # No LFK needed: daily partitions are dropped after 1 day via retain_for
       # https://gitlab.com/gitlab-org/gitlab/-/blob/ccc2459924e2805e43ad8f97eec15a6932d84f68/ee/app/models/analytics/knowledge_graph/code_indexing_task.rb#L13
       'p_knowledge_graph_code_indexing_tasks.project_id',
@@ -123,11 +125,15 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "abuse_report_assignees" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553428",
       "abuse_report_labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553427",
       "achievement_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      # organization_id column added nullable; NOT NULL + validated FK land in a follow-up once call sites are migrated.
+      "ai_settings" => "https://gitlab.com/gitlab-org/gitlab/-/issues/531356",
       "ai_catalog_item_consumers" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/596012",
       "ai_vectorizable_file_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "alert_management_alert_metric_image_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "appearance_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "bulk_import_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      # organization_id backfill in progress; NOT NULL + validated FK land after the BBM completes on prod.
+      "bulk_import_exports" => "https://gitlab.com/gitlab-org/gitlab/-/issues/600457",
       "ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "ci_runner_taggings" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "ci_runner_taggings_instance_type" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
@@ -142,7 +148,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "instance_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "instance_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "issuable_metric_image_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/563889",
       "namespace_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694",
       "project_import_export_relation_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
@@ -159,15 +164,24 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     }
   end
 
-  let(:starting_from_milestone) { 16.6 }
-
-  it 'requires a sharding_key for all cell-local tables, after milestone 16.6', :aggregate_failures do
-    tables_missing_sharding_key(starting_from_milestone: starting_from_milestone).each do |table_name|
+  it 'requires a sharding_key for all org tables', :aggregate_failures do
+    tables_missing_sharding_key.each do |table_name|
       expect(allowed_to_be_missing_sharding_key).to include(table_name), error_message(table_name)
     end
   end
 
-  it 'requires a sharding_key, sharding_key_issue_url, or desired_sharding_key for all cell-local tables',
+  it 'does not allow a sharding key for cell-local tables', :aggregate_failures do
+    Gitlab::Database::Dictionary.entries.each do |entry|
+      next if Gitlab::Database::GitlabSchema.require_sharding_key?(entry.gitlab_schema)
+
+      expect(entry.sharding_key).to be_nil,
+        "This table #{entry.table_name} must not have a `sharding_key` in the `db/docs` YML file. " \
+          "Remove this attribute, or update the `gitlab_schema` to be an organization based schema. " \
+          "Please refer to https://docs.gitlab.com/development/organization/sharding/#sharding-principles."
+    end
+  end
+
+  it 'requires a sharding_key, sharding_key_issue_url, or desired_sharding_key for all org tables',
     :aggregate_failures do
     tables_missing_sharding_key_or_sharding_in_progress.each do |table_name|
       expect(allowed_to_be_missing_sharding_key).to include(table_name),
@@ -372,9 +386,19 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   it 'only allows `allowed_to_be_missing_sharding_key` to include tables that are missing a sharding_key',
     :aggregate_failures do
     allowed_to_be_missing_sharding_key.each do |exempted_table|
-      expect(tables_missing_sharding_key(starting_from_milestone: starting_from_milestone)).to include(exempted_table),
+      expect(tables_missing_sharding_key).to include(exempted_table),
         "`#{exempted_table}` is not missing a `sharding_key`. " \
           "You must remove this table from the `allowed_to_be_missing_sharding_key` list."
+    end
+  end
+
+  it 'requires `allowed_to_be_missing_sharding_key` must have sharding_key_issue_url',
+    :aggregate_failures do
+    allowed_to_be_missing_sharding_key.each do |exempted_table|
+      entry = ::Gitlab::Database::Dictionary.entry(exempted_table)
+
+      expect(entry&.sharding_key_issue_url).to be_present,
+        "`#{exempted_table}` is missing a `sharding_key_issue_url`."
     end
   end
 
@@ -473,17 +497,16 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   def error_message(table_name)
     <<~HEREDOC
       The table `#{table_name}` is missing a `sharding_key` in the `db/docs` YML file.
-      Starting from GitLab #{starting_from_milestone}, we expect all new tables to define a `sharding_key`.
+      Starting from GitLab 16.6, we expect all new tables to define a `sharding_key`.
 
       To choose an appropriate sharding_key for this table please refer
-      to our guidelines at https://docs.gitlab.com/ee/development/organization/#defining-a-sharding-key-for-all-cell-local-tables, or consult with the Tenant Scale group.
+      to our guidelines at https://docs.gitlab.com/development/organization/sharding/, or consult with the Tenant Scale group.
     HEREDOC
   end
 
-  def tables_missing_sharding_key(starting_from_milestone:)
+  def tables_missing_sharding_key
     ::Gitlab::Database::Dictionary.entries.filter_map do |entry|
       entry.table_name if entry.sharding_key.blank? &&
-        entry.milestone_greater_than_or_equal_to?(starting_from_milestone) &&
         ::Gitlab::Database::GitlabSchema.require_sharding_key?(entry.gitlab_schema)
     end
   end

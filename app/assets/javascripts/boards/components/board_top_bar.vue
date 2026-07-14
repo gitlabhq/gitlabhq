@@ -9,6 +9,7 @@ import ToggleFocus from './toggle_focus.vue';
 import BoardOptions from './board_options.vue';
 
 export default {
+  name: 'BoardTopBar',
   components: {
     BoardOptions,
     BoardsSelector,
@@ -40,6 +41,7 @@ export default {
       required: true,
     },
   },
+  emits: ['setFilters', 'switchBoard', 'toggleSwimlanes', 'updateBoard'],
   data() {
     return {
       board: {},

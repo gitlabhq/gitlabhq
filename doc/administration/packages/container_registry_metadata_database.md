@@ -72,13 +72,47 @@ Some database-enabled features are only enabled for GitLab.com and automatic dat
 the registry database is not available. Review the feature support table in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423459#supported-feature-status)
 for the status of features related to the container registry database.
 
+## Database requirements
+
+The container registry connects to its metadata database directly and runs
+read-write transactions against it.
+
+By default, GitLab 18.3 and later preprovisions a logical database for registry
+metadata in the main GitLab database. This database already meets the
+requirements below, so most installations need no extra database setup. You meet
+these requirements yourself only when you use an
+[external database](#using-an-external-database) for the registry:
+
+- Run a supported PostgreSQL version. The registry checks the version at startup
+  and does not start on an unsupported version. For supported versions, see
+  [PostgreSQL requirements](../../install/requirements.md#postgresql).
+- Use a dedicated database for the registry. To create the database and its
+  user, see
+  [Configure the container registry metadata database](../postgresql/external.md#container-registry-metadata-database).
+- Do not add PostgreSQL extensions. The metadata database needs none, so do not
+  copy the main GitLab database's extension list.
+- Allow read-write access. The registry does not start against a read-only
+  replica.
+- Keep `bytea_output` set to `hex`, the PostgreSQL default. The registry reads
+  some binary columns as hexadecimal text, so a server or role set to
+  `bytea_output = escape` makes imports fail with `invalid hex format`. See
+  [Error: `convert field 8 failed: invalid hex format`](container_registry_metadata_database_troubleshooting.md#error-convert-field-8-failed-invalid-hex-format).
+
+The registry user must own the database, or migrations fail with a permission
+error. See
+[Error: `permission denied for schema public`](container_registry_metadata_database_troubleshooting.md#error-permission-denied-for-schema-public-sqlstate-42501).
+
+Encrypting the connection with TLS is optional. To encrypt it, set `sslmode` to
+`require`, as in the example configuration. To also verify the server
+certificate, use `verify-full` with a CA certificate in `sslrootcert`.
+
 ## Enable the metadata database for Linux package installations
 
 Prerequisites:
 
 - GitLab 17.5 is the minimum required version, but GitLab 18.3 or later
   is recommended due to the added improvements and easier configuration.
-- PostgreSQL database [within version requirements](../../install/requirements.md#postgresql). It must be accessible from the registry node.
+- A PostgreSQL database that meets the [database requirements](#database-requirements). It must be accessible from the registry node.
 - If you use an external database, you must first set up the external database connection. For more information, see [Using an external database](#using-an-external-database).
 
 ### Before you start

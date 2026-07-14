@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # This class encapsulates the directories used by project import/export:
 #

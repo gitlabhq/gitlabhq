@@ -1,5 +1,6 @@
 #import "~/graphql_shared/fragments/label.fragment.graphql"
 
+# @feature_category: portfolio_management
 query BoardLabels(
   $fullPath: ID!
   $searchTerm: String

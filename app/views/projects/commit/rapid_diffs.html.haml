@@ -1,5 +1,8 @@
 -# no_container is needed here because of full width side-by-side diff view
 - @no_container = true
+-# Renders layouts/_init_auto_complete so the Rapid Diffs comment form (which reads
+-# gl.GfmAutoComplete.dataSources) can offer GFM autocomplete.
+- @gfm_form = true
 - add_to_breadcrumbs _('Commits'), project_commits_path(@project)
 
 - if @gitaly_unavailable

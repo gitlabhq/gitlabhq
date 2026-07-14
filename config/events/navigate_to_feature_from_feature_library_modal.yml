@@ -1,0 +1,19 @@
+---
+description: Tracks when a user clicks a feature card in the feature
+  library modal to navigate to that feature's page.
+internal_events: true
+action: navigate_to_feature_from_feature_library_modal
+identifiers:
+- user
+product_group: engagement
+product_categories:
+- navigation
+milestone: '19.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243059
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: The item_id of the feature that was navigated to.

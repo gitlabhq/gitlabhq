@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::MimirClient do
+RSpec.describe Gitlab::MimirClient, feature_category: :observability do
   include PrometheusHelpers
 
   subject(:client) { described_class.new(mimir_url: mimir_url, user: 'user', password: 'pass') }

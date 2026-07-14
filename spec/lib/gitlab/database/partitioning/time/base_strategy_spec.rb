@@ -6,7 +6,76 @@ RSpec.describe Gitlab::Database::Partitioning::Time::BaseStrategy, feature_categ
   let(:model) { class_double(ApplicationRecord, table_name: table_name) }
   let(:partitioning_key) { :created_at }
   let(:table_name) { :_test_partitioned_test }
-  let(:base_strategy) { described_class.new(model, partitioning_key) }
+  let(:base_strategy) { described_class.new(model, partitioning_key, retain_for: :ever) }
+
+  describe '#initialize' do
+    subject(:strategy) { described_class.new(model, partitioning_key, retain_for: retain_for) }
+
+    context 'when retain_for is a duration' do
+      let(:retain_for) { 3.months }
+
+      it 'stores the retention duration' do
+        expect(strategy.retain_for).to eq(3.months)
+      end
+    end
+
+    context 'when retain_for is :ever' do
+      let(:retain_for) { :ever }
+
+      it 'normalizes :ever to no retention limit' do
+        expect(strategy.retain_for).to be_nil
+      end
+    end
+
+    context 'when retain_for is nil' do
+      let(:retain_for) { nil }
+
+      it 'raises an ArgumentError' do
+        expect { strategy }.to raise_error(ArgumentError, /retain_for must be an ActiveSupport::Duration.*got: nil/m)
+      end
+    end
+
+    context 'when retain_for is an unsupported value' do
+      let(:retain_for) { 5 }
+
+      it 'raises an ArgumentError' do
+        expect { strategy }.to raise_error(ArgumentError, /retain_for must be an ActiveSupport::Duration.*got: 5/m)
+      end
+    end
+  end
+
+  describe '#retain_detached_partitions_for' do
+    subject(:strategy) do
+      described_class.new(model, partitioning_key, retain_for: :ever,
+        retain_detached_partitions_for: retain_detached_partitions_for)
+    end
+
+    context 'when not given' do
+      let(:retain_detached_partitions_for) { nil }
+
+      it 'defaults to nil so the partition manager falls back to its global default' do
+        expect(strategy.retain_detached_partitions_for).to be_nil
+      end
+    end
+
+    context 'when given a duration' do
+      let(:retain_detached_partitions_for) { 2.days }
+
+      it 'stores the duration' do
+        expect(strategy.retain_detached_partitions_for).to eq(2.days)
+      end
+    end
+
+    context 'when given an unsupported value' do
+      let(:retain_detached_partitions_for) { 5 }
+
+      it 'raises an ArgumentError' do
+        expect { strategy }.to raise_error(
+          ArgumentError, /retain_detached_partitions_for must be an ActiveSupport::Duration.*got: 5/m
+        )
+      end
+    end
+  end
 
   describe '#current_partitions' do
     subject(:current_partitions) { base_strategy.current_partitions }

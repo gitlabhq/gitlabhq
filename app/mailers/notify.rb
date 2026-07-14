@@ -275,7 +275,7 @@ class Notify < ApplicationMailer
   def add_unsubscription_headers_and_links
     return unless !@labels_url && @sent_notification && @sent_notification.unsubscribable?
 
-    @unsubscribe_url = unsubscribe_sent_notification_url(@sent_notification)
+    @unsubscribe_url = unsubscribe_namespace_sent_notification_url(@sent_notification.namespace_id, @sent_notification)
 
     list_unsubscribe_methods = [@unsubscribe_url]
     if Gitlab::Email::IncomingEmail.enabled? && Gitlab::Email::IncomingEmail.supports_wildcard?

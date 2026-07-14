@@ -4,11 +4,11 @@ return if Rails.env.production?
 
 namespace :gitlab do
   require 'graphql/rake_task'
-  require_relative '../../../tooling/graphql/docs/renderer'
+  require_relative '../../../tooling/graphql/deprecated_docs/renderer'
 
   OUTPUT_DIR = Rails.root.join("doc/api/graphql/reference")
   TEMP_SCHEMA_DIR = Rails.root.join('tmp/tests/graphql')
-  TEMPLATES_DIR = 'tooling/graphql/docs/templates/'
+  TEMPLATES_DIR = 'tooling/graphql/deprecated_docs/templates/'
 
   # Some schema items are SaaS-only, and as we want to document them,
   # simulate SaaS when generating the GraphQL documentation.
@@ -139,7 +139,7 @@ namespace :gitlab do
 
     desc 'GitLab | GraphQL | Generate GraphQL docs'
     task compile_docs: [:simulate_saas, :environment, :enable_feature_flags] do
-      renderer = Tooling::Graphql::Docs::Renderer.new(GitlabSchema, **render_options)
+      renderer = Tooling::Graphql::DeprecatedDocs::Renderer.new(GitlabSchema, **render_options)
 
       renderer.write
 
@@ -148,7 +148,7 @@ namespace :gitlab do
 
     desc 'GitLab | GraphQL | Check if GraphQL docs are up to date'
     task check_docs: [:simulate_saas, :environment, :enable_feature_flags] do
-      renderer = Tooling::Graphql::Docs::Renderer.new(GitlabSchema, **render_options)
+      renderer = Tooling::Graphql::DeprecatedDocs::Renderer.new(GitlabSchema, **render_options)
 
       doc = File.read(Rails.root.join(OUTPUT_DIR, '_index.md'))
 

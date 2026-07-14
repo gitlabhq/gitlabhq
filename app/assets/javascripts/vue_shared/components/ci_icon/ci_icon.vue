@@ -18,6 +18,7 @@ import { sprintf, s__ } from '~/locale';
  */
 
 export default {
+  name: 'CiIcon',
   components: {
     GlIcon,
   },
@@ -49,6 +50,7 @@ export default {
       required: false,
     },
   },
+  emits: ['ciStatusBadgeClick'],
   computed: {
     href() {
       // href can come from GraphQL (camelCase) or REST API (snake_case)

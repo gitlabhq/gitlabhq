@@ -1,0 +1,10 @@
+---
+name: read_cycle_analytics
+description: Grants the ability to read cycle analytics
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_cycle_analytics

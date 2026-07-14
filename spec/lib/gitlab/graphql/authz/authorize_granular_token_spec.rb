@@ -64,6 +64,41 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
       end
     end
 
+    context 'when skip_reason is passed' do
+      it 'applies a directive carrying only the skip_reason' do
+        test_type.authorize_granular_token skip_reason: :parent_authorizes
+
+        directive = test_type.directives.first
+        expect(directive).to be_a(Directives::Authz::GranularScope)
+        expect(directive.arguments[:skip_reason]).to eq('parent_authorizes')
+        expect(directive.arguments[:permissions]).to be_nil
+        expect(directive.arguments[:boundary_type]).to be_nil
+      end
+
+      it 'raises when combined with any other authorization argument', :aggregate_failures do
+        other_args = [
+          { permissions: :read_project },
+          { boundary_type: :project },
+          { boundary: :project },
+          { boundary_argument: :project_path },
+          { boundaries: [{ boundary_type: :project }] },
+          { traversal: true }
+        ]
+
+        other_args.each do |other_arg|
+          expect do
+            test_type.authorize_granular_token(skip_reason: :parent_authorizes, **other_arg)
+          end.to raise_error(ArgumentError, /cannot be combined with/), "expected #{other_arg.each_key.first} to raise"
+        end
+      end
+    end
+
+    context 'when neither permissions nor a skip reason is given' do
+      it 'raises ArgumentError' do
+        expect { test_type.authorize_granular_token }.to raise_error(ArgumentError, /permissions/)
+      end
+    end
+
     context 'when traversal: true is passed' do
       it 'raises ArgumentError to prevent misuse on type-level directives' do
         expect do

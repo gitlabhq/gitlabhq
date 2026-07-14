@@ -44,7 +44,7 @@ module Gitlab
         commit = cache_commit(commit)
 
         {
-          file_name: File.basename(path_key).force_encoding(Encoding::UTF_8),
+          file_name: File.basename(path_key),
           commit: commit,
           commit_path: commit_path(commit),
           commit_title_html: markdown_field(commit, :full_title)
@@ -77,7 +77,7 @@ module Gitlab
     end
 
     def entry_path(entry)
-      File.join(*[path, entry[:file_name]].compact).force_encoding(Encoding::ASCII_8BIT)
+      File.join(*[path, entry[:file_name]].compact).b
     end
 
     def lfs_lock_label(lfs_lock)

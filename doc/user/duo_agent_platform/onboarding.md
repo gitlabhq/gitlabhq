@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Project onboarding for GitLab Duo Agent Platform 
+title: Project onboarding for GitLab Duo Agent Platform
 ---
 
 {{< details >}}
@@ -15,9 +15,9 @@ title: Project onboarding for GitLab Duo Agent Platform
 {{< history >}}
 
 - Initialize project context [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229847) as a [beta](../../policy/development_stages_support.md) in GitLab 19.0
-  [with a flag](../../administration/feature_flags/_index.md) named `duo_agent_onboarding`. Disabled by default.
+  [with a feature flag](../../administration/feature_flags/_index.md) named `duo_agent_onboarding`. Disabled by default.
 - Improve CI setup [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234426) as a [beta](../../policy/development_stages_support.md) in GitLab 19.1
-  [with a flag](../../administration/feature_flags/_index.md) named `duo_agent_onboarding`. Disabled by default.
+  [with a feature flag](../../administration/feature_flags/_index.md) named `duo_agent_onboarding`. Disabled by default.
 
 {{< /history >}}
 
@@ -36,7 +36,7 @@ From this page you can initialize project context and improve your CI/CD setup u
 
 ## Initialize project context
 
-The **Initialize project context** task analyzes your repository to create an `AGENTS.md` file for your project. 
+The **Initialize project context** task analyzes your repository to create an `AGENTS.md` file for your project.
 
 This file follows the [`AGENTS.md` specification](https://agents.md/) and documents your project conventions, such as test commands, linting rules, commit format, and coding patterns. Agent Platform features use it for context when working in your repository.
 

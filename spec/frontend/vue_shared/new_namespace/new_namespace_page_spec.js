@@ -1,4 +1,4 @@
-import { GlBreadcrumb, GlAlert } from '@gitlab/ui';
+import { GlBreadcrumb, GlAlert, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { MountingPortal } from 'portal-vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -14,6 +14,7 @@ describe('Experimental new namespace creation app', () => {
   const findBreadcrumb = () => wrapper.findComponent(GlBreadcrumb);
   const findAccountVerificationAlert = () => wrapper.findComponent(GlAlert);
   const findMountingPortal = () => wrapper.findComponent(MountingPortal);
+  const findContributeMessage = () => wrapper.findComponent(GlSprintf);
 
   const DEFAULT_PROPS = {
     title: 'Create something',
@@ -88,6 +89,33 @@ describe('Experimental new namespace creation app', () => {
       const breadcrumb = findBreadcrumb();
       expect(breadcrumb.exists()).toBe(true);
       expect(breadcrumb.props().items[0].text).toBe(DEFAULT_PROPS.initialBreadcrumbs[0].text);
+    });
+  });
+
+  describe('contribute to built-in templates message', () => {
+    const TEMPLATE_PANELS = [{ name: 'template_panel', key: 'template', selector: '#template' }];
+
+    it.each`
+      showBuiltInProjectTemplates | rendered | outcome
+      ${true}                     | ${true}  | ${'renders the message'}
+      ${false}                    | ${false} | ${'does not render the message'}
+    `(
+      '$outcome when showBuiltInProjectTemplates is $showBuiltInProjectTemplates',
+      ({ showBuiltInProjectTemplates, rendered }) => {
+        window.location.hash = `#${TEMPLATE_PANELS[0].name}`;
+        createComponent({
+          propsData: { panels: TEMPLATE_PANELS, showBuiltInProjectTemplates },
+        });
+
+        expect(findContributeMessage().exists()).toBe(rendered);
+      },
+    );
+
+    it('does not render the message on non-template panels', () => {
+      window.location.hash = `#${DEFAULT_PROPS.panels[0].name}`;
+      createComponent({ propsData: { showBuiltInProjectTemplates: true } });
+
+      expect(findContributeMessage().exists()).toBe(false);
     });
   });
 

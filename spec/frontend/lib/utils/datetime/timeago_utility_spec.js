@@ -1,4 +1,10 @@
-import { getTimeago, localTimeAgo, timeFor, duration } from '~/lib/utils/datetime/timeago_utility';
+import {
+  getTimeago,
+  localTimeAgo,
+  initTimeagoPrintHandler,
+  timeFor,
+  duration,
+} from '~/lib/utils/datetime/timeago_utility';
 import { DATE_ONLY_FORMAT, localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 
 import '~/commons/bootstrap';
@@ -96,6 +102,56 @@ describe('TimeAgo utils', () => {
           expect(getTimeago(DATE_ONLY_FORMAT).format(date)).toEqual(result);
         });
       });
+    });
+  });
+
+  describe('initTimeagoPrintHandler', () => {
+    const ABSOLUTE = 'Feb 18, 2020, 10:22 PM GMT';
+
+    beforeEach(() => {
+      window.gon = { time_display_relative: true };
+      initTimeagoPrintHandler();
+    });
+
+    it.each`
+      description                          | html
+      ${'server-rendered (js-timeago)'}    | ${'<time class="js-timeago" datetime="2020-02-18T22:22:32Z">2 days ago</time>'}
+      ${'Vue-style (no js-timeago class)'} | ${'<time datetime="2020-02-18T22:22:32Z">2 days ago</time>'}
+    `('renders the absolute date on beforeprint for a $description element', ({ html }) => {
+      document.body.innerHTML = html;
+
+      window.dispatchEvent(new Event('beforeprint'));
+
+      expect(document.querySelector('time').textContent).toBe(ABSOLUTE);
+    });
+
+    it('restores the relative text on afterprint', () => {
+      document.body.innerHTML =
+        '<time class="js-timeago" datetime="2020-02-18T22:22:32Z">2 days ago</time>';
+      const element = document.querySelector('time');
+
+      window.dispatchEvent(new Event('beforeprint'));
+      expect(element.textContent).toBe(ABSOLUTE);
+
+      window.dispatchEvent(new Event('afterprint'));
+      expect(element.textContent).toBe('2 days ago');
+      expect(element.dataset.relativeText).toBeUndefined();
+    });
+
+    it('leaves elements containing nested markup untouched', () => {
+      document.body.innerHTML =
+        '<time datetime="2020-02-18T22:22:32Z"><span>2 days ago</span></time>';
+
+      window.dispatchEvent(new Event('beforeprint'));
+
+      expect(document.querySelector('time').innerHTML).toBe('<span>2 days ago</span>');
+    });
+
+    it('does not throw for an invalid datetime', () => {
+      document.body.innerHTML = '<time datetime="not-a-date">soon</time>';
+
+      expect(() => window.dispatchEvent(new Event('beforeprint'))).not.toThrow();
+      expect(document.querySelector('time').textContent).toBe('soon');
     });
   });
 

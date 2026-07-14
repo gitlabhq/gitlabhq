@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Admin::AbuseReportsController, feature_category: :insider_threat do
   include AdminModeHelper
 
-  let_it_be(:admin, freeze: false) { create(:admin) }
+  let_it_be(:admin) { create(:admin) }
 
   before do
     enable_admin_mode!(admin)
@@ -20,14 +20,14 @@ RSpec.describe Admin::AbuseReportsController, feature_category: :insider_threat 
       get admin_abuse_reports_path
 
       expect(assigns(:abuse_reports).count).to eq 1
-      expect(assigns(:abuse_reports).first.open?).to eq true
+      expect(assigns(:abuse_reports).first.open?).to be true
     end
 
     it 'returns reports by specified status' do
       get admin_abuse_reports_path, params: { status: 'closed' }
 
       expect(assigns(:abuse_reports).count).to eq 1
-      expect(assigns(:abuse_reports).first.closed?).to eq true
+      expect(assigns(:abuse_reports).first.closed?).to be true
     end
 
     it 'labels does not introduce N+1 queries' do
@@ -52,7 +52,7 @@ RSpec.describe Admin::AbuseReportsController, feature_category: :insider_threat 
   end
 
   describe 'PUT #update' do
-    let_it_be(:report, freeze: false) { create(:abuse_report) }
+    let_it_be(:report) { create(:abuse_report) }
 
     let(:params) { {} }
     let(:expected_params) { ActionController::Parameters.new(params).permit! }

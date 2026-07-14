@@ -273,7 +273,7 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
 
         expect { model.update_search_data! }.not_to raise_error
 
-        expect(model.search_data).to eq(nil)
+        expect(model.search_data).to be_nil
       end
     end
 

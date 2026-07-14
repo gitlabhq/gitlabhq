@@ -211,6 +211,7 @@ these parameters:
 - `group_secrets_limit`
 - `security_mr_report_cache_lifetime_minutes`
 - `security_scan_stale_after_days`
+- `service_access_tokens_expiration_enforced`
 
 ```json
 {
@@ -250,7 +251,7 @@ these parameters:
 - `default_branch_protection` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.
 - `throttle_unauthenticated_git_http_enabled`, `throttle_unauthenticated_git_http_period_in_seconds`, and `throttle_unauthenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147112) in GitLab 17.0.
 - `allow_all_integrations` and `allowed_integrations` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
-- `throttle_authenticated_git_http_enabled`, `throttle_authenticated_git_http_period_in_seconds`, and `throttle_authenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191552) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `git_authenticated_http_limit`. Disabled by default.
+- `throttle_authenticated_git_http_enabled`, `throttle_authenticated_git_http_period_in_seconds`, and `throttle_authenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191552) in GitLab 18.1 [with a feature flag](../administration/feature_flags/_index.md) named `git_authenticated_http_limit`. Disabled by default.
 - `git_authenticated_http_limit` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/543768) in GitLab 18.3.
 - `git_authenticated_http_limit` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/561577) in GitLab 18.4.
 
@@ -437,6 +438,7 @@ these parameters:
 - `lock_memberships_to_saml`
 - `security_mr_report_cache_lifetime_minutes`
 - `security_scan_stale_after_days`
+- `service_access_tokens_expiration_enforced`
 
 Example responses:
 
@@ -463,11 +465,14 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `allow_account_deletion` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412411) in GitLab 16.1.
 - `allow_project_creation_for_guest_and_below` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134625) in GitLab 16.8.
 - `silent_admin_exports_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148918) in GitLab 17.0.
+- `ai_action_api_rate_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149945) in GitLab 17.2.
 - `require_personal_access_token_expiry` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470192) in GitLab 17.3.
 - `receptive_cluster_agents_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463427) in GitLab 17.4.
 - `allow_all_integrations` and `allowed_integrations` [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
 - `iframe_rendering_enabled`, `iframe_rendering_allowlist`, and `iframe_rendering_allowlist_raw` introduced in GitLab 18.6.
+- `built_in_project_templates_enabled` and `lock_built_in_project_templates_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default.
 - `email_otp_enabled` introduced in GitLab 19.1.
+- `built_in_project_templates_enabled` and `lock_built_in_project_templates_enabled` [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623) in GitLab 19.2. Feature flag `use_built_in_project_templates_enabled` removed.
 
 {{< /history >}}
 
@@ -484,6 +489,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `email_restrictions_enabled`             | boolean          | no                                   | Prevent new users from creating an account by email. |
 | `email_restrictions`                     | string           | required by: `email_restrictions_enabled` | Regular expression that is checked against the email used during registration. |
 | `after_sign_up_text`                     | string           | no                                   | Text shown to the user after signing up. |
+| `ai_action_api_rate_limit`               | integer          | no                                   | Maximum number of requests allowed to the `aiAction` GraphQL mutation per user per eight hours. Default: `160`. Set to `0` to disable the rate limit. |
 | `akismet_api_key`                        | string           | required by: `akismet_enabled`       | API key for Akismet spam protection. |
 | `akismet_enabled`                        | boolean          | no                                   | (**If enabled, requires**: `akismet_api_key`) Enable or disable Akismet spam protection. |
 | `allow_all_integrations`                 | boolean          | no                                   | When `false`, only integrations in `allowed_integrations` are allowed on the instance. Ultimate only. |
@@ -512,8 +518,8 @@ to configure other related settings. These requirements are in the `Required` co
 | `bulk_import_max_download_file_size`     | integer          | no                                   | Maximum download file size when importing from source GitLab instances by direct transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
 | `allow_bypass_placeholder_confirmation`  | boolean          | no                                   | Skip confirmation when administrators reassign placeholder users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/534330) in GitLab 18.0. |
 | `allow_s3_compatible_storage_for_offline_transfer` | boolean | no                                   | Allow S3-compatible object storage for offline transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579705) in GitLab 18.9. |
-| `built_in_project_templates_enabled`     | boolean          | no                                   | Enable built-in project templates when users create projects. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235284) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default. |
-| `lock_built_in_project_templates_enabled` | boolean         | no                                   | Enforce the `built_in_project_templates_enabled` setting for all groups. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235284) in GitLab 19.0 [with a flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default. |
+| `built_in_project_templates_enabled`     | boolean          | no                                   | Enable built-in project templates when users create projects. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235284) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623) in GitLab 19.2. Feature flag `use_built_in_project_templates_enabled` removed. |
+| `lock_built_in_project_templates_enabled` | boolean         | no                                   | Enforce the `built_in_project_templates_enabled` setting for all groups. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235284) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623) in GitLab 19.2. Feature flag `use_built_in_project_templates_enabled` removed. |
 | `can_create_group`                       | boolean          | no                                   | Indicates whether users can create top-level groups. Defaults to `true`. |
 | `check_namespace_plan`                   | boolean          | no                                   | Enabling this makes only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. Premium and Ultimate only. |
 | `ci_delete_pipelines_in_seconds_limit_human_readable` | string | no                                | Maximum value that is allowed for configuring pipeline retention. Defaults to `1 year`. |
@@ -522,7 +528,8 @@ to configure other related settings. These requirements are in the `Required` co
 | `ci_max_total_yaml_size_bytes`           | integer          | no                                   | The maximum amount of memory, in bytes, that can be allocated for the pipeline configuration, with all included YAML configuration files. |
 | `ci_max_includes`                        | integer          | no                                   | The [maximum number of includes](../administration/cicd/limits.md#maximum-number-of-includes) per pipeline. Default is `150`. |
 | `ci_partitions_size_limit`               | integer          | no                                   | The maximum amount of disk space, in bytes, that can be used by a database partition for the CI tables before creating new partitions. Default is `100 GB`. [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429675) in GitLab 18.11.|
-| `ci_partitions_in_seconds_limit`         | integer          | no                                   | The time window, in seconds, before new CI partitions are created and the system switches to the next set of partitions. Must be between 1 month and 6 months. Default is 1 month (`2592000`). |
+| `ci_partitions_in_seconds_limit_human_readable` | string    | no                                   | The time window before new CI partitions are created and the system switches to the next set of partitions. Must be between `1 month` and `6 months`. Defaults to `1 month`. |
+| `ci_partitions_in_seconds_limit`         | integer          | no                                   | The time window, in seconds, before new CI partitions are created and the system switches to the next set of partitions. Must be between 1 month and 6 months. Default is 1 month (`2592000`). Write-only. Not returned in GET responses. Deprecated in favor of `ci_partitions_in_seconds_limit_human_readable` and is scheduled for removal in API v5. |
 | `concurrent_github_import_jobs_limit`    | integer          | no                                   | Maximum number of simultaneous import jobs for the GitHub importer. Default is 1000. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
 | `concurrent_bitbucket_import_jobs_limit` | integer          | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Cloud importer. Default is 100. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
 | `concurrent_bitbucket_server_import_jobs_limit` | integer   | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Server importer. Default is 100. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
@@ -724,6 +731,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `personal_access_token_prefix`           | string           | no                                   | Prefix for all generated personal access tokens. |
 | `pipeline_limit_per_project_user_sha`    | integer          | no                                   | Maximum number of pipeline creation requests per minute per user and commit. Disabled by default. |
 | `pipeline_limit_per_user`                | integer          | no                                   | Maximum number of pipeline creation requests per minute per user. |
+| `ci_lint_limit_per_user`                 | integer          | no                                   | Maximum number of CI Lint requests per minute per user. Disabled by default. |
 | `gitpod_enabled`                         | boolean          | no                                   | (**If enabled, requires**: `gitpod_url`) Enable [Ona integration](../integration/gitpod.md). Default is `false`. |
 | `gitpod_url`                             | string           | required by: `gitpod_enabled`        | The Ona instance URL for integration. |
 | `inactive_resource_access_tokens_delete_after_days`| integer | no                                   | Specifies retention period for inactive project and group access tokens. Default is `30`. |
@@ -790,7 +798,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `security_txt_content`                    | string          | no                                   | [Public security contact information](../administration/settings/security_contact_information.md). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433210) in GitLab 16.7. |
 | `security_mr_report_cache_lifetime_minutes` | integer       | no                                   | Number of minutes to cache security reports on merge requests (10-60). Default: 10. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223399) in GitLab 18.10. |
 | `security_scan_stale_after_days`          | integer          | no                                   | Number of days to retain security scan data before purging. Must be between 7 and 90 days. Default: 30 days for GitLab.com, 90 days for self-managed. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222998) in GitLab 18.9. |
-| `service_access_tokens_expiration_enforced` | boolean       | no                                   | Flag to indicate if token expiry date can be optional for service account users |
+| `service_access_tokens_expiration_enforced` | boolean       | no                                   | Flag to indicate if token expiry date can be optional for service account users. Premium and Ultimate only. |
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires**: `shared_runners_text` and `shared_runners_minutes`) Enable instance runners for new projects. |
 | `shared_runners_minutes`                 | integer          | required by: `shared_runners_enabled` | Set the maximum number of compute minutes that a group can use on instance runners per month. Premium and Ultimate only. |
 | `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Instance runners text. |
@@ -871,7 +879,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `user_default_internal_regex`            | string           | no                                   | Specify an email address regex pattern to identify default internal users. |
 | `user_defaults_to_private_profile`       | boolean          | no                                   | Newly created users have private profile by default. Defaults to `false`. |
 | `user_oauth_applications`                | boolean          | no                                   | Allow users to register any application to use GitLab as an OAuth provider. This setting does not affect group-level OAuth applications. |
-| `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false` disable the `You won't be able to pull or push project code via SSH` warning shown to users with no uploaded SSH key. |
+| `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false` disable the `You won't be able to pull or push repositories via SSH until you add an SSH key to your profile` warning shown to users with no uploaded SSH key. |
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
 | `valid_runner_registrars`                | array of strings | no                                   | List of types which are allowed to register a GitLab Runner. Can be `[]`, `['group']`, `['project']` or `['group', 'project']`. |
 | `vscode_extension_marketplace`           | hash             | no                                   | Settings for VS Code Extension Marketplace. Used by [Web IDE](../user/project/web_ide/_index.md) and [Workspaces](../user/workspace/_index.md). |

@@ -6,7 +6,7 @@ RSpec.describe Packages::Pypi::PackagesFinder, feature_category: :package_regist
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:project2, freeze: false) { create(:project, group: group) }
+  let_it_be_with_reload(:project2) { create(:project, group: group) }
   let_it_be(:package1) { create(:pypi_package, project: project) }
   let_it_be(:package2) { create(:pypi_package, project: project) }
   let_it_be(:package3) { create(:pypi_package, name: package2.name, project: project) }

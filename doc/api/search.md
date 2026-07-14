@@ -1542,3 +1542,71 @@ Example response:
   }
 ]
 ```
+
+### Semantic search
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227817) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `semantic_code_search_rest_api`. Enabled by default.
+- Feature flag `semantic_code_search_rest_api` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240677) in GitLab 19.2.
+
+{{< /history >}}
+
+Search for code in a project based on meaning rather than keyword matching.
+
+```plaintext
+GET /projects/:id/search/semantic
+```
+
+| Attribute        | Type              | Required | Description |
+|------------------|-------------------|----------|-------------|
+| `id`             | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `q`              | string            | Yes      | Natural language search query. |
+| `directory_path` | string            | No       | Directory path to scope the search to. |
+| `knn`            | integer           | No       | Number of nearest neighbors to consider during the vector search (1-100). Default is `64`. |
+| `limit`          | integer           | No       | Maximum number of results to return (1-100). Default is `20`. |
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/12/search/semantic?q=authentication%20middleware"
+```
+
+Example response:
+
+The response is an array of code search results. Each result contains the following fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `path` | string | The file path relative to the repository root. |
+| `content` | string | A snippet of the code content from the matched file. |
+| `score` | number | The semantic similarity score between the query and the result (0-1). Higher scores indicate better matches. |
+| `language` | string | The programming language of the file. |
+| `start_line` | integer | The line number where the matched code snippet begins. |
+| `blob_id` | string | The Git blob ID of the file. |
+| `file_url` | string | The URL to view the file in GitLab. |
+
+```json
+[
+  {
+    "path": "app/services/auth/jwt_service.rb",
+    "content": "def verify_token(token)\n  JWT.decode(token, secret_key)...",
+    "score": 0.91,
+    "language": "ruby",
+    "start_line": 42,
+    "blob_id": "a1b2c3d4e5f6...",
+    "file_url": "https://gitlab.example.com/my-org/my-project/-/blob/main/app/services/auth/jwt_service.rb"
+  }
+]
+```

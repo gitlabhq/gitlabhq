@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::BranchRulesFinder, feature_category: :source_code_management, type: :model do
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:all_branches_rule) { Projects::AllBranchesRule.new(project) }
   let_it_be(:custom_rules) { [all_branches_rule] }
 
@@ -81,9 +81,9 @@ RSpec.describe Projects::BranchRulesFinder, feature_category: :source_code_manag
     end
 
     context 'with protected branches' do
-      let!(:protected_branch_a) { create(:protected_branch, project: project, name: 'abranch') }
-      let!(:protected_branch_b) { create(:protected_branch, project: project, name: 'bbranch') }
-      let!(:protected_branch_c) { create(:protected_branch, project: project, name: 'cbranch') }
+      let_it_be(:protected_branch_a) { create(:protected_branch, project: project, name: 'abranch') }
+      let_it_be(:protected_branch_b) { create(:protected_branch, project: project, name: 'bbranch') }
+      let_it_be(:protected_branch_c) { create(:protected_branch, project: project, name: 'cbranch') }
 
       describe 'first page' do
         context 'when limit is greater than total rules' do
@@ -160,7 +160,7 @@ RSpec.describe Projects::BranchRulesFinder, feature_category: :source_code_manag
     end
 
     context 'with many protected branches' do
-      before do
+      before_all do
         ('a'..'x').each do |letter|
           create(:protected_branch, project: project, name: "branch-#{letter}")
         end
@@ -190,9 +190,9 @@ RSpec.describe Projects::BranchRulesFinder, feature_category: :source_code_manag
 
     describe 'keyset pagination correctness' do
       context 'when alphabetical order differs from ID order' do
-        let!(:branch_z) { create(:protected_branch, project: project, name: 'z-branch') }
-        let!(:branch_a) { create(:protected_branch, project: project, name: 'a-branch') }
-        let!(:branch_m) { create(:protected_branch, project: project, name: 'm-branch') }
+        let_it_be(:branch_z) { create(:protected_branch, project: project, name: 'z-branch') }
+        let_it_be(:branch_a) { create(:protected_branch, project: project, name: 'a-branch') }
+        let_it_be(:branch_m) { create(:protected_branch, project: project, name: 'm-branch') }
 
         it 'orders by name alphabetically' do
           page = finder.execute(cursor: nil, limit: 20)
@@ -210,7 +210,7 @@ RSpec.describe Projects::BranchRulesFinder, feature_category: :source_code_manag
     end
 
     context 'with default branch' do
-      before do
+      before_all do
         create(:protected_branch, project: project, name: project.default_branch)
         create(:protected_branch, project: project, name: 'zzz-branch-a')
         create(:protected_branch, project: project, name: 'zzz-branch-b')
@@ -310,7 +310,7 @@ RSpec.describe Projects::BranchRulesFinder, feature_category: :source_code_manag
     end
 
     context 'for cursor edge cases' do
-      let!(:protected_branch) { create(:protected_branch, project: project, name: 'main') }
+      let_it_be(:protected_branch) { create(:protected_branch, project: project, name: 'main') }
 
       it 'raises error for invalid cursor' do
         expect { finder.execute(cursor: Base64.strict_encode64('invalid-cursor'), limit: 20) }
@@ -346,9 +346,9 @@ RSpec.describe Projects::BranchRulesFinder, feature_category: :source_code_manag
       end
 
       context 'when protected branch name matches custom rule identifier' do
-        let!(:branch_aaa) { create(:protected_branch, project: project, name: 'aaa') }
-        let!(:branch_all_branches) { create(:protected_branch, project: project, name: 'all_branches') }
-        let!(:branch_zzz) { create(:protected_branch, project: project, name: 'zzz') }
+        let_it_be(:branch_aaa) { create(:protected_branch, project: project, name: 'aaa') }
+        let_it_be(:branch_all_branches) { create(:protected_branch, project: project, name: 'all_branches') }
+        let_it_be(:branch_zzz) { create(:protected_branch, project: project, name: 'zzz') }
         let(:cursor) { encode_cursor('all_branches', branch_all_branches.id) }
 
         it 'paginates correctly when protected branch has same name as custom rule' do

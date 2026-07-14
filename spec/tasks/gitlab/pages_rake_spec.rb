@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'gitlab:pages', :silence_stdout do
+RSpec.describe 'gitlab:pages', :silence_stdout, feature_category: :pages do
   before(:context) do
     Rake.application.rake_require 'tasks/gitlab/pages'
   end

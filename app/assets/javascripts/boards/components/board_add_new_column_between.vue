@@ -3,10 +3,12 @@ import { GlTooltipDirective } from '@gitlab/ui';
 import Tracking from '~/tracking';
 
 export default {
+  name: 'BoardAddNewColumnBetween',
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
+  emits: ['setAddColumnFormVisibility'],
   methods: {
     handleClick() {
       this.$emit('setAddColumnFormVisibility', true);

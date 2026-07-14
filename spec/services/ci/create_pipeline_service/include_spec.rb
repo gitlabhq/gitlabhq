@@ -6,8 +6,8 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
   include RepoHelpers
 
   context 'include:' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
-    let_it_be(:user)    { project.first_owner }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be(:user) { project.first_owner }
 
     let(:ref)                  { 'refs/heads/master' }
     let(:variables_attributes) { [{ key: 'MYVAR', value: 'hello' }] }
@@ -216,7 +216,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       context 'when project include times out' do
-        let_it_be(:another_project) { create(:project, :repository, :public) }
+        let_it_be(:another_project) { create(:project, :small_repo, :public) }
 
         let(:included_file_content) { File.read(Rails.root.join(file_location)) }
 
@@ -251,8 +251,8 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
 
       context 'when multiple includes exceed the cumulative fetch timeout' do
-        let_it_be(:other_project1) { create(:project, :repository, :public) }
-        let_it_be(:other_project2) { create(:project, :repository, :public) }
+        let_it_be(:other_project1) { create(:project, :small_repo, :public) }
+        let_it_be(:other_project2) { create(:project, :small_repo, :public) }
 
         let(:config) do
           <<~YAML
@@ -307,7 +307,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
           expect(pipeline).to be_persisted
           expect(pipeline.error_messages.map(&:content)).to include(
-            Gitlab::Ci::Config::TIMEOUT_MESSAGE
+            'Request timed out when fetching configuration files.'
           )
         end
       end

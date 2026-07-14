@@ -39,7 +39,7 @@ RSpec.describe Tooling::Danger::Experiments, feature_category: :tooling do
       let(:deleted_files) { ["config/feature_flags/experiment/#{removed_experiments_name}.yml"] }
 
       it 'returns false' do
-        expect(experiments.class_files_removed?).to eq(false)
+        expect(experiments.class_files_removed?).to be(false)
       end
     end
 
@@ -47,7 +47,7 @@ RSpec.describe Tooling::Danger::Experiments, feature_category: :tooling do
       let(:deleted_files) { ["config/feature_flags/experiment/fake_experiment.yml"] }
 
       it 'returns true' do
-        expect(experiments.class_files_removed?).to eq(true)
+        expect(experiments.class_files_removed?).to be(true)
       end
     end
   end

@@ -23,6 +23,7 @@ import { useAccessTokens } from '../stores/access_tokens';
 import { defaultDate } from '../utils';
 
 export default {
+  name: 'AccessTokenForm',
   components: {
     GlButton,
     GlDatepicker,
@@ -126,9 +127,7 @@ export default {
       this.createToken({ ...this.values, expiresAt });
     },
   },
-  helpScopes: helpPagePath('user/profile/personal_access_tokens', {
-    anchor: 'personal-access-token-scopes',
-  }),
+  helpScopes: helpPagePath('security/tokens/access_token_scopes'),
   fields: {
     name: {
       label: s__('AccessTokens|Token name'),

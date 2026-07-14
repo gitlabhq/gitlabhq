@@ -6,6 +6,6 @@ RSpec.describe Types::MergeRequests::WorkItemLinkTypeEnum, feature_category: :co
   specify { expect(described_class.graphql_name).to eq('MergeRequestWorkItemLinkType') }
 
   it 'exposes all the existing link types' do
-    expect(described_class.values.keys).to contain_exactly('CLOSES', 'MENTIONED')
+    expect(described_class.values.keys).to contain_exactly('CLOSES', 'MENTIONED', 'RELATED')
   end
 end

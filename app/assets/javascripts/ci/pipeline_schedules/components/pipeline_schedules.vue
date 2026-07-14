@@ -54,9 +54,9 @@ export default {
       'PipelineSchedules|Successfully scheduled a pipeline to run. Go to the %{linkStart}Pipelines page%{linkEnd} for details. ',
     ),
     planLimitReachedMsg: s__(
-      'PipelineSchedules|You have exceeded the maximum number of pipeline schedules for your plan. To create a new schedule, either increase your plan limit or delete an existing schedule.',
+      'PipelineSchedules|You have reached your plan limit for pipeline schedules. To create a new schedule, delete an existing schedule or increase your limit.',
     ),
-    planLimitReachedBtnText: s__('PipelineSchedules|Explore plan limits'),
+    planLimitReachedBtnText: s__('PipelineSchedules|Learn about pipeline schedule limits'),
   },
   sortStorageKey: TABLE_SORT_STORAGE_KEY,
   docsLink: helpPagePath('administration/cicd/limits.md', {
@@ -519,9 +519,9 @@ export default {
             :current-user="schedules.currentUser"
             :sort-by="sortBy"
             :sort-desc="sortDesc"
-            @showTakeOwnershipModal="setTakeOwnershipModal"
-            @showDeleteModal="setDeleteModal"
-            @playPipelineSchedule="playPipelineSchedule"
+            @show-take-ownership-modal="setTakeOwnershipModal"
+            @show-delete-modal="setDeleteModal"
+            @play-pipeline-schedule="playPipelineSchedule"
             @update-sorting="onUpdateSorting"
           />
 
@@ -552,14 +552,14 @@ export default {
 
     <take-ownership-modal
       :visible="showTakeOwnershipModal"
-      @takeOwnership="takeOwnership"
-      @hideModal="hideModal"
+      @take-ownership="takeOwnership"
+      @hide-modal="hideModal"
     />
 
     <delete-pipeline-schedule-modal
       :visible="showDeleteModal"
-      @deleteSchedule="deleteSchedule"
-      @hideModal="hideModal"
+      @delete-schedule="deleteSchedule"
+      @hide-modal="hideModal"
     />
   </div>
 </template>

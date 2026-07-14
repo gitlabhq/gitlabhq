@@ -128,6 +128,7 @@ describe('WorkItemDescription', () => {
     workItemWidgetsAutoSaveKey = mockWorkItemWidgetsAutoSaveKey,
     workItemLinkedItemsHandler = noBlockedByHandler,
     workItemOpenChildCountHandler = noOpenChildrenHandler,
+    stubs = {},
   } = {}) => {
     getDraft.mockImplementation((key) => {
       if (key === mockWorkItemWidgetsAutoSaveKey) {
@@ -172,6 +173,7 @@ describe('WorkItemDescription', () => {
       },
       stubs: {
         GlAlert,
+        ...stubs,
       },
     });
 
@@ -194,6 +196,21 @@ describe('WorkItemDescription', () => {
         renderMarkdownPath: markdownPaths.markdownPreviewPath,
         autocompleteDataSources: markdownPaths.autocompleteSourcesPath,
       });
+    });
+
+    it('wires aria-labelledby to the markdown editor and renders the contextual label', async () => {
+      await createComponent({
+        isEditing: true,
+        stubs: { GlFormGroup: { template: '<div><slot name="label" /><slot /></div>' } },
+      });
+
+      expect(findMarkdownEditor().props('formFieldProps')['aria-labelledby']).toBe(
+        'work-item-description-label',
+      );
+
+      const label = wrapper.find('#work-item-description-label');
+      expect(label.exists()).toBe(true);
+      expect(label.text()).toBe('Description');
     });
 
     it('shows edited by text', async () => {

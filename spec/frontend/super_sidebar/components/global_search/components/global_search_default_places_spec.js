@@ -9,15 +9,31 @@ import {
   EVENT_CLICK_PREFERENCES_IN_COMMAND_PALETTE,
 } from '~/super_sidebar/components/global_search/tracking_constants';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
-import { contextSwitcherLinks } from '../../../mock_data';
+
+const makeItem = ({ text, href, dataMethod }) => ({
+  text,
+  href,
+  extraAttrs: {
+    class: 'show-focus-layover',
+    'data-track-action': 'click_command_palette_item',
+    'data-track-extra': JSON.stringify({ title: text }),
+    'data-track-label': 'item_without_id',
+    'data-track-property': 'nav_panel_unknown',
+    'data-testid': 'places-item-link',
+    'data-qa-places-item': text,
+    ...(dataMethod ? { 'data-method': dataMethod } : {}),
+  },
+});
 
 describe('GlobalSearchDefaultPlaces', () => {
   let wrapper;
 
-  const createComponent = ({ links = [], attrs } = {}) => {
+  const createComponent = ({ isLoggedIn = true, showAdminAreaLink = false, attrs } = {}) => {
+    window.gon.current_user_id = isLoggedIn ? 123 : null;
+
     wrapper = shallowMount(GlobalSearchDefaultPlaces, {
       provide: {
-        contextSwitcherLinks: links,
+        showAdminAreaLink,
       },
       attrs,
       stubs: {
@@ -30,24 +46,21 @@ describe('GlobalSearchDefaultPlaces', () => {
   const findItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findLayover = () => wrapper.findComponent(SearchResultFocusLayover);
 
-  describe('given no contextSwitcherLinks', () => {
+  describe('when logged out', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ isLoggedIn: false });
     });
 
-    it('renders nothing', () => {
-      expect(wrapper.find('*').exists()).toBe(false);
-    });
+    it('renders only the Explore link', () => {
+      const itemProps = findItems().wrappers.map((item) => item.props('item'));
 
-    it('emits a nothing-to-render event', () => {
-      expect(wrapper.emitted('nothing-to-render')).toEqual([[]]);
+      expect(itemProps).toEqual([makeItem({ text: 'Explore', href: '/explore' })]);
     });
   });
 
-  describe('given some contextSwitcherLinks', () => {
+  describe('when logged in', () => {
     beforeEach(() => {
       createComponent({
-        links: contextSwitcherLinks,
         attrs: {
           bordered: true,
           class: 'test-class',
@@ -73,46 +86,10 @@ describe('GlobalSearchDefaultPlaces', () => {
       const itemProps = findItems().wrappers.map((item) => item.props('item'));
 
       expect(itemProps).toEqual([
-        {
-          text: 'Explore',
-          href: '/explore',
-          extraAttrs: {
-            class: 'show-focus-layover',
-            'data-track-action': 'click_command_palette_item',
-            'data-track-extra': '{"title":"Explore"}',
-            'data-track-label': 'item_without_id',
-            'data-track-property': 'nav_panel_unknown',
-            'data-testid': 'places-item-link',
-            'data-qa-places-item': 'Explore',
-          },
-        },
-        {
-          text: 'Admin area',
-          href: '/admin',
-          extraAttrs: {
-            class: 'show-focus-layover',
-            'data-track-action': 'click_command_palette_item',
-            'data-track-extra': '{"title":"Admin area"}',
-            'data-track-label': 'item_without_id',
-            'data-track-property': 'nav_panel_unknown',
-            'data-testid': 'places-item-link',
-            'data-qa-places-item': 'Admin area',
-          },
-        },
-        {
-          text: 'Leave admin mode',
-          href: '/admin/session/destroy',
-          extraAttrs: {
-            class: 'show-focus-layover',
-            'data-track-action': 'click_command_palette_item',
-            'data-track-extra': '{"title":"Leave admin mode"}',
-            'data-track-label': 'item_without_id',
-            'data-track-property': 'nav_panel_unknown',
-            'data-testid': 'places-item-link',
-            'data-qa-places-item': 'Leave admin mode',
-            'data-method': 'post',
-          },
-        },
+        makeItem({ text: 'Your work', href: '/' }),
+        makeItem({ text: 'Explore', href: '/explore' }),
+        makeItem({ text: 'Profile', href: '/-/user_settings/profile' }),
+        makeItem({ text: 'Preferences', href: '/-/profile/preferences' }),
       ]);
     });
 
@@ -134,6 +111,18 @@ describe('GlobalSearchDefaultPlaces', () => {
         findGroup().vm.$emit('action', { text: action });
         expect(trackEventSpy).toHaveBeenCalledWith(event, {}, undefined);
       });
+    });
+  });
+
+  describe('when showAdminAreaLink is true', () => {
+    beforeEach(() => {
+      createComponent({ showAdminAreaLink: true });
+    });
+
+    it('renders the Admin area link', () => {
+      const itemProps = findItems().wrappers.map((item) => item.props('item'));
+
+      expect(itemProps).toContainEqual(makeItem({ text: 'Admin area', href: '/admin' }));
     });
   });
 });

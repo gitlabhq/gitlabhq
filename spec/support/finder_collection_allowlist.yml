@@ -61,6 +61,7 @@
 - LicenseTemplateFinder
 - MergeRequests::OldestPerCommitFinder
 - NotesFinder
+- OrganizationPushRuleFinder
 - Organizations::OrganizationAssociationCounter
 - Packages::BuildInfosFinder
 - Packages::Conan::PackageFileFinder
@@ -72,7 +73,6 @@
 - Packages::Pypi::PackageFinder
 - Projects::Integrations::Jira::ByIdsFinder
 - Projects::Integrations::Jira::IssuesFinder
-- PushRuleFinder
 - ProjectPushRuleFinder
 - Releases::EvidencePipelineFinder
 - Repositories::BranchNamesFinder

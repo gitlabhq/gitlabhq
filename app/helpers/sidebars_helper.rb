@@ -35,7 +35,6 @@ module SidebarsHelper
     super_sidebar_instance_version_data.merge(super_sidebar_whats_new_data).merge({
       is_logged_in: false,
       compare_plans_url: compare_plans_url,
-      context_switcher_links: context_switcher_links,
       current_menu_items: panel.super_sidebar_menu_items,
       current_context_header: panel.super_sidebar_context_header,
       university_path: university_url,
@@ -53,9 +52,7 @@ module SidebarsHelper
   def super_sidebar_logged_out_context(panel:, panel_type:)
     super_sidebar_shared_context(panel: panel, panel_type: panel_type).merge({
       sign_in_visible: header_link?(:sign_in).to_s,
-      allow_signup: allow_signup?.to_s,
-      new_user_registration_path: new_user_registration_path,
-      sign_in_path: new_session_path(:user, redirect_to_referer: 'yes')
+      allow_signup: allow_signup?.to_s
     })
   end
 
@@ -65,7 +62,6 @@ module SidebarsHelper
       is_admin: user.can_admin_all_resources?,
       name: user.name,
       username: user.username,
-      admin_url: admin_root_path,
       admin_mode: {
         admin_mode_feature_enabled: Gitlab::CurrentSettings.admin_mode,
         admin_mode_active: current_user_mode.admin_mode?,
@@ -75,13 +71,10 @@ module SidebarsHelper
       },
       avatar_url: user.avatar_url,
       has_link_to_profile: current_user_menu?(:profile),
-      link_to_profile: user_path(user),
       logo_url: current_appearance&.header_logo_path,
       status: user_status_menu_data(user),
       settings: {
-        has_settings: current_user_menu?(:settings),
-        profile_path: user_settings_profile_path,
-        profile_preferences_path: profile_preferences_path
+        has_settings: current_user_menu?(:settings)
       },
       user_counts: {
         assigned_issues: user.assigned_open_issues_count,
@@ -91,13 +84,7 @@ module SidebarsHelper
         last_update: time_in_milliseconds
       },
       can_sign_out: current_user_menu?(:sign_out),
-      sign_out_link: destroy_user_session_path,
 
-      issues_dashboard_path: work_items_dashboard_path(assignee_username: user.username),
-
-      merge_request_dashboard_path: merge_requests_dashboard_path,
-      explore_analytics_dashboards_path: explore_analytics_dashboards_path,
-      todos_dashboard_path: dashboard_todos_path,
       compare_plans_url: compare_plans_url(user: user, project: project, group: group),
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
       projects_path: dashboard_projects_path,
@@ -105,13 +92,11 @@ module SidebarsHelper
       gitlab_com_and_canary: Gitlab.com_and_canary?,
       current_context: super_sidebar_current_context(project: project, group: group),
       pinned_items: pinned_items(user, panel_type, group: group),
-      update_pins_url: pins_path,
       is_impersonating: impersonating?,
-      stop_impersonation_path: admin_impersonation_path,
       shortcut_links: shortcut_links(user: user, project: project),
-      track_visits_path: track_namespace_visits_path,
       work_items: work_items_modal_data(group, project),
-      has_multiple_organizations: user.has_multiple_organizations?
+      has_multiple_organizations: user.has_multiple_organizations?,
+      show_feature_library_feedback: show_feature_library_feedback?
     })
   end
 
@@ -124,7 +109,6 @@ module SidebarsHelper
     }
   end
 
-  # Overridden in EE
   def super_sidebar_whats_new_data
     return {} unless display_whats_new?
 
@@ -222,6 +206,10 @@ module SidebarsHelper
 
   private
 
+  def show_feature_library_feedback?
+    true
+  end
+
   def fallback_sidebar_panel(nav, context_adds, user = nil)
     # Fallback when panels fail to render:
     # - UserProfile panel failures (no accessible content) -> Explore navigation for private/blocked users
@@ -243,11 +231,6 @@ module SidebarsHelper
 
   def search_data
     {
-      search_path: search_path,
-      issues_path: issues_dashboard_path,
-      mr_path: merge_requests_dashboard_path,
-      autocomplete_path: search_autocomplete_path,
-      settings_path: search_settings_path,
       search_context: header_search_context
     }
   end
@@ -360,23 +343,6 @@ module SidebarsHelper
     {}
   end
 
-  def context_switcher_links
-    links = [
-      ({ title: s_('Navigation|Your work'), link: root_path, icon: 'work' } if current_user),
-      { title: s_('Navigation|Explore'), link: explore_root_path, icon: 'compass' },
-      ({ title: s_('Navigation|Profile'), link: user_settings_profile_path, icon: 'profile' } if current_user),
-      ({ title: s_('Navigation|Preferences'), link: profile_preferences_path, icon: 'preferences' } if current_user)
-    ]
-
-    if display_admin_area_link?
-      links.append(
-        { title: s_('Navigation|Admin area'), link: admin_area_link, icon: 'admin' }
-      )
-    end
-
-    links.compact
-  end
-
   def impersonating?
     !!session[:impersonator_id]
   end
@@ -447,16 +413,24 @@ module SidebarsHelper
   # rubocop:disable Lint/UnusedMethodArgument -- group is used on EE
   def pinned_items(user, panel_type, group: nil)
     user.pinned_nav_items[panel_type]&.map(&:to_s) ||
-      super_sidebar_default_pins(panel_type)
+      super_sidebar_default_pins(panel_type, user)
   end
   # rubocop:enable Lint/UnusedMethodArgument
 
-  def super_sidebar_default_pins(panel_type)
+  def super_sidebar_default_pins(panel_type, user)
     case panel_type
     when 'project'
-      %w[project_issue_list project_merge_request_list]
+      if Feature.enabled?(:feature_library_modal, user)
+        %w[project_overview members project_issue_list branches project_merge_request_list pipelines]
+      else
+        %w[project_issue_list project_merge_request_list]
+      end
     when 'group'
-      %w[group_issue_list group_merge_request_list]
+      if Feature.enabled?(:feature_library_modal, user)
+        %w[group_overview members group_issue_list issue_boards group_merge_request_list]
+      else
+        %w[group_issue_list group_merge_request_list]
+      end
     else
       []
     end
@@ -464,14 +438,6 @@ module SidebarsHelper
 
   def terms_link
     Gitlab::CurrentSettings.terms ? terms_path : nil
-  end
-
-  def admin_area_link
-    admin_root_path
-  end
-
-  def display_admin_area_link?
-    current_user&.can?(:access_admin_area)
   end
 end
 

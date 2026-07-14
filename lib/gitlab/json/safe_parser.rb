@@ -73,6 +73,8 @@ module Gitlab
 
       PayloadSizeError = Class.new(RuntimeError)
 
+      THREAD_CACHE_NAMESPACE = 'safe-parser-instances'
+
       ERRORS = {
         Oj::Parser::DepthError => 'Parameters nested too deeply',
         Oj::Parser::ArraySizeError => 'Array parameter too large',
@@ -90,6 +92,12 @@ module Gitlab
           @valid_option_keys ||= PARSE_LIMITS.keys
         end
 
+        def parse(payload, **options)
+          instance(options).parse(payload)
+        end
+
+        private
+
         # Returns a thread-local `SafeParser` instance for the given options.
         #
         # Options are merged with `PARSE_LIMITS`, and the resulting effective limits are
@@ -98,17 +106,15 @@ module Gitlab
         #
         # A different thread always gets a different instance because `Oj::Parser.safe`
         # is not thread-safe.
-        def instance(**options)
+        def instance(options)
           parse_limits = PARSE_LIMITS.merge(options)
 
           instance_for(parse_limits)
         end
 
-        private
-
         def instance_for(options)
-          Thread.current['safe-parser-instances'] ||= {}
-          Thread.current['safe-parser-instances'][options] ||= new(**options)
+          Thread.current[THREAD_CACHE_NAMESPACE] ||= {}
+          Thread.current[THREAD_CACHE_NAMESPACE][options] ||= new(**options)
         end
       end
 

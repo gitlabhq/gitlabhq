@@ -20,7 +20,7 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessWebhookService, feature_cat
     subject(:execute) { described_class.new(project, webhook_payload).execute(token) }
 
     context 'when PagerDuty webhook setting is active' do
-      let_it_be(:incident_management_setting, freeze: false) { create(:project_incident_management_setting, project: project, pagerduty_active: true) }
+      let_it_be_with_reload(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: true) }
 
       context 'when token is valid' do
         let(:token) { incident_management_setting.pagerduty_token }
@@ -94,7 +94,7 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessWebhookService, feature_cat
     end
 
     context 'when both tokens are nil' do
-      let_it_be(:incident_management_setting, freeze: false) { create(:project_incident_management_setting, project: project, pagerduty_active: false) }
+      let_it_be_with_reload(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: false) }
 
       let(:token) { nil }
 
@@ -113,7 +113,7 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessWebhookService, feature_cat
     end
 
     context 'when PagerDuty webhook setting is not active' do
-      let_it_be(:incident_management_setting, freeze: false) { create(:project_incident_management_setting, project: project, pagerduty_active: false) }
+      let_it_be_with_reload(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: false) }
 
       it 'responds with Forbidden' do
         result = execute

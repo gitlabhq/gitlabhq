@@ -5,6 +5,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
   role="row"
 >
   <div
+    class="gl-flex gl-flex-col gl-gap-2 gl-items-start"
     role="cell"
   >
     <status-badge-stub

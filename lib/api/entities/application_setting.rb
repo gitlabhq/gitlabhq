@@ -47,6 +47,9 @@ module API
       expose :iframe_rendering_allowlist_raw
       expose :email_otp_enabled
 
+      expose :logging_field_schema_version, documentation: { type: Integer }
+      expose :logging_field_dual_emit_target, documentation: { type: Integer }
+
       # This field is deprecated and always returns true
       expose(:housekeeping_bitmaps_enabled) { |_settings, _options| true }
 

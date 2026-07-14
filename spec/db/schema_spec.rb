@@ -20,8 +20,8 @@ RSpec.describe 'Database schema',
   let(:removed_fks_map) do
     {
       # example_table: %w[example_column]
-      cd_version_sets: %w[environment_id],
-      search_namespace_index_assignments: [%w[search_index_id index_type]]
+      search_namespace_index_assignments: [%w[search_index_id index_type]],
+      work_item_descriptions: %w[work_item_id namespace_id last_edited_by_id]
     }.with_indifferent_access.freeze
   end
 
@@ -31,9 +31,7 @@ RSpec.describe 'Database schema',
   let(:ignored_fk_columns_map) do
     {
       abuse_reports: %w[user_id],
-      ai_code_suggestion_events: %w[user_id],
-      ai_duo_chat_events: %w[user_id],
-      ai_troubleshoot_job_events: %w[user_id job_id],
+      conversational_development_index_metrics: %w[usage_data_id],
       ai_audit_events: %w[author_id workflow_id cloud_event_id],
       ai_usage_events: %w[user_id],
       ai_events_counts: %w[user_id namespace_id],
@@ -61,6 +59,7 @@ RSpec.describe 'Database schema',
       user_audit_events: %w[author_id user_id target_id],
       group_audit_events: %w[author_id group_id target_id],
       project_audit_events: %w[author_id project_id target_id],
+      iam_outbox: %w[entity_id], # generic source-row id (entity_type, entity_id), not a single-table FK
       instance_audit_events: %w[author_id target_id],
       project_compliance_violations: %w[audit_event_id], # audit_events table doesn't have id as the primary key instead the primary key is btree (id, created_at)
       award_emoji: %w[awardable_id user_id],
@@ -70,6 +69,8 @@ RSpec.describe 'Database schema',
       catalog_resource_component_last_usages: %w[used_by_project_id], # No FK constraint because we want to preserve usage data even if project is deleted.
       chat_names: %w[chat_id team_id],
       chat_teams: %w[team_id],
+      cd_deployment_transitions: %w[principal_id], # Pending removal in 19.3
+      cd_rollout_transitions: %w[principal_id], # Pending removal in 19.3
       ci_build_pending_states: %w[project_id],
       ci_build_trace_chunks: %w[project_id],
       ci_builds_runner_session: %w[project_id],
@@ -84,6 +85,7 @@ RSpec.describe 'Database schema',
       ci_unit_test_failures: %w[project_id],
       ci_resources: %w[project_id],
       p_ci_pipelines: %w[partition_id trigger_id],
+      ci_build_runtime_environments: %w[partition_id runtime_environment_id], # runtime_environment_id is a bare pointer that may dangle after the runtime env partition is dropped
       p_ci_runner_machine_builds: %w[project_id],
       ci_runner_taggings: %w[runner_id organization_id], # The organization_id value is meant to populate the partitioned table, no other usage.
       ci_runner_taggings_instance_type: %w[tag_id organization_id], # organization_id is always NULL in this partition, tag_id is handled on ci_runner_taggings.
@@ -120,6 +122,7 @@ RSpec.describe 'Database schema',
       gitlab_subscription_histories: %w[gitlab_subscription_id hosted_plan_id namespace_id],
       issues: %w[last_edited_by_id state_id work_item_type_id],
       issue_emails: %w[email_message_id],
+      jira_connect_installations: %w[cloud_id], # cloud_id is the Jira site (cloud) id, not a GitLab foreign key
       jira_tracker_data: %w[jira_issue_transition_id],
       keys: %w[user_id],
       label_links: %w[target_id],
@@ -137,6 +140,7 @@ RSpec.describe 'Database schema',
       # file_template_project_id and custom_project_templates_group_id will be removed from namespaces
       # as part of https://gitlab.com/gitlab-org/gitlab/-/work_items/592091
       namespaces: %w[owner_id file_template_project_id custom_project_templates_group_id],
+      namespaces_consents: %w[user_id], # Uses loose FK for async nullify (config/gitlab_loose_foreign_keys.yml)
       namespace_descendants: %w[namespace_id],
       notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id],
       notification_settings: %w[source_id],
@@ -162,6 +166,7 @@ RSpec.describe 'Database schema',
       p_ci_pipeline_variables: %w[project_id],
       p_ci_pipelines_config: %w[partition_id project_id],
       p_ci_stages: %w[project_id],
+      p_duo_workflows_checkpoint_blobs: %w[project_id namespace_id],
       p_duo_workflows_checkpoints: %w[project_id namespace_id],
       # No LFK needed: daily partitions are dropped after 1 day via retain_for
       # https://gitlab.com/gitlab-org/gitlab/-/blob/ccc2459924e2805e43ad8f97eec15a6932d84f68/ee/app/models/analytics/knowledge_graph/code_indexing_task.rb#L13
@@ -224,6 +229,7 @@ RSpec.describe 'Database schema',
       vulnerability_occurrence_identifiers: %w[project_id],
       vulnerability_scanners: %w[external_id],
       vulnerability_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
+      vulnerability_finding_ascp_component_links: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
       vulnerability_external_issue_links: %w[project_id],
       vulnerability_issue_links: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_merge_request_links: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
@@ -262,8 +268,8 @@ RSpec.describe 'Database schema',
       p_knowledge_graph_tasks: %w[partition_id knowledge_graph_replica_id zoekt_node_id namespace_id], # needed for: partitioning, and performance reasons
       project_secrets_manager_maintenance_tasks: %w[user_id project_id root_namespace_id parent_group_id], # plain ID columns for task service path resolution, no FK needed
       group_secrets_manager_maintenance_tasks: %w[user_id group_id root_namespace_id organization_id], # plain ID columns for task service path resolution, no FK needed
-      project_secrets_managers: %w[organization_id root_namespace_id], # denormalized ids for the trigger-based deprovision flow, no FK needed
-      group_secrets_managers: %w[organization_id root_namespace_id], # denormalized ids for the trigger-based deprovision flow, no FK needed
+      project_secrets_managers: %w[organization_id root_namespace_id], # denormalized ids for the trigger-based deprovision flow, no FK needed. Sharding key FK is on project_id
+      group_secrets_managers: %w[organization_id root_namespace_id], # denormalized ids for the trigger-based deprovision flow, no FK needed. Sharding key FK is on group_id
       # TODO: To remove with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155256
       approval_merge_request_rules: %w[approval_policy_rule_id],
       ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
@@ -313,22 +319,23 @@ RSpec.describe 'Database schema',
       deployments: 18,
       epics: 19,
       events: 16,
-      group_type_ci_runners: 16,
-      instance_type_ci_runners: 16,
+      ci_runners: 16,
+      group_type_ci_runners: 17,
+      instance_type_ci_runners: 17,
       issues: 35,
       members: 19,
       merge_requests: 29,
-      namespaces: 24,
+      namespaces: 23,
       notes: 16,
       p_ci_builds: 24,
       p_ci_pipelines: 25,
       packages_package_files: 16,
       packages_packages: 28,
-      project_type_ci_runners: 16,
+      project_type_ci_runners: 17,
       projects: 54, # Decrement by 2 after the removal of temporary indexes https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217449
       sbom_occurrences: 25,
       users: 34, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
-      vulnerability_reads: 24 # Decremented by 1 after removal of tmp index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230081
+      vulnerability_reads: 25 # Increased by one for tmp index on BBM https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235514
     }.with_indifferent_access.freeze
   end
 
@@ -539,7 +546,6 @@ RSpec.describe 'Database schema',
         'Analytics::CycleAnalytics::Stage' => %w[start_event_identifier end_event_identifier],
         'Ci::Bridge' => %w[failure_reason],
         'Ci::Build' => %w[failure_reason],
-        'Ci::BuildMetadata' => %w[timeout_source],
         'Ci::BuildTraceChunk' => %w[data_store],
         'Ci::DailyReportResult' => %w[param_type],
         'Ci::JobArtifact' => %w[file_type],
@@ -586,7 +592,6 @@ RSpec.describe 'Database schema',
         "ApplicationSetting" => %w[repository_storages_weighted oauth_provider rate_limits_unauthenticated_git_http],
         "AlertManagement::Alert" => %w[payload],
         "AlertManagement::HttpIntegration" => %w[payload_example],
-        "Ci::BuildMetadata" => %w[config_options config_variables],
         "Ci::Runner" => %w[config],
         "ExperimentSubject" => %w[context],
         "ExperimentUser" => %w[context],

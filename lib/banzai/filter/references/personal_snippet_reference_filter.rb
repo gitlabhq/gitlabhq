@@ -17,8 +17,6 @@ module Banzai
         self.object_class = PersonalSnippet
 
         def call
-          return doc unless Feature.enabled?(:personal_snippet_reference_filters, context[:current_user])
-
           preload_snippets
           super
         end

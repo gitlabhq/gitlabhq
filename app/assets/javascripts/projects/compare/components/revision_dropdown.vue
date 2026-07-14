@@ -12,6 +12,7 @@ const EMPTY_DROPDOWN_TEXT = s__('CompareRevisions|Select branch/tag');
 const SEARCH_DEBOUNCE_MS = 300;
 
 export default {
+  name: 'RevisionDropdown',
   components: {
     GlCollapsibleListbox,
   },

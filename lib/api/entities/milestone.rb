@@ -3,8 +3,10 @@
 module API
   module Entities
     class Milestone < Grape::Entity
-      expose :id, :iid, documentation: { type: 'Integer' }
-      expose :project_id, documentation: { type: 'Integer' }, if: ->(entity, options) { entity&.project_id }
+      expose :id, :iid, documentation: { type: 'Integer', format: 'int64' }
+      expose :project_id, documentation: { type: 'Integer', format: 'int64' }, if: ->(entity, options) {
+        entity&.project_id
+      }
       expose :group_id, if: ->(entity, options) { entity&.group_id }
       expose :title, :description
       expose :state, :created_at, :updated_at

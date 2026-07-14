@@ -6,6 +6,7 @@ module Members
 
     helper EmailsHelper
     helper AvatarsHelper
+    helper InvitesHelper
 
     helper_method :member_source, :member, :invited_to_description
 

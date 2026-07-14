@@ -20,7 +20,10 @@ describe('SuperTopbar', () => {
   let wrapper;
 
   const OrganizationSwitcherStub = stubComponent(OrganizationSwitcher);
-  const SearchModalStub = stubComponent(SearchModal);
+  const SearchModalStub = stubComponent(SearchModal, {
+    inject: { showAdminAreaLink: { default: false } },
+    template: '<div :data-show-admin-area-link="String(showAdminAreaLink)"></div>',
+  });
 
   const findSkipToLink = () => wrapper.findByTestId('super-topbar-skip-to');
   const findAdminLink = () => wrapper.findByTestId('topbar-admin-link');
@@ -292,7 +295,18 @@ describe('SuperTopbar', () => {
               admin_mode: { user_is_admin: true, admin_mode_feature_enabled: false },
             },
           });
-          expect(findAdminLink().attributes('href')).toBe(mockSidebarData.admin_url);
+          expect(findAdminLink().attributes('href')).toBe('/admin');
+        });
+
+        it('provides showAdminAreaLink as true to the search modal', () => {
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              admin_mode: { user_is_admin: true, admin_mode_feature_enabled: false },
+            },
+          });
+
+          expect(findSearchModal().attributes('data-show-admin-area-link')).toBe('true');
         });
       });
 
@@ -308,7 +322,7 @@ describe('SuperTopbar', () => {
               },
             },
           });
-          expect(findAdminLink().attributes('href')).toBe(mockSidebarData.admin_url);
+          expect(findAdminLink().attributes('href')).toBe('/admin');
         });
       });
 
@@ -332,6 +346,12 @@ describe('SuperTopbar', () => {
         it('does not render', () => {
           createComponent();
           expect(findAdminLink().exists()).toBe(false);
+        });
+
+        it('provides showAdminAreaLink as false to the search modal', () => {
+          createComponent();
+
+          expect(findSearchModal().attributes('data-show-admin-area-link')).toBe('false');
         });
       });
     });
@@ -393,7 +413,9 @@ describe('SuperTopbar', () => {
               is_logged_in: false,
             },
           });
-          expect(findSigninButton().attributes('href')).toBe(mockSidebarData.sign_in_path);
+          expect(findSigninButton().attributes('href')).toBe(
+            '/users/sign_in?redirect_to_referer=yes',
+          );
 
           createComponent({
             sidebarData: {
@@ -401,7 +423,9 @@ describe('SuperTopbar', () => {
               is_logged_in: 'false',
             },
           });
-          expect(findSigninButton().attributes('href')).toBe(mockSidebarData.sign_in_path);
+          expect(findSigninButton().attributes('href')).toBe(
+            '/users/sign_in?redirect_to_referer=yes',
+          );
         });
       });
 
@@ -451,9 +475,7 @@ describe('SuperTopbar', () => {
             },
           });
           expect(findSignupButton().text()).toBe('Register');
-          expect(findSignupButton().attributes('href')).toBe(
-            mockSidebarData.new_user_registration_path,
-          );
+          expect(findSignupButton().attributes('href')).toBe('/users/sign_up');
         });
 
         it('renders free trial when in Saas Mode', () => {
@@ -498,9 +520,7 @@ describe('SuperTopbar', () => {
             { isSaas: true },
           );
           expect(findSignupButton().text()).toBe('Get free trial');
-          expect(findSignupButton().attributes('href')).toBe(
-            mockSidebarData.new_user_registration_path,
-          );
+          expect(findSignupButton().attributes('href')).toBe('/users/sign_up');
         });
       });
 
@@ -519,7 +539,6 @@ describe('SuperTopbar', () => {
             {
               sidebarData: {
                 ...mockSidebarData,
-                explore_analytics_dashboards_path: '/explore/analytics/dashboards',
               },
             },
             { glFeatures: { exploreAnalyticsDashboards: true } },
@@ -527,7 +546,7 @@ describe('SuperTopbar', () => {
 
           expect(findAnalyticsDashboardsButton().exists()).toBe(true);
           expect(findAnalyticsDashboardsButton().attributes('href')).toBe(
-            '/explore/analytics/dashboards',
+            '/explore/analytics_dashboards',
           );
           expect(findAnalyticsDashboardsButton().attributes('icon')).toBe('chart');
           expect(findAnalyticsDashboardsButton().attributes('size')).toBe('small');
@@ -543,7 +562,6 @@ describe('SuperTopbar', () => {
             {
               sidebarData: {
                 ...mockSidebarData,
-                explore_analytics_dashboards_path: '/explore/analytics/dashboards',
               },
             },
             { glFeatures: { exploreAnalyticsDashboards: false } },
@@ -560,7 +578,6 @@ describe('SuperTopbar', () => {
               sidebarData: {
                 ...mockSidebarData,
                 is_logged_in: false,
-                explore_analytics_dashboards_path: '/explore/analytics/dashboards',
               },
             },
             { glFeatures: { exploreAnalyticsDashboards: true } },

@@ -155,6 +155,32 @@ module QA
         end
       end
 
+      describe 'clone url' do
+        context 'when clone_url is not set' do
+          before do
+            register
+          end
+
+          it 'does not pass --clone-url' do
+            expect(subject).not_to have_received_masked_shell_command(/ --clone-url /)
+          end
+        end
+
+        context 'when clone_url is set' do
+          let(:clone_url) { 'http://192.168.65.2:3000' }
+
+          before do
+            subject.clone_url = clone_url
+
+            register
+          end
+
+          it 'passes --clone-url' do
+            expect(subject).to have_received_masked_shell_command(%r{ --clone-url #{clone_url} })
+          end
+        end
+      end
+
       context 'executors' do
         it 'defaults to the shell executor' do
           register

@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'omniauth_provider_config factory', feature_category: :system_access do
-  it 'creates a valid GitlabSettings::Options instance' do
+  it 'creates a valid Gitlab::Configs::Options instance' do
     config = build(:omniauth_provider_config)
 
-    expect(config).to be_a(GitlabSettings::Options)
+    expect(config).to be_a(Gitlab::Configs::Options)
     expect(config.name).to eq('openid_connect')
   end
 

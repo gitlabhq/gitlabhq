@@ -21,6 +21,7 @@ export default {
       default: false,
     },
   },
+  emits: ['next', 'prev'],
   computed: {
     attrs() {
       return {

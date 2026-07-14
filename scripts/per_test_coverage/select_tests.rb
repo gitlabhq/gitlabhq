@@ -80,24 +80,26 @@ module PerTestCoverage
       def initialize(
         api_url: ENV.fetch('CI_API_V4_URL', DEFAULT_API_URL),
         project_id: ENV.fetch('CI_PROJECT_ID'),
-        job_token: ENV['CI_JOB_TOKEN'])
+        private_token: ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE'])
         @api_url = api_url
         @project_id = project_id
-        @job_token = job_token
+        @private_token = private_token
       end
 
       # Counts pipelines fired by `schedule_id` whose `created_at` is at or
       # after `since_time` (UTC), excluding `exclude_pipeline_id` (the current
       # pipeline, which would otherwise count itself).
       #
-      # `per_page=100` is enough for the 2-hourly maintenance schedule (max ~24
-      # pipelines per weekend window, ~84 in the trailing 7 days). If the
-      # schedule cadence ever quickens or this endpoint starts returning
-      # manual-rerun pipelines too, this cap may silently drop history; pagination
-      # via `Link` headers would be the fix.
+      # `sort=desc` is required: this endpoint returns pipelines oldest-first by
+      # default, so without it `per_page=100` only ever sees the schedule's
+      # earliest runs (the count of recent pipelines is then always zero, which
+      # pins every weekend slot to bucket 0). Newest-first, 100 covers the
+      # 2-hourly schedule comfortably (max ~24 pipelines per weekend window). If
+      # the cadence ever quickens past that, paginating via the `Link` headers
+      # would be the fix.
       def count_schedule_pipelines_since(schedule_id:, since_time:, exclude_pipeline_id: nil)
         uri = URI.parse(
-          "#{@api_url}/projects/#{@project_id}/pipeline_schedules/#{schedule_id}/pipelines?per_page=100"
+          "#{@api_url}/projects/#{@project_id}/pipeline_schedules/#{schedule_id}/pipelines?per_page=100&sort=desc"
         )
         body = http_get(uri)
         pipelines = JSON.parse(body)
@@ -114,7 +116,8 @@ module PerTestCoverage
 
       def http_get(uri)
         req = Net::HTTP::Get.new(uri)
-        req['JOB-TOKEN'] = @job_token if @job_token
+        # This endpoint requires a token with read_api scope.
+        req['PRIVATE-TOKEN'] = @private_token if @private_token
         res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
           http.request(req)
         end
@@ -231,6 +234,12 @@ module PerTestCoverage
       when 0 then 0
       when 1 then 1
       end
+    rescue StandardError => e
+      # A token, permission, or transient failure on the slot lookup must not
+      # crash the capture. Fall back to the weekday delta path (nil) so the job
+      # still produces a queue or a clean empty-queue skip.
+      info "Weekend-slot lookup failed (#{e.message}); falling back to the weekday delta path."
+      nil
     end
 
     # Most recent Saturday 00:00 UTC at or before `now`. Used as the anchor for

@@ -29,14 +29,14 @@ RSpec.describe Organizations::ProjectsController, feature_category: :organizatio
       end
 
       context 'when the user is signed in' do
-        let_it_be(:user, freeze: false) { create(:user) }
+        let_it_be(:user) { create(:user) }
 
         before do
           sign_in(user)
         end
 
         context 'as as admin', :enable_admin_mode do
-          let_it_be(:user, freeze: false) { create(:admin) }
+          let_it_be(:user) { create(:admin) }
 
           it_behaves_like 'organization - successful response'
           it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
@@ -72,7 +72,7 @@ RSpec.describe Organizations::ProjectsController, feature_category: :organizatio
       end
 
       context 'when the user is signed in' do
-        let_it_be(:user, freeze: false) { create(:user) }
+        let_it_be(:user) { create(:user) }
 
         before do
           sign_in(user)

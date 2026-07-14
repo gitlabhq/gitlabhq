@@ -1,38 +1,38 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import { merge } from 'lodash-es';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
+import { useMetricImages } from '~/vue_shared/components/metric_images/store';
 import MetricImagesTable from '~/vue_shared/components/metric_images/metric_images_table.vue';
 import MetricImagesTab from '~/vue_shared/components/metric_images/metric_images_tab.vue';
-import createStore from '~/vue_shared/components/metric_images/store';
 import waitForPromises from 'helpers/wait_for_promises';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import MetricImageDetailsModal from '~/vue_shared/components/metric_images/metric_image_details_modal.vue';
 import { fileList, initialData } from './mock_data';
 
-const service = {
-  getMetricImages: jest.fn(),
-};
-
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('Metric images tab', () => {
   let wrapper;
   let store;
+  let pinia;
 
   const mountComponent = (options = {}) => {
-    store = createStore({}, service);
+    pinia = createTestingPinia();
+    store = useMetricImages();
+    store.fetchImages.mockResolvedValue();
 
     wrapper = shallowMount(
       MetricImagesTab,
       merge(
         {
-          store,
+          pinia,
           provide: {
             canUpdate: true,
             iid: initialData.issueIid,
             projectId: initialData.projectId,
+            metricImagesService: {},
           },
         },
         options,
@@ -71,12 +71,12 @@ describe('Metric images tab', () => {
 
   describe('onLoad action', () => {
     it('should load images', async () => {
-      service.getMetricImages.mockImplementation(() => Promise.resolve(fileList));
-
       mountComponent();
+      store.metricImages = fileList;
 
       await waitForPromises();
 
+      expect(store.fetchImages).toHaveBeenCalled();
       expect(findImages()).toHaveLength(1);
     });
   });

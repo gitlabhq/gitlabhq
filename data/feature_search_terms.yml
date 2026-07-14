@@ -1,0 +1,804 @@
+# Feature search terminology map
+#
+# Maps external vocabulary and GitLab-native shorthand to Feature Library item IDs.
+# Source: https://docs.google.com/spreadsheets/d/1bwbN5BDFk6oQnSJDQBP9QuTxUXlNekMU-WKJIFk_bzo
+#
+# Each entry:
+#   term:        the search string the user types (lowercase, stripped, no parenthetical tags)
+#   feature_key: the real Sidebars::MenuItem#item_id (source of truth)
+#   panels:      [project], [group], or [project, group]
+#
+# Rules:
+# - Features with distinct ids per panel require two entries (one per panel).
+# - Features that share the same bare id in both panels use panels: [project, group].
+# - Terms must be lowercase and stripped (enforced by the integrity spec).
+# - No duplicate (term, panel) pairs (enforced by the integrity spec).
+# - The !/data/**/*.yml CODEOWNERS rule exempts this file from the engineering review gate.
+
+# ---------------------------------------------------------------------------
+# Merge Requests
+# ---------------------------------------------------------------------------
+
+# GitLab / common shorthand
+- term: mr
+  feature_key: project_merge_request_list
+  panels: [project]
+- term: mr
+  feature_key: group_merge_request_list
+  panels: [group]
+- term: pr
+  feature_key: project_merge_request_list
+  panels: [project]
+- term: pr
+  feature_key: group_merge_request_list
+  panels: [group]
+- term: pull request
+  feature_key: project_merge_request_list
+  panels: [project]
+- term: pull request
+  feature_key: group_merge_request_list
+  panels: [group]
+- term: merge request
+  feature_key: project_merge_request_list
+  panels: [project]
+- term: merge request
+  feature_key: group_merge_request_list
+  panels: [group]
+- term: review
+  feature_key: project_merge_request_list
+  panels: [project]
+- term: review
+  feature_key: group_merge_request_list
+  panels: [group]
+- term: code review
+  feature_key: project_merge_request_list
+  panels: [project]
+- term: code review
+  feature_key: group_merge_request_list
+  panels: [group]
+
+# ---------------------------------------------------------------------------
+# Work Items / Issues
+# ---------------------------------------------------------------------------
+
+- term: issue
+  feature_key: project_issue_list
+  panels: [project]
+- term: issue
+  feature_key: group_issue_list
+  panels: [group]
+- term: ticket
+  feature_key: project_issue_list
+  panels: [project]
+- term: ticket
+  feature_key: group_issue_list
+  panels: [group]
+- term: bug
+  feature_key: project_issue_list
+  panels: [project]
+- term: bug
+  feature_key: group_issue_list
+  panels: [group]
+- term: user story
+  feature_key: project_issue_list
+  panels: [project]
+- term: user story
+  feature_key: group_issue_list
+  panels: [group]
+- term: task
+  feature_key: project_issue_list
+  panels: [project]
+- term: task
+  feature_key: group_issue_list
+  panels: [group]
+- term: epic
+  feature_key: group_epic_list
+  panels: [group]
+- term: backlog
+  feature_key: project_issue_list
+  panels: [project]
+- term: backlog
+  feature_key: group_issue_list
+  panels: [group]
+- term: jql
+  feature_key: project_issue_list
+  panels: [project]
+- term: jql
+  feature_key: group_issue_list
+  panels: [group]
+- term: work item
+  feature_key: project_issue_list
+  panels: [project]
+- term: work item
+  feature_key: group_issue_list
+  panels: [group]
+- term: notion database
+  feature_key: project_issue_list
+  panels: [project]
+- term: notion database
+  feature_key: group_issue_list
+  panels: [group]
+
+# ---------------------------------------------------------------------------
+# Boards
+# ---------------------------------------------------------------------------
+
+# Project boards
+- term: board
+  feature_key: boards
+  panels: [project]
+- term: kanban
+  feature_key: boards
+  panels: [project]
+- term: scrum board
+  feature_key: boards
+  panels: [project]
+- term: standup board
+  feature_key: boards
+  panels: [project]
+- term: trello board
+  feature_key: boards
+  panels: [project]
+- term: trello card
+  feature_key: boards
+  panels: [project]
+
+# Group boards — super-sidebar id is issue_boards (pending description enrichment)
+- term: board
+  feature_key: issue_boards
+  panels: [group]
+- term: kanban
+  feature_key: issue_boards
+  panels: [group]
+- term: scrum board
+  feature_key: issue_boards
+  panels: [group]
+- term: standup board
+  feature_key: issue_boards
+  panels: [group]
+- term: trello board
+  feature_key: issue_boards
+  panels: [group]
+- term: trello card
+  feature_key: issue_boards
+  panels: [group]
+
+# ---------------------------------------------------------------------------
+# Iterations / Sprints
+# ---------------------------------------------------------------------------
+
+- term: sprint
+  feature_key: iterations
+  panels: [project, group]
+- term: iteration
+  feature_key: iterations
+  panels: [project, group]
+- term: linear cycle
+  feature_key: iterations
+  panels: [project, group]
+
+# ---------------------------------------------------------------------------
+# Milestones
+# ---------------------------------------------------------------------------
+
+- term: milestone
+  feature_key: milestones
+  panels: [project, group]
+- term: fix version
+  feature_key: milestones
+  panels: [project, group]
+- term: release train
+  feature_key: milestones
+  panels: [project, group]
+
+# ---------------------------------------------------------------------------
+# Pipelines / CI-CD
+# ---------------------------------------------------------------------------
+
+- term: pipeline
+  feature_key: pipelines
+  panels: [project]
+- term: ci/cd
+  feature_key: pipelines
+  panels: [project]
+- term: cicd
+  feature_key: pipelines
+  panels: [project]
+- term: github actions
+  feature_key: pipelines
+  panels: [project]
+- term: azure pipelines
+  feature_key: pipelines
+  panels: [project]
+- term: jenkins pipeline
+  feature_key: pipelines
+  panels: [project]
+- term: jira automation
+  feature_key: pipelines
+  panels: [project]
+- term: workflow
+  feature_key: pipelines
+  panels: [project]
+- term: build
+  feature_key: pipelines
+  panels: [project]
+- term: blue ocean
+  feature_key: pipelines
+  panels: [project]
+
+# Pipeline Editor
+- term: pipeline editor
+  feature_key: pipelines_editor
+  panels: [project]
+- term: jenkinsfile
+  feature_key: pipelines_editor
+  panels: [project]
+- term: yaml pipeline
+  feature_key: pipelines_editor
+  panels: [project]
+- term: workflow file
+  feature_key: pipelines_editor
+  panels: [project]
+
+# Jobs
+- term: job
+  feature_key: jobs
+  panels: [project]
+- term: action
+  feature_key: jobs
+  panels: [project]
+- term: stage
+  feature_key: jobs
+  panels: [project]
+- term: workflow run
+  feature_key: jobs
+  panels: [project]
+- term: pipeline run
+  feature_key: jobs
+  panels: [project]
+
+# Pipeline Schedules
+- term: pipeline schedule
+  feature_key: pipeline_schedules
+  panels: [project]
+- term: scheduled pipeline
+  feature_key: pipeline_schedules
+  panels: [project]
+- term: scheduled build
+  feature_key: pipeline_schedules
+  panels: [project]
+- term: scheduled workflow
+  feature_key: pipeline_schedules
+  panels: [project]
+
+# Artifacts
+- term: artifact
+  feature_key: artifacts
+  panels: [project]
+- term: build artifact
+  feature_key: artifacts
+  panels: [project]
+- term: action artifact
+  feature_key: artifacts
+  panels: [project]
+
+# ---------------------------------------------------------------------------
+# Repository / Code
+# ---------------------------------------------------------------------------
+
+- term: repository
+  feature_key: files
+  panels: [project]
+- term: repo
+  feature_key: files
+  panels: [project]
+- term: branch policies
+  feature_key: files
+  panels: [project]
+
+# Branches
+- term: branch
+  feature_key: branches
+  panels: [project]
+- term: branch protection
+  feature_key: branches
+  panels: [project]
+
+# Tags
+- term: tag
+  feature_key: tags
+  panels: [project]
+- term: release tag
+  feature_key: tags
+  panels: [project]
+
+# Commits
+- term: commit
+  feature_key: commits
+  panels: [project]
+
+# Repository Graph
+- term: network graph
+  feature_key: graphs
+  panels: [project]
+- term: repository graph
+  feature_key: graphs
+  panels: [project]
+
+# Compare Revisions
+- term: compare
+  feature_key: compare
+  panels: [project]
+- term: diff
+  feature_key: compare
+  panels: [project]
+
+# Contributor Analytics
+- term: contributor
+  feature_key: contributors
+  panels: [project]
+- term: contributor graph
+  feature_key: contributors
+  panels: [project]
+
+# ---------------------------------------------------------------------------
+# Releases & Deployments
+# ---------------------------------------------------------------------------
+
+# Releases
+- term: release
+  feature_key: releases
+  panels: [project]
+- term: release bundle
+  feature_key: releases
+  panels: [project]
+
+# Environments
+- term: environment
+  feature_key: environments
+  panels: [project]
+- term: env
+  feature_key: environments
+  panels: [project]
+- term: deploy
+  feature_key: environments
+  panels: [project]
+- term: deployment
+  feature_key: environments
+  panels: [project]
+- term: deployment group
+  feature_key: environments
+  panels: [project]
+
+# Feature Flags
+- term: feature flag
+  feature_key: feature_flags
+  panels: [project]
+- term: flag
+  feature_key: feature_flags
+  panels: [project]
+
+# ---------------------------------------------------------------------------
+# Infrastructure / Kubernetes / Terraform
+# ---------------------------------------------------------------------------
+
+# Kubernetes
+- term: kubernetes
+  feature_key: group_kubernetes_clusters
+  panels: [group]
+- term: k8s
+  feature_key: group_kubernetes_clusters
+  panels: [group]
+
+# Terraform States
+- term: terraform
+  feature_key: terraform_states
+  panels: [project]
+- term: infra
+  feature_key: terraform_states
+  panels: [project]
+- term: infrastructure
+  feature_key: terraform_states
+  panels: [project]
+- term: terraform cloud
+  feature_key: terraform_states
+  panels: [project]
+
+# Terraform Modules (Infrastructure Registry)
+- term: terraform module
+  feature_key: infrastructure_registry
+  panels: [project, group]
+- term: infrastructure registry
+  feature_key: infrastructure_registry
+  panels: [project, group]
+
+# ---------------------------------------------------------------------------
+# Packages & Registries
+# ---------------------------------------------------------------------------
+
+# Package Registry
+- term: package
+  feature_key: packages_registry
+  panels: [project, group]
+- term: package registry
+  feature_key: packages_registry
+  panels: [project, group]
+- term: azure artifacts
+  feature_key: packages_registry
+  panels: [project, group]
+- term: npm
+  feature_key: packages_registry
+  panels: [project, group]
+- term: pypi
+  feature_key: packages_registry
+  panels: [project, group]
+- term: maven
+  feature_key: packages_registry
+  panels: [project, group]
+
+# Container Registry
+- term: container registry
+  feature_key: container_registry
+  panels: [project, group]
+- term: docker
+  feature_key: container_registry
+  panels: [project, group]
+- term: ghcr
+  feature_key: container_registry
+  panels: [project, group]
+- term: acr
+  feature_key: container_registry
+  panels: [project, group]
+
+# ---------------------------------------------------------------------------
+# Wiki
+# ---------------------------------------------------------------------------
+
+- term: wiki
+  feature_key: project_wiki
+  panels: [project]
+- term: confluence
+  feature_key: project_wiki
+  panels: [project]
+- term: notion page
+  feature_key: project_wiki
+  panels: [project]
+- term: wiki
+  feature_key: group_wiki
+  panels: [group]
+
+# ---------------------------------------------------------------------------
+# Snippets
+# ---------------------------------------------------------------------------
+
+- term: snippet
+  feature_key: project_snippets
+  panels: [project]
+- term: gist
+  feature_key: project_snippets
+  panels: [project]
+
+# ---------------------------------------------------------------------------
+# Members / Labels / Activity
+# ---------------------------------------------------------------------------
+
+- term: member
+  feature_key: members
+  panels: [project, group]
+- term: collaborator
+  feature_key: members
+  panels: [project, group]
+- term: team member
+  feature_key: members
+  panels: [project, group]
+
+- term: label
+  feature_key: labels
+  panels: [project, group]
+- term: component
+  feature_key: labels
+  panels: [project, group]
+
+- term: activity
+  feature_key: activity
+  panels: [project, group]
+- term: activity feed
+  feature_key: activity
+  panels: [project, group]
+
+# ---------------------------------------------------------------------------
+# Security & Compliance
+# ---------------------------------------------------------------------------
+
+# Vulnerability Report
+- term: vulnerability
+  feature_key: vulnerability_report
+  panels: [project, group]
+- term: vuln
+  feature_key: vulnerability_report
+  panels: [project, group]
+- term: code scanning
+  feature_key: vulnerability_report
+  panels: [project, group]
+
+# Security Configuration / Dashboard
+- term: security
+  feature_key: configuration
+  panels: [project, group]
+- term: scan
+  feature_key: configuration
+  panels: [project, group]
+- term: security scan
+  feature_key: configuration
+  panels: [project, group]
+- term: security configuration
+  feature_key: configuration
+  panels: [project, group]
+- term: ghas
+  feature_key: configuration
+  panels: [project]
+- term: github advanced security
+  feature_key: configuration
+  panels: [project]
+
+# Dependency List
+- term: dependency
+  feature_key: dependency_list
+  panels: [project, group]
+- term: dependency list
+  feature_key: dependency_list
+  panels: [project, group]
+- term: dependabot
+  feature_key: dependency_list
+  panels: [project, group]
+- term: dependency vulnerability
+  feature_key: dependency_list
+  panels: [project, group]
+- term: sca
+  feature_key: dependency_list
+  panels: [project, group]
+- term: sbom
+  feature_key: dependency_list
+  panels: [project, group]
+
+# Secrets Manager
+- term: secret
+  feature_key: secrets_manager
+  panels: [project, group]
+- term: vault
+  feature_key: secrets_manager
+  panels: [project, group]
+- term: credential
+  feature_key: secrets_manager
+  panels: [project, group]
+
+# Compliance Center
+- term: compliance
+  feature_key: compliance
+  panels: [project, group]
+- term: compliance framework
+  feature_key: compliance
+  panels: [project, group]
+
+# Audit Events
+- term: audit
+  feature_key: audit_events
+  panels: [project, group]
+- term: audit log
+  feature_key: audit_events
+  panels: [project, group]
+
+# Requirements
+- term: requirement
+  feature_key: requirements
+  panels: [project]
+- term: acceptance criteria
+  feature_key: requirements
+  panels: [project]
+- term: definition of done
+  feature_key: requirements
+  panels: [project]
+
+# ---------------------------------------------------------------------------
+# Analytics
+# ---------------------------------------------------------------------------
+
+# Value Stream Analytics
+- term: value stream
+  feature_key: cycle_analytics
+  panels: [project, group]
+- term: vsa
+  feature_key: cycle_analytics
+  panels: [project, group]
+- term: velocity chart
+  feature_key: cycle_analytics
+  panels: [project, group]
+- term: burndown chart
+  feature_key: cycle_analytics
+  panels: [project, group]
+
+# CI/CD Analytics
+- term: ci/cd analytics
+  feature_key: ci_cd_analytics
+  panels: [project, group]
+- term: pipeline analytics
+  feature_key: ci_cd_analytics
+  panels: [project, group]
+
+# Analytics Dashboards (Project)
+- term: analytics
+  feature_key: dashboards_analytics
+  panels: [project]
+- term: dashboard
+  feature_key: dashboards_analytics
+  panels: [project]
+- term: ado dashboard
+  feature_key: dashboards_analytics
+  panels: [project]
+
+# Repository Analytics
+- term: repository analytics
+  feature_key: repository_analytics
+  panels: [project, group]
+
+# ---------------------------------------------------------------------------
+# Monitoring & Observability
+#
+# Note: singular and plural forms are both listed explicitly (e.g. log/logs,
+# metric/metrics, trace/tracing) because Tier 2 does not stem
+# (see feature_match_service.rb keyword_entries). Do not dedup these.
+# ---------------------------------------------------------------------------
+
+# On-Call Schedules
+- term: on call
+  feature_key: on_call_schedules
+  panels: [project]
+- term: on-call
+  feature_key: on_call_schedules
+  panels: [project]
+- term: oncall
+  feature_key: on_call_schedules
+  panels: [project]
+
+# Incidents
+- term: incident
+  feature_key: incidents
+  panels: [project]
+
+# Error Tracking
+- term: error
+  feature_key: error_tracking
+  panels: [project]
+- term: error tracking
+  feature_key: error_tracking
+  panels: [project]
+- term: exception
+  feature_key: error_tracking
+  panels: [project]
+
+# Logs
+- term: log
+  feature_key: logs
+  panels: [project]
+- term: logs
+  feature_key: logs
+  panels: [project]
+
+# Tracing
+- term: trace
+  feature_key: tracing
+  panels: [project]
+- term: tracing
+  feature_key: tracing
+  panels: [project]
+
+# Metrics
+- term: metric
+  feature_key: metrics
+  panels: [project]
+- term: metrics
+  feature_key: metrics
+  panels: [project]
+
+# ---------------------------------------------------------------------------
+# Pages
+# ---------------------------------------------------------------------------
+
+- term: pages
+  feature_key: pages
+  panels: [project]
+- term: github pages
+  feature_key: pages
+  panels: [project]
+- term: static site
+  feature_key: pages
+  panels: [project]
+
+# ---------------------------------------------------------------------------
+# Service Desk
+# ---------------------------------------------------------------------------
+
+- term: service desk
+  feature_key: service_desk
+  panels: [project]
+- term: jira service management
+  feature_key: service_desk
+  panels: [project]
+- term: support
+  feature_key: service_desk
+  panels: [project]
+
+# ---------------------------------------------------------------------------
+# ML / Data Science
+# ---------------------------------------------------------------------------
+
+- term: experiment
+  feature_key: model_experiments
+  panels: [project]
+- term: experiment tracking
+  feature_key: model_experiments
+  panels: [project]
+- term: model experiment
+  feature_key: model_experiments
+  panels: [project]
+
+- term: model registry
+  feature_key: model_registry
+  panels: [project]
+- term: model
+  feature_key: model_registry
+  panels: [project]
+
+# ---------------------------------------------------------------------------
+# Test Cases
+# ---------------------------------------------------------------------------
+
+- term: test case
+  feature_key: test_cases
+  panels: [project]
+- term: test plan
+  feature_key: test_cases
+  panels: [project]
+
+# ---------------------------------------------------------------------------
+# Jira Issue List (pending description enrichment)
+# ---------------------------------------------------------------------------
+
+- term: jira issues
+  feature_key: jira_issue_list
+  panels: [project]
+- term: jira integration
+  feature_key: jira_issue_list
+  panels: [project]
+
+# ---------------------------------------------------------------------------
+# AI / Duo Agents (pending description enrichment — ee/lib/sidebars)
+# ---------------------------------------------------------------------------
+
+- term: ai agent
+  feature_key: ai_catalog_agents
+  panels: [project]
+- term: duo agent
+  feature_key: ai_catalog_agents
+  panels: [project]
+
+- term: automation workflow
+  feature_key: ai_flows
+  panels: [project]
+- term: duo flow
+  feature_key: ai_flows
+  panels: [project]
+
+- term: automation trigger
+  feature_key: ai_flow_triggers
+  panels: [project]
+- term: duo trigger
+  feature_key: ai_flow_triggers
+  panels: [project]
+
+- term: ai session
+  feature_key: agents_runs
+  panels: [project]
+- term: duo session
+  feature_key: agents_runs
+  panels: [project]

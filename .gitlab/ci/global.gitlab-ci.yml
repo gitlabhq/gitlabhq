@@ -62,6 +62,20 @@
     - !reference [.postgres-auto-explain-service, services]
     - !reference [.valkey-services, services]
 
+.redis70-services:
+  services:
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-${REDIS_CLUSTER_VERSION}
+      alias: rediscluster  # configure connections in config/redis.yml
+    - name: redis:7.0-alpine
+      alias: redis
+
+.use-pg17-redis70:
+  extends:
+    - .use-pg17
+  services:
+    - !reference [.postgres-auto-explain-service, services]
+    - !reference [.redis70-services, services]
+
 .pg-base-variables:
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
@@ -179,7 +193,7 @@
 
 .es9-services:
   services:
-    - name: elasticsearch:9.4.2
+    - name: elasticsearch:9.4.3
 
 .es9-variables:
   variables:
@@ -291,6 +305,22 @@
     CLICKHOUSE_USER: default
     CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     CLICKHOUSE_DB: gitlab_clickhouse_test
+
+# Adds a SECOND Postgres started with a non-UTC server `timezone`
+# (`reset_val = America/Los_Angeles`), exposed under the `postgres-tz` alias,
+# alongside the normal `postgres`. Used only by the dedicated
+# `rspec unit partition-tz` job to exercise the partition export/import UTC
+# session guard against a genuinely non-UTC `reset_val`. No GitLab schema is
+# ever loaded on this instance (the guard raises before any DDL/table access).
+.use-pg17-tz:
+  extends: .use-pg17
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-${PG_VERSION}
+      command: ["postgres", "-c", "timezone=America/Los_Angeles", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=256"]
+      alias: postgres-tz
+  variables:
+    POSTGRES_TZ_HOST: postgres-tz
 
 .as-if-foss:
   variables:

@@ -6,7 +6,7 @@ RSpec.describe Members::ApproveAccessRequestService, feature_category: :groups_a
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, group: group) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:access_requester_user, freeze: false) { create(:user) }
+  let_it_be(:access_requester_user) { create(:user) }
   let(:access_requester) { source.requesters.find_by!(user_id: access_requester_user.id) }
   let(:opts) { {} }
   let(:params) { {} }

@@ -155,8 +155,8 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
 
         subject.perform(pipeline_tracker.id)
 
-        expect(pipeline_tracker.reload.failed?).to eq(true)
-        expect(pipeline_tracker.batches.first.reload.failed?).to eq(true)
+        expect(pipeline_tracker.reload.failed?).to be(true)
+        expect(pipeline_tracker.batches.first.reload.failed?).to be(true)
       end
     end
   end

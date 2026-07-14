@@ -9,6 +9,7 @@ import { planningViewAllItemsFilters } from '~/work_items/pages/planning_view_st
 import { ROUTES, WORK_ITEM_TYPE_NAME_TICKET } from '../constants';
 
 export default {
+  name: 'WorkItemBreadcrumb',
   components: {
     GlBreadcrumb,
   },

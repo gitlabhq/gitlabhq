@@ -1,0 +1,17 @@
+# @feature_category: custom_dashboards_foundation
+#import "./duo_power_users_count_metric_item.fragment.graphql"
+
+query duoPowerUsersCountQuery($fullPath: ID!, $startDate: Time!, $endDate: Time!) {
+  project(fullPath: $fullPath) {
+    id
+    analytics {
+      ...DuoPowerUsersCountMetricItem
+    }
+  }
+  group(fullPath: $fullPath) {
+    id
+    analytics {
+      ...DuoPowerUsersCountMetricItem
+    }
+  }
+}

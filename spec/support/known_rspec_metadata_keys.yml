@@ -104,6 +104,7 @@
 - :numeric
 - :opensearch_adapter
 - :orphan_final_artifacts_cleanup
+- :partition_tz
 - :path
 - :pending
 - :permit_dns

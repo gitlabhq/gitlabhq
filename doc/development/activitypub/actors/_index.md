@@ -13,7 +13,7 @@ title: Implement an ActivityPub actor
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127023) in GitLab 16.5 [with two flags](../../../administration/feature_flags/_index.md) named `activity_pub` and `activity_pub_project`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127023) in GitLab 16.5 [with two feature flags](../../../administration/feature_flags/_index.md) named `activity_pub` and `activity_pub_project`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 
 {{< /history >}}
 

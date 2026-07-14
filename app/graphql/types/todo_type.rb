@@ -10,6 +10,7 @@ module Types
     present_using TodoPresenter
 
     authorize :read_todo
+    authorize_granular_token permissions: :read_todo, boundary: :user, boundary_type: :user
 
     def self.authorization_scopes
       super + [:ai_workflows]

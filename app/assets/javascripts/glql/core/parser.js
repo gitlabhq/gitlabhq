@@ -24,7 +24,7 @@ export const parseQueryTextWithFrontmatter = (text) => {
 };
 
 export const parseQuery = async (query, config) => {
-  const { output, success, variables, fields, mode } = await glql.compile(query, {
+  const { output, success, variables, fields, mode, source } = await glql.compile(query, {
     ...config,
     ...extractGroupOrProject(),
     username: gon.current_username,
@@ -39,6 +39,7 @@ export const parseQuery = async (query, config) => {
     config,
     fields,
     mode: mode || MODE_STANDARD,
+    source,
   };
 };
 

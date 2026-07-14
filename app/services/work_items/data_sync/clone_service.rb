@@ -86,7 +86,7 @@ module WorkItems
           work_item: work_item,
           target_namespace: target_namespace,
           current_user: current_user,
-          target_work_item_type: work_item.work_item_type,
+          target_work_item_type: resolved_target_work_item_type,
           params: params.merge(operation: :clone),
           overwritten_params: {
             author: current_user, created_at: nil, updated_by: current_user, updated_at: nil,
@@ -96,6 +96,10 @@ module WorkItems
             state_id: WorkItem.available_states[:opened]
           }
         ).execute
+      end
+
+      def target_work_item_type_not_available_error_message
+        s_("CloneWorkItem|Unable to clone. The selected work item type is not available in the target namespace.")
       end
     end
   end

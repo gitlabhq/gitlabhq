@@ -8,6 +8,7 @@ import { __, s__, n__ } from '~/locale';
 import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
 
 export default {
+  name: 'ProjectDestinationSelect',
   components: {
     GlCollapsibleListbox,
   },
@@ -190,7 +191,7 @@ export default {
   },
   emptyNameSpace: {
     id: undefined,
-    fullPath: s__('ProjectsNew|Pick a group or namespace'),
+    fullPath: s__('ProjectsNew|Select a group or namespace'),
   },
 };
 </script>

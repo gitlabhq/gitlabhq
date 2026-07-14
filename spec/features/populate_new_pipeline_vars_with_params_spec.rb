@@ -3,14 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe "Populate new pipeline CI variables with url params", :js, feature_category: :pipeline_composition do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:page_path) { new_project_pipeline_path(project) }
+
+  before_all do
+    project.add_maintainer(user)
+  end
 
   before do
     sign_in(user)
-    project.add_maintainer(user)
-
     visit "#{page_path}?var[key1]=value1&file_var[key2]=value2"
   end
 

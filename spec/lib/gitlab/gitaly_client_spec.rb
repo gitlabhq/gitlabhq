@@ -1102,6 +1102,27 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         execute
       end
     end
+
+    context 'return shape and operation handle' do
+      let(:operation) { instance_double(GRPC::ActiveCall::Operation) }
+      let(:stub)      { instance_double(Gitaly::RefService::Stub, find_local_branches: operation) }
+
+      before do
+        allow(described_class).to receive(:stub).with(:ref_service, 'default').and_return(stub)
+      end
+
+      it 'requests the operation handle via return_op: true' do
+        expect(stub).to receive(:find_local_branches)
+          .with(an_instance_of(Gitaly::FindLocalBranchesRequest), hash_including(return_op: true))
+          .and_return(operation)
+
+        execute
+      end
+
+      it 'returns the operation handle' do
+        expect(execute).to eq(operation)
+      end
+    end
   end
 
   describe '.retry_policy' do

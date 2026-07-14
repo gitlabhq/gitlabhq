@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Snippets::DestroyService, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, developers: user) }
   let_it_be(:other_user) { create(:user) }
 
   describe '#execute' do
@@ -97,10 +97,6 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
 
       context 'when user is able to admin_project_snippet' do
         let(:author) { user }
-
-        before do
-          project.add_developer(user)
-        end
 
         it_behaves_like 'a successful destroy'
         it_behaves_like 'deletes the snippet repository'

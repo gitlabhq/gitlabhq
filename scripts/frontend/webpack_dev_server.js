@@ -80,9 +80,6 @@ nodemon
     import('./tailwindcss.cjs').then((mod) => {
       const { webpackTailwindCompilerPlugin } = mod.default;
       plugins.addAndStart(webpackTailwindCompilerPlugin({ shouldWatch: !STATIC_MODE }));
-      plugins.addAndStart(
-        webpackTailwindCompilerPlugin({ shouldWatch: !STATIC_MODE, buildCQs: true }),
-      );
     });
     /* eslint-enable promise/catch-or-return */
   })

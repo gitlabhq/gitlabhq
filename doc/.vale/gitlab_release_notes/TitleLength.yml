@@ -1,0 +1,28 @@
+---
+name: gitlab_release_notes.TitleLength
+description: Warns when a feature release note title is longer than 10 words.
+message: "The `title` metadata has more than 10 words. Use seven words or fewer, in sentence case."
+link: https://docs.gitlab.com/development/documentation/release_notes/#feature-release-note-metadata
+level: warning
+extends: script
+scope: raw
+script: |
+  text := import("text")
+  matches := []
+
+  if text.re_match("^---\\n", scope) {
+    fmEnd := text.index(scope, "\n---")
+    if fmEnd > 0 {
+      fm := scope[0:fmEnd]
+      m := text.re_find("(?m)^title:[ \\t]*(.*)$", fm, 1)
+      if !is_undefined(m) {
+        cap := m[0][1]
+        span := {begin: cap.begin, end: cap.begin + len(cap.text)}
+        v := text.trim_space(text.re_replace("[\"']", cap.text, ""))
+        words := text.re_find("\\S+", v, -1)
+        if !is_undefined(words) && len(words) > 10 {
+          matches = append(matches, span)
+        }
+      }
+    }
+  }

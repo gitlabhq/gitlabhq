@@ -4,13 +4,15 @@ import { GlButton, GlLoadingIcon, GlFormInput, GlFormGroup } from '@gitlab/ui';
 
 import eventHub from '~/blob/components/eventhub';
 import { createAlert } from '~/alert';
-import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import {
   SNIPPET_MARK_EDIT_APP_START,
   SNIPPET_MEASURE_BLOBS_CONTENT,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
+import { projectSnippetsPath } from '~/lib/utils/path_helpers/project';
+import { snippetsPath } from '~/lib/utils/path_helpers/snippets';
 
 import { SNIPPET_CREATE_MUTATION_ERROR, SNIPPET_UPDATE_MUTATION_ERROR } from '../constants';
 import { getSnippetMixin } from '../mixins/snippets';
@@ -27,6 +29,7 @@ import SnippetVisibilityEdit from './snippet_visibility_edit.vue';
 eventHub.$on(SNIPPET_MEASURE_BLOBS_CONTENT, markBlobPerformance);
 
 export default {
+  name: 'SnippetsEdit',
   components: {
     SnippetDescriptionEdit,
     SnippetVisibilityEdit,
@@ -113,7 +116,7 @@ export default {
     },
     cancelButtonHref() {
       if (this.newSnippet) {
-        return joinPaths('/', gon.relative_url_root, this.projectPath, '-/snippets');
+        return this.projectPath ? projectSnippetsPath(this.projectPath) : snippetsPath();
       }
       return this.snippet.webUrl;
     },

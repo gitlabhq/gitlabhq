@@ -128,13 +128,9 @@ RSpec.describe Users::SetNamespaceCommitEmailService, feature_category: :user_pr
       end
 
       context 'when namespace is a project' do
-        let_it_be(:project) { create(:project) }
+        let_it_be(:project) { create(:project, reporters: user) }
 
         let(:namespace) { project.project_namespace }
-
-        before do
-          project.add_reporter(current_user)
-        end
 
         it_behaves_like 'success'
       end

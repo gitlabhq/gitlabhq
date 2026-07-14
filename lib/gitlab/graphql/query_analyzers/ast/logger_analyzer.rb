@@ -80,20 +80,22 @@ module Gitlab
 
             RequestStore.store[:graphql_logs] ||= []
             RequestStore.store[:graphql_logs] << results.except(:time_started, :duration_s).merge({
-              variables: process_variables(query.provided_variables),
+              variables: process_variables(query.provided_variables, query.operation_name),
               operation_name: query.operation_name
             })
           end
 
-          def process_variables(variables)
-            filtered_variables = filter_sensitive_variables(variables)
+          def process_variables(variables, operation_name)
+            filtered_variables = filter_sensitive_variables(variables, operation_name)
             filtered_variables.try(:to_s) || filtered_variables
           end
 
-          def filter_sensitive_variables(variables)
-            ActiveSupport::ParameterFilter
+          def filter_sensitive_variables(variables, operation_name)
+            filtered = ActiveSupport::ParameterFilter
               .new(FILTER_PARAMETERS)
               .filter(variables)
+
+            ::Gitlab::Graphql::VariableFilters::Registry.filter(filtered, operation_name)
           end
 
           def duration(time_started)

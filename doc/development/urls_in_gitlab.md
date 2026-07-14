@@ -62,11 +62,11 @@ For correct alternatives, see the following sections.
 
 ### JavaScript path helpers
 
-We use the [js-routes](https://github.com/railsware/js-routes) to generate JavaScript path helpers that mirror the [backend path helpers](#path-and-url-helpers). These helpers are generated when starting GDK and can be viewed in the `app/assets/javascripts/lib/utils/path_helpers` directory. Path helpers support [relative URL installations](../install/relative_url.md) which is globally configured in [app/assets/javascripts/behaviors/configure_path_helpers.js](https://gitlab.com/gitlab-org/gitlab/-/blob/a278cd28ecfbc7a3334a3152ddeabf83dccbd455/app/assets/javascripts/behaviors/configure_path_helpers.js).
+We use the [js-routes](https://github.com/railsware/js-routes) to generate JavaScript path helpers that mirror the [backend path helpers](#path-and-url-helpers). These helpers are in the `app/assets/javascripts/lib/utils/path_helpers` directory. Path helpers support [relative URL installations](../install/relative_url.md) which is globally configured in [app/assets/javascripts/behaviors/configure_path_helpers.js](https://gitlab.com/gitlab-org/gitlab/-/blob/a278cd28ecfbc7a3334a3152ddeabf83dccbd455/app/assets/javascripts/behaviors/configure_path_helpers.js).
 
 #### Finding the correct path helper
 
-The easiest way to find the correct path helper is to search through `app/assets/javascripts/lib/utils/path_helpers` directory for a substring of the path you need. For example if you need `/<project path>/-/snippets/new` search for `/-/snippets/new` until you find the helper that accepts the project path as a parameter.
+The easiest way to find the correct path helper is to search through `app/assets/javascripts/lib/utils/path_helpers` directory for a substring of the path you need. For example if you need `/<project path>/-/snippets/new` search for `/-/snippets/new` or `new_project_snippet_path` until you find the helper that accepts the project path as a parameter.
 
 Path helpers are organized by where they are defined in Rails. For example routes defined in `config/routes/project.rb` will be available to the frontend in `app/assets/javascripts/lib/utils/path_helpers/project.js`. This also applies to EE specific path helpers. For example a route defined in `ee/config/routes/project.rb` will be available to the frontend in `ee/app/assets/javascripts/lib/utils/path_helpers/project.js`.
 
@@ -81,10 +81,10 @@ Controller#Action | snippets#new
 Source Location   | /config/routes/snippets.rb:3
 ```
 
-The JavaScript path helper is the `Prefix` in camelCase with suffix `Path`. In the above example it will be `newSnippetPath`. The `Source Location` indicates which file the path helper will be in. In the above example it would be in `app/assets/javascripts/lib/utils/path_helpers/snippets.js`
+In the above example it will be `newSnippetPath`. The `Source Location` indicates which file the path helper will be in. In the above example it would be in `app/assets/javascripts/lib/utils/path_helpers/snippets.js`
 
 > [!note]
-> `app/assets/javascripts/lib/utils/path_helpers/*.js` should be generated when starting [GitLab Development Kit](https://gitlab-org.gitlab.io/gitlab-development-kit/). If the path helpers are not generated or you are getting errors due to them being out of date, you can manually generate the path helpers by running `bundle exec rake gitlab:js:routes`. Similarly you can clear the cache and restart GDK with `yarn clean && gdk restart`.
+> When updating Rails routes you will need to generate and commit the JavaScript path helpers for these routes. To do this run `bin/rake gitlab:js:routes`.
 
 #### Project path helpers
 
@@ -121,6 +121,26 @@ export default {
   </div>
 </template>
 ```
+
+#### Path helper options
+
+Every path helper accepts an optional `options` object as its final argument. This object is
+separate from the route parameters. Each generated helper documents it as
+`@param {object | undefined} options`.
+
+The `options` object accepts three kinds of keys:
+
+- `format`: Fills the optional format segment. For example,
+  `exploreCatalogIndexPath({ format: 'json' })` returns `/explore/catalog.json`.
+- Reserved URL options: `anchor`, `trailing_slash`, `subdomain`, `host`, `port`, `protocol`, and
+  `script_name`. These shape the generated URL. For example, `anchor` appends a `#fragment`.
+- Query parameters: Any other key is serialized into the query string. For example,
+  `exploreCatalogIndexPath({ scope: 'all' })` returns `/explore/catalog?scope=all`.
+
+To force an object to be treated as `options` rather than as route parameters, set the `_options`
+key to `true`. This matters when a route parameter name collides with a reserved option.
+
+For more information, see the [js-routes documentation](https://github.com/railsware/js-routes#usage).
 
 ### REST API path helpers
 

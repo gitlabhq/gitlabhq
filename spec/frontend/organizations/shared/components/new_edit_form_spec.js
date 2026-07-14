@@ -24,7 +24,6 @@ describe('NewEditForm', () => {
   let wrapper;
 
   const defaultProvide = {
-    organizationsPath: '/o',
     organizationsUrl: 'http://127.0.0.1:3000/o/',
     previewMarkdownPath: '/o/-/preview_markdown',
   };
@@ -182,6 +181,7 @@ describe('NewEditForm', () => {
       checked: VISIBILITY_LEVEL_PRIVATE_INTEGER,
       visibilityLevels: [VISIBILITY_LEVEL_PRIVATE_INTEGER, VISIBILITY_LEVEL_PUBLIC_INTEGER],
       visibilityLevelDescriptions: ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
+      minVisibilityLevel: VISIBILITY_LEVEL_PRIVATE_INTEGER,
     });
   });
 
@@ -336,9 +336,7 @@ describe('NewEditForm', () => {
     });
 
     it('shows cancel button', () => {
-      expect(wrapper.findByRole('link', { name: 'Cancel' }).attributes('href')).toBe(
-        defaultProvide.organizationsPath,
-      );
+      expect(wrapper.findByRole('link', { name: 'Cancel' }).attributes('href')).toBe('/o');
     });
   });
 

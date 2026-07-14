@@ -6,7 +6,6 @@ import VerificationLevelToken from '~/ci/catalog/components/tokens/verification_
 import {
   SORT_ASC,
   SORT_DESC,
-  SORT_OPTION_CREATED,
   SORT_OPTION_POPULARITY,
   SORT_OPTION_RELEASED,
   SORT_OPTION_STAR_COUNT,
@@ -59,7 +58,7 @@ describe('CatalogSearch', () => {
 
     it('adds sorting options', () => {
       const sortOptionsProp = findAllSortingItems();
-      expect(sortOptionsProp).toHaveLength(4);
+      expect(sortOptionsProp).toHaveLength(3);
       expect(sortOptionsProp[0].text).toBe('Popularity');
     });
 
@@ -221,7 +220,6 @@ describe('CatalogSearch', () => {
     describe('when changing sort option', () => {
       it.each`
         sortOption                | label
-        ${SORT_OPTION_CREATED}    | ${'Created date'}
         ${SORT_OPTION_RELEASED}   | ${'Released date'}
         ${SORT_OPTION_STAR_COUNT} | ${'Star count'}
       `('changes the sort option to `$label`', async ({ sortOption, label }) => {

@@ -10,28 +10,28 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
 
   let(:commit_message) { 'New commit message' }
 
-  let_it_be(:protected_branch, freeze: false) { 'protected-branch' }
+  let_it_be(:protected_branch) { 'protected-branch' }
 
-  let_it_be(:project, freeze: false) { create(:project, :repository, name: 'Shop') }
-  let_it_be(:project2, freeze: false) do
+  let_it_be(:project) { create(:project, :repository, name: 'Shop') }
+  let_it_be(:project2) do
     create(:project, :repository, name: 'Another Project', path: 'another-project')
   end
 
-  let_it_be(:project3, freeze: false) do
+  let_it_be_with_reload(:project3) do
     create(:project, :repository, name: 'Test project with protected branch', path: 'protected-branch')
   end
 
-  let_it_be(:project_tree_path_root_ref, freeze: false) { project_tree_path(project, project.repository.root_ref) }
-  let_it_be(:project2_tree_path_root_ref, freeze: false) { project_tree_path(project2, project2.repository.root_ref) }
-  let_it_be(:project2_non_default_branch_tree_path, freeze: false) do
+  let_it_be(:project_tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
+  let_it_be(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
+  let_it_be(:project2_non_default_branch_tree_path) do
     project_tree_path(project2, 'non-default-branch')
   end
 
-  let_it_be(:project3_protected_branch_tree_path_root_ref, freeze: false) do
+  let_it_be(:project3_protected_branch_tree_path_root_ref) do
     project_tree_path(project3, 'protected-branch', project3.repository.root_ref)
   end
 
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -48,7 +48,7 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
     end
 
     it 'deletes the file', :js do
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
 
       expect(page).to have_content('.gitignore')
 
@@ -71,7 +71,7 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
     it 'deletes the file in a forked project', :js, :sidekiq_might_not_need_inline do
       visit(project2_tree_path_root_ref)
       wait_for_requests
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
 
       expect(page).to have_content('.gitignore')
 
@@ -108,7 +108,7 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
       visit(project3_protected_branch_tree_path_root_ref)
       wait_for_requests
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
 
       expect(page).to have_content('.gitignore')
 

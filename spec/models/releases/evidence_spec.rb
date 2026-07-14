@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Releases::Evidence do
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   let(:release) { create(:release, project: project) }
 

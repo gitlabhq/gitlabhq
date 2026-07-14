@@ -10,7 +10,10 @@ RSpec.describe Ci::Partitionable::AssociationFinder, feature_category: :continuo
       include Ci::Partitionable::AssociationFinder
 
       belongs_to :pipeline, class_name: 'Ci::Pipeline'
+      belongs_to :merge_request
       partitionable_belongs_to_loader :pipeline
+
+      scope :preload_pipeline, -> { with_partition_aware_preload.preload(:pipeline) }
     end
   end
 
@@ -97,17 +100,88 @@ RSpec.describe Ci::Partitionable::AssociationFinder, feature_category: :continuo
         expect(record.association(:pipeline).target).to be_nil
       end
     end
+  end
+
+  describe '.partitioned_pipeline_loaders' do
+    it 'registers the association name mapped to its foreign key' do
+      expect(klass.partitioned_pipeline_loaders).to eq(pipeline: 'pipeline_id')
+    end
+  end
+
+  describe Ci::Partitionable::AssociationFinder::PipelineRelationPreload do
+    let_it_be(:project, freeze: true) { create(:project) }
+    let_it_be(:pipeline_one) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline_two) { create(:ci_pipeline, project: project) }
+
+    let_it_be(:record_one) { create(:merge_request).metrics.tap { |m| m.update!(pipeline_id: pipeline_one.id) } }
+    let_it_be(:record_two) { create(:merge_request).metrics.tap { |m| m.update!(pipeline_id: pipeline_two.id) } }
+
+    let(:relation) { klass.where(id: [record_one.id, record_two.id]).preload_pipeline }
+
+    it 'marks the pipeline association loaded without a per-record p_ci_pipelines query' do
+      records = relation.load.to_a
+
+      # After preload, reading the association must not issue any SQL.
+      expect do
+        records.each(&:pipeline)
+      end.not_to make_queries
+
+      expect(records.map(&:pipeline)).to match_array([pipeline_one, pipeline_two])
+    end
+
+    it 'still preloads sibling associations via super' do
+      sibling_relation = klass
+        .where(id: [record_one.id, record_two.id])
+        .preload_pipeline
+        .preload(:merge_request)
+
+      records = sibling_relation.load.to_a
+
+      expect(records.map { |r| r.association(:merge_request).loaded? }).to all(be(true))
+    end
+
+    it 'is a no-op when no partitioned association is requested' do
+      expect(Gitlab::Ci::Pipeline::BulkByIdLookup).not_to receive(:new)
+
+      klass.where(id: [record_one.id]).extending(described_class).preload(:merge_request).load
+    end
+
+    context 'with a warm partition cache covering the pipeline ids' do
+      before do
+        min_id, max_id = [pipeline_one.id, pipeline_two.id].minmax
+        create(:ci_partition, id: pipeline_one.partition_id, pipelines_id_range: (min_id..max_id))
+        Gitlab::Ci::Pipeline::PartitionCache.invalidate
+      end
+
+      after do
+        Gitlab::Ci::Pipeline::PartitionCache.invalidate
+      end
+
+      it 'prunes the pipeline lookup by partition_id (no full-scan fallback)' do
+        recorder = ActiveRecord::QueryRecorder.new { relation.load }
+
+        expect(recorder.log).to include(a_string_matching(/partition_id/))
+      end
+
+      it 'does not log a full-scan fallback' do
+        expect(Gitlab::AppLogger).not_to receive(:info)
+          .with(hash_including(message: a_string_matching(/full scan/)))
+
+        relation.load
+      end
+    end
 
     context 'when the feature flag is disabled' do
       before do
-        stub_feature_flags(partitioned_pipeline_association_finder: false)
+        stub_feature_flags(partition_aware_pipeline_preload: false)
       end
 
-      it 'falls back to the default Rails reader and does not call find_by_id' do
-        record = klass.new(pipeline_id: pipeline.id)
+      it 'does not use BulkByIdLookup and falls back to vanilla preload' do
+        expect(Gitlab::Ci::Pipeline::BulkByIdLookup).not_to receive(:new)
 
-        expect(Ci::Pipeline).not_to receive(:find_by_id)
-        expect(record.pipeline).to eq(pipeline)
+        records = relation.load.to_a
+
+        expect(records.map { |r| r.association(:pipeline).loaded? }).to all(be(true))
       end
     end
   end

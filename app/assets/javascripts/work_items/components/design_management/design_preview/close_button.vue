@@ -3,6 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { ROUTES } from '../../../constants';
 
 export default {
+  name: 'DesignPreviewCloseButton',
   components: {
     GlButton,
   },

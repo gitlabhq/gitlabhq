@@ -89,6 +89,7 @@ describe('parse', () => {
   }
 }
 ",
+  "source": "WorkItems",
   "variables": {
     "after": {
       "type": "String",
@@ -183,6 +184,7 @@ assignee = currentUser()`),
   }
 }
 ",
+  "source": "WorkItems",
   "variables": {
     "after": {
       "type": "String",
@@ -278,6 +280,7 @@ query: assignee = currentUser()
   }
 }
 ",
+  "source": "WorkItems",
   "variables": {
     "after": {
       "type": "String",

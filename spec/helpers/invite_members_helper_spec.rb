@@ -5,11 +5,11 @@ require "spec_helper"
 RSpec.describe InviteMembersHelper do
   include Devise::Test::ControllerHelpers
 
-  let_it_be(:project, freeze: false) { create(:project) }
-  let_it_be(:group, freeze: false) { create(:group, projects: [project]) }
-  let_it_be(:developer, freeze: false) { create(:user, developer_of: project) }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:group) { create(:group, projects: [project]) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
-  let_it_be(:owner, freeze: false) { create(:user, owner_of: project) }
+  let_it_be(:owner) { create(:user, owner_of: project) }
 
   describe '#common_invite_group_modal_data' do
     context 'when current user is an owner' do
@@ -35,7 +35,7 @@ RSpec.describe InviteMembersHelper do
     end
 
     context 'when sharing with groups outside the hierarchy is disabled' do
-      let_it_be(:group, freeze: false) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group) }
 
       before do
         group.update!(prevent_sharing_groups_outside_hierarchy: true)
@@ -194,8 +194,8 @@ RSpec.describe InviteMembersHelper do
 
   describe '#invite_accepted_notice' do
     context 'for group invites' do
-      let_it_be(:group, freeze: false) { create(:group, name: 'My group') }
-      let_it_be(:member, freeze: false) { build(:group_member, :guest, group: group) }
+      let_it_be_with_reload(:group) { create(:group, name: 'My group') }
+      let_it_be(:member) { build(:group_member, :guest, group: group) }
 
       it 'returns the expected message' do
         expect(helper.invite_accepted_notice(member))
@@ -204,8 +204,8 @@ RSpec.describe InviteMembersHelper do
     end
 
     context 'for project invites' do
-      let_it_be(:project, freeze: false) { create(:project, name: 'My project') }
-      let_it_be(:member, freeze: false) { build(:project_member, :guest, project: project) }
+      let_it_be_with_reload(:project) { create(:project, name: 'My project') }
+      let_it_be(:member) { build(:project_member, :guest, project: project) }
 
       it 'returns the expected message' do
         expect(helper.invite_accepted_notice(member))

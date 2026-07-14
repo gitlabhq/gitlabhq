@@ -34,6 +34,7 @@ project:
   - create_requirement
   - create_requirement_test_report
   - create_saved_view
+  - create_secrets_manager_api_jwt
   - create_snippet
   - create_test_case
   - create_ticket
@@ -74,6 +75,7 @@ project:
   - read_incident_management_oncall_schedule
   - read_internal_note
   - read_issuable_resource_link
+  - read_job_inputs
   - read_licenses
   - read_manual_variables
   - read_merge_request
@@ -121,6 +123,7 @@ group:
   - create_iteration_cadence
   - create_saved_view
   - create_secret
+  - create_secrets_manager_api_jwt
   - create_timelog
   - delete_secret
   - download_wiki_code
@@ -140,6 +143,7 @@ group:
   - read_group_analytics_dashboards
   - read_group_coverage_reports
   - read_group_repository_analytics
+  - read_group_secrets_manager_status
   - read_group_stage
   - read_harbor_registry
   - read_internal_note

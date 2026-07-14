@@ -1,0 +1,9 @@
+---
+name: delete_ml_model
+description: Grants the ability to delete ML models
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_ml_model

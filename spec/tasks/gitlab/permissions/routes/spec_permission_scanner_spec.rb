@@ -5,69 +5,52 @@ require 'fast_spec_helper'
 RSpec.describe Tasks::Gitlab::Permissions::Routes::SpecPermissionScanner, feature_category: :permissions do
   let(:scanner) { described_class.new }
 
-  describe '#in_todo?' do
-    before do
-      allow(scanner).to receive(:todo_entries).and_return(Set.new)
-    end
-
-    context 'when the permission is in the TODO file' do
-      before do
-        allow(scanner).to receive(:todo_entries).and_return(Set.new(['read_note']))
-      end
-
-      it 'returns true' do
-        expect(scanner.in_todo?(:read_note)).to be true
-      end
-    end
-
-    context 'when the permission is not in the TODO file' do
-      it 'returns false' do
-        expect(scanner.in_todo?(:read_note)).to be false
-      end
-    end
-  end
-
-  describe '#add_route and #insufficient_test_coverage' do
-    let(:route_info) do
+  describe '#add_endpoint and #insufficient_test_coverage' do
+    let(:endpoint_details) do
       { method: 'GET', path: '/projects/:id/test', source: 'lib/api/test.rb:42',
         spec_file: 'spec/requests/api/test_spec.rb' }
     end
 
     before do
-      allow(scanner).to receive_messages(spec_files: [], build_shared_example_inclusions: Hash.new(0),
-        todo_entries: Set.new)
+      allow(scanner).to receive_messages(spec_files: [], build_shared_example_inclusions: Hash.new(0))
     end
 
     it 'returns violations for permissions with insufficient tests' do
-      scanner.add_route(route_id: 'GET /projects/:id/test', permission: :read_project, route_info: route_info)
+      scanner.add_endpoint(endpoint_id: 'lib/api/test.rb:42 project', permission: :read_project,
+        details: endpoint_details)
 
       result = scanner.insufficient_test_coverage
       expect(result).to contain_exactly(
-        hash_including(permission: 'read_project', route_count: 1, test_count: 0)
+        hash_including(permission: 'read_project', endpoint_count: 1, test_count: 0)
       )
     end
 
-    it 'deduplicates routes with the same route_id and permission' do
+    it 'deduplicates routes with the same endpoint_id and permission' do
       2.times do
-        scanner.add_route(route_id: 'GET /projects/:id/test', permission: :read_project, route_info: route_info)
+        scanner.add_endpoint(endpoint_id: 'lib/api/test.rb:42 project', permission: :read_project,
+          details: endpoint_details)
       end
 
       result = scanner.insufficient_test_coverage
-      expect(result.first[:route_count]).to eq(1)
+      expect(result.first[:endpoint_count]).to eq(1)
     end
 
-    it 'skips permissions in the TODO file' do
-      allow(scanner).to receive(:todo_entries).and_return(Set.new(['read_project']))
-      scanner.add_route(route_id: 'GET /projects/:id/test', permission: :read_project, route_info: route_info)
+    it 'counts routes with different endpoint_ids separately' do
+      scanner.add_endpoint(endpoint_id: 'lib/api/test.rb:42 project', permission: :read_project,
+        details: endpoint_details)
+      scanner.add_endpoint(endpoint_id: 'lib/api/test.rb:42 group', permission: :read_project,
+        details: endpoint_details)
 
-      expect(scanner.insufficient_test_coverage).to be_empty
+      result = scanner.insufficient_test_coverage
+      expect(result.first[:endpoint_count]).to eq(2)
     end
 
     it 'includes route details in violations' do
-      scanner.add_route(route_id: 'GET /projects/:id/test', permission: :read_project, route_info: route_info)
+      scanner.add_endpoint(endpoint_id: 'lib/api/test.rb:42 project', permission: :read_project,
+        details: endpoint_details)
 
       result = scanner.insufficient_test_coverage
-      expect(result.first[:routes]).to contain_exactly(route_info)
+      expect(result.first[:endpoints]).to contain_exactly(endpoint_details)
     end
   end
 
@@ -136,6 +119,23 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::SpecPermissionScanner, featur
     it 'handles permissions with extra arguments' do
       content = "it_behaves_like 'authorizing granular token permissions', " \
         ":read_project, expected_success_status: :ok do"
+      allow(File).to receive(:read).with('test.rb').and_return(content)
+
+      expect(scanner.test_count(:read_project)).to eq(1)
+    end
+
+    it 'does not count keyword argument values after an array of permissions' do
+      content = "it_behaves_like 'authorizing granular token permissions', " \
+        "[:read_project, :read_issue], expected_success_status: :created do"
+      allow(File).to receive(:read).with('test.rb').and_return(content)
+
+      expect(scanner.test_count(:read_project)).to eq(1)
+      expect(scanner.test_count(:read_issue)).to eq(1)
+      expect(scanner.test_count(:created)).to eq(0)
+    end
+
+    it 'extracts permissions included via include_examples' do
+      content = "include_examples 'authorizing granular token permissions', :read_project"
       allow(File).to receive(:read).with('test.rb').and_return(content)
 
       expect(scanner.test_count(:read_project)).to eq(1)

@@ -10,7 +10,7 @@ module Mutations
 
           authorize :admin_container_image
           authorize_granular_token permissions: :delete_container_repository_protection_rule,
-            boundary_argument: :id, boundary_type: :project
+            boundary_argument: :id, boundary: :project, boundary_type: :project
 
           argument :id,
             ::Types::GlobalIDType[::ContainerRegistry::Protection::Rule],

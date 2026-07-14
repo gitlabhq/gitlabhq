@@ -41,6 +41,10 @@ module Types
       null: false,
       method: :approved?,
       description: 'Whether the user has approved the merge request.'
+
+    field :updated_at, Types::TimeType, null: true,
+      description: 'Timestamp of when the reviewer was last updated. ' \
+        '`null` for records that have not transitioned state since GitLab 19.2.'
   end
 end
 

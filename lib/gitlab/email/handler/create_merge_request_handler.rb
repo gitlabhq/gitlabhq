@@ -12,24 +12,8 @@ module Gitlab
       class CreateMergeRequestHandler < BaseHandler
         include ReplyProcessing
 
-        HANDLER_REGEX        = /\A#{HANDLER_ACTION_BASE_REGEX}-(?<incoming_email_token>.+)-merge-request\z/
-        HANDLER_REGEX_LEGACY = /\A(?<project_path>[^\+]*)\+merge-request\+(?<incoming_email_token>.*)/
-
-        def initialize(mail, mail_key)
-          super(mail, mail_key)
-
-          if !mail_key&.include?('/') && (matched = HANDLER_REGEX.match(mail_key.to_s))
-            @project_slug         = matched[:project_slug]
-            @project_id           = matched[:project_id]&.to_i
-            @incoming_email_token = matched[:incoming_email_token]
-          elsif matched = HANDLER_REGEX_LEGACY.match(mail_key.to_s)
-            @project_path         = matched[:project_path]
-            @incoming_email_token = matched[:incoming_email_token]
-          end
-        end
-
-        def can_handle?
-          incoming_email_token && (project_id || project_path)
+        def self.gem_handler
+          :create_merge_request
         end
 
         def execute

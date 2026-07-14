@@ -15,7 +15,8 @@ BANZAI_FILTER_TIMEOUT_MAX = 30.seconds
 RSpec.shared_examples 'a filter timeout' do
   context 'when rendering takes too long' do
     let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:context, freeze: false) { { project: project } }
+
+    let(:context) { { project: project } }
 
     it 'times out' do
       expect(Gitlab::RenderTimeout).to receive(:timeout).and_raise(Timeout::Error)

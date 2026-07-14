@@ -1014,6 +1014,48 @@ This log is located:
 - In the `/home/git/gitlab/log/zoekt.log` file on self-compiled installations.
 - On the Sidekiq and Webservice pods under the `subcomponent="zoekt"` key on Helm chart installations.
 
+### `zoekt.log` fields
+
+Entries from the periodic metrics cron job are distinguished by the `metric`
+field (`node_metrics` or `indices_metrics`). Per-request log entries do not
+carry a `metric` field and instead append the Zoekt fields documented below
+to whichever Rails request or Sidekiq job log line they were captured in.
+
+#### Node metrics entries (`metric: node_metrics`)
+
+These entries are emitted once per online Zoekt node by the periodic metrics cron job.
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `enabled_namespaces_count` | Integer | Number of namespaces enabled for exact code search on this node |
+| `indices_count` | Integer | Number of repository indices on this node |
+| `task_count_pending` | Integer | Number of indexing tasks in the `pending` state |
+| `task_count_failed` | Integer | Number of indexing tasks in the `failed` state |
+| `task_count_processing_queue` | Integer | Number of indexing tasks ready to be processed (state is `pending` or `processing` with `perform_at <= now`) |
+| `task_count_orphaned` | Integer | Number of indexing tasks in the `orphaned` state |
+| `task_count_done` | Integer | Number of indexing tasks in the `done` state |
+| `meta` | Object | Node metadata, including the node ID and URL |
+
+#### Indices metrics entries (`metric: indices_metrics`)
+
+These entries are emitted once per metrics collection cycle.
+
+The key `meta.zoekt.with_stale_used_storage_bytes_updated_at` is a literal
+flat key name with dots, not a nested object path.
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `meta.zoekt.with_stale_used_storage_bytes_updated_at` | Integer | Number of Zoekt indices whose `used_storage_bytes` value has not been updated recently |
+
+#### Per-request fields
+
+These fields appear in log entries emitted for each HTTP request from GitLab Rails to a Zoekt node.
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `zoekt_calls` | Integer | Number of Zoekt HTTP requests made during this Rails request |
+| `zoekt_duration_s` | Float | Total time in seconds spent waiting for Zoekt responses during this Rails request |
+
 ## `elasticsearch.log`
 
 {{< details >}}
@@ -1170,7 +1212,7 @@ The `llm.log` file logs information related to
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13401) in GitLab 17.2 [with a flag](../feature_flags/_index.md) named `expanded_ai_logging`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13401) in GitLab 17.2 [with a feature flag](../feature_flags/_index.md) named `expanded_ai_logging`. Disabled by default.
 
 {{< /history >}}
 
@@ -1192,6 +1234,26 @@ The log file is located at:
 - In the `/var/log/gitlab/gitlab-rails/llm.log` file on Linux package installations.
 - In the `/home/git/gitlab/log/llm.log` file on self-compiled installations.
 - On the Webservice pods under the `subcomponent="llm"` key on Helm chart installations.
+
+## `mcp.log`
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+The `mcp.log` file logs information related to the
+[GitLab MCP server](../../user/gitlab_duo/model_context_protocol/mcp_server.md). Logging includes
+MCP server availability denials, with a `denial_reason` field that explains why a request was
+refused.
+
+The log file is located at:
+
+- In the `/var/log/gitlab/gitlab-rails/mcp.log` file on Linux package installations.
+- In the `/home/git/gitlab/log/mcp.log` file on self-compiled installations.
+- On the Webservice pods under the `subcomponent="mcp"` key on Helm chart installations.
 
 ## `epic_work_item_sync.log`
 

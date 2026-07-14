@@ -5,6 +5,7 @@ import searchTodosGroupsQuery from '../queries/search_todos_groups.query.graphql
 import AsyncToken from './async_token.vue';
 
 export default {
+  name: 'GroupToken',
   i18n: {
     suggestionsFetchError: __('There was a problem fetching groups.'),
   },

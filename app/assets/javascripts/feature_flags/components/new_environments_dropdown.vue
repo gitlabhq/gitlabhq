@@ -7,11 +7,13 @@ import { __, n__, sprintf } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
 export default {
+  name: 'NewEnvironmentsDropdown',
   components: {
     GlButton,
     GlCollapsibleListbox,
   },
   inject: ['environmentsEndpoint'],
+  emits: ['add'],
   data() {
     return {
       environmentSearch: '',

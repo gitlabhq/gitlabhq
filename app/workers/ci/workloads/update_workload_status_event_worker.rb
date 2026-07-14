@@ -10,7 +10,7 @@ module Ci
       data_consistency :delayed
 
       def handle_event(event)
-        pipeline = Ci::Pipeline.find_by_id(event.data[:pipeline_id])
+        pipeline = Ci::Pipeline.find_by_id_and_partition(event.data[:pipeline_id], event.data[:partition_id])
         return unless pipeline
 
         workload = pipeline.workload

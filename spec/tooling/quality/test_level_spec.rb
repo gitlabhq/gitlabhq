@@ -24,7 +24,7 @@ RSpec.describe Quality::TestLevel, feature_category: :tooling do
                            File.join('spec', dir)
                          end
 
-        expect(File.exist?(spec_directory)).to eq(true), "#{spec_directory} does not exist!"
+        expect(File.exist?(spec_directory)).to be(true), "#{spec_directory} does not exist!"
       end
     end
   end

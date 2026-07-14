@@ -36,6 +36,17 @@ BuildKit offers the following methods to build Docker images:
 BuildKit in standalone mode provides rootless image builds without Docker daemon dependency.
 This method eliminates privileged containers entirely and provides a direct replacement for Kaniko builds.
 
+> [!note]
+> Rootless builds still require a runner that permits the system calls BuildKit uses to create
+> user namespaces and mount points. Hosted runners on GitLab.com permit these calls and need no
+> extra configuration, because they run in
+> [privileged mode](../runners/hosted_runners/linux.md#docker-in-docker-support).
+> On self-managed runners that use the Docker executor without privileged mode, builds can fail
+> with permission errors. For more information, see
+> [rootless build fails with permission errors](#rootless-build-fails-with-permission-errors).
+> If you cannot change your runner security settings, use
+> [rootless Buildah](buildah_rootless_multi_arch.md) to build images instead.
+
 Key differences from other methods:
 
 - Uses the `moby/buildkit:rootless` image
@@ -134,6 +145,12 @@ build-rootless:
         --local dockerfile=. \
         --output type=image,name=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA,push=true
 ```
+
+The `entrypoint: [""]` override is required.
+By default, the `moby/buildkit:rootless` image starts the BuildKit daemon as a
+long-running service.
+Without the override, the job runs the daemon instead of the build command and
+hangs until the job times out.
 
 ### Build multi-platform images in rootless mode
 
@@ -256,8 +273,9 @@ In this example, replace `<your-proxy>` and `<your-no-proxy>` with your proxy co
 
 ### Add custom certificates
 
-To push to a registry using custom CA certificates, add the certificate to the
-container's certificate store before building. For example:
+To push to a registry with a custom CA certificate, configure the certificate in a BuildKit
+configuration file before the daemon starts.
+For example:
 
 ```yaml
 build-with-custom-certs:
@@ -268,11 +286,17 @@ build-with-custom-certs:
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
   before_script:
-    - export SSL_CERT_FILE="$HOME/ca_chain.pem"
-    - cat /etc/ssl/certs/ca-certificates.crt > "$SSL_CERT_FILE"
-    - echo "$MY_CA_CERT" >> "$SSL_CERT_FILE"
-    - mkdir -p ~/.docker
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > ~/.docker/config.json
+    - mkdir -p "$HOME/.docker"
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > "$HOME/.docker/config.json"
+    - REG_HOST="${CI_REGISTRY%%/*}"
+    - mkdir -p "$HOME/.config/buildkit/certs/$REG_HOST"
+    - echo "$CA_CERT" > "$HOME/.config/buildkit/certs/$REG_HOST/ca.pem"
+    - |
+      cat > "$HOME/.config/buildkit/buildkitd.toml" << EOT
+      [registry."$REG_HOST"]
+        ca = ["$HOME/.config/buildkit/certs/$REG_HOST/ca.pem"]
+      EOT
+    - export SSL_CERT_FILE="$HOME/.config/buildkit/certs/$REG_HOST/ca.pem"
   script:
     - |
       buildctl-daemonless.sh build \
@@ -282,13 +306,29 @@ build-with-custom-certs:
         --output type=image,name=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA,push=true
 ```
 
-In this example, populate the `MY_CA_CERT` variable with the full contents of your CA certificate, including both the root and any intermediate certificates.
+In this example:
+
+- `REG_HOST="${CI_REGISTRY%%/*}"` extracts the hostname from the registry URL.
+- `buildkitd.toml` configures BuildKit to trust the CA certificate for the target registry.
+  BuildKit auto-discovers this file from `$HOME/.config/buildkit/`.
+- `SSL_CERT_FILE` is required in addition to `buildkitd.toml` to cover TLS connections
+  made before the BuildKit daemon fully initializes.
+
+Add a `CA_CERT` CI/CD variable with the full certificate chain, including the root and
+any intermediate certificates.
+Because PEM certificates contain newlines, the value of `CA_CERT` cannot be masked.
+To mask the value, use a [file-type variable](../../ci/variables/_index.md#use-file-type-cicd-variables)
+instead and replace `echo "$CA_CERT"` with `cat "$CA_CERT"` in the `before_script`.
+
+If the target registry uses the same certificate authority as your GitLab instance, and the
+runner is configured with `tls-ca-file`, you can reference the predefined
+[`CI_SERVER_TLS_CA_FILE`](../../ci/variables/predefined_variables.md) variable instead of a
+`CA_CERT` variable.
 
 ## Migrate from Kaniko to BuildKit
 
-BuildKit rootless is a secure alternative for Kaniko.
-It offers improved performance, better caching, and enhanced security features while
-maintaining rootless operation.
+BuildKit rootless is a secure alternative for Kaniko that offers improved performance, better
+caching, and enhanced security features without privileged containers.
 
 ### Update your configuration
 
@@ -328,6 +368,23 @@ build:
         --local dockerfile=. \
         --output type=image,name=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA,push=true
 ```
+
+### Custom CA certificates
+
+If your Kaniko jobs used custom CA certificates, you must configure those certificates explicitly
+for BuildKit rootless.
+Unlike Kaniko, the `moby/buildkit:rootless` image does not include a system certificate store.
+You must configure CA certificates in a BuildKit configuration file before the daemon starts.
+
+To migrate custom CA certificate configuration to BuildKit rootless:
+
+1. Store the full certificate chain in a [CI/CD variable](../../ci/variables/_index.md) named
+   `CA_CERT`.
+   Include the root and any intermediate certificates.
+
+1. Update your job configuration to use a `buildkitd.toml` file and the `SSL_CERT_FILE`
+   environment variable.
+   For the full example, see [add custom certificates](#add-custom-certificates).
 
 ## Alternative BuildKit methods
 
@@ -457,6 +514,8 @@ build-with-buildkit:
 
 ## Troubleshooting
 
+When you build images with BuildKit, you might encounter the following issues.
+
 ### Build fails with authentication errors
 
 If you encounter registry authentication failures:
@@ -468,21 +527,41 @@ If you encounter registry authentication failures:
 
 ### Rootless build fails with permission errors
 
-For permission-related issues in rootless mode:
+If a rootless build fails with a permission error, check the following:
 
 - Ensure `BUILDKITD_FLAGS: --oci-worker-no-process-sandbox` is set.
 - Verify that the GitLab Runner has sufficient resources allocated.
 - Check that no privileged operations are attempted in your `Dockerfile`.
 
-If you receive `[rootlesskit:child ] error: failed to share mount point: /: permission denied`
-on a Kubernetes runner, AppArmor is blocking the mount syscall required for BuildKit.
+On a Kubernetes runner, an AppArmor-related mount permission error can also block rootless
+containers. For more information, see
+[AppArmor mount permission errors on the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting/#error-failed-to-share-mount-point-permission-denied).
 
-To resolve this issue, add the following to your runner configuration:
+If the failure matches the following error, the runner security policy is blocking a system call
+that rootless BuildKit requires.
 
-```toml
-[runners.kubernetes.pod_annotations]
-  "container.apparmor.security.beta.kubernetes.io/build" = "unconfined"
+#### Error: `fork/exec /proc/self/exe: operation not permitted`
+
+On a runner that uses the Docker executor without privileged mode, you might get one of the
+following errors:
+
+```plaintext
+could not connect to unix:///run/user/1000/buildkit/buildkitd.sock after 10 trials
+[rootlesskit:parent] error: failed to start the child: fork/exec /proc/self/exe: operation not permitted
 ```
+
+This issue occurs because the runner seccomp profile blocks the system calls that rootless
+BuildKit requires. Hosted runners on GitLab.com run in privileged mode and are not affected.
+
+To resolve this issue on self-managed runners, configure the Docker executor
+[`security_opt`](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runnersdocker-section)
+setting to permit only the system calls that BuildKit requires.
+
+> [!warning]
+> Do not set `security_opt` to `seccomp:unconfined`. Although it resolves the errors, it
+> disables the container's default seccomp profile, which removes protection against dangerous
+> system calls and reduces isolation. Instead, use a custom seccomp profile that permits only
+> the required calls, or build images with rootless Buildah.
 
 ### Error: `invalid local: stat path/to/image/Dockerfile: not a directory`
 

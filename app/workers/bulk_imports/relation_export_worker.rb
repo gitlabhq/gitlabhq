@@ -35,19 +35,22 @@ module BulkImports
       offline_export_id = params&.dig('offline_export_id')
 
       export = if offline_export_id.present?
-                 portable.bulk_import_exports.for_offline_export_and_relation(offline_export_id, relation)
+                 portable.bulk_import_exports.for_offline_export_and_relation(offline_export_id, relation).last
                else
-                 portable.bulk_import_exports.for_user_and_relation(user, relation).for_offline_export(nil)
+                 portable.bulk_import_exports.for_user_and_relation(user, relation).for_offline_export(nil).last
                end
 
       Gitlab::ErrorTracking.track_exception(
         exception,
         portable_id: portable_id,
         portable_type: portable.class.name,
-        offline_export_id: offline_export_id
+        relation: relation,
+        batched: batched,
+        offline_export_id: offline_export_id,
+        importer: export&.import_source
       )
 
-      export.update!(status_event: 'fail_op', error: exception.message.truncate(255), batched: batched)
+      export&.update!(status_event: 'fail_op', error: exception.message.truncate(255), batched: batched)
     end
 
     def self.portable(portable_id, portable_class)

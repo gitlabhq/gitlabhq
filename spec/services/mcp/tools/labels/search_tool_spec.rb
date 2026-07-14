@@ -15,28 +15,6 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
     group.add_developer(user)
   end
 
-  describe 'class methods' do
-    describe '.build_query' do
-      it 'returns the GraphQL query string' do
-        query = described_class.build_query
-
-        expect(query).to include('query searchLabels')
-        expect(query).to include('searchTerm: $search')
-        expect(query).to include('labels')
-        expect(query).to include('$fullPath: ID!')
-        expect(query).to include('searchTerm: $search')
-      end
-
-      it 'includes label fields' do
-        query = described_class.build_query
-
-        expect(query).to include('nodes')
-        expect(query).to include('id')
-        expect(query).to include('title')
-      end
-    end
-  end
-
   describe 'versioning' do
     it 'registers version 0.1.0' do
       expect(tool.version).to eq(Mcp::Tools::Concerns::Constants::VERSIONS[:v0_1_0])
@@ -49,7 +27,7 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
     it 'has correct GraphQL operation for version 0.1.0' do
       operation = tool.graphql_operation
 
-      expect(operation).to include('query searchLabels')
+      expect(operation).to include('query mcpSearchLabels')
     end
 
     context 'when we are searching group labels' do
@@ -268,6 +246,7 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
       expect(result[:content].first[:type]).to eq('text')
       expect(result[:structuredContent]).to be_a(Hash)
       expect(result[:structuredContent]).to have_key(:items)
+      expect(result[:structuredContent][:items].first.keys).to match_array(%w[id title])
       expect(result[:structuredContent][:items].first).to include('title' => 'label')
     end
 

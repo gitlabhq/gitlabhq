@@ -5,8 +5,10 @@ export const GITLAB_WEB_IDE_FEEDBACK_ISSUE = 'https://gitlab.com/gitlab-org/gitl
 export const IDE_ELEMENT_ID = 'ide';
 
 // note: This path comes from `config/routes.rb`
+/* eslint-disable @gitlab/no-hardcoded-urls -- we do not want to use relative_url setting so it is okay to hardcode here. See `getOAuthCallbackUrl` in `app/assets/javascripts/ide/lib/gitlab_web_ide/oauth_callback_urls.js` for more context */
 export const IDE_PATH = '/-/ide';
 export const WEB_IDE_OAUTH_CALLBACK_URL_PATH = '/-/ide/oauth_redirect';
+/* eslint-enable @gitlab/no-hardcoded-urls */
 
 /**
  * LEGACY WEB IDE CONSTANTS USED BY OTHER FRONTEND FEATURES. DO NOT CONTINUE USING.

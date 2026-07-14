@@ -226,6 +226,20 @@ RSpec.describe API::API, feature_category: :system_access do
         end
       end
 
+      context 'for classify action with a claim type' do
+        let(:headers) do
+          {
+            'X-Gitlab-Http-Router-Rule-Action' => 'classify',
+            'X-Gitlab-Http-Router-Rule-Type' => 'organization_path'
+          }
+        end
+
+        it 'increments the counter' do
+          expect { perform_request }
+            .to change { http_router_rule_counter.get(rule_action: 'classify', rule_type: 'organization_path') }.by(1)
+        end
+      end
+
       context 'for proxy action' do
         let(:headers) do
           {

@@ -46,7 +46,7 @@ RSpec.describe Projects::FindFileController, feature_category: :source_code_mana
         go
 
         is_expected.to respond_with(:success)
-        expect(json_response).not_to eq(nil)
+        expect(json_response).not_to be_nil
         expect(json_response.length).to be >= 0
       end
     end

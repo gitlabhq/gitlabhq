@@ -9,6 +9,7 @@ export const GOOGLE_CLOUD_REVOKE_DESCRIPTION = s__(
 );
 
 export default {
+  name: 'RevokeOauth',
   components: { GlButton, GlForm },
   csrf,
   props: {

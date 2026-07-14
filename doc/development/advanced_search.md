@@ -394,7 +394,7 @@ All new indexes must have:
    The migration name must be in the format `Create<Name>Index`.
 1. Use the [`Search::Elastic::MigrationCreateIndexHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationcreateindexhelper)
    helper and the `'migration creates a new index'` shared example for the specification file created.
-1. Add the target class to `Gitlab::Elastic::Helper::ES_SEPARATE_CLASSES`.
+1. Add the target class to `Search::Elastic::Helper::ES_SEPARATE_CLASSES`.
 1. To test the index creation, run `Elastic::MigrationWorker.new.perform` in a console and check that the index
    has been created with the correct mappings and settings:
 

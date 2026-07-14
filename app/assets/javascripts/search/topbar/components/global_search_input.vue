@@ -80,6 +80,7 @@ export default {
       default: () => {},
     },
   },
+  emits: ['focusin', 'focusout', 'input'],
   i18n: {
     label: __('Use Regular Expression'),
   },

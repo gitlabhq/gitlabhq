@@ -6,6 +6,7 @@ module Gitlab
       include ::Gitlab::ImportExport::CommandLineUtil
       include ::BulkImports::FileDownloads::FilenameFetch
       include ::BulkImports::FileDownloads::Validations
+      include ::Import::Framework::AttachmentDownloads
 
       DownloadError = Class.new(StandardError)
       NotRetriableError = Class.new(StandardError)
@@ -14,7 +15,6 @@ module Gitlab
       DEFAULT_FILE_SIZE_LIMIT = Gitlab::CurrentSettings.max_attachment_size.megabytes
       TMP_DIR = File.join(Dir.tmpdir, 'github_attachments').freeze
       SUPPORTED_VIDEO_MEDIA_TYPES = %w[mov mp4 webm].freeze
-      ALLOWED_FILENAME_CHARACTERS = /[^a-zA-Z0-9\-_.]/
 
       REDIRECT_STATUS_CODES = [301, 302, 303, 307, 308].freeze
       NON_RETRIABLE_ERROR_CODES = [403, 404, 410].freeze
@@ -32,14 +32,7 @@ module Gitlab
         @file_size_limit = file_size_limit
         @web_endpoint = web_endpoint
 
-        filename = URI(file_url).path.split('/').last
-        filename = CGI.unescape(filename) # Decode URL-encoded characters
-
-        # Check for path traversal before sanitization
-        Gitlab::PathTraversal.check_path_traversal!(File.join(TMP_DIR, filename))
-
-        filename = sanitize_filename(filename)
-        @filename = ensure_filename_size(filename)
+        @filename = build_filename(file_url)
       end
 
       def perform
@@ -71,13 +64,8 @@ module Gitlab
 
       private
 
-      def sanitize_filename(filename)
-        # Replace any character that's not alphanumeric, hyphen, underscore, or dot
-        sanitized = filename.gsub(ALLOWED_FILENAME_CHARACTERS, '_')
-        # Remove leading dots to prevent hidden files
-        sanitized = sanitized.sub(/^\.+/, '')
-        # Provide fallback if empty or only underscore characters
-        sanitized.empty? || sanitized.match?(/\A_+\z/) ? 'attachment' : sanitized
+      def attachments_temp_dir
+        TMP_DIR
       end
 
       def raise_error(message)
@@ -153,18 +141,6 @@ module Gitlab
         reset_in = RATE_LIMIT_DEFAULT_RESET_IN if reset_in == 0
 
         raise RateLimitError.new("Rate limit exceeded. Response code: #{response.code}", reset_in)
-      end
-
-      def filepath
-        @filepath ||= begin
-          dir = File.join(TMP_DIR, SecureRandom.uuid)
-          mkdir_p dir
-          File.join(dir, filename)
-        end
-      end
-
-      def add_extension_to_file_path(filename)
-        @filepath = "#{filepath}#{File.extname(filename)}"
       end
     end
   end

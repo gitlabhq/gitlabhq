@@ -1,5 +1,5 @@
 import { GlSingleStat } from '@gitlab/ui/src/charts';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SingleStat from '~/analytics/analytics_dashboards/components/visualizations/single_stat.vue';
 
 describe('Single Stat Visualization', () => {
@@ -9,7 +9,7 @@ describe('Single Stat Visualization', () => {
   const findSingleStat = () => wrapper.findComponent(GlSingleStat);
 
   const createWrapper = (props = {}) => {
-    wrapper = mountExtended(SingleStat, {
+    wrapper = shallowMountExtended(SingleStat, {
       propsData: {
         data: props.data,
         options: props.options,
@@ -37,13 +37,19 @@ describe('Single Stat Visualization', () => {
       expect(findSingleStat().props('value')).toBe(35);
     });
 
+    it('should pass the description option to the single stat', () => {
+      createWrapper({ data: 35, options: { description: '12/100 pipelines' } });
+
+      expect(findSingleStat().props('description')).toBe('12/100 pipelines');
+    });
+
     describe('when there are user defined options that include decimal places', () => {
       const options = {
         title: 'Sessions',
         decimalPlaces: 2,
         metaText: 'meta text',
         metaIcon: 'project',
-        titleIcon: 'users',
+        metricIcon: 'users',
         unit: 'days',
         variant: 'success',
       };

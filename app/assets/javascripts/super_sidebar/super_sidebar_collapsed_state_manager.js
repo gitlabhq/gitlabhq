@@ -24,11 +24,6 @@ export const getCollapsedCookie = () => getCookie(SIDEBAR_COLLAPSED_COOKIE) === 
 export const toggleSuperSidebarCollapsed = (collapsed) => {
   findPage().classList.toggle(SIDEBAR_COLLAPSED_CLASS, collapsed);
 
-  sidebarState.isPeek = false;
-  sidebarState.isPeekable = collapsed;
-  sidebarState.hasPeeked = false;
-  sidebarState.isHoverPeek = false;
-  sidebarState.wasHoverPeek = false;
   sidebarState.isCollapsed = collapsed;
   sidebarState.isMobile = !isDesktopBreakpoint();
 };

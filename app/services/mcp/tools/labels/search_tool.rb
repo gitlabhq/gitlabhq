@@ -4,45 +4,8 @@ module Mcp
   module Tools
     module Labels
       class SearchTool < Mcp::Tools::GraphqlTool
-        include Mcp::Tools::Concerns::Constants
-
-        class << self
-          def build_query
-            <<~GRAPHQL
-            query searchLabels($fullPath: ID!, $search: String, $isProject: Boolean = false) {
-              group(fullPath: $fullPath) @skip(if: $isProject) {
-                id
-                labels(
-                  searchTerm: $search
-                  includeAncestorGroups: true
-                  includeDescendantGroups: true
-                ) {
-                  nodes {
-                    ... on Label {
-                      id
-                      title
-                    }
-                  }
-                }
-              }
-              project(fullPath: $fullPath) @include(if: $isProject) {
-                id
-                labels(searchTerm: $search, includeAncestorGroups: true) {
-                  nodes {
-                    ... on Label {
-                      id
-                      title
-                    }
-                  }
-                }
-              }
-            }
-            GRAPHQL
-          end
-        end
-
         register_version VERSIONS[:v0_1_0], {
-          graphql_operation: build_query
+          graphql_operation: load_graphql('labels/search.query.graphql')
         }
 
         def build_variables

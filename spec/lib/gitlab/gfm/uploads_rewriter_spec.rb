@@ -135,8 +135,8 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter, feature_category: :shared do
   end
 
   context 'with various containers' do
-    let_it_be(:project_uploader_class, freeze: false) { FileUploader }
-    let_it_be(:group_uploader_class, freeze: false) { NamespaceFileUploader }
+    let_it_be(:project_uploader_class) { FileUploader }
+    let_it_be(:group_uploader_class) { NamespaceFileUploader }
     let_it_be(:source_project) { create(:project) }
     let_it_be(:target_project) { create(:project) }
     let_it_be(:source_group) { create(:group) }

@@ -1,0 +1,5 @@
+---
+name: Continuous Deployment Rollout
+description: A continuous deployment rollout that deploys a version set to a set
+  of environments
+feature_category: continuous_delivery

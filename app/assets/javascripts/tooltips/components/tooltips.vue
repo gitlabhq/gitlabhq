@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlTooltip } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
@@ -33,6 +32,7 @@ const newTooltip = (element, config = {}) => {
 };
 
 export default {
+  name: 'TooltipsWrapper',
   components: {
     GlTooltip,
   },

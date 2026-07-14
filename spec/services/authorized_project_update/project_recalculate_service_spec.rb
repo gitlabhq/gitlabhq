@@ -8,7 +8,7 @@ RSpec.describe AuthorizedProjectUpdate::ProjectRecalculateService, '#execute', f
   subject(:execute) { described_class.new(project).execute }
 
   it 'returns success' do
-    expect(execute.success?).to eq(true)
+    expect(execute.success?).to be(true)
   end
 
   context 'when there are no changes to be made' do
@@ -18,7 +18,7 @@ RSpec.describe AuthorizedProjectUpdate::ProjectRecalculateService, '#execute', f
   end
 
   context 'when there are changes to be made' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     context 'when addition is required' do
       before do

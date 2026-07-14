@@ -9,8 +9,6 @@ categories: [ Code Review Workflow ]
 level: primary
 ---
 
-<!-- categories: Code Review Workflow -->
-
 Previously, you needed to select reviewers for each merge request manually,
 even when a `CODEOWNERS` file already defined who should review each file.
 

@@ -5,6 +5,7 @@ import { __, sprintf } from '~/locale';
 import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
+  name: 'NoteSignedOutWidget',
   directives: {
     SafeHtml,
   },

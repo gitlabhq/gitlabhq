@@ -1,6 +1,6 @@
 import iframeNavigator from '~/observability/iframe_navigator';
 
-const ACTIVE_CLASS = 'super-sidebar-nav-item-current';
+const ACTIVE_CLASS = 'selected';
 const OBSERVABILITY_PATH = '/groups/my-group/-/observability';
 
 describe('IframeNavigator', () => {

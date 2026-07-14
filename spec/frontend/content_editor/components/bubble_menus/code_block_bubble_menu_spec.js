@@ -13,13 +13,11 @@ import { createTestEditor, emitEditorEvent } from '../../test_utils';
 describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => {
   let wrapper;
   let tiptapEditor;
-  let contentEditor;
   let bubbleMenu;
   let eventHub;
 
   const buildEditor = () => {
     tiptapEditor = createTestEditor({ extensions: [CodeBlockHighlight, Diagram] });
-    contentEditor = { renderDiagram: jest.fn() };
     eventHub = eventHubFactory();
   };
 
@@ -27,7 +25,6 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
     wrapper = mountExtended(CodeBlockBubbleMenu, {
       provide: {
         tiptapEditor,
-        contentEditor,
         eventHub,
       },
       stubs: {

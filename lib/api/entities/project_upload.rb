@@ -5,7 +5,7 @@ module API
     class ProjectUpload < Grape::Entity
       include Gitlab::Routing
 
-      expose :id, documentation: { type: 'Integer', example: 1 } do |uploader|
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 } do |uploader|
         uploader.upload.id
       end
       expose :markdown_name, as: :alt, documentation: { type: 'String', example: 'filename' }

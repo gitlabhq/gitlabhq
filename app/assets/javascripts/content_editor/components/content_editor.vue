@@ -137,7 +137,33 @@ export default {
       required: false,
       default: false,
     },
+    ariaLabel: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    ariaLabelledBy: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    ariaDescribedBy: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
+  emits: [
+    'blur',
+    'change',
+    'enableMarkdownEditor',
+    'focus',
+    'initialized',
+    'keydown',
+    'loading',
+    'loadingError',
+    'loadingSuccess',
+  ],
   data() {
     return {
       focused: false,
@@ -148,6 +174,16 @@ export default {
   computed: {
     showPlaceholder() {
       return this.placeholder && !this.markdown && !this.focused;
+    },
+    editorAriaAttributes() {
+      // aria-labelledby takes precedence over aria-label per ARIA spec
+      return Object.fromEntries(
+        Object.entries({
+          'aria-labelledby': this.ariaLabelledBy,
+          'aria-label': this.ariaLabelledBy ? '' : this.ariaLabel || __('Rich text editor'),
+          'aria-describedby': this.ariaDescribedBy,
+        }).filter(([, v]) => v),
+      );
     },
   },
   watch: {
@@ -163,6 +199,22 @@ export default {
     },
     editable(value) {
       this.contentEditor.setEditable(value);
+    },
+    editorAriaAttributes(newAttrs) {
+      const dom = this.contentEditor?.tiptapEditor?.view?.dom;
+      if (!dom) return;
+
+      // Remove old ARIA attributes
+      dom.removeAttribute('aria-label');
+      dom.removeAttribute('aria-labelledby');
+      dom.removeAttribute('aria-describedby');
+
+      // Apply new ARIA attributes
+      Object.entries(newAttrs).forEach(([key, value]) => {
+        if (value) {
+          dom.setAttribute(key, value);
+        }
+      });
     },
   },
   created() {
@@ -199,7 +251,7 @@ export default {
           editorProps: {
             attributes: {
               'aria-controls': 'content-editor-suggestions',
-              'aria-label': __('Rich text editor'),
+              ...this.editorAriaAttributes,
               class: 'rte-text-box',
             },
           },

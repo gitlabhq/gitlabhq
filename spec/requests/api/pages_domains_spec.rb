@@ -39,6 +39,12 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
       let(:path) { '/pages/domains' }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_pages_domain do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api('/pages/domains', personal_access_token: pat) }
+    end
+
     context 'when pages is disabled' do
       before do
         allow(Gitlab.config.pages).to receive(:enabled).and_return(false)

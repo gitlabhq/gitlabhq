@@ -27,10 +27,10 @@ module Ci
             jobs = Ci::Build
                     .in_partition(partition_id)
                     .id_in(records.map(&:build_id))
-                    .includes(:tags, :runner, project: [:namespace, :route])
+                    .includes(:job_definition, :runner, project: [:namespace, :route])
                     .to_a
 
-            preload_pending_states_for_enabled_projects(jobs)
+            preload_pending_states(jobs)
 
             jobs.each do |job|
               Gitlab::ApplicationContext.with_context(project: job.project) { yield(job) }
@@ -41,13 +41,13 @@ module Ci
 
       def fetch(builds)
         loop do
-          jobs = builds.includes(:tags, :runner, project: [:namespace, :route])
+          jobs = builds.includes(:job_definition, :runner, project: [:namespace, :route])
             .limit(BATCH_SIZE)
             .to_a
 
           break if jobs.empty?
 
-          preload_pending_states_for_enabled_projects(jobs)
+          preload_pending_states(jobs)
 
           jobs.each do |job|
             Gitlab::ApplicationContext.with_context(project: job.project) { yield(job) }
@@ -56,11 +56,7 @@ module Ci
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      def preload_pending_states_for_enabled_projects(jobs)
-        jobs = jobs.select do |job|
-          Feature.enabled?(:ci_anchor_finished_at_to_pending_state, job.project)
-        end
-
+      def preload_pending_states(jobs)
         return if jobs.empty?
 
         ActiveRecord::Associations::Preloader.new(records: jobs, associations: :pending_state).call

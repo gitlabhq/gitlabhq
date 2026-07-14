@@ -340,7 +340,7 @@ describe('WorkItemLabels component', () => {
 
     await nextTick();
 
-    expect(wrapper.emitted('updateWidgetDraft')).toEqual([
+    expect(wrapper.emitted('update-widget-draft')).toEqual([
       [{ labels: [mockLabels[1], mockLabels[2]] }],
     ]);
     expect(successRemoveLabelWorkItemMutationHandler).not.toHaveBeenCalled();

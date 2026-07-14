@@ -41,7 +41,7 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
   end
 
   describe 'Project import job' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     let(:import_state) { create(:import_state, import_url: generate(:url), project: project) }
     let(:jid) { '551d3ceac5f67a116719ce41' }

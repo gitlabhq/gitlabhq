@@ -17,14 +17,14 @@ description: Create non-human accounts for automated processes and third-party s
 
 - Service accounts on Free tier:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225913) in GitLab 18.10
-    [with a flag](../../administration/feature_flags/_index.md) named `service_accounts_available_on_free_or_unlicensed`.
+    [with a feature flag](../../administration/feature_flags/_index.md) named `service_accounts_available_on_free_or_unlicensed`.
     Disabled by default.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227910) in GitLab 18.11. Feature flag removed.
 - Project service accounts [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585509) in GitLab 18.10
-  [with a flag](../../administration/feature_flags/_index.md) named `allow_projects_to_create_service_accounts`.
+  [with a feature flag](../../administration/feature_flags/_index.md) named `allow_projects_to_create_service_accounts`.
   Disabled by default.
 - Subgroup service accounts [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585513) in GitLab 18.10
-  [with a flag](../../administration/feature_flags/_index.md) named `allow_subgroups_to_create_service_accounts`.
+  [with a feature flag](../../administration/feature_flags/_index.md) named `allow_subgroups_to_create_service_accounts`.
   Disabled by default.
 - Subgroup and project service accounts [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225485/) in GitLab 18.11. Feature flags `allow_subgroups_to_create_service_accounts` and `allow_projects_to_create_service_accounts` removed.
 
@@ -63,8 +63,8 @@ The number of service accounts you can create depends on your subscription and o
 - On GitLab Free, limits vary by offering:
   - For GitLab.com, you can create up to 100 service accounts for each top-level group.
     This includes service accounts created in subgroups or projects.
-  - For GitLab Self-Managed Enterprise Edition (EE), you can create up to 100 service accounts instance-wide.
-  - For GitLab Self-Managed Community Edition (CE), you cannot create service accounts.
+  - For GitLab Self-Managed, you can create up to 100 service accounts for the entire instance.
+    This includes service accounts created at the instance, group, or project level.
 
 ## Types of service accounts
 
@@ -182,8 +182,8 @@ The number of service accounts you can create depends on your subscription and o
 - On GitLab Free, limits vary by offering:
   - For GitLab.com, you can create up to 100 service accounts for each top-level group.
     This includes service accounts created in subgroups or projects.
-  - For GitLab Self-Managed Enterprise Edition (EE), you can create up to 100 service accounts instance-wide.
-  - For GitLab Self-Managed Community Edition (CE), you cannot create service accounts.
+  - For GitLab Self-Managed, you can create up to 100 service accounts for the entire instance.
+    This includes service accounts created at the instance, group, or project level.
 
 To create a service account:
 
@@ -329,7 +329,7 @@ To create a personal access token for a service account:
    - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.
    - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
-1. Select the [desired scopes](personal_access_tokens.md#personal-access-token-scopes).
+1. Select the [desired scopes](../../security/tokens/access_token_scopes.md).
 1. Select **Create personal access token**.
 
 ### Rotate a personal access token

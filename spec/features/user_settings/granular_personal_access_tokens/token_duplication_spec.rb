@@ -69,10 +69,6 @@ RSpec.describe 'User Settings > Granular personal access tokens > token duplicat
       expect(page).to have_button('Create')
     end
 
-    page.within('.gl-tabs-nav') do
-      click_on 'User'
-    end
-
     within(find_by_testid('selected-resource', text: 'User')) do
       expect(page).to have_button('Read')
     end

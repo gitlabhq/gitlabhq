@@ -3,14 +3,19 @@
 module Gitlab
   module Graphql
     class ExternallyPaginatedArray < Array
-      attr_reader :start_cursor, :end_cursor, :has_next_page, :has_previous_page
+      attr_reader :start_cursor, :end_cursor, :has_next_page, :has_previous_page, :total_count
 
-      def initialize(previous_cursor, next_cursor, *args, has_next_page: nil, has_previous_page: nil)
+      def initialize(previous_cursor, next_cursor, *args, has_next_page: nil, has_previous_page: nil, total_count: nil)
         super(args)
         @start_cursor = previous_cursor
         @end_cursor = next_cursor
         @has_next_page = has_next_page
         @has_previous_page = has_previous_page
+        @total_count = total_count
+      end
+
+      def precomputed_total_count
+        total_count.respond_to?(:call) ? total_count.call : total_count
       end
     end
   end

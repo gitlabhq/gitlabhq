@@ -11,6 +11,7 @@ import { OPTIONS_NONE_ANY } from '../constants';
 import BaseToken from './base_token.vue';
 
 export default {
+  name: 'UserToken',
   components: {
     BaseToken,
     GlAvatar,

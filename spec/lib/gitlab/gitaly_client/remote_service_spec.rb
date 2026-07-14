@@ -18,7 +18,7 @@ RSpec.describe Gitlab::GitalyClient::RemoteService, feature_category: :source_co
         .to receive(:find_remote_root_ref)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
         .with(gitaly_request_with_params(expected_params), kind_of(Hash))
-        .and_return(double(ref: 'master'))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(ref: 'master'), trailing_metadata: {}))
 
       expect(client.find_remote_root_ref(url, auth)).to eq 'master'
     end
@@ -28,7 +28,7 @@ RSpec.describe Gitlab::GitalyClient::RemoteService, feature_category: :source_co
         .to receive(:find_remote_root_ref)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
         .with(gitaly_request_with_params(expected_params), kind_of(Hash))
-        .and_return(double(ref: "an_invalid_ref_\xE5"))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(ref: "an_invalid_ref_\xE5"), trailing_metadata: {}))
 
       expect(client.find_remote_root_ref(url, auth)).to eq "an_invalid_ref_å"
     end
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::GitalyClient::RemoteService, feature_category: :source_co
       expect_any_instance_of(Gitaly::RemoteService::Stub)
         .to receive(:update_remote_mirror)
         .with(array_including(gitaly_request_with_params(expected_params)), kind_of(Hash))
-        .and_return(double(:update_remote_mirror_response))
+        .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(:update_remote_mirror_response), trailing_metadata: {}))
 
       client.update_remote_mirror(url, only_branches_matching, ssh_key: ssh_key, known_hosts: known_hosts, keep_divergent_refs: true)
     end
@@ -60,7 +60,7 @@ RSpec.describe Gitlab::GitalyClient::RemoteService, feature_category: :source_co
         expect_any_instance_of(Gitaly::RemoteService::Stub)
           .to receive(:update_remote_mirror)
           .with(array_including(gitaly_request_with_params(expected_params)), kind_of(Hash))
-          .and_return(double(:update_remote_mirror_response))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(:update_remote_mirror_response), trailing_metadata: {}))
 
         client.update_remote_mirror(
           url,
@@ -80,7 +80,7 @@ RSpec.describe Gitlab::GitalyClient::RemoteService, feature_category: :source_co
         expect_any_instance_of(Gitaly::RemoteService::Stub)
           .to receive(:update_remote_mirror)
           .with(array_including(gitaly_request_with_params(expected_params)), kind_of(Hash))
-          .and_return(double(:update_remote_mirror_response))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: double(:update_remote_mirror_response), trailing_metadata: {}))
 
         client.update_remote_mirror(url, only_branches_matching, ssh_key: ssh_key, known_hosts: known_hosts, keep_divergent_refs: true)
       end

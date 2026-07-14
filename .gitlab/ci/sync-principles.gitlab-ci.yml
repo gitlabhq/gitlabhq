@@ -9,7 +9,8 @@
 # the GitLab REST API.
 # See gitlab-org/gitlab#597600 for the design.
 #
-# Trigger: pipeline schedule on master with SCHEDULE_TYPE=weekly.
+# Trigger: dedicated pipeline schedule on master with
+# SCHEDULE_TYPE=ai-principles-distillation.
 #
 # Tokens: GITLAB_TOKEN (Workflow API + GraphQL) and GITLAB_API_TOKEN
 # (auto-MR REST). Both are sourced from a single project CI/CD variable
@@ -79,10 +80,78 @@ ai-principles-sync:
     # Detect drift, trigger Duo Workflows, write back, and open an MR.
     - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR" --push
   rules:
-    - !reference ['.ai-principles-sync:rules:weekly', rules]
-  allow_failure: true
+    - !reference ['.ai-principles-sync:rules:scheduled', rules]
   artifacts:
     when: always
     expire_in: 7d
     paths:
       - .ai/principles/distilled/
+
+# Daily job that reconciles the Duo Code Review instruction fences in
+# .gitlab/duo/mr-review-instructions.yaml with the committed distilled
+# principles on master, decoupled from distillation.
+#
+# It regenerates each fence by PURE PROJECTION of the merged-master distilled
+# files (copying their distilled_at_sha / source_checksum front matter) and
+# NEVER re-runs distillation, so the resulting MR is idempotent and passes the
+# ai-duo-review-instructions guard on its own. This closes the drift window a
+# team's distilled MR opens between merging and the fence catching up.
+# See gitlab-org/gitlab#604890 for the design.
+#
+# Trigger: dedicated pipeline schedule on master with
+# SCHEDULE_TYPE=ai-principles-fence-reconcile (daily).
+#
+# Token: GITLAB_API_TOKEN (auto-MR REST) sourced from the same
+# AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN service-account PAT as the weekly
+# sync. No Duo Workflow / GraphQL tokens are needed because this job never
+# distills.
+ai-principles-reconcile-fences:
+  stage: ai-gateway
+  needs: []
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
+  timeout: 15m
+  variables:
+    # Used by the sync bin to create the reconcile MR via the REST API.
+    GITLAB_API_TOKEN: $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN
+    # Install gem dependencies under the gem's vendor/ dir (matches the
+    # convention used by other gems in this repo, isolates the install
+    # from system gems).
+    BUNDLE_PATH: vendor
+  before_script:
+    - apk add --no-cache build-base git
+    # Audit-trail visibility: log the identity making the calls (the
+    # service account; see access request #43931).
+    - echo "Identity:${GITLAB_USER_LOGIN:-<unset>} (job triggered from $CI_PIPELINE_SOURCE)"
+    - git config --global user.email "service-modelops-agent-principles-distiller@gitlab.com"
+    - git config --global user.name "Agent Principles Distiller"
+    # The reconcile cuts its branch off origin/$CI_DEFAULT_BRANCH and projects
+    # fences from that ref's committed distilled files, so master's tip must be
+    # available. A failed fetch must fail the job rather than silently
+    # reconciling from a stale ref, so no `|| true` here.
+    - git fetch --depth=1 origin "$CI_DEFAULT_BRANCH:refs/remotes/origin/$CI_DEFAULT_BRANCH"
+    - cd gems/gitlab-ai-principles-distiller
+    - gem install bundler --no-document --version "$(tail -n 1 Gemfile.lock | tr -d '[:space:]')"
+    - bundle install --jobs=$(nproc) --retry=3
+  script:
+    # Pure projection from master: regenerate the fences and open/update the
+    # reconcile MR. Never re-distills.
+    - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR" --reconcile-duo-instructions --push
+  rules:
+    - !reference ['.ai-principles-reconcile:rules:scheduled', rules]
+
+# Reports a failure of ai-principles-sync to Slack so the team can
+# investigate before principles go stale. Uses scripts/slack which
+# gracefully no-ops when CI_SLACK_WEBHOOK_URL is unset.
+ai-principles-sync:report-failure:
+  stage: ai-gateway
+  needs: ['ai-principles-sync']
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
+  dependencies: []
+  cache: {}
+  before_script:
+    - apk add --no-cache curl
+  script:
+    - scripts/slack ai-harness-gitlab-monolith "☠️ Weekly AI principles distillation (\`ai-principles-sync\`) failed. Distilled principles may be stale. See ${CI_PIPELINE_URL}" ci_failing "GitLab Bot"
+  allow_failure: true
+  rules:
+    - !reference ['.ai-principles-sync:rules:scheduled-on-failure', rules]

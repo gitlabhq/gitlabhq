@@ -336,7 +336,7 @@ To toggle notifications on a specific issue, merge request, or epic:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../administration/feature_flags/_index.md) named `notifications_todos_buttons`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a feature flag](../../administration/feature_flags/_index.md) named `notifications_todos_buttons`. Disabled by default.
 
 {{< /history >}}
 

@@ -1,5 +1,6 @@
-import { existsSync, globSync } from 'node:fs';
+import { existsSync, globSync, readFileSync } from 'node:fs';
 import path from 'node:path';
+import yaml from 'yaml';
 
 const FEATURE_FLAG_PATHS = [
   'config/feature_flags',
@@ -7,8 +8,31 @@ const FEATURE_FLAG_PATHS = [
   'jh/config/feature_flags',
 ];
 
+// Organization flags don't get their own YAML file -- they're registered in
+// this single registry and share a stage flag instead. See
+// Organizations::Release::Registry.
+const ORGANIZATION_RELEASE_REGISTRY_PATH = 'config/organizations_release.yml';
+
 function snakeToCamel(str) {
   return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
+function getOrganizationReleaseFlags() {
+  if (!existsSync(ORGANIZATION_RELEASE_REGISTRY_PATH)) {
+    return [];
+  }
+
+  try {
+    const content = readFileSync(ORGANIZATION_RELEASE_REGISTRY_PATH, 'utf8');
+    const { flags } = yaml.parse(content) ?? {};
+
+    return (flags ?? []).flatMap((flag) => (typeof flag.name === 'string' ? [flag.name] : []));
+  } catch (error) {
+    console.warn(
+      `Warning: Could not parse ${ORGANIZATION_RELEASE_REGISTRY_PATH}: ${error.message}`,
+    );
+    return [];
+  }
 }
 
 export function getAllFeatureFlags() {
@@ -29,6 +53,8 @@ export function getAllFeatureFlags() {
       console.warn(`Warning: Could not scan feature flags in ${basePath}: ${error.message}`);
     }
   });
+
+  getOrganizationReleaseFlags().forEach((flagName) => flags.add(flagName));
 
   return flags;
 }

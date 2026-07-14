@@ -53,11 +53,10 @@ module PreviewMarkdown
   end
 
   def snippets_filter_params
-    filter_params = { skip_project_check: true }
-
-    filter_params[:user] = current_user if Feature.enabled?(:personal_snippet_reference_filters, current_user)
-
-    filter_params
+    {
+      skip_project_check: true,
+      user: current_user
+    }
   end
 
   def markdown_context_params

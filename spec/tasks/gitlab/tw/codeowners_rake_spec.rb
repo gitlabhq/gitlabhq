@@ -100,12 +100,24 @@ RSpec.describe 'tw:codeowners', :silence_stdout, feature_category: :gitlab_docs 
     end.to output("~ CODEOWNERS already up to date\n\n✘ Files with missing metadata found:\nfile1.md\n").to_stdout
   end
 
+  it 'parses YAML files containing a date: field without raising Psych::DisallowedClass' do
+    Tempfile.create(['doc_with_date', '.md']) do |f|
+      f.write("---\ngroup: Group 1\ndate: 2025-11-20\n---\n")
+      f.flush
+
+      expect { YAML.safe_load_file(f.path, permitted_classes: [Date]) }.not_to raise_error
+      result = YAML.safe_load_file(f.path, permitted_classes: [Date])
+      expect(result['date']).to be_a(Date)
+      expect(result['date']).to eq(Date.new(2025, 11, 20))
+    end
+  end
+
   def stub_files(files)
     allow(Dir).to receive(:glob).and_call_original
     glob_stubber = allow(Dir).to receive(:glob).with(Rails.root.join('doc/**/*.md'))
     files.each do |path, metadata|
       glob_stubber = glob_stubber.and_yield(path)
-      allow(YAML).to receive(:load_file).with(path).and_return(metadata)
+      allow(YAML).to receive(:safe_load_file).with(path, permitted_classes: [Date]).and_return(metadata)
     end
   end
 

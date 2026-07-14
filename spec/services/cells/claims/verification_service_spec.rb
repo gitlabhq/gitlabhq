@@ -565,6 +565,38 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
       end
     end
 
+    context 'when a claimable attribute value is blank' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        # Bypass validations to leave a claimable attribute (username) blank on the row, mirroring
+        # the production data that triggered an invalid empty bucket value in the Topology Service.
+        # The service loads its own instances from the database, so update at the DB level.
+        User.where(id: user.id).update_all(username: '')
+        stub_list_records([])
+        stub_commit
+      end
+
+      it 'excludes the blank attribute from the created records', :aggregate_failures do
+        expect(mock_claim_service).to receive(:begin_update) do |args|
+          bucket_types = args[:create_records].map { |record| record[:bucket][:type] }
+
+          expect(bucket_types).to include(user_id_bucket_type)
+          expect(bucket_types).not_to include(username_bucket_type)
+
+          begin_update_response
+        end
+
+        service.execute
+      end
+
+      it 'creates only the claims for non-blank attributes' do
+        result = service.execute
+
+        expect(result[:created]).to eq(1)
+      end
+    end
+
     context 'when model defines cells_claims_scope' do
       let_it_be(:user) { create(:user) }
 

@@ -8,7 +8,7 @@ module Gitlab
       # incoming_email and service_desk_email.
       module CustomEmail
         EMAIL_REGEXP_WITH_ANCHORS = /\A(?>[a-zA-Z0-9]+|[\-._]+){1,255}@[\w\-.]{1,255}\.{1}[a-zA-Z]{2,63}\z/
-        REPLY_ADDRESS_KEY_REGEXP = /\+(?<full_reply_key>#{::SentNotification::FULL_REPLY_KEY_REGEX})@/
+        REPLY_ADDRESS_KEY_REGEXP = /\+(?<full_reply_key>#{Gitlab::EmailHandler::ReplyKey::FULL_REPLY_KEY_REGEX})@/
 
         class << self
           def reply_address(work_item, reply_key)

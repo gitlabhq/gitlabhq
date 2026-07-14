@@ -5,6 +5,7 @@ import { __, s__ } from '~/locale';
 import ParameterFormGroup from './parameter_form_group.vue';
 
 export default {
+  name: 'UsersWithId',
   components: {
     ParameterFormGroup,
     GlFormTextarea,
@@ -15,6 +16,7 @@ export default {
       type: Object,
     },
   },
+  emits: ['change'],
   translations: {
     rolloutUserIdsDescription: __('Enter one or more user ID separated by commas'),
     rolloutUserIdsLabel: s__('FeatureFlag|User IDs'),

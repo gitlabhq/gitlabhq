@@ -42,6 +42,41 @@ RSpec.describe Ci::NamespaceMirror, feature_category: :continuous_integration do
       end
     end
 
+    describe '.by_group_and_descendants_using_covering_index' do
+      subject(:result) { described_class.by_group_and_descendants_using_covering_index(group2.id) }
+
+      it 'returns groups having group2.id in traversal_ids' do
+        expect(result.pluck(:namespace_id)).to contain_exactly(group2.id, group3.id, group4.id)
+      end
+
+      it 'returns the same result as .by_group_and_descendants' do
+        expect(result.pluck(:namespace_id))
+          .to match_array(described_class.by_group_and_descendants(group2.id).pluck(:namespace_id))
+      end
+
+      it 'matches descendants using the traversal_ids prefix instead of the GIN operator' do
+        # The unnest covering index is reached via the prefix form rather than the GIN
+        # `traversal_ids @>` operator; asserting its absence is the meaningful behavioral
+        # difference regardless of the test hierarchy depth.
+        expect(result.to_sql).not_to include('traversal_ids @>')
+      end
+
+      context 'when the namespace mirror does not exist' do
+        subject(:result) { described_class.by_group_and_descendants_using_covering_index(non_existing_record_id) }
+
+        it 'returns no records' do
+          expect(result).to be_empty
+        end
+      end
+
+      context 'when an array of ids is passed' do
+        it 'raises ArgumentError' do
+          expect { described_class.by_group_and_descendants_using_covering_index([group2.id, group3.id]) }
+            .to raise_error(ArgumentError, 'only a single id is supported')
+        end
+      end
+    end
+
     describe '.contains_traversal_ids' do
       let_it_be_with_reload(:other_group1) { create(:group) }
       let_it_be_with_reload(:other_group2) { create(:group, parent: other_group1) }

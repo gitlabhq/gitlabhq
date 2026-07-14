@@ -64,7 +64,9 @@ module Sidebars
             link: project_error_tracking_index_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
             active_routes: { controller: :error_tracking },
-            item_id: :error_tracking
+            item_id: :error_tracking,
+            description: _('Track and manage application errors'),
+            library_icon: 'error'
           )
         end
 
@@ -79,7 +81,9 @@ module Sidebars
             link: project_alert_management_index_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
             active_routes: { controller: :alert_management },
-            item_id: :alert_management
+            item_id: :alert_management,
+            description: _('Manage alerts and notifications'),
+            library_icon: 'alert-management'
           )
         end
 
@@ -94,7 +98,9 @@ module Sidebars
             link: project_incidents_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
             active_routes: { controller: [:incidents, :incident_management] },
-            item_id: :incidents
+            item_id: :incidents,
+            description: _('Manage incident response and resolution'),
+            library_icon: 'work-item-incident'
           )
         end
 
@@ -116,7 +122,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
             active_routes: { page: link },
             item_id: :traces_explorer,
-            container_html_options: { class: 'shortcuts-traces js-observability-nav' }
+            container_html_options: { class: 'shortcuts-traces js-observability-nav' },
+            description: _('Explore and analyze distributed traces'),
+            library_icon: 'traces'
           )
         end
 
@@ -130,7 +138,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
             active_routes: { page: link },
             item_id: :metrics_explorer,
-            container_html_options: { class: 'shortcuts-metrics js-observability-nav' }
+            container_html_options: { class: 'shortcuts-metrics js-observability-nav' },
+            description: _('Visualize and monitor application and infrastructure metrics'),
+            library_icon: 'metrics'
           )
         end
 
@@ -144,7 +154,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
             active_routes: { page: link },
             item_id: :logs_explorer,
-            container_html_options: { class: 'shortcuts-logs js-observability-nav' }
+            container_html_options: { class: 'shortcuts-logs js-observability-nav' },
+            description: _('Search and analyze application logs'),
+            library_icon: 'log'
           )
         end
       end

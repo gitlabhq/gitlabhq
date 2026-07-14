@@ -1,8 +1,10 @@
 <script>
 import { GlEmptyState, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
+import EMPTY_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-devops-md.svg?url';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
+  name: 'ServicePingDisabled',
   components: {
     GlEmptyState,
     GlSprintf,
@@ -13,18 +15,19 @@ export default {
     isAdmin: {
       default: false,
     },
-    svgPath: {
-      default: '',
-    },
     primaryButtonPath: {
       default: '',
     },
   },
   docsLink: helpPagePath('development/internal_analytics/service_ping/_index'),
+  EMPTY_STATE_SVG,
 };
 </script>
 <template>
-  <gl-empty-state :title="s__('ServicePing|Service ping is off')" :svg-path="svgPath">
+  <gl-empty-state
+    :title="s__('ServicePing|Service ping is off')"
+    :svg-path="$options.EMPTY_STATE_SVG"
+  >
     <template #description>
       <gl-sprintf
         v-if="!isAdmin"

@@ -41,6 +41,8 @@ module Import
           ScheduleImportWorker.perform_async(bulk_import.id, Array.wrap(params[:entities]).map(&:deep_stringify_keys))
 
           ServiceResponse.success(payload: bulk_import)
+        rescue ActiveRecord::RecordInvalid => e
+          service_error(e.message)
         end
 
         private

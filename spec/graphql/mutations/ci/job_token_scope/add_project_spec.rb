@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Mutations::Ci::JobTokenScope::AddProject, feature_category: :continuous_integration do

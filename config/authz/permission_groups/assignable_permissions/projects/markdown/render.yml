@@ -1,0 +1,10 @@
+---
+name: render_markdown
+description: Grants the ability to render markdown
+boundaries:
+  - project
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - render_markdown

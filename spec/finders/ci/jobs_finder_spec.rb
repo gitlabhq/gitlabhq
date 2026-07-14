@@ -9,7 +9,7 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:pending_job) { create(:ci_build, :pending) }
   let_it_be(:running_job) { create(:ci_build, :running) }
-  let_it_be(:successful_job, freeze: false) { create(:ci_build, :success, pipeline: pipeline, name: 'build') }
+  let_it_be_with_reload(:successful_job) { create(:ci_build, :success, pipeline: pipeline, name: 'build') }
 
   let(:params) { {} }
 

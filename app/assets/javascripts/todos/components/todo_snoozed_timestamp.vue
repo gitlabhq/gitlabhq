@@ -11,6 +11,7 @@ const TODAY = 0;
 const TOMORROW = 1;
 
 export default {
+  name: 'TodoSnoozedTimestamp',
   components: {
     GlIcon,
   },

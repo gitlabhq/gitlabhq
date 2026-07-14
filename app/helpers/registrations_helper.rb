@@ -5,6 +5,20 @@ module RegistrationsHelper
     false
   end
 
+  def arkose_reactive_submit_button?
+    ::Feature.enabled?(:arkose_labs_signup_challenge_loading_state, :instance)
+  end
+
+  def signup_submit_button_data(button_text, button_class, track_label)
+    {
+      view_model: {
+        buttonText: button_text,
+        buttonClass: button_class,
+        trackLabel: track_label
+      }.to_json
+    }
+  end
+
   def signup_username_data_attributes
     {
       min_length: User::MIN_USERNAME_LENGTH,

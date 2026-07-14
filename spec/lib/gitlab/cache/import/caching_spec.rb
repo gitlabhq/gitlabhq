@@ -48,6 +48,18 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
 
       described_class.read('foo')
     end
+
+    it 'does not refresh the cache key when refresh is false' do
+      described_class.write('foo', 'bar')
+
+      redis = double(:redis)
+
+      expect(redis).to receive(:get).with(/foo/).and_return('bar')
+      expect(redis).not_to receive(:expire)
+      expect(Gitlab::Redis::SharedState).to receive(:with).once.and_yield(redis)
+
+      expect(described_class.read('foo', refresh: false)).to eq('bar')
+    end
   end
 
   describe '.read_integer' do
@@ -59,6 +71,18 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
 
     it 'returns nil if no value was found' do
       expect(described_class.read_integer('foo')).to be_nil
+    end
+
+    it 'does not refresh the cache key when refresh is false' do
+      described_class.write('foo', '10')
+
+      redis = double(:redis)
+
+      expect(redis).to receive(:get).with(/foo/).and_return('10')
+      expect(redis).not_to receive(:expire)
+      expect(Gitlab::Redis::SharedState).to receive(:with).once.and_yield(redis)
+
+      expect(described_class.read_integer('foo', refresh: false)).to eq(10)
     end
   end
 

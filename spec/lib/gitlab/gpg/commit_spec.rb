@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Gpg::Commit, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository, path: 'sample-project') }
+  let_it_be(:project) { create(:project, :small_repo, path: 'sample-project') }
 
   let(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
   let(:committer_email) { GpgHelpers::User1.emails.first }

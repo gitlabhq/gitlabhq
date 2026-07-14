@@ -8,7 +8,7 @@ RSpec.describe Environments::ScheduleToDeleteReviewAppsService, feature_category
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:developer)  { create(:user) }
   let_it_be(:reporter)   { create(:user) }
-  let_it_be(:project)    { create(:project, :private, :repository, namespace: maintainer.namespace, maintainers: maintainer, developers: developer, reporters: reporter) }
+  let_it_be(:project)    { create(:project, :repository, :private, namespace: maintainer.namespace, maintainers: maintainer, developers: developer, reporters: reporter) }
 
   let(:service)      { described_class.new(project, current_user, before: 30.days.ago, dry_run: dry_run) }
   let(:dry_run)      { false }
@@ -18,14 +18,14 @@ RSpec.describe Environments::ScheduleToDeleteReviewAppsService, feature_category
     subject { service.execute }
 
     shared_examples "can schedule for deletion" do
-      let!(:old_stopped_review_env) { create(:environment, :with_review_app, :stopped, created_at: 31.days.ago, project: project) }
-      let!(:new_stopped_review_env) { create(:environment, :with_review_app, :stopped, project: project) }
-      let!(:old_active_review_env)  { create(:environment, :with_review_app, :available, created_at: 31.days.ago, project: project) }
-      let!(:old_stopped_other_env)  { create(:environment, :stopped, created_at: 31.days.ago, project: project) }
-      let!(:new_stopped_other_env)  { create(:environment, :stopped, project: project) }
-      let!(:old_active_other_env)   { create(:environment, :available, created_at: 31.days.ago, project: project) }
-      let!(:already_deleting_env)   { create(:environment, :with_review_app, :stopped, created_at: 31.days.ago, project: project, auto_delete_at: 1.day.from_now) }
-      let(:already_deleting_time)   { already_deleting_env.reload.auto_delete_at }
+      let_it_be_with_reload(:old_stopped_review_env) { create(:environment, :with_review_app, :stopped, created_at: 31.days.ago, project: project) }
+      let_it_be_with_reload(:new_stopped_review_env) { create(:environment, :with_review_app, :stopped, project: project) }
+      let_it_be_with_reload(:old_active_review_env)  { create(:environment, :with_review_app, :available, created_at: 31.days.ago, project: project) }
+      let_it_be_with_reload(:old_stopped_other_env)  { create(:environment, :stopped, created_at: 31.days.ago, project: project) }
+      let_it_be_with_reload(:new_stopped_other_env)  { create(:environment, :stopped, project: project) }
+      let_it_be_with_reload(:old_active_other_env)   { create(:environment, :available, created_at: 31.days.ago, project: project) }
+      let_it_be_with_reload(:already_deleting_env)   { create(:environment, :with_review_app, :stopped, created_at: 31.days.ago, project: project, auto_delete_at: 1.day.from_now) }
+      let(:already_deleting_time) { already_deleting_env.reload.auto_delete_at }
 
       context "live run" do
         let(:dry_run) { false }

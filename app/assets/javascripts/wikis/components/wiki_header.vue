@@ -15,7 +15,6 @@ import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import wikiPageSubscribeMutation from '~/wikis/graphql/wiki_page_subscribe.mutation.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WikiMoreDropdown from './wiki_more_dropdown.vue';
 import RestoreVersionModal from './restore_version_modal.vue';
 import WikiStickyHeader from './wiki_sticky_header.vue';
@@ -39,13 +38,11 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     pageHeading: { default: null },
     showEditButton: { default: null },
     showRestoreVersionButton: { default: null },
     isPageTemplate: { default: null },
-    editButtonUrl: { default: null },
     lastVersion: { default: null },
     pageVersion: { default: null },
     authorUrl: { default: null },

@@ -9,6 +9,7 @@ import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
 export default {
+  name: 'GroupToken',
   separator: '::',
   components: {
     BaseToken,

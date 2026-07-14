@@ -149,6 +149,52 @@ RSpec.describe Gitlab::WorkItems::Instrumentation::TrackingService, feature_cate
     end
   end
 
+  describe '.current_source' do
+    after do
+      ::Current.token_info = nil
+    end
+
+    context 'when there is no token info in the current context' do
+      before do
+        ::Current.token_info = nil
+      end
+
+      it 'returns the internal source' do
+        expect(described_class.current_source).to eq(described_class::SOURCE_INTERNAL)
+      end
+    end
+
+    context 'when the current token has the ai_workflows scope' do
+      before do
+        ::Current.token_info = { token_scopes: [:ai_workflows] }
+      end
+
+      it 'returns the ai_workflows source' do
+        expect(described_class.current_source).to eq(described_class::SOURCE_AI_WORKFLOWS)
+      end
+    end
+
+    context 'when the current token has the ai_workflows scope as a string' do
+      before do
+        ::Current.token_info = { token_scopes: ['ai_workflows'] }
+      end
+
+      it 'returns the ai_workflows source' do
+        expect(described_class.current_source).to eq(described_class::SOURCE_AI_WORKFLOWS)
+      end
+    end
+
+    context 'when the current token has only the api scope' do
+      before do
+        ::Current.token_info = { token_scopes: [:api] }
+      end
+
+      it 'returns the api source' do
+        expect(described_class.current_source).to eq(described_class::SOURCE_API)
+      end
+    end
+  end
+
   describe '.track', :clean_gitlab_redis_shared_state do
     let_it_be(:namespace) { create(:namespace) }
 

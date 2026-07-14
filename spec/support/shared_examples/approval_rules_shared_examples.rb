@@ -39,6 +39,8 @@ RSpec.shared_context 'with merge request approval settings' do
   let_it_be_with_reload(:group_setting) { group.create_group_merge_request_approval_setting! }
 
   before do
+    stub_licensed_features(admin_merge_request_approvers_rules: true)
+
     approval_rule_project.update!(group: group)
 
     Gitlab::CurrentSettings.update!(

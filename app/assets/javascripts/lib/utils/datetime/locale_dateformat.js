@@ -15,6 +15,17 @@ const DATE_ONLY_REGEX = /^\d{4}-\d{2}-\d{2}$/; // yyyy-mm-dd format
 export const DATE_WITH_TIME_FORMAT = 'asDateTime';
 
 /**
+ * Format a Date with the help of {@link DateTimeFormat.asDateTimeWithTimezone}
+ *
+ * This is like {@link DATE_WITH_TIME_FORMAT} but additionally shows the timezone.
+ * Useful for printed/exported content where the reader's timezone is not implied.
+ *
+ * @example
+ * localeDateFormat[DATE_WITH_TIME_AND_TIMEZONE_FORMAT].format(date) // returns 'Jul 6, 2020, 2:43 PM GMT+1'
+ */
+export const DATE_WITH_TIME_AND_TIMEZONE_FORMAT = 'asDateTimeWithTimezone';
+
+/**
  * Format a Date with the help of {@link DateTimeFormat.asDateTimeFull}
  *
  * Note: In case you can use localeDateFormat.asDateTimeFull directly, please do that.
@@ -81,6 +92,7 @@ export const DEFAULT_DATE_TIME_FORMAT = DATE_WITH_TIME_FORMAT;
 
 export const DATE_TIME_FORMATS = [
   DATE_WITH_TIME_FORMAT,
+  DATE_WITH_TIME_AND_TIMEZONE_FORMAT,
   DATE_TIME_FULL_FORMAT,
   DATE_TIME_FULL_WITH_WEEKDAY_FORMAT,
   DATE_ONLY_FORMAT,
@@ -134,6 +146,34 @@ class DateTimeFormat {
       })
     );
   }
+
+  /**
+   * Locale aware formatter to display date and time, including the timezone.
+   *
+   * Like {@link DateTimeFormat.asDateTime} but also shows the timezone. Use this when the
+   * reader's timezone cannot be assumed, e.g. printed or exported pages.
+   *
+   * @example
+   * // en-US: returns something like Jul 6, 2020, 2:43 PM GMT+1
+   * localeDateFormat.asDateTimeWithTimezone.format(date)
+   *
+   * @returns {DateTimeFormatter}
+   */
+  get asDateTimeWithTimezone() {
+    return (
+      this.#formatters[DATE_WITH_TIME_AND_TIMEZONE_FORMAT] ||
+      this.#createFormatter(DATE_WITH_TIME_AND_TIMEZONE_FORMAT, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        timeZoneName: 'short',
+        hourCycle: DateTimeFormat.#hourCycle,
+      })
+    );
+  }
+
   /**
    * Locale aware formatter to a complete date time.
    *

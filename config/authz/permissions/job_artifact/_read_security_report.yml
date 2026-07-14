@@ -5,3 +5,4 @@ description: Private permission that gates read access to job artifacts whose
   job artifact policy combines this permission with the artifact's file_type
   to enable the public read_job_artifacts permission for security report
   downloads. Must not be checked directly at enforcement points.
+conditionally_enables: null

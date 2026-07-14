@@ -15,7 +15,7 @@ title: GitLab Duo and SDLC trends
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `ai_impact_analytics_dashboard`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a feature flag](../../administration/feature_flags/_index.md) named `ai_impact_analytics_dashboard`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451873) in GitLab 17.2. Feature flag `ai_impact_analytics_dashboard` removed.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - Moved from GitLab Ultimate to GitLab Premium in 18.2.
@@ -33,18 +33,19 @@ GitLab Duo and SDLC trends measure the impact of GitLab Duo on software developm
 This dashboard provides visibility into key SDLC metrics in the context of AI adoption for projects or groups.
 You can use the dashboard to measure which metrics have improved from your AI investments.
 
-The metrics display a trend indicator showing the percentage change compared to the previous time period.
-If no data is available for the previous time period, the percentage change displays **n/a**.
-
-Values in green indicate positive changes, and values in red indicate negative changes.
-The icons next to the values indicate upward trends {{< icon name="trend-up" >}} or downward trends {{< icon name="trend-down" >}}.
-
-Upward trends are positive (green) for some metrics (like [deployment frequency](dora_metrics.md#deployment-frequency)), but negative (red) for others (like [mean time to merge](merge_request_analytics.md)).
-
 Use GitLab Duo and SDLC trends to:
 
 - Track SDLC trends in relation to your GitLab Duo journey: Examine how trends in GitLab Duo usage in a project or group influence other crucial productivity metrics such as mean time to merge and CI/CD statistics. GitLab Duo usage metrics are displayed for the last six months, including the current one.
 - Monitor GitLab Duo feature adoption: Track the use of seats and features in a project or group over the last 30 days.
+
+The following table lists the availability of GitLab Duo and SDLC metrics:
+
+| Feature | Requires GitLab Duo Pro or Enterprise | Requires [ClickHouse](../../integration/clickhouse.md) |
+|---------|:-----------------------:|:-------------------:|
+| GitLab Duo and SDLC trends dashboard | {{< yes >}} | {{< yes >}} |
+| `AiMetrics` API | {{< yes >}} | {{< yes >}} |
+| `AiUserMetrics` API | {{< yes >}} | {{< yes >}} |
+| `AiUsageData` API | {{< no >}} | {{< no >}} (PostgreSQL only) |
 
 To learn how you can optimize your license utilization,
 see [GitLab Duo add-ons](../../subscriptions/subscription-add-ons.md).
@@ -66,6 +67,7 @@ For an overview, see [GitLab Duo AI Impact Dashboard](https://youtu.be/FxSWX64aU
 - Code Suggestions acceptance rate metric [replaced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587300) with GitLab Duo agent/flow users in GitLab 18.11.
 - Trend indicators [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590535) in GitLab 19.0.
 - Code Suggestions users metric [replaced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587299) with GitLab Duo power users in GitLab 19.0.
+- Pipelines using GitLab Duo features metric [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587308) in GitLab 19.2.
 
 {{< /history >}}
 
@@ -73,16 +75,25 @@ For an overview, see [GitLab Duo AI Impact Dashboard](https://youtu.be/FxSWX64aU
 - **GitLab Duo power users**: Number of users who used at least three GitLab Duo features in the last 30 days.
 - **GitLab Duo agent/flow users**: Number of users who used at least one GitLab Duo agent or flow in the last 30 days.
 - **GitLab Duo Agent chat sessions**: Number of chat sessions initiated in GitLab Duo Agent Platform in the last 30 days.
+- **Pipelines using GitLab Duo features**: Percentage of CI/CD pipelines that used one or more GitLab Duo features during execution in the last 30 days.
 
 ## Metric trends
 
 The **Metric trends** table displays metrics for the last six months, with monthly values, percentage changes in the past six months, and trend sparklines.
 
+The metrics display a trend indicator showing the percentage change compared to the previous time period.
+If no data is available for the previous time period, the percentage change displays **n/a**.
+
+Values in green indicate positive changes, and values in red indicate negative changes.
+The icons next to the values indicate upward trends {{< icon name="trend-up" >}} or downward trends {{< icon name="trend-down" >}}.
+
+Upward trends are positive (green) for some metrics (like [deployment frequency](dora_metrics.md#deployment-frequency)), but negative (red) for others (like [mean time to merge](merge_request_analytics.md)).
+
 ### GitLab Duo usage metrics
 
 {{< history >}}
 
-- GitLab Duo Root Cause Analysis usage [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513252) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `duo_rca_usage_rate`. Disabled by default.
+- GitLab Duo Root Cause Analysis usage [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513252) in GitLab 18.1 [with a feature flag](../../administration/feature_flags/_index.md) named `duo_rca_usage_rate`. Disabled by default.
 - GitLab Duo Root Cause Analysis usage [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543987) in GitLab 18.3.
 - GitLab Duo Root Cause Analysis usage [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556726) in GitLab 18.4. Feature flag `duo_rca_usage_rate` removed.
 - GitLab Duo features usage [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207562) in GitLab 18.6.
@@ -216,6 +227,24 @@ When interpreting your analytics, keep in mind that:
 - Negativity bias is expected. Users tend to flag problems, but rarely acknowledge good suggestions, even when applying them.
 - Low reaction rates are common. Focus on whether code improves and reviews complete faster.
 - Rising disapproval (👎) rates signal issues. Stable or declining disapproval rates indicate healthy adoption of GitLab Duo Code Review.
+
+## Returning GitLab Duo users by feature
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/576752) in GitLab 19.2.
+
+{{< /history >}}
+
+The **Returning GitLab Duo users by feature** chart displays the retention rate over the last 180 days for each GitLab Duo feature: Code Suggestions, GitLab Duo Chat, Root cause analysis, and GitLab Duo Code Review.
+
+Hover over a point to view for the selected feature and period:
+
+- **Retention rate**: Percentage of users from the previous period who use the feature again in the selected period.
+  Calculated as the number of returning users in the selected period divided by the number of users in the previous period.
+
+The chart starts from the second period in the selected date range.
+The first period doesn't show a retention rate because there is no earlier period to compare against.
 
 ## GitLab Duo metrics by user
 

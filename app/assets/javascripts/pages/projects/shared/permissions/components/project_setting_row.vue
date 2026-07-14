@@ -2,6 +2,7 @@
 import { GlSprintf, GlFormGroup } from '@gitlab/ui';
 
 export default {
+  name: 'ProjectSettingRow',
   components: {
     GlFormGroup,
     GlSprintf,

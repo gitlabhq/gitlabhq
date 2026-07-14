@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_composition do
   include GraphqlHelpers
 
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:namespace, freeze: false) { create(:group, developers: user) }
-  let_it_be(:project, freeze: false) { create(:project, namespace: namespace) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:namespace) { create(:group, developers: user) }
+  let_it_be(:project) { create(:project, namespace: namespace) }
 
-  let_it_be(:private_project, freeze: false) do
+  let_it_be(:private_project) do
     create(
       :project, :with_avatar, :custom_repo,
       name: 'Component Repository',
@@ -20,7 +20,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
     )
   end
 
-  let_it_be(:public_project, freeze: false) do
+  let_it_be_with_reload(:public_project) do
     create(
       :project, :with_avatar, :custom_repo, :public,
       name: 'Public Component',
@@ -29,12 +29,12 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
     )
   end
 
-  let_it_be(:private_resource, freeze: false) do
+  let_it_be_with_reload(:private_resource) do
     create(:ci_catalog_resource, :published, project: private_project, latest_released_at: '2023-01-01T00:00:00Z',
       last_30_day_usage_count: 15)
   end
 
-  let_it_be(:public_resource, freeze: false) { create(:ci_catalog_resource, :published, project: public_project) }
+  let_it_be_with_reload(:public_resource) { create(:ci_catalog_resource, :published, project: public_project) }
 
   let(:query) do
     <<~GQL
@@ -101,7 +101,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
   end
 
   describe 'with an unauthorized user on a private project' do
-    let_it_be(:query, freeze: false) do
+    let_it_be(:query) do
       <<~GQL
         query {
           ciCatalogResources {

@@ -19,13 +19,15 @@ module API
       parent_type = eventable_type.parent_class.to_s.underscore
       eventable_str = eventable_type.to_s.underscore
       eventables_str = eventable_str.pluralize
+      eventable_name = eventable_str.humanize(capitalize: false)
+      eventable_article = eventable_name.match?(/\A[aeiou]/i) ? 'an' : 'a'
 
       params do
         requires :id, types: [String, Integer], desc: "The ID or URL-encoded path of the #{parent_type}"
       end
       resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc "List project #{eventable_type.underscore.humanize} milestone events" do
-          detail "Gets a list of all milestone events for a single #{eventable_type.underscore.humanize}"
+        desc "List all project #{eventable_name} milestone events" do
+          detail "Lists all milestone events for a specified #{eventable_name}."
           success Entities::ResourceMilestoneEvent
           is_array true
           tags resource_milestone_events_tags
@@ -43,8 +45,8 @@ module API
           present paginate(events), with: Entities::ResourceMilestoneEvent
         end
 
-        desc "Get single #{eventable_type.underscore.humanize} milestone event" do
-          detail "Returns a single milestone event for a specific project #{eventable_type.underscore.humanize}"
+        desc "Retrieve #{eventable_article} #{eventable_name} milestone event" do
+          detail "Retrieves a specified milestone event for a project #{eventable_name}."
           success Entities::ResourceMilestoneEvent
           failure [
             { code: 404, message: 'Not found' }

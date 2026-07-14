@@ -78,6 +78,7 @@ export default {
       default: false,
     },
   },
+  emits: ['delete-integration', 'edit-integration'],
   fields: [
     {
       key: 'active',

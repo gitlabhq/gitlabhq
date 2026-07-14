@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe 'Project Issues RSS', :js, feature_category: :team_planning do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:group) { create(:group, developers: user) }
-  let_it_be(:project, freeze: false) { create(:project, group: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+  let_it_be_with_reload(:project) { create(:project, group: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let_it_be(:path) { project_work_items_path(project) }
-  let_it_be(:issue, freeze: false) { create(:issue, project: project, assignees: [user]) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [user]) }
 
   context 'when signed in' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     before_all do
       project.add_developer(user)

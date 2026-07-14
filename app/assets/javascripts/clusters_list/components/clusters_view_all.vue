@@ -30,6 +30,7 @@ export default {
       type: String,
     },
   },
+  emits: ['change-tab', 'kas-disabled', 'register-agent'],
   data() {
     return {
       loadingAgents: true,

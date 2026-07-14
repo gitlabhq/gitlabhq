@@ -1,0 +1,5 @@
+#import "~/ci/common/graphql/fragments/pipeline_list_item_base.fragment.graphql"
+
+fragment MergeRequestPipelineListItem on Pipeline {
+  ...PipelineListItemBase
+}

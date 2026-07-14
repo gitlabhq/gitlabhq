@@ -11,20 +11,14 @@ module AiHarness
       module PerformDoctorChecks
         class CheckForbiddenFiles
           CHECK_NAME = 'Forbidden committed files'
-          # Keep in sync: if you change these patterns, update .ai-harness-doctor-patterns
+          # Keep in sync: if you change these patterns, update .ai-harness-doctor-forbidden-paths
           # in .gitlab/ci/rules.gitlab-ci.yml so the CI job triggers on the right paths.
           FORBIDDEN_PATTERNS = %w[
             AGENTS.local.md
             **/AGENTS.local.md
             CLAUDE.local.md
             **/CLAUDE.local.md
-            .claude/rules/**
-            .claude/skills/**
-            .claude/agents/**
-            .claude/commands/**
-            .claude/settings.json
-            .claude/settings.local.json
-            .claude/settings.local.jsonc
+            .claude/**
             .opencode/**
             .gitlab/duo/chat-rules.md
             .gitlab/duo/mcp.json

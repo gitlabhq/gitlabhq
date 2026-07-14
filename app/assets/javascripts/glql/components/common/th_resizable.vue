@@ -1,6 +1,7 @@
 <script>
 export default {
   name: 'ThResizable',
+  emits: ['resize'],
   data() {
     return {
       initialX: 0,

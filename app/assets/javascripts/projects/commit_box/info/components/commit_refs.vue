@@ -1,6 +1,5 @@
 <script>
 import { createAlert } from '~/alert';
-import { joinPaths } from '~/lib/utils/url_utility';
 import commitReferencesQuery from '../graphql/queries/commit_references.query.graphql';
 import containingBranchesQuery from '../graphql/queries/commit_containing_branches.query.graphql';
 import containingTagsQuery from '../graphql/queries/commit_containing_tags.query.graphql';
@@ -68,10 +67,6 @@ export default {
         commitSha: this.commitSha,
       };
     },
-    commitsUrlPart() {
-      const urlPart = joinPaths(gon.relative_url_root || '', `/${this.fullPath}`, `/-/commits/`);
-      return urlPart;
-    },
     isLoading() {
       return this.$apollo.queries.project.loading;
     },
@@ -119,7 +114,7 @@ export default {
         :tipping-refs="tippingBranches"
         :containing-refs="containingBranches"
         :namespace="$options.i18n.branches"
-        :url-part="commitsUrlPart"
+        :full-path="fullPath"
         :ref-type="$options.BRANCHES_REF_TYPE"
         @[$options.FETCH_CONTAINING_REFS_EVENT]="fetchContainingBranches"
       />
@@ -131,7 +126,7 @@ export default {
         :tipping-refs="tippingTags"
         :containing-refs="containingTags"
         :namespace="$options.i18n.tags"
-        :url-part="commitsUrlPart"
+        :full-path="fullPath"
         :ref-type="$options.TAGS_REF_TYPE"
         @[$options.FETCH_CONTAINING_REFS_EVENT]="fetchContainingTags"
       />

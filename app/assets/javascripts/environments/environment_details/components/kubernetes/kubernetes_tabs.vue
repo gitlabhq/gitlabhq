@@ -37,6 +37,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['cluster-error', 'delete-pod', 'input', 'select-item', 'update-cluster-state'],
   data() {
     return {
       activeTabIndex: this.glFeatures.k8sTreeView

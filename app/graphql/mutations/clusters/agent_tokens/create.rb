@@ -8,7 +8,7 @@ module Mutations
 
         authorize :create_cluster
         authorize_granular_token permissions: :create_cluster_agent_token,
-          boundary_argument: :cluster_agent_id, boundary_type: :project
+          boundary_argument: :cluster_agent_id, boundary: :project, boundary_type: :project
 
         ClusterAgentID = ::Types::GlobalIDType[::Clusters::Agent]
 

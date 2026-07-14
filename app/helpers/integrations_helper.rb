@@ -165,19 +165,6 @@ module IntegrationsHelper
     !Gitlab.com?
   end
 
-  def integration_issue_type(issue_type)
-    issue_type_i18n_map = {
-      'issue' => _('Issue'),
-      'incident' => _('Incident'),
-      'test_case' => _('Test case'),
-      'requirement' => _('Requirement'),
-      'task' => _('Task'),
-      'ticket' => _('Service Desk Ticket')
-    }
-
-    issue_type_i18n_map[issue_type] || issue_type
-  end
-
   def integration_todo_target_type(target_type)
     target_type_i18n_map = {
       'Commit' => _('Commit'),

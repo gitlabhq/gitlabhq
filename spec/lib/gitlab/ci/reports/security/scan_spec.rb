@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Reports::Security::Scan do
+RSpec.describe Gitlab::Ci::Reports::Security::Scan, feature_category: :vulnerability_management do
   describe '#initialize' do
     subject { described_class.new(params.with_indifferent_access) }
 

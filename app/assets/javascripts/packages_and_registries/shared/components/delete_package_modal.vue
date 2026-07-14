@@ -21,6 +21,7 @@ export default {
       default: null,
     },
   },
+  emits: ['cancel', 'ok'],
   computed: {
     isModalVisible() {
       return Boolean(this.itemToBeDeleted);

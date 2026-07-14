@@ -615,7 +615,7 @@ The GitLab Dependency Proxy for container images now supports authentication wit
 
 Starting April 1, 2025, Docker Hub will enforce stricter pull limits (100 per 6-hour window per IPv4 address or IPv6 /64 subnet) for unauthenticated users. Without authentication, your pipelines might fail once these limits are reached.
 
-With this release, you can configure Docker Hub authentication through the GraphQL API using your Docker Hub credentials, [personal access token](https://docs.docker.com/security/for-developers/access-tokens/), or [organization access tokens](https://docs.docker.com/security/for-admins/access-tokens/). Support for UI configuration will be available in GitLab 17.11.
+With this release, you can configure Docker Hub authentication through the GraphQL API using your Docker Hub credentials, [personal access token](https://docs.docker.com/security/access-tokens/), or [organization access tokens](https://docs.docker.com/enterprise/security/access-tokens/). Support for UI configuration will be available in GitLab 17.11.
 
 ### Package registry adds audit events
 

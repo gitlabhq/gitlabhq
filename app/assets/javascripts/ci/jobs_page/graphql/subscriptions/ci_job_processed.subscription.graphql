@@ -42,6 +42,7 @@ subscription jobProcessed($projectId: ProjectID!) {
       path
       user {
         id
+        name
         webPath
         avatarUrl
       }

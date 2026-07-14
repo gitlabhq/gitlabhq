@@ -11,7 +11,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:group1, freeze: false) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1, organization: current_organization) }
+  let_it_be_with_reload(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1, organization: current_organization) }
   let_it_be(:group2) { create(:group, :private, owners: user2) }
   let_it_be(:project1) { create(:project, namespace: group1) }
   let_it_be(:project2) { create(:project, namespace: group2, name: 'testing') }
@@ -1096,7 +1096,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
     context 'step_up_auth_required_oauth_provider attribute' do
       let(:ommiauth_provider_config) do
-        GitlabSettings::Options.new(
+        Gitlab::Configs.build_options(
           name: "openid_connect",
           step_up_auth: {
             namespace: {
@@ -1324,6 +1324,30 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(group1.reload.show_diff_preview_in_email).to be(false)
       end
 
+      it 'updates crm_enabled' do
+        put api("/groups/#{group1.id}", user1), params: { crm_enabled: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['crm_enabled']).to be(false)
+        expect(group1.reload.crm_enabled?).to be(false)
+      end
+
+      it 'updates resource_access_token_notify_inherited' do
+        put api("/groups/#{group1.id}", user1), params: { resource_access_token_notify_inherited: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['resource_access_token_notify_inherited']).to be(true)
+        expect(group1.reload.resource_access_token_notify_inherited).to be(true)
+      end
+
+      it 'updates lock_resource_access_token_notify_inherited' do
+        put api("/groups/#{group1.id}", user1), params: { lock_resource_access_token_notify_inherited: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['lock_resource_access_token_notify_inherited']).to be(true)
+        expect(group1.reload.lock_resource_access_token_notify_inherited).to be(true)
+      end
+
       context 'when default_branch_protection_defaults set to No one' do
         it 'updates default branch protection settings for the group' do
           put api("/groups/#{group1.id}", user1),
@@ -1437,7 +1461,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
       context 'updating the `step_up_auth_required_oauth_provider` attribute' do
         let(:ommiauth_provider_config) do
-          GitlabSettings::Options.new(
+          Gitlab::Configs.build_options(
             name: "openid_connect",
             step_up_auth: {
               namespace: {
@@ -2292,7 +2316,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   end
 
   describe "GET /groups/:id/groups/shared" do
-    let_it_be(:main_group, freeze: false) do
+    let_it_be(:main_group) do
       create(:group, :private, name: "b-group", path: "w#{group1.path}", owners: user1)
     end
 
@@ -2591,7 +2615,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   end
 
   describe "GET /groups/:id/invited_groups" do
-    let_it_be(:main_group, freeze: false) do
+    let_it_be(:main_group) do
       create(:group, :private, name: "b-group", path: "w#{group1.path}", owners: user1)
     end
 
@@ -3367,6 +3391,34 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response["visibility"]).to eq(Gitlab::VisibilityLevel.string_level(Gitlab::CurrentSettings.current_application_settings.default_group_visibility))
       end
 
+      it 'creates group with crm_enabled set to false', :aggregate_failures do
+        group_params = attributes_for_group_api crm_enabled: false
+
+        post api("/groups", user3), params: group_params
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['crm_enabled']).to be(false)
+        expect(Group.find(json_response['id']).crm_enabled?).to be(false)
+      end
+
+      it 'creates group with resource_access_token_notify_inherited set to true', :aggregate_failures do
+        group_params = attributes_for_group_api resource_access_token_notify_inherited: true
+
+        post api("/groups", user3), params: group_params
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['resource_access_token_notify_inherited']).to be(true)
+      end
+
+      it 'creates group with lock_resource_access_token_notify_inherited set to true', :aggregate_failures do
+        group_params = attributes_for_group_api lock_resource_access_token_notify_inherited: true
+
+        post api("/groups", user3), params: group_params
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['lock_resource_access_token_notify_inherited']).to be(true)
+      end
+
       it "creates a nested group", :aggregate_failures do
         parent = create(:group, organization: current_organization)
         parent.add_owner(user3)
@@ -3675,7 +3727,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   describe "POST /groups/:id/restore" do
     let_it_be(:user) { user1 }
     let_it_be(:unauthorized_user) { user2 }
-    let_it_be(:group, freeze: false) do
+    let_it_be(:group) do
       create(:group_with_deletion_schedule, :deletion_scheduled, marked_for_deletion_on: 1.day.ago,
         deleting_user: user, owners: user)
     end
@@ -3798,7 +3850,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
   describe 'GET /groups/:id/transfer_locations' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:source_group, freeze: false) { create(:group, :private) }
+    let_it_be(:source_group) { create(:group, :private) }
 
     let(:params) { {} }
 
@@ -4097,7 +4149,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
   describe 'POST /groups/:id/transfer_to_organization' do
     let_it_be(:organization) { create(:organization) }
-    let_it_be(:group_to_transfer, freeze: false) { create(:group, :private) }
+    let_it_be(:group_to_transfer) { create(:group, :private) }
     let_it_be(:subgroup) { create(:group, :private, parent: group_to_transfer) }
 
     before do
@@ -4389,6 +4441,98 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         let(:shared_group) { group2 }
         let(:shared_with_group) { group_b }
         let(:admin_mode) { true }
+      end
+    end
+  end
+
+  describe 'DELETE /groups/:id/shared_projects/:project_id' do
+    let_it_be(:receiving_group) { create(:group, owners: user1) }
+    let_it_be(:source_project_owner) { create(:user) }
+    let_it_be(:source_project) { create(:project, namespace: source_project_owner.namespace) }
+    let_it_be(:project_group_link) do
+      create(:project_group_link, project: source_project, group: receiving_group)
+    end
+
+    context 'when authenticated as the receiving group owner' do
+      it_behaves_like 'authorizing granular token permissions', :unshare_project do
+        let(:boundary_object) { receiving_group }
+        let(:user) { user1 }
+        let(:request) do
+          delete api("/groups/#{receiving_group.id}/shared_projects/#{source_project.id}",
+            personal_access_token: pat)
+        end
+      end
+
+      it 'removes the share even when the user cannot administer the source project', :aggregate_failures do
+        expect(Ability.allowed?(user1, :admin_project, source_project)).to be(false)
+
+        expect do
+          delete api("/groups/#{receiving_group.id}/shared_projects/#{source_project.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end.to change { receiving_group.project_group_links.count }.by(-1)
+      end
+
+      it 'returns 404 when the link does not exist' do
+        delete api("/groups/#{receiving_group.id}/shared_projects/#{non_existing_record_id}", user1)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns 404 when the project exists but is not shared with this group' do
+        unrelated_project = create(:project, namespace: source_project_owner.namespace)
+
+        delete api("/groups/#{receiving_group.id}/shared_projects/#{unrelated_project.id}", user1)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'requires the project_id to be an integer' do
+        delete api("/groups/#{receiving_group.id}/shared_projects/foo", user1)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      context 'when the destroy service returns an error' do
+        before do
+          allow_next_instance_of(Projects::GroupLinks::DestroyService) do |service|
+            allow(service).to receive(:execute).and_return(
+              ServiceResponse.error(message: 'Forbidden', reason: :forbidden)
+            )
+          end
+        end
+
+        it 'renders the api error', :aggregate_failures do
+          delete api("/groups/#{receiving_group.id}/shared_projects/#{source_project.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
+    context 'when authenticated as a group maintainer' do
+      let_it_be(:maintainer) { create(:user, maintainer_of: receiving_group) }
+
+      it 'returns 403 forbidden' do
+        delete api("/groups/#{receiving_group.id}/shared_projects/#{source_project.id}", maintainer)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when unauthenticated' do
+      it 'returns 401 unauthorized' do
+        delete api("/groups/#{receiving_group.id}/shared_projects/#{source_project.id}")
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when the group does not exist' do
+      it 'returns 404' do
+        delete api("/groups/#{non_existing_record_id}/shared_projects/#{source_project.id}", user1)
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

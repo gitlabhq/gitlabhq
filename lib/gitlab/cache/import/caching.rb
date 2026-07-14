@@ -27,15 +27,19 @@ module Gitlab
         # Reads a cache key.
         #
         # If the key exists and has a non-empty value its TTL is refreshed
-        # automatically.
+        # automatically, unless refresh is set to false.
         #
         # raw_key - The cache key to read.
         # timeout - The new timeout of the key if the key is to be refreshed.
-        def self.read(raw_key, timeout: TIMEOUT)
+        # refresh - When false, the key's TTL is left untouched so the value expires at
+        #           its originally written time. Use this for values derived from data
+        #           that can change (e.g. plan limits), where a sliding TTL would keep a
+        #           stale value alive indefinitely.
+        def self.read(raw_key, timeout: TIMEOUT, refresh: true)
           key = cache_key_for(raw_key)
           value = with_redis { |redis| redis.get(key) }
 
-          if value.present?
+          if value.present? && refresh
             # We refresh the expiration time so frequently used keys stick
             # around, removing the need for querying the database as much as
             # possible.
@@ -53,8 +57,8 @@ module Gitlab
         # Reads an integer from the cache, or returns nil if no value was found.
         #
         # See Caching.read for more information.
-        def self.read_integer(raw_key, timeout: TIMEOUT)
-          value = read(raw_key, timeout: timeout)
+        def self.read_integer(raw_key, timeout: TIMEOUT, refresh: true)
+          value = read(raw_key, timeout: timeout, refresh: refresh)
 
           value.to_i if value.present?
         end

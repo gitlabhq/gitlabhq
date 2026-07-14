@@ -19,8 +19,13 @@ title: Pipelines
 
 {{< /history >}}
 
+## Allowed modes
+
+- Standard mode (default): Query pipeline records.
+- Analytics mode: Query aggregated pipeline metrics. For more information, see [Pipeline analytics](pipeline_analytics.md).
+
 > [!note]
-> Pipelines do not support sorting.
+> Standard mode does not support sorting.
 
 ## Allowed scopes
 
@@ -152,6 +157,7 @@ For more information, see [scopes](_index.md#scopes).
 
   ````yaml
   ```glql
+  title: "Failed pipelines today"
   display: table
   fields: id, ref, status, startedAt
   query: type = Pipeline and project = "gitlab-org/gitlab" and status = failed and updated = today()
@@ -162,6 +168,7 @@ For more information, see [scopes](_index.md#scopes).
 
   ````yaml
   ```glql
+  title: "GitLab Duo agent pipelines"
   display: table
   fields: id, ref, status, source, startedAt
   query: type = Pipeline and project = "gitlab-org/gitlab" and source = "duo_workflow"

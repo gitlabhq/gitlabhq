@@ -4,52 +4,9 @@ module Mcp
   module Tools
     module WorkItems
       class GetWorkItemNotesTool < BaseTool
-        class << self
-          def build_query
-            <<~GRAPHQL
-              query GetWorkItemNotes($id: WorkItemID!, $after: String, $before: String, $first: Int, $last: Int) {
-                workItem(id: $id) {
-                  widgets {
-                    ... on WorkItemWidgetNotes {
-                      notes(after: $after, before: $before, first: $first, last: $last) {
-                        pageInfo {
-                          hasNextPage
-                          hasPreviousPage
-                          startCursor
-                          endCursor
-                        }
-                        nodes {
-                          id
-                          body
-                          internal
-                          createdAt
-                          updatedAt
-                          system
-                          systemNoteIconName
-                          author {
-                            id
-                            name
-                            username
-                            avatarUrl
-                            webUrl
-                          }
-                          discussion {
-                            id
-                          }
-                        }
-                        count
-                      }
-                    }
-                  }
-                }
-              }
-            GRAPHQL
-          end
-        end
-
         register_version VERSIONS[:v0_1_0], {
           operation_name: 'workItem',
-          graphql_operation: build_query
+          graphql_operation: load_graphql('work_items/get_work_item_notes.query.graphql')
         }
 
         def build_variables

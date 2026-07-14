@@ -32,6 +32,7 @@ import TodosBulkBar from './todos_bulk_bar.vue';
 import TodosPagination from './todos_pagination.vue';
 
 export default {
+  name: 'TodosApp',
   components: {
     GlLink,
     GlButton,

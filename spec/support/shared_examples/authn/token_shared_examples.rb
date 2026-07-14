@@ -71,6 +71,12 @@ RSpec.shared_examples 'rotating token fails due to missing access rights' do |to
 
     expect(page).to have_content(resource_access_token.name)
     owner_role.destroy!
+    # Destroying the membership refreshes the user's authorizations through an
+    # `after_commit` hook. In JS feature specs that refresh can race with the
+    # rotate request issued from the browser, occasionally letting the request
+    # through before the access is actually revoked. Refresh synchronously so
+    # the revoked access is guaranteed to be reflected before we rotate.
+    user.refresh_authorized_projects
 
     accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) do
       click_on s_('AccessTokens|Rotate')

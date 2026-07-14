@@ -52,7 +52,7 @@ RSpec.describe Issues::ReorderService, feature_category: :team_planning do
     let_it_be_with_reload(:issue3) { create(:issue, project: project, relative_position: 30) }
 
     context 'when ordering issues in a project' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -60,7 +60,7 @@ RSpec.describe Issues::ReorderService, feature_category: :team_planning do
     end
 
     context 'when ordering issues in a group' do
-      before do
+      before_all do
         group.add_developer(user)
       end
 

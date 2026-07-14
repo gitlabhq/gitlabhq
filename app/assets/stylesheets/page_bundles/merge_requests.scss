@@ -271,6 +271,7 @@ $diff-file-header-top: 11px;
   // height calc is fully delegated to the file_browser_height.vue component
   height: 100%;
   min-height: var(--file-tree-min-height);
+  z-index: 1;
 
   .drag-handle {
     bottom: 16px;
@@ -469,7 +470,7 @@ $diff-file-header-top: 11px;
   @apply gl-bg-section;
   @apply gl-border;
   @apply gl-border-section;
-  @apply gl-rounded-lg;
+  @apply gl-rounded-xl;
 
   &:not(:first-child) {
     @apply gl-mt-5;
@@ -488,15 +489,15 @@ $diff-file-header-top: 11px;
 
   > .mr-widget-section:first-child,
   > .mr-widget-section:first-child .widget-merge-status {
-    border-top-left-radius: $gl-border-radius-lg-inner;
-    border-top-right-radius: $gl-border-radius-lg-inner;
+    border-top-left-radius: calc(var(--gl-border-radius-xl) - 1px);
+    border-top-right-radius: calc(var(--gl-border-radius-xl) - 1px);
   }
 
   > .mr-widget-section {
     > :last-child,
     .deploy-heading:last-child {
-      border-bottom-left-radius: $gl-border-radius-lg-inner;
-      border-bottom-right-radius: $gl-border-radius-lg-inner;
+      border-bottom-left-radius: calc(var(--gl-border-radius-xl) - 1px);
+      border-bottom-right-radius: calc(var(--gl-border-radius-xl) - 1px);
     }
   }
 

@@ -1,0 +1,16 @@
+---
+table_name: namespaces_consents
+classes:
+- Namespaces::Consent
+feature_categories:
+- groups_and_projects
+description: >
+  Records explicit namespace-level consent to activate a named feature.
+  One row per namespace per feature_name. Stores the consenting user and timestamp
+  for auditability. Reusable across features without schema changes.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240258
+milestone: '19.2'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small

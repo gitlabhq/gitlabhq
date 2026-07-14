@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Branches::ValidateNewService, feature_category: :source_code_management do
-  let(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo) }
 
   subject(:service) { described_class.new(project) }
 

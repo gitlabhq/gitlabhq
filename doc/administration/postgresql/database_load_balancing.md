@@ -2,7 +2,7 @@
 stage: Data Access
 group: Database Frameworks
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Database Load Balancing
+title: Database load balancing
 ---
 
 {{< details >}}
@@ -12,12 +12,84 @@ title: Database Load Balancing
 
 {{< /details >}}
 
-With Database Load Balancing, read-only queries can be distributed across
-multiple PostgreSQL nodes to increase performance.
+With database load balancing, read queries are distributed across multiple PostgreSQL nodes to
+improve performance and reduce load on the primary database. Write operations always execute on the
+primary. GitLab handles query routing automatically with no external load balancer required.
 
-This functionality is provided natively in GitLab Rails and Sidekiq where
-they can be configured to balance their database read queries in a round-robin approach,
-without any external dependencies:
+## Requirements
+
+To enable database load balancing:
+
+- PostgreSQL must have one or more secondary nodes replicating the primary.
+- Each node must be reachable on the same port and with the same credentials.
+
+For external database services, only the `db_load_balancing` configuration is needed. Connection
+pooling can help manage connection counts at scale, but the right approach depends on your provider
+and is outside the scope of this guide.
+For connection management guidance, see
+[connection management](../reference_architectures/_index.md#connection-management).
+
+> [!note]
+> [AWS RDS Proxy](https://aws.amazon.com/rds/proxy/) is not validated for use with GitLab.
+
+For Linux package installations, you must configure multi-node HA PostgreSQL before
+enabling database load balancing. For more information, see
+[configuring a multi-node setup](replication_and_failover.md).
+
+### Replica count
+
+Any number of replicas is supported. In practice, three is a common starting point, particularly
+for environments spread across three availability zones. Several GitLab components, including Consul
+and Redis Sentinel, rely on quorum and require an odd number of nodes. Keeping your database replica
+count aligned with this pattern makes for a more consistent architecture, improves disaster recovery
+coverage, and limits the impact of a single availability zone failure. Smaller environments can
+start with two replicas and add more as load increases.
+
+For scale-specific guidance, see the
+[reference architectures documentation](../reference_architectures/_index.md).
+
+## Configure database load balancing
+
+Database load balancing can be configured in one of two ways:
+
+- [Hosts](#hosts): a static list of PostgreSQL hosts. Simpler to configure and suitable for most
+  environments.
+- [Service discovery](#service-discovery): a DNS record that returns a list of PostgreSQL hosts.
+  Use when the replica list changes dynamically, such as in Linux package HA setups using Consul.
+
+### Hosts
+
+Including the primary in the hosts list is optional. When included, it becomes eligible for read
+queries alongside replicas, reducing overall load on the secondaries. If the primary is already
+under sustained high load, leaving it out reserves capacity for writes. The primary always handles
+write queries regardless of whether it appears in this list.
+
+To configure a list of hosts, perform these steps on all GitLab Rails and Sidekiq nodes for each
+environment you want to balance:
+
+1. Edit the `/etc/gitlab/gitlab.rb` file.
+1. In `gitlab_rails['db_load_balancing']`, create the array of database hosts to balance. For
+   example, on an environment with PostgreSQL running on `primary.example.com`,
+   `secondary1.example.com`, and `secondary2.example.com`:
+
+   ```ruby
+   gitlab_rails['db_load_balancing'] = { 'hosts' => ['primary.example.com', 'secondary1.example.com', 'secondary2.example.com'] }
+   ```
+
+   These hosts must be reachable on the same port configured with `gitlab_rails['db_port']`.
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+
+### Service discovery
+
+Service discovery allows GitLab to automatically retrieve a list of PostgreSQL hosts. It checks
+a DNS `A` record periodically, using the returned IP addresses as the replica addresses. To use
+service discovery, you need a DNS server and an `A` record containing the IP addresses of your
+secondaries.
+
+When using a Linux package installation, the provided [Consul](../consul.md) service works as a
+DNS server and returns PostgreSQL addresses through the `postgresql-ha.service.consul` record. The
+following diagram shows this deployment model:
 
 ```plantuml
 @startuml
@@ -60,62 +132,7 @@ consul .[norank]r-> postgres_secondary
 @enduml
 ```
 
-## Requirements to enable Database Load Balancing
-
-To enable Database Load Balancing, make sure that:
-
-- The HA PostgreSQL setup has one or more secondary nodes replicating the primary.
-- Each PostgreSQL node is connected with the same credentials and on the same port.
-
-For Linux package installations, you also need PgBouncer configured on each PostgreSQL node to pool
-all load-balanced connections when [configuring a multi-node setup](replication_and_failover.md).
-
-## Configuring Database Load Balancing
-
-Database Load Balancing can be configured in one of two ways:
-
-- (Recommended) [Hosts](#hosts): a list of PostgreSQL hosts.
-- [Service Discovery](#service-discovery): a DNS record that returns a list of PostgreSQL hosts.
-
-### Hosts
-
-<!-- Including the Primary host in Database Load Balancing is now recommended for improved performance - Approved by the Reference Architecture and Database groups. -->
-
-To configure a list of hosts, perform these steps on all GitLab Rails and Sidekiq
-nodes for each environment you want to balance:
-
-1. Edit the `/etc/gitlab/gitlab.rb` file.
-1. In `gitlab_rails['db_load_balancing']`, create the array of the database
-   hosts you want to balance. For example, on
-   an environment with PostgreSQL running on the hosts `primary.example.com`,
-   `secondary1.example.com`, `secondary2.example.com`:
-
-   ```ruby
-   gitlab_rails['db_load_balancing'] = { 'hosts' => ['primary.example.com', 'secondary1.example.com', 'secondary2.example.com'] }
-   ```
-
-   These hosts must be reachable on the same port configured with `gitlab_rails['db_port']`.
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-
-> [!note]
-> Adding the primary to the hosts list is optional, but recommended.
-> This makes the primary eligible for load-balanced read queries, improving system performance
-> when the primary has capacity for these queries.
-> Very high-traffic instances may not have capacity on the primary for it to serve as a read replica.
-> The primary will be used for write queries whether or not it is present in this list.
-
-### Service Discovery
-
-Service discovery allows GitLab to automatically retrieve a list of PostgreSQL
-hosts to use. It periodically
-checks a DNS `A` record, using the IPs returned by this record as the addresses
-for the secondaries. For service discovery to work, all you need is a DNS server
-and an `A` record containing the IP addresses of your secondaries.
-
-When using a Linux package installation, the provided [Consul](../consul.md) service works as
-a DNS server and returns PostgreSQL addresses via the `postgresql-ha.service.consul`
-record. For example:
+To configure service discovery with Consul:
 
 1. On each GitLab Rails / Sidekiq node, edit `/etc/gitlab/gitlab.rb` and add the following:
 
@@ -131,7 +148,8 @@ record. For example:
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
+   for the changes to take effect.
 
 | Option               | Description                                                                                       | Default   |
 |----------------------|---------------------------------------------------------------------------------------------------|-----------|
@@ -140,27 +158,24 @@ record. For example:
 | `record_type`        | Optional record type to look up. Can be either `A` or `SRV`.                                      | `A`       |
 | `port`               | The port of the nameserver.                                                                       | 8600      |
 | `interval`           | The minimum time in seconds between checking the DNS record.                                      | 60        |
-| `disconnect_timeout` | The time in seconds after which an old connection is closed, after the list of hosts was updated. | 120       |
-| `use_tcp`            | Lookup DNS resources using TCP instead of UDP                                                     | false     |
-| `max_replica_pools`  | The maximum number of replicas each Rails process connects to. This is useful if you run a lot of Postgres replicas and a lot of Rails processes because without this limit every Rails process connects to every replica by default. The default behavior is unlimited if not set. | nil     |
+| `disconnect_timeout` | The time in seconds after which an old connection is closed after the list of hosts is updated.   | 120       |
+| `use_tcp`            | Look up DNS resources using TCP instead of UDP.                                                   | false     |
+| `max_replica_pools`  | The maximum number of replicas each GitLab process connects to. Only applies when using service discovery. Without this limit, every process connects to every replica. Use when running many replicas alongside many GitLab nodes. | nil |
 
-If `record_type` is set to `SRV`, then GitLab continues to use round-robin algorithm
-and ignores the `weight` and `priority` in the record. Because `SRV` records usually
-return hostnames instead of IPs, GitLab needs to look for the IPs of returned hostnames
-in the additional section of the `SRV` response. If no IP is found for a hostname, GitLab
-needs to query the configured `nameserver` for `ANY` record for each such hostname looking for `A` or `AAAA`
-records, eventually dropping this hostname from rotation if it can't resolve its IP.
+If `record_type` is set to `SRV`, GitLab uses round-robin and ignores the `weight` and `priority`
+in the record. Because `SRV` records usually return hostnames instead of IPs, GitLab looks for IP
+addresses in the additional section of the `SRV` response. If no IP is found for a hostname, GitLab
+queries the configured `nameserver` for an `ANY` record for that hostname, looking for `A` or `AAAA`
+records. GitLab drops the hostname from rotation if it cannot resolve its IP.
 
-The `interval` value specifies the minimum time between checks. If the `A`
-record has a TTL greater than this value, then service discovery honors said
-TTL. For example, if the TTL of the `A` record is 90 seconds, then service
-discovery waits at least 90 seconds before checking the `A` record again.
+The `interval` value specifies the minimum time between checks. If the `A` record has a TTL greater
+than this value, service discovery honors that TTL. For example, if the TTL is 90 seconds, service
+discovery waits at least 90 seconds before checking again.
 
-When the list of hosts is updated, it might take a while for the old connections
-to be terminated. The `disconnect_timeout` setting can be used to enforce an
-upper limit on the time it takes to terminate all old database connections.
+When the list of hosts is updated, old connections may take time to terminate. Use
+`disconnect_timeout` to set an upper limit on how long this takes.
 
-### Handling stale reads
+## Stale reads
 
 {{< history >}}
 
@@ -168,22 +183,18 @@ upper limit on the time it takes to terminate all old database connections.
 
 {{< /history >}}
 
-To prevent reading from an outdated secondary the load balancer checks if it
-is in sync with the primary. If the data is recent enough, the
-secondary is used, otherwise it is ignored. To reduce the overhead of
-these checks we only perform them at certain intervals.
+GitLab checks each secondary's replication status before routing reads to it. If a secondary is
+lagging too far behind the primary, it is skipped until it catches up.
 
-There are three configuration options that influence this behavior:
+| Option                       | Description                                                                                                   | Default    |
+|------------------------------|---------------------------------------------------------------------------------------------------------------|------------|
+| `max_replication_difference` | The amount of data (in bytes) a secondary is allowed to lag behind when it has not replicated data recently.  | 8 MB       |
+| `max_replication_lag_time`   | The maximum number of seconds a secondary is allowed to lag behind before it is skipped.                      | 60 seconds |
+| `replica_check_interval`     | The minimum number of seconds between secondary status checks.                                                | 60 seconds |
 
-| Option                       | Description                                                                                                    | Default    |
-|------------------------------|----------------------------------------------------------------------------------------------------------------|------------|
-| `max_replication_difference` | The amount of data (in bytes) a secondary is allowed to lag behind when it hasn't replicated data for a while. | 8 MB       |
-| `max_replication_lag_time`   | The maximum number of seconds a secondary is allowed to lag behind before we stop using it.                    | 60 seconds |
-| `replica_check_interval`     | The minimum number of seconds we have to wait before checking the status of a secondary.                       | 60 seconds |
+The defaults are sufficient for most environments.
 
-The defaults should be sufficient for most users.
-
-To configure these options with a hosts list, use the following example:
+To configure these options with a hosts list:
 
 ```ruby
 gitlab_rails['db_load_balancing'] = {
@@ -197,19 +208,19 @@ gitlab_rails['db_load_balancing'] = {
 ## Logging
 
 The load balancer logs various events in
-[`database_load_balancing.log`](../logs/_index.md#database_load_balancinglog), such as
+[`database_load_balancing.log`](../logs/_index.md#database_load_balancinglog), such as:
 
-- When a host is marked as offline
-- When a host comes back online
-- When all secondaries are offline
-- When a read is retried on a different host due to a query conflict
+- When a host is marked as offline.
+- When a host comes back online.
+- When all secondaries are offline.
+- When a read is retried on a different host due to a query conflict.
 
 The log is structured with each entry a JSON object containing at least:
 
 - An `event` field useful for filtering.
 - A human-readable `message` field.
-- Some event-specific metadata. For example, `db_host`
-- Contextual information that is always logged. For example, `severity` and `time`.
+- Event-specific metadata, for example `db_host`.
+- Contextual information that is always logged, for example `severity` and `time`.
 
 For example:
 
@@ -217,40 +228,24 @@ For example:
 {"severity":"INFO","time":"2019-09-02T12:12:01.728Z","correlation_id":"abcdefg","event":"host_online","message":"Host came back online","db_host":"111.222.333.444","db_port":null,"tag":"rails.database_load_balancing","environment":"production","hostname":"web-example-1","fqdn":"gitlab.example.com","path":null,"params":null}
 ```
 
-## Implementation Details
+## How database load balancing works
 
 ### Balancing queries
 
-Read-only `SELECT` queries balance among all the given hosts.
-Everything else (including transactions) executes on the primary.
-Queries such as `SELECT ... FOR UPDATE` are also executed on the primary.
-
-### Prepared statements
-
-Prepared statements don't work well with load balancing and are disabled
-automatically when load balancing is enabled. This shouldn't impact
-response timings.
+Read queries are distributed across all configured database hosts. Write operations always execute
+on the primary, regardless of how many replicas are configured.
 
 ### Primary sticking
 
-After a write has been performed, GitLab sticks to using the primary for a
-certain period of time, scoped to the user that performed the write. GitLab
-reverts back to using secondaries when they have either caught up, or after 30
-seconds.
+After a write, GitLab temporarily routes reads for that user to the primary for up to 30 seconds.
+GitLab reverts to using replicas as soon as they have caught up, rather than always waiting the
+full 30 seconds. Background jobs also wait for replicas to catch up after a write before reading,
+to avoid stale data.
 
 ### Failover handling
 
-In the event of a failover or an unresponsive database, the load balancer
-tries to use the next available host. If no secondaries are available the
-operation is performed on the primary instead.
+If a secondary becomes unavailable, the load balancer routes to the next available host. If no
+secondaries are available, reads fall back to the primary.
 
-If a connection error occurs while writing data, the
-operation retries up to 3 times using an exponential back-off.
-
-When using load balancing, you should be able to safely restart a database server
-without it immediately leading to errors being presented to the users.
-
-### Development guide
-
-For detailed development guide on database load balancing,
-see the development documentation.
+If a write fails, the operation retries up to 3 times. Restarting a database server does not
+immediately cause errors for users.

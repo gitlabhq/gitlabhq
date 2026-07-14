@@ -54,6 +54,7 @@ permissions:
   - read_milestone_burndown_event
   - read_milestone_issue
   - read_milestone_merge_request
+  - read_note
   - read_related_epic_link
   - read_snippet_award_emoji
   - read_snippet_discussion

@@ -9,6 +9,12 @@ export const TABS = [
     title: __('Members'),
   },
   {
+    namespace: MEMBERS_TAB_TYPES.directMembers,
+    title: __('Direct members'),
+    queryParamValue: TAB_QUERY_PARAM_VALUES.directMembers,
+    lazy: true,
+  },
+  {
     namespace: MEMBERS_TAB_TYPES.group,
     title: __('Groups'),
     attrs: { 'data-testid': 'groups-list-tab' },

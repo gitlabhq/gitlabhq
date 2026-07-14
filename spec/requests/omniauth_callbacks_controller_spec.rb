@@ -72,6 +72,62 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, :aggrega
     end
   end
 
+  describe 'sign-in when the current organization is read-only', :without_current_organization do
+    let_it_be_with_reload(:read_only_organization) { create(:organization) }
+
+    let(:extern_uid) { 'read-only-uid' }
+    let(:auth_email) { 'new-user@example.com' }
+    let(:organization_headers) do
+      { Gitlab::Current::Organization::HTTP_HEADER => read_only_organization.id.to_s }
+    end
+
+    around do |example|
+      with_omniauth_full_host { example.run }
+    end
+
+    before do
+      stub_omniauth_setting(enabled: true, auto_link_user: true, allow_single_sign_on: ['atlassian_oauth2'])
+      stub_omniauth_setting(block_auto_created_users: false)
+      mock_auth_hash('atlassian_oauth2', extern_uid, auth_email)
+
+      read_only_organization.start_read_only!(read_only_reason: 'migration')
+      read_only_organization.confirm_read_only!
+
+      stub_feature_flags(organization_read_only_enforcement: true)
+    end
+
+    context 'when the user does not yet exist (new-user INSERT)' do
+      it 'blocks creation, surfaces the read-only flash, and redirects to sign-in' do
+        expect do
+          post '/users/auth/atlassian_oauth2/callback', headers: organization_headers
+        end.not_to change { User.count }
+
+        expect(response).to redirect_to(new_user_session_path)
+        expect(flash[:alert]).to eq(
+          'This organization is currently in read-only mode. ' \
+            'New account creation via SSO is currently unavailable.'
+        )
+        expect(request.env['warden']).not_to be_authenticated
+      end
+    end
+
+    context 'when the user already exists (existing-user sign-in)' do
+      let_it_be(:existing_user) do
+        create(:atlassian_user, extern_uid: 'read-only-uid', organization: read_only_organization)
+      end
+
+      let(:auth_email) { existing_user.email }
+
+      it 'permits sign-in without creating a user' do
+        expect do
+          post '/users/auth/atlassian_oauth2/callback', headers: organization_headers
+        end.not_to change { User.count }
+
+        expect(request.env['warden']).to be_authenticated
+      end
+    end
+  end
+
   describe '#saml' do
     let(:last_request_id) { 'ONELOGIN_4fee3b046395c4e751011e97f8900b5273d56685' }
     let(:user) { create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml') }

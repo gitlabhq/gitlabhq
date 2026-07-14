@@ -1,0 +1,12 @@
+---
+api_type: boolean
+attr: lock_require_sha_for_merge
+clusterwide: true
+column: lock_require_sha_for_merge
+db_type: boolean
+default: 'false'
+description: cascading setting lock for require_sha_for_merge
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -1,0 +1,33 @@
+# Queries for all the AI metrics values
+
+fragment AiMetricItem on AiMetrics {
+  duoChatContributorsCount @skip(if: $skipChatContributorsCount)
+  duoUsedCount @skip(if: $skipUsedCount)
+  rootCauseAnalysisUsersCount @skip(if: $skipRcaUsersCount)
+  codeReview {
+    requestReviewDuoCodeReviewOnMrByAuthorEventCount @skip(if: $skipReviewRequestsCount)
+    requestReviewDuoCodeReviewOnMrByNonAuthorEventCount @skip(if: $skipReviewRequestsCount)
+    postCommentDuoCodeReviewOnDiffEventCount @skip(if: $skipReviewCommentCount)
+    reactThumbsDownOnDuoCodeReviewCommentEventCount
+    reactThumbsUpOnDuoCodeReviewCommentEventCount
+  }
+  codeSuggestions(languages: $languages, ideNames: $ideNames) {
+    contributorsCount @skip(if: $skipCodeSuggestionsUsersCount)
+    shownCount @skip(if: $skipCodeSuggestionsAcceptanceRate)
+    acceptedCount @skip(if: $skipCodeSuggestionsAcceptanceRate)
+    languages
+    acceptedLinesOfCode
+    shownLinesOfCode
+    ideNames
+  }
+  agentPlatformChats: agentPlatform(flowTypes: ["chat"])
+    @gl_introduced(version: "18.7.0-pre")
+    @skip(if: $skipAgentPlatformChats) {
+    createdSessionEventCount
+  }
+  agentPlatformFlows: agentPlatform(not: { flowTypes: ["chat"] })
+    @gl_introduced(version: "18.7.0-pre")
+    @skip(if: $skipAgentPlatformFlows) {
+    createdSessionEventCount
+  }
+}

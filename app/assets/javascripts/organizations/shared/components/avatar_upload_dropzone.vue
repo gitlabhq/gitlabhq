@@ -5,6 +5,7 @@ import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropz
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 export default {
+  name: 'AvatarUploadDropzone',
   i18n: {
     uploadText: __('Drop or %{linkStart}upload%{linkEnd} an avatar.'),
     maxFileSize: s__('Profiles|The maximum file size allowed is 200 KiB.'),
@@ -29,6 +30,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input'],
   data() {
     return {
       avatarObjectUrl: null,

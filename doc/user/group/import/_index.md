@@ -91,6 +91,12 @@ transfer, you must use the [API](../../../api/bulk_imports.md#start-a-group-or-p
 - If the destination namespace belongs to a different organization than the source, and either
   organization is marked as isolated, migrations by direct transfer fail. For more information, see
   [issue 595674](https://gitlab.com/gitlab-org/gitlab/-/issues/595674).
+- Because direct transfer migrations map contributions to unbanned users on the destination instance, 
+  banned user contributions that were hidden on the source instance appear again on the destination
+  instance. To hide these contributions, on the destination instance either:
+  - Ban the users.
+  - Remove the contributions.
+  For more information, see [issue 508111](https://gitlab.com/gitlab-org/gitlab/-/work_items/508111).
 
 ## Estimating migration duration
 

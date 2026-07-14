@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Packages
   class RemoveTagService < BaseService
     attr_reader :package_tag

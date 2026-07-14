@@ -3,6 +3,7 @@ import { GlIcon } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 
 export default {
+  name: 'DownloadViewer',
   components: {
     GlIcon,
   },

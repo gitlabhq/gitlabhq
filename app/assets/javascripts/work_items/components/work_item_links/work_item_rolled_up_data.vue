@@ -7,6 +7,7 @@ import { i18n } from '../../constants';
 import { findHealthStatusWidget, findWeightWidget } from '../../utils';
 
 export default {
+  name: 'WorkItemRolledUpData',
   components: {
     GlIcon,
     GlTooltip,
@@ -31,6 +32,7 @@ export default {
       default: null,
     },
   },
+  emits: ['error'],
   data() {
     return {
       workItem: {},

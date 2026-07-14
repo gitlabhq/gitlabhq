@@ -4,7 +4,7 @@ module API
   module Entities
     module System
       class BroadcastMessage < Grape::Entity
-        expose :id, documentation: { type: 'Integer' }
+        expose :id, documentation: { type: 'Integer', format: 'int64' }
         expose :message, documentation: { type: 'String', example: 'Example broadcast message' }
         expose :starts_at, documentation: { type: 'DateTime', example: '2016-01-04T15:39:55.570Z' }
         expose :ends_at, documentation: { type: 'DateTime', example: '2016-01-06T15:39:55.570Z' }

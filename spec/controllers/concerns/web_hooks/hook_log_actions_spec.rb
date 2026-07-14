@@ -29,6 +29,36 @@ RSpec.describe WebHooks::HookLogActions, feature_category: :webhooks do
 
     routes.draw do
       get 'retry' => 'anonymous#retry'
+      get 'show' => 'anonymous#show'
+    end
+  end
+
+  describe '#show' do
+    context 'when the hook log is older than 7 days' do
+      let(:hook_log) { create(:web_hook_log, web_hook: webhook, created_at: 8.days.ago) }
+
+      it 'logs the stale access' do
+        expect_next_instance_of(Gitlab::WebHooks::Logger) do |logger|
+          expect(logger).to receive(:info).with(
+            hash_including(
+              class: Gitlab::WebHooks::Logger.name,
+              event: Gitlab::WebHooks::Logger::STALE_LOG_ACCESS_EVENT,
+              message: Gitlab::WebHooks::Logger::STALE_LOG_ACCESS_MESSAGE,
+              hook_id: webhook.id, web_hook_log_id: hook_log.id, action: 'show', interface: 'web', user_id: user.id
+            )
+          )
+        end
+
+        get :show, params: { id: hook_log.id }
+      end
+    end
+
+    context 'when the hook log is within the last 7 days' do
+      it 'does not log' do
+        expect(Gitlab::WebHooks::Logger).not_to receive(:build)
+
+        get :show, params: { id: hook_log.id }
+      end
     end
   end
 
@@ -54,6 +84,33 @@ RSpec.describe WebHooks::HookLogActions, feature_category: :webhooks do
         get :retry, params: { id: hook_log.id }
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
+      end
+    end
+
+    context 'when the hook log is older than 7 days' do
+      let(:hook_log) { create(:web_hook_log, web_hook: webhook, created_at: 8.days.ago) }
+
+      it 'logs the stale access' do
+        expect_next_instance_of(Gitlab::WebHooks::Logger) do |logger|
+          expect(logger).to receive(:info).with(
+            hash_including(
+              class: Gitlab::WebHooks::Logger.name,
+              event: Gitlab::WebHooks::Logger::STALE_LOG_ACCESS_EVENT,
+              message: Gitlab::WebHooks::Logger::STALE_LOG_ACCESS_MESSAGE,
+              hook_id: webhook.id, web_hook_log_id: hook_log.id, action: 'retry', interface: 'web', user_id: user.id
+            )
+          )
+        end
+
+        get :retry, params: { id: hook_log.id }
+      end
+    end
+
+    context 'when the hook log is within the last 7 days' do
+      it 'does not log' do
+        expect(Gitlab::WebHooks::Logger).not_to receive(:build)
+
+        get :retry, params: { id: hook_log.id }
       end
     end
   end

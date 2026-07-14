@@ -20,6 +20,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['change', 'submit'],
   data() {
     return {
       triggerModel: { ...this.trigger },

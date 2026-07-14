@@ -7,6 +7,7 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import noteQuery from '../queries/note.query.graphql';
 
 export default {
+  name: 'CommentPopover',
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   components: {
     GlAvatar,
@@ -104,7 +105,7 @@ export default {
             <span class="gl-break-all gl-text-sm">{{ author.name }}</span>
           </template>
           <template #time>
-            <span class="gl-text-sm">{{ noteCreatedAt }}</span>
+            <time :datetime="note?.createdAt" class="gl-text-sm">{{ noteCreatedAt }}</time>
           </template>
         </gl-sprintf>
       </div>

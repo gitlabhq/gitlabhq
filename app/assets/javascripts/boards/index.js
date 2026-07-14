@@ -12,19 +12,6 @@ import {
 import { queryToObject } from '~/lib/utils/url_utility';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import { fullBoardId } from './boards_util';
-import { BOARDS_ROUTE_NAME } from './constants';
-
-export const createRouter = () => {
-  const routes = [{ name: BOARDS_ROUTE_NAME, path: '/boards' }];
-
-  const router = new VueRouter({
-    routes,
-    mode: 'history',
-    base: gon.relative_url_root || '/',
-  });
-
-  return router;
-};
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
@@ -85,7 +72,6 @@ function mountBoardApp(el) {
   } = el.dataset;
 
   const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
-  const router = createRouter();
 
   const initialFilterParams = {
     ...convertObjectPropsToCamelCase(rawFilterParams, {}),
@@ -97,7 +83,7 @@ function mountBoardApp(el) {
   new Vue({
     el,
     name: 'BoardAppRoot',
-    router,
+    router: new VueRouter(),
     apolloProvider,
     provide: {
       initialBoardId: fullBoardId(boardId),

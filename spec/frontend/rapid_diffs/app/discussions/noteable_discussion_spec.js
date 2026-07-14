@@ -161,18 +161,18 @@ describe('NoteableDiscussion', () => {
     expect(wrapper.emitted('stopReplying')).toBe(undefined);
   });
 
-  it('propagates startEditing event', () => {
+  it('propagates start-editing event', () => {
     const note = {};
     createComponent();
-    wrapper.findComponent(DiscussionNotes).vm.$emit('startEditing', note);
-    expect(wrapper.emitted('startEditing')).toStrictEqual([[note]]);
+    wrapper.findComponent(DiscussionNotes).vm.$emit('start-editing', note);
+    expect(wrapper.emitted('start-editing')).toStrictEqual([[note]]);
   });
 
-  it('propagates cancelEditing event', () => {
+  it('propagates cancel-editing event', () => {
     const note = {};
     createComponent();
-    wrapper.findComponent(DiscussionNotes).vm.$emit('cancelEditing', note);
-    expect(wrapper.emitted('cancelEditing')).toStrictEqual([[note]]);
+    wrapper.findComponent(DiscussionNotes).vm.$emit('cancel-editing', note);
+    expect(wrapper.emitted('cancel-editing')).toStrictEqual([[note]]);
   });
 
   it('propagates noteEdited event', () => {

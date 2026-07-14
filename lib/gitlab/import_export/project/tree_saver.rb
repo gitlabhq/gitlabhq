@@ -40,6 +40,7 @@ module Gitlab
               try_count: try,
               elapsed_time_s: elapsed_time,
               wait_to_retry_s: next_interval,
+              Labkit::Fields::GL_ORGANIZATION_ID => @project.organization_id,
               project_name: @project.name,
               project_id: @project.id
             )

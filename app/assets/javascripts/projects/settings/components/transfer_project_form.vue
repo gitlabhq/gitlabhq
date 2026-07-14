@@ -18,6 +18,11 @@ export default {
       type: String,
       required: true,
     },
+    showUserTransferLocations: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   emits: ['confirm', 'selectTransferLocation'],
   data() {
@@ -47,6 +52,7 @@ export default {
       v-model="selectedTransferLocation"
       data-testid="transfer-project-namespace"
       :group-transfer-locations-api-method="getTransferLocations"
+      :show-user-transfer-locations="showUserTransferLocations"
     />
     <confirm-danger
       :disabled="!hasSelectedNamespace"

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::GithubImport::Stage::FinishImportWorker, feature_category
     create(:project, :in_group, :import_user_mapping_enabled)
   end
 
-  let_it_be(:import_state, freeze: false) { create(:import_state, :started, project: project) }
+  let_it_be(:import_state) { create(:import_state, :started, project: project) }
 
   subject(:worker) { described_class.new }
 

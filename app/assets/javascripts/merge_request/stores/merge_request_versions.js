@@ -32,6 +32,9 @@ export const useMergeRequestVersions = defineStore('mergeRequestVersions', {
       if (this.commit) return this.commit.id;
       return this.selectedSourceVersion?.head_sha ?? null;
     },
+    // Refs of the currently selected diff version. Used ONLY to decide, before the diffs are
+    // rendered, whether a discussion belongs to that version (SPA navigation gate in
+    // merge_request_tabs). Positioning reads per-file refs from the rendered <diff-file>, not this.
     diffRefs() {
       if (this.commit) return this.commit.diff_refs;
       if (this.isViewingContextCommits) return this.contextCommits.diff_refs;

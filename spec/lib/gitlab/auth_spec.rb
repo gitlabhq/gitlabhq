@@ -810,6 +810,27 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect_results_with_abilities(personal_access_token, [:read_container_image])
         end
+
+        context 'with a granular (fine-grained) personal access token' do
+          # Granular PATs carry no legacy abilities; their access is authorized
+          # per-boundary downstream (for example, in the container registry auth
+          # service). They must still authenticate and carry the token so the
+          # downstream service can evaluate the granular permissions.
+          it 'authenticates and carries the token without granting legacy abilities', :aggregate_failures do
+            granular_pat = create(:granular_pat,
+              boundary: ::Authz::Boundary.for(project),
+              permissions: [:read_container_repository])
+
+            result = gl_auth.find_for_git_client('', granular_pat.token, project: nil, request: request)
+
+            expect(result).to have_attributes(
+              actor: granular_pat.user,
+              type: :personal_access_token,
+              authentication_abilities: []
+            )
+            expect(result.personal_access_token).to eq(granular_pat)
+          end
+        end
       end
 
       it 'succeeds if it is an impersonation token' do
@@ -896,7 +917,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         end
 
         context 'when using a personal namespace project access token' do
-          let_it_be(:project_bot_user, freeze: false) { create(:user, :project_bot) }
+          let_it_be_with_reload(:project_bot_user) { create(:user, :project_bot) }
           let_it_be(:access_token) { create(:personal_access_token, user: project_bot_user) }
 
           context 'when the token belongs to the project' do
@@ -915,7 +936,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           let_it_be(:project) { create(:project, group: group) }
 
           context 'when using a project access token' do
-            let_it_be(:project_bot_user, freeze: false) { create(:user, :project_bot) }
+            let_it_be_with_reload(:project_bot_user) { create(:user, :project_bot) }
             let_it_be(:access_token) { create(:personal_access_token, user: project_bot_user) }
 
             context 'when token user belongs to the project' do
@@ -930,7 +951,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           end
 
           context 'when using a group access token' do
-            let_it_be(:project_bot_user, freeze: false) { create(:user, name: 'Group token bot', email: "group_#{group.id}_bot@example.com", username: "group_#{group.id}_bot", user_type: :project_bot) }
+            let_it_be_with_reload(:project_bot_user) { create(:user, name: 'Group token bot', email: "group_#{group.id}_bot@example.com", username: "group_#{group.id}_bot", user_type: :project_bot) }
             let_it_be(:access_token) { create(:personal_access_token, user: project_bot_user) }
 
             context 'when the token belongs to the group' do
@@ -1016,19 +1037,19 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           create(:user, email_otp_required_after: 1.second.ago)
         end
 
-        it 'fails' do
-          expect { gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request) }
-            .to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
+        it 'goes through' do
+          expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request))
+            .to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
         end
 
-        context 'when :email_based_mfa feature flag disabled' do
+        context 'when email_otp_enabled application setting is enabled' do
           before do
-            stub_feature_flags(email_based_mfa: false)
+            stub_application_setting(email_otp_enabled: true)
           end
 
-          it 'goes through' do
-            expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request))
-              .to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
+          it 'fails' do
+            expect { gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request) }
+              .to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
           end
         end
       end
@@ -1046,24 +1067,24 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
             stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
           end
 
-          it 'calls set_email_otp_required_after_based_on_restrictions and fails' do
-            allow_next_instance_of(User) do |instance|
-              expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
-                .with(save: true).and_call_original
-            end
-
-            expect { gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request) }
-              .to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
+          it 'goes through' do
+            expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request))
+              .to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
           end
 
-          context 'when :email_based_mfa feature flag disabled' do
+          context 'when email_otp_enabled application setting is enabled' do
             before do
-              stub_feature_flags(email_based_mfa: false)
+              stub_application_setting(email_otp_enabled: true)
             end
 
-            it 'goes through' do
-              expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request))
-                .to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
+            it 'calls set_email_otp_required_after_based_on_restrictions and fails' do
+              allow_next_instance_of(User) do |instance|
+                expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
+                  .with(save: true).and_call_original
+              end
+
+              expect { gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request) }
+                .to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
             end
           end
         end
@@ -1091,45 +1112,52 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     describe '#user_with_password_for_git' do
-      let_it_be(:user) { create(:omniauth_user, :ldap) }
-      let_it_be(:ldap_username) { user.username }
-      let_it_be(:password) { user.password }
+      let_it_be(:user) { create(:user) }
+      let(:username) { user.username }
+      let(:password) { user.password }
 
-      subject(:track_event) { gl_auth.find_for_git_client(ldap_username, password, project: nil, request: request) }
+      subject(:find_for_git_client) { gl_auth.find_for_git_client(username, password, project: nil, request: request) }
 
-      context 'when #password_authentication_enabled_for_git? is false' do
+      it "finds user by valid login/password" do
+        expect(find_for_git_client).to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
+      end
+
+      context "with password authentication disabled for Git" do
         before do
-          allow(described_class).to receive(:find_with_user_password).with(ldap_username, password).and_return(user)
-          allow(Gitlab::CurrentSettings).to receive(:password_authentication_enabled_for_git?).and_return(false)
+          stub_application_setting(password_authentication_enabled_for_git: false)
         end
 
-        context 'when prevent_ldap_sign_in is disabled' do
-          before do
-            allow(Gitlab::Auth::Ldap::Config).to receive(:prevent_ldap_sign_in?).and_return(false) # default
-          end
-
-          it 'does not track the internal event' do
-            expect { track_event }
-              .not_to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
-          end
+        it "does not find user by valid login/password" do
+          expect { find_for_git_client }.to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
         end
 
-        context 'when prevent_ldap_sign_in is enabled' do
+        context 'when LDAP is enabled' do
+          include LdapHelpers
+
           before do
-            allow(Gitlab::Auth::Ldap::Config).to receive(:prevent_ldap_sign_in?).and_return(true)
+            stub_ldap_setting(enabled: true)
           end
 
-          it 'does not track the internal event' do
-            expect { track_event }
-              .not_to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
+          it "does not find user by valid login/password" do
+            expect(find_for_git_client).to eq(Gitlab::Auth::Result::EMPTY)
           end
         end
       end
 
-      context 'when #password_authentication_enabled_for_git? is true' do
+      context 'for LDAP users' do
+        include LdapHelpers
+
+        let(:provider) { 'ldapmain' }
+
+        let_it_be(:user) { create(:omniauth_user, :ldap) }
+
         before do
-          allow(described_class).to receive(:find_with_user_password).with(ldap_username, password).and_return(user)
-          allow(Gitlab::CurrentSettings).to receive(:password_authentication_enabled_for_git?).and_return(true)
+          stub_ldap_setting(enabled: true)
+          allow(Devise).to receive(:omniauth_providers).and_return([provider.to_sym])
+
+          allow_next_instance_of(Gitlab::Auth::Ldap::Authentication) do |authenticator|
+            allow(authenticator).to receive(:login).and_return(user)
+          end
         end
 
         context 'when prevent_ldap_sign_in is disabled' do
@@ -1138,7 +1166,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           end
 
           it 'does not track the internal event' do
-            expect { track_event }
+            expect { find_for_git_client }
               .not_to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
           end
         end
@@ -1149,7 +1177,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           end
 
           it 'tracks the internal event & increments its metrics' do
-            expect { track_event }
+            expect { find_for_git_client }
               .to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
                     .with(user: user, project: nil, namespace: nil)
                     .and increment_usage_metrics(
@@ -1167,10 +1195,14 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(gl_auth.find_for_git_client(login, 'bar', project: nil, request: request)).to have_attributes(auth_failure)
     end
 
-    it 'throws an error suggesting user create a PAT when internal auth is disabled' do
-      allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled_for_git?) { false }
+    context "when password authentication disabled for Git" do
+      before do
+        stub_application_setting(password_authentication_enabled_for_git: false)
+      end
 
-      expect { gl_auth.find_for_git_client('foo', 'bar', project: nil, request: request) }.to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
+      it 'throws an error suggesting user create a PAT' do
+        expect { gl_auth.find_for_git_client('foo', 'bar', project: nil, request: request) }.to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
+      end
     end
 
     context 'while using deploy tokens' do
@@ -1389,7 +1421,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
 
       context 'when the deploy token has write_registry as a scope' do
-        let_it_be(:deploy_token, freeze: false) { create(:deploy_token, write_registry: true, read_repository: false, read_registry: false, projects: [project]) }
+        let_it_be_with_reload(:deploy_token) { create(:deploy_token, write_registry: true, read_repository: false, read_registry: false, projects: [project]) }
         let_it_be(:login) { deploy_token.username }
 
         context 'when registry enabled' do
@@ -1465,60 +1497,66 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     it "finds user by valid login/password" do
-      expect(gl_auth.find_with_user_password(username, user.password)).to eql user
+      expect(gl_auth.find_with_user_password(username, user.password, activity: :web)).to eql user
+    end
+
+    context 'for git activity' do
+      it "finds user by valid login/password" do
+        expect(gl_auth.find_with_user_password(username, user.password, activity: :git)).to eql user
+      end
     end
 
     it 'finds user by valid email/password with case-insensitive email' do
-      expect(gl_auth.find_with_user_password(user.email.upcase, user.password)).to eql user
+      expect(gl_auth.find_with_user_password(user.email.upcase, user.password, activity: :web)).to eql user
     end
 
     it 'finds user by valid username/password with case-insensitive username' do
-      expect(gl_auth.find_with_user_password(username.upcase, user.password)).to eql user
+      expect(gl_auth.find_with_user_password(username.upcase, user.password, activity: :web)).to eql user
     end
 
     it "does not find user with invalid password" do
-      expect(gl_auth.find_with_user_password(username, 'incorrect_password')).not_to eql user
+      expect(gl_auth.find_with_user_password(username, 'incorrect_password', activity: :web)).not_to eql user
     end
 
     it "does not find user with invalid login" do
       username = 'wrong'
-      expect(gl_auth.find_with_user_password(username, user.password)).not_to eql user
+      expect(gl_auth.find_with_user_password(username, user.password, activity: :web)).not_to eql user
     end
 
     include_examples 'user login operation with unique ip limit' do
       def operation
-        expect(gl_auth.find_with_user_password(username, user.password)).to eq(user)
+        expect(gl_auth.find_with_user_password(username, user.password, activity: :web)).to eq(user)
       end
     end
 
     it 'finds the user in deactivated state' do
       user.deactivate!
 
-      expect(gl_auth.find_with_user_password(username, user.password)).to eql user
+      expect(gl_auth.find_with_user_password(username, user.password, activity: :web)).to eql user
     end
 
     it "does not find user in blocked state" do
       user.block
 
-      expect(gl_auth.find_with_user_password(username, user.password)).not_to eql user
+      expect(gl_auth.find_with_user_password(username, user.password, activity: :web)).not_to eql user
     end
 
     it 'does not find user in locked state' do
       user.lock_access!
 
-      expect(gl_auth.find_with_user_password(username, user.password)).not_to eql user
+      expect(gl_auth.find_with_user_password(username, user.password, activity: :web)).not_to eql user
     end
 
     it "does not find user in ldap_blocked state" do
       user.ldap_block
 
-      expect(gl_auth.find_with_user_password(username, user.password)).not_to eql user
+      expect(gl_auth.find_with_user_password(username, user.password, activity: :web)).not_to eql user
     end
 
     it 'does not find user in blocked_pending_approval state' do
       user.block_pending_approval
 
-      expect(gl_auth.find_with_user_password(username, user.password)).not_to eql user
+      expect(gl_auth.find_with_user_password(username, user.password, activity: :web)).not_to eql user
     end
 
     context 'with increment_failed_attempts' do
@@ -1526,7 +1564,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
       it 'increments failed_attempts when true and password is incorrect' do
         expect do
-          gl_auth.find_with_user_password(username, wrong_password, increment_failed_attempts: true)
+          gl_auth.find_with_user_password(username, wrong_password, activity: :web, increment_failed_attempts: true)
           user.reload
         end.to change { user.failed_attempts }.from(0).to(1)
       end
@@ -1536,14 +1574,14 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         user.save!
 
         expect do
-          gl_auth.find_with_user_password(username, user.password, increment_failed_attempts: true)
+          gl_auth.find_with_user_password(username, user.password, activity: :web, increment_failed_attempts: true)
           user.reload
         end.to change { user.failed_attempts }.from(2).to(0)
       end
 
       it 'does not increment failed_attempts by default' do
         expect do
-          gl_auth.find_with_user_password(username, wrong_password)
+          gl_auth.find_with_user_password(username, wrong_password, activity: :web)
           user.reload
         end.not_to change { user.failed_attempts }
       end
@@ -1555,7 +1593,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
         it 'does not increment failed_attempts when true and password is incorrect' do
           expect do
-            gl_auth.find_with_user_password(username, wrong_password, increment_failed_attempts: true)
+            gl_auth.find_with_user_password(username, wrong_password, activity: :web, increment_failed_attempts: true)
             user.reload
           end.not_to change { user.failed_attempts }
         end
@@ -1565,7 +1603,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           user.save!
 
           expect do
-            gl_auth.find_with_user_password(username, user.password, increment_failed_attempts: true)
+            gl_auth.find_with_user_password(username, user.password, activity: :web, increment_failed_attempts: true)
             user.reload
           end.not_to change { user.failed_attempts }
         end
@@ -1585,23 +1623,23 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       it 'does not try to authenticate with LDAP fallback for local users' do
         expect(Gitlab::Auth::Ldap::Authentication).not_to receive(:login)
 
-        expect(gl_auth.find_with_user_password(username, user.password)).to eq(user)
+        expect(gl_auth.find_with_user_password(username, user.password, activity: :web)).to eq(user)
       end
 
       it 'does not find user by using LDAP fallback for authentication' do
         expect(Gitlab::Auth::Ldap::Authentication).to receive(:login).and_return(nil)
 
-        expect(gl_auth.find_with_user_password('ldap_user', 'password')).to be_nil
+        expect(gl_auth.find_with_user_password('ldap_user', 'password', activity: :web)).to be_nil
       end
 
       it 'finds a user by using LDAP fallback for authentication' do
         expect(Gitlab::Auth::Ldap::Authentication).to receive(:login).and_return(user)
 
-        expect(gl_auth.find_with_user_password('ldap_user', 'password')).to eq(user)
+        expect(gl_auth.find_with_user_password('ldap_user', 'password', activity: :web)).to eq(user)
       end
 
       context 'for LDAP users' do
-        subject(:authentication) { gl_auth.find_with_user_password(login, password) }
+        subject(:authentication) { gl_auth.find_with_user_password(login, password, activity: :web) }
 
         let(:uid) { 'john-ldap' }
         let(:gitlab_username) { 'john-gitlab' }
@@ -1719,17 +1757,15 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         stub_application_setting(password_authentication_enabled_for_git: false)
       end
 
-      it "does not find user by valid login/password" do
-        expect(gl_auth.find_with_user_password(username, user.password)).to be_nil
+      context 'for non-git activity' do
+        it "finds user by valid login/password" do
+          expect(gl_auth.find_with_user_password(username, user.password, activity: :web)).to eql user
+        end
       end
 
-      context "with ldap enabled" do
-        before do
-          allow(Gitlab::Auth::Ldap::Config).to receive(:enabled?).and_return(true)
-        end
-
-        it "does not find non-ldap user by valid login/password" do
-          expect(gl_auth.find_with_user_password(username, user.password)).to be_nil
+      context 'for git activity' do
+        it "does not find user by valid login/password" do
+          expect(gl_auth.find_with_user_password(username, user.password, activity: :git)).to be_nil
         end
       end
     end
@@ -1737,16 +1773,22 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     context 'request-scoped caching' do
       let_it_be(:user) { create(:user, password: 'test1234test') }
 
-      before do
-        allow(Gitlab::CurrentSettings).to receive(:password_authentication_enabled_for_git?).and_return(true)
-      end
-
       context 'when RequestStore is active', :request_store do
         it 'calls bcrypt only once for repeated calls with the same credentials' do
           expect(Devise::Encryptor).to receive(:compare).once.and_call_original
 
-          result1 = described_class.find_with_user_password(user.username, 'test1234test')
-          result2 = described_class.find_with_user_password(user.username, 'test1234test')
+          result1 = described_class.find_with_user_password(user.username, 'test1234test',  activity: :web)
+          result2 = described_class.find_with_user_password(user.username, 'test1234test',  activity: :web)
+
+          expect(result1).to eq(user)
+          expect(result2).to eq(user)
+        end
+
+        it 'does not cache across different activities' do
+          expect(Devise::Encryptor).to receive(:compare).twice.and_call_original
+
+          result1 = described_class.find_with_user_password(user.username, 'test1234test', activity: :web)
+          result2 = described_class.find_with_user_password(user.username, 'test1234test', activity: :git)
 
           expect(result1).to eq(user)
           expect(result2).to eq(user)
@@ -1755,8 +1797,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         it 'does not cache across different passwords for the same login' do
           expect(Devise::Encryptor).to receive(:compare).twice.and_call_original
 
-          result1 = described_class.find_with_user_password(user.username, 'test1234test')
-          result2 = described_class.find_with_user_password(user.username, 'wrong-password')
+          result1 = described_class.find_with_user_password(user.username, 'test1234test', activity: :web)
+          result2 = described_class.find_with_user_password(user.username, 'wrong-password', activity: :web)
 
           expect(result1).to eq(user)
           expect(result2).to be_nil
@@ -1765,8 +1807,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         it 'does not cache across different logins' do
           other_user = create(:user, password: 'test1234test')
 
-          result1 = described_class.find_with_user_password(user.username, 'test1234test')
-          result2 = described_class.find_with_user_password(other_user.username, 'test1234test')
+          result1 = described_class.find_with_user_password(user.username, 'test1234test', activity: :web)
+          result2 = described_class.find_with_user_password(other_user.username, 'test1234test', activity: :web)
 
           expect(result1).to eq(user)
           expect(result2).to eq(other_user)
@@ -1774,31 +1816,36 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
         it 'still runs user_auth_attempt! on cache hits when increment_failed_attempts is true' do
           # First call populates cache
-          described_class.find_with_user_password(user.username, 'test1234test')
+          described_class.find_with_user_password(user.username, 'test1234test', activity: :web)
 
           # Second call hits cache but must still run the side effect
           expect(described_class).to receive(:user_auth_attempt!).with(user, success: true)
           described_class.find_with_user_password(
-            user.username, 'test1234test', increment_failed_attempts: true)
+            user.username, 'test1234test', increment_failed_attempts: true, activity: :web)
         end
 
         it 'caches failed authentication results' do
           expect(Devise::Encryptor).to receive(:compare).once.and_call_original
 
-          result1 = described_class.find_with_user_password(user.username, 'wrong-password')
-          result2 = described_class.find_with_user_password(user.username, 'wrong-password')
+          result1 = described_class.find_with_user_password(user.username, 'wrong-password', activity: :web)
+          result2 = described_class.find_with_user_password(user.username, 'wrong-password', activity: :web)
 
           expect(result1).to be_nil
           expect(result2).to be_nil
         end
 
-        it 'does not cache when user has expired password' do
-          expired_user = create(:user, password: 'test1234test', password_expires_at: 1.day.ago)
+        it 'does not use cache when user password has expired' do
+          password = 'test1234test'
+          password_expires_at = 1.day.since
+          user = create(:user, password: password, password_expires_at: password_expires_at)
 
-          result1 = described_class.find_with_user_password(expired_user.username, 'test1234test')
-          result2 = described_class.find_with_user_password(expired_user.username, 'test1234test')
+          expect(Devise::Encryptor).to receive(:compare).once.and_call_original
+          result1 = described_class.find_with_user_password(user.username, password, activity: :web)
 
-          expect(result1).to be_nil
+          travel_to(password_expires_at + 1.second)
+          result2 = described_class.find_with_user_password(user.username, password, activity: :web)
+
+          expect(result1).to eq(user)
           expect(result2).to be_nil
         end
       end
@@ -1807,8 +1854,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         it 'does not cache — bcrypt runs every time' do
           expect(Devise::Encryptor).to receive(:compare).twice.and_call_original
 
-          described_class.find_with_user_password(user.username, 'test1234test')
-          described_class.find_with_user_password(user.username, 'test1234test')
+          described_class.find_with_user_password(user.username, 'test1234test', activity: :web)
+          described_class.find_with_user_password(user.username, 'test1234test', activity: :web)
         end
       end
     end
@@ -1830,7 +1877,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
     context 'when password is not a recognized token' do
       it 'calls find_with_user_password for regular passwords' do
-        expect(gl_auth).to receive(:find_with_user_password).with(user.username, user.password).and_return(user)
+        expect(gl_auth).to receive(:find_with_user_password).with(user.username, user.password, activity: :git).and_return(user)
 
         result = gl_auth.send(:user_with_password_for_git, user.username, user.password)
         expect(result).to have_attributes(actor: user, type: :gitlab_or_ldap)

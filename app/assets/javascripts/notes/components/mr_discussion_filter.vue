@@ -28,6 +28,7 @@ const filterOptionToTrackingEventMap = {
 const allFilters = MR_FILTER_OPTIONS.map((f) => f.value);
 
 export default {
+  name: 'MrDiscussionFilter',
   components: {
     GlCollapsibleListbox,
     GlButton,

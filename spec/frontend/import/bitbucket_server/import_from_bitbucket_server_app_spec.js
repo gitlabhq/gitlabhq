@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { GlFormInput, GlMultiStepFormTemplate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import importFromBitbucketServerApp from '~/import/bitbucket_server/import_from_bitbucket_server_app.vue';
+import ImportFromBitbucketServerApp from '~/import/bitbucket_server/import_from_bitbucket_server_app.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
@@ -9,7 +9,7 @@ describe('Import from Bitbucket Server app', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(importFromBitbucketServerApp, {
+    wrapper = shallowMountExtended(ImportFromBitbucketServerApp, {
       propsData: {
         backButtonPath: '/projects/new#import_project',
         formPath: '/import/bitbucket_server/configure',

@@ -74,8 +74,6 @@ generate-apollo-graphql-schema:
       optional: true
     - job: compile-fe-islands
       optional: true
-    - job: generate-js-routes
-      optional: true
   variables:
     USE_BUNDLE_INSTALL: "false"
     ESLINT_CODE_QUALITY_REPORT: "gl-code-quality-report.json"
@@ -101,6 +99,19 @@ eslint:
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
+
+# Non-blocking visibility for the `local-rules/no-apollo-mock` guardrail
+# (WS1 Guardrail 2). New violations are caught by the blocking `eslint` job;
+# this job reveals the existing offenders grandfathered in `.eslint_todo` so
+# the remaining migration work stays visible without breaking the pipeline.
+# See https://gitlab.com/groups/gitlab-org/plan-stage/-/work_items/477
+eslint-todo-no-apollo-mock:
+  extends:
+    - .eslint-base
+    - .frontend:rules:eslint-default
+  script:
+    - node scripts/frontend/reveal_eslint_todo_rule.mjs local-rules/no-apollo-mock
+  allow_failure: true
 
 .eslint:fe-islands:
   extends:
@@ -361,7 +372,13 @@ api-high-impact-entity-baseline-check:
     - job: cache:ruby-gems
       optional: true
   script:
+    - echo "CHECK_JOB_URL=${CI_JOB_URL}" >> check_job.env
     - bundle exec rake gitlab:api:check_high_impact_entity_baseline
+  artifacts:
+    expire_in: 31d
+    when: always
+    reports:
+      dotenv: check_job.env
 
 api-high-impact-entity-baseline-check:notify:
   extends:
@@ -369,9 +386,9 @@ api-high-impact-entity-baseline-check:notify:
   stage: lint
   needs:
     - job: api-high-impact-entity-baseline-check
-      artifacts: false
+      artifacts: true
   script:
-    - 'scripts/slack alerts-api-platform ":warning: New high-impact API entities detected. Baseline drift found in weekly check. See ${CI_JOB_URL}" warning "GitLab Bot"'
+    - 'scripts/slack alerts-api-platform ":warning: New high-impact API entities detected. Baseline drift found in weekly check. See ${CHECK_JOB_URL}" warning "GitLab Bot"'
 
 templates-shellcheck:
   extends:
@@ -446,3 +463,18 @@ validate-codeowners-coverage:
     USE_BUNDLE_INSTALL: "false"
   script:
     - tooling/bin/validate_codeowners_coverage
+
+skills-version-bump:
+  stage: lint
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
+  extends:
+    - .skills:rules:skills-version-bump
+  needs: []
+  variables:
+    GIT_DEPTH: 100
+    GIT_SUBMODULE_STRATEGY: none
+  before_script:
+    - apk add --no-cache bash git
+    - git fetch --depth=100 origin "$CI_MERGE_REQUEST_DIFF_BASE_SHA"
+  script:
+    - bash scripts/lint/check-skills-version-bump.sh

@@ -29,10 +29,10 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
       let_it_be(:group_1)  { create(:group) }
       let_it_be(:group_2)  { create(:group) }
 
-      let_it_be(:project_1)  { create(:project, :repository, namespace: group_1) }
-      let_it_be(:project_2)  { create(:project, :repository, namespace: group_1) }
-      let_it_be(:project_3)  { create(:project, :repository, namespace: group_1) }
-      let_it_be(:project_4)  { create(:project, :repository, namespace: group_2) }
+      let_it_be(:project_1)  { create(:project, namespace: group_1) }
+      let_it_be(:project_2)  { create(:project, namespace: group_1) }
+      let_it_be(:project_3)  { create(:project, namespace: group_1) }
+      let_it_be(:project_4)  { create(:project, namespace: group_2) }
 
       # Labels/issues can't be lazily created so we might as well eager initialize
       # all other objects too since we use them inside

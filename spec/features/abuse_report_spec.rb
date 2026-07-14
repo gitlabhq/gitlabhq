@@ -50,7 +50,10 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
       before do
         visit incident_project_issues_path(project, incident)
-        click_button 'Incident actions'
+
+        within_testid('issue-header') do
+          find_by_testid('desktop-dropdown').click
+        end
       end
 
       it_behaves_like 'reports the user with an abuse category'
@@ -78,7 +81,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
         visit user_path(abusive_user)
 
         find_by_testid('user-profile-actions').click
-        fill_and_submit_abuse_category_form("They're being offensive or abusive.")
+        fill_and_submit_abuse_category_form("They're being offensive, harassing, or abusive.")
         fill_and_submit_report_abuse_form
 
         expect(page).to have_content 'Thank you for your report'
@@ -138,7 +141,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
   private
 
-  def fill_and_submit_abuse_category_form(category = "They're posting spam.")
+  def fill_and_submit_abuse_category_form(category = "They're posting spam or unsolicited content.")
     click_button 'Report abuse'
 
     choose category

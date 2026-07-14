@@ -20,15 +20,15 @@ describe('Delete pipeline schedule modal', () => {
     createComponent();
   });
 
-  it('emits the deleteSchedule event', () => {
+  it('emits the delete-schedule event', () => {
     findModal().vm.$emit('primary');
 
-    expect(wrapper.emitted()).toEqual({ deleteSchedule: [[]] });
+    expect(wrapper.emitted()).toEqual({ 'delete-schedule': [[]] });
   });
 
-  it('emits the hideModal event', () => {
+  it('emits the hide-modal event', () => {
     findModal().vm.$emit('hide');
 
-    expect(wrapper.emitted()).toEqual({ hideModal: [[]] });
+    expect(wrapper.emitted()).toEqual({ 'hide-modal': [[]] });
   });
 });

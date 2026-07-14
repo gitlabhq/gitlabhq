@@ -30,7 +30,7 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
         end
 
         it 'includes ProcessLsif in the headers' do
-          expect(authorize[:headers][:ProcessLsif]).to eq(true)
+          expect(authorize[:headers][:ProcessLsif]).to be(true)
         end
 
         it 'returns 200MB in bytes as maximum size' do
@@ -123,7 +123,7 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
 
           # We have to ensure to tell Workhorse to skip deleting the file after upload
           # because we are uploading the file to its final location
-          expect(authorize[:headers][:RemoteObject][:SkipDelete]).to eq(true)
+          expect(authorize[:headers][:RemoteObject][:SkipDelete]).to be(true)
         end
 
         it_behaves_like 'handling lsif artifact'
@@ -224,8 +224,8 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
           expect(new_artifact.file_format).to eq('gzip')
           expect(new_artifact.file_sha256).to eq(artifacts_sha256)
           expect(new_artifact.locked).to eq(job.pipeline.locked)
-          expect(new_artifact.exposed_as).to eq(nil)
-          expect(new_artifact.exposed_paths).to eq(nil)
+          expect(new_artifact.exposed_as).to be_nil
+          expect(new_artifact.exposed_paths).to be_nil
         end
 
         it 'logs the created artifact and metadata' do

@@ -425,7 +425,7 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 
 ## 8. Redis
 
-See the [requirements page](../requirements.md#redis) for the minimum
+See the [requirements page](../requirements.md#redis-or-valkey) for the minimum
 Redis requirements.
 
 Install Redis with:

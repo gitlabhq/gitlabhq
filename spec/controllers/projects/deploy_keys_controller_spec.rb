@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::DeployKeysController, feature_category: :continuous_delivery do
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :small_repo) }
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
 
@@ -14,7 +14,7 @@ RSpec.describe Projects::DeployKeysController, feature_category: :continuous_del
   end
 
   describe 'GET actions' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
     let_it_be(:user) { create(:user) }
 
     let_it_be(:accessible_project) { create(:project, :internal, developers: user) }

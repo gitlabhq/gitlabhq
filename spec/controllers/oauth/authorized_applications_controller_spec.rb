@@ -34,6 +34,17 @@ RSpec.describe Oauth::AuthorizedApplicationsController do
       expect(access_token.reload).to be_revoked
     end
 
+    it 'delegates to Authn::OauthApplications::RevokeService when id is passed' do
+      expect_next_instance_of(
+        Authn::OauthApplications::RevokeService,
+        current_user: user, application_id: application.id.to_s
+      ) do |service|
+        expect(service).to receive(:execute).and_call_original
+      end
+
+      delete :destroy, params: { id: application.id }
+    end
+
     it 'revokes a specific token when token_id is passed' do
       expect(grant).not_to be_revoked
       expect(access_token).not_to be_revoked
@@ -48,6 +59,6 @@ RSpec.describe Oauth::AuthorizedApplicationsController do
   end
 
   it 'includes Two-factor enforcement concern' do
-    expect(described_class.included_modules.include?(EnforcesTwoFactorAuthentication)).to eq(true)
+    expect(described_class.included_modules.include?(EnforcesTwoFactorAuthentication)).to be(true)
   end
 end

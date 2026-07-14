@@ -162,8 +162,8 @@ func TestConfigError(t *testing.T) {
 		t.Run(arg, func(t *testing.T) {
 			_, _, err := buildConfig("test", []string{arg})
 
-			require.Error(t, err)
-			require.IsType(t, alreadyPrintedError{}, err)
+			var printedErr alreadyPrintedError
+			require.ErrorAs(t, err, &printedErr)
 		})
 	}
 }

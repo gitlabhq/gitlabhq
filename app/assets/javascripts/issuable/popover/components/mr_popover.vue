@@ -8,6 +8,7 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import query from '../queries/merge_request.query.graphql';
 
 export default {
+  name: 'MrPopover',
   components: {
     GlIcon,
     GlBadge,
@@ -110,8 +111,8 @@ export default {
             {{ stateHumanName }}
           </gl-badge>
           <span class="gl-text-subtle">
-            {{ __('Opened') }} <time v-text="formattedTime"></time
-          ></span>
+            {{ __('Opened') }} <time :datetime="mergeRequest.createdAt">{{ formattedTime }}</time>
+          </span>
         </div>
         <ci-icon v-if="detailedStatus" :status="detailedStatus" class="gl-ml-2" />
       </div>

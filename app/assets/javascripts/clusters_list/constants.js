@@ -58,9 +58,12 @@ export const MAX_REQUESTS = 3;
 export const STATUSES = {
   default: { className: 'gl-bg-default', title: __('Unknown') },
   disabled: { className: 'disabled', title: __('Disabled') },
-  created: { className: 'bg-success', title: __('Connected') },
-  unreachable: { className: 'bg-danger', title: __('Unreachable') },
-  authentication_failure: { className: 'bg-warning', title: __('Authentication Failure') },
+  created: { className: '!gl-bg-status-success', title: __('Connected') },
+  unreachable: { className: '!gl-bg-status-danger', title: __('Unreachable') },
+  authentication_failure: {
+    className: '!gl-bg-status-warning',
+    title: __('Authentication Failure'),
+  },
   deleting: { title: __('Deleting') },
   creating: { title: __('Creating') },
 };

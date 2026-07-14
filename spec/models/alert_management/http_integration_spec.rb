@@ -89,7 +89,7 @@ RSpec.describe AlertManagement::HttpIntegration, feature_category: :incident_man
 
   describe 'scopes' do
     let_it_be(:integration_1) { create(:alert_management_http_integration) }
-    let_it_be(:integration_2, freeze: false) { create(:alert_management_http_integration, :inactive, project: project) }
+    let_it_be_with_reload(:integration_2) { create(:alert_management_http_integration, :inactive, project: project) }
     let_it_be(:integration_3) { create(:alert_management_prometheus_integration, project: project) }
     let_it_be(:integration_4) { create(:alert_management_http_integration, :legacy, :inactive) }
 

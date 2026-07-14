@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: AI Clients
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use GitLab Duo Agentic Chat to answer complex questions and create or edit files autonomously.
@@ -24,7 +24,7 @@ title: GitLab Duo Agentic Chat
 
 - VS Code [introduced on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/540917) in GitLab 18.1 as an [experiment](../../policy/development_stages_support.md) with a [flag](../../administration/feature_flags/_index.md) named `duo_agentic_chat`. Disabled by default.
 - VS Code [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196688) in GitLab 18.2.
-- GitLab UI [introduced on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/546140) in GitLab 18.2 [with flags](../../administration/feature_flags/_index.md) named `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools`. Both flags are enabled by default.
+- GitLab UI [introduced on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/546140) in GitLab 18.2 [with feature flags](../../administration/feature_flags/_index.md) named `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools`. Both flags are enabled by default.
 - Feature flag `duo_agentic_chat` enabled by default in GitLab 18.2.
 - JetBrains IDEs [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/1077) in GitLab 18.2.
 - Changed to beta in GitLab 18.2.
@@ -74,6 +74,9 @@ You can use GitLab Duo Chat in:
 - A JetBrains IDE.
 - Visual Studio for Windows.
 
+With the [GitLab Duo CLI](../gitlab_duo_cli/_index.md), you can also use Agentic Chat
+in your terminal.
+
 ### Use GitLab Duo Chat in the GitLab UI
 
 {{< history >}}
@@ -109,6 +112,24 @@ To use Chat in the GitLab UI:
 
 If you reload the webpage you are on, or go to another webpage, Chat remembers your
 most recent conversation, and that conversation is still active in the Chat drawer.
+
+#### Foundational flows
+
+{{< history >}}
+
+- Triggering foundational flows in a GitLab Duo Agentic Chat conversation [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20484) in GitLab 19.2 [with a feature flag](../../administration/feature_flags/_index.md) named `agentic_foundational_flow_tool`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Where appropriate, the following foundational flows can be triggered from an Agentic Chat conversation to answer a question or accomplish a goal.
+
+- [Developer Flow](../duo_agent_platform/flows/foundational_flows/developer.md#use-the-flow-in-agentic-chat)
+- [Code Review Flow](../duo_agent_platform/flows/foundational_flows/code_review.md#use-the-flow)
+- [Fix CI/CD Pipeline Flow](../duo_agent_platform/flows/foundational_flows/fix_pipeline.md#fix-the-pipeline-in-a-merge-request)
 
 ### Use GitLab Duo Chat in VS Code
 
@@ -395,6 +416,10 @@ This setting applies to all GitLab Duo Agent Platform features.
   - Introduced in [GitLab for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.83.2) 6.83.2.
   - Introduced in [GitLab Duo plugin for JetBrains IDEs](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.38.0) 3.38.0.
   - Introduced in [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.101.0) 8.101.0.
+- Pattern-based tool approval [removed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/3699) on July 10, 2026.
+  - Removed in [GitLab for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.85.3) 6.85.3.
+  - Removed in [GitLab Duo plugin for JetBrains IDEs](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.43.0) 3.43.0.
+  - Removed in [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.3.0) 9.3.0.
 
 {{< /history >}}
 
@@ -487,9 +512,9 @@ Prerequisites:
 
 - Tool approvals are turned on for your group or instance.
 - For GitLab Duo Chat in your local environment, install and configure one of the following:
-  - [GitLab for VS Code](../../editor_extensions/visual_studio_code/setup.md) 6.72.0 or later. For pattern-based tool approval, 6.83.2 or later.
-  - [GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md) 3.33.0 or later. For pattern-based tool approval, 3.38.0 or later.
-  - [GitLab Duo CLI](../gitlab_duo_cli/_index.md) 8.80.0 or later. For pattern-based tool approval, 8.101.0 or later.
+  - [GitLab for VS Code](../../editor_extensions/visual_studio_code/setup.md) 6.72.0 or later.
+  - [GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md) 3.33.0 or later.
+  - [GitLab Duo CLI](../gitlab_duo_cli/_index.md) 8.80.0 or later.
 
 To approve or deny a tool for your current session:
 
@@ -498,11 +523,6 @@ To approve or deny a tool for your current session:
    - **Approve**: Chat can use the tool with these arguments once.
    - **Approve for session**: Chat can use the tool with these arguments for the remainder of the
      session. Different arguments require additional approval.
-   - **Approve all uses of this tool for session** (pattern or wildcard approval): Chat can use this
-     tool for the remainder of the session whenever the arguments match the approved pattern.
-     > [!note]
-     > If tool arguments contain shell metacharacters (`;`, `&&`, `|`, `$`, and others),
-     > pattern-based approval is not available. Use **Approve for session** instead.
    - **Deny**: Chat cannot use the tool.
 
 All approvals reset when you start a new conversation.

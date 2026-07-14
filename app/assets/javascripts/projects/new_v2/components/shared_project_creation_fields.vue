@@ -130,11 +130,7 @@ export default {
     <gl-form-group
       :label="s__('ProjectsNew|Project name')"
       label-for="project[name]"
-      :description="
-        s__(
-          'ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.',
-        )
-      "
+      :description="s__('ProjectsNew|Start with a letter, digit, emoji, or underscore.')"
       :invalid-feedback="form.fields['project[name]'].feedback"
       data-testid="project-name-group"
     >
@@ -155,9 +151,7 @@ export default {
     <div class="gl-flex gl-flex-col gl-gap-4 @sm/panel:gl-flex-row">
       <gl-form-group
         class="@sm/panel:gl-w-1/2"
-        :invalid-feedback="
-          s__('ProjectsNew|Pick a group or namespace where you want to create this project.')
-        "
+        :invalid-feedback="s__('ProjectsNew|Select where to create this project.')"
         :state="selectedNamespace.id !== null"
         data-testid="project-namespace-group"
       >

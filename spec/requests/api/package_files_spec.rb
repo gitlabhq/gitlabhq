@@ -10,6 +10,11 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
   describe 'GET /projects/:id/packages/:package_id/package_files' do
     let(:url) { "/projects/#{project.id}/packages/#{package.id}/package_files" }
 
+    it_behaves_like 'authorizing granular token permissions', :read_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url, personal_access_token: pat) }
+    end
+
     shared_examples 'handling job token and returning' do |status:|
       it "returns status #{status}" do
         get api(url, job_token: job.token)
@@ -228,6 +233,16 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
     let(:url) { "/projects/#{project.id}/packages/#{package.id}/package_files/#{package_file_id}" }
 
     subject(:api_request) { delete api(url, user) }
+
+    it_behaves_like 'authorizing granular token permissions', :delete_package do
+      let(:boundary_object) { project }
+
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      let(:request) { delete api(url, personal_access_token: pat) }
+    end
 
     shared_examples 'handling job token and returning' do |status:|
       it "returns status #{status}", :aggregate_failures do
@@ -536,6 +551,11 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
     let(:params) { {} }
 
     subject(:request) { get api(url), params: params }
+
+    it_behaves_like 'authorizing granular token permissions', :download_package do
+      let(:boundary_object) { project }
+      let(:request) { get api(url, personal_access_token: pat) }
+    end
 
     shared_examples 'allow to download package file' do |user_type|
       context "for #{user_type}" do

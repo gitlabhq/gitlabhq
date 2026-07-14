@@ -12,23 +12,7 @@ module Gitlab
 
         def key_from_address(address, wildcard_address: nil)
           wildcard_address ||= config.address
-          regex = address_regex(wildcard_address)
-          return unless regex
-
-          match = address.match(regex)
-          return unless match
-
-          match[1]
-        end
-
-        private
-
-        def address_regex(wildcard_address)
-          return unless wildcard_address
-
-          regex = Regexp.escape(wildcard_address)
-          regex = regex.sub(Regexp.escape(WILDCARD_PLACEHOLDER), '(.+)')
-          Regexp.new(/\A<?#{regex}>?\z/).freeze
+          ::Gitlab::EmailHandler::MailKey.key_from_address(address, wildcard_address)
         end
       end
     end

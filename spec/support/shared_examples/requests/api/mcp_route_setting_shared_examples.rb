@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'an endpoint with mcp route setting' do |expected_tool, expected_params = nil|
+RSpec.shared_examples 'an endpoint with mcp route setting' do |expected_tool, expected_params: nil, status: :ok|
   it 'has the correct mcp route setting configured' do
     subject # trigger the request defined in the including spec
 
-    expect(response).to have_gitlab_http_status(:ok)
+    expect(response).to have_gitlab_http_status(status)
 
     endpoint = request.env['api.endpoint']
     actual_value = endpoint.route_setting(:mcp)

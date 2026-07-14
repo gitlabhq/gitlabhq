@@ -9,8 +9,6 @@ work_item: "https://gitlab.com/groups/gitlab-org/-/work_items/20506"
 categories: [ Source Code Management ]
 ---
 
-<!-- categories: Source Code Management -->
-
 In GitLab 18.10, audit logs began capturing the specific Git operation performed
 (clone, pull, fetch, or push) for human users.
 

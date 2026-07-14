@@ -1400,7 +1400,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
         it 'observes delay for jobs whose prior stage has completed' do
           expect(Labkit::UserExperienceSli).to receive(:observed)
-            .with(:ci_job_processing_delay, start_time: an_instance_of(ActiveSupport::TimeWithZone))
+            .with(:ci_job_processing_delay, hash_including(start_time: an_instance_of(ActiveSupport::TimeWithZone)))
             .at_least(:twice)
 
           process_pipeline
@@ -1418,7 +1418,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
         it 'observes delay for DAG jobs whose needs are met' do
           expect(Labkit::UserExperienceSli).to receive(:observed)
-            .with(:ci_job_processing_delay, start_time: an_instance_of(ActiveSupport::TimeWithZone))
+            .with(:ci_job_processing_delay, hash_including(start_time: an_instance_of(ActiveSupport::TimeWithZone)))
             .at_least(:twice)
 
           process_pipeline
@@ -1427,15 +1427,45 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
       end
 
       context 'with first stage jobs that have no prior dependencies' do
-        before do
-          create_build('build', stage_idx: 0)
-        end
+        let!(:build_job) { create_build('build', stage_idx: 0) }
 
-        it 'observes delay using pipeline created_at as the baseline' do
+        it 'observes delay using the job created_at as the baseline' do
           expect(Labkit::UserExperienceSli).to receive(:observed)
-            .with(:ci_job_processing_delay, start_time: pipeline.created_at)
+            .with(:ci_job_processing_delay, hash_including(start_time: build_job.created_at, anchored_on: 'job_created_at'))
 
           process_pipeline
+        end
+      end
+
+      context 'when a job was created after its dependency finished' do
+        let!(:build_job) { create_build('build', stage_idx: 0) }
+        let!(:test_job) { create_build('test', stage_idx: 1, scheduling_type: :dag) }
+
+        before do
+          create(:ci_build_need, build: test_job, name: 'build')
+          process_pipeline
+
+          # Simulate a retried/cloned job: the dependent keeps pointing at the stale
+          # dependency finished_at while having a fresh created_at. We set this while the
+          # job is still in the created state so it is observed when its need completes.
+          test_job.reset.update!(created_at: 2.days.from_now)
+        end
+
+        it 'anchors to the job created_at rather than the stale dependency finished_at', :aggregate_failures do
+          observed_args = []
+          allow(Labkit::UserExperienceSli).to receive(:observed) do |id, **kwargs|
+            observed_args << kwargs.merge(id: id)
+          end
+
+          # Completing the need triggers pipeline processing for the dependent job.
+          builds.find_by(name: 'build').reset.success
+
+          anchored_on_job = observed_args.find { |args| args[:anchored_on] == 'job_created_at' }
+
+          expect(anchored_on_job).to be_present
+          expect(anchored_on_job[:id]).to eq(:ci_job_processing_delay)
+          expect(anchored_on_job[:start_time]).to be_within(1.second).of(test_job.reset.created_at)
+          expect(anchored_on_job[:retried]).to be(false)
         end
       end
 
@@ -1447,7 +1477,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
         it 'observes delay when the manual job is processed out of created status' do
           expect(Labkit::UserExperienceSli).to receive(:observed)
-            .with(:ci_job_processing_delay, start_time: an_instance_of(ActiveSupport::TimeWithZone))
+            .with(:ci_job_processing_delay, hash_including(start_time: an_instance_of(ActiveSupport::TimeWithZone)))
             .at_least(:twice)
 
           process_pipeline
@@ -1466,7 +1496,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
         it 'observes delay when the delayed job is processed out of created status' do
           expect(Labkit::UserExperienceSli).to receive(:observed)
-            .with(:ci_job_processing_delay, start_time: an_instance_of(ActiveSupport::TimeWithZone))
+            .with(:ci_job_processing_delay, hash_including(start_time: an_instance_of(ActiveSupport::TimeWithZone)))
             .at_least(:twice)
 
           process_pipeline

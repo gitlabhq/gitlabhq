@@ -17,7 +17,7 @@ Learn how to use the [Google Cloud Run component](https://gitlab.com/google-gitl
 
 1. To run the commands on this page, set up the `gcloud` CLI in one of the following development environments:
 
-   - [Cloud Shell](https://cloud.google.com/shell/docs/using-cloud-shell)
+   - [Cloud Shell](https://docs.cloud.google.com/shell/docs/using-cloud-shell)
    - [Local shell](https://cloud.google.com/sdk/docs/install)
 
 1. Set your default Google Cloud project by running the following command:
@@ -232,7 +232,7 @@ unless you follow all the set up instructions again.
 For information on GitLab and Google pricing and project management, see the following
 resources:
 
-- [GitLab pricing](https://about.gitlab.com/free-trial/devsecops)
+- [GitLab pricing](https://about.gitlab.com/free-trial/devsecops/)
 - [Google pricing](https://cloud.google.com/pricing)
 - [Delete a GitLab project](../../user/project/working_with_projects.md#delete-a-project)
 
@@ -282,4 +282,4 @@ avoid exceeding project quota limits.
 
 ## Related topics
 
-- [Learn more about Cloud Run](https://cloud.google.com/run/docs/overview/what-is-cloud-run).
+- [Learn more about Cloud Run](https://docs.cloud.google.com/run/docs/overview/what-is-cloud-run).

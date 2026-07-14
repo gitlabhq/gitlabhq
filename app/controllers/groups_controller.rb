@@ -13,10 +13,11 @@ class GroupsController < Groups::ApplicationController
 
   respond_to :html
 
-  prepend_before_action(only: [:show, :issues]) { authenticate_sessionless_user!(:rss) }
+  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss, permission: :read_event) }
+  prepend_before_action(only: [:issues]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:merge_requests], if: -> {
     request.format.atom?
-  }) { authenticate_sessionless_user!(:rss) }
+  }) { authenticate_sessionless_user!(:rss, permission: :read_merge_request) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
 
   before_action :authenticate_user!, only: [:new, :create]

@@ -58,6 +58,7 @@ const FIELDS = {
 };
 
 export default {
+  name: 'SettingsForm',
   components: {
     GlButton,
     GlForm,

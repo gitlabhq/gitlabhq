@@ -19,6 +19,7 @@ import {
 } from '~/work_items/constants';
 
 export default {
+  name: 'CreateMenu',
   CREATION_CONTEXT_SUPER_SIDEBAR,
   components: {
     GlDisclosureDropdown,

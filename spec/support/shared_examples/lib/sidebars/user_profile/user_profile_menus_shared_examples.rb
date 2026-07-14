@@ -5,8 +5,8 @@ RSpec.shared_examples 'User profile menu' do |
   # A nil title will fall back to user.name.
   title: nil
 |
-  let_it_be(:current_user, freeze: false) { build(:user) }
-  let_it_be(:user, freeze: false) { build(:user) }
+  let_it_be(:current_user) { build(:user) }
+  let_it_be(:user) { build(:user) }
 
   let(:context) { Sidebars::Context.new(current_user: current_user, container: user) }
 
@@ -44,7 +44,7 @@ RSpec.shared_examples 'User profile menu' do |
 
   [:blocked, :banned].each do |trait|
     context "when viewed user is #{trait}" do
-      let_it_be(:viewed_user, freeze: false) { build(:user, trait) }
+      let_it_be(:viewed_user) { build(:user, trait) }
       let(:context) { Sidebars::Context.new(current_user: user, container: viewed_user) }
 
       context 'when user is not logged in' do
@@ -74,8 +74,8 @@ RSpec.shared_examples 'User profile menu' do |
 end
 
 RSpec.shared_examples 'Followers/followees counts' do |symbol|
-  let_it_be(:current_user, freeze: false) { build(:user) }
-  let_it_be(:user, freeze: false) { build(:user) }
+  let_it_be(:current_user) { build(:user) }
+  let_it_be(:user) { build(:user) }
 
   let(:context) { Sidebars::Context.new(current_user: current_user, container: user) }
 

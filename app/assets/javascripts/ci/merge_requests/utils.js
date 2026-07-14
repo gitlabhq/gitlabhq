@@ -26,27 +26,6 @@ export const createSubscriptionsCollection = () => {
   };
 };
 
-export const updatePipelineInQueryResult = (queryResult, updatedPipeline) => {
-  const nodes = queryResult?.project?.mergeRequest?.pipelines?.nodes;
-  if (!nodes?.length) return queryResult;
-
-  return {
-    ...queryResult,
-    project: {
-      ...queryResult.project,
-      mergeRequest: {
-        ...queryResult.project.mergeRequest,
-        pipelines: {
-          ...queryResult.project.mergeRequest.pipelines,
-          nodes: nodes.map((node) =>
-            node.id === updatedPipeline.id ? { ...node, ...updatedPipeline } : node,
-          ),
-        },
-      },
-    },
-  };
-};
-
 export const updateDownstreamPipelineInList = (
   pipelines = [],
   { parentGraphqlId, updatedDownstream },

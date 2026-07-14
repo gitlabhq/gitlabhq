@@ -28,6 +28,10 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
     allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
       allow(instance).to receive(:check_execution_time!)
     end
+
+    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
+      .with(:ci_interpolation_split_function)
+      .and_return(false)
   end
 
   describe '#matching?' do

@@ -144,5 +144,11 @@ RSpec.describe "Private Project Pages Access", feature_category: :pages do
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_pages_access do
+      let(:user) { developer }
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/pages_access", personal_access_token: pat) }
+    end
   end
 end

@@ -37,9 +37,25 @@ module Import
                 pipeline: ::BulkImports::Common::Pipelines::UploadsPipeline,
                 stage: 2
               },
+              # UserContributionsPipeline updates source users created by the
+              # preceding relation pipelines. It must run after all relation
+              # pipelines.
+              user_contributions: {
+                pipeline: Import::Offline::Common::Pipelines::UserContributionsPipeline,
+                stage: 3
+              },
+              project_entities: {
+                pipeline: Import::Offline::Groups::Pipelines::ProjectEntitiesPipeline,
+                stage: 3
+              },
+              subgroups: {
+                pipeline: Import::Offline::Groups::Pipelines::SubgroupEntitiesPipeline,
+                stage: 4 # SubGroup Entities must be imported in later stage
+                # to Project Entities to avoid `full_path` naming conflicts.
+              },
               finisher: {
                 pipeline: ::BulkImports::Common::Pipelines::EntityFinisher,
-                stage: 3
+                stage: 5
               }
             }
           end

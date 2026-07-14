@@ -14,7 +14,7 @@ title: Runner API
 
 このAPIを使用して、インスタンスに登録されている[Runner](../ci/runners/_index.md)を管理します。
 
-新規のインスタンス、グループ、またはプロジェクトのRunnerを作成するには、[`POST /user/runners`](users.md#create-a-runner-linked-to-a-user)エンドポイントを使用します。既存のRunnerを管理するには、このAPIを使用します。
+新しいインスタンス、グループ、またはプロジェクトRunnerを作成するには、[`POST /user/runners`](users.md#create-a-runner-linked-to-a-user)エンドポイントを使用します。既存のRunnerを管理するには、このAPIを使用します。
 
 [ページネーション](rest/_index.md#pagination)は、次のAPIエンドポイント（デフォルトでは20個のアイテムを返します）で使用できます。
 
@@ -154,27 +154,17 @@ GET /runners/all?tag_list=tag1,tag2
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/runners/all"
+```
 
 > [!warning]
-> Deprecations:
+> 非推奨事項:
 >
-> - The `active` and `paused` values in the `status` query parameter are deprecated
->   and scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
->   Use the `paused` query parameter instead.
-> - The `active` attribute in the response is deprecated
->   and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
->   Use the `paused` attribute instead.
-> - The `ip_address` attribute in the response is deprecated
->   [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
->   [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
->   In GitLab 17.0, this attribute returns an empty string.
->   The `ipAddress` attribute can be found inside the respective runner manager.
->   It is only available through the GraphQL
->   [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
+> - `status`クエリパラメータの`active`と`paused`の値は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`クエリパラメータを使用してください。
+> - 応答の`active`属性は非推奨であり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。代わりに、`paused`属性を使用してください。
+> - 応答の`ip_address`属性は[GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159)で非推奨となり、[REST APIの将来のバージョン](https://gitlab.com/gitlab-org/gitlab/-/issues/351109)で削除される予定です。GitLab 17.0では、この属性は空の文字列を返します。`ipAddress`属性は、それぞれのRunnerマネージャー内にあります。GraphQL [`CiRunnerManager`タイプ](graphql/reference/_index.md#cirunnermanager)でのみ利用可能です。
 
-Example response:
+レスポンス例: 
 
 ```json
 [
@@ -329,7 +319,7 @@ PUT /runners/:id
 |--------------------|---------|----------|-------------|
 | `id`               | 整数 | はい      | RunnerのID |
 | `description`      | 文字列  | いいえ       | Runnerの説明 |
-| `active`           | ブール値 | いいえ       | 非推奨。代わりに、`paused`を使用してください。Runnerがジョブの受信を許可されているかどうかを示すフラグ |
+| `active`           | ブール値 | いいえ       | 非推奨。代わりに`paused`を使用してください。Runnerがジョブの受信を許可されているかどうかを示すフラグ |
 | `paused`           | ブール値 | いいえ       | Runnerが新規ジョブを無視する必要があるかどうかを指定します |
 | `tag_list`         | 配列   | いいえ       | Runnerのタグのリスト |
 | `run_untagged`     | ブール値 | いいえ       | タグ付けされていないジョブをRunnerが実行できるかどうかを指定します |
@@ -829,7 +819,7 @@ POST /runners
 | `token`            | 文字列       | はい      | [登録トークン](#registration-and-authentication-tokens) |
 | `description`      | 文字列       | いいえ       | Runnerの説明 |
 | `info`             | ハッシュ         | いいえ       | Runnerのメタデータ。`name`、`version`、`revision`、`platform`、`architecture`を含めることができますが、UIの**管理者**エリアには、`version`、`platform`、`architecture`のみが表示されます |
-| `active`           | ブール値      | いいえ       | 非推奨。代わりに、`paused`を使用してください。Runnerに新規ジョブの受信を許可するかどうかを指定します |
+| `active`           | ブール値      | いいえ       | 非推奨。代わりに`paused`を使用してください。Runnerに新規ジョブの受信を許可するかどうかを指定します |
 | `paused`           | ブール値      | いいえ       | Runnerが新規ジョブを無視する必要があるかどうかを指定します |
 | `locked`           | ブール値      | いいえ       | 現在のプロジェクトに対してRunnerをロックする必要があるかどうかを指定します |
 | `run_untagged`     | ブール値      | いいえ       | タグ付けされていないジョブをRunnerが処理する必要があるかどうかを指定します |

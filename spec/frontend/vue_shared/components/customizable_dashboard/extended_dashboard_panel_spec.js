@@ -75,6 +75,21 @@ describe('ExtendedDashboardPanel', () => {
     });
   });
 
+  describe('with a titleIcon and no alert state', () => {
+    beforeEach(() => {
+      createWrapper({
+        props: {
+          titleIcon: 'chart',
+        },
+      });
+    });
+
+    it('renders the titleIcon in the panel header', () => {
+      expect(findDashboardPanel().props('titleIcon')).toBe('chart');
+      expect(findDashboardPanel().props('titleIconClass')).toBe('');
+    });
+  });
+
   describe('with a tooltip', () => {
     beforeEach(() => {
       createWrapper({
@@ -185,6 +200,7 @@ describe('ExtendedDashboardPanel', () => {
         createWrapper({
           props: {
             title: 'Panel title',
+            titleIcon: 'chart',
             alertPopoverTitle: 'Some error',
             showAlertState: true,
             alertVariant,
@@ -200,7 +216,7 @@ describe('ExtendedDashboardPanel', () => {
         expect(findDashboardPanel().props('borderColorClass')).toBe(borderColor);
       });
 
-      it('sets the alert icon', () => {
+      it('renders the alert icon, taking precedence over the titleIcon', () => {
         expect(findDashboardPanel().props('titleIcon')).toBe(iconName);
         expect(findDashboardPanel().props('titleIconClass')).toBe(iconColor);
       });

@@ -11,6 +11,7 @@ import CreateTimelineEvent from './create_timeline_event.vue';
 import IncidentTimelineEventsList from './timeline_events_list.vue';
 
 export default {
+  name: 'TimelineEventsTab',
   components: {
     GlButton,
     GlLoadingIcon,

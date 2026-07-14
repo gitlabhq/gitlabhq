@@ -4,13 +4,13 @@ require 'spec_helper'
 
 RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_planning do
   let_it_be(:author)  { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
 
   describe '#change_start_date_or_due_date' do
-    let_it_be(:issue, freeze: false)     { create(:issue, project: project) }
-    let_it_be(:work_item, freeze: false) { create(:work_item, project: project) }
+    let_it_be_with_reload(:issue) { create(:issue, project: project) }
+    let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
 
-    let(:start_date) { Date.today }
+    let(:start_date) { Time.zone.today }
     let(:due_date) { 1.week.from_now.to_date }
     let(:changed_dates) { { 'due_date' => [nil, due_date], 'start_date' => [nil, start_date] } }
 
@@ -257,7 +257,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
     end
 
     context 'when noteable is a merge request' do
-      let_it_be(:noteable, freeze: false) { create(:merge_request, source_project: project) }
+      let_it_be_with_reload(:noteable) { create(:merge_request, source_project: project) }
 
       it 'does not track the issue event' do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_time_estimate_changed_action)
@@ -457,7 +457,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
       end
 
       context 'when noteable is a merge request' do
-        let_it_be(:noteable, freeze: false) { create(:merge_request, source_project: project) }
+        let_it_be_with_reload(:noteable) { create(:merge_request, source_project: project) }
 
         it 'does not track the issue event' do
           expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_time_estimate_changed_action)

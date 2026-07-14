@@ -397,6 +397,14 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
       let!(:project_setup) { project.add_maintainer(user) }
       let(:request) { delete api("/projects/#{project.id}/badges/#{badge.id}", personal_access_token: pat) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_badge do
+      let(:user) { developer }
+      let(:badge) { group.badges.first }
+      let(:boundary_object) { group }
+      let!(:group_setup) { group.add_owner(user) }
+      let(:request) { delete api("/groups/#{group.id}/badges/#{badge.id}", personal_access_token: pat) }
+    end
   end
 
   context 'when updating a badge' do

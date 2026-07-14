@@ -16,6 +16,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'MembersTokenSelect',
   components: {
     GlTokenSelector,
     GlAvatar,
@@ -55,6 +56,7 @@ export default {
       default: '',
     },
   },
+  emits: ['clear', 'input', 'invite-cap-reached', 'token-remove', 'tokenization-state-change'],
   data() {
     return {
       loading: false,

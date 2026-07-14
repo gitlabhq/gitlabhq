@@ -72,6 +72,18 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       expect(helper.visible_attributes).to include(:can_create_organization)
     end
 
+    it 'contains :ci_partitions_in_seconds_limit_human_readable' do
+      expect(helper.visible_attributes).to include(:ci_partitions_in_seconds_limit_human_readable)
+    end
+
+    it 'contains :lock_require_sha_for_merge' do
+      expect(helper.visible_attributes).to include(:lock_require_sha_for_merge)
+    end
+
+    it 'contains :require_sha_for_merge' do
+      expect(helper.visible_attributes).to include(:require_sha_for_merge)
+    end
+
     describe ':mcp_server_enabled' do
       context 'when self-managed' do
         it 'is included' do
@@ -184,32 +196,20 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
     it 'includes :granular_tokens_enforced_after' do
       expect(helper.visible_attributes).to include(:granular_tokens_enforced_after)
     end
+
+    it 'includes logging_settings' do
+      expect(helper.visible_attributes).to include(:logging_field_schema_version, :logging_field_dual_emit_target)
+    end
   end
 
   describe '.mcp_server_setting_available?', feature_category: :mcp_server do
     subject { helper.mcp_server_setting_available? }
 
-    context 'on self-managed with the feature flag enabled' do
-      before do
-        stub_feature_flags(mcp_server_availability_setting: true)
-      end
-
+    context 'on self-managed' do
       it { is_expected.to be(true) }
     end
 
     context 'on SaaS', :saas do
-      before do
-        stub_feature_flags(mcp_server_availability_setting: true)
-      end
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(mcp_server_availability_setting: false)
-      end
-
       it { is_expected.to be(false) }
     end
   end
@@ -461,6 +461,11 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
   end
 
   describe '#global_search_settings_checkboxes', feature_category: :global_search do
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:application_setting, freeze: false) { build(:application_setting) }
 
     before do
@@ -606,6 +611,40 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
 
       work_items_option = options.find { |_label, value| value == 'work_items' }
       expect(work_items_option.first).to eq('Work items')
+    end
+  end
+
+  describe '#logging_field_changes_for_version' do
+    it 'returns fields introduced at the given version' do
+      changes = helper.send(:logging_field_changes_for_version, 1)
+
+      expect(changes).to be_an(Array)
+      expect(changes).not_to be_empty
+
+      change = changes.find { |c| c[:standard_field] == 'correlation_id' }
+      expect(change).to be_present
+      expect(change[:deprecated_fields]).to include('tags.correlation_id')
+    end
+
+    it 'returns fields with version 0' do
+      changes = helper.send(:logging_field_changes_for_version, 0)
+
+      expect(changes).to be_an(Array)
+      standard_fields = changes.map { |c| c[:standard_field] }
+      expect(standard_fields).not_to include('correlation_id')
+    end
+  end
+
+  describe '#logging_field_changes_data' do
+    it 'returns a hash keyed by version with field change arrays', :aggregate_failures do
+      data = helper.logging_field_changes_data
+
+      expect(data).to be_a(Hash)
+      expect(data).not_to have_key(0)
+      expect(data).to have_key(1)
+      expect(data[1]).to be_an(Array).and(be_present)
+      expect(data[1].first).to have_key(:standard_field)
+      expect(data[1].first).to have_key(:deprecated_fields)
     end
   end
 end

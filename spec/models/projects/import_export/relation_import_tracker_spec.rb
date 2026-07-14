@@ -13,6 +13,11 @@ RSpec.describe Projects::ImportExport::RelationImportTracker, feature_category: 
     it { is_expected.to validate_presence_of(:relation) }
 
     describe '#cannot_be_created_for_importing_project' do
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:project, freeze: false) do
         create(:project, import_state: create(:import_state))
       end
@@ -42,7 +47,7 @@ RSpec.describe Projects::ImportExport::RelationImportTracker, feature_category: 
 
   describe '#stale?' do
     context 'when older than 24 hours' do
-      let_it_be(:status, freeze: false) { build(:relation_import_tracker, created_at: 2.days.ago) }
+      let(:status) { build(:relation_import_tracker, created_at: 2.days.ago) }
 
       it 'is stale if created' do
         status.status = 0
@@ -66,7 +71,7 @@ RSpec.describe Projects::ImportExport::RelationImportTracker, feature_category: 
     end
 
     context 'when younger than 24 hours' do
-      let_it_be(:status, freeze: false) { build(:relation_import_tracker, created_at: (23.hours + 59.minutes).ago) }
+      let(:status) { build(:relation_import_tracker, created_at: (23.hours + 59.minutes).ago) }
 
       it 'is not stale' do
         expect(status.stale?).to be false

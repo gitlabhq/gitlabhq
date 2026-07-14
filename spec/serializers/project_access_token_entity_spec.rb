@@ -26,7 +26,7 @@ RSpec.describe ProjectAccessTokenEntity do
   subject(:json) {  described_class.new(token, project: project).as_json }
 
   context 'when bot is a member of the project' do
-    before do
+    before_all do
       project.add_developer(bot)
     end
 

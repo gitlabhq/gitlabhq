@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::AfterConfig, feature_category: :pipeline_composition do
   let_it_be(:user) { create(:user, :service_account, composite_identity_enforced: true) }
-  let_it_be(:project, freeze: false) { create(:project, :repository, developers: user) }
+  let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
 
   let(:pipeline) do
     build(:ci_pipeline, project: project)

@@ -351,7 +351,9 @@ module API
       requires :id, type: String, desc: 'The ID of a group'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Update a group. Available only for users who can administrate groups.' do
+      desc 'Update group attributes' do
+        detail 'Updates the attributes for a specified group. You must be an administrator or have ' \
+          'the Owner role for the group.'
         success Entities::Group
         tags %w[groups]
       end
@@ -407,6 +409,8 @@ module API
       end
 
       desc 'Unarchive a group' do
+        detail 'Unarchives a specified group. You must be an administrator or have the Owner role ' \
+          'for the group.'
         success code: 200, model: Entities::Group
         failure [
           { code: 403, message: 'Unauthenticated' }
@@ -430,7 +434,8 @@ module API
         end
       end
 
-      desc 'Get a single group, with containing projects.' do
+      desc 'Retrieve a group' do
+        detail 'Retrieves a specified group by ID or path.'
         success Entities::GroupDetail
         tags %w[groups]
       end
@@ -449,7 +454,9 @@ module API
         present_group_details(params, group, with_projects: params[:with_projects])
       end
 
-      desc 'Remove a group.' do
+      desc 'Schedule a group for deletion' do
+        detail 'Schedules a group for deletion. Groups are deleted at the end of the retention period (30 days ' \
+          'by default). Use the `permanently_remove` param to override the retention period.'
         success code: 202, message: 'Accepted'
         tags %w[groups]
       end
@@ -462,7 +469,9 @@ module API
         delete_group(group)
       end
 
-      desc 'Restore a group.' do
+      desc 'Restore a group' do
+        detail 'Restores a specified group that was previously scheduled for deletion. Can not restore groups ' \
+        'outside of the retention period (30 days by default).'
         tags %w[groups]
       end
       route_setting :authorization, permissions: :restore_group, boundary_type: :group
@@ -479,7 +488,8 @@ module API
         end
       end
 
-      desc 'Get a list of shared groups this group was invited to' do
+      desc 'List all shared groups' do
+        detail 'Lists all groups shared with a specified group.'
         success Entities::Group
         is_array true
         tags %w[groups]
@@ -505,7 +515,8 @@ module API
         present_groups params, groups
       end
 
-      desc 'Get a list of invited groups in this group' do
+      desc 'List all invited groups' do
+        detail 'Lists all groups invited to a specified group.'
         success Entities::Group
         is_array true
         tags %w[groups]
@@ -527,7 +538,9 @@ module API
         present_groups params, groups
       end
 
-      desc 'Get a list of projects in this group.' do
+      desc 'List all projects in a group' do
+        detail 'Lists all projects in a specified group accessible to the authenticated user. Unauthenticated requests ' \
+          'return only public projects with a limited subset of attributes.'
         success Entities::Project
         is_array true
         tags %w[groups]
@@ -573,7 +586,8 @@ module API
         present_projects(params, projects)
       end
 
-      desc 'Get a list of shared projects in this group' do
+      desc 'List all shared projects' do
+        detail 'Lists all projects shared with a specified group.'
         success Entities::Project
         is_array true
         tags %w[groups]
@@ -604,7 +618,8 @@ module API
         present_projects(params, projects)
       end
 
-      desc 'Get a list of subgroups in this group.' do
+      desc 'List all subgroups' do
+        detail 'Lists all subgroups for a specified group.'
         success Entities::Group
         is_array true
         tags %w[groups]
@@ -619,7 +634,8 @@ module API
         present_groups params, groups
       end
 
-      desc 'Get a list of descendant groups of this group.' do
+      desc 'List all descendant groups' do
+        detail 'Lists all descendant groups for a specified group.'
         success Entities::Group
         is_array true
         tags %w[groups]
@@ -635,7 +651,8 @@ module API
         present_groups params, groups
       end
 
-      desc 'Transfer a project to the group namespace. Available only for admin.' do
+      desc 'Transfer a project to a group' do
+        detail 'Transfers a specified project to another group. Administrators only.'
         success Entities::GroupDetail
         tags %w[groups]
       end
@@ -657,7 +674,8 @@ module API
         end
       end
 
-      desc 'Get the groups to where the current group can be transferred to' do
+      desc 'List all transfer locations for a group' do
+        detail 'Lists all groups that a specified source group can be transferred to.'
         success Entities::Group
         is_array true
         tags %w[groups]
@@ -677,7 +695,9 @@ module API
         present_groups params, groups, serializer: Entities::PublicGroupDetails
       end
 
-      desc 'Transfer a group to a new parent group or promote a subgroup to a top-level group' do
+      desc 'Transfer a group' do
+        detail 'Transfers a group to another parent group or transforms a subgroup into a top-level group. ' \
+          'You must be an administrator or have the Owner role for the group.'
         tags %w[groups]
       end
       params do
@@ -741,7 +761,8 @@ module API
         end
       end
 
-      desc 'Share a group with a group' do
+      desc 'Add a group to a group' do
+        detail 'Adds a group to a group.'
         success Entities::GroupDetail
         tags %w[groups]
       end
@@ -771,7 +792,8 @@ module API
         end
       end
 
-      desc 'Unshare a group with a group' do
+      desc 'Remove a group from a group' do
+        detail 'Removes a group from a group.'
         success code: 204, message: 'Resource deleted'
         tags ['groups']
       end
@@ -789,6 +811,38 @@ module API
         ::Groups::GroupLinks::DestroyService.new(shared_group, current_user).execute(link)
 
         no_content!
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      desc 'Remove a shared project from a group' do
+        detail 'Removes a shared project targeting this group. The ' \
+          'group Owner can remove a shared project without access to the source project.'
+        success code: 204
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[groups]
+      end
+      params do
+        requires :project_id, type: Integer, desc: 'The ID of the shared project'
+      end
+      # rubocop: disable CodeReuse/ActiveRecord -- Composite-key find_by/destroy; lightweight Grape endpoint, no finder reuse
+      route_setting :authorization, permissions: :unshare_project, boundary_type: :group
+      delete ":id/shared_projects/:project_id", feature_category: :groups_and_projects do
+        authorize! :delete_group_link, user_group
+
+        link = user_group.project_group_links.find_by(project_id: params[:project_id])
+        not_found!('Project Group Link') unless link
+
+        destroy_conditionally!(link) do
+          result = ::Projects::GroupLinks::DestroyService.new(link.project, current_user).execute(link)
+
+          if result.error?
+            render_api_error!(result.message, result.reason)
+          end
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

@@ -7,6 +7,9 @@ module Mutations
 
       include ValidateTimeEstimate
 
+      authorize_granular_token permissions: :update_merge_request, boundary_argument: :project_path,
+        boundary_type: :project
+
       description 'Update attributes of a merge request'
 
       argument :title, GraphQL::Types::String,

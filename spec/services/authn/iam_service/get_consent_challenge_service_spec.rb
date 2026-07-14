@@ -31,11 +31,11 @@ RSpec.describe Authn::IamService::GetConsentChallengeService, feature_category: 
         skip: false,
         subject: '123',
         requested_scopes: %w[openid profile],
-        client: ::Auth::V1::Client.new(**client_attrs)
+        client: ::Gitlab::Iam::Auth::V1::Client.new(**client_attrs)
       }
     end
 
-    let(:response) { ::Auth::V1::ConsentServiceGetResponse.new(**response_attrs) }
+    let(:response) { ::Gitlab::Iam::Auth::V1::ConsentServiceGetResponse.new(**response_attrs) }
 
     before do
       allow(grpc_client).to receive(:get_consent_challenge).and_return(response)
@@ -69,7 +69,7 @@ RSpec.describe Authn::IamService::GetConsentChallengeService, feature_category: 
           skip: false,
           subject: 123,
           requested_scopes: %w[openid profile],
-          client: ::Auth::V1::Client.new(**client_attrs)
+          client: ::Gitlab::Iam::Auth::V1::Client.new(**client_attrs)
         )
       end
 

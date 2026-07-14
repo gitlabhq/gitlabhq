@@ -17,6 +17,7 @@ export default {
       required: true,
     },
   },
+  emits: ['change'],
   computed: {
     storageKey() {
       return `package_${this.packageType}_installation_instructions`;

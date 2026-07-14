@@ -5,11 +5,14 @@ tier: [ Premium, Ultimate ]
 stage: ai-powered
 documentation_link: "../../../user/gitlab_duo_chat/agentic_chat/#approve-tools-in-your-local-environment"
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/21850
-categories: [ 'Duo Agent Platform', 'Duo Chat', 'Editor Extensions' ]
+categories: [ Duo CLI, Chat Engine ]
 weight: 50
 ---
 
-<!-- categories: Duo Agent Platform, Duo Chat, Editor Extensions -->
+<!-- categories: Duo CLI, Chat Engine -->
+
+> [!warning]
+> This feature was [removed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/3699) on July 10, 2026.
 
 Previously, when Agentic Chat asked you to approve a tool invocation, you could approve it once or approve the tool call with these arguments for the remainder of the session. Different arguments would require additional approval.
 

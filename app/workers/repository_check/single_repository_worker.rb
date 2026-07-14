@@ -50,6 +50,11 @@ module RepositoryCheck
     rescue Gitlab::Git::Repository::GitError => e
       Gitlab::RepositoryCheckLogger.error("#{repository.full_path}: #{e.message}")
       false
+    rescue GRPC::DeadlineExceeded => e
+      Gitlab::RepositoryCheckLogger.error(
+        "#{repository.full_path}: Repository check did not complete: #{e.message}"
+      )
+      false
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

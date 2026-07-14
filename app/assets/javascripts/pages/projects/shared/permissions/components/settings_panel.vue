@@ -43,6 +43,7 @@ const PACKAGE_REGISTRY_ACCESS_LEVEL_DEFAULT_BY_PROJECT_VISIBILITY = {
 };
 
 export default {
+  name: 'SettingsPanel',
   i18n: {
     ...CVE_ID_REQUEST_BUTTON_I18N,
     analyticsLabel: s__('ProjectSettings|Analytics'),
@@ -292,6 +293,11 @@ export default {
       required: false,
       default: false,
     },
+    topLevelGroupFullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     showVisibilityConfirmModal: {
       type: Boolean,
       required: false,
@@ -327,6 +333,7 @@ export default {
       default: null,
     },
   },
+  emits: ['confirm'],
   data() {
     const defaults = {
       visibilityLevel: VISIBILITY_LEVEL_PUBLIC_INTEGER,
@@ -1116,6 +1123,7 @@ export default {
         context="project"
         :can-manage-secrets-manager="canManageSecretsManager"
         :full-path="confirmationPhrase"
+        :top-level-group-full-path="topLevelGroupFullPath"
       />
       <other-project-settings />
       <project-setting-row

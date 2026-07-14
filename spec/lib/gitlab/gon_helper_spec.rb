@@ -259,6 +259,45 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
     end
   end
 
+  describe '#push_frontend_organization_release' do
+    let(:gon) { class_double('Gon') }
+    let(:actor) { stub_feature_flag_gate('actor') }
+
+    before do
+      allow(helper).to receive(:gon).and_return(gon)
+    end
+
+    it 'pushes the resolved organization flag under its own name when enabled' do
+      allow(::Organizations::Release).to receive(:enabled?).with(:my_org_flag, actor).and_return(true)
+
+      expect(gon)
+        .to receive(:push)
+        .with({ features: { 'myOrgFlag' => true } }, true)
+
+      helper.push_frontend_organization_release(:my_org_flag, actor)
+    end
+
+    it 'pushes false when the organization flag is disabled' do
+      allow(::Organizations::Release).to receive(:enabled?).with(:my_org_flag, actor).and_return(false)
+
+      expect(gon)
+        .to receive(:push)
+        .with({ features: { 'myOrgFlag' => false } }, true)
+
+      helper.push_frontend_organization_release(:my_org_flag, actor)
+    end
+
+    it 'passes a nil actor through to the release layer' do
+      allow(::Organizations::Release).to receive(:enabled?).with(:my_org_flag, nil).and_return(true)
+
+      expect(gon)
+        .to receive(:push)
+        .with({ features: { 'myOrgFlag' => true } }, true)
+
+      helper.push_frontend_organization_release(:my_org_flag, nil)
+    end
+  end
+
   describe '#push_namespace_setting' do
     it 'pushes a namespace setting to the frontend' do
       namespace_settings = create(:namespace_settings, math_rendering_limits_enabled: false)

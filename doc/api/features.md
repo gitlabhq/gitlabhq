@@ -134,12 +134,13 @@ POST /features/:name
 | `group`         | string         | no       | A GitLab group's path, for example `gitlab-org`, or comma-separated multiple group paths                                                                                                         |
 | `namespace`     | string         | no       | A GitLab group or user namespace's path, for example `john-doe`, or comma-separated multiple namespace paths. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353117) in GitLab 15.0. |
 | `project`       | string         | no       | A project path, for example `gitlab-org/gitlab-foss`, or comma-separated multiple project paths                                                                                                 |
+| `organization`  | string         | no       | An organization ID or path, for example `1` or `default`, or comma-separated multiple organization IDs or paths                                                                                  |
 | `repository`    | string         | no       | A repository path, for example `gitlab-org/gitlab-test.git`, `gitlab-org/gitlab-test.wiki.git`, , `snippets/21.git`, to name a few. Use comma to separate multiple repository paths              |
 | `runner`        | string         | no       | A runner ID, or comma-separated list of runner IDs                                                                                                                                               |
 | `force`         | boolean        | no       | Skip feature flag validation checks, such as a YAML definition                                                                                                                                   |
 
 You can enable or disable a feature for a `feature_group`, a `user`,
-a `group`, a `namespace`, a `project`, a `repository`, and a `runner` in a single API call.
+a `group`, a `namespace`, a `project`, an `organization`, a `repository`, and a `runner` in a single API call.
 
 ```shell
 curl --request POST \

@@ -91,6 +91,7 @@ export default {
       },
     },
   },
+  emits: ['click-avatar'],
   computed: {
     avatarLabelLink() {
       return this.resource.avatarLabelLink || this.resource.relativeWebUrl;

@@ -16,7 +16,6 @@ describe('WikiApp', () => {
       provide: {
         wikiUrl: 'foo/bar',
         historyUrl: 'foo/history',
-        glFeatures: { wikiImmersiveEditor: true },
         ...provide,
       },
     });

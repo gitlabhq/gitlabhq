@@ -218,8 +218,9 @@ Then you can use the link to embed the badge in your HTML or Markdown pages.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180832) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `custom_project_badges`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180832) in GitLab 18.5 [with a feature flag](../../administration/feature_flags/_index.md) named `custom_project_badges`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/574344) in GitLab 18.6.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/574344) in GitLab 19.2. Feature flag `custom_project_badges` removed.
 
 {{< /history >}}
 
@@ -329,7 +330,7 @@ Customize the background color on the right side by adding the `value_color=colo
 
 Colors can be passed as:
 
-- [A named color](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color), for example `blue`
+- [A named color](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/named-color), for example `blue`
 - Hexadecimal representation like `fff` or `7bc043` (without leading `#`)
 
 ```plaintext
@@ -342,7 +343,7 @@ Customize the background color on the left side by adding the `value_color=color
 
 Colors can be passed as:
 
-- [A named color](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color), for example `blue`
+- [A named color](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/named-color), for example `blue`
 - Hexadecimal representation like `fff` or `7bc043` (without leading `#`)
 
 ```plaintext

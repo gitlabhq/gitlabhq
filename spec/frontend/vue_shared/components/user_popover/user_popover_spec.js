@@ -34,7 +34,7 @@ const DEFAULT_PROPS = {
     localTime: '2:30 PM',
     webUrl: '/root',
     bot: false,
-    bio: null,
+    bioHtml: null,
     workInformation: null,
     status: null,
     pronouns: 'they/them',
@@ -90,7 +90,7 @@ describe('User Popover Component', () => {
           name: null,
           username: null,
           location: null,
-          bio: null,
+          bioHtml: null,
           workInformation: null,
           status: null,
           loaded: false,
@@ -127,7 +127,7 @@ describe('User Popover Component', () => {
     const findWorkInformation = () => wrapper.findComponent({ ref: 'workInformation' });
     const findBio = () => wrapper.findComponent({ ref: 'bio' });
     const findEmail = () => wrapper.findComponent({ ref: 'email' });
-    const bio = 'My super interesting bio';
+    const bioHtml = 'My <em>super</em> interesting bio';
     const email = 'my@email.com';
 
     it('should show email', () => {
@@ -139,7 +139,7 @@ describe('User Popover Component', () => {
     });
 
     it('should show only bio if work information is not available', () => {
-      const user = { ...DEFAULT_PROPS.user, bio };
+      const user = { ...DEFAULT_PROPS.user, bioHtml };
 
       createWrapper({ user });
 
@@ -161,7 +161,7 @@ describe('User Popover Component', () => {
     it('should display bio and work information in separate lines', () => {
       const user = {
         ...DEFAULT_PROPS.user,
-        bio,
+        bioHtml,
         workInformation: 'Frontend Engineer at GitLab',
       };
 
@@ -171,21 +171,34 @@ describe('User Popover Component', () => {
       expect(findWorkInformation().text()).toBe('Frontend Engineer at GitLab');
     });
 
-    it('should encode special characters in bio', () => {
+    it('should render the bio HTML', () => {
       const user = {
         ...DEFAULT_PROPS.user,
-        bio: 'I like <b>CSS</b>',
+        bioHtml: '<strong>bold</strong> bio',
       };
 
       createWrapper({ user });
 
-      expect(findBio().html()).toContain('I like &lt;b&gt;CSS&lt;/b&gt;');
+      expect(findBio().find('strong').text()).toBe('bold');
+      expect(findBio().text()).toBe('bold bio');
+    });
+
+    it('should sanitize the bio HTML #security', () => {
+      const user = {
+        ...DEFAULT_PROPS.user,
+        bioHtml: 'hello <script>alert(1)</script>',
+      };
+
+      createWrapper({ user });
+
+      expect(findBio().find('script').exists()).toBe(false);
+      expect(findBio().text()).toBe('hello');
     });
 
     it('shows icon for bio', () => {
       const user = {
         ...DEFAULT_PROPS.user,
-        bio: 'My super interesting bio',
+        bioHtml,
       };
 
       createWrapper({ user });
@@ -498,11 +511,16 @@ describe('User Popover Component', () => {
   });
 
   describe('when the user is blocked', () => {
-    const bio = 'My super interesting bio';
+    const bioHtml = 'My <em>super</em> interesting bio';
     const status = 'My status';
     beforeEach(() =>
       createWrapper({
-        user: { ...DEFAULT_PROPS.user, state: 'blocked', bio, status: { message_html: status } },
+        user: {
+          ...DEFAULT_PROPS.user,
+          state: 'blocked',
+          bioHtml,
+          status: { message_html: status },
+        },
       }),
     );
 
@@ -511,7 +529,7 @@ describe('User Popover Component', () => {
     });
 
     it("doesn't show other information", () => {
-      expect(wrapper.text()).not.toContain(bio);
+      expect(wrapper.text()).not.toContain('My super interesting bio');
       expect(wrapper.text()).not.toContain(status);
     });
   });

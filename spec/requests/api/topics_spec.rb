@@ -8,13 +8,13 @@ RSpec.describe API::Topics, :aggregate_failures, :with_current_organization, fea
   let_it_be(:file) { fixture_file_upload('spec/fixtures/dk.png') }
 
   let_it_be_with_reload(:current_organization) { create(:organization, :public, name: 'Current Public Organization') }
-  let_it_be(:namespace, freeze: false) { create(:namespace, organization: current_organization) }
+  let_it_be_with_reload(:namespace) { create(:namespace, organization: current_organization) }
 
   let_it_be(:topic_1) { create(:topic, name: 'Git', total_projects_count: 1, non_private_projects_count: 1, avatar: file, organization: current_organization) }
   let_it_be(:topic_2) { create(:topic, name: 'GitLab', total_projects_count: 2, non_private_projects_count: 2, organization: current_organization) }
   let_it_be(:topic_3) { create(:topic, name: 'other-topic', total_projects_count: 3, non_private_projects_count: 3, organization: current_organization) }
 
-  let_it_be(:admin, freeze: false) { create(:user, :admin, namespace: namespace) }
+  let_it_be_with_reload(:admin) { create(:user, :admin, namespace: namespace) }
   let_it_be(:user) { create(:user, namespace: namespace) }
 
   let(:path) { '/topics' }

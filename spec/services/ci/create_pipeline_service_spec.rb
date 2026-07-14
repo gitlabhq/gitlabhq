@@ -757,6 +757,27 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
     end
 
+    context 'when the pipeline fails to persist after being saved' do
+      before do
+        config = YAML.dump({ test: { script: 'ls' } })
+        stub_ci_pipeline_yaml_file(config)
+
+        allow_next_instance_of(Gitlab::Ci::Pipeline::Chain::Create) do |instance|
+          allow(instance).to receive(:insert_records_and_restore_ids).and_raise(ActiveRecord::RecordInvalid)
+        end
+      end
+
+      it 'returns an error response', :aggregate_failures do
+        result = nil
+
+        expect { result = execute_service }.not_to raise_error
+
+        expect(result).to be_error
+        expect(result.payload).to be_frozen
+        expect(result.payload).not_to be_persisted
+      end
+    end
+
     context 'when the configuration includes ID tokens' do
       it 'creates variables for the ID tokens' do
         config = YAML.dump({
@@ -844,7 +865,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           expect(project.resource_groups.count).to eq(1)
           expect(resource_group.processables.count).to eq(1)
           expect(resource_group.resources.count).to eq(1)
-          expect(resource_group.resources.first.processable).to eq(nil)
+          expect(resource_group.resources.first.processable).to be_nil
         end
 
         context 'when resource group key includes predefined variables' do
@@ -854,7 +875,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
             result = execute_service.payload
 
             expect(result).to be_persisted
-            expect(project.resource_groups.exists?(key: 'master-test')).to eq(true)
+            expect(project.resource_groups.exists?(key: 'master-test')).to be(true)
           end
         end
       end
@@ -1934,53 +1955,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
             )
           end
         end
-      end
-    end
-
-    describe 'stop writing to ci_builds_metadata' do
-      # This config includes all non-EE metadata attributes that are written on pipeline creation
-      let(:config) do
-        YAML.dump(
-          job: {
-            interruptible: true,
-            script: 'echo',
-            variables: { VAR: 'test' },
-            environment: { name: 'env' },
-            id_tokens: { ID_TOKEN: { aud: 'https://test' } }
-          }
-        )
-      end
-
-      before do
-        stub_ci_pipeline_yaml_file(config)
-      end
-
-      it 'does not write to ci_builds_metadata' do
-        expect { execute_service }.to not_change { Ci::BuildMetadata.count }
-      end
-    end
-
-    describe 'stop writing to p_ci_builds_execution_configs' do
-      let(:config) do
-        YAML.dump(
-          job: {
-            variables:
-              { CI_SAY_HI_TO: "Sally" },
-            run: [{
-              name: 'say_hi',
-              step: 'gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@v5',
-              inputs: { echo: "hello, ${{job.CI_SAY_HI_TO}}" }
-            }]
-          }
-        )
-      end
-
-      before do
-        stub_ci_pipeline_yaml_file(config)
-      end
-
-      it 'does not write to p_ci_builds_execution_configs' do
-        expect { execute_service }.to not_change { Ci::BuildExecutionConfig.count }
       end
     end
 

@@ -79,6 +79,10 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
     let(:token) { create(:oauth_access_token, application: application, resource_owner: user) }
     let(:anonymous_token) { create(:oauth_access_token, resource_owner: user) }
 
+    before do
+      stub_feature_flags(iam_svc_oauth: false)
+    end
+
     context 'with multiple access token types and multiple owners' do
       let!(:token2) { create(:oauth_access_token, application: application, resource_owner: user) }
       let!(:other_user_token) { create(:oauth_access_token, application: application, resource_owner: other_user) }
@@ -150,6 +154,43 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
           expect(page).to have_content('0')
         end
       end
+    end
+  end
+
+  describe 'Authorized applications backed by oauth_consents' do
+    let(:other_app) { create(:oauth_application) }
+    let!(:consent) { create(:oauth_consent, user: user, application: other_app, granted_scopes: %w[openid profile]) }
+
+    before do
+      stub_feature_flags(iam_svc_oauth: user)
+    end
+
+    it 'displays consents with a locally-resolvable application' do
+      visit oauth_applications_path
+
+      within_testid('oauth-authorized-applications') do
+        within_testid('crud-count') do
+          expect(page).to have_content('1')
+        end
+
+        expect(page).to have_content(other_app.name)
+        expect(page).to have_content('openid profile')
+      end
+    end
+
+    it 'revokes the consent when the user revokes the application', :js do
+      visit oauth_applications_path
+
+      within_testid('oauth-authorized-applications') do
+        page.within("tr#application_#{other_app.id}") do
+          click_button 'Revoke'
+        end
+      end
+
+      accept_gl_confirm(button_text: 'Revoke application')
+
+      expect(page).to have_content('The application was revoked access.')
+      expect(consent.reload).to be_revoked
     end
   end
 end

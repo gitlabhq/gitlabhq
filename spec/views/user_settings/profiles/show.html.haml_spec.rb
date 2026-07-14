@@ -26,7 +26,7 @@ RSpec.describe 'user_settings/profiles/show', feature_category: :user_profile do
       expected_link_html = "<a href=\"#{expected_link}\" target=\"_blank\" " \
                            "rel=\"noopener noreferrer\">#{s_('Profiles|What is a private commit email?')}</a>"
 
-      expect(rendered.include?(expected_link_html)).to eq(true)
+      expect(rendered.include?(expected_link_html)).to be(true)
     end
 
     it 'renders required hidden inputs for set status form' do

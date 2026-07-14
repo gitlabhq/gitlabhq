@@ -28,7 +28,7 @@ module Authz
       end
 
       desc "Anonymous caller would be granted #{permission} on the boundary's resource"
-      condition(:"anonymous_can_#{permission}") do
+      condition(:"anonymous_can_#{permission}", score: 40) do
         resource = boundary.boundary
         next false unless resource.is_a?(::Project) || resource.is_a?(::Group)
 

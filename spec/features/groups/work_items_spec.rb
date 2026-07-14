@@ -178,6 +178,7 @@ RSpec.describe 'Group work items page', feature_category: :team_planning do
     end
 
     def select_manual_sort
+      click_button 'Display'
       pajamas_sort_by 'Manual', from: 'Created date'
       wait_for_requests
     end

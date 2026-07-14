@@ -1,7 +1,7 @@
 ---
 name: glab
 description: GitLab workflow automation using glab CLI
-version: 1.10.0
+version: 1.11.0
 category: Development Workflow
 license: MIT
 metadata:
@@ -113,6 +113,14 @@ Always pass `--push` and `-H <owner/repo>`. Without `--push`, the branch may not
 any remote yet. Without `-H`, glab may pick the wrong remote (e.g. a security mirror) as
 the source project, creating the MR from the wrong fork.
 
+> **Second same-family remote?** In a checkout with both `origin` (`gitlab-org/gitlab`)
+> and a `security` mirror (`gitlab-org/security/gitlab`), `glab mr create` run
+> non-interactively (no TTY, how agents run) silently picks the `security` fork as the
+> head and fails with `400 {source_branch: [does not exist]}`. Durable fix, set once per
+> checkout: `git config remote.origin.glab-resolved-head head`. Per-command fallback for
+> fresh checkouts: pass `-H <owner/repo>` (e.g. `-H gitlab-org/gitlab`). `-R` does **not**
+> fix this — it pins only the base repo, not the head.
+
 ```bash
 # Simple MR
 glab mr create --push -H <owner/repo> --title "Add feature" --description "Brief description" --assignee <username>
@@ -176,7 +184,7 @@ glab api "projects/org%2Fproject/work_items/<iid>"   # → 404
 URL parsing: `https://gitlab.com/org/project/-/work_items/539076`
 → `glab api "projects/org%2Fproject/issues/539076"`
 
-Full details, GraphQL alternative, and group-level work items: **[references/work-items.md](references/work-items.md)**
+Full details, GraphQL alternative, group-level work items, and the agent plan (Workplan) widget: **[references/work-items.md](references/work-items.md)**
 
 ## MR Review
 
@@ -268,6 +276,8 @@ API quirks that are easy to get wrong and not discoverable from `glab <cmd> --he
 13. **Idempotent comments → `--unique`** — `glab mr note create -m "..." --unique` skips posting if an identical body already exists; matches on body only, so identical bodies on different diff lines still post
 14. **Non-origin remotes → `remote_alias`** — if `origin` points at one instance but you want glab to target another remote (e.g. a local GDK added as `gdk`), run `glab config set remote_alias gdk` rather than setting `GITLAB_HOST` per command. See [references/multi-host.md](references/multi-host.md)
 15. **Backticks in messages → write to a file first** — never inline `` ` ``/`$` in `-m "..."` or `--description "..."`; write to a file you name (unique per invocation) using `<< 'EOF'` (single-quoted delimiter, critical), then pass via `$(cat "$FILE")`. See the Message Escaping section above.
+16. **Second same-family remote misroutes `mr create`** — with a `security` mirror alongside `origin`, non-interactive `mr create` (no TTY) silently picks the fork as the head. Fix once per checkout: `git config remote.origin.glab-resolved-head head`; per-command fallback: `-H <owner/repo>` (`-R` does not fix it). See the "Creating Merge Requests" section.
+17. **`glab api -f` serializes bracket keys as flat JSON, not nested objects** — `-f "position[new_line]=72"` sends `{"position[new_line]":"72"}` (literal key); the API ignores it and silently creates a *general* note (HTTP 201, `new_line: null`). Write the nested JSON body to a `/tmp/` file with a single-quoted `<< 'EOF'` heredoc (prevents shell interpolation of backticks/`$` in review bodies) and pass via `--input <file>` with `-H "Content-Type: application/json"` (omitting the header → HTTP 415). Verify inline notes landed before publishing: `GET --paginate .../draft_notes | jq '.[] | {id, new_line: .position.new_line, note: .note[0:40]}'` — a `null` on a note you intended as inline means the position was dropped. See [references/mr-review.md](references/mr-review.md).
 
 ## Contributing Improvements
 

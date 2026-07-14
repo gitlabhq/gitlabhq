@@ -48,6 +48,7 @@ export default {
       required: true,
     },
   },
+  emits: ['cancel', 'select'],
   data() {
     return {
       searchTerm: '',

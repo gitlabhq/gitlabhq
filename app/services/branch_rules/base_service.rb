@@ -134,22 +134,36 @@ module BranchRules
       return access_denied unless skip_authorization || authorized?
 
       execute_on_branch_rule_type
-    rescue Gitlab::Access::AccessDeniedError
-      access_denied
+    rescue Gitlab::Access::AccessDeniedError => error
+      handle_access_denied_error(error)
     rescue ActiveRecord::RecordNotFound
       not_found_error
     end
 
     private
 
+    # Hook for EE to translate specific access-denied errors (e.g. security
+    # policy violations) into a more descriptive response. EE extensions can
+    # override this method to surface user-facing messages for policy violations.
+    def handle_access_denied_error(_error)
+      access_denied
+    end
+
     delegate :project, to: :branch_rule, allow_nil: true, private: true
 
+    def all_branches_rule?
+      branch_rule.is_a?(::Projects::AllBranchesRule)
+    end
+
+    def branch_rule?
+      branch_rule.is_a?(::Projects::BranchRule)
+    end
+
     def execute_on_branch_rule_type
-      case branch_rule
-      when ::Projects::AllBranchesRule then execute_on_all_branches_rule
-      when ::Projects::BranchRule then execute_on_branch_rule
-      else ServiceResponse.error(message: 'Unknown branch rule type.')
-      end
+      return execute_on_all_branches_rule if all_branches_rule?
+      return execute_on_branch_rule if branch_rule?
+
+      ServiceResponse.error(message: 'Unknown branch rule type.')
     end
 
     def execute_on_branch_rule

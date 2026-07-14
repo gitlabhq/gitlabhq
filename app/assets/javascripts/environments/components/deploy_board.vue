@@ -54,6 +54,7 @@ export default {
       required: true,
     },
   },
+  emits: ['change-canary-weight'],
   computed: {
     canRenderDeployBoard() {
       return !this.isEmpty && !isEmpty(this.deployBoardData);
@@ -106,7 +107,7 @@ export default {
   },
   methods: {
     changeCanaryWeight(weight) {
-      this.$emit('changeCanaryWeight', weight);
+      this.$emit('change-canary-weight', weight);
     },
     podName(instance) {
       return instance.podName;

@@ -1,0 +1,68 @@
+---
+name: gitlab_release_notes.Categories
+description: Ensures feature release notes define a non-empty `categories` array.
+message: "The `categories` metadata is required and must be an array with at least one category (for example, `[ Vulnerability Management ]`)."
+link: https://docs.gitlab.com/development/documentation/release_notes/#feature-release-note-metadata
+level: error
+extends: script
+scope: raw
+script: |
+  text := import("text")
+  matches := []
+
+  // Returns the values of `field` as an array, accepting either inline
+  // (`field: [ a, b ]`) or block (`field:` then `  - a`) syntax. Returns
+  // undefined for a scalar value, which is not a valid array.
+  collectValues := func(fm, field, val) {
+    lb := text.index(val, "[")
+    rb := text.index(val, "]")
+    if lb >= 0 && rb >= 0 {
+      out := []
+      for p in text.split(val[lb+1:rb], ",") {
+        t := text.trim_space(text.re_replace("[\"']", p, ""))
+        if t != "" { out = append(out, t) }
+      }
+      return out
+    }
+    if val != "" { return undefined }
+    lines := text.split(fm, "\n")
+    fi := -1
+    i := 0
+    for ln in lines {
+      if text.re_match("^" + field + ":", ln) { fi = i; break }
+      i++
+    }
+    out := []
+    j := fi + 1
+    for fi >= 0 && j < len(lines) {
+      mm := text.re_find("^[ \\t]+-[ \\t]*(.*)$", lines[j], 1)
+      if is_undefined(mm) { break }
+      t := text.trim_space(text.re_replace("[\"']", mm[0][1].text, ""))
+      if t != "" { out = append(out, t) }
+      j++
+    }
+    return out
+  }
+
+  if text.re_match("^---\\n", scope) {
+    fmEnd := text.index(scope, "\n---")
+    if fmEnd > 0 {
+      fm := scope[0:fmEnd]
+      if !text.re_match("(?m)^categories:", fm) {
+        matches = append(matches, {begin: 0, end: 3})
+      } else {
+        m := text.re_find("(?m)^categories:[ \\t]*(.*)$", fm, 1)
+        if !is_undefined(m) {
+          full := m[0][0]
+          val := text.trim_space(m[0][1].text)
+          span := {begin: full.begin, end: full.begin + len(full.text)}
+          vals := collectValues(fm, "categories", val)
+          if is_undefined(vals) {
+            matches = append(matches, span)
+          } else {
+            if len(vals) == 0 { matches = append(matches, span) }
+          }
+        }
+      }
+    }
+  }

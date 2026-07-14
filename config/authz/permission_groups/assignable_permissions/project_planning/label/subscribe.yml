@@ -1,0 +1,10 @@
+---
+name: subscribe_label
+description: Grants the ability to subscribe to labels
+boundaries:
+  - project
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - subscribe_label

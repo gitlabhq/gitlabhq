@@ -87,12 +87,6 @@ module Ci
       )
     end
 
-    scope :with_metadata_interruptible_false, -> do
-      joins(:metadata).where.not(
-        Ci::BuildMetadata.table_name => { id: Ci::BuildMetadata.scoped_build.with_interruptible.select(:id) }
-      )
-    end
-
     scope :with_interruptible_false, -> do
       where_not_exists(
         Ci::JobDefinitionInstance
@@ -162,7 +156,6 @@ module Ci
 
     def self.fabricate(partition_id:, **attrs)
       definition_attrs = attrs.extract!(*Ci::JobDefinition::CONFIG_ATTRIBUTES)
-      attrs[:tag_list] = definition_attrs[:tag_list] if definition_attrs.key?(:tag_list)
       attrs[:partition_id] = partition_id
 
       new(attrs).tap do |job|

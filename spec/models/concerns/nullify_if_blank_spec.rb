@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe NullifyIfBlank do
-  let_it_be(:model, freeze: false) do
+  let_it_be(:model) do
     Class.new(ApplicationRecord) do
       include NullifyIfBlank
 

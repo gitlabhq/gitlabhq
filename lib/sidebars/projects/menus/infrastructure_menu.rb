@@ -55,7 +55,9 @@ module Sidebars
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: [:cluster_agents, :clusters] },
             container_html_options: { class: 'shortcuts-kubernetes' },
-            item_id: :kubernetes
+            item_id: :kubernetes,
+            description: _('Manage Kubernetes clusters and agents'),
+            library_icon: 'kubernetes'
           )
         end
 
@@ -69,7 +71,9 @@ module Sidebars
             link: project_terraform_index_path(context.project),
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: :terraform },
-            item_id: :terraform_states
+            item_id: :terraform_states,
+            description: _('Manage Terraform state files'),
+            library_icon: 'terraform'
           )
         end
 
@@ -89,7 +93,9 @@ module Sidebars
             item_id: :aws,
             active_routes: { controller: %w[
               projects/aws/configuration
-            ] }
+            ] },
+            description: _('Configure AWS integration for your project.'),
+            library_icon: 'cloud-pod'
           )
         end
 
@@ -112,7 +118,9 @@ module Sidebars
               projects/google_cloud/deployments
               projects/google_cloud/gcp_regions
             ] },
-            item_id: :google_cloud
+            item_id: :google_cloud,
+            description: _('Configure Google Cloud integration for your project.'),
+            library_icon: 'cloud-gear'
           )
         end
 

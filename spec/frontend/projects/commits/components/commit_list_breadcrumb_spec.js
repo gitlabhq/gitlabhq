@@ -6,7 +6,6 @@ describe('CommitListBreadcrumb', () => {
   let wrapper;
 
   const defaultProvide = {
-    projectFullPath: 'gitlab-org/gitlab',
     projectPath: 'gitlab',
     escapedRef: 'main',
     refType: 'heads',

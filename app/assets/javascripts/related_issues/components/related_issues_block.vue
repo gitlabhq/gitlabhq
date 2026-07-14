@@ -117,14 +117,14 @@ export default {
     },
   },
   emits: [
-    'addIssuableFormBlur',
-    'addIssuableFormCancel',
-    'addIssuableFormInput',
-    'addIssuableFormSubmit',
+    'add-issuable-form-blur',
+    'add-issuable-form-cancel',
+    'add-issuable-form-input',
+    'add-issuable-form-submit',
     'hideForm',
-    'pendingIssuableRemoveRequest',
-    'relatedIssueRemoveRequest',
-    'saveReorder',
+    'pending-issuable-remove-request',
+    'related-issue-remove-request',
+    'save-reorder',
     'showForm',
   ],
   computed: {
@@ -198,10 +198,10 @@ export default {
   },
   methods: {
     handleFormSubmit(event) {
-      this.$emit('addIssuableFormSubmit', event);
+      this.$emit('add-issuable-form-submit', event);
     },
     handleFormCancel(event) {
-      this.$emit('addIssuableFormCancel', event);
+      this.$emit('add-issuable-form-cancel', event);
       this.$refs.relatedIssuesWidget.hideForm();
     },
   },
@@ -249,11 +249,11 @@ export default {
         :path-id-separator="pathIdSeparator"
         :has-error="hasError"
         :item-add-failure-message="itemAddFailureMessage"
-        @pendingIssuableRemoveRequest="$emit('pendingIssuableRemoveRequest', $event)"
-        @addIssuableFormInput="$emit('addIssuableFormInput', $event)"
-        @addIssuableFormBlur="$emit('addIssuableFormBlur', $event)"
-        @addIssuableFormSubmit="handleFormSubmit"
-        @addIssuableFormCancel="handleFormCancel"
+        @pending-issuable-remove-request="$emit('pending-issuable-remove-request', $event)"
+        @add-issuable-form-input="$emit('add-issuable-form-input', $event)"
+        @add-issuable-form-blur="$emit('add-issuable-form-blur', $event)"
+        @add-issuable-form-submit="handleFormSubmit"
+        @add-issuable-form-cancel="handleFormCancel"
       />
     </template>
 
@@ -285,8 +285,8 @@ export default {
           'gl-mb-5 gl-border-b-1 gl-border-b-default gl-border-b-solid':
             index !== categorisedIssues.length - 1,
         }"
-        @relatedIssueRemoveRequest="$emit('relatedIssueRemoveRequest', $event)"
-        @saveReorder="$emit('saveReorder', $event)"
+        @related-issue-remove-request="$emit('related-issue-remove-request', $event)"
+        @save-reorder="$emit('save-reorder', $event)"
       />
     </template>
   </crud-component>

@@ -8,7 +8,6 @@ export default {
     'app/assets/javascripts/ci/ci_variable_list/index.js',
     'app/assets/javascripts/code_navigation/index.js',
     'app/assets/javascripts/merge_request_dashboard/index.js',
-    'app/assets/javascripts/pages/projects/forks/new/index.js',
     'app/assets/javascripts/pages/projects/graphs/charts/init_graphs_charts.js',
     'app/assets/javascripts/pages/shared/mount_badge_settings.js',
     'app/assets/javascripts/rapid_diffs/app/file_browser/index.js',

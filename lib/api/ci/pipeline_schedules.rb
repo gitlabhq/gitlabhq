@@ -131,6 +131,7 @@ module API
         end
 
         route_setting :authorization, permissions: :create_pipeline_schedule, boundary_type: :project
+        route_setting :log_safety, { unsafe_nested: [%w[inputs value]] }
         post ':id/pipeline_schedules' do
           authorize! :create_pipeline_schedule, user_project
 
@@ -181,6 +182,7 @@ module API
         end
 
         route_setting :authorization, permissions: :update_pipeline_schedule, boundary_type: :project
+        route_setting :log_safety, { unsafe_nested: [%w[inputs value]] }
         put ':id/pipeline_schedules/:pipeline_schedule_id' do
           authorize! :update_pipeline_schedule, pipeline_schedule
 

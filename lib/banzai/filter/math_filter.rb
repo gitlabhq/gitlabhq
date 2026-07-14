@@ -9,6 +9,7 @@ module Banzai
       # HTML filter that adds any necessary classes to math html for rendering
       # on the frontend
       prepend Concerns::PipelineTimingCheck
+      include Concerns::ContextAccessors
       include ::Gitlab::Utils::StrongMemoize
 
       CSS_MATH_STYLE = 'pre[data-math-style], pre[data-canonical-lang="math"], ' \
@@ -18,10 +19,7 @@ module Banzai
       LANG_ATTR = 'data-canonical-lang'
       MATH_STYLE_ATTR = 'data-math-style'
 
-      # Limit to how many nodes can be marked as math elements.
-      # Prevents timeouts for large notes.
-      # For more information check: https://gitlab.com/gitlab-org/gitlab/-/issues/341832
-      RENDER_NODES_LIMIT = 50
+      RENDER_NODES_LIMIT = 1000
 
       def call
         @nodes_count = 0
@@ -60,7 +58,7 @@ module Banzai
       strong_memoize_attr :math_rendering_limits_enabled?
 
       def group
-        context[:project]&.parent || context[:group]
+        project&.parent || super
       end
     end
   end

@@ -3,6 +3,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import MarkdownFieldView from '~/vue_shared/components/markdown/field_view.vue';
 
 export default {
+  name: 'SnippetDescriptionView',
   components: {
     MarkdownFieldView,
   },

@@ -50,10 +50,11 @@ module Ci
           Ci::Catalog::Resource.published.each_batch(of: BATCH_SIZE) do |resources|
             resource_ids = resources.pluck(:id)
 
-            usage_counts = Component
+            usage_counts = Ci::Catalog::Resources::Components::LastUsage
+              .within_last_30_days
               .where(catalog_resource_id: resource_ids)
               .group(:catalog_resource_id)
-              .select('catalog_resource_id, SUM(last_30_day_usage_count) as total_usage')
+              .select('catalog_resource_id, COUNT(DISTINCT used_by_project_id) as total_usage')
               .index_by(&:catalog_resource_id)
 
             updates = resource_ids.map do |resource_id|

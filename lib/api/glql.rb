@@ -114,8 +114,8 @@ module API
         ).execute
       end
 
-      def transform_glql_result(glql_result, fields, mode: nil)
-        transform_context = { fields: fields, mode: mode }
+      def transform_glql_result(glql_result, fields, mode: nil, source: nil)
+        transform_context = { fields: fields, mode: mode, source: source }
         transform_context[:username] = current_user.username if current_user.present?
 
         ::Glql.transform(glql_result[:data], transform_context)
@@ -155,7 +155,7 @@ module API
         error!(glql_result[:errors].first[:message], 400) if glql_result[:errors]
 
         transformed_result = transform_glql_result(glql_result, compiled_glql['fields'],
-          mode: compiled_glql['mode'])
+          mode: compiled_glql['mode'], source: compiled_glql['source'])
         error!(transformed_result['error'], 400) unless transformed_result['success']
 
         status 200

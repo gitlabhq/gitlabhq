@@ -43,6 +43,7 @@ export default {
       default: () => {},
     },
   },
+  emits: ['fetchJobsByStatus'],
   computed: {
     tabs() {
       return [

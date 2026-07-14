@@ -1,5 +1,6 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
+import EMPTY_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-todos-md.svg?url';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 
@@ -17,13 +18,11 @@ export const i18n = {
 export default {
   name: 'TestReportsEmptyState',
   i18n,
+  EMPTY_STATE_SVG,
   components: {
     GlEmptyState,
   },
   inject: {
-    emptyStateImagePath: {
-      default: '',
-    },
     hasTestReport: {
       default: false,
     },
@@ -54,7 +53,7 @@ export default {
   <gl-empty-state
     :title="emptyStateText.title"
     :description="emptyStateText.description"
-    :svg-path="emptyStateImagePath"
+    :svg-path="$options.EMPTY_STATE_SVG"
     :svg-height="150"
     :primary-button-link="testReportDocPath"
     :primary-button-text="emptyStateText.button"

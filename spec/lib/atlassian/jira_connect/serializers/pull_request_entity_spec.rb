@@ -4,6 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Atlassian::JiraConnect::Serializers::PullRequestEntity, feature_category: :integrations do
   let_it_be(:project) { create_default(:project, :repository) }
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:merge_requests, freeze: false) { create_list(:merge_request, 2, :unique_branches) }
   let_it_be(:notes) { create_list(:note, 2, system: false, noteable: merge_requests.first) }
   let_it_be(:merge_request_reviewers) { create_pair(:merge_request_reviewer, merge_request: merge_requests[0]) }

@@ -40,7 +40,7 @@ RSpec.describe ::Packages::Npm::PackagesForUserFinder, feature_category: :packag
       it_behaves_like 'avoids N+1 database queries in the package registry'
 
       context 'with a project inaccessible to user, but with a public registry' do
-        let_it_be(:project_with_public_package_registry, freeze: false) { create(:project, group: group) }
+        let_it_be_with_reload(:project_with_public_package_registry) { create(:project, group: group) }
         let_it_be(:other_package) do
           create(:npm_package, project: project_with_public_package_registry, name: package.name)
         end

@@ -15,7 +15,7 @@ RSpec.describe Mutations::AlertManagement::HttpIntegration::Create, feature_cate
     subject(:resolve) { mutation_for(project, current_user).resolve(args) }
 
     context 'user has access to project' do
-      before do
+      before_all do
         project.add_maintainer(current_user)
       end
 
@@ -35,9 +35,11 @@ RSpec.describe Mutations::AlertManagement::HttpIntegration::Create, feature_cate
 
       context 'when HttpIntegrations::CreateService responds with an error' do
         before do
-          allow_any_instance_of(::AlertManagement::HttpIntegrations::CreateService)
-            .to receive(:execute)
-            .and_return(ServiceResponse.error(payload: { integration: nil }, message: 'An integration already exists'))
+          allow_next_instance_of(::AlertManagement::HttpIntegrations::CreateService) do |instance|
+            allow(instance).to receive(:execute)
+                      .and_return(ServiceResponse.error(payload: { integration: nil },
+                        message: 'An integration already exists'))
+          end
         end
 
         it 'returns errors' do

@@ -17,15 +17,17 @@ RSpec.describe 'lock a terraform state', feature_category: :infrastructure_as_co
     let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
   end
 
-  before do
-    expect(state).not_to be_locked
-    post_graphql_mutation(mutation, current_user: user)
-  end
+  context 'when locking the state as the current user' do
+    before do
+      expect(state).not_to be_locked
+      post_graphql_mutation(mutation, current_user: user)
+    end
 
-  include_examples 'a working graphql query'
+    include_examples 'a working graphql query'
 
-  it 'locks the state' do
-    expect(state.reload).to be_locked
-    expect(state.locked_by_user).to eq(user)
+    it 'locks the state' do
+      expect(state.reload).to be_locked
+      expect(state.locked_by_user).to eq(user)
+    end
   end
 end

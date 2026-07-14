@@ -12,5 +12,10 @@ RSpec.describe 'Work item API parity', feature_category: :team_planning, unless:
   end
 
   it_behaves_like 'work item API filter parity'
-  it_behaves_like 'work item API create parity'
+
+  it_behaves_like 'work item API create parity' do
+    # development_widget is exposed only on the GraphQL create mutation (links MRs to
+    # the new work item); the REST create endpoint has no development feature param.
+    let(:widget_exceptions) { Set.new(%w[development_widget]) }
+  end
 end

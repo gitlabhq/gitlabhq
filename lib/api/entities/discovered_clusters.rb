@@ -4,17 +4,17 @@ module API
   module Entities
     class DiscoveredClusters < Grape::Entity
       class ClusterBasic < Grape::Entity
-        expose :id
-        expose :name
+        expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
+        expose :name, documentation: { type: 'String' }
       end
 
-      expose :groups do |object|
+      expose :groups, documentation: { type: 'Hash' } do |object|
         object[:groups].transform_values do |clusters|
           ClusterBasic.represent(clusters)
         end
       end
 
-      expose :projects do |object|
+      expose :projects, documentation: { type: 'Hash' } do |object|
         object[:projects].transform_values do |clusters|
           ClusterBasic.represent(clusters)
         end

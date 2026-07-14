@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Evidences::ReleaseEntity, feature_category: :release_evidence do
-  let_it_be(:project, freeze: false) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   let(:release) { build(:release, project: project) }
   let(:entity) { described_class.new(release) }
@@ -38,7 +38,7 @@ RSpec.describe Evidences::ReleaseEntity, feature_category: :release_evidence do
   end
 
   context 'when the release has associated packages' do
-    let_it_be(:release, freeze: false) { create(:release, project: project, tag: 'v1.0.0') }
+    let_it_be_with_reload(:release) { create(:release, project: project, tag: 'v1.0.0') }
 
     let_it_be(:package) { create(:generic_package, project: project, version: '1.0.0') }
 

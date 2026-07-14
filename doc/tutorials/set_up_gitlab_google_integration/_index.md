@@ -137,7 +137,7 @@ After this step, your pipeline creates a Google Cloud Deploy release with your a
 1. Select **Commit changes**.
 1. Go to **Build** > **Pipelines** and make sure a new pipeline passes.
 1. After the pipeline finishes successfully, to view the release,
-   see the [Google Cloud documentation](https://cloud.google.com/deploy/docs/view-release).
+   see the [Google Cloud documentation](https://docs.cloud.google.com/deploy/docs/view-release).
 
 And that's it! You've now integrated Google Cloud with GitLab, and your GitLab project seamlessly
 deploys to Google Cloud.

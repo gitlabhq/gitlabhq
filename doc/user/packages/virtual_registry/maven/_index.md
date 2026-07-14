@@ -15,7 +15,7 @@ description: Use the Maven virtual registry to configure and manage multiple pri
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14137) in GitLab 18.0 [with a flag](../../../../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14137) in GitLab 18.0 [with a feature flag](../../../../administration/feature_flags/_index.md) named `virtual_registry_maven`. Disabled by default.
 - Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
@@ -63,7 +63,7 @@ When using the Maven virtual registry, remember the following restrictions:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15090) in GitLab 18.5 [with a flag](../../../../administration/feature_flags/_index.md) named `ui_for_virtual_registries`. Enabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15090) in GitLab 18.5 [with a feature flag](../../../../administration/feature_flags/_index.md) named `ui_for_virtual_registries`. Enabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/525934) in GitLab 18.6 to a flag named `maven_virtual_registry`. Enabled by default. Feature flag `ui_for_virtual_registries` removed.
 
 {{< /history >}}

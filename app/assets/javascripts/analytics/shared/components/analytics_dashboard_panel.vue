@@ -47,6 +47,11 @@ export default {
       required: false,
       default: '',
     },
+    titleIcon: {
+      type: String,
+      required: false,
+      default: '',
+    },
     queryOverrides: {
       type: Object,
       required: false,
@@ -128,6 +133,9 @@ export default {
     },
     panelTitle() {
       return this.visualizationOptions?.title ?? this.title;
+    },
+    panelTitleIcon() {
+      return this.visualizationOptions?.titleIcon ?? this.titleIcon;
     },
     visualizationOptions() {
       return merge({}, this.currentVisualization.options, this.visualizationOptionOverrides);
@@ -322,6 +330,7 @@ export default {
 <template>
   <extended-dashboard-panel
     :title="panelTitle"
+    :title-icon="panelTitleIcon"
     :subtitle="subtitle"
     :tooltip="panelTooltip"
     :loading="loading"

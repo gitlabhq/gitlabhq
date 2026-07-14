@@ -35,6 +35,7 @@ import TrainingSection from './training_section.vue';
 import RefTrackingList from './ref_tracking_list.vue';
 
 export default {
+  name: 'SecurityConfigurationApp',
   i18n,
   featureCardComponents: {
     default: 'feature-card',

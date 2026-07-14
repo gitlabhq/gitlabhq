@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Kubernetes::KubeClient do
+RSpec.describe Gitlab::Kubernetes::KubeClient, feature_category: :deployment_management do
   include StubRequests
   include KubernetesHelpers
 

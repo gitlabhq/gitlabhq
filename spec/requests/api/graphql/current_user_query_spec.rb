@@ -34,6 +34,16 @@ RSpec.describe 'getting project information', :with_current_organization, featur
 
       it { is_expected.to include('namespace' => nil) }
     end
+
+    describe 'granular PAT authorization' do
+      let(:query) { graphql_query_for('currentUser', {}, 'name') }
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :read_user do
+        let(:user) { current_user }
+        let(:boundary_object) { :user }
+        let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+      end
+    end
   end
 
   context 'when there is no current_user' do

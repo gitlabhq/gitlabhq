@@ -7,6 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 import { __, s__, sprintf } from '~/locale';
 
 export default {
+  name: 'UpdateUsername',
   components: {
     GlModal,
     GlButton,

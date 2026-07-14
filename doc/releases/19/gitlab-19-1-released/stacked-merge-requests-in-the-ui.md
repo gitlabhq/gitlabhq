@@ -9,8 +9,6 @@ categories: [ Code Review Workflow ]
 level: secondary
 ---
 
-<!-- categories: Code Review Workflow -->
-
 Previously, when you split a large change into smaller merge requests that
 build on each other, the UI gave no signal that they were related. Authors and reviewers had to
 track the sequence manually.

@@ -111,7 +111,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-px-5 gl-py-5">
+  <div>
     <gl-skeleton-loader v-if="loading" />
     <gl-line-chart
       v-else-if="!validationError && dimension"

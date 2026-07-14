@@ -1,0 +1,4 @@
+---
+name: Continuous Deployment Rollout Gate
+description: An approval gate on a continuous deployment rollout
+feature_category: continuous_delivery

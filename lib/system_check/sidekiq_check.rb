@@ -25,7 +25,7 @@ module SystemCheck
           sudo_gitlab("RAILS_ENV=production bin/background_jobs start")
         )
         for_more_information(
-          see_installation_guide_section("Install Init Script"),
+          see_installation_guide_section("Install SysV init script"),
           "see log/sidekiq.log for possible errors"
         )
         fix_and_rerun

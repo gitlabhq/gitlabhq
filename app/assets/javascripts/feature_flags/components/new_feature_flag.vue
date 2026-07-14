@@ -7,6 +7,7 @@ import { ROLLOUT_STRATEGY_ALL_USERS } from '../constants';
 import FeatureFlagForm from './form.vue';
 
 export default {
+  name: 'NewFeatureFlag',
   components: {
     FeatureFlagForm,
     GlAlert,

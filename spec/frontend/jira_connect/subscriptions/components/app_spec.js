@@ -1,5 +1,7 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
+import Vue, { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import JiraConnectApp from '~/jira_connect/subscriptions/components/app.vue';
@@ -8,8 +10,7 @@ import SubscriptionsPage from '~/jira_connect/subscriptions/pages/subscriptions_
 import UserLink from '~/jira_connect/subscriptions/components/user_link.vue';
 import BrowserSupportAlert from '~/jira_connect/subscriptions/components/browser_support_alert.vue';
 import FeedbackBanner from '~/jira_connect/subscriptions/components/feedback_banner.vue';
-import createStore from '~/jira_connect/subscriptions/store';
-import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
+import { useJiraConnectSubscriptions } from '~/jira_connect/subscriptions/store';
 import { I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE } from '~/jira_connect/subscriptions/constants';
 import { retrieveAlert } from '~/jira_connect/subscriptions/utils';
 import AccessorUtilities from '~/lib/utils/accessor';
@@ -17,6 +18,8 @@ import * as api from '~/jira_connect/subscriptions/api';
 import { mockSubscription } from '../mock_data';
 
 jest.mock('~/jira_connect/subscriptions/utils');
+
+Vue.use(PiniaVuePlugin);
 
 describe('JiraConnectApp', () => {
   let wrapper;
@@ -34,11 +37,13 @@ describe('JiraConnectApp', () => {
   const findFeedbackBanner = () => wrapper.findComponent(FeedbackBanner);
 
   const createComponent = ({ provide, initialState = {} } = {}) => {
-    store = createStore({ ...initialState, subscriptions: [mockSubscription] });
-    jest.spyOn(store, 'dispatch').mockImplementation();
+    const pinia = createTestingPinia({ stubActions: false });
+    store = useJiraConnectSubscriptions();
+    store.$patch({ ...initialState, subscriptions: [mockSubscription] });
+    jest.spyOn(store, 'fetchSubscriptions').mockImplementation();
 
     wrapper = shallowMountExtended(JiraConnectApp, {
-      store,
+      pinia,
       provide,
       stubs: {
         GlSprintf,
@@ -144,8 +149,8 @@ describe('JiraConnectApp', () => {
         findSignInPage().vm.$emit('sign-in-oauth');
       });
 
-      it('dispatches `fetchSubscriptions` action', () => {
-        expect(store.dispatch).toHaveBeenCalledWith('fetchSubscriptions', mockSubscriptionsPath);
+      it('calls `fetchSubscriptions` action', () => {
+        expect(store.fetchSubscriptions).toHaveBeenCalledWith(mockSubscriptionsPath);
       });
     });
 
@@ -184,7 +189,7 @@ describe('JiraConnectApp', () => {
         async ({ message, alertShouldRender, variant }) => {
           createComponent();
 
-          store.commit(SET_ALERT, { message, variant });
+          store.setAlert({ message, variant });
           await nextTick();
 
           const alert = findAlert();
@@ -202,7 +207,7 @@ describe('JiraConnectApp', () => {
       it('hides alert on @dismiss event', async () => {
         createComponent();
 
-        store.commit(SET_ALERT, { message: 'test message' });
+        store.setAlert({ message: 'test message' });
         await nextTick();
 
         findAlert().vm.$emit('dismiss');
@@ -214,7 +219,7 @@ describe('JiraConnectApp', () => {
       it('renders link when `linkUrl` is set', async () => {
         createComponent();
 
-        store.commit(SET_ALERT, {
+        store.setAlert({
           message: 'test message %{linkStart}test link%{linkEnd}',
           linkUrl: 'https://gitlab.com',
         });

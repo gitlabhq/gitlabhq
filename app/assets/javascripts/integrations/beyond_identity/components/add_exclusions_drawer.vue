@@ -7,6 +7,7 @@ import ListSelector from '~/vue_shared/components/list_selector/index.vue';
 import { GROUPS_TYPE, PROJECTS_TYPE } from '~/vue_shared/components/list_selector/constants';
 
 export default {
+  name: 'AddExclusionsDrawer',
   DRAWER_Z_INDEX,
   GROUPS_TYPE,
   PROJECTS_TYPE,

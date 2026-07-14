@@ -21,10 +21,10 @@ RSpec.describe SystemCheck::Helpers, feature_category: :tooling do
 
     it 'converts doc/ paths with anchors to full help page URLs' do
       expected_url = Rails.application.routes.url_helpers.help_page_url(
-        'install/self_compiled/_index.md', anchor: 'install-init-script'
+        'install/self_compiled/_index.md', anchor: 'install-sysv-init-script'
       )
 
-      expect { helper.for_more_information('doc/install/self_compiled/_index.md#install-init-script') }
+      expect { helper.for_more_information('doc/install/self_compiled/_index.md#install-sysv-init-script') }
         .to output(/#{Regexp.escape(expected_url)}/).to_stdout
     end
 
@@ -51,10 +51,16 @@ RSpec.describe SystemCheck::Helpers, feature_category: :tooling do
   end
 
   describe '#see_installation_guide_section' do
-    it 'returns a doc path with an anchor' do
-      result = helper.see_installation_guide_section('Install Init Script')
+    it 'returns a doc path with an anchor matching a real heading' do
+      result = helper.see_installation_guide_section('Install SysV init script')
 
-      expect(result).to eq('doc/install/self_compiled/_index.md#install-init-script')
+      expect(result).to eq('doc/install/self_compiled/_index.md#install-sysv-init-script')
+    end
+
+    it 'returns a doc path with a correct anchor for a numbered section heading' do
+      result = helper.see_installation_guide_section('9. GitLab')
+
+      expect(result).to eq('doc/install/self_compiled/_index.md#9-gitlab')
     end
   end
 end

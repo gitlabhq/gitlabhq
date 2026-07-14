@@ -78,66 +78,33 @@ module Gitlab
       end
       strong_memoize_attr :handler
 
+      # The order in which headers are scanned, the wildcard-key parsing, and the
+      # references message-id fallback all live in the gitlab-email_handler gem
+      # (Gitlab::EmailHandler::MailKey), so the GitLab application and the
+      # standalone mail_room service can never disagree on which key an email
+      # resolves to. This layers in the database-backed Service Desk custom email
+      # lookups, which are only relevant for the primary To header.
       def mail_key
-        find_most_concrete_key_from(to) || key_from_additional_headers
+        ::Gitlab::EmailHandler::MailKey.each_candidate(
+          mail,
+          wildcard_address: email_class.config&.address,
+          gitlab_host: Gitlab.config.gitlab.host
+        ) do |candidate|
+          if candidate.source == :to
+            # First handle reply key from custom email to fix forwarding behavior in MS O365.
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/426269
+            Gitlab::Email::ServiceDesk::CustomEmail.key_from_reply_address(candidate.value) ||
+              candidate.key ||
+              # Also perform direct check for custom emails. Some email providers
+              # don't set the forwarding target email in headers.
+              # https://gitlab.com/gitlab-org/gitlab/-/issues/496396
+              Gitlab::Email::ServiceDesk::CustomEmail.key_from_settings(candidate.value)
+          else
+            candidate.key
+          end
+        end
       end
       strong_memoize_attr :mail_key
-
-      def find_most_concrete_key_from(items)
-        find_first_key_from(items) do |email|
-          # First handle reply key from custom email to fix forwarding behavior in MS O365.
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/426269
-          Gitlab::Email::ServiceDesk::CustomEmail.key_from_reply_address(email) ||
-            email_class.key_from_address(email) ||
-            # Also perform direct check for custom emails. Some email providers
-            # don't set the forwarding target email in headers.
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/496396
-            Gitlab::Email::ServiceDesk::CustomEmail.key_from_settings(email)
-        end
-      end
-
-      def find_first_key_from(items)
-        items.each do |item|
-          email = item.is_a?(Mail::Field) ? item.value : item
-
-          key = block_given? ? yield(email) : email_class.key_from_address(email)
-
-          return key if key
-        end
-        nil
-      end
-
-      def key_from_additional_headers
-        find_key_from_references ||
-          find_first_key_from(delivered_to) ||
-          find_first_key_from(x_delivered_to) ||
-          find_first_key_from(envelope_to) ||
-          find_first_key_from(x_envelope_to) ||
-          find_first_key_from(recipients_from_received_headers) ||
-          find_first_key_from(x_original_to) ||
-          find_first_key_from(x_forwarded_to) ||
-          find_first_key_from(cc)
-      end
-
-      def ensure_references_array(references)
-        case references
-        when Array
-          references
-        when String
-          # Handle emails from clients which append with commas,
-          # example clients are Microsoft exchange and iOS app
-          email_class.scan_fallback_references(references)
-        when nil
-          []
-        end
-      end
-
-      def find_key_from_references
-        ensure_references_array(mail.references).find do |mail_id|
-          key = email_class.key_from_fallback_message_id(mail_id)
-          break key if key
-        end
-      end
 
       def from
         Array(mail.from)

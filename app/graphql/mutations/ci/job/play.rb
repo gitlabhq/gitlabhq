@@ -28,7 +28,8 @@ module Mutations
           description: 'Inputs to use when playing the job.'
 
         authorize :play_job
-        authorize_granular_token permissions: :play_job, boundary_argument: :id, boundary_type: :project
+        authorize_granular_token permissions: :play_job, boundary_argument: :id, boundary: :project,
+          boundary_type: :project
 
         def resolve(id:, variables:, inputs:)
           job = authorized_find!(id: id)

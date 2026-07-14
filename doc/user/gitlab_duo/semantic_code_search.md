@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Global Search
+stage: AI Platform
+group: AI Core Infra
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Find relevant code snippets in your repository based on meaning rather than keyword matching.
 title: Semantic code search
@@ -23,222 +23,40 @@ title: Semantic code search
 
 {{< /history >}}
 
-Semantic code search uses AI to find relevant code snippets
-in your repository based on meaning rather than keyword matching.
+> [!note]
+> For administrator documentation, see [semantic code search administration](../../administration/semantic_code_search.md).
 
-Semantic code search converts your codebase into vector embeddings
-and stores these embeddings in a vector database.
-Your search query is also converted into an embedding and then compared against
-your code embeddings to find the most semantically similar results.
+Use semantic code search to find relevant code snippets in your repository
+based on meaning rather than keyword matching.
+
+Semantic code search converts your codebase into vector embeddings stored in a vector database.
+When you search, your query is converted into an embedding and compared against your code embeddings
+to find semantically similar results.
 This approach finds relevant code even when keywords do not match.
-
-Improvements to this feature are proposed in [epic 18018](https://gitlab.com/groups/gitlab-org/-/epics/18018)
-and [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110).
 
 ## Prerequisites
 
-- Access to the [GitLab AI Gateway](../../administration/gitlab_duo/gateway.md).
-- These features turned on:
-  - For GitLab.com, experiment features for your top-level group.
-  - For GitLab Self-Managed, GitLab Duo experiment and beta features for the instance.
-- [GitLab Duo](../duo_agent_platform/turn_on_off.md#turn-gitlab-duo-on-or-off) turned on for your project.
-- One of these vector stores configured:
-  - Elasticsearch 8.0 and later.
-  - OpenSearch 2.0 and later.
-  - PostgreSQL with the [`pgvector`](https://github.com/pgvector/pgvector) extension.
-- Administrator access.
-
-## Enable semantic code search
-
-### With the UI
-
-If your GitLab instance uses Elasticsearch or OpenSearch for advanced search,
-you can enable semantic code search by connecting to the same cluster:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **Search**.
-1. Expand **Semantic search**.
-1. Select **Connect to the advanced search cluster**.
-
-### With the Rails console
-
-To create a custom vector store connection for Elasticsearch, OpenSearch, or PostgreSQL,
-in the Rails console, create a connection with `adapter` and `options`.
-
-> [!note]
-> You should use Elasticsearch or OpenSearch for medium to large repositories.
-> Use PostgreSQL with `pgvector` only for setups with a few small repositories.
-> Indexing and querying performance might be limited with `pgvector`.
-
-#### Elasticsearch
-
-```ruby
-connection = Ai::ActiveContext::Connection.create!(
-  name: "elasticsearch",
-  options: options,
-  adapter_class: "ActiveContext::Databases::Elasticsearch::Adapter"
-)
-connection.activate!
-```
-
-Connection options:
-
-| Option                   | Type             | Required | Default    | Description |
-|--------------------------|------------------|----------|------------|-------------|
-| `url`                    | array of strings | Yes      | None       | Array of URLs for your Elasticsearch cluster (for example, `["http://localhost:9200"]`). |
-| `client_adapter`         | string           | No       | `typhoeus` | HTTP adapter to use. Possible values are `typhoeus` and `net_http`. |
-| `client_request_timeout` | integer          | No       | `30`       | Request timeout in seconds. |
-| `retry_on_failure`       | integer          | No       | `0`        | Number of retries on failure. |
-| `debug`                  | boolean          | No       | `false`    | Enables debug logging. |
-
-#### OpenSearch
-
-```ruby
-connection = Ai::ActiveContext::Connection.create!(
-  name: "opensearch",
-  options: options,
-  adapter_class: "ActiveContext::Databases::Opensearch::Adapter"
-)
-connection.activate!
-```
-
-Connection options:
-
-| Option                   | Type             | Required | Default    | Description |
-|--------------------------|------------------|----------|------------|-------------|
-| `url`                    | array of strings | Yes      | None       | Array of URLs for your OpenSearch cluster (for example, `["http://localhost:9200"]`). |
-| `client_adapter`         | string           | No       | `typhoeus` | HTTP adapter to use. Possible values are `typhoeus` and `net_http`. |
-| `client_request_timeout` | integer          | No       | `30`       | Request timeout in seconds. |
-| `retry_on_failure`       | integer          | No       | `0`        | Number of retries on failure. |
-| `debug`                  | boolean          | No       | `false`    | Enables debug logging. |
-| `aws`                    | boolean          | No       | `false`    | Enables AWS Signature Version 4 signing. |
-| `aws_region`             | string           | No       | None       | AWS region for your OpenSearch domain. |
-| `aws_access_key`         | string           | No       | None       | AWS access key ID. |
-| `aws_secret_access_key`  | string           | No       | None       | AWS secret access key. |
-
-#### PostgreSQL with `pgvector`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/552311) in GitLab 18.8.
-
-{{< /history >}}
-
-For PostgreSQL, use the [`pgvector`](https://github.com/pgvector/pgvector) extension:
-
-1. In the PostgreSQL database, create the extension:
-
-   ```sql
-   CREATE EXTENSION vector;
-   ```
-
-1. In the Rails console, create the connection:
-
-   ```ruby
-   connection = Ai::ActiveContext::Connection.create!(
-     name: "postgres",
-     options: options,
-     adapter_class: "ActiveContext::Databases::Postgresql::Adapter"
-   )
-   connection.activate!
-   ```
-
-Connection options:
-
-| Option           | Type    | Required | Default | Description |
-|------------------|---------|----------|---------|-------------|
-| `host`           | string  | Yes      | None    | PostgreSQL host. |
-| `port`           | integer | No       | None    | PostgreSQL port. |
-| `database`       | string  | No       | None    | Database name. |
-| `user`           | string  | No       | None    | PostgreSQL user. |
-| `password`       | string  | No       | None    | PostgreSQL password. |
-| `connect_timeout`| integer | No       | `5`     | Connection timeout in seconds. |
-| `pool_size`      | integer | No       | `5`     | Connection pool size. |
-
-## Check semantic code search status
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/596795) in GitLab 19.0.
-
-{{< /history >}}
-
-Prerequisites:
-
-- Administrator access.
-
-To check the status of semantic code search, including indexing status,
-vector store connection details, repository statistics,
-and embedding queue sizes, run this Rake task:
-
-```shell
-sudo gitlab-rake gitlab:semantic_search:code:info
-```
-
-To monitor status continuously, provide a watch interval in seconds:
-
-```shell
-sudo gitlab-rake "gitlab:semantic_search:code:info[5]"
-```
-
-This task refreshes the output at the specified interval.
-To stop the task, press <kbd>Control</kbd>+<kbd>C</kbd>.
-
-## Manage the dead queue
-
-When embedding generation fails repeatedly, items are moved to the dead queue for manual intervention.
-You can check the dead queue size in the `Embedding Queues` section of the
-[status Rake task](#check-semantic-code-search-status) output.
-
-Prerequisites:
-
-- Administrator access.
-- A personal access token with the `api` scope.
-
-### Clear the dead queue
-
-To discard all items from the dead queue:
-
-```shell
-curl --request DELETE \
-  --header "PRIVATE-TOKEN: <your_token>" \
-  "https://gitlab.example.com/api/v4/admin/active_context/dead_queue"
-```
-
-### Replay the dead queue
-
-To move dead queue items back into a processing queue for another attempt,
-use the `queue` parameter to specify the target.
-Valid values are `retry_queue`, `code`, and `code_backfill`.
-
-Use `retry_queue` to attempt processing once more before potentially failing back to the dead queue:
-
-```shell
-curl --request POST \
-  --header "PRIVATE-TOKEN: <your_token>" \
-  --data "queue=retry_queue" \
-  "https://gitlab.example.com/api/v4/admin/active_context/dead_queue/replay"
-```
-
-Use `code` to add items to the main code queue:
-
-```shell
-curl --request POST \
-  --header "PRIVATE-TOKEN: <your_token>" \
-  --data "queue=code" \
-  "https://gitlab.example.com/api/v4/admin/active_context/dead_queue/replay"
-```
+- On GitLab Self-Managed, have semantic code search turned on [for the instance](../../administration/semantic_code_search.md).
+  On GitLab.com, semantic code search is turned on by default.
+- Have beta and experimental features turned on:
+  - On GitLab.com, [for the top-level group](../duo_agent_platform/turn_on_off.md#on-gitlabcom-3).
+  - On GitLab Self-Managed, [for the instance](../duo_agent_platform/turn_on_off.md#on-gitlab-self-managed-3).
+- Have GitLab Duo turned on [for the project](../duo_agent_platform/turn_on_off.md).
 
 ## Use semantic code search
 
-Semantic code search is available as a GitLab MCP server tool.
-For more information about how to use this tool, see
-[`semantic_code_search`](model_context_protocol/mcp_server_tools.md#semantic_code_search).
+Semantic code search is available through multiple interfaces:
+
+- REST API: Use the [`GET /api/v4/projects/:id/search/semantic` endpoint](../../api/search.md#semantic-search) to search your codebase programmatically.
+- MCP server tool: Use the [`semantic_code_search`](model_context_protocol/mcp_server_tools.md#semantic_code_search) tool in agentic workflows.
+- CLI: Use the [`glab search semantic`](https://docs.gitlab.com/cli/search/semantic/) command for command-line access.
+
+## Ad-hoc initial indexing
 
 When you first use semantic code search in a GitLab project:
 
 - Your repository code is indexed and converted into vector embeddings.
 - These embeddings are stored in your configured vector store.
-- Updates are processed incrementally when code is merged to the default branch.
+- Updates are processed incrementally when code is pushed to the default branch.
 
-Initial indexing might take a while depending on your repository size.
+Initial indexing can take time for large repositories.

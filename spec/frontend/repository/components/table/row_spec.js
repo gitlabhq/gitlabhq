@@ -37,14 +37,11 @@ function factory({
   wrapper = shallowMount(TableRow, {
     apolloProvider: createMockApolloProvider(mockData),
     propsData: {
-      id: '1',
       sha: '0as4k',
       commitInfo: COMMIT_MOCK,
-      name: 'name',
       currentPath: 'gitlab-org/gitlab-ce',
       projectPath: 'gitlab-org/gitlab-ce',
       url: `https://test.com`,
-      totalEntries: 10,
       rowNumber: 123,
       path: 'gitlab-org/gitlab-ce',
       type: 'tree',
@@ -92,7 +89,6 @@ describe('Repository table row component', () => {
   it('renders table row', () => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path: 'test',
         type: 'file',
@@ -106,7 +102,6 @@ describe('Repository table row component', () => {
   it('renders a symlink table row', () => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path: 'test',
         type: 'blob',
@@ -121,7 +116,6 @@ describe('Repository table row component', () => {
   it('renders table row for path with special character', () => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path: 'test$/test',
         type: 'file',
@@ -135,7 +129,6 @@ describe('Repository table row component', () => {
   it('renders a gl-hover-load directive', () => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path: 'test',
         type: 'blob',
@@ -152,7 +145,6 @@ describe('Repository table row component', () => {
   it.each(['tree', 'blob'])('renders a RouterLink for type $type', (type) => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path: 'test',
         type,
@@ -166,7 +158,6 @@ describe('Repository table row component', () => {
   it('renders a hyperlink for type commit', () => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path: 'test',
         type: 'commit',
@@ -185,7 +176,6 @@ describe('Repository table row component', () => {
   `('renders link for $path', ({ path, encodedPath }) => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path,
         type: 'tree',
@@ -201,7 +191,6 @@ describe('Repository table row component', () => {
   it('renders link for directory with hash', () => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path: 'test#',
         type: 'tree',
@@ -215,7 +204,6 @@ describe('Repository table row component', () => {
   it('renders commit ID for submodule', () => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path: 'test',
         type: 'commit',
@@ -229,7 +217,6 @@ describe('Repository table row component', () => {
   it('renders link with href', () => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path: 'test',
         type: 'blob',
@@ -244,7 +231,6 @@ describe('Repository table row component', () => {
   it('renders LFS badge', () => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path: 'test',
         type: 'commit',
@@ -259,7 +245,6 @@ describe('Repository table row component', () => {
   it('renders commit and web links with href for submodule', () => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path: 'test',
         type: 'commit',
@@ -276,7 +261,6 @@ describe('Repository table row component', () => {
   it('renders lock icon', () => {
     factory({
       propsData: {
-        id: '1',
         sha: '123',
         path: 'test',
         type: 'tree',
@@ -291,7 +275,6 @@ describe('Repository table row component', () => {
   it('renders loading icon when path is loading', () => {
     factory({
       propsData: {
-        id: '1',
         sha: '1',
         path: 'test',
         type: 'tree',
@@ -307,7 +290,6 @@ describe('Repository table row component', () => {
     it('tracks event when file link is clicked', () => {
       factory({
         propsData: {
-          id: '1',
           sha: '123',
           path: 'test/test',
           type: 'file',
@@ -324,7 +306,6 @@ describe('Repository table row component', () => {
     it('tracks event when directory link is clicked', () => {
       factory({
         propsData: {
-          id: '1',
           sha: '123',
           path: 'src/components',
           type: 'tree',
@@ -341,7 +322,6 @@ describe('Repository table row component', () => {
     it('tracks event when submodule link is clicked', () => {
       factory({
         propsData: {
-          id: '1',
           sha: '123',
           path: 'external-lib',
           type: 'commit',
@@ -363,7 +343,6 @@ describe('Repository table row component', () => {
     it('emits row-appear on mount when commitInfo is null', () => {
       factory({
         propsData: {
-          id: '1',
           sha: '1',
           path: 'test',
           type: 'tree',
@@ -380,7 +359,6 @@ describe('Repository table row component', () => {
     it('does not emit row-appear when commitInfo is provided', () => {
       factory({
         propsData: {
-          id: '1',
           sha: '1',
           path: 'test',
           type: 'tree',

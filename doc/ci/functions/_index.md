@@ -202,7 +202,7 @@ For each step in the list, the step runner:
 ## Function requirements
 
 To use functions, you might have to install a step runner on the runner executor you use.
-For more information, see [install the step runner manually](https://docs.gitlab.com/runner/install/step-runner).
+For more information, see [install the step runner manually](https://docs.gitlab.com/runner/install/step-runner/).
 
 ## Use functions
 

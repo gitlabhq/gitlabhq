@@ -8,11 +8,35 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
   include WorkhorseHelpers
   include ProjectForksHelper
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project, :repository, creator: user) }
+  let!(:maintainer) { create(:project_member, :maintainer, user: user, project: project) }
   let(:guest) { create(:user).tap { |u| create(:project_member, :guest, user: u, project: project) } }
   let(:developer) { create(:user).tap { |u| create(:project_member, :developer, user: u, project: project) } }
-  let!(:project) { create(:project, :repository, creator: user) }
-  let!(:maintainer) { create(:project_member, :maintainer, user: user, project: project) }
+
+  shared_examples 'returns 503 when Gitaly is unavailable' do |http_method:|
+    using RSpec::Parameterized::TableSyntax
+
+    # Gitaly errors (GRPC::Unavailable, GRPC::DeadlineExceeded, etc.) are wrapped by
+    # Gitlab::Git::WrapsGitalyErrors into CommandError or CommandTimedOut before
+    # reaching the API layer. CommandTimedOut is a subclass of CommandError.
+    where(:exception_class) do
+      [
+        [Gitlab::Git::CommandError],
+        [Gitlab::Git::CommandTimedOut]
+      ]
+    end
+
+    with_them do
+      it 'returns 503' do
+        stub_gitaly_error
+
+        send(http_method, api(route, user))
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+      end
+    end
+  end
 
   describe "GET /projects/:id/repository/tree" do
     let(:route) { "/projects/#{project.id}/repository/tree" }
@@ -263,6 +287,8 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(Gitlab::Workhorse).to receive(:send_git_blob) do |_, blob|
           expect(blob.id).to eq(sample_blob.oid)
           expect(blob.loaded_size).to eq(0)
+
+          [Gitlab::Workhorse::SEND_DATA_HEADER, "git-blob:#{blob.id}"]
         end
 
         get api(route, current_user)
@@ -523,6 +549,38 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       end
     end
 
+    context 'when Gitaly is unavailable' do
+      let(:stub_gitaly_error) do
+        allow(Gitlab::Workhorse).to receive(:send_git_archive)
+          .and_raise(exception_class, 'Gitaly error')
+      end
+
+      it_behaves_like 'returns 503 when Gitaly is unavailable', http_method: :get
+    end
+
+    context 'when archive is not found' do
+      it 'returns 404' do
+        allow(Gitlab::Workhorse).to receive(:send_git_archive)
+          .and_raise(Gitlab::Workhorse::ArchiveNotFoundError, 'Archive not found')
+
+        get api(route, user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when repository is empty' do
+      let_it_be(:project) { create(:project, :empty_repo, creator: user) }
+      let_it_be(:maintainer) { create(:project_member, :maintainer, user: user, project: project) }
+
+      it 'returns 404', :aggregate_failures do
+        get api("/projects/#{project_id}/repository/archive.tar.bz2", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 File Not Found')
+      end
+    end
+
     context 'when ref_type is provided' do
       it 'forwards ref_type to send_git_archive' do
         expect(Gitlab::Workhorse).to receive(:send_git_archive).with(
@@ -581,6 +639,28 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers['Content-Type']).to include('application/zip')
+      end
+    end
+
+    context 'when Gitaly is unavailable' do
+      let(:stub_gitaly_error) do
+        allow_next_instance_of(Gitlab::Repositories::ArchiveHeaderBuilder) do |builder|
+          allow(builder).to receive(:metadata).and_raise(exception_class, 'Gitaly error')
+        end
+      end
+
+      it_behaves_like 'returns 503 when Gitaly is unavailable', http_method: :head
+    end
+
+    context 'when archive is not found' do
+      it 'returns 404' do
+        allow_next_instance_of(Gitlab::Repositories::ArchiveHeaderBuilder) do |builder|
+          allow(builder).to receive(:metadata).and_raise(Gitlab::Workhorse::ArchiveNotFoundError, 'Archive not found')
+        end
+
+        head api(route, user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -782,6 +862,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
     context 'when authenticated', 'as a developer' do
       it_behaves_like 'repository compare' do
+        let(:project) { create(:project, :repository, creator: user) }
         let(:current_user) { user }
 
         context 'when user does not have read access to the parent project' do
@@ -904,6 +985,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
     context 'when authenticated', 'as a developer' do
       it_behaves_like 'repository contributors' do
+        let(:project) { create(:project, :repository, creator: user) }
         let(:current_user) { user }
       end
     end
@@ -938,6 +1020,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
   end
 
   describe 'GET :id/repository/health' do
+    let(:project) { create(:project, :repository, creator: user) }
     let(:params) { nil }
 
     subject(:request) do
@@ -1117,6 +1200,8 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
   end
 
   describe 'GET /projects/:id/repository/changelog' do
+    let(:project) { create(:project, :repository, creator: user) }
+
     it_behaves_like 'enforcing job token policies', :read_releases,
       allow_public_access_for_enabled_project_features: :repository do
       before do
@@ -1373,6 +1458,8 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
   end
 
   describe 'POST /projects/:id/repository/changelog' do
+    let(:project) { create(:project, :repository, creator: user) }
+
     it 'generates the changelog for a version' do
       spy = instance_spy(::Repositories::ChangelogService)
 

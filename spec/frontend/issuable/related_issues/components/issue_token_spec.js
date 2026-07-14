@@ -124,7 +124,7 @@ describe('IssueToken', () => {
       it('emits event when clicked', () => {
         findRemoveBtn().vm.$emit('click');
 
-        const emitted = wrapper.emitted(`${eventNamespace}RemoveRequest`);
+        const emitted = wrapper.emitted('pending-issuable-remove-request');
 
         expect(emitted).toHaveLength(1);
         expect(emitted[0]).toEqual([idKey]);

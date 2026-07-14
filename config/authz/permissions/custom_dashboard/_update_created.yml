@@ -1,3 +1,4 @@
 ---
 name: _update_created_custom_dashboard
 description: Allows users to update custom dashboards they created
+conditionally_enables: update_custom_dashboard

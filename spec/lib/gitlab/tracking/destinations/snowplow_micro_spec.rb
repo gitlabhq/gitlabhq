@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Tracking::Destinations::SnowplowMicro, feature_category: 
         namespace: 'gl',
         hostname: subject.hostname,
         cookieDomain: '.gitlab.com',
-        appId: nil,
+        appId: "",
         formTracking: true,
         linkClickTracking: true
       }

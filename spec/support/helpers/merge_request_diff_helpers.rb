@@ -119,6 +119,8 @@ module MergeRequestDiffHelpers
   end
 
   def find_by_scrolling(selector, **options)
+    wait_for_scrollable_content_to_load
+
     element = find_within_viewport(selector, **options)
     return element if element
 
@@ -136,6 +138,8 @@ module MergeRequestDiffHelpers
   end
 
   def find_in_panel_by_scrolling(selector, **options)
+    wait_for_scrollable_content_to_load
+
     element = find_within_panel_viewport(selector, **options)
     return element if element
 
@@ -152,5 +156,13 @@ module MergeRequestDiffHelpers
       element = find_within_panel_viewport(selector, **options)
     end
     element
+  end
+
+  private
+
+  def wait_for_scrollable_content_to_load
+    return unless page.has_css?('.diffs-tab', wait: 0)
+
+    expect(page).to have_css('.diff-file')
   end
 end

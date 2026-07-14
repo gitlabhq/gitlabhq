@@ -3,9 +3,11 @@ import { GlSprintf, GlLink } from '@gitlab/ui';
 import {
   EVENT_COMMENTED_I18N,
   EVENT_COMMENTED_SNIPPET_I18N,
+  VARIANT_DEFAULT,
 } from 'ee_else_ce/contribution_events/constants';
 import { SNIPPET_NOTEABLE_TYPE, COMMIT_NOTEABLE_TYPE } from '~/notes/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { isValidVariant } from '../../utils';
 import ResourceParentLink from '../resource_parent_link.vue';
 import ContributionEventBase from './contribution_event_base.vue';
 
@@ -19,6 +21,12 @@ export default {
     event: {
       type: Object,
       required: true,
+    },
+    variant: {
+      type: String,
+      required: false,
+      default: VARIANT_DEFAULT,
+      validator: isValidVariant,
     },
   },
   computed: {
@@ -53,7 +61,7 @@ export default {
 </script>
 
 <template>
-  <contribution-event-base :event="event" icon-name="comment">
+  <contribution-event-base :event="event" :variant="variant" icon-name="comment">
     <gl-sprintf :message="message">
       <template #noteableLink>
         <gl-link :class="noteableLinkClass" :href="noteable.web_url">{{

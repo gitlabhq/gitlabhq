@@ -34,10 +34,15 @@ module Features
     end
 
     # Add OTP for authentication via UI
-    def add_otp(user)
-      click_button _("Sign in via 2FA code")
-      otp_code = user.current_otp
-      fill_in _('Enter verification code'), with: otp_code
+    # The data-testid is shared by the legacy and two_factor_vue screens, so this
+    # works regardless of the flag state.
+    def use_otp_fallback
+      find_by_testid('authenticator-app-button').click
+    end
+
+    def sign_in_with_otp(user)
+      use_otp_fallback
+      fill_in 'user_otp_attempt', with: user.current_otp
       click_button _('Verify code')
     end
 

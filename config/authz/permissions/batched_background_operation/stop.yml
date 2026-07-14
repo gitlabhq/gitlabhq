@@ -1,0 +1,3 @@
+---
+name: stop_batched_background_operation
+description: Grants the ability to stop batched background operations

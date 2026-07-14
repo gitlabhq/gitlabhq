@@ -6,7 +6,7 @@ RSpec.describe 'getting an issue list for a project', feature_category: :team_pl
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:project, freeze: false) { create(:project, :repository, :public, group: group) }
+  let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:another_user) { create(:user, reporter_of: group) }
   let_it_be(:milestone1) { create(:milestone, project: project, due_date: 10.days.from_now) }

@@ -7,26 +7,21 @@ export const commonOptions = {
   ciHelpPagePath: 'help/ci/',
   ciLintPath: 'ci/lint',
   ciTroubleshootingPath: 'help/troubleshoot',
-  defaultBranch: 'main',
-  emptyStateIllustrationPath: 'illustrations/svg',
-  helpPaths: '/ads',
   includesHelpPagePath: 'help/includes',
   needsHelpPagePath: 'help/ci/needs',
   newMergeRequestPath: 'merge_request/new',
-  pipelinePagePath: '/pipelines/1',
   projectFullPath: 'root/my-project',
-  projectNamespace: 'root',
   simulatePipelineHelpPagePath: 'help/ci/simulate',
   totalBranches: '10',
   usesExternalConfig: 'false',
-  validateTabIllustrationPath: 'illustrations/tab',
   ymlHelpPagePath: 'help/ci/yml',
 };
 
 export const editorDatasetOptions = {
   initialBranchName: 'production',
   pipelineEtag: 'pipelineEtag',
-  ciCatalogPath: '/explore/catalog',
+  // Read from the dataset to seed the Apollo cache, but not provided.
+  defaultBranch: 'main',
   ...commonOptions,
 };
 

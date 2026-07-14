@@ -2,14 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_caching, feature_category: :source_code_management do
+RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_caching, feature_category: :source_code_management, factory_default: :keep do
   include ProjectForksHelper
 
   subject { described_class.new(forked_project, user) }
 
+  let_it_be(:namespace) { create_default(:namespace) }
+  let_it_be(:user) { create(:user) }
+
   let(:project) { create(:project, :public) }
   let!(:forked_project) { fork_project(project, user) }
-  let(:user) { create(:user) }
 
   context 'with opened merge request on the source project' do
     let(:merge_request) { create(:merge_request, source_project: forked_project, target_project: forked_project.forked_from_project) }

@@ -10,6 +10,8 @@ module Types
         graphql_name 'WorkItemWidgetNotifications'
         description 'Represents the notifications widget'
 
+        authorize_granular_token skip_reason: :parent_authorizes
+
         implements ::Types::WorkItems::WidgetInterface
 
         field :subscribed, GraphQL::Types::Boolean,

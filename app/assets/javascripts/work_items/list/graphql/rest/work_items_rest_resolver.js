@@ -10,9 +10,16 @@
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { buildApiUrl } from '~/api/api_utils';
 import axios from '~/lib/utils/axios_utils';
+import { parseUrlPathname } from '~/lib/utils/url_utility';
 import { convertGraphQLVarsToRestParams } from './rest_filter_params_mapper';
 
-const WORK_ITEMS_PATH = '/api/:version/namespaces/:full_path/-/work_items';
+const GROUPS_PATH = '/api/:version/groups/:full_path/-/work_items';
+const NAMESPACES_PATH = '/api/:version/namespaces/:full_path/-/work_items';
+
+export function isGroupNamespace(namespace) {
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls
+  return (namespace?.id ?? '').includes('/Group/');
+}
 
 const REST_STATE_TO_GRAPHQL = {
   opened: 'OPEN',
@@ -54,7 +61,7 @@ function mapAssigneesFeature(features) {
         name: user.name,
         username: user.username,
         webUrl: user.web_url ?? null, // eslint-disable-line local-rules/no-web-url
-        webPath: user.web_path ?? null,
+        webPath: user.web_url ? parseUrlPathname(user.web_url) : null, // eslint-disable-line local-rules/no-web-url
         __typename: 'UserCore',
       })),
       __typename: 'UserCoreConnection',
@@ -72,7 +79,8 @@ function mapMilestoneFeature(features) {
           dueDate: milestone.due_date ?? null,
           startDate: milestone.start_date ?? null,
           title: milestone.title,
-          webPath: milestone.web_path ?? null,
+          webPath: milestone.web_url ? parseUrlPathname(milestone.web_url) : null, // eslint-disable-line local-rules/no-web-url
+          webUrl: milestone.web_url ?? null, // eslint-disable-line local-rules/no-web-url
           __typename: 'Milestone',
         }
       : null,
@@ -116,14 +124,41 @@ function mapHierarchyFeature(features, itemNamespace) {
   };
 }
 
+function mapAwardEmojiFeature(features) {
+  const awardEmojiData = features?.award_emoji;
+  return {
+    __typename: 'WorkItemWidgetAwardEmoji',
+    upvotes: awardEmojiData?.upvotes ?? 0,
+    downvotes: awardEmojiData?.downvotes ?? 0,
+  };
+}
+
+function mapDevelopmentFeature(features) {
+  const developmentData = features?.development;
+  return {
+    __typename: 'WorkItemWidgetDevelopment',
+    closingMergeRequests: {
+      count: developmentData?.closing_merge_requests_count ?? 0,
+      __typename: 'WorkItemClosingMergeRequestConnection',
+    },
+  };
+}
+
 export function mapWidgetsFromFeatures(features, itemNamespace) {
-  return [
+  const widgets = [
     { ...mapLabelsFeature(features), type: 'LABELS' },
     { ...mapAssigneesFeature(features), type: 'ASSIGNEES' },
     { ...mapMilestoneFeature(features), type: 'MILESTONE' },
     { ...mapStartAndDueDateFeature(features), type: 'START_AND_DUE_DATE' },
     { ...mapHierarchyFeature(features, itemNamespace), type: 'HIERARCHY' },
+    { ...mapAwardEmojiFeature(features), type: 'AWARD_EMOJI' },
   ];
+
+  if (features?.development) {
+    widgets.push({ ...mapDevelopmentFeature(features), type: 'DEVELOPMENT' });
+  }
+
+  return widgets;
 }
 
 export function mapFeaturesFromRestResponse(features, itemNamespace) {
@@ -134,6 +169,8 @@ export function mapFeaturesFromRestResponse(features, itemNamespace) {
     milestone: mapMilestoneFeature(features),
     startAndDueDate: mapStartAndDueDateFeature(features),
     hierarchy: mapHierarchyFeature(features, itemNamespace),
+    awardEmoji: mapAwardEmojiFeature(features),
+    development: features?.development ? mapDevelopmentFeature(features) : null,
   };
 }
 
@@ -148,6 +185,8 @@ export function nullWorkItemFeatures() {
     milestone: null,
     startAndDueDate: null,
     hierarchy: null,
+    awardEmoji: null,
+    development: null,
   };
 }
 
@@ -176,6 +215,7 @@ export function mapWorkItemToGraphQL(item, sharedNamespace, { useWorkItemFeature
     hidden: item.hidden ?? false,
     reference: item.reference ?? null,
     webPath: item.web_path ?? null,
+    webUrl: item.web_url ?? null, // eslint-disable-line local-rules/no-web-url
     userDiscussionsCount: item.user_discussions_count ?? 0,
     author: item.author
       ? {
@@ -185,6 +225,7 @@ export function mapWorkItemToGraphQL(item, sharedNamespace, { useWorkItemFeature
           name: item.author.name,
           username: item.author.username,
           webPath: item.author.web_path ?? null,
+          webUrl: item.author.web_url ?? null, // eslint-disable-line local-rules/no-web-url
         }
       : null,
     namespace: itemNamespace,
@@ -205,16 +246,33 @@ export function mapWorkItemToGraphQL(item, sharedNamespace, { useWorkItemFeature
   };
 }
 
-// Parses keyset pagination info from REST API response headers
+// Parses pagination info from REST API response headers
+// Supports both keyset pagination and offset pagination
 export function parsePageInfo(headers) {
   const nextCursor = headers['x-next-cursor'] || null;
   const prevCursor = headers['x-prev-cursor'] || null;
+
+  // If cursor headers are present, use keyset pagination
+  if (nextCursor || prevCursor) {
+    return {
+      __typename: 'PageInfo',
+      hasNextPage: Boolean(nextCursor),
+      hasPreviousPage: Boolean(prevCursor),
+      endCursor: nextCursor,
+      startCursor: prevCursor,
+    };
+  }
+
+  // Otherwise, fall back to offset pagination
+  const nextPage = headers['x-next-page'];
+  const prevPage = headers['x-prev-page'];
+
   return {
     __typename: 'PageInfo',
-    hasNextPage: Boolean(nextCursor),
-    hasPreviousPage: Boolean(prevCursor),
-    endCursor: nextCursor,
-    startCursor: prevCursor,
+    hasNextPage: Boolean(nextPage),
+    hasPreviousPage: Boolean(prevPage),
+    endCursor: nextPage ? String(nextPage) : null,
+    startCursor: prevPage ? String(prevPage) : null,
   };
 }
 
@@ -225,11 +283,15 @@ export async function workItemsRestResolver(namespace, args) {
 
   restParams.set(
     'fields',
-    'id,iid,global_id,title,title_html,state,created_at,updated_at,closed_at,reference,web_path,author,work_item_type,confidential,hidden,user_discussions_count,namespace',
+    'id,iid,global_id,title,title_html,state,created_at,updated_at,closed_at,reference,web_path,web_url,author,work_item_type,confidential,hidden,user_discussions_count,namespace',
   );
-  restParams.set('features', 'labels,assignees,milestone,start_and_due_date');
+  restParams.set(
+    'features',
+    'labels,assignees,milestone,start_and_due_date,hierarchy,award_emoji,development',
+  );
 
-  const url = buildApiUrl(WORK_ITEMS_PATH).replace(':full_path', encodeURIComponent(fullPath));
+  const pathTemplate = isGroupNamespace(namespace) ? GROUPS_PATH : NAMESPACES_PATH;
+  const url = buildApiUrl(pathTemplate).replace(':full_path', encodeURIComponent(fullPath));
 
   let response;
   try {

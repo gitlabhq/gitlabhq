@@ -201,11 +201,6 @@ module Gitlab
             'unique' => true,
             'references' => [
               {
-                'table' => 'p_ci_build_tags',
-                'column' => 'tag_id',
-                'deduplication_column' => 'build_id'
-              },
-              {
                 'table' => 'ci_runner_taggings',
                 'column' => 'tag_id',
                 'deduplication_column' => 'runner_id'

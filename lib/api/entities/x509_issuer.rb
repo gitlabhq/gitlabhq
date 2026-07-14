@@ -3,7 +3,7 @@
 module API
   module Entities
     class X509Issuer < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :subject, documentation: { type: 'String', example: 'CN=PKI,OU=Example,O=World' }
       expose :subject_key_identifier, documentation: {
         type: 'String',

@@ -58,9 +58,12 @@ export default class AssetResolver {
 
     const labelsLength = p[0]?.querySelectorAll('.gl-label').length;
     if (labelsLength >= 1) {
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- False positive, not a URL
       if (text.startsWith('/label')) return n__('Adds a label.', 'Adds %d labels.', labelsLength);
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- False positive, not a URL
       if (text.startsWith('/unlabel'))
         return n__('Removes a label.', 'Removes %d labels.', labelsLength);
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- False positive, not a URL
       if (text.startsWith('/relabel'))
         return n__(
           'Replaces all labels with %d label.',

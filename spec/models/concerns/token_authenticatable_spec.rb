@@ -154,7 +154,7 @@ RSpec.describe TokenAuthenticatable, feature_category: :system_access do
       it 'delegates to strategy' do
         instance.public_send(:"#{field}=", 'foo')
 
-        expect(instance.public_send(:"#{field}_matches?", 'bar')).to eq(false)
+        expect(instance.public_send(:"#{field}_matches?", 'bar')).to be(false)
       end
     end
 

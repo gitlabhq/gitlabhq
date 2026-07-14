@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::Issues::SetLocked, feature_category: :api do
   include GraphqlHelpers
 
-  let_it_be(:issue, freeze: false) { create(:issue) }
+  let_it_be_with_reload(:issue) { create(:issue) }
   let_it_be(:current_user) { create(:user) }
 
   subject(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }

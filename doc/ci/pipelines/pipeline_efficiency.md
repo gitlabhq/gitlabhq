@@ -220,7 +220,7 @@ that download and run faster.
 
 Try to use custom Docker images with the software pre-installed. It's usually much
 faster to download a larger pre-configured image than to use a common image and install
-software on it each time. The Docker [Best practices for writing Dockerfiles article](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
+software on it each time. The Docker [Best practices for writing Dockerfiles article](https://docs.docker.com/build/building/best-practices/)
 has more information about building efficient Docker images.
 
 Methods to reduce Docker image size:
@@ -257,6 +257,6 @@ identify recurring problems with CI pipeline efficiency.
 
 ### Related topics
 
-- [CI Monitoring Webcast Slides](https://docs.google.com/presentation/d/1ONwIIzRB7GWX-WOSziIIv8fz1ngqv77HO1yVfRooOHM/edit?usp=sharing)
+- [CI expert agent](../../user/duo_agent_platform/agents/foundational_agents/ci_expert_agent.md)
 - GitLab.com Monitoring Handbook
 - [Buildings dashboards for operational visibility](https://aws.amazon.com/builders-library/building-dashboards-for-operational-visibility/)

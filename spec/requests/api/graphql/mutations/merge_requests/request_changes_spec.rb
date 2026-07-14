@@ -39,6 +39,20 @@ RSpec.describe 'Requesting changes on a merge request', feature_category: :code_
     project.add_developer(current_user)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_merge_request do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:mutation) do
+      graphql_mutation(
+        :merge_request_request_changes,
+        { project_path: project.full_path, iid: merge_request.iid.to_s },
+        'errors'
+      )
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'returns an error if the user is not allowed to update the merge request' do
     post_graphql_mutation(mutation, current_user: create(:user))
 

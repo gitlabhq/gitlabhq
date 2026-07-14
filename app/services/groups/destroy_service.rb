@@ -91,63 +91,19 @@ module Groups
     end
 
     def prepare_authorization_refresh
-      if Feature.enabled?(:group_destroy_update_project_authorizations_per_project, group.root_ancestor)
-        project_ids = obtain_project_ids_for_authorization_refresh
-        return if project_ids.blank?
+      project_ids = obtain_project_ids_for_authorization_refresh
+      return if project_ids.blank?
 
-        -> do
-          Gitlab::AppLogger.info(
-            message: "Refreshing project_authorizations for projects previously shared with destroyed group",
-            group_id: group.id,
-            user_ids_count: 0,
-            project_ids_count: project_ids.size
-          )
+      -> do
+        Gitlab::AppLogger.info(
+          message: "Refreshing project_authorizations for projects previously shared with destroyed group",
+          group_id: group.id,
+          user_ids_count: 0,
+          project_ids_count: project_ids.size
+        )
 
-          AuthorizedProjectUpdate::ProjectAccessChangedService.new(project_ids.to_a).execute
-        end
-      else
-        user_ids = obtain_user_ids_for_project_authorizations_refresh
-        return if user_ids.blank?
-
-        -> do
-          Gitlab::AppLogger.info(
-            message: "Refreshing project_authorizations of users to projects previously shared with destroyed group",
-            group_id: group.id,
-            user_ids_count: user_ids.size,
-            project_ids_count: 0
-          )
-
-          UserProjectAccessChangedService.new(user_ids).execute
-        end
+        AuthorizedProjectUpdate::ProjectAccessChangedService.new(project_ids.to_a).execute
       end
-    end
-
-    def any_groups_shared_with_this_group?
-      group.shared_group_links.any?
-    end
-
-    def any_projects_shared_with_this_group?
-      group.project_group_links.any?
-    end
-
-    # Destroying a group automatically destroys all project authorizations directly
-    # associated with the group and descendents. However, project authorizations
-    # for projects and groups this group is shared with are not. Without a manual
-    # refresh, the project authorization records of these users to shared projects
-    # and projects within the shared groups will never be removed, causing
-    # inconsistencies with access permissions.
-    #
-    # This method retrieves the user IDs that need to be refreshed. If only
-    # groups are shared with this group, only direct members need to be refreshed.
-    # If projects are also shared with the group, direct members *and* shared
-    # members of other groups need to be refreshed.
-    # `Group#user_ids_for_project_authorizations` returns both direct and shared
-    # members' user IDs.
-    def obtain_user_ids_for_project_authorizations_refresh
-      return unless any_projects_shared_with_this_group? || any_groups_shared_with_this_group?
-      return group.user_ids_for_project_authorizations if any_projects_shared_with_this_group?
-
-      group.users_ids_of_direct_members
     end
 
     # Destroying a group automatically destroys all project authorizations
@@ -168,8 +124,13 @@ module Groups
       project_ids = Set.new
 
       group.shared_group_links.each_batch(of: 50, column: :shared_group_id) do |batch|
-        descendant_ids = Namespace.where(id: batch.pluck(:shared_group_id)).self_and_descendant_ids
-        project_ids.merge(Project.where(namespace_id: descendant_ids).pluck(:id))
+        # Use the instance-level `all_projects` (which calls `self_and_descendant_ids` via
+        # the fast `traversal_ids @> '{id}'` GIN-indexed operator) rather than the class-level
+        # `Namespace.where(...).self_and_descendant_ids` (which uses the expensive
+        # `next_traversal_ids_sibling` PL/pgSQL CTE that can time out on large hierarchies).
+        Namespace.id_in(batch.pluck(:shared_group_id)).each do |ns|
+          project_ids.merge(ns.all_projects.pluck(:id))
+        end
       end
 
       group.project_group_links.each_batch(of: 50, column: :project_id) do |batch|

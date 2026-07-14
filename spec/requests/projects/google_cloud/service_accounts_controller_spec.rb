@@ -8,9 +8,9 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController, feature_categor
   describe 'GET index', :snowplow do
     let_it_be(:url) { project_google_cloud_service_accounts_path(project).to_s }
 
-    let_it_be(:user_guest, freeze: false) { create(:user) }
-    let_it_be(:user_developer, freeze: false) { create(:user) }
-    let_it_be(:user_maintainer, freeze: false) { create(:user) }
+    let_it_be(:user_guest) { create(:user) }
+    let_it_be(:user_developer) { create(:user) }
+    let_it_be(:user_maintainer) { create(:user) }
     let_it_be(:user_creator) { project.creator }
 
     let_it_be(:unauthorized_members) { [user_guest, user_developer] }

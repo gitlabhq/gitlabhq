@@ -51,6 +51,7 @@ const i18n = {
 const helpUrlSecrets = helpPagePath('ci/secrets/_index');
 
 export default {
+  name: 'ServiceTable',
   components: { GlAlert, GlButton, GlLink, GlSprintf, GlTable },
   props: {
     cloudsqlPostgresUrl: {

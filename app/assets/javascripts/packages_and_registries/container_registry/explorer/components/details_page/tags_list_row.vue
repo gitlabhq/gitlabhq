@@ -17,7 +17,6 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   REMOVE_TAG_BUTTON_TITLE,
   DIGEST_LABEL,
@@ -60,7 +59,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     tag: {
       type: Object,
@@ -87,6 +85,7 @@ export default {
       required: false,
     },
   },
+  emits: ['delete', 'select'],
   i18n: {
     REMOVE_TAG_BUTTON_TITLE,
     DIGEST_LABEL,
@@ -160,11 +159,7 @@ export default {
       return !this.isInvalidTag && this.tag.mediaType;
     },
     showManifestPlatforms() {
-      return (
-        !this.isInvalidTag &&
-        this.isMultiPlatformImage &&
-        this.glFeatures.containerRegistryDisplaySupportedPlatforms
-      );
+      return !this.isInvalidTag && this.isMultiPlatformImage;
     },
     signatures() {
       const referrers = this.tag.referrers || [];

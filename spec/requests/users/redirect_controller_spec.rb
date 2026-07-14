@@ -6,7 +6,7 @@ RSpec.describe "Users::RedirectController requests", feature_category: :user_man
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:another_user, freeze: false) { create(:user) }
+  let_it_be(:another_user) { create(:user) }
 
   context 'when user is not logged in' do
     it 'returns 403' do

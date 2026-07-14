@@ -32,7 +32,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       project.update!(archived: true)
       visit project_tree_path(project, project.repository.root_ref)
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
 
       aggregate_failures 'available edit buttons' do
         expect(page).to have_button('Edit', disabled: true)
@@ -54,7 +54,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     it 'inserts a content of a file' do
       visit(project_tree_path_root_ref)
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
       edit_in_single_file_editor
       find('.file-editor', match: :first)
 
@@ -66,11 +66,11 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     it 'shows ref instead of full path when editing a file' do
       visit(project_tree_path_root_ref)
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
       edit_in_single_file_editor
 
-      expect(page).not_to have_selector('#editor_path')
       expect(page).to have_selector('#editor_ref')
+      expect(page).not_to have_selector('#editor_path')
     end
 
     it 'does not show the edit link if a file is binary' do
@@ -85,7 +85,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     it 'commits an edited file' do
       visit(project_tree_path_root_ref)
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
       edit_in_single_file_editor
       find('.file-editor', match: :first)
 
@@ -108,7 +108,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     it 'commits a renamed file' do
       visit(project_tree_path_root_ref)
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
       edit_in_single_file_editor
       find('.file-editor', match: :first)
 
@@ -131,7 +131,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     it 'displays a flash message with a link when an edited file was committed' do
       visit(project_tree_path_root_ref)
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
       edit_in_single_file_editor
       find('.file-editor', match: :first)
 
@@ -156,7 +156,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     it 'commits an edited file to a new branch' do
       visit(project_tree_path_root_ref)
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
       edit_in_single_file_editor
 
       find('.file-editor', match: :first)
@@ -180,7 +180,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     it 'shows the diff of an edited file' do
       visit(project_tree_path_root_ref)
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
       edit_in_single_file_editor
       find('.file-editor', match: :first)
 
@@ -217,7 +217,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     it 'inserts a content of a file in a forked project', :sidekiq_might_not_need_inline do
       visit(project2_tree_path_root_ref)
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
       edit_in_single_file_editor
 
       expect_fork_prompt
@@ -238,7 +238,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     it 'opens the Web IDE in a forked project', :sidekiq_might_not_need_inline do
       visit(project2_tree_path_root_ref)
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
 
       click_button 'Edit'
       expect(page).to have_content 'Edit single file'
@@ -272,7 +272,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       visit(project2_tree_path_root_ref)
       wait_for_requests
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
       edit_in_single_file_editor
 
       expect_fork_prompt
@@ -304,7 +304,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       visit(project2_tree_path_root_ref)
       wait_for_requests
 
-      click_link('.gitignore')
+      within_testid('file-tree-table') { click_link('.gitignore') }
       edit_in_single_file_editor
 
       expect_fork_prompt
@@ -334,7 +334,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
         visit(project2_tree_path_root_ref)
         wait_for_requests
 
-        click_link('.gitignore')
+        within_testid('file-tree-table') { click_link('.gitignore') }
         edit_in_single_file_editor
 
         expect(page).not_to have_link('Fork')
@@ -464,28 +464,14 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       end
     end
 
-    context 'with blob_edit_refactor feature flag enabled' do
-      before do
-        stub_feature_flags(blob_edit_refactor: true)
-      end
+    it_behaves_like 'maintainer can commit to new branch in upstream', 'feature-branch'
 
-      it_behaves_like 'maintainer can commit to new branch in upstream', 'feature-branch'
+    it 'shows correct project context in the UI' do
+      visit project_edit_blob_path(upstream_project, tree_join(upstream_project.default_branch, 'README.md'))
+      wait_for_requests
 
-      it 'shows correct project context in the UI' do
-        visit project_edit_blob_path(upstream_project, tree_join(upstream_project.default_branch, 'README.md'))
-        wait_for_requests
-
-        expect(page).to have_content(upstream_project.name)
-        expect(page).not_to have_content(forked_project.name)
-      end
-    end
-
-    context 'with blob_edit_refactor feature flag disabled (old controller flow)' do
-      before do
-        stub_feature_flags(blob_edit_refactor: false)
-      end
-
-      it_behaves_like 'maintainer can commit to new branch in upstream', 'feature-branch-old'
+      expect(page).to have_content(upstream_project.name)
+      expect(page).not_to have_content(forked_project.name)
     end
   end
 end

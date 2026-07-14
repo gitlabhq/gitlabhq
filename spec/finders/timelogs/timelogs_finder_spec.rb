@@ -3,27 +3,27 @@
 require 'spec_helper'
 
 RSpec.describe Timelogs::TimelogsFinder, feature_category: :team_planning do
-  let_it_be(:current_user, freeze: false) { create(:user) }
-  let_it_be(:group_a, freeze: false) { create(:group) }
-  let_it_be(:group_b, freeze: false) { create(:group) }
-  let_it_be(:project_a, freeze: false) { create(:project, :empty_repo, :public, group: group_a) }
-  let_it_be(:project_b, freeze: false) { create(:project, :empty_repo, :public, group: group_a) }
-  let_it_be(:project_c, freeze: false) { create(:project, :empty_repo, :public, group: group_b) }
+  let_it_be(:current_user) { create(:user) }
+  let_it_be(:group_a) { create(:group) }
+  let_it_be(:group_b) { create(:group) }
+  let_it_be(:project_a) { create(:project, :empty_repo, :public, group: group_a) }
+  let_it_be(:project_b) { create(:project, :empty_repo, :public, group: group_a) }
+  let_it_be(:project_c) { create(:project, :empty_repo, :public, group: group_b) }
 
-  let_it_be(:issue_a, freeze: false) { create(:issue, project: project_a) }
-  let_it_be(:issue_b, freeze: false) { create(:issue, project: project_b) }
-  let_it_be(:issue_c, freeze: false) { create(:issue, project: project_c) }
-  let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project_a) }
+  let_it_be_with_reload(:issue_a) { create(:issue, project: project_a) }
+  let_it_be_with_reload(:issue_b) { create(:issue, project: project_b) }
+  let_it_be_with_reload(:issue_c) { create(:issue, project: project_c) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project_a) }
 
-  let_it_be(:timelog1, freeze: false) do
+  let_it_be_with_reload(:timelog1) do
     create(:issue_timelog, issue: issue_a, user: current_user, spent_at: 2.days.ago.beginning_of_day, time_spent: 3000)
   end
 
-  let_it_be(:timelog2, freeze: false) do
+  let_it_be(:timelog2) do
     create(:issue_timelog, issue: issue_a, user: create(:user), spent_at: 2.days.ago.end_of_day, time_spent: 4000)
   end
 
-  let_it_be(:timelog3, freeze: false) do
+  let_it_be_with_reload(:timelog3) do
     create(:merge_request_timelog,
       merge_request: merge_request,
       user: current_user,
@@ -31,11 +31,11 @@ RSpec.describe Timelogs::TimelogsFinder, feature_category: :team_planning do
       time_spent: 2000)
   end
 
-  let_it_be(:timelog4, freeze: false) do
+  let_it_be_with_reload(:timelog4) do
     create(:issue_timelog, issue: issue_b, user: current_user, spent_at: 1.hour.ago, time_spent: 500)
   end
 
-  let_it_be(:timelog5, freeze: false) do
+  let_it_be_with_reload(:timelog5) do
     create(:issue_timelog, issue: issue_c, user: create(:user), spent_at: 7.days.ago.end_of_day, time_spent: 6000)
   end
 

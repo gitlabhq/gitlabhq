@@ -7,7 +7,8 @@ module Mutations
         graphql_name 'PipelineTriggerDelete'
 
         authorize :manage_trigger
-        authorize_granular_token permissions: :delete_trigger, boundary_argument: :id, boundary_type: :project
+        authorize_granular_token permissions: :delete_trigger, boundary_argument: :id, boundary: :project,
+          boundary_type: :project
 
         argument :id, ::Types::GlobalIDType[::Ci::Trigger],
           required: true,

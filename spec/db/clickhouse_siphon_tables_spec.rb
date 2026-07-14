@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :database do
+RSpec.describe 'ClickHouse siphon tables', feature_category: :database do
   let_it_be(:siphon_table_prefix) { 'siphon_' }
   let_it_be(:skip_tables) { [] } # insert table name in the array to be skipped on specs
   let_it_be(:skip_fields) do
@@ -41,7 +41,7 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
     )
   end
 
-  let_it_be(:ch_database_name) { ClickHouse::Client.configuration.databases[:main].database }
+  let_it_be(:ch_schema) { ClickHouse::SchemaCache[:main] }
   let_it_be(:pg_type_map) { Gitlab::ClickHouse::SiphonGenerator::PG_TYPE_MAP }
   let_it_be(:ch_type_map) { pg_type_map.invert }
 
@@ -58,7 +58,7 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
   end
 
   describe 'Siphon definition' do
-    let(:clickhouse_table_names) { ch_table_names.pluck('name').to_set }
+    let(:clickhouse_table_names) { ch_table_names.to_set }
     let(:skip_ignore_columns) do
       {
         'namespaces' => %w[max_personal_access_token_lifetime],
@@ -114,35 +114,30 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
   end
 
   def siphon_table_names
-    ch_table_names.filter_map do |row|
-      row['name'] if row['name'].start_with?(siphon_table_prefix)
-    end
+    ch_table_names.select { |name| name.start_with?(siphon_table_prefix) }
   end
 
   def ch_table_names
-    query =
-      <<~SQL
-        SELECT name
-        FROM system.tables
-        WHERE database = '#{ch_database_name}';
-      SQL
-
-    ::ClickHouse::Client.select(query, :main)
+    ch_schema.table_names
   end
 
   def ch_table_fields_hash_for(ch_table)
-    query =
-      <<~SQL
-        SELECT name, type
-        FROM system.columns
-        WHERE table = '#{ch_table}' AND database = '#{ch_database_name}';
-      SQL
+    ch_schema.columns(ch_table)
+      .to_h { |column| [column.name, column.type] }
+      .with_indifferent_access
+  end
 
-    result = ClickHouse::Client.select(query, :main)
+  # Used by the `have_correct_replication_target` matcher (delegated via method_missing).
+  def ch_column_names(ch_table)
+    ch_schema.columns(ch_table).map(&:name)
+  end
 
-    result.each_with_object({}) do |row, hash|
-      hash[row["name"].to_sym] = row["type"]
-    end.with_indifferent_access
+  # Used by the `have_correct_replication_target` matcher (delegated via method_missing).
+  def ch_primary_keys(ch_table)
+    table = ch_schema.table(ch_table)
+    raise "Table not found: #{ch_table}" unless table
+
+    table.primary_key.map { |column| column.is_a?(ClickHouse::SchemaCache::Column) ? column.name : column }
   end
 
   def pg_table_fields_array_for(pg_table)

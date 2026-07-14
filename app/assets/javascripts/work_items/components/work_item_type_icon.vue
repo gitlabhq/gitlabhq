@@ -3,6 +3,7 @@ import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { convertTypeEnumToName } from '../utils';
 
 export default {
+  name: 'WorkItemTypeIcon',
   components: {
     GlIcon,
   },

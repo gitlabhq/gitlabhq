@@ -265,7 +265,7 @@ Shibboleth OmniAuth support has been re-introduced to GitLab. It was previously 
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Links: [Documentation](../../user/profile/personal_access_tokens.md#personal-access-token-scopes) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/42692)
+- Links: [Documentation](../../security/tokens/access_token_scopes.md) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/42692)
 
 {{< /details >}}
 
@@ -552,8 +552,8 @@ We’ve integrated Secret Detection with Google Cloud to better protect customer
 
 Secret Detection searches for three types of secrets issued by Google Cloud:
 
-- [Service account keys](https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys)
-- [API keys](https://cloud.google.com/docs/authentication/api-keys)
+- [Service account keys](https://docs.cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys)
+- [API keys](https://docs.cloud.google.com/docs/authentication/api-keys)
 - [OAuth client secrets](https://support.google.com/cloud/answer/6158849#rotate-client-secret)
 
 Publicly leaked secrets are sent to Google Cloud after they’re discovered. Google Cloud verifies the leaks, then works to protect customer accounts against abuse.

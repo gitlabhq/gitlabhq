@@ -11,7 +11,7 @@ module Mutations
 
       authorize_granular_token permissions: :update_snippet,
         boundaries: [
-          { boundary_argument: :id, boundary_type: :project },
+          { boundary_argument: :id, boundary: :project, boundary_type: :project },
           { boundary: :user, boundary_type: :user }
         ]
 

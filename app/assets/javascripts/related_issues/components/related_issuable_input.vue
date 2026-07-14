@@ -71,11 +71,11 @@ export default {
     },
   },
   emits: [
-    'addIssuableFinishEntry',
-    'addIssuableFormBlur',
-    'addIssuableFormCancel',
-    'addIssuableFormInput',
-    'pendingIssuableRemoveRequest',
+    'add-issuable-finish-entry',
+    'add-issuable-form-blur',
+    'add-issuable-form-cancel',
+    'add-issuable-form-input',
+    'pending-issuable-remove-request',
   ],
   data() {
     return {
@@ -147,7 +147,7 @@ export default {
         })
         .filter((ref) => ref.trim().length > 0);
 
-      this.$emit('addIssuableFormInput', {
+      this.$emit('add-issuable-form-input', {
         newValue: value,
         untouchedRawReferences: untouchedRawRefs,
         touchedReference,
@@ -168,7 +168,7 @@ export default {
         const { value } = this.$refs.input;
         // Avoid event emission when only pathIdSeparator has been typed
         if (value !== this.pathIdSeparator) {
-          this.$emit('addIssuableFormBlur', value);
+          this.$emit('add-issuable-form-blur', value);
         }
       }
     },
@@ -179,7 +179,7 @@ export default {
       if ([ENTER_KEY, TAB_KEY].includes(event.key)) {
         const { value } = this.$refs.input;
 
-        this.$emit('addIssuableFinishEntry', { value, event });
+        this.$emit('add-issuable-finish-entry', { value, event });
       }
     },
     setupAutoComplete() {
@@ -224,9 +224,9 @@ export default {
             is-condensed
             :path-id-separator="pathIdSeparator"
             event-namespace="pendingIssuable"
-            @pendingIssuableRemoveRequest="
+            @pending-issuable-remove-request="
               (params) => {
-                $emit('pendingIssuableRemoveRequest', params);
+                $emit('pending-issuable-remove-request', params);
               }
             "
           />
@@ -247,7 +247,7 @@ export default {
             @focus="onFocus"
             @blur="onBlur"
             @keydown="onKeydown"
-            @keyup.escape.exact="$emit('addIssuableFormCancel')"
+            @keyup.escape.exact="$emit('add-issuable-form-cancel')"
           />
         </li>
       </ul>

@@ -441,6 +441,13 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
   end
 
   describe 'POST /groups/:id/labels/:label_id/subscribe' do
+    it_behaves_like 'authorizing granular token permissions', :subscribe_label do
+      let(:boundary_object) { group }
+      let(:request) do
+        post api("/groups/#{group.id}/labels/#{group_label1.id}/subscribe", personal_access_token: pat)
+      end
+    end
+
     context 'when label_id is a label title' do
       it 'subscribes to the label' do
         post api("/groups/#{group.id}/labels/#{valid_group_label_title_1_esc}/subscribe", user)
@@ -485,6 +492,13 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
   describe 'POST /groups/:id/labels/:label_id/unsubscribe' do
     before do
       group_label1.subscribe(user)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :subscribe_label do
+      let(:boundary_object) { group }
+      let(:request) do
+        post api("/groups/#{group.id}/labels/#{group_label1.id}/unsubscribe", personal_access_token: pat)
+      end
     end
 
     context 'when label_id is a label title' do

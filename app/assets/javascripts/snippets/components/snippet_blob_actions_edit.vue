@@ -7,6 +7,7 @@ import { createBlob, decorateBlob, diffAll } from '../utils/blob';
 import SnippetBlobEdit from './snippet_blob_edit.vue';
 
 export default {
+  name: 'SnippetBlobActionsEdit',
   components: {
     SnippetBlobEdit,
     GlButton,

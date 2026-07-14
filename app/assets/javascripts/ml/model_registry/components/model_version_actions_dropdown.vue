@@ -3,6 +3,7 @@ import { GlDisclosureDropdown } from '@gitlab/ui';
 import DeleteModelVersionDisclosureDropdownItem from './delete_model_version_disclosure_dropdown_item.vue';
 
 export default {
+  name: 'ModelVersionActionsDropdown',
   components: {
     DeleteModelVersionDisclosureDropdownItem,
     GlDisclosureDropdown,

@@ -26,6 +26,7 @@ export default {
       default: false,
     },
   },
+  emits: ['toggleLineDiscussions'],
   computed: {
     allDiscussions() {
       return this.discussions.reduce((acc, note) => acc.concat(note.notes), []);

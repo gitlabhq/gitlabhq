@@ -1,0 +1,12 @@
+fragment FinishedPipelinesMonthlyAggregationItem on FinishedPipelinesAggregationScope {
+  aggregated(
+    orderBy: [{ identifier: "startedAt", direction: ASC, parameters: { granularity: "monthly" } }]
+  ) {
+    nodes {
+      totalCount
+      dimensions {
+        startedAt(granularity: "monthly")
+      }
+    }
+  }
+}

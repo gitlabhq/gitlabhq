@@ -14,14 +14,12 @@ RSpec.describe Ci::PipelineSchedulesHelper, feature_category: :continuous_integr
 
   describe '#js_pipeline_schedules_form_data' do
     before do
-      allow(helper).to receive_messages(timezone_data: timezones, current_user: user, can_view_pipeline_editor?: true)
+      allow(helper).to receive_messages(timezone_data: timezones, current_user: user)
     end
 
     it 'returns pipeline schedule form data' do
       expect(helper.js_pipeline_schedules_form_data(project, pipeline_schedule)).to include({
-        can_view_pipeline_editor: 'true',
         daily_limit: nil,
-        pipeline_editor_path: project_ci_pipeline_editor_path(project),
         project_id: project.id,
         project_path: project.full_path,
         schedules_path: pipeline_schedules_path(project),

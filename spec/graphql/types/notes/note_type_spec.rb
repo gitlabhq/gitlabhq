@@ -38,6 +38,7 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
       resolved
       resolved_at
       resolved_by
+      suggestions
       system
       system_note_icon_name
       updated_at

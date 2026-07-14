@@ -304,7 +304,7 @@ Note that the merge request also needs to have the `master:broken` or `master:fo
 
 ### Revert MRs
 
-To make your Revert MRs faster, use the [revert MR template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Revert%20To%20Resolve%20Incident.md) **before** you create your merge request. It will apply the `pipeline::expedited` label and others that will expedite the pipelines that run on the merge request.
+To make your Revert MRs faster, use the [revert MR template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Revert%20To%20Resolve%20Incident.md) before you create your merge request. It will apply the `pipeline::expedited` label and others that will expedite the pipelines that run on the merge request.
 
 ### The `pipeline::expedited` label
 
@@ -883,18 +883,18 @@ pipeline page.
 
 ### Redis versions testing
 
-Our test suite runs against Redis 6 as GitLab.com runs on Redis 6 and
-[Omnibus defaults to Redis 6 for new installs and upgrades](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/config/software/redis.rb).
-
-We do run our test suite against Redis 7 on `nightly` scheduled pipelines, specifically when running forward-compatible PostgreSQL 15 jobs.
+Our test suite runs against Redis 7.2 by default, which is the recommended version for GitLab
+installations. Weekly scheduled pipelines also run against Redis 7.0 (the minimum version) and
+Valkey 7.2 to validate compatibility across the supported range.
 
 #### Current versions testing
 
 | Where? | Redis version |
 | ------ | ------------------ |
-| MRs    | 6 |
-| `default branch` (non-scheduled pipelines) | 6 |
-| `nightly` scheduled pipelines | 7 |
+| MRs    | 7.2 |
+| `default branch` (non-scheduled pipelines) | 7.2 |
+| `nightly` scheduled pipelines | 7.2 |
+| `weekly` scheduled pipelines | 7.0 (minimum), and Valkey 7.2 |
 
 ### Single database testing
 

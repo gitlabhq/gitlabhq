@@ -22,6 +22,4 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "gitlab-styles", "~> 14.0"
   spec.add_development_dependency "pry-byebug", "~> 3.12"
-  spec.add_development_dependency "pry-shell", "~> 0.6.4"
-  spec.add_development_dependency "unicode_utils", "1.4.0"
 end

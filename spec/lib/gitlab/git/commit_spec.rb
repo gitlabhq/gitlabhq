@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
-  let_it_be(:repository, freeze: false) { create(:project, :repository).repository.raw }
+  let_it_be_with_reload(:repository) { create(:project, :repository).repository.raw }
   let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
 
   describe "Commit info from gitaly commit" do

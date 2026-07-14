@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"log/slog"
 	"mime"
 	"net/http"
 	"os"
@@ -12,7 +13,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gitlab.com/gitlab-org/labkit/log"
+	"gitlab.com/gitlab-org/labkit/v2/fields"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
@@ -35,7 +36,11 @@ func allowedXSendfileDownload(t *testing.T, contentFilename string, filePath str
 	contentPath := path.Join(t.TempDir(), contentFilename)
 	// Prepare test server and backend
 	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.WithFields(log.Fields{"method": r.Method, "url": r.URL}).Info("UPSTREAM")
+		slog.Info(
+			"UPSTREAM",
+			slog.String(fields.HTTPMethod, r.Method),
+			slog.String(fields.HTTPURL, r.URL.String()),
+		)
 
 		assert.Equal(t, "X-Sendfile", r.Header.Get("X-Sendfile-Type"))
 
@@ -65,7 +70,11 @@ func allowedXSendfileDownload(t *testing.T, contentFilename string, filePath str
 func deniedXSendfileDownload(t *testing.T, contentFilename string, filePath string) {
 	// Prepare test server and backend
 	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.WithFields(log.Fields{"method": r.Method, "url": r.URL}).Info("UPSTREAM")
+		slog.Info(
+			"UPSTREAM",
+			slog.String(fields.HTTPMethod, r.Method),
+			slog.String(fields.HTTPURL, r.URL.String()),
+		)
 
 		assert.Equal(t, "X-Sendfile", r.Header.Get("X-Sendfile-Type"))
 

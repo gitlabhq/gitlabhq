@@ -45,6 +45,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input', 'token-complete', 'token-destroy'],
   data() {
     // filtered_search_bar_root.vue may mutate the initial
     // filters. Use `cloneDeep` to prevent those mutations

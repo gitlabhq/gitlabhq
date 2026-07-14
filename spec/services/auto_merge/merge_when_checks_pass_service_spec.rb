@@ -25,7 +25,7 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
           mr_merge_if_green_enabled.update_head_pipeline
         end
 
-        it { is_expected.to eq false }
+        it { is_expected.to be false }
       end
 
       context 'when an active pipeline' do
@@ -37,7 +37,7 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
           mr_merge_if_green_enabled.update_head_pipeline
         end
 
-        it { is_expected.to eq true }
+        it { is_expected.to be true }
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
         mr_merge_if_green_enabled.update!(title: 'Draft: check')
       end
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     context 'when discussions open' do
@@ -56,7 +56,7 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
           .to receive(:only_allow_merge_if_all_discussions_are_resolved?).and_return(true)
       end
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     context 'when pipline is active' do
@@ -69,7 +69,7 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
         mr_merge_if_green_enabled.update_head_pipeline
       end
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     context 'when the user does not have permission to merge' do
@@ -77,7 +77,7 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
         allow(mr_merge_if_green_enabled).to receive(:can_be_merged_by?).and_return(false)
       end
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
 
     context 'when pipeline is being created' do
@@ -85,7 +85,7 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
         allow(mr_merge_if_green_enabled).to receive(:pipeline_creating?).and_return(true)
       end
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     context 'when merge request is mergeable and pipeline is not in progress' do
@@ -94,7 +94,7 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
         allow(mr_merge_if_green_enabled).to receive(:diff_head_pipeline_considered_in_progress?).and_return(false)
       end
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
   end
 

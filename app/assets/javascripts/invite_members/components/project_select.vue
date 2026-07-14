@@ -19,6 +19,7 @@ export default {
   model: {
     prop: 'selectedProjectId',
   },
+  emits: ['input'],
   data() {
     return {
       isFetching: false,

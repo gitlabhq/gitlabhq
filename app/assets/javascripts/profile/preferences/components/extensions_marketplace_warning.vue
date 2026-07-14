@@ -15,6 +15,7 @@ export const WARNING_PARAGRAPH_3 = s__(
 );
 
 export default {
+  name: 'ExtensionsMarketplaceWarning',
   components: {
     GlIcon,
     GlLink,

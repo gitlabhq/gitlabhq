@@ -16,7 +16,7 @@ describe('Transfer project form', () => {
   const confirmButtonText = 'Confirm';
   const confirmationPhrase = 'You must construct additional pylons!';
 
-  const createComponent = () => {
+  const createComponent = ({ showUserTransferLocations = true } = {}) => {
     wrapper = shallowMountExtended(TransferProjectForm, {
       provide: {
         resourceId,
@@ -24,6 +24,7 @@ describe('Transfer project form', () => {
       propsData: {
         confirmButtonText,
         confirmationPhrase,
+        showUserTransferLocations,
       },
     });
   };
@@ -44,6 +45,20 @@ describe('Transfer project form', () => {
     createComponent();
 
     expect(findConfirmDanger().exists()).toBe(true);
+  });
+
+  describe('showUserTransferLocations prop', () => {
+    it('passes `true` to TransferLocations by default', () => {
+      createComponent();
+
+      expect(findTransferLocations().props('showUserTransferLocations')).toBe(true);
+    });
+
+    it('passes `false` to TransferLocations when showUserTransferLocations is false', () => {
+      createComponent({ showUserTransferLocations: false });
+
+      expect(findTransferLocations().props('showUserTransferLocations')).toBe(false);
+    });
   });
 
   it('disables the confirm button by default', () => {

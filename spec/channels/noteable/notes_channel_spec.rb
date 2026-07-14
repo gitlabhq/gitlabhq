@@ -98,5 +98,114 @@ RSpec.describe Noteable::NotesChannel, :with_current_organization, feature_categ
         expect(subscription).to have_stream_for(noteable)
       end
     end
+
+    context 'with a granular personal access token' do
+      context 'when scoped to the noteable project with the required permission' do
+        let(:access_token) do
+          create(:granular_pat, user: user, boundary: Authz::Boundary.for(project), permissions: :read_work_item)
+        end
+
+        it 'subscribes to the given noteable' do
+          subscribe(subscribe_params)
+
+          expect(subscription).to be_confirmed
+          expect(subscription).to have_stream_for(noteable)
+        end
+      end
+
+      context 'without the required permission' do
+        let(:access_token) { create(:granular_pat, user: user) }
+
+        it 'rejects the subscription' do
+          subscribe(subscribe_params)
+
+          expect(subscription).to be_rejected
+        end
+      end
+
+      context 'when scoped to a different project' do
+        let_it_be(:other_project) { create(:project, developers: user) }
+        let(:access_token) do
+          create(:granular_pat, user: user, boundary: Authz::Boundary.for(other_project), permissions: :read_work_item)
+        end
+
+        it 'rejects the subscription' do
+          subscribe(subscribe_params)
+
+          expect(subscription).to be_rejected
+        end
+      end
+    end
+
+    context 'with a parent-less noteable' do
+      let_it_be(:personal_snippet) { create(:personal_snippet, author: user, organization: current_organization) }
+
+      let(:subscribe_params) do
+        {
+          noteable_type: 'personal_snippet',
+          noteable_id: personal_snippet.id
+        }
+      end
+
+      context 'with a granular personal access token' do
+        let(:access_token) do
+          create(:granular_pat, user: user, boundary: Authz::Boundary.for(project), permissions: :read_work_item)
+        end
+
+        it 'rejects the subscription' do
+          subscribe(subscribe_params)
+
+          expect(subscription).to be_rejected
+        end
+      end
+
+      context 'with a legacy personal access token' do
+        let(:access_token) { read_api_token }
+
+        it 'subscribes to the given noteable' do
+          subscribe(subscribe_params)
+
+          expect(subscription).to be_confirmed
+          expect(subscription).to have_stream_for(personal_snippet)
+        end
+      end
+    end
+
+    context 'when the namespace enforces granular tokens' do
+      let_it_be_with_reload(:enforced_group) { create(:group, organization: current_organization) }
+      let_it_be(:enforced_project) { create(:project, :private, group: enforced_group, developers: user) }
+      let_it_be(:noteable) { create(:issue, project: enforced_project) }
+
+      before do
+        enforced_group.namespace_settings.update!(
+          enforce_granular_tokens: true,
+          granular_tokens_enforced_after: Date.current
+        )
+      end
+
+      context 'with a legacy personal access token' do
+        let(:access_token) { read_api_token }
+
+        it 'rejects the subscription' do
+          subscribe(subscribe_params)
+
+          expect(subscription).to be_rejected
+        end
+      end
+
+      context 'with a granular personal access token carrying the permission' do
+        let(:access_token) do
+          create(:granular_pat, user: user, boundary: Authz::Boundary.for(enforced_project),
+            permissions: :read_work_item)
+        end
+
+        it 'subscribes to the given noteable' do
+          subscribe(subscribe_params)
+
+          expect(subscription).to be_confirmed
+          expect(subscription).to have_stream_for(noteable)
+        end
+      end
+    end
   end
 end

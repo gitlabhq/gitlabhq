@@ -351,6 +351,10 @@ For more information on tuning Geo, see [Tuning Geo](replication/tuning.md).
 
 For more information, see [Pausing and resuming replication](replication/pause_resume_replication.md).
 
+### Background jobs
+
+For more information on Geo background workers, their queue safety, and recovery mechanisms, see [Geo background jobs](replication/background_jobs.md).
+
 ### Backfill
 
 When a secondary site is set up, it starts replicating missing data from

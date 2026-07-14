@@ -80,11 +80,11 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
           include PartitionedTable
 
           self.table_name = :_test_partitioning_test1
-          partitioned_by :created_at, strategy: :monthly
+          partitioned_by :created_at, strategy: :monthly, retain_for: :ever
         end,
         Class.new(Gitlab::Database::Partitioning::TableWithoutModel).tap do |klass|
           klass.table_name = :_test_partitioning_test2
-          klass.partitioned_by(:created_at, strategy: :monthly)
+          klass.partitioned_by(:created_at, strategy: :monthly, retain_for: :ever)
           klass.limit_connection_names = %i[main]
         end
       ]
@@ -134,11 +134,11 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
               include PartitionedTable
 
               self.table_name = :_test_partitioning_test1
-              partitioned_by :created_at, strategy: :monthly, analyze_interval: 1.week
+              partitioned_by :created_at, strategy: :monthly, retain_for: :ever, analyze_interval: 1.week
             end,
             Class.new(Gitlab::Database::Partitioning::TableWithoutModel).tap do |klass|
               klass.table_name = :_test_partitioning_test2
-              klass.partitioned_by(:created_at, strategy: :monthly, analyze_interval: 1.week)
+              klass.partitioned_by(:created_at, strategy: :monthly, retain_for: :ever, analyze_interval: 1.week)
               klass.limit_connection_names = %i[main]
             end
           ]
@@ -185,7 +185,7 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
                 include PartitionedTable
 
                 self.table_name = :_test_partitioning_generic_shared_model
-                partitioned_by :created_at, strategy: :monthly
+                partitioned_by :created_at, strategy: :monthly, retain_for: :ever
               end
             ]
           end
@@ -222,7 +222,7 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
                 include PartitionedTable
 
                 self.table_name = :_test_partitioning_generic_shared_model
-                partitioned_by :created_at, strategy: :monthly
+                partitioned_by :created_at, strategy: :monthly, retain_for: :ever
               end
             ]
           end
@@ -267,7 +267,8 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
             {
               table_name: table_names.last,
               partitioned_column: :created_at,
-              strategy: :monthly
+              strategy: :monthly,
+              retain_for: :ever
             }
           ])
 
@@ -283,7 +284,7 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
           include PartitionedTable
 
           self.table_name = :_test_partitioning_test3
-          partitioned_by :created_at, strategy: :monthly
+          partitioned_by :created_at, strategy: :monthly, retain_for: :ever
         end
       end
 

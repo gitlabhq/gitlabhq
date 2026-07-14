@@ -6,6 +6,7 @@ import ActivityCalendar from '~/pages/users/activity_calendar';
 import { getVisibleCalendarPeriod } from '../utils';
 
 export default {
+  name: 'ActivityCalendar',
   i18n: {
     errorAlertTitle: __('There was an error loading users activity calendar.'),
     retry: __('Retry'),

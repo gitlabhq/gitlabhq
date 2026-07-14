@@ -7,7 +7,6 @@ RSpec.describe Ci::Tag, feature_category: :continuous_integration do
     [create(:ci_tag, name: 'Awesome'), create(:ci_tag, name: 'awesome'), create(:ci_tag, name: 'epic')]
   end
 
-  it { is_expected.to have_many(:job_taggings).class_name('Ci::BuildTag') }
   it { is_expected.to have_many(:runner_taggings).class_name('Ci::RunnerTagging') }
 
   describe 'validations' do

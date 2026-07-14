@@ -6,6 +6,7 @@ import k8sJobsQuery from '../graphql/queries/k8s_dashboard_jobs.query.graphql';
 import { STATUS_FAILED, STATUS_COMPLETED, STATUS_LABELS } from '../constants';
 
 export default {
+  name: 'JobsPage',
   components: {
     WorkloadLayout,
   },

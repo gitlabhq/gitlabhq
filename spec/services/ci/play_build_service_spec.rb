@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_integration do
+  let_it_be_with_reload(:project) { create(:project) }
   let(:user) { create(:user, developer_of: project) }
-  let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, :manual, user: user, pipeline: pipeline) }
   let(:job_variables) { nil }
@@ -105,9 +105,8 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
         end
 
         context 'when user is maintainer' do
-          before do
-            project.add_maintainer(user)
-          end
+          let_it_be(:maintainer_user) { create(:user, maintainer_of: project) }
+          let(:user) { maintainer_user }
 
           it 'assigns the variables to the build' do
             execute_service

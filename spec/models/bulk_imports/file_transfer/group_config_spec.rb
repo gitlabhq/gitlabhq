@@ -118,6 +118,14 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :import
     end
   end
 
+  describe '#commit_notes_export_via_git?' do
+    it 'returns false for every group relation (commit_notes is project-only)', :aggregate_failures do
+      subject.portable_relations.each do |relation|
+        expect(subject.commit_notes_export_via_git?(relation)).to eq(false)
+      end
+    end
+  end
+
   describe '#relation_has_user_contributions?' do
     subject { described_class.new(exportable).relation_has_user_contributions?(relation) }
 

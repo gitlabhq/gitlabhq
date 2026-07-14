@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :user_management do
-  let_it_be(:admin, freeze: false) { create(:admin) }
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   before do
     sign_in(admin)
@@ -100,7 +100,10 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
 
       context "when email OTP is required" do
         before do
-          stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+          stub_application_setting(
+            email_otp_enabled: true,
+            require_minimum_email_based_otp_for_users_with_passwords: true
+          )
         end
 
         it 'cannot be set to nil' do
@@ -119,7 +122,10 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
         let(:user) { create(:user, :two_factor) }
 
         before do
-          stub_application_setting(require_two_factor_authentication: true)
+          stub_application_setting(
+            email_otp_enabled: true,
+            require_two_factor_authentication: true
+          )
         end
 
         it 'cannot be set to a datetime' do

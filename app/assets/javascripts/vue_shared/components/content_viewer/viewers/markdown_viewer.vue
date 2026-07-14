@@ -11,6 +11,7 @@ const { CancelToken } = axios;
 let axiosSource;
 
 export default {
+  name: 'MarkdownViewer',
   components: {
     GlSkeletonLoader,
   },

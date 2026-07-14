@@ -80,7 +80,7 @@
     - if current_user.two_factor_enabled?
       = render 'recovery_codes'
 
-- if current_user.email_otp_available?
+- if Gitlab::CurrentSettings.email_otp_enabled?
   #email-otp-settings
     = render ::Layouts::SettingsSectionComponent.new(s_("Profiles|Email one-time password (email OTP)")) do |c|
       - c.with_description do

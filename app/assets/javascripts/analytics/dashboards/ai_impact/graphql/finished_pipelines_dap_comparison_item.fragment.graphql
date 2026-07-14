@@ -1,0 +1,14 @@
+#import "./finished_pipelines_monthly_aggregation_item.fragment.graphql"
+
+fragment FinishedPipelinesDapComparisonItem on Analytics {
+  duoPipelines: finishedPipelines(
+    source: ["duo_workflow"]
+    startedAtFrom: $startDate
+    startedAtTo: $endDate
+  ) {
+    ...FinishedPipelinesMonthlyAggregationItem
+  }
+  allPipelines: finishedPipelines(startedAtFrom: $startDate, startedAtTo: $endDate) {
+    ...FinishedPipelinesMonthlyAggregationItem
+  }
+}

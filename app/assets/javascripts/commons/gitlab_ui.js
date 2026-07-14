@@ -11,6 +11,7 @@ import {
 
 applyGitLabUIConfig({
   firstDayOfWeek: gon.first_day_of_week,
+  accessibleDisabledButton: Boolean(gon?.features?.accessibleDisabledButton),
   translations: {
     'ClipboardButton.copied': __('Copied'),
     'ClipboardButton.error': __('Copy failed'),

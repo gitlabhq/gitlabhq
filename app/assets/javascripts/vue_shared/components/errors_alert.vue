@@ -32,6 +32,7 @@ export default {
       default: 'gl-mb-5',
     },
   },
+  emits: ['dismiss'],
   computed: {
     hasErrors() {
       return this.errors.length > 0;

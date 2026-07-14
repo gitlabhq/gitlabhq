@@ -368,12 +368,11 @@ GitLab can display the results of one or more reports in the
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452042) in GitLab 18.11
   with a [feature flag](../../administration/feature_flags/_index.md) named `sarif_ingestion`. Disabled by default.
+- Enabled by default in GitLab 19.1.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/602748) in GitLab 19.2.
+  Feature flag `sarif_ingestion` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag named `sarif_ingestion`.
-> For more information, see the history.
 
 The `sarif` report collects security findings from tools that emit
 [SARIF 2.1.0](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html) output.

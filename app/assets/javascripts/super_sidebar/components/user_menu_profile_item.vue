@@ -1,10 +1,12 @@
 <script>
 import { GlBadge, GlDisclosureDropdownItem, GlTooltip } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { userPath } from '~/lib/utils/path_helpers/user';
 import { s__ } from '~/locale';
 import { USER_MENU_TRACKING_DEFAULTS } from '../constants';
 
 export default {
+  name: 'UserMenuProfileItem',
   i18n: {
     user: {
       busy: s__('UserProfile|Busy'),
@@ -30,7 +32,7 @@ export default {
         text: this.user.name,
       };
       if (this.user.has_link_to_profile) {
-        item.href = this.user.link_to_profile;
+        item.href = userPath(this.user.username);
 
         item.extraAttrs = {
           ...USER_MENU_TRACKING_DEFAULTS,

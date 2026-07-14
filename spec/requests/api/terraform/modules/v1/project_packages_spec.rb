@@ -240,7 +240,7 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
       end
 
       context 'with existing package in another project' do
-        let_it_be(:package_settings, freeze: false) { create(:namespace_package_setting, namespace: group) }
+        let_it_be_with_reload(:package_settings) { create(:namespace_package_setting, namespace: group) }
         let_it_be(:project2) { create(:project, namespace: group) }
         let!(:existing_package) { create(:terraform_module_package, name: 'mymodule/mysystem', project: project2) }
 

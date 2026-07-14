@@ -40,6 +40,12 @@ module Mutations
       Gitlab::Database.read_only?
     end
 
+    def authorized?(**args)
+      granular_scope_authorization.authorize!(nil, context, arguments: args)
+
+      super
+    end
+
     def load_application_object(argument, id, context)
       ::Gitlab::Graphql::Lazy.new { super }
     end
@@ -50,6 +56,10 @@ module Mutations
       # at least say that something went wrong.
       Gitlab::ErrorTracking.track_exception(error)
       raise_resource_not_available_error!
+    end
+
+    def granular_scope_authorization
+      ::Gitlab::Graphql::Authz::GranularScopeAuthorization.new(self.class.directives)
     end
 
     def self.authorizes_object?

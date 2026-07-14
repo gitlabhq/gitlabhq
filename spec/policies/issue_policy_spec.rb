@@ -8,17 +8,17 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
   include ProjectHelpers
   include UserHelpers
 
-  let_it_be(:group, freeze: false) { create(:group, :public) }
-  let_it_be(:admin, freeze: false) { create(:user, :admin) }
-  let_it_be(:guest, freeze: false) { create(:user) }
-  let_it_be(:planner, freeze: false) { create(:user) }
-  let_it_be(:author, freeze: false) { create(:user) }
-  let_it_be(:assignee, freeze: false) { create(:user) }
-  let_it_be(:reporter, freeze: false) { create(:user) }
-  let_it_be(:maintainer, freeze: false) { create(:user) }
-  let_it_be(:owner, freeze: false) { create(:user) }
-  let_it_be(:reporter_from_group_link, freeze: false) { create(:user) }
-  let_it_be(:non_member, freeze: false) { create(:user) }
+  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:admin) { create(:user, :admin) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:planner) { create(:user) }
+  let_it_be_with_reload(:author) { create(:user) }
+  let_it_be_with_reload(:assignee) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:owner) { create(:user) }
+  let_it_be(:reporter_from_group_link) { create(:user) }
+  let_it_be(:non_member) { create(:user) }
   let(:alert_bot) { Users::Internal.in_organization(issue.project.organization).alert_bot }
   let(:support_bot) { Users::Internal.in_organization(project.organization_id).support_bot }
 
@@ -92,7 +92,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
   end
 
   context 'a private project' do
-    let_it_be(:project, freeze: false) { create(:project, :private) }
+    let_it_be_with_reload(:project) { create(:project, :private) }
     let_it_be_with_reload(:group_issue) { create(:issue, :group_level, namespace: group) }
     let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
     let_it_be_with_reload(:issue_no_assignee) { create(:issue, project: project) }
@@ -532,7 +532,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       end
 
       let_it_be_with_reload(:issue) { create(:issue, project: project, author: author) }
-      let_it_be(:visitor, freeze: false) { create(:user) }
+      let_it_be(:visitor) { create(:user) }
 
       it 'forbids visitors from viewing issues' do
         expect(permissions(visitor, issue)).to be_disallowed(:read_issue)
@@ -605,8 +605,8 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
 
     context 'with confidential issues' do
-      let_it_be(:confidential_issue, freeze: false) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
-      let_it_be(:confidential_issue_no_assignee, freeze: false) { create(:issue, :confidential, project: project) }
+      let_it_be(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
+      let_it_be(:confidential_issue_no_assignee) { create(:issue, :confidential, project: project) }
 
       it 'does not allow guests to read confidential issues' do
         expect(permissions(guest, confidential_issue)).to be_disallowed(
@@ -685,9 +685,9 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
 
     context 'with a hidden issue' do
-      let_it_be(:user, freeze: false) { create(:user) }
-      let_it_be(:banned_user, freeze: false) { create(:user, :banned) }
-      let_it_be(:hidden_issue, freeze: false) { create(:issue, project: project, author: banned_user) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:banned_user) { create(:user, :banned) }
+      let_it_be(:hidden_issue) { create(:issue, project: project, author: banned_user) }
 
       it 'does not allow non-admin user to access or modify the issue' do
         expect(permissions(user, hidden_issue)).not_to be_allowed(:read_issue, :update_issue, :admin_issue)
@@ -742,29 +742,29 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
   # rubocop:disable RSpec/MultipleMemoizedHelpers -- Need helpers for testing multiple scenarios
   context 'with group level issues' do
-    let_it_be(:private_group, freeze: false) { create(:group, :private) }
-    let_it_be(:public_group, freeze: false) { create(:group, :public) }
-    let_it_be(:private_project, freeze: false) { create(:project, :private, group: private_group) }
-    let_it_be(:public_project, freeze: false) { create(:project, :public, group: public_group) }
+    let_it_be(:private_group) { create(:group, :private) }
+    let_it_be(:public_group) { create(:group, :public) }
+    let_it_be(:private_project) { create(:project, :private, group: private_group) }
+    let_it_be(:public_project) { create(:project, :public, group: public_group) }
 
-    let_it_be(:admin, freeze: false) { create(:user, :admin) }
-    let_it_be(:non_member_user, freeze: false) { create(:user) }
+    let_it_be(:admin) { create(:user, :admin) }
+    let_it_be(:non_member_user) { create(:user) }
 
-    let_it_be(:guest, freeze: false) { create(:user, guest_of: [private_project, public_project]) }
-    let_it_be(:planner, freeze: false) { create(:user, planner_of: [private_project, public_project]) }
-    let_it_be(:guest_author, freeze: false) { create(:user, guest_of: [private_project, public_project]) }
-    let_it_be(:reporter, freeze: false) { create(:user, reporter_of: [private_project, public_project]) }
+    let_it_be(:guest) { create(:user, guest_of: [private_project, public_project]) }
+    let_it_be(:planner) { create(:user, planner_of: [private_project, public_project]) }
+    let_it_be(:guest_author) { create(:user, guest_of: [private_project, public_project]) }
+    let_it_be(:reporter) { create(:user, reporter_of: [private_project, public_project]) }
 
-    let_it_be(:group_guest, freeze: false) { create(:user, guest_of: [private_group, public_group]) }
-    let_it_be(:group_planner, freeze: false) { create(:user, planner_of: [private_group, public_group]) }
-    let_it_be(:group_guest_author, freeze: false) { create(:user, guest_of: [private_group, public_group]) }
-    let_it_be(:group_reporter, freeze: false) { create(:user, reporter_of: [private_group, public_group]) }
+    let_it_be(:group_guest) { create(:user, guest_of: [private_group, public_group]) }
+    let_it_be(:group_planner) { create(:user, planner_of: [private_group, public_group]) }
+    let_it_be(:group_guest_author) { create(:user, guest_of: [private_group, public_group]) }
+    let_it_be(:group_reporter) { create(:user, reporter_of: [private_group, public_group]) }
 
     context 'with public group' do
-      let_it_be(:work_item, freeze: false) { create(:issue, :group_level, namespace: public_group) }
-      let_it_be(:confidential_work_item, freeze: false) { create(:issue, :group_level, confidential: true, namespace: public_group) }
-      let_it_be(:authored_work_item, freeze: false) { create(:issue, :group_level, namespace: public_group, author: group_guest_author) }
-      let_it_be(:authored_confidential_work_item, freeze: false) { create(:issue, :group_level, confidential: true, namespace: public_group, author: group_guest_author) }
+      let_it_be(:work_item) { create(:issue, :group_level, namespace: public_group) }
+      let_it_be(:confidential_work_item) { create(:issue, :group_level, confidential: true, namespace: public_group) }
+      let_it_be(:authored_work_item) { create(:issue, :group_level, namespace: public_group, author: group_guest_author) }
+      let_it_be(:authored_confidential_work_item) { create(:issue, :group_level, confidential: true, namespace: public_group, author: group_guest_author) }
       let(:not_persisted_work_item) { build(:issue, :group_level, namespace: public_group) }
 
       # only checking abilities without group level work items license, because in FOSS there is no license available
@@ -772,10 +772,10 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
 
     context 'with private group' do
-      let_it_be(:work_item, freeze: false) { create(:issue, :group_level, namespace: private_group) }
-      let_it_be(:confidential_work_item, freeze: false) { create(:issue, :group_level, confidential: true, namespace: private_group) }
-      let_it_be(:authored_work_item, freeze: false) { create(:issue, :group_level, namespace: private_group, author: group_guest_author) }
-      let_it_be(:authored_confidential_work_item, freeze: false) { create(:issue, :group_level, confidential: true, namespace: private_group, author: group_guest_author) }
+      let_it_be(:work_item) { create(:issue, :group_level, namespace: private_group) }
+      let_it_be(:confidential_work_item) { create(:issue, :group_level, confidential: true, namespace: private_group) }
+      let_it_be(:authored_work_item) { create(:issue, :group_level, namespace: private_group, author: group_guest_author) }
+      let_it_be(:authored_confidential_work_item) { create(:issue, :group_level, confidential: true, namespace: private_group, author: group_guest_author) }
       let(:not_persisted_work_item) { build(:issue, :group_level, namespace: private_group) }
 
       # only checking abilities without group level work items license, because in FOSS there is no license available
@@ -785,9 +785,9 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
   # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   context 'with external authorization enabled' do
-    let_it_be(:user, freeze: false) { create(:user) }
-    let_it_be(:project, freeze: false) { create(:project, :public) }
-    let_it_be(:issue, freeze: false) { create(:issue, project: project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
+    let_it_be_with_reload(:issue) { create(:issue, project: project) }
     let(:policies) { described_class.new(user, issue) }
 
     before do
@@ -859,9 +859,9 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       end
 
       context 'when custom crm_group configured' do
-        let_it_be(:crm_settings, freeze: false) { create(:crm_settings, source_group: create(:group)) }
-        let_it_be(:subgroup, freeze: false) { create(:group, parent: create(:group), crm_settings: crm_settings) }
-        let_it_be(:project, freeze: false) { create(:project, group: subgroup) }
+        let_it_be_with_reload(:crm_settings) { create(:crm_settings, source_group: create(:group)) }
+        let_it_be_with_reload(:subgroup) { create(:group, parent: create(:group), crm_settings: crm_settings) }
+        let_it_be_with_reload(:project) { create(:project, group: subgroup) }
 
         subject { policies }
 
@@ -939,8 +939,8 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
   describe 'set_issue_metadata rule for new issues' do
     context 'when user has set_new_issue_metadata permission' do
-      let_it_be(:project, freeze: false) { create(:project, :private) }
-      let_it_be(:persisted_issue, freeze: false) { create(:issue, project: project) }
+      let_it_be_with_reload(:project) { create(:project, :private) }
+      let_it_be(:persisted_issue) { create(:issue, project: project) }
       let(:new_issue) { build(:issue, project: project) }
 
       before_all do
@@ -958,9 +958,9 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
 
     context 'when user does not have set_new_issue_metadata permission' do
-      let_it_be(:project, freeze: false) { create(:project, :private) }
+      let_it_be_with_reload(:project) { create(:project, :private) }
       let(:new_issue) { build(:issue, project: project) }
-      let_it_be(:non_member, freeze: false) { create(:user) }
+      let_it_be(:non_member) { create(:user) }
 
       it 'does not allow non-member to set metadata on new issues' do
         expect(permissions(non_member, new_issue)).to be_disallowed(:set_issue_metadata)
@@ -969,8 +969,8 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
   end
 
   context 'with incident issue type' do
-    let_it_be(:project, freeze: false) { create(:project, group: group, guests: guest, planners: planner, reporters: reporter, owners: owner) }
-    let_it_be(:incident, freeze: false) { create(:issue, :incident, project: project) }
+    let_it_be_with_reload(:project) { create(:project, group: group, guests: guest, planners: planner, reporters: reporter, owners: owner) }
+    let_it_be(:incident) { create(:issue, :incident, project: project) }
 
     it 'allows accessing an incident' do
       expect(permissions(guest, incident)).to be_disallowed(:update_issue, :admin_issue)

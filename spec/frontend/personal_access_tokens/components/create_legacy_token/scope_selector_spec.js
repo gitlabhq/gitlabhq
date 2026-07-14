@@ -84,7 +84,7 @@ describe('ScopeSelector', () => {
 
     it('shows link to help page', () => {
       expect(wrapper.findComponent(GlLink).props()).toMatchObject({
-        href: '/help/user/profile/personal_access_tokens#personal-access-token-scopes',
+        href: '/help/security/tokens/access_token_scopes',
         target: '_blank',
       });
     });

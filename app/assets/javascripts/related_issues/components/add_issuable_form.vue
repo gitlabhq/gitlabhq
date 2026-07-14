@@ -92,11 +92,11 @@ export default {
     },
   },
   emits: [
-    'addIssuableFormBlur',
-    'addIssuableFormCancel',
-    'addIssuableFormInput',
-    'addIssuableFormSubmit',
-    'pendingIssuableRemoveRequest',
+    'add-issuable-form-blur',
+    'add-issuable-form-cancel',
+    'add-issuable-form-input',
+    'add-issuable-form-submit',
+    'pending-issuable-remove-request',
   ],
   data() {
     return {
@@ -157,22 +157,22 @@ export default {
   },
   methods: {
     onPendingIssuableRemoveRequest(params) {
-      this.$emit('pendingIssuableRemoveRequest', params);
+      this.$emit('pending-issuable-remove-request', params);
     },
     onFormSubmit() {
-      this.$emit('addIssuableFormSubmit', {
+      this.$emit('add-issuable-form-submit', {
         pendingReferences: this.$refs.relatedIssuableInput.$refs.input.value,
         linkedIssueType: this.linkedIssueType,
       });
     },
     onFormCancel() {
-      this.$emit('addIssuableFormCancel');
+      this.$emit('add-issuable-form-cancel');
     },
     onAddIssuableFormInput(params) {
-      this.$emit('addIssuableFormInput', params);
+      this.$emit('add-issuable-form-input', params);
     },
     onAddIssuableFormBlur(params) {
-      this.$emit('addIssuableFormBlur', params);
+      this.$emit('add-issuable-form-blur', params);
     },
   },
 };
@@ -212,10 +212,10 @@ export default {
         epics: autoCompleteEpics,
       } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       :issuable-type="issuableType"
-      @pendingIssuableRemoveRequest="onPendingIssuableRemoveRequest"
-      @formCancel="onFormCancel"
-      @addIssuableFormBlur="onAddIssuableFormBlur"
-      @addIssuableFormInput="onAddIssuableFormInput"
+      @pending-issuable-remove-request="onPendingIssuableRemoveRequest"
+      @add-issuable-form-cancel="onFormCancel"
+      @add-issuable-form-blur="onAddIssuableFormBlur"
+      @add-issuable-form-input="onAddIssuableFormInput"
     />
     <p v-if="hasError" v-safe-html="addRelatedErrorMessage" class="gl-field-error"></p>
     <div class="gl-mt-5 gl-flex gl-gap-3">

@@ -106,7 +106,7 @@ POST /projects/:id/ci/lint
 | `content`      | string  | Yes      | The CI/CD configuration content. |
 | `dry_run`      | boolean | No       | Run [pipeline creation simulation](../ci/yaml/lint.md#simulate-a-pipeline), or only do static check. Default: `false`. |
 | `include_jobs` | boolean | No       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. Default: `false`. |
-| `ref`          | string  | No       | When `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. |
+| `ref`          | string  | No       | If `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. |
 
 Example request:
 
@@ -189,7 +189,7 @@ GET /projects/:id/ci/lint
 |----------------|---------|----------|-------------|
 | `content_ref`  | string  | No       | The CI/CD configuration content is taken from this commit SHA, branch or tag. Defaults to the SHA of the head of the project's default branch when not set. |
 | `dry_run`      | boolean | No       | Run pipeline creation simulation, or only do static check. |
-| `dry_run_ref`  | string  | No       | Of `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. |
+| `dry_run_ref`  | string  | No       | If `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. |
 | `include_jobs` | boolean | No       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. Default: `false`. |
 | `ref`          | string  | No       | (Deprecated) When `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. Use `dry_run_ref` instead. |
 | `sha`          | string  | No       | (Deprecated) The CI/CD configuration content is taken from this commit SHA, branch or tag. Defaults to the SHA of the head of the project's default branch when not set. Use `content_ref` instead. |

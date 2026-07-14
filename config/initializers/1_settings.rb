@@ -174,7 +174,7 @@ saml_provider_enabled = Settings.omniauth.providers.any? do |provider|
 end
 
 if Gitlab.ee? && Rails.env.test? && !saml_provider_enabled
-  Settings.omniauth.providers << GitlabSettings::Options.build({ 'name' => 'group_saml' })
+  Settings.omniauth.providers << Gitlab::Configs.build_options({ 'name' => 'group_saml' })
 end
 
 Settings['issues_tracker'] ||= {}
@@ -494,6 +494,8 @@ Settings['jira_connect'] ||= {}
 Settings.jira_connect['atlassian_js_url'] ||= 'https://connect-cdn.atl-paas.net/all.js'
 Settings.jira_connect['enforce_jira_base_url_https'] = true if Settings.jira_connect['enforce_jira_base_url_https'].nil?
 Settings.jira_connect['additional_iframe_ancestors'] ||= []
+# Forge app ARI, used as the expected audience for FITs. Nil disables the check.
+Settings.jira_connect['forge_app_id'] ||= nil
 
 #
 # Gravatar
@@ -611,6 +613,15 @@ Settings.iam_auth_service['jwt_audience'] ||= 'gitlab-rails'
 Settings.iam_auth_service['jwt_issuer'] ||= 'http://localhost'
 
 #
+# IAM Data Access Service
+#
+Settings['iam_data_access_service'] ||= {}
+Settings.iam_data_access_service['secret_file'] ||= nil
+Settings.iam_data_access_service['grpc'] ||= {}
+Settings.iam_data_access_service.grpc['host'] ||= 'localhost'
+Settings.iam_data_access_service.grpc['port'] ||= 5005
+
+#
 # Gitlab Secrets Manager Openbao Integration
 #
 Settings['openbao'] ||= {}
@@ -715,6 +726,16 @@ Settings.microsoft_graph_mailer['azure_ad_endpoint'] ||= 'https://login.microsof
 Settings.microsoft_graph_mailer['graph_endpoint'] ||= 'https://graph.microsoft.com'
 
 #
+# Amazon SES Mailer
+#
+Settings['amazon_ses_mailer'] ||= {}
+Settings.amazon_ses_mailer['enabled'] = false if Settings.amazon_ses_mailer['enabled'].nil?
+Settings.amazon_ses_mailer['region'] ||= nil
+Settings.amazon_ses_mailer['access_key_id'] ||= nil
+Settings.amazon_ses_mailer['secret_access_key'] ||= nil
+Settings.amazon_ses_mailer['role_arn'] ||= nil
+
+#
 # Kerberos
 #
 Gitlab.ee do
@@ -728,7 +749,7 @@ Gitlab.ee do
   Settings.kerberos['port'] ||= Settings.kerberos.https ? 8443 : 8088
 
   if Settings.kerberos['enabled'] && Settings.omniauth.providers.map(&:name).exclude?('kerberos')
-    Settings.omniauth.providers << GitlabSettings::Options.build({ 'name' => 'kerberos' })
+    Settings.omniauth.providers << Gitlab::Configs.build_options({ 'name' => 'kerberos' })
   end
 end
 
@@ -811,7 +832,7 @@ Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
 Settings.monitoring['sidekiq_exporter'] ||= {}
 Settings.monitoring.sidekiq_exporter['enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['log_enabled'] ||= false
-Settings.monitoring.sidekiq_exporter['address'] ||= 'localhost'
+Settings.monitoring.sidekiq_exporter['address'] = 'localhost' unless Settings.monitoring.sidekiq_exporter.key?('address')
 Settings.monitoring.sidekiq_exporter['port'] ||= 8082
 Settings.monitoring.sidekiq_exporter['tls_enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['tls_cert_path'] ||= nil
@@ -819,13 +840,13 @@ Settings.monitoring.sidekiq_exporter['tls_key_path'] ||= nil
 
 Settings.monitoring['sidekiq_health_checks'] ||= {}
 Settings.monitoring.sidekiq_health_checks['enabled'] ||= false
-Settings.monitoring.sidekiq_health_checks['address'] ||= 'localhost'
+Settings.monitoring.sidekiq_health_checks['address'] = 'localhost' unless Settings.monitoring.sidekiq_health_checks.key?('address')
 Settings.monitoring.sidekiq_health_checks['port'] ||= 8092
 
 Settings.monitoring['web_exporter'] ||= {}
 Settings.monitoring.web_exporter['enabled'] ||= false
 Settings.monitoring.web_exporter['log_enabled'] ||= true
-Settings.monitoring.web_exporter['address'] ||= 'localhost'
+Settings.monitoring.web_exporter['address'] = 'localhost' unless Settings.monitoring.web_exporter.key?('address')
 Settings.monitoring.web_exporter['port'] ||= 8083
 Settings.monitoring.web_exporter['tls_enabled'] ||= false
 Settings.monitoring.web_exporter['tls_cert_path'] ||= nil

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Dashboard::GroupsController do
+RSpec.describe Dashboard::GroupsController, feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:user) { create(:user) }
@@ -29,30 +29,11 @@ RSpec.describe Dashboard::GroupsController do
       expect(assigns(:groups)).to contain_exactly(member_of_group)
     end
 
-    it 'only includes groups in the current Organization' do
-      current_org_group = create(:group)
-      another_org = create(:organization)
-      another_org_group = create(:group, organization: another_org)
-
-      # User is a member of both groups in different Organizations
-      current_org_group.add_developer(user)
-      another_org_group.add_developer(user)
-
-      get :index
-
-      expect(assigns(:groups)).to contain_exactly(current_org_group)
-    end
-
     context 'when rendering an expanded hierarchy with public groups you are not a member of' do
-      let!(:top_level_result) { create(:group, name: 'chef-top') }
-      let!(:top_level_a) { create(:group, name: 'top-a') }
-      let!(:sub_level_result_a) { create(:group, name: 'chef-sub-a', parent: top_level_a) }
-      let!(:other_group) { create(:group, name: 'other') }
-
-      before do
-        top_level_result.add_maintainer(user)
-        top_level_a.add_maintainer(user)
-      end
+      let_it_be(:top_level_result) { create(:group, name: 'chef-top', maintainers: user) }
+      let_it_be(:top_level_a) { create(:group, name: 'top-a', maintainers: user) }
+      let_it_be(:sub_level_result_a) { create(:group, name: 'chef-sub-a', parent: top_level_a) }
+      let_it_be(:other_group) { create(:group, name: 'other') }
 
       it 'renders only groups the user is a member of when searching hierarchy correctly' do
         get :index, params: { filter: 'chef' }, format: :json

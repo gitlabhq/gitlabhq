@@ -3,8 +3,8 @@
 require "spec_helper"
 
 RSpec.describe "E-Mails > Issues", :js, feature_category: :team_planning do
-  let_it_be(:project, freeze: false) { create(:project_empty_repo, :public, name: 'Long Earth') }
-  let_it_be(:author, freeze: false) { create(:user, username: 'author', name: 'Sally Linsay') }
+  let_it_be_with_reload(:project) { create(:project_empty_repo, :public, name: 'Long Earth') }
+  let_it_be_with_reload(:author) { create(:user, username: 'author', name: 'Sally Linsay') }
   let_it_be(:current_user) { create(:user, username: 'current_user', name: 'Shi-mi') }
 
   before do
@@ -13,10 +13,10 @@ RSpec.describe "E-Mails > Issues", :js, feature_category: :team_planning do
   end
 
   describe 'assignees' do
-    let_it_be(:assignee, freeze: false) { create(:user, username: 'assignee', name: 'Joshua Valienté') }
+    let_it_be_with_reload(:assignee) { create(:user, username: 'assignee', name: 'Joshua Valienté') }
     let_it_be(:issue_without_assignee) { create(:issue, project: project, author: author, title: 'No milk today!') }
 
-    let_it_be(:issue_with_assignee, freeze: false) do
+    let_it_be_with_reload(:issue_with_assignee) do
       create(
         :issue, project: project, author: author, assignees: [assignee],
         title: 'All your base are belong to us')

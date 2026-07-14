@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Notes::DestroyService, feature_category: :team_planning do
-  let_it_be(:project, freeze: false) { create(:project, :public) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
 
   let(:user) { issue.author }

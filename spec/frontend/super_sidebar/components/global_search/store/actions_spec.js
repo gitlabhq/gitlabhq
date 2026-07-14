@@ -11,9 +11,6 @@ import {
   MOCK_AUTOCOMPLETE_PATH,
   MOCK_PROJECT,
   MOCK_SEARCH_CONTEXT,
-  MOCK_SEARCH_PATH,
-  MOCK_MR_PATH,
-  MOCK_ISSUE_PATH,
 } from '../mock_data';
 
 describe('Global Search Store Actions', () => {
@@ -22,10 +19,6 @@ describe('Global Search Store Actions', () => {
 
   const createState = (initialState) =>
     initState({
-      searchPath: MOCK_SEARCH_PATH,
-      issuesPath: MOCK_ISSUE_PATH,
-      mrPath: MOCK_MR_PATH,
-      autocompletePath: MOCK_AUTOCOMPLETE_PATH,
       searchContext: MOCK_SEARCH_CONTEXT,
       ...initialState,
     });

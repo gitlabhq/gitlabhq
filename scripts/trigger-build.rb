@@ -708,13 +708,22 @@ module Trigger
     IDENTIFIABLE_NOTE_TAG = 'gitlab-org/database-team/gitlab-com-database-testing:identifiable-note'
     COMMIT_STATUS_NAME = 'database-testing'
     COMMIT_STATUS_DESCRIPTION = 'Database testing pipeline running on ops.gitlab.net and it needs to finish'
+    RUNNING_STATE = 'running'
 
     def invoke!
-      pipeline = super
       project_path = variables['TOP_UPSTREAM_SOURCE_PROJECT']
       merge_request_id = variables['TOP_UPSTREAM_MERGE_REQUEST_IID']
+      target_sha = variables['UPSTREAM_TARGET_SHA']
 
-      post_pending_commit_status(project_path, variables['UPSTREAM_TARGET_SHA'])
+      existing_status = existing_running_commit_status(project_path, target_sha)
+      if existing_status
+        abort "A #{COMMIT_STATUS_NAME} pipeline is already running for #{target_sha} " \
+          "(#{existing_status.target_url}). Wait for it to finish before retrying this job."
+      end
+
+      pipeline = super
+
+      post_running_commit_status(project_path, target_sha)
 
       comment = <<~COMMENT.strip
         <!-- #{IDENTIFIABLE_NOTE_TAG} -->
@@ -782,15 +791,23 @@ module Trigger
       'master'
     end
 
-    # Post a pending `database-testing` commit status on the upstream project so
-    # the gitlab.com merge gate waits for the downstream ops pipeline. The ops
+    def existing_running_commit_status(project_path, sha)
+      com_gitlab_client
+        .commit_status(project_path, sha, name: COMMIT_STATUS_NAME)
+        .auto_paginate
+        .find { |status| status.status == RUNNING_STATE }
+    end
+
+    # Post a running `database-testing` commit status on the upstream project so
+    # the gitlab.com merge gate waits for the downstream ops pipeline. `running`
+    # reflects that the downstream pipeline is already in progress. The ops
     # notifier updates this same status to success/failed when the pipeline
     # finishes.
-    def post_pending_commit_status(project_path, sha)
+    def post_running_commit_status(project_path, sha)
       com_gitlab_client.update_commit_status(
         project_path,
         sha,
-        'pending',
+        RUNNING_STATE,
         name: COMMIT_STATUS_NAME,
         target_url: ENV['CI_JOB_URL'],
         description: COMMIT_STATUS_DESCRIPTION

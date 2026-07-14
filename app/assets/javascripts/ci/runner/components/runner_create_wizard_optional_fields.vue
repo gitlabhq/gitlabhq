@@ -5,9 +5,12 @@ import {
   GlFormGroup,
   GlFormInput,
   GlFormTextarea,
+  GlLink,
   GlMultiStepFormTemplate,
+  GlSprintf,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import MultipleChoiceSelector from '~/vue_shared/components/multiple_choice_selector.vue';
 import MultipleChoiceSelectorItem from '~/vue_shared/components/multiple_choice_selector_item.vue';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
@@ -30,7 +33,9 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlFormTextarea,
+    GlLink,
     GlMultiStepFormTemplate,
+    GlSprintf,
     MultipleChoiceSelector,
     MultipleChoiceSelectorItem,
   },
@@ -56,6 +61,7 @@ export default {
       required: true,
     },
   },
+  emits: ['back', 'next', 'onGetNewRunnerId'],
   data() {
     return {
       runner: {
@@ -145,6 +151,9 @@ export default {
     },
   },
   ACCESS_LEVEL_REF_PROTECTED,
+  HELP_JOB_TIMEOUT_PAGE_PATH: helpPagePath('ci/pipelines/settings', {
+    anchor: 'set-a-limit-for-how-long-jobs-can-run',
+  }),
 };
 </script>
 <template>
@@ -207,14 +216,26 @@ export default {
           :label="s__('Runners|Maximum job timeout')"
           :label-description="
             s__(
-              'Runners|Maximum amount of time the runner can run before it terminates. If a project has a shorter job timeout period, the job timeout period of the instance runner is used instead.',
+              'Runners|Maximum amount of time the runner can run before it terminates. The job timeout of the runner is used if it is shorter than the project job timeout. For example, if the maximum job timeout for a runner is 30 minutes, but the CI/CD timeout for a project is 2 hours, the job running in that project times out after 30 minutes.',
             )
           "
           :optional="true"
-          :description="
-            s__('Runners|Enter the job timeout in seconds. Must be a minimum of 600 seconds.')
-          "
         >
+          <template #description>
+            <gl-sprintf
+              :message="
+                s__(
+                  'Runners|Enter number of seconds. Must be 600 seconds or more. If not defined, the runner uses the project %{linkStart}job timeout value%{linkEnd}.',
+                )
+              "
+            >
+              <template #link="{ content }">
+                <gl-link :href="$options.HELP_JOB_TIMEOUT_PAGE_PATH" target="_blank">{{
+                  content
+                }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </template>
           <gl-form-input
             id="max-timeout"
             v-model="runner.maximumTimeout"

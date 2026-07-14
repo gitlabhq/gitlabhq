@@ -87,8 +87,53 @@ module Ci
     def validate_executing_job!(job)
       return if Ci::HasStatus::EXECUTING_STATUSES.include?(job.status)
 
+      if stale_status_read?(job)
+        refresh_job_from_primary(job)
+
+        return if Ci::HasStatus::EXECUTING_STATUSES.include?(job.status)
+      end
+
       raise NotRunningJobError.new('Job is not running',
         job: job)
+    end
+
+    # A job token is only handed to the runner after the job transitions to
+    # `running`, so observing a pre-execution status while authenticating
+    # with the token means the job was read from a stale replica.
+    #
+    # Database load balancing sticking prevents the majority of stale reads:
+    # while the Redis write-location key for the build exists, reads are
+    # routed to a caught-up replica or fall back to the primary. However, the
+    # key expires after 30 seconds (Sticking::EXPIRATION), and replicas may
+    # lag longer than that before health checks evict them, so requests
+    # arriving outside that window lose the protection and can very
+    # occasionally read a stale status.
+    def stale_status_read?(job)
+      Ci::HasStatus::PRE_EXECUTION_STATUSES.include?(job.status) &&
+        Feature.enabled?(:ci_job_token_auth_stale_read_retry, ::Project.actor_from_id(job.project_id))
+    end
+
+    def refresh_job_from_primary(job)
+      ::Gitlab::Database::LoadBalancing::SessionMap
+        .current(::Ci::Build.load_balancer)
+        .use_primary!
+
+      job.reset
+
+      log_stale_read_retry(job)
+    rescue ActiveRecord::RecordNotFound
+      # The job was deleted since the replica read; fall through to the
+      # NotRunningJobError raised by the caller.
+    end
+
+    def log_stale_read_retry(job)
+      Gitlab::AppLogger.info({
+        class: self.class,
+        job_id: job.id,
+        job_status: job.status,
+        job_recovered: Ci::HasStatus::EXECUTING_STATUSES.include?(job.status),
+        message: 'job token auth retried on primary after stale status read'
+      }.merge(Gitlab::ApplicationContext.current))
     end
 
     def validate_job_not_erased!(job)

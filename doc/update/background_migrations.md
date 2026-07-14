@@ -396,7 +396,7 @@ Use the following database queries to see the state of the current batched backg
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.2 [with a flag](../administration/feature_flags/_index.md) named `optimize_batched_migrations`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.2 [with a feature flag](../administration/feature_flags/_index.md) named `optimize_batched_migrations`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204173) in GitLab 18.4. Feature flag `optimize_batched_migrations` removed.
 
 {{< /history >}}
@@ -411,7 +411,7 @@ To maximize throughput of batched background migrations (in terms of the number 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104027) in GitLab 15.7 [with a flag](../administration/feature_flags/_index.md) named `batched_migrations_parallel_execution`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104027) in GitLab 15.7 [with a feature flag](../administration/feature_flags/_index.md) named `batched_migrations_parallel_execution`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/372316) in GitLab 15.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120808) in GitLab 16.1. Feature flag `batched_migrations_parallel_execution` removed.
 

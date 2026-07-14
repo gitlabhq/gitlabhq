@@ -7,13 +7,13 @@ import { isFileDiscussion } from '~/rapid_diffs/utils/discussion_position';
 export const createNoPreviewDiscussionsAdapter = (store) => ({
   [MOUNTED](addCleanup) {
     const { diffElement } = this;
-    const { oldPath, newPath } = this.data;
+    const { oldPath, newPath, diffRefs } = this.data;
     let alert = null;
 
     const stopWatcher = watch(
       () =>
         store
-          .findDiscussionsForFile({ oldPath, newPath })
+          .findDiscussionsForFile({ oldPath, newPath, diffRefs })
           .filter((discussion) => !isFileDiscussion(discussion)),
       (lineDiscussions) => {
         alert?.dismiss();

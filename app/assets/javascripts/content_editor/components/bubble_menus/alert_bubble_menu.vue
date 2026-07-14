@@ -28,7 +28,7 @@ export default {
   directives: {
     GlTooltip,
   },
-  inject: ['tiptapEditor', 'contentEditor'],
+  inject: ['tiptapEditor'],
   data() {
     return {
       alertType: null,

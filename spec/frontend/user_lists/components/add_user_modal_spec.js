@@ -26,7 +26,7 @@ describe('Add User Modal', () => {
 
     it('should emit the users entered when Add Users is clicked', () => {
       click('confirm-add-user-ids');
-      expect(wrapper.emitted('addUsers')).toContainEqual(['1, 2, 3, 4']);
+      expect(wrapper.emitted('add-users')).toContainEqual(['1, 2, 3, 4']);
     });
 
     it('should clear the input after emitting', async () => {
@@ -38,7 +38,7 @@ describe('Add User Modal', () => {
 
     it('should not emit the users entered if cancel is clicked', () => {
       click('cancel-add-user-ids');
-      expect(wrapper.emitted('addUsers')).toBeUndefined();
+      expect(wrapper.emitted('add-users')).toBeUndefined();
     });
 
     it('should clear the input after cancelling', async () => {

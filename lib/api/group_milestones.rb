@@ -14,7 +14,8 @@ module API
       requires :id, type: String, desc: 'The ID of a group'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get a list of group milestones' do
+      desc 'List all group milestones' do
+        detail 'Lists all group milestones for a specified group.'
         success Entities::Milestone
         tags ['milestones']
       end
@@ -28,7 +29,8 @@ module API
         list_milestones_for(user_group)
       end
 
-      desc 'Get a single group milestone' do
+      desc 'Retrieve a group milestone' do
+        detail 'Retrieves a specified group milestone.'
         success Entities::Milestone
         tags ['milestones']
       end
@@ -42,7 +44,8 @@ module API
         get_milestone_for(user_group)
       end
 
-      desc 'Create a new group milestone' do
+      desc 'Create a group milestone' do
+        detail 'Creates a milestone for the specified group.'
         success Entities::Milestone
         tags ['milestones']
       end
@@ -57,7 +60,8 @@ module API
         create_milestone_for(user_group)
       end
 
-      desc 'Update an existing group milestone' do
+      desc 'Update a group milestone' do
+        detail 'Updates the specified group milestone.'
         success Entities::Milestone
         tags ['milestones']
       end
@@ -71,7 +75,8 @@ module API
         update_milestone_for(user_group)
       end
 
-      desc 'Remove a project milestone' do
+      desc 'Delete a group milestone' do
+        detail 'Deletes the specified group milestone.'
         success code: 204, message: '204 No Content'
         tags ['milestones']
       end
@@ -85,7 +90,8 @@ module API
         no_content!
       end
 
-      desc 'Get all issues for a single group milestone' do
+      desc 'List all issues assigned to a single milestone' do
+        detail 'Lists all issues assigned to a specified group milestone.'
         success Entities::IssueBasic
         tags ['milestones']
       end
@@ -98,8 +104,8 @@ module API
         milestone_issuables_for(user_group, :issue)
       end
 
-      desc 'Get all merge requests for a single group milestone' do
-        detail 'This feature was introduced in GitLab 9.'
+      desc 'List all merge requests assigned to a single milestone' do
+        detail 'Lists all merge requests assigned to a specified group milestone.'
         success Entities::MergeRequestBasic
         tags ['milestones']
       end

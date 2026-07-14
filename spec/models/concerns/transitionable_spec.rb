@@ -25,13 +25,13 @@ RSpec.describe Transitionable, feature_category: :code_review_workflow do
     context "when trasnitioning" do
       let(:transitioning) { true }
 
-      it { expect(object.transitioning?).to eq(true) }
+      it { expect(object.transitioning?).to be(true) }
     end
 
     context "when not trasnitioning" do
       let(:transitioning) { false }
 
-      it { expect(object.transitioning?).to eq(false) }
+      it { expect(object.transitioning?).to be(false) }
     end
   end
 end

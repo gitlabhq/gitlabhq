@@ -10,6 +10,8 @@ module Types
         graphql_name 'WorkItemWidgetDesigns'
         description 'Represents designs widget'
 
+        authorize_granular_token skip_reason: :parent_authorizes
+
         implements ::Types::WorkItems::WidgetInterface
 
         field :design_collection, ::Types::DesignManagement::DesignCollectionType, null: true,

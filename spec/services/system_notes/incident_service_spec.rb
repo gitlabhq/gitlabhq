@@ -6,7 +6,7 @@ RSpec.describe ::SystemNotes::IncidentService, feature_category: :incident_manag
   let_it_be(:author) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:noteable) { create(:incident, project: project) }
-  let_it_be(:issuable_severity, freeze: false) { create(:issuable_severity, issue: noteable, severity: :medium) }
+  let_it_be_with_reload(:issuable_severity) { create(:issuable_severity, issue: noteable, severity: :medium) }
 
   describe '#change_incident_severity' do
     subject(:change_severity) { described_class.new(noteable: noteable, container: project, author: author).change_incident_severity }

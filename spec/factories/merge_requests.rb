@@ -109,6 +109,19 @@ FactoryBot.define do
       state_id { MergeRequest.available_states[:opened] }
     end
 
+    trait :with_closed_by do
+      transient do
+        closed_by { nil }
+      end
+
+      after(:create) do |merge_request, evaluator|
+        next unless evaluator.closed_by
+
+        merge_request.ensure_metrics!
+        merge_request.metrics.update!(latest_closed_by_id: evaluator.closed_by.id)
+      end
+    end
+
     trait :invalid do
       source_branch { "feature_one" }
       target_branch { "feature_two" }

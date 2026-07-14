@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::SystemNotes::ZoomService, feature_category: :integrations do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:author)  { create(:user) }
 
   let(:noteable)      { create(:issue, project: project) }

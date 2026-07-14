@@ -6,7 +6,7 @@ RSpec.describe Packages::MarkPackagesForDestructionService, :sidekiq_inline, fea
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:packages) { create_list(:nuget_package, 3, project: project) }
 
-  let(:user) { project.owner }
+  let_it_be(:user) { project.owner }
 
   # The service only accepts ActiveRecord relationships and not arrays.
   let(:service) { described_class.new(packages: ::Packages::Package.id_in(package_ids), current_user: user) }
@@ -27,7 +27,7 @@ RSpec.describe Packages::MarkPackagesForDestructionService, :sidekiq_inline, fea
     end
 
     context 'when the user is authorized' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -116,7 +116,7 @@ RSpec.describe Packages::MarkPackagesForDestructionService, :sidekiq_inline, fea
               create_list(:rubygems_package, 2, :with_metadatum, project: other_project)
           end
 
-          before do
+          before_all do
             other_project.add_maintainer(user)
           end
 

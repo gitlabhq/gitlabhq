@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Projects::ForkTargetsResolver do
+RSpec.describe Resolvers::Projects::ForkTargetsResolver, feature_category: :source_code_management do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group, path: 'namespace-group') }

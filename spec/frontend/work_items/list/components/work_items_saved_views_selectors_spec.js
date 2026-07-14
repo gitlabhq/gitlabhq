@@ -1,19 +1,28 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import VueDraggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import WorkItemsCreateSavedViewDropdown from '~/work_items/list/components/work_items_create_saved_view_dropdown.vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import workItemSavedViewDelete from '~/work_items/graphql/delete_saved_view.mutation.graphql';
+import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
+import workItemSavedViewReorder from '~/work_items/graphql/reorder_saved_view.mutation.graphql';
 import { CREATED_DESC } from '~/work_items/list/constants';
 import { ROUTES } from '~/work_items/constants';
+
+Vue.use(VueApollo);
 
 describe('WorkItemsSavedViewsSelectors', () => {
   let wrapper;
   let routerPushMock;
   let toastShowMock;
-  let mutateMock;
+  let unsubscribeMutationHandler;
+  let deleteMutationHandler;
+  let reorderMutationHandler;
 
   const mockSavedViewsData = [
     {
@@ -72,8 +81,9 @@ describe('WorkItemsSavedViewsSelectors', () => {
   const mockUnsubscribeResponse = {
     data: {
       workItemSavedViewUnsubscribe: {
-        errors: [],
+        __typename: 'WorkItemSavedViewUnsubscribePayload',
         savedView: {
+          __typename: 'WorkItemSavedViewType',
           id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
         },
       },
@@ -83,8 +93,10 @@ describe('WorkItemsSavedViewsSelectors', () => {
   const mockDeleteResponse = {
     data: {
       workItemSavedViewDelete: {
+        __typename: 'WorkItemSavedViewDeletePayload',
         errors: [],
         savedView: {
+          __typename: 'WorkItemSavedViewType',
           id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
         },
       },
@@ -94,8 +106,10 @@ describe('WorkItemsSavedViewsSelectors', () => {
   const mockReorderResponse = {
     data: {
       workItemSavedViewReorder: {
+        __typename: 'WorkItemSavedViewReorderPayload',
         errors: [],
         savedView: {
+          __typename: 'WorkItemSavedViewType',
           id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
         },
       },
@@ -108,15 +122,23 @@ describe('WorkItemsSavedViewsSelectors', () => {
     visibleViews = mockSavedViews.slice(0, 2),
     overflowedViews = mockSavedViews.slice(2),
     routeMock = { params: { view_id: '1' } },
-    mutateResult = mockUnsubscribeResponse,
     subscribedSavedViewLimit = null,
     mountFn = shallowMountExtended,
   } = {}) => {
     routerPushMock = jest.fn();
     toastShowMock = jest.fn();
-    mutateMock = jest.fn().mockResolvedValue(mutateResult);
+    unsubscribeMutationHandler = jest.fn().mockResolvedValue(mockUnsubscribeResponse);
+    deleteMutationHandler = jest.fn().mockResolvedValue(mockDeleteResponse);
+    reorderMutationHandler = jest.fn().mockResolvedValue(mockReorderResponse);
+
+    const apolloProvider = createMockApollo([
+      [workItemSavedViewUnsubscribe, unsubscribeMutationHandler],
+      [workItemSavedViewDelete, deleteMutationHandler],
+      [workItemSavedViewReorder, reorderMutationHandler],
+    ]);
 
     wrapper = mountFn(WorkItemsSavedViewsSelectors, {
+      apolloProvider,
       propsData: {
         fullPath: 'test-project-path',
         savedViews: mockSavedViews,
@@ -144,9 +166,6 @@ describe('WorkItemsSavedViewsSelectors', () => {
         },
         $toast: {
           show: toastShowMock,
-        },
-        $apollo: {
-          mutate: mutateMock,
         },
       },
       stubs: {
@@ -237,17 +256,17 @@ describe('WorkItemsSavedViewsSelectors', () => {
       });
 
       it('calls reorder mutation after overflow view click', async () => {
-        createComponent({ mutateResult: mockReorderResponse, mountFn: mountExtended });
+        createComponent({ mountFn: mountExtended });
         await clickFirstOverflowItem();
         await waitForPromises();
 
-        expect(mutateMock).toHaveBeenCalled();
+        expect(reorderMutationHandler).toHaveBeenCalled();
       });
 
       it('emits error when reorder fails', async () => {
         const reorderError = new Error('Reorder failed');
         createComponent({ mountFn: mountExtended });
-        mutateMock.mockRejectedValueOnce(reorderError);
+        reorderMutationHandler.mockRejectedValueOnce(reorderError);
         await clickFirstOverflowItem();
         await waitForPromises();
 
@@ -292,7 +311,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
     });
 
     it('calls reorder mutation on drag change', async () => {
-      createComponent({ mutateResult: mockReorderResponse });
+      createComponent();
 
       findVueDraggable().vm.$emit('input', [mockSavedViewsData[1], mockSavedViewsData[0]]);
       findVueDraggable().vm.$emit('change', {
@@ -301,11 +320,11 @@ describe('WorkItemsSavedViewsSelectors', () => {
 
       await waitForPromises();
 
-      expect(mutateMock).toHaveBeenCalled();
+      expect(reorderMutationHandler).toHaveBeenCalled();
     });
 
     it('does not navigate to dragged view on drag change', async () => {
-      createComponent({ mutateResult: mockReorderResponse });
+      createComponent();
 
       findVueDraggable().vm.$emit('input', [mockSavedViewsData[1], mockSavedViewsData[0]]);
       findVueDraggable().vm.$emit('change', {
@@ -323,13 +342,13 @@ describe('WorkItemsSavedViewsSelectors', () => {
       findVueDraggable().vm.$emit('change', {});
       await waitForPromises();
 
-      expect(mutateMock).not.toHaveBeenCalled();
+      expect(reorderMutationHandler).not.toHaveBeenCalled();
     });
 
     it('emits error when drag reorder fails', async () => {
       const reorderError = new Error('Reorder failed');
       createComponent();
-      mutateMock.mockRejectedValueOnce(reorderError);
+      reorderMutationHandler.mockRejectedValueOnce(reorderError);
 
       findVueDraggable().vm.$emit('change', {
         moved: { newIndex: 1, element: mockSavedViewsData[0] },
@@ -348,15 +367,11 @@ describe('WorkItemsSavedViewsSelectors', () => {
       await findUnsubscribeBtnAt(0).trigger('click');
       await waitForPromises();
 
-      expect(mutateMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          variables: {
-            input: {
-              id: mockSavedViewsData[0].id,
-            },
-          },
-        }),
-      );
+      expect(unsubscribeMutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: mockSavedViewsData[0].id,
+        },
+      });
     });
 
     it('navigates to next view after successful unsubscribe', async () => {
@@ -397,7 +412,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
       createComponent();
 
       const networkError = new Error('Network error');
-      mutateMock.mockRejectedValueOnce(networkError);
+      unsubscribeMutationHandler.mockRejectedValueOnce(networkError);
 
       await findUnsubscribeBtnAt(0).trigger('click');
       await waitForPromises();
@@ -428,24 +443,20 @@ describe('WorkItemsSavedViewsSelectors', () => {
 
   describe('delete saved view', () => {
     it('calls delete mutation when delete-saved-view event is emitted', async () => {
-      createComponent({ mutateResult: mockDeleteResponse });
+      createComponent();
 
       await findDeleteBtnAt(0).trigger('click');
       await waitForPromises();
 
-      expect(mutateMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          variables: {
-            input: {
-              id: mockSavedViewsData[0].id,
-            },
-          },
-        }),
-      );
+      expect(deleteMutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: mockSavedViewsData[0].id,
+        },
+      });
     });
 
     it('navigates to next view after successful delete', async () => {
-      createComponent({ mutateResult: mockDeleteResponse });
+      createComponent();
 
       await findDeleteBtnAt(0).trigger('click');
       await waitForPromises();
@@ -457,7 +468,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
     });
 
     it('shows success toast after successful delete', async () => {
-      createComponent({ mutateResult: mockDeleteResponse });
+      createComponent();
 
       await findDeleteBtnAt(0).trigger('click');
       await waitForPromises();
@@ -470,7 +481,6 @@ describe('WorkItemsSavedViewsSelectors', () => {
         mockSavedViews: [mockSavedViewsData[0]],
         visibleViews: [mockSavedViewsData[0]],
         overflowedViews: [],
-        mutateResult: mockDeleteResponse,
       });
 
       await findDeleteBtnAt(0).trigger('click');
@@ -480,10 +490,10 @@ describe('WorkItemsSavedViewsSelectors', () => {
     });
 
     it('emits error event when delete mutation fails', async () => {
-      createComponent({ mutateResult: mockDeleteResponse });
+      createComponent();
 
       const networkError = new Error('Network error');
-      mutateMock.mockRejectedValueOnce(networkError);
+      deleteMutationHandler.mockRejectedValueOnce(networkError);
 
       await findDeleteBtnAt(0).trigger('click');
       await waitForPromises();
@@ -500,7 +510,6 @@ describe('WorkItemsSavedViewsSelectors', () => {
         mockSavedViews: [mockSavedViewsData[0], mockSavedViewsData[1]],
         visibleViews: [mockSavedViewsData[0], mockSavedViewsData[1]],
         overflowedViews: [],
-        mutateResult: mockDeleteResponse,
       });
 
       await findDeleteBtnAt(1).trigger('click');

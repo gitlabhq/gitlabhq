@@ -93,7 +93,7 @@ module Gitlab
               # with `only/except` defaults
               #
               # Context: https://gitlab.com/gitlab-org/gitlab/merge_requests/21742
-              if has_rules? || has_workflow_rules
+              if has_rules? || has_workflow_rules || skip_branch_pipelines_for_mrs?
                 # Remove only/except defaults
                 # defaults are not considered as defined
                 @entries.delete(:only) unless only_defined? # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -150,6 +150,10 @@ module Gitlab
 
           def manual_action?
             self.when == 'manual'
+          end
+
+          def skip_branch_pipelines_for_mrs?
+            opt(:project)&.ci_skip_branch_pipelines_for_mrs?
           end
         end
       end

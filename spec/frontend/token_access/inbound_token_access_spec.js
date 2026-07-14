@@ -71,13 +71,12 @@ describe('TokenAccess component', () => {
 
   const createComponent = (
     requestHandlers,
-    { enforceAllowlist = false, projectAllowlistLimit = 2, stubs = {}, isLoading = false } = {},
+    { enforceAllowlist = false, stubs = {}, isLoading = false } = {},
   ) => {
     wrapper = shallowMountExtended(InboundTokenAccess, {
       provide: {
         fullPath: projectPath,
         enforceAllowlist,
-        projectAllowlistLimit,
       },
       apolloProvider: createMockApollo(requestHandlers),
       mocks: {

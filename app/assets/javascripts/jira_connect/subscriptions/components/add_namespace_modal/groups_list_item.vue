@@ -1,12 +1,13 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { mapActions } from 'pinia';
 import { GlButton } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import GroupItemName from '../group_item_name.vue';
 import { I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE } from '../../constants';
+import { useJiraConnectSubscriptions } from '../../store';
 
 export default {
+  name: 'GroupsListItem',
   components: {
     GlButton,
     GroupItemName,
@@ -27,13 +28,14 @@ export default {
       default: false,
     },
   },
+  emits: ['error'],
   data() {
     return {
       isLoading: false,
     };
   },
   methods: {
-    ...mapActions(['addSubscription']),
+    ...mapActions(useJiraConnectSubscriptions, ['addSubscription']),
     async onClick() {
       this.isLoading = true;
       try {

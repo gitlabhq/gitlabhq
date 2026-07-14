@@ -3,26 +3,27 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::Otp::Strategies::DuoAuth::ManualOtp, feature_category: :system_access do
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:user, freeze: false) { create(:user) }
 
-  let_it_be(:otp_code, freeze: false) { 42 }
-
-  let_it_be(:hostname, freeze: false) { 'duo_auth.example.com' }
-  let_it_be(:integration_key, freeze: false) { 'int3gr4t1on' }
-  let_it_be(:secret_key, freeze: false) { 's3cr3t' }
-
-  let_it_be(:duo_response_builder, freeze: false) { Struct.new(:body) }
-
-  let_it_be(:response_status, freeze: false) { 200 }
-
-  let_it_be(:duo_auth_url, freeze: false) { "https://#{hostname}/auth/v2/auth/" }
-  let_it_be(:params, freeze: false) do
+  let(:otp_code) { 42 }
+  let(:hostname) { 'duo_auth.example.com' }
+  let(:integration_key) { 'int3gr4t1on' }
+  let(:secret_key) { 's3cr3t' }
+  let(:duo_response_builder) { Struct.new(:body) }
+  let(:response_status) { 200 }
+  let(:duo_auth_url) { "https://#{hostname}/auth/v2/auth/" }
+  let(:params) do
     { username: user.username,
       factor: "passcode",
       passcode: otp_code }
   end
 
-  let_it_be(:manual_otp, freeze: false) { described_class.new(user) }
+  let(:manual_otp) { described_class.new(user) }
 
   subject(:response) { manual_otp.validate(otp_code) }
 

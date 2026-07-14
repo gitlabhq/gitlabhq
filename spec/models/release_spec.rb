@@ -180,7 +180,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
         it 'returns nil' do
           project.releases.delete_all(:delete_all)
 
-          expect(latest).to eq(nil)
+          expect(latest).to be_nil
         end
       end
     end
@@ -280,7 +280,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
         end
 
         it 'creates a link successfully' do
-          is_expected.to eq(true)
+          is_expected.to be(true)
 
           expect(release.links.count).to eq(1)
           expect(release.links.first.name).to eq('test')
@@ -303,7 +303,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
         end
 
         it 'updates the link successfully' do
-          is_expected.to eq(true)
+          is_expected.to be(true)
 
           expect(release.links.count).to eq(2)
           expect(release.links.first.name).to eq('new')
@@ -316,7 +316,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
         end
 
         it 'removes the link successfully' do
-          is_expected.to eq(true)
+          is_expected.to be(true)
 
           expect(release.links.count).to eq(1)
           expect(release.links.first.name).to eq(link2.name)
@@ -338,7 +338,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
       it 'handles a nil released_at value and returns false' do
         allow(release).to receive(:released_at).and_return nil
 
-        expect(release.upcoming_release?).to eq(false)
+        expect(release.upcoming_release?).to be(false)
       end
     end
   end

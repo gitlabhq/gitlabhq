@@ -1,0 +1,9 @@
+---
+name: read_attestation
+description: Grants the ability to read supply chain attestations
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_attestation

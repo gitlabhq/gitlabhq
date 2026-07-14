@@ -164,6 +164,7 @@ linters:
             # Additional test and utility libraries
             - github.com/dlclark/regexp2
             - go.uber.org/goleak
+            - github.com/go-json-experiment/json
 
     dupl:
       # tokens count to trigger issue, 150 by default

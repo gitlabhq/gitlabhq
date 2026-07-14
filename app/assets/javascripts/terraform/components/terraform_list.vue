@@ -7,6 +7,7 @@ import EmptyState from './empty_state.vue';
 import StatesTable from './states_table.vue';
 
 export default {
+  name: 'TerraformList',
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     states: {

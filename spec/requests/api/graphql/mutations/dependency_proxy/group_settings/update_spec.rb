@@ -62,7 +62,7 @@ RSpec.describe 'Updating the dependency proxy group settings', feature_category:
 
           expect(response).to have_gitlab_http_status(:success)
           expect(mutation_response['errors']).to be_empty
-          expect(group_settings[:enabled]).to eq(false)
+          expect(group_settings[:enabled]).to be(false)
         end
 
         it_behaves_like 'authorizing granular token permissions for GraphQL', :update_dependency_proxy do

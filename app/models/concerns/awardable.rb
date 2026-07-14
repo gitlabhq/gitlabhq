@@ -104,12 +104,6 @@ module Awardable
     Ability.allowed?(current_user, :award_emoji, self)
   end
 
-  def user_authored?(current_user)
-    author = self.respond_to?(:author) ? self.author : self.user
-
-    author == current_user
-  end
-
   def awarded_emoji?(emoji_name, current_user)
     award_emoji.named(emoji_name).awarded_by(current_user).exists?
   end

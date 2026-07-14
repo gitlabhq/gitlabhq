@@ -142,6 +142,11 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
     end
 
     context 'when processing a tar archive' do
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:package_file, freeze: false) { build(:package_file, :terraform_module) }
       let(:archive_file) { Gem::Package::TarReader.new(Zlib::GzipReader.open(package_file.file.path)) }
 
@@ -204,6 +209,11 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
     context 'for getting module_type from path' do
       using RSpec::Parameterized::TableSyntax
 
+      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+      # subject, or an in-memory mutation that survives reload/refind). Do not
+      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+      # (see gitlab-org/gitlab#602925).
       let_it_be(:archive_file, freeze: false) { Zip::File.new('', create: true) }
 
       where(:path, :module_type) do

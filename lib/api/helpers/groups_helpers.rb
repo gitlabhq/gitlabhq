@@ -42,6 +42,13 @@ module API
           optional :developer_can_initial_push, type: Boolean, desc: 'Allow developers to initial push'
         end
         optional :enabled_git_access_protocol, type: String, values: %w[ssh http all], desc: 'Allow only the selected protocols to be used for Git access.'
+        optional :crm_enabled, type: Boolean, desc: 'Enable Customer Relations Management for this group'
+        optional :resource_access_token_notify_inherited,
+          type: Boolean,
+          desc: 'Send access token expiry notifications to all inherited members of the group'
+        optional :lock_resource_access_token_notify_inherited,
+          type: Boolean,
+          desc: 'Prevent subgroups from overriding the access token expiry notification setting'
       end
 
       params :optional_params_ee do

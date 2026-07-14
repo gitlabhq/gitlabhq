@@ -1,13 +1,12 @@
 <script>
 import { GlDisclosureDropdownItem, GlToggle } from '@gitlab/ui';
-import produce from 'immer';
-import { __, s__ } from '~/locale';
-import { createAlert } from '~/alert';
+import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
-import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_preferences.mutation.graphql';
-import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
-import { ROUTES } from '~/work_items/constants';
+import {
+  persistSidePanelPreference,
+  alertPreferenceError,
+} from '~/work_items/list/display_settings_preferences';
 
 export default {
   name: 'WorkItemDisplaySettingsUserPreferences',
@@ -36,6 +35,11 @@ export default {
       type: String,
       required: true,
     },
+    isSavedView: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -43,9 +47,6 @@ export default {
     };
   },
   computed: {
-    isSavedView() {
-      return this.$route?.name === ROUTES.savedView;
-    },
     shouldOpenItemsInSidePanel() {
       return this.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
     },
@@ -54,55 +55,22 @@ export default {
     async toggleSidePanelPreference() {
       const isEnabled = this.shouldOpenItemsInSidePanel;
 
-      const input = {
-        workItemsDisplaySettings: {
-          shouldOpenItemsInSidePanel: !isEnabled,
-        },
-      };
-
       this.isLoading = true;
 
       try {
-        await this.$apollo.mutate({
-          mutation: updateWorkItemsDisplaySettings,
-          variables: { input },
-          update: (
-            cache,
-            {
-              data: {
-                userPreferencesUpdate: { userPreferences },
-              },
-            },
-          ) => {
-            cache.updateQuery(
-              {
-                query: getUserWorkItemsPreferences,
-                variables: {
-                  namespace: this.fullPath,
-                  workItemTypeId: this.workItemTypeId,
-                  userPreferencesOnly: this.isSavedView,
-                },
-              },
-              (existingData) =>
-                produce(existingData, (draftData) => {
-                  if (draftData?.currentUser?.userPreferences) {
-                    draftData.currentUser.userPreferences.workItemsDisplaySettings =
-                      userPreferences.workItemsDisplaySettings;
-                  }
-                }),
-            );
-          },
+        await persistSidePanelPreference({
+          apolloClient: this.$apollo,
+          namespace: this.fullPath,
+          workItemTypeId: this.workItemTypeId,
+          userPreferencesOnly: this.isSavedView,
+          shouldOpenItemsInSidePanel: !isEnabled,
         });
 
         if (isEnabled) {
           this.trackEvent('work_item_drawer_disabled');
         }
       } catch (error) {
-        createAlert({
-          message: __('Something went wrong while saving the preference.'),
-          captureError: true,
-          error,
-        });
+        alertPreferenceError(error);
       } finally {
         this.isLoading = false;
       }

@@ -64,12 +64,31 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   def set_index_vars
     @applications = current_user.oauth_applications.keyset_paginate(cursor: params[:cursor])
     @applications_total_count = current_user.oauth_applications.count
-    @authorized_tokens = current_user.oauth_authorized_tokens
-                                     .latest_per_application
-                                     .preload_application
+    @authorized_records = authorized_records
 
     # Don't overwrite a value possibly set by `create`
     @application ||= Authn::OauthApplication.new
+  end
+
+  def authorized_records
+    tokens = current_user.oauth_authorized_tokens.latest_per_application.preload_application
+    return tokens.to_a unless Feature.enabled?(:iam_svc_oauth, current_user)
+
+    # with_application excludes cross-cell consents (apps not resolvable on
+    # this cell). Cross-cell resolution will move to an iam_service gRPC
+    # call once https://gitlab.com/gitlab-org/gitlab/-/issues/598701 lands.
+    consents = current_user.oauth_consents.authorized
+                                          .with_application
+                                          .latest_per_application
+                                          .preload_application
+                                          .to_a
+
+    # During gradual rollout a user may have both pre-FF Doorkeeper tokens
+    # and post-FF consents for the same application. Show both lists,
+    # deduped by client_id with consent winning, ordered by recency.
+    consent_client_ids = consents.map(&:client_id).to_set
+    deduped_tokens = tokens.reject { |token| consent_client_ids.include?(token.application&.uid) }
+    (consents + deduped_tokens).sort_by { |record| -record.created_at.to_i }
   end
 
   # Override Doorkeeper to scope to the current user

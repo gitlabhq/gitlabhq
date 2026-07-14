@@ -6,7 +6,7 @@ RSpec.describe Mutations::AlertManagement::CreateAlertIssue, feature_category: :
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: current_user) }
   let_it_be(:alert) { create(:alert_management_alert, project: project, status: 'triggered') }
 
   let(:args) { { project_path: project.full_path, iid: alert.iid } }
@@ -19,7 +19,6 @@ RSpec.describe Mutations::AlertManagement::CreateAlertIssue, feature_category: :
     context 'user has access to project' do
       before do
         stub_feature_flags(hide_incident_management_features: false)
-        project.add_developer(current_user)
       end
 
       context 'when CreateAlertIssueService responds with success' do

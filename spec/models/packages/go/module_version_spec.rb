@@ -31,19 +31,19 @@ RSpec.describe Packages::Go::ModuleVersion, type: :model, feature_category: :pac
 
   describe '#name' do
     context 'with ref and name specified' do
-      let_it_be(:version, freeze: false) { create :go_module_version, mod: mod, name: 'foobar', commit: project.repository.head_commit, ref: project.repository.find_tag('v1.0.0') }
+      let_it_be_with_reload(:version) { create :go_module_version, mod: mod, name: 'foobar', commit: project.repository.head_commit, ref: project.repository.find_tag('v1.0.0') }
 
       it('returns that name') { expect(version.name).to eq('foobar') }
     end
 
     context 'with ref specified and name unspecified' do
-      let_it_be(:version, freeze: false) { create :go_module_version, mod: mod, commit: project.repository.head_commit, ref: project.repository.find_tag('v1.0.0') }
+      let_it_be_with_reload(:version) { create :go_module_version, mod: mod, commit: project.repository.head_commit, ref: project.repository.find_tag('v1.0.0') }
 
       it('returns the name of the ref') { expect(version.name).to eq('v1.0.0') }
     end
 
     context 'with ref and name unspecified' do
-      let_it_be(:version, freeze: false) { create :go_module_version, mod: mod, commit: project.repository.head_commit }
+      let_it_be_with_reload(:version) { create :go_module_version, mod: mod, commit: project.repository.head_commit }
 
       it('returns nil') { expect(version.name).to eq(nil) }
     end
@@ -51,7 +51,7 @@ RSpec.describe Packages::Go::ModuleVersion, type: :model, feature_category: :pac
 
   describe '#gomod' do
     context 'with go.mod missing' do
-      let_it_be(:version, freeze: false) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.0' }
+      let_it_be_with_reload(:version) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.0' }
 
       it('returns nil') { expect(version.gomod).to eq(nil) }
     end
@@ -87,7 +87,7 @@ RSpec.describe Packages::Go::ModuleVersion, type: :model, feature_category: :pac
   describe '#files' do
     context 'with a root module' do
       context 'with an empty module path' do
-        let_it_be(:version, freeze: false) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.2' }
+        let_it_be_with_reload(:version) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.2' }
 
         it_behaves_like '#files', 'all the files', 'README.md', 'go.mod', 'a.go', 'pkg/b.go'
       end
@@ -95,14 +95,14 @@ RSpec.describe Packages::Go::ModuleVersion, type: :model, feature_category: :pac
 
     context 'with a root module and a submodule' do
       context 'with an empty module path' do
-        let_it_be(:version, freeze: false) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.3' }
+        let_it_be_with_reload(:version) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.3' }
 
         it_behaves_like '#files', 'files excluding the submodule', 'README.md', 'go.mod', 'a.go', 'pkg/b.go'
       end
 
       context 'with the submodule\'s path' do
         let_it_be(:mod) { create :go_module, project: project, path: 'mod' }
-        let_it_be(:version, freeze: false) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.3' }
+        let_it_be_with_reload(:version) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.3' }
 
         it_behaves_like '#files', 'the submodule\'s files', 'mod/go.mod', 'mod/a.go'
       end
@@ -112,7 +112,7 @@ RSpec.describe Packages::Go::ModuleVersion, type: :model, feature_category: :pac
   describe '#archive' do
     context 'with a root module' do
       context 'with an empty module path' do
-        let_it_be(:version, freeze: false) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.2' }
+        let_it_be_with_reload(:version) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.2' }
 
         it_behaves_like '#archive', 'all the files', 'README.md', 'go.mod', 'a.go', 'pkg/b.go'
       end
@@ -120,14 +120,14 @@ RSpec.describe Packages::Go::ModuleVersion, type: :model, feature_category: :pac
 
     context 'with a root module and a submodule' do
       context 'with an empty module path' do
-        let_it_be(:version, freeze: false) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.3' }
+        let_it_be_with_reload(:version) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.3' }
 
         it_behaves_like '#archive', 'files excluding the submodule', 'README.md', 'go.mod', 'a.go', 'pkg/b.go'
       end
 
       context 'with the submodule\'s path' do
         let_it_be(:mod) { create :go_module, project: project, path: 'mod' }
-        let_it_be(:version, freeze: false) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.3' }
+        let_it_be_with_reload(:version) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.3' }
 
         it_behaves_like '#archive', 'the submodule\'s files', 'go.mod', 'a.go'
       end

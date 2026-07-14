@@ -5,8 +5,21 @@ require 'spec_helper'
 RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   include RedisHelpers
 
+  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+  # subject, or an in-memory mutation that survives reload/refind). Do not
+  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+  # (see gitlab-org/gitlab#602925).
   let_it_be(:redis_store_class, freeze: false) { define_helper_redis_store_class }
+  # `freeze: false` is kept here because this `let_it_be` subject is not an
+  # ActiveRecord record, so freezing gives no cross-example isolation benefit
+  # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+  # gitlab-org/gitlab#602925).
   let_it_be(:primary_db, freeze: false) { 1 }
+  # `freeze: false` is kept here because this `let_it_be` subject is not an
+  # ActiveRecord record, so freezing gives no cross-example isolation benefit
+  # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+  # gitlab-org/gitlab#602925).
   let_it_be(:secondary_db, freeze: false) { 2 }
   let_it_be(:primary_store, freeze: false) do
     create_redis_store(redis_store_class.params, db: primary_db, serializer: nil)
@@ -18,6 +31,10 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
   let_it_be(:primary_pool, freeze: false) { ConnectionPool.new { primary_store } }
   let_it_be(:secondary_pool, freeze: false) { ConnectionPool.new { secondary_store } }
+  # `freeze: false` is kept here because this `let_it_be` subject is not an
+  # ActiveRecord record, so freezing gives no cross-example isolation benefit
+  # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+  # gitlab-org/gitlab#602925).
   let_it_be(:instance_name, freeze: false) { 'TestStore' }
   let_it_be(:multi_store, freeze: false) do
     described_class.create_using_pool(primary_pool, secondary_pool, instance_name)
@@ -490,9 +507,26 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   end
 
   RSpec.shared_examples_for 'pipelined command' do |name|
+    # `freeze: false` is kept here because this `let_it_be` subject is not an
+    # ActiveRecord record, so freezing gives no cross-example isolation benefit
+    # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+    # gitlab-org/gitlab#602925).
     let_it_be(:key1, freeze: false) { "redis:{1}:key_a" }
+    # `freeze: false` is kept here because this `let_it_be` subject is not an
+    # ActiveRecord record, so freezing gives no cross-example isolation benefit
+    # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+    # gitlab-org/gitlab#602925).
     let_it_be(:value1, freeze: false) { "redis_value1" }
+    # `freeze: false` is kept here because this `let_it_be` subject is not an
+    # ActiveRecord record, so freezing gives no cross-example isolation benefit
+    # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+    # gitlab-org/gitlab#602925).
     let_it_be(:value2, freeze: false) { "redis_value2" }
+    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
+    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
+    # subject, or an in-memory mutation that survives reload/refind). Do not
+    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
+    # (see gitlab-org/gitlab#602925).
     let_it_be(:expected_value, freeze: false) { value1 }
     let_it_be(:verification_name, freeze: false) { :get }
     let_it_be(:verification_args, freeze: false) { key1 }
@@ -845,6 +879,10 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   end
 
   describe '#blpop' do
+    # `freeze: false` is kept here because this `let_it_be` subject is not an
+    # ActiveRecord record, so freezing gives no cross-example isolation benefit
+    # and `let_it_be_with_reload`/`refind` are no-ops on it. Keep as-is (see
+    # gitlab-org/gitlab#602925).
     let_it_be(:key, freeze: false) { "mylist" }
 
     subject { multi_store.with_borrowed_connection { multi_store.blpop(key, timeout: 0.1) } }

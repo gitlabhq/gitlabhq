@@ -124,15 +124,13 @@ export default {
       </div>
     </div>
     <div class="gl-ml-2 gl-pb-4 gl-pl-8 gl-pr-4">
-      <!-- eslint-disable vue/v-on-event-hyphenation -->
       <note-body
         :note="draft"
         can-edit
         :is-editing="draft.isEditing"
         :save-note="saveNote"
-        @cancelEditing="onCancelEditing"
+        @cancel-editing="onCancelEditing"
       />
-      <!-- eslint-enable vue/v-on-event-hyphenation -->
       <div
         v-if="!draft.isEditing && draft.references && draft.references.commands"
         v-gfm="draft.references.commands"

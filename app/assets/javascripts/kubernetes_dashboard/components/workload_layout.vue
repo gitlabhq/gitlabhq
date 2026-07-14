@@ -5,6 +5,7 @@ import WorkloadTable from './workload_table.vue';
 import WorkloadDetailsDrawer from './workload_details_drawer.vue';
 
 export default {
+  name: 'WorkloadLayout',
   components: {
     GlLoadingIcon,
     GlAlert,

@@ -27,6 +27,7 @@ import BoardColumn from './board_column.vue';
 import BoardDrawerWrapper from './board_drawer_wrapper.vue';
 
 export default {
+  name: 'BoardContent',
   draggableItemTypes: DraggableItemTypes,
   VIEW_CONTEXT,
   components: {
@@ -38,16 +39,7 @@ export default {
     GlAlert,
     WorkItemDetailPanel,
   },
-  inject: [
-    'boardType',
-    'canAdminList',
-    'isIssueBoard',
-    'isEpicBoard',
-    'disabled',
-    'issuableType',
-    'isGroupBoard',
-    'fullPath',
-  ],
+  inject: ['boardType', 'canAdminList', 'disabled', 'issuableType', 'isGroupBoard', 'fullPath'],
   props: {
     boardId: {
       type: String,
@@ -80,6 +72,13 @@ export default {
       required: true,
     },
   },
+  emits: [
+    'drawer-closed',
+    'drawer-opened',
+    'setActiveList',
+    'setAddColumnFormVisibility',
+    'setFilters',
+  ],
   data() {
     return {
       highlightedLists: [],
@@ -322,7 +321,7 @@ export default {
           :can-admin-list="canAdminList"
           :dragged-item-id="draggedItemId"
           :focused="list.id === effectiveFocusedListId"
-          @dragStart="handleDragStart"
+          @drag-start="handleDragStart"
           @dragStop="handleDragStop"
           @highlight-list="highlightList"
           @setActiveList="$emit('setActiveList', $event)"

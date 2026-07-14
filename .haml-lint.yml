@@ -110,6 +110,7 @@ linters:
       - Layout/ArrayAlignment
       - Layout/ClosingParenthesisIndentation # See https://github.com/sds/haml-lint/issues/491
       - Layout/EndAlignment
+      - Layout/FirstArgumentIndentation # Reports false positives on Ruby extracted from multiline tag attributes and cannot be autocorrected in HAML
       - Layout/SpaceInsideParens # See https://github.com/sds/haml-lint/issues/491
 
       - Cop/LineBreakAfterGuardClauses

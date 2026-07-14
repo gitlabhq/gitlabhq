@@ -12,6 +12,7 @@ import searchCrmContactsQuery from '../queries/search_crm_contacts.query.graphql
 import BaseToken from './base_token.vue';
 
 export default {
+  name: 'CrmContactToken',
   components: {
     BaseToken,
     GlFilteredSearchSuggestion,

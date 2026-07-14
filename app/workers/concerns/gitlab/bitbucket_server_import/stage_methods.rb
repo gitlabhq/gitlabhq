@@ -30,29 +30,26 @@ module Gitlab
 
       # project_id - The ID of the GitLab project to import the data into.
       def perform(project_id)
-        info(project_id, message: 'starting stage')
+        project = find_project(project_id)
+        info(project_id, message: 'starting stage', Labkit::Fields::GL_ORGANIZATION_ID => project&.organization_id)
 
-        return unless (project = find_project(project_id))
+        return unless project&.import_state&.status == 'started'
 
         Import::RefreshImportJidWorker.perform_in_the_future(project_id, jid)
 
         import(project)
 
-        info(project_id, message: 'stage finished')
+        info(project_id, message: 'stage finished', Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id)
       rescue BitbucketServer::Connection::ConnectionError => e
         raise if e.retryable?
 
-        log_non_retryable_error(project_id, e)
+        log_non_retryable_error(project_id, e, project)
       rescue StandardError => e
         track_and_raise(project_id, e)
       end
 
       def find_project(id)
-        # If the project has been marked as failed we want to bail out
-        # automatically.
-        # rubocop: disable CodeReuse/ActiveRecord
-        Project.joins_import_state.where(import_state: { status: :started }).find_by_id(id)
-        # rubocop: enable CodeReuse/ActiveRecord
+        Project.find_by_id(id)
       end
 
       def abort_on_failure
@@ -72,13 +69,14 @@ module Gitlab
         raise(exception)
       end
 
-      def log_non_retryable_error(project_id, exception)
+      def log_non_retryable_error(project_id, exception, project)
         Logger.warn(
           log_attributes(
             project_id,
             message: 'Non-retryable Bitbucket Server error, failing import',
             http_status_code: exception.http_status_code,
-            error: exception.message
+            error: exception.message,
+            Labkit::Fields::GL_ORGANIZATION_ID => project&.organization_id
           )
         )
 
@@ -98,7 +96,7 @@ module Gitlab
         extra.merge(
           project_id: project_id,
           import_stage: self.class.name
-        )
+        ).compact
       end
     end
   end

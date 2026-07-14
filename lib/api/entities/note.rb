@@ -6,7 +6,7 @@ module API
       # Only Issue and MergeRequest have iid
       NOTEABLE_TYPES_WITH_IID = %w[Issue MergeRequest].freeze
 
-      expose :id, documentation: { type: 'Integer', example: 1 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :type, documentation: { type: 'String', example: 'DiscussionNote' }
 
       expose :body, documentation: { type: 'String', example: 'Note body.' } do |note|
@@ -17,9 +17,9 @@ module API
       expose :created_at, documentation: { type: 'DateTime', example: '2022-01-31T15:10:44.988Z' }
       expose :updated_at, documentation: { type: 'DateTime', example: '2022-01-31T15:10:44.988Z' }
       expose :system?, as: :system, documentation: { type: 'Boolean', example: false }
-      expose :noteable_id, documentation: { type: 'Integer', example: 1 }
+      expose :noteable_id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :noteable_type, documentation: { type: 'String', example: 'Issue' }
-      expose :project_id, documentation: { type: 'Integer', example: 1 }
+      expose :project_id, documentation: { type: 'Integer', format: 'int64', example: 1 }
       expose :commit_id, documentation: { type: 'String', example: '7b09ce7e6f80347baf0316c8c94cdba9a0a7e91d' },
         if: ->(note, _options) { note.noteable_type == "MergeRequest" && note.is_a?(DiffNote) }
 

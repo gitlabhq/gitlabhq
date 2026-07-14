@@ -30,7 +30,6 @@ export default {
     GlLoadingIcon,
   },
   mixins: [Tracking.mixin()],
-  inject: ['manualActionsLimit'],
   props: {
     fullPath: {
       type: String,
@@ -41,6 +40,7 @@ export default {
       required: true,
     },
   },
+  emits: ['refresh-pipeline-table'],
   apollo: {
     actions: {
       query: getPipelineActionsQuery,
@@ -48,7 +48,7 @@ export default {
         return {
           fullPath: this.fullPath,
           iid: this.iid,
-          limit: this.manualActionsLimit || DEFAULT_MANUAL_ACTIONS_LIMIT,
+          limit: DEFAULT_MANUAL_ACTIONS_LIMIT,
         };
       },
       skip() {
@@ -75,7 +75,7 @@ export default {
       return this.$apollo.queries.actions.loading;
     },
     isDropdownLimitReached() {
-      return this.actions.length === this.manualActionsLimit;
+      return this.actions.length === DEFAULT_MANUAL_ACTIONS_LIMIT;
     },
   },
   methods: {

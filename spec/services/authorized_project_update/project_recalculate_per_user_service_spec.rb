@@ -10,7 +10,7 @@ RSpec.describe AuthorizedProjectUpdate::ProjectRecalculatePerUserService, '#exec
   subject(:execute) { described_class.new(project, user).execute }
 
   it 'returns success' do
-    expect(execute.success?).to eq(true)
+    expect(execute.success?).to be(true)
   end
 
   context 'when there are no changes to be made' do

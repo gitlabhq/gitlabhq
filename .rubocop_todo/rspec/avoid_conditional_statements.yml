@@ -20,7 +20,6 @@ RSpec/AvoidConditionalStatements:
     - 'spec/features/calendar_spec.rb'
     - 'spec/features/groups/dependency_proxy_for_containers_spec.rb'
     - 'spec/features/groups/empty_states_spec.rb'
-    - 'spec/features/groups/group_settings_spec.rb'
     - 'spec/features/groups/members/sort_members_spec.rb'
     - 'spec/features/groups/navbar_spec.rb'
     - 'spec/features/issuables/issuable_list_spec.rb'

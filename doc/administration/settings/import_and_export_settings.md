@@ -86,7 +86,7 @@ The same setting
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151278) in GitLab 17.0 [with a flag](../feature_flags/_index.md) named `export_audit_events`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151278) in GitLab 17.0 [with a feature flag](../feature_flags/_index.md) named `export_audit_events`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153351) in GitLab 17.1. Feature flag `export_audit_events` removed.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152143) for file export downloads in GitLab 17.1.
 
@@ -107,7 +107,7 @@ To enable silent admin project and group file exports:
 
 {{< history >}}
 
-- Introduced in GitLab 17.5 [with a flag](../feature_flags/_index.md) named `importer_user_mapping`. Disabled by default.
+- Introduced in GitLab 17.5 [with a feature flag](../feature_flags/_index.md) named `importer_user_mapping`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175371) in GitLab 17.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508944) in GitLab 18.3. Feature flag `importer_user_mapping` removed.
 
@@ -124,7 +124,7 @@ To allow mapping of imported user contributions to administrators:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/534330) in GitLab 18.1 [with a flag](../feature_flags/_index.md) named `importer_user_mapping_allow_bypass_of_confirmation`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/534330) in GitLab 18.1 [with a feature flag](../feature_flags/_index.md) named `importer_user_mapping_allow_bypass_of_confirmation`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/541373) in GitLab 18.6. Feature flag `importer_user_mapping_allow_bypass_of_confirmation` removed.
 
 {{< /history >}}

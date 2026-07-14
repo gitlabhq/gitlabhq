@@ -41,6 +41,38 @@ RSpec.describe WorkItems::DataSync::Widgets::Designs, feature_category: :team_pl
       it_behaves_like 'does not copy designs'
     end
 
+    context 'when the target work item is in a different organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_group) { create(:group, organization: other_organization) }
+      let_it_be(:other_project) { create(:project, group: other_group) }
+      let_it_be_with_refind(:target_work_item) { create(:work_item, project: other_project) }
+
+      it 'logs the error message' do
+        expect(::Gitlab::AppLogger).to receive(:error).with("Cannot copy designs across organizations")
+
+        after_save_commit
+      end
+
+      it_behaves_like 'does not copy designs'
+
+      context 'when the prevent_cross_organization_work_item_actions flag is disabled',
+        :clean_gitlab_redis_shared_state do
+        before do
+          stub_feature_flags(prevent_cross_organization_work_item_actions: false)
+          allow(current_user).to receive(:can?).with(:read_design, work_item).and_return(true)
+          allow(current_user).to receive(:can?).with(:admin_issue, target_work_item).and_return(true)
+        end
+
+        it 'copies designs across the otherwise-blocked organizations' do
+          expect(DesignManagement::CopyDesignCollectionWorker).to receive(:perform_async).with(
+            current_user.id, work_item.id, target_work_item.id
+          )
+
+          after_save_commit
+        end
+      end
+    end
+
     context "when user does not have permissions to read designs" do
       it "logs the error message" do
         expect(::Gitlab::AppLogger).to receive(:error).with("User cannot copy designs to work item")

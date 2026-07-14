@@ -434,17 +434,6 @@ RSpec.shared_examples 'create environment for job' do
     end
 
     context 'when a pipeline contains a teardown job' do
-      before_all do
-        Ci::ApplicationRecord.connection.execute(<<~SQL)
-          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_100"
-            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (100);
-          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_101"
-            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (101);
-          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_102"
-            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (102);
-        SQL
-      end
-
       let!(:job) { build(factory_type, :stop_review_app, project: project, pipeline: pipeline) }
 
       it 'ensures environment existence for the job' do
@@ -453,16 +442,6 @@ RSpec.shared_examples 'create environment for job' do
         expect(environment).to be_present
         expect(job.persisted_environment.name).to eq("review/#{pipeline.ref}")
         expect(job.expanded_environment_name).to eq("review/#{pipeline.ref}")
-      end
-
-      context 'when job metadata exists' do
-        before do
-          job.metadata = build(:ci_build_metadata, project: project)
-        end
-
-        it 'does not change metadata.expanded_environment_name' do
-          expect { subject }.to not_change { job.metadata.expanded_environment_name }
-        end
       end
     end
 

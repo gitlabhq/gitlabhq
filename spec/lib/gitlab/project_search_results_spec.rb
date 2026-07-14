@@ -707,7 +707,7 @@ RSpec.describe Gitlab::ProjectSearchResults, :with_current_organization, feature
   describe 'user search' do
     let(:query) { 'gob' }
 
-    let_it_be(:user_1, freeze: false) { create(:user, username: 'gob_bluth') }
+    let_it_be(:user_1) { create(:user, username: 'gob_bluth') }
     let_it_be(:user_2) { create(:user, username: 'michael_bluth') }
     let_it_be(:user_3) { create(:user, username: 'gob_2018') }
     let_it_be(:group) { create(:group) }

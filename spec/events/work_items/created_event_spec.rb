@@ -30,7 +30,7 @@ RSpec.describe WorkItems::CreatedEvent, feature_category: :code_suggestions do
       work_item_type: 'issue',
       confidential: false
     },
-    missing_required: %i[work_item_id work_item_iid namespace_id project_id work_item_type confidential],
+    missing_required: %i[work_item_id work_item_iid namespace_id work_item_type confidential],
     invalid_types: {
       work_item_id: 'not_an_integer',
       work_item_iid: 'not_an_integer',

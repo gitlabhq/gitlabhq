@@ -3,6 +3,7 @@ import { GlTooltipDirective, GlButton } from '@gitlab/ui';
 import { TOOLBAR_CONTROL_TRACKING_ACTION, MARKDOWN_EDITOR_TRACKING_LABEL } from './tracking';
 
 export default {
+  name: 'ToolbarButton',
   components: {
     GlButton,
   },
@@ -73,6 +74,7 @@ export default {
       default: null,
     },
   },
+  emits: ['click'],
   computed: {
     shortcutsString() {
       const shortcutArray = Array.isArray(this.shortcuts) ? this.shortcuts : [this.shortcuts];

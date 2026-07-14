@@ -1,4 +1,5 @@
 import { GlEmptyState, GlSprintf } from '@gitlab/ui';
+import EMPTY_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-devops-md.svg?url';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ServicePingDisabled from '~/analytics/devops_reports/components/service_ping_disabled.vue';
@@ -10,7 +11,6 @@ describe('~/analytics/devops_reports/components/service_ping_disabled.vue', () =
     wrapper = mountExtended(ServicePingDisabled, {
       provide: {
         isAdmin,
-        svgPath: TEST_HOST,
         primaryButtonPath: TEST_HOST,
       },
     });
@@ -21,10 +21,10 @@ describe('~/analytics/devops_reports/components/service_ping_disabled.vue', () =
   const findDocsLink = () => wrapper.findByRole('link', { name: 'service ping' });
   const findPowerOnButton = () => wrapper.findByRole('link', { name: 'Turn on service ping' });
 
-  it('renders empty state with provided SVG path', () => {
+  it('renders empty state with the illustration', () => {
     createWrapper();
 
-    expect(findEmptyState().props('svgPath')).toBe(TEST_HOST);
+    expect(findEmptyState().props('svgPath')).toBe(EMPTY_STATE_SVG);
   });
 
   describe('for regular users', () => {

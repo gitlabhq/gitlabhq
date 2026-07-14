@@ -21,12 +21,16 @@ module Tasks
           private
 
           def each_type_directive
+            each_type_with_directives do |item, directives|
+              directives.each { |directive| yield(item, directive) }
+            end
+          end
+
+          def each_type_with_directives
             GitlabSchema.types.each do |name, type|
               next unless graphql_object_type?(name, type)
 
-              granular_directives(type).each do |directive|
-                yield({ kind: 'type', name: name, source: class_source_path(type) }, directive)
-              end
+              yield({ kind: 'type', name: name, source: class_source_path(type) }, granular_directives(type))
             end
           end
 

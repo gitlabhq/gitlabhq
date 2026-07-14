@@ -5,6 +5,31 @@ require 'spec_helper'
 RSpec.describe Snippet, feature_category: :source_code_management do
   include FakeBlobHelpers
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
+    subject_key: Proc,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_SNIPPETS,
+    claiming_attributes: [:id]
+
+  describe '#cells_claims_subject_key' do
+    context 'with a personal snippet' do
+      let(:snippet) { build(:personal_snippet) }
+
+      it 'returns the snippet organization_id' do
+        expect(snippet.__send__(:cells_claims_subject_key)).to eq(snippet.organization_id)
+      end
+    end
+
+    context 'with a project snippet' do
+      let(:snippet) { build(:project_snippet) }
+
+      it 'resolves the organization_id through the project' do
+        expect(snippet.organization_id).to be_nil
+        expect(snippet.__send__(:cells_claims_subject_key)).to eq(snippet.project.organization_id)
+      end
+    end
+  end
+
   describe 'modules' do
     subject { described_class }
 
@@ -31,7 +56,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     describe '.with_repository_storage_moves' do
       subject { described_class.with_repository_storage_moves }
 
-      let_it_be(:snippet, freeze: false) { create(:project_snippet) }
+      let_it_be_with_reload(:snippet) { create(:project_snippet) }
 
       it { is_expected.to be_empty }
 
@@ -45,7 +70,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     describe '.in_organization' do
       let_it_be(:organization) { create(:organization) }
       let_it_be(:other_organization) { create(:organization) }
-      let_it_be(:project, freeze: false) { create(:project, organization: organization) }
+      let_it_be_with_reload(:project) { create(:project, organization: organization) }
       let_it_be(:other_project) { create(:project, organization: other_organization) }
 
       # Personal snippets
@@ -188,7 +213,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     describe 'project or organization validation' do
       # Test using both subclasses to ensure the parent validation works
 
-      let_it_be(:project, freeze: false) { create(:project) }
+      let_it_be_with_reload(:project) { create(:project) }
       let_it_be(:organization) { create(:organization) }
 
       context 'with ProjectSnippet' do
@@ -289,6 +314,14 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     end
   end
 
+  describe '#title_html' do
+    let(:snippet) { create(:personal_snippet, title: 'hello `friend`') }
+
+    it 'renders inline code using the issuable_title pipeline' do
+      expect(snippet.title_html).to eq('hello <code>friend</code>')
+    end
+  end
+
   describe '#file_name' do
     let(:snippet) { build(:personal_snippet, file_name: file_name) }
 
@@ -318,7 +351,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '.search' do
-    let_it_be(:snippet, freeze: false) { create(:project_snippet, title: 'test snippet', description: 'description') }
+    let_it_be_with_reload(:snippet) { create(:project_snippet, title: 'test snippet', description: 'description') }
 
     it 'returns snippets with a matching title' do
       expect(described_class.search(snippet.title)).to eq([snippet])
@@ -440,7 +473,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
 
   describe 'only_include_projects_with_snippets_enabled' do
     let_it_be_with_reload(:project) { create(:project_empty_repo) }
-    let_it_be(:snippet, freeze: false) { create(:project_snippet, project: project) }
+    let_it_be_with_reload(:snippet) { create(:project_snippet, project: project) }
 
     let(:access_level) { ProjectFeature::ENABLED }
 
@@ -560,7 +593,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '.find_by_project_title_trunc_created_at' do
-    let_it_be(:snippet, freeze: false) { create(:project_snippet) }
+    let_it_be_with_reload(:snippet) { create(:project_snippet) }
     let_it_be(:created_at_without_ms) { snippet.created_at.change(usec: 0) }
 
     it 'returns a record if arguments match' do
@@ -608,7 +641,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     let_it_be(:user) { create(:user) }
     let_it_be(:banned_user) { create(:user, :banned) }
 
-    let_it_be(:snippet, freeze: false) { create(:project_snippet, author: user) }
+    let_it_be_with_reload(:snippet) { create(:project_snippet, author: user) }
     let_it_be(:snippet_by_banned_user) { create(:project_snippet, author: banned_user) }
 
     subject(:without_created_by_banned_user) { described_class.without_created_by_banned_user }
@@ -626,10 +659,10 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#participants' do
-    let_it_be(:project, freeze: false) { create(:project, :public) }
-    let_it_be(:snippet, freeze: false) { create(:project_snippet, content: 'foo', project: project) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
+    let_it_be_with_reload(:snippet) { create(:project_snippet, content: 'foo', project: project) }
 
-    let_it_be(:note1, freeze: false) do
+    let_it_be_with_reload(:note1) do
       create(
         :note_on_project_snippet,
         noteable: snippet,
@@ -944,7 +977,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#hook_attrs' do
-    let_it_be(:snippet, freeze: false) { create(:personal_snippet) }
+    let_it_be_with_reload(:snippet) { create(:personal_snippet) }
 
     subject(:attrs) { snippet.hook_attrs }
 
@@ -966,7 +999,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     end
 
     context 'when snippet is for a project' do
-      let_it_be(:snippet, freeze: false) { create(:project_snippet) }
+      let_it_be_with_reload(:snippet) { create(:project_snippet) }
 
       it { is_expected.to include(project_id: snippet.project.id) }
     end
@@ -1019,7 +1052,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#list_files' do
-    let_it_be(:snippet, freeze: false) { create(:project_snippet, :repository) }
+    let_it_be_with_reload(:snippet) { create(:project_snippet, :repository) }
 
     let(:ref) { 'test-ref' }
 
@@ -1086,7 +1119,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
         double(:reference_counter, value: 2)
       end
 
-      expect(subject).to eq true
+      expect(subject).to be true
     end
 
     it 'returns false when there are not git transfers' do
@@ -1094,7 +1127,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
         double(:reference_counter, value: 0)
       end
 
-      expect(subject).to eq false
+      expect(subject).to be false
     end
   end
 
@@ -1110,13 +1143,13 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     context 'when the author is not banned' do
       let_it_be(:author) { build(:user) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when author is banned' do
       let_it_be(:author) { build(:user, :banned) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 end

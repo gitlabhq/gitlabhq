@@ -32,7 +32,7 @@ depending on your [installation method](../administration/reference_architecture
 
 {{< tab title="Linux package (Omnibus)" >}}
 
-Shut down Puma and Sidekiq on all servers running these processes:
+Shut down Puma and Sidekiq on any servers running these processes:
 
 ```shell
 sudo gitlab-ctl stop sidekiq
@@ -187,25 +187,28 @@ To upgrade a standalone Redis server, [upgrade with the Linux package](package/_
 
 If you use Redis HA, follow [the zero-downtime instructions](zero_downtime.md) for upgrading your Redis HA cluster.
 
-## Upgrade the GitLab application components
+## Upgrade the GitLab application (Rails) nodes
 
-The process for upgrading the GitLab application depends on your installation method.
+In [reference architectures](../administration/reference_architectures/_index.md),
+these are the _Rails nodes_. They run the Puma processes that were
+shut down in the first step. The process for upgrading these nodes depends on your
+installation method.
 
 {{< tabs >}}
 
 {{< tab title="Linux package (Omnibus)" >}}
 
-All the Puma and Sidekiq processes were previously shut down. On each GitLab application node:
+All the Puma and Sidekiq processes were previously shut down. On each GitLab application (Rails) node:
 
 1. Ensure `/etc/gitlab/skip-auto-reconfigure` does not exist.
-1. Check that Puma and Sidekiq are shut down:
+1. Verify that Puma and Sidekiq are not running:
 
    ```shell
    ps -ef | egrep 'puma: | puma | sidekiq '
    ```
 
-Select one node that runs Puma as your deploy node that is responsible for running all database migrations. On the
-deploy node:
+Select one Rails node as your _deploy node_, responsible for running all
+database migrations. On the deploy node:
 
 1. Ensure the server is configured to permit regular migrations. Check that
    `/etc/gitlab/gitlab.rb` does not contain `gitlab_rails['auto_migrate'] = false`.

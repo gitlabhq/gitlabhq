@@ -96,6 +96,7 @@ export default {
       default: false,
     },
   },
+  emits: ['drag', 'drop', 'error', 'mouseout', 'mouseover', 'removeChild', 'toggleDrawer'],
   data() {
     return {
       isExpanded: false,
@@ -319,7 +320,6 @@ export default {
         :contextual-view-enabled="contextualViewEnabled"
         @drag="$emit('drag', $event)"
         @drop="$emit('drop')"
-        @removeChild="$emit('removeChild', childItem)"
         @error="$emit('error', $event)"
         @click="$emit('toggleDrawer', $event)"
       />

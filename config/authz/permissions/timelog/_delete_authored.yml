@@ -3,4 +3,5 @@ name: _delete_authored_timelog
 description: Private permission that gates delete access to timelogs authored by
   the current user. Timelogs track time spent on issuables. The timelog policy
   combines this permission with an authorship check to enable the public
-  admin_timelog permission. Must not be checked directly at enforcement points.
+  delete_timelog permission.
+conditionally_enables: delete_timelog

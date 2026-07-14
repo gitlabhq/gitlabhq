@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'StrategyLabel',
   props: {
     name: {
       type: String,

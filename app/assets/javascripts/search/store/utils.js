@@ -1,7 +1,7 @@
 import { isEqual, orderBy } from 'lodash-es';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { formatNumber } from '~/locale';
-import { joinPaths, queryToObject, objectToQuery, getBaseURL } from '~/lib/utils/url_utility';
+import { queryToObject, objectToQuery, getBaseURL } from '~/lib/utils/url_utility';
 import { LABEL_AGREGATION_NAME, LANGUAGE_FILTER_PARAM } from '~/search/sidebar/constants';
 import {
   SEARCH_SCOPE,
@@ -134,12 +134,6 @@ export const formatSearchResultCount = (count) => {
 
   const countNumber = typeof count === 'string' ? parseInt(count.replace(/,/g, ''), 10) : count;
   return formatNumber(countNumber, NUMBER_FORMATING_OPTIONS);
-};
-
-export const getAggregationsUrl = () => {
-  const currentUrl = new URL(window.location.href);
-  currentUrl.pathname = joinPaths(gon.relative_url_root || '/', 'search', 'aggregations');
-  return currentUrl.toString();
 };
 
 const sortLanguages = (state, entries) => {

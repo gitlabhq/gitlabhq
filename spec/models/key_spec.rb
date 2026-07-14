@@ -177,7 +177,7 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
   end
 
   describe "Methods" do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     it { is_expected.to respond_to :projects }
     it { is_expected.to respond_to :publishable_key }
@@ -362,7 +362,7 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
   end
 
   context 'validation of uniqueness (based on fingerprint uniqueness)' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     it 'accepts the key once' do
       expect(build(:rsa_key_4096, user: user)).to be_valid

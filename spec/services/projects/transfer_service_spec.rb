@@ -193,6 +193,38 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
         end
       end
     end
+
+    context 'when the current user cannot transfer to their personal namespace' do
+      let(:expected_error) { s_("TransferProject|You don't have permission to transfer projects into that namespace.") }
+
+      let(:executor) { user }
+
+      before do
+        group.add_owner(user)
+      end
+
+      context 'when projects_limit is 0' do
+        let(:user) { create(:user, projects_limit: 0) }
+
+        it 'does not allow the transfer' do
+          expect(execute_transfer).to be false
+          expect(project.errors[:new_namespace]).to include(expected_error)
+        end
+      end
+
+      context 'when the user has already reached their projects limit' do
+        let(:user) { create(:user, projects_limit: 5) }
+
+        before do
+          create_list(:project, 5, namespace: user.namespace)
+        end
+
+        it 'does not allow the transfer', :aggregate_failures do
+          expect(execute_transfer).to be false
+          expect(project.errors[:new_namespace]).to include(expected_error)
+        end
+      end
+    end
   end
 
   context 'personal namespace -> group', :enable_admin_mode do
@@ -269,7 +301,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     context 'with a project integration' do
       let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
       let_it_be(:instance_integration) { create(:integrations_slack, :instance) }
-      let_it_be(:project_integration, freeze: false) { create(:integrations_slack, project: project) }
+      let_it_be_with_reload(:project_integration) { create(:integrations_slack, project: project) }
 
       context 'when it inherits from instance_integration' do
         before do
@@ -424,7 +456,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     it 'does not allow the project transfer' do
       transfer_result = execute_transfer
 
-      expect(transfer_result).to eq false
+      expect(transfer_result).to be false
       expect(project.namespace).to eq(user.namespace)
       expect(project.errors.messages[:new_namespace].first).to eq 'Please select a new namespace for your project.'
     end
@@ -454,7 +486,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
 
     shared_examples 'project transfer failed with a message' do |message|
       it 'fails with an error message' do
-        expect(execute_transfer).to eq false
+        expect(execute_transfer).to be false
         expect(project.errors[:new_namespace]).to include(message)
       end
     end
@@ -472,7 +504,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
             expect(ContainerRegistry::GitlabApiClient).to receive(:move_repository_to_namespace).with(
               project.full_path, namespace: target.full_path, project: project, dry_run: true)
 
-            expect(execute_transfer).to eq true
+            expect(execute_transfer).to be true
           end
         end
 
@@ -531,7 +563,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     it 'does not allow the project transfer' do
       transfer_result = execute_transfer
 
-      expect(transfer_result).to eq false
+      expect(transfer_result).to be false
       expect(project.namespace).to eq(user.namespace)
     end
   end
@@ -545,7 +577,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     it 'does not allow the project transfer' do
       transfer_result = execute_transfer
 
-      expect(transfer_result).to eq false
+      expect(transfer_result).to be false
       expect(project.namespace).to eq(user.namespace)
       expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists')
     end
@@ -559,7 +591,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     it 'does not allow the project transfer' do
       transfer_result = execute_transfer
 
-      expect(transfer_result).to eq false
+      expect(transfer_result).to be false
       expect(project.namespace).to eq(user.namespace)
       expect(project.errors[:new_namespace]).to include("You don't have permission to transfer this project.")
     end
@@ -574,7 +606,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     it 'does not allow the project transfer' do
       transfer_result = execute_transfer
 
-      expect(transfer_result).to eq false
+      expect(transfer_result).to be false
       expect(project.namespace).to eq(user.namespace)
       expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists')
     end
@@ -591,7 +623,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     it 'does not allow the project transfer' do
       transfer_result = execute_transfer
 
-      expect(transfer_result).to eq false
+      expect(transfer_result).to be false
       expect(project.namespace).to eq(user.namespace)
       expect(project.errors[:new_namespace].first).to include('recently deleted')
     end
@@ -603,7 +635,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     it 'does not allow project transfer' do
       transfer_result = execute_transfer
 
-      expect(transfer_result).to eq false
+      expect(transfer_result).to be false
       expect(project.namespace).to eq(user.namespace)
       expect(project.errors[:new_namespace]).to include('Project is already in this namespace.')
     end
@@ -619,7 +651,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
 
       transfer_result = execute_transfer
 
-      expect(transfer_result).to eq false
+      expect(transfer_result).to be false
       expect(project.namespace).to eq(namespace)
       expect(project.errors[:new_namespace]).to include("You don't have permission to transfer projects into that namespace.")
     end
@@ -635,7 +667,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     it 'does not allow project transfer to the target namespace' do
       transfer_result = execute_transfer
 
-      expect(transfer_result).to eq false
+      expect(transfer_result).to be false
       expect(project.errors[:new_namespace]).to include("You don't have permission to transfer this project.")
     end
   end
@@ -651,7 +683,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       it 'does not allow project transfer to the target namespace' do
         transfer_result = execute_transfer
 
-        expect(transfer_result).to eq false
+        expect(transfer_result).to be false
         expect(project.namespace).to eq(user.namespace)
         expect(project.errors[:new_namespace]).to include("You don't have permission to transfer projects into that namespace.")
       end
@@ -705,7 +737,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       it 'updates shared runners based on the parent group' do
         group.add_owner(user)
 
-        expect(execute_transfer).to eq(true)
+        expect(execute_transfer).to be(true)
 
         expect(project.shared_runners_enabled).to eq(expected_shared_runners_enabled)
       end

@@ -1,0 +1,13 @@
+---
+table_name: p_ci_runtime_environments
+classes:
+- Ci::RuntimeEnvironment
+feature_categories:
+- runner_core
+description: Stores the opaque environment key a runner reports when a CI job suspends its execution environment. Partitions are dropped after a TTL.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243035
+milestone: '19.2'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: small

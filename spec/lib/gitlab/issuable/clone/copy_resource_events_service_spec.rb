@@ -138,9 +138,9 @@ RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService, feature_categ
   end
 
   context 'with existing state events' do
-    let!(:event1) { create(:resource_state_event, issue: original_issue, state: 'opened') }
-    let!(:event2) { create(:resource_state_event, issue: original_issue, state: 'closed') }
-    let!(:event3) { create(:resource_state_event, issue: original_issue, state: 'reopened') }
+    let_it_be(:event1) { create(:resource_state_event, issue: original_issue, state: 'opened') }
+    let_it_be(:event2) { create(:resource_state_event, issue: original_issue, state: 'closed') }
+    let_it_be(:event3) { create(:resource_state_event, issue: original_issue, state: 'reopened') }
 
     it 'copies existing state events as expected' do
       subject.execute

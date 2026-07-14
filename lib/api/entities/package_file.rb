@@ -3,8 +3,8 @@
 module API
   module Entities
     class PackageFile < Grape::Entity
-      expose :id, documentation: { type: 'Integer', example: 225 }
-      expose :package_id, documentation: { type: 'Integer', example: 4 }
+      expose :id, documentation: { type: 'Integer', format: 'int64', example: 225 }
+      expose :package_id, documentation: { type: 'Integer', format: 'int64', example: 4 }
       expose :created_at, documentation: { type: 'DateTime', example: '2018-11-07T15:25:52.199Z' }
       expose :file_name, documentation: { type: 'String', example: 'my-app-1.5-20181107.152550-1.jar' }
       expose :size, documentation: { type: 'Integer', example: 2421 }

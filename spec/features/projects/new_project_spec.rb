@@ -295,7 +295,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
         end
 
         it 'does not select the user namespace' do
-          click_on 'Pick a group or namespace'
+          click_on 'Select a group or namespace'
           expect_listbox_item(user.username)
         end
       end

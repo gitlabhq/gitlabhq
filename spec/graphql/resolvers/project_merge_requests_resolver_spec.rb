@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe Resolvers::ProjectMergeRequestsResolver do
   include GraphqlHelpers
 
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user, developer_of: project) }
-  let_it_be(:other_user, freeze: false) { create(:user) }
-  let_it_be(:reviewer, freeze: false) { create(:user) }
-  let_it_be(:label, freeze: false) { create(:label, project: project) }
+  let_it_be_with_reload(:other_user) { create(:user) }
+  let_it_be_with_reload(:reviewer) { create(:user) }
+  let_it_be_with_reload(:label) { create(:label, project: project) }
 
-  let_it_be(:merge_request, freeze: false) do
+  let_it_be_with_reload(:merge_request) do
     create(
       :merge_request,
       :unique_branches,

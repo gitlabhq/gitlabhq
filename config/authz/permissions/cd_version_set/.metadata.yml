@@ -1,0 +1,5 @@
+---
+name: Continuous Deployment Version Set
+description: A set of artifact versions deployed together in a continuous deployment
+  application
+feature_category: continuous_delivery

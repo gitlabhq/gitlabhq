@@ -10,26 +10,6 @@ RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :markdown do
   let(:link) { 'http://about.gitlab.com/' }
   let(:quotes) { ['"', "'"] }
 
-  context 'when using default markdown engine' do
-    it 'does nothing' do
-      exp = act = link
-
-      expect(filter(act, {}).to_html).to eq exp
-    end
-
-    it 'autolinks when using single_line pipeline' do
-      doc = filter("See #{link}", { pipeline: :single_line })
-
-      expect(doc.at_css('a').text).to eq link
-    end
-
-    it 'autolinks when using commit_description pipeline' do
-      doc = filter("See #{link}", { pipeline: :commit_description })
-
-      expect(doc.at_css('a').text).to eq link
-    end
-  end
-
   it 'does nothing when :autolink is false' do
     exp = act = link
 

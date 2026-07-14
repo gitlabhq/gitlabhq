@@ -12,7 +12,7 @@ module Gitlab
       class << self
         def api_url
           Gitlab.config.consul.api_url.to_s.presence if Gitlab.config.consul
-        rescue GitlabSettings::MissingSetting
+        rescue Gitlab::Configs::MissingConfig
           Gitlab::AppLogger.error('Consul api_url is not present in config/gitlab.yml')
 
           nil

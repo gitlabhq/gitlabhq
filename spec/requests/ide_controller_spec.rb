@@ -8,7 +8,7 @@ RSpec.describe IdeController, feature_category: :web_ide do
 
   let_it_be(:reporter) { create(:user) }
 
-  let_it_be(:project, freeze: false) do
+  let_it_be_with_reload(:project) do
     create(:project, :private).tap do |p|
       p.add_reporter(reporter)
     end

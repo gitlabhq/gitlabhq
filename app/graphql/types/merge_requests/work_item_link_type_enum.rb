@@ -12,6 +12,9 @@ module Types
       value 'MENTIONED',
         description: 'Work item is mentioned in the merge request but will not be closed.',
         value: 'mentioned'
+      value 'RELATED',
+        description: 'Work item is related to the merge request but will not be closed.',
+        value: 'related'
     end
   end
 end

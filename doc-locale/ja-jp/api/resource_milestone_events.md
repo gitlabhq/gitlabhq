@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: リソースマイルストーンイベントAPI
 ---
 
@@ -12,15 +12,13 @@ title: リソースマイルストーンイベントAPI
 
 {{< /details >}}
 
-リソース[マイルストーン](../user/project/milestones/_index.md)イベントは、 [issue](../user/project/issues/_index.md)と[マージリクエスト](../user/project/merge_requests/_index.md)で何が起こるかを追跡します。
-
-それらを使用して、どのマイルストーンが追加または削除されたか、誰がそれを行ったか、そしてそれがいつ起こったかを追跡します。
+このAPIを使用して、イシューおよびマージリクエストのマイルストーンイベントを操作します。
 
 ## イシュー {#issues}
 
-### プロジェクトイシューマイルストーンイベントの一覧 {#list-project-issue-milestone-events}
+### プロジェクトイシューのマイルストーンイベントを一覧表示 {#list-project-issue-milestone-events}
 
-単一のイシューに対するすべてのマイルストーンイベントのリストを取得します。
+単一のイシューのすべてのマイルストーンイベントを一覧表示します。
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_milestone_events
@@ -31,13 +29,15 @@ GET /projects/:id/issues/:issue_iid/resource_milestone_events
 | `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `issue_iid` | 整数        | はい      | イシューのIID                                                             |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_milestone_events"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_milestone_events"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -100,9 +100,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-### 単一イシューマイルストーンイベントを取得 {#get-single-issue-milestone-event}
+### 単一のイシューのマイルストーンイベントを取得する {#retrieve-a-single-issue-milestone-event}
 
-特定のプロジェクトイシューの単一マイルストーンイベントを返します
+特定のプロジェクトイシューの単一のマイルストーンイベントを取得します。
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_milestone_events/:resource_milestone_event_id
@@ -116,17 +116,19 @@ GET /projects/:id/issues/:issue_iid/resource_milestone_events/:resource_mileston
 | `issue_iid`                   | 整数        | はい      | イシューのIID                                                             |
 | `resource_milestone_event_id` | 整数        | はい      | マイルストーンイベントのID                                                     |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_milestone_events/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_milestone_events/1"
 ```
 
 ## マージリクエスト {#merge-requests}
 
-### プロジェクトマージリクエストマイルストーンイベントの一覧 {#list-project-merge-request-milestone-events}
+### プロジェクトマージリクエストのマイルストーンイベントを一覧表示 {#list-project-merge-request-milestone-events}
 
-単一のマージリクエストに対するすべてのマイルストーンイベントのリストを取得します。
+単一のマージリクエストのすべてのマイルストーンイベントを一覧表示します。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/resource_milestone_events
@@ -137,13 +139,15 @@ GET /projects/:id/merge_requests/:merge_request_iid/resource_milestone_events
 | `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `merge_request_iid` | 整数        | はい      | マージリクエストのIID                                                      |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/resource_milestone_events"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/resource_milestone_events"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -206,9 +210,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-### 単一マージリクエストマイルストーンイベントを取得 {#get-single-merge-request-milestone-event}
+### 単一のマージリクエストのマイルストーンイベントを取得する {#retrieve-a-single-merge-request-milestone-event}
 
-特定のプロジェクトマージリクエストに対する単一マイルストーンイベントを返します
+特定のプロジェクトマージリクエストの単一のマイルストーンイベントを取得します。
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/resource_milestone_events/:resource_milestone_event_id
@@ -222,7 +226,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/resource_milestone_events/:r
 | `merge_request_iid`           | 整数        | はい      | マージリクエストのIID                                                      |
 | `resource_milestone_event_id` | 整数        | はい      | マイルストーンイベントのID                                                     |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request GET \

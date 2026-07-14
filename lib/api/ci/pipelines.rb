@@ -73,7 +73,7 @@ module API
         route_setting :mcp,
           tool_name: :list_pipelines,
           params: [:id, :ref, :page, :per_page],
-          aggregators: [::Mcp::Tools::PipelineService],
+          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
           resource_name: "project"
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_pipelines,
@@ -107,9 +107,10 @@ module API
         route_setting :mcp,
           tool_name: :create_pipeline,
           params: [:id, :ref, :variables, :inputs],
-          aggregators: [::Mcp::Tools::PipelineService],
+          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
           resource_name: "project"
         route_setting :authorization, permissions: :create_pipeline, boundary_type: :project
+        route_setting :log_safety, { unsafe: %w[inputs] }
         post ':id/pipeline', urgency: :low, feature_category: :pipeline_composition do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20711')
 
@@ -210,9 +211,36 @@ module API
             .new(current_user: current_user, pipeline: pipeline, params: params)
             .execute
 
-          builds = builds.with_preloads.preload(:metadata, :job_definition, :runner_manager, :ci_stage) # rubocop:disable CodeReuse/ActiveRecord -- preload job.archived?
+          builds = builds.with_preloads.preload(:job_definition, :runner_manager, :ci_stage) # rubocop:disable CodeReuse/ActiveRecord -- preload job.archived?
 
           present paginate(builds), with: Entities::Ci::Job
+        end
+
+        desc 'List all bridge jobs by pipeline' do
+          detail 'Deprecated in GitLab 19.2. Use trigger_jobs endpoint instead.'
+          success status: 200, model: Entities::Ci::Bridge
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          is_array true
+          tags ['pipelines']
+          deprecated true
+        end
+        params do
+          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          use :optional_scope
+          use :pagination
+        end
+
+        route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_pipelines,
+          allow_public_access_for_enabled_project_features: [:repository, :builds],
+          permissions: :read_pipeline_bridge, boundary_type: :project
+        get ':id/pipelines/:pipeline_id/bridges',
+          urgency: :low, feature_category: :pipeline_composition do
+          present_pipeline_trigger_jobs
         end
 
         desc 'List all trigger jobs by pipeline' do
@@ -236,19 +264,9 @@ module API
         route_setting :authorization, job_token_policies: :read_pipelines,
           allow_public_access_for_enabled_project_features: [:repository, :builds],
           permissions: :read_pipeline_bridge, boundary_type: :project
-        get ':id/pipelines/:pipeline_id/bridges', urgency: :low, feature_category: :pipeline_composition do
-          authorize!(:read_build, user_project)
-
-          pipeline = user_project.all_pipelines.find(params[:pipeline_id])
-
-          bridges = ::Ci::JobsFinder
-            .new(current_user: current_user, pipeline: pipeline, params: params, type: ::Ci::Bridge)
-            .execute
-          # rubocop:disable CodeReuse/ActiveRecord -- Preload is only related to this endpoint
-          bridges = bridges.with_preloads.preload(:ci_stage)
-          # rubocop:enable CodeReuse/ActiveRecord
-
-          present paginate(bridges), with: Entities::Ci::Bridge
+        get ':id/pipelines/:pipeline_id/trigger_jobs',
+          urgency: :low, feature_category: :pipeline_composition do
+          present_pipeline_trigger_jobs
         end
 
         desc 'List all pipeline variables' do
@@ -320,7 +338,6 @@ module API
 
         desc 'Delete a pipeline' do
           detail 'Deletes a specified pipeline for a project.'
-          http_codes [[204, 'Pipeline was deleted'], [403, 'Forbidden']]
           success code: 204, message: 'Pipeline was deleted'
           failure [[403, 'Forbidden']]
           tags ['pipelines']
@@ -332,7 +349,7 @@ module API
         route_setting :mcp,
           tool_name: :delete_pipeline,
           params: [:id, :pipeline_id],
-          aggregators: [::Mcp::Tools::PipelineService],
+          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
           resource_name: "pipeline"
         route_setting :authorization, permissions: :delete_pipeline, boundary_type: :project
         delete ':id/pipelines/:pipeline_id', urgency: :low, feature_category: :continuous_integration do
@@ -364,7 +381,7 @@ module API
         route_setting :mcp,
           tool_name: :update_pipeline,
           params: [:id, :pipeline_id, :name],
-          aggregators: [::Mcp::Tools::PipelineService],
+          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
           resource_name: "pipeline"
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, permissions: :update_pipeline_metadata, boundary_type: :project,
@@ -401,7 +418,7 @@ module API
         route_setting :mcp,
           tool_name: :retry_pipeline,
           params: [:id, :pipeline_id],
-          aggregators: [::Mcp::Tools::PipelineService],
+          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
           resource_name: "pipeline"
         route_setting :authorization, permissions: :retry_pipeline, boundary_type: :project
         post ':id/pipelines/:pipeline_id/retry', urgency: :low, feature_category: :continuous_integration do
@@ -433,7 +450,7 @@ module API
         route_setting :mcp,
           tool_name: :cancel_pipeline,
           params: [:id, :pipeline_id],
-          aggregators: [::Mcp::Tools::PipelineService],
+          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
           resource_name: "pipeline"
         route_setting :authorization, permissions: :cancel_pipeline, boundary_type: :project
         post ':id/pipelines/:pipeline_id/cancel', urgency: :low, feature_category: :continuous_integration do
@@ -449,6 +466,19 @@ module API
       end
 
       helpers do
+        def present_pipeline_trigger_jobs
+          authorize!(:read_build, user_project)
+
+          bridges = ::Ci::JobsFinder
+            .new(current_user: current_user, pipeline: pipeline, params: params, type: ::Ci::Bridge)
+            .execute
+          # rubocop:disable CodeReuse/ActiveRecord -- Preload is only related to this endpoint
+          bridges = bridges.with_preloads.preload(:ci_stage)
+          # rubocop:enable CodeReuse/ActiveRecord
+
+          present paginate(bridges), with: Entities::Ci::Bridge
+        end
+
         def pipeline
           strong_memoize(:pipeline) do
             user_project.all_pipelines.find(params[:pipeline_id])

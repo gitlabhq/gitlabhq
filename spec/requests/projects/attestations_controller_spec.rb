@@ -239,8 +239,12 @@ RSpec.describe Projects::AttestationsController, feature_category: :artifact_sec
 
     context 'when slsa_provenance_statement is enabled' do
       context 'when attestation is readable' do
-        it 'returns attestation file',
-          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/18579' do
+        let_it_be(:attestation) do
+          create(:supply_chain_attestation, :with_parseable_metadata, project: project,
+            file_store: ObjectStorage::Store::LOCAL)
+        end
+
+        it 'returns attestation file', :aggregate_failures do
           download_attestation
 
           filename = attestation.file.filename

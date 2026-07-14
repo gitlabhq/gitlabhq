@@ -20,6 +20,7 @@ export default {
       default: '',
     },
   },
+  emits: ['input'],
   data() {
     return {
       loading: false,

@@ -46,7 +46,10 @@
         - if diff_file.too_large?
           The diff for this file was not included because it is too large.
         - else
+          -# This is a plain-text email, so HTML escaping is not applicable.
+          -# haml-lint:disable UnescapedHtml
           != diff_file.diff.diff
+          -# haml-lint:enable UnescapedHtml
   - if @message.target_url
     \
     \

@@ -156,6 +156,6 @@ export const refsListPropsMock = {
   namespace: 'Branches',
   tippingRefs: tippingBranchesMock,
   isLoading: false,
-  urlPart: '/some/project/-/commits/',
+  fullPath: 'some/project',
   refType: 'heads',
 };

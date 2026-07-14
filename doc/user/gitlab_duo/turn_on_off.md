@@ -28,6 +28,8 @@ You can turn GitLab Duo on or off:
 
 - On GitLab.com: For top-level groups, other groups or subgroups, and projects.
 - On GitLab Self-Managed: For instances, groups or subgroups, and projects.
+- On GitLab Dedicated: Administrators can also lock specific subgroups to **Always off**
+  so that users with the Owner role cannot enable GitLab Duo in those subgroups.
 
 ## Lock GitLab Duo on
 
@@ -85,6 +87,68 @@ Users with the Owner role for a group, subgroup, or project cannot turn GitLab D
 {{< /tab >}}
 
 {{< /tabs >}}
+
+## Lock GitLab Duo off for selected subgroups
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Dedicated, GitLab Dedicated for Government
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22389) in GitLab 19.2.
+
+{{< /history >}}
+
+As a GitLab Dedicated administrator, you can lock specific subgroups to
+**Always off** for GitLab Duo and GitLab Duo Agent Platform.
+Users with the Owner role in those subgroups cannot enable GitLab Duo,
+while other subgroups remain under owner control.
+
+The lock applies to the subgroup and all its descendant groups and projects.
+Users with the Owner role for the subgroup or its descendants cannot change this setting.
+Affected owners see a message that GitLab Duo is locked by a parent group.
+
+Only one lock can exist in any chain of ancestor and descendant groups.
+When you lock a subgroup:
+
+- If an ancestor group already has an lock, the lock is not applied.
+  You must [clear the lock](#clear-the-lock-for-a-subgroup) from the ancestor group first.
+- If one or more descendant subgroups already have admin locks, you are prompted to confirm.
+  When you confirm, the locks on those descendant subgroups are cleared,
+  and the lock is applied to the subgroup you selected.
+
+### Lock a subgroup
+
+Prerequisites:
+
+- Administrator access on a GitLab Dedicated instance.
+
+To lock GitLab Duo off for a subgroup:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. In the **Namespace availability overrides** section, find the subgroup.
+1. In the row for the subgroup, under **GitLab Duo availability**, select **Always off**.
+
+### Clear the lock for a subgroup
+
+Prerequisites:
+
+- Administrator access on a GitLab Dedicated instance.
+
+To clear the admin lock for a subgroup:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. In the **Namespace availability overrides** section, find the subgroup.
+1. In the row for the subgroup, select **Reset**.
+
+The subgroup returns to the instance default.
+Users with the Owner role for the subgroup can now control GitLab Duo availability.
 
 ## Turn GitLab Duo on or off
 
@@ -291,7 +355,7 @@ To turn on GitLab Duo experiment and beta features for an instance:
 Prerequisites:
 
 - Administrator access.
-- [Network connectivity](../../administration/gitlab_duo/configure/gitlab_self_managed.md) enabled.
+- [Network connectivity](../../administration/gitlab_duo/configure/_index.md) enabled.
 - [Silent Mode](../../administration/silent_mode/_index.md) turned off.
 
 To turn on GitLab Duo experiment and beta features for an instance:

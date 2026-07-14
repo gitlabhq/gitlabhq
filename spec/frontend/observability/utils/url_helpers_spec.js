@@ -1,4 +1,4 @@
-import { buildIframeUrl, extractTargetPath } from '~/observability/utils/url_helpers';
+import { buildIframeUrl } from '~/observability/utils/url_helpers';
 
 describe('URL Helper Utilities', () => {
   describe('buildIframeUrl', () => {
@@ -50,24 +50,6 @@ describe('URL Helper Utilities', () => {
           'https://example.com/dashboards',
         );
       });
-    });
-  });
-
-  describe('extractTargetPath', () => {
-    it.each`
-      description                                        | path                            | baseUrl                  | expected
-      ${'extracts pathname from combined URL'}           | ${'/dashboards/123/metrics'}    | ${'https://example.com'} | ${'/dashboards/123/metrics'}
-      ${'extracts pathname from root'}                   | ${'/'}                          | ${'https://example.com'} | ${'/'}
-      ${'ignores query parameters'}                      | ${'/dashboards?tab=metrics'}    | ${'https://example.com'} | ${'/dashboards'}
-      ${'ignores fragments'}                             | ${'/dashboards#overview'}       | ${'https://example.com'} | ${'/dashboards'}
-      ${'extracts pathname from absolute URLs'}          | ${'https://other.com/absolute'} | ${'https://example.com'} | ${'/absolute'}
-      ${'returns original path when construction fails'} | ${'invalid-path'}               | ${'invalid-base-url'}    | ${'invalid-path'}
-    `('$description: $path + $baseUrl = $expected', ({ path, baseUrl, expected }) => {
-      expect(extractTargetPath(path, baseUrl)).toBe(expected);
-    });
-
-    it('returns null when path is empty', () => {
-      expect(extractTargetPath('', 'https://example.com')).toBeNull();
     });
   });
 });

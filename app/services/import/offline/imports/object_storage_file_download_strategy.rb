@@ -65,6 +65,7 @@ module Import
 
         def log_error_params
           {
+            importer: Import::SOURCE_OFFLINE_TRANSFER.to_s,
             object_key: object_key,
             provider: configuration.provider
           }

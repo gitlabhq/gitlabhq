@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 mutation updateIssueState($issueType: String, $isDirty: Boolean) {
   updateIssueState(issueType: $issueType, isDirty: $isDirty) @client
 }

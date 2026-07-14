@@ -6,6 +6,7 @@ import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import initLinkedResources from '~/linked_resources';
+import { pinia } from '~/pinia/instance';
 import IssueApp from './components/app.vue';
 import DescriptionComponent from './components/description.vue';
 import IncidentTabs from './components/incidents/incident_tabs.vue';
@@ -81,6 +82,7 @@ export function initIssuableApp(store) {
     name: 'DescriptionRoot',
     apolloProvider,
     store,
+    pinia,
     router: issueType === TYPE_INCIDENT ? createRouter(currentPath, currentTab) : undefined,
     provide: {
       canCreateIncident,

@@ -42,7 +42,9 @@ module Sidebars
         def serialize_as_menu_item_args
           super.merge({
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::OperationsMenu,
-            item_id: :group_kubernetes_clusters
+            item_id: :group_kubernetes_clusters,
+            description: _('Deploy and manage containerized applications across clusters'),
+            library_icon: 'kubernetes'
           })
         end
       end

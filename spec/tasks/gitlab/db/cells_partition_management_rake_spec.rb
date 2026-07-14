@@ -41,6 +41,34 @@ RSpec.describe 'gitlab:db partition management tasks', feature_category: :databa
       expect { Rake::Task['gitlab:db:export_partition_definitions'].invoke }
         .to output(/audit_events/).to_stdout
     end
+
+    it 'includes list-partitioned tables' do
+      expect { Rake::Task['gitlab:db:export_partition_definitions'].invoke }
+        .to output(/p_sent_notifications/).to_stdout
+    end
+
+    context 'with a multi-value list partition' do
+      before do
+        ApplicationRecord.connection.execute(<<~SQL)
+          CREATE TABLE _test_rake_multi_list_partitioned
+            (id serial NOT NULL, partition_id bigint NOT NULL, PRIMARY KEY (id, partition_id))
+            PARTITION BY LIST (partition_id);
+
+          CREATE TABLE #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_rake_multi_list_1_2
+            PARTITION OF _test_rake_multi_list_partitioned
+            FOR VALUES IN ('1', '2');
+        SQL
+      end
+
+      after do
+        ApplicationRecord.connection.execute('DROP TABLE IF EXISTS _test_rake_multi_list_partitioned CASCADE')
+      end
+
+      it 'excludes multi-value list partitions' do
+        expect { Rake::Task['gitlab:db:export_partition_definitions'].invoke }
+          .not_to output(/_test_rake_multi_list_1_2/).to_stdout
+      end
+    end
   end
 
   describe 'gitlab:db:ensure_partitions' do
@@ -59,12 +87,21 @@ RSpec.describe 'gitlab:db partition management tasks', feature_category: :databa
         CREATE TABLE #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_rake_date_partitioned_202601
           PARTITION OF _test_rake_date_partitioned
           FOR VALUES FROM ('2026-01-01') TO ('2026-02-01');
+
+        CREATE TABLE _test_rake_list_partitioned
+          (id serial NOT NULL, partition_id bigint NOT NULL, PRIMARY KEY (id, partition_id))
+          PARTITION BY LIST (partition_id);
+
+        CREATE TABLE #{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_rake_list_partitioned_1
+          PARTITION OF _test_rake_list_partitioned
+          FOR VALUES IN ('1');
       SQL
     end
 
     after do
       connection.execute('DROP TABLE IF EXISTS _test_rake_partitioned CASCADE')
       connection.execute('DROP TABLE IF EXISTS _test_rake_date_partitioned CASCADE')
+      connection.execute('DROP TABLE IF EXISTS _test_rake_list_partitioned CASCADE')
     end
 
     it 'creates partitions from a JSON file' do
@@ -86,6 +123,15 @@ RSpec.describe 'gitlab:db partition management tasks', feature_category: :databa
                 { partition_name: '_test_rake_date_partitioned_202601', from: '2026-01-01', to: '2026-02-01' },
                 { partition_name: '_test_rake_date_partitioned_202602', from: '2026-02-01', to: '2026-03-01' }
               ]
+            },
+            {
+              table_name: '_test_rake_list_partitioned',
+              partition_type: 'bigint',
+              partition_strategy: 'list',
+              partitions: [
+                { partition_name: '_test_rake_list_partitioned_1', values: [1] },
+                { partition_name: '_test_rake_list_partitioned_2', values: [2] }
+              ]
             }
           ]
         }
@@ -105,6 +151,9 @@ RSpec.describe 'gitlab:db partition management tasks', feature_category: :databa
         "'2026-02-01'",
         "'2026-03-01'"
       )
+      expect(connection.table_exists?(
+        "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_rake_list_partitioned_2"
+      )).to be(true)
     end
 
     it 'skips excluded databases like geo during import' do

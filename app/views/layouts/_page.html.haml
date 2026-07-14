@@ -22,6 +22,10 @@
 
   = render_if_exists "layouts/session_expire_modal"
 
+  .broadcast-wrapper.gl-rounded-lg.gl-overflow-hidden
+    = dispensable_render_if_exists "shared/token_expiration_banner"
+    = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
+
   .panels-container.gl-flex.gl-gap-3
     .content-panels.gl-flex-1.gl-w-full.gl-flex.gl-gap-3.gl-relative.js-content-panels{ class: 'gl-@container/content-panels' }
       -# For clarity:
@@ -32,10 +36,6 @@
           container_options: { class: "#{container_class unless @no_container} #{@content_class}" },
           main_options: page_itemtype,
           page_breadcrumbs_in_top_bar_feature_flag: !@force_show_panel_header && Feature.enabled?(:page_breadcrumbs_in_top_bar, current_user)) do |c|
-
-        - c.with_broadcasts do
-          = dispensable_render_if_exists "shared/token_expiration_banner"
-          = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
 
         - c.with_header do
           = render "layouts/nav/breadcrumbs/breadcrumbs"
@@ -61,7 +61,6 @@
         - c.with_footer do
           -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
           = render_if_exists "shared/footer/global_footer"
-
 
       #contextual-panel-portal.paneled-view-portal{
         class: 'gl-@container/panel !gl-absolute gl-shadow-lg @xl/content-panels:gl-w-1/2 @xl/content-panels:gl-shadow-none @xl/content-panels:!gl-relative gl-right-0'

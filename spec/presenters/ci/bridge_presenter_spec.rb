@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Ci::BridgePresenter do
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project) }
-  let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
-  let_it_be(:bridge, freeze: false) { create(:ci_bridge, pipeline: pipeline, status: :failed, user: user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline, status: :failed, user: user) }
 
   subject(:presenter) do
     described_class.new(bridge)

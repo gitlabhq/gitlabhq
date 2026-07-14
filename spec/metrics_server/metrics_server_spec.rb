@@ -186,7 +186,7 @@ RSpec.describe MetricsServer, feature_category: :durability_metrics do
   end
 
   context 'for sidekiq' do
-    let(:settings) { GitlabSettings::Options.build({ "sidekiq_exporter" => { "enabled" => true } }) }
+    let(:settings) { Gitlab::Configs.build_options({ "sidekiq_exporter" => { "enabled" => true } }) }
 
     before do
       allow(::Settings).to receive(:monitoring).and_return(settings)

@@ -1,0 +1,10 @@
+---
+name: runner_job_count_recent_partitions
+description: Scopes the GraphQL runner jobCount query to recent CI build partitions so PostgreSQL can prune the partitioned table instead of probing every partition.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/603266
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241016
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/603281
+milestone: '19.2'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

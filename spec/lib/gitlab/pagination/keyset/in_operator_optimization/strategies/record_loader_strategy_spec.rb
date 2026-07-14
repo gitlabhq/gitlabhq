@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::R
     Gitlab::Pagination::Keyset::InOperatorOptimization::OrderByColumns.new(keyset_order.column_definitions, model.arel_table)
   end
 
-  let_it_be(:ignored_column_model, freeze: false) do
+  let_it_be(:ignored_column_model) do
     Class.new(ApplicationRecord) do
       self.table_name = 'projects'
 
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::R
     end
   end
 
-  let_it_be(:model_without_ignored_columns, freeze: false) do
+  let_it_be(:model_without_ignored_columns) do
     Class.new(ApplicationRecord) do
       self.table_name = 'projects'
     end

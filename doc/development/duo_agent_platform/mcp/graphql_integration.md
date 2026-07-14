@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: Agent Foundations
+group: Agent Execution
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: MCP GraphQL Integration
 ---
@@ -60,7 +60,7 @@ Introduce a **two-layer architecture** for GraphQL-based MCP tools:
 
 **Layer 1: GraphQL Tool Classes** (`Mcp::Tools::GraphqlTool`)
 
-- Define GraphQL operations (queries/mutations) as static constants
+- Load GraphQL operations (queries and mutations) from `.graphql` files that are validated against the schema at build time
 - Support single mutation or multiple mutations in one request
 - Transform input parameters to GraphQL input format
 - Execute operations against `GitlabSchema`
@@ -79,7 +79,7 @@ Introduce a **two-layer architecture** for GraphQL-based MCP tools:
 
 ```mermaid
 graph TB
-    A[AI Client<br/>Claude/Cursor] -->|MCP Request| B[GraphqlCreateIssueService<br/>GraphqlService]
+    A[AI Client<br/>Claude/Cursor] -->|MCP Request| B[CreateIssueService<br/>GraphqlService]
     B -->|params, version| E[CreateIssueTool<br/>GraphqlTool]
     E -->|GraphQL Mutation| F[GitlabSchema.execute]
     F -->|Response| E
@@ -117,6 +117,20 @@ graph TB
 
 ## Design and Implementation Details
 
+### Naming conventions
+
+Name service and tool subclasses after the operation, without a `Graphql` prefix. Only the base
+classes `GraphqlService` and `GraphqlTool` keep the prefix. Every subclass already inherits from one
+of them, and there is no separate `graphql` folder, so the prefix adds no information.
+
+| Layer           | Pattern              | Example                             |
+|-----------------|----------------------|-------------------------------------|
+| Service wrapper | `<Operation>Service` | `Mcp::Tools::Labels::SearchService` |
+| GraphQL tool    | `<Operation>Tool`    | `Mcp::Tools::CreateIssueTool`       |
+
+The `tool_name` keys registered in `Mcp::Tools::Manager` are a public, append-only contract.
+Renaming a Ruby class does not rename its registered tool, so keep the keys unchanged.
+
 ### Layer 1: GraphQL Tool Base Class
 
 **File**: `app/services/mcp/tools/graphql_tool.rb`
@@ -129,6 +143,13 @@ module Mcp
   module Tools
     class GraphqlTool
       include Mcp::Tools::Concerns::Versionable
+
+      QUERIES_ROOT = Rails.root.join('app/graphql/queries/mcp').freeze
+
+      # Reads a .graphql operation file once at class-load and returns it frozen.
+      def self.load_graphql(relative_path)
+        File.read(QUERIES_ROOT.join(relative_path)).freeze
+      end
 
       attr_reader :current_user, :params
 
@@ -214,12 +235,59 @@ end
 
 **Key Design Decisions**:
 
-- **Immutable operations**: GraphQL strings defined as constants prevent runtime modification
+- **File-backed operations**: GraphQL operations live in `.graphql` files that are validated against the schema at build time
 - **MCP Response format**: Returns `Mcp::Tools::Response` objects (success or error)
 - **Flexible operation support**: Supports both mutations and queries
 - **Context isolation**: Each tool instance is independent (no shared state)
 - **Framework agnostic**: Works with any GraphQL operation type
 - **Error extraction**: Handles both GraphQL-level and operation-level errors
+
+### Store GraphQL operations in `.graphql` files
+
+Store each tool's GraphQL operation in a `.graphql` file under `app/graphql/queries/mcp/`, and load it with `GraphqlTool.load_graphql`.
+Do not embed the operation as an inline string or HEREDOC.
+
+Files in this directory are validated against `GitlabSchema` at build time by `spec/graphql/all_queries_spec.rb`, so an operation that drifts from the schema fails CI.
+An inline operation skips this check.
+
+Place the file under a subdirectory that mirrors the tool's domain, and name it with a `.query.graphql` or `.mutation.graphql` suffix:
+
+```plaintext
+app/graphql/queries/mcp/
+  work_items/create_note.mutation.graphql
+  work_items/get_work_item_types.query.graphql
+  labels/search.query.graphql
+```
+
+Use a verb-first name for a query operation to match the operations already in `app/graphql/queries`, for example `getWorkItemTypes` rather than `WorkItemTypes`.
+Mutations already use a verb-first name, such as `createNote`.
+
+Start each file with a `# @feature_category:` comment.
+The frontend `graphql_require_feature_category` lint rule requires one on every GraphQL operation, and the lint job fails without it:
+
+```graphql
+# @feature_category: mcp_server
+query getWorkItemTypes($fullPath: ID!) {
+  # ...
+}
+```
+
+Load the file in `register_version` with the direct `load_graphql(...)` form, not a lambda.
+`graphql_operation_for_version` calls a lambda on every request, so `-> { load_graphql(...) }` rereads the file each time:
+
+```ruby
+register_version VERSIONS[:v0_1_0], {
+  operation_name: 'createNote',
+  graphql_operation: load_graphql('work_items/create_note.mutation.graphql')
+}
+```
+
+> [!note]
+> This works only for static operations.
+> An operation composed at load time (for example, a query built from EE-overridden fragments) cannot live in a flat `.graphql` file.
+> Build it through a method and reference that method with a lambda (`graphql_operation: -> { build_query }`) so it is composed per request.
+
+The `Mcp/UseGraphqlQueryFile` RuboCop rule flags an inline string or HEREDOC passed as `graphql_operation:` and points to `load_graphql`.
 
 ### Layer 2: GraphqlService Base Class
 
@@ -346,7 +414,7 @@ end
 
 ### Service Wrapper Pattern
 
-**File**: `app/services/mcp/tools/graphql_create_issue_service.rb`
+**File**: `app/services/mcp/tools/create_issue_service.rb`
 
 **Purpose**: Provides input validation, MCP protocol compliance, and version
 management. Authorization is delegated to GraphQL layer.
@@ -354,7 +422,7 @@ management. Authorization is delegated to GraphQL layer.
 ```ruby
 module Mcp
   module Tools
-    class GraphqlCreateIssueService < GraphqlService
+    class CreateIssueService < GraphqlService
       # Register version 0.1.0 with metadata
       register_version '0.1.0', {
         description: 'Create a new issue in a GitLab project using GraphQL mutation',
@@ -406,50 +474,60 @@ end
 
 **Use Case**: Create an issue with basic fields.
 
+Each version loads its operation from a versioned `.graphql` file.
+For more information, see [Store GraphQL operations in `.graphql` files](#store-graphql-operations-in-graphql-files).
+
+```graphql
+# app/graphql/queries/mcp/issues/create_issue.v0_1_0.mutation.graphql
+# @feature_category: mcp_server
+mutation createIssue($input: CreateIssueInput!) {
+  createIssue(input: $input) {
+    issue {
+      id
+      iid
+      title
+      description
+      webUrl
+      state
+    }
+    errors
+  }
+}
+```
+
+```graphql
+# app/graphql/queries/mcp/issues/create_issue.v0_2_0.mutation.graphql
+# @feature_category: mcp_server
+mutation createIssue($input: CreateIssueInput!) {
+  createIssue(input: $input) {
+    issue {
+      id
+      iid
+      title
+      description
+      webUrl
+      state
+      createdAt
+      updatedAt
+    }
+    errors
+  }
+}
+```
+
 ```ruby
 module Mcp
   module Tools
     class CreateIssueTool < GraphqlTool
-      # Register version with GraphQL operation in metadata
       register_version '0.1.0', {
         operation_name: 'createIssue',
-        graphql_operation: <<~GRAPHQL
-          mutation($input: CreateIssueInput!) {
-            createIssue(input: $input) {
-              issue {
-                id
-                iid
-                title
-                description
-                webUrl
-                state
-              }
-              errors
-            }
-          }
-          GRAPHQL
-        }
+        graphql_operation: load_graphql('issues/create_issue.v0_1_0.mutation.graphql')
+      }
 
-      # Can register additional versions with different operations
+      # A later version returns more fields from its own file
       register_version '0.2.0', {
         operation_name: 'createIssue',
-        graphql_operation: <<~GRAPHQL
-          mutation($input: CreateIssueInput!) {
-            createIssue(input: $input) {
-              issue {
-                id
-                iid
-                title
-                description
-                webUrl
-                state
-                createdAt
-                updatedAt
-              }
-              errors
-            }
-          }
-        GRAPHQL
+        graphql_operation: load_graphql('issues/create_issue.v0_2_0.mutation.graphql')
       }
 
       # Default variable building (used by v0.1.0)
@@ -559,24 +637,36 @@ GraphqlService.execute_graphql_tool → Response.error → MCP Client
 
 ### Creating New Tools - Step-by-Step Guide
 
-**Step 1: Define GraphQL Tool Class**
+**Step 1: Add the GraphQL operation file**
+
+Add the operation under `app/graphql/queries/mcp/`, in a subdirectory that mirrors the tool's domain.
+For more information, see [Store GraphQL operations in `.graphql` files](#store-graphql-operations-in-graphql-files).
+
+```graphql
+# app/graphql/queries/mcp/your_domain/your.mutation.graphql
+# @feature_category: mcp_server
+mutation yourMutation($input: YourInput!) {
+  yourMutation(input: $input) {
+    result {
+      id
+      title
+    }
+    errors
+  }
+}
+```
+
+**Step 2: Define the GraphQL tool class**
 
 ```ruby
-# app/services/mcp/tools/your_graphql_tool.rb
+# app/services/mcp/tools/your_tool.rb
 module Mcp
   module Tools
-    class YourGraphqlTool < GraphqlTool
-      # Register version with operation in metadata
+    class YourTool < GraphqlTool
+      # Load the operation from its .graphql file
       register_version '0.1.0', {
         operation_name: 'yourMutation',
-        graphql_operation: <<~GRAPHQL
-          mutation($input: YourInput!) {
-            yourMutation(input: $input) {
-              result { id title }
-              errors
-            }
-          }
-        GRAPHQL
+        graphql_operation: load_graphql('your_domain/your.mutation.graphql')
       }
 
       # Implement variable building
@@ -606,7 +696,7 @@ module Mcp
 end
 ```
 
-**Step 2: Create Service Wrapper**
+**Step 3: Create the service wrapper**
 
 ```ruby
 # app/services/mcp/tools/your_service.rb
@@ -630,7 +720,7 @@ module Mcp
 
       # Specify the GraphQL tool class to use
       def graphql_tool_class
-        Mcp::Tools::YourGraphqlTool
+        Mcp::Tools::YourTool
       end
 
       # Version 0.1.0 implementation
@@ -648,7 +738,7 @@ module Mcp
 end
 ```
 
-**Step 3: Register Tool in Manager**
+**Step 4: Register the tool in the manager**
 
 GraphQL tools are registered separately from custom tools in Mcp::Tools::Manager:
 
@@ -658,7 +748,7 @@ GRAPHQL_TOOLS = {
 }.freeze
 ```
 
-**Step 3: Add Tests**
+**Step 5: Add tests**
 
 - Unit tests for GraphQL tool
 - Integration tests for service
@@ -672,7 +762,7 @@ GRAPHQL_TOOLS = {
 **Approach**: Execute GraphQL directly in service classes without abstraction layer.
 
 ```ruby
-class GraphqlCreateIssueService < GraphqlService
+class CreateIssueService < GraphqlService
   def perform_0_1_0(params)
     result = GitlabSchema.execute(MUTATION, variables: params, context: {...})
     # Handle result inline
@@ -699,7 +789,7 @@ end
 **Approach**: Generic service that accepts arbitrary GraphQL queries from MCP clients.
 
 ```ruby
-class GraphqlProxyService < GraphqlService
+class ProxyService < GraphqlService
   def perform_0_1_0(params)
     query = params[:query]
     GitlabSchema.execute(query, variables: params[:variables], context: {...})

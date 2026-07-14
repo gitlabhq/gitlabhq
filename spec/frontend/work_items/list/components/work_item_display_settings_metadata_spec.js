@@ -11,7 +11,8 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import {
   WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS,
   WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS_SORTED,
-  ROUTES,
+  VIEW_MODE_BOARD,
+  VIEW_MODE_LIST,
 } from '~/work_items/constants';
 
 Vue.use(VueApollo);
@@ -43,15 +44,11 @@ describe('WorkItemDisplaySettingsMetadata', () => {
     mountFn = shallowMountExtended,
     props = {},
     namespaceHandler = namespacePreferencesHandler,
-    routeName = ROUTES.index,
   } = {}) => {
     mockApolloProvider = createMockApollo([[updateWorkItemListUserPreference, namespaceHandler]]);
 
     wrapper = mountFn(WorkItemDisplaySettingsMetadata, {
       apolloProvider: mockApolloProvider,
-      mocks: {
-        $route: { name: routeName },
-      },
       propsData: {
         namespacePreferences: { hiddenMetadataKeys: [] },
         fullPath: 'gitlab-org/gitlab',
@@ -89,6 +86,25 @@ describe('WorkItemDisplaySettingsMetadata', () => {
       (field) => field.isPresentInGroup,
     );
     expect(findToggles()).toHaveLength(groupApplicableFields.length);
+  });
+
+  it('renders all fields in the list view', () => {
+    createComponent({ props: { viewMode: VIEW_MODE_LIST } });
+
+    expect(findToggles()).toHaveLength(WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.length);
+  });
+
+  it('renders only board-applicable metadata fields in the board view', () => {
+    createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
+
+    const boardApplicableFields = WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter(
+      (field) => field.isAvailableInBoard,
+    );
+    const labels = findToggles().wrappers.map((t) => t.props('label'));
+
+    expect(findToggles()).toHaveLength(boardApplicableFields.length);
+    expect(labels).not.toContain('Comments');
+    expect(labels).not.toContain('Popularity');
   });
 
   describe('shown/hidden grouping', () => {
@@ -178,7 +194,7 @@ describe('WorkItemDisplaySettingsMetadata', () => {
 
   describe('when not on a saved view', () => {
     beforeEach(() => {
-      createComponent({ routeName: ROUTES.index });
+      createComponent({ props: { isSavedView: false } });
     });
 
     it('toggles metadata field visibility via the mutation', async () => {
@@ -224,7 +240,7 @@ describe('WorkItemDisplaySettingsMetadata', () => {
 
   describe('when on a saved view', () => {
     beforeEach(() => {
-      createComponent({ routeName: ROUTES.savedView });
+      createComponent({ props: { isSavedView: true } });
     });
 
     it('updates settings without calling the mutation', async () => {

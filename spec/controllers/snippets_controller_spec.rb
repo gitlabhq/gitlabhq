@@ -443,34 +443,19 @@ RSpec.describe SnippetsController do
         sign_in(user)
       end
 
-      context 'when personal_snippet_reference_filters feature flag is enabled' do
-        it 'resolves fully-qualified cross-project references' do
-          post :preview_markdown, params: { text: "See #{full_reference}" }
+      it 'resolves fully-qualified cross-project references' do
+        post :preview_markdown, params: { text: "See #{full_reference}" }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['body']).to include('class="gfm gfm-issue')
-          expect(json_response['body']).to include(issue.title)
-        end
-
-        it 'does not resolve unqualified references without a project context' do
-          post :preview_markdown, params: { text: "See ##{issue.iid}" }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['body']).not_to include('class="gfm')
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['body']).to include('class="gfm gfm-issue')
+        expect(json_response['body']).to include(issue.title)
       end
 
-      context 'when personal_snippet_reference_filters feature flag is disabled' do
-        before do
-          stub_feature_flags(personal_snippet_reference_filters: false)
-        end
+      it 'does not resolve unqualified references without a project context' do
+        post :preview_markdown, params: { text: "See ##{issue.iid}" }
 
-        it 'does not resolve any references' do
-          post :preview_markdown, params: { text: "See #{full_reference}" }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['body']).not_to include('class="gfm')
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['body']).not_to include('class="gfm')
       end
     end
   end

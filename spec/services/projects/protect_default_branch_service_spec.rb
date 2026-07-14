@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_code_management do
   let(:service) { described_class.new(project) }
-  let(:project) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
 
   let(:allowed_to_push) { Gitlab::Access::MAINTAINER }
   let(:allowed_to_merge) { Gitlab::Access::MAINTAINER }
@@ -220,7 +220,7 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
           .to receive(:default_branch_protection_settings)
                 .and_return(Gitlab::Access::BranchProtection.protection_none)
 
-        expect(service.protect_branch?).to eq(false)
+        expect(service.protect_branch?).to be(false)
       end
     end
 
@@ -241,7 +241,7 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
                 .with(project, 'master')
                 .and_return(true)
 
-        expect(service.protect_branch?).to eq(false)
+        expect(service.protect_branch?).to be(false)
       end
 
       it 'returns true if the branch is not yet protected' do
@@ -250,7 +250,7 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
                 .with(project, 'master')
                 .and_return(false)
 
-        expect(service.protect_branch?).to eq(true)
+        expect(service.protect_branch?).to be(true)
       end
     end
   end
@@ -263,7 +263,7 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
     end
 
     it 'return true' do
-      expect(service.protected_branch_exists?).to eq(true)
+      expect(service.protected_branch_exists?).to be(true)
     end
   end
 

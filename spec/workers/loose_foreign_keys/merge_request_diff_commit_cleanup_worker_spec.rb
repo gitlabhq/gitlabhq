@@ -68,6 +68,36 @@ RSpec.describe LooseForeignKeys::MergeRequestDiffCommitCleanupWorker, feature_ca
     end
   end
 
+  describe 'record_store' do
+    context 'when the use_loose_foreign_keys_deleted_record_store flag is disabled' do
+      before do
+        stub_feature_flags(use_loose_foreign_keys_deleted_record_store: false)
+      end
+
+      it 'passes LooseForeignKeys::DeletedRecord as the record_store' do
+        expect(LooseForeignKeys::ProcessDeletedRecordsService).to receive(:new)
+          .with(hash_including(record_store: LooseForeignKeys::DeletedRecord))
+          .and_call_original
+
+        worker.perform
+      end
+    end
+
+    context 'when the use_loose_foreign_keys_deleted_record_store flag is enabled' do
+      before do
+        stub_feature_flags(use_loose_foreign_keys_deleted_record_store: true)
+      end
+
+      it 'passes Gitlab::LooseForeignKeys::DeletedRecordStore as the record_store' do
+        expect(LooseForeignKeys::ProcessDeletedRecordsService).to receive(:new)
+          .with(hash_including(record_store: Gitlab::LooseForeignKeys::DeletedRecordStore))
+          .and_call_original
+
+        worker.perform
+      end
+    end
+  end
+
   describe 'E2E cleanup functionality' do
     let_it_be(:project) { create(:project) }
     let_it_be(:merge_request) { create(:merge_request, source_project: project) }

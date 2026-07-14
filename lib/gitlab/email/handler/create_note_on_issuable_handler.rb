@@ -13,23 +13,14 @@ module Gitlab
       class CreateNoteOnIssuableHandler < BaseHandler
         include ReplyProcessing
 
-        attr_reader :issuable_iid
-
-        HANDLER_REGEX = /\A#{HANDLER_ACTION_BASE_REGEX}-(?<incoming_email_token>.+)-issue-(?<issuable_iid>\d+)\z/
-
-        def initialize(mail, mail_key)
-          super(mail, mail_key)
-
-          if (matched = HANDLER_REGEX.match(mail_key.to_s))
-            @project_slug         = matched[:project_slug]
-            @project_id           = matched[:project_id]&.to_i
-            @incoming_email_token = matched[:incoming_email_token]
-            @issuable_iid         = matched[:issuable_iid]&.to_i
-          end
+        def self.gem_handler
+          :create_note_on_issuable
         end
 
-        def can_handle?
-          incoming_email_token && project_id && issuable_iid
+        def issuable_iid
+          return unless identification
+
+          identification[:issuable_iid]
         end
 
         def execute

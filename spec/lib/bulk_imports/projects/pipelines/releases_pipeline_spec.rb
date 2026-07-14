@@ -39,8 +39,11 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline, feature_categ
   subject(:pipeline) { described_class.new(context) }
 
   describe '#run', :clean_gitlab_redis_shared_state do
-    before do
+    before_all do
       group.add_owner(user)
+    end
+
+    before do
       with_index = [release, 0]
 
       allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|

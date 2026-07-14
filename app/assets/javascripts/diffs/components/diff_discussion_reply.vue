@@ -24,6 +24,7 @@ export default {
       required: true,
     },
   },
+  emits: ['showNewDiscussionForm'],
   computed: {
     ...mapState(useNotes, {
       currentUser: 'getUserData',

@@ -31,6 +31,7 @@ module Gitlab
           :queue_iteration,
           :queue_depth_limit,
           :queue_replication_lag,
+          :queue_merge_request_replication_lag,
           :runner_pre_assign_checks_failed,
           :runner_pre_assign_checks_success,
           :runner_queue_tick,

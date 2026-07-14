@@ -119,8 +119,7 @@ module Ci
 
         after_successful_creation_hook
       else
-        # If pipeline is not persisted, try to recover IID
-        pipeline.reset_project_iid
+        recover_pipeline_iid
       end
 
       if error_message = pipeline.full_error_messages.presence || pipeline.failure_reason.presence
@@ -165,6 +164,11 @@ module Ci
 
     def after_successful_creation_hook
       # overridden in EE
+    end
+
+    def recover_pipeline_iid
+      # Try to recover IID unless the record is frozen because it was destroyed.
+      pipeline.reset_project_iid unless pipeline.frozen?
     end
 
     # rubocop:disable Gitlab/NoCodeCoverageComment

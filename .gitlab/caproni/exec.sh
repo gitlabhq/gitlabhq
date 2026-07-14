@@ -28,6 +28,11 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MONOLITH_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
+if [[ ! -f "$SCRIPT_DIR/.setup-complete" ]]; then
+  echo >&2 "ERROR: setup has not run yet. Run 'caproni run' to set up the local environment first."
+  exit 1
+fi
+
 CONFIG_NAME="${MIRRORD_CONFIG:-exec}"
 CONFIG="$MONOLITH_DIR/.gitlab/caproni/.mirrord/${CONFIG_NAME}.json"
 TARGET_DEPLOYMENT="deploy/gitlab-toolbox"
@@ -42,7 +47,15 @@ QUOTED_ARGS=$(printf '%q ' "$@")
 #
 # Partition syncing can be enabled by setting DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP to 0.
 SKIP_PARTITION_CREATION="${DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP:-1}"
-COMMAND="export DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP=$SKIP_PARTITION_CREATION && cd $MONOLITH_DIR && mise exec -- $QUOTED_ARGS"
+
+# PGGSSENCMODE=disable: libpq defaults to gssencmode=prefer, which negotiates
+# GSSAPI encryption on connect and loads the macOS Kerberos/GSS framework. That
+# code path is not fork-safe, so any forked child (for example parallel RSpec
+# workers) can SIGSEGV in pg's native connect_start on its first DB connection.
+# Disabling GSS avoids the crash for every command run through this wrapper, and
+# replaces the per-connection gssencmode patch that setup.sh used to inject into
+# config/database.yml.
+COMMAND="export PGGSSENCMODE=disable DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP=$SKIP_PARTITION_CREATION && cd $MONOLITH_DIR && mise exec -- $QUOTED_ARGS"
 
 if [[ $OSTYPE == 'darwin'* ]]; then
   if command -v brew >/dev/null 2>&1; then

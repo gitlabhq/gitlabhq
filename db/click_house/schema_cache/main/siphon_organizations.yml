@@ -40,3 +40,10 @@ columns:
   type: Int16
   default_kind: DEFAULT
   default_expression: '0'
+- name: _siphon_watermark
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(ZSTD(1))
+- name: uuid
+  type: UUID

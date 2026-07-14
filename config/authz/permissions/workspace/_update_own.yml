@@ -4,3 +4,4 @@ description: Private permission that gates update access to workspaces owned by 
   current user within a project. The workspace policy combines this permission
   with an ownership check to enable the public update_workspace permission. Must
   not be checked directly at enforcement points.
+conditionally_enables: null

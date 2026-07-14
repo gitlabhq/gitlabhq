@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import Vue from 'vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -8,6 +7,7 @@ import SuggestionDiff from './suggestion_diff.vue';
 
 // eslint-disable-next-line vue/one-component-per-file
 export default {
+  name: 'MarkdownSuggestions',
   directives: {
     SafeHtml,
   },
@@ -116,6 +116,7 @@ export default {
       const emitOnRoot = (...args) => this.$emit(...args);
       // eslint-disable-next-line vue/one-component-per-file
       const SuggestionDiffComponent = Vue.extend({
+        name: 'SuggestionDiffComponent',
         computed: {
           suggestionsCount: () => this.suggestionsCount,
           defaultCommitMessage: () => this.defaultCommitMessage || '',

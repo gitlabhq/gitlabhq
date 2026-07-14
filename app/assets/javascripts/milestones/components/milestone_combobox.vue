@@ -40,6 +40,7 @@ export default {
       required: false,
     },
   },
+  emits: ['input'],
   translations: {
     selectMilestone: s__('MilestoneCombobox|Select milestone'),
     noMilestone: s__('MilestoneCombobox|No milestone'),

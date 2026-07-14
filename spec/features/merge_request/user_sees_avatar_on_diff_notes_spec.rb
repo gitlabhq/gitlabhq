@@ -28,7 +28,6 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
   end
 
   before do
-    stub_feature_flags(rapid_diffs_on_commit_show: false)
     sign_in user
   end
 
@@ -58,23 +57,32 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
   end
 
   context 'commit view' do
-    before do
-      visit project_commit_path(project, merge_request.commits.first.id)
+    # A diff note left on a commit that belongs to the merge request shows up in the
+    # MR discussion, but must not produce the diff-avatar UI that MR diff notes do.
+    # (Creating notes through the Rapid Diffs commit page is covered by
+    # spec/features/projects/commit/comments/*.) We use a regular feature-branch
+    # merge request here because merge_request_with_diffs' head is a merge commit with
+    # degenerate diff refs, which can't carry a valid commit diff note position.
+    let_it_be(:commit_merge_request) do
+      create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master')
     end
 
-    it 'does not render avatar after commenting' do
-      first('.diff-line-num').click
-      find('.js-add-diff-note-button').click
+    let(:commit) { project.commit('feature') }
+    let(:commit_diff_file) { commit.diffs.diff_files.find { |file| file.text? && file.diff_lines.any?(&:added?) } }
+    let(:commit_position) do
+      build(:text_diff_position, :added,
+        file: commit_diff_file.new_path,
+        new_line: commit_diff_file.diff_lines.find(&:added?).new_pos,
+        diff_refs: commit.diff_refs
+      )
+    end
 
-      page.within('.js-discussion-note-form') do
-        find('.note-textarea').native.send_keys('test comment')
+    let!(:commit_diff_note) do
+      create(:diff_note_on_commit, project: project, commit_id: commit.id, position: commit_position, note: 'test comment')
+    end
 
-        click_button 'Comment'
-
-        wait_for_requests
-      end
-
-      visit project_merge_request_path(project, merge_request)
+    it 'does not render an avatar for a commit diff note', :aggregate_failures do
+      visit project_merge_request_path(project, commit_merge_request)
 
       expect(page).to have_content('test comment')
       expect(page).not_to have_selector('.js-avatar-container')
@@ -110,12 +118,14 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         expect(page).to have_content "#{note.author.name}: #{note.note.truncate(17)}"
       end
 
-      it 'toggles comments when clicking avatar',
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4213' do
+      it 'toggles comments when clicking avatar' do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
         end
 
+        # Confirm the collapsed state has settled (the comment avatar is shown
+        # in place of the expanded notes) before asserting the notes are hidden.
+        expect(page).to have_selector('.js-diff-comment-avatar [data-testid="user-avatar-image"]')
         expect(page).not_to have_selector('.notes_holder')
 
         page.within find_line(position.line_code(project.repository)) do

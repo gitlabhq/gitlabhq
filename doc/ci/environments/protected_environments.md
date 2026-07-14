@@ -30,6 +30,13 @@ To protect or unprotect an environment, you need at least the Maintainer role.
 Additionally, to update environment attributes such as `external_url`, `tier`, or `description`,
 you must also be in the **Allowed to deploy** list.
 
+> [!note]
+> Protected environments are part of CI/CD settings. If
+> [CI/CD is turned off](../../user/project/settings/_index.md#turn-off-cicd-for-a-project)
+> for the project, protected environments are unavailable in the UI and through the
+> [API](../../api/protected_environments.md). The API returns `403 Forbidden` for all
+> requests, including listing protected environments.
+
 ## Protecting environments
 
 Prerequisites:

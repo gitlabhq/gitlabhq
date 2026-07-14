@@ -28,7 +28,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
         find(".project-template #{sub_template_tab}").click if sub_template_tab
         find("label[for=#{template.name}]").click
 
-        click_on 'Pick a group or namespace'
+        click_on 'Select a group or namespace'
         select_listbox_item user.username
 
         fill_in("project_name", with: template.name)
@@ -63,7 +63,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
         focused_template_name = focused_template.find(template_name_selector).text
         focused_template.find(choose_template_selector).send_keys :enter
 
-        click_on 'Pick a group or namespace'
+        click_on 'Select a group or namespace'
         select_listbox_item user.username
 
         fill_in "project_name", with: project_name

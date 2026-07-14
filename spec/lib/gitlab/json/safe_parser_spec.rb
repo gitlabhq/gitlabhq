@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Json::SafeParser, feature_category: :shared do # rubocop:disable RSpec/FeatureCategory -- These are tests for a shared library
+RSpec.describe Gitlab::Json::SafeParser, :aggregate_failures, feature_category: :shared do # rubocop:disable RSpec/FeatureCategory -- These are tests for a shared library
   let(:parser) { described_class.new(**options) }
   let(:options) { {} }
 
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Json::SafeParser, feature_category: :shared do # rubocop:
     end
   end
 
-  describe '#parse' do
+  shared_examples_for 'parsing a JSON document' do
     let(:default_parse_limits) do
       {
         max_depth: 2,
@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Json::SafeParser, feature_category: :shared do # rubocop:
     end
 
     shared_examples_for 'raising a validation error' do |json, expected_error|
-      subject(:parse) { parser.parse(json) }
+      subject(:parse) { parser_method.call(json) }
 
       it 'raises a validation error' do
         expect { parse }.to raise_error(JSON::ParserError, expected_error)
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Json::SafeParser, feature_category: :shared do # rubocop:
     end
 
     shared_examples_for 'parsing without error' do |json, expected|
-      subject(:parse) { parser.parse(json) }
+      subject(:parse) { parser_method.call(json) }
 
       it 'parses without error' do
         expect(parse).to eq(expected)
@@ -192,15 +192,25 @@ RSpec.describe Gitlab::Json::SafeParser, feature_category: :shared do # rubocop:
     context 'when the given JSON payload is malformed' do
       it_behaves_like 'raising a validation error', '[}', 'unexpected object close at 1:3'
     end
+  end
+
+  describe '#parse' do
+    it_behaves_like 'parsing a JSON document' do
+      let(:parser_method) { ->(json) { parser.parse(json) } }
+    end
 
     describe 'parser thread affinity' do
       around do |example|
-        old_value = Thread.report_on_exception
+        old_report_on_exception = Thread.report_on_exception
+        old_abort_on_exception = Thread.abort_on_exception
+
         Thread.report_on_exception = false
+        Thread.abort_on_exception = true
 
         example.run
       ensure
-        Thread.abort_on_exception = old_value
+        Thread.report_on_exception = old_report_on_exception
+        Thread.abort_on_exception = old_abort_on_exception
       end
 
       it 'raises a ConcurrencyError when used by a different thread' do
@@ -211,46 +221,46 @@ RSpec.describe Gitlab::Json::SafeParser, feature_category: :shared do # rubocop:
     end
   end
 
-  describe '.instance' do
-    before do
-      Thread.current['safe-parser-instances'] = nil
+  describe '.parse' do
+    it_behaves_like 'parsing a JSON document' do
+      let(:parser_method) { ->(json) { described_class.parse(json, **options) } }
     end
 
-    describe 'when called multiple times' do
-      context 'when called with same parameters' do
-        it 'memoizes the instance returned' do
-          instance_1 = described_class.instance
-          instance_2 = described_class.instance
+    describe 'different options handling' do
+      let(:options_1) { { max_array_size: 1 } }
+      let(:options_2) { { max_array_size: 2 } }
+      let(:payload) { '[1, 2]' }
 
-          expect(instance_1.object_id).to eq(instance_2.object_id)
+      it 'uses correct options' do
+        expect { described_class.parse(payload, **options_1) }.to raise_error(Gitlab::Json.parser_error)
+        expect { described_class.parse(payload, **options_2) }.not_to raise_error
+      end
+    end
+
+    describe 'thread safety' do
+      let(:options) { { max_array_size: 1 } }
+
+      before do
+        Thread.current[described_class::THREAD_CACHE_NAMESPACE] = nil
+      end
+
+      it 'uses a different parser instance per thread' do
+        mock_parser_instance(:from_first_instance)
+
+        expect(described_class.parse('')).to eq(:from_first_instance)
+
+        mock_parser_instance(:from_second_instance)
+
+        expect(described_class.parse('')).to eq(:from_first_instance) # using the same instance within the same thread
+
+        sub_thread_value = Thread.new { described_class.parse('') }.value
+        expect(sub_thread_value).to eq(:from_second_instance)
+      end
+
+      def mock_parser_instance(return_value)
+        allow_next_instance_of(described_class, **Gitlab::Json::PARSE_LIMITS) do |parser_instance|
+          allow(parser_instance).to receive(:parse).and_return(return_value)
         end
-      end
-
-      context 'when called with different parameters' do
-        it 'memoizes the instance returned' do
-          instance_1 = described_class.instance
-          instance_2 = described_class.instance(max_depth: 1)
-
-          expect(instance_1.object_id).not_to eq(instance_2.object_id)
-        end
-      end
-    end
-
-    describe 'when called from different fibers' do
-      it 'returns different instances for different fibers' do
-        instance_1 = described_class.instance
-        instance_2 = Fiber.new { described_class.instance }.resume
-
-        expect(instance_1.object_id).not_to eq(instance_2.object_id)
-      end
-    end
-
-    describe 'when called from different threads' do
-      it 'returns different instances for different threads' do
-        instance_1 = described_class.instance
-        instance_2 = Thread.new { described_class.instance }.join
-
-        expect(instance_1.object_id).not_to eq(instance_2.object_id)
       end
     end
   end

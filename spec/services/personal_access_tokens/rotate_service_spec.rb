@@ -207,6 +207,17 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
       end
     end
 
+    context 'when the token has the sudo capability', :enable_admin_mode do
+      let_it_be(:admin) { create(:admin, :with_namespace) }
+      let(:token) { create(:granular_pat, :sudo, user: admin) }
+
+      it 'preserves the sudo capability on the rotated token' do
+        new_token = response.payload[:personal_access_token]
+
+        expect(new_token.sudo).to be(true)
+      end
+    end
+
     context 'when granular' do
       let_it_be(:project) { create(:project, developers: current_user) }
       let_it_be(:boundary) { Authz::Boundary.for(project) }

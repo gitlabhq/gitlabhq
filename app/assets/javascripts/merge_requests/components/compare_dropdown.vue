@@ -58,6 +58,7 @@ export default {
       default: false,
     },
   },
+  emits: ['selected'],
   data() {
     return {
       current: this.default,
@@ -82,6 +83,9 @@ export default {
       this.selected = newVal.value;
     },
   },
+  beforeDestroy() {
+    this.searchAbortController?.abort();
+  },
   methods: {
     async fetchData() {
       if (!this.endpoint) return;
@@ -89,8 +93,12 @@ export default {
       this.isLoading = true;
 
       try {
+        this.searchAbortController?.abort();
+        this.searchAbortController = new AbortController();
+
         const { data } = await axios.get(this.endpoint, {
           params: { search: this.searchStr },
+          signal: this.searchAbortController.signal,
         });
 
         if (this.isProject) {
@@ -107,7 +115,9 @@ export default {
         }
 
         this.isLoading = false;
-      } catch {
+      } catch (error) {
+        if (axios.isCancel(error)) return;
+
         createAlert({
           message: __('Error fetching data. Please try again.'),
           primaryButton: { text: __('Try again'), clickHandler: () => this.fetchData() },

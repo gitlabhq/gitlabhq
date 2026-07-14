@@ -11,9 +11,6 @@ RSpec.describe 'Group variables', :js, feature_category: :pipeline_composition d
   before do
     group.add_owner(user)
     sign_in(user)
-
-    visit page_path
-    wait_for_requests
   end
 
   context 'when ci_variables_pages FF is enabled' do

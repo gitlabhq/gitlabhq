@@ -9,6 +9,7 @@ import SettingsSection from '~/vue_shared/components/settings/settings_section.v
 import { __, sprintf } from '~/locale';
 
 export default {
+  name: 'CodeCoverage',
   components: {
     GlAlert,
     GlAreaChart,

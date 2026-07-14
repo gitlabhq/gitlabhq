@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Settings::RepositoryController, feature_category: :source_code_management do
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
-  let_it_be(:user, freeze: false) { create(:user, maintainer_of: project) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   before do
     sign_in(user)

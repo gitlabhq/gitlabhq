@@ -2,7 +2,18 @@
 
 module DiffPositionableNote
   extend ActiveSupport::Concern
-  include Gitlab::Utils::StrongMemoize
+
+  # Tokenizes a Ruby Hash#inspect string when recovering a malformed position
+  # column. The alternatives are ordered so a complete double-quoted string
+  # literal is matched before any structural token; a quoted value is therefore
+  # consumed whole and left untouched, so `=>`, `nil`, or `:foo` appearing
+  # inside a value (e.g. a path like `a=>b.rb`) is never rewritten.
+  RUBY_HASH_INSPECT_TOKEN = /
+    "(?:\\.|[^"\\])*"      # complete double-quoted string literal -> verbatim
+    | :[A-Za-z_]\w*[!?]?   # Ruby symbol (e.g. :start) -> quoted JSON string
+    | =>                   # hash rocket -> :
+    | \bnil\b              # nil -> null
+  /x
 
   included do
     before_validation :set_original_position, on: :create
@@ -50,14 +61,68 @@ module DiffPositionableNote
         Gitlab::ErrorTracking.track_exception(
           e,
           note_id: id,
-          noteable_type: noteable_type,
-          noteable_id: noteable_id,
+          noteable_type: read_attribute(:noteable_type),
+          noteable_id: read_attribute(:noteable_id),
           attribute: meth
         )
         true
       end
-      nil
+
+      # Attempt to recover a stringified Ruby Hash stored as a raw string
+      # (e.g. `{"base_sha"=>"abc..."}`) instead of YAML-serialized position.
+      # The value is recovered on every read and never persisted here.
+      recover_stringified_position(read_attribute_before_type_cast(meth), meth)
     end
+  end
+
+  # Returns true when +raw+ looks like a Ruby Hash#inspect string, with either
+  # string keys (`{"key"=>"val"}`) or symbol keys (`{:key=>"val"}`), which
+  # indicates a malformed position column. A correctly serialized position is
+  # YAML and starts with `---`, so neither prefix yields a false positive.
+  def stringified_hash?(raw)
+    raw.is_a?(String) && raw.start_with?('{"', '{:')
+  end
+
+  # Attempts to parse a Ruby Hash#inspect string that was incorrectly stored
+  # in a position column. Returns a Gitlab::Diff::Position on success, nil
+  # otherwise.
+  def recover_stringified_position(raw, meth = nil)
+    return unless stringified_hash?(raw)
+
+    # Convert Ruby hash-rocket syntax and Ruby-specific literals to valid JSON
+    # so we can parse safely without resorting to eval. Transformations only
+    # apply to structural tokens; values inside string literals are preserved
+    # verbatim (see RUBY_HASH_INSPECT_TOKEN).
+    json_str = raw.gsub(RUBY_HASH_INSPECT_TOKEN) do |token|
+      case token
+      when '=>' then ':'
+      when 'nil' then 'null'
+      when /\A"/ then token       # string literal, leave verbatim
+      else %("#{token[1..]}")     # symbol -> "name"
+      end
+    end
+
+    parsed = Gitlab::Json.safe_parse(json_str)
+    return unless parsed.is_a?(Hash)
+
+    Gitlab::Diff::Position.new(parsed.with_indifferent_access)
+  rescue StandardError => e
+    # Recovery hit an unexpected error (e.g. a shape the tokenizer could not
+    # handle). The position is read many times per request, so dedupe the
+    # Sentry event per note to avoid flooding ingest, then fall back to nil.
+    track_key = [:diff_positionable_note_recovery_error, id, meth]
+    Gitlab::SafeRequestStore.fetch(track_key) do
+      Gitlab::ErrorTracking.track_exception(
+        e,
+        note_id: id,
+        noteable_type: read_attribute(:noteable_type),
+        noteable_id: read_attribute(:noteable_id),
+        attribute: meth
+      )
+      true
+    end
+
+    nil
   end
 
   def should_update_position?
@@ -126,15 +191,7 @@ module DiffPositionableNote
     errors.add(:commit_id, 'does not match the diff refs')
   end
 
-  def sync_keep_around_commits
-    return if async_keep_around_refs?
-
-    repository.keep_around(*shas, source: "#{noteable_type}/#{self.class.name}")
-  end
-
   def enqueue_keep_around_commits
-    return unless async_keep_around_refs?
-
     MergeRequests::KeepAroundRefsWorker.perform_async(
       [project.id],
       shas,
@@ -149,11 +206,6 @@ module DiffPositionableNote
   def repository
     noteable.respond_to?(:repository) ? noteable.repository : project.repository
   end
-
-  def async_keep_around_refs?
-    Feature.enabled?(:async_keep_around_refs_for_merge_request_diffs, project, type: :gitlab_com_derisk)
-  end
-  strong_memoize_attr :async_keep_around_refs?
 
   def shas
     return [] unless original_position

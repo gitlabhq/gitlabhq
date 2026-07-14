@@ -46,6 +46,7 @@ export default {
       default: null,
     },
   },
+  emits: ['cancel', 'submit'],
   i18n: {
     PACKAGES_PROTECTION_RULES_SAVED_ERROR_MESSAGE,
     packageNamePatternInputHelpText: s__(

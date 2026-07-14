@@ -62,6 +62,30 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
     end
   end
 
+  context 'when the target namespace is in a different organization' do
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:other_group) { create(:group, organization: other_organization) }
+    let_it_be(:other_project) { create(:project, group: other_group) }
+    let_it_be(:current_user) do
+      create(:user, reporter_of: project).tap { |user| other_project.add_reporter(user) }
+    end
+
+    let(:target_namespace) { other_project.project_namespace }
+
+    it_behaves_like 'fails to transfer work item',
+      'Unable to perform this action across organizations.'
+
+    context 'when the prevent_cross_organization_work_item_actions flag is disabled' do
+      before do
+        stub_feature_flags(prevent_cross_organization_work_item_actions: false)
+      end
+
+      it 'does not block the move because of organizations' do
+        expect(service.execute).to be_success
+      end
+    end
+  end
+
   context 'when user has permission to move work item' do
     let_it_be(:current_user) { projects_member }
 
@@ -93,6 +117,107 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
       let_it_be_with_reload(:original_work_item) { create(:work_item, :task, project: project) }
 
       it_behaves_like 'fails to transfer work item', 'Unable to move. Moving \'Task\' is not supported.'
+    end
+
+    context 'with target_work_item_type_id parameter' do
+      let(:incident_type) { build(:work_item_system_defined_type, :incident) }
+      let(:service) do
+        described_class.new(
+          work_item: original_work_item,
+          target_namespace: target_namespace,
+          current_user: current_user,
+          params: { target_work_item_type_id: target_work_item_type_id }
+        )
+      end
+
+      context 'when the type id resolves in the target namespace' do
+        let(:target_work_item_type_id) { incident_type.id }
+
+        it 'moves the work item and converts it to the target type', :aggregate_failures do
+          response = service.execute
+          new_work_item = response[:work_item]
+
+          expect(response).to be_success
+          expect(new_work_item.work_item_type_id).to eq(incident_type.id)
+        end
+      end
+
+      context 'when the type id does not resolve in the target namespace' do
+        let(:target_work_item_type_id) { non_existing_record_id }
+
+        it_behaves_like 'fails to transfer work item',
+          'Unable to move. The selected work item type is not available in the target namespace.'
+
+        it 'does not create a new work item' do
+          expect { service.execute }.not_to change { WorkItem.count }
+        end
+      end
+
+      context 'when moving within the same namespace' do
+        let_it_be_with_refind(:target_namespace) { project.project_namespace }
+        let(:target_work_item_type_id) { incident_type.id }
+
+        it 'ignores target_work_item_type_id and is a no-op', :aggregate_failures do
+          expect(service).not_to receive(:move_work_item)
+
+          response = service.execute
+
+          expect(response).to be_success
+          expect(response[:work_item]).to eq(original_work_item)
+          expect(original_work_item.reload.work_item_type_id).not_to eq(incident_type.id)
+        end
+      end
+    end
+
+    context 'with skip_work_item_type_check keyword' do
+      let_it_be_with_reload(:original_work_item) { create(:work_item, :task, project: project) }
+
+      let(:service) do
+        described_class.new(
+          work_item: original_work_item,
+          target_namespace: target_namespace,
+          current_user: current_user,
+          params: params,
+          skip_work_item_type_check: true
+        )
+      end
+
+      context 'when moving an otherwise unsupported type' do
+        let(:params) { {} }
+
+        it 'bypasses the supports_move_and_clone? check' do
+          response = service.execute
+
+          expect(response).to be_success
+        end
+      end
+
+      context 'when target_work_item_type_id is also supplied via params' do
+        let(:incident_type) { build(:work_item_system_defined_type, :incident) }
+        let(:params) { { target_work_item_type_id: incident_type.id } }
+
+        it 'ignores target_work_item_type_id (internal callers control type)', :aggregate_failures do
+          response = service.execute
+          new_work_item = response[:work_item]
+
+          expect(response).to be_success
+          expect(new_work_item.work_item_type_id).to eq(original_work_item.work_item_type_id)
+        end
+      end
+
+      context 'when the caller tries to enable the bypass through params instead' do
+        let(:service) do
+          described_class.new(
+            work_item: original_work_item,
+            target_namespace: target_namespace,
+            current_user: current_user,
+            params: { skip_work_item_type_check: true }
+          )
+        end
+
+        it_behaves_like 'fails to transfer work item',
+          'Unable to move. Moving \'Task\' is not supported.'
+      end
     end
 
     context 'when moving work item raises an error', :aggregate_failures do

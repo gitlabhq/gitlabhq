@@ -34,7 +34,6 @@ module QA
       enroll_instance_in_secrets_manager
 
       Flow::Login.while_signed_in(as: owner) do
-        skip "OpenBao instance is not reachable" unless openbao_healthy?
         group.visit!
 
         Page::Group::Menu.perform(&:go_to_general_settings)

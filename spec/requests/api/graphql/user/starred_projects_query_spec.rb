@@ -12,17 +12,17 @@ RSpec.describe 'Getting starredProjects of the user', feature_category: :groups_
   let(:user_params) { { username: user.username } }
 
   let_it_be_with_reload(:project_a) { create(:project, :public, name: 'ProjectA', path: 'Project-A', star_count: 30) }
-  let_it_be(:project_b, freeze: false) do
+  let_it_be_with_reload(:project_b) do
     create(:project, :private, name: 'ProjectB', path: 'Project-B', star_count: 20)
   end
 
-  let_it_be(:project_c, freeze: false) do
+  let_it_be_with_reload(:project_c) do
     create(:project, :private, name: 'ProjectC', path: 'Project-C', star_count: 10)
   end
 
   let_it_be_with_reload(:user) { create(:user) }
 
-  let_it_be(:path, freeze: false) { %i[user starred_projects nodes] }
+  let_it_be(:path) { %i[user starred_projects nodes] }
 
   let(:user_fields) { 'starredProjects { nodes { id } }' }
 
@@ -94,7 +94,7 @@ RSpec.describe 'Getting starredProjects of the user', feature_category: :groups_
   end
 
   context 'the current user is a member of a private project the user starred' do
-    let_it_be(:other_user, freeze: false) { create(:user) }
+    let_it_be(:other_user) { create(:user) }
 
     let(:current_user) { other_user }
 
@@ -316,7 +316,7 @@ RSpec.describe 'Getting starredProjects of the user', feature_category: :groups_
   describe 'min_access_level' do
     let(:current_user) { user }
 
-    let_it_be(:project_with_owner_access, freeze: false) { create(:project, :private) }
+    let_it_be(:project_with_owner_access) { create(:project, :private) }
 
     let(:user_fields_with_min_access_level) do
       "starredProjects(minAccessLevel: #{min_access_level}) { nodes { id name } }"
@@ -359,8 +359,8 @@ RSpec.describe 'Getting starredProjects of the user', feature_category: :groups_
   describe 'programming_language_name' do
     let(:current_user) { user }
 
-    let_it_be(:ruby, freeze: false) { create(:programming_language, name: 'Ruby') }
-    let_it_be(:repository_language, freeze: false) do
+    let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
+    let_it_be(:repository_language) do
       create(:repository_language, project: project_b, programming_language: ruby, share: 1)
     end
 

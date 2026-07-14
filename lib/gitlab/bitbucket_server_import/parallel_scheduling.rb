@@ -46,7 +46,12 @@ module Gitlab
       private
 
       def client
-        @client ||= BitbucketServer::Client.new(project.import_data.credentials)
+        @client ||= BitbucketServer::Client.new(
+          project.import_data.credentials.merge(
+            logger: Gitlab::BitbucketServerImport::Logger
+          ),
+          http_client: ::Import::Clients::HTTP
+        )
       end
 
       def project_key

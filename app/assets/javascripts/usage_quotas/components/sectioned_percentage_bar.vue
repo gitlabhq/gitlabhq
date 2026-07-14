@@ -5,6 +5,7 @@ import { roundOffFloat } from '~/lib/utils/common_utils';
 import { formatNumber } from '~/locale';
 
 export default {
+  name: 'SectionedPercentageBar',
   props: {
     /**
      * {

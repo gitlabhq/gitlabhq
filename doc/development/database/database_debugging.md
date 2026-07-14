@@ -73,30 +73,39 @@ bundle exec rails db -e development
 
 ## Access the database with a GUI
 
-Most GUIs (DataGrip, RubyMine, DBeaver) require a TCP connection to the database, but by default
-the database runs on a UNIX socket. To be able to access the database from these tools, some steps
-are needed:
+Most GUIs (DataGrip, RubyMine, DBeaver) require a TCP connection to the database. By default,
+the GDK PostgreSQL instance listens on a UNIX socket only. To expose it over TCP:
 
-1. On the GDK root directory, run:
+1. From the GDK root directory, switch the host from the socket path to `localhost`:
 
    ```shell
    gdk config set postgresql.host localhost
    ```
 
-1. Open your `gdk.yml`, and confirm that it has the following lines:
+1. Confirm `gdk.yml` contains:
 
    ```yaml
    postgresql:
-      host: localhost
+     host: localhost
    ```
 
-1. Reconfigure GDK:
+1. Regenerate the service definitions:
 
    ```shell
    gdk reconfigure
    ```
 
-1. On your database GUI, select `localhost` as host, `5432` as port and `gitlabhq_development` as database.
+1. Restart PostgreSQL so the new launch arguments take effect:
+
+   > [!warning]
+   > Restarting PostgreSQL drops every active connection, including Rails, Sidekiq, and any
+   > open `gdk psql` sessions. Stop dependent services or run the restart when the GDK is idle.
+
+   ```shell
+   gdk restart postgresql
+   ```
+
+1. In your GUI, connect to host `localhost`, port `5432`, database `gitlabhq_development`.
    You can also use the connection string `postgresql://localhost:5432/gitlabhq_development`.
 
 The new connection should be working now.

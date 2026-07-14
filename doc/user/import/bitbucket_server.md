@@ -15,7 +15,7 @@ description: "Migrate from Bitbucket Server to GitLab."
 
 {{< history >}}
 
-- User mapping by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36885) in GitLab 13.4 [with a flag](../../administration/feature_flags/_index.md) named `bitbucket_server_user_mapping_by_username`. Disabled by default.
+- User mapping by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36885) in GitLab 13.4 [with a feature flag](../../administration/feature_flags/_index.md) named `bitbucket_server_user_mapping_by_username`. Disabled by default.
 - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
 - Ability to import reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416611) in GitLab 16.3.

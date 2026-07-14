@@ -79,7 +79,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
         sign_in(author_user)
         visit diffs_project_merge_request_path(project, merge_request)
 
-        first(".js-diff-more-actions").click
+        find_by_testid('options-dropdown-button', match: :first).click
 
         expect(page).to have_selector(".js-edit-blob")
       end
@@ -105,7 +105,8 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
       let(:current_user) { project.first_owner }
       let(:branch_name) { "test_branch" }
 
-      it 'escapes any HTML special characters in the diff chunk header' do
+      it 'escapes any HTML special characters in the diff chunk header',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43335' do
         file_content =
           <<~CONTENT
           function foo<input> {

@@ -49,7 +49,10 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
     # tested in depth in spec/models/concerns/users/email_otp_enrollment_spec.rb
     context 'for ensuring the valid state of `email_otp_required_after`' do
       before do
-        stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+        stub_application_setting(
+          email_otp_enabled: true,
+          require_minimum_email_based_otp_for_users_with_passwords: true
+        )
       end
 
       context 'when treat_email_otp_as_2fa is set to true' do

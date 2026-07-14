@@ -414,3 +414,22 @@ export const allowedToMergeDrawerProps = {
   title: 'Edit allowed to merge',
   roles: accessLevelsMock,
 };
+
+// Custom role fixtures (GlobalID form). Kept shape-compatible with the EE
+// fixture of the same name, since the CE spec resolves this via ee_else_ce_jest.
+export const customRolesMock = [
+  {
+    __typename: 'MemberRole',
+    id: 'gid://gitlab/MemberRole/1',
+    name: 'Custom developer',
+    description: 'A custom developer role',
+    baseAccessLevel: { integerValue: 30, __typename: 'AccessLevel' },
+  },
+  {
+    __typename: 'MemberRole',
+    id: 'gid://gitlab/MemberRole/2',
+    name: 'Custom maintainer',
+    description: 'A custom maintainer role',
+    baseAccessLevel: { integerValue: 40, __typename: 'AccessLevel' },
+  },
+];

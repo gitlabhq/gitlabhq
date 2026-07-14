@@ -9,6 +9,8 @@ RSpec.describe 'Project remote mirror', :feature, feature_category: :groups_and_
 
   describe 'On a project', :js do
     before do
+      stub_feature_flags(vue_mirror_table: false)
+
       project.add_maintainer(user)
       sign_in user
     end

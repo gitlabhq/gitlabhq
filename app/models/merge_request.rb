@@ -25,6 +25,7 @@ class MergeRequest < ApplicationRecord
   include IdInOrdered
   include Todoable
   include Spammable
+  include Ci::Partitionable::AssociationFinder
 
   extend ::Gitlab::Utils::Override
 
@@ -104,6 +105,7 @@ class MergeRequest < ApplicationRecord
   end
 
   belongs_to :head_pipeline, class_name: "Ci::Pipeline", inverse_of: :merge_requests_as_head_pipeline
+  partitionable_belongs_to_loader :head_pipeline
 
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
@@ -164,7 +166,6 @@ class MergeRequest < ApplicationRecord
   after_create :ensure_merge_request_diff, unless: :skip_ensure_merge_request_diff
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
-  after_save :keep_around_commit, unless: :importing?
   after_save :save_merge_data_changes
   after_commit :enqueue_keep_around_commit, unless: :importing?
   after_commit :ensure_metrics!, on: [:create, :update], unless: :importing?
@@ -394,7 +395,7 @@ class MergeRequest < ApplicationRecord
     :importing_or_transitioning?,
     :closed_or_merged_without_fork?
   ]
-  validate :validate_fork, unless: :closed_or_merged_without_fork?
+  validate :validate_fork, unless: [:closed_or_merged_without_fork?, :allow_broken]
   validate :validate_branch_existence, on: :create, unless: [
     :allow_broken,
     :skip_branch_existence_check,
@@ -939,12 +940,6 @@ class MergeRequest < ApplicationRecord
     [:assignees, :reviewers] + super
   end
 
-  def head_pipeline
-    return super unless head_pipeline_id
-
-    association(:head_pipeline).target ||= Ci::Pipeline.find_by_id(head_pipeline_id)
-  end
-
   def recent_commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: false, page: nil, preload_metadata: false)
     if preload_metadata && !load_from_gitaly
       preload_commits_metadata
@@ -1156,7 +1151,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def note_positions_for_paths(paths, user = nil)
-    positions = notes.new_diff_notes.joins(:note_diff_file)
+    positions = notes.non_legacy_diff_notes.joins(:note_diff_file)
       .where('note_diff_files.old_path IN (?) OR note_diff_files.new_path IN (?)', paths, paths)
       .positions
 
@@ -1212,7 +1207,13 @@ class MergeRequest < ApplicationRecord
   end
 
   def changed_paths
-    project.repository.find_changed_paths(commit_shas(bypass_preloaded: true), merge_commit_diff_mode: :all_parents)
+    if Feature.enabled?(:mr_changed_paths_net_diff, project) && diff_base_sha && diff_head_sha
+      return project.repository.find_changed_paths([Gitlab::Git::DiffTree.new(diff_base_sha, diff_head_sha)])
+    end
+
+    project.repository.find_changed_paths(
+      commit_shas(bypass_preloaded: true), merge_commit_diff_mode: :all_parents
+    )
   end
   request_cache(:changed_paths) { [id, diff_head_sha] }
 
@@ -2147,6 +2148,26 @@ class MergeRequest < ApplicationRecord
     remove_from_locked_set unless locked?
   end
 
+  # Recovers a merge request that is stuck `locked` and cannot be unlocked
+  # normally because reopening it now fails a structural validation (most
+  # commonly a newer opened MR occupying the same source branch, a missing
+  # source project, or a broken fork). Those validations are bypassed via
+  # `allow_broken` and the MR is moved locked -> opened -> closed so the
+  # state-machine callbacks (e.g. the head pipeline update on `=> :opened`)
+  # still fire.
+  #
+  # Returns false without persisting a close when the MR is not locked or a
+  # transition fails. The non-bang transitions return false (instead of raising)
+  # on a non-bypassable validation error or a concurrent state change, so a
+  # failure here never aborts the surrounding (cron) batch. Note: if unlock_mr
+  # succeeds but close then fails, the MR is left opened (already a recovered
+  # state); the unstick cron self-heals that on its next run. See #600038.
+  def force_unlock_and_close
+    return false unless locked?
+
+    with_allow_broken { unlock_mr && close }
+  end
+
   def update_and_mark_in_progress_merge_commit_sha(commit_id)
     self.update(in_progress_merge_commit_sha: commit_id)
     # Since another process checks for matching merge request, we need
@@ -2373,9 +2394,13 @@ class MergeRequest < ApplicationRecord
   end
 
   def all_commits
-    MergeRequestDiffCommit
+    relation = MergeRequestDiffCommit
       .where(merge_request_diff: merge_request_diffs.recent)
       .limit(10_000)
+
+    relation = relation.where(project_id: target_project_id) if project_id_pruning_enabled?
+
+    relation
   end
 
   # Note that this could also return SHA from now dangling commits
@@ -2470,7 +2495,7 @@ class MergeRequest < ApplicationRecord
     return unless has_complete_diff_refs?
     return if new_diff_refs == old_diff_refs
 
-    active_diff_discussions = self.notes.new_diff_notes.discussions.select do |discussion|
+    active_diff_discussions = self.notes.non_legacy_diff_notes.discussions.select do |discussion|
       discussion.active?(old_diff_refs)
     end
     return if active_diff_discussions.empty?
@@ -2505,27 +2530,21 @@ class MergeRequest < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
+  # Imports bypass the `after_commit :enqueue_keep_around_commit` callback
+  # (it is skipped while `importing?`), so importers call this synchronously to
+  # ensure the merge commit is kept around for imported merge requests.
   def keep_around_commit
-    return if async_keep_around_refs?
-
-    project.repository.keep_around(self.merge_commit_sha, source: self.class.name)
+    project.repository.keep_around(merge_commit_sha, source: self.class.name)
   end
 
   def enqueue_keep_around_commit
     return unless merge_commit_sha.present?
-    return unless async_keep_around_refs?
 
     MergeRequests::KeepAroundRefsWorker.perform_async(
       [project.id],
       [merge_commit_sha],
       self.class.name
     )
-  end
-
-  def async_keep_around_refs?
-    strong_memoize(:async_keep_around_refs) do
-      Feature.enabled?(:async_keep_around_refs_for_merge_request_diffs, project, type: :gitlab_com_derisk)
-    end
   end
 
   def has_commits?
@@ -2665,7 +2684,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def batch_update_reviewer_state(user_ids, state)
-    merge_request_reviewers.where(user_id: user_ids).update_all(state: state)
+    merge_request_reviewers.where(user_id: user_ids).update_all_state(state)
   end
 
   def enabled_reports
@@ -2847,21 +2866,24 @@ class MergeRequest < ApplicationRecord
   end
 
   def commit_exists?(sha)
-    # We query the SHA from `merge_request_commits_metadata` table first and
-    # fallback to querying them from `merge_request_diff_commits` if doesn't match
-    # anything. That is to check if commit exists but the records are old and there
-    # are no `merge_request_commits_metadata_id` set for them since they're not
-    # backfilled yet.
+    diff_commits_subquery = MergeRequestDiffCommit
+      .where('merge_request_diff_commits.merge_request_commits_metadata_id = merge_request_commits_metadata.id')
+      .where_exists(
+        merge_request_diffs.where('merge_request_diffs.id = merge_request_diff_commits.merge_request_diff_id')
+      )
+
+    diff_commits_subquery = diff_commits_subquery.where(project_id: target_project_id) if project_id_pruning_enabled?
+
+    # Data can be found in either table until backfill completes. First look for SHAs in table
+    # `merge_request_commits_metadata`, if not found look in `merge_request_diff_commits`.
     return true if MergeRequest::CommitsMetadata
       .where(project: project, sha: sha)
-      .where_exists(
-        MergeRequestDiffCommit
-          .where('merge_request_diff_commits.merge_request_commits_metadata_id = merge_request_commits_metadata.id')
-          .where_exists(
-            merge_request_diffs.where('merge_request_diffs.id = merge_request_diff_commits.merge_request_diff_id')
-          )
-      )
+      .where_exists(diff_commits_subquery)
       .exists?
+
+    # We skip querying `merge_request_diff_commits` table when FF `mr_diff_commits_read_new_table` is enabled.
+    # This flag will only be enabled when new table is fully populated
+    return false if read_new_commits_table?
 
     all_commits.exists?(sha: sha)
   end
@@ -2958,6 +2980,18 @@ class MergeRequest < ApplicationRecord
 
   private
 
+  # Runs the block with `allow_broken` enabled, restoring the previous value
+  # afterwards. Used to bypass the structural validations that would otherwise
+  # block recovering a stuck `locked` merge request. Keep this private: a public
+  # generic validation escape hatch would be too easy to misuse.
+  def with_allow_broken
+    previous_allow_broken = allow_broken
+    self.allow_broken = true
+    yield
+  ensure
+    self.allow_broken = previous_allow_broken
+  end
+
   # Returns true when the in-memory state_id no longer matches what the primary
   # database holds. This can happen because the instance was loaded from a
   # replica that lagged behind primary, or because another process transitioned
@@ -2980,21 +3014,60 @@ class MergeRequest < ApplicationRecord
   def committer_emails_from_diff
     return [] unless merge_request_diff&.persisted?
 
-    union = Arel::Nodes::Union.new(
-      committer_emails_via_metadata_query,
-      committer_emails_via_direct_query
-    )
+    unless Feature.enabled?(:cache_committer_emails_from_diff, target_project)
+      return uncached_committer_emails_from_diff
+    end
 
-    ApplicationRecord.connection.select_values(union.to_sql)
+    # The committer set of a diff is immutable once the diff is created, so the
+    # result is cached keyed by the merge_request_diff id. A new push creates a
+    # new diff (and id), which naturally invalidates the entry; the TTL is only
+    # a backstop. This reduces the call rate of the approval-committer filter
+    # query, which runs very frequently across the fleet.
+    cache_key = ['merge_request_diffs', merge_request_diff.id, 'committer_emails']
+
+    cached = Rails.cache.read(cache_key)
+    return cached if cached
+
+    emails = uncached_committer_emails_from_diff
+
+    # Don't cache an empty result. A persisted diff should always resolve to at
+    # least one committer, so an empty set is almost always a transient state
+    # (e.g. the mr_diff_commits_read_new_table read path before its backfill
+    # completes) rather than the real answer. Caching it would freeze that stale
+    # value for the whole TTL and silently disable the approval-committer filter;
+    # leaving it uncached lets the next call recompute cheaply. Since empty is
+    # never written, a cache miss (nil) is unambiguous.
+    Rails.cache.write(cache_key, emails, expires_in: 6.hours) if emails.present?
+
+    emails
   end
   strong_memoize_attr :committer_emails_from_diff
+
+  def uncached_committer_emails_from_diff
+    committer_emails_query =
+      if read_new_commits_table?
+        committer_emails_via_metadata_query
+      else
+        Arel::Nodes::Union.new(committer_emails_via_metadata_query, committer_emails_via_direct_query)
+      end
+
+    # This is a pure read used only for approval eligibility filtering, which
+    # can tolerate a few seconds of replication lag, and it is gated behind the
+    # approval_committer_emails_from_diff feature flag. We send it to a replica
+    # via select_all, which ConnectionProxy routes through the load balancer's
+    # read path; the previous select_values fell through to #method_missing and
+    # was treated as ambiguous, so it ran on the primary. The SQL is unchanged.
+    ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do
+      ApplicationRecord.connection.select_all(committer_emails_query.to_sql).rows.flatten
+    end
+  end
 
   def committer_emails_via_metadata_query
     dc = MergeRequestDiffCommit.arel_table
     m = MergeRequest::CommitsMetadata.arel_table
     u = MergeRequest::DiffCommitUser.arel_table
 
-    dc.project(u[:email])
+    query = dc.project(u[:email])
       .join(m).on(
         m[:id].eq(dc[:merge_request_commits_metadata_id])
         .and(m[:project_id].eq(target_project_id))
@@ -3002,6 +3075,10 @@ class MergeRequest < ApplicationRecord
       .join(u).on(u[:id].eq(m[:committer_id]))
       .where(dc[:merge_request_diff_id].eq(merge_request_diff.id))
       .where(u[:email].not_eq(nil))
+
+    query = query.where(dc[:project_id].eq(target_project_id)) if project_id_pruning_enabled?
+
+    query
   end
 
   def committer_emails_via_direct_query
@@ -3222,6 +3299,8 @@ class MergeRequest < ApplicationRecord
                       .where(project_id: project_id)
                       .pluck(:sha)
 
+    return migrated_shas.uniq if read_new_commits_table?
+
     # We need to query SHAs from `merge_request_diff_commits` table to account
     # for records that don't have `merge_request_commits_metadata_id` populated yet
     unmigrated_shas = all_commits.where(merge_request_commits_metadata_id: nil).pluck(:sha)
@@ -3238,6 +3317,16 @@ class MergeRequest < ApplicationRecord
 
     ::Gitlab::MergeRequests::DiffResolver.new(self, params).resolve
   end
+
+  def read_new_commits_table?
+    Feature.enabled?(:mr_diff_commits_read_new_table, project)
+  end
+  strong_memoize_attr :read_new_commits_table?
+
+  def project_id_pruning_enabled?
+    MergeRequestDiffCommit.project_id_pruning_enabled?(target_project_id)
+  end
+  strong_memoize_attr :project_id_pruning_enabled?
 end
 
 MergeRequest.prepend_mod_with('MergeRequest')

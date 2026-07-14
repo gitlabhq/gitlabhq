@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Coding
+stage: AI Coding
+group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use AI-assisted features for relevant information about a merge request.
 title: GitLab Duo in merge requests
@@ -63,27 +63,23 @@ GitLab Duo can review your merge request for potential errors and provide feedba
 standards.
 
 When you request a review from GitLab Duo, it automatically runs one of two code review features
-based on your add-on:
+based on your add-on. Users with the Owner role for the group can configure which feature runs for all users.
 
-| Detail                | [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md) | [GitLab Duo Code Review](../../gitlab_duo/code_review.md) |
-|-----------------------|--------------------------------------------------------------------------------------|-----------------------------------------------------------|
-| Reviewer | `@GitLabDuo`                                                                         | `@GitLabDuo`                                              |
-| Type                  | Agentic                                                                              | Non-agentic                                               |
-| Add-on                | None required. Uses GitLab Credits.                                                  | GitLab Duo Enterprise                                     |
-| Context awareness     | Enhanced understanding of repository structure and cross-file dependencies           | Focused on the merge request and the file diffs within it. |
-| Analysis              | Multi-step agentic reasoning                                                         | Single-pass                                               |
-| Session creation     | {{< yes >}}                                                                          | {{< no >}}                                                |
-| Automatic reviews     | {{< yes >}}                                                                          | {{< yes >}}                                               |
-| Custom instructions   | {{< yes >}}                                                                          | {{< yes >}}                                               |
-| Custom comments       | {{< yes >}}                                                                          | {{< yes >}}                                               |
+| Detail              | [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md) | [GitLab Duo Code Review](../../gitlab_duo/code_review.md) |
+|---------------------|--------------------------------------------------------------------------------------|-----------------------------------------------------------|
+| Reviewer            | `@GitLabDuo`                                                                         | `@GitLabDuo`                                              |
+| Type                | Agentic                                                                              | Non-agentic                                               |
+| Required add-on     | None. Uses GitLab Credits.                                                           | GitLab Duo Enterprise                                     |
+| Context awareness   | Enhanced understanding of repository structure and cross-file dependencies           | Focused on the merge request and the file diffs within it |
+| Analysis            | Multi-step agentic reasoning                                                         | Single-pass                                               |
+| Session creation    | {{< yes >}}                                                                          | {{< no >}}                                                |
+| Automatic reviews   | {{< yes >}}                                                                          | {{< yes >}}                                               |
+| Custom instructions | {{< yes >}}                                                                          | {{< yes >}}                                               |
+| Custom comments     | {{< yes >}}                                                                          | {{< yes >}}                                               |
 
 ### Determine which review feature runs
 
-The code review feature that runs depends on the user that initiates the GitLab Duo review.
-
-If the user has a GitLab Duo Pro Enterprise seat, GitLab Duo Core Review runs. If not, Code Review Flow runs.
-
-When Code Review Flow runs, credit usage is attributed to the initiating user.
+By default, the code review feature that GitLab runs depends on the user that initiates the review.
 
 | Review trigger                          | Initiating user                      |
 |-----------------------------------------|--------------------------------------|
@@ -91,8 +87,12 @@ When Code Review Flow runs, credit usage is attributed to the initiating user.
 | Merge request created (not a draft)     | The merge request author.            |
 | Draft merge request marked as ready     | The merge request author.            |
 
-Because the review feature is based on the initiating user's add-on, both features can run in the
-same project.
+If the initiating user has a GitLab Duo Enterprise seat, GitLab Duo Code Review runs. If not, Code Review Flow
+runs. Both features can run in the same project.
+
+Users with the Owner role for the group can [configure all reviews to use Code Review Flow](#turn-on-code-review-flow-for-gitlab-duo-enterprise-seats),
+regardless of seat type. When Code Review Flow runs, credit usage is attributed to the initiating
+user.
 
 To determine which feature runs a review, check the merge request's activity feed. Code Review
 Flow starts a review session when it runs. If no review session appears, GitLab Duo Code Review runs
@@ -101,6 +101,110 @@ the review.
 ![Merge request activity feed showing a review session started by GitLab Duo.](img/gitlab_duo_code_review_flow_session_v18_10.png)
 
 After the review completes, you can also look for a Code Review Flow session in [sessions for your project](../../duo_agent_platform/sessions/_index.md#view-sessions-for-your-project).
+
+#### Turn on Code Review Flow for GitLab Duo Enterprise seats
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240432) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `duo_code_review_dap_routing_consent_enabled`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+To prevent GitLab Duo Enterprise seat holders from using a feature that consumes GitLab Credits, all
+code reviews they initiate use GitLab Duo Code Review by default. This behavior occurs even
+if a user with the Owner role turns on Code Review Flow for the group.
+
+You can change this default and configure all code reviews to use Code Review Flow instead,
+regardless of the user's seat.
+
+To override the default code review feature for GitLab Duo Enterprise seats:
+
+{{< tabs >}}
+
+{{< tab title="GitLab.com" >}}
+
+Prerequisites:
+
+- The Owner role for the top-level group.
+- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md#prerequisites)
+  turned on and configured correctly for your top-level group.
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Flow execution** > **Allow foundational flows**, clear the **Code Review Flow** checkbox
+   and then select it again.
+1. In the confirmation dialog, select **Enable Code Review Flow**.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed and GitLab Dedicated" >}}
+
+Prerequisites:
+
+- The Maintainer or Owner role for the group.
+- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md#prerequisites)
+  turned on and configured correctly for the instance.
+
+1. In the top bar, select **Search or go to** and find your group or subgroup.
+1. Select **Settings** > **General**.
+1. Expand **GitLab Duo features**.
+1. Under **Flow execution**, clear the **Code Review Flow** checkbox, and select **Save changes**.
+1. Expand **GitLab Duo features** again and, under **Flow execution**, select the **Code Review Flow**
+   checkbox.
+1. In the confirmation dialog, select **Enable Code Review Flow**.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+Code Review Flow now runs for all code reviews in the group and consumes GitLab Credits.
+To switch all reviews back to GitLab Duo Code Review, turn off Code Review Flow.
+
+## Resolve a discussion with GitLab Duo
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/600990) as a [beta](../../../policy/development_stages_support.md) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `resolve_discussion_with_duo`. Enabled by default.
+
+{{< /history >}}
+
+Use GitLab Duo to resolve review discussions on merge requests.
+
+When you ask GitLab Duo to resolve a discussion, it reads the review comment and the surrounding code, makes the requested change on the source branch, then commits and pushes the change.
+GitLab Duo then replies to the discussion with a summary of the change and resolves the thread.
+
+This feature uses the Developer Flow
+on the [GitLab Duo Agent Platform](../../duo_agent_platform/_index.md).
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+- The [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
+- **Allow foundational flows** and **Developer** turned on [for the top-level group](../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+- [Push rules configured to allow a service account](../../duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account).
+- [Your own runners configured](../../duo_agent_platform/flows/execution.md#configure-runners-to-execute-flows), or [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) turned on for your project.
+
+To resolve a discussion with GitLab Duo:
+
+1. In the merge request, go to an unresolved discussion.
+1. Next to **Resolve thread**, select **More resolve options** ({{< icon name="chevron-down" >}}).
+1. Select **Resolve with GitLab Duo**.
+
+GitLab Duo starts a session you can track in the [sessions for your project](../../duo_agent_platform/sessions/_index.md#view-sessions-for-your-project).
 
 ## Summarize a code review
 
@@ -167,7 +271,7 @@ Data usage: When you use this feature, the following data is sent to the large l
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [experiment](../../../policy/development_stages_support.md#experiment) [with a flag](../../../administration/feature_flags/_index.md) named `generate_commit_message_flag`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [experiment](../../../policy/development_stages_support.md#experiment) [with a feature flag](../../../administration/feature_flags/_index.md) named `generate_commit_message_flag`. Disabled by default.
 - Feature flag `generate_commit_message_flag` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158339) in GitLab 17.2.
 - Feature flag `generate_commit_message_flag` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173262) in GitLab 17.7.
 - Changed to include Premium in GitLab 18.0.

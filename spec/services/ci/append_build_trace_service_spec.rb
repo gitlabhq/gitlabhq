@@ -78,7 +78,6 @@ RSpec.describe Ci::AppendBuildTraceService, feature_category: :continuous_integr
   end
 
   context 'when debug_trace param is provided' do
-    let(:metadata) { Ci::BuildMetadata.find_by(build_id: build) }
     let(:stream_size) { 192.kilobytes }
     let(:body_data) { 'x' * stream_size }
     let(:content_range) { "#{body_start}-#{stream_size}" }
@@ -98,7 +97,7 @@ RSpec.describe Ci::AppendBuildTraceService, feature_category: :continuous_integr
     context 'when sending the second trace' do
       let(:body_start) { 1 }
 
-      it 'does not update build metadata debug_trace_enabled', :aggregate_failures do
+      it 'does not update build debug_trace_enabled', :aggregate_failures do
         query_recorder = ActiveRecord::QueryRecorder.new do
           described_class.new(build, content_range: content_range, debug_trace: true).execute(body_data)
         end

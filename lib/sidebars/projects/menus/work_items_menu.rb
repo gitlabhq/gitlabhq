@@ -64,7 +64,9 @@ module Sidebars
             pill_count_field: pill_count_field,
             has_pill: true,
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
-            item_id: :project_issue_list
+            item_id: :project_issue_list,
+            description: _('Plan, track, and manage work in one place'),
+            library_icon: 'work-items'
           })
         end
 
@@ -85,7 +87,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::NilMenuItem,
             active_routes: { path: 'projects/work_items#index' },
             container_html_options: { aria: { label: s_('WorkItem|Work items') } },
-            item_id: :issue_list
+            item_id: :issue_list,
+            description: _('Plan, track, and manage work in one place'),
+            library_icon: 'work-items'
           )
         end
 
@@ -102,7 +106,9 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
             active_routes: { controller: :boards },
             container_html_options: { class: 'shortcuts-issue-boards' },
-            item_id: :boards
+            item_id: :boards,
+            description: _('Visualize and manage work with kanban-style boards'),
+            library_icon: 'work-item-issue-board'
           )
         end
 
@@ -114,7 +120,9 @@ module Sidebars
             link: service_desk_project_issues_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
             active_routes: { path: 'issues#service_desk' },
-            item_id: :service_desk
+            item_id: :service_desk,
+            description: _('Collect customer feedback and support requests via email'),
+            library_icon: 'service-desk'
           )
         end
 
@@ -124,7 +132,9 @@ module Sidebars
             link: project_milestones_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
             active_routes: { controller: :milestones },
-            item_id: :milestones
+            item_id: :milestones,
+            description: _('Plan releases and group work into time-based phases'),
+            library_icon: 'milestone'
           )
         end
       end

@@ -164,7 +164,7 @@ RSpec.describe RoutableActions do
 
       get_routable(routable)
 
-      expect(last_check_called).to eq(true)
+      expect(last_check_called).to be(true)
     end
 
     it 'performs checks in the context of the controller' do

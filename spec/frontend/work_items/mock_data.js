@@ -1188,6 +1188,55 @@ export const mockNoLinkedItems = {
   },
 };
 
+// Migrated widgets that child/linked items read from `features` when the
+// `work_item_features_field` flag is on (mirrors WorkItemChildMetadataFeatures).
+export const mockLinkedItemChildFeatures = {
+  __typename: 'WorkItemFeatures',
+  assignees: {
+    allowsMultipleAssignees: true,
+    canInviteMembers: false,
+    assignees: { nodes: [], __typename: 'UserCoreConnection' },
+    __typename: 'WorkItemWidgetAssignees',
+  },
+  labels: {
+    allowsScopedLabels: false,
+    labels: { nodes: [], __typename: 'LabelConnection' },
+    __typename: 'WorkItemWidgetLabels',
+  },
+  startAndDueDate: {
+    startDate: null,
+    dueDate: null,
+    __typename: 'WorkItemWidgetStartAndDueDate',
+  },
+  weight: {
+    weight: null,
+    rolledUpWeight: null,
+    __typename: 'WorkItemWidgetWeight',
+  },
+  healthStatus: {
+    healthStatus: null,
+    rolledUpHealthStatus: null,
+    __typename: 'WorkItemWidgetHealthStatus',
+  },
+  milestone: {
+    milestone: null,
+    __typename: 'WorkItemWidgetMilestone',
+  },
+  progress: {
+    progress: null,
+    updatedAt: null,
+    __typename: 'WorkItemWidgetProgress',
+  },
+  iteration: {
+    iteration: null,
+    __typename: 'WorkItemWidgetIteration',
+  },
+  status: {
+    status: null,
+    __typename: 'WorkItemWidgetStatus',
+  },
+};
+
 export const mockLinkedItems = {
   type: WIDGET_TYPE_LINKED_ITEMS,
   blockingCount: 1,
@@ -1224,6 +1273,7 @@ export const mockLinkedItems = {
           closedAt: null,
           webUrl: '/gitlab-org/gitlab-test/-/work_items/83',
           widgets: [],
+          features: mockLinkedItemChildFeatures,
           __typename: 'WorkItem',
         },
         __typename: 'LinkedWorkItemType',
@@ -1258,6 +1308,7 @@ export const mockLinkedItems = {
           closedAt: null,
           webUrl: '/gitlab-org/gitlab-test/-/work_items/55',
           widgets: [],
+          features: mockLinkedItemChildFeatures,
           __typename: 'WorkItem',
         },
         __typename: 'LinkedWorkItemType',
@@ -1292,6 +1343,7 @@ export const mockLinkedItems = {
           closedAt: null,
           webUrl: '/gitlab-org/gitlab-test/-/work_items/56',
           widgets: [],
+          features: mockLinkedItemChildFeatures,
           __typename: 'WorkItem',
         },
         __typename: 'LinkedWorkItemType',
@@ -1310,6 +1362,23 @@ export const workItemLinkedItemsResponse = {
       workItem: {
         id: 'gid://gitlab/WorkItem/2',
         widgets: [mockLinkedItems],
+        __typename: 'WorkItem',
+      },
+    },
+  },
+};
+
+export const workItemLinkedItemsFeaturesResponse = {
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Group/1',
+      workItem: {
+        id: 'gid://gitlab/WorkItem/2',
+        features: {
+          __typename: 'WorkItemFeatures',
+          linkedItems: mockLinkedItems,
+        },
         __typename: 'WorkItem',
       },
     },
@@ -1452,7 +1521,16 @@ export const workItemBlockedByLinkedItemsResponseWithFeatures = {
         id: 'gid://gitlab/WorkItem/2',
         features: {
           linkedItems: {
-            linkedItems: mockBlockedByLinkedItem.linkedItems,
+            type: WIDGET_TYPE_LINKED_ITEMS,
+            linkedItems: {
+              ...mockBlockedByLinkedItem.linkedItems,
+              // The linked items query selects `features` on each nested work item,
+              // so blocker work items must carry it too (mirrors the query shape).
+              nodes: mockBlockedByLinkedItem.linkedItems.nodes.map((node) => ({
+                ...node,
+                workItem: { ...node.workItem, features: mockLinkedItemChildFeatures },
+              })),
+            },
             __typename: 'WorkItemWidgetLinkedItems',
           },
           __typename: 'WorkItemFeatures',
@@ -1472,6 +1550,7 @@ export const workItemNoBlockedByLinkedItemsResponseWithFeatures = {
         id: 'gid://gitlab/WorkItem/2',
         features: {
           linkedItems: {
+            type: WIDGET_TYPE_LINKED_ITEMS,
             linkedItems: { nodes: [], __typename: 'LinkedWorkItemTypeConnection' },
             __typename: 'WorkItemWidgetLinkedItems',
           },
@@ -1977,8 +2056,10 @@ export const mockWorkItemFeaturesData = ({ discussionLocked = false } = {}) => (
     parent: null,
     __typename: 'WorkItemWidgetHierarchy',
   },
-  healthStatus: { healthStatus: null },
-  weight: { weight: null },
+  healthStatus: { healthStatus: null, rolledUpHealthStatus: [] },
+  weight: { weight: null, rolledUpWeight: null, rolledUpCompletedWeight: null },
+  color: { color: null, textColor: null },
+  progress: { progress: null, updatedAt: null },
   linkedItems: { blockedByCount: 0, blockingCount: 0 },
   iteration: { iteration: null },
   errorTracking: {
@@ -1996,6 +2077,13 @@ export const mockWorkItemFeaturesData = ({ discussionLocked = false } = {}) => (
     },
     __typename: 'WorkItemWidgetCrmContacts',
   },
+  currentUserTodos: {
+    currentUserTodos: {
+      nodes: [],
+      __typename: 'TodoConnection',
+    },
+    __typename: 'WorkItemWidgetCurrentUserTodos',
+  },
   linkedResources: {
     linkedResources: {
       nodes: [],
@@ -2005,6 +2093,8 @@ export const mockWorkItemFeaturesData = ({ discussionLocked = false } = {}) => (
   },
   status: null,
   agentPlan: null,
+  customFields: null,
+  participants: null,
 });
 
 export const workItemResponseFactory = ({
@@ -4206,6 +4296,30 @@ export const projectMembersAutocompleteResponseWithCurrentUser = {
   },
 };
 
+export const projectMembersAutocompleteResponseWithoutCurrentUser = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Project/7',
+      __typename: 'Project',
+      users: [
+        {
+          __typename: 'AutocompletedUser',
+          id: 'gid://gitlab/User/5',
+          avatarUrl: '/avatar2',
+          name: 'rookie',
+          username: 'rookie',
+          webUrl: 'rookie',
+          webPath: '/rookie',
+          compositeIdentityEnforced: false,
+          status: {
+            availability: 'NOT_SET',
+          },
+        },
+      ],
+    },
+  },
+};
+
 export const projectMembersAutocompleteResponseWithNoMatchingUsers = {
   data: {
     namespace: {
@@ -6272,6 +6386,18 @@ const emptyRestFeatures = {
     blockingCount: 0,
     blockedByCount: 0,
   },
+  awardEmoji: {
+    __typename: 'WorkItemWidgetAwardEmoji',
+    upvotes: 0,
+    downvotes: 0,
+  },
+  development: {
+    __typename: 'WorkItemWidgetDevelopment',
+    closingMergeRequests: {
+      count: 0,
+      __typename: 'WorkItemClosingMergeRequestConnection',
+    },
+  },
 };
 
 const subChildBaseNodes = [
@@ -6840,6 +6966,8 @@ const nullRestFeatures = {
   weight: null,
   iteration: null,
   linkedItems: null,
+  awardEmoji: null,
+  development: null,
 };
 
 const buildWorkItemsRestQueryResponse = (features) => ({
@@ -11545,9 +11673,12 @@ export const workItemsQueryResponseWithFeatures = {
               },
               healthStatus: {
                 healthStatus: null,
+                rolledUpHealthStatus: [],
               },
               weight: {
                 weight: null,
+                rolledUpWeight: null,
+                rolledUpCompletedWeight: null,
               },
               linkedItems: {
                 blockedByCount: 0,
@@ -11645,9 +11776,12 @@ export const workItemsQueryResponseWithFeatures = {
               },
               healthStatus: {
                 healthStatus: null,
+                rolledUpHealthStatus: [],
               },
               weight: {
                 weight: null,
+                rolledUpWeight: null,
+                rolledUpCompletedWeight: null,
               },
               linkedItems: {
                 blockedByCount: 0,

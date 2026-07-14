@@ -15,11 +15,12 @@ title: Gitファイルblame
 
 [Git blame](https://git-scm.com/docs/git-blame)は、ファイル内のすべての行に関する詳細情報（最終更新時刻、作成者、コミットハッシュなど）を提供します。
 
-## ファイルごとのblameを表示 {#view-blame-for-a-file}
+## ファイルのblameを表示する {#view-blame-for-a-file}
 
 {{< history >}}
 
 - ファイルビューで直接blameを表示する機能は、GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/430950)されました。[フラグ](../../../../administration/feature_flags/_index.md)名は`inline_blame`です。デフォルトでは無効になっています。
+- GitLab 19.1で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効になりました。](https://gitlab.com/gitlab-org/gitlab/-/issues/501539)
 
 {{< /history >}}
 
@@ -30,7 +31,7 @@ title: Gitファイルblame
 ファイルのblameを表示するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. 左サイドバーで、**コード** > **リポジトリ**を選択します。
+1. 左側のサイドバーで、**コード** > **リポジトリ**を選択します。
 1. レビューしたいファイルを選択します。
 1. 次のいずれかの操作を行います:
    - 現在のファイルのビューを変更するには、ファイルヘッダーで**Blame**を選択します。
@@ -41,17 +42,17 @@ title: Gitファイルblame
 
 ![Git blameの出力](img/file_blame_output_v18_11.png "blameボタンの出力")
 
-コミットの正確な日時を確認するには、日付にカーソルを合わせるます。コミットの経過時間を示す色凡例を表示するには、[経過時間インジケーターの凡例を表示](#show-age-indicator-legend)を参照してください。
+コミットの正確な日時を確認するには、日付にカーソルを合わせます。コミットの経過時間を示す色凡例を表示するには、[経過時間インジケーターの凡例を表示](#show-age-indicator-legend)を参照してください。
 
 ### 前のコミットのblame {#blame-previous-commit}
 
 特定の行の以前のリビジョンを表示するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. 左サイドバーで、**コード** > **リポジトリ**を選択します。
+1. 左側のサイドバーで、**コード** > **リポジトリ**を選択します。
 1. レビューしたいファイルを選択します。
 1. 右上隅で**Blame**を選択し、表示したい行に移動します。
-1. 表示したい変更が見つかるまで、**この変更前のblameを表示** ({{< icon name="doc-versions" >}}) を選択します。
+1. 表示したい変更が見つかるまで、**この変更前のblameを表示**（{{< icon name="doc-versions" >}}）を選択します。
 
 ### 特定の改訂版を無視する {#ignore-specific-revisions}
 
@@ -74,7 +75,7 @@ Git blameが特定の改訂版を無視するように設定するには:
    ```
 
 1. blameビューでファイルを開きます。
-1. **Blame環境設定** ({{< icon name="preferences" >}})を選択します。
+1. **Blame環境設定**（{{< icon name="preferences" >}}）を選択します。
 1. **特定のリビジョンを無視する**チェックボックスを選択します。
 
 blameビューが更新され、`.git-blame-ignore-revs`ファイルで指定されたリビジョンはスキップされ、以前の重要な変更が表示されます。
@@ -92,7 +93,7 @@ blameビューが更新され、`.git-blame-ignore-revs`ファイルで指定さ
 経過時間インジケーターの凡例を表示または非表示にするには:
 
 1. blameビューでファイルを開きます。
-1. **Blame環境設定** ({{< icon name="preferences" >}})を選択します。
+1. **Blame環境設定**（{{< icon name="preferences" >}}）を選択します。
 1. **経過時間インジケーターの凡例を表示**チェックボックスを選択またはクリアします。
 
 ## 関連トピック {#related-topics}

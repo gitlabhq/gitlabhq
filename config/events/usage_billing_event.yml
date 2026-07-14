@@ -1,0 +1,22 @@
+---
+description: Tracks when a billing event is sent to the Data Insights Platform, enabling correlation between internal analytics and billing data
+internal_events: true
+action: usage_billing_event
+identifiers:
+- namespace
+- user
+- project
+additional_properties:
+  label:
+    description: The unique event_id of the billing event, used for correlation with billable_usage Snowplow events
+  property:
+    description: The billing event_type (e.g. secrets_read, code_completions)
+product_group: analytics_instrumentation
+product_categories:
+- analytics_instrumentation
+milestone: '19.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243286
+tiers:
+- free
+- premium
+- ultimate

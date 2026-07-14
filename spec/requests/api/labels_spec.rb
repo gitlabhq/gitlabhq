@@ -15,10 +15,10 @@ RSpec.describe API::Labels, feature_category: :team_planning do
     end
   end
 
-  let_it_be(:valid_label_title_1, freeze: false) { 'Label foo & bar:subgroup::v.1' }
-  let_it_be(:valid_label_title_1_esc, freeze: false) { ERB::Util.url_encode(valid_label_title_1) }
-  let_it_be(:valid_label_title_2, freeze: false) { 'Label bar & foo:subgroup::v.2' }
-  let_it_be(:valid_group_label_title_1, freeze: false) { 'Group label foobar:sub::v.1' }
+  let_it_be(:valid_label_title_1) { 'Label foo & bar:subgroup::v.1' }
+  let_it_be(:valid_label_title_1_esc) { ERB::Util.url_encode(valid_label_title_1) }
+  let_it_be(:valid_label_title_2) { 'Label bar & foo:subgroup::v.2' }
+  let_it_be(:valid_group_label_title_1) { 'Group label foobar:sub::v.1' }
 
   let(:user) { create(:user) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
@@ -183,8 +183,8 @@ RSpec.describe API::Labels, feature_category: :team_planning do
   end
 
   describe 'GET /projects/:id/labels' do
-    let_it_be(:group, freeze: false) { create(:group) }
-    let_it_be(:group_label, freeze: false) { create(:group_label, title: valid_group_label_title_1, group: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:group_label) { create(:group_label, title: valid_group_label_title_1, group: group) }
 
     before do
       project.update!(group: group)
@@ -292,8 +292,8 @@ RSpec.describe API::Labels, feature_category: :team_planning do
     end
 
     context 'with subgroups' do
-      let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
-      let_it_be(:subgroup_label, freeze: false) { create(:group_label, title: 'support label', group: subgroup) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:subgroup_label) { create(:group_label, title: 'support label', group: subgroup) }
 
       before do
         subgroup.add_owner(user)
@@ -495,8 +495,8 @@ RSpec.describe API::Labels, feature_category: :team_planning do
     end
 
     context 'with group label' do
-      let_it_be(:group, freeze: false) { create(:group) }
-      let_it_be(:group_label, freeze: false) { create(:group_label, title: valid_group_label_title_1, group: group) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:group_label) { create(:group_label, title: valid_group_label_title_1, group: group) }
 
       before do
         project.update!(group: group)
@@ -570,8 +570,8 @@ RSpec.describe API::Labels, feature_category: :team_planning do
     end
 
     context 'with group label' do
-      let_it_be(:group, freeze: false) { create(:group) }
-      let_it_be(:group_label, freeze: false) { create(:group_label, title: valid_group_label_title_1, group: group) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:group_label) { create(:group_label, title: valid_group_label_title_1, group: group) }
 
       before do
         project.update!(group: group)
@@ -609,7 +609,7 @@ RSpec.describe API::Labels, feature_category: :team_planning do
   end
 
   describe 'PUT /projects/:id/labels/promote' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:group) { create(:group) }
 
     before do
       group.add_owner(user)
@@ -689,6 +689,11 @@ RSpec.describe API::Labels, feature_category: :team_planning do
   end
 
   describe "POST /projects/:id/labels/:label_id/subscribe" do
+    it_behaves_like 'authorizing granular token permissions', :subscribe_label do
+      let(:boundary_object) { project }
+      let(:request) { post api("/projects/#{project.id}/labels/#{label1.id}/subscribe", personal_access_token: pat) }
+    end
+
     context "when label_id is a label title" do
       it "subscribes to the label" do
         post api("/projects/#{project.id}/labels/#{valid_label_title_1_esc}/subscribe", user)
@@ -735,6 +740,13 @@ RSpec.describe API::Labels, feature_category: :team_planning do
       label1.subscribe(user, project)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :subscribe_label do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/labels/#{label1.id}/unsubscribe", personal_access_token: pat)
+      end
+    end
+
     context "when label_id is a label title" do
       it "unsubscribes from the label" do
         post api("/projects/#{project.id}/labels/#{valid_label_title_1_esc}/unsubscribe", user)
@@ -777,16 +789,16 @@ RSpec.describe API::Labels, feature_category: :team_planning do
   end
 
   describe 'granular token permissions' do
-    let_it_be(:granular_test_group, freeze: false) { create(:group) }
-    let_it_be(:granular_test_user, freeze: false) { create(:user) }
-    let_it_be(:granular_test_project, freeze: false) do
+    let_it_be(:granular_test_group) { create(:group) }
+    let_it_be(:granular_test_user) { create(:user) }
+    let_it_be(:granular_test_project) do
       create(:project, creator_id: granular_test_user.id, namespace: granular_test_group)
     end
 
-    let_it_be(:read_label, freeze: false) { create(:label, title: 'read_test_label', project: granular_test_project) }
-    let_it_be(:promote_label, freeze: false) { create(:label, title: 'promote_test_label', project: granular_test_project) }
-    let_it_be(:update_label, freeze: false) { create(:label, title: 'update_test_label', project: granular_test_project) }
-    let_it_be(:delete_label, freeze: false) { create(:label, title: 'delete_test_label', project: granular_test_project) }
+    let_it_be(:read_label) { create(:label, title: 'read_test_label', project: granular_test_project) }
+    let_it_be(:promote_label) { create(:label, title: 'promote_test_label', project: granular_test_project) }
+    let_it_be(:update_label) { create(:label, title: 'update_test_label', project: granular_test_project) }
+    let_it_be(:delete_label) { create(:label, title: 'delete_test_label', project: granular_test_project) }
 
     before_all do
       granular_test_project.add_developer(granular_test_user)
@@ -873,6 +885,17 @@ RSpec.describe API::Labels, feature_category: :team_planning do
         let(:user) { granular_test_user }
         let(:request) do
           put api("/projects/#{granular_test_project.id}/labels/#{ERB::Util.url_encode(promote_label.title)}/promote", personal_access_token: pat)
+        end
+      end
+    end
+
+    context 'when promoting a label with PUT /projects/:id/labels/promote (deprecated)' do
+      it_behaves_like 'authorizing granular token permissions', :promote_label do
+        let(:boundary_object) { granular_test_project }
+        let(:user) { granular_test_user }
+        let(:request) do
+          put api("/projects/#{granular_test_project.id}/labels/promote", personal_access_token: pat),
+            params: { name: promote_label.title }
         end
       end
     end

@@ -31,6 +31,7 @@ export default {
       required: true,
     },
   },
+  emits: ['filter:changed', 'filter:submit', 'query:changed', 'sorting:changed'],
   computed: {
     internalFilter: {
       get() {

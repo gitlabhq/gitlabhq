@@ -223,6 +223,12 @@ if [[ -z "$SIDEKIQ_POD_NAME" ]] || [[ "$SIDEKIQ_POD_STATUS" != "Running" ]]; the
 fi
 
 # ---------------------------------------------------------------------------
+# 1c. Remove stale deprecated config files left over from older clusters.
+# ---------------------------------------------------------------------------
+
+rm -f "$GITLAB_DIR/config/redis.action_cable.yml"
+
+# ---------------------------------------------------------------------------
 # 2. Copy CNG-generated config files from the pod into $CONFIG_DIR
 #
 #    These files are written by the Helm chart init containers or the CNG
@@ -239,7 +245,6 @@ CONFIG_FILES=(
   "config/database.yml"
   "config/cable.yml"
   "config/resque.yml"
-  "config/redis.action_cable.yml"
   "config/session_store.yml"
   "config/secrets.yml"
   "config/initializers/smtp_settings.rb"
@@ -364,7 +369,6 @@ ENV_REWRITE_FILES=(
   "config/database.yml"
   "config/cable.yml"
   "config/resque.yml"
-  "config/redis.action_cable.yml"
   "config/session_store.yml"
   "config/secrets.yml"
 )
@@ -387,29 +391,7 @@ done
 
 echo "Rewrote environment key in ${#MODIFIED_FILES[@]} files."
 
-# ---------------------------------------------------------------------------
-# 4. Patch database.yml: add gssencmode: disable
-#
-#    libpq's GSSAPI negotiation triggers a segfault on macOS when connecting
-#    to a PostgreSQL server that doesn't support GSSAPI (e.g. CloudNativePG).
-#    Setting gssencmode: disable skips the negotiation entirely.
-# ---------------------------------------------------------------------------
-
-echo ""
-echo "==> Patching config/database.yml: adding gssencmode: disable..."
-
 DB_YML="$GITLAB_DIR/config/database.yml"
-if [[ -f "$DB_YML" ]]; then
-  # Insert "gssencmode: disable" on the line after every "adapter: postgresql",
-  # preserving the same leading whitespace.  The sed expression is POSIX-
-  # compatible and works on both GNU sed (Linux) and BSD sed (macOS).
-  #
-  sed -i.bak 's/^\([ \t]*\)adapter: postgresql$/\1adapter: postgresql\n\1gssencmode: disable/' "$DB_YML"
-  rm "$DB_YML.bak"
-  echo "  ✓ config/database.yml"
-else
-  warn "config/database.yml not found – skipping gssencmode patch"
-fi
 
 # ---------------------------------------------------------------------------
 # 5. Copy gitlabhq_production → gitlabhq_development if it does not exist
@@ -474,7 +456,23 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 5b. Mirror gitlabhq_development extensions into template1
+# 5b. Grant CREATEDB to the gitlab-dev-stack role so RSpec can create gitlabhq_test
+# ---------------------------------------------------------------------------
+
+echo ""
+echo "==> Granting CREATEDB to the gitlab-dev-stack role..."
+
+if $KUBECTL exec -n "$PG_NAMESPACE" "$PG_POD" -c postgres -- \
+  psql -U postgres -d postgres -c \
+    "ALTER ROLE \"gitlab-dev-stack\" CREATEDB;" >/dev/null; then
+  echo "  ✓ gitlab-dev-stack can now create databases"
+else
+  error "Failed to grant CREATEDB to the gitlab-dev-stack role."
+  exit 1
+fi
+
+# ---------------------------------------------------------------------------
+# 5c. Mirror gitlabhq_development extensions into template1
 #
 #     RSpec creates gitlabhq_test by cloning template1 and then replays
 #     db/structure.sql.  Extensions copied from cluster prod (e.g. btree_gist)
@@ -526,7 +524,7 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 5c. Add test: sections to YAML config files
+# 5d. Add test: sections to YAML config files
 #
 #     RSpec requires a `test` environment.  For each config file that was
 #     rewritten from production → development, append a `test:` block by
@@ -542,7 +540,6 @@ TEST_SECTION_FILES=(
   "config/gitlab.yml"
   "config/cable.yml"
   "config/resque.yml"
-  "config/redis.action_cable.yml"
   "config/session_store.yml"
   "config/secrets.yml"
 )
@@ -593,7 +590,7 @@ for file in "${TEST_SECTION_FILES[@]}"; do
 done
 
 # ---------------------------------------------------------------------------
-# 5d. Enable pages.local_store only in the test: block of gitlab.yml
+# 5e. Enable pages.local_store only in the test: block of gitlab.yml
 #
 #     The cluster config has pages.local_store.enabled: false because prod
 #     uses object storage. RSpec's TestEnv resolves pages_path via
@@ -615,7 +612,7 @@ if [[ -f "$GITLAB_YML" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 5e. Clear /etc/ paths in the test: block of gitlab.yml
+# 5f. Clear /etc/ paths in the test: block of gitlab.yml
 #
 #     The cluster config points various secret/key/keytab/ca_file settings
 #     at /etc/gitlab/... or /etc/krb5.keytab, none of which exist on local
@@ -644,7 +641,7 @@ if [[ -f "$GITLAB_YML" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 5f. Disable object_store.enabled in every block of the test: section
+# 5g. Disable object_store.enabled in every block of the test: section
 #
 #     The cluster config points uploads/artifacts/LFS/external_diffs/etc. at
 #     the in-cluster minio (gitlab-minio-svc.gitlab.svc:9000) with
@@ -698,6 +695,18 @@ if [[ -f "$VITE_GDK_JSON" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
+# 6a. Set duo_workflow.service_url before Puma caches config/gitlab.yml at boot.
+# ---------------------------------------------------------------------------
+
+if [[ -f "$GITLAB_YML" ]] && ! grep -q '^  duo_workflow:' "$GITLAB_YML"; then
+  echo ""
+  echo "==> Setting duo_workflow.service_url in config/gitlab.yml..."
+  awk '/^development:/ && !d {print; print "  duo_workflow:"; print "    service_url: ai-gateway.ai-gateway.svc.cluster.local:50052"; print "    secure: false"; d=1; next} 1' \
+    "$GITLAB_YML" > "$GITLAB_YML.tmp" && mv "$GITLAB_YML.tmp" "$GITLAB_YML"
+  echo "  ✓ config/gitlab.yml duo_workflow.service_url set."
+fi
+
+# ---------------------------------------------------------------------------
 # 7. Summary
 # ---------------------------------------------------------------------------
 
@@ -709,4 +718,8 @@ success "  Copied: ${COPIED_FILES[*]:-none}"
 success "  Rewritten to development env: ${MODIFIED_FILES[*]:-none}"
 success "  Unable to modify files: ${UNMODIFIED_FILES[*]:-none}"
 success ""
+
+# Create a marker file so exec.sh can tell setup has run.
+touch "$GITLAB_DIR/.gitlab/caproni/.setup-complete"
+
 echo 'Next: Run `caproni run`'

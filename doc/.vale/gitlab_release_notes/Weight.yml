@@ -1,0 +1,26 @@
+---
+name: gitlab_release_notes.Weight
+description: Ensures the optional `weight` metadata is a number.
+message: "The `weight` metadata must be a number (default is `50`)."
+link: https://docs.gitlab.com/development/documentation/release_notes/#feature-release-note-metadata
+level: error
+extends: script
+scope: raw
+script: |
+  text := import("text")
+  matches := []
+
+  if text.re_match("^---\\n", scope) {
+    fmEnd := text.index(scope, "\n---")
+    if fmEnd > 0 {
+      fm := scope[0:fmEnd]
+      m := text.re_find("(?m)^weight:[ \\t]*(.*)$", fm, 1)
+      if !is_undefined(m) {
+        cap := m[0][1]
+        span := {begin: cap.begin, end: cap.begin + len(cap.text)}
+        if !text.re_match("^[0-9]+$", text.trim_space(text.re_replace("[\"']", cap.text, ""))) {
+          matches = append(matches, span)
+        }
+      }
+    }
+  }

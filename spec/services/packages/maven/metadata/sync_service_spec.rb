@@ -54,7 +54,7 @@ RSpec.describe ::Packages::Maven::Metadata::SyncService, feature_category: :pack
     end
 
     context 'with a maintainer' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 

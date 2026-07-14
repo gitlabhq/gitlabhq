@@ -13,7 +13,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'TAGS and BRANCHES scope' do
-    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:branch_pipeline) { create(:ci_pipeline, project: project, ref: 'feature') }
     let_it_be(:tag_pipeline) { create(:ci_pipeline, project: project, ref: 'v1.0.0', tag: true) }
 
@@ -56,7 +56,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'sha' do
-    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
 
     let(:pipelines_graphql_data) { graphql_data.dig(*%w[project pipelines nodes]).first }
 
@@ -98,7 +98,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'duration fields' do
-    let_it_be(:pipeline, freeze: false) do
+    let_it_be_with_reload(:pipeline) do
       create(:ci_pipeline, project: project)
     end
 
@@ -135,7 +135,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
 
   describe '.stages' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:pipeline, freeze: false) { create(:ci_empty_pipeline, project: project) }
+    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project) }
     let_it_be(:stage) { create(:ci_stage, pipeline: pipeline, project: project) }
     let_it_be(:other_stage) { create(:ci_stage, pipeline: pipeline, project: project, name: 'other') }
 
@@ -300,7 +300,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe '.job_artifacts' do
-    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:pipeline_job_1) { create(:ci_build, pipeline: pipeline, name: 'Job 1') }
     let_it_be(:pipeline_job_artifact_1) { create(:ci_job_artifact, job: pipeline_job_1) }
     let_it_be(:pipeline_job_2) { create(:ci_build, pipeline: pipeline, name: 'Job 2') }
@@ -373,7 +373,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'errorMessages' do
-    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:error_message) { create(:ci_pipeline_message, pipeline: pipeline, content: 'error', severity: :error) }
 
     let(:pipelines_graphql_data) { graphql_data.dig(*%w[project pipelines nodes]).first }
@@ -419,7 +419,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'warningMessages' do
-    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:warning_message) { create(:ci_pipeline_message, pipeline: pipeline, content: 'warning') }
 
     let(:pipelines_graphql_data) { graphql_data.dig(*%w[project pipelines nodes]).first }
@@ -504,7 +504,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'upstream' do
-    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project, user: user) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, user: user) }
     let_it_be(:upstream_project) { create(:project, :repository, :public) }
     let_it_be(:upstream_pipeline) { create(:ci_pipeline, project: upstream_project, user: user) }
 
@@ -564,8 +564,8 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
   end
 
   describe 'downstream' do
-    let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project, user: user) }
-    let(:pipeline_2) { create(:ci_pipeline, project: project, user: user) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+    let_it_be_with_reload(:pipeline_2) { create(:ci_pipeline, project: project, user: user) }
 
     let_it_be(:downstream_project) { create(:project, :repository, :public) }
     let_it_be(:downstream_pipeline_a) { create(:ci_pipeline, project: downstream_project, user: user) }
@@ -613,8 +613,10 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
     end
 
     before do
-      create(:ci_sources_pipeline, source_pipeline: pipeline, pipeline: downstream_pipeline_a)
-      create(:ci_sources_pipeline, source_pipeline: pipeline_2, pipeline: downstream_pipeline_b)
+      create(:ci_sources_pipeline, source_pipeline: pipeline, source_job: create(:ci_build, pipeline: pipeline),
+        pipeline: downstream_pipeline_a)
+      create(:ci_sources_pipeline, source_pipeline: pipeline_2, source_job: create(:ci_build, pipeline: pipeline_2),
+        pipeline: downstream_pipeline_b)
 
       post_graphql(query, current_user: user)
     end
@@ -631,29 +633,31 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
 
     context 'when fetching the downstream pipelines from the pipeline' do
       it 'avoids N+1 queries', :use_sql_query_cache, :request_store do
-        first_user = create(:user)
-        second_user = create(:user)
-
         # warm up
-        post_graphql(query, current_user: first_user)
+        post_graphql(query, current_user: user)
+
         control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          post_graphql(query, current_user: first_user)
+          post_graphql(query, current_user: user)
         end
 
         downstream_pipeline_2a = create(:ci_pipeline, project: downstream_project, user: user)
-        create(:ci_sources_pipeline, source_pipeline: pipeline, pipeline: downstream_pipeline_2a)
+        create(:ci_sources_pipeline, source_pipeline: pipeline, source_job: create(:ci_build, pipeline: pipeline),
+          pipeline: downstream_pipeline_2a)
+
         downsteam_pipeline_3a = create(:ci_pipeline, project: downstream_project, user: user)
-        create(:ci_sources_pipeline, source_pipeline: pipeline, pipeline: downsteam_pipeline_3a)
+        create(:ci_sources_pipeline, source_pipeline: pipeline, source_job: create(:ci_build, pipeline: pipeline),
+          pipeline: downsteam_pipeline_3a)
 
         downstream_pipeline_2b = create(:ci_pipeline, project: downstream_project, user: user)
-        create(:ci_sources_pipeline, source_pipeline: pipeline_2, pipeline: downstream_pipeline_2b)
-        downsteam_pipeline_3b = create(:ci_pipeline, project: downstream_project, user: first_user)
-        create(:ci_sources_pipeline, source_pipeline: pipeline_2, pipeline: downsteam_pipeline_3b)
+        create(:ci_sources_pipeline, source_pipeline: pipeline_2, source_job: create(:ci_build, pipeline: pipeline_2),
+          pipeline: downstream_pipeline_2b)
 
-        # warm up
-        post_graphql(query, current_user: second_user)
+        downsteam_pipeline_3b = create(:ci_pipeline, project: downstream_project, user: user)
+        create(:ci_sources_pipeline, source_pipeline: pipeline_2, source_job: create(:ci_build, pipeline: pipeline_2),
+          pipeline: downsteam_pipeline_3b)
+
         expect do
-          post_graphql(query, current_user: second_user)
+          post_graphql(query, current_user: user)
         end.to issue_same_number_of_queries_as(control_count)
       end
     end

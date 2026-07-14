@@ -19,7 +19,7 @@ RSpec.describe Authn::IamService::AcceptLoginChallengeService, feature_category:
   end
 
   describe '#execute' do
-    let(:response) { ::Auth::V1::LoginServiceAcceptResponse.new(redirect_to: redirect_url) }
+    let(:response) { ::Gitlab::Iam::Auth::V1::LoginServiceAcceptResponse.new(redirect_to: redirect_url) }
 
     before do
       allow(grpc_client).to receive(:accept_login_challenge).and_return(response)
@@ -55,7 +55,7 @@ RSpec.describe Authn::IamService::AcceptLoginChallengeService, feature_category:
     end
 
     context 'when the response is missing redirect_to' do
-      let(:response) { ::Auth::V1::LoginServiceAcceptResponse.new(redirect_to: '') }
+      let(:response) { ::Gitlab::Iam::Auth::V1::LoginServiceAcceptResponse.new(redirect_to: '') }
 
       include_examples 'iam service error response with user',
         reason: :invalid_response,
@@ -63,7 +63,7 @@ RSpec.describe Authn::IamService::AcceptLoginChallengeService, feature_category:
     end
 
     context 'when redirect_to points to a different host' do
-      let(:response) { ::Auth::V1::LoginServiceAcceptResponse.new(redirect_to: 'https://untrusted.com/oauth2/authorize') }
+      let(:response) { ::Gitlab::Iam::Auth::V1::LoginServiceAcceptResponse.new(redirect_to: 'https://untrusted.com/oauth2/authorize') }
 
       include_examples 'iam service error response with user',
         reason: :invalid_redirect_url,
