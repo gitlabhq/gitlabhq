@@ -13,12 +13,6 @@ export const baseUpdateResponse = fixtures.updateWorkItem;
 export const canCreateBranchResponse = fixtures.canCreateBranch;
 export const workItemsFullResponse = fixtures.getWorkItemsFull;
 
-// Award-emoji integration fixtures (Rails-generated with reactions present on the
-// shared work item, so the whole detail view stays on one normalized entity).
-export const namespaceWorkItemResponse = fixtures.namespaceWorkItem;
-export const projectWorkItemAwardEmojisResponse = fixtures.projectWorkItemAwardEmojis;
-export const workItemNotesByIidResponse = fixtures.workItemNotesByIid;
-
 const { id, name } = fixtures.getWorkItemsRest.data.namespace;
 
 const LINKABLE_WORK_ITEM = {
@@ -139,45 +133,7 @@ const STATIC_OPERATION_HANDLERS = Object.fromEntries(
   ]),
 );
 
-// The award-emoji body toggle resolves the cache from the server-returned
-// `toggledOn`, so the handler tracks current-user reactions and flips per call.
-// Reset between tests via resetAwardState().
-let currentUserReactions = new Set();
-
-export const resetAwardState = () => {
-  currentUserReactions = new Set();
-};
-
-const awardEmojiMutationHandlers = {
-  updateWorkItemAwardEmojiWidget: ({ variables }) => {
-    const { awardableId, name: emojiName } = variables.input;
-    const key = `${awardableId}:${emojiName}`;
-    const toggledOn = !currentUserReactions.has(key);
-
-    if (toggledOn) {
-      currentUserReactions.add(key);
-    } else {
-      currentUserReactions.delete(key);
-    }
-
-    return {
-      data: {
-        awardEmojiToggle: { __typename: 'AwardEmojiTogglePayload', errors: [], toggledOn },
-      },
-    };
-  },
-  // Note reactions decide add-vs-remove and update the cache optimistically on the
-  // client, so the acknowledgements are static.
-  workItemNoteAddAwardEmoji: () => ({
-    data: { awardEmojiAdd: { __typename: 'AwardEmojiAddPayload', errors: [] } },
-  }),
-  workItemNoteRemoveAwardEmoji: () => ({
-    data: { awardEmojiRemove: { __typename: 'AwardEmojiRemovePayload', errors: [] } },
-  }),
-};
-
 const MUTATION_OPERATION_HANDLERS = {
-  ...awardEmojiMutationHandlers,
   createWorkItemNote: () => fixtures.createWorkItemNote,
 
   namespaceWorkItem: ({ variables }) =>

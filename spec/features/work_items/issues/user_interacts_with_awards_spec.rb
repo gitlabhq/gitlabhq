@@ -2,14 +2,6 @@
 
 require 'spec_helper'
 
-# Most award/reaction interactions were migrated to the MSW integration spec at
-# spec/frontend/msw_integration/work_items/awards/award_emoji_spec.js. What stays
-# here needs the real backend or the real emoji picker:
-#   - Emoji picker selection: the picker renders its emoji list lazily via an
-#     intersection observer that does not fire under jsdom, so selecting an emoji
-#     from the picker cannot be exercised in the MSW spec.
-#   - Comment/GFM parsing and the legacy invalid-emoji regression go through real
-#     server-side code paths.
 RSpec.describe 'User interacts with awards', :js, feature_category: :team_planning do
   include MobileHelpers
 
@@ -24,6 +16,26 @@ RSpec.describe 'User interacts with awards', :js, feature_category: :team_planni
       sign_in(user)
 
       visit(project_issue_path(project, issue))
+    end
+
+    it 'toggles the thumbsup award emoji' do
+      page.within('.awards') do
+        click_button '👍'
+        find_button('👍').hover
+
+        expect(page).to have_button '👍 1'
+
+        click_button '👍'
+
+        expect(page).to have_button '👍'
+        expect(page).to have_button '👎'
+        expect(page).not_to have_button '👍 1'
+
+        click_button '👍'
+        find_button('👍').hover
+
+        expect(page).to have_button '👍 1'
+      end
     end
 
     it 'toggles a custom award emoji' do
@@ -58,6 +70,16 @@ RSpec.describe 'User interacts with awards', :js, feature_category: :team_planni
       let!(:note) { create(:note, noteable: issue, project: issue.project) }
       let!(:award_emoji) { create(:award_emoji, awardable: note, name: 'grinning') }
 
+      it 'shows the award on the note' do
+        expect(page).to have_button('😀')
+      end
+
+      it 'allows adding a vote to an award' do
+        click_button '😀'
+
+        expect(page).to have_button '😀 2'
+      end
+
       it 'allows adding a new emoji' do
         within('.note') do
           click_button 'Add reaction', match: :first
@@ -66,6 +88,65 @@ RSpec.describe 'User interacts with awards', :js, feature_category: :team_planni
           expect(page).to have_button '😀 1'
           expect(page).to have_button '😆 1'
         end
+      end
+
+      context 'when the project is archived' do
+        let(:project) { create(:project, :archived) }
+
+        it 'hides the buttons for adding new emoji' do
+          page.within('.awards') do
+            expect(page).not_to have_button 'Add reaction'
+          end
+
+          within_testid('note-wrapper') do
+            expect(page).not_to have_button 'Add reaction'
+          end
+        end
+
+        it 'does not allow toggling existing emoji' do
+          click_button '😀'
+
+          expect(page).to have_button '😀 1'
+          expect(page).not_to have_button '😀 2'
+        end
+      end
+    end
+  end
+
+  describe 'User interacts with awards on an issue' do
+    let(:project)   { create(:project, :public) }
+    let(:issue)     { create(:issue, project: project) }
+
+    describe 'logged in' do
+      context 'when the issue is locked' do
+        before do
+          create(:award_emoji, awardable: issue, name: '100')
+          issue.update!(discussion_locked: true)
+
+          sign_in(user)
+          visit project_issue_path(project, issue)
+        end
+
+        it 'hides the add award button' do
+          expect(page).not_to have_button 'Add reaction'
+        end
+
+        it 'does not allow toggling existing emoji' do
+          click_button '💯'
+
+          expect(page).to have_button '💯 1'
+          expect(page).not_to have_button '💯 2'
+        end
+      end
+    end
+
+    describe 'logged out' do
+      before do
+        visit project_issue_path(project, issue)
+      end
+
+      it 'does not see award menu button' do
+        expect(page).not_to have_button 'Add reaction'
       end
     end
   end
