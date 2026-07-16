@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::LanguageDetection do
+RSpec.describe Gitlab::LanguageDetection, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
   let_it_be(:haskell) { create(:programming_language, name: 'Haskell') }
@@ -33,19 +33,18 @@ RSpec.describe Gitlab::LanguageDetection do
     end
   end
 
-  describe '#language_gitaly_id' do
-    subject { described_class.new(repository, repository_languages).language_gitaly_id(name) }
+  describe '#detected_languages' do
+    it 'returns detected language objects', :aggregate_failures do
+      detected_languages = subject.detected_languages
 
-    context 'when the language is detected' do
-      let(:name) { 'Ruby' }
-
-      it { is_expected.to eq(326) }
-    end
-
-    context 'when the language is not detected' do
-      let(:name) { 'Unknown' }
-
-      it { is_expected.to be_nil }
+      expect(detected_languages.size).to eq(described_class::MAX_LANGUAGES)
+      expect(detected_languages.first).to have_attributes(
+        name: 'Ruby',
+        share: 66.63,
+        color: '#701516',
+        language_id: 326
+      )
+      expect(detected_languages).to all(be_a(described_class::DetectedLanguage))
     end
   end
 
@@ -104,6 +103,27 @@ RSpec.describe Gitlab::LanguageDetection do
 
         expect(elixir_insert[:language_id]).to be_nil
         expect(go_insert[:language_id]).to eq(go_lang.language_id)
+      end
+    end
+
+    context 'when the detected language name differs from the resolved language name' do
+      let_it_be(:mathematica) do
+        create(:programming_language, name: 'Mathematica', color: '#dd1100', language_id: 224)
+      end
+
+      let(:programming_languages) { [mathematica] }
+      let(:repository_languages) { [] }
+
+      let(:detection) do
+        [{ value: 100.0, label: 'Wolfram Language', color: '#dd1100', language_id: 224 }]
+      end
+
+      it 'matches the resolved language by language_id first', :aggregate_failures do
+        insertions = subject.insertions(programming_languages)
+
+        expect(insertions.first[:programming_language_id]).to eq(mathematica.id)
+        expect(insertions.first[:language_id]).to eq(224)
+        expect(insertions.first[:share]).to eq(100.0)
       end
     end
   end
