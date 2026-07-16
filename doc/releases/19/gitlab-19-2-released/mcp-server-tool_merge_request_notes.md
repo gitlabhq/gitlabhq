@@ -10,8 +10,8 @@ level: secondary
 weight: 50
 ---
 
+You can now use GitLab Duo and MCP-based agents to read merge request review conversations.
+This gives your AI assistant the full context of reviewer feedback, unresolved threads, and discussion history.
 
-
-You can now use GitLab Duo and MCP-based agents to read merge request review conversations. This gives your AI assistant the full context of reviewer feedback, unresolved threads, and discussion history.
-
-You can ask your agent to summarize review comments, draft responses to feedback, and post replies directly to merge request discussions without ever leaving your workflow.
+You can ask your agent to summarize review comments, draft responses to feedback, and post replies
+directly to merge request discussions without ever leaving your workflow.

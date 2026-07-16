@@ -8,7 +8,6 @@ work_item: https://gitlab.com/groups/gitlab-org/-/work_items/21585
 categories: [ DAP Code Review ]
 ---
 
-
 In previous versions of GitLab, when automatic reviews were turned on for a project or group, GitLab Duo reviewed every eligible merge request.
 This included bot-authored dependency updates, feature branches, and experimental work, not just changes the team actually wanted feedback on.
 

@@ -1,12 +1,12 @@
 ---
-title: "GitLab 19.2 (Upcoming release)"
-description: "Release notes for the upcoming version of GitLab."
-group: Monthly Release
 stage: Release Notes
+group: Monthly Release
+title: "GitLab 19.2 release notes"
+description: GitLab 19.2 released with GitLab Duo CLI is now generally available.
+date: 2026-07-16
 ---
 
-The following features are being delivered for GitLab 19.2.
-These features are now available on GitLab.com.
+On July 16, 2026, GitLab 19.2 was released with the following features.
 
 We are excited to recognize [vivekshukl007](https://gitlab.com/vivekshukl007)
 as this month's [Notable Contributor](https://contributors.gitlab.com/notable-contributors)!
