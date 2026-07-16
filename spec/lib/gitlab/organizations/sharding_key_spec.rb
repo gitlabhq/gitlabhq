@@ -24,7 +24,16 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
 
   # Specific tables can be temporarily exempt from this requirement. You must add an issue link in a comment next to
   # the table name to remove this once a decision has been made.
-  let(:allowed_to_be_missing_not_null) { [] }
+  let(:allowed_to_be_missing_not_null) do
+    # web_hook_logs_daily's check_19dc80d658 is left NOT VALID by
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/603303 and re-validated (these entries removed)
+    # in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244171
+    %w[
+      web_hook_logs_daily.organization_id
+      web_hook_logs_daily.group_id
+      web_hook_logs_daily.project_id
+    ]
+  end
 
   # Tables with a multi-column `sharding_key` must enforce that exactly one of the sharding key columns is
   # non-null per row, via a `num_nonnulls(...) = 1` (or equivalent `<>`) check constraint. Tables that still
@@ -38,7 +47,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'events', # has `(group_id IS NOT NULL) OR (project_id IS NOT NULL) OR (personal_namespace_id IS NOT NULL)`
       'labels', # constraint exists as `num_nonnulls(...) = 1` but is NOT VALID; tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/558353
       'notes', # has `num_nonnulls(namespace_id, organization_id, project_id) >= 1`
-      'scan_result_policies' # has `num_nonnulls(namespace_id, project_id) >= 1`
+      'scan_result_policies', # has `num_nonnulls(namespace_id, project_id) >= 1`
+      # has `num_nonnulls(...) = 1` but left NOT VALID by
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/603303, re-validated (this entry removed)
+      # in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244171
+      'web_hook_logs_daily'
     ]
   end
 
