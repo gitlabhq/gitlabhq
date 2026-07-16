@@ -73,12 +73,12 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
         expect { files.restore('registry.tar.gz', 'backup_id') }.not_to raise_error
       end
 
-      it 'calls tar command with unlink' do
+      it 'calls tar command without unlink flags', :aggregate_failures do
         expect_next_instance_of(Gitlab::Backup::Cli::Shell::Pipeline) do |pipeline|
           tar_cmd = pipeline.shell_commands[1]
 
-          expect(tar_cmd.cmd_args).to include('--unlink-first')
-          expect(tar_cmd.cmd_args).to include('--recursive-unlink')
+          expect(tar_cmd.cmd_args).not_to include('--unlink-first')
+          expect(tar_cmd.cmd_args).not_to include('--recursive-unlink')
 
           expect(pipeline).to receive(:run!).and_return(pipeline_status_success)
         end
