@@ -57,9 +57,9 @@ RSpec.describe LooseForeignKeys::PartitionCleanerService, feature_category: :dat
 
   describe 'query generation' do
     context 'when composite primary key is used' do
-      it 'generates an IN query for deleting the rows' do
-        expected_query = build_expected_query("gitlab_partitions_dynamic\".\"_test_target_table_100")
-        expected_query2 = build_expected_query("gitlab_partitions_dynamic\".\"_test_target_table_101")
+      it 'generates a lateral query for deleting the rows' do
+        expected_query = build_expected_lateral_query("gitlab_partitions_dynamic\".\"_test_target_table_100")
+        expected_query2 = build_expected_lateral_query("gitlab_partitions_dynamic\".\"_test_target_table_101")
 
         expect(ApplicationRecord.connection).to receive(:execute).with(expected_query).and_call_original
         expect(ApplicationRecord.connection).to receive(:execute).with(expected_query2).and_call_original
@@ -104,15 +104,18 @@ RSpec.describe LooseForeignKeys::PartitionCleanerService, feature_category: :dat
     end
   end
 
-  def build_expected_query(identifier)
+  def build_expected_lateral_query(identifier)
     <<~SQL.squish
       UPDATE \"#{identifier}\" SET "parent_id" = NULL
       WHERE (\"#{identifier}\"."id", \"#{identifier}\"."partition_id")
       IN
-        (SELECT \"#{identifier}\"."id", \"#{identifier}\"."partition_id"
-        FROM \"#{identifier}\"
-        WHERE \"#{identifier}\"."parent_id"
-        IN (1)
+        (SELECT "lateral_rows"."id", "lateral_rows"."partition_id"
+        FROM (VALUES (1)) AS parent("parent_id"),
+        LATERAL
+          (SELECT \"#{identifier}\"."id", \"#{identifier}\"."partition_id"
+          FROM \"#{identifier}\"
+          WHERE \"#{identifier}\"."parent_id" = "parent"."parent_id"
+          LIMIT 500) lateral_rows
         LIMIT 500)
     SQL
   end

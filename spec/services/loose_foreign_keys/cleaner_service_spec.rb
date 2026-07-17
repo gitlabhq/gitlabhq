@@ -54,8 +54,8 @@ RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
         ]
       end
 
-      it 'generates an IN query for nullifying the rows' do
-        expected_query = %{UPDATE "issues" SET "project_id" = NULL WHERE ("issues"."id") IN (SELECT "issues"."id" FROM "issues" WHERE "issues"."project_id" IN (#{issue.project_id}) LIMIT 500)}
+      it 'generates a lateral query for nullifying the rows' do
+        expected_query = %{UPDATE "issues" SET "project_id" = NULL WHERE ("issues"."id") IN (SELECT "lateral_rows"."id" FROM (VALUES (#{issue.project_id})) AS parent("project_id"), LATERAL (SELECT "issues"."id" FROM "issues" WHERE "issues"."project_id" = "parent"."project_id" LIMIT 500) lateral_rows LIMIT 500)}
         expect(ApplicationRecord.connection).to receive(:execute).with(expected_query).and_call_original
 
         cleaner_service.execute
@@ -64,30 +64,30 @@ RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
         expect(issue.project_id).to be_nil
       end
 
-      it 'generates an IN query for deleting the rows' do
+      it 'generates a lateral query for deleting the rows' do
         loose_fk_definition.options[:on_delete] = :async_delete
 
-        expected_query = %{DELETE FROM "issues" WHERE ("issues"."id") IN (SELECT "issues"."id" FROM "issues" WHERE "issues"."project_id" IN (#{issue.project_id}) LIMIT 1000)}
+        expected_query = %{DELETE FROM "issues" WHERE ("issues"."id") IN (SELECT "lateral_rows"."id" FROM (VALUES (#{issue.project_id})) AS parent("project_id"), LATERAL (SELECT "issues"."id" FROM "issues" WHERE "issues"."project_id" = "parent"."project_id" LIMIT 1000) lateral_rows LIMIT 1000)}
         expect(ApplicationRecord.connection).to receive(:execute).with(expected_query).and_call_original
 
         cleaner_service.execute
 
-        expect(Issue.exists?(id: issue.id)).to eq(false)
+        expect(Issue.exists?(id: issue.id)).to be(false)
       end
 
       context 'when delete_limit is configured' do
         let(:custom_limit) { 20 }
 
-        it 'generates an IN query for deleting the rows' do
+        it 'generates a lateral query for deleting the rows' do
           loose_fk_definition.options[:on_delete] = :async_delete
           loose_fk_definition.options[:delete_limit] = custom_limit
 
-          expected_query = %{DELETE FROM "issues" WHERE ("issues"."id") IN (SELECT "issues"."id" FROM "issues" WHERE "issues"."project_id" IN (#{issue.project_id}) LIMIT #{custom_limit})}
+          expected_query = %{DELETE FROM "issues" WHERE ("issues"."id") IN (SELECT "lateral_rows"."id" FROM (VALUES (#{issue.project_id})) AS parent("project_id"), LATERAL (SELECT "issues"."id" FROM "issues" WHERE "issues"."project_id" = "parent"."project_id" LIMIT #{custom_limit}) lateral_rows LIMIT #{custom_limit})}
           expect(ApplicationRecord.connection).to receive(:execute).with(expected_query).and_call_original
 
           cleaner_service.execute
 
-          expect(Issue.exists?(id: issue.id)).to eq(false)
+          expect(Issue.exists?(id: issue.id)).to be(false)
         end
       end
 
@@ -95,7 +95,7 @@ RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
         let(:target_column) { 'state_id' }
         let(:target_value) { 2 }
         let(:update_query) do
-          %{UPDATE "issues" SET "#{target_column}" = #{target_value} WHERE ("issues"."id") IN (SELECT "issues"."id" FROM "issues" WHERE "issues"."project_id" IN (#{issue.project_id}) AND "issues"."#{target_column}" != #{target_value} LIMIT 500)}
+          %{UPDATE "issues" SET "#{target_column}" = #{target_value} WHERE ("issues"."id") IN (SELECT "lateral_rows"."id" FROM (VALUES (#{issue.project_id})) AS parent("project_id"), LATERAL (SELECT "issues"."id" FROM "issues" WHERE "issues"."project_id" = "parent"."project_id" AND "issues"."#{target_column}" != #{target_value} LIMIT 500) lateral_rows LIMIT 500)}
         end
 
         before do
@@ -149,13 +149,13 @@ RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
         project.add_developer(user)
       end
 
-      it 'generates an IN query for deleting the rows' do
-        expected_query = %{DELETE FROM "project_authorizations" WHERE ("project_authorizations"."user_id", "project_authorizations"."project_id", "project_authorizations"."access_level") IN (SELECT "project_authorizations"."user_id", "project_authorizations"."project_id", "project_authorizations"."access_level" FROM "project_authorizations" WHERE "project_authorizations"."user_id" IN (#{user.id}) LIMIT 1000)}
+      it 'generates a lateral query for deleting the rows' do
+        expected_query = %{DELETE FROM "project_authorizations" WHERE ("project_authorizations"."user_id", "project_authorizations"."project_id", "project_authorizations"."access_level") IN (SELECT "lateral_rows"."user_id", "lateral_rows"."project_id", "lateral_rows"."access_level" FROM (VALUES (#{user.id})) AS parent("user_id"), LATERAL (SELECT "project_authorizations"."user_id", "project_authorizations"."project_id", "project_authorizations"."access_level" FROM "project_authorizations" WHERE "project_authorizations"."user_id" = "parent"."user_id" LIMIT 1000) lateral_rows LIMIT 1000)}
         expect(ApplicationRecord.connection).to receive(:execute).with(expected_query).and_call_original
 
         cleaner_service.execute
 
-        expect(ProjectAuthorization.exists?(user_id: user.id)).to eq(false)
+        expect(ProjectAuthorization.exists?(user_id: user.id)).to be(false)
       end
 
       context 'when the query generation is incorrect (paranoid check)' do
@@ -181,8 +181,8 @@ RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
         )
       end
 
-      it 'generates a query with the SKIP LOCKED clause' do
-        expect(ApplicationRecord.connection).to receive(:execute).with(/FOR UPDATE SKIP LOCKED/).and_call_original
+      it 'adds SKIP LOCKED inside the LATERAL subquery' do
+        expect(ApplicationRecord.connection).to receive(:execute).with(/FOR UPDATE SKIP LOCKED\) lateral_rows LIMIT \d+\)\z/).and_call_original
 
         cleaner_service.execute
       end
