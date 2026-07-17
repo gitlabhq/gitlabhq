@@ -49,7 +49,7 @@ module LooseForeignKeys
               end
 
       quoted_fk_col = connection.quote_column_name(loose_foreign_key_definition.column)
-      unless query.include?(%(= "parent".#{quoted_fk_col})) || query.include?("#{quoted_fk_col} IN (")
+      unless query.include?(%(= "parent".#{quoted_fk_col}))
         logger.error("FATAL: foreign key condition is missing from the generated query: #{query}")
         return ""
       end
@@ -102,14 +102,6 @@ module LooseForeignKeys
       query.where(columns.in(in_query_with_limit(limit))).to_sql
     end
 
-    def in_query_with_limit(limit, exclude_condition: nil)
-      if Feature.enabled?(:loose_foreign_keys_lateral_query, Feature.current_request)
-        lateral_in_query_with_limit(limit, exclude_condition: exclude_condition)
-      else
-        legacy_in_query_with_limit(limit, exclude_condition: exclude_condition)
-      end
-    end
-
     # Builds a lateral sub-query to avoid plan flip / sequential scans.
     # The LATERAL join forces one index seek per parent ID instead
     # of a single scan for all IDs, and the outer LIMIT caps total rows returned.
@@ -122,7 +114,7 @@ module LooseForeignKeys
     #   [FOR UPDATE SKIP LOCKED]
     # ) lateral_rows
     # LIMIT N
-    def lateral_in_query_with_limit(limit, exclude_condition: nil)
+    def in_query_with_limit(limit, exclude_condition: nil)
       fk_col = loose_foreign_key_definition.column
       parent_table = Arel::Table.new('parent')
       lateral_table = Arel::Table.new('lateral_rows')
@@ -151,26 +143,6 @@ module LooseForeignKeys
       outer.projections = primary_keys.map { |pk| lateral_table[pk.name] }
       outer.take(limit)
       outer
-    end
-
-    # Builds: SELECT primary_keys FROM table WHERE foreign_key IN (1, 2, 3) LIMIT N
-    def legacy_in_query_with_limit(limit, exclude_condition: nil)
-      in_query = Arel::SelectManager.new
-      in_query.from(quoted_table_name)
-      in_query.where(arel_table[loose_foreign_key_definition.column].in(deleted_parent_records.map(&:primary_key_value)))
-      loose_foreign_key_definition.options[:conditions]&.each do |condition|
-        in_query.where(arel_table[condition[:column]].eq(condition[:value]))
-      end
-
-      if exclude_condition
-        col, val = exclude_condition
-        in_query.where(arel_table[col].not_eq(val))
-      end
-
-      in_query.projections = primary_keys
-      in_query.take(limit)
-      in_query.lock(Arel.sql('FOR UPDATE SKIP LOCKED')) if with_skip_locked
-      in_query
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

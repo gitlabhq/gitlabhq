@@ -57,36 +57,14 @@ RSpec.describe LooseForeignKeys::PartitionCleanerService, feature_category: :dat
 
   describe 'query generation' do
     context 'when composite primary key is used' do
-      context 'when loose_foreign_keys_lateral_query feature flag is disabled' do
-        before do
-          stub_feature_flags(loose_foreign_keys_lateral_query: false)
-        end
+      it 'generates a lateral query for deleting the rows' do
+        expected_query = build_expected_lateral_query("gitlab_partitions_dynamic\".\"_test_target_table_100")
+        expected_query2 = build_expected_lateral_query("gitlab_partitions_dynamic\".\"_test_target_table_101")
 
-        it 'generates an IN query for deleting the rows' do
-          expected_query = build_expected_legacy_query("gitlab_partitions_dynamic\".\"_test_target_table_100")
-          expected_query2 = build_expected_legacy_query("gitlab_partitions_dynamic\".\"_test_target_table_101")
+        expect(ApplicationRecord.connection).to receive(:execute).with(expected_query).and_call_original
+        expect(ApplicationRecord.connection).to receive(:execute).with(expected_query2).and_call_original
 
-          expect(ApplicationRecord.connection).to receive(:execute).with(expected_query).and_call_original
-          expect(ApplicationRecord.connection).to receive(:execute).with(expected_query2).and_call_original
-
-          cleaner_service.execute
-        end
-      end
-
-      context 'when loose_foreign_keys_lateral_query feature flag is enabled' do
-        before do
-          stub_feature_flags(loose_foreign_keys_lateral_query: true)
-        end
-
-        it 'generates a lateral query for deleting the rows' do
-          expected_query = build_expected_lateral_query("gitlab_partitions_dynamic\".\"_test_target_table_100")
-          expected_query2 = build_expected_lateral_query("gitlab_partitions_dynamic\".\"_test_target_table_101")
-
-          expect(ApplicationRecord.connection).to receive(:execute).with(expected_query).and_call_original
-          expect(ApplicationRecord.connection).to receive(:execute).with(expected_query2).and_call_original
-
-          cleaner_service.execute
-        end
+        cleaner_service.execute
       end
 
       context 'when the query generation is incorrect (paranoid check)' do
@@ -124,19 +102,6 @@ RSpec.describe LooseForeignKeys::PartitionCleanerService, feature_category: :dat
         cleaner_service.execute
       end
     end
-  end
-
-  def build_expected_legacy_query(identifier)
-    <<~SQL.squish
-      UPDATE \"#{identifier}\" SET "parent_id" = NULL
-      WHERE (\"#{identifier}\"."id", \"#{identifier}\"."partition_id")
-      IN
-        (SELECT \"#{identifier}\"."id", \"#{identifier}\"."partition_id"
-        FROM \"#{identifier}\"
-        WHERE \"#{identifier}\"."parent_id"
-        IN (1)
-        LIMIT 500)
-    SQL
   end
 
   def build_expected_lateral_query(identifier)
