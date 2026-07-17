@@ -1,0 +1,6 @@
+# frozen_string_literal: true
+
+# Blocks post-deploy migrations on security MRs.
+# See: https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/1755
+
+post_deployment_migration.check_security_post_deployment_migrations
