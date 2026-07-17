@@ -62,8 +62,6 @@ module Gitlab
           # @return [Gitlab::Backup::Cli::Shell::Command]
           def extract_cmd(archive_file:, target_directory:)
             tar_args = %W[
-              --unlink-first
-              --recursive-unlink
               --directory=#{target_directory}
               --extract
               --file=#{archive_file}
