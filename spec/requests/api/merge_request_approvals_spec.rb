@@ -124,41 +124,6 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
           expect(merge_request.approvals).to be_empty
         end
       end
-
-      context 'when the merge request is already approved by the user' do
-        before do
-          create(:approval, user: approver, merge_request: merge_request)
-        end
-
-        it 'returns 304 Not Modified' do
-          approve
-
-          expect(response).to have_gitlab_http_status(:not_modified)
-        end
-
-        it 'does not create a duplicate approval' do
-          expect { approve }.not_to change { merge_request.approvals.count }
-        end
-
-        context 'when the publish_review param is true' do
-          it 'still publishes pending draft notes and returns 304' do
-            draft_note = create(:draft_note, merge_request: merge_request, author: approver)
-
-            expect { approve(publish_review: true) }.to change { merge_request.notes.count }.by(1)
-
-            expect(DraftNote.exists?(draft_note.id)).to be(false)
-            expect(response).to have_gitlab_http_status(:not_modified)
-          end
-        end
-
-        context 'when the sha param is incorrect' do
-          it 'returns 409 Conflict' do
-            approve(sha: merge_request.diff_head_sha.reverse)
-
-            expect(response).to have_gitlab_http_status(:conflict)
-          end
-        end
-      end
     end
   end
 
@@ -212,20 +177,6 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
         post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unapprove", unapprover)
 
         expect(response).to have_gitlab_http_status(:created)
-      end
-    end
-
-    context 'as a user who has not approved the merge request' do
-      let_it_be(:non_approver) { create(:user) }
-
-      before do
-        project.add_developer(non_approver)
-      end
-
-      it 'returns 304 Not Modified' do
-        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unapprove", non_approver)
-
-        expect(response).to have_gitlab_http_status(:not_modified)
       end
     end
   end

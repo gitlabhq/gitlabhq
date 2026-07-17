@@ -58,7 +58,6 @@ module API
             'the value must match the merge request’s HEAD commit SHA. A mismatch returns a `409 Conflict` response.'
           success code: 201, model: ::API::Entities::MergeRequestApprovals
           failure [
-            { code: 304, message: 'Not modified' },
             { code: 404, message: 'Not found' },
             { code: 401, message: 'Unauthorized' }
           ]
@@ -82,8 +81,6 @@ module API
             render_api_error('Failed to publish review', 500) unless result[:status] == :success
           end
 
-          not_modified! if merge_request.approved_by?(current_user)
-
           success =
             ::MergeRequests::ApprovalService
               .new(project: user_project, current_user: current_user, params: params)
@@ -99,7 +96,6 @@ module API
             'specified merge request.'
           success code: 201, model: ::API::Entities::MergeRequestApprovals
           failure [
-            { code: 304, message: 'Not modified' },
             { code: 404, message: 'Not found' },
             { code: 401, message: 'Unauthorized' }
           ]
@@ -108,8 +104,6 @@ module API
         route_setting :authorization, permissions: :unapprove_merge_request, boundary_type: :project
         post 'unapprove', urgency: :low do
           merge_request = find_merge_request_with_access(params[:merge_request_iid], :approve_merge_request)
-
-          not_modified! unless merge_request.approved_by?(current_user)
 
           success = ::MergeRequests::RemoveApprovalService
             .new(project: user_project, current_user: current_user)

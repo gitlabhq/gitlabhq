@@ -39209,8 +39209,6 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesMergeRequestApprovals"
-        '304':
-          description: Not modified
         '404':
           description: Not found
         '401':
@@ -39253,8 +39251,6 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesMergeRequestApprovals"
-        '304':
-          description: Not modified
         '404':
           description: Not found
         '401':
