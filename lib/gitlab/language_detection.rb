@@ -3,6 +3,7 @@
 module Gitlab
   class LanguageDetection
     MAX_LANGUAGES = 5
+    DetectedLanguage = Struct.new(:name, :share, :color, :language_id, keyword_init: true)
 
     def initialize(repository, repository_languages)
       @repository = repository
@@ -10,39 +11,54 @@ module Gitlab
     end
 
     def languages
-      detection.keys
+      detected_languages.map(&:name)
     end
 
-    def language_color(name)
-      detection.dig(name, :color)
+    def detected_languages
+      @detected_languages ||= detection.map do |name, attributes|
+        DetectedLanguage.new(
+          name: name,
+          share: attributes[:value],
+          color: attributes[:color],
+          language_id: attributes[:language_id]
+        )
+      end
     end
 
-    def language_gitaly_id(name)
-      detection.dig(name, :language_id)
-    end
-
-    # Newly detected languages, returned in a structure accepted by
-    # ApplicationRecord.legacy_bulk_insert
     def insertions(programming_languages)
-      lang_to_id = programming_languages.to_h { |p| [p.name, p.id] }
+      languages_by_name = programming_languages.index_by(&:name)
+      languages_by_id = programming_languages
+        .select(&:language_id)
+        .index_by(&:language_id)
 
-      (languages - previous_language_names).map do |new_lang|
+      new_languages.map do |detected_language|
+        programming_language = languages_by_id[detected_language.language_id] ||
+          languages_by_name[detected_language.name]
+
         {
           project_id: @repository.project.id,
-          share: detection[new_lang][:value],
-          programming_language_id: lang_to_id[new_lang]
+          share: detected_language.share,
+          programming_language_id: programming_language.id,
+          language_id: programming_language.language_id
         }
       end
     end
 
-    # updates analyses which records only require updating of their share
     def updates
       to_update = @repository_languages.select do |lang|
-        detection.key?(lang.name) && detection[lang.name][:value] != lang.share
+        next unless detection.key?(lang.name)
+
+        expected_language_id = lang.programming_language.language_id
+
+        detection[lang.name][:value] != lang.share || expected_language_id != lang.language_id
       end
 
       to_update.map do |lang|
-        { programming_language_id: lang.programming_language_id, share: detection[lang.name][:value] }
+        {
+          programming_language_id: lang.programming_language_id,
+          share: detection[lang.name][:value],
+          language_id: lang.programming_language.language_id
+        }
       end
     end
 
@@ -60,6 +76,10 @@ module Gitlab
 
     def previous_language_names
       @previous_language_names ||= @repository_languages.map(&:name)
+    end
+
+    def new_languages
+      detected_languages.reject { |language| previous_language_names.include?(language.name) }
     end
 
     def detection
