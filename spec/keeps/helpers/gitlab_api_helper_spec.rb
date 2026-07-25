@@ -12,6 +12,14 @@ RSpec.describe Keeps::Helpers::GitlabApiHelper, feature_category: :tooling do
     allow(helper).to receive(:puts)
   end
 
+  # `GitlabApiHelper#initialize` mutates the process-global `Gitlab::HTTP_V2`
+  # configuration (empties `allowed_internal_uris` and swaps the logging procs).
+  # Reload the initializer to restore it so we don't leak the change into
+  # unrelated specs sharing the same RSpec process.
+  after do
+    load Rails.root.join('config/initializers/7_gitlab_http.rb')
+  end
+
   describe '#query_api' do
     let(:first_page_response) do
       instance_double(

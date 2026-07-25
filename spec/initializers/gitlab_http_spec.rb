@@ -60,6 +60,14 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
   context 'when configuring allowed_internal_uris' do
     subject(:uris) { described_class.configuration.allowed_internal_uris }
 
+    # Reloading the initializer mutates the process-global HTTP_V2 configuration.
+    # Restore the original value so we don't leak it into unrelated specs.
+    around do |example|
+      original = described_class.configuration.allowed_internal_uris
+      example.run
+      described_class.configuration.allowed_internal_uris = original
+    end
+
     it do
       is_expected.to contain_exactly(
         URI::HTTP.build(host: 'localhost', port: 80),
