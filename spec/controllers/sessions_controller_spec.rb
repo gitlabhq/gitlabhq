@@ -445,7 +445,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
       context 'with reCAPTCHA' do
         def unsuccessful_login(user_params, sesion_params: {})
           # Without this, `verify_recaptcha` arbitrarily returns true in test env
-          Recaptcha.configuration.skip_verify_env.delete('test')
+          allow(Recaptcha.configuration).to receive(:skip_verify_env).and_return([])
           counter = double(:counter)
 
           expect(counter).to receive(:increment)
@@ -458,7 +458,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
 
         def successful_login(user_params, sesion_params: {})
           # Avoid test ordering issue and ensure `verify_recaptcha` returns true
-          Recaptcha.configuration.skip_verify_env << 'test'
+          allow(Recaptcha.configuration).to receive(:skip_verify_env).and_return(['test'])
           counter = double(:counter)
 
           expect(counter).to receive(:increment)

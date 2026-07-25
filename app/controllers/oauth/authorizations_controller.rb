@@ -80,11 +80,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   # CodeResponse once an authorization code has been issued; a denial or error
   # yields an ErrorResponse, so those are left untouched and we never
   # misattribute an authorization the user did not grant.
-  #
-  # Gated behind the `stamp_authorizing_user_on_dynamic_oauth_app` feature flag
-  # for safe rollout on GitLab.com.
   def stamp_authorizing_user_on_dynamic_application
-    return unless Feature.enabled?(:stamp_authorizing_user_on_dynamic_oauth_app, current_user)
     return unless performed? && authorize_response.is_a?(Doorkeeper::OAuth::CodeResponse)
     return unless current_user
 

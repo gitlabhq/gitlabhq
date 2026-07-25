@@ -5,6 +5,10 @@ class PasswordsController < Devise::PasswordsController
   include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
 
   skip_before_action :require_no_authentication, only: [:edit, :update]
+  # Password reset must remain available even when the organization is read-only,
+  # otherwise a user who cannot sign in also cannot recover access to read it.
+  # See https://gitlab.com/gitlab-org/gitlab/-/work_items/602813
+  skip_before_action :enforce_read_only_organization, only: [:create, :update]
 
   prepend_before_action :check_recaptcha, only: :create
   before_action :load_recaptcha, only: :new

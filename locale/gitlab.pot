@@ -2595,9 +2595,6 @@ msgstr ""
 msgid "AICatalog|Additional information"
 msgstr ""
 
-msgid "AICatalog|Agent"
-msgstr ""
-
 msgid "AICatalog|Agent configuration"
 msgstr ""
 
@@ -2626,9 +2623,6 @@ msgid "AICatalog|Agent is now at version %{newVersion}."
 msgstr ""
 
 msgid "AICatalog|Agent not found."
-msgstr ""
-
-msgid "AICatalog|Agent or flow"
 msgstr ""
 
 msgid "AICatalog|Agent updated."
@@ -2955,6 +2949,9 @@ msgstr ""
 msgid "AICatalog|External"
 msgstr ""
 
+msgid "AICatalog|External agent"
+msgstr ""
+
 msgid "AICatalog|External agents are inactive for all projects. To create or use external agents, %{linkStart}turn on external agents%{linkEnd}."
 msgstr ""
 
@@ -3039,6 +3036,9 @@ msgstr ""
 msgid "AICatalog|Flow not found."
 msgstr ""
 
+msgid "AICatalog|Flow or external agent"
+msgstr ""
+
 msgid "AICatalog|Flow updated."
 msgstr ""
 
@@ -3055,15 +3055,6 @@ msgid "AICatalog|Foundational agents and flows must be enabled in the Admin area
 msgstr ""
 
 msgid "AICatalog|Frequently failing or nuisance activity."
-msgstr ""
-
-msgid "AICatalog|From the agents and flows configured for this project, select the one that this trigger will execute."
-msgstr ""
-
-msgid "AICatalog|From the agents configured for this project, select the agent that this trigger will execute."
-msgstr ""
-
-msgid "AICatalog|From the flows configured for this project, select the flow that this trigger will execute."
 msgstr ""
 
 msgid "AICatalog|Get started with the AI Catalog"
@@ -3339,16 +3330,16 @@ msgstr ""
 msgid "AICatalog|Search tools."
 msgstr ""
 
-msgid "AICatalog|Select a flow from the AI Catalog"
-msgstr ""
-
-msgid "AICatalog|Select an agent from the AI Catalog"
-msgstr ""
-
-msgid "AICatalog|Select an agent or flow from the AI Catalog"
-msgstr ""
-
 msgid "AICatalog|Select at least one trigger."
+msgstr ""
+
+msgid "AICatalog|Select external agent"
+msgstr ""
+
+msgid "AICatalog|Select flow"
+msgstr ""
+
+msgid "AICatalog|Select flow or external agent"
 msgstr ""
 
 msgid "AICatalog|Select one or more projects where the agent should be enabled."
@@ -8561,6 +8552,9 @@ msgid "AiPowered|Buy Credits"
 msgstr ""
 
 msgid "AiPowered|Buy GitLab Credits"
+msgstr ""
+
+msgid "AiPowered|Buy monthly credits for AI capabilities, additional compute, and GitLab add-ons. Credits from $%{minPrice}, with volume discounts."
 msgstr ""
 
 msgid "AiPowered|Buy monthly credits for AI capabilities, additional compute, and GitLab add-ons. Credits from $1, with volume discounts."
@@ -29146,9 +29140,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|AI"
 msgstr ""
 
-msgid "DuoAgentsPlatform|AI Catalog"
-msgstr ""
-
 msgid "DuoAgentsPlatform|API request"
 msgstr ""
 
@@ -29162,9 +29153,6 @@ msgid "DuoAgentsPlatform|Actions"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Agent Platform health checks pass and runners are available to this project."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Agent or flow is required."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Agent session"
@@ -29203,6 +29191,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Cancel session?"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Change the target or events for this trigger."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Chat"
 msgstr ""
 
@@ -29239,7 +29230,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|Contact a project Maintainer or group Owner"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Create a new trigger."
+msgid "DuoAgentsPlatform|Create a trigger to run a flow or external agent based on project events."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Create commit"
@@ -29296,13 +29287,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Enter the path to your configuration file."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Event Type"
+msgid "DuoAgentsPlatform|Event"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Event types"
+msgid "DuoAgentsPlatform|Event type"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Event types are required."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Events"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Failed to cancel session. Please try again."
@@ -29336,6 +29330,9 @@ msgid "DuoAgentsPlatform|Fix a failing pipeline"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Flow"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Flow or external agent"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Flows can't run yet"
@@ -29384,9 +29381,6 @@ msgid "DuoAgentsPlatform|List files"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Manage automated flows within your project."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Manage trigger settings."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Merge request events configuration"
@@ -29473,6 +29467,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Select a service account"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Select any flow or external agent enabled in this project."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Select at least one merge request action."
 msgstr ""
 
@@ -29518,10 +29515,19 @@ msgstr ""
 msgid "DuoAgentsPlatform|Something went wrong while running the initializer."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Specify the path to a YAML file that contains a flow definition."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Start a Free Trial"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Start your free %{strongStart}%{trialDuration}-day trial%{strongEnd} now to accelerate your software delivery. Automate tasks with AI agents, from searching projects to creating commits."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Target"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Target is required."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Tell the agent what to change and it will generate an updated plan for your review."
@@ -29579,6 +29585,12 @@ msgid "DuoAgentsPlatform|We need to verify your account"
 msgstr ""
 
 msgid "DuoAgentsPlatform|We won't ask you for this information again. It will never be used for marketing purposes."
+msgstr ""
+
+msgid "DuoAgentsPlatform|What this trigger runs."
+msgstr ""
+
+msgid "DuoAgentsPlatform|When this trigger runs."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Who can grant you access"

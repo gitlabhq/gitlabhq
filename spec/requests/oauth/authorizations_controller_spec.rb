@@ -79,62 +79,49 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
           }
         end
 
-        context 'when the stamp_authorizing_user_on_dynamic_oauth_app feature flag is enabled' do
-          it 'appends the authorizing user to the name', :aggregate_failures do
-            post oauth_authorization_path, params: params
+        it 'appends the authorizing user to the name', :aggregate_failures do
+          post oauth_authorization_path, params: params
 
-            expect(response).to have_gitlab_http_status(:found)
-            expect(application.reload.name)
-              .to eq("[Unverified Dynamic Application] kiro — authorized by @#{user.username}")
-          end
+          expect(response).to have_gitlab_http_status(:found)
+          expect(application.reload.name)
+            .to eq("[Unverified Dynamic Application] kiro — authorized by @#{user.username}")
+        end
 
-          it 'stamps the user only once across repeat authorizations' do
-            2.times { post oauth_authorization_path, params: params.merge(state: SecureRandom.hex) }
+        it 'stamps the user only once across repeat authorizations' do
+          2.times { post oauth_authorization_path, params: params.merge(state: SecureRandom.hex) }
 
-            expect(application.reload.name)
-              .to eq("[Unverified Dynamic Application] kiro — authorized by @#{user.username}")
-          end
+          expect(application.reload.name)
+            .to eq("[Unverified Dynamic Application] kiro — authorized by @#{user.username}")
+        end
 
-          it 'does not stamp the name when the user denies authorization' do
-            expect { delete oauth_authorization_path, params: params }
+        it 'does not stamp the name when the user denies authorization' do
+          expect { delete oauth_authorization_path, params: params }
+            .not_to change { application.reload.name }.from('[Unverified Dynamic Application] kiro')
+        end
+
+        context 'when authorization is not granted (error redirect, no code)' do
+          let(:params) { super().merge(response_type: 'token') }
+
+          it 'does not stamp the name' do
+            expect { post oauth_authorization_path, params: params }
               .not_to change { application.reload.name }.from('[Unverified Dynamic Application] kiro')
-          end
-
-          context 'when authorization is not granted (error redirect, no code)' do
-            let(:params) { super().merge(response_type: 'token') }
-
-            it 'does not stamp the name' do
-              expect { post oauth_authorization_path, params: params }
-                .not_to change { application.reload.name }.from('[Unverified Dynamic Application] kiro')
-            end
-          end
-
-          context 'when the authorizing username contains unsafe characters' do
-            let(:unsafe_user) { create(:user, organizations: [current_organization]) }
-
-            before do
-              # Bypass username validation to simulate a value the sanitizer must clean.
-              unsafe_user.update_column(:username, 'ev.il name<script>')
-              sign_in(unsafe_user)
-            end
-
-            it 'strips characters outside the safe set before saving' do
-              post oauth_authorization_path, params: params
-
-              expect(application.reload.name)
-                .to eq('[Unverified Dynamic Application] kiro — authorized by @ev.ilnamescript')
-            end
           end
         end
 
-        context 'when the stamp_authorizing_user_on_dynamic_oauth_app feature flag is disabled' do
+        context 'when the authorizing username contains unsafe characters' do
+          let(:unsafe_user) { create(:user, organizations: [current_organization]) }
+
           before do
-            stub_feature_flags(stamp_authorizing_user_on_dynamic_oauth_app: false)
+            # Bypass username validation to simulate a value the sanitizer must clean.
+            unsafe_user.update_column(:username, 'ev.il name<script>')
+            sign_in(unsafe_user)
           end
 
-          it 'does not modify the application name' do
-            expect { post oauth_authorization_path, params: params }
-              .not_to change { application.reload.name }.from('[Unverified Dynamic Application] kiro')
+          it 'strips characters outside the safe set before saving' do
+            post oauth_authorization_path, params: params
+
+            expect(application.reload.name)
+              .to eq('[Unverified Dynamic Application] kiro — authorized by @ev.ilnamescript')
           end
         end
       end

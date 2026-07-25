@@ -3168,7 +3168,7 @@ export const userConfirmationPath = /*#__PURE__*/ (...args) => {
  * - href: `/users/unlock/new(.:format)`
  * - Path helper: `new_user_unlock_path`
  * - URL helper: `new_user_unlock_url`
- * - controller#action: `devise/unlocks#new`
+ * - controller#action: `unlocks#new`
  *
  * @param {object | undefined} options
  * @returns {string} route path
@@ -3190,7 +3190,7 @@ export const newUserUnlockPath = /*#__PURE__*/ (...args) => {
  * - href: `/users/unlock(.:format)`
  * - Path helper: `user_unlock_path`
  * - URL helper: `user_unlock_url`
- * - controller#action: `devise/unlocks#show`
+ * - controller#action: `unlocks#show`
  *
  * @param {object | undefined} options
  * @returns {string} route path

@@ -887,6 +887,22 @@ RSpec.describe JwtController, :aggregate_failures, feature_category: :system_acc
     end
   end
 
+  describe 'read-only organization enforcement exemption' do
+    # JwtController only exposes a GET action today, and enforcement never applies
+    # to reads, so a request spec cannot prove the skip does anything. Assert the
+    # inherited before_action is skipped on the controller instead, which is the
+    # behaviour the skip_before_action is there to guarantee for future writes.
+    it 'skips read-only organization enforcement', :aggregate_failures do
+      expect(ApplicationController._process_action_callbacks).to include(
+        have_attributes(kind: :before, filter: :enforce_read_only_organization)
+      )
+
+      expect(described_class._process_action_callbacks).not_to include(
+        have_attributes(kind: :before, filter: :enforce_read_only_organization)
+      )
+    end
+  end
+
   def credentials(login, password)
     ActionController::HttpAuthentication::Basic.encode_credentials(login, password)
   end

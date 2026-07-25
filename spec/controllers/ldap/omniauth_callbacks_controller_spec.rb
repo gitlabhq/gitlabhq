@@ -117,6 +117,34 @@ RSpec.describe Ldap::OmniauthCallbacksController, type: :controller, feature_cat
     end
   end
 
+  describe 'read-only organization enforcement exemption' do
+    let_it_be_with_reload(:organization) { create(:organization) }
+
+    before do
+      organization.start_read_only(read_only_reason: 'migration')
+      organization.confirm_read_only
+      stub_current_organization(organization.reload)
+    end
+
+    it 'does not block LDAP callback POST requests with a read-only error' do
+      post provider
+
+      expect(flash[:alert].to_s).not_to include('read-only mode')
+    end
+
+    context 'with the organization_read_only_enforcement flag disabled' do
+      before do
+        stub_feature_flags(organization_read_only_enforcement: false)
+      end
+
+      it 'does not block LDAP callback POST requests' do
+        post provider
+
+        expect(flash[:alert].to_s).not_to include('read-only mode')
+      end
+    end
+  end
+
   def reauthenticate_and_check_admin_mode(expected_admin_mode:)
     # Initially admin mode disabled
     expect(subject.current_user_mode.admin_mode?).to be(false)
