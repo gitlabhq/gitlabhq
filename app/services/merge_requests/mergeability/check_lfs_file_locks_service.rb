@@ -43,15 +43,6 @@ module MergeRequests
         format(CACHE_KEY, id: id, sha: sha, epoch: epoch)
       end
 
-      def has_lfs_file_locks?
-        if project.lfs_file_locks.loaded?
-          project.lfs_file_locks.any?
-        else
-          project.lfs_file_locks.exists?
-        end
-      end
-      strong_memoize_attr :has_lfs_file_locks?
-
       private
 
       delegate :project, :author_id, :changed_paths, to: :merge_request
@@ -62,6 +53,11 @@ module MergeRequests
         paths = changed_paths.map(&:path).uniq
         project.lfs_file_locks.for_paths(paths).not_for_users(author_id).exists?
       end
+
+      def has_lfs_file_locks?
+        project.lfs_file_locks.any?
+      end
+      strong_memoize_attr :has_lfs_file_locks?
 
       def check_inactive?
         !project.lfs_enabled?

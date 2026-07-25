@@ -69180,9 +69180,6 @@ msgstr ""
 msgid "SecurityOrchestration|Allowlist details"
 msgstr ""
 
-msgid "SecurityOrchestration|Allows any new vulnerabilities"
-msgstr ""
-
 msgid "SecurityOrchestration|Allows more than %{count} vulnerability"
 msgid_plural "SecurityOrchestration|Allows more than %{count} vulnerabilities"
 msgstr[0] ""
@@ -70256,6 +70253,9 @@ msgid "SecurityOrchestration|No exceptions"
 msgstr ""
 
 msgid "SecurityOrchestration|No linked groups"
+msgstr ""
+
+msgid "SecurityOrchestration|No new vulnerabilities allowed"
 msgstr ""
 
 msgid "SecurityOrchestration|No other actions are allowed in warn mode"
