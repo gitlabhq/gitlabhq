@@ -5,6 +5,7 @@ import customEmojisQuery from '../queries/custom_emojis.query.graphql';
 import List from '../components/list.vue';
 
 export default {
+  name: 'CustomEmojiIndex',
   apollo: {
     customEmojis: {
       fetchPolicy: fetchPolicies.NETWORK_ONLY,

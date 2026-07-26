@@ -3,6 +3,7 @@
 import CreateForm from '../components/form.vue';
 
 export default {
+  name: 'CustomEmojiNew',
   components: {
     CreateForm,
   },
