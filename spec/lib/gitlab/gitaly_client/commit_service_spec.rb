@@ -1395,6 +1395,54 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
     end
   end
 
+  describe '#list_commits_by_oid' do
+    before do
+      ::Gitlab::GitalyClient.clear_stubs!
+    end
+
+    context 'when the OID list is empty' do
+      it 'does not issue an RPC and returns an empty array' do
+        expect(Gitaly::CommitService::Stub).not_to receive(:new)
+
+        expect(client.list_commits_by_oid([])).to eq([])
+      end
+    end
+
+    context 'when the OID list spans more than one batch' do
+      let(:oids) { %w[oid1 oid2 oid3 oid4 oid5] }
+
+      before do
+        stub_const("#{described_class}::LIST_COMMITS_BY_OID_BATCH_SIZE", 2)
+      end
+
+      def commit_message(*commit_ids)
+        commits = commit_ids.map { |id| build(:gitaly_commit, id: id) }
+
+        instance_double(GRPC::ActiveCall::Operation, execute: [Gitaly::ListCommitsByOidResponse.new(commits: commits)], trailing_metadata: {})
+      end
+
+      it 'chunks the OIDs into batched RPCs and concatenates the results in order' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits_by_oid)
+            .with(gitaly_request_with_params(oid: %w[oid1 oid2]), kind_of(Hash))
+            .ordered.and_return(commit_message('oid1', 'oid2'))
+
+          expect(service).to receive(:list_commits_by_oid)
+            .with(gitaly_request_with_params(oid: %w[oid3 oid4]), kind_of(Hash))
+            .ordered.and_return(commit_message('oid3', 'oid4'))
+
+          expect(service).to receive(:list_commits_by_oid)
+            .with(gitaly_request_with_params(oid: %w[oid5]), kind_of(Hash))
+            .ordered.and_return(commit_message('oid5'))
+        end
+
+        commits = client.list_commits_by_oid(oids)
+
+        expect(commits.map(&:id)).to eq(oids)
+      end
+    end
+  end
+
   describe '#commits_by_message' do
     shared_examples 'a CommitsByMessageRequest' do
       let(:commits) { create_list(:gitaly_commit, 2) }

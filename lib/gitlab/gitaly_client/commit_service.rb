@@ -19,6 +19,11 @@ module Gitlab
 
       TREE_ENTRIES_DEFAULT_LIMIT = 100_000
 
+      # Bounds commits fetched per ListCommitsByOid RPC so a single streamed
+      # response cannot exceed gRPC's 4 MiB receive cap on large commit sets.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/362327.
+      LIST_COMMITS_BY_OID_BATCH_SIZE = 250
+
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
         @repository = repository
@@ -412,10 +417,12 @@ module Gitlab
       def list_commits_by_oid(oids)
         return [] if oids.empty?
 
-        request = Gitaly::ListCommitsByOidRequest.new(repository: @gitaly_repo, oid: oids)
+        oids.each_slice(LIST_COMMITS_BY_OID_BATCH_SIZE).flat_map do |oids_batch|
+          request = Gitaly::ListCommitsByOidRequest.new(repository: @gitaly_repo, oid: oids_batch)
 
-        response = gitaly_client_call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
-        consume_commits_response(response)
+          response = gitaly_client_call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
+          consume_commits_response(response)
+        end
       rescue GRPC::NotFound # If no repository is found, happens mainly during testing
         []
       end
