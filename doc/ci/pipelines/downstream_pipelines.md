@@ -556,10 +556,16 @@ upstream pipeline:
 
 {{< tab title="Multi-project pipeline" >}}
 
+Prerequisites:
+
+- The downstream project added to the [job token scope allowlist](../jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) of the upstream project.
+- At least the [Reporter role](../../user/permissions.md#project-cicd) in the upstream project for
+  the user who triggers the downstream pipeline.
+  Adding a project to the allowlist does not grant this access.
+
 Use [`needs:project`](../yaml/_index.md#needsproject) to fetch artifacts from an
 upstream pipeline:
 
-1. [Add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) of the upstream project.
 1. In the upstream pipeline, save the artifacts in a job with the [`artifacts`](../yaml/_index.md#artifacts)
    keyword, then trigger the downstream pipeline with a trigger job:
 
@@ -617,10 +623,15 @@ where `id` is the merge request ID. You can retrieve this ref with the [`CI_MERG
 CI/CD variable. Do not use a branch name as the `ref` with merge request pipelines,
 because the downstream pipeline attempts to fetch artifacts from the latest branch pipeline.
 
+Prerequisites:
+
+- The downstream project added to the [job token scope allowlist](../jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) of the upstream project.
+- At least the Reporter role in the upstream project for the user who triggers the downstream pipeline.
+  Adding a project to the allowlist does not grant this access.
+
 To fetch the artifacts from the upstream `merge request` pipeline instead of the `branch` pipeline,
 pass `CI_MERGE_REQUEST_REF_PATH` to the downstream pipeline using [variable inheritance](#pass-yaml-defined-cicd-variables):
 
-1. [Add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) of the upstream project.
 1. In a job in the upstream pipeline, save the artifacts using the [`artifacts`](../yaml/_index.md#artifacts) keyword.
 1. In the job that triggers the downstream pipeline, pass the `$CI_MERGE_REQUEST_REF_PATH` variable:
 
