@@ -87,7 +87,7 @@ export default {
       default: true,
     },
   },
-  emits: ['card-move', 'set-active-item', 'toggle-collapse', 'drag-start'],
+  emits: ['card-move', 'set-active-item', 'toggle-collapse', 'drag-start', 'check-board-params'],
   data() {
     return {
       workItemsConnection: { nodes: [], pageInfo: {} },
@@ -150,10 +150,11 @@ export default {
         update(data) {
           return data?.namespace?.workItems ?? { nodes: [], pageInfo: {} };
         },
-        result(result) {
-          if (!result.error) {
+        result({ data, error }) {
+          if (!error) {
             this.error = null;
           }
+          this.$emit('check-board-params', data?.namespace?.workItems?.nodes ?? []);
         },
         variables() {
           return this.queryVariables;

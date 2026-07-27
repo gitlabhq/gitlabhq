@@ -116,7 +116,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
           created_user = User.find_by(email: 'new@user.com')
 
           expect(created_user).to be_present
-          expect(created_user.blocked_pending_approval?).to eq(true)
+          expect(created_user.blocked_pending_approval?).to be(true)
         end
 
         it 'does not log in the user after sign up' do
@@ -173,7 +173,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
           created_user = User.find_by(email: 'new@user.com')
 
           expect(created_user).to be_present
-          expect(created_user.active?).to eq(true)
+          expect(created_user.active?).to be(true)
         end
 
         it 'does not show any flash message after signing up' do

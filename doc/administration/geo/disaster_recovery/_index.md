@@ -578,7 +578,7 @@ must disable the primary site:
 
    | Name | Default value | Description |
    | ---- | ------------- | ------- |
-   | `ENABLE_SILENT_MODE` | `false`  | If `true`, enables [Silent Mode](../../silent_mode/_index.md) before promotion (GitLab 16.4 and later) |
+   | `ENABLE_SILENT_MODE` | `false`  | If `true`, enables [Silent Mode](../../silent_mode/_index.md) before promotion |
 
 ### Step 3. Promote the secondary cluster
 

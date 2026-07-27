@@ -14,12 +14,6 @@ title: Diagrams.net
 
 {{< /details >}}
 
-{{< history >}}
-
-- Offline environment support [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116281) in GitLab 16.1.
-
-{{< /history >}}
-
 Use the [diagrams.net](https://www.drawio.com/) integration to create and embed SVG diagrams in wikis.
 The diagram editor is available in both the plain text editor and the rich text editor.
 

@@ -12,12 +12,6 @@ title: Search admin API
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120751) in GitLab 16.1
-
-{{< /history >}}
-
 Use this API to retrieve information about [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations).
 
 Prerequisites:

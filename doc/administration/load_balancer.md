@@ -131,8 +131,8 @@ It is strongly recommend that multi-node deployments configure load balancers to
 
 ### The health check is returning a `408` HTTP code via the load balancer
 
-If you are using the [AWS Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers)
-in GitLab 15.0 or later, you must to enable the `AES256-GCM-SHA384` cipher in NGINX.
+If you are using the [AWS Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers),
+you must to enable the `AES256-GCM-SHA384` cipher in NGINX.
 See [AES256-GCM-SHA384 SSL cipher no longer allowed by default by NGINX](../update/versions/gitlab_15_changes.md#1500)
 for more information.
 

@@ -34,7 +34,10 @@ keys:
 | `file_filters` | list of strings  | No       | Glob patterns that identify which repository paths the principle applies to. The sync uses these to scope drift detection. |
 | `baseline`     | string           | No       | Path to a file containing hand-curated rules. The distiller preserves baseline content verbatim. See [Baseline files](_index.md#baseline-files). |
 | `prerequisite` | boolean          | No       | When `true`, the routing table marks this principle as a prerequisite for all other principles in the same group and the distiller prepends a note referencing it in every non-prerequisite distilled file in that group. Default: `false`. |
-| `owner_team`   | string           | No       | Planned. Identifies the team responsible for reviewing the auto-generated merge request for this principle. Tracked in [issue 599920](https://gitlab.com/gitlab-org/gitlab/-/issues/599920). |
+| `owner_team`   | string           | No       | CODEOWNERS handle of the team that owns the source documentation. The sync groups principles by this value, opens one merge request per team, and routes approval to this team through CODEOWNERS. |
+| `secondary_teams` | list of strings | No      | Additional CODEOWNERS handles for source documentation that spans more than one team. Listed as inline code in a "Request a review from" section so the merge request does not notify these groups. |
+| `fallback_ping_team` | boolean    | No       | Fallback ping behavior when no source-documentation author resolves to a user. When `true` (default), the merge request summary mentions the `owner_team` handle. When `false`, it uses the non-mention team slug so a large group is not notified on every run. |
+| `team_slug`    | string           | No       | Short, URL-safe name used for the per-team branch and merge request title. Defaults to the last path segment of `owner_team`. Set this when the last segment is generic (for example, `approvers`) and would collide across teams. |
 
 ### Source entry
 
@@ -55,6 +58,20 @@ The `auto_mr:` map controls how the scheduled sync opens its merge request:
 | `title_template`       | string          | Yes      | Title template for the merge request. Supports `%{date}` interpolation. |
 | `labels`               | list of strings | Yes      | Labels applied to the merge request. |
 | `remove_source_branch` | boolean         | Yes      | When `true`, the source branch is deleted after the merge request merges. |
+
+## Merge request reviewers
+
+Each per-team merge request pings the people who changed the source documentation
+since the principle was last distilled. The sync lists the commit authors in the
+range between the previous distillation and the target branch, resolves each
+author to a GitLab user, and mentions the users in the merge request summary. The
+sync skips authors that are bot accounts or that it cannot resolve to a user, for
+example when the author has no public email address.
+
+When no author resolves to a user, the summary falls back to the
+`fallback_ping_team` behavior for the `owner_team`. Approval always routes to
+the `owner_team` through CODEOWNERS, so an unavailable author never blocks the
+merge request.
 
 ## Static entries
 

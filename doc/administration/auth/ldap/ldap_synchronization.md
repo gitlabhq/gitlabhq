@@ -41,12 +41,6 @@ You must consider your LDAP server's rate limits when configuring LDAP synchroni
 
 ## User sync
 
-{{< history >}}
-
-- Preventing LDAP user's profile name synchronization [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11336) in GitLab 15.11.
-
-{{< /history >}}
-
 Once per day, GitLab runs a worker to check and update GitLab
 users against LDAP.
 

@@ -38794,6 +38794,9 @@ msgstr ""
 msgid "Groups|Group name"
 msgstr ""
 
+msgid "Groups|Group name is required."
+msgstr ""
+
 msgid "Groups|Group path is available."
 msgstr ""
 
@@ -91471,8 +91474,8 @@ msgstr ""
 msgid "Your instance has reached its seat limit"
 msgstr ""
 
-msgid "Your instance has used %{used_seats} of %{total_seats} seat (%{overage_count} over limit). Purchase more seats and turn on restricted access to prevent further overages."
-msgid_plural "Your instance has used %{used_seats} of %{total_seats} seats (%{overage_count} over limit). Purchase more seats and turn on restricted access to prevent further overages."
+msgid "Your instance has used %{used_seats} of %{total_seats} seat (%{overage_count} over limit). Purchase more seats or turn on restricted access to prevent further overages."
+msgid_plural "Your instance has used %{used_seats} of %{total_seats} seats (%{overage_count} over limit). Purchase more seats or turn on restricted access to prevent further overages."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -91481,14 +91484,14 @@ msgid_plural "Your instance has used %{used_seats} of %{total_seats} seats (%{ov
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Your instance has used %{used_seats} of %{total_seats} seats. When no seats remain, adding new users will put your instance into overage. Purchase more seats and turn on restricted access to block new users automatically."
+msgid "Your instance has used %{used_seats} of %{total_seats} seats. When no seats remain, adding new users will put your instance into overage. Purchase more seats or turn on restricted access to block new users automatically."
 msgstr ""
 
 msgid "Your instance has used %{used_seats} of %{total_seats} seats. When no seats remain, restricted access will block new users from being added to prevent overages."
 msgstr ""
 
-msgid "Your instance has used all %{total_seats} seat. Adding new users will put your instance into overage. Purchase more seats and turn on restricted access to block new users automatically."
-msgid_plural "Your instance has used all %{total_seats} seats. Adding new users will put your instance into overage. Purchase more seats and turn on restricted access to block new users automatically."
+msgid "Your instance has used all %{total_seats} seat. Adding new users will put your instance into overage. Purchase more seats or turn on restricted access to block new users automatically."
+msgid_plural "Your instance has used all %{total_seats} seats. Adding new users will put your instance into overage. Purchase more seats or turn on restricted access to block new users automatically."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -91551,8 +91554,8 @@ msgstr ""
 msgid "Your namespace has reached its seat limit"
 msgstr ""
 
-msgid "Your namespace has used %{used_seats} of %{total_seats} seat (%{overage_count} over limit). Purchase more seats and turn on restricted access to prevent further overages."
-msgid_plural "Your namespace has used %{used_seats} of %{total_seats} seats (%{overage_count} over limit). Purchase more seats and turn on restricted access to prevent further overages."
+msgid "Your namespace has used %{used_seats} of %{total_seats} seat (%{overage_count} over limit). Purchase more seats or turn on restricted access to prevent further overages."
+msgid_plural "Your namespace has used %{used_seats} of %{total_seats} seats (%{overage_count} over limit). Purchase more seats or turn on restricted access to prevent further overages."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -91561,14 +91564,14 @@ msgid_plural "Your namespace has used %{used_seats} of %{total_seats} seats (%{o
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Your namespace has used %{used_seats} of %{total_seats} seats. When no seats remain, adding new users will put your namespace into overage. Purchase more seats and turn on restricted access to block new users automatically."
+msgid "Your namespace has used %{used_seats} of %{total_seats} seats. When no seats remain, adding new users will put your namespace into overage. Purchase more seats or turn on restricted access to block new users automatically."
 msgstr ""
 
 msgid "Your namespace has used %{used_seats} of %{total_seats} seats. When no seats remain, restricted access will block new users from being added to prevent overages."
 msgstr ""
 
-msgid "Your namespace has used all %{total_seats} seat. Adding new users will put your namespace into overage. Purchase more seats and turn on restricted access to block new users automatically."
-msgid_plural "Your namespace has used all %{total_seats} seats. Adding new users will put your namespace into overage. Purchase more seats and turn on restricted access to block new users automatically."
+msgid "Your namespace has used all %{total_seats} seat. Adding new users will put your namespace into overage. Purchase more seats or turn on restricted access to block new users automatically."
+msgid_plural "Your namespace has used all %{total_seats} seats. Adding new users will put your namespace into overage. Purchase more seats or turn on restricted access to block new users automatically."
 msgstr[0] ""
 msgstr[1] ""
 

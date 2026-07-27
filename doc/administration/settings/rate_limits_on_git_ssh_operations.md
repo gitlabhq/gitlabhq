@@ -26,12 +26,6 @@ The `git-upload-pack`, `git pull`, and `git clone` commands share a rate limit b
 
 ## Configure GitLab Shell operation limit
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123761) in GitLab 16.2.
-
-{{< /history >}}
-
 Prerequisites:
 
 - Administrator access.

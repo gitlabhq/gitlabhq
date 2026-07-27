@@ -827,33 +827,33 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
     end
   end
 
-  describe '.principle_ping_team?' do
+  describe '.principle_fallback_ping_team?' do
     before do
       manifest.data = {
         'principles' => {
           'small' => { 'owner_team' => '@a/small' },
-          'large' => { 'owner_team' => '@a/large', 'ping_team' => false }
+          'large' => { 'owner_team' => '@a/large', 'fallback_ping_team' => false }
         }
       }
     end
 
-    it 'defaults to true when ping_team is absent' do
-      expect(manifest.principle_ping_team?('small')).to be(true)
+    it 'defaults to true when fallback_ping_team is absent' do
+      expect(manifest.principle_fallback_ping_team?('small')).to be(true)
     end
 
-    it 'returns false when ping_team is explicitly false' do
-      expect(manifest.principle_ping_team?('large')).to be(false)
+    it 'returns false when fallback_ping_team is explicitly false' do
+      expect(manifest.principle_fallback_ping_team?('large')).to be(false)
     end
   end
 
-  describe '.team_pings? and .team_display' do
+  describe '.team_fallback_pings? and .team_display' do
     before do
       manifest.data = {
         'principles' => {
-          'be-a' => { 'owner_team' => '@gitlab-org/maintainers/rails-backend', 'ping_team' => false },
-          'be-b' => { 'owner_team' => '@gitlab-org/maintainers/rails-backend', 'ping_team' => false },
+          'be-a' => { 'owner_team' => '@gitlab-org/maintainers/rails-backend', 'fallback_ping_team' => false },
+          'be-b' => { 'owner_team' => '@gitlab-org/maintainers/rails-backend', 'fallback_ping_team' => false },
           'db' => { 'owner_team' => '@gitlab-org/maintainers/database' },
-          'mixed-a' => { 'owner_team' => '@a/mixed', 'ping_team' => false },
+          'mixed-a' => { 'owner_team' => '@a/mixed', 'fallback_ping_team' => false },
           'mixed-b' => { 'owner_team' => '@a/mixed' }
         }
       }
@@ -861,14 +861,14 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
 
     context 'when every principle owned by the handle opts out' do
       it 'does not ping and displays the team_slug', :aggregate_failures do
-        expect(manifest.team_pings?('@gitlab-org/maintainers/rails-backend')).to be(false)
+        expect(manifest.team_fallback_pings?('@gitlab-org/maintainers/rails-backend')).to be(false)
         expect(manifest.team_display('@gitlab-org/maintainers/rails-backend')).to eq('rails-backend')
       end
     end
 
     context 'when the handle has no opt-out' do
       it 'pings and displays the raw handle', :aggregate_failures do
-        expect(manifest.team_pings?('@gitlab-org/maintainers/database')).to be(true)
+        expect(manifest.team_fallback_pings?('@gitlab-org/maintainers/database')).to be(true)
         expect(manifest.team_display('@gitlab-org/maintainers/database'))
           .to eq('@gitlab-org/maintainers/database')
       end
@@ -876,7 +876,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
 
     context 'when only some principles owned by the handle opt out' do
       it 'still pings (any opt-in wins)', :aggregate_failures do
-        expect(manifest.team_pings?('@a/mixed')).to be(true)
+        expect(manifest.team_fallback_pings?('@a/mixed')).to be(true)
         expect(manifest.team_display('@a/mixed')).to eq('@a/mixed')
       end
     end

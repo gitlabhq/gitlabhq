@@ -45,6 +45,7 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
             have_attributes(user: current_user, source_hostname: source_hostname)
           )
         )
+        expect(result.payload.configuration).to have_attributes(source_hostname: source_hostname)
       end
     end
 
@@ -91,7 +92,7 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
       it_behaves_like 'a success response'
 
       it 'persists the sanitized source hostname' do
-        expect(result.payload.reload.source_hostname).to eq(source_hostname)
+        expect(result.payload.configuration.reload.source_hostname).to eq(source_hostname)
       end
     end
 

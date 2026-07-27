@@ -151,12 +151,6 @@ see [Archive a group](../../api/groups.md#archive-a-group).
 
 ## Configure rate limits on deleting group members
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420321) in GitLab 16.9.
-
-{{< /history >}}
-
 Configure the rate limit for each group and user for requests to the
 [delete members endpoint](../../api/group_members.md#remove-a-group-member).
 

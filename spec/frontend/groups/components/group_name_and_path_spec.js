@@ -76,6 +76,12 @@ describe('GroupNameAndPath', () => {
   const findSelectedGroup = () => wrapper.findComponent(GlCollapsibleListbox);
   const findChangeUrlAlert = () => extendedWrapper(wrapper.findByTestId('changing-url-alert'));
   const findDotInPathAlert = () => extendedWrapper(wrapper.findByTestId('dot-in-path-alert'));
+  const findFormGroupByLabelFor = (labelFor) =>
+    wrapper.findAllComponents({ name: 'BFormGroup' }).wrappers.find((formGroup) => {
+      return formGroup.props('labelFor') === labelFor;
+    });
+  const findGroupNameFormGroup = () => findFormGroupByLabelFor(defaultProvide.fields.name.id);
+  const findGroupPathFormGroup = () => findFormGroupByLabelFor(defaultProvide.fields.path.id);
 
   const apiMockAvailablePath = () => {
     getGroupPathAvailability.mockResolvedValueOnce({
@@ -92,7 +98,7 @@ describe('GroupNameAndPath', () => {
   };
 
   const expectLoadingMessageExists = () => {
-    expect(wrapper.findByText(GroupNameAndPath.i18n.apiLoadingMessage).exists()).toBe(true);
+    expect(findGroupPathFormGroup().props('description')).toBe('Checking group URL availability…');
   };
 
   describe('when user types in the `Group name` field', () => {
@@ -175,6 +181,8 @@ describe('GroupNameAndPath', () => {
 
       describe('when user selects parent group', () => {
         it('updates `Subgroup URL` dropdown and calls API', async () => {
+          getGroupPathAvailability.mockResolvedValue({ data: { exists: false, suggests: [] } });
+
           expect(findSelectedGroup().props('toggleText')).toContain('/path1');
 
           await findSubgroupNameField().setValue(mockGroupName);
@@ -184,14 +192,13 @@ describe('GroupNameAndPath', () => {
 
           findSelectedGroup().vm.$emit('select', '2');
           await nextTick();
+          await waitForPromises();
 
           expect(findSelectedGroup().props('toggleText')).toContain('/path2');
 
           expect(getGroupPathAvailability).toHaveBeenCalled();
 
-          expect(wrapper.findByText(GroupNameAndPath.i18n.inputs.path.validFeedback).exists()).toBe(
-            true,
-          );
+          expect(findGroupPathFormGroup().props('state')).toBe(true);
         });
       });
     });
@@ -286,7 +293,7 @@ describe('GroupNameAndPath', () => {
         await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith({
-          message: GroupNameAndPath.i18n.apiErrorMessage,
+          message: 'An error occurred while checking group path. Please refresh and try again.',
         });
       });
     });
@@ -301,7 +308,7 @@ describe('GroupNameAndPath', () => {
         await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith({
-          message: GroupNameAndPath.i18n.apiErrorMessage,
+          message: 'An error occurred while checking group path. Please refresh and try again.',
         });
       });
     });
@@ -348,8 +355,8 @@ describe('GroupNameAndPath', () => {
 
         await findGroupNameField().setValue('a');
 
-        expect(wrapper.findByText('Group URL must be at least 2 characters long.').exists()).toBe(
-          true,
+        expect(findGroupPathFormGroup().props('invalidFeedback')).toBe(
+          'Group URL must be at least 2 characters long.',
         );
       });
 
@@ -365,14 +372,78 @@ describe('GroupNameAndPath', () => {
     });
   });
 
-  describe('when `Group name` field is invalid', () => {
-    it('shows error message', async () => {
+  describe('when `Group name` has an invalid format', () => {
+    beforeEach(() => {
       createComponent();
+    });
 
+    it.each`
+      name            | message
+      ${'-bad start'} | ${'Group name must start with a letter, digit, emoji, or underscore.'}
+      ${'(parens)'}   | ${'Group name must start with a letter, digit, emoji, or underscore.'}
+      ${'bad/char'}   | ${'Group name can contain only letters, digits, dashes, spaces, dots, underscores, parenthesis, and emojis.'}
+      ${'bad!char'}   | ${'Group name can contain only letters, digits, dashes, spaces, dots, underscores, parenthesis, and emojis.'}
+    `('shows the inline error "$message" for name "$name"', async ({ name, message }) => {
+      await findGroupNameField().setValue(name);
+
+      expect(findGroupNameFormGroup().props('invalidFeedback')).toBe(message);
+    });
+
+    it('clears the inline error once the format becomes valid', async () => {
+      await findGroupNameField().setValue('-bad');
+      expect(findGroupNameFormGroup().props('invalidFeedback')).toBe(
+        'Group name must start with a letter, digit, emoji, or underscore.',
+      );
+
+      await findGroupNameField().setValue('My Group');
+      expect(findGroupNameFormGroup().props('invalidFeedback')).toBe(null);
+    });
+
+    it('shows the required error when the field is cleared', async () => {
+      await findGroupNameField().setValue('-bad');
+      expect(findGroupNameFormGroup().props('invalidFeedback')).toBe(
+        'Group name must start with a letter, digit, emoji, or underscore.',
+      );
+
+      await findGroupNameField().setValue('');
+      expect(findGroupNameFormGroup().props('invalidFeedback')).toBe('Group name is required.');
+    });
+
+    it('blocks form submission by marking the field invalid with the format message', async () => {
+      await findGroupNameField().setValue('-bad');
+
+      expect(findGroupNameFormGroup().props('state')).toBe(false);
+      expect(findGroupNameFormGroup().props('invalidFeedback')).toBe(
+        'Group name must start with a letter, digit, emoji, or underscore.',
+      );
+    });
+
+    it('allows form submission once the name becomes valid', async () => {
+      await findGroupNameField().setValue('-bad');
+      expect(findGroupNameFormGroup().props('state')).toBe(false);
+
+      await findGroupNameField().setValue('My Group');
+      expect(findGroupNameFormGroup().props('state')).toBe(null);
+    });
+  });
+
+  describe('when `Group name` field is invalid', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('shows the required message when the field is empty', async () => {
       await findGroupNameField().trigger('invalid');
 
-      expect(wrapper.findByText(GroupNameAndPath.i18n.inputs.name.invalidFeedback).exists()).toBe(
-        true,
+      expect(findGroupNameFormGroup().props('invalidFeedback')).toBe('Group name is required.');
+    });
+
+    it('shows the granular format message when the value has a format error', async () => {
+      await findGroupNameField().setValue('-bad');
+      await findGroupNameField().trigger('invalid');
+
+      expect(findGroupNameFormGroup().props('invalidFeedback')).toBe(
+        'Group name must start with a letter, digit, emoji, or underscore.',
       );
     });
   });
@@ -397,9 +468,7 @@ describe('GroupNameAndPath', () => {
         await findGroupUrlField().setValue(mockGroupUrl);
         await waitForPromises();
 
-        expect(wrapper.findByText(GroupNameAndPath.i18n.inputs.path.validFeedback).exists()).toBe(
-          true,
-        );
+        expect(findGroupPathFormGroup().props('state')).toBe(true);
       });
     });
 
@@ -412,11 +481,9 @@ describe('GroupNameAndPath', () => {
         await findGroupUrlField().setValue(mockGroupUrl);
         await waitForPromises();
 
-        expect(
-          wrapper
-            .findByText(GroupNameAndPath.i18n.inputs.path.invalidFeedbackPathUnavailable)
-            .exists(),
-        ).toBe(true);
+        expect(findGroupPathFormGroup().props('invalidFeedback')).toBe(
+          'Group path is unavailable. Path has been replaced with a suggested available path.',
+        );
         expect(findGroupUrlField().element.value).toBe(mockGroupUrlSuggested);
       });
     });
@@ -433,9 +500,7 @@ describe('GroupNameAndPath', () => {
         await waitForPromises();
 
         expect(getGroupPathAvailability).toHaveBeenCalled();
-        expect(wrapper.findByText(GroupNameAndPath.i18n.inputs.path.validFeedback).exists()).toBe(
-          true,
-        );
+        expect(findGroupPathFormGroup().props('state')).toBe(true);
 
         getGroupPathAvailability.mockClear();
 
@@ -463,7 +528,7 @@ describe('GroupNameAndPath', () => {
         await findGroupUrlField().setValue(path);
         await waitForPromises();
 
-        expect(wrapper.findByText(message).exists()).toBe(true);
+        expect(findGroupPathFormGroup().props('invalidFeedback')).toBe(message);
         expect(getGroupPathAvailability).not.toHaveBeenCalled();
       },
     );
@@ -473,7 +538,7 @@ describe('GroupNameAndPath', () => {
 
       await findGroupUrlField().setValue('-abc');
 
-      expect(wrapper.findByText(GroupNameAndPath.i18n.apiLoadingMessage).exists()).toBe(false);
+      expect(findGroupPathFormGroup().props('description')).toBe('');
     });
 
     it('aborts an in-flight availability request when the format becomes invalid', async () => {
@@ -489,12 +554,10 @@ describe('GroupNameAndPath', () => {
       await findGroupUrlField().setValue('-abc');
 
       expect(abortSpy).toHaveBeenCalled();
-      expect(wrapper.findByText(GroupNameAndPath.i18n.apiLoadingMessage).exists()).toBe(false);
-      expect(
-        wrapper
-          .findByText('Group URL must start with a letter, digit, underscore, or period.')
-          .exists(),
-      ).toBe(true);
+      expect(findGroupPathFormGroup().props('description')).toBe('');
+      expect(findGroupPathFormGroup().props('invalidFeedback')).toBe(
+        'Group URL must start with a letter, digit, underscore, or period.',
+      );
     });
 
     it('triggers the availability check once the format becomes valid again', async () => {
@@ -509,9 +572,7 @@ describe('GroupNameAndPath', () => {
       await waitForPromises();
 
       expect(getGroupPathAvailability).toHaveBeenCalled();
-      expect(wrapper.findByText(GroupNameAndPath.i18n.inputs.path.validFeedback).exists()).toBe(
-        true,
-      );
+      expect(findGroupPathFormGroup().props('state')).toBe(true);
     });
 
     it('shows the required message when the native `invalid` event fires on an empty field', async () => {
@@ -519,20 +580,35 @@ describe('GroupNameAndPath', () => {
 
       await findGroupUrlField().trigger('invalid');
 
-      expect(wrapper.findByText('Group URL is required.').exists()).toBe(true);
+      expect(findGroupPathFormGroup().props('invalidFeedback')).toBe('Group URL is required.');
     });
 
-    it('falls back to the generic pattern message when the value passes client-side rules but the native `invalid` event fires', async () => {
+    it.each`
+      path           | message
+      ${'-abc'}      | ${'Group URL must start with a letter, digit, underscore, or period.'}
+      ${'repo.git'}  | ${'Group URL must not end with `.git` or `.atom`.'}
+      ${'feed.atom'} | ${'Group URL must not end with `.git` or `.atom`.'}
+      ${'a'}         | ${'Group URL must be at least 2 characters long.'}
+    `(
+      'blocks form submission by marking the field invalid for path "$path"',
+      async ({ path, message }) => {
+        createComponent();
+
+        await findGroupUrlField().setValue(path);
+
+        expect(findGroupPathFormGroup().props('state')).toBe(false);
+        expect(findGroupPathFormGroup().props('invalidFeedback')).toBe(message);
+      },
+    );
+
+    it('allows form submission once the path format becomes valid', async () => {
       createComponent();
 
-      await findGroupUrlField().setValue(mockGroupUrl);
-      await findGroupUrlField().trigger('invalid');
+      await findGroupUrlField().setValue('repo.git');
+      expect(findGroupPathFormGroup().props('state')).toBe(false);
 
-      expect(
-        wrapper
-          .findByText(GroupNameAndPath.i18n.inputs.path.invalidFeedbackInvalidPattern)
-          .exists(),
-      ).toBe(true);
+      await findGroupUrlField().setValue(mockGroupUrl);
+      expect(findGroupPathFormGroup().props('state')).toBe(null);
     });
   });
 
@@ -540,9 +616,7 @@ describe('GroupNameAndPath', () => {
     it('adds `data-bind-in` attribute when enabled', () => {
       createComponent({ provide: { mattermostEnabled: true } });
 
-      expect(findGroupUrlField().attributes('data-bind-in')).toBe(
-        GroupNameAndPath.mattermostDataBindName,
-      );
+      expect(findGroupUrlField().attributes('data-bind-in')).toBe('create_chat_team');
     });
 
     it('does not add `data-bind-in` attribute when disabled', () => {

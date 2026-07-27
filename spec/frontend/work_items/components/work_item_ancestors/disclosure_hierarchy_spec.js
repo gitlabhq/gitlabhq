@@ -76,7 +76,10 @@ describe('DisclosurePath', () => {
     const tooltipText = 'Display more items';
 
     beforeEach(() => {
-      wrapper = createComponent({ withEllipsis: true, ellipsisTooltipLabel: tooltipText });
+      wrapper = createComponent(
+        { withEllipsis: true, ellipsisTooltipLabel: tooltipText },
+        { stubs: { GlTooltip } },
+      );
     });
 
     describe('renders items and dropdown', () => {
@@ -99,6 +102,30 @@ describe('DisclosurePath', () => {
       it('renders tooltip with text passed as prop', () => {
         expect(findTooltip().exists()).toBe(true);
         expect(findTooltipText()).toBe(tooltipText);
+      });
+
+      it('uses a unique dynamic id for the ellipsis button', () => {
+        const button = wrapper.find('.disclosure-hierarchy-button');
+
+        expect(button.attributes('id')).toMatch(/^disclosure-hierarchy-\d+-ellipsis-button$/);
+      });
+    });
+
+    describe('when middleItems is empty (only 2 items total)', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          withEllipsis: true,
+          ellipsisTooltipLabel: tooltipText,
+          items: [mockDisclosureHierarchyItems[0], mockDisclosureHierarchyItems[1]],
+        });
+      });
+
+      it('does not render the ellipsis button', () => {
+        expect(wrapper.find('.disclosure-hierarchy-button').exists()).toBe(false);
+      });
+
+      it('does not render the tooltip when the ellipsis button is absent', () => {
+        expect(findTooltip().exists()).toBe(false);
       });
     });
 

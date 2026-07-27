@@ -12,12 +12,6 @@ title: Project-level Secure Files API
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) in GitLab 15.7. Feature flag `ci_secure_files` removed.
-
-{{< /history >}}
-
 Use this API to manage [secure files](../ci/secure_files/_index.md) for a project.
 
 ## List all secure files for a project

@@ -198,7 +198,7 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
 
         project.reload
         expect(page).to have_content('Mirroring settings were successfully updated')
-        expect(project.remote_mirrors.first.only_protected_branches).to eq(false)
+        expect(project.remote_mirrors.first.only_protected_branches).to be(false)
       end
 
       it 'creates a push mirror that only mirrors protected branches', :js do
@@ -216,7 +216,7 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
 
         project.reload
         expect(page).to have_content('Mirroring settings were successfully updated')
-        expect(project.remote_mirrors.first.only_protected_branches).to eq(true)
+        expect(project.remote_mirrors.first.only_protected_branches).to be(true)
       end
 
       it 'creates a push mirror that keeps divergent refs', :js do
@@ -233,7 +233,7 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
 
         # Waiting for page to load to ensure mirror changes are saved in the backend
         expect(page).to have_content('Mirroring settings were successfully updated')
-        expect(project.reload.remote_mirrors.first.keep_divergent_refs).to eq(true)
+        expect(project.reload.remote_mirrors.first.keep_divergent_refs).to be(true)
       end
 
       it 'generates an SSH public key on submission', :js do

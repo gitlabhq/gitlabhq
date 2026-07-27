@@ -45,7 +45,12 @@ import {
   METADATA_KEYS,
   DETAIL_VIEW_QUERY_PARAM_NAME,
 } from '../constants';
-import { combineWorkItemLists, findHierarchyWidget, getSortedWorkItems } from '../utils';
+import {
+  combineWorkItemLists,
+  findDetailPanelWorkItem,
+  findHierarchyWidget,
+  getSortedWorkItems,
+} from '../utils';
 
 import HealthStatus from './components/health_status.vue';
 
@@ -343,27 +348,17 @@ export default {
         return;
       }
 
-      const params = JSON.parse(atob(queryParam));
-      if (params.id) {
-        if (
-          this.activeItem &&
-          getIdFromGraphQLId(this.activeItem.id) === params.id &&
-          this.isIssuableActive(params)
-        ) {
-          return;
-        }
-
-        const issue = this.workItems.find((i) => getIdFromGraphQLId(i.id) === params.id);
-        if (issue) {
-          this.$emit('set-active-item', {
-            ...issue,
-            fullPath: params.full_path,
-          });
-        } else {
-          updateHistory({
-            url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]),
-          });
-        }
+      const { item, notFound } = findDetailPanelWorkItem(
+        queryParam,
+        this.workItems,
+        this.activeItem,
+      );
+      if (item) {
+        this.$emit('set-active-item', item);
+      } else if (notFound) {
+        updateHistory({
+          url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]),
+        });
       }
     },
     handleReorder({ newIndex, oldIndex }) {

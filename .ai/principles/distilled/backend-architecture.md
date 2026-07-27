@@ -1,6 +1,6 @@
 ---
-source_checksum: 0f3cc16be36719f5
-distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
+source_checksum: 57e5080bbe7ec600
+distilled_at_sha: e2c2d99ca92022373f943f7b13d7697d7cffa9ce
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -78,7 +78,7 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 - Use conditional dispatch (`if:` lambda) only for cheap synchronous checks; handle complex conditions inside `handle_event`
 - Access Cloud Event envelope fields (e.g., `current_user`, `organization`) directly on the event object; access custom payload via `event.event_data`
 - Follow the multi-rollout process when renaming events, adding required properties, or removing properties (expand → migrate → contract across separate milestones)
-- Use `publish_event` RSpec matcher to test publishers; use `it_behaves_like 'subscribes to event'` shared example to test subscribers
+- Use `publish_event` RSpec matcher to test publishers; use `it_behaves_like 'subscribes to event'` shared example to test subscribers; use `it_behaves_like 'a cloud event with schema'` shared example to validate Cloud Event `data_schema`
 - Define CE events and publish them in CE code; define EE events and publish them in EE code; subscribers may cross CE/EE boundaries
 - DO NOT use EventStore when logic must run synchronously as part of the main business transaction rather than as a side-effect
 - Use `Gitlab::EventStore.publish_group` when publishing multiple events of the same type in a single transaction to reduce Sidekiq load; configure `group_size` on the subscription as needed

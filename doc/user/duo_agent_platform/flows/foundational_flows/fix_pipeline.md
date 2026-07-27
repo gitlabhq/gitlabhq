@@ -68,7 +68,7 @@ a GitLab Duo Chat feature to troubleshoot single-job failures.
 - Have the Developer, Maintainer, or Owner role for the project.
 - Have an existing failed pipeline.
 - [Configure push rules to allow a service account](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Configure your own runners](../execution.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
+- [Configure your own runners](../execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
 
 ## Fix the pipeline in a merge request
 
@@ -144,7 +144,7 @@ apply labels based on the following failed pipeline scenarios:
   See the following section for workarounds.
 - The flow cannot always verify package installation in the sandboxed runtime environment.
   If dependencies are missing, you can customize the default flow image. See
-  [change the default Docker image](../execution.md#change-the-default-docker-image).
+  [change the default Docker image](../execution/images.md#change-the-default-docker-image).
 - Repository instructions in `AGENTS.md` influence the flow's behavior but are not guaranteed
   to be followed in every case.
 

@@ -298,7 +298,7 @@ principles:
     description: General code review practices and acceptance checklist
     group: Code Review
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - '**/*'
     sources:
@@ -308,9 +308,9 @@ principles:
   ai-instruction-files:
     description: Reviewing AI instruction files under .ai/ (hand-authored modules, distilled principles, baselines, distillation config)
     group: Code Review
-    owner_team: '@dgruzd @pedropombeiro @ghavenga @tkuah @dmishunov'
+    owner_team: '@gitlab-org/maintainers/ai-harness'
     team_slug: ai-harness
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - '.ai/**/*'
     sources:
@@ -323,7 +323,7 @@ principles:
     description: Ruby/Rails style, logging, common pitfalls
     group: Backend
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     prerequisite: true
     file_filters:
       - 'app/**/*.rb'
@@ -369,7 +369,7 @@ principles:
     description: Service patterns, abstractions, design conventions
     group: Backend
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'app/services/**/*.rb'
       - 'app/finders/**/*.rb'
@@ -396,7 +396,7 @@ principles:
     description: EE/CE separation, licensing, code placement
     group: Backend
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'ee/**/*.rb'
     sources:
@@ -456,7 +456,7 @@ principles:
     description: Sidekiq worker design and reliability
     group: Workers
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'app/workers/**/*.rb'
       - 'ee/app/workers/**/*.rb'
@@ -499,7 +499,7 @@ principles:
     description: Vue.js components, state management, patterns
     group: Frontend
     owner_team: '@gitlab-org/maintainers/frontend'
-    ping_team: false
+    fallback_ping_team: false
     prerequisite: true
     file_filters:
       - 'app/assets/javascripts/**/*.vue'
@@ -532,7 +532,7 @@ principles:
     description: CSS/SCSS, Tailwind, dark mode
     group: Frontend
     owner_team: '@gitlab-org/maintainers/frontend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'app/assets/stylesheets/**/*.scss'
       - 'ee/app/assets/stylesheets/**/*.scss'
@@ -549,7 +549,7 @@ principles:
     description: HAML templates, ViewComponents, Pajamas
     group: Frontend
     owner_team: '@gitlab-org/maintainers/frontend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'app/views/**/*.haml'
       - 'ee/app/views/**/*.haml'
@@ -563,7 +563,7 @@ principles:
     description: Frontend accessibility patterns and requirements
     group: Frontend
     owner_team: '@gitlab-org/maintainers/frontend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'app/assets/javascripts/**/*.vue'
       - 'app/views/**/*.haml'
@@ -668,7 +668,7 @@ principles:
     description: Jest, jsdom, Vue Test Utils patterns
     group: Testing
     owner_team: '@gitlab-org/maintainers/frontend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'spec/frontend/**/*'
       - 'ee/spec/frontend/**/*'
@@ -755,7 +755,7 @@ principles:
     description: Performance and scalability
     group: Performance
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'app/**/*.rb'
       - 'ee/app/**/*.rb'
@@ -845,7 +845,7 @@ principles:
     description: Feature flag usage and lifecycle
     group: Feature Flags
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'config/feature_flags/**/*.yml'
       - 'ee/config/feature_flags/**/*.yml'

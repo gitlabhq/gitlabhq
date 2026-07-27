@@ -12,25 +12,25 @@ RSpec.describe Integrations::JiraEncodedUrlConstraint do
     subject { described_class.new.matches?(request) }
 
     context 'when there is no /-/jira prefix and no encoded slash' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when tree path contains encoded slash' do
       let(:path) { "/#{namespace_id}/#{project_id}/tree/folder-with-#{Gitlab::Jira::Dvcs::ENCODED_SLASH}" }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when path has /-/jira prefix' do
       let(:path) { "/-/jira/#{namespace_id}/#{project_id}" }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when project_id has encoded slash' do
       let(:project_id) { "sub_group#{Gitlab::Jira::Dvcs::ENCODED_SLASH}sub_project" }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 end

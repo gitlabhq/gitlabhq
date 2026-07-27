@@ -238,12 +238,6 @@ steps below:
 
 ### Using an encrypted SSL key
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7799) in GitLab 16.1.
-
-{{< /history >}}
-
 Puma supports the use of an encrypted private SSL key, which can be
 decrypted at runtime. The following instructions illustrate how to
 configure this:

@@ -207,12 +207,6 @@ user4
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142189) in GitLab 16.9.
-
-{{< /history >}}
-
 To perform bulk user assignment for GitLab Duo Pro, you can use the following Rake task:
 
 ```shell

@@ -342,7 +342,7 @@ Supported attributes:
 | `to`              | string            | Yes      | Commit SHA or branch name. |
 | `from_project_id` | integer           | No       | ID to compare from. |
 | `straight`        | boolean           | No       | If `true`, comparison method is direct comparison between `from` and `to` (`from`..`to`). If `false`, compare using merge base (`from`...`to`). Default is `false`. |
-| `unidiff`         | boolean           | No       | If `true`, present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5. |
+| `unidiff`         | boolean           | No       | If `true`, present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is `false`. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:

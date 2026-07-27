@@ -528,6 +528,114 @@ module Gitlab
 
           @mr_assignee_id = fetch_current_user_id(api_token)
         end
+        # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+        # Machine accounts that commit to SSOT docs but should never be pinged
+        # as "authors". Required in addition to the API `bot` flag because these
+        # accounts report `bot: false`.
+        NON_PINGABLE_USERNAMES = %w[
+          service-modelops-agent-principles-distiller
+          gitlab-bot
+        ].freeze
+
+        # Builds the list of `@username` mentions for the people who changed the
+        # SSOT docs backing the given principles since each was last distilled.
+        # Returns [] when nothing resolves, so the caller falls back to the team
+        # ping. Best-effort: any git/API failure logs and contributes no
+        # mentions rather than failing the MR.
+        #
+        # Only the notification changes: CODEOWNERS still routes approval to the
+        # principle's owner_team, so an unavailable SSOT author cannot block the
+        # MR.
+        def ssot_author_mentions(affected_entries, api_token)
+          emails = affected_entries.values.flat_map { |entry| ssot_author_emails(entry) }.uniq
+          return [] if emails.empty?
+
+          emails.filter_map { |email| pingable_username_for(email, api_token) }
+            .uniq
+            .map { |username| "@#{username}" }
+        end
+
+        # Author emails of every commit that touched this principle's SSOT paths
+        # in the range prior_sha..origin/<default_branch>. Empty when there is no
+        # reachable prior SHA (e.g. first distillation) or the range is empty.
+        def ssot_author_emails(affected_entry)
+          return [] unless affected_entry
+
+          prior_sha = affected_entry[:prior_sha]
+          return [] if prior_sha.nil? || prior_sha.empty?
+          return [] unless sha_present_locally?(prior_sha)
+
+          sources = affected_entry[:changed_sources] || []
+          baseline_path = affected_entry.dig(:config, 'baseline')
+          paths = sources.map { |s| s['path'] }
+          paths.unshift(baseline_path) if baseline_path
+          return [] if paths.empty?
+
+          target_ref = "origin/#{workflow.default_branch}"
+          cmd = ['git', '-C', Workspace.path, 'log', '--format=%aE',
+            "#{prior_sha}..#{target_ref}", '--', *paths]
+          out = IO.popen(cmd, err: File::NULL, &:read)
+          return [] if out.nil?
+
+          out.split("\n").map(&:strip).reject(&:empty?).uniq
+        end
+
+        # Resolves a commit-author email to a pingable GitLab username, or nil
+        # when it cannot be resolved (private email), the account is a bot (per
+        # the API `bot` flag), or it is on the non-pingable deny-list. Memoized
+        # per run so a fan-out does not re-query the same email.
+        # rubocop:disable Gitlab/ModuleWithInstanceVariables -- run-scoped memo on the host Sync instance
+        def pingable_username_for(email, api_token)
+          @username_by_email ||= {}
+          return @username_by_email[email] if @username_by_email.key?(email)
+
+          @username_by_email[email] = resolve_pingable_username(email, api_token)
+        end
+        # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+        def resolve_pingable_username(email, api_token)
+          user = search_user_by_email(email, api_token)
+          return unless user
+
+          return if user['bot'] == true
+
+          username = user['username'].to_s
+          return if username.empty?
+          return if NON_PINGABLE_USERNAMES.include?(username.downcase)
+
+          username
+        end
+
+        # GET /users?search=<email>. Returns the user whose public_email exactly
+        # matches, or nil when the email does not resolve (private email) or the
+        # lookup fails. The exact-match guard is required because the search
+        # endpoint also matches username and name.
+        def search_user_by_email(email, api_token)
+          uri = URI("#{workflow.gitlab_host}/api/v4/users")
+          uri.query = URI.encode_www_form(search: email)
+          http = Net::HTTP.new(uri.host, uri.port)
+          http.use_ssl = uri.scheme == 'https'
+          http.read_timeout = 60
+          request = Net::HTTP::Get.new(uri)
+          request['PRIVATE-TOKEN'] = api_token
+          response = http.request(request)
+          unless response.is_a?(Net::HTTPSuccess)
+            warn Rainbow("WARNING: user lookup for #{email} failed (#{response.code}); " \
+              'skipping this SSOT author').yellow
+            return
+          end
+
+          # /users?search= matches on username, name, and email, so a result is
+          # not guaranteed to be an email match. Require an exact public_email
+          # match so we never ping the wrong person.
+          users = JSON.parse(response.body)
+          users.find { |u| u['public_email'].to_s.casecmp?(email) }
+        rescue StandardError => e
+          warn Rainbow("WARNING: user lookup for #{email} failed (#{e.message}); " \
+            'skipping this SSOT author').yellow
+          nil
+        end
 
         def fetch_current_user_id(api_token)
           uri = URI("#{workflow.gitlab_host}/api/v4/user")
@@ -556,6 +664,7 @@ module Gitlab
         # ancestor-group milestones). Memoized for the run. Returns nil when
         # VERSION is unreadable or no milestone matches (best-effort: the MR
         # is created without a milestone).
+        # rubocop:disable Gitlab/ModuleWithInstanceVariables -- run-scoped memo on the host Sync instance
         def current_milestone_id(encoded_project, api_token)
           return @current_milestone_id if defined?(@current_milestone_id)
 
@@ -681,14 +790,24 @@ module Gitlab
           manifest_url = "#{project_url}/-/blob/#{default_branch}/.ai/principles/manifest.yml"
           ci_yml_url = "#{project_url}/-/blob/#{default_branch}/.gitlab/ci/sync-principles.gitlab-ci.yml"
 
+          # Ping the individuals who actually changed the SSOT docs rather than
+          # the whole owning team. Falls back to the team ping (or the
+          # non-mention slug when fallback_ping_team: false) only when no
+          # author resolves (see ssot_author_mentions and team_display).
+          mentions = ssot_author_mentions(affected.slice(*changed_principles.keys), api_token)
+          ping_line = if mentions.empty?
+                        "Please review: **#{manifest.team_display(team)}**."
+                      else
+                        "Recent SSOT changes here were authored by #{mentions.join(' ')} — please review."
+                      end
+
           description = <<~DESC
         ## Summary
 
-        This MR updates the **#{manifest.team_display(team)}** AI development
-        principles based on recent changes to the development documentation
-        (SSOT). It is one of several team-scoped MRs from this run; the global
-        routing tables (AGENTS.md, CLAUDE.md, SKILL.md) are updated in a
-        separate tooling MR.
+        This MR updates AI development principles based on recent changes to the
+        development documentation (SSOT). #{ping_line} It is one of several
+        team-scoped MRs from this run; the global routing tables (AGENTS.md,
+        CLAUDE.md, SKILL.md) are updated in a separate tooling MR.
         #{review_request_section(changed_principles.keys, team)}
         ### Updated principles and their source-doc changes
 

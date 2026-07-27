@@ -4,7 +4,7 @@ tier: [ Premium, Ultimate ]
 offering: [ gitlab_com, self_managed, gitlab_dedicated ]
 documentation_link: "../../../user/duo_agent_platform/flows/custom"
 work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/597224
-categories: [ AI Catalog ]
+categories: [ AI Catalog Curation ]
 stage: ai-powered
 level: secondary
 weight: 50

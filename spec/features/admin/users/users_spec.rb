@@ -55,7 +55,7 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
     end
 
     it 'shows the user popover on hover', :js do
-      expect(has_testid?('user-popover', count: 0)).to eq(true)
+      expect(has_testid?('user-popover', count: 0)).to be(true)
 
       within('body.page-initialised') do
         find_link(user.email).hover
@@ -671,7 +671,7 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
         expect(user.name).to eq('Big Bang')
         expect(user.admin?).to be_truthy
         expect(user.password_expires_at).to be <= Time.zone.now
-        expect(user.private_profile).to eq(true)
+        expect(user.private_profile).to be(true)
       end
 
       context 'when updating the organization access level' do

@@ -13,40 +13,16 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
   end
 
   describe 'validations' do
-    it { is_expected.to validate_presence_of(:source_hostname) }
     it { is_expected.to validate_presence_of(:status) }
+  end
 
-    describe '#source_hostname' do
-      it { is_expected.to allow_value('http://example.com:8080').for(:source_hostname) }
-      it { is_expected.to allow_value('https://example.com:8080').for(:source_hostname) }
-      it { is_expected.to allow_value('http://example.com').for(:source_hostname) }
-      it { is_expected.to allow_value('https://example.com').for(:source_hostname) }
-      it { is_expected.not_to allow_value('http://').for(:source_hostname) }
-      it { is_expected.not_to allow_value('example.com').for(:source_hostname) }
-      it { is_expected.not_to allow_value('https://example.com/dir').for(:source_hostname) }
-      it { is_expected.not_to allow_value('https://example.com?param=1').for(:source_hostname) }
-      it { is_expected.not_to allow_value('https://example.com/dir?param=1').for(:source_hostname) }
-      it { is_expected.not_to allow_value('https://github.com').for(:source_hostname) }
-      it { is_expected.not_to allow_value('https://www.github.com').for(:source_hostname) }
-      it { is_expected.not_to allow_value('https://bitbucket.org').for(:source_hostname) }
-      it { is_expected.not_to allow_value('https://gitea.com').for(:source_hostname) }
+  describe '#source_hostname' do
+    it 'returns the configuration source hostname' do
+      source_hostname = 'https://gitlab.example.com'
+      configuration = build(:offline_configuration, source_hostname: source_hostname)
+      export = build(:offline_export, configuration: configuration)
 
-      it 'sanitizes embedded credentials before validation' do
-        export = build(:offline_export, source_hostname: 'https://user:secret@gitlab.example.com')
-
-        expect { export.validate }
-          .to change { export.source_hostname }
-          .from('https://user:secret@gitlab.example.com')
-          .to('https://gitlab.example.com')
-      end
-
-      it 'keeps unparseable source_hostname unchanged before validation', :aggregate_failures do
-        source_hostname = 'https://gitlab example.com'
-        export = build(:offline_export, source_hostname: source_hostname)
-
-        expect { export.validate }.not_to change { export.source_hostname }
-        expect(export.errors[:source_hostname]).to include('must contain only scheme and host')
-      end
+      expect(export.source_hostname).to eq(source_hostname)
     end
   end
 

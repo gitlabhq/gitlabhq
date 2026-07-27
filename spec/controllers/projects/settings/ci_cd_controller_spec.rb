@@ -239,7 +239,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
             request
 
             project.reload
-            expect(project.ci_forward_deployment_enabled).to eq(false)
+            expect(project.ci_forward_deployment_enabled).to be(false)
           end
         end
 

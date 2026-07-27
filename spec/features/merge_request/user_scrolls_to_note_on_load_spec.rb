@@ -20,7 +20,7 @@ RSpec.describe 'Merge request > User scrolls to note on load', :js, feature_cate
     wait_for_all_requests
 
     expect(page).to have_selector(fragment_id.to_s)
-    expect(find(fragment_id).visible?).to eq true
+    expect(find(fragment_id).visible?).to be true
 
     panel_scroll_top = page.evaluate_script("document.querySelector('.js-static-panel-inner').scrollTop")
     fragment_position_top = page.evaluate_script("Math.round(document.querySelector('#{fragment_id}').getBoundingClientRect().top + document.querySelector('.js-static-panel-inner').scrollTop)")
@@ -39,7 +39,7 @@ RSpec.describe 'Merge request > User scrolls to note on load', :js, feature_cate
     note_element = find(fragment_id)
     note_container = note_element.ancestor('.js-discussion-container')
 
-    expect(note_element.visible?).to eq true
+    expect(note_element.visible?).to be true
 
     page.within note_container do
       expect(page).not_to have_selector('.js-error-lazy-load-diff')
@@ -58,8 +58,8 @@ RSpec.describe 'Merge request > User scrolls to note on load', :js, feature_cate
         note_element = find(collapsed_fragment_id)
         diff_container = note_element.ancestor('.diff-content')
 
-        expect(note_element.visible?).to eq(true)
-        expect(diff_container.visible?).to eq(true)
+        expect(note_element.visible?).to be(true)
+        expect(diff_container.visible?).to be(true)
       end
     end
 
@@ -72,7 +72,7 @@ RSpec.describe 'Merge request > User scrolls to note on load', :js, feature_cate
 
         note_element = find(collapsed_fragment_id)
 
-        expect(note_element.visible?).to eq(true)
+        expect(note_element.visible?).to be(true)
         expect(note_element.sibling('li:nth-child(2)')).to have_button s_('Notes|Collapse replies')
       end
     end

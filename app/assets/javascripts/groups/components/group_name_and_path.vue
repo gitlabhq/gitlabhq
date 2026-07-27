@@ -22,6 +22,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 
+import { checkGroupNameRules } from '../group_name_rules';
 import { validateGroupPath } from '../group_path_rules';
 import searchGroupsWhereUserCanCreateSubgroups from '../queries/search_groups_where_user_can_create_subgroups.query.graphql';
 
@@ -34,16 +35,12 @@ export default {
       name: {
         placeholder: __('My group'),
         description: s__('Groups|Start with a letter, digit, emoji, or underscore.'),
-        invalidFeedback: s__('Groups|Enter a descriptive name for your group.'),
         warningForUsingDotInName: s__(
           'Groups|Your group name must not contain a period if you intend to use SCIM integration, as it can lead to errors.',
         ),
       },
       path: {
         placeholder: __('my-awesome-group'),
-        invalidFeedbackInvalidPattern: s__(
-          'GroupSettings|Choose a group path that does not start with a dash or end with a period. It can also contain alphanumeric characters and underscores.',
-        ),
         invalidFeedbackPathUnavailable: s__(
           'Groups|Group path is unavailable. Path has been replaced with a suggested available path.',
         ),
@@ -58,6 +55,7 @@ export default {
     learnMore: __('Learn more'),
   },
   inputSize: { md: 'lg' },
+  nameMaxLength: 255,
   changingGroupPathHelpPagePath: helpPagePath('user/group/manage', {
     anchor: 'change-a-groups-path',
   }),
@@ -121,6 +119,9 @@ export default {
     pathDescription() {
       return this.apiLoading ? this.$options.i18n.apiLoadingMessage : '';
     },
+    nameDescription() {
+      return this.nameFeedbackState === false ? '' : this.$options.i18n.inputs.name.description;
+    },
     isEditingGroup() {
       return this.fields.groupId.value !== '';
     },
@@ -135,33 +136,51 @@ export default {
 
       return '!gl-bg-feedback-info';
     },
-    pathFormatError() {
+    pathValidationError() {
       return validateGroupPath(this.path);
+    },
+    nameValidationError() {
+      return checkGroupNameRules(this.name);
     },
   },
   watch: {
     name: [
+      function validateName() {
+        if (this.nameValidationError) {
+          this.nameFeedbackState = false;
+          // Set HTML5 validation message so form cannot be submitted until fixed
+          this.$refs.nameInput.$el.setCustomValidity(this.nameValidationError);
+          return;
+        }
+
+        this.nameFeedbackState = null;
+        // Clear HTML5 validation message so form can be submitted
+        this.$refs.nameInput.$el.setCustomValidity('');
+      },
       function updatePath(newName) {
         if (this.isEditingGroup || this.hasPathBeenManuallySet) return;
 
-        this.nameFeedbackState = null;
         this.pathFeedbackState = null;
         this.apiSuggestedPath = '';
         this.path = slugify(newName);
 
         if (!this.path) return;
 
-        if (this.pathFormatError) {
+        if (this.pathValidationError) {
           this.abortActiveRequest();
-          this.pathInvalidFeedback = this.pathFormatError;
+          this.pathInvalidFeedback = this.pathValidationError;
           this.pathFeedbackState = false;
+          // Set HTML5 validation message so form cannot be submitted until fixed
+          this.$refs.pathInput.$el.setCustomValidity(this.pathValidationError);
         } else {
           this.pathInvalidFeedback = null;
+          // Clear HTML5 validation message so form can be submitted
+          this.$refs.pathInput.$el.setCustomValidity('');
         }
       },
       debounce(async function updatePathWithSuggestions() {
         if (this.isEditingGroup || this.hasPathBeenManuallySet) return;
-        if (this.pathFormatError) return;
+        if (this.pathValidationError) return;
 
         try {
           const { suggests } = await this.checkPathAvailability();
@@ -249,20 +268,24 @@ export default {
       this.hasPathBeenManuallySet = true;
       this.path = value;
 
-      if (this.pathFormatError) {
+      if (this.pathValidationError) {
         this.abortActiveRequest();
-        this.pathInvalidFeedback = this.pathFormatError;
+        this.pathInvalidFeedback = this.pathValidationError;
         this.pathFeedbackState = false;
+        // Set HTML5 validation message so form cannot be submitted until fixed
+        this.$refs.pathInput.$el.setCustomValidity(this.pathValidationError);
         return;
       }
 
       this.pathInvalidFeedback = null;
+      // Clear HTML5 validation message so form can be submitted
+      this.$refs.pathInput.$el.setCustomValidity('');
       this.debouncedValidatePath();
     },
     debouncedValidatePath: debounce(async function validatePath() {
       if (this.isEditingGroup && this.path === this.fields.path.value) return;
 
-      if (this.pathFormatError) return;
+      if (this.pathValidationError) return;
 
       try {
         const {
@@ -290,8 +313,7 @@ export default {
       event.preventDefault();
 
       this.pathFeedbackState = false;
-      this.pathInvalidFeedback =
-        this.pathFormatError || this.$options.i18n.inputs.path.invalidFeedbackInvalidPattern;
+      this.pathInvalidFeedback = this.pathValidationError;
     },
     handleDropdownShown() {
       if (!this.currentUserGroups) {
@@ -335,18 +357,20 @@ export default {
     />
     <gl-form-group
       :label="inputLabels.name"
-      :description="$options.i18n.inputs.name.description"
+      :description="nameDescription"
       :label-for="fields.name.id"
-      :invalid-feedback="$options.i18n.inputs.name.invalidFeedback"
+      :invalid-feedback="nameValidationError"
       :state="nameFeedbackState"
     >
       <gl-form-input
         :id="fields.name.id"
+        ref="nameInput"
         v-model="name"
         class="gl-field-error-ignore !gl-h-auto"
         required
         :name="fields.name.name"
         :placeholder="$options.i18n.inputs.name.placeholder"
+        :maxlength="$options.nameMaxLength"
         data-testid="group-name-field"
         :width="$options.inputSize"
         :state="nameFeedbackState"
@@ -415,13 +439,13 @@ export default {
           </template>
           <gl-form-input
             :id="fields.path.id"
+            ref="pathInput"
             class="gl-field-error-ignore !gl-h-auto"
             :class="pathInputClass"
             :name="fields.path.name"
             :value="computedPath"
             :placeholder="$options.i18n.inputs.path.placeholder"
             :maxlength="fields.path.maxLength"
-            :pattern="fields.path.pattern"
             :state="pathFeedbackState"
             :width="pathInputSize"
             required

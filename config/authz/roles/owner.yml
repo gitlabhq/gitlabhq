@@ -54,6 +54,7 @@ project:
   - update_compliance_violations_report
   - update_group_link
   - update_security_orchestration_policy_project
+  - update_storage_ai_audit_events
 group:
   permissions: []
   raw_permissions:
@@ -183,6 +184,7 @@ group:
   - update_runners_registration_token
   - update_secrets_permission
   - update_security_orchestration_policy_project
+  - update_storage_ai_audit_events
   - update_subscription_usage_cap
   - update_work_item_setting
   - view_member_roles

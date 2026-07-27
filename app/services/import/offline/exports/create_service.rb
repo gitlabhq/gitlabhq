@@ -120,11 +120,11 @@ module Import
           Import::Offline::Export.new(
             user: current_user,
             organization_id: organization_id,
-            source_hostname: source_hostname,
             configuration: Import::Offline::Configuration.new(
               provider: storage_config[:provider],
               bucket: storage_config[:bucket],
               object_storage_credentials: storage_config[:credentials],
+              source_hostname: source_hostname,
               organization_id: organization_id
             )
           )

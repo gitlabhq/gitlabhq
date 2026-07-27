@@ -188,12 +188,6 @@ Example response:
 
 ## Update a protected environment
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351854) in GitLab 15.4.
-
-{{< /history >}}
-
 Updates a single environment.
 
 ```plaintext

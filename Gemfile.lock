@@ -809,7 +809,7 @@ GEM
       googleapis-common-protos-types (~> 1.15)
       googleauth (~> 1.12)
       grpc (~> 1.66)
-    gdk-toogle (1.0.1)
+    gdk-toogle (1.0.2)
       haml
       rails (>= 7.0.4.2)
     gemoji (3.0.1)
@@ -3003,7 +3003,7 @@ CHECKSUMS
   fugit (1.11.2) sha256=4c2e234f750c78d4514d0ca343a0b923847eac3846976fdb23ed4245d8fde6fe
   fuzzyurl (0.9.0) sha256=542efa80f2bcaadbdc402c2f0b572f2e335a1d53e375aecad68bbb3d86860c0f
   gapic-common (1.1.0) sha256=3270ab3c5135012a4ab4d8848f945cf35014192f24504cdb40c66fc67f1beaa3
-  gdk-toogle (1.0.1) sha256=f8fd42490c6ec589b9130fbd24b05d1014f5de3451948dcd3893a7a50d36b3bf
+  gdk-toogle (1.0.2) sha256=f078ea960c5a9c1e18a3ceda39e12fca73122e14fe1726873b8d03d9d11fd447
   gemoji (3.0.1) sha256=80553f2f4932a7a95fb1b3c7c63f7dd937e7c8c610164bbdea28fd06eba5f36d
   get_process_mem (0.2.7) sha256=4afd3c3641dd6a817c09806c7d6d509d8a9984512ac38dea8b917426bbf77eba
   gettext (3.5.2) sha256=ada02c59aa7e9f56bd2522faedaed16421dd2f3ddb5fe28628c0be5abcbf3c74

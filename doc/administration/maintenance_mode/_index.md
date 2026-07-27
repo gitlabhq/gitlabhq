@@ -117,12 +117,6 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
 
 ### GraphQL API
 
-{{< history >}}
-
-- The `GeoRegistriesUpdate` mutation addition in the allowlist was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124259) in GitLab 16.2.
-
-{{< /history >}}
-
 `POST /api/graphql` requests are allowed but mutations are blocked with the error message `You cannot perform write operations on a read-only instance`.
 
 The only mutation that is allowed is the `GeoRegistriesUpdate` which is used to resync and reverify registries.

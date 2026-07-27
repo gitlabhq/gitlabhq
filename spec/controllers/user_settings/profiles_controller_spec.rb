@@ -50,7 +50,7 @@ RSpec.describe UserSettings::ProfilesController, :request_store, feature_categor
       user.reload
 
       expect(response).to have_gitlab_http_status(:found)
-      expect(user.unconfirmed_email).to eq nil
+      expect(user.unconfirmed_email).to be_nil
     end
 
     it 'ignores an email update from a user with an external email address' do

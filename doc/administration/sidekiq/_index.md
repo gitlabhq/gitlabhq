@@ -132,12 +132,6 @@ To configure the metrics server:
 
 ### Enable HTTPS
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364771) in GitLab 15.2.
-
-{{< /history >}}
-
 To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
 
 1. Edit `/etc/gitlab/gitlab.rb` to add (or find and uncomment) the following lines:

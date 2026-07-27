@@ -5,8 +5,6 @@ FactoryBot.define do
     user
     organization
 
-    source_hostname { 'https://offline-environment-gitlab.example.com' }
-
     trait :created do
       status { 0 }
     end

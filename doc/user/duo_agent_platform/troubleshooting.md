@@ -126,7 +126,7 @@ To resolve this issue:
    1. In the top bar, select **Search or go to** and find your project or top-level group.
    1. In the left sidebar, select **Build** > **Runners**.
    1. Confirm that a runner with the `gitlab--duo` tag is online.
-1. If no runner meets the requirements, [configure a runner to execute flows](flows/execution.md#configure-runners-to-execute-flows).
+1. If no runner meets the requirements, [configure a runner to execute flows](flows/execution/_index.md#configure-runners-to-execute-flows).
 
 ## Error: `Something went wrong while requesting a review from GitLab Duo`
 
@@ -222,7 +222,7 @@ Replace `/path/to/your/ca-bundle.crt` with the path to your CA certificate bundl
 The file must be a PEM-formatted CA bundle that contains your root CA and any intermediate certificates.
 
 You might expect to set this as a CI/CD variable, but custom CI/CD variables are
-[not available](flows/execution_variables.md#custom-cicd-variables) in GitLab Duo Agent Platform jobs.
+[not available](flows/execution/execution-variables.md#custom-cicd-variables) in GitLab Duo Agent Platform jobs.
 You must use the runner's `config.toml` `environment` directive instead.
 
 To connect GitLab Duo CLI to your GitLab instance over a custom CA, add `NODE_EXTRA_CA_CERTS`

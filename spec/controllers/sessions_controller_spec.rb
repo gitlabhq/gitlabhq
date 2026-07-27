@@ -953,7 +953,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
         it 'does not log the user in' do
           post_action
 
-          expect(subject.current_user).to eq nil
+          expect(subject.current_user).to be_nil
         end
       end
 
@@ -963,7 +963,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
         it 'does not log the user in' do
           post_action
 
-          expect(subject.current_user).to eq nil
+          expect(subject.current_user).to be_nil
         end
       end
     end

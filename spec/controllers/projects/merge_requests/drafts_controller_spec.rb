@@ -73,7 +73,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
 
       draft_note = DraftNote.find_by(author: user)
 
-      expect(draft_note.internal).to eq(true)
+      expect(draft_note.internal).to be(true)
     end
 
     it 'creates draft note with position' do
@@ -165,7 +165,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
 
         expect(draft_note).to be_valid
         expect(draft_note.discussion_id).to eq(discussion.reply_id)
-        expect(draft_note.resolve_discussion).to eq(true)
+        expect(draft_note.resolve_discussion).to be(true)
       end
 
       it 'cannot create more than one draft note per thread' do
@@ -489,13 +489,13 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         discussion = note.discussion
 
         expect(discussion.notes.last.note).to eq(draft_reply.note)
-        expect(discussion.resolved?).to eq(true)
+        expect(discussion.resolved?).to be(true)
         expect(discussion.resolved_by.id).to eq(user.id)
       end
 
       it 'unresolves a thread if the draft note unresolves it' do
         note.discussion.resolve!(user)
-        expect(note.discussion.resolved?).to eq(true)
+        expect(note.discussion.resolved?).to be(true)
 
         draft_reply = create_reply(note.discussion_id, resolves: false)
 
@@ -505,7 +505,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         discussion = Note.find(note.id).discussion
 
         expect(discussion.notes.last.note).to eq(draft_reply.note)
-        expect(discussion.resolved?).to eq(false)
+        expect(discussion.resolved?).to be(false)
       end
     end
 

@@ -70,6 +70,7 @@ export default {
 </script>
 
 <template>
+  <!-- eslint-disable vue/v-on-event-hyphenation -->
   <gl-sorting
     :text="sortText"
     :is-ascending="isDirectionAscending"
@@ -82,4 +83,5 @@ export default {
     @sortDirectionChange="onDirectionChange"
     @sortByChange="onSortItemClick"
   />
+  <!-- eslint-enable vue/v-on-event-hyphenation -->
 </template>

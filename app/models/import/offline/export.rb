@@ -7,7 +7,8 @@ module Import
 
       self.table_name = 'import_offline_exports'
 
-      KNOWN_IMPORT_HOSTS = %w[github.com bitbucket.org gitea.com].freeze
+      ignore_column :source_hostname, remove_with: '19.4', remove_after: '2026-08-21'
+
       PURGE_CONFIGURATION_DELAY = 24.hours
 
       belongs_to :user
@@ -17,11 +18,9 @@ module Import
         inverse_of: :offline_export
       has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :offline_export
 
-      before_validation :sanitize_source_hostname
+      validates :status, presence: true
 
-      validates :source_hostname, :status, presence: true
-      validate :validate_source_hostname
-
+      scope :including_configuration, -> { includes(:configuration) }
       scope :order_by_created_at, ->(direction) { order(created_at: direction) }
 
       state_machine :status, initial: :created do
@@ -63,28 +62,12 @@ module Import
         state_machine.states.map(&:human_name)
       end
 
+      def source_hostname
+        configuration&.source_hostname
+      end
+
       def completed?
         finished? || failed?
-      end
-
-      def validate_source_hostname
-        uri = Gitlab::Utils.parse_url(source_hostname)
-
-        if KNOWN_IMPORT_HOSTS.include?(uri&.domain)
-          return errors.add(:source_hostname, :invalid, message: 'must not be a known import source domain')
-        end
-
-        return if uri && uri.scheme && uri.host && uri.path.blank? && uri.query.blank?
-
-        errors.add(:source_hostname, :invalid, message: 'must contain only scheme and host')
-      end
-
-      def sanitize_source_hostname
-        return unless source_hostname.present?
-
-        self.source_hostname = Gitlab::UrlSanitizer.new(source_hostname).sanitized_url
-      rescue Addressable::URI::InvalidURIError
-        # Leave source_hostname as-is; validate_source_hostname will reject it
       end
 
       def schedule_configuration_purge

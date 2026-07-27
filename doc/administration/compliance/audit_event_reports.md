@@ -40,12 +40,6 @@ Instance audit events can also be accessed using the [instance audit events API]
 
 {{< /details >}}
 
-{{< history >}}
-
-- Entity type `Gitlab::Audit::InstanceScope` for instance audit events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418185) in GitLab 16.2.
-
-{{< /history >}}
-
 You can export the current view (including filters) of your instance audit events as a
 CSV(comma-separated values) file. To export the instance audit events to CSV:
 

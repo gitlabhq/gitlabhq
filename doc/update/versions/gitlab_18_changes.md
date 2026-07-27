@@ -657,7 +657,7 @@ GitLab responds to requests that exceed the size limit with a `413 Entity Too la
 - Affects: All installation methods
 - Affected versions: 18.6.2
 
-Some [runner restrictions](../../user/duo_agent_platform/flows/execution.md#configure-runners-to-execute-flows)
+Some [runner restrictions](../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows)
 have been introduced relating to which runners can be used with Duo Agent Platform.
 
 ### Geo log cursor migration fix

@@ -9,7 +9,7 @@ module Import
       end
 
       def execute
-        exports = filter_by_status(user.import_offline_exports)
+        exports = filter_by_status(user.import_offline_exports.including_configuration)
         sort(exports)
       end
 

@@ -11,7 +11,11 @@ repository for the full operator-facing flow.
 - `gitlab-ai-principles-distiller-sync` — the orchestrator. Detects per-principle
   drift via the existing checksum frontmatter, triggers one Duo Workflow per
   affected principle, polls each until terminal state, writes the result back,
-  and (with `--push`) opens an MR via the REST API.
+  and (with `--push`) opens an MR via the REST API. Each per-team MR pings the
+  people who changed the SSOT docs since the last distillation (resolved from
+  `git log` author emails via the Users API), falling back to the manifest's
+  `fallback_ping_team` behavior when no author resolves. Approval still routes to
+  `owner_team` via CODEOWNERS.
 - `gitlab-ai-principles-distiller-provision-flow` — idempotent provisioner for
   the AI Catalog Flow that the orchestrator drives. Runs before `sync` so prompt
   edits in git automatically propagate to the catalog.

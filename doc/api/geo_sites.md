@@ -12,12 +12,6 @@ title: Geo sites API
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369140) in GitLab 16.0.
-
-{{< /history >}}
-
 Use this API to manage [Geo sites](../administration/geo/_index.md).
 
 Prerequisites:

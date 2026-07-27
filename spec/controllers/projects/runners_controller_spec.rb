@@ -191,7 +191,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
           perform_request
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(runner.active).to eq(true)
+          expect(runner.active).to be(true)
         end
       end
     end
@@ -279,7 +279,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
       runner.reload
 
       expect(response).to have_gitlab_http_status(:found)
-      expect(runner.active).to eq(true)
+      expect(runner.active).to be(true)
     end
   end
 
@@ -300,7 +300,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
       runner.reload
 
       expect(response).to have_gitlab_http_status(:found)
-      expect(runner.active).to eq(false)
+      expect(runner.active).to be(false)
     end
 
     context 'with an instance runner' do
@@ -310,7 +310,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
         post :pause, params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
-        expect(runner.active).to eq(true)
+        expect(runner.active).to be(true)
       end
     end
 
@@ -321,7 +321,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
         post :pause, params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
-        expect(runner.active).to eq(true)
+        expect(runner.active).to be(true)
       end
     end
   end
@@ -348,7 +348,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
           perform_request
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(project.shared_runners_enabled).to eq(false)
+          expect(project.shared_runners_enabled).to be(false)
         end
       end
 
@@ -362,7 +362,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
           perform_request
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(project.shared_runners_enabled).to eq(true)
+          expect(project.shared_runners_enabled).to be(true)
         end
       end
 
@@ -376,7 +376,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
           perform_request
 
           expect(response).to have_gitlab_http_status(:unauthorized)
-          expect(project.shared_runners_enabled).to eq(false)
+          expect(project.shared_runners_enabled).to be(false)
           expect(json_response['error'])
             .to eq('Shared runners enabled cannot be enabled because parent group does not allow it')
         end
@@ -397,7 +397,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
           perform_request
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(project.shared_runners_enabled).to eq(true)
+          expect(project.shared_runners_enabled).to be(true)
         end
       end
     end
@@ -422,7 +422,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
           perform_request
 
           expect(response).to have_gitlab_http_status(:found)
-          expect(project.group_runners_enabled).to eq(false)
+          expect(project.group_runners_enabled).to be(false)
         end
       end
     end
@@ -441,7 +441,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
           perform_request
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(project.group_runners_enabled).to eq(true)
+          expect(project.group_runners_enabled).to be(true)
         end
       end
     end

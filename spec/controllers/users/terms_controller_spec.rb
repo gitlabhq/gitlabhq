@@ -96,7 +96,7 @@ RSpec.describe Users::TermsController, feature_category: :system_access do
 
         agreement = user.term_agreements.find_by(term: term)
 
-        expect(agreement.accepted).to eq(true)
+        expect(agreement.accepted).to be(true)
       end
 
       it 'redirects to a path when specified' do
@@ -150,7 +150,7 @@ RSpec.describe Users::TermsController, feature_category: :system_access do
 
         agreement = user.term_agreements.find_by(term: term)
 
-        expect(agreement.accepted).to eq(false)
+        expect(agreement.accepted).to be(false)
       end
 
       it 'signs out the user' do

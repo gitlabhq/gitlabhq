@@ -193,7 +193,7 @@ Prerequisites:
 - The [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
 - **Allow foundational flows** and **Developer** turned on [for the top-level group](../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 - [Push rules configured to allow a service account](../../duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Your own runners configured](../../duo_agent_platform/flows/execution.md#configure-runners-to-execute-flows), or [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) turned on for your project.
+- [Your own runners configured](../../duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows), or [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) turned on for your project.
 
 To resolve a discussion with GitLab Duo:
 

@@ -31,6 +31,67 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
     it { is_expected.not_to allow_value('CapitalLetters').for(:bucket) }
     it { is_expected.not_to allow_value('special.characters/\?<>@&=_ ').for(:bucket) }
 
+    describe '#source_hostname' do
+      it { is_expected.to allow_value(nil).for(:source_hostname) }
+      it { is_expected.to allow_value('http://example.com:8080').for(:source_hostname) }
+      it { is_expected.to allow_value('https://example.com:8080').for(:source_hostname) }
+      it { is_expected.to allow_value('http://example.com').for(:source_hostname) }
+      it { is_expected.to allow_value('https://example.com').for(:source_hostname) }
+      it { is_expected.not_to allow_value('').for(:source_hostname) }
+      it { is_expected.not_to allow_value('http://').for(:source_hostname) }
+      it { is_expected.not_to allow_value('example.com').for(:source_hostname) }
+      it { is_expected.not_to allow_value('https://example.com/dir').for(:source_hostname) }
+      it { is_expected.not_to allow_value('https://example.com?param=1').for(:source_hostname) }
+      it { is_expected.not_to allow_value('https://example.com/dir?param=1').for(:source_hostname) }
+      it { is_expected.not_to allow_value('https://github.com').for(:source_hostname) }
+      it { is_expected.not_to allow_value('https://www.github.com').for(:source_hostname) }
+      it { is_expected.not_to allow_value('https://bitbucket.org').for(:source_hostname) }
+      it { is_expected.not_to allow_value('https://gitea.com').for(:source_hostname) }
+
+      it 'rejects source_hostname longer than 255 characters' do
+        source_hostname = "https://#{'a' * 244}.com"
+        configuration = build(:offline_configuration, source_hostname: source_hostname)
+
+        configuration.validate
+
+        expect(configuration.errors.of_kind?(:source_hostname, :too_long)).to be(true)
+      end
+
+      it 'requires source_hostname when associated with an offline export' do
+        offline_export = build_stubbed(:offline_export)
+        configuration = build(:offline_configuration, offline_export: offline_export, source_hostname: nil)
+
+        expect(configuration).not_to be_valid
+        expect(configuration.errors[:source_hostname]).to include("can't be blank")
+      end
+
+      it 'allows source_hostname to be nil when associated with a bulk import' do
+        configuration = build(:offline_configuration, :with_bulk_import, source_hostname: nil)
+
+        expect(configuration).to be_valid
+      end
+
+      it 'sanitizes embedded credentials before validation' do
+        configuration = build(
+          :offline_configuration,
+          source_hostname: 'https://user:secret@gitlab.example.com'
+        )
+
+        expect { configuration.validate }
+          .to change { configuration.source_hostname }
+          .from('https://user:secret@gitlab.example.com')
+          .to('https://gitlab.example.com')
+      end
+
+      it 'keeps unparseable source_hostname unchanged before validation', :aggregate_failures do
+        source_hostname = 'https://gitlab example.com'
+        configuration = build(:offline_configuration, source_hostname: source_hostname)
+
+        expect { configuration.validate }.not_to change { configuration.source_hostname }
+        expect(configuration.errors[:source_hostname]).to include('must contain only scheme and host')
+      end
+    end
+
     describe 'bulk_import and offline_export should be mutually exclusive' do
       let(:bulk_import) { build(:bulk_import) }
       let(:offline_export) { build(:offline_export) }

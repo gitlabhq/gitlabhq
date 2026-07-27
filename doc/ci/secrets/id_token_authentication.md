@@ -43,7 +43,7 @@ sequenceDiagram
 
 ID tokens are also used by the [`secrets`](../yaml/_index.md#secrets) keyword.
 
-GitLab Duo Agent Platform [flows](../../user/duo_agent_platform/flows/execution.md#configure-id-tokens)
+GitLab Duo Agent Platform [flows](../../user/duo_agent_platform/flows/execution/_index.md#configure-id-tokens)
 and [external agents](../../user/duo_agent_platform/agents/external.md#authenticate-with-id-tokens)
 can also declare `id_tokens` to authenticate with third-party services during execution.
 

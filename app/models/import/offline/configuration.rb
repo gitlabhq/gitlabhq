@@ -5,6 +5,7 @@ module Import
     class Configuration < ApplicationRecord
       self.table_name = 'import_offline_configurations'
 
+      KNOWN_IMPORT_HOSTS = %w[github.com bitbucket.org gitea.com].freeze
       S3_BUCKET_REGEXP = %r{\A[a-z0-9.\-]*\z}
 
       # The only fields fog-google needs to authenticate with a service account
@@ -59,6 +60,9 @@ module Import
       after_initialize :generate_export_prefix
       before_validation :flatten_gcs_json_key
 
+      before_validation :sanitize_source_hostname
+      validate :validate_source_hostname
+
       def entity_prefix_for_path(source_full_path)
         entity_prefix_mapping[source_full_path]
       end
@@ -84,6 +88,39 @@ module Import
       end
 
       private
+
+      def offline_export_configuration?
+        offline_export_id.present?
+      end
+
+      def validate_source_hostname
+        if source_hostname.nil?
+          return errors.add(:source_hostname, :blank) if offline_export_configuration?
+
+          return
+        end
+
+        return errors.add(:source_hostname, :blank) if source_hostname.blank? && offline_export_configuration?
+        return errors.add(:source_hostname, :too_long, count: 255) if source_hostname.length > 255
+
+        uri = Gitlab::Utils.parse_url(source_hostname)
+
+        if KNOWN_IMPORT_HOSTS.include?(uri&.domain)
+          return errors.add(:source_hostname, :invalid, message: 'must not be a known import source domain')
+        end
+
+        return if uri && uri.scheme && uri.host && uri.path.blank? && uri.query.blank?
+
+        errors.add(:source_hostname, :invalid, message: 'must contain only scheme and host')
+      end
+
+      def sanitize_source_hostname
+        return if source_hostname.nil?
+
+        self.source_hostname = Gitlab::UrlSanitizer.new(source_hostname).sanitized_url
+      rescue Addressable::URI::InvalidURIError
+        # Leave source_hostname as-is; validate_source_hostname will reject it
+      end
 
       def generate_export_prefix
         return if export_prefix.present?

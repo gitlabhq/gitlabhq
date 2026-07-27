@@ -43,7 +43,7 @@ Supported attributes:
 | `allow_agent_to_request_user` | boolean | No | When `true` (default), the agent may pause to ask the user questions before proceeding. When `false`, the agent runs to completion without user input. |
 | `environment` | string | No | Execution environment. One of: `ide`, `web`, `chat_partial`, `chat`, `ambient`. |
 | `goal` | string | No | Description of the task for the agent to complete. Example: `Fix the failing pipeline`. |
-| `image` | string | No | Container image to use when running the flow in a CI pipeline. Must meet the [custom image requirements](../user/duo_agent_platform/flows/execution.md#custom-image-requirements). Example: `registry.gitlab.com/gitlab-org/duo-workflow/custom-image:latest`. |
+| `image` | string | No | Container image to use when running the flow in a CI pipeline. Must meet the [custom image requirements](../user/duo_agent_platform/flows/execution/images.md#use-a-custom-image). Example: `registry.gitlab.com/gitlab-org/duo-workflow/custom-image:latest`. |
 | `issue_id` | integer | No | IID of the issue to associate the flow with. Requires `project_id`. |
 | `merge_request_id` | integer | No | IID of the merge request to associate the flow with. Requires `project_id`. |
 | `namespace_id` | string | No | ID or path of the namespace to associate the flow with. |

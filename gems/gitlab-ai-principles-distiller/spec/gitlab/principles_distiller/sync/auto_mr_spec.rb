@@ -308,6 +308,143 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
   end
 
+  describe '.ssot_author_mentions' do
+    subject(:mentions) { sync.send(:ssot_author_mentions, affected_entries, 'api-token') }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = '/tmp/workspace'
+      allow(sync.workflow).to receive_messages(gitlab_host: 'https://gitlab.com', default_branch: 'master')
+    end
+
+    let(:affected_entries) do
+      {
+        'qa' => {
+          config: { 'sources' => [{ 'path' => 'doc/development/qa.md' }] },
+          changed_sources: [{ 'path' => 'doc/development/qa.md' }],
+          prior_sha: '1111111111111111111111111111111111111111'
+        }
+      }
+    end
+
+    context 'when a prior SHA is reachable and authors resolve to users' do
+      before do
+        allow(sync).to receive(:sha_present_locally?).and_return(true)
+        allow(IO).to receive(:popen).and_return("ada@example.com\ngrace@example.com\nada@example.com\n")
+        allow(sync).to receive(:search_user_by_email).with('ada@example.com', 'api-token')
+          .and_return({ 'username' => 'ada', 'bot' => false })
+        allow(sync).to receive(:search_user_by_email).with('grace@example.com', 'api-token')
+          .and_return({ 'username' => 'grace', 'bot' => false })
+      end
+
+      it 'returns deduped @username mentions in author order' do
+        expect(mentions).to eq(%w[@ada @grace])
+      end
+    end
+
+    context 'when an author is a bot or on the deny-list' do
+      before do
+        allow(sync).to receive(:sha_present_locally?).and_return(true)
+        allow(IO).to receive(:popen)
+          .and_return("bot@example.com\nservice@example.com\nada@example.com\n")
+        allow(sync).to receive(:search_user_by_email).with('bot@example.com', 'api-token')
+          .and_return({ 'username' => 'some-bot', 'bot' => true })
+        allow(sync).to receive(:search_user_by_email).with('service@example.com', 'api-token')
+          .and_return({ 'username' => 'service-modelops-agent-principles-distiller', 'bot' => false })
+        allow(sync).to receive(:search_user_by_email).with('ada@example.com', 'api-token')
+          .and_return({ 'username' => 'ada', 'bot' => false })
+      end
+
+      it 'excludes bot accounts and deny-listed service accounts' do
+        expect(mentions).to eq(%w[@ada])
+      end
+    end
+
+    context 'when an author email does not resolve to a user' do
+      before do
+        allow(IO).to receive(:popen).and_return("private@example.com\n")
+        allow(sync).to receive_messages(sha_present_locally?: true, search_user_by_email: nil)
+      end
+
+      it 'drops the unresolvable author (falls back to team ping upstream)' do
+        expect(mentions).to eq([])
+      end
+    end
+
+    context 'when there is no reachable prior SHA' do
+      let(:affected_entries) do
+        { 'qa' => { config: {}, changed_sources: [{ 'path' => 'doc/development/qa.md' }], prior_sha: nil } }
+      end
+
+      it 'returns no mentions without shelling out to git' do
+        expect(IO).not_to receive(:popen)
+        expect(mentions).to eq([])
+      end
+    end
+  end
+
+  describe '.search_user_by_email' do
+    subject(:user) { sync.send(:search_user_by_email, 'ada@example.com', 'api-token') }
+
+    let(:fake_response) { instance_double(Net::HTTPResponse, code: '200', body: response_body) }
+    let(:http_instance) { instance_double(Net::HTTP) }
+    let(:captured_request) { [] }
+
+    before do
+      allow(sync.workflow).to receive(:gitlab_host).and_return('https://gitlab.com')
+      allow(Net::HTTP).to receive(:new).and_return(http_instance)
+      allow(http_instance).to receive(:use_ssl=)
+      allow(http_instance).to receive(:read_timeout=)
+      allow(http_instance).to receive(:request) do |request|
+        captured_request << request
+        fake_response
+      end
+      allow(fake_response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(http_success)
+    end
+
+    context 'when a single result has a matching public_email' do
+      let(:http_success) { true }
+      let(:response_body) { '[{"username":"ada","public_email":"ada@example.com","bot":false}]' }
+
+      it 'returns that user and searches by email', :aggregate_failures do
+        expect(user).to eq({ 'username' => 'ada', 'public_email' => 'ada@example.com', 'bot' => false })
+        expect(captured_request.first.uri.query).to include('search=ada%40example.com')
+        expect(captured_request.first['PRIVATE-TOKEN']).to eq('api-token')
+      end
+    end
+
+    context 'when a single result does NOT match the searched email' do
+      let(:http_success) { true }
+      # The search endpoint matches username/name too, so a lone result can be
+      # someone whose username coincidentally contains the local-part.
+      let(:response_body) { '[{"username":"ada","public_email":"other@example.com"}]' }
+
+      it 'returns nil so the wrong person is not pinged' do
+        expect(user).to be_nil
+      end
+    end
+
+    context 'when multiple users match' do
+      let(:http_success) { true }
+      let(:response_body) do
+        '[{"username":"ada","public_email":"ada@example.com"},' \
+          '{"username":"other","public_email":"other@example.com"}]'
+      end
+
+      it 'returns only the exact public_email match' do
+        expect(user).to eq({ 'username' => 'ada', 'public_email' => 'ada@example.com' })
+      end
+    end
+
+    context 'when the lookup fails' do
+      let(:http_success) { false }
+      let(:response_body) { 'Forbidden' }
+
+      it 'returns nil so the author is skipped' do
+        expect(user).to be_nil
+      end
+    end
+  end
+
   describe '.version_milestone_title' do
     subject(:title) { sync.send(:version_milestone_title) }
 
@@ -671,7 +808,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       }
       allow(sync.manifest).to receive(:principles_path) { |n| ".ai/principles/distilled/#{n}.md" }
       # Keep the idempotency lookup hermetic (no network); nil => create path.
-      allow(sync).to receive(:find_open_mr_iid).and_return(nil)
+      # Default: no SSOT authors resolve, so the description falls back to the
+      # team ping (contexts below override this to exercise the author path).
+      # Keeps these tests hermetic (no /users lookup over the network).
+      allow(sync).to receive_messages(find_open_mr_iid: nil, ssot_author_mentions: [])
     end
 
     # Captures the team MR body (the one whose title is NOT the tooling MR),
@@ -886,7 +1026,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       end
     end
 
-    context 'when the team opts out of pings (ping_team: false)' do
+    context 'when the team opts out of fallback pings (fallback_ping_team: false)' do
       let(:distilled_contents) do
         { 'backend-ruby' => "---\nsource_checksum: a\n---\n# Ruby\n" }
       end
@@ -904,7 +1044,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         sync.manifest.data = {
           'principles' => {
             'backend-ruby' => {
-              'owner_team' => '@gitlab-org/maintainers/rails-backend', 'ping_team' => false,
+              'owner_team' => '@gitlab-org/maintainers/rails-backend', 'fallback_ping_team' => false,
               'sources' => [{ 'path' => 'doc/development/backend/ruby_style_guide.md' }]
             }
           }
@@ -929,6 +1069,23 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         expect(captured[:description]).to include('**rails-backend**')
         expect(captured[:description]).not_to include('@gitlab-org/maintainers/rails-backend')
         expect(commits).to include(a_string_including('Update rails-backend AI development principles'))
+      end
+    end
+
+    context 'when SSOT authors resolve' do
+      before do
+        # Override the hermetic default: individuals who changed the SSOT are
+        # pinged instead of the owning team.
+        allow(sync).to receive(:ssot_author_mentions).and_return(%w[@ada @grace])
+      end
+
+      it 'pings the resolved authors and omits the team fallback ping', :aggregate_failures do
+        body = capture_post_body
+
+        expect(body[:description]).to include('authored by @ada @grace')
+        # The team-fallback ping ("Please review: **team**.") must not appear
+        # when authors resolved.
+        expect(body[:description]).not_to include('Please review: **')
       end
     end
 

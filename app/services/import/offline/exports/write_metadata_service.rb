@@ -37,7 +37,7 @@ module Import
             instance_version: Gitlab::VERSION,
             instance_enterprise: Gitlab.ee?,
             export_prefix: configuration.export_prefix,
-            source_hostname: Gitlab.config.gitlab.url,
+            source_hostname: configuration.source_hostname,
             entities_mapping: entities_mapping_hash
           }.deep_stringify_keys
         end

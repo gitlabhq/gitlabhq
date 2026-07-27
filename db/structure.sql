@@ -22065,7 +22065,7 @@ CREATE TABLE import_offline_exports (
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
     has_failures boolean DEFAULT false NOT NULL,
-    source_hostname text NOT NULL,
+    source_hostname text,
     CONSTRAINT check_dcd47fbc18 CHECK ((char_length(source_hostname) <= 255))
 );
 

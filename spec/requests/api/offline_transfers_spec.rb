@@ -6,9 +6,9 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:export_1) { create(:offline_export, user: user) }
-  let_it_be(:export_2) { create(:offline_export, user: user) }
-  let_it_be(:other_user_export) { create(:offline_export) }
+  let_it_be(:export_1) { create(:offline_export, :with_configuration, user: user) }
+  let_it_be(:export_2) { create(:offline_export, :with_configuration, user: user) }
+  let_it_be(:other_user_export) { create(:offline_export, :with_configuration) }
 
   shared_examples 'not found when offline_transfer_exports is disabled' do
     before do

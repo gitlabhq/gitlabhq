@@ -137,12 +137,6 @@ For example, if the backup directory name is `1714053314_2024_04_25_17.0.0-pre`,
 
 ## Backup metadata file (`backup_information.json`)
 
-{{< history >}}
-
-- Metadata version 2 was introduced in [GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149441).
-
-{{< /history >}}
-
 `backup_information.json` is found in the backup directory, and it stores metadata about the backup. For example:
 
 ```json

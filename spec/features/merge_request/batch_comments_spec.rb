@@ -203,7 +203,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     end
 
     it 'publishes comment right away and resolves the thread' do
-      expect(active_discussion.resolved?).to eq(false)
+      expect(active_discussion.resolved?).to be(false)
 
       write_reply_to_discussion(button_text: 'Add comment now', resolve: true)
 
@@ -213,7 +213,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     end
 
     it 'publishes review and resolves the thread' do
-      expect(active_discussion.resolved?).to eq(false)
+      expect(active_discussion.resolved?).to be(false)
 
       write_reply_to_discussion(resolve: true)
 
@@ -244,7 +244,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
     it 'publishes comment right away and unresolves the thread',
       quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24861' do
-      expect(active_discussion.resolved?).to eq(true)
+      expect(active_discussion.resolved?).to be(true)
 
       write_reply_to_discussion(button_text: 'Add comment now', unresolve: true)
 
@@ -255,7 +255,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
     it 'publishes review and unresolves the thread',
       quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24861' do
-      expect(active_discussion.resolved?).to eq(true)
+      expect(active_discussion.resolved?).to be(true)
 
       wait_for_requests
 

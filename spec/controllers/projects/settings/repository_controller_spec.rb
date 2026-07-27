@@ -204,7 +204,7 @@ RSpec.describe Projects::Settings::RepositoryController, feature_category: :sour
 
           expect(response).to redirect_to project_settings_repository_path(project)
           expect(controller).to set_flash[:alert].to("Project setting issue branch template is too long (maximum is 255 characters)")
-          expect(project.reload.issue_branch_template).to eq(nil)
+          expect(project.reload.issue_branch_template).to be_nil
         end
       end
     end

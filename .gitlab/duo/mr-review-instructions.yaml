@@ -527,8 +527,8 @@ instructions:
   # <<< end generated: authentication-testing
 
   # >>> generated: documentation — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
-  # source_checksum: fdddf765995a1dff
+  # distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
+  # source_checksum: 87cff74ae8d8aa47
   - name: Documentation
     fileFilters:
       - "doc/**/*.md"
@@ -585,8 +585,7 @@ instructions:
       - Any `<a>` tags created with HTML must use absolute URLs as `href` attributes.
       - Use inline links, not reference-style links.
       - Split long lines at approximately 100 characters; DO NOT split links across lines.
-      - Start each new sentence on a new line.
-      - Use `<!-- comment -->` HTML comments for author notes; DO NOT use comments to hide documentation.
+      - Use `<!-- -->` HTML comments for author notes; DO NOT use comments to hide documentation.
 
       ### Text Formatting
 
@@ -1171,8 +1170,8 @@ instructions:
   # <<< end generated: testing-e2e
 
   # >>> generated: cicd-internals — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
-  # source_checksum: 4186dc0d16bee6b6
+  # distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
+  # source_checksum: 5a5d9202955ad21b
   - name: CI/CD Internals
     fileFilters:
       - "lib/gitlab/ci/**/*.rb"
@@ -1194,11 +1193,22 @@ instructions:
 
       - Check feature flags inside `Entry::Node#value` (or a private helper) using `Gitlab::Ci::Config::FeatureFlags.enabled?(:flag, type: :beta)` rather than scattering flag checks across callers.
       - DO NOT use feature flags in entry classes without an actor; prefer `Feature.enabled?(:flag, Feature.current_request)` or `Config::FeatureFlags.enabled?(:flag)`, or move the flag check outside the entry class entirely.
+      - Place CI YAML parsing changes behind a feature flag that is default-enabled for a full milestone before removal, so Self-Managed and Dedicated users can revert to the original behaviour if unexpected side effects arise.
 
+      - Place CI YAML parsing changes behind a feature flag that is default-enabled for a full milestone before removal, so Self-Managed and Dedicated users can revert to the original behavior if unexpected side effects arise.
       ### Testing and Validation
 
       - Add or update the corresponding spec file whenever an entry is added or modified.
       - Add or update integration tests in `spec/lib/gitlab/ci/yaml_processor_spec.rb` or the files under `spec/lib/gitlab/ci/yaml_processor/test_cases/` for every new or changed keyword.
+
+      ### YAML Keyword Reviews
+
+      - For path-based keywords: document and test whether glob patterns (`*`, `**`, `?`), relative/absolute paths, symbolic links, and missing-path behaviour are supported; explicitly document and spec any intentionally unsupported behaviour so a future accidental enablement causes a test failure.
+      - For variable expansion: document the expansion type in the [variables usage table](https://docs.gitlab.com/ci/variables/where_variables_can_be_used/#variables-usage), test both positive and negative cases, and add a spec that prevents accidental future enablement of unsupported nested expansion (which would be a breaking change).
+      - For keyword reuse (adding an existing keyword as a subkeyword): document any unsupported sub-features, provide clear validation errors for unsupported syntax, and test scenarios where users assume the subkeyword behaves identically to the original.
+      - For composability: document and test `!reference` tag behaviour (a frequent source of unexpected behaviour), `include:` semantics, and `extends:` merge behaviour (deep-merges hashes but replaces arrays); add validation that rejects unwanted `!reference` or `include:` usage where applicable.
+      - Ensure every relevant usage dimension (string length, list/array size) has a documented limit with a note on the performance impact of raising it; DO NOT ship a keyword without limits on every dimension that could be exploited at scale.
+      - Ensure all implemented behaviour is documented, all documented behaviour is covered by specs, validation errors are specific and actionable, and JSON schema validation is consistent with backend validation.
 
       ### CI Database Tables (Partitioning)
 
@@ -1217,8 +1227,8 @@ instructions:
   # <<< end generated: cicd-internals
 
   # >>> generated: ai-instruction-files — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 7e6400c6673ccad101ddf620e6bf08ad99e5325a
-  # source_checksum: af9ed0ec46eedb9d
+  # distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
+  # source_checksum: eb7c929edce58d7d
   - name: AI Instruction Files
     fileFilters:
       - ".ai/**/*"
@@ -1270,6 +1280,9 @@ instructions:
       - Compare the distilled diff against the referenced SSOT documentation changes.
       - Confirm no still-valid, SSOT-supported rule was dropped and no unsupported rule was added.
       - Confirm the front matter checksums were updated by the tool, not by hand.
+      - When reviewing a fence-reconcile MR (which changes only `.gitlab/duo/mr-review-instructions.yaml`), confirm the fence directives match the front matter of the distilled files on `master`; the reconcile job runs no distillation, so the fence body must never diverge from the committed distilled content.
+      - Treat a malformed or orphaned fence as always-blocking; the `ai-duo-review-instructions` guard fails on its own ref regardless of the reconcile state.
+      - Treat fence staleness as blocking only on the reconcile MR and on MRs that touch the fences' owned files. DO NOT treat staleness as blocking on a team's distilled MR or on unrelated `doc/**/*.md` edits — it is expected transient state until the daily reconcile catches up.
       - Reference: doc/development/ai_instruction_files_review.md
   # <<< end generated: ai-instruction-files
 

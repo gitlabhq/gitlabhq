@@ -133,31 +133,35 @@ module Gitlab
         end
 
         # Whether a principle's owner_team should be @-mentioned (pinged) in
-        # the MR commit subject and description summary. Defaults to true;
-        # large groups (e.g. all of frontend/rails-backend) set `ping_team:
-        # false` to avoid mass-notifying every member on each weekly MR.
-        def principle_ping_team?(name)
-          principle_config(name)&.fetch('ping_team', true) != false
+        # the MR description summary when no SSOT author could be resolved
+        # (the team ping is only a fallback; resolved authors are pinged
+        # instead). Defaults to true; large groups (e.g. all of
+        # frontend/rails-backend) set `fallback_ping_team: false` to avoid
+        # mass-notifying every member on each weekly MR.
+        def principle_fallback_ping_team?(name)
+          principle_config(name)&.fetch('fallback_ping_team', true) != false
         end
 
-        # Whether the team identified by an owner_team handle should be pinged.
-        # The fan-out groups by handle, so a team is pinged unless *every*
-        # principle it owns opts out (mirrors explicit_slug_for_handle).
-        # Delegates the per-principle check to principle_ping_team? so the
-        # ping_team semantics live in one place.
-        def team_pings?(handle)
+        # Whether the team identified by an owner_team handle should be pinged
+        # when the fallback fires (no SSOT author resolved). The fan-out groups
+        # by handle, so a team is pinged unless *every* principle it owns opts
+        # out (mirrors explicit_slug_for_handle). Delegates the per-principle
+        # check to principle_fallback_ping_team? so the fallback_ping_team
+        # semantics live in one place.
+        def team_fallback_pings?(handle)
           owned = principles.keys.select { |name| principle_owner_team(name) == handle }
           return true if owned.empty?
 
-          owned.any? { |name| principle_ping_team?(name) }
+          owned.any? { |name| principle_fallback_ping_team?(name) }
         end
 
-        # The human-facing label for a team in pinging surfaces: the raw
-        # owner_team handle when the team opts into pings (so it notifies), or
-        # the non-mention team_slug when it does not. CODEOWNERS routing always
+        # The human-facing label for a team on the fallback ping path (used
+        # only when no SSOT author resolved): the raw owner_team handle when
+        # the team opts into fallback pings (so it notifies), or the
+        # non-mention team_slug when it does not. CODEOWNERS routing always
         # uses the real handle regardless of this.
         def team_display(handle)
-          team_pings?(handle) ? handle : team_slug(handle)
+          team_fallback_pings?(handle) ? handle : team_slug(handle)
         end
 
         # URL/branch-safe slug for the per-team branch suffix. Prefers the

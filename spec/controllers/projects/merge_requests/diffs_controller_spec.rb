@@ -776,7 +776,7 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
 
     it 'sets generated' do
       go
-      expect(json_response["diff_files"][0]["viewer"]["generated"]).to eq(false)
+      expect(json_response["diff_files"][0]["viewer"]["generated"]).to be(false)
     end
   end
 end

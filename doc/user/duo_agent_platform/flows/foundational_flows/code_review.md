@@ -57,7 +57,7 @@ This flow is available in the GitLab UI only.
 - Turn on **Allow foundational flows** and **Code Review** [for the top-level group](_index.md#turn-foundational-flows-on-or-off).
 - Have the Developer, Maintainer, or Owner role for the project.
 - If you belong to multiple GitLab Duo namespaces, [set a default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
-- [Configure your own runners](../execution.md#configure-runners-to-execute-flows) with the `gitlab--duo` tag and
+- [Configure your own runners](../execution/_index.md#configure-runners-to-execute-flows) with the `gitlab--duo` tag and
   an executor that supports Docker images, or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md)
   for your project. Code Review Flow runs as a CI/CD job and requires a runner to execute.
 

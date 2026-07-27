@@ -64,7 +64,7 @@ See the table below for the list of ports that the Linux package assigns by defa
 **Footnotes**:
 
 1. If Sidekiq health check settings are not set, they default to the Sidekiq metrics exporter settings.
-   This default is deprecated and is set to be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/347509).
+   This default is deprecated and is set to be [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/347509).
 1. If using additional Consul functionality, more ports may need to be opened. See the
    [official documentation](https://developer.hashicorp.com/consul/docs/install/ports#ports-table) for the list.
 

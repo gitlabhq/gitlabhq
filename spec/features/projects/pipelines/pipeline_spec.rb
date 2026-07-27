@@ -1290,7 +1290,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       end
 
       it 'contains badge with tooltip which contains failure reason' do
-        expect(pipeline.failure_reason?).to eq true
+        expect(pipeline.failure_reason?).to be true
 
         within_testid('pipeline-header') do
           expect(page).to have_selector(

@@ -42,7 +42,7 @@ POST /projects/:id/invitations
 | `access_level`   | integer           | yes                               | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
 | `expires_at`     | string            | no                                | A date string in the format `YEAR-MONTH-DAY` |
 | `invite_source`  | string            | no                                | The source of the invitation that starts the member creation process. |
-| `member_role_id` | integer           | no                                | Assigns the new member to the provided custom role. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134100)) in GitLab 16.6. Ultimate only. |
+| `member_role_id` | integer           | no                                | Assigns the new member to the provided custom role. Ultimate only. |
 
 ```shell
 curl --request POST \

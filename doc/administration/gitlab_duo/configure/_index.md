@@ -90,10 +90,10 @@ In addition, runners must be able to connect to:
 | Destination | Port | Purpose |
 |-------------|------|---------|
 | `registry.npmjs.org` | `443` | Download the Duo CLI package at runtime |
-| `registry.gitlab.com` | `443` | Download the default Docker image (unless using a [custom image](../../../user/duo_agent_platform/flows/execution.md#change-the-default-docker-image)) |
+| `registry.gitlab.com` | `443` | Download the default Docker image (unless using a [custom image](../../../user/duo_agent_platform/flows/execution/images.md#change-the-default-docker-image)) |
 
 If your organization cannot allow access to the public npm registry, you can use a
-[custom Docker image](../../../user/duo_agent_platform/flows/execution.md#change-the-default-docker-image)
+[custom Docker image](../../../user/duo_agent_platform/flows/execution/images.md#change-the-default-docker-image)
 with the required dependencies already installed.
 
 > [!note]

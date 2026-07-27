@@ -310,7 +310,7 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
         let(:integration_params) { { inherit_from_id: '' } }
 
         it 'sets inherit_from_id to nil' do
-          expect(integration.reload.inherit_from_id).to eq(nil)
+          expect(integration.reload.inherit_from_id).to be_nil
         end
       end
 

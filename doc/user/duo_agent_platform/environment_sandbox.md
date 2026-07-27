@@ -38,14 +38,14 @@ The sandbox is enabled when:
 
 For information about CI/CD variable differences between default and custom
 image configurations, see
-[Flow execution variables](flows/execution_variables.md).
+[Flow execution variables](flows/execution/execution-variables.md).
 
 ## Prerequisites
 
 To use the execution environment sandbox, you need:
 
 - GitLab Duo Agent Platform enabled in your project.
-- Privileged runner mode enabled. It is [required for sandboxing to function](flows/execution.md#configure-runners-to-execute-flows).
+- Privileged runner mode enabled. It is [required for sandboxing to function](flows/execution/_index.md#configure-runners-to-execute-flows).
 - A compatible Docker image: this could be the [default GitLab Docker](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/container_registry) image on version `v0.0.6` or above, or a [custom image with Anthropic Sandbox Runtime (SRT) installed](#install-anthropic-sandbox-runtime-srt-on-a-custom-image).
 
 ## How it works
@@ -61,7 +61,7 @@ The execution environment sandbox uses [Anthropic Sandbox Runtime (SRT)](https:/
 
 ## Install Anthropic Sandbox Runtime (SRT) on a custom image
 
-If you use a custom image, for example, with an [`agent-config.yml`](flows/execution.md#create-the-configuration-file),
+If you use a custom image, for example, with an [`agent-config.yml`](flows/execution/_index.md#create-the-agent-configuration-file),
 Anthropic SRT version `0.0.20` or later must be installed and available in the environment.
 
 SRT is available through `npm` as `@anthropic-ai/sandbox-runtime`. The following example shows the installation stage
@@ -121,7 +121,7 @@ When the execution environment sandbox is applied, the following restrictions ar
 
 ### Configure sandbox settings
 
-Use an [`agent-config.yml`](flows/execution.md#create-the-configuration-file) file to configure some of your sandbox settings.
+Use an [`agent-config.yml`](flows/execution/_index.md#create-the-agent-configuration-file) file to configure some of your sandbox settings.
 
 By default, the sandbox permits access to the following configurations:
 

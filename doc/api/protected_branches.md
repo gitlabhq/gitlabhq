@@ -44,12 +44,6 @@ For more information, see the [protect repository branches examples](#protect-re
 
 ## List protected branches
 
-{{< history >}}
-
-- Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
-
-{{< /history >}}
-
 Get a list of [protected branches](../user/project/repository/branches/protected.md) from a project
 as they are defined in the UI. If a wildcard is set, it is returned instead of the exact name
 of the branches that match that wildcard.

@@ -217,6 +217,9 @@
 .if-missing-clickhouse-coverage-credentials: &if-missing-clickhouse-coverage-credentials
   if: '$GLCI_DA_CLICKHOUSE_URL == null || $GLCI_CLICKHOUSE_CODE_COVERAGE_DB == null || $GLCI_CLICKHOUSE_METRICS_USERNAME == null || $GLCI_CLICKHOUSE_METRICS_PASSWORD == null'
 
+.if-missing-clickhouse-diff-stats-credentials: &if-missing-clickhouse-diff-stats-credentials
+  if: '$GLCI_DA_CLICKHOUSE_URL == null || $GLCI_CLICKHOUSE_METRICS_USERNAME == null || $GLCI_CLICKHOUSE_METRICS_PASSWORD == null || $GLCI_CLICKHOUSE_WORK_ITEM_DB == null || $GLCI_DIFF_STATS_CLICKHOUSE_TABLE == null'
+
 .if-coverband-enabled: &if-coverband-enabled
   if: '$COVERBAND_ENABLED == "true"'
 
@@ -4052,6 +4055,8 @@
 
 .test-metadata:rules:export-diff-stats:
   rules:
+    - <<: *if-missing-clickhouse-diff-stats-credentials
+      when: never
     - *if-merge-request
 
 ###############################

@@ -51,7 +51,7 @@ To set up your environment for the Agent Platform:
 
 1. [Configure your instance](_index.md).
 1. [Configure your network](_index.md#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo) to allow outbound connections from your GitLab instance.
-1. [Configure instance or group runners](../../../user/duo_agent_platform/flows/execution.md#configure-runners-to-execute-flows) to use the flows. Flows that use CI/CD are executed on runners. Agentic Chat does not require runners.
+1. [Configure instance or group runners](../../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows) to use the flows. Flows that use CI/CD are executed on runners. Agentic Chat does not require runners.
 1. [Allow connections](_index.md#allow-connections-from-the-runner) from the runner to your GitLab instance.
 1. If you have an online license, [Synchronize your subscription data](../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
 
@@ -96,7 +96,7 @@ When you first transition your instance to the Agent Platform, you might encount
 | Issue | Likely cause | Resolution |
 |---------|--------------|------------|
 | Flows not visible in the UI | GitLab Duo or flow execution is not turned on, the group lacks permission to use flows, or the flow is not enabled at the project level. | [Flows not visible in the UI](../../../user/duo_agent_platform/troubleshooting.md#flows-not-visible-in-the-ui) |
-| Flows do not run because no runner picks up the job | No runner has the `gitlab--duo` tag, or runners are not configured for flows. | [Configure runners](../../../user/duo_agent_platform/flows/execution.md#configure-runners-to-execute-flows) |
+| Flows do not run because no runner picks up the job | No runner has the `gitlab--duo` tag, or runners are not configured for flows. | [Configure runners](../../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows) |
 | Session is stuck in the `created` state | Push rules block the service account. The commit author email or the `duo/feature/` branch prefix is not allowed. | [Configure push rules to allow a service account](../../../user/duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account) |
 | `Error in creating workload: Insufficient permissions to create a new pipeline` | The foundational flow service account was set up before the imported or templated project existed. | [Insufficient permissions to create a new pipeline for imported projects](../../../user/duo_agent_platform/troubleshooting.md#insufficient-permissions-to-create-a-new-pipeline-for-imported-projects) |
 | A foundational flow is turned on but does nothing | The service account was not created, or a group membership lock prevents it from being added to projects. | [Foundational flow service account not created](../../../user/duo_agent_platform/troubleshooting.md#foundational-flow-service-account-not-created) and [Group membership locked](../../../user/duo_agent_platform/troubleshooting.md#group-membership-locked) |

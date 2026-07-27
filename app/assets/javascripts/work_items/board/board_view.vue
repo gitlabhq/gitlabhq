@@ -3,9 +3,12 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { getParameterByName } from '~/lib/utils/url_utility';
+import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import { RELATIVE_POSITION_ASC } from '~/work_items/list/constants';
 
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
+import { findDetailPanelWorkItem } from '../utils';
 import updateBoardWorkItemMutation from './graphql/update_board_work_item.mutation.graphql';
 import { groupingStrategyFor } from './grouping';
 import {
@@ -160,6 +163,20 @@ export default {
   methods: {
     groupId(value) {
       return getGroupId({ groupBy: this.groupBy, value });
+    },
+    // Opens the detail panel for the item in the `show` param.
+    // Each column loads separately, so we run this whenever one resolves. We don't clear
+    // the param when the item is missing as it may still load in another column.
+    checkDetailPanelParams(workItems) {
+      const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
+      if (!queryParam) {
+        return;
+      }
+
+      const { item } = findDetailPanelWorkItem(queryParam, workItems, this.activeItem);
+      if (item) {
+        this.$emit('set-active-item', item);
+      }
     },
     isColumnCollapsed(value) {
       return this.collapsedGroups.includes(this.groupId(value));
@@ -402,6 +419,7 @@ export default {
       @drag-start="onDragStart"
       @card-move="onCardMove"
       @set-active-item="$emit('set-active-item', $event)"
+      @check-board-params="checkDetailPanelParams"
       @toggle-collapse="$emit('toggle-collapse', groupId(value))"
     />
   </div>

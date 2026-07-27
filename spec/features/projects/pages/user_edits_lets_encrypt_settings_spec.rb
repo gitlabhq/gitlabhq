@@ -35,7 +35,7 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
     click_button 'Create new domain'
 
     expect(page).to have_content('my.test.domain.com')
-    expect(PagesDomain.find_by_domain('my.test.domain.com').auto_ssl_enabled).to eq(true)
+    expect(PagesDomain.find_by_domain('my.test.domain.com').auto_ssl_enabled).to be(true)
   end
 
   context 'when the auto SSL management is initially disabled' do

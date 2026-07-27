@@ -270,10 +270,10 @@ RSpec.describe Projects::MilestonesController, feature_category: :team_planning 
 
       expect { Milestone.find(milestone.id) }.to raise_exception(ActiveRecord::RecordNotFound)
       issue.reload
-      expect(issue.milestone_id).to eq(nil)
+      expect(issue.milestone_id).to be_nil
 
       merge_request.reload
-      expect(merge_request.milestone_id).to eq(nil)
+      expect(merge_request.milestone_id).to be_nil
     end
   end
 

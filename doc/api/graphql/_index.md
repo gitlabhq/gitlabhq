@@ -299,12 +299,6 @@ deprecation and removal process. These fields can be removed at any time without
 
 ### Verify against the future breaking-change schema
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353642) in GitLab 15.6.
-
-{{< /history >}}
-
 You can make calls against the GraphQL API as if all deprecated items were already removed.
 This way, you can verify API calls ahead of a [breaking-change release](#deprecation-and-removal-process)
 before the items are actually removed from the schema.

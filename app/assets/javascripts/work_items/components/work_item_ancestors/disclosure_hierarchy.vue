@@ -108,7 +108,8 @@ export default {
           <gl-disclosure-dropdown :items="middleItems">
             <template #toggle>
               <button
-                id="disclosure-hierarchy-ellipsis-button"
+                :id="`${itemUuid}-ellipsis-button`"
+                ref="ellipsisButton"
                 class="disclosure-hierarchy-button"
                 :aria-label="ellipsisTooltipLabel"
               >
@@ -132,8 +133,8 @@ export default {
           </gl-disclosure-dropdown>
         </li>
         <gl-tooltip
-          v-if="ellipsisTooltipLabel"
-          target="disclosure-hierarchy-ellipsis-button"
+          v-if="ellipsisTooltipLabel && middleItems.length > 0"
+          :target="() => $refs.ellipsisButton"
           triggers="hover"
         >
           {{ ellipsisTooltipLabel }}

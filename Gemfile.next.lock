@@ -807,7 +807,7 @@ GEM
       googleapis-common-protos-types (~> 1.15)
       googleauth (~> 1.12)
       grpc (~> 1.66)
-    gdk-toogle (1.0.1)
+    gdk-toogle (1.0.2)
       haml
       rails (>= 7.0.4.2)
     gemoji (3.0.1)
@@ -2070,7 +2070,7 @@ GEM
     rubyntlm (0.6.3)
     rubypants (0.2.0)
     rubyzip (2.4.1)
-    rugged (1.7.2)
+    rugged (1.9.6)
     safety_net_attestation (0.5.0)
       jwt (>= 2.0, < 4.0)
     sanitize (6.0.2)
@@ -2997,7 +2997,7 @@ CHECKSUMS
   fugit (1.11.2) sha256=4c2e234f750c78d4514d0ca343a0b923847eac3846976fdb23ed4245d8fde6fe
   fuzzyurl (0.9.0) sha256=542efa80f2bcaadbdc402c2f0b572f2e335a1d53e375aecad68bbb3d86860c0f
   gapic-common (1.1.0) sha256=3270ab3c5135012a4ab4d8848f945cf35014192f24504cdb40c66fc67f1beaa3
-  gdk-toogle (1.0.1) sha256=f8fd42490c6ec589b9130fbd24b05d1014f5de3451948dcd3893a7a50d36b3bf
+  gdk-toogle (1.0.2) sha256=f078ea960c5a9c1e18a3ceda39e12fca73122e14fe1726873b8d03d9d11fd447
   gemoji (3.0.1) sha256=80553f2f4932a7a95fb1b3c7c63f7dd937e7c8c610164bbdea28fd06eba5f36d
   get_process_mem (0.2.7) sha256=4afd3c3641dd6a817c09806c7d6d509d8a9984512ac38dea8b917426bbf77eba
   gettext (3.5.2) sha256=ada02c59aa7e9f56bd2522faedaed16421dd2f3ddb5fe28628c0be5abcbf3c74
@@ -3467,7 +3467,7 @@ CHECKSUMS
   rubyntlm (0.6.3) sha256=5b321456dba3130351f7451f8669f1afa83a0d26fd63cdec285b7b88e667102d
   rubypants (0.2.0) sha256=f07e38eac793655a0323fe91946081052341b9e69807026fcf102346589eedee
   rubyzip (2.4.1) sha256=8577c88edc1fde8935eb91064c5cb1aef9ad5494b940cf19c775ee833e075615
-  rugged (1.7.2) sha256=9049b1f4c37f39d7b0e6fc5768815c5c5f470bf27d3fd725ab032258c2b38ce9
+  rugged (1.9.6) sha256=c6e45250e51cdf19f6130d050e280ba8d6af475d4c76580f91377a59fe23d3c7
   safe_zip (0.1.0)
   safety_net_attestation (0.5.0) sha256=c8cd01dd550dbe8553862918af6355a04672db11d218ec96104ce3955293f2aa
   sanitize (6.0.2) sha256=48c4eb8e92bb1699056b6000986ac50fc9df82f458a941abf2c4d6759bccd5cf

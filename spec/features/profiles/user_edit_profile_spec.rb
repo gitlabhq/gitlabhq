@@ -194,7 +194,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
       user.reload
 
-      expect(user.avatar?).to eq false
+      expect(user.avatar?).to be false
       expect(page).not_to have_link('Remove avatar')
       expect(page).to have_link('gravatar.com')
     end
@@ -291,13 +291,13 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       it 'sets the users status to busy' do
         busy_status = find_by_testid('user-availability-checkbox')
 
-        expect(busy_status.checked?).to eq(false)
+        expect(busy_status.checked?).to be(false)
 
         toggle_busy_status
         submit_settings
         visit user_settings_profile_path
 
-        expect(busy_status.checked?).to eq(true)
+        expect(busy_status.checked?).to be(true)
       end
 
       context 'with user status set to busy' do
@@ -404,7 +404,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
         open_user_status_modal
         busy_status = find_by_testid('user-availability-checkbox')
 
-        expect(busy_status.checked?).to eq(false)
+        expect(busy_status.checked?).to be(false)
 
         toggle_busy_status
         set_user_status_in_modal
@@ -414,7 +414,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
         open_edit_status_modal
 
-        expect(busy_status.checked?).to eq(true)
+        expect(busy_status.checked?).to be(true)
       end
 
       it 'opens the emoji modal again after closing it' do
