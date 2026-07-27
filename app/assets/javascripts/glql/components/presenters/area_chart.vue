@@ -3,12 +3,14 @@ import { GlSkeletonLoader } from '@gitlab/ui';
 import { dimensionsOf, metricsOf } from '../../utils/chart_data';
 import { dimensionMetricValidationError } from '../../utils/chart_validation';
 import SingleDimensionSeriesChart from './chart/single_dimension_series_chart.vue';
+import TwoDimensionsAreaChart from './area_chart/two_dimensions_area_chart.vue';
 
 export default {
-  name: 'LineChartPresenter',
+  name: 'AreaChartPresenter',
   components: {
     GlSkeletonLoader,
     SingleDimensionSeriesChart,
+    TwoDimensionsAreaChart,
   },
   props: {
     data: {
@@ -26,6 +28,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    displayConfig: {
+      required: false,
+      type: Object,
+      default: () => ({}),
+    },
   },
   emits: { error: null },
   computed: {
@@ -38,11 +45,13 @@ export default {
     validationError() {
       if (!this.fields.length) return null;
       return dimensionMetricValidationError({
-        displayType: 'lineChart',
+        displayType: 'areaChart',
         dimensions: this.dimensions,
         metrics: this.metrics,
-        maxDimensions: 1,
       });
+    },
+    stacked() {
+      return this.displayConfig?.stacked === true;
     },
   },
   watch: {
@@ -59,12 +68,22 @@ export default {
 <template>
   <div>
     <gl-skeleton-loader v-if="loading" />
-    <single-dimension-series-chart
-      v-else-if="!validationError && dimensions.length === 1"
-      variant="line"
-      :data="data"
-      :dimension="dimensions[0]"
-      :metrics="metrics"
-    />
+    <template v-else-if="!validationError">
+      <single-dimension-series-chart
+        v-if="dimensions.length === 1"
+        variant="area"
+        :data="data"
+        :dimension="dimensions[0]"
+        :metrics="metrics"
+        :stacked="stacked"
+      />
+      <two-dimensions-area-chart
+        v-else-if="dimensions.length === 2"
+        :data="data"
+        :primary-dimension="dimensions[0]"
+        :secondary-dimension="dimensions[1]"
+        :metric="metrics[0]"
+      />
+    </template>
   </div>
 </template>

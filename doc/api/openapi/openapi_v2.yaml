@@ -23133,7 +23133,7 @@ paths:
   "/api/v4/projects/{id}/services/mattermost_slash_commands/trigger":
     post:
       summary: Trigger a slash command for mattermost-slash-commands
-      description: Added in GitLab 8.13
+      description: Triggers a slash command for mattermost-slash-commands.
       produces:
       - application/json
       consumes:
@@ -25141,7 +25141,7 @@ paths:
   "/api/v4/projects/{id}/integrations/mattermost_slash_commands/trigger":
     post:
       summary: Trigger a slash command for mattermost-slash-commands
-      description: Added in GitLab 8.13
+      description: Triggers a slash command for mattermost-slash-commands.
       produces:
       - application/json
       consumes:
@@ -26550,7 +26550,8 @@ paths:
       operationId: getApiV4ProjectsIdIssuesIssueIidUserAgentDetail
   "/api/v4/projects/{id}/issues/{issue_iid}/metric_images/authorize":
     post:
-      description: Upload a metric image for an incident
+      summary: Authorize metric image upload
+      description: Authorizes uploading a metric image for a specified incident.
       produces:
       - application/json
       consumes:
@@ -26568,7 +26569,7 @@ paths:
         required: true
       responses:
         '201':
-          description: Upload a metric image for an incident
+          description: Authorize metric image upload
       tags:
       - metric_images
       operationId: postApiV4ProjectsIdIssuesIssueIidMetricImagesAuthorize
@@ -27415,8 +27416,9 @@ paths:
       operationId: getApiV4ProjectsIdMembersAllUserId
   "/api/v4/projects/{id}/create_ci_config":
     post:
-      summary: Create merge request for missing ci config in project
-      description: Creates a merge request to add missing CI configuration
+      summary: Create a CI configuration merge request
+      description: Creates a merge request to add CI configuration to a specified
+        project.
       produces:
       - application/json
       consumes:
@@ -27429,7 +27431,7 @@ paths:
         required: true
       responses:
         '201':
-          description: Create merge request for missing ci config in project
+          description: Create a CI configuration merge request
           schema:
             "$ref": "#/definitions/API_Entities_MergeRequest"
         '400':
@@ -33094,7 +33096,8 @@ paths:
   "/api/v4/projects/{id}/import/git":
     post:
       summary: Import a project from a Git URL
-      description: This feature was introduced in GitLab 18.10.
+      description: Imports a project from a specified Git URL. This feature was introduced
+        in GitLab 18.10.
       produces:
       - application/json
       consumes:
@@ -33798,15 +33801,16 @@ paths:
       operationId: postApiV4ProjectsRemoteImport
   "/api/v4/projects/import-relation/authorize":
     post:
-      summary: Workhorse authorize the project relation import upload
-      description: This feature was introduced in GitLab 16.11
+      summary: Authorize project relation import
+      description: Authorizes uploading a project relation import file. This feature
+        was introduced in GitLab 16.11.
       produces:
       - application/json
       consumes:
       - application/json
       responses:
         '201':
-          description: Workhorse authorize the project relation import upload
+          description: Authorize project relation import
       tags:
       - project_import
       operationId: postApiV4ProjectsImportRelationAuthorize
@@ -39626,8 +39630,8 @@ paths:
       operationId: getApiV4ProjectsIdPackagesRubygemsApiV1Dependencies
   "/api/v4/projects/{id}/(-/)search":
     get:
-      summary: Search on GitLab within a project
-      description: This feature was introduced in GitLab 10.5.
+      summary: Search a project
+      description: Searches for content in a specified project.
       produces:
       - application/json
       parameters:
@@ -39728,7 +39732,7 @@ paths:
         example: 20
       responses:
         '200':
-          description: Search on GitLab within a project
+          description: Search a project
       tags:
       - search
       - projects
@@ -40205,8 +40209,8 @@ paths:
       operationId: putApiV4ProjectsIdPackagesTerraformModulesModuleNameModuleSystem*moduleVersionFile
   "/api/v4/projects/{id}/terraform/state/{name}":
     get:
-      summary: Get a Terraform state by its name
-      description: Get a Terraform state by its name
+      summary: Retrieve a Terraform state
+      description: Retrieves a Terraform state by name for a specified project.
       produces:
       - application/json
       parameters:
@@ -40227,7 +40231,7 @@ paths:
         required: false
       responses:
         '200':
-          description: Get a Terraform state by its name
+          description: Retrieve a Terraform state
         '204':
           description: Empty state
         '403':
@@ -40240,8 +40244,8 @@ paths:
       - terraform
       operationId: getApiV4ProjectsIdTerraformStateName
     post:
-      summary: Add a new Terraform state or update an existing one
-      description: Add a new Terraform state or update an existing one
+      summary: Create or update a Terraform state
+      description: Creates or updates a Terraform state for a specified project.
       produces:
       - application/json
       consumes:
@@ -40264,7 +40268,7 @@ paths:
           "$ref": "#/definitions/postApiV4ProjectsIdTerraformStateName"
       responses:
         '200':
-          description: Add a new Terraform state or update an existing one
+          description: Create or update a Terraform state
         '204':
           description: No data provided
         '403':
@@ -40277,8 +40281,8 @@ paths:
       - terraform
       operationId: postApiV4ProjectsIdTerraformStateName
     delete:
-      summary: Delete a Terraform state of a certain name
-      description: Delete a Terraform state of a certain name
+      summary: Delete a Terraform state
+      description: Deletes a Terraform state for a specified project.
       produces:
       - application/json
       parameters:
@@ -40294,7 +40298,7 @@ paths:
         required: true
       responses:
         '204':
-          description: Delete a Terraform state of a certain name
+          description: Delete a Terraform state
         '403':
           description: Forbidden
         '404':
@@ -40307,7 +40311,8 @@ paths:
   "/api/v4/projects/{id}/terraform/state/{name}/authorize":
     post:
       summary: Authorize Terraform state upload
-      description: This feature was introduced in GitLab 18.5
+      description: Authorizes uploading a Terraform state for a specified project.
+        This feature was introduced in GitLab 18.5.
       produces:
       - application/json
       consumes:
@@ -40339,8 +40344,8 @@ paths:
       operationId: postApiV4ProjectsIdTerraformStateNameAuthorize
   "/api/v4/projects/{id}/terraform/state/{name}/lock":
     post:
-      summary: Lock a Terraform state of a certain name
-      description: Lock a Terraform state of a certain name
+      summary: Lock a Terraform state
+      description: Locks a Terraform state for a specified project.
       produces:
       - application/json
       consumes:
@@ -40363,7 +40368,7 @@ paths:
           "$ref": "#/definitions/postApiV4ProjectsIdTerraformStateNameLock"
       responses:
         '200':
-          description: Lock a Terraform state of a certain name
+          description: Lock a Terraform state
         '403':
           description: Forbidden
         '404':
@@ -40376,8 +40381,8 @@ paths:
       - terraform
       operationId: postApiV4ProjectsIdTerraformStateNameLock
     delete:
-      summary: Unlock a Terraform state of a certain name
-      description: Unlock a Terraform state of a certain name
+      summary: Unlock a Terraform state
+      description: Unlocks a Terraform state for a specified project.
       produces:
       - application/json
       parameters:
@@ -40398,7 +40403,7 @@ paths:
         required: false
       responses:
         '204':
-          description: Unlock a Terraform state of a certain name
+          description: Unlock a Terraform state
         '403':
           description: Forbidden
         '404':
@@ -40551,8 +40556,8 @@ paths:
       operationId: deleteApiV4ProjectsIdTerraformStateProtectionRulesTerraformStateProtectionRuleId
   "/api/v4/projects/{id}/terraform/state/{name}/versions/{serial}":
     get:
-      summary: Get a Terraform state version
-      description: Get a Terraform state version
+      summary: Retrieve a Terraform state version
+      description: Retrieves a specified Terraform state version.
       produces:
       - application/json
       parameters:
@@ -40574,7 +40579,7 @@ paths:
         required: true
       responses:
         '200':
-          description: Get a Terraform state version
+          description: Retrieve a Terraform state version
           schema:
             type: file
         '403':
@@ -40586,7 +40591,7 @@ paths:
       operationId: getApiV4ProjectsIdTerraformStateNameVersionsSerial
     delete:
       summary: Delete a Terraform state version
-      description: Delete a Terraform state version
+      description: Deletes a specified Terraform state version.
       produces:
       - application/json
       parameters:
@@ -42792,7 +42797,8 @@ paths:
       operationId: postApiV4RunnersResetRegistrationToken
   "/api/v4/jobs/request":
     post:
-      description: Request a job
+      summary: Request a job
+      description: Requests a job for a runner to execute.
       produces:
       - application/json
       consumes:
@@ -42891,7 +42897,8 @@ paths:
       operationId: patchApiV4JobsIdTrace
   "/api/v4/jobs/{id}/artifacts/authorize":
     post:
-      description: Authorize uploading job artifact
+      summary: Authorize artifacts upload
+      description: Authorizes uploading artifacts for a specified job.
       produces:
       - application/json
       consumes:
@@ -42924,7 +42931,8 @@ paths:
       operationId: postApiV4JobsIdArtifactsAuthorize
   "/api/v4/jobs/{id}/artifacts":
     post:
-      description: Upload a job artifact
+      summary: Upload job artifacts
+      description: Uploads artifacts for a specified job.
       produces:
       - application/json
       consumes:
@@ -42943,7 +42951,7 @@ paths:
           "$ref": "#/definitions/postApiV4JobsIdArtifacts"
       responses:
         '201':
-          description: Upload a job artifact
+          description: Upload job artifacts
         '400':
           description: Bad request
         '403':
@@ -42958,7 +42966,8 @@ paths:
       - jobs
       operationId: postApiV4JobsIdArtifacts
     get:
-      description: Download the artifacts file for job
+      summary: Download job artifacts
+      description: Downloads artifacts for a specified job.
       produces:
       - application/json
       parameters:
@@ -49175,7 +49184,7 @@ paths:
   "/api/v4/slack/trigger":
     post:
       summary: Trigger a global slack command
-      description: Added in GitLab 9.4
+      description: Triggers a global slack command.
       produces:
       - application/json
       consumes:
@@ -73735,7 +73744,7 @@ definitions:
         description: The package file to be published (generated by Multipart middleware)
     required:
     - file
-    description: Add a new Terraform state or update an existing one
+    description: Create or update a Terraform state
   postApiV4ProjectsIdTerraformStateNameLock:
     type: object
     properties:
@@ -73768,7 +73777,7 @@ definitions:
     - Version
     - Created
     - Path
-    description: Lock a Terraform state of a certain name
+    description: Lock a Terraform state
   API_Entities_Terraform_StateProtectionRule:
     type: object
     properties:
@@ -75524,7 +75533,7 @@ definitions:
         - jacoco
         - sarif
         default: archive
-    description: Authorize uploading job artifact
+    description: Authorize artifacts upload
   postApiV4JobsIdArtifacts:
     type: object
     properties:
@@ -75591,7 +75600,7 @@ definitions:
         description: Specify accessibility level of artifact private/public
     required:
     - file
-    description: Upload a job artifact
+    description: Upload job artifacts
   putApiV4PackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionExportFileName:
     type: object
     properties:

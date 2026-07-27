@@ -838,10 +838,6 @@ module Ci
       trace.exist?
     end
 
-    def has_archived_trace?
-      trace.archived?
-    end
-
     def artifacts_file
       job_artifacts_archive&.file
     end

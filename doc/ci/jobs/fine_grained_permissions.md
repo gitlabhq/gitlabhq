@@ -107,8 +107,8 @@ CI/CD job tokens can access the following REST API endpoints:
 | ---------- | ------------ | --------------- | ----- |
 | Download a specific file from artifacts archive | `GET /projects/:id/jobs/:job_id/artifacts/*artifact_path` | `READ_JOBS` | Read |
 | Download a specific file from artifacts archive from a ref | `GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path` | `READ_JOBS` | Read |
+| Download job artifacts | `GET /jobs/:id/artifacts` | `READ_JOBS` | Read |
 | Download the artifacts archive from a job | `GET /projects/:id/jobs/:job_id/artifacts` | `READ_JOBS` | Read |
-| Download the artifacts file for job | `GET /jobs/:id/artifacts` | `READ_JOBS` | Read |
 | List all files in an artifacts archive | `GET /projects/:id/jobs/:job_id/artifacts/tree` | `READ_JOBS` | Read |
 | List all jobs by pipeline | `GET /projects/:id/pipelines/:pipeline_id/jobs` | `READ_JOBS` | Read |
 | List all jobs for a project | `GET /projects/:id/jobs` | `READ_JOBS` | Read |
@@ -276,13 +276,13 @@ CI/CD job tokens can access the following REST API endpoints:
 
 | Permission | API endpoint | Permission name | Scope |
 | ---------- | ------------ | --------------- | ----- |
-| Get a Terraform state by its name | `GET /projects/:id/terraform/state/:name` | `READ_TERRAFORM_STATE` | Read |
-| Get a Terraform state version | `GET /projects/:id/terraform/state/:name/versions/:serial` | `READ_TERRAFORM_STATE` | Read |
-| Add a new Terraform state or update an existing one | `POST /projects/:id/terraform/state/:name` | `ADMIN_TERRAFORM_STATE` | Read and write |
-| Delete a Terraform state of a certain name | `DELETE /projects/:id/terraform/state/:name` | `ADMIN_TERRAFORM_STATE` | Read and write |
+| Retrieve a Terraform state | `GET /projects/:id/terraform/state/:name` | `READ_TERRAFORM_STATE` | Read |
+| Retrieve a Terraform state version | `GET /projects/:id/terraform/state/:name/versions/:serial` | `READ_TERRAFORM_STATE` | Read |
+| Create or update a Terraform state | `POST /projects/:id/terraform/state/:name` | `ADMIN_TERRAFORM_STATE` | Read and write |
+| Delete a Terraform state | `DELETE /projects/:id/terraform/state/:name` | `ADMIN_TERRAFORM_STATE` | Read and write |
 | Delete a Terraform state version | `DELETE /projects/:id/terraform/state/:name/versions/:serial` | `ADMIN_TERRAFORM_STATE` | Read and write |
-| Lock a Terraform state of a certain name | `POST /projects/:id/terraform/state/:name/lock` | `ADMIN_TERRAFORM_STATE` | Read and write |
-| Unlock a Terraform state of a certain name | `DELETE /projects/:id/terraform/state/:name/lock` | `ADMIN_TERRAFORM_STATE` | Read and write |
+| Lock a Terraform state | `POST /projects/:id/terraform/state/:name/lock` | `ADMIN_TERRAFORM_STATE` | Read and write |
+| Unlock a Terraform state | `DELETE /projects/:id/terraform/state/:name/lock` | `ADMIN_TERRAFORM_STATE` | Read and write |
 
 ### Work items endpoints
 

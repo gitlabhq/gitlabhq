@@ -78,7 +78,7 @@ export default {
         @noteEdited="store.editNote"
         @start-editing="store.setEditingMode($event, true)"
         @cancel-editing="store.setEditingMode($event, false)"
-        @startReplying="store.startReplying(discussion)"
+        @start-replying="store.startReplying(discussion)"
         @stopReplying="store.stopReplying(discussion)"
       >
         <template v-if="counterBadgeVisible" #avatar-badge>

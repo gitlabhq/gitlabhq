@@ -739,6 +739,10 @@ For example:
 1. Configure the new identity provider.
 1. Test that sign in works.
 
+> [!NOTE]
+> Non-enterprise users must reset their SAML password and [relink SAML to their account](#link-saml-to-your-existing-gitlabcom-account)
+> after their identity is updated.
+
 ## Related topics
 
 - [SAML SSO for GitLab Self-Managed](../../../integration/saml.md)

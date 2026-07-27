@@ -52,7 +52,6 @@ export default () => {
       projectId,
       groupId,
       showLabel,
-      noFlip,
     } = el.dataset;
 
     return new Vue({
@@ -68,7 +67,6 @@ export default () => {
         projectId,
         groupId,
         showLabel: parseBoolean(showLabel),
-        noFlip: parseBoolean(noFlip),
       },
       render(h) {
         return h(NotificationsDropdown);

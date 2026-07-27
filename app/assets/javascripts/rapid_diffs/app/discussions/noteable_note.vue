@@ -93,7 +93,7 @@ export default {
       default: false,
     },
   },
-  emits: ['cancel-editing', 'noteEdited', 'resolve', 'start-editing', 'startReplying'],
+  emits: ['cancel-editing', 'noteEdited', 'resolve', 'start-editing', 'start-replying'],
   data() {
     return {
       isDeleting: false,
@@ -299,7 +299,7 @@ export default {
             @resolve="$emit('resolve')"
             @delete="onDelete"
             @start-editing="$emit('start-editing')"
-            @startReplying="$emit('startReplying')"
+            @start-replying="$emit('start-replying')"
             @award="toggleAward"
           />
         </div>

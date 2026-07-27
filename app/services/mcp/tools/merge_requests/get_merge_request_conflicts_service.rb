@@ -60,22 +60,22 @@ module Mcp
         # Main implementation - returns raw git conflict content
         def perform_0_1_0(arguments)
           mr = merge_request(arguments)
-          return ::Mcp::Tools::Response.error('Merge request not found') if mr.nil?
+          return ::Mcp::Tools::Base::Response.error('Merge request not found') if mr.nil?
 
           # Check merge status and return appropriate error
           case mr.merge_status
           when 'unchecked', 'checking', 'preparing', 'cannot_be_merged_recheck', 'cannot_be_merged_rechecking'
-            return ::Mcp::Tools::Response.error(
+            return ::Mcp::Tools::Base::Response.error(
               "Merge request merge status is '#{mr.merge_status}' — " \
                 "conflicts cannot be determined until mergeability has been checked"
             )
           when 'can_be_merged'
-            return ::Mcp::Tools::Response.error('Merge request does not have conflicts')
+            return ::Mcp::Tools::Base::Response.error('Merge request does not have conflicts')
           end
 
           # Check if branches/refs are valid
           unless mr.has_complete_diff_refs? && !mr.branch_missing?
-            return ::Mcp::Tools::Response.error('Cannot retrieve conflicts: missing branches or diff refs')
+            return ::Mcp::Tools::Base::Response.error('Cannot retrieve conflicts: missing branches or diff refs')
           end
 
           # Get raw conflict content
@@ -96,7 +96,7 @@ module Mcp
 
           # Return as plain text (no JSON structure in structuredContent)
           formatted_content = [{ type: 'text', text: conflict_text }]
-          ::Mcp::Tools::Response.success(formatted_content)
+          ::Mcp::Tools::Base::Response.success(formatted_content)
         end
 
         private

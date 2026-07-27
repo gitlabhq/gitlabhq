@@ -77,7 +77,7 @@ module API
         end
         resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           desc "Trigger a slash command for #{integration_slug}" do
-            detail 'Added in GitLab 8.13'
+            detail "Triggers a slash command for #{integration_slug}."
             failure [
               { code: 401, message: 'Unauthorized' },
               { code: 404, message: 'Not found' }
@@ -130,8 +130,8 @@ module API
       end
     end
 
-    desc "Trigger a global slack command" do
-      detail 'Added in GitLab 9.4'
+    desc 'Trigger a global slack command' do
+      detail 'Triggers a global slack command.'
       failure [
         { code: 401, message: 'Unauthorized' }
       ]

@@ -260,6 +260,68 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
     it_behaves_like 'placeholders with no access'
   end
 
+  context 'when rendering a merge request' do
+    let_it_be(:merge_request) do
+      create(
+        :merge_request,
+        source_project: project,
+        target_project: project,
+        description: <<~MARKDOWN
+          %{merge_request_iid}
+          [foo](https://example.com/merge_requests/%{merge_request_iid})
+        MARKDOWN
+      )
+    end
+
+    it 'replaces the merge request IID using the render context' do
+      result = MarkupHelper.markdown_field(merge_request, :description, current_user: user)
+
+      expect(Nokogiri::HTML.fragment(result).at_css('span[data-placeholder]').content)
+        .to eq(merge_request.iid.to_s)
+    end
+
+    it 'replaces the merge request IID in a link path' do
+      result = MarkupHelper.markdown_field(merge_request, :description, current_user: user)
+
+      expect(Nokogiri::HTML.fragment(result).at_css('a')['href'])
+        .to eq("https://example.com/merge_requests/#{merge_request.iid}")
+    end
+
+    it 'does not expose the merge request IID without access' do
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?)
+        .with(user, :read_merge_request, merge_request)
+        .and_return(false)
+
+      result = run_pipeline('%{merge_request_iid}', project: project, current_user: user,
+        merge_request: merge_request)
+
+      expect(Nokogiri::HTML.fragment(result).at_css('[data-placeholder]').content).to be_empty
+    end
+  end
+
+  context 'when the merge request IID is unavailable' do
+    let(:merge_request) do
+      build(:merge_request, source_project: project, target_project: project, iid: nil)
+    end
+
+    it 'leaves the placeholder unchanged' do
+      result = run_pipeline('%{merge_request_iid}', project: project, current_user: user,
+        merge_request: merge_request)
+
+      expect(Nokogiri::HTML.fragment(result).at_css('[data-placeholder]').content)
+        .to eq('%{merge_request_iid}')
+    end
+
+    it 'leaves the placeholder unchanged in a link path' do
+      markdown = '[foo](https://example.com/merge_requests/%{merge_request_iid})'
+      result = run_pipeline(markdown, project: project, current_user: user, merge_request: merge_request)
+
+      expect(Nokogiri::HTML.fragment(result).at_css('a')['href'])
+        .to eq('https://example.com/merge_requests/%25%7Bmerge_request_iid%7D')
+    end
+  end
+
   context 'when placeholders in link' do
     before do
       project.add_member(user, Gitlab::Access::OWNER)
@@ -516,6 +578,23 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
       expect do
         described_class.new(:xyz)
       end.to raise_error(ArgumentError)
+    end
+
+    context 'when the replacement is nil' do
+      let(:replacement_block) { -> {} }
+
+      it 'replaces the placeholder with an empty string by default' do
+        replacer = described_class.new(all, &replacement_block)
+
+        expect(replacer.generate(nil, in_uri_component: false)).to eq('')
+      end
+
+      it 'preserves the placeholder when preserve_if_nil is enabled' do
+        replacer = described_class.new(all, preserve_if_nil: true, &replacement_block)
+
+        expect(replacer.generate(nil, in_uri_component: false)).to be_nil
+        expect(replacer.generate(nil, in_uri_component: :path)).to be_nil
+      end
     end
 
     context 'when permitted in all URI contexts' do

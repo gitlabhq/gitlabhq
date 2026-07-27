@@ -65,10 +65,10 @@ describe('DiffDiscussions', () => {
     );
   });
 
-  it('handles startReplying event', () => {
+  it('handles start-replying event', () => {
     const discussion = { id: '1' };
     createComponent({ discussions: [discussion] });
-    wrapper.findComponent(NoteableDiscussion).vm.$emit('startReplying');
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('start-replying');
     expect(useDiffDiscussions().startReplying).toHaveBeenCalledWith(discussion);
   });
 

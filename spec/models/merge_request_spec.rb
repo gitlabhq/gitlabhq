@@ -8969,6 +8969,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it 'sets the label_url_method in the context' do
       expect(context[:label_url_method]).to eq(:project_merge_requests_url)
     end
+
+    it 'sets the merge request in the context' do
+      expect(context[:merge_request]).to eq(merge_request)
+    end
   end
 
   describe '#head_pipeline_builds_with_coverage' do

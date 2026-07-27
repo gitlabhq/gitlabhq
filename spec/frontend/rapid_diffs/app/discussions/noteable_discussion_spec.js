@@ -124,7 +124,7 @@ describe('NoteableDiscussion', () => {
     createComponent();
     await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
     await nextTick();
-    expect(wrapper.emitted('startReplying')).toStrictEqual([[]]);
+    expect(wrapper.emitted('start-replying')).toStrictEqual([[]]);
   });
 
   it('shows note form when reply mode is on', () => {

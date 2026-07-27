@@ -1899,20 +1899,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#has_archived_trace?' do
-    subject { build.has_archived_trace? }
-
-    let(:build) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
-
-    it { is_expected.to be_truthy }
-
-    context 'when build does not have archived trace' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
-
-      it { is_expected.to be_falsy }
-    end
-  end
-
   describe '#has_job_artifacts?' do
     subject { build.has_job_artifacts? }
 

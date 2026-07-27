@@ -198,6 +198,7 @@ module API
         before { set_application_context }
 
         desc 'Request a job' do
+          detail 'Requests a job for a runner to execute.'
           success [
             { code: 201, model: Entities::Ci::JobRequest::Response, message: 'Job was scheduled' },
             { code: 204, message: 'No job for Runner' }
@@ -323,7 +324,8 @@ module API
           header 'X-GitLab-Trace-Update-Interval', job.trace.update_interval.to_s
         end
 
-        desc 'Authorize uploading job artifact' do
+        desc 'Authorize artifacts upload' do
+          detail 'Authorizes uploading artifacts for a specified job.'
           success code: 200, message: 'Upload allowed'
           failure [[403, 'Forbidden'],
             [405, 'Artifacts support not enabled'],
@@ -364,7 +366,8 @@ module API
           end
         end
 
-        desc 'Upload a job artifact' do
+        desc 'Upload job artifacts' do
+          detail 'Uploads artifacts for a specified job.'
           success code: 201
           failure [[400, 'Bad request'],
             [403, 'Forbidden'],
@@ -409,7 +412,8 @@ module API
           end
         end
 
-        desc 'Download the artifacts file for job' do
+        desc 'Download job artifacts' do
+          detail 'Downloads artifacts for a specified job.'
           success [
             { code: 200, message: 'Download allowed' },
             { code: 302, message: 'Found' }

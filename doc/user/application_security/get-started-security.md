@@ -24,9 +24,9 @@ For an overview, see [Adopting GitLab application security](https://www.youtube.
 <i class="fa-youtube-play" aria-hidden="true"></i>
 [View an interactive reading and how-to demo playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
 
-This process is part of a larger workflow:
+Securing your app is part of the Secure stage in the GitLab DevOps lifecycle:
 
-![Workflow](img/get_started_app_sec_v16_11.png)
+![GitLab DevOps lifecycle diagram, with Secure your app highlighted.](img/get_started_app_sec_v16_11.png)
 
 ## Step 1: Learn about scanning
 

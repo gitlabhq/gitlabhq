@@ -123,7 +123,7 @@ export default {
       default: false,
     },
   },
-  emits: ['award', 'delete', 'resolve', 'start-editing', 'startReplying'],
+  emits: ['award', 'delete', 'resolve', 'start-editing', 'start-replying'],
   data() {
     return {
       abuseDrawerOpen: false,
@@ -242,7 +242,7 @@ export default {
       data-testid="note-emoji-button"
       @click="$emit('award', $event)"
     />
-    <reply-button v-if="showReply" ref="replyButton" @start-replying="$emit('startReplying')" />
+    <reply-button v-if="showReply" ref="replyButton" @start-replying="$emit('start-replying')" />
     <gl-button
       v-if="canEdit"
       v-gl-tooltip

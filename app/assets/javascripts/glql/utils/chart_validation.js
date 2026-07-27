@@ -1,11 +1,10 @@
 import { __, sprintf } from '~/locale';
 
-// Shared by display types that plot up to `maxDimensions` dimensions against
-// one or more metrics, where reaching the dimension maximum only leaves room
-// for a single metric (columnChart, barChart — both fold a second dimension's
-// values into stacked segments, which only makes sense for one metric).
-// Other display types (e.g. stat's "no dimensions, exactly one metric") have a
-// different shape and validate on their own.
+// Shared by chart display types that plot up to `maxDimensions` dimensions
+// against one or more metrics. Reaching the dimension maximum only leaves
+// room for a single metric (a second dimension folds into stacked segments).
+// Other display types (e.g. stat's "no dimensions, exactly one metric") have
+// a different shape and validate on their own.
 export const dimensionMetricValidationError = ({
   displayType,
   dimensions,
@@ -16,6 +15,9 @@ export const dimensionMetricValidationError = ({
     return sprintf(__('%{displayType} requires at least one dimension'), { displayType });
   }
   if (dimensions.length > maxDimensions) {
+    if (maxDimensions === 1) {
+      return sprintf(__('%{displayType} supports exactly one dimension'), { displayType });
+    }
     return sprintf(__('%{displayType} supports a maximum of %{maxDimensions} dimensions'), {
       displayType,
       maxDimensions,

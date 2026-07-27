@@ -204,12 +204,12 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
       [{ type: 'text', text: Gitlab::Json.dump(operation_data) }]
     end
 
-    let(:success_response) { instance_double(Mcp::Tools::Response) }
+    let(:success_response) { instance_double(Mcp::Tools::Base::Response) }
 
     before do
       allow(GitlabSchema).to receive(:execute).and_return(graphql_result)
-      allow(::Mcp::Tools::Response).to receive(:success).and_return(success_response)
-      allow(::Mcp::Tools::Response).to receive(:error)
+      allow(::Mcp::Tools::Base::Response).to receive(:success).and_return(success_response)
+      allow(::Mcp::Tools::Base::Response).to receive(:error)
     end
 
     it 'executes GraphQL mutation with correct context' do
@@ -236,7 +236,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
     it 'returns success response' do
       result = tool.execute
 
-      expect(::Mcp::Tools::Response).to have_received(:success).with(
+      expect(::Mcp::Tools::Base::Response).to have_received(:success).with(
         formatted_content,
         operation_data
       )
@@ -252,16 +252,16 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
         }
       end
 
-      let(:error_response) { instance_double(Mcp::Tools::Response) }
+      let(:error_response) { instance_double(Mcp::Tools::Base::Response) }
 
       before do
-        allow(::Mcp::Tools::Response).to receive(:error).and_return(error_response)
+        allow(::Mcp::Tools::Base::Response).to receive(:error).and_return(error_response)
       end
 
       it 'returns error response' do
         result = tool.execute
 
-        expect(::Mcp::Tools::Response).to have_received(:error).with('Syntax error')
+        expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Syntax error')
         expect(result).to eq(error_response)
       end
     end
@@ -278,16 +278,16 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
         }
       end
 
-      let(:error_response) { instance_double(Mcp::Tools::Response) }
+      let(:error_response) { instance_double(Mcp::Tools::Base::Response) }
 
       before do
-        allow(::Mcp::Tools::Response).to receive(:error).and_return(error_response)
+        allow(::Mcp::Tools::Base::Response).to receive(:error).and_return(error_response)
       end
 
       it 'returns error response with mutation errors' do
         result = tool.execute
 
-        expect(::Mcp::Tools::Response).to have_received(:error).with('Title cannot be blank')
+        expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Title cannot be blank')
         expect(result).to eq(error_response)
       end
     end
@@ -304,16 +304,16 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
         }
       end
 
-      let(:error_response) { instance_double(Mcp::Tools::Response) }
+      let(:error_response) { instance_double(Mcp::Tools::Base::Response) }
 
       before do
-        allow(::Mcp::Tools::Response).to receive(:error).and_return(error_response)
+        allow(::Mcp::Tools::Base::Response).to receive(:error).and_return(error_response)
       end
 
       it 'returns error response with joined errors' do
         result = tool.execute
 
-        expect(::Mcp::Tools::Response).to have_received(:error)
+        expect(::Mcp::Tools::Base::Response).to have_received(:error)
           .with('Title cannot be blank, Description is too short')
         expect(result).to eq(error_response)
       end
@@ -328,16 +328,16 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
         }
       end
 
-      let(:error_response) { instance_double(Mcp::Tools::Response) }
+      let(:error_response) { instance_double(Mcp::Tools::Base::Response) }
 
       before do
-        allow(::Mcp::Tools::Response).to receive(:error).and_return(error_response)
+        allow(::Mcp::Tools::Base::Response).to receive(:error).and_return(error_response)
       end
 
       it 'converts non-standard errors to strings' do
         result = tool.execute
 
-        expect(::Mcp::Tools::Response).to have_received(:error).with('123')
+        expect(::Mcp::Tools::Base::Response).to have_received(:error).with('123')
         expect(result).to eq(error_response)
       end
     end
@@ -351,16 +351,16 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
         }
       end
 
-      let(:error_response) { instance_double(Mcp::Tools::Response) }
+      let(:error_response) { instance_double(Mcp::Tools::Base::Response) }
 
       before do
-        allow(::Mcp::Tools::Response).to receive(:error).and_return(error_response)
+        allow(::Mcp::Tools::Base::Response).to receive(:error).and_return(error_response)
       end
 
       it 'returns error response' do
         result = tool.execute
 
-        expect(::Mcp::Tools::Response).to have_received(:error).with('Operation returned no data')
+        expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Operation returned no data')
         expect(result).to eq(error_response)
       end
     end

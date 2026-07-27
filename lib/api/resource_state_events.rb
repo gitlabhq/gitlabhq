@@ -16,13 +16,15 @@ module API
       parent_type = eventable_type.parent_class.to_s.underscore
       eventables_str = eventable_type.to_s.underscore.pluralize
       human_eventable_str = eventable_type.to_s.underscore.humanize.downcase
+      eventable_article = human_eventable_str.match?(/\A[aeiou]/i) ? 'an' : 'a'
       feature_category = details[:feature_category]
 
       params do
         requires :id, type: String, desc: "The ID of a #{parent_type}"
       end
       resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc "Get a list of #{human_eventable_str} resource state events" do
+        desc "List all #{parent_type} #{human_eventable_str} state events" do
+          detail "Lists all state events for a specified #{human_eventable_str}."
           success Entities::ResourceStateEvent
           tags ['resource_events']
         end
@@ -40,7 +42,8 @@ module API
           present_resource_state_event_collection(paginate(events), eventable, eventable_type)
         end
 
-        desc "Get a single #{human_eventable_str} resource state event" do
+        desc "Retrieve #{eventable_article} #{human_eventable_str} state event" do
+          detail "Retrieves a state event for a specified #{parent_type} #{human_eventable_str}."
           success Entities::ResourceStateEvent
           tags ['resource_events']
         end

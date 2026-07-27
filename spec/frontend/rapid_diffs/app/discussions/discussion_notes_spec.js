@@ -91,11 +91,11 @@ describe('DiscussionNotes', () => {
         expect(wrapper.findComponent(DraftNote).exists()).toBe(true);
       });
 
-      it('propagates startReplying event', () => {
+      it('propagates start-replying event', () => {
         const note = { id: 'foo' };
         createComponent({ notes: [note] });
-        wrapper.findComponent(NoteableNote).vm.$emit('startReplying');
-        expect(wrapper.emitted('startReplying')).toStrictEqual([[]]);
+        wrapper.findComponent(NoteableNote).vm.$emit('start-replying');
+        expect(wrapper.emitted('start-replying')).toStrictEqual([[]]);
       });
 
       it('propagates noteEdited event', () => {

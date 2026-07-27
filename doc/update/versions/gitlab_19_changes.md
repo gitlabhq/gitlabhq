@@ -39,6 +39,12 @@ Each list item points to a specific section that holds more information.
 Items marked with an installation method, like `(Geo)` or `(Linux package)`,
 apply only to that method. All other items apply to all installation methods.
 
+### Upgrade to 19.2
+
+Before upgrading to GitLab 19.2, review the following:
+
+- [19.2.0] - [GitLab Duo Self-Hosted AI Gateway URLs cleared after upgrade](#gitlab-duo-self-hosted-ai-gateway-urls-cleared-after-upgrade) (Linux package)
+
 ### Upgrade to 19.0
 
 Before upgrading to GitLab 19.0, review the following:
@@ -60,6 +66,30 @@ Before upgrading to GitLab 19.0, review the following:
 ## Upgrade notes
 
 Specific upgrade notes for GitLab 19.
+
+### GitLab Duo Self-Hosted AI Gateway URLs cleared after upgrade
+
+- Affects: Linux package
+- Affected versions: 19.2.0
+- Fixed versions: 19.2.1
+
+When upgrading an instance directly to GitLab 19.2.0,
+the GitLab Duo Self-Hosted service endpoint settings can be cleared.
+The following fields under **Admin area** > **GitLab Duo** > **Configuration** > **Service endpoints** may
+become empty after the upgrade:
+
+- **Local AI Gateway URL**
+- **Local URL for the GitLab Duo Agent Platform service**
+
+Other related settings may also revert to their defaults.
+GitLab Duo Self-Hosted features stop working until the URLs are manually re-entered.
+
+This issue does not occur when upgrading to GitLab 19.2.1 or later.
+
+If you have already upgraded to 19.2.0 and are affected, restore the correct
+AI Gateway endpoint URLs in **Admin area** > **GitLab Duo** > **Configuration** > **Service endpoints**
+and save the changes.
+For more information, see [issue 606458](https://gitlab.com/gitlab-org/gitlab/-/work_items/606458).
 
 ### Container registry metadata database enabled by default in prefer mode
 

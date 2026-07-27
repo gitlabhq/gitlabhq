@@ -2634,7 +2634,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def banzai_render_context(field)
-    super.merge(label_url_method: :project_merge_requests_url)
+    super.merge(label_url_method: :project_merge_requests_url, merge_request: self)
   end
 
   # When the experiment flag is on for this project, treat the cached HTML as

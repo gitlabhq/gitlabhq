@@ -16,7 +16,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
       end
 
       def execute
-        Mcp::Tools::Response.success(
+        Mcp::Tools::Base::Response.success(
           [{ type: 'text', text: '{"result": "success"}' }],
           { 'result' => 'success' }
         )
@@ -188,7 +188,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
           protected
 
           def perform_0_1_0(arguments)
-            Mcp::Tools::Response.success([], { version: '0.1.0', args: arguments })
+            Mcp::Tools::Base::Response.success([], { version: '0.1.0', args: arguments })
           end
 
           # No perform_0_2_0 defined - will fall back to perform_default
@@ -220,7 +220,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
           protected
 
           def perform_0_1_0(arguments)
-            Mcp::Tools::Response.success([], { version: '0.1.0', args: arguments })
+            Mcp::Tools::Base::Response.success([], { version: '0.1.0', args: arguments })
           end
 
           # Override perform_default to provide fallback behavior
@@ -357,11 +357,11 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
         protected
 
         def perform_0_1_0(arguments)
-          Mcp::Tools::Response.success([], { version: '0.1.0', args: arguments })
+          Mcp::Tools::Base::Response.success([], { version: '0.1.0', args: arguments })
         end
 
         def perform_0_2_0(arguments)
-          Mcp::Tools::Response.success([], { version: '0.2.0', args: arguments })
+          Mcp::Tools::Base::Response.success([], { version: '0.2.0', args: arguments })
         end
       end
     end

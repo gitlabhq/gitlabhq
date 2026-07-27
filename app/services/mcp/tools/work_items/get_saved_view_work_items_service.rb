@@ -78,7 +78,7 @@ module Mcp
           append_unsupported_filter_warnings(combined, unsupported_filters)
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(combined) }]
-          ::Mcp::Tools::Response.success(formatted_content, combined)
+          ::Mcp::Tools::Base::Response.success(formatted_content, combined)
         end
 
         override :perform_default

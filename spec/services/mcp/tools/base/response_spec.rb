@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mcp::Tools::Response, feature_category: :mcp_server do
+RSpec.describe Mcp::Tools::Base::Response, feature_category: :mcp_server do
   describe '.success' do
     context 'with formatted content only' do
       it 'returns a successful response' do

@@ -63,6 +63,8 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
             expect(page).to have_css('[data-testid="pipeline-multi-actions-dropdown"]')
           end
 
+          expect(page).to have_no_testid('failed-jobs-card')
+
           within('.merge-request-tabs') do
             expect(page).to have_link('Pipelines 1')
           end
@@ -126,6 +128,113 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
                 end
               end
             end
+          end
+        end
+      end
+
+      context 'with failed jobs', feature_category: :continuous_integration do
+        let!(:pipeline) do
+          create(
+            :ci_pipeline,
+            :failed,
+            project: project,
+            ref: merge_request.source_branch,
+            sha: merge_request.diff_head_sha
+          )
+        end
+
+        let!(:failed_job) { create(:ci_build, :failed, name: 'failed-job-1', stage: 'test', pipeline: pipeline) }
+
+        before do
+          merge_request.update_attribute(:head_pipeline_id, pipeline.id)
+        end
+
+        context 'with a second failed job and a retried failed job' do
+          let!(:second_failed_job) do
+            create(:ci_build, :failed, name: 'failed-job-2', stage: 'test', pipeline: pipeline)
+          end
+
+          let!(:retried_job) do
+            create(:ci_build, :failed, :retried, name: 'old-failed-job', stage: 'test', pipeline: pipeline)
+          end
+
+          it 'shows the failed jobs count and job details, excluding retried jobs', :aggregate_failures do
+            visit_pipelines_tab
+
+            within_testid('failed-jobs-card') do
+              expect(page).to have_testid('crud-count', text: '2')
+              expect(page).to have_css('[data-testid="toggle-button"][aria-expanded="false"]')
+            end
+
+            expand_failed_jobs_widget
+
+            within_testid('failed-jobs-card') do
+              expect(page).to have_link('failed-job-1', href: project_job_path(project, failed_job))
+              expect(page).to have_testid('job-stage-name', text: 'test')
+              expect(page).to have_testid('job-id-link', text: "##{failed_job.id}")
+              expect(page).to have_no_content('old-failed-job')
+            end
+          end
+
+          it 'retries a failed job from the widget and refreshes the count and pipeline row', :aggregate_failures do
+            visit_pipelines_tab
+
+            within_testid('pipeline-table-row', match: :first) do
+              expect(page).to have_testid('ci-icon', text: 'Failed')
+            end
+
+            expand_failed_jobs_widget
+            retry_job('failed-job-1')
+
+            expect(page).to have_content('failed-job-1 job is being retried')
+
+            within_testid('pipeline-table-row', match: :first) do
+              expect(page).to have_testid('ci-icon', text: 'Running')
+            end
+
+            within_testid('failed-jobs-card') do
+              expect(page).to have_testid('crud-count', text: '1')
+              expect(page).to have_testid('widget-row', count: 1)
+              expect(page).to have_no_content('failed-job-1')
+            end
+          end
+        end
+
+        context 'when the only failed job is retried' do
+          let!(:passed_job) { create(:ci_build, :success, name: 'passed-job', stage: 'test', pipeline: pipeline) }
+
+          it 'removes the failed jobs widget after the last failed job is retried', :aggregate_failures do
+            visit_pipelines_tab
+
+            expand_failed_jobs_widget
+            retry_job('failed-job-1')
+
+            expect(page).to have_content('failed-job-1 job is being retried')
+            expect(page).to have_no_testid('failed-jobs-card')
+
+            within_testid('pipeline-table-row', match: :first) do
+              expect(page).to have_testid('ci-icon', text: 'Running')
+            end
+          end
+        end
+
+        def visit_pipelines_tab
+          visit project_merge_request_path(project, merge_request)
+          within('.merge-request-tabs') { click_link('Pipelines') }
+
+          expect(page).to have_testid('pipeline-table-row')
+        end
+
+        def expand_failed_jobs_widget
+          within_testid('failed-jobs-card') do
+            find_by_testid('toggle-button').click
+            expect(page).to have_link(failed_job.name)
+          end
+        end
+
+        def retry_job(job_name)
+          within_testid('widget-row', text: job_name) do
+            find_by_testid('retry-button').click
           end
         end
       end

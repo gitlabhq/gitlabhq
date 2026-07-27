@@ -80,7 +80,6 @@ export default {
     'app/assets/javascripts/projects/settings/branch_rules/components/access_levels_drawer.vue',
     'app/assets/javascripts/projects/settings/components/transfer_project_form.vue',
     'app/assets/javascripts/rapid_diffs/app/discussions/discussion_notes.vue',
-    'app/assets/javascripts/rapid_diffs/app/discussions/note_actions.vue',
     'app/assets/javascripts/rapid_diffs/app/discussions/note_form.vue',
     'app/assets/javascripts/rapid_diffs/app/discussions/noteable_discussion.vue',
     'app/assets/javascripts/rapid_diffs/app/discussions/noteable_note.vue',

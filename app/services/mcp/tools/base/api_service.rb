@@ -64,9 +64,9 @@ module Mcp
           parsed_response = Gitlab::Json.safe_parse(response.body)
 
           if response.success?
-            return ::Mcp::Tools::Response.error('Invalid JSON response', nil) if parsed_response.nil?
+            return ::Mcp::Tools::Base::Response.error('Invalid JSON response', nil) if parsed_response.nil?
 
-            ::Mcp::Tools::Response.success(
+            ::Mcp::Tools::Base::Response.success(
               format_response_content(parsed_response),
               parsed_response
             )
@@ -75,10 +75,10 @@ module Mcp
 
             error_payload = parsed_response.nil? ? nil : parsed_response
 
-            ::Mcp::Tools::Response.error(message, error_payload)
+            ::Mcp::Tools::Base::Response.error(message, error_payload)
           end
         rescue JSON::ParserError, Gitlab::Json::ParserError => e
-          ::Mcp::Tools::Response.error('Invalid JSON response', { message: e.message })
+          ::Mcp::Tools::Base::Response.error('Invalid JSON response', { message: e.message })
         end
       end
     end

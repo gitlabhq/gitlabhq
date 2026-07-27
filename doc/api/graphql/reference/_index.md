@@ -32925,6 +32925,21 @@ Fields:
 | <a id="aicatalogmcpserver-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the MCP server was last updated. |
 | <a id="aicatalogmcpserver-url"></a>`url` | [`String!`](#string) | URL of the MCP server. |
 
+#### Fields with arguments
+
+##### `AiCatalogMcpServer.blockStatus`
+
+Block status of the MCP server for the given group or project (kill-switch state). Provide exactly one of `groupFullPath` or `projectFullPath`.
+
+Returns [`AiCatalogMcpServerBlockStatus!`](#aicatalogmcpserverblockstatus).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogmcpserver-blockstatus-groupfullpath"></a>`groupFullPath` | [`ID`](#id) | Full path of the group to resolve the block status for. |
+| <a id="aicatalogmcpserver-blockstatus-projectfullpath"></a>`projectFullPath` | [`ID`](#id) | Full path of the project to resolve the block status for. |
+
 ### `AiCatalogMcpTool`
 
 An MCP tool dynamically discovered from the GitLab MCP server.
@@ -35255,6 +35270,7 @@ Fields:
 | <a id="branchrule-externalstatuschecks"></a>`externalStatusChecks` | [`ExternalStatusCheckConnection`](#externalstatuscheckconnection) | External status checks configured for the branch rule. (see [Connections](#connections)) |
 | <a id="branchrule-id"></a>`id` | [`ProjectsBranchRuleID`](#projectsbranchruleid) | ID of the branch rule. |
 | <a id="branchrule-isdefault"></a>`isDefault` | [`Boolean!`](#boolean) | Check if the branch rule protects the project's default branch. |
+| <a id="branchrule-isgrouplevel"></a>`isGroupLevel` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Indicates whether the branch rule was created at the group level. Unlike the equivalent field on `BranchProtection`, this field is readable by every user who can read the branch rule. |
 | <a id="branchrule-isprotected"></a>`isProtected` | [`Boolean!`](#boolean) | Check if the branch rule protects access for the branch. |
 | <a id="branchrule-matchingbranchescount"></a>`matchingBranchesCount` | [`Int!`](#int) | Number of existing branches that match the branch rule. |
 | <a id="branchrule-name"></a>`name` | [`String!`](#string) | Name of the branch rule target. Includes wildcards. |
@@ -35645,6 +35661,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cdserviceenvironmenthealth-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the service environment health was created. |
+| <a id="cdserviceenvironmenthealth-deployedversions"></a>`deployedVersions` {{< icon name="warning-solid" >}} | [`CdVersionConnection`](#cdversionconnection) | Introduced in GitLab 19.3. Status: Experiment. Versions of the service currently deployed in this environment. |
 | <a id="cdserviceenvironmenthealth-environment"></a>`environment` | [`CdEnvironment`](#cdenvironment) | Environment the health belongs to. |
 | <a id="cdserviceenvironmenthealth-health"></a>`health` | [`CdServiceHealth!`](#cdservicehealth) | Observed health of the service in the environment. |
 | <a id="cdserviceenvironmenthealth-id"></a>`id` | [`CdServiceEnvironmentHealthID!`](#cdserviceenvironmenthealthid) | Global ID of the service environment health. |
@@ -63773,6 +63790,16 @@ Authentication types for MCP servers.
 | ----- | ----------- |
 | <a id="aicatalogmcpserverauthtype-no_auth"></a>`NO_AUTH` | No authentication. |
 | <a id="aicatalogmcpserverauthtype-oauth"></a>`OAUTH` | OAuth authentication. |
+
+### `AiCatalogMcpServerBlockStatus`
+
+Block status of an MCP server for a group or project.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogmcpserverblockstatus-active"></a>`ACTIVE` | Server is allowed for the group or project. |
+| <a id="aicatalogmcpserverblockstatus-blocked"></a>`BLOCKED` | Server is blocked directly on the group or project. |
+| <a id="aicatalogmcpserverblockstatus-blocked_by_ancestor"></a>`BLOCKED_BY_ANCESTOR` | Server is blocked by an ancestor group and cannot be allowed here. |
 
 ### `AiCatalogMcpServerTransport`
 

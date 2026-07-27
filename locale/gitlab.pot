@@ -962,6 +962,9 @@ msgstr ""
 msgid "%{displayType} supports a maximum of %{maxDimensions} dimensions"
 msgstr ""
 
+msgid "%{displayType} supports exactly one dimension"
+msgstr ""
+
 msgid "%{displayType} with %{maxDimensions} dimensions supports only a single metric"
 msgstr ""
 
@@ -58068,6 +58071,39 @@ msgstr ""
 msgid "PolicyRuleMultiSelect|Select all"
 msgstr ""
 
+msgid "PolicyStore|Active"
+msgstr ""
+
+msgid "PolicyStore|Active policies"
+msgstr ""
+
+msgid "PolicyStore|Audit"
+msgstr ""
+
+msgid "PolicyStore|Disabled"
+msgstr ""
+
+msgid "PolicyStore|Enforce"
+msgstr ""
+
+msgid "PolicyStore|Evaluations this week"
+msgstr ""
+
+msgid "PolicyStore|Last updated"
+msgstr ""
+
+msgid "PolicyStore|Mode"
+msgstr ""
+
+msgid "PolicyStore|Policies"
+msgstr ""
+
+msgid "PolicyStore|Scope"
+msgstr ""
+
+msgid "PolicyStore|Warn"
+msgstr ""
+
 msgid "Polling interval multiplier"
 msgstr ""
 
@@ -78035,6 +78071,9 @@ msgstr ""
 msgid "The blob is too large to render"
 msgstr ""
 
+msgid "The blocking merge request must be in the same organization"
+msgstr ""
+
 msgid "The branch for this project has no active pipeline configuration."
 msgstr ""
 
@@ -93234,15 +93273,6 @@ msgid "line"
 msgid_plural "lines"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "lineChart requires at least one dimension"
-msgstr ""
-
-msgid "lineChart requires at least one metric"
-msgstr ""
-
-msgid "lineChart supports exactly one dimension"
-msgstr ""
 
 msgid "load it anyway"
 msgstr ""

@@ -295,8 +295,8 @@ module API
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Search on GitLab within a project' do
-        detail 'This feature was introduced in GitLab 10.5.'
+      desc 'Search a project' do
+        detail 'Searches for content in a specified project.'
         tags %w[search projects]
       end
 

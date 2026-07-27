@@ -16,8 +16,6 @@ export function initRelatedIssues() {
     apolloProvider,
     provide: {
       fullPath: el.dataset.fullPath,
-      hasIssueWeightsFeature: parseBoolean(el.dataset.hasIssueWeightsFeature),
-      hasIterationsFeature: parseBoolean(el.dataset.hasIterationsFeature),
       isGroup: parseBoolean(el.dataset.isGroup),
       // for work item modal
       canAdminLabel: el.dataset.wiCanAdminLabel,

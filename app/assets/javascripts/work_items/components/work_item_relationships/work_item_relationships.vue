@@ -389,7 +389,7 @@ export default {
     <template #count>
       <gl-badge
         :aria-label="countBadgeAriaLabel"
-        data-testid="linked-items-count-bage"
+        data-testid="linked-items-count-badge"
         variant="neutral"
       >
         {{ linkedWorkItemsCount }}

@@ -74,7 +74,7 @@ export default {
     'cancel-editing',
     'noteEdited',
     'start-editing',
-    'startReplying',
+    'start-replying',
     'stopReplying',
     'toggleDiscussionReplies',
   ],
@@ -162,7 +162,7 @@ export default {
     },
     showReplyForm(text) {
       suppressShortcutsUntilInputFocus();
-      this.$emit('startReplying');
+      this.$emit('start-replying');
       if (typeof text !== 'undefined') {
         this.$nextTick(() => {
           this.$refs.noteForm.append(text);
@@ -254,7 +254,7 @@ export default {
       :is-resolving="isResolving"
       @resolve="toggleResolve"
       @toggleDiscussionReplies="$emit('toggleDiscussionReplies')"
-      @startReplying="showReplyForm"
+      @start-replying="showReplyForm"
       @noteEdited="$emit('noteEdited', $event)"
       @start-editing="$emit('start-editing', $event)"
       @cancel-editing="$emit('cancel-editing', $event)"

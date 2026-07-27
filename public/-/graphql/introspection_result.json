@@ -16499,6 +16499,47 @@
               "deprecationReason": null
             },
             {
+              "name": "blockStatus",
+              "description": "Block status of the MCP server for the given group or project (kill-switch state). Provide exactly one of `groupFullPath` or `projectFullPath`.",
+              "args": [
+                {
+                  "name": "groupFullPath",
+                  "description": "Full path of the group to resolve the block status for.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "projectFullPath",
+                  "description": "Full path of the project to resolve the block status for.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "AiCatalogMcpServerBlockStatus",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "createdAt",
               "description": "Timestamp when the MCP server was created.",
               "args": [],
@@ -16685,6 +16726,35 @@
             {
               "name": "NO_AUTH",
               "description": "No authentication.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AiCatalogMcpServerBlockStatus",
+          "description": "Block status of an MCP server for a group or project",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ACTIVE",
+              "description": "Server is allowed for the group or project.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BLOCKED",
+              "description": "Server is blocked directly on the group or project.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BLOCKED_BY_ANCESTOR",
+              "description": "Server is blocked by an ancestor group and cannot be allowed here.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -52513,6 +52583,22 @@
               "deprecationReason": null
             },
             {
+              "name": "isGroupLevel",
+              "description": "Indicates whether the branch rule was created at the group level. Unlike the equivalent field on `BranchProtection`, this field is readable by every user who can read the branch rule. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "isProtected",
               "description": "Check if the branch rule protects access for the branch.",
               "args": [],
@@ -61748,6 +61834,67 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "deployedVersions",
+              "description": "Versions of the service currently deployed in this environment. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CdVersionConnection",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "environment",

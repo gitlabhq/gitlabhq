@@ -187,6 +187,7 @@ export default {
         <gl-disclosure-dropdown-item
           v-for="metadata in widgetMetadataFields"
           :key="metadata.key"
+          :data-testid="`work-item-metadata-toggle-${metadata.key}`"
           class="work-item-dropdown-toggle"
           @action="toggleMetadataDisplaySettings(metadata.key)"
         >

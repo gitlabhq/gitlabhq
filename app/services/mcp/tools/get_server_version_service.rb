@@ -29,7 +29,7 @@ module Mcp
       def perform_0_1_0(_arguments = {})
         data = { version: Gitlab::VERSION, revision: Gitlab.revision }
         formatted_content = [{ type: 'text', text: data[:version] }]
-        ::Mcp::Tools::Response.success(formatted_content, data)
+        ::Mcp::Tools::Base::Response.success(formatted_content, data)
       end
 
       # Fallback to 0.1.0 behavior for any unimplemented versions

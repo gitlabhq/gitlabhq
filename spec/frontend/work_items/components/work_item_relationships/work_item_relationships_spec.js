@@ -92,7 +92,7 @@ describe('WorkItemRelationships', () => {
   const findCrudCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
   const findErrorMessage = () => wrapper.findComponent(GlAlert);
   const findEmptyRelatedMessageContainer = () => wrapper.findByTestId('crud-empty');
-  const findLinkedItemsCountBadge = () => wrapper.findByTestId('linked-items-count-bage');
+  const findLinkedItemsCountBadge = () => wrapper.findByTestId('linked-items-count-badge');
   const findAllWorkItemRelationshipListComponents = () =>
     wrapper.findAllComponents(WorkItemRelationshipList);
   const findAddButton = () => wrapper.findByTestId('link-item-add-button');

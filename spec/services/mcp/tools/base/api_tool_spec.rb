@@ -178,7 +178,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
         result = api_tool.execute(request: request, params: params)
 
         expect(request_env[Rack::REQUEST_METHOD]).to eq('POST')
-        expect(result).to eq(Mcp::Tools::Response.error('Bad request', { 'error' => 'Bad request' }))
+        expect(result).to eq(Mcp::Tools::Base::Response.error('Bad request', { 'error' => 'Bad request' }))
       end
     end
 
@@ -190,7 +190,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       it 'uses message field for error' do
         result = api_tool.execute(request: request, params: params)
 
-        expected = Mcp::Tools::Response.error('Validation failed', { 'message' => 'Validation failed' })
+        expected = Mcp::Tools::Base::Response.error('Validation failed', { 'message' => 'Validation failed' })
         expect(result).to eq(expected)
       end
     end
@@ -203,7 +203,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       it 'falls back to HTTP status message' do
         result = api_tool.execute(request: request, params: params)
 
-        expect(result).to eq(Mcp::Tools::Response.error('HTTP 500', { 'details' => 'Internal error' }))
+        expect(result).to eq(Mcp::Tools::Base::Response.error('HTTP 500', { 'details' => 'Internal error' }))
       end
     end
 
@@ -218,7 +218,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
         result = api_tool.execute(request: request, params: params)
 
         expect(result).to eq(
-          Mcp::Tools::Response.error(expected_error_message, { 'message' => '404 Not Found' })
+          Mcp::Tools::Base::Response.error(expected_error_message, { 'message' => '404 Not Found' })
         )
       end
     end
@@ -256,7 +256,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
         result = api_tool.execute(request: request, params: params)
 
         expect(result).to eq(
-          Mcp::Tools::Response.error('HTTP 404', { 'details' => 'extra info' })
+          Mcp::Tools::Base::Response.error('HTTP 404', { 'details' => 'extra info' })
         )
       end
     end
@@ -274,7 +274,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
         result = api_tool.execute(request: request, params: params)
 
         expect(result).to eq(
-          Mcp::Tools::Response.error('404 Project Not Found', { 'message' => '404 Project Not Found' })
+          Mcp::Tools::Base::Response.error('404 Project Not Found', { 'message' => '404 Project Not Found' })
         )
       end
     end
@@ -292,7 +292,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
         result = api_tool.execute(request: request, params: params)
 
         expect(result).to eq(
-          Mcp::Tools::Response.error('Validation failed', { 'message' => 'Validation failed' })
+          Mcp::Tools::Base::Response.error('Validation failed', { 'message' => 'Validation failed' })
         )
       end
     end

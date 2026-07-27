@@ -105,6 +105,7 @@ export function initMergeRequestDashboard(el) {
 
   return new Vue({
     el,
+    name: 'MergeRequestDashboardRoot',
     router,
     apolloProvider,
     provide: {

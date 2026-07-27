@@ -640,7 +640,9 @@ paths:
   "/api/v4/jobs/{id}/sbom_scans/authorize":
     post:
       operationId: postApiV4JobsIdSbomScansAuthorize
-      summary: Authorize uploading SBOM file to be scanned
+      summary: Authorize SBOM file upload
+      description: Authorizes uploading an SBOM file to be scanned for a specified
+        job.
       tags:
       - Software composition analysis
       responses:
@@ -670,7 +672,8 @@ paths:
   "/api/v4/jobs/{id}/sbom_scans":
     post:
       operationId: postApiV4JobsIdSbomScans
-      summary: Upload an SBOM file to be scanned
+      summary: Upload an SBOM file
+      description: Uploads an SBOM file to be scanned for a specified job.
       tags:
       - Software composition analysis
       responses:
@@ -704,8 +707,9 @@ paths:
   "/api/v4/jobs/{id}/sbom_scans/{sbom_digest}":
     post:
       operationId: postApiV4JobsIdSbomScansSbomDigest
-      summary: Reuse sbom scan results if scans for sboms with given digest already
-        exist
+      summary: Reuse SBOM scan results
+      description: Reuses existing SBOM scan results if scans for the specified digest
+        already exist.
       tags:
       - Software composition analysis
       responses:
@@ -744,7 +748,8 @@ paths:
               "$ref": "#/components/schemas/RequestBody_ca3de2b20bbf"
     get:
       operationId: getApiV4JobsIdSbomScansSbomScanId
-      summary: Download an SBOM scan result file
+      summary: Download an SBOM scan result
+      description: Downloads an SBOM scan result file for a specified job.
       tags:
       - Software composition analysis
       responses:
@@ -818,7 +823,8 @@ paths:
   "/api/v4/projects/{id}/security_scans/sast/{sast_endpoint}":
     post:
       operationId: postApiV4ProjectsIdSecurityScansSastSastEndpoint
-      summary: Scan a file for vulnerabilities.
+      summary: Scan a file for vulnerabilities
+      description: Scans a specified file for security vulnerabilities using SAST.
       tags:
       - Security scans
       responses:
@@ -4926,7 +4932,8 @@ paths:
   "/api/v4/projects/{id}/managed_licenses":
     get:
       operationId: getApiV4ProjectsIdManagedLicenses
-      summary: Get project software license policies
+      summary: List all software license policies
+      description: Lists all software license policies for a specified project.
       tags:
       - Licenses
       responses:
@@ -4973,7 +4980,8 @@ paths:
         example: 20
     post:
       operationId: postApiV4ProjectsIdManagedLicenses
-      summary: Create a new software license policy in a project
+      summary: Create a software license policy
+      description: Creates a software license policy for a specified project.
       tags:
       - Licenses
       responses:
@@ -5009,7 +5017,8 @@ paths:
   "/api/v4/projects/{id}/managed_licenses/{managed_license_id}":
     get:
       operationId: getApiV4ProjectsIdManagedLicensesManagedLicenseId
-      summary: Get a specific software license policy from a project
+      summary: Retrieve a software license policy
+      description: Retrieves a specified software license policy from a project.
       tags:
       - Licenses
       responses:
@@ -5044,7 +5053,8 @@ paths:
         in: path
     patch:
       operationId: patchApiV4ProjectsIdManagedLicensesManagedLicenseId
-      summary: Update an existing software license policy from a project
+      summary: Update a software license policy
+      description: Updates a specified software license policy for a project.
       tags:
       - Licenses
       responses:
@@ -5085,7 +5095,8 @@ paths:
               "$ref": "#/components/schemas/RequestBody_ff6c80a6af72"
     delete:
       operationId: deleteApiV4ProjectsIdManagedLicensesManagedLicenseId
-      summary: Delete an existing software license policy from a project
+      summary: Delete a software license policy
+      description: Deletes a specified software license policy from a project.
       tags:
       - Licenses
       responses:
@@ -7514,8 +7525,8 @@ paths:
   "/api/v4/license/usage_export":
     get:
       operationId: getApiV4LicenseUsageExport
-      summary: Retrieve license usage data
-      description: Get usage data on the currently active license
+      summary: Download license usage data
+      description: Downloads usage data for the currently active license.
       tags:
       - Licenses
       responses:
@@ -17605,7 +17616,8 @@ paths:
   "/api/v4/projects/{id}/issues/{eventable_id}/resource_state_events":
     get:
       operationId: getApiV4ProjectsIdIssuesEventableIdResourceStateEvents
-      summary: Get a list of issue resource state events
+      summary: List all project issue state events
+      description: Lists all state events for a specified issue.
       tags:
       - Resource events
       responses:
@@ -17653,7 +17665,8 @@ paths:
   "/api/v4/projects/{id}/issues/{eventable_id}/resource_state_events/{event_id}":
     get:
       operationId: getApiV4ProjectsIdIssuesEventableIdResourceStateEventsEventId
-      summary: Get a single issue resource state event
+      summary: Retrieve an issue state event
+      description: Retrieves a state event for a specified project issue.
       tags:
       - Resource events
       responses:
@@ -17689,7 +17702,8 @@ paths:
   "/api/v4/projects/{id}/merge_requests/{eventable_id}/resource_state_events":
     get:
       operationId: getApiV4ProjectsIdMergeRequestsEventableIdResourceStateEvents
-      summary: Get a list of merge request resource state events
+      summary: List all project merge request state events
+      description: Lists all state events for a specified merge request.
       tags:
       - Resource events
       responses:
@@ -17737,7 +17751,8 @@ paths:
   "/api/v4/projects/{id}/merge_requests/{eventable_id}/resource_state_events/{event_id}":
     get:
       operationId: getApiV4ProjectsIdMergeRequestsEventableIdResourceStateEventsEventId
-      summary: Get a single merge request resource state event
+      summary: Retrieve a merge request state event
+      description: Retrieves a state event for a specified project merge request.
       tags:
       - Resource events
       responses:
@@ -17773,7 +17788,8 @@ paths:
   "/api/v4/groups/{id}/epics/{eventable_id}/resource_state_events":
     get:
       operationId: getApiV4GroupsIdEpicsEventableIdResourceStateEvents
-      summary: Get a list of epic resource state events
+      summary: List all group epic state events
+      description: Lists all state events for a specified epic.
       tags:
       - Resource events
       responses:
@@ -17821,7 +17837,8 @@ paths:
   "/api/v4/groups/{id}/epics/{eventable_id}/resource_state_events/{event_id}":
     get:
       operationId: getApiV4GroupsIdEpicsEventableIdResourceStateEventsEventId
-      summary: Get a single epic resource state event
+      summary: Retrieve an epic state event
+      description: Retrieves a state event for a specified group epic.
       tags:
       - Resource events
       responses:
@@ -26096,8 +26113,8 @@ paths:
   "/api/v4/projects/{id}/terraform/state/{name}/versions/{serial}":
     get:
       operationId: getApiV4ProjectsIdTerraformStateNameVersionsSerial
-      summary: Get a Terraform state version
-      description: Get a Terraform state version
+      summary: Retrieve a Terraform state version
+      description: Retrieves a specified Terraform state version.
       tags:
       - Terraform
       responses:
@@ -26133,7 +26150,7 @@ paths:
     delete:
       operationId: deleteApiV4ProjectsIdTerraformStateNameVersionsSerial
       summary: Delete a Terraform state version
-      description: Delete a Terraform state version
+      description: Deletes a specified Terraform state version.
       tags:
       - Terraform
       responses:
@@ -26316,8 +26333,8 @@ paths:
   "/api/v4/projects/{id}/terraform/state/{name}":
     get:
       operationId: getApiV4ProjectsIdTerraformStateName
-      summary: Get a Terraform state by its name
-      description: Get a Terraform state by its name
+      summary: Retrieve a Terraform state
+      description: Retrieves a Terraform state by name for a specified project.
       tags:
       - Terraform
       responses:
@@ -26358,8 +26375,8 @@ paths:
         in: query
     post:
       operationId: postApiV4ProjectsIdTerraformStateName
-      summary: Add a new Terraform state or update an existing one
-      description: Add a new Terraform state or update an existing one
+      summary: Create or update a Terraform state
+      description: Creates or updates a Terraform state for a specified project.
       tags:
       - Terraform
       responses:
@@ -26400,8 +26417,8 @@ paths:
               "$ref": "#/components/schemas/RequestBody_e3f669b4b551"
     delete:
       operationId: deleteApiV4ProjectsIdTerraformStateName
-      summary: Delete a Terraform state of a certain name
-      description: Delete a Terraform state of a certain name
+      summary: Delete a Terraform state
+      description: Deletes a Terraform state for a specified project.
       tags:
       - Terraform
       responses:
@@ -26434,7 +26451,8 @@ paths:
     post:
       operationId: postApiV4ProjectsIdTerraformStateNameAuthorize
       summary: Authorize Terraform state upload
-      description: This feature was introduced in GitLab 18.5
+      description: Authorizes uploading a Terraform state for a specified project.
+        This feature was introduced in GitLab 18.5.
       tags:
       - Terraform
       responses:
@@ -26466,8 +26484,8 @@ paths:
   "/api/v4/projects/{id}/terraform/state/{name}/lock":
     post:
       operationId: postApiV4ProjectsIdTerraformStateNameLock
-      summary: Lock a Terraform state of a certain name
-      description: Lock a Terraform state of a certain name
+      summary: Lock a Terraform state
+      description: Locks a Terraform state for a specified project.
       tags:
       - Terraform
       responses:
@@ -26506,8 +26524,8 @@ paths:
               "$ref": "#/components/schemas/RequestBody_fcbe52168a61"
     delete:
       operationId: deleteApiV4ProjectsIdTerraformStateNameLock
-      summary: Unlock a Terraform state of a certain name
-      description: Unlock a Terraform state of a certain name
+      summary: Unlock a Terraform state
+      description: Unlocks a Terraform state for a specified project.
       tags:
       - Terraform
       responses:
@@ -28029,8 +28047,8 @@ paths:
   "/api/v4/projects/{id}/(-/)search":
     get:
       operationId: getApiV4ProjectsIdDashSearch
-      summary: Search on GitLab within a project
-      description: This feature was introduced in GitLab 10.5.
+      summary: Search a project
+      description: Searches for content in a specified project.
       tags:
       - Search
       - Projects
@@ -35172,7 +35190,8 @@ paths:
     post:
       operationId: postApiV4ProjectsIdImportGit
       summary: Import a project from a Git URL
-      description: This feature was introduced in GitLab 18.10.
+      description: Imports a project from a specified Git URL. This feature was introduced
+        in GitLab 18.10.
       tags:
       - Project import
       responses:
@@ -35244,8 +35263,9 @@ paths:
   "/api/v4/projects/import-relation/authorize":
     post:
       operationId: postApiV4ProjectsImportRelationAuthorize
-      summary: Workhorse authorize the project relation import upload
-      description: This feature was introduced in GitLab 16.11
+      summary: Authorize project relation import
+      description: Authorizes uploading a project relation import file. This feature
+        was introduced in GitLab 16.11.
       tags:
       - Project import
       responses:
@@ -39759,8 +39779,9 @@ paths:
   "/api/v4/projects/{id}/create_ci_config":
     post:
       operationId: postApiV4ProjectsIdCreateCiConfig
-      summary: Create merge request for missing ci config in project
-      description: Creates a merge request to add missing CI configuration
+      summary: Create a CI configuration merge request
+      description: Creates a merge request to add CI configuration to a specified
+        project.
       tags:
       - Projects
       - Merge requests
@@ -47062,7 +47083,8 @@ paths:
   "/api/v4/projects/{id}/issues/{issue_iid}/metric_images/authorize":
     post:
       operationId: postApiV4ProjectsIdIssuesIssueIidMetricImagesAuthorize
-      summary: Upload a metric image for an incident
+      summary: Authorize metric image upload
+      description: Authorizes uploading a metric image for a specified incident.
       tags:
       - Metric images
       responses:
@@ -50068,7 +50090,7 @@ paths:
     post:
       operationId: postApiV4ProjectsIdServicesMattermostSlashCommandsTrigger
       summary: Trigger a slash command for mattermost-slash-commands
-      description: Added in GitLab 8.13
+      description: Triggers a slash command for mattermost-slash-commands.
       tags:
       - Integrations
       responses:
@@ -52241,7 +52263,7 @@ paths:
     post:
       operationId: postApiV4ProjectsIdIntegrationsMattermostSlashCommandsTrigger
       summary: Trigger a slash command for mattermost-slash-commands
-      description: Added in GitLab 8.13
+      description: Triggers a slash command for mattermost-slash-commands.
       tags:
       - Integrations
       responses:
@@ -54360,7 +54382,7 @@ paths:
     post:
       operationId: postApiV4SlackTrigger
       summary: Trigger a global slack command
-      description: Added in GitLab 9.4
+      description: Triggers a global slack command.
       tags:
       - Integrations
       responses:
@@ -68382,6 +68404,7 @@ paths:
     post:
       operationId: postApiV4JobsRequest
       summary: Request a job
+      description: Requests a job for a runner to execute.
       tags:
       - Jobs
       responses:
@@ -68478,7 +68501,8 @@ paths:
   "/api/v4/jobs/{id}/artifacts/authorize":
     post:
       operationId: postApiV4JobsIdArtifactsAuthorize
-      summary: Authorize uploading job artifact
+      summary: Authorize artifacts upload
+      description: Authorizes uploading artifacts for a specified job.
       tags:
       - Jobs
       responses:
@@ -68512,7 +68536,8 @@ paths:
   "/api/v4/jobs/{id}/artifacts":
     post:
       operationId: postApiV4JobsIdArtifacts
-      summary: Upload a job artifact
+      summary: Upload job artifacts
+      description: Uploads artifacts for a specified job.
       tags:
       - Jobs
       responses:
@@ -68545,7 +68570,8 @@ paths:
               "$ref": "#/components/schemas/RequestBody_574ced25d3f6"
     get:
       operationId: getApiV4JobsIdArtifacts
-      summary: Download the artifacts file for job
+      summary: Download job artifacts
+      description: Downloads artifacts for a specified job.
       tags:
       - Jobs
       responses:

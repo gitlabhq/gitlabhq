@@ -61,7 +61,7 @@ module Mcp
 
           merge_request = processed_result[:structuredContent]['mergeRequest']
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(merge_request) }]
-          ::Mcp::Tools::Response.success(formatted_content, merge_request)
+          ::Mcp::Tools::Base::Response.success(formatted_content, merge_request)
         end
 
         def missing_resource(result)
@@ -74,7 +74,7 @@ module Mcp
         end
 
         def resource_not_found_error(resource)
-          ::Mcp::Tools::Response.error(
+          ::Mcp::Tools::Base::Response.error(
             "#{resource} not found: it does not exist or you do not have access to it."
           )
         end

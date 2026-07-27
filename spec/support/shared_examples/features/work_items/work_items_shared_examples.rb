@@ -1280,7 +1280,9 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
     end
   end
 
-  it 'passes axe automated accessibility testing for linked items', :aggregate_failures do
+  it 'passes axe automated accessibility testing for linked items',
+    :aggregate_failures,
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/554457' do
     selector = '[data-testid="work-item-relationships"]'
 
     within_testid('work-item-relationships') do
@@ -1301,6 +1303,43 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
     end
   end
 
+  it 'toggles metadata field display', :aggregate_failures do
+    within_testid('work-item-relationships') do
+      click_button 'Add'
+
+      within_testid('link-work-item-form') do
+        fill_in 'Search existing items', with: linked_item.title
+        click_button linked_item.title
+        click_button 'Add'
+      end
+
+      click_button 'Display options'
+
+      labels_toggle = find_by_testid('work-item-metadata-toggle-labels')
+      expect(labels_toggle).to have_css('button.gl-toggle.is-checked')
+
+      labels_toggle.find('button.gl-toggle').click
+
+      expect(labels_toggle).not_to have_css('button.gl-toggle.is-checked')
+
+      labels_toggle.find('button.gl-toggle').click
+
+      expect(labels_toggle).to have_css('button.gl-toggle.is-checked')
+    end
+  end
+
+  it 'prevents linking a work item to itself', :aggregate_failures do
+    within_testid('work-item-relationships') do
+      click_button 'Add'
+
+      within_testid('link-work-item-form') do
+        fill_in 'Search existing items', with: work_item.title
+
+        expect(page).not_to have_button(work_item.title)
+      end
+    end
+  end
+
   def expect_linked_item_added(input)
     within_testid('work-item-relationships') do
       click_button 'Add'
@@ -1313,7 +1352,9 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
         click_button 'Add'
       end
 
+      expect(page).to have_css('h3', text: 'Related to')
       expect(page).to have_link linked_item.title
+      expect(page).to have_css('[data-testid="linked-items-count-badge"]', text: '1')
     end
   end
 end

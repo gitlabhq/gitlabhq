@@ -530,16 +530,18 @@ jest-msw-integration:
     JEST_MSW_START_TIME_FILE: tmp/jest-msw-start-time
   script:
     - date +%s > "${JEST_MSW_START_TIME_FILE}"
-    # `|| true` so a failing suite still reaches the summary/gate step below;
-    # test failures surface in the posted comment, not by aborting the script.
-    - yarn jest:msw-integration --ci --passWithNoTests --forceExit --json --outputFile="${JEST_MSW_REPORT}" || true
+    # Capture the Jest exit code so we can re-raise it after the summary step.
+    # The summary is always posted (even on test failure) because the inline
+    # comment is the primary signal for reviewers; the job itself also fails
+    # when tests fail, surfacing the failure in the pipeline.
+    - yarn jest:msw-integration --ci --passWithNoTests --forceExit --json --outputFile="${JEST_MSW_REPORT}"; JEST_EXIT=$?
     # This runs in `script` instead of `after_script` on purpose.
     # We want the budget gate to be able to fail the job when someone adds too many new tests.
     # That only works from `script`, because GitLab ignores the exit code of `after_script` and a failure there
     # wouldn't stop the pipeline.
     #
     # Posting the summary comment is best-effort: if the API call fails, the script quietly ignores it
-    # and the job keeps going. The only thing that actually fails the job is breaching the per-new-test budget.
+    # and the job keeps going. The job fails when tests fail or when the per-new-test budget is breached.
     - |
       # Read the recorded jest-msw start timestamp; fall back to 0 if the file is
       # missing or unreadable (keeps later duration math from breaking).
@@ -551,6 +553,8 @@ jest-msw-integration:
         --artifact-path "${JEST_MSW_REPORT}" \
         --job-url "${CI_JOB_URL}" \
         --duration "${DURATION}"
+      echo "Exiting with jest exit code $JEST_EXIT."
+      exit $JEST_EXIT
   artifacts:
     name: jest-msw-report
     expire_in: 7d

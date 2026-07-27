@@ -66,7 +66,7 @@ export default {
     'noteEdited',
     'resolve',
     'start-editing',
-    'startReplying',
+    'start-replying',
     'toggleDiscussionReplies',
   ],
   computed: {
@@ -110,7 +110,7 @@ export default {
       :is-resolving="isResolving"
       @resolve="$emit('resolve')"
       @noteEdited="$emit('noteEdited', { note: firstNote, value: $event })"
-      @startReplying="$emit('startReplying')"
+      @start-replying="$emit('start-replying')"
       @start-editing="$emit('start-editing', firstNote)"
       @cancel-editing="$emit('cancel-editing', firstNote)"
     >

@@ -84,8 +84,6 @@ app/helpers/routing/projects/members_helper.rb:
   - resend_invite_project_member_path
 app/models/application_setting_implementation.rb:
   - ensure_key_restrictions!
-app/models/ci/build.rb:
-  - has_archived_trace?
 app/models/ci/job_token/allowlist.rb:
   - project_link_traversal_ids
   - group_link_traversal_ids

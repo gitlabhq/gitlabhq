@@ -35,7 +35,7 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
         raise StandardError, 'Something went wrong' if arguments[:required_field] == 'error'
 
         formatted_content = [{ type: 'text', text: 'Success' }]
-        Mcp::Tools::Response.success(formatted_content, { processed: true })
+        Mcp::Tools::Base::Response.success(formatted_content, { processed: true })
       end
     end
   end
@@ -129,7 +129,7 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
           protected
 
           def perform(_arguments, _query = {})
-            Mcp::Tools::Response.success([], {})
+            Mcp::Tools::Base::Response.success([], {})
           end
         end
       end

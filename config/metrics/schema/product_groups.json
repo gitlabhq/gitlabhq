@@ -62,6 +62,7 @@
     "package_registry",
     "pipeline_authoring",
     "pipeline_execution",
+    "planning_views",
     "platform_insights",
     "product_planning",
     "project_management",

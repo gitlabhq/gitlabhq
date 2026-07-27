@@ -44,7 +44,7 @@ RSpec.describe 'Import/Export - project export integration test', :js, feature_c
       allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(200)
     end
 
-    it 'exports a project successfully', :sidekiq_inline do
+    it 'exports a project successfully' do
       export_project_and_download_file(page, project, user)
 
       in_directory_with_expanded_export(project, user) do |exit_status, tmpdir|
@@ -78,6 +78,17 @@ RSpec.describe 'Import/Export - project export integration test', :js, feature_c
     expect(page).to have_content('Export project')
 
     find(:link, 'Export project').send_keys(:return)
+
+    # Wait for the export request to be handled and the job enqueued before
+    # draining the queue below.
+    expect(page).to have_content('Project export started')
+
+    # The export runs through a chain of Sidekiq jobs. Rather than executing it
+    # inline inside the browser request (which blocked the WebDriver long enough
+    # to raise Net::ReadTimeout, see
+    # https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43576),
+    # we let the click enqueue the job and drain the queue outside the request.
+    Sidekiq::Worker.drain_all
 
     visit edit_project_path(project)
 

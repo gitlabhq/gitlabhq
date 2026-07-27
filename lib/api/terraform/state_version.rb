@@ -46,8 +46,8 @@ module API
             end
           end
 
-          desc 'Get a Terraform state version' do
-            detail 'Get a Terraform state version'
+          desc 'Retrieve a Terraform state version' do
+            detail 'Retrieves a specified Terraform state version.'
             success File
             failure [
               { code: 403, message: 'Forbidden' },
@@ -67,7 +67,7 @@ module API
           end
 
           desc 'Delete a Terraform state version' do
-            detail 'Delete a Terraform state version'
+            detail 'Deletes a specified Terraform state version.'
             success code: 204
             failure [
               { code: 403, message: 'Forbidden' },

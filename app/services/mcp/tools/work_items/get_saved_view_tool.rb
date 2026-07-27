@@ -31,10 +31,10 @@ module Mcp
           return processed if processed[:isError]
 
           saved_view = extract_saved_view(processed[:structuredContent])
-          return ::Mcp::Tools::Response.error("Saved view not found or inaccessible") unless saved_view
+          return ::Mcp::Tools::Base::Response.error("Saved view not found or inaccessible") unless saved_view
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(saved_view) }]
-          ::Mcp::Tools::Response.success(formatted_content, saved_view)
+          ::Mcp::Tools::Base::Response.success(formatted_content, saved_view)
         end
 
         def extract_saved_view(structured_content)
