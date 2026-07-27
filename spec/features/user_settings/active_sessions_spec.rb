@@ -219,6 +219,9 @@ RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_stat
         click_on 'Revoke'
       end
 
+      # Wait for the page to reload after the revoke before asserting the
+      # link is gone; only the current session remains.
+      expect(page).to have_selector('ul.list-group li.list-group-item', count: 1)
       expect(page).not_to have_link('Revoke')
     end
 

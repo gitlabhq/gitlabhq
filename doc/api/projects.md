@@ -2331,6 +2331,7 @@ see [Project feature visibility level](#project-feature-visibility-level).
 - `protect_merge_request_pipelines` and `ci_display_pipeline_variables` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/584488) in GitLab 18.10.
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+- `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.1.
 
 {{< /history >}}
 
@@ -2425,6 +2426,7 @@ Supported general project attributes:
 | `request_access_enabled`                           | boolean           | No       | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                | boolean           | No       | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `restrict_user_defined_variables`                  | boolean           | No       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154510) in GitLab 17.7 in favour of `ci_pipeline_variables_minimum_override_role`)_ Allow only users with the Maintainer role to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
+| `reviewer_assignment_strategy`                     | string            | No       | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. Premium and Ultimate only. |
 | `service_desk_enabled`                             | boolean           | No       | Enable or disable Service Desk feature. |
 | `shared_runners_enabled`                           | boolean           | No       | Enable instance runners for this project. |
 | `show_default_award_emojis`                        | boolean           | No       | Show default emoji reactions. |
