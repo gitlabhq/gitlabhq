@@ -12,13 +12,6 @@ title: Configure Grafana
 
 {{< /details >}}
 
-{{< history >}}
-
-- Grafana bundled with GitLab was [deprecated](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772) in GitLab 16.0.
-- Grafana bundled with GitLab was [removed](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772) in GitLab 16.3.
-
-{{< /history >}}
-
 [Grafana](https://grafana.com/) is a tool that enables you to visualize time
 series metrics through graphs and dashboards. GitLab writes performance data to Prometheus,
 and Grafana allows you to query the data to display graphs.

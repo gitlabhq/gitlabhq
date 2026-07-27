@@ -190,7 +190,7 @@ Prerequisites:
 
 - You must purchase a GitLab Duo Pro or Enterprise add-on, or have an active GitLab Duo trial.
 - For GitLab Self-Managed and GitLab Dedicated:
-  - The GitLab Duo Pro add-on is available in GitLab 16.8 and later.
+  - The GitLab Duo Pro add-on is available.
   - The GitLab Duo Enterprise add-on is only available in GitLab 17.3 and later.
 
 After you purchase GitLab Duo Pro or Enterprise, you can assign seats to users to grant access to the add-on.
@@ -216,7 +216,7 @@ The user is sent a confirmation email.
 Prerequisites:
 
 - You must be an administrator.
-- The user must be not blocked, banned or deactivated.
+- The user must be not blocked, banned, or deactivated.
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
@@ -371,7 +371,7 @@ Seats are selected for removal based on the following criteria, in this order:
 1. Users who have not yet used Code Suggestions, ordered by most recently assigned.
 1. Users who have used Code Suggestions, ordered by least recent usage of Code Suggestions.
 
-### For blocked, banned and deactivated users
+### For blocked, banned, and deactivated users
 
 Once or twice each day, a CronJob reviews GitLab Duo seat assignments. If a user who is assigned a GitLab Duo seat becomes
 blocked, banned, or deactivated, their access to GitLab Duo features is automatically removed.

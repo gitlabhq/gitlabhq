@@ -395,9 +395,6 @@ export default {
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
     },
-    newTodoAndNotificationsEnabled() {
-      return this.glFeatures.notificationsTodosButtons;
-    },
     parentWorkItem() {
       return findHierarchyWidget(this.workItem)?.parent;
     },
@@ -569,7 +566,7 @@ export default {
       return {
         fullPath: this.workItemFullPath,
         workItemId: this.workItem.id,
-        hideSubscribe: this.newTodoAndNotificationsEnabled,
+        hideSubscribe: true,
         workItemType: this.workItemType,
         workItemIid: this.iid,
         projectId: this.workItemProjectId,
@@ -1135,7 +1132,6 @@ export default {
               @error="updateError = $event"
             />
             <work-item-notifications-widget
-              v-if="newTodoAndNotificationsEnabled"
               :work-item-id="workItem.id"
               @error="updateError = $event"
             />

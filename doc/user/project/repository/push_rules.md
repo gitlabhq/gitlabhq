@@ -13,12 +13,6 @@ title: Push rules
 
 {{< /details >}}
 
-{{< history >}}
-
-- Maximum regular expression length for push rules [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/411901) from 255 to 511 characters in GitLab 16.3.
-
-{{< /history >}}
-
 Push rules are [`pre-receive` Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#:~:text=pre%2Dreceive,with%20the%20push.) you
 can enable in a user-friendly interface. Push rules give you more control over what
 can and can't be pushed to your repository. While GitLab offers
@@ -204,7 +198,7 @@ Some validation examples:
   ```
 
 - Branches must be between `4` and `15` characters long,
-  accepting only lowercase letters, numbers and dashes.
+  accepting only lowercase letters, numbers, and dashes.
 
   ```plaintext
   ^[a-z0-9\\-]{4,15}$

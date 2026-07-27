@@ -126,8 +126,7 @@ git config lfs.activitytimeout 60
 ## Encountered `n` files that should have been pointers, but weren't
 
 This error indicates the repository should be tracking a file with Git LFS, but
-isn't. [Issue 326342](https://gitlab.com/gitlab-org/gitlab/-/issues/326342#note_586820485),
-fixed in GitLab 16.10, was one cause of this problem.
+isn't.
 
 To fix the problem, migrate the affected files, and push them up to the repository:
 

@@ -13,6 +13,7 @@ import getGroupOrganizationsQuery from './graphql/get_group_organizations.query.
 import getGroupOrganizationsCountByStateQuery from './graphql/get_group_organizations_count_by_state.query.graphql';
 
 export default {
+  name: 'OrganizationsRoot',
   components: {
     GlButton,
     GlLoadingIcon,

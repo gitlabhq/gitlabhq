@@ -38982,6 +38982,57 @@ paths:
       tags:
       - repositories
       operationId: postApiV4ProjectsIdRepositoryBlobsBatch
+  "/api/v4/projects/{id}/repository/diverging_commits":
+    get:
+      description: Retrieve diverging commit counts between two refs
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+        example: 1
+      - in: query
+        name: from
+        description: The ref to compare from
+        type: string
+        required: true
+        example: main
+      - in: query
+        name: to
+        description: The ref to compare to
+        type: string
+        required: true
+        example: feature
+      - in: query
+        name: max_count
+        description: Maximum number of commits to count. 0 for unlimited
+        type: integer
+        format: int32
+        default: 0
+        minimum: 0
+        required: false
+        example: 1000
+      responses:
+        '200':
+          description: Retrieve diverging commit counts between two refs
+          schema:
+            "$ref": "#/definitions/API_Entities_DivergingCommitCount"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '429':
+          description: Too many requests
+      tags:
+      - repositories
+      operationId: getApiV4ProjectsIdRepositoryDivergingCommits
   "/api/v4/projects/{id}/repository/changelog":
     get:
       summary: Generate changelog data
@@ -73384,6 +73435,21 @@ definitions:
     - encoding
     - content
     description: API_Entities_BatchBlob model
+  API_Entities_DivergingCommitCount:
+    type: object
+    properties:
+      behind:
+        type: integer
+        format: int32
+        example: 3
+      ahead:
+        type: integer
+        format: int32
+        example: 5
+    required:
+    - behind
+    - ahead
+    description: API_Entities_DivergingCommitCount model
   API_Entities_Changelog:
     type: object
     properties:

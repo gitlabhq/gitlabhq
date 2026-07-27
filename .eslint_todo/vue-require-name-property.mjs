@@ -11,11 +11,6 @@ export default {
     'app/assets/javascripts/contribution_events/components/target_link.vue',
     'app/assets/javascripts/contributors/components/contributors.vue',
     'app/assets/javascripts/contributors/components/individual_chart.vue',
-    'app/assets/javascripts/crm/contacts/components/contact_form_wrapper.vue',
-    'app/assets/javascripts/crm/contacts/components/contacts_root.vue',
-    'app/assets/javascripts/crm/organizations/components/organization_form_wrapper.vue',
-    'app/assets/javascripts/crm/organizations/components/organizations_root.vue',
-
     'ee/app/assets/javascripts/ci/job_details/components/root_cause_analysis_button.vue',
     'ee/app/assets/javascripts/ci/pipeline_details/tabs/pipeline_tabs.vue',
     'ee/app/assets/javascripts/ci/secrets/components/secrets_breadcrumbs.vue',

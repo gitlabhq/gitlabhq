@@ -473,14 +473,11 @@ Threads on unchanged lines and top-level resolvable threads are not resolved.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `notifications_todos_buttons`. Disabled by default.
 - [Issues, incidents](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133474), and [epics](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133881) also updated.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/426305) in GitLab 19.3. Feature flag `notifications_todos_buttons` removed.
 
 {{< /history >}}
 
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-
-When you turn on this feature flag, the notifications and to-do item buttons move to the upper-right corner of the page.
+The notifications and to-do item buttons appear in the upper-right corner of the page.
 
 - On merge requests, these buttons appear to the far right of the tabs.
 - On issues, incidents, and epics, these buttons appear at the top of the right sidebar.

@@ -112,12 +112,6 @@ unless a subgroup configuration overrides it.
 
 {{< /details >}}
 
-{{< history >}}
-
-- Full protection after initial push [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
-
-{{< /history >}}
-
 GitLab administrators and group owners can define [branch protections](protected.md)
 to apply to every repository's default branch for the instance, or for individual groups, with one of these options:
 

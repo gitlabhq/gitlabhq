@@ -1,9 +1,10 @@
-import { GlToggle } from '@gitlab/ui';
+import { GlAnimatedNotificationIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
 import SidebarSubscriptionWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import issueSubscribedQuery from '~/sidebar/queries/issue_subscribed.query.graphql';
@@ -24,7 +25,11 @@ describe('Sidebar Subscriptions Widget', () => {
   let fakeApollo;
   let subscriptionMutationHandler;
 
-  const findToggle = () => wrapper.findComponent(GlToggle);
+  const findNotificationIcon = () => wrapper.findComponent(GlAnimatedNotificationIcon);
+  const findNotificationIconIsOn = () => {
+    const icon = findNotificationIcon();
+    return icon.props('isOn') ?? parseBoolean(icon.attributes('is-on'));
+  };
   const findSubscribeButton = () => wrapper.findByTestId('subscribe-button');
 
   const createComponent = ({
@@ -61,8 +66,9 @@ describe('Sidebar Subscriptions Widget', () => {
       createComponent();
       return waitForPromises();
     });
-    it('toggle is unchecked', () => {
-      expect(findToggle().props('value')).toBe(false);
+    it('renders the notification icon in the on (unsubscribed) state', () => {
+      expect(findSubscribeButton().exists()).toBe(true);
+      expect(findNotificationIconIsOn()).toBe(true);
     });
 
     it('emits `subscribedUpdated` event with a `false` payload', () => {
@@ -78,8 +84,9 @@ describe('Sidebar Subscriptions Widget', () => {
       return waitForPromises();
     });
 
-    it('toggle is checked', () => {
-      expect(findToggle().props('value')).toBe(true);
+    it('renders the notification icon in the off (subscribed) state', () => {
+      expect(findSubscribeButton().exists()).toBe(true);
+      expect(findNotificationIconIsOn()).toBe(false);
     });
 
     it('emits `subscribedUpdated` event with a `true` payload', () => {
@@ -102,7 +109,7 @@ describe('Sidebar Subscriptions Widget', () => {
       await waitForPromises();
 
       expect(findSubscribeButton().exists()).toBe(true);
-      expect(findToggle().exists()).toBe(false);
+      expect(findNotificationIcon().exists()).toBe(true);
     });
 
     it('is disabled while loading', () => {

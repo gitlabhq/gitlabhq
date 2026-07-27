@@ -6,12 +6,6 @@ description: Repository X-Ray gives Code Suggestions more insight into your proj
 title: Repository X-Ray with Code Suggestions
 ---
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
-
-{{< /history >}}
-
 Repository X-Ray automatically enriches:
 
 - Code generation requests for [GitLab Duo Code Suggestions](_index.md) by providing additional context about a project's dependencies to improve the accuracy and relevance of code recommendations.

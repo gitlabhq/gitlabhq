@@ -419,12 +419,6 @@ You can also configure the associated [incident to be closed automatically](mana
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.2.
-
-{{< /history >}}
-
 > [!warning]
 > We are building deeper integration with Opsgenie and other alerting tools through
 > [HTTP endpoint integrations](#single-alerting-endpoint) so you can see alerts in

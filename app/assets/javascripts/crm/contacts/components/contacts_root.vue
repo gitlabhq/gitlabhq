@@ -13,6 +13,7 @@ import getGroupContacts from './graphql/get_group_contacts.query.graphql';
 import getGroupContactsCountByState from './graphql/get_group_contacts_count_by_state.graphql';
 
 export default {
+  name: 'ContactsRoot',
   components: {
     GlButton,
     GlLoadingIcon,

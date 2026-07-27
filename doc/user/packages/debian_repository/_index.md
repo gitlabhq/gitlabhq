@@ -188,12 +188,6 @@ dput --config=dput.cf --unchecked --no-upload-log gitlab <your_package>.changes
 
 ## Upload a package with explicit distribution and component
 
-{{< history >}}
-
-- Upload with explicit distribution and component [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
-
-{{< /history >}}
-
 When you don't have access to `.changes` file, you can directly upload a `.deb` by passing
 distribution `codename` and target `component` as parameters with
 your [credentials](#authenticate-to-the-debian-package-repositories).

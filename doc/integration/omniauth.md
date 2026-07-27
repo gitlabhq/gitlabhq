@@ -50,7 +50,7 @@ configure the settings that are common for all providers.
 | Option | Description |
 | ------ | ----------- |
 | `allow_bypass_two_factor`    | Allows users to sign in with the specified providers without two-factor authentication (2FA). Can be set to `true`, `false`, or an array of providers. For more information, see [Bypass two-factor authentication](#bypass-two-factor-authentication). |
-| `allow_single_sign_on`       | Enables the automatic creation of accounts when signing in with OmniAuth. Can be set to `true`, `false` or an array of providers. For provider names, see the [supported providers table](#supported-providers). When `false`, signing in using your OmniAuth provider account without a pre-existing GitLab account is not allowed. You must create a GitLab account first, and then connect it to your OmniAuth provider account through your profile settings. |
+| `allow_single_sign_on`       | Enables the automatic creation of accounts when signing in with OmniAuth. Can be set to `true`, `false`, or an array of providers. For provider names, see the [supported providers table](#supported-providers). When `false`, signing in using your OmniAuth provider account without a pre-existing GitLab account is not allowed. You must create a GitLab account first, and then connect it to your OmniAuth provider account through your profile settings. |
 | `auto_link_ldap_user`        | Creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. To enable this setting, you must have [LDAP integration](../administration/auth/ldap/_index.md) enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. |
 | `auto_link_saml_user`        | Allows users authenticating through a SAML provider to be automatically linked to a current GitLab user if their emails match. To enable this setting, you must have SAML integration enabled. |
 | `auto_link_user`             | Allows users authenticating through an OmniAuth provider to be automatically linked to a current GitLab user if their emails match. Can be set to `true`, `false`, or an array of providers. For provider names, see the [supported providers table](#supported-providers). |
@@ -184,12 +184,6 @@ After configuring these settings, you can configure
 your chosen [provider](#supported-providers).
 
 ### Per-provider configuration
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89379) in GitLab 15.3.
-
-{{< /history >}}
 
 If `allow_single_sign_on` is set, GitLab uses one of the following fields returned in the OmniAuth `auth_hash` to establish a username in GitLab for the user signing in,
 choosing the first that exists:

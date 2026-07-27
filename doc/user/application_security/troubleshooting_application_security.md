@@ -211,8 +211,7 @@ success or failure of the analyzer itself. Analyzer results are displayed in the
 
 ## Error: job `is used for configuration only, and its script should not be executed`
 
-[Changes made in GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41260)
-to the `Security/Dependency-Scanning.gitlab-ci.yml` and `Security/SAST.gitlab-ci.yml`
+The `Security/Dependency-Scanning.gitlab-ci.yml` and `Security/SAST.gitlab-ci.yml`
 templates mean that if you enable the `sast` or `dependency_scanning` jobs by setting the `rules` attribute,
 they fail with the error `(job) is used for configuration only, and its script should not be executed`.
 

@@ -22,7 +22,6 @@ title: DAST on-demand scan
 
 {{< history >}}
 
-- Runner tags selection [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111499) in GitLab 16.3.
 - Browser based on-demand DAST scans available in GitLab 17.0 and later because [proxy-based DAST was removed in the same version](../../../update/deprecations.md#proxy-based-dast-deprecated).
 
 {{< /history >}}

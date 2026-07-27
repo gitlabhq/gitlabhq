@@ -73468,6 +73468,9 @@ msgstr ""
 msgid "SemanticSearch|Elasticsearch"
 msgstr ""
 
+msgid "SemanticSearch|Embedding model"
+msgstr ""
+
 msgid "SemanticSearch|Embedding model configuration is not available. Ensure %{coll_name} collection exists."
 msgstr ""
 

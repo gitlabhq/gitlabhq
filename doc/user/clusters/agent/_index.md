@@ -13,12 +13,6 @@ description: Kubernetes integration, GitOps, CI/CD, agent deployment, and cluste
 
 {{< /details >}}
 
-{{< history >}}
-
-- Flux [recommended](https://gitlab.com/gitlab-org/gitlab/-/issues/357947#note_1253489000) as GitOps solution in GitLab 15.10.
-
-{{< /history >}}
-
 You can connect your Kubernetes cluster with GitLab to deploy, manage,
 and monitor your cloud-native solutions.
 

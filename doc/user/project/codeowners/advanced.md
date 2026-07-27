@@ -214,12 +214,6 @@ Members who inherit membership in the invited group are not eligible.
 
 ## Error handling
 
-{{< history >}}
-
-- Error validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216066) in GitLab 16.3.
-
-{{< /history >}}
-
 ### Entries with spaces
 
 Escape whitespace in paths with backslashes:

@@ -193,12 +193,6 @@ To apply a compliance framework to a project through a compliance framework:
 
 ## Default compliance frameworks
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375036) in GitLab 15.6.
-
-{{< /history >}}
-
 Group owners can set a default compliance framework. The default framework is applied to all the new and imported
 projects that are created in that group. It does not affect the framework applied to the existing projects. The
 default framework cannot be deleted.

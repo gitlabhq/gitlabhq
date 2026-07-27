@@ -2605,6 +2605,7 @@ Grants the ability to create, delete, read, and update commits.
 | Read | Project | `GET` | `/projects/:id/repository/commits/:sha/sequence` |
 | Read | Project | `GET` | `/projects/:id/repository/commits/:sha/signature` |
 | Read | Project | `GET` | `/projects/:id/repository/commits/:sha/statuses` |
+| Read | Project | `GET` | `/projects/:id/repository/diverging_commits` |
 | Update | Project | `POST` | `/projects/:id/repository/commits/:sha/comments` |
 | Update | Project | `PUT` | `/projects/:id/repository/commits/:noteable_id/discussions/:discussion_id/notes/:note_id` |
 
@@ -3837,6 +3838,7 @@ feature is enabled.
 | Commit: Read | `GET` | `/projects/:id/repository/commits/:sha/statuses` |
 | Repository: Read | `GET` | `/projects/:id/repository/compare` |
 | Repository: Read | `GET` | `/projects/:id/repository/contributors` |
+| Commit: Read | `GET` | `/projects/:id/repository/diverging_commits` |
 | Repository: Read | `GET` | `/projects/:id/repository/files/:file_path` |
 | Repository: Read | `HEAD` | `/projects/:id/repository/files/:file_path` |
 | Repository: Read | `GET` | `/projects/:id/repository/files/:file_path/blame` |

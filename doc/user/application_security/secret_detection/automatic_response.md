@@ -41,12 +41,6 @@ GitLab supports automatic response for the following types of secrets:
 
 ## Feature availability
 
-{{< history >}}
-
-- [Enabled for non-default branches](https://gitlab.com/gitlab-org/gitlab/-/issues/299212) in GitLab 15.11.
-
-{{< /history >}}
-
 Credentials are only post-processed when secret detection finds them:
 
 - In public projects, because publicly exposed credentials pose an increased threat. Expansion to private projects is considered in [issue 391379](https://gitlab.com/gitlab-org/gitlab/-/issues/391379).

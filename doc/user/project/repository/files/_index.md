@@ -190,12 +190,6 @@ To view the open merge requests for a file:
 
 ## Search for a file
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148025) to a dialog in GitLab 16.11.
-
-{{< /history >}}
-
 Use the file finder to search directly from the GitLab UI for a file in your repository.
 The file finder uses fuzzy search and highlights results as you type.
 

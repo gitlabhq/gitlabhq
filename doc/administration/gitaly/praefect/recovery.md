@@ -457,11 +457,6 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 
 ### Manually add a single repository to the tracking database
 
-> [!warning]
-> Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), in GitLab 16.0 and earlier, you can't
-> add repositories to the Praefect tracking database with Praefect-generated replica paths (`@cluster`). These
-> repositories are not associated with the repository path used by GitLab and are inaccessible.
-
 The `track-repository` Praefect sub-command adds repositories on disk to the Praefect tracking database to be tracked.
 
 ```shell
@@ -512,11 +507,6 @@ This command fails if:
 - The repository does not exist on disk.
 
 ### Manually add many repositories to the tracking database
-
-> [!warning]
-> Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), in GitLab 16.0 and earlier, you can't
-> add repositories to the Praefect tracking database with Praefect-generated replica paths (`@cluster`). These
-> repositories are not associated with the repository path used by GitLab and are inaccessible.
 
 Migrations using the API automatically add repositories to the Praefect tracking database.
 

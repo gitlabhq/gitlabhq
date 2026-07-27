@@ -91,12 +91,6 @@ Project audit events can also be accessed using the [project audit events API](.
 
 ## Time zones
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/242014) in GitLab 15.7, GitLab UI shows dates and times in the user's local time zone instead of UTC.
-
-{{< /history >}}
-
 The time zone used for audit events depends on where you view them:
 
 - In the GitLab UI, your local time zone is used.

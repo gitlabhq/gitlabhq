@@ -100,7 +100,13 @@ module Types
         null: true,
         description: 'Latest pipeline that determines the commit CI status. ' \
           'Excludes dangling pipelines, such as security policy scans, that do ' \
-          'not affect the commit CI status.'
+          'not affect the commit CI status.' do
+        argument :ref, GraphQL::Types::String,
+          required: false,
+          description: 'Ref to scope the pipeline to. When provided, returns the ' \
+            'latest pipeline for the commit on that ref; otherwise the latest ' \
+            'pipeline for the commit across all refs.'
+      end
 
       markdown_field :title_html, null: true, description: "HTML rendering of `title`"
       markdown_field :full_title_html, null: true, description: "HTML rendering of `full_title`"
@@ -115,14 +121,16 @@ module Types
       # `ci_pipelines` (the `ci_sources` scope) so dangling pipelines such as
       # `security_orchestration_policy` scans do not influence the commit CI
       # status, keeping it consistent with the commit page, `Commit#status`, and
-      # `Ci::Ref#update_status_by!`.
-      def latest_pipeline
+      # `Ci::Ref#update_status_by!`. The batch key includes `ref` so commits
+      # queried with different refs resolve in separate batches.
+      def latest_pipeline(ref: nil)
         commit_project = object.project
         return unless commit_project
 
-        BatchLoader::GraphQL.for(object.sha).batch(key: commit_project.id) do |shas, loader|
+        BatchLoader::GraphQL.for(object.sha).batch(key: [commit_project.id, ref]) do |shas, loader|
           # rubocop:disable Database/AvoidUnpartitionedCiRelations -- `in_current_partition: true` scopes the lookup to the current partition first and only falls back to a cross-partition scan for the SHAs whose latest pipeline predates it.
-          pipelines = commit_project.ci_pipelines.latest_pipeline_per_commit(shas.compact, in_current_partition: true)
+          pipelines = commit_project.ci_pipelines
+            .latest_pipeline_per_commit(shas.compact, ref, in_current_partition: true)
           # rubocop:enable Database/AvoidUnpartitionedCiRelations
 
           shas.each { |sha| loader.call(sha, pipelines[sha]) }

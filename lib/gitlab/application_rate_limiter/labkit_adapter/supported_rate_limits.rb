@@ -570,6 +570,13 @@ module Gitlab
               period: 1.minute,
               action: :block
             ),
+            project_repositories_diverging_commits: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_repository_diverging_commits_by_user_project',
+              characteristics: %i[user project],
+              limit: 30,
+              period: 1.minute,
+              action: :block
+            ),
             project_repositories_health: ::Labkit::RateLimit::Rule.new(
               name: 'limit_project_repository_health_by_project',
               characteristics: %i[project],

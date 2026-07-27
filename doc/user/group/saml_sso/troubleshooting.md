@@ -604,7 +604,7 @@ Ensure the SAML identity provider is configured to send a [supported mail attrib
 </Attribute>
 ```
 
-Attribute names starting with phrases such as `http://schemas.xmlsoap.org/ws/2005/05/identity/claims` and `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are supported by default beginning in GitLab 16.7.
+Attribute names starting with phrases such as `http://schemas.xmlsoap.org/ws/2005/05/identity/claims` and `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are supported by default.
 
 ```xml
 <Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress">

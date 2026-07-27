@@ -158,18 +158,8 @@ describe('Sidebar Todo Widget', () => {
   });
 
   describe('when the query is pending', () => {
-    it('is in the loading state', () => {
+    it('shows a disabled icon button instead of the loading state', () => {
       createComponent();
-
-      expect(findTodoButton().attributes('loading')).toBe('true');
-    });
-
-    it('is not in the loading state if notificationsTodosButtons feature flag is enabled', () => {
-      createComponent({
-        provide: {
-          glFeatures: { notificationsTodosButtons: true },
-        },
-      });
 
       expect(findTodoButton().attributes('loading')).toBeUndefined();
       expect(findTodoButton().attributes().disabled).toBe('true');

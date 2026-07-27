@@ -35,12 +35,6 @@ When a branch matches multiple protection rules, these behaviors apply:
 
 ## Push and merge permissions
 
-{{< history >}}
-
-- Branch push permission [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118532) to require GitLab administrators to also have the **Allowed** permission in GitLab 16.0.
-
-{{< /history >}}
-
 When a branch is protected, the default behavior enforces these restrictions:
 
 | Action                   | Who can do it |

@@ -613,7 +613,7 @@ but do not provide the `EXTERNAL_URL` value.
 1. On every database node, edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
    ```ruby
-   # Disable all components except Patroni, PgBouncer and Consul
+   # Disable all components except Patroni, PgBouncer, and Consul
    roles(['patroni_role', 'pgbouncer_role'])
 
    # PostgreSQL configuration
@@ -2114,9 +2114,8 @@ On each node perform the following:
    sudo gitlab-ctl tail gitaly
    ```
 
-1. Optionally, from the Gitaly servers, confirm that Gitaly can perform callbacks to the internal API:
-   - For GitLab 15.3 and later, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
-   - For GitLab 15.2 and earlier, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
+1. Optionally, from the Gitaly servers, confirm that Gitaly can perform callbacks to the internal API by running
+   `sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
 
 When you specify `https` in the `external_url`, as in the previous example,
 GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the

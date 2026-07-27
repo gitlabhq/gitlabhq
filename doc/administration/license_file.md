@@ -26,12 +26,6 @@ Otherwise, add your license in the Admin area.
 
 ## Activate subscription during installation
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114572) in GitLab 16.0.
-
-{{< /history >}}
-
 To activate your subscription during installation, set the `GITLAB_ACTIVATION_CODE` environment variable with the activation code:
 
 ```shell
@@ -254,7 +248,7 @@ users to cover the number of users in your instance.
 To fix this issue, purchase additional seats to cover those users.
 For more information, read the [licensing FAQ](https://about.gitlab.com/pricing/licensing-faq/).
 
-In GitLab 14.2 and later, for instances that use a license file, the following
+For instances that use a license file, the following
 rules apply:
 
 - If the users over license are less than or equal to 10% of the users in the license

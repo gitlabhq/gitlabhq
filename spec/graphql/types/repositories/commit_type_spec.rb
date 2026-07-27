@@ -58,5 +58,27 @@ RSpec.describe GitlabSchema.types['Commit'], feature_category: :source_code_mana
 
       expect(::Gitlab::Graphql::Lazy.force(result)).to eq(ci_pipeline)
     end
+
+    context 'with a ref argument' do
+      # Same SHA, different ref, created last (higher id) so it wins when unscoped.
+      let_it_be(:feature_pipeline) do
+        create(:ci_pipeline, project: project, sha: commit.sha, ref: 'feature',
+          status: :success, source: :push)
+      end
+
+      it 'scopes the pipeline to the given ref' do
+        result = resolve_field(:latest_pipeline, commit, args: { ref: project.default_branch },
+          current_user: user, object_type: described_class)
+
+        expect(::Gitlab::Graphql::Lazy.force(result)).to eq(ci_pipeline)
+      end
+
+      it 'returns the latest pipeline for a different ref' do
+        result = resolve_field(:latest_pipeline, commit, args: { ref: 'feature' },
+          current_user: user, object_type: described_class)
+
+        expect(::Gitlab::Graphql::Lazy.force(result)).to eq(feature_pipeline)
+      end
+    end
   end
 end

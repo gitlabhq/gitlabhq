@@ -159,12 +159,6 @@ Active Directory servers store certificates in this format.
 
 ### Authentication against Entra ID Domain Services
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328074) in GitLab 16.9.
-
-{{< /history >}}
-
 [Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/fundamentals/what-is-entra), formerly known as Azure Active Directory, provides a cloud-based directory for companies and organizations. [Entra Domain Services](https://learn.microsoft.com/en-us/entra/identity/domain-services/overview) provides a secure read-only LDAP interface to the directory, but only exposes a limited subset of the fields Entra ID has.
 
 Entra ID uses the `CertificateUserIds` field to manage client certificates for users, but this field is not exposed in LDAP / Entra ID Domain Services. With a cloud-only setup, it is not possible for GitLab to authenticate users' smart cards using LDAP.

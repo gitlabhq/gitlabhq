@@ -119,7 +119,7 @@ Total connections = 2 × ((Puma × Rails nodes) + (Sidekiq × Sidekiq nodes) + (
 ```
 
 Multiplying by 2 accounts for the
-[dual database connections](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections) in GitLab 16.0 and later.
+[dual database connections](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections).
 
 For Geo installations:
 
@@ -222,7 +222,7 @@ In PgBouncer terminology:
 
 - `pgbouncer['max_client_conn']` is the frontend pool: connections from Rails to PgBouncer.
 - `pgbouncer['default_pool_size']` is the backend pool: connections from PgBouncer to the database.
-  This value is sized per pool (per database/user pair). Because GitLab 16.0 and later opens
+  This value is sized per pool (per database/user pair). Because GitLab opens
   separate pools for `main` and `ci`, the backend pool budget must account for both pools per
   PgBouncer node.
 

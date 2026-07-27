@@ -435,8 +435,8 @@ including support for `Deployment` in the `extensions/v1beta1` version.
 
 To use Auto Deploy on a Kubernetes 1.16+ cluster:
 
-1. If you are deploying your application for the first time in GitLab 13.0 or
-   later, no configuration should be required.
+1. If you are deploying your application for the first time,
+   no configuration should be required.
 1. If you have an in-cluster PostgreSQL database installed with
    `AUTO_DEVOPS_POSTGRES_CHANNEL` set to `1`, follow the
    [guide to upgrade PostgreSQL](upgrading_postgresql.md).

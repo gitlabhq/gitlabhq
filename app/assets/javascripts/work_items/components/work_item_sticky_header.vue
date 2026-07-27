@@ -8,7 +8,6 @@ import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import { STATE_CLOSED } from '~/work_items/constants';
 import { findNotesWidget } from '../utils';
@@ -35,7 +34,6 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     workItem: {
       type: Object,
@@ -82,9 +80,6 @@ export default {
     },
     workItemState() {
       return this.workItem.state;
-    },
-    newTodoAndNotificationsEnabled() {
-      return this.glFeatures.notificationsTodosButtons;
     },
   },
   watch: {
@@ -182,11 +177,7 @@ export default {
             @todosUpdated="$emit('todosUpdated', $event)"
             @error="updateError = $event"
           />
-          <work-item-notifications-widget
-            v-if="newTodoAndNotificationsEnabled"
-            :work-item-id="workItem.id"
-            @error="$emit('error')"
-          />
+          <work-item-notifications-widget :work-item-id="workItem.id" @error="$emit('error')" />
           <slot name="actions"></slot>
         </div>
       </div>

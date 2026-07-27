@@ -336,7 +336,6 @@ RSpec.shared_examples 'work items description' do
 
     before do
       project.add_developer(other_user)
-      stub_feature_flags(notifications_todos_buttons: false)
     end
 
     it 'shows conflict message when description changes', :aggregate_failures do
@@ -467,17 +466,14 @@ end
 
 RSpec.shared_examples 'work items notifications' do
   it 'displays toast when notification is toggled', :aggregate_failures do
-    click_button _('More actions'), match: :first
+    wait_for_requests
 
-    within_testid 'notifications-toggle-form' do
-      expect(page).not_to have_css('.gl-toggle.is-checked')
+    notifications_button = find('[data-testid="subscribe-button"][data-subscribed="false"]')
 
-      click_button(class: 'gl-toggle')
-
-      expect(page).to have_css('.gl-toggle.is-checked')
-    end
+    notifications_button.click
 
     expect(page).to have_css('.gl-toast', text: _('Notifications turned on.'))
+    expect(page).to have_css('[data-testid="subscribe-button"][data-subscribed="true"]')
   end
 end
 

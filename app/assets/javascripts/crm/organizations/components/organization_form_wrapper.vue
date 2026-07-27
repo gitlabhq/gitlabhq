@@ -8,6 +8,7 @@ import createCustomerRelationsOrganizationMutation from './graphql/create_custom
 import updateCustomerRelationsOrganizationMutation from './graphql/update_customer_relations_organization.mutation.graphql';
 
 export default {
+  name: 'OrganizationFormWrapper',
   components: {
     CrmForm,
   },

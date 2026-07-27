@@ -4,7 +4,6 @@ import { produce } from 'immer';
 import { createAlert } from '~/alert';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import Tracking from '~/tracking';
 import { todoMutationTypes } from '../../constants';
 import { todoQueries, todoMutations } from '../../queries/constants';
@@ -23,7 +22,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin(), trackingMixin],
+  mixins: [trackingMixin],
   inject: {
     isClassicSidebar: {
       default: false,
@@ -132,9 +131,6 @@ export default {
     tootltipTitle() {
       return todoLabel(this.hasTodo);
     },
-    isIconButton() {
-      return this.isMergeRequest || this.glFeatures.notificationsTodosButtons;
-    },
   },
   methods: {
     toggleTodo() {
@@ -205,7 +201,6 @@ export default {
 <template>
   <div data-testid="sidebar-todo" :class="{ 'inline-block': !isMergeRequest }">
     <todo-button
-      v-if="isIconButton"
       v-gl-tooltip.hover.top
       :title="tootltipTitle"
       :issuable-type="issuableType"
@@ -223,17 +218,6 @@ export default {
         class="gl-button-icon"
       />
     </todo-button>
-    <todo-button
-      v-else
-      :issuable-type="issuableType"
-      :issuable-id="issuableId"
-      :is-todo="hasTodo"
-      :todo-count="todoCount"
-      :loading="isLoading"
-      size="small"
-      class="hide-collapsed gl-mt-2"
-      @click.stop.prevent="toggleTodo"
-    />
     <gl-button
       v-if="isClassicSidebar && !isMergeRequest"
       v-gl-tooltip.left.viewport

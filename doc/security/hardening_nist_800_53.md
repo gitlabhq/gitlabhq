@@ -126,7 +126,7 @@ for customers that have unique permission requirements.
 
 GitLab also supports the following user types for unique use cases:
 
-- [Auditor Users](../administration/auditor_users.md) - The auditor role provides read-only access to all groups, projects and other resources except for the **Admin** area and project/group settings. You can use the auditor role when engaging with third-party auditors that require access to certain projects to validate processes.
+- [Auditor Users](../administration/auditor_users.md) - The auditor role provides read-only access to all groups, projects, and other resources except for the **Admin** area and project/group settings. You can use the auditor role when engaging with third-party auditors that require access to certain projects to validate processes.
 
 - [External Users](../administration/external_users.md) -
   External users can be set to provide limited access for users that
@@ -152,7 +152,7 @@ requirements:
 - [Unlock users](unlock_user.md).
   By default, GitLab locks users after 10 failed sign-in attempts.
   Users remain locked for 10 minutes or until an administrator unlocks
-  the user. In GitLab 16.5 and later, administrators can [use the API](../api/settings.md#available-settings)
+  the user. Administrators can [use the API](../api/settings.md#available-settings)
   to configure max login attempts and time period for remaining locked
   out. Per guidance in AC-7, FedRAMP defers to NIST 800-63B for
   defining parameters for account lockouts, which the default setting

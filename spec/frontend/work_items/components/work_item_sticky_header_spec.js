@@ -149,18 +149,12 @@ describe('WorkItemStickyHeader', () => {
     });
   });
 
-  describe('notificationsTodosButtons Feature flag', () => {
-    it.each`
-      description        | featureFlag | expected
-      ${'shows'}         | ${true}     | ${true}
-      ${'does not show'} | ${false}    | ${false}
-    `(
-      '$description new notifications button when notificationsTodoButtons feature flag is $featureFlag',
-      ({ featureFlag, expected }) => {
-        createComponent({ features: { notificationsTodosButtons: featureFlag } });
-        expect(findWorkItemNotificationsWidget().exists()).toBe(expected);
-      },
-    );
+  describe('notifications widget', () => {
+    it('renders the notifications widget', () => {
+      createComponent();
+
+      expect(findWorkItemNotificationsWidget().exists()).toBe(true);
+    });
   });
 
   describe('WorkItemStateBadge', () => {

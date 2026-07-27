@@ -104,7 +104,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
      For Kubernetes 1.16+ clusters, you must perform additional configuration for
      [Auto Deploy for Kubernetes 1.16+](stages.md#kubernetes-116).
   1. For external HTTP traffic, an Ingress controller is required. For regular
-     deployments, any Ingress controller should work, but as of GitLab 14.0,
+     deployments, any Ingress controller should work, but
      [canary deployments](../../user/project/canary_deployments.md) require
      NGINX Ingress. You can deploy the NGINX Ingress controller to your
      Kubernetes cluster either through the GitLab [Cluster management project template](../../user/clusters/management_project_template.md)

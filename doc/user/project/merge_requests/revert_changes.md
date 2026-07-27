@@ -39,7 +39,7 @@ Prerequisites:
 - Your project must use the [merge method](methods/_index.md#fast-forward-merge) **Merge Commit**,
   set in your project's **Settings** > **Merge requests**.
 
-  In GitLab 16.9 and later, you can revert fast-forwarded commits from the GitLab UI if either:
+  You can revert fast-forwarded commits from the GitLab UI if either:
 
   - The commits are squashed, or
   - The merge request contains a single commit.

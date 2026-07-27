@@ -62,12 +62,6 @@ When the `geo_object_storage_verification` feature flag is disabled:
 
 ## Enabling GitLab-managed object storage replication
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5551) in GitLab 15.1.
-
-{{< /history >}}
-
 > [!warning]
 > In case of issues, avoid manually deleting individual files as that can lead to [data inconsistencies](#inconsistencies-after-the-migration).
 

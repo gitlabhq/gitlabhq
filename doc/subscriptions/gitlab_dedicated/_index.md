@@ -108,12 +108,12 @@ By default, [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/se
 {{< /details >}}
 
 Cloudflare is implemented as a web application firewall (WAF) for distributed denial-of-service (DDoS)
-protection and related security capabilities. The WAF implementation and configuration is managed by the GitLab SRE team.
+protection and related security capabilities. The WAF implementation and configuration are managed by the GitLab SRE team.
 Direct access to WAF configuration or logs is not available.
 
 ### Compliance
 
-GitLab Dedicated adheres to various regulations, certifications, and compliance frameworks to ensure the security, and reliability of your data.
+GitLab Dedicated adheres to various regulations, certifications, and compliance frameworks to ensure the security and reliability of your data.
 
 #### View compliance and certification details
 
@@ -146,7 +146,7 @@ In tenant accounts, GitLab Dedicated uses:
 
 #### Audit and observability
 
-You can access [application logs](../../administration/dedicated/monitor.md) for auditing and observability purposes. These logs provide insights into system activities and user actions, helping you monitor your instance and maintain compliance requirements.
+You can access [application logs](../../administration/dedicated/monitor.md) for auditing and observability purposes. These logs provide insights into system activities and user actions, helping you monitor your instance and meet compliance requirements.
 
 ### Custom domains
 
@@ -411,7 +411,7 @@ these importers:
 - Direct transfer: Uses a direct connection between instances to copy groups and projects.
   Direct transfer is the recommended method. You can also automate it with the
   [direct transfer API](../../api/bulk_imports.md).
-- File exports: Give you a portable package of your data that works in offline environments.
+- File exports: Gives you a portable package of your data that works in offline environments.
 
 To migrate from third-party services, use the [import sources](../../user/import/_index.md),
 which provide a migration tool for some third-party platforms.

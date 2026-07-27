@@ -12,12 +12,6 @@ title: Secure Files administration
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) and feature flag `ci_secure_files` removed in GitLab 15.7.
-
-{{< /history >}}
-
 You can securely store up to 100 files for use in CI/CD pipelines as secure files.
 These files are stored securely outside of your project's repository and are not version controlled.
 It is safe to store sensitive information in these files. Secure files support both plain text
@@ -208,12 +202,6 @@ See [the available connection settings for different providers](../object_storag
 {{< /tabs >}}
 
 ### Migrate to object storage
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/readme/-/issues/125) in GitLab 16.1.
-
-{{< /history >}}
 
 > [!warning]
 > It's not possible to migrate Secure Files from object storage back to local storage,

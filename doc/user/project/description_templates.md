@@ -115,12 +115,6 @@ To discard any changes to the description you've made after selecting the templa
 
 ### Supported variables in merge request templates
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89810) in GitLab 15.7.
-
-{{< /history >}}
-
 > [!note]
 > This feature is available only for
 > [the default template](#set-a-default-template-for-merge-requests-and-issues).

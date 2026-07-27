@@ -220,12 +220,6 @@ the appropriate project and followed up from there.
 
 ## Fields in the new issue form
 
-{{< history >}}
-
-- Iteration field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233517) in GitLab 15.6.
-
-{{< /history >}}
-
 When you're creating a new issue, you can complete the following fields:
 
 - Title: [limited formatting support](../../markdown.md#work-item-and-merge-request-titles)

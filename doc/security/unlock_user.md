@@ -13,12 +13,6 @@ title: Locked user accounts
 
 {{< /details >}}
 
-{{< history >}}
-
-- Configurable locked user policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27048) in GitLab 16.5.
-
-{{< /history >}}
-
 GitLab locks a user account after several failed authentication attempts. To unlock an account, wait for the end of
 the automatic unlock period or [reset your password](https://gitlab.com/users/password/new).
 

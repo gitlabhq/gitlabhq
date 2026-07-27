@@ -544,6 +544,71 @@ Example response:
 }
 ```
 
+## Retrieve diverging commit counts
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234443) in GitLab 19.3 [with a flag](../administration/feature_flags/_index.md) named `repository_diverging_commits_api`. Disabled by default. This feature is in [beta](../policy/development_stages_support.md).
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Retrieves the number of commits by which two refs have diverged. The counts are relative to each other:
+
+- `behind` is the number of commits in `from` that are not in `to`.
+- `ahead` is the number of commits in `to` that are not in `from`.
+
+This endpoint requires authentication.
+Unauthenticated requests are rejected with [`401 Unauthorized`](rest/troubleshooting.md#status-codes).
+
+```plaintext
+GET /projects/:id/repository/diverging_commits
+```
+
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
+| `from`      | string            | Yes      | Ref to compare from. Accepts a commit SHA, branch name, or tag name. |
+| `to`        | string            | Yes      | Ref to compare to. Accepts a commit SHA, branch name, or tag name. |
+| `max_count` | integer           | No       | Maximum number of commits to count. Use `0` for unlimited. Defaults to `0`. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute | Type    | Description |
+|-----------|---------|-------------|
+| `ahead`   | integer | Number of commits in `to` that are not in `from`. |
+| `behind`  | integer | Number of commits in `from` that are not in `to`. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/diverging_commits?from=main&to=feature"
+```
+
+Example response:
+
+```json
+{
+  "behind": 3,
+  "ahead": 5
+}
+```
+
 ## Generate changelog data
 
 {{< history >}}

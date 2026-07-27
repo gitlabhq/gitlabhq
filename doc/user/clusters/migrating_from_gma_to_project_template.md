@@ -12,7 +12,7 @@ title: Migrate from GitLab Managed Apps to Cluster Management Projects (deprecat
 
 {{< /details >}}
 
-The GitLab Managed Apps were deprecated in GitLab 14.0
+The GitLab Managed Apps were deprecated
 in favor of user-controlled Cluster Management projects.
 Managing your cluster applications through a project enables you a
 lot more flexibility to manage your cluster than through the late GitLab Managed Apps.

@@ -33,9 +33,7 @@ import eventHub from '~/notes/event_hub';
 import Tracking from '~/tracking';
 import toast from '~/vue_shared/plugins/global_toast';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
-import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import IssuableLockForm from '~/sidebar/components/lock/issuable_lock_form.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
 import issuesEventHub from '../event_hub';
 import promoteToEpicMutation from '../queries/promote_to_epic.mutation.graphql';
@@ -76,7 +74,6 @@ export default {
     GlLink,
     GlModal,
     AbuseCategorySelector,
-    SidebarSubscriptionsWidget,
     IssuableLockForm,
     HeaderActionsConfidentialityToggle,
   },
@@ -84,7 +81,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [trackingMixin, glFeatureFlagMixin()],
+  mixins: [trackingMixin],
   inject: [
     'canCreateIssue',
     'canDestroyIssue',
@@ -359,17 +356,6 @@ export default {
         :loading="isToggleStateButtonLoading"
         placement="bottom-end"
       >
-        <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
-          <sidebar-subscriptions-widget
-            :iid="String(iid)"
-            :full-path="fullPath"
-            :issuable-type="$options.TYPE_ISSUE"
-            data-testid="notification-toggle"
-          />
-
-          <gl-dropdown-divider />
-        </template>
-
         <gl-disclosure-dropdown-item v-if="canUpdateIssue" @action="edit">
           <template #list-item>{{ $options.i18n.edit }}</template>
         </gl-disclosure-dropdown-item>
@@ -466,15 +452,6 @@ export default {
       @shown="showDesktopDropdown"
       @hidden="hideDesktopDropdown"
     >
-      <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
-        <sidebar-subscriptions-widget
-          :iid="String(iid)"
-          :full-path="fullPath"
-          :issuable-type="$options.TYPE_ISSUE"
-          data-testid="notification-toggle"
-        />
-        <gl-dropdown-divider />
-      </template>
       <gl-disclosure-dropdown-item
         v-if="showToggleIssueStateButton"
         data-testid="toggle-issue-state-button"

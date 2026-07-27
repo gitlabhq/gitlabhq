@@ -252,12 +252,6 @@ an [auto-generated self-signed wildcard certificate](https://docs.gitlab.com/cha
 
 ##### Use the agent behind an HTTP proxy
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351867) in GitLab 15.0, the GitLab agent Helm chart supports setting environment variables.
-
-{{< /history >}}
-
 To configure an HTTP proxy when using the Helm chart, you can use the environment variables `HTTP_PROXY`, `HTTPS_PROXY`,
 and `NO_PROXY`. Upper and lowercase are both acceptable.
 

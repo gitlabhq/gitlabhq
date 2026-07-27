@@ -161,12 +161,6 @@ investigate further.
 
 #### Users see an error `Invalid login or password.`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438144) in GitLab 16.10.
-
-{{< /history >}}
-
 If users see this error, it might be because they are trying to sign in using the **Standard** sign-in form instead of the **LDAP** sign-in form.
 
 To resolve, ask the user to enter their LDAP username and password into the **LDAP** sign-in form.
@@ -475,7 +469,7 @@ the rails console.
 
 When LDAP sync is enabled for a group, you cannot use the "invite" dialog to invite new group members.
 
-To resolve this issue in GitLab 16.8 and later, you can invite service accounts to and remove them from a group using the [group members API endpoints](../../../api/group_members.md#add-a-group-member).
+To resolve this issue, you can invite service accounts to and remove them from a group using the [group members API endpoints](../../../api/group_members.md#add-a-group-member).
 
 #### Administrator privileges not granted
 

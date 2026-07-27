@@ -88,12 +88,6 @@ Prerequisites:
 
 ## Filter requests
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377371) in GitLab 15.10.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must have administrator access to the GitLab instance.

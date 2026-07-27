@@ -76,12 +76,6 @@ Jira issue can't be merged. The merge request displays the message
 
 ## Customize Jira issue matching in GitLab
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112826) in GitLab 15.10.
-
-{{< /history >}}
-
 You can configure custom rules for how GitLab matches Jira issue keys by defining:
 
 - [A regex pattern](#define-a-regex-pattern)

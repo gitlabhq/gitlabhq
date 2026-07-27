@@ -9,7 +9,7 @@ When working with SSH keys, you might encounter the following issues.
 
 ## TLS: server sent certificate containing RSA key larger than 8192 bits
 
-In GitLab 16.3 and later, Go limits RSA keys to a maximum of 8192 bits.
+Go limits RSA keys to a maximum of 8192 bits.
 To check the length of a key:
 
 ```shell

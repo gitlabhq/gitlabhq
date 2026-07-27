@@ -29692,6 +29692,68 @@ paths:
             schema:
               "$ref": "#/components/schemas/RequestBody_d0e25dbef307"
       x-gitlab-lifecycle: beta
+  "/api/v4/projects/{id}/repository/diverging_commits":
+    get:
+      operationId: getApiV4ProjectsIdRepositoryDivergingCommits
+      summary: Retrieve diverging commit counts between two refs
+      tags:
+      - Repositories
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesDivergingCommitCount"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '429':
+          description: Too many requests
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+        example: 1
+      - name: from
+        required: true
+        description: The ref to compare from
+        schema:
+          type: string
+          nullable: true
+          maxLength: 255
+        in: query
+        example: main
+      - name: to
+        required: true
+        description: The ref to compare to
+        schema:
+          type: string
+          nullable: true
+          maxLength: 255
+        in: query
+        example: feature
+      - name: max_count
+        required: false
+        description: Maximum number of commits to count. 0 for unlimited
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          nullable: true
+        in: query
+        example: 1000
+      x-gitlab-lifecycle: experiment
   "/api/v4/projects/{id}/repository/changelog":
     get:
       operationId: getApiV4ProjectsIdRepositoryChangelog
@@ -86473,6 +86535,15 @@ components:
         content:
           type: string
           example: VGhpcyBpcyBhIGZpbGU=
+    APIEntitiesDivergingCommitCount:
+      type: object
+      properties:
+        behind:
+          type: integer
+          example: 3
+        ahead:
+          type: integer
+          example: 5
     APIEntitiesChangelog:
       type: object
       properties:

@@ -58,16 +58,16 @@ To roll back a Linux package instance to an earlier GitLab version:
    sudo yum --showduplicates list gitlab-ee
    ```
 
-1. Roll back GitLab to the desired version (for example, to GitLab 15.0.5):
+1. Roll back GitLab to the desired version (for example, to GitLab 19.2.1):
 
    ```shell
    # (Replace with gitlab-ce if you have GitLab FOSS installed)
 
    # Ubuntu
-   sudo apt install gitlab-ee=15.0.5-ee.0
+   sudo apt install gitlab-ee=19.2.1-ee.0
 
    # CentOS:
-   sudo yum install gitlab-ee-15.0.5-ee.0.el8
+   sudo yum install gitlab-ee-19.2.1-ee.0.el8
    ```
 
 1. Reconfigure GitLab:

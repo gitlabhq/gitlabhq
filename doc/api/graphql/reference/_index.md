@@ -37231,7 +37231,6 @@ Fields:
 | <a id="commit-fulltitlehtml"></a>`fullTitleHtml` | [`String`](#string) | HTML rendering of `full_title`. |
 | <a id="commit-hasagentsession"></a>`hasAgentSession` | [`Boolean!`](#boolean) | Indicates the commit was authored during a GitLab Duo Agent Platform flow. |
 | <a id="commit-id"></a>`id` | [`ID!`](#id) | ID (global ID) of the commit. |
-| <a id="commit-latestpipeline"></a>`latestPipeline` | [`Pipeline`](#pipeline) | Latest pipeline that determines the commit CI status. Excludes dangling pipelines, such as security policy scans, that do not affect the commit CI status. |
 | <a id="commit-message"></a>`message` | [`String`](#string) | Raw commit message. |
 | <a id="commit-name"></a>`name` | [`String`](#string) | Name or title of the object. |
 | <a id="commit-parentsha"></a>`parentSha` | [`String`](#string) | SHA ID of the first parent. |
@@ -37246,6 +37245,18 @@ Fields:
 | <a id="commit-weburl"></a>`webUrl` | [`String!`](#string) | Web URL of the commit. |
 
 #### Fields with arguments
+
+##### `Commit.latestPipeline`
+
+Latest pipeline that determines the commit CI status. Excludes dangling pipelines, such as security policy scans, that do not affect the commit CI status.
+
+Returns [`Pipeline`](#pipeline).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="commit-latestpipeline-ref"></a>`ref` | [`String`](#string) | Ref to scope the pipeline to. When provided, returns the latest pipeline for the commit on that ref; otherwise the latest pipeline for the commit across all refs. |
 
 ##### `Commit.notes`
 

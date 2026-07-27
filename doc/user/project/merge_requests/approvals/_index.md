@@ -173,12 +173,6 @@ don't affect existing merge requests, except for [target branch](rules.md#approv
 
 ## Invalid rules
 
-{{< history >}}
-
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/405023) in GitLab 16.2. Feature flag `invalid_scan_result_policy_prevents_merge` removed.
-
-{{< /history >}}
-
 GitLab marks approval rules as **Auto approved** when they're impossible to satisfy, such as when:
 
 - The only eligible approver is the merge request author.

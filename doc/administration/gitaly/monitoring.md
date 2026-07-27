@@ -81,12 +81,6 @@ In Prometheus, look for the following metrics:
 
 ## Monitor Gitaly adaptive concurrency limiting
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
-
-{{< /history >}}
-
 You can observe specific behavior of [adaptive concurrency limiting](concurrency_limiting.md#adaptive-concurrency-limiting) using Gitaly logs and Prometheus.
 
 Adaptive concurrency limiting is an extension of static concurrency limiting, so all metrics and logs applicable to [static concurrency limiting](#monitor-gitaly-concurrency-limiting) are also relevant when monitoring adaptive limits. In addition, adaptive limiting introduces several specific metrics that help monitor the dynamic adjustment of limits.
@@ -188,12 +182,6 @@ gitaly_streamcache_index_entries{dir="/var/opt/gitlab/git-data/repositories/+git
 ```
 
 ## Monitor Gitaly server-side backups
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5358) in GitLab 16.7.
-
-{{< /history >}}
 
 Monitor [server-side repository backups](configure_gitaly.md#configure-server-side-backups) with the following metrics:
 

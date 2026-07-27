@@ -33098,7 +33098,18 @@
             {
               "name": "latestPipeline",
               "description": "Latest pipeline that determines the commit CI status. Excludes dangling pipelines, such as security policy scans, that do not affect the commit CI status.",
-              "args": [],
+              "args": [
+                {
+                  "name": "ref",
+                  "description": "Ref to scope the pipeline to. When provided, returns the latest pipeline for the commit on that ref; otherwise the latest pipeline for the commit across all refs.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
               "type": {
                 "kind": "OBJECT",
                 "name": "Pipeline",

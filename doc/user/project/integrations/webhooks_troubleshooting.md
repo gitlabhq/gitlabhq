@@ -117,12 +117,6 @@ To resolve this issue:
 
 ## Webhook not triggered
 
-{{< history >}}
-
-- Webhooks not triggered in Silent Mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) in GitLab 16.3.
-
-{{< /history >}}
-
 If a webhook is not triggered, verify that:
 
 - The webhook is not [disabled automatically](webhooks.md#auto-disabled-webhooks).

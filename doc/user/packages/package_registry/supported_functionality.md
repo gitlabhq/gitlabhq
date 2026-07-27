@@ -279,12 +279,6 @@ for a given package manager:
 
 {{< /details >}}
 
-{{< history >}}
-
-- Basic authentication for Maven packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212854) in GitLab 16.0.
-
-{{< /history >}}
-
 The following authentication protocols are supported:
 
 | Package type                                           | Supported auth protocols                                    |

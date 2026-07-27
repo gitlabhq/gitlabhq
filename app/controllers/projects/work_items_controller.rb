@@ -11,7 +11,6 @@ module Projects
 
     before_action :authorize_import_access!, only: [:import_csv, :authorize] # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action do
-      push_frontend_feature_flag(:notifications_todos_buttons, current_user)
       push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
       push_force_frontend_feature_flag(:use_work_item_url, !!project&.use_work_item_url?)
       push_force_frontend_feature_flag(:work_item_features_field,

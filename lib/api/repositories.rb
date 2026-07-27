@@ -408,10 +408,10 @@ module API
         end
       end
 
-      # Unlike the other repository endpoints, batch blob retrieval requires an
-      # authenticated user: the per-user rate limiter cannot protect against
-      # anonymous abuse on public projects. Authenticate in a `before` block so
-      # unauthenticated requests are rejected before parameter validation runs.
+      # Unlike the other repository endpoints, batch blob retrieval and diverging
+      # commit counts require an authenticated user: the per-user rate limiter cannot
+      # protect against anonymous abuse on public projects. Authenticate in a `before`
+      # block so unauthenticated requests are rejected before parameter validation runs.
       namespace do
         before { authenticate! }
 
@@ -459,6 +459,35 @@ module API
 
           status 200
           present result, with: Entities::BatchBlob
+        end
+
+        desc 'Retrieve diverging commit counts between two refs' do
+          success Entities::DivergingCommitCount
+          failure [{ code: 400, message: 'Bad request' }, { code: 401, message: 'Unauthorized' }, { code: 403, message: 'Forbidden' }, { code: 404, message: 'Not found' }, { code: 429, message: 'Too many requests' }]
+          tags ['repositories']
+        end
+        params do
+          requires :from, type: String, desc: 'The ref to compare from', limit: 255,
+            documentation: { example: 'main' }
+          requires :to, type: String, desc: 'The ref to compare to', limit: 255,
+            documentation: { example: 'feature' }
+          optional :max_count, type: Integer, desc: 'Maximum number of commits to count. 0 for unlimited', default: 0, values: 0..,
+            documentation: { example: 1000 }
+        end
+        route_setting :authorization, permissions: :read_commit, boundary_type: :project
+        route_setting :lifecycle, :experiment
+        get ':id/repository/diverging_commits', urgency: :low do
+          not_found! unless Feature.enabled?(:repository_diverging_commits_api, user_project)
+
+          check_rate_limit!(:project_repositories_diverging_commits, scope: [current_user, user_project])
+
+          service = ::Branches::DivergingCommitCountsService.new(user_project.repository)
+          counts = service.diverging_counts(params[:from], params[:to], max_count: params[:max_count])
+
+          present counts, with: Entities::DivergingCommitCount
+
+        rescue Gitlab::Git::CommandError
+          render_api_error!('Invalid from or to ref', 400)
         end
       end
 
