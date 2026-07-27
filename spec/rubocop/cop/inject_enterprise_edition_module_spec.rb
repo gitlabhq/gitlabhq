@@ -31,6 +31,19 @@ RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule, feature_category: :t
     RUBY
   end
 
+  it 'flags the use of module helpers in the middle of a file' do
+    expect_offense(<<~RUBY)
+    class Foo
+      prepend_mod
+      ^^^^^^^^^^^ Injecting extension modules must be done on the last line of this file, outside of any class or module definitions
+      extend_mod
+      ^^^^^^^^^^ Injecting extension modules must be done on the last line of this file, outside of any class or module definitions
+      include_mod
+      ^^^^^^^^^^^ Injecting extension modules must be done on the last line of this file, outside of any class or module definitions
+    end
+    RUBY
+  end
+
   it 'does not flag the use of `prepend_mod_with` on the last line' do
     expect_no_offenses(<<~RUBY)
     class Foo
@@ -55,6 +68,17 @@ RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule, feature_category: :t
     end
 
     Foo.extend_mod_with('Foo')
+    RUBY
+  end
+
+  it 'does not flag the use of module helpers at the end of a file' do
+    expect_no_offenses(<<~RUBY)
+    class Foo
+    end
+
+    Foo.prepend_mod(with_descendants: true)
+    Foo.extend_mod
+    Foo.include_mod
     RUBY
   end
 
@@ -106,7 +130,7 @@ RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule, feature_category: :t
     end
 
     Foo.prepend(EE::Foo)
-    ^^^^^^^^^^^^^^^^^^^^ EE modules must be injected using `include_mod_with`, `extend_mod_with`, or `prepend_mod_with`
+    ^^^^^^^^^^^^^^^^^^^^ EE modules must be injected using `include_mod_with`, `extend_mod_with`, `prepend_mod_with`, `include_mod`, `extend_mod`, or `prepend_mod`.
     RUBY
   end
 
@@ -116,7 +140,7 @@ RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule, feature_category: :t
     end
 
     Foo.prepend(QA::EE::Foo)
-    ^^^^^^^^^^^^^^^^^^^^^^^^ EE modules must be injected using `include_mod_with`, `extend_mod_with`, or `prepend_mod_with`
+    ^^^^^^^^^^^^^^^^^^^^^^^^ EE modules must be injected using `include_mod_with`, `extend_mod_with`, `prepend_mod_with`, `include_mod`, `extend_mod`, or `prepend_mod`.
     RUBY
   end
 
@@ -126,7 +150,7 @@ RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule, feature_category: :t
     end
 
     Foo.extend(EE::Foo)
-    ^^^^^^^^^^^^^^^^^^^ EE modules must be injected using `include_mod_with`, `extend_mod_with`, or `prepend_mod_with`
+    ^^^^^^^^^^^^^^^^^^^ EE modules must be injected using `include_mod_with`, `extend_mod_with`, `prepend_mod_with`, `include_mod`, `extend_mod`, or `prepend_mod`.
     RUBY
   end
 
@@ -136,7 +160,7 @@ RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule, feature_category: :t
     end
 
     Foo.include(EE::Foo)
-    ^^^^^^^^^^^^^^^^^^^^ EE modules must be injected using `include_mod_with`, `extend_mod_with`, or `prepend_mod_with`
+    ^^^^^^^^^^^^^^^^^^^^ EE modules must be injected using `include_mod_with`, `extend_mod_with`, `prepend_mod_with`, `include_mod`, `extend_mod`, or `prepend_mod`.
     RUBY
   end
 

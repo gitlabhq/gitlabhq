@@ -12,7 +12,7 @@ title: Security report ingestion overview
 
 ### Feedback
 
-An instance of `Vulnerabilities::Feedback` class. They are created to keep track of users' interactions with Vulnerability Findings before they are promoted to a Vulnerability. This model is deprecated and due to be removed by GitLab 16.0 as part of the [Deprecate and remove Vulnerabilities::Feedback epic](https://gitlab.com/groups/gitlab-org/-/epics/5629).
+An instance of `Vulnerabilities::Feedback` class. They are created to keep track of users' interactions with Vulnerability Findings before they are promoted to a Vulnerability. This model is deprecated and due to be removed as part of the [Deprecate and remove Vulnerabilities::Feedback epic](https://gitlab.com/groups/gitlab-org/-/epics/5629).
 
 ### Issue Link
 

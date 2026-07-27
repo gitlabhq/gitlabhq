@@ -39,10 +39,13 @@ You must:
 To identify which `401 Unauthorized` requests are failing due to
 expired access tokens, use the following fields in the `api_json.log` file:
 
-| Field name                | Description |
-|---------------------------|-------------|
-| `meta.auth_fail_reason`   | The reason the request was rejected. Possible values: `token_expired`, `token_revoked`, `insufficient_scope`, and `impersonation_disabled`. |
-| `meta.auth_fail_token_id` | A string describing the type and ID of the attempted token. |
+| Field name                        | Description |
+|-----------------------------------|-------------|
+| `meta.auth_fail_reason`           | The reason the request was rejected. Possible values: `token_expired`, `token_revoked`, `insufficient_scope`, and `impersonation_disabled`. |
+| `meta.auth_fail_token_id`         | A string describing the type and ID of the attempted token. |
+| `meta.auth_fail_requested_scopes` | The OAuth scopes the request required, space-separated. |
+| `meta.auth_fail_token_type`       | The type of token used. Possible values: `PersonalAccessToken`, `CiJobToken`, and `unknown`. |
+| `meta.auth_fail_auth_header_type` | How the token was passed in the request. Possible values: `private_token_header`, `private_token_param`, `bearer`, and `other`. |
 
 When a user attempts to use an expired token, the `meta.auth_fail_reason`
 is `token_expired`. The following shows an excerpt from a log
@@ -58,6 +61,16 @@ entry:
   "meta.auth_fail_token_id": "PersonalAccessToken/12",
 }
 ```
+
+> [!note]
+> In some cases, `meta.auth_fail_*` fields may appear on non-401 responses. Known cases include:
+>
+> - Git HTTP requests to public projects, where Rack::Attack records the token failure but
+>   the project's public visibility allows the request to succeed.
+> - The Unleash feature flags endpoint, which authorizes by `HTTP_UNLEASH_INSTANCEID` rather
+>   than the token.
+> - Workhorse pre-authorization (`/authorize`) endpoints, which perform their own authorization
+>   after the token probe.
 
 `meta.auth_fail_token_id` indicates that an access token of ID 12 was used.
 From GitLab 18.9, `meta.user` will also be populated with any username associated with the token used for the failed request.

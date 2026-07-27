@@ -10,7 +10,7 @@
 - Llm::ExtraResourceFinder # Reason: The finder does not deal with DB-backend resource for now.
 - WorkItems::Statuses::Finder # Reason: The finder intentionally returns a single model instance.
 - Sbom::PathFinder # Reason: we need an [[Sbom::Occurrence]]
-- PackageMetadata::MalwareAdvisoriesFinder # Reason: no-op placeholder; execute returns an Array, not an ActiveRecord::Relation
+- PackageMetadata::MalwareAdvisoriesFinder # Reason: version matching is done client-side via SemverDialects (affected ranges are arbitrary version disjunctions, not SQL-comparable), so execute must return a filtered Array rather than an ActiveRecord::Relation
 - Search::AdvancedFinders::Security::Vulnerability::SearchFinder # Reason: The finder deals with Elasticsearch records and not DB records
 - Search::AdvancedFinders::Security::Vulnerability::IdentifierNamesFinder # Reason: The finder deals with Elasticsearch records and not DB records
 - Search::AdvancedFinders::Security::Vulnerability::CountBySeverityFinder # Reason: The finder deals with Elasticsearch records and not DB records

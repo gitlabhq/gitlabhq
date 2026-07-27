@@ -194,7 +194,7 @@ can't create Thread: Operation not permitted
 ```
 
 This error occurs when running a container built with newer `glibc` versions on a
-[host that doesn't support the clone3 function](https://github.com/moby/moby/issues/42680). In GitLab 16.0 and later, the container image includes
+[host that doesn't support the clone3 function](https://github.com/moby/moby/issues/42680). The container image includes
 the Ubuntu 22.04 Linux package, which is built with newer `glibc` versions.
 
 This problem does not occur in newer container runtime tools like [Docker 20.10.10](https://github.com/moby/moby/pull/42836).

@@ -29,7 +29,9 @@ module Types
       end
 
       # This prepend must stay here because the dynamic block below depends on it.
+      # rubocop: disable Cop/InjectEnterpriseEditionModule -- Dynamic values below depend on EE overrides.
       prepend_mod
+      # rubocop: enable Cop/InjectEnterpriseEditionModule
 
       integration_names.each do |name|
         value graphql_value(name), value: domain_value(name), description: value_description(name) # rubocop:disable Graphql/EnumValues -- Cop falsely identifies we must call upcase. Enum value is upcased in #graphql_value

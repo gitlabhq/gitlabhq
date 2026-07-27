@@ -86,6 +86,59 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
         expect(response).to be_successful
         expect(assigns(:commits).length).to be >= 1
       end
+
+      context 'when an unauthenticated user compares identical refs' do
+        let(:from_ref) { 'master' }
+        let(:to_ref) { 'master' }
+
+        before do
+          sign_out(user)
+        end
+
+        it 'does not list commits or mark the compare as overflowing', :aggregate_failures do
+          expect(Gitlab::Git::Commit).not_to receive(:between)
+
+          show_request
+
+          expect(assigns(:commits_overflow)).to be(false)
+        end
+      end
+    end
+
+    context 'when limiting commits fetched from Gitaly' do
+      let(:from_project_id) { nil }
+      let(:from_ref) { 'cfe32cf6' }
+      let(:to_ref) { 'ddd0f15a' }
+
+      before do
+        stub_const('MergeRequestDiff::COMMITS_SAFE_SIZE', 1)
+      end
+
+      context 'when user is not authenticated' do
+        before do
+          sign_out(user)
+        end
+
+        it 'shows the limited count and overflow message', :aggregate_failures do
+          show_request
+
+          expect(assigns(:commits_overflow)).to be(true)
+          expect(assigns(:commits_count_label)).to eq('1+')
+          expect(response.body).to include('1+')
+          expect(response.body).to include('Additional commits have been omitted to prevent performance issues.')
+        end
+      end
+
+      context 'when user is authenticated' do
+        it 'shows the full count without an overflow message', :aggregate_failures do
+          show_request
+
+          expect(assigns(:commits_overflow)).to be(false)
+          expect(assigns(:commits_count_label)).to be_nil
+          expect(response.body).to include(assigns(:total_commit_count).to_s)
+          expect(response.body).not_to include('Additional commits have been omitted to prevent performance issues.')
+        end
+      end
     end
 
     context 'with limited number of Redis calls' do

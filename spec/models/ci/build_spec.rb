@@ -6460,6 +6460,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
+    context 'when build is part of a legacy parallel build with integer parallel options' do
+      let(:build) { create(:ci_build, name: 'build 1/2', pipeline: pipeline, options: { parallel: 2 }) }
+
+      it 'uses the group name for test suite name' do
+        expect(build.test_suite_name).to eq('build')
+      end
+    end
+
     context 'when build is part of matrix build' do
       let!(:matrix_build) { create(:ci_build, :matrix, pipeline: pipeline) }
 

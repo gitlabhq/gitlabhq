@@ -196,12 +196,6 @@ In addition to recording to the database, we also write these events to
 
 ## Event type definitions
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367847) in GitLab 15.4.
-
-{{< /history >}}
-
 All new audit events must have a type definition stored in `config/audit_events/types/` or `ee/config/audit_events/types/` that contains a single source of truth for every auditable event in GitLab.
 
 ### Add a new audit event type
@@ -227,7 +221,7 @@ To add a new audit event type:
 | `milestone` | yes | Milestone in which this type was added |
 | `saved_to_database` | yes | Indicate whether to persist events to database and JSON logs |
 | `streamed` | yes | Indicate that events should be streamed to external services (if configured) |
-| `scope` | yes | List of scopes that this audit event type is available for. Should be an Array containing one or more of `Project`, `User`, `Group` or `Instance` |
+| `scope` | yes | List of scopes that this audit event type is available for. Should be an Array containing one or more of `Project`, `User`, `Group`, or `Instance` |
 
 ### Generate documentation
 

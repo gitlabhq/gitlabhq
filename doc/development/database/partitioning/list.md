@@ -5,12 +5,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: List partition
 ---
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96815) in GitLab 15.4.
-
-{{< /history >}}
-
 ## Description
 
 Add the partitioning key column to the table you are partitioning.

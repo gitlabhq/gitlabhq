@@ -24,7 +24,15 @@ module Gitlab
           return user if user
         end
 
-        find_user_from_warden
+        # Only clear auth-failure context when warden session auth succeeds after
+        # a failed token probe. For genuine 401s (bad/expired token, no session)
+        # the context is preserved so the failure is logged. For successful
+        # token-based sessionless auth, validate_and_save_access_token! already
+        # calls clear_auth_failure_in_application_context on success, so no
+        # explicit reset is needed there.
+        warden_user = find_user_from_warden
+        clear_auth_failure_in_application_context(true) if warden_user
+        warden_user
       end
 
       def runner

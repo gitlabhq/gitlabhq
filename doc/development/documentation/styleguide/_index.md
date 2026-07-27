@@ -1559,10 +1559,10 @@ To emphasize an area in a screenshot, use an arrow.
   or concept in the image:
   - If the image is of the GitLab interface, append the GitLab version to the filename,
     based on this format: `image-name-vX_Y.png`. For example, for a screenshot taken
-    from the pipelines page of GitLab 11.1, a valid name is `pipelines-v11_1.png`.
+    from the pipelines page of GitLab 19.2, a valid name is `pipelines-v19_2.png`.
   - If you're adding an illustration that doesn't include parts of the user interface,
     add the release number corresponding to the release the image was added to.
-    For an MR added to 11.1's milestone, a valid name for an illustration is `devops-diagram-v11_1.png`.
+    For an MR added in the 19.2 milestone, a valid name for an illustration is `devops-diagram-v19_2.png`.
 - Place images in a separate directory named `img/` in the same directory where
   the `.md` document that you're working on is located.
   - Do not link to externally-hosted images. Download a copy and store it in the appropriate `img` directory within the docs directory.

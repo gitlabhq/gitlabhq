@@ -11,14 +11,23 @@ module RuboCop
           ', outside of any class or module definitions'
 
       DISALLOWED_METHOD =
-        'EE modules must be injected using `include_mod_with`, `extend_mod_with`, or `prepend_mod_with`'
+        'EE modules must be injected using `include_mod_with`, `extend_mod_with`, `prepend_mod_with`, ' \
+          '`include_mod`, `extend_mod`, or `prepend_mod`.'
 
       INVALID_ARGUMENT = 'extension modules to inject must be specified as a String'
 
       CHECK_LINE_METHODS =
+        Set.new(%i[
+          include_mod include_mod_with
+          extend_mod extend_mod_with
+          prepend_mod prepend_mod_with
+        ]).freeze
+
+      STRING_ARGUMENT_METHODS =
         Set.new(%i[include_mod_with extend_mod_with prepend_mod_with]).freeze
 
       DISALLOW_METHODS = Set.new(%i[include extend prepend]).freeze
+      RESTRICT_ON_SEND = (CHECK_LINE_METHODS + DISALLOW_METHODS).freeze
 
       COMMENT_OR_EMPTY_LINE = /^\s*(#.*|$)/
 
@@ -39,7 +48,7 @@ module RuboCop
           add_offense(node, message: DISALLOWED_METHOD, &corrector(node))
         else
           verify_line_number(node)
-          verify_argument_type(node)
+          verify_argument_type(node) if STRING_ARGUMENT_METHODS.include?(node.children[1])
         end
       end
 

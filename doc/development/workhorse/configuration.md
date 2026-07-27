@@ -206,7 +206,7 @@ Include the following options in the `[metadata]` section:
 
 | Setting                  | Type  | Default value     | Description                                                                                                                                      |
 | ------------------------ | ----- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `zip_reader_limit_bytes` | bytes | 104857600 (100 MB) | The optional number of bytes to limit the zip reader to. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439016) in GitLab 16.9. |
+| `zip_reader_limit_bytes` | bytes | 104857600 (100 MB) | The optional number of bytes to limit the zip reader to. |
 
 For example:
 

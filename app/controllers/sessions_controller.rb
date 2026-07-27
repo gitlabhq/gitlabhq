@@ -32,8 +32,6 @@ class SessionsController < Devise::SessionsController
     if: -> { action_name == 'create' && two_factor_enabled? }
   prepend_before_action :check_captcha, only: [:create]
   prepend_before_action :store_redirect_uri, only: [:new]
-  prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
-  prepend_before_action :store_login_challenge, only: [:new]
   prepend_before_action :ensure_password_authentication_enabled!,
     if: -> { action_name == 'create' && password_based_login? }
   before_action :auto_sign_in_with_provider, only: [:new]
@@ -61,6 +59,18 @@ class SessionsController < Devise::SessionsController
   # RequestForgeryProtection#verify_authenticity_token would fail because of
   # token mismatch.
   protect_from_forgery with: :exception, prepend: true, except: :destroy
+
+  # Runs before CSRF verification (protect_from_forgery). An already-signed-in user who
+  # navigates "back" to a cached 2FA page and resubmits would otherwise hit a stale-token
+  # error; redirecting them to their destination first avoids that. Safe to run before CSRF
+  # because this guard only redirects (it never authenticates, so it does not clear the CSRF
+  # token the way authenticate_with_two_factor does).
+  prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
+
+  # On the new action, runs before require_no_authentication_without_flash so
+  # session[:login_challenge] is populated before that already-authenticated redirect guard
+  # calls after_sign_in_path_for, which reads that key to redirect through the IAM service.
+  prepend_before_action :store_login_challenge, only: [:new]
 
   feature_category :system_access
   urgency :low

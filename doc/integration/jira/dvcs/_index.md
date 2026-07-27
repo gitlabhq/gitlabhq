@@ -24,7 +24,7 @@ Jira creates a webhook in the GitLab project to provide real-time updates.
 To configure this webhook, you must have the Maintainer or Owner role for the project.
 For more information, see [configuring webhook security](https://confluence.atlassian.com/adminjiraserver/configuring-webhook-security-1299913153.html).
 
-The Jira DVCS connector for Jira Cloud was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118126) in GitLab 16.0.
+The Jira DVCS connector for Jira Cloud was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118126).
 Use the [GitLab for Jira Cloud app](../connect-app.md) instead.
 For more information, see [install the GitLab for Jira Cloud app](../connect-app.md#install-the-gitlab-for-jira-cloud-app).
 

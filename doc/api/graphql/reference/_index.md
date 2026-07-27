@@ -6307,8 +6307,9 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutation-cdartifactsourcecreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-cdartifactsourcecreate-name"></a>`name` | [`String!`](#string) | Name of the artifact source. |
 | <a id="mutation-cdartifactsourcecreate-serviceid"></a>`serviceId` | [`CdServiceID!`](#cdserviceid) | Global ID of the service to create the artifact source for. |
-| <a id="mutation-cdartifactsourcecreate-sourceref"></a>`sourceRef` | [`String`](#string) | Reference of the artifact source. |
+| <a id="mutation-cdartifactsourcecreate-sourceref"></a>`sourceRef` | [`String!`](#string) | Reference of the artifact source. |
 
 Fields:
 
@@ -35419,6 +35420,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cdapplication-versionsets-search"></a>`search` | [`String`](#string) | Search version sets by name or description. |
+| <a id="cdapplication-versionsets-statuses"></a>`statuses` | [`[CdVersionSetStatus!]`](#cdversionsetstatus) | Filter releases by status. |
 
 ### `CdApplicationFlowDefinition`
 
@@ -35479,6 +35481,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="cdartifactsource-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the artifact source was created. |
 | <a id="cdartifactsource-id"></a>`id` | [`CdArtifactSourceID!`](#cdartifactsourceid) | Global ID of the artifact source. |
+| <a id="cdartifactsource-name"></a>`name` | [`String`](#string) | Name of the artifact source. |
 | <a id="cdartifactsource-service"></a>`service` | [`CdService`](#cdservice) | Service the artifact source belongs to. |
 | <a id="cdartifactsource-sourceref"></a>`sourceRef` | [`String`](#string) | Reference of the artifact source. |
 | <a id="cdartifactsource-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the artifact source was last updated. |
@@ -35679,6 +35682,7 @@ Fields:
 | <a id="cdversionset-entriesdigest"></a>`entriesDigest` | [`String`](#string) | Digest of the version set entries. |
 | <a id="cdversionset-id"></a>`id` | [`CdVersionSetID!`](#cdversionsetid) | Global ID of the version set. |
 | <a id="cdversionset-name"></a>`name` | [`String!`](#string) | Name of the version set. |
+| <a id="cdversionset-status"></a>`status` {{< icon name="warning-solid" >}} | [`CdVersionSetStatus`](#cdversionsetstatus) | Introduced in GitLab 19.3. Status: Experiment. High-level lifecycle status of the release, or null when the release is currently live and has not been superseded or rolled back. |
 | <a id="cdversionset-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the version set was last updated. |
 | <a id="cdversionset-versionsetentries"></a>`versionSetEntries` {{< icon name="warning-solid" >}} | [`CdVersionSetEntryConnection`](#cdversionsetentryconnection) | Introduced in GitLab 19.2. Status: Experiment. Entries of the version set. |
 
@@ -63745,9 +63749,9 @@ Possible visibility levels for AI catalog items.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="aicatalogitemvisibility-internal"></a>`INTERNAL` | Internal visibility. |
 | <a id="aicatalogitemvisibility-private"></a>`PRIVATE` | Private visibility. |
 | <a id="aicatalogitemvisibility-public"></a>`PUBLIC` | Public visibility. |
+| <a id="aicatalogitemvisibility-restricted"></a>`RESTRICTED` | Restricted visibility. |
 
 ### `AiCatalogItemsSort`
 
@@ -64583,6 +64587,16 @@ Observed health of a service in an environment.
 | <a id="cdservicehealth-failed"></a>`FAILED` | Service is failed. |
 | <a id="cdservicehealth-healthy"></a>`HEALTHY` | Service is healthy. |
 | <a id="cdservicehealth-unknown"></a>`UNKNOWN` | Service is unknown. |
+
+### `CdVersionSetStatus`
+
+High-level lifecycle status of a continuous deployment release (version set).
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cdversionsetstatus-deploying"></a>`DEPLOYING` | Release has a rollout currently in progress. |
+| <a id="cdversionsetstatus-rolled_back"></a>`ROLLED_BACK` | Release was redeployed to an environment after a newer release had already run there. |
+| <a id="cdversionsetstatus-superseded"></a>`SUPERSEDED` | Release has been replaced, in at least one environment, by a newer release. |
 
 ### `CiCatalogResourceProjectUsageSort`
 
@@ -73429,6 +73443,17 @@ Arguments:
 | <a id="bulktoolruleinput-toolid"></a>`toolId` | [`String!`](#string) | Tool name string identifying the tool to update. For example, "create_issue". |
 | <a id="bulktoolruleinput-webaccess"></a>`webAccess` | [`AiToolPermission`](#aitoolpermission) | Permission mode for web surface. Omitting the field sets it to null, clearing any existing value. |
 
+### `CdArtifactSourceInput`
+
+Attributes for a continuous deployment artifact source.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cdartifactsourceinput-name"></a>`name` | [`String!`](#string) | Name of the artifact source. |
+| <a id="cdartifactsourceinput-sourceref"></a>`sourceRef` | [`String!`](#string) | Reference of the artifact source. |
+
 ### `CdEnvironmentDriverBindingInput`
 
 Attributes for a continuous deployment environment driver binding.
@@ -73448,6 +73473,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="cdserviceinput-artifactsources"></a>`artifactSources` | [`[CdArtifactSourceInput!]`](#cdartifactsourceinput) | Artifact sources to create for the service, up to 1000. |
 | <a id="cdserviceinput-description"></a>`description` | [`String`](#string) | Description of the service. |
 | <a id="cdserviceinput-name"></a>`name` | [`String!`](#string) | Name of the service. |
 

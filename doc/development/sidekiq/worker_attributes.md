@@ -227,7 +227,7 @@ All Sidekiq workers must define a known [feature category](../feature_categoriza
 
 ## Job data consistency strategies
 
-In GitLab 13.11 and earlier, Sidekiq workers would always send database queries to the primary
+Previously, Sidekiq workers would always send database queries to the primary
 database node,
 both for reads and writes. This ensured that data integrity
 is both guaranteed and immediate, since in a single-node scenario it is impossible to encounter

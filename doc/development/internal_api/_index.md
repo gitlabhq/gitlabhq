@@ -466,12 +466,6 @@ Example response:
 
 ## GitLab agent for Kubernetes endpoints
 
-{{< history >}}
-
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432773) in GitLab 16.7.
-
-{{< /history >}}
-
 The following endpoints are used by the GitLab agent server for Kubernetes (`kas`)
 for various purposes.
 
@@ -995,7 +989,7 @@ This group SCIM API:
 - Is for system use for SCIM provider integration.
 - Implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 - Gets a list of SCIM provisioned users for the group.
-- Creates, deletes and updates SCIM provisioned users for the group.
+- Creates, deletes, and updates SCIM provisioned users for the group.
 
 The [instance SCIM API](#instance-scim-api) does the same for instances.
 

@@ -1450,7 +1450,8 @@ module Ci
     strong_memoize_attr :encoded_jwt
 
     def matrix_build?
-      options.dig(:parallel, :matrix).present?
+      # Jobs migrated from legacy data may store numeric `parallel` as a bare Integer.
+      options[:parallel].is_a?(Hash) && options.dig(:parallel, :matrix).present?
     end
 
     def stick_build_if_status_changed

@@ -311,7 +311,7 @@ During development (`RAILS_ENV=development`) or testing (`RAILS_ENV=test`) all f
 
 This process is meant to ensure consistent feature flag usage in the codebase. All feature flags **must**:
 
-- Be known. Only use feature flags that are explicitly defined (except for feature flags of the types `experiment`, `worker` and `undefined`).
+- Be known. Only use feature flags that are explicitly defined (except for feature flags of the types `experiment`, `worker`, and `undefined`).
 - Not be defined twice. They have to be defined either in FOSS or EE, but not both.
 - For feature flags that don't have a definition file, use a valid and consistent `type:` across all invocations.
 - Have an owner.
@@ -551,7 +551,7 @@ by `default_enabled:` in YAML definition.
 If feature flag does not have a YAML definition an error will be raised
 in development or test environment, while returning `false` on production.
 
-For feature flags that don't have a definition file (only allowed for the `experiment`, `worker` and `undefined` types),
+For feature flags that don't have a definition file (only allowed for the `experiment`, `worker`, and `undefined` types),
 you need to pass their `type:` when calling `Feature.enabled?` and `Feature.disabled?`:
 
 ```ruby
@@ -636,7 +636,7 @@ so checking for `gon.features.vim_bindings` would not work.
 See the [Vue guide](../fe_guide/vue.md#accessing-feature-flags) for details about
 how to access feature flags in a Vue component.
 
-For feature flags that don't have a definition file (only allowed for the `experiment`, `worker` and `undefined` types),
+For feature flags that don't have a definition file (only allowed for the `experiment`, `worker`, and `undefined` types),
 you need to pass their `type:` when calling `push_frontend_feature_flag`:
 
 ```ruby
@@ -648,7 +648,7 @@ end
 ### Feature actors
 
 **It is strongly advised to use actors with feature flags.** Actors provide a simple
-way to enable a feature flag only for a given project, group or user. This makes debugging
+way to enable a feature flag only for a given project, group, or user. This makes debugging
 easier, as you can filter logs and errors for example, based on actors. This also makes it possible
 to enable the feature on the `gitlab-org` or `gitlab-com` groups first, while the rest of
 the users aren't impacted.
@@ -740,12 +740,6 @@ Feature.enabled?(:feature_flag, :instance)
 ```
 
 #### Current request actor
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132078) in GitLab 16.5
-
-{{< /history >}}
 
 It is not recommended to use percentage of time rollout, as each call may return
 inconsistent results.

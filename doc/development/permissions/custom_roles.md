@@ -16,7 +16,7 @@ In this context, the terms "permission" and "ability" are often used interchange
 
 ## Custom roles vs default roles
 
-In GitLab 15.9 and earlier, GitLab only had [default roles](predefined_roles.md) as a permission system. In this system, there are a few predefined roles that are statically assigned to certain abilities. These default roles are not customizable by customers.
+Before custom roles, GitLab only had [default roles](predefined_roles.md) as a permission system. In this system, there are a few predefined roles that are statically assigned to certain abilities. These default roles are not customizable by customers.
 
 With custom roles, the customers can decide which abilities they want to assign to certain user groups. For example:
 

@@ -39,6 +39,49 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
       expect(request_authenticator.user([:api])).to be_blank
     end
 
+    context 'when a prior token failure recorded auth_fail context' do
+      around do |example|
+        Gitlab::ApplicationContext.with_context(
+          auth_fail: Gitlab::Auth::AuthFailure.new(
+            reason: 'insufficient_scope',
+            token_id: 'PersonalAccessToken/42',
+            requested_scopes: 'api',
+            token_type: 'PersonalAccessToken',
+            auth_header_type: 'private_token_header'
+          )
+        ) do
+          example.run
+        end
+      end
+
+      it 'clears auth_fail keys from the Labkit context when warden session auth succeeds', :aggregate_failures do
+        allow_any_instance_of(described_class).to receive(:find_user_from_warden).and_return(session_user)
+
+        request_authenticator.user([:api])
+
+        Gitlab::Auth::AuthFailure::LOG_KEYS.each_key do |key|
+          expect(Gitlab::ApplicationContext.current_context_attribute(key)).to be_nil
+        end
+      end
+
+      it 'preserves auth_fail keys in the Labkit context when warden session auth also fails' do
+        allow_any_instance_of(described_class).to receive(:find_user_from_warden).and_return(nil)
+
+        request_authenticator.user([:api])
+
+        expect(Gitlab::ApplicationContext.current_context_attribute(:auth_fail_reason)).to eq('insufficient_scope')
+      end
+
+      it 'preserves auth_fail keys when a later sessionless format succeeds, keeping the failed-probe audit trail' do
+        allow_any_instance_of(described_class)
+          .to receive(:find_sessionless_user).and_return(nil, sessionless_user)
+
+        request_authenticator.user([:api, :git])
+
+        expect(Gitlab::ApplicationContext.current_context_attribute(:auth_fail_reason)).to eq('insufficient_scope')
+      end
+    end
+
     it 'bubbles up exceptions' do
       allow_any_instance_of(described_class).to receive(:find_user_from_warden).and_raise(Gitlab::Auth::UnauthorizedError)
     end

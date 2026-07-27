@@ -4,6 +4,7 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  name: 'ConfidentialMergeRequestDropdown',
   components: {
     GlCollapsibleListbox,
   },

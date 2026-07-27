@@ -163,12 +163,6 @@ Things to note:
 
 ### `data-testid` vs `data-qa-selector`
 
-{{< history >}}
-
-- Introduced in GitLab 16.1
-
-{{< /history >}}
-
 Any existing `data-qa-selector` class should be considered deprecated
 and we should use the `data-testid` method of definition.
 

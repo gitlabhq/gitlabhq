@@ -16556,7 +16556,9 @@ CREATE TABLE cd_artifact_sources (
     organization_id bigint,
     source_ref text,
     source_config jsonb DEFAULT '{}'::jsonb NOT NULL,
+    name text,
     CONSTRAINT check_892918d4b4 CHECK ((source_ref IS NOT NULL)),
+    CONSTRAINT check_af610d5f06 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_cd_artifact_sources_source_config_is_hash CHECK ((jsonb_typeof(source_config) = 'object'::text)),
     CONSTRAINT check_cec135cb4a CHECK ((char_length(source_ref) <= 255)),
     CONSTRAINT check_f9ef894005 CHECK ((organization_id IS NOT NULL))
@@ -44588,6 +44590,8 @@ CREATE UNIQUE INDEX i_pkgs_rubygems_spec_files_on_obj_stor_key_and_project_id ON
 CREATE UNIQUE INDEX i_pm_licenses_on_spdx_identifier ON pm_licenses USING btree (spdx_identifier);
 
 CREATE UNIQUE INDEX i_pm_malware_advisories_xid_source ON pm_malware_advisories USING btree (advisory_xid, source_xid);
+
+CREATE INDEX i_pm_malware_affected_packages_on_purl_type_and_package_name ON pm_malware_affected_packages USING btree (purl_type, package_name);
 
 CREATE UNIQUE INDEX i_pm_malware_affected_packages_unique_for_upsert ON pm_malware_affected_packages USING btree (pm_malware_advisory_id, purl_type, package_name);
 

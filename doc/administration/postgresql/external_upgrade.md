@@ -43,3 +43,13 @@ This should be done for all databases on the upgraded PostgreSQL service/instanc
 
 When you plan your maintenance window, you should include the `ANALYZE` duration
 because this operation might significantly degrade GitLab performance.
+
+## Restart GitLab after a database upgrade
+
+You must restart GitLab (Sidekiq, Puma, PgBouncer, and Praefect,
+where applicable) after any PostgreSQL engine upgrade, minor or major,
+because a database service restart invalidates existing connections
+and these components might require a restart to reconnect successfully.
+
+When you plan your maintenance window, you should include time to restart
+GitLab immediately after the upgrade completes.

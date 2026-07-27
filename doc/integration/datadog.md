@@ -52,7 +52,7 @@ For more information, see the [Datadog CI Visibility documentation](https://docs
 This feature is based on [Webhooks](../user/project/integrations/webhooks.md),
 and only requires configuration in GitLab:
 
-1. Optional. Select **Enable Pipeline job logs collection** to enable logs collection for the output of jobs. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 15.3.)
+1. Optional. Select **Enable Pipeline job logs collection** to enable logs collection for the output of jobs.
 1. Optional. If you use more than one GitLab instance, provide a unique **Service** name
    to differentiate between your GitLab instances.
    <!-- vale gitlab_base.Spelling = NO -->

@@ -5,12 +5,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Int range partitioning
 ---
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132148) in GitLab 16.8.
-
-{{< /history >}}
-
 ## Description
 
 Int range partitioning is a technique for dividing a large table into smaller,

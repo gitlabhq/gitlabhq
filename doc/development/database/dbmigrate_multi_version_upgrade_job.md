@@ -5,12 +5,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: db:migrate:multi-version-upgrade job
 ---
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/epics/19) in GitLab 16.11.
-
-{{< /history >}}
-
 This job runs on the test stage of a merge request pipeline. It validates that migrations pass
 for multi-version upgrade from the latest [required upgrade stop](../../update/upgrade_paths.md)
 to the author's working branch. It achieves it by running `gitlab:db:configure` against PostgreSQL

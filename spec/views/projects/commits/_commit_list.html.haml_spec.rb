@@ -48,4 +48,24 @@ RSpec.describe 'projects/commits/_commit_list.html.haml', feature_category: :sou
       expect(rendered).to include('10 additional commits have been omitted')
     end
   end
+
+  context 'when @commits_overflow is true' do
+    before do
+      assign(:commits_overflow, true)
+      assign(:hidden_commit_count, 1)
+      assign(:total_commit_count, 101)
+      assign(:commits_count_label, "#{MergeRequestDiff::COMMITS_SAFE_SIZE}+")
+    end
+
+    it 'shows the count as 100+' do
+      render
+      expect(rendered).to include('100+')
+    end
+
+    it 'shows the generic overflow message without a specific number', :aggregate_failures do
+      render
+      expect(rendered).to include('Additional commits have been omitted to prevent performance issues.')
+      expect(rendered).not_to match(/\d+ additional commits have been omitted/)
+    end
+  end
 end

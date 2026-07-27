@@ -692,12 +692,6 @@ If you have to use `pipeline:skip-undercoverage` to bypass unrelated pipeline fa
 
 ### `pajamas_adoption` job
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141368) in GitLab 16.8.
-
-{{< /history >}}
-
 The `pajamas_adoption` job runs the [Pajamas Adoption Scanner](https://gitlab-org.gitlab.io/frontend/pajamas-adoption-scanner/) in merge requests to prevent regressions in the adoption of the [Pajamas Design System](https://design.gitlab.com/).
 
 The job fails if the scanner detects regressions caused by a merge request. If the regressions cannot be fixed in the merge request, add the `pipeline:skip-pajamas-adoption` label to the merge request, then retry the job.
@@ -808,7 +802,7 @@ Ruby version only:
 Our test suite runs against PostgreSQL 16 as GitLab.com runs on PostgreSQL 16 and
 [Omnibus defaults to PG14 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
 
-We run our test suite against PostgreSQL 16, 17 and 18 on nightly scheduled pipelines.
+We run our test suite against PostgreSQL 16, 17, and 18 on nightly scheduled pipelines.
 
 > [!note]
 > With the addition of PG17, we are close to the limit of nightly jobs, with 1946 out of 2000 jobs per pipeline.
@@ -822,7 +816,7 @@ We run our test suite against PostgreSQL 16, 17 and 18 on nightly scheduled pipe
 | `master` branch commits                                                                         | 17 (default version)            | 3.3 (default version) |
 | `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 17 (default version)            | 3.3 (default version) |
 | `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 17 (default version)            | 3.3                   |
-| `nightly` scheduled pipelines for the `master` branch                                           | 17 (default version), 16 and 18 | 3.3 (default version) |
+| `nightly` scheduled pipelines for the `master` branch                                           | 17 (default version), 16, and 18 | 3.3 (default version) |
 | `weekly` scheduled pipelines for the `master` branch                                            | 17 (default version)            | 3.3 (default version) |
 
 For the next Ruby versions we're testing against with, we run

@@ -853,12 +853,6 @@ Example response:
 
 ### Compute quota provisioning (deprecated)
 
-{{< history >}}
-
-- [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "compute minutes" in GitLab 16.1.
-
-{{< /history >}}
-
 The compute quota endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
 to apply additional packs of compute minutes, for personal namespaces or top-level groups in GitLab.com.
 

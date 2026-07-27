@@ -12,7 +12,7 @@ Value Stream Analytics (VSA).
 
 ## Current Status
 
-The aggregated backend is used by default since GitLab 15.0 on the group-level.
+The aggregated backend is used by default on the group-level.
 
 ## Motivation
 

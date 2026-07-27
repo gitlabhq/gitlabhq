@@ -108,12 +108,6 @@ SILENCE_DEPRECATIONS=1 bin/rspec spec/models/project_spec.rb
 
 ### Test order
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93137) in GitLab 15.4.
-
-{{< /history >}}
-
 All new spec files are run in [random order](https://gitlab.com/gitlab-org/gitlab/-/issues/337399)
 to surface flaky tests that are dependent on test order.
 

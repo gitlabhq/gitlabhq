@@ -8,6 +8,7 @@ import state from '../state';
 import Dropdown from './dropdown.vue';
 
 export default {
+  name: 'ProjectFormGroup',
   components: {
     GlLink,
     GlSprintf,

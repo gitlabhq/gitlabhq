@@ -3,8 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/confidential_merge_request/components/dropdown.vue',
-    'app/assets/javascripts/confidential_merge_request/components/project_form_group.vue',
     'app/assets/javascripts/contribution_events/components/contribution_event/contribution_event_base.vue',
     'app/assets/javascripts/contribution_events/components/contribution_events.vue',
     'app/assets/javascripts/contribution_events/components/resource_parent_link.vue',

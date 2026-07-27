@@ -225,6 +225,16 @@ adds those wrappers automatically.
       contradictory guidance.
     - Add a new subsection only when no existing subsection covers the
       baseline topic.
+    - Baseline rules must appear verbatim in your output — preserve their
+      exact wording and punctuation. You may re-wrap long lines (the check
+      compares whole rules with whitespace normalized), but every baseline
+      rule must appear exactly once. The sync tooling mechanically rejects
+      (and retries) any output that alters, duplicates, or omits a
+      baseline rule, so a paraphrased baseline can never be published.
+    - Once baseline rules are integrated, DO NOT relocate them on a later
+      run: keep them in the same subsection and position they occupy in
+      the prior distilled file. Moving a baseline section elsewhere in the
+      checklist is reordering churn under rule 18.
 16. **Reconcile against the SSOT — capture new, revise changed.** The
     current distilled file is the PRIOR version; the SSOT is the current
     truth. Do not simply re-emit the prior checklist. On every invocation,
@@ -257,10 +267,20 @@ adds those wrappers automatically.
        - GOOD (fold enforcement into the existing bullet):
          - "Place widget specs in `spec/frontend/widgets/` (enforced in CI
            by the `Widgets/SpecPlacement` ESLint rule)"
-    b) **Revise changed rules.** If the SSOT narrowed, broadened, or
-       redirected an existing rule, rewrite that item to match the current
-       SSOT. DO NOT keep the prior wording when it now conflicts with the
-       SSOT. Examples:
+    b) **Revise changed rules — only when the item's own SSOT guidance
+       changed.** If the SSOT narrowed, broadened, or redirected an existing
+       rule, rewrite that item to match the current SSOT. DO NOT keep the
+       prior wording when it now conflicts with the SSOT. This clause is a
+       license to revise ONLY when the rule's own governing SSOT text
+       changed such that the prior wording is now wrong, contradictory, or
+       so incomplete that following it would violate the SSOT's current
+       requirement (i.e., a concise-but-correct item is NOT incomplete in
+       this sense). It is NOT a license to enrich an already-correct item with
+       detail you happened to find in the full sources (that is churn — see
+       rule 18). "The full SSOT contains more detail than the item states"
+       is NOT, by itself, a changed rule: a concise item that correctly
+       captures the rule is complete even when the source elaborates.
+       Examples:
        - SSOT now mandates a generator over manual steps:
          - STALE: "Create the YAML definition manually in `config/foo/`"
          - CORRECT: "Run `bin/foo.rb <name>` to generate the YAML
@@ -372,16 +392,71 @@ adds those wrappers automatically.
     - DO NOT reword, reorder, split, or merge items that already
       accurately reflect the SSOT.
     - DO NOT expand an item with extra detail from the SSOT when the
-      existing wording is already a correct and sufficient rule.
+      existing wording is already a correct and sufficient rule. An item is
+      "sufficient" when it correctly captures the rule at a checkable level;
+      it does NOT need to restate every threshold, enumeration, class name,
+      or example the source provides. Finding such detail in the full
+      sources is NOT a reason to touch the item — the reconciliation pass
+      (rule 16) reads the full sources to catch genuinely NEW or genuinely
+      CHANGED rules, not to enrich already-correct ones.
+    - Specifically, DO NOT rewrite an already-accurate item just because the
+      full SSOT could support a more precise or more complete phrasing when
+      that precision was NOT itself added or changed by the SSOT this run.
+      Enriching a correct item with pre-existing source detail (a threshold
+      like "more than 1h", extra class-name mappings, additional examples)
+      is churn, not reconciliation, and is forbidden here — even though the
+      detail is grounded. Leave the item exactly as it was.
+
+      Worked examples of FORBIDDEN grounded enrichment (illustrative,
+      fictional). In each, the run was triggered by an UNRELATED source
+      change and the item's own governing text did NOT change this run:
+      - Enriching an item with a pre-existing threshold and an extra clause
+        the source already documented:
+        - Prior item: "After deploying a `Foo::Bar` change, notify the
+          release DRI in `#example-channel`."
+        - FORBIDDEN: "After deploying a `Foo::Bar` change (larger than 500
+          records on the staging clone), follow the steps to batch it and
+          notify the release DRI in `#example-channel`."
+        - CORRECT: leave the prior item byte-for-byte unchanged.
+      - Expanding a deliberate trailing "etc." with pre-existing enumerated
+        values:
+        - Prior item: "Register each handler with the correct adapter
+          (`AlphaAdapter` for `alpha`, `BetaAdapter` for `beta`, etc.)."
+        - FORBIDDEN: "… `BetaAdapter` for `beta`, `GammaAdapter` for `gamma`,
+          `DeltaAdapter` for `delta`, `EpsilonAdapter` for `epsilon`)."
+        - CORRECT: leave the prior item unchanged. A trailing "etc." is a
+          deliberate, sufficient summary — it is NOT an invitation to
+          enumerate every value the source lists.
     - DO NOT add items for SSOT content that the prior checklist already
       covers, or that rule 9 excludes (universal best practices).
+
+    **Mechanical per-item gate (apply to EVERY item you change or add).**
+    Determine what changed THIS run: the prior distilled file's frontmatter
+    records the `distilled_at_sha` it was generated from. Use your tools to
+    diff each SSOT source between that sha and the current checkout (for
+    example `git diff <distilled_at_sha>..HEAD -- <source_path>`, or a
+    targeted `grep` of the changed regions) to see exactly which source lines
+    were added or removed since the last distillation. Before you emit any
+    line that differs from the prior checklist, you MUST be able to point to
+    SPECIFIC source lines that changed this run AND that GOVERN THIS ITEM. If
+    the only justification you can give is "the full source contains this
+    detail" or "this makes the item more complete/precise" — WITHOUT a
+    this-run change to the lines governing that item — then the change is
+    FORBIDDEN: revert the item to its prior text verbatim. "Grounded in the
+    full source" is necessary but NOT sufficient; the governing lines must
+    have changed this run. If you cannot run the diff, or cannot tie a
+    proposed edit to a this-run source change, keep the prior line exactly.
+
     When in doubt whether a change is required by the SSOT or merely
     stylistic, leave the prior item untouched. A reviewer should be able to
     map every changed line in your output to one of: (a) a change in the
     SSOT, (b) a rule-2 removal, (c) the imperative rewrite, (d) a
     dedup/cross-reference consolidation (rule 11), (e) a precedence or
     exception merge (rules 12/14), or (f) baseline integration (rule 15) —
-    anything else is churn and makes the sync MRs impossible to review.
+    anything else is churn and makes the sync MRs impossible to review. In
+    particular, "(a) a change in the SSOT" means the source text governing
+    THAT item changed this run; it does NOT cover detail that was already in
+    the sources before this run and merely went unstated in a correct item.
 
 ## How to read inputs
 

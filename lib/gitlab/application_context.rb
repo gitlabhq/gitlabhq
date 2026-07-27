@@ -78,14 +78,10 @@ module Gitlab
       Attribute.new(:merge_action_status, String),
       Attribute.new(:bulk_import_entity_id, Integer),
       Attribute.new(:sidekiq_destination_shard_redis, String),
-      Attribute.new(:auth_fail_reason, String),
-      Attribute.new(:auth_fail_token_id, String),
-      Attribute.new(:auth_fail_requested_scopes, String),
+      Attribute.new(:auth_fail, ::Gitlab::Auth::AuthFailure),
       Attribute.new(:http_router_rule_action, String),
       Attribute.new(:http_router_rule_type, String),
       Attribute.new(:kubernetes_agent, ::Clusters::Agent),
-      Attribute.new(:auth_fail_token_type, String),
-      Attribute.new(:auth_fail_auth_header_type, String),
       Attribute.new(:mvcc_manifest, String),
       Attribute.new(:duo_workflow_id, String)
     ].freeze
@@ -159,14 +155,10 @@ module Gitlab
         assign_hash_if_value(hash, :merge_action_status)
         assign_hash_if_value(hash, :bulk_import_entity_id)
         assign_hash_if_value(hash, :sidekiq_destination_shard_redis)
-        assign_hash_if_value(hash, :auth_fail_reason)
-        assign_hash_if_value(hash, :auth_fail_token_id)
-        assign_hash_if_value(hash, :auth_fail_requested_scopes)
+        assign_auth_failure_fields(hash)
         assign_hash_if_value(hash, :http_router_rule_action)
         assign_hash_if_value(hash, :http_router_rule_type)
         assign_hash_if_value(hash, :bulk_import_entity_id)
-        assign_hash_if_value(hash, :auth_fail_token_type)
-        assign_hash_if_value(hash, :auth_fail_auth_header_type)
         assign_hash_if_value(hash, :mvcc_manifest)
         assign_hash_if_value(hash, :duo_workflow_id)
 
@@ -199,6 +191,26 @@ module Gitlab
     def set_attr_readers
       self.class.application_attributes.each do |attr|
         self.class.lazy_attr_reader attr.name, type: attr.type
+      end
+    end
+
+    # Expand the pushed AuthFailure struct into its individual log fields.
+    # The values are read once here, at push time, and stored as static
+    # strings (not lazy lambdas), so they survive CurrentAttributes.reset_all
+    # (e.g. ActionCable's executor.wrap) and still appear in the log entry.
+    # When auth later succeeds after a failed token probe,
+    # clear_auth_failure_in_application_context pushes nil values to remove
+    # these keys, so they do not leak into 200-response log entries.
+    # The set_values guard keeps these keys absent when no auth failure was
+    # recorded.
+    def assign_auth_failure_fields(hash)
+      return unless set_values.include?(:auth_fail)
+
+      failure = auth_fail
+      return unless failure
+
+      Gitlab::Auth::AuthFailure::LOG_KEYS.each do |context_key, member|
+        hash[context_key] = failure[member]
       end
     end
 

@@ -172,6 +172,24 @@ Additionally, to log all of the debug statements from `litellm`, add the followi
 -e AIGW_LOGGING__ENABLE_LITELLM_LOGGING=true
 ```
 
+To have GitLab Duo Workflow Service logs as structured JSON
+for log aggregation, set the following environment variable:
+
+```shell
+-e DUO_WORKFLOW_LOGGING__JSON_FORMAT=true
+```
+
+When `DUO_WORKFLOW_LOGGING__JSON_FORMAT` is not set, the format
+is derived from `DUO_WORKFLOW_SERVICE_ENVIRONMENT`.
+When the environment is not set to `development`,
+the GitLab Duo Workflow Service uses JSON.
+Otherwise, the service uses plain text.
+
+The `DUO_WORKFLOW_LOGGING` variables configure the GitLab Duo Workflow Service only
+and are independent of the AI Gateway `AIGW_LOGGING` variables.
+If you set one of these variables, it does not affect the other.
+Set both variables if you want the same behavior across both services.
+
 If you do not specify a filename, logs are streamed to the output and can also be managed using Docker logs.
 For more information, see the [Docker Logs documentation](https://docs.docker.com/reference/cli/docker/container/logs/).
 

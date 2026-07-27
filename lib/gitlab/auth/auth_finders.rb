@@ -316,32 +316,32 @@ module Gitlab
       end
 
       def save_auth_failure_in_application_context(access_token, cause, requested_scopes)
+        # Push so that (a) the user is set and (b) set_values includes :auth_fail,
+        # which gates the auth_fail entries in assign_auth_failure_fields.
+        # to_lazy_hash expands the AuthFailure struct into static string log
+        # fields at push time (not lazy lambdas), so they survive
+        # CurrentAttributes.reset_all (e.g. ActionCable executor.wrap).
         Gitlab::ApplicationContext.push(
           user: access_token.user,
-          auth_fail_reason: cause.to_s,
-          auth_fail_token_id: "#{access_token.class}/#{access_token.id}",
-          auth_fail_requested_scopes: requested_scopes.join(' '),
-          auth_fail_token_type: request_token_type,
-          auth_fail_auth_header_type: current_auth_header_type
+          auth_fail: Gitlab::Auth::AuthFailure.new(
+            reason: cause.to_s,
+            token_id: "#{access_token.class}/#{access_token.id}",
+            requested_scopes: Array(requested_scopes).join(' '),
+            token_type: request_token_type,
+            auth_header_type: current_auth_header_type
+          )
         )
       end
 
       def clear_auth_failure_in_application_context(save_auth_context)
         return unless save_auth_context
 
-        # Use Labkit::Context.push directly to avoid triggering `to_lazy_hash`
-        # inside Gitlab::ApplicationContext.push. That path calls `include_client?`,
-        # which evaluates the existing client_id lambda and transitively the user
-        # lazy-attribute reader -- memoizing nil because @current_user hasn't been
-        # assigned yet (we are still inside its computation). Pushing at the Labkit
-        # level bypasses that evaluation entirely.
-        Labkit::Context.push(
-          auth_fail_reason: nil,
-          auth_fail_token_id: nil,
-          auth_fail_requested_scopes: nil,
-          auth_fail_token_type: nil,
-          auth_fail_auth_header_type: nil
-        )
+        # Push nil values directly to Labkit to remove auth_fail keys from the
+        # context, preventing them from appearing in 200-response log entries.
+        # We bypass ApplicationContext.push to avoid triggering lazy-attribute
+        # evaluation (e.g. include_client?) while authentication is still in
+        # progress, which would prematurely memoize user-related fields as nil.
+        Labkit::Context.push(Gitlab::Auth::AuthFailure::LOG_KEYS.keys.index_with(nil))
       end
 
       def find_user_from_job_bearer_token

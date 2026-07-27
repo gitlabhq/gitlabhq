@@ -493,8 +493,15 @@ module Gitlab
           result = workflow.distill(name, config)
 
           if result&.include?('## Checklist')
-            updated = result
-            break
+            baseline_missing = baseline_drift(config, result)
+
+            if baseline_missing.empty?
+              updated = result
+              break
+            end
+
+            warn_baseline_drift(name, baseline_missing, attempt, log_warn)
+            next
           end
 
           msg = "  WARNING: Duo returned invalid content for #{name} (attempt #{attempt + 1}/#{DISTILL_MAX_RETRIES})"
@@ -512,6 +519,72 @@ module Gitlab
         end
 
         Diff.strip_preamble(updated)
+      end
+
+      # Mechanical guard for distillation prompt rule 15: baseline rules must
+      # be included verbatim. Prompt-only enforcement proved insufficient: a
+      # re-distillation relocated and corrupted a baseline section (duplicated
+      # sentence fragment, broken sub-bullet) despite the verbatim
+      # instruction, so drift here fails the attempt and triggers a retry
+      # instead of publishing corrupted baseline rules.
+      #
+      # The comparison operates on normalized logical units (one unit per
+      # bullet or paragraph, hard-wrapped continuation lines joined, inner
+      # whitespace collapsed), NOT on physical lines: the agent routinely
+      # re-flows long lines, and a pure re-wrap of identical text is not
+      # corruption. A line-level check rejected such reflows
+      # deterministically, burning every retry on byte-identical text.
+      # Heading lines and blank lines are unit boundaries and exempt, because
+      # the agent may adapt heading levels and placement when integrating
+      # baseline rules into an existing subsection.
+      #
+      # Returns the baseline units that are altered, missing, or duplicated
+      # in `content` (empty when clean, when the principle has no baseline,
+      # or when the baseline file is unreadable). Duplication matters because
+      # the observed corruption emitted a baseline fragment twice: every
+      # baseline rule must appear exactly once.
+      def baseline_drift(config, content)
+        baseline_path = config['baseline']
+        return [] unless baseline_path
+
+        baseline = manifest.read_repo_file(baseline_path)
+        return [] unless baseline
+
+        occurrences = logical_units(content).tally
+        logical_units(baseline).reject { |unit| occurrences[unit] == 1 }
+      end
+
+      # Splits markdown into logical units: each list item or paragraph is
+      # one unit, with hard-wrapped continuation lines joined and inner
+      # whitespace collapsed. Heading lines and blank lines terminate the
+      # current unit and are excluded from the result.
+      def logical_units(text)
+        units = []
+        current = nil
+
+        text.each_line do |raw|
+          line = raw.strip
+
+          if line.empty? || line.start_with?('#')
+            units << current if current
+            current = nil
+          elsif current.nil? || line.match?(/\A(?:[-*+]|\d+[.)])\s/)
+            units << current if current
+            current = line
+          else
+            current = "#{current} #{line}"
+          end
+        end
+
+        units << current if current
+        units.map { |unit| unit.gsub(/\s+/, ' ') }
+      end
+
+      def warn_baseline_drift(name, drifted, attempt, log_warn)
+        msg = "  WARNING: Duo altered, omitted, or duplicated #{drifted.size} baseline rule(s) " \
+          "for #{name} (attempt #{attempt + 1}/#{DISTILL_MAX_RETRIES})"
+        log_warn.call(Rainbow(msg).yellow)
+        drifted.first(3).each { |unit| log_warn.call(Rainbow("    drifted: #{unit}").faint) }
       end
 
       # Returns the distilled file content stripped of its YAML frontmatter,

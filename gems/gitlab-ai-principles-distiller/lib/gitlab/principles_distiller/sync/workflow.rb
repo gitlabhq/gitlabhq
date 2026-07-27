@@ -105,6 +105,22 @@ module Gitlab
             rule to every item. Do not simply re-emit the prior checklist. Keep
             all other lines untouched (system prompt rule 18).
 
+            CRITICAL diff discipline (system prompt rule 18): ADD/REVISE above
+            does NOT license enriching an already-accurate item with detail
+            that was already in the sources before this run. You may only
+            REVISE an item when the specific source lines GOVERNING THAT ITEM
+            changed THIS run. To find what changed this run, diff each SSOT
+            source between the prior `distilled_at_sha` (recorded in the
+            frontmatter of the current distilled file you read) and HEAD — for
+            example `git diff <distilled_at_sha>..HEAD -- <source_path>`. If an
+            item is already a correct, checkable rule, leave it byte-for-byte
+            unchanged — even if the full source could support a more precise
+            phrasing, an extra threshold, more enumerated values, or expanding
+            a trailing "etc.". "Grounded in the full source" is NOT sufficient
+            justification; the governing lines must have changed this run. When
+            you cannot tie an edit to a this-run source change, keep the prior
+            line verbatim.
+
             Current distilled file (the PRIOR version — reconcile it against the
             SSOT, do not assume it is still complete or correct):
             - #{distilled_path}
@@ -112,7 +128,11 @@ module Gitlab
             SSOT source files (the documentation to distill from):
             #{sources}
 
-            Baseline (include verbatim, exempt from rephrasing):
+            Baseline (include EVERY rule line byte-for-byte, in the same
+            place it occupies in the prior distilled file — relocating it is
+            churn under rule 18. The sync mechanically rejects and retries
+            any output that alters, re-wraps, duplicates, or omits a
+            baseline line — system prompt rule 15):
             #{baseline_line}
 
             Output ONLY the checklist content. No preamble, no thinking, no

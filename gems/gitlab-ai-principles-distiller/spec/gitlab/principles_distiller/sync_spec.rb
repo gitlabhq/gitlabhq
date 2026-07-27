@@ -265,6 +265,225 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         expect(distill).to be_nil
       end
     end
+
+    # Mechanical guard for prompt rule 15: baseline rules must appear
+    # verbatim, exactly once. A re-distillation once relocated AND corrupted
+    # a baseline section (duplicated sentence fragment, broken sub-bullet)
+    # despite the verbatim instruction; prompt-only enforcement is not
+    # enough, so baseline drift must consume a retry instead of publishing.
+    # The check compares normalized logical units (bullets/paragraphs with
+    # wrapping and whitespace collapsed), not physical lines: the agent
+    # routinely re-flows hard-wrapped lines, and identical text with
+    # different wrapping is not corruption.
+    context 'when the principle has a baseline' do
+      let(:config) do
+        {
+          'sources' => [{ 'path' => 'doc/qa.md' }],
+          'baseline' => '.ai/principles/baselines/qa.md'
+        }
+      end
+
+      let(:baseline_content) do
+        <<~BASELINE
+          ### Process Reminders
+
+          - Ask: "Have you triggered the QA pipeline?"
+          - Flag all modified fixtures as needing a reviewer, checking
+            each one against the base branch first
+
+          ### Verify Before Flagging
+
+          When a diff modifies an existing structure, verify the current
+          state from an authoritative source before flagging a discrepancy.
+        BASELINE
+      end
+
+      let(:verbatim_content) do
+        <<~CONTENT
+          # QA Principles
+
+          ## Checklist
+
+          ### Process Reminders
+
+          - Do thing
+          - Ask: "Have you triggered the QA pipeline?"
+          - Flag all modified fixtures as needing a reviewer, checking
+            each one against the base branch first
+
+          ### Verify Before Flagging
+
+          When a diff modifies an existing structure, verify the current
+          state from an authoritative source before flagging a discrepancy.
+        CONTENT
+      end
+
+      before do
+        FileUtils.mkdir_p(File.join(tmpdir, '.ai/principles/baselines'))
+        File.write(File.join(tmpdir, '.ai/principles/baselines/qa.md'), baseline_content)
+      end
+
+      context 'when the output includes every baseline line verbatim' do
+        before do
+          allow(sync.workflow).to receive(:distill).and_return(verbatim_content)
+        end
+
+        it 'accepts the content on the first attempt' do
+          expect(distill).to include('Have you triggered the QA pipeline?')
+          expect(sync.workflow).to have_received(:distill).once
+        end
+      end
+
+      context 'when the output integrates baseline rules under a different heading' do
+        # Rule 15 allows adapting placement/headings when integrating into
+        # an existing same-topic subsection; only the rule lines are locked.
+        let(:relocated_content) do
+          verbatim_content.sub('### Process Reminders', '### Review Process')
+        end
+
+        before do
+          allow(sync.workflow).to receive(:distill).and_return(relocated_content)
+        end
+
+        it 'accepts the content (headings are exempt from the verbatim check)' do
+          expect(distill).to include('### Review Process')
+          expect(sync.workflow).to have_received(:distill).once
+        end
+      end
+
+      context 'when the output rewords a baseline rule' do
+        let(:corrupted_content) do
+          verbatim_content.sub('Have you triggered the QA pipeline?', 'Did you run QA?')
+        end
+
+        before do
+          allow(sync.workflow).to receive(:distill).and_return(corrupted_content, verbatim_content)
+        end
+
+        it 'treats the drift as failure, logs it, and retries', :aggregate_failures do
+          expect { distill }
+            .to output(/altered, omitted, or duplicated 1 baseline rule/).to_stderr
+          expect(sync.workflow).to have_received(:distill).twice
+        end
+      end
+
+      context 'when the output omits a baseline rule' do
+        let(:corrupted_content) do
+          verbatim_content.sub("- Ask: \"Have you triggered the QA pipeline?\"\n", '')
+        end
+
+        before do
+          allow(sync.workflow).to receive(:distill).and_return(corrupted_content, verbatim_content)
+        end
+
+        it 'treats the omission as failure and retries' do
+          expect { distill }
+            .to output(/altered, omitted, or duplicated 1 baseline rule/).to_stderr
+          expect(sync.workflow).to have_received(:distill).twice
+        end
+      end
+
+      context 'when the output re-wraps a multi-line baseline rule' do
+        # Identical text with different wrapping is not corruption. A
+        # line-level check rejected this deterministically, burning every
+        # retry on byte-identical text (observed with the hard-wrapped
+        # database-fundamentals baseline).
+        let(:rewrapped_content) do
+          verbatim_content.sub(
+            "- Flag all modified fixtures as needing a reviewer, checking\n  " \
+              "each one against the base branch first",
+            '- Flag all modified fixtures as needing a reviewer, checking each one against the base branch first'
+          )
+        end
+
+        before do
+          allow(sync.workflow).to receive(:distill).and_return(rewrapped_content)
+        end
+
+        it 'accepts the content on the first attempt' do
+          expect(distill).to include('Flag all modified fixtures')
+          expect(sync.workflow).to have_received(:distill).once
+        end
+      end
+
+      context 'when the output re-flows a baseline paragraph onto one line' do
+        let(:rewrapped_content) do
+          verbatim_content.sub(
+            "When a diff modifies an existing structure, verify the current\n" \
+              "state from an authoritative source before flagging a discrepancy.",
+            'When a diff modifies an existing structure, verify the current ' \
+              'state from an authoritative source before flagging a discrepancy.'
+          )
+        end
+
+        before do
+          allow(sync.workflow).to receive(:distill).and_return(rewrapped_content)
+        end
+
+        it 'accepts the content on the first attempt' do
+          expect(distill).to include('verify the current')
+          expect(sync.workflow).to have_received(:distill).once
+        end
+      end
+
+      context 'when the output duplicates a baseline sentence fragment' do
+        # The observed corruption emitted a baseline sentence fragment twice
+        # right after its own bullet; the fragment joins the bullet's logical
+        # unit and corrupts it, so the unit no longer matches the baseline.
+        let(:corrupted_content) do
+          verbatim_content.sub(
+            "  each one against the base branch first\n",
+            "  each one against the base branch first\n  " \
+              "each one against the base branch first\n"
+          )
+        end
+
+        before do
+          allow(sync.workflow).to receive(:distill).and_return(corrupted_content, verbatim_content)
+        end
+
+        it 'treats the duplication as failure and retries' do
+          expect { distill }
+            .to output(/altered, omitted, or duplicated 1 baseline rule/).to_stderr
+          expect(sync.workflow).to have_received(:distill).twice
+        end
+      end
+
+      context 'when the output duplicates an entire baseline rule' do
+        # Presence alone is not enough: each baseline rule must appear
+        # exactly once.
+        let(:corrupted_content) do
+          "#{verbatim_content}\n- Ask: \"Have you triggered the QA pipeline?\"\n"
+        end
+
+        before do
+          allow(sync.workflow).to receive(:distill).and_return(corrupted_content, verbatim_content)
+        end
+
+        it 'treats the duplication as failure and retries' do
+          expect { distill }
+            .to output(/altered, omitted, or duplicated 1 baseline rule/).to_stderr
+          expect(sync.workflow).to have_received(:distill).twice
+        end
+      end
+
+      context 'when baseline drift persists on every attempt' do
+        let(:corrupted_content) do
+          verbatim_content.sub('Have you triggered the QA pipeline?', 'Did you run QA?')
+        end
+
+        before do
+          allow(sync.workflow).to receive(:distill).and_return(corrupted_content)
+        end
+
+        it 'returns nil after DISTILL_MAX_RETRIES attempts', :aggregate_failures do
+          expect { distill }.to output(/Duo failed after #{described_class::DISTILL_MAX_RETRIES} attempts/o).to_stderr
+          expect(distill).to be_nil
+          expect(sync.workflow).to have_received(:distill)
+            .exactly(described_class::DISTILL_MAX_RETRIES).times
+        end
+      end
+    end
   end
 
   describe 'MAX_CONCURRENT_DISTILLATIONS' do

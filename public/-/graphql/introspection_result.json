@@ -16422,8 +16422,8 @@
               "deprecationReason": null
             },
             {
-              "name": "INTERNAL",
-              "description": "Internal visibility.",
+              "name": "RESTRICTED",
+              "description": "Restricted visibility.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -55939,6 +55939,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "statuses",
+                  "description": "Filter releases by status.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "CdVersionSetStatus",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -57420,6 +57440,18 @@
               "deprecationReason": null
             },
             {
+              "name": "name",
+              "description": "Name of the artifact source.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "service",
               "description": "Service the artifact source belongs to.",
               "args": [],
@@ -57649,12 +57681,32 @@
               "deprecationReason": null
             },
             {
+              "name": "name",
+              "description": "Name of the artifact source.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "sourceRef",
               "description": "Reference of the artifact source.",
               "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               },
               "defaultValue": null,
               "isDeprecated": false,
@@ -57769,6 +57821,49 @@
           "description": "A `CdArtifactSourceID` is a global ID. It is encoded as a string.\n\nAn example `CdArtifactSourceID` is: `\"gid://gitlab/Cd::ArtifactSource/1\"`.",
           "fields": null,
           "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "CdArtifactSourceInput",
+          "description": "Attributes for a continuous deployment artifact source.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "name",
+              "description": "Name of the artifact source.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sourceRef",
+              "description": "Reference of the artifact source.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
@@ -61947,6 +62042,26 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "artifactSources",
+              "description": "Artifact sources to create for the service, up to 1000.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "CdArtifactSourceInput",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "interfaces": null,
@@ -62567,6 +62682,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
             },
             {
+              "name": "status",
+              "description": "High-level lifecycle status of the release, or null when the release is currently live and has not been superseded or rolled back. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "CdVersionSetStatus",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "updatedAt",
               "description": "Timestamp of when the version set was last updated.",
               "args": [],
@@ -63178,6 +63305,35 @@
           "inputFields": null,
           "interfaces": null,
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "CdVersionSetStatus",
+          "description": "High-level lifecycle status of a continuous deployment release (version set).",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "DEPLOYING",
+              "description": "Release has a rollout currently in progress.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SUPERSEDED",
+              "description": "Release has been replaced, in at least one environment, by a newer release.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ROLLED_BACK",
+              "description": "Release was redeployed to an environment after a newer release had already run there.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

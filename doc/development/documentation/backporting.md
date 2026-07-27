@@ -139,5 +139,5 @@ To view versions that are not available on `docs.gitlab.com`:
 
 - View the [documentation archives](https://archives.docs.gitlab.com).
 - Go to the GitLab repository and select the version-specific branch. For example,
-  the [13.2 branch](https://gitlab.com/gitlab-org/gitlab/-/tree/13-2-stable-ee/doc) has the
-  documentation for GitLab 13.2.
+  the [19.2 branch](https://gitlab.com/gitlab-org/gitlab/-/tree/19-2-stable-ee/doc) has the
+  documentation for GitLab 19.2.

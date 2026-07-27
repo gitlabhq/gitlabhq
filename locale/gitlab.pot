@@ -3687,9 +3687,6 @@ msgstr ""
 msgid "AICatalog|can't be changed because it is released"
 msgstr ""
 
-msgid "AICatalog|can't be made internal because this item is enabled outside the top-level group hierarchy"
-msgstr ""
-
 msgid "AICatalog|can't be made private because it is enabled in a project or group"
 msgstr ""
 
@@ -3697,6 +3694,9 @@ msgid "AICatalog|can't be made private because it is used by at least one flow"
 msgstr ""
 
 msgid "AICatalog|can't be made private because this item is enabled outside its owning project"
+msgstr ""
+
+msgid "AICatalog|can't be made restricted because this item is enabled outside the top-level group hierarchy"
 msgstr ""
 
 msgid "AICatalog|cannot be enabled because your top-level group settings block enabling items outside of its hierarchy"
@@ -19361,6 +19361,9 @@ msgid "Compare with previous version"
 msgstr ""
 
 msgid "CompareRevisions|%{source_branch} and %{target_branch} are the same."
+msgstr ""
+
+msgid "CompareRevisions|Additional commits have been omitted to prevent performance issues."
 msgstr ""
 
 msgid "CompareRevisions|An error occurred while retrieving target projects."

@@ -26,7 +26,7 @@ Error obtaining access token. Cannot access https://gitlab.example.com from Jira
 
 ## Session token bug in Jira
 
-When you use GitLab 15.0 and later with Jira Server, you might encounter a
+When you use GitLab with Jira Server, you might encounter a
 [session token bug in Jira](https://jira.atlassian.com/browse/JSWSERVER-21389).
 This bug affects Jira Server 8.20.8, 8.22.3, 8.22.4, 9.4.6, and 9.4.14.
 
