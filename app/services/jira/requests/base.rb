@@ -123,7 +123,10 @@ module Jira
         return if error_message.length > JIRA_ERROR_JSON_SIZE_LIMIT
 
         begin
-          messages = Gitlab::Json.safe_parse(error_message)['errorMessages']&.to_sentence
+          parsed_json = Gitlab::Json::SafeParser.parse(error_message)
+          return unless parsed_json
+
+          messages = parsed_json['errorMessages']&.to_sentence
           messages = Rails::Html::FullSanitizer.new.sanitize(messages).presence
           return unless messages
 

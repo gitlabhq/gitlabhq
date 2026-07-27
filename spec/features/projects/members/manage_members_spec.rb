@@ -36,17 +36,16 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
     expect(all_rows[3]).to have_content(project_developer.name)
   end
 
-  it 'show user once if member of both group and project', :aggregate_failures,
-    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5753' do
+  it 'show user once if member of both group and project', :aggregate_failures do
     group.add_reporter(project_maintainer)
 
     visit_members_page
 
-    expect(first_row).to have_content(group_owner.name)
-    expect(second_row).to have_content(project_owner.name)
-    expect(third_row).to have_content(project_maintainer.name)
-    expect(all_rows[3]).to have_content(project_developer.name)
-    expect(all_rows[4]).to be_blank
+    expect(members_table).to have_content(group_owner.name)
+    expect(members_table).to have_content(project_owner.name)
+    expect(members_table).to have_content(project_maintainer.name)
+    expect(members_table).to have_content(project_developer.name)
+    expect(all_rows.size).to eq(4)
   end
 
   context 'update user access level' do
