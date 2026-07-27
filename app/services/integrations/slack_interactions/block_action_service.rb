@@ -15,7 +15,7 @@ module Integrations
         actions.each do |action|
           action_id = action[:action_id]
 
-          action_handler_class = ALLOWED_UPDATES_HANDLERS[action_id]
+          action_handler_class = handlers[action_id]
           action_handler_class.new(params, action).execute
         end
       end
@@ -23,10 +23,16 @@ module Integrations
       private
 
       def actions
-        params[:actions].select { |action| ALLOWED_UPDATES_HANDLERS[action[:action_id]] }
+        params[:actions].select { |action| handlers[action[:action_id]] }
+      end
+
+      def handlers
+        ALLOWED_UPDATES_HANDLERS
       end
 
       attr_accessor :params
     end
   end
 end
+
+Integrations::SlackInteractions::BlockActionService.prepend_mod

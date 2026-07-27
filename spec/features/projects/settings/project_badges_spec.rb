@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project Badges', feature_category: :groups_and_projects,
-  quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16787' do
+RSpec.describe 'Project Badges', feature_category: :groups_and_projects do
   include WaitForRequests
 
   let(:user) { create(:user) }
@@ -36,27 +35,35 @@ RSpec.describe 'Project Badges', feature_category: :groups_and_projects,
     it 'user can preview a badge' do
       click_button 'Add new badge'
       within_testid('crud-form') do
-        fill_in 'badge-link-url', with: badge_link_url
-        fill_in 'badge-image-url', with: badge_image_url
-        within '#badge-preview' do
-          expect(find('a')[:href]).to eq badge_link_url
-          expect(find('a img')[:src]).to eq badge_image_url
-        end
+        fill_in 'Name', with: 'test badge'
+        fill_in 'Link', with: badge_link_url
+        fill_in 'Badge image URL', with: badge_image_url
+
+        badge_link = find_by_testid('badge-image-link')
+        expect(badge_link[:href]).to eq badge_link_url
+        expect(badge_link.find('img')[:src]).to eq badge_image_url
       end
     end
 
     it do
       click_button 'Add new badge'
-      within_testid('badge-settings') do
-        fill_in 'badge-link-url', with: badge_link_url
-        fill_in 'badge-image-url', with: badge_image_url
+      within_testid('crud-form') do
+        fill_in 'Name', with: 'test badge'
+        fill_in 'Link', with: badge_link_url
+        fill_in 'Badge image URL', with: badge_image_url
 
         click_button 'Add badge'
         wait_for_requests
+      end
 
-        within_testid('crud-body') do
-          expect(find('a')[:href]).to eq badge_link_url
-          expect(find('a img')[:src]).to eq badge_image_url
+      within_testid('badge-settings') do
+        rows = all('tbody tr')
+        expect(rows.length).to eq 3
+
+        within rows.last do
+          badge_link = find_by_testid('badge-image-link')
+          expect(badge_link[:href]).to eq badge_link_url
+          expect(badge_link.find('img')[:src]).to eq badge_image_url
         end
       end
     end
@@ -72,8 +79,8 @@ RSpec.describe 'Project Badges', feature_category: :groups_and_projects,
       end
 
       page.within '.gl-modal' do
-        expect(find('#badge-link-url').value).to eq project_badge.link_url
-        expect(find('#badge-image-url').value).to eq project_badge.image_url
+        expect(find_field('Link').value).to eq project_badge.link_url
+        expect(find_field('Badge image URL').value).to eq project_badge.image_url
       end
     end
 
@@ -86,8 +93,9 @@ RSpec.describe 'Project Badges', feature_category: :groups_and_projects,
       end
 
       page.within '.gl-modal' do
-        fill_in 'badge-link-url', with: badge_link_url
-        fill_in 'badge-image-url', with: badge_image_url
+        fill_in 'Name', with: 'test badge'
+        fill_in 'Link', with: badge_link_url
+        fill_in 'Badge image URL', with: badge_image_url
 
         click_button 'Save changes'
         wait_for_requests

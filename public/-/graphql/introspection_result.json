@@ -11168,6 +11168,43 @@
               "deprecationReason": null
             },
             {
+              "name": "effectiveVersion",
+              "description": "Version of the item in effect for the given namespace, falling back to the latest version when none is in effect. In a project namespace, resolves to the project configuration pinned version when enabled, otherwise the latest version. In a group namespace, resolves to the group configuration pinned version when enabled, otherwise the latest version. In the global namespace, always resolves to the latest version. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "projectId",
+                  "description": "Global ID of the project to return the effective version for.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ProjectID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "groupId",
+                  "description": "Global ID of the group to return the effective version for.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "GroupID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "AiCatalogItemVersion",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "foundational",
               "description": "Whether the item is a foundational item.",
               "args": [],
@@ -12906,6 +12943,43 @@
               "deprecationReason": null
             },
             {
+              "name": "effectiveVersion",
+              "description": "Version of the item in effect for the given namespace, falling back to the latest version when none is in effect. In a project namespace, resolves to the project configuration pinned version when enabled, otherwise the latest version. In a group namespace, resolves to the group configuration pinned version when enabled, otherwise the latest version. In the global namespace, always resolves to the latest version. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "projectId",
+                  "description": "Global ID of the project to return the effective version for.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ProjectID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "groupId",
+                  "description": "Global ID of the group to return the effective version for.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "GroupID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "AiCatalogItemVersion",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "foundational",
               "description": "Whether the item is a foundational item.",
               "args": [],
@@ -14029,6 +14103,43 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "effectiveVersion",
+              "description": "Version of the item in effect for the given namespace, falling back to the latest version when none is in effect. In a project namespace, resolves to the project configuration pinned version when enabled, otherwise the latest version. In a group namespace, resolves to the group configuration pinned version when enabled, otherwise the latest version. In the global namespace, always resolves to the latest version. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "projectId",
+                  "description": "Global ID of the project to return the effective version for.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ProjectID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "groupId",
+                  "description": "Global ID of the group to return the effective version for.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "GroupID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "AiCatalogItemVersion",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "foundational",
@@ -17441,6 +17552,43 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "effectiveVersion",
+              "description": "Version of the item in effect for the given namespace, falling back to the latest version when none is in effect. In a project namespace, resolves to the project configuration pinned version when enabled, otherwise the latest version. In a group namespace, resolves to the group configuration pinned version when enabled, otherwise the latest version. In the global namespace, always resolves to the latest version. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "projectId",
+                  "description": "Global ID of the project to return the effective version for.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ProjectID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "groupId",
+                  "description": "Global ID of the group to return the effective version for.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "GroupID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "AiCatalogItemVersion",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "foundational",
@@ -26162,6 +26310,12 @@
               "description": "Merge commit message was generated for a merge request.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "AI_DUO_MESSAGING_FEEDBACK_SUBMITTED",
+              "description": "Feedback was submitted on a Duo agent response in a messaging surface.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -26254,6 +26408,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Use `chat.requestDuoChatResponseEventCount` instead. Deprecated in GitLab 18.7."
+            },
+            {
+              "name": "duoMessaging",
+              "description": "Duo Messaging metrics for the user.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "duoMessagingUserMetrics",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "duoWorkflow",
@@ -27060,6 +27226,30 @@
             {
               "name": "GENERATE_MERGE_COMMIT_MESSAGE_ASC",
               "description": "Generate Merge Commit Message event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DUO_MESSAGING_TOTAL_COUNT_DESC",
+              "description": "Duo Messaging total event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DUO_MESSAGING_TOTAL_COUNT_ASC",
+              "description": "Duo Messaging total event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "AI_DUO_MESSAGING_FEEDBACK_SUBMITTED_DESC",
+              "description": "Ai Duo Messaging Feedback Submitted event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "AI_DUO_MESSAGING_FEEDBACK_SUBMITTED_ASC",
+              "description": "Ai Duo Messaging Feedback Submitted event count in ascending order.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -443774,6 +443964,53 @@
             {
               "name": "requestDuoChatResponseEventCount",
               "description": "Total count of `request_duo_chat_response` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "duoMessagingUserMetrics",
+          "description": "Duo Messaging user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.",
+          "fields": [
+            {
+              "name": "aiDuoMessagingFeedbackSubmittedEventCount",
+              "description": "Total count of `ai_duo_messaging_feedback_submitted` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "lastDuoActivityOn",
+              "description": "Date of the last Duo Messaging activity for the user.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Date",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalEventCount",
+              "description": "Total count of all Duo Messaging events for the user.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

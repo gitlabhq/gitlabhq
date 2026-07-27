@@ -30575,6 +30575,18 @@ msgstr ""
 msgid "DuoSlack|Failed to start the Duo Developer workflow. Try again."
 msgstr ""
 
+msgid "DuoSlack|Helpful"
+msgstr ""
+
+msgid "DuoSlack|Mark this response as helpful"
+msgstr ""
+
+msgid "DuoSlack|Mark this response as not helpful"
+msgstr ""
+
+msgid "DuoSlack|Not helpful"
+msgstr ""
+
 msgid "DuoSlack|On it! Working on your request."
 msgstr ""
 

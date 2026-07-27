@@ -32666,6 +32666,26 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="aicatalogagent-configurationforproject-projectid"></a>`projectId` | [`ProjectID!`](#projectid) | Global ID of the project to return the item configuration of. |
 
+##### `AiCatalogAgent.effectiveVersion`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Version of the item in effect for the given namespace, falling back to the latest version when none is in effect. In a project namespace, resolves to the project configuration pinned version when enabled, otherwise the latest version. In a group namespace, resolves to the group configuration pinned version when enabled, otherwise the latest version. In the global namespace, always resolves to the latest version.
+
+Returns [`AiCatalogItemVersion`](#aicatalogitemversion).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogagent-effectiveversion-groupid"></a>`groupId` | [`GroupID`](#groupid) | Global ID of the group to return the effective version for. |
+| <a id="aicatalogagent-effectiveversion-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project to return the effective version for. |
+
 ##### `AiCatalogAgent.latestVersion`
 
 Latest version of the item.
@@ -32784,6 +32804,26 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aicatalogflow-configurationforproject-projectid"></a>`projectId` | [`ProjectID!`](#projectid) | Global ID of the project to return the item configuration of. |
+
+##### `AiCatalogFlow.effectiveVersion`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Version of the item in effect for the given namespace, falling back to the latest version when none is in effect. In a project namespace, resolves to the project configuration pinned version when enabled, otherwise the latest version. In a group namespace, resolves to the group configuration pinned version when enabled, otherwise the latest version. In the global namespace, always resolves to the latest version.
+
+Returns [`AiCatalogItemVersion`](#aicatalogitemversion).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogflow-effectiveversion-groupid"></a>`groupId` | [`GroupID`](#groupid) | Global ID of the group to return the effective version for. |
+| <a id="aicatalogflow-effectiveversion-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project to return the effective version for. |
 
 ##### `AiCatalogFlow.latestVersion`
 
@@ -32978,6 +33018,26 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aicatalogthirdpartyflow-configurationforproject-projectid"></a>`projectId` | [`ProjectID!`](#projectid) | Global ID of the project to return the item configuration of. |
+
+##### `AiCatalogThirdPartyFlow.effectiveVersion`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Version of the item in effect for the given namespace, falling back to the latest version when none is in effect. In a project namespace, resolves to the project configuration pinned version when enabled, otherwise the latest version. In a group namespace, resolves to the group configuration pinned version when enabled, otherwise the latest version. In the global namespace, always resolves to the latest version.
+
+Returns [`AiCatalogItemVersion`](#aicatalogitemversion).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogthirdpartyflow-effectiveversion-groupid"></a>`groupId` | [`GroupID`](#groupid) | Global ID of the group to return the effective version for. |
+| <a id="aicatalogthirdpartyflow-effectiveversion-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project to return the effective version for. |
 
 ##### `AiCatalogThirdPartyFlow.latestVersion`
 
@@ -33423,6 +33483,7 @@ Fields:
 | <a id="aiusermetrics-codesuggestions"></a>`codeSuggestions` | [`codeSuggestionsUserMetrics`](#codesuggestionsusermetrics) | Code Suggestions metrics for the user. |
 | <a id="aiusermetrics-codesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Deprecated in GitLab 18.7. Use `codeSuggestions.codeSuggestionAcceptedInIdeEventCount` instead. |
 | <a id="aiusermetrics-duochatinteractionscount"></a>`duoChatInteractionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Deprecated in GitLab 18.7. Use `chat.requestDuoChatResponseEventCount` instead. |
+| <a id="aiusermetrics-duomessaging"></a>`duoMessaging` | [`duoMessagingUserMetrics`](#duomessagingusermetrics) | Duo Messaging metrics for the user. |
 | <a id="aiusermetrics-duoworkflow"></a>`duoWorkflow` | [`duoWorkflowUserMetrics`](#duoworkflowusermetrics) | Duo Workflow metrics for the user. |
 | <a id="aiusermetrics-fixpipeline"></a>`fixPipeline` | [`fixPipelineUserMetrics`](#fixpipelineusermetrics) | Fix Pipeline metrics for the user. |
 | <a id="aiusermetrics-generatemergecommitmessage"></a>`generateMergeCommitMessage` | [`generateMergeCommitMessageUserMetrics`](#generatemergecommitmessageusermetrics) | Generate Merge Commit Message metrics for the user. |
@@ -63386,6 +63447,18 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="duochatmetrics-requestduochatresponseeventcount"></a>`requestDuoChatResponseEventCount` | [`Int`](#int) | Total count of `request_duo_chat_response` event. |
 
+### `duoMessagingUserMetrics`
+
+Duo Messaging user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duomessagingusermetrics-aiduomessagingfeedbacksubmittedeventcount"></a>`aiDuoMessagingFeedbackSubmittedEventCount` | [`Int`](#int) | Total count of `ai_duo_messaging_feedback_submitted` event. |
+| <a id="duomessagingusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Duo Messaging activity for the user. |
+| <a id="duomessagingusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Duo Messaging events for the user. |
+
 ### `duoWorkflowUserMetrics`
 
 Duo Workflow user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
@@ -63910,6 +63983,7 @@ Type of AI usage event.
 | <a id="aiusageeventtype-agent_platform_session_resumed"></a>`AGENT_PLATFORM_SESSION_RESUMED` | Agent platform session was resumed. |
 | <a id="aiusageeventtype-agent_platform_session_started"></a>`AGENT_PLATFORM_SESSION_STARTED` | Agent platform session was started. |
 | <a id="aiusageeventtype-agent_platform_session_stopped"></a>`AGENT_PLATFORM_SESSION_STOPPED` | Agent platform session was stopped. |
+| <a id="aiusageeventtype-ai_duo_messaging_feedback_submitted"></a>`AI_DUO_MESSAGING_FEEDBACK_SUBMITTED` | Feedback was submitted on a Duo agent response in a messaging surface. |
 | <a id="aiusageeventtype-click_duo_agentic_subscription_expired_learn_more"></a>`CLICK_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_LEARN_MORE` | User clicked learn more on Duo Agent Platform subscription expired state. |
 | <a id="aiusageeventtype-click_duo_agentic_subscription_expired_upgrade"></a>`CLICK_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_UPGRADE` | User clicked upgrade on Duo Agent Platform subscription expired state. |
 | <a id="aiusageeventtype-code_suggestions_requested"></a>`CODE_SUGGESTIONS_REQUESTED` | Code Suggestion was requested. Old data only. |
@@ -63962,6 +64036,8 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-agent_platform_total_count_desc"></a>`AGENT_PLATFORM_TOTAL_COUNT_DESC` | Agent Platform total event count in descending order. |
 | <a id="aiusermetricssort-ai_catalog_total_count_asc"></a>`AI_CATALOG_TOTAL_COUNT_ASC` | Ai Catalog total event count in ascending order. |
 | <a id="aiusermetricssort-ai_catalog_total_count_desc"></a>`AI_CATALOG_TOTAL_COUNT_DESC` | Ai Catalog total event count in descending order. |
+| <a id="aiusermetricssort-ai_duo_messaging_feedback_submitted_asc"></a>`AI_DUO_MESSAGING_FEEDBACK_SUBMITTED_ASC` | Ai Duo Messaging Feedback Submitted event count in ascending order. |
+| <a id="aiusermetricssort-ai_duo_messaging_feedback_submitted_desc"></a>`AI_DUO_MESSAGING_FEEDBACK_SUBMITTED_DESC` | Ai Duo Messaging Feedback Submitted event count in descending order. |
 | <a id="aiusermetricssort-chat_total_count_asc"></a>`CHAT_TOTAL_COUNT_ASC` | Chat total event count in ascending order. |
 | <a id="aiusermetricssort-chat_total_count_desc"></a>`CHAT_TOTAL_COUNT_DESC` | Chat total event count in descending order. |
 | <a id="aiusermetricssort-click_duo_agentic_subscription_expired_learn_more_asc"></a>`CLICK_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_LEARN_MORE_ASC` | Click Duo Agentic Subscription Expired Learn More event count in ascending order. |
@@ -63982,6 +64058,8 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-code_suggestion_rejected_in_ide_desc"></a>`CODE_SUGGESTION_REJECTED_IN_IDE_DESC` | Code Suggestion Rejected In Ide event count in descending order. |
 | <a id="aiusermetricssort-code_suggestion_shown_in_ide_asc"></a>`CODE_SUGGESTION_SHOWN_IN_IDE_ASC` | Code Suggestion Shown In Ide event count in ascending order. |
 | <a id="aiusermetricssort-code_suggestion_shown_in_ide_desc"></a>`CODE_SUGGESTION_SHOWN_IN_IDE_DESC` | Code Suggestion Shown In Ide event count in descending order. |
+| <a id="aiusermetricssort-duo_messaging_total_count_asc"></a>`DUO_MESSAGING_TOTAL_COUNT_ASC` | Duo Messaging total event count in ascending order. |
+| <a id="aiusermetricssort-duo_messaging_total_count_desc"></a>`DUO_MESSAGING_TOTAL_COUNT_DESC` | Duo Messaging total event count in descending order. |
 | <a id="aiusermetricssort-duo_workflow_total_count_asc"></a>`DUO_WORKFLOW_TOTAL_COUNT_ASC` | Duo Workflow total event count in ascending order. |
 | <a id="aiusermetricssort-duo_workflow_total_count_desc"></a>`DUO_WORKFLOW_TOTAL_COUNT_DESC` | Duo Workflow total event count in descending order. |
 | <a id="aiusermetricssort-duo_workflow_workload_completed_asc"></a>`DUO_WORKFLOW_WORKLOAD_COMPLETED_ASC` | Duo Workflow Workload Completed event count in ascending order. |
@@ -71444,6 +71522,26 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aicatalogitem-configurationforproject-projectid"></a>`projectId` | [`ProjectID!`](#projectid) | Global ID of the project to return the item configuration of. |
+
+###### `AiCatalogItem.effectiveVersion`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Version of the item in effect for the given namespace, falling back to the latest version when none is in effect. In a project namespace, resolves to the project configuration pinned version when enabled, otherwise the latest version. In a group namespace, resolves to the group configuration pinned version when enabled, otherwise the latest version. In the global namespace, always resolves to the latest version.
+
+Returns [`AiCatalogItemVersion`](#aicatalogitemversion).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitem-effectiveversion-groupid"></a>`groupId` | [`GroupID`](#groupid) | Global ID of the group to return the effective version for. |
+| <a id="aicatalogitem-effectiveversion-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project to return the effective version for. |
 
 ###### `AiCatalogItem.latestVersion`
 
