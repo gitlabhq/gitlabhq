@@ -40,7 +40,7 @@ you to use.
    - **Name**: This can be anything. Consider something like `<Organization>'s GitLab`
      or `<Your Name>'s GitLab` or something else descriptive.
    - **Application description**: Optional. Fill this in if you wish.
-   - **Callback URL**: (Required in GitLab versions 8.15 and greater)
+   - **Callback URL**: (Required)
      The URL to your GitLab installation, such as
      `https://gitlab.example.com/users/auth`. Leaving this
      field empty results in an `Invalid redirect_uri` message.

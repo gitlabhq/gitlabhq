@@ -266,7 +266,7 @@ module BulkImports
           },
           documents: {
             pipeline: BulkImports::Projects::Pipelines::DocumentsPipeline,
-            minimum_source_version: '16.11.0',
+            minimum_source_version: '19.3.0',
             stage: 2
           }
        end
@@ -278,8 +278,8 @@ end
 We specified:
 
 - `stage: 2`, so project and repository stages must complete first before our pipeline is run in stage 2.
-- `minimum_source_version: '16.11.0'`. Because we introduced `documents` relation for exports in this milestone, it's not available in previous GitLab versions. Therefore
-  so this pipeline only runs if source version is 16.11 or later.
+- `minimum_source_version: '19.3.0'`. Because we introduced `documents` relation for exports in this milestone, it's not available in previous GitLab versions. Therefore
+  so this pipeline only runs if source version is 19.3 or later.
 
 > [!note]
 > If a relation is deprecated and need only to run the pipeline up to a certain version, we can specify `maximum_source_version` attribute.

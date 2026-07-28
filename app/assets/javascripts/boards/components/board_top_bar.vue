@@ -103,7 +103,7 @@ export default {
             class="gl-flex-grow"
             @switchBoard="$emit('switchBoard', $event)"
             @updateBoard="$emit('updateBoard', $event)"
-            @showBoardModal="setCurrentForm"
+            @show-board-modal="setCurrentForm"
           />
           <div class="gl-flex gl-items-center gl-gap-2 @md/panel:!gl-hidden">
             <board-options
@@ -111,7 +111,7 @@ export default {
               :is-swimlanes-on="isSwimlanesOn"
               @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
             />
-            <config-toggle @showBoardModal="setCurrentForm" />
+            <config-toggle @show-board-modal="setCurrentForm" />
           </div>
         </div>
 
@@ -137,7 +137,7 @@ export default {
           :is-swimlanes-on="isSwimlanesOn"
           @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
         />
-        <config-toggle @showBoardModal="setCurrentForm" />
+        <config-toggle @show-board-modal="setCurrentForm" />
 
         <toggle-focus />
       </div>

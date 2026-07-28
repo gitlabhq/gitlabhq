@@ -126,8 +126,6 @@ columns:
   type: Nullable(Int64)
 - name: user_id
   type: Nullable(Int64)
-- name: execution_config_id
-  type: Nullable(Int64)
 - name: upstream_pipeline_partition_id
   type: Nullable(Int64)
 - name: scoped_user_id

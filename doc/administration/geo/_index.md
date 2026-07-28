@@ -21,7 +21,7 @@ a warm-standby as part of a disaster recovery strategy. Geo is not an out of the
 > supported and [documented](#upgrading-geo), but you should ensure that you're
 > using the right version of the documentation for your installation.
 
-To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/_index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/_index.md).
+To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/_index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v19.2.0-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v19.2.0-ee/doc/administration/geo/_index.md).
 
 Fetching large repositories can take a long time for teams and runners located far from a single GitLab instance.
 

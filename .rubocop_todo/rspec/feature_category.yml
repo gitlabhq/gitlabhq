@@ -2765,7 +2765,6 @@ RSpec/FeatureCategory:
     - 'spec/uploaders/namespace_file_uploader_spec.rb'
     - 'spec/uploaders/object_storage/cdn/google_ip_cache_spec.rb'
     - 'spec/uploaders/object_storage_spec.rb'
-    - 'spec/uploaders/personal_file_uploader_spec.rb'
     - 'spec/uploaders/records_uploads_spec.rb'
     - 'spec/uploaders/uploader_helper_spec.rb'
     - 'spec/uploaders/workers/object_storage/migrate_uploads_worker_spec.rb'

@@ -140,6 +140,7 @@ Grants the ability to create, read, and update continuous deployment environment
 | ------ | ------ | ---- | ---- |
 | Create | Instance | Mutation | `CdEnvironmentCreate` |
 | Read | Instance | Type | `CdEnvironment` |
+| Read | Instance | Type | `CdEnvironmentApplication` |
 | Read | Instance | Type | `CdEnvironmentDriverBinding` |
 | Update | Instance | Mutation | `CdEnvironmentDriverBindingCreate` |
 | Update | Instance | Mutation | `CdEnvironmentUpdate` |

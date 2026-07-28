@@ -8,11 +8,14 @@ import { getCookie, isMetaClick, parseBoolean } from '~/lib/utils/common_utils';
 import { scrollTo, scrollToElement } from '~/lib/utils/scroll_utils';
 import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/constants';
 import { getScrollingElement } from '~/lib/utils/panels';
-import { parseUrlPathname, visitUrl } from '~/lib/utils/url_utility';
+import { parseUrlPathname, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { pinia } from '~/pinia/instance';
 import { useMergeRequestVersions } from '~/merge_request/stores/merge_request_versions';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { findApplicablePosition } from '~/rapid_diffs/utils/discussion_position';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useBatchComments } from '~/batch_comments/store';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import {
   removeLinkedFileUrlParams,
   withLinkedFileUrlParams,
@@ -242,6 +245,7 @@ export default class MergeRequestTabs {
     this.switchViewType = this.switchViewType.bind(this);
     this.tabShown = this.tabShown.bind(this);
     this.clickTab = this.clickTab.bind(this);
+    this.navigateToNote = this.navigateToNote.bind(this);
 
     if (stubLocation) {
       location = stubLocation;
@@ -720,9 +724,11 @@ export default class MergeRequestTabs {
     }
 
     const { diffRefs } = useMergeRequestVersions(pinia);
-    const canSpaNavigate = this.rapidDiffsApp
-      ? diffRefs && findApplicablePosition(discussion, diffRefs)
-      : discussion.active;
+    const canSpaNavigate =
+      discussion.isDraft ||
+      (this.rapidDiffsApp
+        ? diffRefs && findApplicablePosition(discussion, diffRefs)
+        : discussion.active);
 
     if (!canSpaNavigate) {
       this.#visitDiffNote(discussion);
@@ -730,6 +736,47 @@ export default class MergeRequestTabs {
     }
 
     await this.#spaNavigateToDiffNote(discussion, position);
+  }
+
+  async navigateToNote(note) {
+    const discussion = note.discussion_id && useNotes(pinia).getDiscussion(note.discussion_id);
+    const isDiffNote = Boolean(note.position || discussion?.diff_discussion);
+
+    if (!isDiffNote) {
+      useBatchComments(pinia).scrollToDraft(note);
+      return;
+    }
+
+    if (note.position && !this.#isOnLatestDiff(note)) {
+      this.#visitVersionedDiffNote(note);
+      return;
+    }
+
+    if (!this.createRapidDiffsApp) {
+      const legacyDiffs = useLegacyDiffs(pinia);
+      if (legacyDiffs.viewDiffsFileByFile) await legacyDiffs.goToFile({ path: note.file_path });
+      useBatchComments(pinia).scrollToDraft(note);
+      return;
+    }
+
+    await this.navigateToDiffNote(
+      discussion?.diff_discussion ? discussion : { isDraft: true, position: note.position },
+    );
+  }
+
+  #isOnLatestDiff(note) {
+    return note.position?.head_sha === useNotes(pinia).getNoteableData.diff_head_sha;
+  }
+
+  #visitVersionedDiffNote(note) {
+    const diffsPath = this.mergeRequestTabs
+      ?.querySelector("a[data-action='diffs']")
+      ?.getAttribute('href');
+    if (!diffsPath) return;
+
+    const url = new URL(setUrlParams({ commit_id: note.position.head_sha }, { url: diffsPath }));
+    url.hash = `draft_${note.id}`;
+    visitUrl(url.toString());
   }
 
   async #spaNavigateToDiffNote(discussion, position) {

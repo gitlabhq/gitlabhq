@@ -87,7 +87,7 @@ const initMrStickyHeader = (store) => {
   }
 };
 
-const initReviewDrawer = () => {
+const initReviewDrawer = (navigateToNote) => {
   // Review drawer has to be located outside the MR sticky/non-sticky header
   // Otherwise it will disappear when header switches between sticky/non-sticky components
   const el = document.querySelector('#js-review-drawer');
@@ -100,11 +100,12 @@ const initReviewDrawer = () => {
     apolloProvider,
     provide: {
       newCommentTemplatePaths: JSON.parse(el.dataset.newCommentTemplatePaths),
-      diffsPath: el.dataset.diffsPath,
       canSummarize: parseBoolean(el.dataset.canSummarize),
     },
     render(h) {
-      return h(ReviewDrawer);
+      return h(ReviewDrawer, {
+        on: { 'draft-click': navigateToNote },
+      });
     },
   });
 };
@@ -135,7 +136,7 @@ const initStackedDropdown = () => {
 };
 
 export function initMrPage(createRapidDiffsApp) {
-  initMrNotes(createRapidDiffsApp);
+  const mergeRequest = initMrNotes(createRapidDiffsApp);
   initShow();
   initMrMoreDropdown();
   startCodeReviewMessaging({ signalBus: diffsEventHub });
@@ -175,7 +176,7 @@ export function initMrPage(createRapidDiffsApp) {
       ? useMergeRequestDiscussions(pinia)
       : useMrNotes(pinia);
     initMrStickyHeader(stickyHeaderStore);
-    initReviewDrawer();
+    initReviewDrawer(mergeRequest.tabs.navigateToNote);
     initStackedDropdown();
   });
 }

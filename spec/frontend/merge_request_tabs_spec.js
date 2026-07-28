@@ -14,6 +14,10 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/constants';
 import { useMergeRequestVersions } from '~/merge_request/stores/merge_request_versions';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
+import { useBatchComments } from '~/batch_comments/store';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import InternalEvents from '~/tracking/internal_events';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
@@ -964,6 +968,104 @@ describe('MergeRequestTabs', () => {
         jest.spyOn(store, 'setLinkedFileData');
         await navigate();
         expect(store.setLinkedFileData).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('drafts always navigate through SPA', () => {
+      it('scrolls even when the app is loaded and the version does not match', async () => {
+        testContext.class.rapidDiffsApp = { scrollToDiffNote: jest.fn() };
+        useMergeRequestVersions().$patch({
+          sourceVersions: [{ selected: true, base_sha: 'x', head_sha: 'y' }],
+          targetVersions: [{ selected: true, start_sha: 'z' }],
+        });
+        jest.spyOn(testContext.class, 'tabShown').mockResolvedValue();
+        const draft = { isDraft: true, position: discussion.original_position };
+
+        await testContext.class.navigateToDiffNote(draft);
+
+        expect(visitUrl).not.toHaveBeenCalled();
+        expect(testContext.class.rapidDiffsApp.scrollToDiffNote).toHaveBeenCalledWith(draft);
+      });
+    });
+  });
+
+  describe('navigateToNote', () => {
+    beforeEach(() => {
+      setHTMLFixture(htmlMergeRequestsWithTaskList);
+      testContext.class = new MergeRequestTabs({ stubLocation });
+      testContext.class.createRapidDiffsApp = jest.fn();
+      useLegacyDiffs();
+      useNotes().noteableData.diff_head_sha = 'current-sha';
+      jest.spyOn(testContext.class, 'navigateToDiffNote').mockResolvedValue();
+      jest.spyOn(useBatchComments(), 'scrollToDraft').mockImplementation();
+      jest.spyOn(useLegacyDiffs(), 'goToFile').mockResolvedValue();
+    });
+
+    it('scrolls to a regular note on the Overview tab', async () => {
+      const note = { id: 1 };
+
+      await testContext.class.navigateToNote(note);
+
+      expect(useBatchComments().scrollToDraft).toHaveBeenCalledWith(note);
+      expect(testContext.class.navigateToDiffNote).not.toHaveBeenCalled();
+    });
+
+    it('navigates a new diff draft on the latest diff as an in-app diff note', async () => {
+      const position = { head_sha: 'current-sha', old_path: 'a', new_path: 'a' };
+      const note = { id: 1, position };
+
+      await testContext.class.navigateToNote(note);
+
+      expect(testContext.class.navigateToDiffNote).toHaveBeenCalledWith({
+        isDraft: true,
+        position,
+      });
+      expect(useBatchComments().scrollToDraft).not.toHaveBeenCalled();
+    });
+
+    it('navigates to the parent discussion for a reply to a diff discussion', async () => {
+      const discussion = { id: 'abc', diff_discussion: true };
+      useDiscussions().discussions = [discussion];
+      const note = { id: 1, discussion_id: 'abc' };
+
+      await testContext.class.navigateToNote(note);
+
+      expect(testContext.class.navigateToDiffNote).toHaveBeenCalledWith(discussion);
+    });
+
+    it('opens the diff of the original version for a draft on an older diff', async () => {
+      const note = { id: 7, position: { head_sha: 'old-sha' } };
+
+      await testContext.class.navigateToNote(note);
+
+      expect(testContext.class.navigateToDiffNote).not.toHaveBeenCalled();
+      expect(visitUrl).toHaveBeenCalledWith(expect.stringContaining('commit_id=old-sha'));
+      expect(visitUrl).toHaveBeenCalledWith(expect.stringContaining('#draft_7'));
+    });
+
+    describe('legacy diffs', () => {
+      beforeEach(() => {
+        testContext.class.createRapidDiffsApp = null;
+      });
+
+      it('scrolls to the draft without opening a file', async () => {
+        const note = { id: 1, position: { head_sha: 'current-sha' } };
+
+        await testContext.class.navigateToNote(note);
+
+        expect(useLegacyDiffs().goToFile).not.toHaveBeenCalled();
+        expect(useBatchComments().scrollToDraft).toHaveBeenCalledWith(note);
+        expect(testContext.class.navigateToDiffNote).not.toHaveBeenCalled();
+      });
+
+      it('opens the file first in file-by-file mode', async () => {
+        useLegacyDiffs().viewDiffsFileByFile = true;
+        const note = { id: 1, file_path: 'foo', position: { head_sha: 'current-sha' } };
+
+        await testContext.class.navigateToNote(note);
+
+        expect(useLegacyDiffs().goToFile).toHaveBeenCalledWith({ path: 'foo' });
+        expect(useBatchComments().scrollToDraft).toHaveBeenCalledWith(note);
       });
     });
   });

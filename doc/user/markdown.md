@@ -2098,7 +2098,6 @@ The syntax is `%{PLACEHOLDER}`.
 | `%{project_path}`         | `gitlab-org/gitlab` | Path of a project including the parent groups |
 | `%{project_name}`         | `gitlab`            | Name of a project |
 | `%{project_id}`           | `278964`            | Database ID associated with a project |
-| `%{merge_request_iid}`    | `57`                | Project-level IID (internal ID) used in the merge request URL |
 | `%{project_namespace}`    | `gitlab-org`        | Project namespace of a project |
 | `%{project_title}`        | `GitLab`            | Title of a project |
 | `%{group_name}`           | `gitlab-org`        | Group of a project |
@@ -2106,10 +2105,7 @@ The syntax is `%{PLACEHOLDER}`.
 | `%{current_ref}`          | `feature-branch`    | Current ref (branch, tag, or commit SHA) being viewed |
 | `%{commit_sha}`           | `ad10e011ce65492322037633ebc054efde37b143` | ID of the most recent commit to the default branch of a project's repository |
 | `%{latest_tag}`           | `v17.10.7-ee`       | Latest tag added to the project's repository |
-
-In a merge request description, the `%{merge_request_iid}` placeholder is available after
-the merge request is created. You can use it in a link, such as
-`[this merge request](https://%{gitlab_server}/%{project_path}/-/merge_requests/%{merge_request_iid})`.
+| `%{merge_request_iid}`    | `57`                | Project-level IID of a merge request URL. Available only after the merge request is created. |
 
 ## Escape characters
 

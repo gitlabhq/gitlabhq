@@ -50,7 +50,7 @@ export class RapidDiffsFacade {
       .then(() => {
         if (useDiffsView(pinia).singleFileMode) {
           useDiffsView(pinia).resolveInitialFileIndex({
-            linkedFileData: this.appData.linkedFileData,
+            linkedFileData: useDiffsList(pinia).linkedFileData,
           });
 
           if (this.#lazy) {

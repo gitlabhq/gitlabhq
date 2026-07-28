@@ -62,19 +62,6 @@ RETURN NEW;
 END
 $$;
 
-CREATE FUNCTION assign_p_ci_builds_execution_configs_id_value() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF NEW."id" IS NOT NULL THEN
-  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
-END IF;
-NEW."id" := nextval('p_ci_builds_execution_configs_id_seq'::regclass);
-RETURN NEW;
-
-END
-$$;
-
 CREATE FUNCTION assign_p_ci_builds_id_value() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -6349,7 +6336,6 @@ CREATE TABLE p_ci_builds (
     runner_id bigint,
     upstream_pipeline_id bigint,
     user_id bigint,
-    execution_config_id bigint,
     upstream_pipeline_partition_id bigint,
     scoped_user_id bigint,
     timeout integer,
@@ -25764,24 +25750,6 @@ CREATE SEQUENCE p_catalog_resource_sync_events_id_seq
 
 ALTER SEQUENCE p_catalog_resource_sync_events_id_seq OWNED BY p_catalog_resource_sync_events.id;
 
-CREATE TABLE p_ci_builds_execution_configs (
-    id bigint NOT NULL,
-    partition_id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    pipeline_id bigint NOT NULL,
-    run_steps jsonb DEFAULT '{}'::jsonb NOT NULL
-)
-PARTITION BY LIST (partition_id);
-
-CREATE SEQUENCE p_ci_builds_execution_configs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE p_ci_builds_execution_configs_id_seq OWNED BY p_ci_builds_execution_configs.id;
-
 CREATE SEQUENCE p_ci_job_annotations_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -40784,9 +40752,6 @@ ALTER TABLE ONLY p_ci_build_sources
 ALTER TABLE ONLY p_ci_build_trace_metadata
     ADD CONSTRAINT p_ci_build_trace_metadata_pkey PRIMARY KEY (build_id, partition_id);
 
-ALTER TABLE ONLY p_ci_builds_execution_configs
-    ADD CONSTRAINT p_ci_builds_execution_configs_pkey PRIMARY KEY (id, partition_id);
-
 ALTER TABLE ONLY p_ci_builds
     ADD CONSTRAINT p_ci_builds_pkey PRIMARY KEY (id, partition_id);
 
@@ -48997,12 +48962,6 @@ CREATE INDEX index_p_ci_build_trace_metadata_on_project_id ON ONLY p_ci_build_tr
 
 CREATE INDEX index_p_ci_build_trace_metadata_on_trace_artifact_id ON ONLY p_ci_build_trace_metadata USING btree (trace_artifact_id);
 
-CREATE INDEX index_p_ci_builds_execution_configs_on_pipeline_id ON ONLY p_ci_builds_execution_configs USING btree (pipeline_id);
-
-CREATE INDEX index_p_ci_builds_execution_configs_on_project_id ON ONLY p_ci_builds_execution_configs USING btree (project_id);
-
-CREATE INDEX index_p_ci_builds_on_execution_config_id ON ONLY p_ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
-
 CREATE INDEX index_p_ci_finished_build_ch_sync_events_finished_at ON ONLY p_ci_finished_build_ch_sync_events USING btree (partition, build_finished_at);
 
 CREATE INDEX index_p_ci_finished_build_ch_sync_events_on_project_id ON ONLY p_ci_finished_build_ch_sync_events USING btree (project_id);
@@ -55357,8 +55316,6 @@ CREATE TRIGGER assign_ci_runner_taggings_id_trigger BEFORE INSERT ON ci_runner_t
 
 CREATE TRIGGER assign_ci_runners_id_trigger BEFORE INSERT ON ci_runners FOR EACH ROW EXECUTE FUNCTION assign_ci_runners_id_value();
 
-CREATE TRIGGER assign_p_ci_builds_execution_configs_id_trigger BEFORE INSERT ON p_ci_builds_execution_configs FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_execution_configs_id_value();
-
 CREATE TRIGGER assign_p_ci_builds_id_trigger BEFORE INSERT ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_id_value();
 
 CREATE TRIGGER assign_p_ci_job_annotations_id_trigger BEFORE INSERT ON p_ci_job_annotations FOR EACH ROW EXECUTE FUNCTION assign_p_ci_job_annotations_id_value();
@@ -61073,9 +61030,6 @@ ALTER TABLE p_ci_build_names
 
 ALTER TABLE ONLY approval_merge_request_rules_users
     ADD CONSTRAINT fk_rails_bc8972fa55 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE p_ci_builds_execution_configs
-    ADD CONSTRAINT fk_rails_bc9ff5d0a9_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY observability_traces_issues_connections
     ADD CONSTRAINT fk_rails_bcf18aa0d2 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

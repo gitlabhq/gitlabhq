@@ -64,7 +64,8 @@ MergeRequest.prototype.initTabs = function () {
     window.mrTabs.unbindEvents();
   }
 
-  window.mrTabs = new MergeRequestTabs(this.opts);
+  this.tabs = new MergeRequestTabs(this.opts);
+  window.mrTabs = this.tabs;
 };
 
 MergeRequest.prototype.initMRBtnListeners = function () {

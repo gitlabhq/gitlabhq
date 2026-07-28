@@ -149,7 +149,7 @@ For GitLab there is an essential difference in analytics setup between GitLab.co
 
 **For GitLab 18.0 and later**: Self-Managed and Dedicated instances collect event-level data, providing the same detailed insights available on GitLab.com.
 
-**For versions prior to 18.0**: Only aggregated metrics are available. These metrics are computed once per week on a randomly chosen day and forwarded to [Version App](https://version.gitlab.com) via a process called Service Ping. Only the metrics that were instrumented up to the version the instance is running are available. For example, if a metric is instrumented during the development of version 16.9, it will be available on instances running version 16.9 or later, but not on instances running earlier versions such as 16.8.
+**For versions prior to 18.0**: Only aggregated metrics are available. These metrics are computed once per week on a randomly chosen day and forwarded to [Version App](https://version.gitlab.com) via a process called Service Ping. Only the metrics that were instrumented up to the version the instance is running are available. For example, if a metric is instrumented during the development of version 17.9, it will be available on instances running version 17.9 or later, but not on instances running earlier versions such as 17.8.
 The received payloads are imported into our Data Warehouse once per day.
 
 ### GitLab.com

@@ -1917,7 +1917,6 @@ CREATE TABLE siphon_p_ci_builds
     `runner_id` Nullable(Int64),
     `upstream_pipeline_id` Nullable(Int64),
     `user_id` Nullable(Int64),
-    `execution_config_id` Nullable(Int64),
     `upstream_pipeline_partition_id` Nullable(Int64),
     `scoped_user_id` Nullable(Int64),
     `timeout` Nullable(Int64),

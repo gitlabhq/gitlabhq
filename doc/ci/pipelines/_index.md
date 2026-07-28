@@ -50,6 +50,8 @@ Pipelines can be configured in many different ways:
   followed by the next stage.
 - [Pipelines that use the `needs` keyword](../yaml/needs.md) run based on dependencies
   between jobs and can run more quickly than basic pipelines.
+- [Branch pipelines](pipeline_types.md#branch-pipeline) run every time you push a commit
+  to a branch, with no configuration required.
 - [Merge request pipelines](merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).
 - [Merged results pipelines](merged_results_pipelines.md)

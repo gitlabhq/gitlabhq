@@ -43,10 +43,6 @@ Each DAST major version uses different analyzers by default:
 
 DAST version 5 uses a set of new CI/CD variables. Aliases have been created for the DAST version 4 variables' names.
 
-Changes to make:
-
-- To test your DAST scan using DAST version 5 in GitLab 16.11 and earlier, set the CI/CD variable `DAST_VERSION` to `5`.
-
 ## Continuing to use the proxy-based analyzer
 
 You can use the proxy-based DAST analyzer until GitLab 18.0. Bugs and vulnerabilities in this legacy analyzer will not be fixed.

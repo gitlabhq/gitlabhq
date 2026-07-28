@@ -15,7 +15,7 @@ export default {
   },
   mixins: [Tracking.mixin()],
   inject: ['canAdminList'],
-  emits: ['showBoardModal'],
+  emits: ['show-board-modal'],
   computed: {
     buttonText() {
       return this.canAdminList ? s__('Boards|Configure board') : s__('Boards|Board configuration');
@@ -24,7 +24,7 @@ export default {
   methods: {
     showPage() {
       this.track('click_button', { label: 'edit_board' });
-      this.$emit('showBoardModal', formType.edit);
+      this.$emit('show-board-modal', formType.edit);
     },
   },
 };

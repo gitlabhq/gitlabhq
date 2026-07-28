@@ -65,11 +65,11 @@ those errors are available in the GitLab UI. To view them:
 1. In the top bar, select **Search or go to** and find your project.
 1. Go to **Monitor** > **Error Tracking** to see the list of open errors:
 
-   ![MonitorListErrors](img/list_errors_v16_0.png)
+   ![The list of open errors on the Error Tracking page.](img/list_errors_v16_0.png)
 
 1. Select an error to see the **Error details** view:
 
-   ![MonitorDetailErrors](img/detail_errors_v16_0.png)
+   ![The Error details view with exception details and a stack trace.](img/detail_errors_v16_0.png)
 
    This page shows more details of the exception, including:
 
@@ -96,12 +96,12 @@ To view the full timestamp of an error:
 
 In the following example, the error happened at 11:41 CEST:
 
-![MonitorDetailErrors](img/last_seen_v16_10.png)
+![A tooltip with the full timestamp shown over the Last seen date.](img/last_seen_v16_10.png)
 
 The **Last 24 hours** graph measures how many times this error occurred per hour.
 By pointing at the `11 am` bar, the dialog shows the error was seen 239 times:
 
-![MonitorDetailErrors](img/error_bucket_v16_10.png)
+![A bar graph of hourly error frequency with 239 errors at 11 am.](img/error_bucket_v16_10.png)
 
 The **Last seen** field does not update until the full hour is complete, due to
 the library used for the call

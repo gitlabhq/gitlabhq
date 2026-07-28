@@ -43,14 +43,9 @@ Each DAST major version runs different analyzers:
 
 DAST version 5 uses a set of new CI/CD variables. Aliases have been created for the DAST version 4 variables' names.
 
-Changes to make in GitLab 16.11 and earlier:
+Changes to make:
 
-- To test DAST version 5, set the CI/CD variable `DAST_VERSION` to 5.
-- To avoid job failures, do not remove or rename `DAST_WEBSITE`. The `DAST.gitlab-ci.yml` template versions 16.11 and earlier [still use the `DAST_WEBSITE`](https://gitlab.com/gitlab-org/gitlab/-/blob/v16.11.5-ee/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml?ref_type=tags#L39) variable.
-
-Changes to make in GitLab 17.0 and later:
-
-- After you upgrade to GitLab 17.0, rename `DAST_WEBSITE` to `DAST_TARGET_URL`.
+- Rename `DAST_WEBSITE` to `DAST_TARGET_URL`.
 - When you start using new templates that set `DAST_VERSION` to 5, make sure the CI/CD variable `DAST_VERSION` is not set.
 
 ## Continuing to use version 4

@@ -380,6 +380,11 @@ describe('Diffs view store', () => {
       expect(store.currentFileIndex).toBe(2);
     });
 
+    it('resolves index from snake_case linked file data set during SPA navigation', () => {
+      store.resolveInitialFileIndex({ linkedFileData: { old_path: 'c.js', new_path: 'c.js' } });
+      expect(store.currentFileIndex).toBe(2);
+    });
+
     it('keeps default index when linked file is not found', () => {
       store.resolveInitialFileIndex({ linkedFileData: { oldPath: 'x.js', newPath: 'x.js' } });
       expect(store.currentFileIndex).toBe(0);

@@ -641,7 +641,7 @@ A temporary migration would look like:
 INDEX_NAME = 'tmp_index_projects_on_owner_where_emails_disabled'
 
 def up
-  # Temporary index to be removed in 13.9 https://gitlab.com/gitlab-org/gitlab/-/issues/1234
+  # Temporary index to be removed in 19.3 https://gitlab.com/gitlab-org/gitlab/-/issues/1234
   add_concurrent_index :projects, :creator_id, where: 'emails_disabled = false', name: INDEX_NAME
 end
 

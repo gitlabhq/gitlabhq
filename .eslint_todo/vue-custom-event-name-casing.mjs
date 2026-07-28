@@ -16,7 +16,6 @@ export default {
     'app/assets/javascripts/boards/components/board_settings_sidebar.vue',
     'app/assets/javascripts/boards/components/board_top_bar.vue',
     'app/assets/javascripts/boards/components/boards_selector.vue',
-    'app/assets/javascripts/boards/components/config_toggle.vue',
     'app/assets/javascripts/boards/components/project_select.vue',
     'app/assets/javascripts/ci/artifacts/components/artifact_row.vue',
     'app/assets/javascripts/ci/artifacts/components/artifacts_bulk_delete.vue',

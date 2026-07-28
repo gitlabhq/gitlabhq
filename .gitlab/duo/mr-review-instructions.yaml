@@ -766,8 +766,8 @@ instructions:
   # <<< end generated: documentation
 
   # >>> generated: documentation-api — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 98353ccc8444ff6f7b594c7118283ddc21bb19d5
-  # source_checksum: 5278bc6b07a981fb
+  # distilled_at_sha: e2c2d99ca92022373f943f7b13d7697d7cffa9ce
+  # source_checksum: 68dd734ecfa7b3dd
   - name: API documentation
     fileFilters:
       - "doc/api/**/*.md"
@@ -781,8 +781,8 @@ instructions:
 
       ### REST API — OpenAPI Definition
 
-      - Run `bin/rake gitlab:openapi:v2:generate` and `bin/rake gitlab:openapi:v3:generate` when modifying API Markdown or code to update the OpenAPI definition (checked by the `openapi-doc-check` CI/CD job).
-      - Verify the OpenAPI definition is up to date by running `bin/rake gitlab:openapi:v2:check_docs` and `bin/rake gitlab:openapi:v3:check_docs` before merging.
+      - Run `bin/rake gitlab:openapi:v3:generate` when modifying API Markdown or code to update the OpenAPI definition (checked by the `static-analysis` CI/CD job for commits that modify API code or documentation).
+      - Verify the OpenAPI definition is up to date by running `bin/rake gitlab:openapi:v3:check_docs` before merging.
 
       ### REST API — History and Deprecations
 
@@ -1195,7 +1195,6 @@ instructions:
       - DO NOT use feature flags in entry classes without an actor; prefer `Feature.enabled?(:flag, Feature.current_request)` or `Config::FeatureFlags.enabled?(:flag)`, or move the flag check outside the entry class entirely.
       - Place CI YAML parsing changes behind a feature flag that is default-enabled for a full milestone before removal, so Self-Managed and Dedicated users can revert to the original behaviour if unexpected side effects arise.
 
-      - Place CI YAML parsing changes behind a feature flag that is default-enabled for a full milestone before removal, so Self-Managed and Dedicated users can revert to the original behavior if unexpected side effects arise.
       ### Testing and Validation
 
       - Add or update the corresponding spec file whenever an entry is added or modified.
@@ -1310,6 +1309,66 @@ instructions:
       9. Tests cover experiment variants and tracking behavior
       10. Temporary assets (icons/illustrations) are in `/ee/app/assets/images` or `/app/assets/images` not Pajamas library
       11. When both control and variants are being toggled in Vue components layer, we prefer to use the `<gitlab-experiment>` component.
+
+  - name: Rendered HTML Field Safety
+    fileFilters:
+      - "**/*.vue"
+      - "**/*.js"
+      - "**/*.rb"
+      - "**/*.haml"
+      - "!spec/**/*"
+      - "!ee/spec/**/*"
+    instructions: |
+      Many models expose a pre-rendered, sanitized HTML variant of a field
+      (for example `titleHtml`/`title_html`, `descriptionHtml`/`description_html`,
+      `noteHtml`/`note_html`) alongside the raw text field (`title`, `description`,
+      `note`). The HTML variant has been run through the Markdown/Banzai pipeline
+      and sanitized; the raw text field has NOT been processed or sanitized and is
+      attacker-controlled.
+
+      This applies in two directions, and BOTH matter:
+
+      1. FLAG it when an author introduces it. When the diff adds a fallback that
+         renders the raw text field in a place that expects sanitized HTML, report
+         it as a security vulnerability (XSS) that must be changed before merge. Do
+         not treat it as a style nit or wait for a human to catch it — authors
+         routinely add this without realizing the risk, and it slips through. Call
+         it out every time it appears in the change, in either frontend or backend
+         code. Patterns to catch include:
+         - Frontend: `v-safe-html="foo.fooHtml || foo.foo"`, the equivalent with
+           `v-html`, `dangerouslySetInnerHTML`, `el.innerHTML = fooHtml || foo`, or
+           any expression that substitutes the raw text field into an HTML sink when
+           the HTML variant is null/undefined/empty.
+         - Backend: `raw(foo_html || foo)`, `(foo_html || foo).html_safe`, or a
+           resolver/serializer/presenter/helper that returns the raw text field as
+           the value of an `*_html`/`*Html` field.
+         For each occurrence, explain that the raw text field is unsanitized,
+         attacker-controlled input and that feeding it into an HTML sink is an XSS
+         vulnerability, then point to the correct resolution below.
+
+      2. NEVER suggest or introduce it yourself. Do not propose any of the patterns
+         above as a fix, and do not flag a MISSING fallback as an issue — the
+         absence of such a fallback is correct, not a defect.
+
+      Rendering unsanitized user input as HTML is always wrong. It has caused
+      multiple past security incidents. No current code should do this.
+
+      When the HTML variant might be missing, the correct guidance is one of:
+
+      1. The HTML variant is expected to always exist. Then NO fallback is
+         needed. If the field is ever absent, THAT is the bug — fix it at the
+         source. Do not mask it by rendering raw text through an HTML sink.
+
+      2. The HTML variant may legitimately be absent. Then the fallback must
+         preserve the text/HTML boundary: the backend must expose BOTH the raw
+         text field and the HTML field, and the frontend must render the HTML
+         variant as HTML only when it is present, and otherwise render the raw
+         text variant AS TEXT (for example plain interpolation `{{ foo.foo }}`),
+         never feeding the raw text field into an HTML sink.
+
+      In short: never default one field to the other within a single
+      HTML-rendering codepath. Pick the sink from the field you actually have —
+      HTML field to an HTML sink, text field to a text sink.
 
   - name: Pajamas Design System Components
     fileFilters:

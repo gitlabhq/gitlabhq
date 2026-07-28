@@ -105,7 +105,7 @@ export default {
       default: null,
     },
   },
-  emits: ['addBoard', 'cancel', 'showBoardModal', 'shown', 'updateBoard'],
+  emits: ['addBoard', 'cancel', 'show-board-modal', 'shown', 'updateBoard'],
   data() {
     return {
       board: { ...boardDefaults, ...this.currentBoard },
@@ -243,7 +243,7 @@ export default {
       return response.data.updateBoard.board;
     },
     openDeleteModal() {
-      this.$emit('showBoardModal', this.$options.formType.delete);
+      this.$emit('show-board-modal', this.$options.formType.delete);
     },
     async deleteBoard() {
       await this.$apollo.mutate({

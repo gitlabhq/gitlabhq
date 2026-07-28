@@ -258,6 +258,20 @@ describe('Merge Request Rapid Diffs app', () => {
       app.scrollToDiffNote(discussion);
       expect(mockDiffFile.selectLine).not.toHaveBeenCalled();
     });
+
+    it('loads the target file first in file-by-file mode', () => {
+      useDiffsView().singleFileMode = true;
+      app.scrollToDiffNote(discussion);
+      expect(useDiffsView().resolveInitialFileIndex).toHaveBeenCalledWith({
+        linkedFileData: { old_path: 'file.js', new_path: 'file.js' },
+      });
+      expect(useDiffsView().loadCurrentFile).toHaveBeenCalled();
+    });
+
+    it('does not load a single file when not in file-by-file mode', () => {
+      app.scrollToDiffNote(discussion);
+      expect(useDiffsView().loadCurrentFile).not.toHaveBeenCalled();
+    });
   });
 
   describe('setLinkedFile', () => {

@@ -108,8 +108,8 @@ describe('BoardTopBar', () => {
       expect(wrapper.emitted('updateBoard')).toHaveLength(1);
     });
 
-    it('passes current form to BoardsSelector when showBoardModal is emitted by config toggle', async () => {
-      wrapper.findComponent(ConfigToggle).vm.$emit('showBoardModal', formType.edit);
+    it('passes current form to BoardsSelector when show-board-modal is emitted by config toggle', async () => {
+      wrapper.findComponent(ConfigToggle).vm.$emit('show-board-modal', formType.edit);
       await nextTick();
       expect(findBoardsSelector().props('boardModalForm')).toEqual(formType.edit);
     });

@@ -3439,7 +3439,7 @@ arm-sql-job:
 
 #### `image:pull_policy`
 
-The pull policy that the runner uses to fetch the Docker image. Requires GitLab Runner 15.1 or later.
+The pull policy that the runner uses to fetch the Docker image.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
 
@@ -6443,7 +6443,7 @@ services:
 
 #### `services:pull_policy`
 
-The pull policy that the runner uses to fetch the Docker image. Requires GitLab Runner 15.1 or later.
+The pull policy that the runner uses to fetch the Docker image.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
 

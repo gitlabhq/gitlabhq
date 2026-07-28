@@ -67,7 +67,7 @@ export default {
       default: '',
     },
   },
-  emits: ['showBoardModal', 'switchBoard', 'updateBoard'],
+  emits: ['show-board-modal', 'switchBoard', 'updateBoard'],
   data() {
     return {
       boards: [],
@@ -155,7 +155,7 @@ export default {
       return fullBoardId(boardId);
     },
     cancel() {
-      this.$emit('showBoardModal', '');
+      this.$emit('show-board-modal', '');
     },
     boardUpdate(data, boardType) {
       if (!data?.[this.parentType]) {
@@ -295,7 +295,7 @@ export default {
               data-track-action="click_button"
               data-track-label="create_new_board"
               data-track-property="dropdown"
-              @click="$emit('showBoardModal', $options.formType.new)"
+              @click="$emit('show-board-modal', $options.formType.new)"
             >
               {{ s__('Boards|Create new board') }}
             </gl-button>
@@ -314,7 +314,7 @@ export default {
         :parent-type="parentType"
         @addBoard="addBoard"
         @updateBoard="$emit('updateBoard', $event)"
-        @showBoardModal="$emit('showBoardModal', $event)"
+        @show-board-modal="$emit('show-board-modal', $event)"
         @shown="loadBoards"
         @cancel="cancel"
       />

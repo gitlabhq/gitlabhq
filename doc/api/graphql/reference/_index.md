@@ -21799,6 +21799,43 @@ Fields:
 | <a id="cddeploymenttransitionedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cddeploymenttransitionedge-node"></a>`node` | [`CdDeploymentTransition`](#cddeploymenttransition) | The item at the end of the edge. |
 
+#### `CdEnvironmentApplicationConnection`
+
+The connection type for [`CdEnvironmentApplication`](#cdenvironmentapplication).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cdenvironmentapplicationconnection-edges"></a>`edges` | [`[CdEnvironmentApplicationEdge]`](#cdenvironmentapplicationedge) | A list of edges. |
+| <a id="cdenvironmentapplicationconnection-nodes"></a>`nodes` | [`[CdEnvironmentApplication]`](#cdenvironmentapplication) | A list of nodes. |
+| <a id="cdenvironmentapplicationconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CdEnvironmentApplicationConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cdenvironmentapplicationconnection-count-limit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
+
+#### `CdEnvironmentApplicationEdge`
+
+The edge type for [`CdEnvironmentApplication`](#cdenvironmentapplication).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cdenvironmentapplicationedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cdenvironmentapplicationedge-node"></a>`node` | [`CdEnvironmentApplication`](#cdenvironmentapplication) | The item at the end of the edge. |
+
 #### `CdEnvironmentConnection`
 
 The connection type for [`CdEnvironment`](#cdenvironment).
@@ -35547,6 +35584,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="cdenvironment-applications"></a>`applications` {{< icon name="warning-solid" >}} | [`CdEnvironmentApplicationConnection`](#cdenvironmentapplicationconnection) | Introduced in GitLab 19.3. Status: Experiment. Applications with services in the environment, each with its service count in the environment. |
 | <a id="cdenvironment-applicationscount"></a>`applicationsCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.3. Status: Experiment. Number of applications with services in the environment. |
 | <a id="cdenvironment-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the environment was created. |
 | <a id="cdenvironment-description"></a>`description` | [`String`](#string) | Description of the environment. |
@@ -35556,8 +35594,21 @@ Fields:
 | <a id="cdenvironment-organization"></a>`organization` | [`Organization`](#organization) | Organization the environment belongs to. |
 | <a id="cdenvironment-rolloutenvironments"></a>`rolloutEnvironments` {{< icon name="warning-solid" >}} | [`CdRolloutEnvironmentConnection`](#cdrolloutenvironmentconnection) | Introduced in GitLab 19.2. Status: Experiment. Rollout environments of the environment. |
 | <a id="cdenvironment-serviceenvironmenthealths"></a>`serviceEnvironmentHealths` {{< icon name="warning-solid" >}} | [`CdServiceEnvironmentHealthConnection`](#cdserviceenvironmenthealthconnection) | Introduced in GitLab 19.2. Status: Experiment. Observed service health in the environment. |
+| <a id="cdenvironment-servicescount"></a>`servicesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.3. Status: Experiment. Number of services with observed health in the environment. |
 | <a id="cdenvironment-tier"></a>`tier` | [`CdEnvironmentTier!`](#cdenvironmenttier) | Tier of the environment. |
 | <a id="cdenvironment-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the environment was last updated. |
+
+### `CdEnvironmentApplication`
+
+An application with services in a continuous deployment environment.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cdenvironmentapplication-application"></a>`application` {{< icon name="warning-solid" >}} | [`CdApplication`](#cdapplication) | Introduced in GitLab 19.3. Status: Experiment. Application with services in the environment. |
+| <a id="cdenvironmentapplication-services"></a>`services` {{< icon name="warning-solid" >}} | [`CdServiceConnection`](#cdserviceconnection) | Introduced in GitLab 19.3. Status: Experiment. Application's services present in the environment. |
+| <a id="cdenvironmentapplication-servicescount"></a>`servicesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.3. Status: Experiment. Number of the application's services in the environment. |
 
 ### `CdEnvironmentDriverBinding`
 

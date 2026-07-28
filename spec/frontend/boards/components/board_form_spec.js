@@ -259,7 +259,7 @@ describe('BoardForm', () => {
       it('renders form wrapper', () => {
         expect(findFormWrapper().exists()).toBe(true);
       });
-      it('emits showBoardModal with delete when clicking on delete board button', async () => {
+      it('emits show-board-modal with delete when clicking on delete board button', async () => {
         await createComponent({
           props: {
             currentPage: formType.edit,
@@ -270,7 +270,7 @@ describe('BoardForm', () => {
         });
 
         findDeleteButton().vm.$emit('click');
-        expect(wrapper.emitted('showBoardModal')).toEqual([[formType.delete]]);
+        expect(wrapper.emitted('show-board-modal')).toEqual([[formType.delete]]);
       });
     });
 
