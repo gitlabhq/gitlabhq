@@ -516,6 +516,18 @@ module API
       forbidden!
     end
 
+    # Chokepoint for emitting Gitlab-Workhorse-Send-Data response headers from
+    # Grape route bodies. Verifies the Workhorse JWT first so the senddata
+    # payload (which may carry Gitaly credentials or pre-signed object storage
+    # URLs) cannot escape Rails unless the request came through Workhorse.
+    # The senddata helpers in this file (send_git_blob, send_git_archive, etc.)
+    # call verify_workhorse_api! directly; this wrapper exists for routes that
+    # emit the header inline rather than through a typed helper.
+    def send_workhorse_headers!(*pair)
+      verify_workhorse_api!
+      header(*pair)
+    end
+
     def require_pages_enabled!
       not_found! unless ::Gitlab::Pages.enabled?
     end
@@ -825,6 +837,7 @@ module API
         file_url = ObjectStorage::CDN::FileUrl.new(file: file, ip_address: ip_address, redirect_params: redirect_params)
         redirect(file_url.url)
       else
+        verify_workhorse_api!
         response_headers = extra_response_headers.merge('Content-Type' => content_type, 'Content-Disposition' => response_disposition).compact_blank
 
         header(*Gitlab::Workhorse.send_url(file.url, response_headers: response_headers, **extra_send_url_params))
@@ -1015,6 +1028,8 @@ module API
     end
 
     def send_git_blob(repository, blob)
+      verify_workhorse_api!
+
       env['api.format'] = :txt
       content_type 'text/plain'
 
@@ -1033,6 +1048,7 @@ module API
     end
 
     def send_git_diff(repository, diff_refs)
+      verify_workhorse_api!
       header(*Gitlab::Workhorse.send_git_diff(repository, diff_refs))
 
       headers['Content-Disposition'] = 'inline'
@@ -1041,6 +1057,7 @@ module API
     end
 
     def send_git_archive(repository, **kwargs)
+      verify_workhorse_api!
       header(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
 
       body ''
@@ -1067,6 +1084,7 @@ module API
 
     # Deprecated. Use `send_artifacts_entry` instead.
     def legacy_send_artifacts_entry(file, entry, etag: nil)
+      verify_workhorse_api!
       apply_etag_or_suppress_rack_etag!(etag)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
 
@@ -1074,6 +1092,7 @@ module API
     end
 
     def send_artifacts_entry(file, entry, etag: nil)
+      verify_workhorse_api!
       apply_etag_or_suppress_rack_etag!(etag)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
       header(*Gitlab::Workhorse.detect_content_type)

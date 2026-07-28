@@ -305,6 +305,14 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         it_behaves_like 'can access terraform state'
       end
     end
+
+    context 'without Workhorse JWT', :verify_workhorse_jwt do
+      it 'returns 403 forbidden' do
+        request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 
   describe 'POST /projects/:id/terraform/state/:name/authorize' do
@@ -340,7 +348,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       end
     end
 
-    context 'without Workhorse headers' do
+    context 'without Workhorse headers', :verify_workhorse_jwt do
       subject(:request) { post api("#{state_path}/authorize"), headers: auth_header, as: :json }
 
       it 'returns unauthorized', :aggregate_failures do

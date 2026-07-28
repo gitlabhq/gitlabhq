@@ -899,7 +899,7 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
         it_behaves_like 'not setting the X-Error-Message header on the response'
       end
 
-      context 'on a forbidden response (workhorse-bypassed authorize)' do
+      context 'on a forbidden response (workhorse-bypassed authorize)', :verify_workhorse_jwt do
         include_context 'workhorse headers'
 
         let(:url) { api("/projects/#{project.id}/packages/rubygems/api/v1/gems/authorize") }

@@ -988,6 +988,22 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
           expect(generator.new_mr_title('%{issue_title}')).to be_nil
         end
       end
+
+      context 'when the issue is confidential' do
+        let(:issue) { create(:issue, :confidential, project: project, title: 'Secret vulnerability in auth') }
+
+        it 'does not leak the confidential issue title and returns nil' do
+          expect(generator.new_mr_title('%{issue_title}', issue: issue)).to be_nil
+        end
+      end
+
+      context 'when the issue is an external issue' do
+        let(:issue) { ExternalIssue.new('EXT-1', project) }
+
+        it 'still returns the external issue title, which has no confidentiality concept' do
+          expect(generator.new_mr_title('%{issue_title}', issue: issue)).to eq(issue.title)
+        end
+      end
     end
 
     context 'when template combines %{issue_id} and %{issue_title}' do
@@ -996,6 +1012,15 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
       it 'renders both placeholders' do
         expect(generator.new_mr_title('Resolve %{issue_id} "%{issue_title}"', issue: issue))
           .to eq('Resolve 123 "Fix the login bug"')
+      end
+
+      context 'when the issue is confidential' do
+        let(:issue) { create(:issue, :confidential, project: project, iid: 123, title: 'Secret vulnerability in auth') }
+
+        it 'keeps the issue id but drops the confidential title' do
+          expect(generator.new_mr_title('Resolve %{issue_id}: %{issue_title}', issue: issue))
+            .to eq('Resolve 123:')
+        end
       end
     end
 

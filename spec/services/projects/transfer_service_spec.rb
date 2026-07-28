@@ -686,6 +686,48 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     end
   end
 
+  context 'when disabling merge request collaboration on access reduction' do
+    let(:group) { create(:group, :private) }
+
+    before do
+      group.add_owner(user)
+    end
+
+    context 'when visibility is reduced to private' do
+      let(:project) { create(:project, :public, :repository, namespace: user.namespace) }
+
+      it 'enqueues the worker' do
+        expect(::MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+          .to receive(:perform_async).with(project.id)
+
+        execute_transfer
+      end
+    end
+
+    context 'when visibility is reduced but stays above private' do
+      let(:group) { create(:group, :internal) }
+      let(:project) { create(:project, :public, :repository, namespace: user.namespace) }
+
+      it 'does not enqueue the worker' do
+        expect(::MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+          .not_to receive(:perform_async)
+
+        execute_transfer
+      end
+    end
+
+    context 'when visibility is not reduced' do
+      let(:project) { create(:project, :private, :repository, namespace: user.namespace) }
+
+      it 'does not enqueue the worker' do
+        expect(::MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+          .not_to receive(:perform_async)
+
+        execute_transfer
+      end
+    end
+  end
+
   context 'shared Runners group level configurations' do
     using RSpec::Parameterized::TableSyntax
 

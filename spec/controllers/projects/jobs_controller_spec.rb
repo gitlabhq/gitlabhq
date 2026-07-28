@@ -1604,10 +1604,12 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     end
 
     context 'with invalid workhorse signature' do
-      it 'aborts with an exception' do
+      it 'returns 403 forbidden' do
         allow(Gitlab::Workhorse).to receive(:verify_api_request!).and_raise(JWT::DecodeError)
 
-        expect { get_terminal_websocket(id: job.id) }.to raise_error(JWT::DecodeError)
+        get_terminal_websocket(id: job.id)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -1764,10 +1766,12 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     end
 
     context 'with invalid workhorse signature' do
-      it 'aborts with an exception' do
+      it 'returns 403 forbidden' do
         allow(Gitlab::Workhorse).to receive(:verify_api_request!).and_raise(JWT::DecodeError)
 
-        expect { make_request }.to raise_error(JWT::DecodeError)
+        make_request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 

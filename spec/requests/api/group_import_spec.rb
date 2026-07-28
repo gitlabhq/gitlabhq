@@ -332,7 +332,7 @@ RSpec.describe API::GroupImport, :with_current_organization, feature_category: :
       end
     end
 
-    it 'rejects requests that bypassed gitlab-workhorse' do
+    it 'rejects requests that bypassed gitlab-workhorse', :verify_workhorse_jwt do
       workhorse_headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
 
       subject

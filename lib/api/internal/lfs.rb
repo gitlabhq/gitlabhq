@@ -44,8 +44,7 @@ module API
             if file.file_storage?
               sendfile file.path
             else
-              workhorse_headers = Gitlab::Workhorse.send_url(file.url)
-              header workhorse_headers[0], workhorse_headers[1]
+              send_workhorse_headers!(*Gitlab::Workhorse.send_url(file.url))
               env['api.format'] = :binary
               body ""
             end

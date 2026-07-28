@@ -603,7 +603,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       end
 
       def compared_data
-        Ci::CompareTestReportsService.new(project).execute(nil, head_pipeline)
+        Ci::CompareTestReportsService.new(project, user).execute(nil, head_pipeline)
       end
     end
 

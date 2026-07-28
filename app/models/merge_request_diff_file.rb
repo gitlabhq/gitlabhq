@@ -28,9 +28,19 @@ class MergeRequestDiffFile < ApplicationRecord
     ''
   end
 
+  def too_large
+    if merge_request_diff&.stored_externally? && external_diff_size.to_i >= Gitlab::Git::Diff.patch_hard_limit_bytes
+      return true
+    end
+
+    super
+  end
+
   def diff
     content =
       if merge_request_diff&.stored_externally?
+        return '' if too_large
+
         merge_request_diff.opening_external_diff do |file|
           file.seek(external_diff_offset)
           force_encode_utf8(file.read(external_diff_size))
@@ -75,6 +85,8 @@ class MergeRequestDiffFile < ApplicationRecord
   # difference of caching externally stored diffs on local disk in
   # temp storage location in order to improve diff export performance.
   def diff_export
+    return '' if too_large
+
     content = merge_request_diff.cached_external_diff do |file|
       file.seek(external_diff_offset)
 

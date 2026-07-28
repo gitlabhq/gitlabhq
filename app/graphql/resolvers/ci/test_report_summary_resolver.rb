@@ -9,8 +9,8 @@ module Resolvers
 
       def resolve(**args)
         TestReportSummarySerializer
-          .new(project: pipeline.project, current_user: @current_user)
-          .represent(pipeline.test_report_summary)
+          .new(project: pipeline.project, current_user: current_user)
+          .represent(pipeline.accessible_test_report_summary(current_user))
       end
     end
   end

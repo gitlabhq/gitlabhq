@@ -322,13 +322,19 @@ func configureRoutes(u *upstream) {
 	static := &staticpages.Static{DocumentRoot: u.DocumentRoot, Exclude: staticExclude, API: u.APIClient}
 	dependencyProxyInjector := dependencyproxy.NewInjector()
 
-	// Build proxy with optional success tracking
+	// All requests forwarded to Rails carry a short-lived HMAC-SHA256 JWT
+	// (Gitlab-Workhorse-Api-Request header) so that Rails can verify they came
+	// through Workhorse via verify_workhorse_api!. This is required before
+	// emitting any Gitlab-Workhorse-Send-Data header that embeds Gitaly
+	// credentials or pre-signed object storage URLs.
+	signingTripper := secret.NewRoundTripper(u.RoundTripper, u.Version)
+
 	var proxyOpts []ProxyOption
 	if u.healthCheckServer != nil {
 		proxyOpts = append(proxyOpts, WithSuccessTracking(u.healthCheckServer.GetSuccessTracker()))
 	}
 
-	proxy := buildProxy(u.Backend, u.Version, u.RoundTripper, u.Config, dependencyProxyInjector, api, proxyOpts...)
+	proxy := buildProxy(u.Backend, u.Version, signingTripper, u.Config, dependencyProxyInjector, api, proxyOpts...)
 	cableProxy := proxypkg.NewProxy(u.CableBackend, u.Version, u.CableRoundTripper)
 
 	dwHandler := duoworkflow.NewHandler(api, u.rdb, u)
@@ -346,8 +352,9 @@ func configureRoutes(u *upstream) {
 		)
 	}
 
-	signingTripper := secret.NewRoundTripper(u.RoundTripper, u.Version)
-	signingProxy := buildProxy(u.Backend, u.Version, signingTripper, u.Config, dependencyProxyInjector, api)
+	// signingProxy is now identical to proxy (both use signingTripper); kept as a
+	// distinct variable so upload handler call sites remain explicit about their intent.
+	signingProxy := proxy
 
 	preparer := upload.NewObjectStoragePreparer(u.Config)
 	requestBodyUploader := upload.RequestBody(api, signingProxy, preparer)

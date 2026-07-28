@@ -23,16 +23,16 @@ func (p Prefix) Match(s string) bool {
 	return strings.HasPrefix(s, string(p))
 }
 
-// Unpack decodes and unmarshals the sendData string
+// Unpack base64-decodes the sendData payload (after stripping the type prefix) and
+// unmarshals it into result. The caller must have verified that the request arrived
+// through Workhorse (via verify_workhorse_api!) before this payload was emitted by
+// Rails, so the Gitaly credentials inside are never exposed to direct-Puma clients.
 func (p Prefix) Unpack(result interface{}, sendData string) error {
 	jsonBytes, err := base64.URLEncoding.DecodeString(strings.TrimPrefix(sendData, string(p)))
 	if err != nil {
 		return err
 	}
-	if err := json.Unmarshal(jsonBytes, result); err != nil {
-		return err
-	}
-	return nil
+	return json.Unmarshal(jsonBytes, result)
 }
 
 // Name returns the name of the prefix without the colon suffix

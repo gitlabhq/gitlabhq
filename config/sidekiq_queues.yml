@@ -707,6 +707,8 @@
   - 1
 - - merge_requests_delete_source_branch
   - 1
+- - merge_requests_disable_collaboration_on_unauthorized
+  - 1
 - - merge_requests_duo_code_review_chat
   - 1
 - - merge_requests_execute_approval_hooks

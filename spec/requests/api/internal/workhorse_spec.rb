@@ -17,7 +17,7 @@ RSpec.describe API::Internal::Workhorse, :allow_forgery_protection, feature_cate
       expect(response).to have_gitlab_http_status(status)
     end
 
-    context 'without workhorse internal header' do
+    context 'without workhorse internal header', :verify_workhorse_jwt do
       it { expect_status(:forbidden) }
     end
 
@@ -50,7 +50,7 @@ RSpec.describe API::Internal::Workhorse, :allow_forgery_protection, feature_cate
       post(api('/internal/workhorse/oauth_routing'), headers: headers, params: params)
     end
 
-    context 'without workhorse internal header' do
+    context 'without workhorse internal header', :verify_workhorse_jwt do
       let(:headers) { {} }
 
       it 'returns 403 forbidden' do
