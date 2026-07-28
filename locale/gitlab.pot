@@ -50846,6 +50846,9 @@ msgstr ""
 msgid "Orbit|Navigate to"
 msgstr ""
 
+msgid "Orbit|No eligible groups are available for Orbit."
+msgstr ""
+
 msgid "Orbit|No groups match your search."
 msgstr ""
 
@@ -50901,9 +50904,6 @@ msgid "Orbit|Orbit is unavailable."
 msgstr ""
 
 msgid "Orbit|Orbit not enabled"
-msgstr ""
-
-msgid "Orbit|Orbit requires a top-level group with at least a Premium license."
 msgstr ""
 
 msgid "Orbit|Orbit transforms your GitLab data into a structured knowledge graph you can query, explore, and integrate with AI tools."
