@@ -40,7 +40,7 @@ module ActiveContext
     private
 
     def collect_specs_from_queue(redis, specs_buffer, scores)
-      queue.each_queued_items_by_shard(redis, shards: [shard]) do |shard_number, specs|
+      queue.each_queued_items_by_shard(redis, shards: [shard], due_only: true) do |shard_number, specs|
         next if specs.empty?
 
         set_key = queue.redis_set_key(shard_number)

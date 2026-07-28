@@ -27,7 +27,9 @@ module ActiveContext
 
         # Queues are FIFO by default (scores are counter sequence numbers).
         # Override to return a duration and the queue becomes time-based:
-        # scores are due timestamps, and items stay invisible to reads until due.
+        # scores are due timestamps. Reads see all items by default; only
+        # callers passing `due_only: true` are restricted to items whose
+        # due time has passed.
         def processing_delay
           nil
         end
@@ -75,7 +77,7 @@ module ActiveContext
         def queued_items
           {}.tap do |hash|
             ActiveContext::Redis.with_redis do |redis|
-              each_queued_items_by_shard(redis, include_delayed: true) do |shard_number, specs|
+              each_queued_items_by_shard(redis) do |shard_number, specs|
                 hash[shard_number] = specs unless specs.empty?
               end
             end
@@ -83,10 +85,10 @@ module ActiveContext
         end
 
         def each_queued_items_by_shard(
-          redis, shards: queue_shards, include_orphaned: false, limit: shard_limit, include_delayed: false)
+          redis, shards: queue_shards, include_orphaned: false, limit: shard_limit, due_only: false)
           shards &= queue_shards unless include_orphaned
 
-          max_score = if processing_delay && !include_delayed
+          max_score = if processing_delay && due_only
                         Time.current.to_f
                       else
                         '+inf'

@@ -256,39 +256,41 @@ RSpec.describe ActiveContext::Concerns::Queue do
     end
 
     context 'when the queue has a processing_delay' do
-      it 'bounds the fetched scores by the current time' do
-        freeze_time do
-          expect(redis_double).to receive(:zrangebyscore)
-            .with('mockmodule:{delayed_queue}:0:zset', '-inf', Time.current.to_f, limit: [0, 1000], with_scores: true)
-            .and_return([['ref1', 1.0]])
-          expect(redis_double).to receive(:zrangebyscore)
-            .with('mockmodule:{delayed_queue}:1:zset', '-inf', Time.current.to_f, limit: [0, 1000], with_scores: true)
-            .and_return([])
+      it 'fetches items regardless of their due time' do
+        expect(redis_double).to receive(:zrangebyscore)
+          .with('mockmodule:{delayed_queue}:0:zset', '-inf', '+inf', limit: [0, 1000], with_scores: true)
+          .and_return([['ref1', 1.0]])
+        expect(redis_double).to receive(:zrangebyscore)
+          .with('mockmodule:{delayed_queue}:1:zset', '-inf', '+inf', limit: [0, 1000], with_scores: true)
+          .and_return([])
 
-          expect do |block|
-            delayed_queue_class.each_queued_items_by_shard(redis_double, &block)
-          end.to yield_successive_args(
-            [0, [['ref1', 1.0]]],
-            [1, []]
-          )
-        end
+        expect do |block|
+          delayed_queue_class.each_queued_items_by_shard(redis_double, &block)
+        end.to yield_successive_args(
+          [0, [['ref1', 1.0]]],
+          [1, []]
+        )
       end
 
-      context 'when `include_delayed` is set to true' do
-        it 'fetches items regardless of their due time' do
-          expect(redis_double).to receive(:zrangebyscore)
-            .with('mockmodule:{delayed_queue}:0:zset', '-inf', '+inf', limit: [0, 1000], with_scores: true)
-            .and_return([['ref1', 1.0]])
-          expect(redis_double).to receive(:zrangebyscore)
-            .with('mockmodule:{delayed_queue}:1:zset', '-inf', '+inf', limit: [0, 1000], with_scores: true)
-            .and_return([])
+      context 'when `due_only` is set to true' do
+        it 'bounds the fetched scores by the current time' do
+          freeze_time do
+            expect(redis_double).to receive(:zrangebyscore)
+              .with('mockmodule:{delayed_queue}:0:zset', '-inf', Time.current.to_f, limit: [0, 1000],
+                with_scores: true)
+              .and_return([['ref1', 1.0]])
+            expect(redis_double).to receive(:zrangebyscore)
+              .with('mockmodule:{delayed_queue}:1:zset', '-inf', Time.current.to_f, limit: [0, 1000],
+                with_scores: true)
+              .and_return([])
 
-          expect do |block|
-            delayed_queue_class.each_queued_items_by_shard(redis_double, include_delayed: true, &block)
-          end.to yield_successive_args(
-            [0, [['ref1', 1.0]]],
-            [1, []]
-          )
+            expect do |block|
+              delayed_queue_class.each_queued_items_by_shard(redis_double, due_only: true, &block)
+            end.to yield_successive_args(
+              [0, [['ref1', 1.0]]],
+              [1, []]
+            )
+          end
         end
       end
     end

@@ -12,7 +12,11 @@ module Test
         model_ref: model_metadata[:model_ref],
         model_type: model_metadata[:model_type] || 'gitlab',
         llm_class: Test::MockLlmClass,
-        llm_params: { model: model_metadata[:model_ref], search: search }
+        llm_params: {
+          model: model_metadata[:model_ref],
+          search: search,
+          batch_size: model_metadata[:embeddings_request_batch_size]
+        }
       )
     end
   end

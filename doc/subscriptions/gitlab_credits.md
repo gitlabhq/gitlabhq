@@ -280,6 +280,7 @@ For premium models with optimized integration:
 | `gpt-5-4-mini` | 6.7 |
 | `gpt-5.6-luna` <sup>2</sup> | 5.0 |
 | `gemini-3.5-flash` | 3.3 |
+| `gemini-3.6-flash` | 3.3 |
 | `gpt-5` | 3.3 |
 | `gpt-5-codex` | 3.3 |
 | `claude-sonnet-5` <sup>1</sup> | 3.2 |
@@ -299,6 +300,7 @@ For premium models with optimized integration:
 | `claude-opus-4.6` | 1.1 |
 | `claude-opus-4.7` | 1.1 |
 | `claude-opus-4.8` | 1.1 |
+| `claude-opus-5` | 1.1 |
 | `gpt-5.5` <sup>2</sup> | 1.0 |
 | `gpt-5.6-sol` <sup>2</sup> | 1.0 |
 | `claude-fable-5` | 0.6 |

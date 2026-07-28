@@ -43,6 +43,14 @@ RSpec.describe ActiveContext::BulkProcessQueue do
       bulk_process_queue.process(redis)
     end
 
+    it 'fetches only items that are due for processing' do
+      expect(queue).to receive(:each_queued_items_by_shard)
+        .with(redis, shards: [shard], due_only: true)
+        .and_yield(shard, specs)
+
+      bulk_process_queue.process(redis)
+    end
+
     it 'removes processed items from Redis' do
       expect(redis).to receive(:zremrangebyscore).with('redis_set_key', 1, 2)
 
