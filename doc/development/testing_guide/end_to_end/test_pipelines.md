@@ -52,7 +52,7 @@ The child pipeline consists of several stages that support E2E test execution.
 
 #### prepare
 
-- `dotenv-vars` job is responsible to create an artifact out of the `qa/performance_test` folder which consists of all the k6 performance test. This artifact will be downloaded by downstream pipeline jobs to run the tests. It also stores some env vars like `CI_JOB_NAME`, `CI_JOB_ID` and `GITLAB_HELM_CHART_REF` as can be seen in the [job definition](https://gitlab.com/gitlab-org/gitlab/-/blob/andywh/perf_testing_in_mr/.gitlab/ci/performance-on-cng/main.gitlab-ci.yml#L52-54), which will be used by `run-performance-tests` job
+- `dotenv-vars` job is responsible to create an artifact out of the `qa/performance_test` folder which consists of all the k6 performance test. This artifact will be downloaded by downstream pipeline jobs to run the tests. It also stores some env vars like `CI_JOB_NAME`, `CI_JOB_ID`, and `GITLAB_HELM_CHART_REF` as can be seen in the [job definition](https://gitlab.com/gitlab-org/gitlab/-/blob/andywh/perf_testing_in_mr/.gitlab/ci/performance-on-cng/main.gitlab-ci.yml#L52-54), which will be used by `run-performance-tests` job
 
 #### test
 

@@ -1578,7 +1578,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/analytics/cycle_analytics/stage_events/stage_event.rb'
     - 'lib/gitlab/analytics/cycle_analytics/stage_query_helpers.rb'
     - 'lib/gitlab/application_context.rb'
-    - 'lib/gitlab/application_rate_limiter.rb'
     - 'lib/gitlab/audit/null_author.rb'
     - 'lib/gitlab/audit/type/definition.rb'
     - 'lib/gitlab/auth.rb'

@@ -121,7 +121,7 @@ export default {
     <draggable
       v-if="items.length > 0"
       v-model="draggableItems"
-      class="gl-m-0 gl-list-none gl-p-0"
+      class="gl-m-0 gl-list-none gl-p-0 gl-leading-0"
       :aria-label="$options.i18n.pinned"
       data-testid="pinned-nav-items"
       handle=".js-draggable-icon"

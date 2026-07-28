@@ -175,7 +175,7 @@ Git. In that case you can use the `scripts/regenerate-schema` script to
 regenerate a clean `db/structure.sql` for the migrations you're
 adding. This script applies all migrations found in `db/migrate`
 or `db/post_migrate`, so if there are any migrations you don't want to
-commit to the schema, rename or remove them. If your branch is not
+commit to the schema, rename, or remove them. If your branch is not
 targeting the default Git branch, you can set the `TARGET` environment variable.
 
 ```shell
@@ -1014,7 +1014,7 @@ end
 Table **has records** but **no foreign keys**:
 
 - Remove the application code related to the table, such as models,
-  controllers and services.
+  controllers, and services.
 - In a post-deployment migration, use `drop_table`.
 
 This can all be in a single migration if you're sure the code is not used.

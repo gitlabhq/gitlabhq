@@ -1945,7 +1945,7 @@ This filter can be used in place of `by_search_level_and_membership` if the data
 
 #### `by_search_level_and_membership`
 
-Requires `project_id`, `traversal_id` and project visibility (defaulting to `visibility_level` but can set with the `project_visibility_level_field` option) fields. Supports feature `*_access_level` fields. Query with `search_level`
+Requires `project_id`, `traversal_id`, and project visibility (defaulting to `visibility_level` but can set with the `project_visibility_level_field` option) fields. Supports feature `*_access_level` fields. Query with `search_level`
  and optionally `project_ids`, `group_ids`, `features`, and `current_user` in options.
 
 Filtering is applied for:

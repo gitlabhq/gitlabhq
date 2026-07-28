@@ -925,7 +925,6 @@ RSpec/NamedSubject:
     - 'spec/controllers/groups/settings/integrations_controller_spec.rb'
     - 'spec/controllers/groups/settings/repository_controller_spec.rb'
     - 'spec/controllers/groups/variables_controller_spec.rb'
-    - 'spec/controllers/groups_controller_spec.rb'
     - 'spec/controllers/help_controller_spec.rb'
     - 'spec/controllers/import/bitbucket_controller_spec.rb'
     - 'spec/controllers/jira_connect/events_controller_spec.rb'

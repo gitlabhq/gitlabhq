@@ -142,7 +142,7 @@ end
 To add these elements to the view, you must change the Rails view, partial, or Vue component by adding a `data-testid` attribute
 for each element defined.
 
-In our case, `data-testid="login-field"`, `data-testid="password-field"` and `data-testid="sign-in-button"`
+In our case, `data-testid="login-field"`, `data-testid="password-field"`, and `data-testid="sign-in-button"`
 
 `app/views/my/view.html.haml`
 

@@ -311,7 +311,7 @@ which only gets parsed when it is requested for the first time.
 
 [Spring](https://github.com/rails/spring) is a Rails application pre-loader. It
 speeds up development by keeping your application running in the background so
-you don't need to boot it every time you run a test, Rake task or migration.
+you don't need to boot it every time you run a test, Rake task, or migration.
 
 If you want to use it, you must export the `ENABLE_SPRING` environment
 variable to `1`:

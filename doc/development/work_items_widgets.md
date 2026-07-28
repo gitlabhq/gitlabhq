@@ -117,7 +117,7 @@ We also have a [reusable base dropdown widget wrapper](https://gitlab.com/gitlab
 
 ### When we start work on a new widget
 
-1. Depending on the input field i.e a dropdown, input text or any other custom design we should make sure that we use an [existing wrapper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/shared/work_item_sidebar_dropdown_widget.vue) or completely new component
+1. Depending on the input field i.e a dropdown, input text, or any other custom design we should make sure that we use an [existing wrapper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/shared/work_item_sidebar_dropdown_widget.vue) or completely new component
 1. Ideally any new widget should be behind an FF to make sure we have room for testing unless there is a priority for the widget.
 1. Create the new widget in the [folder](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/work_items/components)
 1. If it is an editable widget in the sidebar, you should include it in [work_item_attributes_wrapper](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/work_items/components/work_item_attributes_wrapper.vue)

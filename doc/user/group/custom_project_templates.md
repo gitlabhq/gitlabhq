@@ -101,7 +101,7 @@ For a complete list of what is copied, see [project items that are exported](../
 
 ### Permissions and sensitive data
 
-The copying behavior might differ based on your permissions:
+The copying behavior differs based on your permissions:
 
 - If you're a GitLab administrator, all project settings, including project members,
   are copied over to the new project.
@@ -110,6 +110,14 @@ The copying behavior might differ based on your permissions:
   project settings are copied, but project members are not.
 - If you do not have the Owner role for the project and you're not a GitLab administrator:
   project deploy keys and project webhooks are not copied over because they contain sensitive data.
+
+Protected branch and tag access levels are also affected when templates are copied:
+
+- If you have the Owner role for the top-level group of the new project, or if you're a GitLab
+  administrator, these access levels are copied to the new project.
+- Otherwise, protected branch and tag access levels are reset to Maintainers.
+  Access levels set to No one are preserved. For more information, see
+  [changes to imported items](../project/settings/import_export.md#changes-to-imported-items).
 
 Deploy keys and webhooks contain sensitive secrets. They are copied only when the identity that
 creates the project has the Owner role on the template project or has administrator access. When you
@@ -133,6 +141,10 @@ and tags. For example, if the template contains a protected branch:
 - In the template, the branch allows the template owner to merge into the default branch.
 - In the project created from the template, the branch allows you to merge into
   the default branch.
+
+Protected branch and tag access levels are also affected when
+templates are copied. For more information, see
+[permissions and sensitive data](#permissions-and-sensitive-data).
 
 ## Troubleshooting
 

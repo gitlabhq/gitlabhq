@@ -132,7 +132,7 @@ This limit is hardcoded and only applied on GitLab.
 Diff Viewers, which can be found on `models/diff_viewer/*` are classes used to map metadata about each type of Diff File. It has information
 whether it's a binary, which partial should be used to render it or which File extensions this class accounts for.
 
-`DiffViewer::Base` validates _blobs_ (old and new versions) content, extension and file type to check if it can be rendered.
+`DiffViewer::Base` validates _blobs_ (old and new versions) content, extension, and file type to check if it can be rendered.
 
 ## Merge request diffs against the `HEAD` of the target branch
 

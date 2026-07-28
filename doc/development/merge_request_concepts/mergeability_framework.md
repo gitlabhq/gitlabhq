@@ -87,7 +87,7 @@ The mergeability checks live under `app/services/merge_requests/mergeability/`.
 
 1. The main methods that call the mergeability framework are: `def mergeable?`, and `DetailedMergeStatusService`.
 1. These methods call the `RunChecksService` class which handles the iterating
-   of the mergeability checks, caching and instrumentation.
+   of the mergeability checks, caching, and instrumentation.
 
 ## Merge when checks pass
 

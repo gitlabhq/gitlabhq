@@ -3,7 +3,7 @@ import { renderGlql } from '~/behaviors/markdown/render_glql';
 import { renderJSONTable } from '~/behaviors/markdown/render_json_table';
 import { renderImageLightbox } from '~/behaviors/markdown/render_image_lightbox';
 import renderSandboxedMermaid from '~/behaviors/markdown/render_sandboxed_mermaid';
-import renderStickyTableHeaders from '~/behaviors/markdown/render_table_headers';
+import renderMarkdownTables from '~/behaviors/markdown/render_markdown_tables';
 
 jest.mock('~/behaviors/markdown/render_glql', () => ({
   renderGlql: jest.fn(),
@@ -20,7 +20,7 @@ jest.mock('~/behaviors/markdown/render_image_lightbox', () => ({
 
 jest.mock('~/behaviors/markdown/render_sandboxed_mermaid', () => jest.fn());
 
-jest.mock('~/behaviors/markdown/render_table_headers', () => jest.fn());
+jest.mock('~/behaviors/markdown/render_markdown_tables', () => jest.fn());
 
 describe('renderGFM', () => {
   it('handles a missing element', () => {
@@ -107,28 +107,31 @@ describe('renderGFM', () => {
     });
   });
 
-  describe('rendering sticky table headers', () => {
+  describe('rendering markdown', () => {
     let element;
 
     beforeEach(() => {
       element = document.createElement('div');
       element.innerHTML = `
-        <table>
-          <thead><tr><th>Header 1</th><th>Header 2</th></tr></thead>
-          <tbody><tr><td>Data 1</td><td>Data 2</td></tr></tbody>
-        </table>
-        <table class="code">
-          <thead><tr><th>Code Header</th></tr></thead>
-          <tbody><tr><td>Code Data</td></tr></tbody>
-        </table>
+        <div class="md">
+          <table>
+            <thead><tr><th>Header 1</th><th>Header 2</th></tr></thead>
+            <tbody><tr><td>Data 1</td><td>Data 2</td></tr></tbody>
+          </table>
+          <table class="code">
+            <thead><tr><th>Code Header</th></tr></thead>
+            <tbody><tr><td>Code Data</td></tr></tbody>
+          </table>
+        </div>
       `;
     });
 
-    it('calls renderStickyTableHeaders with non-code tables', () => {
+    it('calls renderMarkdownTables with markdown tables, excluding code tables', () => {
       renderGFM(element);
 
-      const tables = Array.from(element.querySelectorAll('table:not(.code)'));
-      expect(renderStickyTableHeaders).toHaveBeenCalledWith(tables);
+      const tables = Array.from(element.querySelectorAll('.md table:not(.code)'));
+      expect(tables).toHaveLength(1);
+      expect(renderMarkdownTables).toHaveBeenCalledWith(tables);
     });
   });
 });

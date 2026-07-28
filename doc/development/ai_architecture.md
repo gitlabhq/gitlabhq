@@ -74,7 +74,7 @@ There are two primary reasons for this: the best AI models are cloud-based as th
 
 ## AI Gateway
 
-The AI Gateway (formerly the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)) is a standalone-service that will give access to AI features to all users of GitLab, no matter which instance they are using: self-managed, dedicated or GitLab.com. The SaaS-based AI abstraction layer will transition to connecting to this gateway, rather than accessing cloud-based providers directly.
+The AI Gateway (formerly the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)) is a standalone-service that will give access to AI features to all users of GitLab, no matter which instance they are using: self-managed, dedicated, or GitLab.com. The SaaS-based AI abstraction layer will transition to connecting to this gateway, rather than accessing cloud-based providers directly.
 
 Calls to the AI-gateway from GitLab-rails can be made using the
 [Abstraction Layer](ai_features/_index.md#feature-development-abstraction-layer).

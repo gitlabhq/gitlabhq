@@ -24,7 +24,7 @@ during high load periods.
 ## How GitLab metrics collection works
 
 When monitoring GitLab with Prometheus, GitLab runs various collectors that
-sample the application for data related to usage, load and performance. GitLab can then make
+sample the application for data related to usage, load, and performance. GitLab can then make
 this data available to a Prometheus scraper by running one or more Prometheus exporters.
 A Prometheus exporter is an HTTP server that serializes metric data into a format the
 Prometheus scraper understands.

@@ -54,7 +54,7 @@ include Gitlab::InternalEventsTracking
 track_internal_event('ci_templates_unique', namespace: namespace, project: project, user: user, additional_properties: { label: label })
 ```
 
-The `label`, `property` and `value` attributes need to be sent inside the `additional_properties` hash. In case they were not included in the original call, the `additional_properties` argument can be skipped.
+The `label`, `property`, and `value` attributes need to be sent inside the `additional_properties` hash. In case they were not included in the original call, the `additional_properties` argument can be skipped.
 
 In addition, you have to create definitions for the metrics that you would like to track.
 

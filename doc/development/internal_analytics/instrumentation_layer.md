@@ -84,7 +84,7 @@ To implement it for your tracking system, you need to:
 
 `**kwargs` is used to pass additional parameters to the tracking class from the Internal Events framework.
 The actual parameters depend on the tracking parameters passed to the event invocation above.
-Usually, it includes `user`, `namespace` and `project` along with `protected_properties` that can be used to pass any additional data.
+Usually, it includes `user`, `namespace`, and `project` along with `protected_properties` that can be used to pass any additional data.
 
 The tracking systems are triggered by the order of the `extra_trackers:` property.
 

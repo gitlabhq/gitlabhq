@@ -415,7 +415,7 @@ For comprehensive scaling guidance, see [scaling an environment](_index.md#scali
 
 Prerequisites:
 
-- External PostgreSQL with required databases, users and permissions set up
+- External PostgreSQL with required databases, users, and permissions set up
 - External Redis instances configured and accessible
 - Object Storage buckets created
 - Kubernetes secrets created for authentication as required (PostgreSQL password, Redis passwords, Object Storage credentials, GitLab secrets)

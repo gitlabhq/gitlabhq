@@ -134,7 +134,7 @@ The following integration guides are internal. Some integrations require access 
   for ensuring merge requests do not negatively impact GitLab performance
 - [Profiling](profiling.md) a URL or tracking down N+1 queries using Bullet.
 - [Cached queries guidelines](cached_queries.md), for tracking down N+1 queries
-  masked by query caching, memory profiling and why should we avoid cached
+  masked by query caching, memory profiling, and why should we avoid cached
   queries.
 - [JSON guidelines](json.md) for how to handle JSON in a performant manner.
 - [GraphQL API optimizations](api_graphql_styleguide.md#optimizations) for how to optimize GraphQL code.

@@ -26736,6 +26736,9 @@ msgstr ""
 msgid "Dependencies|There was a problem fetching the licenses for this group."
 msgstr ""
 
+msgid "Dependencies|There was a problem fetching the refs for this dependency."
+msgstr ""
+
 msgid "Dependencies|There was a problem fetching vulnerabilities."
 msgstr ""
 
@@ -77249,6 +77252,12 @@ msgid "Table size"
 msgstr ""
 
 msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes, or task lists with text or multiple items) are not supported in Markdown and will be converted to HTML."
+msgstr ""
+
+msgid "Table|Click to sort ascending"
+msgstr ""
+
+msgid "Table|Click to sort descending"
 msgstr ""
 
 msgid "Tag"

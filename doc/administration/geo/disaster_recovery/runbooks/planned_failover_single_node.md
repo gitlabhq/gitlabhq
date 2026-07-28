@@ -85,7 +85,7 @@ follow these steps to avoid unnecessary data loss:
    access to the primary site during the maintenance window:
 
    1. At the scheduled time, using your cloud provider or your site's firewall, block
-      all HTTP, HTTPS and SSH traffic to/from the primary site, **except** for your IP and
+      all HTTP, HTTPS, and SSH traffic to/from the primary site, **except** for your IP and
       the secondary site's IP.
 
       For instance, you can run the following commands on the primary site:

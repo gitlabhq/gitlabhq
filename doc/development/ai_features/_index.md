@@ -232,7 +232,7 @@ mutation {
 }
 ```
 
-In our component, we then listen on the `aiCompletionResponse` using the `userId`, `resourceId` and `clientSubscriptionId` (`"randomId"`):
+In our component, we then listen on the `aiCompletionResponse` using the `userId`, `resourceId`, and `clientSubscriptionId` (`"randomId"`):
 
 ```graphql
 subscription aiCompletionResponse(

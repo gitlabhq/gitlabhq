@@ -8,7 +8,13 @@ module Gitlab
         include Queueable
         include Observable
 
-        WORKER_TYPE = :local
+        WORKER_TYPE = :cell_local
+
+        ALLOWED_ENQUEUER = 'Database::BackgroundOperation::CronEnqueueWorker'
+
+        def self.allowed_enqueuer
+          ALLOWED_ENQUEUER
+        end
 
         self.table_name = :background_operation_workers_cell_local
 

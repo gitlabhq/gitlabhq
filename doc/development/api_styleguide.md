@@ -822,7 +822,7 @@ be seen in
 [the `Issue` model](https://gitlab.com/gitlab-org/gitlab/-/blob/2fedc47b97837ea08c3016cf2fb773a0300a4a25/app%2Fmodels%2Fissue.rb#L62).
 
 In situations where the same model has multiple entities in the API
-(for instance, `UserBasic`, `User` and `UserPublic`) you should use your
+(for instance, `UserBasic`, `User`, and `UserPublic`) you should use your
 discretion with applying this scope. It may be that you optimize for the
 most basic entity, with successive entities building upon that scope.
 

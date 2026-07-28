@@ -262,7 +262,7 @@ The following table lists these variables along with their default values.
 
 GitLab may decide to change these settings to speed up application performance, lower memory requirements, or both.
 
-You can see how each of these settings affect GC performance, memory use and application start-up time for an idle instance of
+You can see how each of these settings affect GC performance, memory use, and application start-up time for an idle instance of
 GitLab by running the `scripts/perf/gc/collect_gc_stats.rb` script. It will output GC stats and general timing data to standard
 out as CSV.
 

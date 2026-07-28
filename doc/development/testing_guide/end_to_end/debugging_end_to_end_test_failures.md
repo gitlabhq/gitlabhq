@@ -74,9 +74,9 @@ find what changes caused it and act on resolving the failure more quickly.
 
 ## Verifying current environment version
 
-### Determine the version, revision, branch and package deployed in GitLab environments
+### Determine the version, revision, branch, and package deployed in GitLab environments
 
-To find out the version, revision, branch and package deployed in GitLab.com, staging and canary environments,
+To find out the version, revision, branch, and package deployed in GitLab.com, staging, and canary environments,
 run this in the #chat-ops-test Slack channel:
 
 ```shell

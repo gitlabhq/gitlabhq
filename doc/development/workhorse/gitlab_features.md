@@ -17,7 +17,7 @@ Examples of features that rely on Workhorse:
 
 ## 1. `git clone` and `git push` over HTTP
 
-Git clone, pull and push are slow because they transfer large amounts
+Git clone, pull, and push are slow because they transfer large amounts
 of data and because each is CPU intensive on the GitLab side. Without
 Workhorse, HTTP access to Git repositories would compete with regular
 web access to the application, requiring us to run way more Rails

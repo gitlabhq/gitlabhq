@@ -31,7 +31,6 @@ Performance/MapCompact:
     - 'app/services/merge_requests/get_urls_service.rb'
     - 'app/services/merge_requests/pushed_branches_service.rb'
     - 'app/services/merge_requests/update_service.rb'
-    - 'app/services/packages/maven/find_or_create_package_service.rb'
     - 'app/services/projects/container_repository/third_party/delete_tags_service.rb'
     - 'app/services/quick_actions/interpret_service.rb'
     - 'app/services/repositories/changelog_service.rb'

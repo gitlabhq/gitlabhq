@@ -518,6 +518,33 @@ Example:
 Show me all labels in project gitlab-org/gitlab
 ```
 
+## `list_wiki_pages`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240973) in GitLab 19.3.
+
+{{< /history >}}
+
+Lists the wiki pages in a GitLab project or group.
+
+| Parameter    | Type    | Required | Description |
+|--------------|---------|----------|-------------|
+| `project_id` | string  | No       | Full path or numeric ID of the project (for example, `gitlab-org/gitlab` or `278964`). |
+| `group_id`   | string  | No       | Full path or numeric ID of the group (for example, `gitlab-org` or `9970`). |
+| `first`      | integer | No       | Number of wiki pages to return for forward pagination (maximum 100). |
+| `after`      | string  | No       | Cursor for forward pagination. |
+
+Provide only one `project_id` or `group_id`.
+Each call returns a single page of results.
+If more pages exist, the response includes an `end_cursor` you can pass as `after` to fetch the next page.
+
+Example:
+
+```plaintext
+List the wiki pages in gitlab-org/gitlab
+```
+
 ## `semantic_code_search`
 
 {{< details >}}

@@ -23,7 +23,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     )
   end
 
-  def highlight(to: nil, plain: nil, used_on: :blob)
+  def highlight(to: nil, plain: nil, used_on: :blob, suppress_line_ids: nil)
     load_all_blob_data
 
     Gitlab::Highlight.highlight(
@@ -31,7 +31,8 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
       blob_data(to),
       language: blob_language,
       plain: plain,
-      used_on: used_on
+      used_on: used_on,
+      suppress_line_ids: suppress_line_ids
     )
   end
 

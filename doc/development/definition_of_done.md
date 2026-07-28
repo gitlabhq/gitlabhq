@@ -16,7 +16,7 @@ This Definition of Done (DoD) applies to features that are implemented across mu
 
 ## Testing and validation
 
-- [Unit, integration, feature and end-to-end tests](testing_guide/testing_levels.md) are implemented as appropriate.
+- [Unit, integration, feature, and end-to-end tests](testing_guide/testing_levels.md) are implemented as appropriate.
 - End-to-end tests cover the critical user journeys to ensure high confidence in real-world use cases.
 - (optional) Exploratory testing sessions have been performed by engineers and/or downstream counterpart teams:
   - Validate UX and workflows beyond automated test coverage, including edge cases and unexpected interactions

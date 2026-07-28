@@ -8,7 +8,7 @@ title: Harbor registry
 ## Enable Harbor registry
 
 To enable the Harbor registry, you must configure the Harbor integration for your group or project.
-The Harbor configuration requires four fields: `url`, `project_name`, `username` and `password`.
+The Harbor configuration requires four fields: `url`, `project_name`, `username`, and `password`.
 
 | Field | Description |
 | --- | --- |

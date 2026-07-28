@@ -49,7 +49,7 @@ To add webhook support for a resource:
 1. Add support for the new webhook to `TriggerableHooks.available_triggers`.
 1. Add to the list of `triggerable_hooks` in `ProjectHook`, `GroupHook`, or `SystemHook`, depending
    on whether the webhook should be configurable for projects, groups, or the GitLab instance.
-   See [project, group and system hooks](#decision-project-group-and-system-webhooks) for guidance.
+   See [project, group, and system hooks](#decision-project-group-and-system-webhooks) for guidance.
 1. Add frontend support for a new checkbox in the webhook settings form in `app/views/shared/web_hooks/_form.html.haml`.
 1. Add support for testing the new webhook in `TestHooks::ProjectService` and `TestHooks::SystemService`.
    `TestHooks::GroupService` does not need to be updated because it only

@@ -838,7 +838,7 @@ When text values are used in translatable strings as variables, special care mus
 
 When using variables to add text into translatable strings, several localization challenges can arise:
 
-- Gender agreement: Languages with grammatical gender may require different forms of articles, adjectives or pronouns depending on the gender of the inserted noun. For example, in French, articles, adjectives and some past participles must agree with the noun's gender and position in the sentence.
+- Gender agreement: Languages with grammatical gender may require different forms of articles, adjectives, or pronouns depending on the gender of the inserted noun. For example, in French, articles, adjectives, and some past participles must agree with the noun's gender and position in the sentence.
 - Case and declension: In languages with cases (like German), the inserted text may need different forms depending on its grammatical role in the sentence.
 - Word order: Different languages have different word order requirements, and inserted text may need to appear in different positions in the sentence for natural-sounding translations.
 

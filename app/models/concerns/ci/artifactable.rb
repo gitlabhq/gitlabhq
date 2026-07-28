@@ -59,9 +59,7 @@ module Ci
     private
 
     # Downloads the remote file once and reuses the local copy for both
-    # decompressed-size validation and parsing. The default path downloads
-    # the file twice: once inside DecompressedArtifactSizeValidator and
-    # again through file.open.
+    # decompressed-size validation and parsing.
     def each_blob_from_local_copy(&blk)
       file.use_open_file(unlink_early: false) do |open_file|
         validate_decompressed_size!(local_archive_path: open_file.file_path)
@@ -75,12 +73,7 @@ module Ci
 
     def parse_remote_artifact_from_local_copy?
       file.respond_to?(:object_store) &&
-        file.object_store == ObjectStorage::Store::REMOTE &&
-        optimize_artifact_parsing_enabled?
-    end
-
-    def optimize_artifact_parsing_enabled?
-      Feature.enabled?(:ci_optimize_artifact_parsing, project)
+        file.object_store == ObjectStorage::Store::REMOTE
     end
 
     def validate_decompressed_size!(local_archive_path: nil)
@@ -88,8 +81,7 @@ module Ci
         file: file,
         file_format: file_format.to_sym,
         max_bytes: max_size_for_file_type,
-        local_archive_path: local_archive_path,
-        limit_output: optimize_artifact_parsing_enabled?
+        local_archive_path: local_archive_path
       ).validate!
     end
 

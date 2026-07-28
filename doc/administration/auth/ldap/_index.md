@@ -85,7 +85,7 @@ If the user is no longer active in LDAP, they are:
 
 You should only use LDAP integration if your LDAP users cannot:
 
-- Change their `mail`, `email` or `userPrincipalName` attributes on the LDAP server. These
+- Change their `mail`, `email`, or `userPrincipalName` attributes on the LDAP server. These
   users can potentially take over any account on your GitLab server.
 - Share email addresses. LDAP users with the same email address can share the same GitLab
   account.

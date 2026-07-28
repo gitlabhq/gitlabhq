@@ -205,8 +205,6 @@ export default {
     'ee/app/assets/javascripts/issues_analytics/components/issues_analytics_chart.vue',
     'ee/app/assets/javascripts/issues_analytics/components/total_issues_analytics_chart.vue',
     'ee/app/assets/javascripts/iterations/components/iteration_report_issues.vue',
-    'ee/app/assets/javascripts/linked_resources/components/resource_links_list.vue',
-    'ee/app/assets/javascripts/linked_resources/components/resource_links_list_item.vue',
     'ee/app/assets/javascripts/metrics/details/filter_bar/groupby_filter.vue',
     'ee/app/assets/javascripts/on_demand_scans/components/action_button.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/add_edit_schedule_modal.vue',

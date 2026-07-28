@@ -346,13 +346,13 @@ RSpec.describe BlobPresenter, feature_category: :source_code_management do
     let(:git_blob) { blob.__getobj__ }
 
     it 'returns highlighted content' do
-      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby', used_on: :blob)
+      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby', used_on: :blob, suppress_line_ids: nil)
 
       presenter.highlight
     end
 
     it 'returns plain content when :plain is true' do
-      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: 'ruby', used_on: :blob)
+      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: 'ruby', used_on: :blob, suppress_line_ids: nil)
 
       presenter.highlight(plain: true)
     end
@@ -365,7 +365,7 @@ RSpec.describe BlobPresenter, feature_category: :source_code_management do
       end
 
       it 'returns limited highlighted content' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', "line one\n", plain: nil, language: 'ruby', used_on: :blob)
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', "line one\n", plain: nil, language: 'ruby', used_on: :blob, suppress_line_ids: nil)
 
         presenter.highlight(to: 1)
       end
@@ -377,7 +377,7 @@ RSpec.describe BlobPresenter, feature_category: :source_code_management do
       end
 
       it 'passes language to inner call' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby', used_on: :blob)
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby', used_on: :blob, suppress_line_ids: nil)
 
         presenter.highlight
       end
@@ -385,7 +385,7 @@ RSpec.describe BlobPresenter, feature_category: :source_code_management do
 
     context 'when used_on param is present' do
       it 'returns highlighted content' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby', used_on: :diff)
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby', used_on: :diff, suppress_line_ids: nil)
 
         presenter.highlight(used_on: :diff)
       end

@@ -193,8 +193,6 @@ export default {
     'ee/app/assets/javascripts/issues_analytics/components/issues_analytics.vue',
     'ee/app/assets/javascripts/iterations/components/iteration_report.vue',
     'ee/app/assets/javascripts/iterations/components/iteration_report_tabs.vue',
-    'ee/app/assets/javascripts/linked_resources/components/resource_links_block.vue',
-    'ee/app/assets/javascripts/linked_resources/components/resource_links_list.vue',
     'ee/app/assets/javascripts/logs/list/filter_bar/logs_filtered_search.vue',
     'ee/app/assets/javascripts/logs/list/logs_list.vue',
     'ee/app/assets/javascripts/metrics/details/filter_bar/metrics_filtered_search.vue',

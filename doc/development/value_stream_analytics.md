@@ -319,7 +319,7 @@ Since we have a lots of events and possible pairings, testing each pairing is no
 Writing a test case for a stage using a new `Event` can be challenging since data must be created for both events. To make this a bit simpler, each test case must be implemented in the `data_collector_spec.rb` where the stage is tested through the `DataCollector`. Each test case is turned into multiple tests, covering the following cases:
 
 - Different parents: `Group` or `Project`
-- Different calculations: `Median`, `RecordsFetcher` or `DataForDurationChart`
+- Different calculations: `Median`, `RecordsFetcher`, or `DataForDurationChart`
 
 The VSA frontend is tested extensively on two different levels (integration, unit):
 

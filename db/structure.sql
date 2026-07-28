@@ -13031,6 +13031,7 @@ CREATE TABLE ai_flow_triggers (
     filter jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_87b77d9d54 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_ai_flow_triggers_filter_is_hash CHECK ((jsonb_typeof(filter) = 'object'::text)),
+    CONSTRAINT check_ai_flow_triggers_user_consumer_mutually_exclusive CHECK ((num_nonnulls(ai_catalog_item_consumer_id, user_id) <= 1)),
     CONSTRAINT check_f3a5b0bd6e CHECK ((char_length(config_path) <= 255))
 );
 
@@ -51591,6 +51592,8 @@ CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules U
 CREATE INDEX tmp_idx_p_sent_notifications_on_noteable_id_for_epics ON ONLY p_sent_notifications USING btree (noteable_id) WHERE (noteable_type = 'Epic'::text);
 
 CREATE INDEX tmp_idx_redirect_routes_on_source_type_id_where_namespace_null ON redirect_routes USING btree (source_type, id) WHERE (namespace_id IS NULL);
+
+CREATE INDEX tmp_idx_repository_languages_on_programming_language_id ON repository_languages USING btree (programming_language_id);
 
 CREATE INDEX tmp_idx_sbom_occurrence_refs_on_project_id_id ON sbom_occurrence_refs USING btree (project_id, id);
 

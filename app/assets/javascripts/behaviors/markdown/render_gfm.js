@@ -8,7 +8,7 @@ import { renderGlql } from './render_glql';
 import { renderJSONTable, renderJSONTableHTML } from './render_json_table';
 import { addAriaLabels } from './accessibility';
 import { renderImageLightbox } from './render_image_lightbox';
-import renderStickyTableHeaders from './render_table_headers';
+import renderMarkdownTables from './render_markdown_tables';
 import { GFM_POPOVER_SELECTOR } from './constants';
 
 function initPopovers(elements) {
@@ -44,6 +44,7 @@ export function renderGFM(element) {
   const iframeEls = arrayFromAll('.js-render-iframe');
   const tableEls = arrayFromAll('[data-canonical-lang="json"][data-lang-params~="table"]');
   const tableHTMLEls = arrayFromAll('table[data-table-fields]');
+  const mdTableEls = arrayFromAll('.md table:not(.code)');
   const glqlEls = arrayFromAll('[data-canonical-lang="glql"], .language-glql');
   const userEls = arrayFromAll('.gfm-project_member');
   const popoverEls = arrayFromAll(GFM_POPOVER_SELECTOR);
@@ -58,12 +59,10 @@ export function renderGFM(element) {
   renderIframe(iframeEls);
   renderJSONTable(tableEls.map((e) => e.parentNode));
   renderJSONTableHTML(tableHTMLEls);
+  renderMarkdownTables(mdTableEls);
   highlightCurrentUser(userEls);
   initPopovers(popoverEls);
   addAriaLabels(taskListCheckboxEls);
   renderGlql(glqlEls);
   renderImageLightbox(imageEls, element);
-
-  const mdTableEls = arrayFromAll('table:not(.code)');
-  renderStickyTableHeaders(mdTableEls);
 }

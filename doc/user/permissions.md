@@ -46,11 +46,17 @@ To view assigned roles, go to the **Members** page for a
 
 ### Default roles
 
+Roles are ordered from the fewest permissions to the most.
+The Guest, Reporter, Developer, Maintainer, and Owner roles are cumulative, so each role
+includes most of the permissions of the roles before it. The Planner and Security Manager roles are
+specialized for planning and security work, so they do not include all the permissions of the other roles. To
+confirm whether a role has a specific permission, check the relevant table.
+
 The following default roles are available:
 
 | Role             | Description |
 | ---------------- | ----------- |
-| Minimal Access   | View limited group information without access to projects. For more information, see [Users with Minimal Access](#users-with-minimal-access). |
+| Minimal Access   | View limited group information without access to projects. For more information, see [users with Minimal Access](#users-with-minimal-access). |
 | Guest            | View and comment on issues and epics. Cannot push code or access repository. This role applies to [private and internal projects](public_access.md) only. |
 | Planner          | Create and manage issues, epics, milestones, and iterations. Focused on project planning and tracking with the ability to view and collaborate on code changes. |
 | Reporter         | View code, create issues, and generate reports. Cannot push code or manage protected branches. |
@@ -78,7 +84,10 @@ It's okay to list multiple related objects per line (for example, "View pipeline
 Any user can remove themselves from a group, unless they are the only Owner of
 the group.
 
-The following table lists group permissions available for each role:
+The following table lists the group permissions available for each role.
+
+> [!note]
+> The Minimal Access role is not included because it has no permissions.
 
 ### Groups
 
@@ -321,7 +330,10 @@ can perform the action.
 For more information about how to manage project members, see
 [members of a project](project/members/_index.md).
 
-The following tables list the project permissions available for each role.
+The following table lists the project permissions available for each role.
+
+> [!note]
+> The Minimal Access role is not included because it has no permissions.
 
 ### Projects
 
@@ -899,6 +911,11 @@ Users with the Minimal Access role do not:
   Owners must explicitly add these users to the specific subgroups and
   projects.
 - Count as licensed seats, provided the user has no other role anywhere on the instance or in the GitLab.com namespace.
+
+The Minimal Access role grants none of the permissions in the group and project permission tables.
+Users with only this role cannot view project features such as wikis, issues, or the repository. To
+give these users access to a project or subgroup, an Owner must add them with the Guest role or a
+higher role.
 
 If a user with the Minimal Access role is granted a [billable role](../subscriptions/manage_seats.md#billable-users)
 in any project or subgroup, they consume a license seat based on their highest role.

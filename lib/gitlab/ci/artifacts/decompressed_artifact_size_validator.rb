@@ -15,14 +15,10 @@ module Gitlab
         # local_archive_path points to an already-downloaded local copy of a
         # remote file, so validation can run on it directly instead of
         # downloading the file again.
-        def initialize(
-          file:, file_format:, max_bytes: DEFAULT_MAX_BYTES, local_archive_path: nil, limit_output: false)
-          @file = file
-          @local_archive_path = local_archive_path
+        def initialize(file:, file_format:, max_bytes: DEFAULT_MAX_BYTES, local_archive_path: nil)
           @file_path = local_archive_path || file&.path
           @file_format = file_format
           @max_bytes = max_bytes
-          @limit_output = limit_output
         end
 
         def validate!
@@ -30,44 +26,14 @@ module Gitlab
 
           return if file_path.nil?
           return if validator_class.nil?
-
-          if validate_on_storage?
-            return if valid_on_storage?(validator_class)
-          elsif validator_class.new(archive_path: file_path, max_bytes: max_bytes, limit_output: limit_output).valid?
-            return
-          end
+          return if validator_class.new(archive_path: file_path, max_bytes: max_bytes).valid?
 
           raise(FileDecompressionError, 'File decompression error')
         end
 
         private
 
-        attr_reader :file_path, :file, :file_format, :max_bytes, :local_archive_path, :limit_output
-
-        def validate_on_storage?
-          local_archive_path.nil? &&
-            file.respond_to?(:object_store) &&
-            file.object_store == ObjectStorage::Store::REMOTE
-        end
-
-        def valid_on_storage?(validator_class)
-          temp_filename = "#{SecureRandom.uuid}.gz"
-
-          is_valid = false
-          Tempfile.open(temp_filename, '/tmp') do |tempfile|
-            tempfile.binmode
-            ::Faraday.get(file.url) do |req|
-              req.options.on_data = proc { |chunk, _| tempfile.write(chunk) }
-            end
-
-            is_valid = validator_class.new(
-              archive_path: tempfile.path, max_bytes: max_bytes, limit_output: limit_output
-            ).valid?
-            tempfile.unlink
-          end
-
-          is_valid
-        end
+        attr_reader :file_path, :file_format, :max_bytes
       end
     end
   end

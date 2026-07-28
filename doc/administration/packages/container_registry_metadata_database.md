@@ -148,7 +148,7 @@ A few factors affect the duration of the import:
 - The size of your existing registry data.
 - The specifications of your PostgreSQL instance.
 - The number of registry instances running.
-- Network latency between the registry, PostgreSQL and your configured storage.
+- Network latency between the registry, PostgreSQL, and your configured storage.
 
 You do not need to do the following in preparation before importing:
 

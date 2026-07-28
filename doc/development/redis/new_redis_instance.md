@@ -150,7 +150,7 @@ end
 ```
 
 MultiStore is initialized by providing the new Redis connection pools as a primary pool, and [old (fallback-instance) connection pool](#fallback-instance) as a secondary pool.
-The third argument is `store_name` which is used for logs, metrics and feature flag names, in case we use MultiStore implementation for different Redis stores at the same time.
+The third argument is `store_name` which is used for logs, metrics, and feature flag names, in case we use MultiStore implementation for different Redis stores at the same time.
 
 By default, the MultiStore reads and writes only from the default Redis store.
 The default Redis store is `secondary_store` (the old fallback-instance).

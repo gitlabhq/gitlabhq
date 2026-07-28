@@ -47,7 +47,7 @@ The process of solving performance problems is roughly as follows:
 1. Add your findings based on the measurement period (screenshots of graphs,
    timings, etc) to the issue mentioned in step 1.
 1. Solve the problem.
-1. Create a merge request, assign the "Performance" label and follow the [performance review process](merge_request_concepts/performance.md).
+1. Create a merge request, assign the "Performance" label, and follow the [performance review process](merge_request_concepts/performance.md).
 1. Once a change has been deployed make sure to again measure for at least 24
    hours to see if your changes have any impact on the production environment.
 1. Repeat until you're done.

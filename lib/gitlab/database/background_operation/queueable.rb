@@ -20,7 +20,15 @@ module Gitlab
           job_class_name: %s, table_name: %s, column_name: %s and job_arguments: [%s].
         MSG
 
+        EnqueueNotAllowedError = Class.new(StandardError)
+
         class_methods do
+          # Override in worker classes that must restrict who can enqueue them.
+          def allowed_enqueuer
+            nil
+          end
+
+          # rubocop:disable Metrics/ParameterLists -- needed for better readability
           def enqueue(
             job_class_name,
             table_name,
@@ -29,8 +37,11 @@ module Gitlab
             gitlab_schema: nil,
             user: nil,
             organization: nil,
+            enqueued_by: nil,
             **options
           )
+            validate_enqueue_source!(enqueued_by)
+
             # background operation workers will be stored in the same database (eg: main, ci)
             # as the table it's operating on.
             operation_schema, operation_connection = table_connection_info(table_name)
@@ -59,6 +70,7 @@ module Gitlab
                 **options)
             end
           end
+          # rubocop:enable Metrics/ParameterLists
 
           def table_connection_info(table_name)
             table_schema = Gitlab::Database::GitlabSchema.table_schema!(table_name)
@@ -68,6 +80,15 @@ module Gitlab
           end
 
           private
+
+          def validate_enqueue_source!(enqueued_by)
+            return unless allowed_enqueuer.present? && enqueued_by != allowed_enqueuer
+
+            raise(
+              EnqueueNotAllowedError,
+              "#{name} can only be enqueued from #{allowed_enqueuer}"
+            )
+          end
 
           # rubocop:disable Metrics/ParameterLists -- needs many arguments
           def create_operation!(

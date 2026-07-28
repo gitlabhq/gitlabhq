@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Cookies
 ---
 
-In general, there is usually a better place to store data for users than in cookies. For backend development PostgreSQL, Redis, and [session storage](session.md) are available. For frontend development, cookies may be more secure than `localStorage`, `IndexedDB` or other options.
+In general, there is usually a better place to store data for users than in cookies. For backend development PostgreSQL, Redis, and [session storage](session.md) are available. For frontend development, cookies may be more secure than `localStorage`, `IndexedDB`, or other options.
 
 In general do not put sensitive information such as user IDs, potentially user-identifying information, tokens, or other secrets into cookies. See our [Secure Coding Guidelines](secure_coding_guidelines/_index.md) for more information.
 

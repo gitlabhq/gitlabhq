@@ -1114,7 +1114,7 @@ Usage: /etc/init.d/postgresql {start|stop|restart|reload|force-reload|status} [v
 
 GitLab (includes Puma and Sidekiq logs):
 
-- `/home/git/gitlab/log/` usually contains `application.log`, `production.log`, `sidekiq.log`, `puma.stdout.log`, `git_json.log` and `puma.stderr.log`.
+- `/home/git/gitlab/log/` usually contains `application.log`, `production.log`, `sidekiq.log`, `puma.stdout.log`, `git_json.log`, and `puma.stderr.log`.
 
 GitLab Shell:
 

@@ -295,7 +295,7 @@ For further quality guidelines, see [testing](https://handbook.gitlab.com/handbo
 1. You have self-reviewed this MR per [code review guidelines](code_review.md).
 1. The code follows the [software design guidelines](software_design.md).
 1. Ensure [automated tests](testing_guide/_index.md) exist following the [testing pyramid](testing_guide/testing_levels.md). Add missing tests or create an issue documenting testing gaps.
-1. You have considered the technical impacts on GitLab.com, Dedicated and self-managed.
+1. You have considered the technical impacts on GitLab.com, Dedicated, and self-managed.
 1. You have considered the impact of this change on the frontend, backend, and database portions of the system where appropriate and applied the `~ux`, `~frontend`, `~backend`, and `~database` labels accordingly.
 1. You have tested this MR in [all supported browsers](../install/requirements.md#supported-web-browsers), or determined that this testing is not needed.
 1. You have confirmed that this change is [backwards compatible across updates](multi_version_compatibility.md), or you have decided that this does not apply.

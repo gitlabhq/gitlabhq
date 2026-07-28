@@ -1447,7 +1447,7 @@ end
 While you can use the same resolver class in two different places,
 such as in two different fields where the same object is exposed,
 you should never re-use resolver objects directly. Resolvers have a complex lifecycle, with
-authorization, readiness and resolution orchestrated by the framework, and at
+authorization, readiness, and resolution orchestrated by the framework, and at
 each stage [lazy values](#laziness) can be returned to take advantage of batching
 opportunities. Never instantiate a resolver or a mutation in application code.
 
@@ -2113,7 +2113,7 @@ In this case there is no `data`:
 
 This results from raising an error during the mutation. In our implementation,
 the messages of argument errors and validation errors are returned to the client, and all other
-`StandardError` instances are caught, logged and presented to the client with the message set to `"Internal server error"`.
+`StandardError` instances are caught, logged, and presented to the client with the message set to `"Internal server error"`.
 See [`GraphqlController`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/graphql_controller.rb) for details.
 
 These represent programming errors, such as:

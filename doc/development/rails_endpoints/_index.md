@@ -49,7 +49,7 @@ Response:
 }
 ```
 
-### List new, resolved and existing merge request code quality findings
+### List new, resolved, and existing merge request code quality findings
 
 Get a list of new, resolved, and existing code quality Findings, if any.
 

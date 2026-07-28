@@ -99,7 +99,7 @@ has three main functions:
 
 To configure the connection to the external read-replica database:
 
-1. SSH into each **Rails, Sidekiq and Geo Log Cursor** node on your secondary site and login as root:
+1. SSH into each **Rails, Sidekiq, and Geo Log Cursor** node on your secondary site and login as root:
 
    ```shell
    sudo -i

@@ -15,7 +15,7 @@ Parsing and rendering [GitLab Flavored Markdown](_index.md) into HTML involves d
 
 The backend does all the processing for GLFM to HTML. This provides several benefits:
 
-- Security: We run robust sanitization which removes unknown tags, classes and ids.
+- Security: We run robust sanitization which removes unknown tags, classes, and ids.
 - References: Our reference syntax requires access to the database to resolve issues, etc, as well as redacting references in which the user has no access.
 - Consistency: We want to provide users with a consistent experience, which includes full support of the GLFM syntax and styling. Having a single place where the processing is done allows us to provide that.
 - Caching: We cache the HTML in our database when possible, such as for issue or MR descriptions, or comments.

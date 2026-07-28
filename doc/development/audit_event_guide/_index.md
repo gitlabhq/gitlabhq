@@ -213,7 +213,7 @@ To add a new audit event type:
 
 | Field | Required | Description |
 | ----- | -------- |--------------|
-| `name` | yes     | Unique, lowercase and underscored name describing the type of event. Must match the filename. |
+| `name` | yes     | Unique, lowercase, and underscored name describing the type of event. Must match the filename. |
 | `description` | yes | Human-readable description of how this event is triggered |
 | `group` | yes | Name of the group that introduced this audit event. For example, `manage::compliance` |
 | `introduced_by_issue` | yes | Issue URL that proposed the addition of this type |

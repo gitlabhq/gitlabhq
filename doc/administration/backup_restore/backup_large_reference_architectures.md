@@ -258,7 +258,7 @@ Before restoring a backup:
         kubectl get pods -lrelease=RELEASE_NAME,app=toolbox
         ```
 
-     1. The Webservice, Sidekiq and Toolbox pods must be restarted.
+     1. The Webservice, Sidekiq, and Toolbox pods must be restarted.
         The safest way to restart those pods is to run:
 
         ```shell

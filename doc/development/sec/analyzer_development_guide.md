@@ -286,7 +286,7 @@ After the above steps have been completed, the automatic release process execute
 1. The default pipeline is triggered, and the `upsert git tag` job is executed.
    - If the most recent version in the `CHANGELOG.md` matches one of the Git tags, the job is a no-op.
    - Else, this job automatically creates a new release and Git tag using the [releases API](../../api/releases/_index.md#create-a-release). The version and message is obtained from the most recent entry in the `CHANGELOG.md` file for the project.
-1. A pipeline is automatically triggered for the new Git tag. This pipeline releases the `latest`, `major`, `minor` and `patch` Docker images of the analyzer.
+1. A pipeline is automatically triggered for the new Git tag. This pipeline releases the `latest`, `major`, `minor`, and `patch` Docker images of the analyzer.
 
 ### Service account used in the automatic release process
 

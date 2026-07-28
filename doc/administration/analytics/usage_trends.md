@@ -28,7 +28,7 @@ The usage trends page displays:
   - Pipelines
   - Issues and merge requests
 
-![Usage trends counts and charts for total users, projects and groups.](img/usage_trends_v17_7.png)
+![Usage trends counts and charts for total users, projects, and groups.](img/usage_trends_v17_7.png)
 
 Usage trends data refreshes daily.
 

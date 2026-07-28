@@ -1,0 +1,17 @@
+# @feature_category: mcp_server
+query listProjectWikiPages($fullPath: ID!, $first: Int, $after: String) {
+  project(fullPath: $fullPath) {
+    id
+    wikiPages(first: $first, after: $after) {
+      nodes {
+        id
+        title
+        slug
+        webUrl
+      }
+      pageInfo {
+        endCursor
+      }
+    }
+  }
+}

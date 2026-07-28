@@ -123,7 +123,7 @@ The partial failover to a secondary Geo site may be the result of a temporary/tr
 
 If the previous steps are **not successful**, proceed through the next steps:
 
-1. SSH to every Sidekiq, PostgreSQL, Gitaly and Rails node in the secondary site and perform the following operations:
+1. SSH to every Sidekiq, PostgreSQL, Gitaly, and Rails node in the secondary site and perform the following operations:
 
    - Create a `/etc/gitlab/gitlab-cluster.json` file with the following content:
 

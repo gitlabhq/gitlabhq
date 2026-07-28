@@ -80,7 +80,8 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'get_work_item_types' => { 'readOnlyHint' => true },
         'get_workitem_notes' => { 'readOnlyHint' => true },
         'search' => { 'readOnlyHint' => true },
-        'search_labels' => { 'readOnlyHint' => true }
+        'search_labels' => { 'readOnlyHint' => true },
+        'list_wiki_pages' => { 'readOnlyHint' => true }
       }
 
       actual_annotations = json_response['result']['tools'].to_h { |tool| [tool['name'], tool['annotations']] }

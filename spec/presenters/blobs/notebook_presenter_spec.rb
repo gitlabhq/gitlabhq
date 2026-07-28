@@ -19,7 +19,7 @@ RSpec.describe Blobs::NotebookPresenter do
   subject(:presenter) { described_class.new(blob, current_user: user) }
 
   it 'highlight receives markdown' do
-    expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'md', used_on: :blob)
+    expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'md', used_on: :blob, suppress_line_ids: nil)
 
     presenter.highlight
   end

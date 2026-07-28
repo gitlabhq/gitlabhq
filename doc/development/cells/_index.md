@@ -231,7 +231,7 @@ class Plan
 end
 ```
 
-You can use model validations and use ActiveRecord-like methods like `all`, `where`, `find_by` and `find`:
+You can use model validations and use ActiveRecord-like methods like `all`, `where`, `find_by`, and `find`:
 
 ```ruby
 Plan.find(4)

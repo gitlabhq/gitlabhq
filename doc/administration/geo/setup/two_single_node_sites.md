@@ -508,7 +508,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    chmod 0600 /etc/gitlab/gitlab-secrets.json
    ```
 
-1. To apply the changes, reconfigure every Rails, Sidekiq and Gitaly secondary site node:
+1. To apply the changes, reconfigure every Rails, Sidekiq, and Gitaly secondary site node:
 
    ```shell
    gitlab-ctl reconfigure

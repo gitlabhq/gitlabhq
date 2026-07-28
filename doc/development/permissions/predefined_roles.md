@@ -104,7 +104,7 @@ is stored in the `project_authorizations` table.
 
 #### Guest role
 
-A user with the Guest role in GitLab can view project plans, blockers and other
+A user with the Guest role in GitLab can view project plans, blockers, and other
 progress indicators. While unable to modify data they have not created, Guests
 can contribute to a project by creating and linking project work items. Guests
 can also view high-level project information such as:

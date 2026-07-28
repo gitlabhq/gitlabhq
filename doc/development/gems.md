@@ -48,7 +48,7 @@ Using Gems can provide several benefits for code maintenance:
   This helps to better organize code, better define who is owner of a given module, makes it easier to maintain
   or update specific gems.
 - Small - Gems by design due to implementing isolated set of functions are small. Small projects are much easier
-  to comprehend, extend and maintain.
+  to comprehend, extend, and maintain.
 - Testing - Using Gems since they are small makes much faster to run all tests, or be very through with testing of the gem.
   Since the gem is packaged, not changed too often, it also allows us to run those tests less frequently improving
   CI testing time.
@@ -283,7 +283,7 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
 
       This job will handle building and publishing the gem (it uses a `gitlab_rubygems` RubyGems
       API token inherited from the `gitlab-org/ruby/gems` group, in order to publish the gem
-      package), as well as creating the tag, release and populating its release notes by
+      package), as well as creating the tag, release, and populating its release notes by
       using the
       [Generate changelog data](../api/repositories.md#generate-changelog-data)
       API endpoint.

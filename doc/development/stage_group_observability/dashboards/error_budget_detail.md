@@ -94,7 +94,7 @@ for your stage group, and limited to the range selected. Keep in mind
 that we only keep logs in Kibana for seven days.
 
 In the graphs, there is a single line per service. In the previous example image,
-`rails_requests` is an SLI for the `web`, `api` and `git` services.
+`rails_requests` is an SLI for the `web`, `api`, and `git` services.
 
 Sidekiq is not included in this dashboard. We're tracking this in
 [epic 700](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/700).

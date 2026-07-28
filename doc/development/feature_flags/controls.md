@@ -143,7 +143,7 @@ dashboard on Grafana.
 ##### C. Feature flag for an operation that runs at the core of the app
 
 Sometimes, a new change that might touch every aspect of the GitLab application. For example, changing
-a database query on one of the core models, like `User`, `Project` or `Namespace`. In this case, releasing
+a database query on one of the core models, like `User`, `Project`, or `Namespace`. In this case, releasing
 the feature for `1%` of the requests, or even less than that (via Change Request) is highly recommended to avoid any incidents.
 See [this change request example](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/16427) of a feature flag that was released
 for around `0.1%` of the requests, due to the high impact of the change.

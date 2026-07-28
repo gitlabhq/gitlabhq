@@ -737,7 +737,7 @@ module Types
 end
 ```
 
-The `validate_request!` method receives a `Gitlab::Database::Aggregation::Request` object containing `dimensions`, `metrics`, `filters` and `order` specifications.
+The `validate_request!` method receives a `Gitlab::Database::Aggregation::Request` object containing `dimensions`, `metrics`, `filters`, and `order` specifications.
 
 ### Dimensions for ActiveRecord association
 

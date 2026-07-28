@@ -1,6 +1,6 @@
 ---
-source_checksum: a8b2d55fd93bf700
-distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
+source_checksum: 9fd9f0dd24d08709
+distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -53,7 +53,8 @@ distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
 - Call `track_internal_event` from the `Gitlab::InternalEventsTracking` module, passing `user`, `namespace`, and `project` arguments; fill out as many as possible to maximize data quality.
 - When a metric uses a `unique` property (e.g., `unique: project.id`), ensure the corresponding argument (e.g., `project`) is always provided to `track_internal_event`.
 - Use the `ProductAnalyticsTracking` module for controller-level event tracking and the `Gitlab::InternalEvents::ServiceTracking` concern for service objects instead of calling `track_internal_event` inline.
-- When passing `additional_properties`, DO NOT include sensitive information; define each custom property in the event definition's `additional_properties` field.
+- When passing `additional_properties`, DO NOT include sensitive information; define each custom property in the event definition's `additional_properties` field; prefer the built-in `label` (string), `property` (string), and `value` (numeric) properties over custom ones, as they map to dedicated flat columns in Snowflake and are immediately queryable without Data team involvement.
+- When a feature is enabled through multiple namespaces and you need to track why, pass the optional `feature_enabled_by_namespace_ids` parameter with an array of namespace IDs to `track_internal_event`.
 - When emitting multiple events at once, wrap calls in `Gitlab::InternalEvents.with_batched_redis_writes` to batch Redis writes into a single call.
 
 ### Frontend Tracking

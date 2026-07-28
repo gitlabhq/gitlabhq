@@ -170,7 +170,7 @@ This service is responsible for moving all the pipeline's jobs to a completed st
 - `pending` status if their requirements are met and they're ready to run and can be picked [up by a runner](#job-scheduling)
 - `created` status if they need to wait, with `processed` marked as `true`
 
-After a job has been executed it can complete successfully or fail. Each status transition for a job within a pipeline triggers this service again, which looks for the next jobs to be transitioned towards completion. While doing that, `ProcessPipelineService` updates the status of jobs, stages and the overall pipeline. If any jobs require further processing, the service will reschedule itself.
+After a job has been executed it can complete successfully or fail. Each status transition for a job within a pipeline triggers this service again, which looks for the next jobs to be transitioned towards completion. While doing that, `ProcessPipelineService` updates the status of jobs, stages, and the overall pipeline. If any jobs require further processing, the service will reschedule itself.
 
 The `processed` flag acts as a "needs processing" indicator that gets [reset to `false` before each status transition](https://gitlab.com/gitlab-org/gitlab/-/blob/12da0553647706202c2113e84d92dff0ef12d668/app/models/commit_status.rb#L131). This ensures that whenever a job's status changes, those changes are propagated to the stage and pipeline levels, and later builds and next builds in the DAG can be marked as `pending`. The job won't be marked as `processed` until the state is also propagated to the pipeline and stage.
 
@@ -362,7 +362,7 @@ sequenceDiagram
 
 ## The definition of "Job" in GitLab CI/CD
 
-"Job" in GitLab CI context refers a task to drive Continuous Integration, Delivery and Deployment.
+"Job" in GitLab CI context refers a task to drive Continuous Integration, Delivery, and Deployment.
 Typically, a pipeline contains multiple stages, and a stage contains multiple jobs.
 
 In Active Record modeling, Job is defined as `CommitStatus` class.

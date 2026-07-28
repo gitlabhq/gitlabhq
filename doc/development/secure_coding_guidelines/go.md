@@ -63,7 +63,7 @@ Alternatively, you can use backtick-delimited raw string literals. For example, 
 
 ### Description
 
-Path Traversal vulnerabilities grant attackers access to arbitrary directories and files on the server that is executing an application. This data can include data, code or credentials.
+Path Traversal vulnerabilities grant attackers access to arbitrary directories and files on the server that is executing an application. This data can include data, code, or credentials.
 
 Traversal can occur when a path includes directories. A typical malicious example includes one or more `../`, which tells the file system to look in the parent directory. Supplying many of them in a path, for example `../../../../../../../etc/passwd`, usually resolves to `/etc/passwd`. If the file system is instructed to look back to the root directory and can't go back any further, then extra `../` are ignored. The file system then looks from the root, resulting in `/etc/passwd` - a file you definitely do not want exposed to a malicious attacker!
 
@@ -193,7 +193,7 @@ This outputs `1` followed by the content of `/etc/passwd`.
 
 ## Working with archive files
 
-Working with archive files like `zip`, `tar`, `jar`, `war`, `cpio`, `apk`, `rar` and `7z` presents an area where potentially critical security vulnerabilities can sneak into an application.
+Working with archive files like `zip`, `tar`, `jar`, `war`, `cpio`, `apk`, `rar`, and `7z` presents an area where potentially critical security vulnerabilities can sneak into an application.
 
 ### Zip Slip
 

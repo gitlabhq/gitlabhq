@@ -195,7 +195,7 @@ When primary is in Maintenance Mode, secondary also automatically goes into Main
 
 It is important that you do not disable replication before enabling Maintenance Mode.
 
-Replication, verification and manual actions to resync and reverify registries through the Admin UI
+Replication, verification, and manual actions to resync and reverify registries through the Admin UI
 continue to work, but proxied Git pushes to primary don't.
 
 ### Secure features

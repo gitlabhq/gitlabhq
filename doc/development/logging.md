@@ -237,7 +237,7 @@ end
 #### Logging durations
 
 Similar to timezones, choosing the right time unit to log can impose avoidable overhead. So, whenever
-challenged to choose between seconds, milliseconds or any other unit, lean towards seconds as float
+challenged to choose between seconds, milliseconds, or any other unit, lean towards seconds as float
 (with microseconds precision, that is, `Gitlab::InstrumentationHelper::DURATION_PRECISION`).
 
 In order to make it easier to track timings in the logs, make sure the log key has `_s` as
@@ -338,7 +338,7 @@ I, [2020-01-13T19:01:17.091Z #11056]  INFO -- : {"message"=>"Message", "project_
 lifecycle, which can then be added to the web request
 or Sidekiq logs.
 
-The API, Rails and Sidekiq logs contain fields starting with `meta.` with this context information.
+The API, Rails, and Sidekiq logs contain fields starting with `meta.` with this context information.
 
 Entry points can be seen at:
 
@@ -396,7 +396,7 @@ It should be noted that manual logging of exceptions is not allowed, as:
    which reduces the boilerplate,
 1. Very often manually logged exception needs to be tracked to Sentry as well,
 1. Manually logged exceptions does not use `correlation_id`, which makes hard
-   to pin them to request, user and context in which this exception was raised,
+   to pin them to request, user, and context in which this exception was raised,
 1. Manually logged exceptions often end up across
    multiple files, which increases burden scraping all logging files.
 

@@ -308,6 +308,14 @@ Exported items are imported with the following changes:
   source project.
 - If the `Internal` visibility level [is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects),
   all imported projects are given `Private` visibility.
+- Protected branch and protected tag access levels are reset to Maintainers.
+  For example, **Allowed to merge** set to **Developers + Maintainers** becomes
+  **Maintainers**.
+  Access levels set to No one are preserved.
+  - To preserve the original access levels, the user who
+    performs the import must have the Owner role for the destination
+    project's top-level group, or be a GitLab administrator.
+  - Access levels are always reset when the destination project is in a personal namespace.
 
 Deploy keys aren't imported. To use deploy keys, you must enable them in your imported project and update protected branches.
 

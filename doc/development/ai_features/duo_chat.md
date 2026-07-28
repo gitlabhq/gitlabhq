@@ -673,7 +673,7 @@ Keep in mind that the `clientSubscriptionId` must be unique for every request. R
    ```
 
 If you can't fetch the response, check `graphql_json.log`,
-`sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error
+`sidekiq_json.log`, `llm.log`, or `modelgateway_debug.log` if it contains error
 information.
 
 ### GitLab Duo Chat Conversation Threads GraphQL queries

@@ -349,7 +349,6 @@ RSpec/ReceiveMessages:
     - 'spec/requests/api/graphql/mutations/ml/model_versions/delete_spec.rb'
     - 'spec/requests/api/graphql/mutations/ml/models/delete_spec.rb'
     - 'spec/requests/api/graphql/mutations/ml/models/destroy_spec.rb'
-    - 'spec/requests/api/group_export_spec.rb'
     - 'spec/requests/api/group_import_spec.rb'
     - 'spec/requests/api/helpers_spec.rb'
     - 'spec/requests/api/maven_packages_spec.rb'
