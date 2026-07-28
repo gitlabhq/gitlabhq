@@ -233,6 +233,19 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           expect { service.execute }.not_to change { user_app.reload.organization_id }
         end
       end
+
+      context 'when transferring topics' do
+        let!(:old_topic) { create(:topic, name: 'rails', organization: old_organization) }
+        let!(:project_topic) { create(:project_topic, project: project, topic: old_topic) }
+
+        it 'delegates to TopicsService' do
+          service.execute
+
+          new_topic = Projects::Topic.find_by(organization_id: new_organization.id, name: 'rails')
+          expect(new_topic).to be_present
+          expect(project_topic.reload.topic_id).to eq(new_topic.id)
+        end
+      end
     end
 
     context 'when group is not root' do

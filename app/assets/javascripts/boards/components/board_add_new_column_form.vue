@@ -27,7 +27,7 @@ export default {
       required: true,
     },
   },
-  emits: ['add-list', 'setAddColumnFormVisibility'],
+  emits: ['add-list', 'set-add-column-form-visibility'],
   methods: {
     onSubmit() {
       this.$emit('add-list');
@@ -79,7 +79,7 @@ export default {
         >
         <gl-button
           data-testid="cancelAddNewColumn"
-          @click="$emit('setAddColumnFormVisibility', false)"
+          @click="$emit('set-add-column-form-visibility', false)"
           >{{ $options.i18n.cancel }}</gl-button
         >
       </div>

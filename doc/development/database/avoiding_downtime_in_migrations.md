@@ -597,7 +597,7 @@ This operation is safe as there's no code using the table just yet.
 Dropping tables requires a multi-release process to avoid downtime:
 
 1. **Release M**: Remove all application code that uses the table.
-1. **Release M+1**: In seperate post-deployment migrations for each, remove the foreign keys, then drop the table.
+1. **Release M+1**: In separate post-deployment migrations for each, remove the foreign keys, then drop the table.
 
 Add the table to [`db/docs/deleted_tables`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/docs/deleted_tables) using the process described in [database dictionary](database_dictionary.md#dropping-tables).
 Even though the table is deleted, it is still referenced in database migrations.

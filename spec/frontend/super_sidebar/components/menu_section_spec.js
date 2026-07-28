@@ -107,6 +107,17 @@ describe('MenuSection component', () => {
         expect(findCollapse().classes()).not.toContain('gl-invisible');
       });
     });
+
+    describe('when in icon-only mode and headerless', () => {
+      it('shows icons of pinned items', () => {
+        createWrapper(
+          { title: 'Pinned' },
+          { expanded: true, headerless: true },
+          { isIconOnly: true },
+        );
+        expect(findCollapse().classes()).not.toContain('gl-invisible');
+      });
+    });
   });
 
   describe('flyout behavior', () => {

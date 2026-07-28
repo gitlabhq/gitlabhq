@@ -26,7 +26,13 @@ import {
   workItemMetadataProviderResponse,
 } from '../mock_data';
 
-jest.mock('~/lib/utils/url_utility');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
+  updateHistory: jest.fn(),
+  setUrlParams: jest.fn(),
+  removeParams: jest.fn(),
+}));
 
 Vue.use(VueApollo);
 
@@ -141,7 +147,47 @@ describe('WorkItemDetailPanel', () => {
 
     expect(
       wrapper.findByTestId('work-item-detail-panel-copy-button').attributes('data-clipboard-text'),
-    ).toBe('test');
+    ).toBe('http://test.host/test');
+  });
+
+  // Regression: board drawer items provide `webPath` instead of `webUrl`, so the
+  // panel must fall back to `webPath` for its links and the "Open in full page"
+  // navigation. Otherwise those actions become no-ops on issue boards.
+  describe('when the active item provides `webPath` instead of `webUrl` (board drawer)', () => {
+    const boardItem = {
+      id: '1',
+      iid: '1',
+      webPath: '/gitlab-org/gitlab/-/issues/1',
+      fullPath: 'gitlab-org/gitlab',
+    };
+
+    it.each`
+      testId                                  | attr
+      ${'work-item-detail-panel-link-button'} | ${'href'}
+      ${'work-item-detail-panel-ref-link'}    | ${'href'}
+    `('renders `webPath` in the $testId $attr', ({ testId, attr }) => {
+      createComponent({ activeItem: boardItem });
+
+      expect(wrapper.findByTestId(testId).attributes(attr)).toBe('/gitlab-org/gitlab/-/issues/1');
+    });
+
+    it('copies the absolute URL built from `webPath` to the clipboard', () => {
+      createComponent({ activeItem: boardItem });
+
+      expect(
+        wrapper
+          .findByTestId('work-item-detail-panel-copy-button')
+          .attributes('data-clipboard-text'),
+      ).toBe('http://test.host/gitlab-org/gitlab/-/issues/1');
+    });
+
+    it('navigates to `webPath` when opening in full page from a board', () => {
+      createComponent({ isBoard: true, activeItem: boardItem });
+
+      findLinkButton().vm.$emit('click', new MouseEvent('click'));
+
+      expect(visitUrl).toHaveBeenCalledWith('/gitlab-org/gitlab/-/issues/1');
+    });
   });
 
   describe.skip('closing the drawer', () => {

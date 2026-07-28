@@ -38,7 +38,7 @@ describe('BoardAddNewColumnTrigger', () => {
 
       findCreateButton().vm.$emit('click');
 
-      expect(wrapper.emitted('setAddColumnFormVisibility')).toEqual([[true]]);
+      expect(wrapper.emitted('set-add-column-form-visibility')).toEqual([[true]]);
     });
   });
   describe('when isNewListShowing is true', () => {

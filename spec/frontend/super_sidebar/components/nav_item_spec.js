@@ -366,6 +366,67 @@ describe('NavItem component', () => {
     });
   });
 
+  describe('drag icon behavior in pinned section', () => {
+    const pinnedItem = { title: 'Issues', icon: 'issues', library_icon: 'issues' };
+
+    describe('when hideUnpinnedSidebarItems is enabled', () => {
+      beforeEach(() => {
+        createWrapper({
+          item: pinnedItem,
+          props: { isInPinnedSection: true },
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+        });
+      });
+
+      it('renders both item icon and grip icon', () => {
+        expect(wrapper.findByTestId('issues-icon').exists()).toBe(true);
+        expect(wrapper.findByTestId('grip-icon').exists()).toBe(true);
+      });
+
+      it('swaps item icon for grip icon on hover', () => {
+        expect(wrapper.findByTestId('issues-icon').classes()).toContain(
+          'hide-on-focus-or-hover--target',
+        );
+        expect(wrapper.findByTestId('grip-icon').classes()).toContain(
+          'show-on-focus-or-hover--target',
+        );
+        expect(wrapper.findByTestId('grip-icon').classes()).toContain('js-draggable-icon');
+      });
+
+      describe('when in icon-only mode', () => {
+        beforeEach(() => {
+          createWrapper({
+            item: pinnedItem,
+            props: { isInPinnedSection: true },
+            provide: { glFeatures: { hideUnpinnedSidebarItems: true }, isIconOnly: true },
+          });
+        });
+
+        it('renders only the item icon without drag swap', () => {
+          expect(wrapper.findByTestId('issues-icon').exists()).toBe(true);
+          expect(wrapper.findByTestId('grip-icon').exists()).toBe(false);
+          expect(wrapper.findByTestId('issues-icon').classes()).not.toContain(
+            'hide-on-focus-or-hover--target',
+          );
+        });
+      });
+    });
+
+    describe('when hideUnpinnedSidebarItems is disabled', () => {
+      it('renders only the item icon without hover swap', () => {
+        createWrapper({
+          item: { title: 'Issues', icon: 'issues' },
+          props: { isInPinnedSection: true },
+        });
+
+        expect(wrapper.findByTestId('issues-icon').exists()).toBe(true);
+        expect(wrapper.findByTestId('issues-icon').classes()).not.toContain(
+          'hide-on-focus-or-hover--target',
+        );
+      });
+    });
+  });
+
   describe('title tooltip', () => {
     const directives = {
       GlTooltip: createMockDirective('gl-tooltip'),

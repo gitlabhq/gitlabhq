@@ -5,10 +5,6 @@ export default {
   files: [
     'app/assets/javascripts/behaviors/components/diagram_performance_warning.vue',
     'app/assets/javascripts/behaviors/components/image_lightbox.vue',
-    'app/assets/javascripts/boards/components/board_add_new_column.vue',
-    'app/assets/javascripts/boards/components/board_add_new_column_between.vue',
-    'app/assets/javascripts/boards/components/board_add_new_column_form.vue',
-    'app/assets/javascripts/boards/components/board_add_new_column_trigger.vue',
     'app/assets/javascripts/boards/components/board_card_move_to_position.vue',
     'app/assets/javascripts/boards/components/board_column.vue',
     'app/assets/javascripts/boards/components/board_content.vue',
@@ -195,7 +191,6 @@ export default {
     'ee/app/assets/javascripts/analytics/productivity_analytics/components/filter_dropdowns.vue',
     'ee/app/assets/javascripts/analytics/productivity_analytics/components/metric_chart.vue',
     'ee/app/assets/javascripts/analytics/productivity_analytics/components/mr_table.vue',
-    'ee/app/assets/javascripts/boards/components/board_add_new_column.vue',
     'ee/app/assets/javascripts/boards/components/board_list_header.vue',
     'ee/app/assets/javascripts/boards/components/board_new_epic.vue',
     'ee/app/assets/javascripts/boards/components/board_new_issue.vue',

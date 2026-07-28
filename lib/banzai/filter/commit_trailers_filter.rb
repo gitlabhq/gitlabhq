@@ -26,7 +26,11 @@ module Banzai
 
           next if html == content
 
-          node.replace("\n\n#{html}")
+          # Replace the node in place. Do NOT prepend newlines here: the node often holds the whole
+          # commit description (body + trailer), so prepending would inject blank lines at the start
+          # of the body (or mid-body when the DOM is split by a link) rather than before the trailer.
+          # The commit message already carries its own blank line before the trailer block.
+          node.replace(html)
         end
 
         doc

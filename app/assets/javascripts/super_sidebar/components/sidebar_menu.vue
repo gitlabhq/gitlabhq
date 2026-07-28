@@ -315,7 +315,8 @@ export default {
   >
     <ul
       v-if="hasStaticItems"
-      class="gl-m-0 gl-mb-3 gl-list-none gl-p-0"
+      class="gl-m-0 gl-list-none gl-p-0"
+      :class="{ 'gl-mb-3': showUnpinnedItems }"
       data-testid="static-items-section"
     >
       <nav-item

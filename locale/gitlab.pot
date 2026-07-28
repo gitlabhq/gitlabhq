@@ -5888,6 +5888,9 @@ msgid_plural "AdminAIPoweredFeatures|%d models selected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "AdminAIPoweredFeatures|%{allowedCount} of %{totalCount} models allowed"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|AI-native features"
 msgstr ""
 
@@ -5904,6 +5907,9 @@ msgid "AdminAIPoweredFeatures|All available models (%d model)"
 msgid_plural "AdminAIPoweredFeatures|All available models (%d models)"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "AdminAIPoweredFeatures|Allow list disabled"
+msgstr ""
 
 msgid "AdminAIPoweredFeatures|An AI assistant that helps users accelerate software development using real-time conversational AI. This setting is for regular Duo Chat only. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
@@ -7937,6 +7943,9 @@ msgid "AgentArtifacts|%{workflowDefinition} session %{workflowId}"
 msgstr ""
 
 msgid "AgentArtifacts|AI Item"
+msgstr ""
+
+msgid "AgentArtifacts|AI audit event storage is turned off, so no audit events are being recorded. %{linkStart}Turn on storage%{linkEnd} to start capturing audit events."
 msgstr ""
 
 msgid "AgentArtifacts|Agent audit events"
@@ -11739,6 +11748,9 @@ msgstr ""
 msgid "ArtifactRegistry|Activation"
 msgstr ""
 
+msgid "ArtifactRegistry|Ancestor ID must be a valid UUID."
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact registry"
 msgstr ""
 
@@ -11775,7 +11787,16 @@ msgstr ""
 msgid "ArtifactRegistry|The Artifact Registry service is unavailable."
 msgstr ""
 
+msgid "ArtifactRegistry|The requested resources could not be found."
+msgstr ""
+
 msgid "ArtifactRegistry|The role assignment could not be completed."
+msgstr ""
+
+msgid "ArtifactRegistry|The role assignment lookup could not be completed."
+msgstr ""
+
+msgid "ArtifactRegistry|The role assignment lookup request was invalid."
 msgstr ""
 
 msgid "ArtifactRegistry|The role assignment request was invalid."
@@ -11784,13 +11805,22 @@ msgstr ""
 msgid "ArtifactRegistry|Unknown Artifact Registry role: %{role}."
 msgstr ""
 
+msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
+msgstr ""
+
 msgid "ArtifactRegistry|You are not authorized to grant this role on this resource."
+msgstr ""
+
+msgid "ArtifactRegistry|You are not authorized to read these role assignments."
 msgstr ""
 
 msgid "ArtifactRegistry|You cannot grant roles in another organization."
 msgstr ""
 
 msgid "ArtifactRegistry|You must be signed in to grant a role."
+msgstr ""
+
+msgid "ArtifactRegistry|You must be signed in to read role assignments."
 msgstr ""
 
 msgid "Artifacts"

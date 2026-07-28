@@ -54,7 +54,6 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       personal_access_token_last_used_ips
       pool_repositories
       project_topic_upload_states
-      project_topic_uploads
       queries_service_pings
       raw_usage_data
       sbom_component_versions
@@ -66,7 +65,6 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       slack_api_scopes
       snippet_uploads
       personal_snippet_upload_states
-      topics
       upcoming_reconciliations
       user_agent_details
       user_uploads
@@ -105,6 +103,8 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       organization_isolations
       organization_push_rules
       organization_settings
+      project_topic_uploads
+      loose_foreign_keys_organization_deleted_records
       slack_integrations
       slack_integrations_scopes
       web_hook_logs_daily

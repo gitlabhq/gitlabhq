@@ -1,6 +1,6 @@
 ---
-stage: Software Supply Chain Security
-group: Pipeline Security
+stage: Security Platform
+group: Secrets Manager Application
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Secrets Manager
 ignore_in_report: true

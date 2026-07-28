@@ -79,8 +79,10 @@ Introduce a **two-layer architecture** for GraphQL-based MCP tools:
 
 ```mermaid
 graph TB
-    A[AI Client<br/>Claude/Cursor] -->|MCP Request| B[CreateIssueService<br/>GraphqlService]
-    B -->|params, version| E[CreateIssueTool<br/>GraphqlTool]
+    accTitle: MCP GraphQL two-layer architecture
+    accDescr: AI client sends an MCP request to CreateWorkItemNoteService, which delegates to CreateWorkItemNoteTool, which executes a GraphQL mutation against GitlabSchema and returns the result back up the chain.
+    A[AI Client<br/>Claude/Cursor] -->|MCP Request| B[CreateWorkItemNoteService<br/>Base::GraphqlService]
+    B -->|params, version| E[CreateWorkItemNoteTool<br/>Base::GraphqlTool]
     E -->|GraphQL Mutation| F[GitlabSchema.execute]
     F -->|Response| E
     E -->|Structured Result| B
@@ -126,7 +128,7 @@ of them, and there is no separate `graphql` folder, so the prefix adds no inform
 | Layer           | Pattern              | Example                             |
 |-----------------|----------------------|-------------------------------------|
 | Service wrapper | `<Operation>Service` | `Mcp::Tools::Labels::SearchService` |
-| GraphQL tool    | `<Operation>Tool`    | `Mcp::Tools::CreateIssueTool`       |
+| GraphQL tool    | `<Operation>Tool`    | `Mcp::Tools::WorkItems::CreateWorkItemNoteTool` |
 
 The `tool_name` keys registered in `Mcp::Tools::Manager` are a public, append-only contract.
 Renaming a Ruby class does not rename its registered tool, so keep the keys unchanged.
@@ -415,45 +417,66 @@ end
 
 ### Service Wrapper Pattern
 
-**File**: `app/services/mcp/tools/create_issue_service.rb`
+**File**: `app/services/mcp/tools/work_items/create_work_item_note_service.rb`
 
 **Purpose**: Provides input validation, MCP protocol compliance, and version
 management. Authorization is delegated to GraphQL layer.
 
+This `input_schema` below omits optional properties such as `minLength` and `enum`; add them as needed.
+
 ```ruby
 module Mcp
   module Tools
-    class CreateIssueService < Base::GraphqlService
-      # Register version 0.1.0 with metadata
-      register_version '0.1.0', {
-        description: 'Create a new issue in a GitLab project using GraphQL mutation',
-        input_schema: {
-          type: 'object',
-          properties: {
-            project_path: { type: 'string', description: 'Full project path or ID' },
-            title: { type: 'string', description: 'Issue title' },
-            description: { type: 'string', description: 'Issue description' }
+    module WorkItems
+      class CreateWorkItemNoteService < Base::GraphqlService
+        register_version '0.1.0', {
+          description: 'Create a new note (comment) on a GitLab work item',
+          annotations: {
+            readOnlyHint: false,
+            destructiveHint: false
           },
-          required: ['project_path', 'title']
+          input_schema: {
+            type: 'object',
+            properties: {
+              url: {
+                type: 'string',
+                description: 'GitLab URL for the work item.'
+              },
+              project_id: {
+                type: 'string',
+                description: 'ID or path of the project. Required if URL and group_id are not provided.'
+              },
+              work_item_iid: {
+                type: 'integer',
+                description: 'Internal ID of the work item. Required if URL is not provided.'
+              },
+              body: {
+                type: 'string',
+                description: 'Content of the note/comment (max 1,048,576 characters)',
+                maxLength: 1_048_576
+              }
+            },
+            required: ['body']
+          }
         }
-      }
 
-      protected
+        protected
 
-      # Specify which GraphQL tool class to use
-      def graphql_tool_class
-        Mcp::Tools::CreateIssueTool
-      end
+        # Specify which GraphQL tool class to use
+        def graphql_tool_class
+          Mcp::Tools::WorkItems::CreateWorkItemNoteTool
+        end
 
-      # Version 0.1.0 implementation
-      def perform_0_1_0(arguments = {})
-        execute_graphql_tool(arguments)
-      end
+        # Version 0.1.0 implementation
+        def perform_0_1_0(arguments)
+          execute_graphql_tool(arguments)
+        end
 
-      # Fallback to 0.1.0 behavior for any unimplemented versions
-      override :perform_default
-      def perform_default(arguments = {})
-        perform_0_1_0(arguments)
+        # Fallback to 0.1.0 behavior for any unimplemented versions
+        override :perform_default
+        def perform_default(arguments = {})
+          perform_0_1_0(arguments)
+        end
       end
     end
   end
@@ -472,96 +495,109 @@ end
 
 ### Mutation Tool Example
 
-**File**: `app/services/mcp/tools/create_issue_tool.rb`
+**File**: `app/services/mcp/tools/work_items/create_work_item_note_tool.rb`
 
-**Use Case**: Create an issue with basic fields.
+**Use Case**: Create a note (comment) on a work item.
 
-Each version loads its operation from a versioned `.graphql` file.
+Each version loads its operation from a `.graphql` file.
 For more information, see [Store GraphQL operations in `.graphql` files](#store-graphql-operations-in-graphql-files).
 
 ```graphql
-# app/graphql/queries/mcp/issues/create_issue.v0_1_0.mutation.graphql
+# app/graphql/queries/mcp/work_items/create_note.mutation.graphql
 # @feature_category: mcp_server
-mutation createIssue($input: CreateIssueInput!) {
-  createIssue(input: $input) {
-    issue {
+mutation createNote($input: CreateNoteInput!) {
+  createNote(input: $input) {
+    note {
       id
-      iid
-      title
-      description
-      webUrl
-      state
+      body
+      internal
+      createdAt
+      updatedAt
+      author {
+        id
+        name
+        username
+        avatarUrl
+        webUrl
+      }
+      discussion {
+        id
+      }
     }
     errors
   }
 }
 ```
 
-```graphql
-# app/graphql/queries/mcp/issues/create_issue.v0_2_0.mutation.graphql
-# @feature_category: mcp_server
-mutation createIssue($input: CreateIssueInput!) {
-  createIssue(input: $input) {
-    issue {
-      id
-      iid
-      title
-      description
-      webUrl
-      state
-      createdAt
-      updatedAt
-    }
-    errors
-  }
-}
-```
+`WorkItems::BaseTool` inherits from `Base::GraphqlTool` and resolves the target work item from
+either a URL or a project and internal ID pair:
 
 ```ruby
 module Mcp
   module Tools
-    class CreateIssueTool < Base::GraphqlTool
-      register_version '0.1.0', {
-        operation_name: 'createIssue',
-        graphql_operation: load_graphql('issues/create_issue.v0_1_0.mutation.graphql')
-      }
-
-      # A later version returns more fields from its own file
-      register_version '0.2.0', {
-        operation_name: 'createIssue',
-        graphql_operation: load_graphql('issues/create_issue.v0_2_0.mutation.graphql')
-      }
-
-      # Default variable building (used by v0.1.0)
-      def build_variables
-        {
-          input: {
-            projectPath: params[:project_path],
-            title: params[:title],
-            description: params[:description],
-            confidential: params[:confidential]
-          }.compact
+    module WorkItems
+      class CreateWorkItemNoteTool < BaseTool
+        register_version VERSIONS[:v0_1_0], {
+          operation_name: 'createNote',
+          graphql_operation: load_graphql('work_items/create_note.mutation.graphql')
         }
-      end
 
-      private
+        def build_variables
+          validate_no_quick_actions!(params[:body], field_name: 'note body')
 
-      # Version-specific variable building for v0.2.0
-      def build_variables_0_2_0
-        {
-          input: {
-            projectPath: params[:project_path],
-            title: params[:title],
-            description: params[:description],
-            confidential: params[:confidential],
-            labelIds: params[:label_ids]
+          work_item_id = resolve_work_item_id
+
+          { input: build_note_input(work_item_id) }
+        end
+
+        private
+
+        def build_note_input(work_item_id)
+          {
+            noteableId: work_item_id,
+            body: params[:body],
+            internal: params[:internal],
+            discussionId: params[:discussion_id]
           }.compact
-        }
+        end
       end
     end
   end
 end
 ```
+
+#### Register a later version
+
+A tool with a single version loads an unversioned file, such as
+`work_items/create_note.mutation.graphql`. When you add a second version, rename that file to
+include its version and add a file for the new version, so every registered version maps to its own
+file:
+
+```plain
+app/graphql/queries/mcp/work_items/
+  create_note.v0_1_0.mutation.graphql
+  create_note.v0_2_0.mutation.graphql
+```
+
+Register each version against its own file:
+
+```ruby
+register_version VERSIONS[:v0_1_0], {
+  operation_name: 'createNote',
+  graphql_operation: load_graphql('work_items/create_note.v0_1_0.mutation.graphql')
+}
+
+# A later version returns more fields from its own file
+register_version '0.2.0', {
+  operation_name: 'createNote',
+  graphql_operation: load_graphql('work_items/create_note.v0_2_0.mutation.graphql')
+}
+```
+
+To send different variables for a version, define a `build_variables_<version>` method, such as
+`build_variables_0_2_0` for version `0.2.0`. The suffix is the version with each dot replaced by an
+underscore. `build_variables_for_version` calls that method when it exists, and otherwise falls back
+to `build_variables`. Version-specific `perform_<version>` methods follow the same pattern.
 
 ### Composite Tool Example
 
@@ -661,37 +697,39 @@ mutation yourMutation($input: YourInput!) {
 **Step 2: Define the GraphQL tool class**
 
 ```ruby
-# app/services/mcp/tools/your_tool.rb
+# app/services/mcp/tools/your_domain/your_tool.rb
 module Mcp
   module Tools
-    class YourTool < Base::GraphqlTool
-      # Load the operation from its .graphql file
-      register_version '0.1.0', {
-        operation_name: 'yourMutation',
-        graphql_operation: load_graphql('your_domain/your.mutation.graphql')
-      }
-
-      # Implement variable building
-      def build_variables
-        {
-          input: {
-            projectPath: params[:project_path],
-            title: params[:title]
-          }.compact
+    module YourDomain
+      class YourTool < Base::GraphqlTool
+        # Load the operation from its .graphql file
+        register_version '0.1.0', {
+          operation_name: 'yourMutation',
+          graphql_operation: load_graphql('your_domain/your.mutation.graphql')
         }
-      end
 
-      # Optional: Version-specific variable building
-      private
+        # Implement variable building
+        def build_variables
+          {
+            input: {
+              projectPath: params[:project_path],
+              title: params[:title]
+            }.compact
+          }
+        end
 
-      def build_variables_0_2_0
-        {
-          input: {
-            projectPath: params[:project_path],
-            title: params[:title],
-            extraField: params[:extra_field]
-          }.compact
-        }
+        # Optional: Version-specific variable building
+        private
+
+        def build_variables_0_2_0
+          {
+            input: {
+              projectPath: params[:project_path],
+              title: params[:title],
+              extraField: params[:extra_field]
+            }.compact
+          }
+        end
       end
     end
   end
@@ -701,39 +739,41 @@ end
 **Step 3: Create the service wrapper**
 
 ```ruby
-# app/services/mcp/tools/your_service.rb
+# app/services/mcp/tools/your_domain/your_service.rb
 module Mcp
   module Tools
-    class YourService < Base::GraphqlService
-      # Register version with metadata
-      register_version '0.1.0', {
-        description: 'Description of what this tool does',
-        input_schema: {
-          type: 'object',
-          properties: {
-            project_path: { type: 'string', description: '...' },
-            title: { type: 'string', description: '...' }
-          },
-          required: ['project_path', 'title']
+    module YourDomain
+      class YourService < Base::GraphqlService
+        # Register version with metadata
+        register_version '0.1.0', {
+          description: 'Description of what this tool does',
+          input_schema: {
+            type: 'object',
+            properties: {
+              project_path: { type: 'string', description: '...' },
+              title: { type: 'string', description: '...' }
+            },
+            required: ['project_path', 'title']
+          }
         }
-      }
 
-      protected
+        protected
 
-      # Specify the GraphQL tool class to use
-      def graphql_tool_class
-        Mcp::Tools::YourTool
-      end
+        # Specify the GraphQL tool class to use
+        def graphql_tool_class
+          Mcp::Tools::YourDomain::YourTool
+        end
 
-      # Version 0.1.0 implementation
-      def perform_0_1_0(arguments = {})
-        execute_graphql_tool(arguments)
-      end
+        # Version 0.1.0 implementation
+        def perform_0_1_0(arguments)
+          execute_graphql_tool(arguments)
+        end
 
-      # Fallback to 0.1.0 behavior for any unimplemented versions
-      override :perform_default
-      def perform_default(arguments = {})
-        perform_0_1_0(arguments)
+        # Fallback to 0.1.0 behavior for any unimplemented versions
+        override :perform_default
+        def perform_default(arguments = {})
+          perform_0_1_0(arguments)
+        end
       end
     end
   end
@@ -746,7 +786,7 @@ GraphQL tools are registered separately from custom tools in Mcp::Tools::Manager
 
 ```ruby
 GRAPHQL_TOOLS = {
-  'your_tool_name' => ::Mcp::Tools::YourService
+  'your_tool_name' => ::Mcp::Tools::YourDomain::YourService
 }.freeze
 ```
 
@@ -764,7 +804,7 @@ GRAPHQL_TOOLS = {
 **Approach**: Execute GraphQL directly in service classes without abstraction layer.
 
 ```ruby
-class CreateIssueService < Base::GraphqlService
+class CreateWorkItemNoteService < Base::GraphqlService
   def perform_0_1_0(params)
     result = GitlabSchema.execute(MUTATION, variables: params, context: {...})
     # Handle result inline

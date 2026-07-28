@@ -16,44 +16,18 @@ RSpec.describe Import::Clients::ObjectStorage, feature_category: :importers do
   subject(:client) { described_class.new(provider: provider, bucket: bucket, credentials: credentials) }
 
   describe '#initialize' do
-    context 'when the provider is aws' do
-      let(:provider) { :aws }
+    using RSpec::Parameterized::TableSyntax
 
-      it 'builds an AWS adapter' do
-        expect(described_class::Adapters::Aws).to receive(:new)
-          .with(provider: provider, bucket: bucket, credentials: credentials)
-
-        client
-      end
+    where(:provider, :expected_adapter) do
+      :aws           | described_class::Adapters::Aws
+      :s3_compatible | described_class::Adapters::Aws
+      :gcs           | described_class::Adapters::Gcs
+      :gcs_hmac      | described_class::Adapters::GcsHmac
     end
 
-    context 'when the provider is s3_compatible' do
-      let(:provider) { :s3_compatible }
-
-      it 'builds an AWS adapter' do
-        expect(described_class::Adapters::Aws).to receive(:new)
-          .with(provider: provider, bucket: bucket, credentials: credentials)
-
-        client
-      end
-    end
-
-    context 'when the provider is gcs_hmac' do
-      let(:provider) { :gcs_hmac }
-
-      it 'builds a GCS HMAC adapter' do
-        expect(described_class::Adapters::GcsHmac).to receive(:new)
-          .with(provider: provider, bucket: bucket, credentials: credentials)
-
-        client
-      end
-    end
-
-    context 'when the provider is gcs' do
-      let(:provider) { :gcs }
-
-      it 'builds a GCS adapter' do
-        expect(described_class::Adapters::Gcs).to receive(:new)
+    with_them do
+      it 'builds the adapter for the provider' do
+        expect(expected_adapter).to receive(:new)
           .with(provider: provider, bucket: bucket, credentials: credentials)
 
         client

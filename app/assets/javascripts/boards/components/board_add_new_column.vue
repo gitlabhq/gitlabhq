@@ -50,7 +50,7 @@ export default {
       default: null,
     },
   },
-  emits: ['filter-items', 'hide', 'highlight-list', 'setAddColumnFormVisibility'],
+  emits: ['filter-items', 'hide', 'highlight-list', 'set-add-column-form-visibility'],
   data() {
     return {
       selectedId: null,
@@ -162,7 +162,7 @@ export default {
       }
 
       await this.createList({ labelId: this.selectedId, position: this.position });
-      this.$emit('setAddColumnFormVisibility', false);
+      this.$emit('set-add-column-form-visibility', false);
     },
 
     onSearch: debounce(function debouncedSearch(searchTerm) {
@@ -192,7 +192,7 @@ export default {
   <board-add-new-column-form
     :selected-id-valid="selectedIdValid"
     @add-list="addList"
-    @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+    @set-add-column-form-visibility="$emit('set-add-column-form-visibility', $event)"
   >
     <template #dropdown>
       <gl-collapsible-listbox

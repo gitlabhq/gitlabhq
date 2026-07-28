@@ -166,7 +166,7 @@ export default {
       v-if="showAddNewListBetween"
       class="gl-absolute gl-bottom-0 gl-right-0 gl-top-0 gl-z-1 gl-translate-x-4"
     >
-      <board-add-new-column-between @setAddColumnFormVisibility="setShowNewListAfter" />
+      <board-add-new-column-between @set-add-column-form-visibility="setShowNewListAfter" />
     </div>
     <div v-if="showNewListForm" class="gl-pl-2 gl-pr-3">
       <board-add-new-column
@@ -174,7 +174,7 @@ export default {
         :list-query-variables="listQueryVariablesWithCreateNewPosition"
         :lists="lists"
         :position="createNewPosition"
-        @setAddColumnFormVisibility="setShowNewListAfter"
+        @set-add-column-form-visibility="setShowNewListAfter"
         @highlight-list="$emit('highlight-list', $event)"
       />
     </div>

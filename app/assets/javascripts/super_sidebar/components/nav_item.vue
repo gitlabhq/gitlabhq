@@ -235,7 +235,7 @@ export default {
     >
       <template v-if="!isFlyout" #icon>
         <span
-          class="gl-flex gl-h-6 gl-w-6 gl-items-center gl-justify-center"
+          class="gl-relative gl-flex gl-h-6 gl-w-6 gl-items-center gl-justify-center"
           :class="{
             'gl-self-start': hasAvatar,
             'gl-rounded-base gl-bg-default': hasAvatar && avatarShape === 'rect',
@@ -243,14 +243,19 @@ export default {
           }"
         >
           <slot name="icon">
-            <gl-icon
-              v-if="itemIcon"
-              :name="itemIcon"
-              :class="{
-                'js-draggable-icon gl-cursor-grab':
-                  isInPinnedSection && glFeatures.hideUnpinnedSidebarItems,
-              }"
-            />
+            <template
+              v-if="
+                isInPinnedSection && glFeatures.hideUnpinnedSidebarItems && itemIcon && !isIconOnly
+              "
+            >
+              <gl-icon :name="itemIcon" class="hide-on-focus-or-hover--target" />
+              <gl-icon
+                name="grip"
+                class="js-draggable-icon show-on-focus-or-hover--target gl-absolute gl-cursor-grab"
+                variant="subtle"
+              />
+            </template>
+            <gl-icon v-else-if="itemIcon" :name="itemIcon" />
             <gl-icon
               v-else-if="isInPinnedSection"
               name="grip"

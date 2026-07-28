@@ -353,7 +353,7 @@ Dangerfile
 /spec/rubocop/
 /spec/rubocop*
 
-^[Unused code linting scripts] @kerrizor @splattael @dstull
+^[Unused code linting scripts] @kerrizor @dstull
 /scripts/lint/unused_methods.rb
 /scripts/lint/unused_code.rb
 /scripts/lint/excluded_methods.yml

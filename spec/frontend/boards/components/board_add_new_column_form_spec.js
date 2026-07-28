@@ -31,7 +31,7 @@ describe('BoardAddNewColumnForm', () => {
 
     cancelButton().vm.$emit('click');
 
-    expect(wrapper.emitted('setAddColumnFormVisibility')).toEqual([[false]]);
+    expect(wrapper.emitted('set-add-column-form-visibility')).toEqual([[false]]);
   });
 
   describe('Add list button', () => {

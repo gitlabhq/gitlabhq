@@ -233,3 +233,8 @@ To control access to protected variables and runners:
 1. Expand **Variables**.
 1. Under **Access protected resources in merge request pipelines**, select or clear
    the **Allow merge request pipelines to access protected variables and runners** checkbox.
+
+## Related topics
+
+- [Troubleshooting merge request pipelines](mr_pipeline_troubleshooting.md)
+- [Troubleshooting downstream pipelines](downstream_pipelines_troubleshooting.md#job-in-child-pipeline-is-not-created-when-the-pipeline-runs)

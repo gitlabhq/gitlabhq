@@ -26,7 +26,7 @@ describe('BoardAddNewColumnBetween', () => {
     it('shows form on click button', () => {
       findCreateButton().trigger('click');
 
-      expect(wrapper.emitted('setAddColumnFormVisibility')).toEqual([[true]]);
+      expect(wrapper.emitted('set-add-column-form-visibility')).toEqual([[true]]);
     });
   });
 });

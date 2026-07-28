@@ -227,7 +227,6 @@ export default {
       :filters="filterParams"
       @switchBoard="switchBoard"
       @set-filters="setFilters"
-      @setAddColumnFormVisibility="addColumnFormVisible = $event"
       @toggleSwimlanes="setIsShowingEpicSwimlanes"
       @updateBoard="refetchLists"
     />
@@ -245,7 +244,7 @@ export default {
       :error="error"
       :list-query-variables="listQueryVariables"
       @setActiveList="setActiveId"
-      @setAddColumnFormVisibility="addColumnFormVisible = $event"
+      @set-add-column-form-visibility="addColumnFormVisible = $event"
       @set-filters="setFilters"
       @drawer-closed="handleWorkItemDrawerClose"
       @drawer-opened="isWorkItemDrawerOpened = true"
