@@ -52212,6 +52212,9 @@ msgstr ""
 msgid "Orbit|Navigate to"
 msgstr ""
 
+msgid "Orbit|No eligible groups are available for Orbit."
+msgstr ""
+
 msgid "Orbit|No groups match your search."
 msgstr ""
 
@@ -52279,9 +52282,6 @@ msgid "Orbit|Orbit is unavailable."
 msgstr ""
 
 msgid "Orbit|Orbit not enabled"
-msgstr ""
-
-msgid "Orbit|Orbit requires a top-level group with at least a Premium license."
 msgstr ""
 
 msgid "Orbit|Owner instructions"
