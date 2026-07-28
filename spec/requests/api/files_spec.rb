@@ -7,6 +7,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
   include ProjectForksHelper
 
   include_context 'for workhorse body uploads'
+  include_context 'workhorse headers'
 
   let_it_be(:group) { create(:group, :public) }
   let(:helper) do
@@ -75,7 +76,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
   def expect_to_send_git_blob(url, params)
     expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
-    get url, params: params
+    get url, params: params, headers: workhorse_headers
 
     expect(response).to have_gitlab_http_status(:ok)
     expect(response.parsed_body).to be_empty
@@ -168,7 +169,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       end
     end
 
-    context 'without workhorse headers' do
+    context 'without workhorse headers', :verify_workhorse_jwt do
       let(:workhorse_headers) { {} }
 
       it 'returns forbidden' do
@@ -896,7 +897,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
   end
 
   describe 'HEAD /projects/:id/repository/files/:file_path/raw' do
-    let(:request) { head api(route(file_path) + '/raw', current_user), params: params }
+    let(:request) { head api(route(file_path) + '/raw', current_user), params: params, headers: workhorse_headers }
 
     describe 'response headers' do
       subject { response.headers }
@@ -922,7 +923,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
             project.update_attribute(:lfs_enabled, true)
           end
 
-          let(:request) { head api(route('files%2Flfs%2Flfs_object.iso') + '/raw', current_user), params: params.merge(lfs: true) }
+          let(:request) { head api(route('files%2Flfs%2Flfs_object.iso') + '/raw', current_user), params: params.merge(lfs: true), headers: workhorse_headers }
 
           context 'and the file has an lfs object' do
             let_it_be(:lfs_object) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897') }
@@ -963,7 +964,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         it_behaves_like 'authorizing granular token permissions', :read_repository_file do
           let(:boundary_object) { project }
           let(:request) do
-            head api(route(file_path) + '/raw', personal_access_token: pat), params: params
+            head api(route(file_path) + '/raw', personal_access_token: pat), params: params, headers: workhorse_headers
           end
         end
       end
@@ -980,13 +981,13 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     it_behaves_like 'enforcing job token policies', :read_repositories,
       allow_public_access_for_enabled_project_features: :repository do
       let(:request) do
-        get api(route(file_path) + '/raw'), params: { job_token: target_job.token }
+        get api(route(file_path) + '/raw'), params: { job_token: target_job.token }, headers: workhorse_headers
       end
     end
 
     shared_examples_for 'repository raw files' do
       it_behaves_like 'when path is absolute' do
-        subject { get api(route(absolute_path) + '/raw', current_user), params: params }
+        subject { get api(route(absolute_path) + '/raw', current_user), params: params, headers: workhorse_headers }
       end
 
       it 'returns raw file info' do
@@ -1059,7 +1060,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
           project.update_attribute(:lfs_enabled, true)
         end
 
-        let(:request) { get api(route(file_path) + '/raw', current_user), params: params.merge(lfs: true) }
+        let(:request) { get api(route(file_path) + '/raw', current_user), params: params.merge(lfs: true), headers: workhorse_headers }
         let(:file_path) { 'files%2Flfs%2Flfs_object.iso' }
 
         it_behaves_like '404 response'
@@ -1136,7 +1137,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         it_behaves_like 'authorizing granular token permissions', :read_repository_file do
           let(:boundary_object) { project }
           let(:request) do
-            get api(route(file_path) + '/raw', personal_access_token: pat), params: params
+            get api(route(file_path) + '/raw', personal_access_token: pat), params: params, headers: workhorse_headers
           end
         end
       end
@@ -1150,7 +1151,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       it_behaves_like 'ai_workflows scope' do
         subject(:file_action) do
           url = route(file_path) + '/raw'
-          get api(url, oauth_access_token: oauth_token), params: params
+          get api(url, oauth_access_token: oauth_token), params: params, headers: workhorse_headers
         end
 
         let(:expected_status) { :ok }

@@ -10,7 +10,7 @@ module API
       end
 
       def send_git_snapshot(repository)
-        header(*Gitlab::Workhorse.send_git_snapshot(repository))
+        send_workhorse_headers!(*Gitlab::Workhorse.send_git_snapshot(repository))
 
         body ''
       end

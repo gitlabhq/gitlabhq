@@ -15,7 +15,9 @@ module Types
         description: 'Current status of the import.'
 
       field :url, GraphQL::Types::String,
-        description: 'Import url.'
+        description: 'Import url.',
+        null: true,
+        authorize: :read_project_import
 
       field :last_error, GraphQL::Types::String,
         description: 'Last error of the import.',

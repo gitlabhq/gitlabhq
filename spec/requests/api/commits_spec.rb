@@ -728,7 +728,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         end
       end
 
-      context 'without workhorse headers' do
+      context 'without workhorse headers', :verify_workhorse_jwt do
         let(:workhorse_headers) { {} }
 
         it 'returns forbidden' do

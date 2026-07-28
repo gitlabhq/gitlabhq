@@ -450,6 +450,16 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
             end
           end
         end
+
+        context 'when the source branch matches a confidential issue' do
+          let(:source_branch) { "#{issue.iid}-fix-issue" }
+          let(:issue_confidential) { true }
+
+          it 'does not derive the MR title from the confidential issue title', :aggregate_failures do
+            expect(merge_request.title).to eq("#{issue.iid} fix issue")
+            expect(merge_request.title).not_to include(issue.title)
+          end
+        end
       end
     end
 
@@ -830,6 +840,18 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
 
           it 'leaves surrounding text and strips the blank placeholder' do
             expect(merge_request.title).to eq('Resolve')
+          end
+        end
+
+        context 'with %{issue_title} template and a confidential branch-linked issue' do
+          let(:title_template) { 'Resolve %{issue_id}: %{issue_title}' }
+          let(:source_branch) { "#{issue.iid}-fix-bug" }
+          let(:issue_confidential) { true }
+          let(:commits) { Commit.decorate([commit_1], project) }
+
+          it 'keeps the issue id but does not persist the confidential issue title', :aggregate_failures do
+            expect(merge_request.title).to eq("Resolve #{issue.iid}:")
+            expect(merge_request.title).not_to include(issue.title)
           end
         end
       end

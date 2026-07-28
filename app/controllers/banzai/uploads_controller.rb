@@ -7,6 +7,7 @@ module Banzai
     skip_before_action :authenticate_user!
     skip_before_action :check_two_factor_requirement
 
+    before_action :verify_workhorse_api!
     before_action :verify_upload_model_class!
     before_action :authorize_access!
 

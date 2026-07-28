@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::ProjectSnapshots, :aggregate_failures, feature_category: :source_code_management do
   include WorkhorseHelpers
+  include_context 'workhorse headers'
 
   let(:project) { create(:project) }
   let(:admin) { create(:admin) }
@@ -46,7 +47,9 @@ RSpec.describe API::ProjectSnapshots, :aggregate_failures, feature_category: :so
       expect(response.parsed_body).to be_empty
     end
 
-    it_behaves_like 'GET request permissions for admin mode'
+    it_behaves_like 'GET request permissions for admin mode' do
+      subject { get api(path, current_user, admin_mode: admin_mode), headers: workhorse_headers }
+    end
 
     it 'returns authentication error as project owner' do
       get api(path, project.first_owner)
@@ -61,14 +64,14 @@ RSpec.describe API::ProjectSnapshots, :aggregate_failures, feature_category: :so
     end
 
     it 'requests project repository raw archive as administrator' do
-      get api(path, admin, admin_mode: true), params: { wiki: '0' }
+      get api(path, admin, admin_mode: true), params: { wiki: '0' }, headers: workhorse_headers
 
       expect(response).to have_gitlab_http_status(:ok)
       expect_snapshot_response_for(project.repository)
     end
 
     it 'requests wiki repository raw archive as administrator' do
-      get api(path, admin, admin_mode: true), params: { wiki: '1' }
+      get api(path, admin, admin_mode: true), params: { wiki: '1' }, headers: workhorse_headers
 
       expect(response).to have_gitlab_http_status(:ok)
       expect_snapshot_response_for(project.wiki.repository)
@@ -79,7 +82,7 @@ RSpec.describe API::ProjectSnapshots, :aggregate_failures, feature_category: :so
         let(:boundary_object) { project }
         let(:user) { admin }
         let(:request) do
-          get api(path, personal_access_token: pat), params: { wiki: '0' }
+          get api(path, personal_access_token: pat), params: { wiki: '0' }, headers: workhorse_headers
         end
       end
     end

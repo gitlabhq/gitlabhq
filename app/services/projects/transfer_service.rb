@@ -117,6 +117,7 @@ module Projects
 
     # rubocop: disable CodeReuse/ActiveRecord
     def transfer(project)
+      @visibility_before_transfer = project.visibility_level
       @old_path = project.full_path
       @old_group = project.group
       @new_path = File.join(@new_namespace.try(:full_path) || '', project.path)
@@ -245,7 +246,21 @@ module Projects
       ensure_personal_project_owner_membership(project)
       invalidate_personal_projects_counts
 
+      disable_unauthorized_merge_request_collaboration
+
       publish_event
+    end
+
+    # When a project's visibility is reduced to private as a result of the transfer,
+    # members of the project could otherwise still push to the source branch of open
+    # fork merge requests through collaboration. Disable collaboration asynchronously
+    # so the stale `allow_maintainer_to_push` flag cannot silently re-grant access if
+    # the project's visibility is later raised again.
+    def disable_unauthorized_merge_request_collaboration
+      return unless @visibility_before_transfer > Gitlab::VisibilityLevel::PRIVATE
+      return unless project.visibility_level <= Gitlab::VisibilityLevel::PRIVATE
+
+      ::MergeRequests::DisableCollaborationOnUnauthorizedWorker.perform_async(project.id)
     end
 
     # Overridden in EE

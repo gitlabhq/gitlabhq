@@ -11,6 +11,7 @@ class ApplicationController < BaseActionController
   include PageLayoutHelper
   include SafeParamsHelper
   include WorkhorseHelper
+  include WorkhorseAuthenticatable
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
   include Gitlab::SearchContext::ControllerConcern

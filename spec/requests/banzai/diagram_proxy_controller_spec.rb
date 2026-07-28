@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Banzai::DiagramProxyController, feature_category: :markdown do
+  include_context 'workhorse headers'
+
   def decode_send_data(response)
     command, encoded_params = response.headers[Gitlab::Workhorse::SEND_DATA_HEADER].split(':')
     params = Gitlab::Json.safe_parse(Base64.urlsafe_decode64(encoded_params))
@@ -27,7 +29,7 @@ RSpec.describe Banzai::DiagramProxyController, feature_category: :markdown do
   end
 
   describe 'GET /-/diagram-proxy/:key' do
-    subject(:request) { get "/-/diagram-proxy/#{key}" }
+    subject(:request) { get "/-/diagram-proxy/#{key}", headers: workhorse_headers }
 
     context 'with a valid plantuml key and matching user' do
       before do
@@ -104,11 +106,11 @@ RSpec.describe Banzai::DiagramProxyController, feature_category: :markdown do
       end
 
       it 'returns 404 on the second request' do
-        get "/-/diagram-proxy/#{key}"
+        get "/-/diagram-proxy/#{key}", headers: workhorse_headers
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        get "/-/diagram-proxy/#{key}"
+        get "/-/diagram-proxy/#{key}", headers: workhorse_headers
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
